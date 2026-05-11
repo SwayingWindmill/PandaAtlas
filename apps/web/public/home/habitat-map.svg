@@ -1,0 +1,58 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#f5efe0"/>
+  <g opacity="0.45">
+    <path d="M84 140C198 84 342 92 430 130C518 168 626 172 712 142C814 106 934 112 1038 170" stroke="#cabd9f" stroke-width="2"/>
+    <path d="M92 238C238 178 374 190 474 234C582 282 680 286 780 246C886 204 1012 212 1106 270" stroke="#cabd9f" stroke-width="2"/>
+    <path d="M110 340C264 278 392 292 498 344C612 400 736 396 842 350C928 314 1014 316 1086 346" stroke="#cabd9f" stroke-width="2"/>
+    <path d="M128 456C260 402 374 418 470 458C602 512 734 512 846 466C938 428 1004 430 1084 458" stroke="#cabd9f" stroke-width="2"/>
+    <path d="M144 564C278 512 384 528 492 578C600 626 726 626 836 584C912 554 1006 548 1082 580" stroke="#cabd9f" stroke-width="2"/>
+    <path d="M172 674C304 622 416 636 520 684C610 726 726 732 818 692C896 658 990 652 1072 684" stroke="#cabd9f" stroke-width="2"/>
+  </g>
+  <g opacity="0.7">
+    <path d="M232 258C270 192 350 144 434 148C506 152 566 202 602 246C636 286 684 322 756 332C828 342 904 336 948 374C1002 420 1016 510 982 574C946 642 854 680 776 666C704 654 650 606 586 592C520 578 444 598 380 576C288 544 206 472 198 392C194 340 204 306 232 258Z" fill="#dae4d1"/>
+    <path d="M268 286C316 240 390 224 462 236C524 248 590 290 628 336C668 384 704 440 774 454C832 466 904 446 952 482C1008 524 988 618 926 664C862 710 768 714 696 682C632 654 586 608 526 596C452 580 356 602 300 554C246 508 224 430 234 368C240 334 246 308 268 286Z" stroke="#8ba078" stroke-width="3"/>
+    <path d="M314 352C362 314 420 304 478 318C534 332 582 370 616 414C650 456 698 494 760 508C822 522 896 516 932 552C978 598 952 662 898 700C840 742 760 744 694 720C634 698 588 650 526 638C464 624 390 640 342 610C278 568 254 490 274 432C282 406 294 370 314 352Z" stroke="#8ba078" stroke-width="2"/>
+    <path d="M208 170C278 128 352 128 402 160C448 190 476 246 458 300C438 360 382 404 326 398C262 392 212 330 196 270C186 230 182 188 208 170Z" fill="#dde8e3"/>
+    <path d="M160 626C212 578 296 550 354 570C404 588 450 642 438 702C426 758 364 808 302 804C242 800 182 756 164 694C152 654 136 646 160 626Z" fill="#e2d7be"/>
+    <path d="M864 188C918 158 994 162 1048 198C1102 234 1128 306 1100 366C1068 434 992 468 924 456C854 444 796 380 792 312C788 262 820 214 864 188Z" fill="#eadfd1"/>
+  </g>
+  <g opacity="0.6">
+    <circle cx="328" cy="236" r="6" fill="#6d8a59"/>
+    <circle cx="330" cy="236" r="22" fill="#6d8a59" fill-opacity="0.12"/>
+    <circle cx="668" cy="412" r="6" fill="#6d8a59"/>
+    <circle cx="668" cy="412" r="22" fill="#6d8a59" fill-opacity="0.12"/>
+    <circle cx="904" cy="262" r="6" fill="#6d8a59"/>
+    <circle cx="904" cy="262" r="22" fill="#6d8a59" fill-opacity="0.12"/>
+    <circle cx="508" cy="638" r="6" fill="#6d8a59"/>
+    <circle cx="508" cy="638" r="22" fill="#6d8a59" fill-opacity="0.12"/>
+  </g>
+  <g>
+    <g transform="translate(286 194)">
+      <rect width="114" height="48" rx="24" fill="#fffdf7" stroke="#d4c6a7"/>
+      <text x="57" y="30" text-anchor="middle" fill="#28422d" font-size="24" font-family="'Noto Serif SC', 'Songti SC', serif">岷山</text>
+    </g>
+    <g transform="translate(614 370)">
+      <rect width="136" height="48" rx="24" fill="#fffdf7" stroke="#d4c6a7"/>
+      <text x="68" y="30" text-anchor="middle" fill="#28422d" font-size="24" font-family="'Noto Serif SC', 'Songti SC', serif">邛崃山系</text>
+    </g>
+    <g transform="translate(846 220)">
+      <rect width="114" height="48" rx="24" fill="#fffdf7" stroke="#d4c6a7"/>
+      <text x="57" y="30" text-anchor="middle" fill="#28422d" font-size="24" font-family="'Noto Serif SC', 'Songti SC', serif">秦岭</text>
+    </g>
+    <g transform="translate(442 596)">
+      <rect width="152" height="48" rx="24" fill="#fffdf7" stroke="#d4c6a7"/>
+      <text x="76" y="30" text-anchor="middle" fill="#28422d" font-size="24" font-family="'Noto Serif SC', 'Songti SC', serif">生态廊道</text>
+    </g>
+  </g>
+  <g transform="translate(86 742)">
+    <rect width="1028" height="90" rx="28" fill="#fffaf0" stroke="#ddd0b4"/>
+    <circle cx="52" cy="45" r="10" fill="#6d8a59"/>
+    <text x="76" y="50" fill="#334435" font-size="22" font-family="'Noto Serif SC', 'Songti SC', serif">核心分布热点</text>
+    <circle cx="314" cy="45" r="10" fill="#dae4d1" stroke="#8ba078" stroke-width="2"/>
+    <text x="338" y="50" fill="#55655a" font-size="22" font-family="'Noto Serif SC', 'Songti SC', serif">生态缓冲带</text>
+    <circle cx="558" cy="45" r="10" fill="#e2d7be"/>
+    <text x="582" y="50" fill="#55655a" font-size="22" font-family="'Noto Serif SC', 'Songti SC', serif">保护行动重点区</text>
+    <circle cx="860" cy="45" r="10" fill="#eadfd1"/>
+    <text x="884" y="50" fill="#55655a" font-size="22" font-family="'Noto Serif SC', 'Songti SC', serif">科普观察节点</text>
+  </g>
+</svg>

@@ -1,0 +1,125 @@
+﻿# Panda Atlas
+
+Panda Atlas is a full-stack monorepo for a giant panda encyclopedia and distribution map.
+
+## Stack
+
+- Frontend: Next.js App Router + Tailwind CSS v4 + shadcn/ui
+- Backend: FastAPI + Pydantic + SQLAlchemy (optional runtime fallback)
+- Data: Supabase Postgres/PostGIS/Auth/Storage
+- Deployment: Vercel (`apps/web`) + container runtime for FastAPI (`services/api`)
+
+## Quick Start (Scaffold)
+
+### 1) Frontend
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+### 2) Backend (uv)
+
+```bash
+cd services/api
+uv sync --extra dev
+uv run uvicorn app.main:app --reload
+```
+
+### 3) Container (API + Postgres)
+
+```bash
+docker compose up --build
+```
+
+## Database Behavior
+
+- If `DATABASE_URL` is configured and SQLAlchemy dependencies are installed, API read endpoints query Postgres/PostGIS.
+- If DB connection is unavailable and `DB_USE_MOCK_FALLBACK=true`, endpoints automatically use in-memory mock data.
+- Health endpoint returns database status in `db` field: `ok`, `disabled`, `error`, or `driver_missing`.
+
+## Release Gate
+
+Default release gate:
+
+```powershell
+npm run release:default
+```
+
+One-time local browser install for the Playwright smoke step:
+
+```powershell
+Push-Location apps/web
+npx playwright install chromium
+Pop-Location
+```
+
+Extended release gate:
+
+```powershell
+$env:RUN_REAL_DB_TESTS="1"
+$env:DATABASE_URL="postgresql+psycopg://postgres:postgres@localhost:5432/panda_atlas"
+$env:RUN_ADMIN_IMPORT_SMOKE="1"
+$env:ADMIN_API_TOKEN="dev-admin-token"
+npm run release:extended
+```
+
+The default gate is token-free and read-only. The extended gate adds the explicit real-DB chain and admin import smoke checks only when those env flags are set.
+
+## Real DB Verification Flow
+
+1. Apply schema migration (Supabase SQL editor or `psql`):
+
+```bash
+psql "$env:DATABASE_URL" -f infra/supabase/migrations/0001_panda_atlas_init.sql
+```
+
+2. Import demo dataset:
+
+```bash
+cd services/api
+uv run python scripts/import_demo_seed.py
+```
+
+3. Start API and verify endpoints:
+
+```bash
+uv run uvicorn app.main:app --reload
+curl "http://localhost:8000/api/v1/pandas"
+curl "http://localhost:8000/api/v1/map/snapshots"
+curl "http://localhost:8000/api/v1/map/distribution?bbox=100,25,110,36&layer=wild"
+curl "http://localhost:8000/api/v1/stats/overview"
+```
+
+4. Execute import jobs via admin API:
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/admin/import-jobs" \
+  -H "Authorization: Bearer dev-admin-token" \
+  -H "Content-Type: application/json" \
+  -d "{\"source_name\":\"0001_demo_seed.sql\"}"
+
+curl -X POST "http://localhost:8000/api/v1/admin/import-jobs/<job_id>/run" \
+  -H "Authorization: Bearer dev-admin-token"
+```
+
+5. Real-DB anti-regression + smoke test:
+
+```bash
+cd services/api
+$env:RUN_REAL_DB_TESTS="1"
+$env:DATABASE_URL="postgresql+psycopg://postgres:postgres@localhost:5432/panda_atlas"
+uv run pytest -q tests/integration/test_real_db_chain.py
+
+$env:API_BASE_URL="http://localhost:8000"
+$env:ADMIN_API_TOKEN="dev-admin-token"
+uv run python scripts/smoke_test_api.py
+```
+
+## Project Docs
+
+- Architecture: `docs/monorepo-structure.md`
+- API contract: `services/api/openapi/panda-atlas-v1.yaml`
+- DB migration draft: `infra/supabase/migrations/0001_panda_atlas_init.sql`
+- Demo seed SQL: `infra/supabase/seed/0001_demo_seed.sql`

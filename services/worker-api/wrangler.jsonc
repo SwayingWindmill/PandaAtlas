@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "panda-atlas-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-01",
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "APP_ENV": "development"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "panda-atlas",
+      "database_id": "8b51142c-af99-493b-8247-5e5f61802a49",
+      "migrations_dir": "../../infra/cloudflare/d1/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "GEO_BUCKET",
+      "bucket_name": "panda-atlas-geo"
+    },
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "panda-atlas-media"
+    }
+  ]
+}

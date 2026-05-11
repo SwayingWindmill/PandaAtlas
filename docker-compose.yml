@@ -1,0 +1,35 @@
+﻿version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      APP_PORT: ${APP_PORT:-8000}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@postgres:5432/panda_atlas}
+      DB_USE_MOCK_FALLBACK: ${DB_USE_MOCK_FALLBACK:-true}
+      # Local development convenience default only. Replace outside development.
+      ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:-dev-admin-token}
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-http://localhost:3000}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/api/app:/app/app
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_DB: panda_atlas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - panda_atlas_pg_data:/var/lib/postgresql/data
+
+volumes:
+  panda_atlas_pg_data:

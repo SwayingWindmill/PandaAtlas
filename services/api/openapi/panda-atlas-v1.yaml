@@ -1,0 +1,890 @@
+﻿openapi: 3.1.0
+info:
+  title: Panda Atlas API
+  version: 0.1.0-draft
+  summary: Draft contract for Panda Atlas backend service
+  description: |
+    API draft for a panda encyclopedia and distribution map service.
+    This contract is intended for FastAPI implementation and frontend integration.
+servers:
+  - url: https://panda-atlas-api.example.workers.dev
+    description: Cloudflare Worker API
+  - url: https://api.example.com
+    description: Container API
+  - url: http://localhost:8000
+    description: Local FastAPI development
+  - url: http://127.0.0.1:8787
+    description: Local Cloudflare Worker development
+
+tags:
+  - name: health
+  - name: pandas
+  - name: map
+  - name: stats
+  - name: admin
+
+paths:
+  /health:
+    get:
+      tags: [health]
+      summary: Service health check
+      operationId: getHealth
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  version:
+                    type: string
+                    example: 0.1.0
+                  db:
+                    type: string
+                    description: Database health state
+                    enum: [ok, disabled, error, driver_missing]
+                    example: ok
+
+  /api/v1/pandas:
+    get:
+      tags: [pandas]
+      summary: List pandas
+      operationId: listPandas
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Search keyword for names/tags
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/PandaStatus'
+        - name: gender
+          in: query
+          schema:
+            type: string
+            enum: [male, female, unknown]
+        - name: habitat_id
+          in: query
+          description: Filter pandas linked to the given habitat through sightings or fallback habitat summaries
+          schema:
+            type: string
+            format: uuid
+        - name: featured
+          in: query
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [name_asc, name_desc, birth_date_desc, created_at_desc]
+            default: created_at_desc
+      responses:
+        '200':
+          description: Paginated panda list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPandasResponse'
+
+  /api/v1/pandas/{panda_ref}:
+    get:
+      tags: [pandas]
+      summary: Get panda detail
+      operationId: getPandaByRef
+      parameters:
+        - name: panda_ref
+          in: path
+          required: true
+          description: Canonical panda slug or legacy UUID alias
+          schema:
+            type: string
+            examples: [he-hua, 1d08f72f-7550-42e9-a4d5-bd74bc505955]
+      responses:
+        '200':
+          description: Panda detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PandaDetail'
+        '404':
+          description: Panda not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/pandas/{panda_ref}/lineage:
+    get:
+      tags: [pandas]
+      summary: Get panda lineage graph around a focus panda
+      operationId: getPandaLineageByRef
+      parameters:
+        - name: panda_ref
+          in: path
+          required: true
+          description: Canonical panda slug or legacy UUID alias
+          schema:
+            type: string
+            examples: [he-hua, 1d08f72f-7550-42e9-a4d5-bd74bc505955]
+        - name: ancestor_depth
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 16
+            default: 6
+        - name: descendant_depth
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 16
+            default: 6
+      responses:
+        '200':
+          description: Lineage graph centered on the target panda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PandaLineageResponse'
+        '404':
+          description: Panda not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/map/distribution:
+    get:
+      tags: [map]
+      summary: Get distribution GeoJSON in a bounding box
+      operationId: getDistribution
+      parameters:
+        - name: bbox
+          in: query
+          required: true
+          description: minLon,minLat,maxLon,maxLat (EPSG:4326)
+          schema:
+            type: string
+            example: '102.0,27.5,108.8,34.2'
+        - name: snapshot_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Uses latest snapshot when omitted
+        - name: layer
+          in: query
+          schema:
+            $ref: '#/components/schemas/DistributionLayer'
+        - name: zoom
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 22
+      responses:
+        '200':
+          description: Distribution features
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionFeatureCollection'
+
+  /api/v1/map/habitats:
+    get:
+      tags: [map]
+      summary: Get habitat polygons
+      operationId: getHabitats
+      parameters:
+        - name: bbox
+          in: query
+          schema:
+            type: string
+            example: '102.0,27.5,108.8,34.2'
+        - name: level
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Habitat polygons in GeoJSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitatFeatureCollection'
+
+  /api/v1/map/snapshots:
+    get:
+      tags: [map]
+      summary: List available distribution snapshots
+      operationId: listDistributionSnapshots
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 120
+            default: 24
+      responses:
+        '200':
+          description: Snapshot metadata list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionSnapshotList'
+
+  /api/v1/stats/overview:
+    get:
+      tags: [stats]
+      summary: Get dashboard overview metrics
+      operationId: getOverviewStats
+      responses:
+        '200':
+          description: Overview metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverviewStats'
+
+  /api/v1/admin/import-sources:
+    get:
+      tags: [admin]
+      summary: List approved import sources
+      operationId: listImportSources
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Approved import sources for local operator workflows
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportSourceList'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Admin token is still using the unsafe default outside development
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/admin/import-jobs:
+    post:
+      tags: [admin]
+      summary: Create an import job
+      operationId: createImportJob
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateImportJobRequest'
+      responses:
+        '201':
+          description: Import job created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportJob'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Import source is not approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Admin token is still using the unsafe default outside development
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/admin/import-jobs/{job_id}:
+    get:
+      tags: [admin]
+      summary: Get import job status
+      operationId: getImportJob
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Import job detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportJob'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Admin token is still using the unsafe default outside development
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/admin/import-jobs/{job_id}/run:
+    post:
+      tags: [admin]
+      summary: Execute import job
+      operationId: runImportJob
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Import job execution finished
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportJob'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Job cannot be run from its current state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Admin token is still using the unsafe default outside development
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    PandaStatus:
+      type: string
+      enum: [alive, deceased, unknown]
+
+    DistributionLayer:
+      type: string
+      enum: [wild, captive, protected_area, corridor]
+
+    PaginationMeta:
+      type: object
+      required: [page, page_size, total]
+      properties:
+        page:
+          type: integer
+          example: 1
+        page_size:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 120
+
+    PandaListItem:
+      type: object
+      required: [id, slug, name_zh, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+          example: he-hua
+        name_zh:
+          type: string
+          example: He Hua
+        name_en:
+          type: string
+          nullable: true
+        gender:
+          type: string
+          enum: [male, female, unknown]
+        status:
+          $ref: '#/components/schemas/PandaStatus'
+        birth_date:
+          type: string
+          format: date
+          nullable: true
+        current_location:
+          type: string
+          nullable: true
+        cover_image_url:
+          type: string
+          format: uri
+          nullable: true
+
+    PandaDetail:
+      allOf:
+        - $ref: '#/components/schemas/PandaListItem'
+        - type: object
+          properties:
+            intro:
+              type: string
+              nullable: true
+            birthplace:
+              type: string
+              nullable: true
+            tags:
+              type: array
+              items:
+                type: string
+            father_id:
+              type: string
+              format: uuid
+              nullable: true
+            mother_id:
+              type: string
+              format: uuid
+              nullable: true
+            habitats:
+              type: array
+              items:
+                $ref: '#/components/schemas/HabitatSummary'
+            media:
+              type: array
+              items:
+                $ref: '#/components/schemas/MediaAsset'
+
+    PandaLineageNode:
+      allOf:
+        - $ref: '#/components/schemas/PandaListItem'
+        - type: object
+          properties:
+            intro:
+              type: string
+              nullable: true
+            tags:
+              type: array
+              items:
+                type: string
+            father_id:
+              type: string
+              format: uuid
+              nullable: true
+            mother_id:
+              type: string
+              format: uuid
+              nullable: true
+
+    PandaLineageEdge:
+      type: object
+      required: [parent_id, child_id]
+      properties:
+        parent_id:
+          type: string
+          format: uuid
+        child_id:
+          type: string
+          format: uuid
+
+    PandaLineageMeta:
+      type: object
+      required: [ancestor_depth, descendant_depth]
+      properties:
+        ancestor_depth:
+          type: integer
+          minimum: 0
+        descendant_depth:
+          type: integer
+          minimum: 0
+
+    PandaLineageResponse:
+      type: object
+      required: [focus_id, nodes, edges, meta]
+      properties:
+        focus_id:
+          type: string
+          format: uuid
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/PandaLineageNode'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/PandaLineageEdge'
+        meta:
+          $ref: '#/components/schemas/PandaLineageMeta'
+
+    HabitatSummary:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        province:
+          type: string
+          nullable: true
+
+    MediaAsset:
+      type: object
+      required: [id, storage_bucket, storage_path]
+      properties:
+        id:
+          type: string
+          format: uuid
+        storage_bucket:
+          type: string
+        storage_path:
+          type: string
+        title:
+          type: string
+          nullable: true
+        photographer:
+          type: string
+          nullable: true
+        signed_url:
+          type: string
+          format: uri
+          nullable: true
+
+    PaginatedPandasResponse:
+      type: object
+      required: [items, meta]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PandaListItem'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    GeoJsonGeometry:
+      type: object
+      required: [type, coordinates]
+      properties:
+        type:
+          type: string
+          enum: [Point, MultiPolygon, Polygon, MultiPoint, LineString, MultiLineString]
+        coordinates:
+          description: Raw GeoJSON coordinates
+
+    GeoJsonFeature:
+      type: object
+      required: [type, geometry, properties]
+      properties:
+        type:
+          type: string
+          const: Feature
+        id:
+          oneOf:
+            - type: string
+            - type: integer
+        geometry:
+          $ref: '#/components/schemas/GeoJsonGeometry'
+        properties:
+          type: object
+          additionalProperties: true
+
+    GeoJsonFeatureCollection:
+      type: object
+      required: [type, features]
+      properties:
+        type:
+          type: string
+          const: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoJsonFeature'
+
+    DistributionFeatureProperties:
+      type: object
+      required: [layer, cell_code]
+      properties:
+        layer:
+          $ref: '#/components/schemas/DistributionLayer'
+        cell_code:
+          type: string
+        density:
+          type: number
+          nullable: true
+        snapshot_date:
+          type: string
+          format: date
+          nullable: true
+
+    DistributionGeoJsonFeature:
+      type: object
+      required: [type, geometry, properties]
+      properties:
+        type:
+          type: string
+          const: Feature
+        id:
+          oneOf:
+            - type: string
+            - type: integer
+        geometry:
+          $ref: '#/components/schemas/GeoJsonGeometry'
+        properties:
+          $ref: '#/components/schemas/DistributionFeatureProperties'
+
+    DistributionFeatureCollection:
+      type: object
+      required: [type, features]
+      properties:
+        type:
+          type: string
+          const: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionGeoJsonFeature'
+
+    HabitatFeatureProperties:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        province:
+          type: string
+          nullable: true
+        level:
+          type: string
+          nullable: true
+
+    HabitatGeoJsonFeature:
+      type: object
+      required: [type, geometry, properties]
+      properties:
+        type:
+          type: string
+          const: Feature
+        id:
+          oneOf:
+            - type: string
+            - type: integer
+        geometry:
+          $ref: '#/components/schemas/GeoJsonGeometry'
+        properties:
+          $ref: '#/components/schemas/HabitatFeatureProperties'
+
+    HabitatFeatureCollection:
+      type: object
+      required: [type, features]
+      properties:
+        type:
+          type: string
+          const: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/HabitatGeoJsonFeature'
+
+    DistributionSnapshot:
+      type: object
+      required: [snapshot_date, version]
+      properties:
+        snapshot_date:
+          type: string
+          format: date
+        version:
+          type: string
+        notes:
+          type: string
+          nullable: true
+
+    DistributionSnapshotList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionSnapshot'
+
+    OverviewStats:
+      type: object
+      required: [total_pandas, active_habitats, latest_snapshot_date]
+      properties:
+        total_pandas:
+          type: integer
+          example: 612
+        active_habitats:
+          type: integer
+          example: 67
+        latest_snapshot_date:
+          type: string
+          format: date
+        wild_distribution_cells:
+          type: integer
+          example: 1430
+        featured_pandas:
+          type: integer
+          example: 12
+
+    ImportSourceOption:
+      type: object
+      required: [name, label, source_path]
+      properties:
+        name:
+          type: string
+          example: 0001_demo_seed.sql
+        label:
+          type: string
+          example: Demo seed dataset
+        source_path:
+          type: string
+          example: infra/supabase/seed/0001_demo_seed.sql
+
+    ImportSourceList:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportSourceOption'
+
+    CreateImportJobRequest:
+      type: object
+      required: [source_name]
+      properties:
+        source_name:
+          type: string
+          example: 0001_demo_seed.sql
+
+    ImportJobSummary:
+      type: object
+      required: [rows_total, rows_success, rows_failed, source_name, source_path, mode]
+      properties:
+        rows_total:
+          type: integer
+          example: 1
+        rows_success:
+          type: integer
+          example: 1
+        rows_failed:
+          type: integer
+          example: 0
+        source_name:
+          type: string
+          example: 0001_demo_seed.sql
+        source_path:
+          type: string
+          example: infra/supabase/seed/0001_demo_seed.sql
+        mode:
+          type: string
+          example: mock
+        failure_reason:
+          type: string
+          nullable: true
+
+    ImportJob:
+      type: object
+      required: [id, source_name, status, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        source_name:
+          type: string
+        source_uri:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [queued, running, succeeded, failed]
+        summary:
+          $ref: '#/components/schemas/ImportJobSummary'
+        error_log:
+          type: string
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: not_found
+        message:
+          type: string
+          example: Panda not found
+

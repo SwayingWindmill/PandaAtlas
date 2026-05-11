@@ -1,0 +1,29 @@
+import { expect, test } from "@playwright/test";
+
+test("loads atlas and follows the canonical detail-to-lineage route", async ({ page }) => {
+  await page.goto("/atlas");
+
+  await expect(page.getByTestId("atlas-page")).toBeVisible();
+
+  const firstAtlasCard = page.locator('[data-testid^="panda-card-link-"]').first();
+  await expect(firstAtlasCard).toBeVisible();
+  await expect(firstAtlasCard).toHaveAttribute("href", /\/atlas\/.+/);
+
+  await firstAtlasCard.click();
+  await expect(page).toHaveURL(/\/atlas\/[^/?#]+$/);
+  await expect(page.getByTestId("panda-profile-page")).toBeVisible();
+
+  const lineageLink = page.getByTestId("profile-lineage-link");
+  await expect(lineageLink).toHaveAttribute("href", /\/lineage\?focus=[^&]+$/);
+
+  await lineageLink.click();
+  await expect(page).toHaveURL(/\/lineage\?focus=[^&]+/);
+  await expect(page.getByTestId("lineage-page")).toBeVisible();
+});
+
+test("loads the global distribution shell directly", async ({ page }) => {
+  await page.goto("/global-distribution");
+
+  await expect(page.getByTestId("global-distribution-page")).toBeVisible();
+  await expect(page.getByTestId("global-distribution-shell")).toBeVisible();
+});

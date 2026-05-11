@@ -1,0 +1,23 @@
+{
+  "name": "panda-atlas",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "npm@10.9.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/worker-api"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w web",
+    "lint:web": "npm run lint -w web",
+    "typecheck:web": "npm run typecheck -w web",
+    "build:web": "npm run build -w web",
+    "smoke:web": "npm run smoke -w web",
+    "dev:api:cf": "npm run dev -w worker-api",
+    "typecheck:api:cf": "npm run typecheck -w worker-api",
+    "deploy:api:cf": "npm run deploy -w worker-api",
+    "release:default": "node scripts/release/default.mjs",
+    "release:extended": "node scripts/release/extended.mjs"
+  }
+}

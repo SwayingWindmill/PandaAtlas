@@ -1,0 +1,45 @@
+﻿# Node / Next
+node_modules/
+.npm/
+apps/web/.next/
+apps/web/out/
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/blob-report/
+*.tsbuildinfo
+**/.wrangler/
+*.wrangler-dev.*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+.uv-cache/
+services/api/.uv-cache-codex/
+*.egg-info/
+.coverage
+coverage.xml
+htmlcov/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Local agent/planning state
+.claude/
+.codex/
+.codex-temp/
+.planning/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
