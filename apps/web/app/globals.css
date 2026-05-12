@@ -10,8 +10,8 @@
   --line: #dde2da;
   --accent: #3f7d48;
   --accent-2: #c66b2f;
-  --font-display: var(--font-manrope), "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-body: var(--font-noto-sans-sc), "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
 }
 
 * {

@@ -14,6 +14,8 @@
     "typecheck:web": "npm run typecheck -w web",
     "build:web": "npm run build -w web",
     "smoke:web": "npm run smoke -w web",
+    "preview:web:cf": "npm run preview:cf -w web",
+    "deploy:web:cf": "npm run deploy:cf -w web",
     "dev:api:cf": "npm run dev -w worker-api",
     "typecheck:api:cf": "npm run typecheck -w worker-api",
     "deploy:api:cf": "npm run deploy -w worker-api",

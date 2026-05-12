@@ -2,6 +2,8 @@
 node_modules/
 .npm/
 apps/web/.next/
+apps/web/.open-next/
+apps/web/.vercel/
 apps/web/out/
 apps/web/test-results/
 apps/web/playwright-report/
