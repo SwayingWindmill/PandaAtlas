@@ -23,7 +23,6 @@ from app.schemas.map import (
     HabitatFeatureCollection,
 )
 
-
 DISTRIBUTION_DEFAULT_LIMIT = 5_000
 HABITAT_FEATURE_LIMIT = 2_000
 
