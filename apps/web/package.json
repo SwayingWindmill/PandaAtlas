@@ -17,6 +17,7 @@
         "lint": "eslint .",
         "typecheck": "tsc --noEmit",
         "smoke": "playwright test",
+        "check:browser": "node scripts/check-playwright-runtime.mjs",
         "test:admin-proxy": "node scripts/smoke-admin-proxy.mjs",
         "test:admin-proxy:production": "node scripts/smoke-admin-proxy.mjs --production",
         "test:map-viewport": "node scripts/test-map-viewport.mjs"

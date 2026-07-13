@@ -19,7 +19,10 @@
     "dev:api:cf": "npm run dev -w worker-api",
     "typecheck:api:cf": "npm run typecheck -w worker-api",
     "smoke:api:cf": "npm run smoke -w worker-api",
+    "smoke:api:cf:d1": "npm run smoke:d1 -w worker-api",
+    "smoke:api:cf:http": "npm run smoke:http -w worker-api",
     "check:public-api-boundary": "node scripts/check-public-api-boundary.mjs",
+    "test:release-gate": "node --test scripts/release/tests/*.test.mjs",
     "deploy:api:cf": "npm run deploy -w worker-api",
     "release:default": "node scripts/release/default.mjs",
     "release:extended": "node scripts/release/extended.mjs"

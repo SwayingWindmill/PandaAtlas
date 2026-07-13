@@ -1,0 +1,100 @@
+# Cross-platform release gate
+
+The default release gate is the supported pre-release verification path for Panda Atlas. It runs Web, FastAPI, public-contract, and Worker checks serially and writes machine-readable and human-readable reports.
+
+## Supported toolchain
+
+CI pins:
+
+- Node.js 22
+- npm 10.9.0
+- Python 3.12
+- uv 0.11.7
+
+CI installs JavaScript dependencies with `npm ci`, creates a dedicated locked FastAPI environment from `services/api/uv.lock`, and installs the Playwright Chromium runtime. The release environment is `services/api/.venv-release`; it is deliberately separate from developer or WSL virtual environments.
+
+## Windows-first local run
+
+From a Windows `cmd.exe` or PowerShell prompt at the repository root:
+
+```powershell
+npm install
+npm run release:default
+```
+
+On Windows the gate:
+
+1. runs the Worker D1 schema and projection smoke;
+2. records Worker HTTP smoke as `skipped`, because the required full Workerd HTTP execution runs in Linux CI;
+3. uses Microsoft Edge automatically when it is installed and `PLAYWRIGHT_BROWSER_CHANNEL` is not set;
+4. uses the production Next.js server created by `npm run build:web` rather than a development server.
+
+To force the bundled Playwright Chromium runtime instead of Edge:
+
+```powershell
+$env:RELEASE_GATE_USE_SYSTEM_EDGE="0"
+npm run release:default
+```
+
+If the selected browser is unavailable, the browser-runtime step is reported as `environment-blocked`; it is not reported as a test failure or a pass.
+
+## Linux and CI behavior
+
+The Linux CI job runs both Worker stages:
+
+```text
+Worker D1 projection smoke
+Worker HTTP runtime smoke
+```
+
+The HTTP stage starts Wrangler/Workerd, checks health, panda reads, map completeness metadata, and confirms that Worker admin paths return `404`. A Linux job cannot pass while this HTTP stage is skipped.
+
+The Windows CI job installs Chromium and runs the same default gate, with the Worker HTTP stage explicitly recorded as a platform skip. Both CI jobs upload `.release-gate/` as artifacts.
+
+## Report format
+
+The gate writes:
+
+```text
+.release-gate/default.json
+.release-gate/default.md
+```
+
+Extended verification also writes `extended.json` and `extended.md`.
+
+Every step has exactly one status:
+
+- `passed`: the command completed successfully;
+- `failed`: code, test, build, lint, or contract behavior failed;
+- `skipped`: the step is intentionally not applicable or a required predecessor did not pass;
+- `environment-blocked`: a required executable, browser, secret, or external runtime is unavailable.
+
+A report with `failed` or `environment-blocked` steps exits non-zero. Intentional `skipped` steps remain visible but do not by themselves fail the platform-specific gate.
+
+## Clean-checkout reproduction
+
+The CI workflow proves the clean-checkout path by:
+
+1. using `actions/checkout` with cleaning enabled;
+2. installing pinned tools;
+3. running `npm ci` from the committed lockfile;
+4. creating the dedicated frozen FastAPI environment;
+5. installing browser/runtime dependencies;
+6. running the default gate;
+7. asserting `git diff --exit-code` so the gate cannot modify tracked source files.
+
+The report directory, Playwright output, Wrangler state, Next.js output, and release virtual environment are ignored generated artifacts.
+
+## Extended gate
+
+The extended gate first runs the complete default gate, then records optional real-database and admin-import checks separately:
+
+```powershell
+$env:RUN_REAL_DB_TESTS="1"
+$env:DATABASE_URL="postgresql+psycopg://..."
+$env:RUN_ADMIN_IMPORT_SMOKE="1"
+$env:ADMIN_API_TOKEN="..."
+npm run release:extended
+```
+
+Missing required variables are classified as `environment-blocked`. Disabled optional checks are classified as `skipped`.

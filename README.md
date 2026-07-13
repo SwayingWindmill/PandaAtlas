@@ -49,31 +49,15 @@ docker compose up --build
 
 ## Release Gate
 
-Default release gate:
+Run the Windows-first default gate from the repository root:
 
 ```powershell
 npm run release:default
 ```
 
-One-time local browser install for the Playwright smoke step:
+It runs Web, FastAPI, Worker projection, contract, and browser checks serially. Reports are written to `.release-gate/default.json` and `.release-gate/default.md`. Windows records Worker HTTP as an explicit platform skip; Linux CI executes the complete Workerd HTTP smoke.
 
-```powershell
-Push-Location apps/web
-npx playwright install chromium
-Pop-Location
-```
-
-Extended release gate:
-
-```powershell
-$env:RUN_REAL_DB_TESTS="1"
-$env:DATABASE_URL="postgresql+psycopg://postgres:postgres@localhost:5432/panda_atlas"
-$env:RUN_ADMIN_IMPORT_SMOKE="1"
-$env:ADMIN_API_TOKEN="dev-admin-token"
-npm run release:extended
-```
-
-The default gate is token-free and read-only. The extended gate adds the explicit real-DB chain and admin import smoke checks only when those env flags are set.
+The extended gate adds opt-in real-database and admin-import verification. See [the cross-platform release-gate runbook](docs/release/release-gate.md) for pinned tool versions, clean-checkout reproduction, browser selection, report status definitions, and extended configuration.
 
 ## Real DB Verification Flow
 

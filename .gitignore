@@ -11,6 +11,7 @@ apps/web/blob-report/
 *.tsbuildinfo
 **/.wrangler/
 *.wrangler-dev.*.log
+.release-gate/
 
 # Python
 __pycache__/
@@ -23,6 +24,7 @@ __pycache__/
 venv/
 .uv-cache/
 services/api/.uv-cache-codex/
+services/api/.venv-release/
 *.egg-info/
 .coverage
 coverage.xml

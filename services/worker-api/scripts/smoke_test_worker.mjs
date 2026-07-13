@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { access, rm } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { setTimeout as delay } from "node:timers/promises";
@@ -7,6 +8,16 @@ const HOST = "127.0.0.1";
 const PORT = "8787";
 const BASE_URL = `http://${HOST}:${PORT}`;
 const PERSIST_PATH = ".wrangler/smoke-state";
+const ENVIRONMENT_BLOCKED_EXIT_CODE = 2;
+
+function parseMode(argv) {
+  const modeArgument = argv.find((argument) => argument.startsWith("--mode="));
+  const mode = modeArgument?.slice("--mode=".length) ?? "full";
+  if (!["d1", "http", "full"].includes(mode)) {
+    throw new Error(`Unsupported Worker smoke mode: ${mode}`);
+  }
+  return mode;
+}
 
 function runCommand(command, args) {
   return new Promise((resolve, reject) => {
@@ -47,8 +58,8 @@ async function waitForServer(child) {
   throw new Error(`Timed out waiting for Worker: ${String(lastError)}`);
 }
 
-async function expectJson(path, expectedStatus, init) {
-  const response = await fetch(`${BASE_URL}${path}`, init);
+async function expectJson(requestPath, expectedStatus, init) {
+  const response = await fetch(`${BASE_URL}${requestPath}`, init);
   const text = await response.text();
   let payload = null;
   if (text) {
@@ -59,7 +70,7 @@ async function expectJson(path, expectedStatus, init) {
     }
   }
   if (response.status !== expectedStatus) {
-    throw new Error(`${path} returned ${response.status}, expected ${expectedStatus}: ${text}`);
+    throw new Error(`${requestPath} returned ${response.status}, expected ${expectedStatus}: ${text}`);
   }
   return payload;
 }
@@ -82,24 +93,37 @@ async function stopProcess(child) {
   }
 }
 
-async function main() {
-  const wranglerBin = path.resolve(process.cwd(), "../../node_modules/wrangler/bin/wrangler.js");
-  const d1Args = [wranglerBin, "d1", "execute", "panda-atlas", "--local", "--persist-to", PERSIST_PATH];
+function wranglerBin() {
+  return path.resolve(process.cwd(), "../../node_modules/wrangler/bin/wrangler.js");
+}
 
+async function prepareD1Projection() {
+  await rm(PERSIST_PATH, { recursive: true, force: true });
+  const d1Args = [wranglerBin(), "d1", "execute", "panda-atlas", "--local", "--persist-to", PERSIST_PATH];
   await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/schema.sql"]);
   await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/seed.sql"]);
+  console.log("WORKER_SMOKE_RESULT status=passed scope=d1");
+}
 
+async function runHttpSmoke() {
   if (process.platform === "win32") {
-    console.warn(
-      "D1 schema and seed smoke checks passed. Skipping the HTTP Worker runtime on Windows because workerd currently terminates during native startup; Linux CI runs the complete HTTP smoke flow."
+    console.error(
+      "WORKER_SMOKE_RESULT status=environment-blocked scope=http reason=Workerd HTTP smoke is supported by the Linux CI job; run the D1 mode on Windows.",
     );
+    process.exitCode = ENVIRONMENT_BLOCKED_EXIT_CODE;
     return;
+  }
+
+  try {
+    await access(PERSIST_PATH);
+  } catch {
+    throw new Error("Worker HTTP smoke requires prepared D1 state; run --mode=d1 first");
   }
 
   const worker = spawn(
     process.execPath,
     [
-      wranglerBin,
+      wranglerBin(),
       "dev",
       "--local",
       "--host",
@@ -131,11 +155,12 @@ async function main() {
 
     const distribution = await expectJson(
       "/api/v1/map/distribution?bbox=100,25,110,36&layer=wild&zoom=4",
-      200
+      200,
     );
     if (distribution?.meta?.limit !== 1500 || distribution.meta.requested_zoom !== 4) {
-      throw new Error("Unexpected distribution metadata: " + JSON.stringify(distribution?.meta));
+      throw new Error(`Unexpected distribution metadata: ${JSON.stringify(distribution?.meta)}`);
     }
+
     await expectJson("/api/v1/admin/import-sources", 404);
     await expectJson("/api/v1/admin/import-jobs", 404, {
       method: "POST",
@@ -146,9 +171,19 @@ async function main() {
       body: JSON.stringify({ source_name: "must-not-execute.sql" }),
     });
 
-    console.log("Cloudflare Worker smoke test passed");
+    console.log("WORKER_SMOKE_RESULT status=passed scope=http");
   } finally {
     await stopProcess(worker);
+  }
+}
+
+async function main() {
+  const mode = parseMode(process.argv.slice(2));
+  if (mode === "d1" || mode === "full") {
+    await prepareD1Projection();
+  }
+  if (mode === "http" || mode === "full") {
+    await runHttpSmoke();
   }
 }
 
