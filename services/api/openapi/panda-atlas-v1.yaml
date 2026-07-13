@@ -661,6 +661,19 @@ components:
           items:
             $ref: '#/components/schemas/GeoJsonFeature'
 
+    FeatureCollectionMeta:
+      type: object
+      required: [truncated, limit, requested_zoom]
+      properties:
+        truncated:
+          type: boolean
+        limit:
+          type: integer
+          nullable: true
+        requested_zoom:
+          type: integer
+          nullable: true
+
     DistributionFeatureProperties:
       type: object
       required: [layer, cell_code]
@@ -695,7 +708,7 @@ components:
 
     DistributionFeatureCollection:
       type: object
-      required: [type, features]
+      required: [type, features, meta]
       properties:
         type:
           type: string
@@ -704,6 +717,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DistributionGeoJsonFeature'
+        meta:
+          $ref: '#/components/schemas/FeatureCollectionMeta'
 
     HabitatFeatureProperties:
       type: object
@@ -736,7 +751,7 @@ components:
 
     HabitatFeatureCollection:
       type: object
-      required: [type, features]
+      required: [type, features, meta]
       properties:
         type:
           type: string
@@ -745,6 +760,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/HabitatGeoJsonFeature'
+        meta:
+          $ref: '#/components/schemas/FeatureCollectionMeta'
 
     DistributionSnapshot:
       type: object

@@ -1,4 +1,4 @@
-﻿import json
+import json
 from datetime import date
 
 from fastapi import HTTPException
@@ -22,6 +22,20 @@ from app.schemas.map import (
     DistributionSnapshotList,
     HabitatFeatureCollection,
 )
+
+
+DISTRIBUTION_DEFAULT_LIMIT = 5_000
+HABITAT_FEATURE_LIMIT = 2_000
+
+
+def _distribution_feature_limit(zoom: int | None) -> int:
+    if zoom is None:
+        return DISTRIBUTION_DEFAULT_LIMIT
+    if zoom <= 4:
+        return 1_500
+    if zoom <= 7:
+        return 3_000
+    return DISTRIBUTION_DEFAULT_LIMIT
 
 
 def _parse_bbox(bbox: str) -> tuple[float, float, float, float]:
@@ -104,6 +118,7 @@ def _distribution_from_mock(
     bbox: tuple[float, float, float, float],
     snapshot_date: date | None,
     layer: str | None = None,
+    zoom: int | None = None,
 ) -> DistributionFeatureCollection:
     snapshot_value = snapshot_date.isoformat() if snapshot_date else None
     features = []
@@ -116,8 +131,18 @@ def _distribution_from_mock(
             continue
         features.append(feature)
 
+    feature_limit = _distribution_feature_limit(zoom)
+    truncated = len(features) > feature_limit
     return DistributionFeatureCollection.model_validate(
-        {"type": "FeatureCollection", "features": features}
+        {
+            "type": "FeatureCollection",
+            "features": features[:feature_limit],
+            "meta": {
+                "truncated": truncated,
+                "limit": feature_limit,
+                "requested_zoom": zoom,
+            },
+        }
     )
 
 
@@ -134,8 +159,17 @@ def _habitats_from_mock(
             continue
         features.append(feature)
 
+    truncated = len(features) > HABITAT_FEATURE_LIMIT
     return HabitatFeatureCollection.model_validate(
-        {"type": "FeatureCollection", "features": features}
+        {
+            "type": "FeatureCollection",
+            "features": features[:HABITAT_FEATURE_LIMIT],
+            "meta": {
+                "truncated": truncated,
+                "limit": HABITAT_FEATURE_LIMIT,
+                "requested_zoom": None,
+            },
+        }
     )
 
 
@@ -167,7 +201,7 @@ def _distribution_from_db(
     if text is None:
         raise SQLAlchemyError("SQLAlchemy text() unavailable")
 
-    _ = zoom
+    feature_limit = _distribution_feature_limit(zoom)
 
     where_clauses = [
         "st_intersects(dc.geom, st_makeenvelope(:min_lon, :min_lat, :max_lon, :max_lat, 4326))"
@@ -195,7 +229,8 @@ def _distribution_from_db(
         from public.distribution_cells dc
         join public.distribution_snapshots ds on ds.id = dc.snapshot_id
         where {" and ".join(where_clauses)}
-        limit 5000
+        order by dc.cell_code asc, dc.id asc
+        limit :query_limit
         """
     )
 
@@ -204,6 +239,7 @@ def _distribution_from_db(
         "min_lat": bbox[1],
         "max_lon": bbox[2],
         "max_lat": bbox[3],
+        "query_limit": feature_limit + 1,
     }
     if layer:
         params["layer"] = layer
@@ -214,6 +250,9 @@ def _distribution_from_db(
         if session is None:
             raise SQLAlchemyError("Database session unavailable")
         rows = session.execute(sql, params).mappings().all()
+
+    truncated = len(rows) > feature_limit
+    rows = rows[:feature_limit]
 
     features = [
         {
@@ -231,7 +270,15 @@ def _distribution_from_db(
     ]
 
     return DistributionFeatureCollection.model_validate(
-        {"type": "FeatureCollection", "features": features}
+        {
+            "type": "FeatureCollection",
+            "features": features,
+            "meta": {
+                "truncated": truncated,
+                "limit": feature_limit,
+                "requested_zoom": zoom,
+            },
+        }
     )
 
 
@@ -244,7 +291,7 @@ def _habitats_from_db(
         raise SQLAlchemyError("SQLAlchemy text() unavailable")
 
     where_clauses = ["1=1"]
-    params: dict[str, object] = {}
+    params: dict[str, object] = {"query_limit": HABITAT_FEATURE_LIMIT + 1}
 
     if level:
         where_clauses.append("h.level = :level")
@@ -274,7 +321,8 @@ def _habitats_from_db(
           st_asgeojson(h.boundary)::json as geometry
         from public.habitats h
         where {" and ".join(where_clauses)}
-        limit 2000
+        order by h.name asc, h.id asc
+        limit :query_limit
         """
     )
 
@@ -282,6 +330,9 @@ def _habitats_from_db(
         if session is None:
             raise SQLAlchemyError("Database session unavailable")
         rows = session.execute(sql, params).mappings().all()
+
+    truncated = len(rows) > HABITAT_FEATURE_LIMIT
+    rows = rows[:HABITAT_FEATURE_LIMIT]
 
     features = [
         {
@@ -298,7 +349,15 @@ def _habitats_from_db(
     ]
 
     return HabitatFeatureCollection.model_validate(
-        {"type": "FeatureCollection", "features": features}
+        {
+            "type": "FeatureCollection",
+            "features": features,
+            "meta": {
+                "truncated": truncated,
+                "limit": HABITAT_FEATURE_LIMIT,
+                "requested_zoom": None,
+            },
+        }
     )
 
 
@@ -360,6 +419,7 @@ def get_distribution(
         bbox=parsed_bbox,
         snapshot_date=snapshot_date,
         layer=layer,
+        zoom=zoom,
     )
 
 

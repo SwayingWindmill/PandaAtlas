@@ -1,9 +1,9 @@
 import type {
+  CompleteGeoJsonFeatureCollection,
   DistributionFeatureProperties,
   DistributionLayer,
   DistributionSnapshot,
   DistributionSnapshotList,
-  GeoJsonFeatureCollection,
   HabitatFeatureProperties,
   OverviewStats,
   PaginatedPandasResponse,
@@ -430,8 +430,13 @@ const FALLBACK_SNAPSHOTS: DistributionSnapshot[] = [
   { snapshot_date: "2026-03-05", version: "mock-v3", notes: "Latest sample" }
 ];
 
-const FALLBACK_DISTRIBUTION: GeoJsonFeatureCollection<DistributionFeatureProperties> = {
+const FALLBACK_DISTRIBUTION: CompleteGeoJsonFeatureCollection<DistributionFeatureProperties> = {
   type: "FeatureCollection",
+  meta: {
+    truncated: false,
+    limit: 5000,
+    requested_zoom: null
+  },
   features: [
     {
       type: "Feature",
@@ -492,8 +497,13 @@ const FALLBACK_DISTRIBUTION: GeoJsonFeatureCollection<DistributionFeaturePropert
   ]
 };
 
-const FALLBACK_HABITATS: GeoJsonFeatureCollection<HabitatFeatureProperties> = {
+const FALLBACK_HABITATS: CompleteGeoJsonFeatureCollection<HabitatFeatureProperties> = {
   type: "FeatureCollection",
+  meta: {
+    truncated: false,
+    limit: 2000,
+    requested_zoom: null
+  },
   features: [
     {
       type: "Feature",
@@ -532,6 +542,55 @@ function buildQuery(params: Record<string, string | number | null | undefined>):
     query.set(key, String(value));
   }
   return query.toString();
+}
+
+type ParsedBBox = [number, number, number, number];
+
+function parseBBox(value: string): ParsedBBox | null {
+  const values = value.split(",").map((item) => Number(item.trim()));
+  if (
+    values.length !== 4 ||
+    values.some((item) => !Number.isFinite(item)) ||
+    values[0] >= values[2] ||
+    values[1] >= values[3]
+  ) {
+    return null;
+  }
+  return values as ParsedBBox;
+}
+
+function collectGeometryPositions(value: unknown): Array<[number, number]> {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  if (
+    value.length >= 2 &&
+    typeof value[0] === "number" &&
+    Number.isFinite(value[0]) &&
+    typeof value[1] === "number" &&
+    Number.isFinite(value[1])
+  ) {
+    return [[value[0], value[1]]];
+  }
+  return value.flatMap(collectGeometryPositions);
+}
+
+function geometryIntersectsBBox(coordinates: unknown, bbox: ParsedBBox | null): boolean {
+  if (!bbox) {
+    return true;
+  }
+  const positions = collectGeometryPositions(coordinates);
+  if (positions.length === 0) {
+    return false;
+  }
+  const longitudes = positions.map(([longitude]) => longitude);
+  const latitudes = positions.map(([, latitude]) => latitude);
+  return !(
+    Math.max(...longitudes) < bbox[0] ||
+    Math.min(...longitudes) > bbox[2] ||
+    Math.max(...latitudes) < bbox[1] ||
+    Math.min(...latitudes) > bbox[3]
+  );
 }
 
 function sortDatesAsc(values: string[]): string[] {
@@ -625,7 +684,7 @@ export interface DistributionQueryOptions {
 }
 
 export interface DistributionResponse {
-  data: GeoJsonFeatureCollection<DistributionFeatureProperties>;
+  data: CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>;
   source: "api" | "fallback";
 }
 
@@ -827,13 +886,18 @@ export async function getDistributionWithSource(
 
   try {
     return {
-      data: await fetchJson<GeoJsonFeatureCollection<DistributionFeatureProperties>>(`/api/v1/map/distribution?${query}`, {
-        cache: "no-store"
-      }),
+      data: await fetchJson<CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>>(
+        `/api/v1/map/distribution?${query}`,
+        { cache: "no-store" }
+      ),
       source: "api"
     };
   } catch {
+    const fallbackBBox = parseBBox(options.bbox ?? DEFAULT_BBOX);
     const filtered = FALLBACK_DISTRIBUTION.features.filter((feature) => {
+      if (!geometryIntersectsBBox(feature.geometry.coordinates, fallbackBBox)) {
+        return false;
+      }
       if (options.layer && feature.properties.layer !== options.layer) {
         return false;
       }
@@ -843,7 +907,14 @@ export async function getDistributionWithSource(
       return true;
     });
     return {
-      data: { type: "FeatureCollection", features: filtered },
+      data: {
+        type: "FeatureCollection",
+        features: filtered,
+        meta: {
+          ...FALLBACK_DISTRIBUTION.meta,
+          requested_zoom: options.zoom ?? null
+        }
+      },
       source: "fallback"
     };
   }
@@ -851,26 +922,34 @@ export async function getDistributionWithSource(
 
 export async function getDistribution(
   options: DistributionQueryOptions = {}
-): Promise<GeoJsonFeatureCollection<DistributionFeatureProperties>> {
+): Promise<CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>> {
   const result = await getDistributionWithSource(options);
   return result.data;
 }
 
 export async function getHabitats(
   options: HabitatQueryOptions = {}
-): Promise<GeoJsonFeatureCollection<HabitatFeatureProperties>> {
+): Promise<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>> {
   const query = buildQuery({
     bbox: options.bbox ?? DEFAULT_BBOX,
     level: options.level
   });
 
   try {
-    return await fetchJson<GeoJsonFeatureCollection<HabitatFeatureProperties>>(
+    return await fetchJson<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>>(
       `/api/v1/map/habitats?${query}`,
       { cache: "no-store" }
     );
   } catch {
-    return FALLBACK_HABITATS;
+    const fallbackBBox = parseBBox(options.bbox ?? DEFAULT_BBOX);
+    return {
+      ...FALLBACK_HABITATS,
+      features: FALLBACK_HABITATS.features.filter(
+        (feature) =>
+          geometryIntersectsBBox(feature.geometry.coordinates, fallbackBBox) &&
+          (!options.level || feature.properties.level === options.level)
+      )
+    };
   }
 }
 

@@ -113,7 +113,8 @@ def test_distribution_requires_bbox() -> None:
 
 def test_distribution_with_bbox() -> None:
     response = client.get(
-        "/api/v1/map/distribution", params={"bbox": "100,25,110,36", "layer": "wild"}
+        "/api/v1/map/distribution",
+        params={"bbox": "100,25,110,36", "layer": "wild", "zoom": 4},
     )
     assert response.status_code == 200
     payload = response.json()
@@ -123,6 +124,9 @@ def test_distribution_with_bbox() -> None:
     assert first["properties"]["layer"] == "wild"
     assert "cell_code" in first["properties"]
     assert "snapshot_date" in first["properties"]
+    assert payload["meta"]["truncated"] is False
+    assert payload["meta"]["limit"] == 1500
+    assert payload["meta"]["requested_zoom"] == 4
 
 
 def test_distribution_filters_snapshot_date() -> None:
@@ -155,6 +159,9 @@ def test_habitats_filter_by_bbox_and_level() -> None:
     assert all(
         feature["properties"]["level"] == "national" for feature in payload["features"]
     )
+    assert payload["meta"]["truncated"] is False
+    assert payload["meta"]["limit"] == 2000
+    assert payload["meta"]["requested_zoom"] is None
 
     empty_response = client.get(
         "/api/v1/map/habitats",

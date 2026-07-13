@@ -1,11 +1,11 @@
 "use client";
 
-import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { getDistributionWithSource } from "@/lib/api-client";
 import { ATLAS_DATA_SOURCE, ATLAS_DATA_STATUS, ATLAS_INSTITUTIONS, type AtlasMode } from "@/lib/panda-atlas";
 import type {
+  CompleteGeoJsonFeatureCollection,
   DistributionFeatureProperties,
-  GeoJsonFeatureCollection,
   HabitatFeatureProperties,
   OverviewStats
 } from "@/lib/types";
@@ -23,29 +23,33 @@ import {
   matchesStatus,
   matchesType
 } from "./helpers";
+import { mapViewportEquals, mapViewportToQuery, type MapViewport } from "./map-viewport";
 import { MapStage } from "./map-stage";
 import { MobileMapControls } from "./mobile-map-controls";
 import { TopNav } from "./top-nav";
 
 interface GlobalDistributionShellProps {
-  initialDistribution: GeoJsonFeatureCollection<DistributionFeatureProperties>;
-  initialHabitats: GeoJsonFeatureCollection<HabitatFeatureProperties>;
+  initialDistribution: CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>;
+  initialHabitats: CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>;
   initialStats: OverviewStats;
-  defaultBBox: string;
   initialSnapshotDate: string;
   availableSnapshotDates: string[];
 }
 
-const EMPTY_DISTRIBUTION: GeoJsonFeatureCollection<DistributionFeatureProperties> = {
+const EMPTY_DISTRIBUTION: CompleteGeoJsonFeatureCollection<DistributionFeatureProperties> = {
   type: "FeatureCollection",
-  features: []
+  features: [],
+  meta: {
+    truncated: false,
+    limit: null,
+    requested_zoom: null
+  }
 };
 
 export function GlobalDistributionShell({
   initialDistribution,
   initialHabitats,
   initialStats,
-  defaultBBox,
   initialSnapshotDate,
   availableSnapshotDates
 }: GlobalDistributionShellProps) {
@@ -59,6 +63,7 @@ export function GlobalDistributionShell({
   >("all");
   const [selectedSnapshotDate, setSelectedSnapshotDate] = useState(initialSnapshotDate);
   const [distribution, setDistribution] = useState(initialDistribution);
+  const [mapViewport, setMapViewport] = useState<MapViewport | null>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [isDistributionUpdating, setIsDistributionUpdating] = useState(false);
   const [distributionError, setDistributionError] = useState<string | null>(null);
@@ -67,11 +72,16 @@ export function GlobalDistributionShell({
   const [focusSignal, setFocusSignal] = useState(0);
   const [resetSignal, setResetSignal] = useState(0);
 
-  const skipInitialDistributionSyncRef = useRef(true);
-
   const modeMeta = getModeMeta(mode);
   const latestSnapshotDate =
     availableSnapshotDates[availableSnapshotDates.length - 1] ?? initialStats.latest_snapshot_date;
+  const distributionTruncationMessage = distribution.meta.truncated
+    ? `当前视野的数据超过返回上限，仅显示前 ${distribution.meta.limit ?? distribution.features.length} 个分布网格。请放大地图或缩小查询范围，地图会按新视野重新加载。`
+    : null;
+  const habitatTruncationMessage = initialHabitats.meta.truncated
+    ? `栖息地边界达到返回上限，仅显示前 ${initialHabitats.meta.limit ?? initialHabitats.features.length} 条记录；可通过搜索和筛选浏览已返回记录。`
+    : null;
+  const distributionMessage = distributionError ?? distributionTruncationMessage ?? habitatTruncationMessage;
 
   const habitatFeatures = useMemo(() => buildHabitatFeatureCollection(initialHabitats), [initialHabitats]);
   const wildRegionItems = useMemo(
@@ -212,33 +222,24 @@ export function GlobalDistributionShell({
   }, []);
 
   useEffect(() => {
-    if (skipInitialDistributionSyncRef.current) {
-      skipInitialDistributionSyncRef.current = false;
+    const distributionLayer = modeMeta.distributionLayer;
+
+    if (!distributionLayer || !mapViewport) {
       return;
     }
 
     let cancelled = false;
+    const viewportQuery = mapViewportToQuery(mapViewport);
 
     async function syncDistribution() {
-      const distributionLayer = modeMeta.distributionLayer;
-
-      if (!distributionLayer) {
-        startTransition(() => {
-          setDistribution(EMPTY_DISTRIBUTION);
-        });
-        setDistributionError(null);
-        setIsDistributionUpdating(false);
-        return;
-      }
-
       setIsDistributionUpdating(true);
       setDistributionError(null);
 
       const result = await getDistributionWithSource({
-        bbox: defaultBBox,
-        layer: distributionLayer,
+        bbox: viewportQuery.bbox,
+        layer: distributionLayer ?? undefined,
         snapshot_date: selectedSnapshotDate,
-        zoom: 6
+        zoom: viewportQuery.zoom
       });
 
       if (cancelled) {
@@ -250,7 +251,7 @@ export function GlobalDistributionShell({
       });
 
       if (result.source === "fallback") {
-        setDistributionError("分布快照刷新失败，当前显示的是本地回退数据。");
+        setDistributionError("当前视野刷新失败，显示的是本地回退数据。可重新刷新或调整地图视野后再试。");
       }
 
       setIsDistributionUpdating(false);
@@ -261,7 +262,7 @@ export function GlobalDistributionShell({
     return () => {
       cancelled = true;
     };
-  }, [defaultBBox, distributionRefreshNonce, modeMeta.distributionLayer, selectedSnapshotDate]);
+  }, [distributionRefreshNonce, mapViewport, modeMeta.distributionLayer, selectedSnapshotDate]);
 
   function resetFilters() {
     setSearchQuery("");
@@ -270,9 +271,22 @@ export function GlobalDistributionShell({
     setTypeFilter("all");
   }
 
+  function handleViewportChange(nextViewport: MapViewport) {
+    setMapViewport((currentViewport) =>
+      mapViewportEquals(currentViewport, nextViewport) ? currentViewport : nextViewport
+    );
+  }
+
   function handleModeChange(nextMode: AtlasMode) {
+    const nextModeMeta = getModeMeta(nextMode);
+    setMapViewport(null);
+    setDistributionError(null);
+    setIsDistributionUpdating(false);
     startTransition(() => {
       setMode(nextMode);
+      if (!nextModeMeta.distributionLayer) {
+        setDistribution(EMPTY_DISTRIBUTION);
+      }
     });
   }
 
@@ -366,25 +380,28 @@ export function GlobalDistributionShell({
               detailOpen={Boolean(selectedItem)}
               sheetOpen={sheetOpen}
               onSelectItem={handleSelectItem}
+              onViewportChange={handleViewportChange}
               onRequestResetView={handleResetView}
             />
 
-            {distributionError ? (
+            {distributionMessage ? (
               <div className="pointer-events-none absolute inset-x-0 top-4 z-30 flex justify-center px-4 sm:top-5">
                 <div
                   className="pointer-events-auto flex max-w-[680px] flex-col gap-3 border border-[rgba(154,91,36,0.2)] bg-[rgba(255,248,240,0.94)] px-4 py-3 text-[#6F4A25] shadow-[0_14px_30px_rgba(76,53,25,0.12)] backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between"
                   role="status"
                   aria-live="polite"
                 >
-                  <p className="text-[13px] leading-6">{distributionError}</p>
-                  <button
-                    type="button"
-                    onClick={handleRetryDistribution}
-                    disabled={isDistributionUpdating}
-                    className="inline-flex h-9 shrink-0 items-center justify-center border-b border-[rgba(111,74,37,0.22)] px-0 text-[13px] font-medium text-[#8C5A2C] transition-colors hover:text-[#6F4A25] disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isDistributionUpdating ? "重试中" : "重新刷新"}
-                  </button>
+                  <p className="text-[13px] leading-6">{distributionMessage}</p>
+                  {distributionError ? (
+                    <button
+                      type="button"
+                      onClick={handleRetryDistribution}
+                      disabled={isDistributionUpdating}
+                      className="inline-flex h-9 shrink-0 items-center justify-center border-b border-[rgba(111,74,37,0.22)] px-0 text-[13px] font-medium text-[#8C5A2C] transition-colors hover:text-[#6F4A25] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isDistributionUpdating ? "重试中" : "重新刷新"}
+                    </button>
+                  ) : null}
                 </div>
               </div>
             ) : null}

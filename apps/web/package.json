@@ -18,7 +18,8 @@
         "typecheck": "tsc --noEmit",
         "smoke": "playwright test",
         "test:admin-proxy": "node scripts/smoke-admin-proxy.mjs",
-        "test:admin-proxy:production": "node scripts/smoke-admin-proxy.mjs --production"
+        "test:admin-proxy:production": "node scripts/smoke-admin-proxy.mjs --production",
+        "test:map-viewport": "node scripts/test-map-viewport.mjs"
     },
     "dependencies": {
         "@radix-ui/react-slot": "^1.1.0",

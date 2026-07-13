@@ -21,6 +21,7 @@ import {
   modeSurfaceHint,
   type SummaryBarItem
 } from "./helpers";
+import { createMapViewport, type MapViewport } from "./map-viewport";
 import { MapOverlay } from "./map-overlay";
 import { MapSummaryBar } from "./map-summary-bar";
 
@@ -40,6 +41,7 @@ interface MapStageProps {
   detailOpen: boolean;
   sheetOpen: boolean;
   onSelectItem: (item: AtlasItem | null) => void;
+  onViewportChange: (viewport: MapViewport) => void;
   onRequestResetView: () => void;
 }
 
@@ -88,6 +90,19 @@ function resolveCameraPadding(detailOpen: boolean, sheetOpen: boolean): PaddingO
   };
 }
 
+function readMapViewport(map: MapLibreMap): MapViewport {
+  const bounds = map.getBounds();
+  return createMapViewport(
+    {
+      west: bounds.getWest(),
+      south: bounds.getSouth(),
+      east: bounds.getEast(),
+      north: bounds.getNorth()
+    },
+    map.getZoom()
+  );
+}
+
 export function MapStage({
   modeMeta,
   distribution,
@@ -104,13 +119,16 @@ export function MapStage({
   detailOpen,
   sheetOpen,
   onSelectItem,
+  onViewportChange,
   onRequestResetView
 }: MapStageProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const styleReadyRef = useRef(false);
+  const viewportTimeoutRef = useRef<number | null>(null);
   const [hoverCard, setHoverCard] = useState<HoverCardState | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   const showWildBackdrop = modeMeta.distributionLayer === "wild";
 
@@ -137,6 +155,10 @@ export function MapStage({
     () => buildSelectedRegionCollection(selectedItem, habitatById),
     [selectedItem, habitatById]
   );
+  const fallbackItems = useMemo(
+    () => [...wildRegionItems, ...domesticItems, ...overseasItems],
+    [domesticItems, overseasItems, wildRegionItems]
+  );
   const itemById = useMemo(
     () => new Map([...wildRegionItems, ...domesticItems, ...overseasItems].map((item) => [item.id, item])),
     [wildRegionItems, domesticItems, overseasItems]
@@ -154,6 +176,7 @@ export function MapStage({
   const itemByIdRef = useRef(itemById);
   const habitatByIdRef = useRef(habitatById);
   const onSelectItemRef = useRef(onSelectItem);
+  const onViewportChangeRef = useRef(onViewportChange);
   const modeMetaRef = useRef(modeMeta);
 
   useEffect(() => {
@@ -167,6 +190,10 @@ export function MapStage({
   useEffect(() => {
     onSelectItemRef.current = onSelectItem;
   }, [onSelectItem]);
+
+  useEffect(() => {
+    onViewportChangeRef.current = onViewportChange;
+  }, [onViewportChange]);
 
   useEffect(() => {
     modeMetaRef.current = modeMeta;
@@ -196,8 +223,26 @@ export function MapStage({
 
   useEffect(() => {
     let disposed = false;
+    let startupTimeoutId: number | null = null;
+
+    function scheduleViewportChange(map: MapLibreMap) {
+      if (viewportTimeoutRef.current !== null) {
+        window.clearTimeout(viewportTimeoutRef.current);
+      }
+      viewportTimeoutRef.current = window.setTimeout(() => {
+        viewportTimeoutRef.current = null;
+        if (!disposed) {
+          try {
+            onViewportChangeRef.current(readMapViewport(map));
+          } catch {
+            // Ignore transient invalid bounds while MapLibre settles a camera transition.
+          }
+        }
+      }, 250);
+    }
 
     async function bootstrap() {
+
       if (!mapContainerRef.current || mapRef.current) {
         return;
       }
@@ -419,9 +464,20 @@ export function MapStage({
       });
 
       mapRef.current = map;
+      startupTimeoutId = window.setTimeout(() => {
+        if (!disposed && !styleReadyRef.current) {
+          setMapError("地图无法加载，以下文字列表仍可浏览和选择当前结果。");
+        }
+      }, 4000);
+      map.on("moveend", () => scheduleViewportChange(map));
 
       map.on("load", () => {
+        if (startupTimeoutId !== null) {
+          window.clearTimeout(startupTimeoutId);
+          startupTimeoutId = null;
+        }
         styleReadyRef.current = true;
+        setMapError(null);
         setIsMapReady(true);
         map.resize();
 
@@ -474,10 +530,27 @@ export function MapStage({
       });
     }
 
-    void bootstrap();
+    void bootstrap().catch(() => {
+      if (startupTimeoutId !== null) {
+        window.clearTimeout(startupTimeoutId);
+        startupTimeoutId = null;
+      }
+      if (!disposed) {
+        setMapError("地图无法加载，以下文字列表仍可浏览和选择当前结果。");
+        setIsMapReady(false);
+      }
+    });
 
     return () => {
       disposed = true;
+      if (startupTimeoutId !== null) {
+        window.clearTimeout(startupTimeoutId);
+        startupTimeoutId = null;
+      }
+      if (viewportTimeoutRef.current !== null) {
+        window.clearTimeout(viewportTimeoutRef.current);
+        viewportTimeoutRef.current = null;
+      }
       mapRef.current?.remove();
       mapRef.current = null;
       styleReadyRef.current = false;
@@ -621,10 +694,45 @@ export function MapStage({
       />
       <div ref={mapContainerRef} className="absolute inset-0" />
 
-      {!isMapReady ? (
+      {!isMapReady && !mapError ? (
         <div className="absolute inset-0 z-10 flex items-center justify-center">
           <div className="border-y border-[rgba(63,125,72,0.12)] bg-[rgba(250,248,243,0.9)] px-5 py-2 text-[14px] leading-6 text-[#5F6E61]">
             正在准备地图视图
+          </div>
+        </div>
+      ) : null}
+
+      {mapError ? (
+        <div
+          className="absolute inset-0 z-40 overflow-y-auto bg-[rgba(247,246,242,0.96)] px-6 py-8"
+          data-testid="map-text-fallback"
+          role="status"
+        >
+          <div className="mx-auto max-w-2xl">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#2F6B3B]">文字视图</p>
+            <h2 className="mt-2 text-[26px] leading-9 text-[#233126]" style={{ fontFamily: "var(--font-display)" }}>
+              地图暂不可用
+            </h2>
+            <p className="mt-3 text-[14px] leading-7 text-[#5F6E61]">{mapError}</p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {fallbackItems.length > 0 ? (
+                fallbackItems.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => onSelectItem(item)}
+                    className="border border-[rgba(63,125,72,0.12)] bg-white/80 px-4 py-3 text-left transition-colors hover:bg-white"
+                  >
+                    <span className="block text-[14px] font-medium text-[#233126]">{item.name}</span>
+                    <span className="mt-1 block text-[12px] leading-5 text-[#6D7C6E]">
+                      {item.kind === "wild_region" ? "野生分布区" : item.kindLabel}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <p className="text-[14px] leading-7 text-[#5F6E61]">当前筛选条件下没有可显示的对象。</p>
+              )}
+            </div>
           </div>
         </div>
       ) : null}

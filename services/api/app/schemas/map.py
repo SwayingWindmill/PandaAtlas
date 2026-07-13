@@ -20,6 +20,12 @@ class GeoJsonFeatureCollection(BaseModel):
     features: list[GeoJsonFeature] = Field(default_factory=list)
 
 
+class FeatureCollectionMeta(BaseModel):
+    truncated: bool
+    limit: int | None
+    requested_zoom: int | None
+
+
 class DistributionFeatureProperties(BaseModel):
     layer: str = Field(pattern="^(wild|captive|protected_area|corridor)$")
     cell_code: str
@@ -37,6 +43,7 @@ class DistributionGeoJsonFeature(BaseModel):
 class DistributionFeatureCollection(BaseModel):
     type: str = "FeatureCollection"
     features: list[DistributionGeoJsonFeature] = Field(default_factory=list)
+    meta: FeatureCollectionMeta
 
 
 class HabitatFeatureProperties(BaseModel):
@@ -55,6 +62,7 @@ class HabitatGeoJsonFeature(BaseModel):
 class HabitatFeatureCollection(BaseModel):
     type: str = "FeatureCollection"
     features: list[HabitatGeoJsonFeature] = Field(default_factory=list)
+    meta: FeatureCollectionMeta
 
 
 class DistributionSnapshot(BaseModel):

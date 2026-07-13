@@ -9,6 +9,7 @@ import type {
 } from "@/lib/panda-atlas";
 import { ATLAS_INSTITUTIONS, ATLAS_MODES } from "@/lib/panda-atlas";
 import type {
+  CompleteGeoJsonFeatureCollection,
   DistributionFeatureProperties,
   DistributionSnapshot,
   GeoJsonFeature,
@@ -117,7 +118,7 @@ export function formatNumber(value: number): string {
 
 export function buildAvailableSnapshotDates(
   snapshots: DistributionSnapshot[],
-  distribution: GeoJsonFeatureCollection<DistributionFeatureProperties>,
+  distribution: CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>,
   latestSnapshotDate?: string | null
 ): string[] {
   return uniqueSortedSnapshotDates([
@@ -129,7 +130,7 @@ export function buildAvailableSnapshotDates(
 
 export function resolveInitialSnapshotDate(
   snapshots: DistributionSnapshot[],
-  distribution: GeoJsonFeatureCollection<DistributionFeatureProperties>,
+  distribution: CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>,
   latestSnapshotDate?: string | null
 ): string {
   const distributionDates = collectDistributionSnapshotDates(distribution);
@@ -144,9 +145,9 @@ export function resolveInitialSnapshotDate(
 }
 
 export function filterDistributionBySnapshot(
-  distribution: GeoJsonFeatureCollection<DistributionFeatureProperties>,
+  distribution: CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>,
   snapshotDate: string
-): GeoJsonFeatureCollection<DistributionFeatureProperties> {
+): CompleteGeoJsonFeatureCollection<DistributionFeatureProperties> {
   if (!snapshotDate) {
     return distribution;
   }

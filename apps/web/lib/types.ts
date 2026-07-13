@@ -73,10 +73,23 @@ export interface GeoJsonFeature<TProperties extends Record<string, unknown> = Re
   properties: TProperties;
 }
 
+export interface FeatureCollectionMeta {
+  truncated: boolean;
+  limit: number | null;
+  requested_zoom: number | null;
+}
+
 export interface GeoJsonFeatureCollection<TProperties extends Record<string, unknown> = Record<string, unknown>> {
   type: "FeatureCollection";
   features: Array<GeoJsonFeature<TProperties>>;
+  meta?: FeatureCollectionMeta;
 }
+
+export type CompleteGeoJsonFeatureCollection<
+  TProperties extends Record<string, unknown> = Record<string, unknown>
+> = GeoJsonFeatureCollection<TProperties> & {
+  meta: FeatureCollectionMeta;
+};
 
 export interface DistributionFeatureProperties extends Record<string, unknown> {
   layer?: DistributionLayer;

@@ -40,3 +40,14 @@ def test_validate_checked_contract_details_rejects_missing_expected_response() -
 
     with pytest.raises(ContractCheckError, match=r"\[401\].*GET /api/v1/admin/import-sources"):
         validate_checked_contract_details(contract)
+
+
+def test_map_feature_collections_require_completeness_metadata() -> None:
+    contract = load_openapi_contract(CONTRACT_PATH)
+    schemas = contract["components"]["schemas"]
+
+    assert {"truncated", "limit", "requested_zoom"} <= set(
+        schemas["FeatureCollectionMeta"]["required"]
+    )
+    for schema_name in ("DistributionFeatureCollection", "HabitatFeatureCollection"):
+        assert "meta" in schemas[schema_name]["required"]

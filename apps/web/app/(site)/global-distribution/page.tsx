@@ -41,7 +41,6 @@ export default async function GlobalDistributionPage() {
         initialDistribution={initialDistribution}
         initialHabitats={habitats}
         initialStats={overviewStats}
-        defaultBBox={DEFAULT_BBOX}
         initialSnapshotDate={initialSnapshotDate}
         availableSnapshotDates={availableSnapshotDates}
       />

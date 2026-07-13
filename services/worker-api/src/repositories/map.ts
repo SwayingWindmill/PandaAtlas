@@ -2,11 +2,28 @@ import type { Env } from "../bindings";
 import type { BBox } from "../geo";
 import { loadGeometry } from "../geo";
 import type {
+  CompleteGeoJsonFeatureCollection,
   DistributionFeatureProperties,
   DistributionLayer,
   GeoJsonFeature,
   HabitatFeatureProperties
 } from "../types";
+
+const DISTRIBUTION_DEFAULT_LIMIT = 5_000;
+const HABITAT_FEATURE_LIMIT = 2_000;
+
+function distributionFeatureLimit(zoom: number | null): number {
+  if (zoom === null) {
+    return DISTRIBUTION_DEFAULT_LIMIT;
+  }
+  if (zoom <= 4) {
+    return 1_500;
+  }
+  if (zoom <= 7) {
+    return 3_000;
+  }
+  return DISTRIBUTION_DEFAULT_LIMIT;
+}
 
 interface DistributionRow {
   id: number;
@@ -34,7 +51,10 @@ export interface DistributionOptions {
   zoom: number | null;
 }
 
-export async function getDistribution(env: Env, options: DistributionOptions) {
+export async function getDistribution(
+  env: Env,
+  options: DistributionOptions
+): Promise<CompleteGeoJsonFeatureCollection<DistributionFeatureProperties>> {
   const snapshotDate =
     options.snapshotDate ??
     (
@@ -42,6 +62,7 @@ export async function getDistribution(env: Env, options: DistributionOptions) {
         snapshot_date: string | null;
       }>()
     )?.snapshot_date;
+  const featureLimit = distributionFeatureLimit(options.zoom);
 
   const where: string[] = [
     "not (dc.max_lng < ? or dc.min_lng > ? or dc.max_lat < ? or dc.min_lat > ?)"
@@ -76,14 +97,16 @@ export async function getDistribution(env: Env, options: DistributionOptions) {
     join distribution_snapshots ds on ds.id = dc.snapshot_id
     where ${where.join(" and ")}
     order by dc.cell_code asc
-    limit 5000
+    limit ?
     `
   )
-    .bind(...values)
+    .bind(...values, featureLimit + 1)
     .all<DistributionRow>();
 
+  const rows = result.results ?? [];
+  const truncated = rows.length > featureLimit;
   const features: Array<GeoJsonFeature<DistributionFeatureProperties>> = [];
-  for (const row of result.results ?? []) {
+  for (const row of rows.slice(0, featureLimit)) {
     features.push({
       type: "Feature",
       id: row.id,
@@ -97,10 +120,22 @@ export async function getDistribution(env: Env, options: DistributionOptions) {
     });
   }
 
-  return { type: "FeatureCollection" as const, features };
+  return {
+    type: "FeatureCollection" as const,
+    features,
+    meta: {
+      truncated,
+      limit: featureLimit,
+      requested_zoom: options.zoom
+    }
+  };
 }
 
-export async function getHabitats(env: Env, bbox: BBox | null, level: string | null) {
+export async function getHabitats(
+  env: Env,
+  bbox: BBox | null,
+  level: string | null
+): Promise<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>> {
   const where: string[] = ["1=1"];
   const values: unknown[] = [];
 
@@ -125,14 +160,16 @@ export async function getHabitats(env: Env, bbox: BBox | null, level: string | n
     from habitats h
     where ${where.join(" and ")}
     order by h.name asc
-    limit 2000
+    limit ?
     `
   )
-    .bind(...values)
+    .bind(...values, HABITAT_FEATURE_LIMIT + 1)
     .all<HabitatRow>();
 
+  const rows = result.results ?? [];
+  const truncated = rows.length > HABITAT_FEATURE_LIMIT;
   const features: Array<GeoJsonFeature<HabitatFeatureProperties>> = [];
-  for (const row of result.results ?? []) {
+  for (const row of rows.slice(0, HABITAT_FEATURE_LIMIT)) {
     features.push({
       type: "Feature",
       id: row.id,
@@ -145,7 +182,15 @@ export async function getHabitats(env: Env, bbox: BBox | null, level: string | n
     });
   }
 
-  return { type: "FeatureCollection" as const, features };
+  return {
+    type: "FeatureCollection" as const,
+    features,
+    meta: {
+      truncated,
+      limit: HABITAT_FEATURE_LIMIT,
+      requested_zoom: null
+    }
+  };
 }
 
 export async function listDistributionSnapshots(env: Env, limit: number) {
