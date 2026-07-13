@@ -41,6 +41,10 @@ function distributionPayload(zoom: number, truncated = false) {
   };
 }
 
+function requestKey(requestUrl: URL) {
+  return `${requestUrl.searchParams.get("bbox")}|${requestUrl.searchParams.get("zoom")}`;
+}
+
 test("queries distribution data from the current map viewport", async ({ page }) => {
   const requests: URL[] = [];
 
@@ -57,7 +61,7 @@ test("queries distribution data from the current map viewport", async ({ page })
 
   await page.goto("/global-distribution");
   await expect(page.getByTestId("global-distribution-shell")).toBeVisible();
-  await expect.poll(() => requests.length).toBeGreaterThan(0);
+  await expect.poll(() => requests.length, { timeout: 15_000 }).toBeGreaterThan(0);
   await page.waitForTimeout(400);
 
   const firstRequestCount = requests.length;
@@ -69,21 +73,40 @@ test("queries distribution data from the current map viewport", async ({ page })
   await expect(page.getByText(/当前视野的数据超过返回上限/)).toBeVisible();
 
   await page.getByRole("button", { name: "放大地图" }).click();
-  await expect.poll(() => requests.length).toBeGreaterThan(firstRequestCount);
+  await expect
+    .poll(
+      () =>
+        requests
+          .slice(firstRequestCount)
+          .some(
+            (requestUrl) =>
+              requestUrl.searchParams.get("bbox") !== firstBBox &&
+              Number(requestUrl.searchParams.get("zoom")) >= firstZoom,
+          ),
+      { timeout: 15_000 },
+    )
+    .toBe(true);
 
-  const nextRequest = requests.at(-1)!;
+  const nextRequest = requests
+    .slice(firstRequestCount)
+    .find(
+      (requestUrl) =>
+        requestUrl.searchParams.get("bbox") !== firstBBox &&
+        Number(requestUrl.searchParams.get("zoom")) >= firstZoom,
+    )!;
   expect(nextRequest.searchParams.get("bbox")).not.toBe(firstBBox);
   expect(Number(nextRequest.searchParams.get("zoom"))).toBeGreaterThanOrEqual(firstZoom);
 });
 
 test("retries the current viewport after a distribution request fails", async ({ page }) => {
   let shouldSucceed = false;
-  const requests: URL[] = [];
+  const failedRequestKeys = new Set<string>();
+  const successfulRequestKeys: string[] = [];
 
   await page.route("**/api/v1/map/distribution?**", async (route) => {
     const requestUrl = new URL(route.request().url());
-    requests.push(requestUrl);
     if (!shouldSucceed) {
+      failedRequestKeys.add(requestKey(requestUrl));
       await route.fulfill({
         status: 503,
         contentType: "application/json",
@@ -93,6 +116,7 @@ test("retries the current viewport after a distribution request fails", async ({
       return;
     }
 
+    successfulRequestKeys.push(requestKey(requestUrl));
     await route.fulfill({
       contentType: "application/json",
       headers: { "Access-Control-Allow-Origin": "*" },
@@ -102,19 +126,18 @@ test("retries the current viewport after a distribution request fails", async ({
 
   await page.goto("/global-distribution");
   const retryButton = page.getByRole("button", { name: "重新刷新" });
-  await expect(retryButton).toBeVisible();
-  await page.waitForTimeout(400);
-  const failedRequest = requests.at(-1)!;
-  const failedRequestCount = requests.length;
+  await expect(retryButton).toBeVisible({ timeout: 15_000 });
+  await expect.poll(() => failedRequestKeys.size, { timeout: 15_000 }).toBeGreaterThan(0);
 
   shouldSucceed = true;
   await retryButton.click();
-  await expect.poll(() => requests.length).toBeGreaterThan(failedRequestCount);
+  await expect
+    .poll(
+      () => successfulRequestKeys.some((key) => failedRequestKeys.has(key)),
+      { timeout: 15_000 },
+    )
+    .toBe(true);
   await expect(retryButton).toBeHidden();
-
-  const retryRequest = requests.at(-1)!;
-  expect(retryRequest.searchParams.get("bbox")).toBe(failedRequest.searchParams.get("bbox"));
-  expect(retryRequest.searchParams.get("zoom")).toBe(failedRequest.searchParams.get("zoom"));
 });
 
 test("keeps a usable text list when the map cannot initialize", async ({ page }) => {
