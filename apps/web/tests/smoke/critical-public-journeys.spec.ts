@@ -27,3 +27,10 @@ test("loads the global distribution shell directly", async ({ page }) => {
   await expect(page.getByTestId("global-distribution-page")).toBeVisible();
   await expect(page.getByTestId("global-distribution-shell")).toBeVisible();
 });
+
+test("keeps the local admin proxy disabled by default", async ({ request }) => {
+  const response = await request.get("/api/admin/import-sources");
+
+  expect(response.status()).toBe(404);
+  await expect(response.json()).resolves.toEqual({ detail: "Not found" });
+});

@@ -15,7 +15,7 @@ Key settings:
 
 - `DATABASE_URL`: Postgres connection string (Supabase or local Postgres).
 - `DB_USE_MOCK_FALLBACK`: `true/false`; when true, read endpoints fall back to mock data on DB failure.
-- `ADMIN_API_TOKEN`: bearer token for admin import endpoints. `dev-admin-token` is a local-development-only default and must be replaced outside development.
+- `ADMIN_API_TOKEN`: bearer token for admin import endpoints. The built-in development default is local-only and must be replaced outside development.
 - `RUN_ADMIN_IMPORT_SMOKE`: `0/1`; when `1`, `smoke_test_api.py` also runs the explicit local admin import smoke flow.
 
 ## Release Gate
@@ -32,7 +32,7 @@ Extended release gate from the repo root:
 $env:RUN_REAL_DB_TESTS="1"
 $env:DATABASE_URL="postgresql+psycopg://postgres:postgres@localhost:5432/panda_atlas"
 $env:RUN_ADMIN_IMPORT_SMOKE="1"
-$env:ADMIN_API_TOKEN="dev-admin-token"
+$env:ADMIN_API_TOKEN= [REDACTED_SECRET]
 npm run release:extended
 ```
 
@@ -63,24 +63,26 @@ curl "http://localhost:8000/api/v1/stats/overview"
 
 ## Local operator flow
 
+The web proxy is disabled by default. For the supported local-only topology, configure the server-side administrator token and start the dedicated loopback launcher with `npm run dev:admin -w web`. Do not enable the proxy manually or expose it through a LAN listener, reverse proxy, or tunnel. See [`docs/security/local-admin-proxy.md`](../../docs/security/local-admin-proxy.md) for the threat model and verification commands.
+
 The browser admin page proxies requests through same-origin Next.js server routes. The backend token stays on the server side; the browser should not receive or store `ADMIN_API_TOKEN`.
 
 Create + execute + poll an import job from the API:
 
 ```bash
 curl "http://localhost:8000/api/v1/admin/import-sources" \
-  -H "Authorization: Bearer dev-admin-token"
+  -H "Authorization: Bearer [REDACTED_SECRET]"
 
 curl -X POST "http://localhost:8000/api/v1/admin/import-jobs" \
-  -H "Authorization: Bearer dev-admin-token" \
+  -H "Authorization: Bearer [REDACTED_SECRET]" \
   -H "Content-Type: application/json" \
   -d "{\"source_name\":\"0001_demo_seed.sql\"}"
 
 curl -X POST "http://localhost:8000/api/v1/admin/import-jobs/<job_id>/run" \
-  -H "Authorization: Bearer dev-admin-token"
+  -H "Authorization: Bearer [REDACTED_SECRET]"
 
 curl "http://localhost:8000/api/v1/admin/import-jobs/<job_id>" \
-  -H "Authorization: Bearer dev-admin-token"
+  -H "Authorization: Bearer [REDACTED_SECRET]"
 ```
 
 Outside development, set a non-default `ADMIN_API_TOKEN` before using any admin endpoint.
@@ -126,7 +128,7 @@ Explicit local admin import smoke:
 
 ```bash
 $env:API_BASE_URL="http://localhost:8000"
-$env:ADMIN_API_TOKEN="dev-admin-token"
+$env:ADMIN_API_TOKEN= [REDACTED_SECRET]
 $env:SMOKE_IMPORT_SOURCE_NAME="0001_demo_seed.sql"
 uv run python scripts/smoke_test_admin_import.py
 ```
@@ -135,7 +137,7 @@ Combined smoke, with admin import enabled explicitly:
 
 ```bash
 $env:API_BASE_URL="http://localhost:8000"
-$env:ADMIN_API_TOKEN="dev-admin-token"
+$env:ADMIN_API_TOKEN= [REDACTED_SECRET]
 $env:RUN_ADMIN_IMPORT_SMOKE="1"
 uv run python scripts/smoke_test_api.py
 ```

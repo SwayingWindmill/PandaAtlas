@@ -4,14 +4,21 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
+        "dev:admin": "node scripts/dev-local-admin.mjs",
+        "guard:public-admin-proxy": "node scripts/assert-public-admin-proxy-disabled.mjs",
+        "prebuild": "npm run guard:public-admin-proxy",
         "build": "next build",
         "start": "next start",
+        "prepreview:cf": "npm run guard:public-admin-proxy",
         "preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+        "predeploy:cf": "npm run guard:public-admin-proxy",
         "deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
         "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
         "lint": "eslint .",
         "typecheck": "tsc --noEmit",
-        "smoke": "playwright test"
+        "smoke": "playwright test",
+        "test:admin-proxy": "node scripts/smoke-admin-proxy.mjs",
+        "test:admin-proxy:production": "node scripts/smoke-admin-proxy.mjs --production"
     },
     "dependencies": {
         "@radix-ui/react-slot": "^1.1.0",
