@@ -32,6 +32,13 @@ test("CI declares reproducible Linux and Windows default gates", async () => {
   }
 });
 
+test("default gate includes golden dataset validation", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+
+  assert.match(defaultGate, /test:golden-dataset/);
+  assert.match(defaultGate, /Golden dataset contract/);
+});
+
 test("default gate separates D1 and HTTP Worker smoke", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const workerPackage = JSON.parse(await readFile(workerPackagePath, "utf8"));

@@ -1,0 +1,526 @@
+{
+  "contract_version": "1.0.0",
+  "dataset": {
+    "id": "mei-xiang-family",
+    "version": "2026.07.13.1",
+    "public_schema_version": "1.0.0",
+    "title": "Mei Xiang–Tian Tian family golden dataset",
+    "core_panda_count": 7,
+    "fixture_consumers": ["domain", "api", "projection", "snapshot", "browser"],
+    "access_policy": {
+      "public_property": "public",
+      "restricted_property": "restricted",
+      "restricted_never_projected": true
+    },
+    "licenses": {
+      "structured_data": "ODC-By-1.0",
+      "original_text": "CC-BY-4.0",
+      "third_party_media": "per-item"
+    }
+  },
+  "sources": [
+    {
+      "id": "src_smithsonian_agreement_2020",
+      "publication_status": "published",
+      "public": {
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "Smithsonian extends giant panda agreement",
+        "url": "https://nationalzoo.si.edu/news/smithsonians-national-zoo-and-conservation-biology-institute-extends-giant-panda-agreement",
+        "published_at": "2020-12-07",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      "restricted": {
+        "curator_notes": "Primary source for family birth dates and the planned 2023 return context.",
+        "content_hash": null
+      }
+    },
+    {
+      "id": "src_smithsonian_history",
+      "publication_status": "published",
+      "public": {
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      "restricted": {
+        "curator_notes": "Primary timeline source for arrivals, births, returns, and the 2023 departure.",
+        "content_hash": null
+      }
+    },
+    {
+      "id": "src_smithsonian_giant_panda_faq",
+      "publication_status": "published",
+      "public": {
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "Giant Panda FAQs",
+        "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      "restricted": {
+        "curator_notes": "Primary source for Bao Li identity, birth date, and parent names.",
+        "content_hash": null
+      }
+    },
+    {
+      "id": "src_ccrcgp_2025_birthday_season",
+      "publication_status": "published",
+      "public": {
+        "publisher": "China.org.cn / Xinhua",
+        "title": "前方高萌 卧龙神树坪基地举办大熊猫集体生日会",
+        "url": "https://www.china.org.cn/2025-07/18/content_117984485_4.shtml",
+        "published_at": "2025-07-18",
+        "last_verified_at": "2026-05-10",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      "restricted": {
+        "curator_notes": "Current-location confirmation used for Bei Bei and Xiao Qi Ji.",
+        "content_hash": null
+      }
+    },
+    {
+      "id": "src_gpg_yongba_death",
+      "publication_status": "published",
+      "public": {
+        "publisher": "Giant Panda Global",
+        "title": "Yong Ba died",
+        "url": "https://www.giantpandaglobal.com/en/news/yong-ba-died",
+        "published_at": "2011-12-06",
+        "last_verified_at": "2026-05-11",
+        "language": "en",
+        "access_state": "accessible",
+        "evidence_tier": "secondary_confirmation"
+      },
+      "restricted": {
+        "curator_notes": "Secondary parentage evidence; assertions remain tentative pending studbook confirmation.",
+        "content_hash": null
+      }
+    }
+  ],
+  "facilities": [
+    {
+      "id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "smithsonian-national-zoo",
+        "names": [
+          { "language": "en", "value": "Smithsonian's National Zoo", "kind": "official" },
+          { "language": "zh-Hans", "value": "史密森国家动物园", "kind": "translated" }
+        ],
+        "country_code": "US",
+        "locality": "Washington, D.C.",
+        "facility_type": "zoo"
+      },
+      "restricted": {
+        "curator_notes": "Canonical fixture facility for the Smithsonian family history."
+      }
+    },
+    {
+      "id": "108f227d-2510-554a-98fb-395e58ca4433",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "china-country-level-last-verified",
+        "names": [
+          { "language": "en", "value": "China — exact facility not publicly verified", "kind": "display" },
+          { "language": "zh-Hans", "value": "中国——具体场所尚未公开核实", "kind": "display" }
+        ],
+        "country_code": "CN",
+        "locality": null,
+        "facility_type": "country_level_placeholder"
+      },
+      "restricted": {
+        "curator_notes": "Used when a current country is supported but an exact post-return facility is not."
+      }
+    },
+    {
+      "id": "60c7e1a3-d286-5366-8d41-32c11df58b5c",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "ccrcgp-wolong-gengda-base",
+        "names": [
+          { "language": "en", "value": "CCRCGP Wolong Gengda Base", "kind": "display" },
+          { "language": "zh-Hans", "value": "中国大熊猫保护研究中心卧龙耿达基地", "kind": "display" }
+        ],
+        "country_code": "CN",
+        "locality": "Wolong, Sichuan",
+        "facility_type": "conservation_center"
+      },
+      "restricted": {
+        "curator_notes": "Fixture facility for Tai Shan and Bao Bao current-location examples."
+      }
+    },
+    {
+      "id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "ccrcgp-wolong-shenshuping-base",
+        "names": [
+          { "language": "en", "value": "CCRCGP Wolong Shenshuping Base", "kind": "display" },
+          { "language": "zh-Hans", "value": "中国大熊猫保护研究中心卧龙神树坪基地", "kind": "display" }
+        ],
+        "country_code": "CN",
+        "locality": "Wolong, Sichuan",
+        "facility_type": "conservation_center"
+      },
+      "restricted": {
+        "curator_notes": "Fixture facility for Bei Bei and Xiao Qi Ji current-location examples."
+      }
+    }
+  ],
+  "related_pandas": [
+    {
+      "id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "an-an-bao-li-father",
+        "names": [{ "language": "en", "value": "An An", "kind": "romanized" }],
+        "record_tier": "dependency_stub"
+      },
+      "restricted": {
+        "curator_notes": "Dependency stub; Chinese characters and full identity still require confirmation."
+      }
+    },
+    {
+      "id": "b53e84dd-31f1-56a8-b8dd-ab0b75dc7a1a",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "pan-pan-baoxing",
+        "names": [{ "language": "en", "value": "Pan Pan", "kind": "romanized" }],
+        "record_tier": "dependency_stub"
+      },
+      "restricted": {
+        "curator_notes": "Tentative Tian Tian parent dependency pending studbook confirmation."
+      }
+    },
+    {
+      "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "yong-ba",
+        "names": [{ "language": "en", "value": "Yong Ba", "kind": "romanized" }],
+        "record_tier": "dependency_stub"
+      },
+      "restricted": {
+        "curator_notes": "Tentative Tian Tian parent dependency pending studbook confirmation."
+      }
+    }
+  ],
+  "pandas": [
+    {
+      "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "mei-xiang",
+        "legacy_slugs": ["meixiang", "mei_xiang"],
+        "record_tier": "complete_first_pass",
+        "names": [
+          { "language": "zh-Hans", "value": "美香", "kind": "official", "primary": true },
+          { "language": "en", "value": "Mei Xiang", "kind": "official_romanization", "primary": true },
+          { "language": "pinyin", "value": "Měixiāng", "kind": "pinyin", "primary": true }
+        ],
+        "aliases": [
+          { "language": "en", "value": "Mei-Xiang", "kind": "historic_spelling", "source_ids": ["src_smithsonian_history"] }
+        ],
+        "external_identifiers": [
+          { "system": "smithsonian_history_key", "value": "mei-xiang", "source_ids": ["src_smithsonian_history"] }
+        ],
+        "sex": "female",
+        "life_status": "alive",
+        "content": [
+          { "locale": "zh-CN", "translation_status": "approved", "summary": "曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。" },
+          { "locale": "en", "translation_status": "approved", "summary": "Former Smithsonian female and mother of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji." }
+        ]
+      },
+      "restricted": {
+        "curator_notes": "Exact post-return facility remains intentionally unpublished until a current primary source is available.",
+        "internal_completeness_score": 92,
+        "review_owner": null
+      }
+    },
+    {
+      "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "tian-tian",
+        "legacy_slugs": ["tiantian", "tian_tian"],
+        "record_tier": "complete_first_pass",
+        "names": [
+          { "language": "zh-Hans", "value": "添添", "kind": "official", "primary": true },
+          { "language": "en", "value": "Tian Tian", "kind": "official_romanization", "primary": true },
+          { "language": "pinyin", "value": "Tiāntiān", "kind": "pinyin", "primary": true }
+        ],
+        "aliases": [
+          { "language": "en", "value": "Tian-Tian", "kind": "historic_spelling", "source_ids": ["src_smithsonian_history"] }
+        ],
+        "external_identifiers": [
+          { "system": "smithsonian_history_key", "value": "tian-tian", "source_ids": ["src_smithsonian_history"] }
+        ],
+        "sex": "male",
+        "life_status": "alive",
+        "content": [
+          { "locale": "zh-CN", "translation_status": "approved", "summary": "曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。" },
+          { "locale": "en", "translation_status": "approved", "summary": "Former Smithsonian male and father of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji." }
+        ]
+      },
+      "restricted": {
+        "curator_notes": "Parentage outside the seven-panda core remains tentative pending studbook confirmation.",
+        "internal_completeness_score": 88,
+        "review_owner": null,
+        "pending_content": [
+          { "locale": "zh-TW", "translation_status": "draft", "summary": "待審核翻譯草稿，不得進入公開投影。" }
+        ]
+      }
+    },
+    {
+      "id": "96d00a39-7865-55db-b5c2-f339ef692258",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "tai-shan",
+        "legacy_slugs": ["taishan"],
+        "record_tier": "identity_first_pass",
+        "names": [
+          { "language": "zh-Hans", "value": "泰山", "kind": "official", "primary": true },
+          { "language": "en", "value": "Tai Shan", "kind": "official_romanization", "primary": true },
+          { "language": "pinyin", "value": "Tàishān", "kind": "pinyin", "primary": true }
+        ],
+        "aliases": [],
+        "external_identifiers": [{ "system": "smithsonian_history_key", "value": "tai-shan", "source_ids": ["src_smithsonian_history"] }],
+        "sex": "male",
+        "life_status": "alive",
+        "content": []
+      },
+      "restricted": { "curator_notes": "Current facility requires holder-level confirmation.", "internal_completeness_score": 64, "review_owner": null }
+    },
+    {
+      "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "bao-bao",
+        "legacy_slugs": ["baobao-smithsonian"],
+        "record_tier": "identity_first_pass",
+        "names": [
+          { "language": "zh-Hans", "value": "宝宝", "kind": "official", "primary": true },
+          { "language": "en", "value": "Bao Bao", "kind": "official_romanization", "primary": true },
+          { "language": "pinyin", "value": "Bǎobǎo", "kind": "pinyin", "primary": true }
+        ],
+        "aliases": [],
+        "external_identifiers": [{ "system": "smithsonian_history_key", "value": "bao-bao", "source_ids": ["src_smithsonian_history"] }],
+        "sex": "female",
+        "life_status": "alive",
+        "content": []
+      },
+      "restricted": { "curator_notes": "Core identity is stable; current facility needs stronger confirmation.", "internal_completeness_score": 68, "review_owner": null }
+    },
+    {
+      "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "bei-bei",
+        "legacy_slugs": ["beibei"],
+        "record_tier": "identity_first_pass",
+        "names": [
+          { "language": "zh-Hans", "value": "贝贝", "kind": "official", "primary": true },
+          { "language": "en", "value": "Bei Bei", "kind": "official_romanization", "primary": true },
+          { "language": "pinyin", "value": "Bèibèi", "kind": "pinyin", "primary": true }
+        ],
+        "aliases": [],
+        "external_identifiers": [{ "system": "smithsonian_history_key", "value": "bei-bei", "source_ids": ["src_smithsonian_history"] }],
+        "sex": "male",
+        "life_status": "alive",
+        "content": []
+      },
+      "restricted": { "curator_notes": "Current Shenshuping presence is source-backed in the fixture.", "internal_completeness_score": 72, "review_owner": null }
+    },
+    {
+      "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "xiao-qi-ji",
+        "legacy_slugs": ["xiaoqiji", "xiao_qi_ji"],
+        "record_tier": "identity_first_pass",
+        "names": [
+          { "language": "zh-Hans", "value": "小奇迹", "kind": "official", "primary": true },
+          { "language": "en", "value": "Xiao Qi Ji", "kind": "official_romanization", "primary": true },
+          { "language": "pinyin", "value": "Xiǎoqíjì", "kind": "pinyin", "primary": true }
+        ],
+        "aliases": [],
+        "external_identifiers": [{ "system": "smithsonian_history_key", "value": "xiao-qi-ji", "source_ids": ["src_smithsonian_history"] }],
+        "sex": "male",
+        "life_status": "alive",
+        "content": []
+      },
+      "restricted": { "curator_notes": "Golden browser journey anchor for search, parents, return event, footprint, and evidence.", "internal_completeness_score": 76, "review_owner": null }
+    },
+    {
+      "id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+      "publication_status": "published",
+      "public": {
+        "canonical_slug": "bao-li",
+        "legacy_slugs": ["baoli"],
+        "record_tier": "identity_first_pass",
+        "names": [
+          { "language": "zh-Hans", "value": "宝力", "kind": "official", "primary": true },
+          { "language": "en", "value": "Bao Li", "kind": "official_romanization", "primary": true },
+          { "language": "pinyin", "value": "Bǎolì", "kind": "pinyin", "primary": true }
+        ],
+        "aliases": [],
+        "external_identifiers": [{ "system": "smithsonian_faq_key", "value": "bao-li", "source_ids": ["src_smithsonian_giant_panda_faq"] }],
+        "sex": "male",
+        "life_status": "alive",
+        "content": []
+      },
+      "restricted": { "curator_notes": "Third-generation identity anchor; father remains a dependency stub.", "internal_completeness_score": 70, "review_owner": null }
+    }
+  ],
+  "facts": [
+    {
+      "id": "fact-mei-xiang-birth-date",
+      "publication_status": "published",
+      "public": {
+        "subject_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+        "field": "birth_date",
+        "value": "1998-07-22",
+        "conclusion_status": "confirmed",
+        "source_ids": ["src_smithsonian_agreement_2020"],
+        "last_verified_at": "2026-05-09",
+        "freshness": { "policy": "stable_identity_fact", "max_age_days": null, "state": "current" }
+      },
+      "restricted": { "curator_notes": "No conflicting assertion in the golden baseline." }
+    },
+    {
+      "id": "fact-mei-xiang-current-place",
+      "publication_status": "published",
+      "public": {
+        "subject_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+        "field": "current_facility_id",
+        "value": "108f227d-2510-554a-98fb-395e58ca4433",
+        "conclusion_status": "confirmed_country_level",
+        "source_ids": ["src_smithsonian_history"],
+        "last_verified_at": "2026-05-09",
+        "freshness": { "policy": "current_location", "max_age_days": 180, "state": "current" }
+      },
+      "restricted": { "curator_notes": "Exact facility is withheld because the available primary source supports only the return to China." }
+    },
+    {
+      "id": "fact-tian-tian-birth-date",
+      "publication_status": "published",
+      "public": {
+        "subject_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+        "field": "birth_date",
+        "value": "1997-08-27",
+        "conclusion_status": "confirmed",
+        "source_ids": ["src_smithsonian_agreement_2020"],
+        "last_verified_at": "2026-05-09",
+        "freshness": { "policy": "stable_identity_fact", "max_age_days": null, "state": "current" }
+      },
+      "restricted": { "curator_notes": "No conflicting assertion in the golden baseline." }
+    },
+    {
+      "id": "fact-tian-tian-current-place",
+      "publication_status": "published",
+      "public": {
+        "subject_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+        "field": "current_facility_id",
+        "value": "108f227d-2510-554a-98fb-395e58ca4433",
+        "conclusion_status": "confirmed_country_level",
+        "source_ids": ["src_smithsonian_history"],
+        "last_verified_at": "2026-05-09",
+        "freshness": { "policy": "current_location", "max_age_days": 180, "state": "current" }
+      },
+      "restricted": { "curator_notes": "Exact facility is withheld because the available primary source supports only the return to China." }
+    }
+  ],
+  "parentage_assertions": [
+    { "id": "parent-tai-shan-father", "publication_status": "published", "public": { "child_id": "96d00a39-7865-55db-b5c2-f339ef692258", "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "role": "father", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-tai-shan-mother", "publication_status": "published", "public": { "child_id": "96d00a39-7865-55db-b5c2-f339ef692258", "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "role": "mother", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-bao-bao-father", "publication_status": "published", "public": { "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6", "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "role": "father", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-bao-bao-mother", "publication_status": "published", "public": { "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6", "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "role": "mother", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-bei-bei-father", "publication_status": "published", "public": { "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b", "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "role": "father", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-bei-bei-mother", "publication_status": "published", "public": { "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b", "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "role": "mother", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-xiao-qi-ji-father", "publication_status": "published", "public": { "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443", "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "role": "father", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-xiao-qi-ji-mother", "publication_status": "published", "public": { "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443", "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "role": "mother", "status": "confirmed", "source_ids": ["src_smithsonian_agreement_2020"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-bao-li-mother", "publication_status": "published", "public": { "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c", "parent_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6", "role": "mother", "status": "confirmed", "source_ids": ["src_smithsonian_giant_panda_faq"] }, "restricted": { "curator_notes": "" } },
+    { "id": "parent-bao-li-father", "publication_status": "published", "public": { "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c", "parent_id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3", "role": "father", "status": "tentative", "source_ids": ["src_smithsonian_giant_panda_faq"] }, "restricted": { "curator_notes": "Dependency identity is intentionally incomplete." } },
+    { "id": "parent-tian-tian-father", "publication_status": "published", "public": { "child_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "parent_id": "b53e84dd-31f1-56a8-b8dd-ab0b75dc7a1a", "role": "father", "status": "tentative", "source_ids": ["src_gpg_yongba_death"] }, "restricted": { "curator_notes": "Kept tentative until studbook-quality confirmation is available." } },
+    { "id": "parent-tian-tian-mother", "publication_status": "published", "public": { "child_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "parent_id": "35f40679-1253-58f4-a2c5-7669ea81cf6e", "role": "mother", "status": "tentative", "source_ids": ["src_gpg_yongba_death"] }, "restricted": { "curator_notes": "Kept tentative until studbook-quality confirmation is available." } }
+  ],
+  "residencies": [
+    { "id": "res-mei-xiang-smithsonian", "publication_status": "published", "public": { "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049", "residency_type": "primary", "start_date": "2000-12-06", "end_date": "2023-11-08", "status": "confirmed", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "" } },
+    { "id": "res-mei-xiang-china", "publication_status": "published", "public": { "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact facility is not asserted." } },
+    { "id": "res-tian-tian-smithsonian", "publication_status": "published", "public": { "panda_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049", "residency_type": "primary", "start_date": "2000-12-06", "end_date": "2023-11-08", "status": "confirmed", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "" } },
+    { "id": "res-tian-tian-china", "publication_status": "published", "public": { "panda_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact facility is not asserted." } },
+    { "id": "res-tai-shan-china-country-level", "publication_status": "published", "public": { "panda_id": "96d00a39-7865-55db-b5c2-f339ef692258", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2010-02-04", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact current holder requires primary confirmation." } },
+    { "id": "res-bao-bao-china-country-level", "publication_status": "published", "public": { "panda_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2017-02-21", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact current holder requires primary confirmation." } },
+    { "id": "res-bei-bei-shenshuping", "publication_status": "published", "public": { "panda_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b", "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c", "residency_type": "primary", "start_date": "2019-11-19", "end_date": null, "status": "confirmed", "source_ids": ["src_ccrcgp_2025_birthday_season"] }, "restricted": { "curator_notes": "" } },
+    { "id": "res-xiao-qi-ji-shenshuping", "publication_status": "published", "public": { "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443", "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed", "source_ids": ["src_ccrcgp_2025_birthday_season", "src_smithsonian_history"] }, "restricted": { "curator_notes": "" } }
+  ],
+  "events": [
+    {
+      "id": "event-smithsonian-return-plan-2020",
+      "publication_status": "published",
+      "public": {
+        "event_type": "transfer",
+        "event_status": "announced",
+        "event_date": "2020-12-07",
+        "participants": ["2939c16f-1938-5629-928c-b36b1d5cd6ed", "38cd1cad-3e34-5511-bc35-a091ece74e11", "926abc78-1e79-55c6-b24a-d33b4e5f6443"],
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "source_ids": ["src_smithsonian_agreement_2020"],
+        "changes_current_residency": false
+      },
+      "restricted": { "curator_notes": "An announced event must not change current-place derivation." }
+    },
+    {
+      "id": "event-smithsonian-departure-2023",
+      "publication_status": "published",
+      "public": {
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2023-11-08",
+        "participants": ["2939c16f-1938-5629-928c-b36b1d5cd6ed", "38cd1cad-3e34-5511-bc35-a091ece74e11", "926abc78-1e79-55c6-b24a-d33b4e5f6443"],
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "source_ids": ["src_smithsonian_history"],
+        "changes_current_residency": true
+      },
+      "restricted": { "curator_notes": "One multi-participant event, not three duplicated events." }
+    }
+  ],
+  "media": [
+    {
+      "id": "media-mei-xiang-none",
+      "publication_status": "published",
+      "public": {
+        "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+        "license_state": "no_licensed_media",
+        "display_mode": "designed_empty_state",
+        "source_ids": []
+      },
+      "restricted": {
+        "curator_notes": "Do not substitute an unverified or unlicensed image."
+      }
+    },
+    {
+      "id": "media-tian-tian-link-only",
+      "publication_status": "published",
+      "public": {
+        "panda_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+        "license_state": "source_link_only",
+        "display_mode": "link_to_source",
+        "source_ids": ["src_smithsonian_history"]
+      },
+      "restricted": {
+        "curator_notes": "The source may be linked, but its media is not imported into the public dataset."
+      }
+    }
+  ]
+}

@@ -273,6 +273,11 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "test:release-gate"]),
       },
       {
+        id: "golden-dataset",
+        label: "Golden dataset contract",
+        run: () => runCommand(npm, ["run", "test:golden-dataset"]),
+      },
+      {
         id: "web-lint",
         label: "Web lint",
         run: () => runCommand(npm, ["run", "lint:web"]),
