@@ -5,6 +5,8 @@ import test from "node:test";
 const workflowPath = new URL("../../../.github/workflows/release-gate.yml", import.meta.url);
 const defaultGatePath = new URL("../default.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
+const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
+const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
 
 test("CI declares reproducible Linux and Windows default gates", async () => {
   const workflow = await readFile(workflowPath, "utf8");
@@ -40,4 +42,22 @@ test("default gate separates D1 and HTTP Worker smoke", async () => {
     workerPackage.scripts["smoke:http"],
     "node scripts/smoke_test_worker.mjs --mode=http",
   );
+});
+
+test("web lockfile retains Linux native optional packages", async () => {
+  const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));
+  const packageLock = JSON.parse(await readFile(packageLockPath, "utf8"));
+  const expectedPackages = {
+    "@tailwindcss/oxide-linux-x64-gnu": "4.2.1",
+    "lightningcss-linux-x64-gnu": "1.31.1",
+  };
+
+  assert.deepEqual(webPackage.optionalDependencies, expectedPackages);
+  for (const [packageName, version] of Object.entries(expectedPackages)) {
+    const lockEntry = packageLock.packages[`node_modules/${packageName}`];
+    assert.equal(lockEntry?.version, version);
+    assert.equal(lockEntry?.optional, true);
+    assert.deepEqual(lockEntry?.os, ["linux"]);
+    assert.deepEqual(lockEntry?.cpu, ["x64"]);
+  }
 });
