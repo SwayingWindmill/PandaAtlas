@@ -20,7 +20,12 @@ test("CI declares reproducible Linux and Windows default gates", async () => {
     "run: npm ci",
     "npx playwright install --with-deps chromium",
     "npx playwright install chromium",
-    "uses: actions/upload-artifact@v4",
+    "uses: actions/checkout@v7.0.0",
+    "uses: actions/setup-node@v6.4.0",
+    "uses: actions/setup-python@v6.3.0",
+    "uses: actions/upload-artifact@v7.0.1",
+    "include-hidden-files: true",
+    "if-no-files-found: error",
     "run: git diff --exit-code",
   ]) {
     assert.match(workflow, new RegExp(requiredText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));

@@ -34,18 +34,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out clean repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.0
         with:
           clean: true
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6.3.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -84,11 +84,12 @@ jobs:
 
       - name: Upload release report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: release-gate-${{ matrix.platform }}
           path: .release-gate/
-          if-no-files-found: warn
+          if-no-files-found: error
+          include-hidden-files: true
 
   release-gate-extended:
     name: Extended gate (linux)
@@ -102,18 +103,18 @@ jobs:
       ADMIN_API_TOKEN: ${{ secrets.ADMIN_API_TOKEN }}
     steps:
       - name: Check out clean repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.0
         with:
           clean: true
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6.3.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -139,8 +140,9 @@ jobs:
 
       - name: Upload extended release report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: release-gate-extended-linux
           path: .release-gate/
-          if-no-files-found: warn
+          if-no-files-found: error
+          include-hidden-files: true
