@@ -5,6 +5,7 @@ import type {
   CompleteGeoJsonFeatureCollection,
   DistributionFeatureProperties,
   DistributionLayer,
+  DistributionSnapshot,
   GeoJsonFeature,
   HabitatFeatureProperties
 } from "../types";
@@ -193,7 +194,10 @@ export async function getHabitats(
   };
 }
 
-export async function listDistributionSnapshots(env: Env, limit: number) {
+export async function listDistributionSnapshots(
+  env: Env,
+  limit: number
+): Promise<{ items: DistributionSnapshot[] }> {
   const result = await env.DB.prepare(
     `
     select snapshot_date, version, notes

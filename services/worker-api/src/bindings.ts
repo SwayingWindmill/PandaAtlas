@@ -30,6 +30,4 @@ export interface Env {
   DB: D1Database;
   GEO_BUCKET?: R2Bucket;
   MEDIA_BUCKET?: R2Bucket;
-  ADMIN_API_TOKEN?: string;
-  APP_ENV?: string;
 }

@@ -452,7 +452,7 @@ components:
 
     PandaListItem:
       type: object
-      required: [id, slug, name_zh, status]
+      required: [id, slug, name_zh, gender, status]
       properties:
         id:
           type: string
@@ -787,7 +787,7 @@ components:
 
     OverviewStats:
       type: object
-      required: [total_pandas, active_habitats, latest_snapshot_date]
+      required: [total_pandas, active_habitats, latest_snapshot_date, wild_distribution_cells, featured_pandas]
       properties:
         total_pandas:
           type: integer

@@ -11,7 +11,6 @@ import {
   parsePandaStatus
 } from "./http";
 import { parseBBox } from "./geo";
-import { assertAdminRequest, createImportJob, getImportJob, listImportSources, runImportJob } from "./repositories/admin";
 import { getDistribution, getHabitats, listDistributionSnapshots } from "./repositories/map";
 import { getPandaDetail, getPandaLineage, listPandas } from "./repositories/pandas";
 import { getOverviewStats } from "./repositories/stats";
@@ -97,44 +96,7 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
     return jsonResponse(await getOverviewStats(env));
   }
 
-  if (path.startsWith("/api/v1/admin/")) {
-    assertAdminRequest(env, request);
-    return routeAdminRequest(request, env, path);
-  }
-
   return errorResponse(404, "Not found");
-}
-
-async function routeAdminRequest(request: Request, env: Env, path: string): Promise<Response> {
-  if (request.method === "GET" && path === "/api/v1/admin/import-sources") {
-    return jsonResponse(listImportSources());
-  }
-  if (request.method === "POST" && path === "/api/v1/admin/import-jobs") {
-    return jsonResponse(await createImportJob(env, await readJsonObject(request)), 201);
-  }
-
-  const runMatch = path.match(/^\/api\/v1\/admin\/import-jobs\/([^/]+)\/run$/);
-  if (request.method === "POST" && runMatch) {
-    return jsonResponse(await runImportJob(env, decodeURIComponent(runMatch[1])));
-  }
-
-  const getMatch = path.match(/^\/api\/v1\/admin\/import-jobs\/([^/]+)$/);
-  if (request.method === "GET" && getMatch) {
-    return jsonResponse(await getImportJob(env, decodeURIComponent(getMatch[1])));
-  }
-
-  return errorResponse(404, "Not found");
-}
-
-async function readJsonObject(request: Request): Promise<Record<string, unknown>> {
-  try {
-    const payload = await request.json();
-    return payload && typeof payload === "object" && !Array.isArray(payload)
-      ? (payload as Record<string, unknown>)
-      : {};
-  } catch {
-    return {};
-  }
 }
 
 function requireBBox(raw: string | null) {

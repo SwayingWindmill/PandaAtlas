@@ -1,6 +1,7 @@
 import type { Env } from "../bindings";
+import type { OverviewStats } from "../types";
 
-export async function getOverviewStats(env: Env) {
+export async function getOverviewStats(env: Env): Promise<OverviewStats> {
   const row = await env.DB.prepare(
     `
     select

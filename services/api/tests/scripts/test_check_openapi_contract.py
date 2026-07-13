@@ -8,7 +8,9 @@ from check_openapi_contract import (
     assert_required_route_methods,
     check_contract,
     load_openapi_contract,
+    load_public_schema,
     validate_checked_contract_details,
+    validate_public_schema,
 )
 
 
@@ -51,3 +53,23 @@ def test_map_feature_collections_require_completeness_metadata() -> None:
     )
     for schema_name in ("DistributionFeatureCollection", "HabitatFeatureCollection"):
         assert "meta" in schemas[schema_name]["required"]
+
+
+def test_public_schema_rejects_required_field_drift() -> None:
+    contract = deepcopy(load_openapi_contract(CONTRACT_PATH))
+    public_schema = load_public_schema()
+    contract["components"]["schemas"]["PandaListItem"]["required"].remove("gender")
+
+    with pytest.raises(ContractCheckError, match=r"PandaListItem required fields drifted"):
+        validate_public_schema("checked-in", contract, public_schema)
+
+
+def test_public_schema_rejects_nullability_drift() -> None:
+    contract = deepcopy(load_openapi_contract(CONTRACT_PATH))
+    public_schema = load_public_schema()
+    contract["components"]["schemas"]["DistributionFeatureProperties"]["properties"][
+        "density"
+    ]["nullable"] = False
+
+    with pytest.raises(ContractCheckError, match=r"density nullability drifted"):
+        validate_public_schema("checked-in", contract, public_schema)

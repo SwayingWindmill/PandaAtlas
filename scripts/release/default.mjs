@@ -134,6 +134,9 @@ export async function runDefaultReleaseGate() {
   await runCommand(npm, ["run", "lint:web"]);
   await runCommand(npm, ["run", "typecheck:web"]);
   await runCommand(npm, ["run", "build:web"]);
+  await runCommand(npm, ["run", "check:public-api-boundary"]);
+  await runCommand(npm, ["run", "typecheck:api:cf"]);
+  await runCommand(npm, ["run", "smoke:api:cf"]);
 
   await runCommand(uv, ["run", "python", "-m", "compileall", "app"], { cwd: apiDir });
   await runCommand(uv, ["run", "ruff", "check", "app", "tests", "scripts"], { cwd: apiDir });

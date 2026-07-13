@@ -93,7 +93,7 @@ export type CompleteGeoJsonFeatureCollection<
 
 export interface DistributionFeatureProperties extends Record<string, unknown> {
   layer?: DistributionLayer;
-  density?: number;
+  density?: number | null;
   cell_code?: string;
   snapshot_date?: string | null;
 }

@@ -1,7 +1,6 @@
 export type PandaGender = "male" | "female" | "unknown";
 export type PandaStatus = "alive" | "deceased" | "unknown";
 export type DistributionLayer = "wild" | "captive" | "protected_area" | "corridor";
-export type ImportJobStatus = "queued" | "running" | "succeeded" | "failed";
 
 export interface PandaListItem {
   id: string;
@@ -82,26 +81,18 @@ export interface HabitatFeatureProperties extends Record<string, unknown> {
   level: string | null;
 }
 
-export interface ImportJobSummary {
-  rows_total: number;
-  rows_success: number;
-  rows_failed: number;
-  source_name: string;
-  source_path: string;
-  mode: string;
-  failure_reason: string | null;
+export interface DistributionSnapshot {
+  snapshot_date: string;
+  version: string;
+  notes: string | null;
 }
 
-export interface ImportJob {
-  id: string;
-  source_name: string;
-  source_uri: string | null;
-  status: ImportJobStatus;
-  summary: ImportJobSummary;
-  error_log: string | null;
-  started_at: string | null;
-  finished_at: string | null;
-  created_at: string;
+export interface OverviewStats {
+  total_pandas: number;
+  active_habitats: number;
+  latest_snapshot_date: string;
+  wild_distribution_cells: number;
+  featured_pandas: number;
 }
 
 export interface PandaRow {

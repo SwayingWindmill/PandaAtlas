@@ -1,0 +1,55 @@
+{
+  "version": "1",
+  "authority": "services/api/openapi/panda-atlas-v1.yaml",
+  "schemas": {
+    "PandaListItem": {
+      "description": "Public panda identity and current-status summary.",
+      "fields": {
+        "id": { "required": true, "nullable": false },
+        "slug": { "required": true, "nullable": false },
+        "name_zh": { "required": true, "nullable": false },
+        "name_en": { "required": false, "nullable": true },
+        "gender": { "required": true, "nullable": false },
+        "status": { "required": true, "nullable": false },
+        "birth_date": { "required": false, "nullable": true },
+        "current_location": { "required": false, "nullable": true },
+        "cover_image_url": { "required": false, "nullable": true }
+      }
+    },
+    "DistributionFeatureProperties": {
+      "description": "Published map-cell attributes for one versioned distribution projection.",
+      "fields": {
+        "layer": { "required": true, "nullable": false },
+        "cell_code": { "required": true, "nullable": false },
+        "density": { "required": false, "nullable": true },
+        "snapshot_date": { "required": false, "nullable": true }
+      }
+    },
+    "HabitatFeatureProperties": {
+      "description": "Published habitat boundary attributes; province and level may be unknown.",
+      "fields": {
+        "name": { "required": true, "nullable": false },
+        "province": { "required": false, "nullable": true },
+        "level": { "required": false, "nullable": true }
+      }
+    },
+    "DistributionSnapshot": {
+      "description": "A named, immutable public projection release of distribution data.",
+      "fields": {
+        "snapshot_date": { "required": true, "nullable": false },
+        "version": { "required": true, "nullable": false },
+        "notes": { "required": false, "nullable": true }
+      }
+    },
+    "OverviewStats": {
+      "description": "Counts computed from one coherent public projection version.",
+      "fields": {
+        "total_pandas": { "required": true, "nullable": false },
+        "active_habitats": { "required": true, "nullable": false },
+        "latest_snapshot_date": { "required": true, "nullable": false },
+        "wild_distribution_cells": { "required": true, "nullable": false },
+        "featured_pandas": { "required": true, "nullable": false }
+      }
+    }
+  }
+}

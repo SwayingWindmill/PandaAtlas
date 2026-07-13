@@ -5,9 +5,17 @@ Panda Atlas is a full-stack monorepo for a giant panda encyclopedia and distribu
 ## Stack
 
 - Frontend: Next.js App Router + Tailwind CSS v4 + shadcn/ui
-- Backend: FastAPI + Pydantic + SQLAlchemy (optional runtime fallback)
+- Backend: FastAPI with PostgreSQL/PostGIS is authoritative for domain rules and writes; the Cloudflare Worker with D1/R2 is an optional versioned public read projection
 - Data: Supabase Postgres/PostGIS/Auth/Storage
-- Deployment: Vercel (`apps/web`) + container runtime for FastAPI (`services/api`)
+- Deployment: OpenNext/Cloudflare for `apps/web`; Cloudflare Worker for `services/worker-api`; container runtime for `services/api`
+
+## API authority
+
+FastAPI and PostgreSQL/PostGIS own validation, imports, admin behavior, and every persistent write. The Cloudflare Worker exposes only compatible public read endpoints from an approved D1/R2 projection; it has no admin or import routes.
+
+- Architecture decision: [ADR 0001](docs/architecture/adr-0001-single-source-api-boundary.md)
+- Shared public field semantics: [Public API v1 manifest](contracts/public-api-v1.json)
+- Drift check: `npm run check:public-api-boundary`
 
 ## Quick Start (Scaffold)
 
