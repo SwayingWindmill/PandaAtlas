@@ -72,7 +72,7 @@ paths:
           in: query
           schema:
             type: string
-          description: Search keyword for names/tags
+          description: Search keyword for reviewed Chinese/English names, pinyin, aliases, legacy slugs, external identifiers, or tags. The trusted fallback projection includes all seven Mei Xiang–Tian Tian family records.
         - name: status
           in: query
           schema:
@@ -115,13 +115,13 @@ paths:
         - name: panda_ref
           in: path
           required: true
-          description: Canonical panda slug or legacy UUID alias
+          description: Canonical panda slug, reviewed legacy slug, stable UUID, or external identity reference
           schema:
             type: string
             examples: [he-hua, 1d08f72f-7550-42e9-a4d5-bd74bc505955]
       responses:
         '200':
-          description: Panda detail
+          description: Panda detail, including the trusted seven-family public projection when the database fallback is active
           content:
             application/json:
               schema:
@@ -1018,7 +1018,9 @@ components:
                 $ref: '#/components/schemas/PandaDomainEventSummary'
             record_tier:
               type: string
+              enum: [complete_first_pass, identity_first_pass, dependency_stub]
               nullable: true
+              description: Public archive completeness classification; records below complete_first_pass retain structured missing requirements internally.
             localized_content:
               type: array
               items:

@@ -21,13 +21,15 @@ function legacySlugValue(value) {
   return typeof value === "string" ? value : value.value;
 }
 
+function isPublicProfileRecord(record) {
+  return record.publication_status === "published"
+    && ["complete_first_pass", "identity_first_pass"].includes(record.public?.record_tier);
+}
+
 export function buildTrustedIdentityReferences(dataset) {
   const references = {};
   for (const record of dataset.pandas ?? []) {
-    if (
-      record.publication_status !== "published"
-      || record.public?.record_tier !== "complete_first_pass"
-    ) continue;
+    if (!isPublicProfileRecord(record)) continue;
     const canonicalSlug = record.public?.canonical_slug;
     if (!canonicalSlug || !record.id) continue;
     const reference = { id: record.id, slug: canonicalSlug };
@@ -82,10 +84,7 @@ export function buildTrustedPandaDetails(dataset) {
     (dataset.facilities ?? []).map((facility) => [facility.id, facility]),
   );
   return (dataset.pandas ?? [])
-    .filter(
-      (record) => record.publication_status === "published"
-        && record.public?.record_tier === "complete_first_pass",
-    )
+    .filter(isPublicProfileRecord)
     .map((record) => {
       const publicRecord = record.public;
       const identity = {

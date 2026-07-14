@@ -33,8 +33,10 @@ test("serves bilingual canonical routes and permanently redirects legacy slugs",
     expect(await response.text()).toContain("Mei Xiang");
   }
 
-  expect((await request.get("/en/atlas/tian-tian")).status()).toBe(404);
-  expect((await request.get("/en/atlas/tiantian", { maxRedirects: 0 })).status()).toBe(404);
+  expect((await request.get("/en/atlas/tian-tian")).status()).toBe(200);
+  const tianTianLegacy = await request.get("/en/atlas/tiantian", { maxRedirects: 0 });
+  expect(tianTianLegacy.status()).toBe(308);
+  expect(tianTianLegacy.headers().location).toContain("/en/atlas/tian-tian");
 });
 
 test("renders the reviewed identity, family, footprint, evidence, no-image, and revision loop", async ({ page }) => {
@@ -54,7 +56,7 @@ test("renders the reviewed identity, family, footprint, evidence, no-image, and 
   await expect(page.getByTestId("footprint-text-view")).toContainText("中国（国家级记录）");
   await expect(page.getByTestId("evidence-list").getByRole("link")).toHaveCount(2);
   await expect(page.getByTestId("media-empty-state")).toContainText("暂无可公开授权影像");
-  await expect(page.getByTestId("revision-summary")).toContainText("2026.07.14.1");
+  await expect(page.getByTestId("revision-summary")).toContainText("2026.07.14.2");
   await expect(page.getByTestId("timeline-list")).toContainText("来源发布日期");
 });
 
@@ -84,7 +86,7 @@ test("exposes the full reading loop through sequential keyboard navigation", asy
 
   expect([...visited].some((target) => target.includes("#timeline"))).toBe(true);
   expect([...visited].some((target) => target.includes("/en/atlas/mei-xiang"))).toBe(true);
-  expect([...visited].some((target) => target.includes("/lineage?focus=tian-tian"))).toBe(true);
+  expect([...visited].some((target) => target.includes("/zh/atlas/tian-tian"))).toBe(true);
   expect([...visited].some((target) => target.startsWith("http"))).toBe(true);
   expect(visited.has("收藏美香")).toBe(true);
 });

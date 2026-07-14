@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from fastapi.testclient import TestClient
 
+from app.data.golden_dataset import load_golden_dataset
 from app.main import app
 
 client = TestClient(app)
@@ -11,6 +13,23 @@ MEI_XIANG_ID = "2939c16f-1938-5629-928c-b36b1d5cd6ed"
 TAI_SHAN_ID = "96d00a39-7865-55db-b5c2-f339ef692258"
 BAO_BAO_ID = "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
 BAO_LI_ID = "434e10e3-7ba0-5de7-a59e-d3984524c58c"
+
+
+def _display_name(public: dict[str, Any], language: str) -> str:
+    return next(
+        str(name["value"])
+        for name in public["names"]
+        if name["language"] == language
+    )
+
+
+CORE_FAMILY = {
+    str(record["public"]["canonical_slug"]): (
+        _display_name(record["public"], "zh-Hans"),
+        _display_name(record["public"], "en"),
+    )
+    for record in load_golden_dataset()["pandas"]
+}
 
 
 def test_identity_search_uses_names_aliases_legacy_slugs_and_external_ids() -> None:
@@ -33,6 +52,33 @@ def test_identity_search_uses_names_aliases_legacy_slugs_and_external_ids() -> N
     assert punctuation_response.json()["items"] == []
 
 
+def test_all_seven_family_profiles_are_searchable_and_publicly_projected() -> None:
+    for slug, (name_zh, name_en) in CORE_FAMILY.items():
+        for query in (name_zh, name_en):
+            search_response = client.get(
+                "/api/v1/pandas", params={"q": query, "page_size": 100}
+            )
+            assert search_response.status_code == 200
+            assert slug in {item["slug"] for item in search_response.json()["items"]}
+
+        detail_response = client.get(f"/api/v1/pandas/{slug}")
+        assert detail_response.status_code == 200
+        detail = detail_response.json()
+        assert detail["slug"] == slug
+        assert detail["identity"]["canonical_slug"] == slug
+        assert detail["record_tier"] in {"complete_first_pass", "identity_first_pass"}
+        assert {item["locale"] for item in detail["localized_content"]} == {
+            "zh-CN",
+            "en",
+        }
+        conclusions = {item["field"]: item for item in detail["conclusions"]}
+        for field in ("birth_date", "sex", "current_coarse_location"):
+            assert conclusions[field]["source_ids"], (slug, field)
+            assert conclusions[field]["last_verified_at"], (slug, field)
+        assert detail["current_place"] is not None
+        assert detail["media_release"] is not None
+
+
 def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> None:
     response = client.get("/api/v1/pandas/meixiang")
 
@@ -52,7 +98,7 @@ def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> 
         "display_mode": "designed_empty_state",
         "source_ids": [],
     }
-    assert payload["public_revision"]["data_version"] == "2026.07.14.1"
+    assert payload["public_revision"]["data_version"] == "2026.07.14.2"
     assert payload["public_revision"]["public_schema_version"] == "1.0.0"
     assert {item["locale"] for item in payload["public_revision"]["summaries"]} == {
         "zh-CN",

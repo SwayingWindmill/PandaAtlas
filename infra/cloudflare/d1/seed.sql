@@ -314,6 +314,14 @@ insert into evidence_sources (
     'https://nationalzoo.si.edu/animals/giant-panda-faqs',
     null, '2026-05-09', 'en', 'accessible', 'primary_fact',
     'Bao Li identity and reviewed maternal parentage.'
+  ),
+  (
+    'src_ccrcgp_2025_birthday_season',
+    'China.org.cn / Xinhua',
+    '前方高萌 卧龙神树坪基地举办大熊猫集体生日会',
+    'http://www.china.org.cn/chinese/2025-05/06/content_117858363.shtml',
+    '2025-05-06', '2026-05-10', 'zh-Hans', 'accessible', 'secondary_fact',
+    'Current Shenshuping presence for Bei Bei and Xiao Qi Ji.'
   )
 on conflict(id) do update set
   publisher = excluded.publisher,
@@ -326,6 +334,25 @@ on conflict(id) do update set
   evidence_tier = excluded.evidence_tier,
   public_summary = excluded.public_summary;
 
+-- Establish every core stable identity before inserting names, slugs, and identifiers.
+insert into pandas (
+  id, slug, name_zh, name_en, gender, birth_date, death_date, status, birthplace,
+  current_location, father_id, mother_id, intro, tags_json, is_featured
+) values
+  ('96d00a39-7865-55db-b5c2-f339ef692258', 'tai-shan', '泰山', 'Tai Shan', 'male', '2005-07-09', null, 'alive', 'Smithsonian National Zoo', 'China', null, null, null, '["golden-dataset"]', 0),
+  ('7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'bao-bao', '宝宝', 'Bao Bao', 'female', '2013-08-23', null, 'alive', 'Smithsonian National Zoo', 'China', null, null, null, '["golden-dataset"]', 0),
+  ('1a05a5dc-1926-5355-9d81-c2a43189d50b', 'bei-bei', '贝贝', 'Bei Bei', 'male', '2015-08-22', null, 'alive', 'Smithsonian National Zoo', 'Wolong Shenshuping Base', null, null, null, '["golden-dataset"]', 0),
+  ('926abc78-1e79-55c6-b24a-d33b4e5f6443', 'xiao-qi-ji', '小奇迹', 'Xiao Qi Ji', 'male', '2020-08-21', null, 'alive', 'Smithsonian National Zoo', 'Wolong Shenshuping Base', null, null, null, '["golden-dataset"]', 0),
+  ('434e10e3-7ba0-5de7-a59e-d3984524c58c', 'bao-li', '宝力', 'Bao Li', 'male', '2021-08-04', null, 'alive', null, 'Smithsonian National Zoo', null, null, null, '["golden-dataset"]', 0)
+on conflict(id) do update set
+  slug = excluded.slug,
+  name_zh = excluded.name_zh,
+  name_en = excluded.name_en,
+  gender = excluded.gender,
+  birth_date = excluded.birth_date,
+  status = excluded.status,
+  current_location = excluded.current_location;
+
 insert into panda_names (
   id, panda_id, language_tag, name_kind, value, normalized_value, is_primary
 ) values
@@ -336,7 +363,22 @@ insert into panda_names (
   ('a0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'zh-Hans', 'official', '添添', '添添', 1),
   ('a0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'en', 'official_romanization', 'Tian Tian', 'tiantian', 1),
   ('a0000000-0000-5000-8000-000000000013', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'pinyin', 'pinyin', 'Tiāntiān', 'tiantian', 1),
-  ('a0000000-0000-5000-8000-000000000014', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'en', 'historic_spelling', 'Tian-Tian', 'tiantian', 0)
+  ('a0000000-0000-5000-8000-000000000014', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'en', 'historic_spelling', 'Tian-Tian', 'tiantian', 0),
+  ('a0000000-0000-5000-8000-000000000021', '96d00a39-7865-55db-b5c2-f339ef692258', 'zh-Hans', 'official', '泰山', '泰山', 1),
+  ('a0000000-0000-5000-8000-000000000022', '96d00a39-7865-55db-b5c2-f339ef692258', 'en', 'official_romanization', 'Tai Shan', 'taishan', 1),
+  ('a0000000-0000-5000-8000-000000000023', '96d00a39-7865-55db-b5c2-f339ef692258', 'pinyin', 'pinyin', 'Tàishān', 'taishan', 1),
+  ('a0000000-0000-5000-8000-000000000031', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'zh-Hans', 'official', '宝宝', '宝宝', 1),
+  ('a0000000-0000-5000-8000-000000000032', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'en', 'official_romanization', 'Bao Bao', 'baobao', 1),
+  ('a0000000-0000-5000-8000-000000000033', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'pinyin', 'pinyin', 'Bǎobǎo', 'baobao', 1),
+  ('a0000000-0000-5000-8000-000000000041', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'zh-Hans', 'official', '贝贝', '贝贝', 1),
+  ('a0000000-0000-5000-8000-000000000042', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'en', 'official_romanization', 'Bei Bei', 'beibei', 1),
+  ('a0000000-0000-5000-8000-000000000043', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'pinyin', 'pinyin', 'Bèibèi', 'beibei', 1),
+  ('a0000000-0000-5000-8000-000000000051', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'zh-Hans', 'official', '小奇迹', '小奇迹', 1),
+  ('a0000000-0000-5000-8000-000000000052', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'en', 'official_romanization', 'Xiao Qi Ji', 'xiaoqiji', 1),
+  ('a0000000-0000-5000-8000-000000000053', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'pinyin', 'pinyin', 'Xiǎoqíjì', 'xiaoqiji', 1),
+  ('a0000000-0000-5000-8000-000000000061', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'zh-Hans', 'official', '宝力', '宝力', 1),
+  ('a0000000-0000-5000-8000-000000000062', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'en', 'official_romanization', 'Bao Li', 'baoli', 1),
+  ('a0000000-0000-5000-8000-000000000063', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'pinyin', 'pinyin', 'Bǎolì', 'baoli', 1)
 on conflict(id) do update set
   panda_id = excluded.panda_id,
   language_tag = excluded.language_tag,
@@ -353,7 +395,22 @@ insert into panda_name_sources (panda_name_id, source_id) values
   ('a0000000-0000-5000-8000-000000000011', 'src_smithsonian_history'),
   ('a0000000-0000-5000-8000-000000000012', 'src_smithsonian_history'),
   ('a0000000-0000-5000-8000-000000000013', 'src_smithsonian_history'),
-  ('a0000000-0000-5000-8000-000000000014', 'src_smithsonian_history')
+  ('a0000000-0000-5000-8000-000000000014', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000021', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000022', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000023', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000031', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000032', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000033', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000041', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000042', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000043', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000051', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000052', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000053', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000061', 'src_smithsonian_giant_panda_faq'),
+  ('a0000000-0000-5000-8000-000000000062', 'src_smithsonian_giant_panda_faq'),
+  ('a0000000-0000-5000-8000-000000000063', 'src_smithsonian_giant_panda_faq')
 on conflict do nothing;
 
 insert into panda_slugs (id, panda_id, slug, slug_kind) values
@@ -362,7 +419,18 @@ insert into panda_slugs (id, panda_id, slug, slug_kind) values
   ('b0000000-0000-5000-8000-000000000003', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'mei_xiang', 'legacy'),
   ('b0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tian-tian', 'canonical'),
   ('b0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tiantian', 'legacy'),
-  ('b0000000-0000-5000-8000-000000000013', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tian_tian', 'legacy')
+  ('b0000000-0000-5000-8000-000000000013', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tian_tian', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000021', '96d00a39-7865-55db-b5c2-f339ef692258', 'tai-shan', 'canonical'),
+  ('b0000000-0000-5000-8000-000000000022', '96d00a39-7865-55db-b5c2-f339ef692258', 'taishan', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000031', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'bao-bao', 'canonical'),
+  ('b0000000-0000-5000-8000-000000000032', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'baobao-smithsonian', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000041', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'bei-bei', 'canonical'),
+  ('b0000000-0000-5000-8000-000000000042', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'beibei', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000051', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'xiao-qi-ji', 'canonical'),
+  ('b0000000-0000-5000-8000-000000000052', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'xiaoqiji', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000053', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'xiao_qi_ji', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000061', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'bao-li', 'canonical'),
+  ('b0000000-0000-5000-8000-000000000062', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'baoli', 'legacy')
 on conflict(id) do update set
   panda_id = excluded.panda_id,
   slug = excluded.slug,
@@ -374,14 +442,30 @@ insert into panda_slug_sources (panda_slug_id, source_id) values
   ('b0000000-0000-5000-8000-000000000003', 'src_smithsonian_history'),
   ('b0000000-0000-5000-8000-000000000011', 'src_smithsonian_history'),
   ('b0000000-0000-5000-8000-000000000012', 'src_smithsonian_history'),
-  ('b0000000-0000-5000-8000-000000000013', 'src_smithsonian_history')
+  ('b0000000-0000-5000-8000-000000000013', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000021', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000022', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000031', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000032', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000041', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000042', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000051', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000052', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000053', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000061', 'src_smithsonian_giant_panda_faq'),
+  ('b0000000-0000-5000-8000-000000000062', 'src_smithsonian_giant_panda_faq')
 on conflict do nothing;
 
 insert into panda_external_identifiers (
   id, panda_id, system, value, normalized_value
 ) values
   ('c0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'smithsonian_history_key', 'mei-xiang', 'meixiang'),
-  ('c0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'smithsonian_history_key', 'tian-tian', 'tiantian')
+  ('c0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'smithsonian_history_key', 'tian-tian', 'tiantian'),
+  ('c0000000-0000-5000-8000-000000000021', '96d00a39-7865-55db-b5c2-f339ef692258', 'smithsonian_history_key', 'tai-shan', 'taishan'),
+  ('c0000000-0000-5000-8000-000000000031', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'smithsonian_history_key', 'bao-bao', 'baobao'),
+  ('c0000000-0000-5000-8000-000000000041', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'smithsonian_history_key', 'bei-bei', 'beibei'),
+  ('c0000000-0000-5000-8000-000000000051', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'smithsonian_history_key', 'xiao-qi-ji', 'xiaoqiji'),
+  ('c0000000-0000-5000-8000-000000000061', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'smithsonian_faq_key', 'bao-li', 'baoli')
 on conflict(id) do update set
   panda_id = excluded.panda_id,
   system = excluded.system,
@@ -390,7 +474,12 @@ on conflict(id) do update set
 
 insert into panda_external_identifier_sources (external_identifier_id, source_id) values
   ('c0000000-0000-5000-8000-000000000001', 'src_smithsonian_history'),
-  ('c0000000-0000-5000-8000-000000000011', 'src_smithsonian_history')
+  ('c0000000-0000-5000-8000-000000000011', 'src_smithsonian_history'),
+  ('c0000000-0000-5000-8000-000000000021', 'src_smithsonian_history'),
+  ('c0000000-0000-5000-8000-000000000031', 'src_smithsonian_history'),
+  ('c0000000-0000-5000-8000-000000000041', 'src_smithsonian_history'),
+  ('c0000000-0000-5000-8000-000000000051', 'src_smithsonian_history'),
+  ('c0000000-0000-5000-8000-000000000061', 'src_smithsonian_giant_panda_faq')
 on conflict do nothing;
 
 -- Reviewed public-profile presentation projection from the golden dataset.
@@ -399,7 +488,7 @@ set
   record_tier = 'complete_first_pass',
   localized_content_json = '[{"locale":"zh-CN","summary":"曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。"},{"locale":"en","summary":"Former Smithsonian female and mother of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji."}]',
   media_release_json = '{"license_state":"no_licensed_media","display_mode":"designed_empty_state","source_ids":[]}',
-  public_revision_json = '{"data_version":"2026.07.14.1","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成身份、出生日期、居住记录、迁移事件与公开来源的首轮整理。"},{"locale":"en","summary":"First public review of identity, birth date, residencies, transfer events, and sources."}]}'
+  public_revision_json = '{"data_version":"2026.07.14.2","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成身份、出生日期、居住记录、迁移事件与公开来源的首轮整理。"},{"locale":"en","summary":"First public review of identity, birth date, residencies, transfer events, and sources."}]}'
 where id = '2939c16f-1938-5629-928c-b36b1d5cd6ed';
 
 update pandas
@@ -407,7 +496,7 @@ set
   record_tier = 'complete_first_pass',
   localized_content_json = '[{"locale":"zh-CN","summary":"曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。"},{"locale":"en","summary":"Former Smithsonian male and father of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji."}]',
   media_release_json = '{"license_state":"source_link_only","display_mode":"link_to_source","source_ids":["src_smithsonian_history"]}',
-  public_revision_json = '{"data_version":"2026.07.14.1","public_schema_version":"1.0.0","summaries":[]}'
+  public_revision_json = '{"data_version":"2026.07.14.2","public_schema_version":"1.0.0","summaries":[]}'
 where id = '38cd1cad-3e34-5511-bc35-a091ece74e11';
 
 insert into fact_assertions (
@@ -417,7 +506,23 @@ insert into fact_assertions (
   ('fact-mei-xiang-birth-date', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"', 'confirmed', '2026-05-09'),
   ('fact-mei-xiang-current-place', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09'),
   ('fact-tian-tian-birth-date', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"', 'confirmed', '2026-05-09'),
-  ('fact-tian-tian-current-place', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09')
+  ('fact-tian-tian-current-place', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09'),
+  ('fact-tian-tian-sex', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'sex', '"male"', 'confirmed', '2026-05-09'),
+  ('fact-tai-shan-sex', '96d00a39-7865-55db-b5c2-f339ef692258', 'sex', '"male"', 'confirmed', '2026-05-09'),
+  ('fact-tai-shan-birth-date', '96d00a39-7865-55db-b5c2-f339ef692258', 'birth_date', '"2005-07-09"', 'confirmed', '2026-05-09'),
+  ('fact-tai-shan-current-place', '96d00a39-7865-55db-b5c2-f339ef692258', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09'),
+  ('fact-bao-bao-sex', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'sex', '"female"', 'confirmed', '2026-05-09'),
+  ('fact-bao-bao-birth-date', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'birth_date', '"2013-08-23"', 'confirmed', '2026-05-09'),
+  ('fact-bao-bao-current-place', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09'),
+  ('fact-bei-bei-sex', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'sex', '"male"', 'confirmed', '2026-05-09'),
+  ('fact-bei-bei-birth-date', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'birth_date', '"2015-08-22"', 'confirmed', '2026-05-09'),
+  ('fact-bei-bei-current-place', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'current_coarse_location', '"Wolong Shenshuping Base"', 'confirmed', '2026-05-10'),
+  ('fact-xiao-qi-ji-sex', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'sex', '"male"', 'confirmed', '2026-05-09'),
+  ('fact-xiao-qi-ji-birth-date', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'birth_date', '"2020-08-21"', 'confirmed', '2026-05-09'),
+  ('fact-xiao-qi-ji-current-place', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'current_coarse_location', '"Wolong Shenshuping Base"', 'confirmed', '2026-05-10'),
+  ('fact-bao-li-sex', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'sex', '"male"', 'confirmed', '2026-05-09'),
+  ('fact-bao-li-birth-date', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'birth_date', '"2021-08-04"', 'confirmed', '2026-05-09'),
+  ('fact-bao-li-current-place', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'current_coarse_location', '"Smithsonian National Zoo"', 'confirmed', '2026-05-09')
 on conflict(id) do update set
   panda_id = excluded.panda_id,
   field_key = excluded.field_key,
@@ -430,7 +535,23 @@ insert into fact_assertion_sources (assertion_id, source_id, stance) values
   ('fact-mei-xiang-birth-date', 'src_smithsonian_agreement_2020', 'supports'),
   ('fact-mei-xiang-current-place', 'src_smithsonian_history', 'supports'),
   ('fact-tian-tian-birth-date', 'src_smithsonian_agreement_2020', 'supports'),
-  ('fact-tian-tian-current-place', 'src_smithsonian_history', 'supports')
+  ('fact-tian-tian-current-place', 'src_smithsonian_history', 'supports'),
+  ('fact-tian-tian-sex', 'src_smithsonian_history', 'supports'),
+  ('fact-tai-shan-sex', 'src_smithsonian_history', 'supports'),
+  ('fact-tai-shan-birth-date', 'src_smithsonian_history', 'supports'),
+  ('fact-tai-shan-current-place', 'src_smithsonian_history', 'supports'),
+  ('fact-bao-bao-sex', 'src_smithsonian_history', 'supports'),
+  ('fact-bao-bao-birth-date', 'src_smithsonian_history', 'supports'),
+  ('fact-bao-bao-current-place', 'src_smithsonian_history', 'supports'),
+  ('fact-bei-bei-sex', 'src_smithsonian_history', 'supports'),
+  ('fact-bei-bei-birth-date', 'src_smithsonian_history', 'supports'),
+  ('fact-bei-bei-current-place', 'src_ccrcgp_2025_birthday_season', 'supports'),
+  ('fact-xiao-qi-ji-sex', 'src_smithsonian_history', 'supports'),
+  ('fact-xiao-qi-ji-birth-date', 'src_smithsonian_history', 'supports'),
+  ('fact-xiao-qi-ji-current-place', 'src_ccrcgp_2025_birthday_season', 'supports'),
+  ('fact-bao-li-sex', 'src_smithsonian_giant_panda_faq', 'supports'),
+  ('fact-bao-li-birth-date', 'src_smithsonian_giant_panda_faq', 'supports'),
+  ('fact-bao-li-current-place', 'src_smithsonian_giant_panda_faq', 'supports')
 on conflict do nothing;
 
 insert into public_fact_conclusions (
@@ -441,7 +562,23 @@ insert into public_fact_conclusions (
   ('d0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
   ('d0000000-0000-5000-8000-000000000002', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
   ('d0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
-  ('d0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1)
+  ('d0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000013', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'sex', '"male"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000021', '96d00a39-7865-55db-b5c2-f339ef692258', 'sex', '"male"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000022', '96d00a39-7865-55db-b5c2-f339ef692258', 'birth_date', '"2005-07-09"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000023', '96d00a39-7865-55db-b5c2-f339ef692258', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000031', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'sex', '"female"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000032', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'birth_date', '"2013-08-23"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000033', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000041', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'sex', '"male"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000042', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'birth_date', '"2015-08-22"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000043', '1a05a5dc-1926-5355-9d81-c2a43189d50b', 'current_coarse_location', '"Wolong Shenshuping Base"', 'confirmed', '2026-05-10', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000051', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'sex', '"male"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000052', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'birth_date', '"2020-08-21"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000053', '926abc78-1e79-55c6-b24a-d33b4e5f6443', 'current_coarse_location', '"Wolong Shenshuping Base"', 'confirmed', '2026-05-10', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000061', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'sex', '"male"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000062', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'birth_date', '"2021-08-04"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000063', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'current_coarse_location', '"Smithsonian National Zoo"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1)
 on conflict(id) do update set
   panda_id = excluded.panda_id,
   field_key = excluded.field_key,
@@ -458,7 +595,23 @@ insert into public_fact_conclusion_assertions (conclusion_id, assertion_id) valu
   ('d0000000-0000-5000-8000-000000000001', 'fact-mei-xiang-birth-date'),
   ('d0000000-0000-5000-8000-000000000002', 'fact-mei-xiang-current-place'),
   ('d0000000-0000-5000-8000-000000000011', 'fact-tian-tian-birth-date'),
-  ('d0000000-0000-5000-8000-000000000012', 'fact-tian-tian-current-place')
+  ('d0000000-0000-5000-8000-000000000012', 'fact-tian-tian-current-place'),
+  ('d0000000-0000-5000-8000-000000000013', 'fact-tian-tian-sex'),
+  ('d0000000-0000-5000-8000-000000000021', 'fact-tai-shan-sex'),
+  ('d0000000-0000-5000-8000-000000000022', 'fact-tai-shan-birth-date'),
+  ('d0000000-0000-5000-8000-000000000023', 'fact-tai-shan-current-place'),
+  ('d0000000-0000-5000-8000-000000000031', 'fact-bao-bao-sex'),
+  ('d0000000-0000-5000-8000-000000000032', 'fact-bao-bao-birth-date'),
+  ('d0000000-0000-5000-8000-000000000033', 'fact-bao-bao-current-place'),
+  ('d0000000-0000-5000-8000-000000000041', 'fact-bei-bei-sex'),
+  ('d0000000-0000-5000-8000-000000000042', 'fact-bei-bei-birth-date'),
+  ('d0000000-0000-5000-8000-000000000043', 'fact-bei-bei-current-place'),
+  ('d0000000-0000-5000-8000-000000000051', 'fact-xiao-qi-ji-sex'),
+  ('d0000000-0000-5000-8000-000000000052', 'fact-xiao-qi-ji-birth-date'),
+  ('d0000000-0000-5000-8000-000000000053', 'fact-xiao-qi-ji-current-place'),
+  ('d0000000-0000-5000-8000-000000000061', 'fact-bao-li-sex'),
+  ('d0000000-0000-5000-8000-000000000062', 'fact-bao-li-birth-date'),
+  ('d0000000-0000-5000-8000-000000000063', 'fact-bao-li-current-place')
 on conflict do nothing;
 
 -- Reviewed lineage, residency, and event public projection. Compatibility
@@ -469,9 +622,9 @@ insert into pandas (
 ) values
   ('96d00a39-7865-55db-b5c2-f339ef692258', 'tai-shan', '泰山', 'Tai Shan', 'male', '2005-07-09', null, 'alive', 'Smithsonian National Zoo', 'China', null, null, null, '["golden-dataset"]', 0),
   ('7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', 'bao-bao', '宝宝', 'Bao Bao', 'female', '2013-08-23', null, 'alive', 'Smithsonian National Zoo', 'China', null, null, null, '["golden-dataset"]', 0),
-  ('1a05a5dc-1926-5355-9d81-c2a43189d50b', 'bei-bei', '贝贝', 'Bei Bei', 'male', '2015-08-22', null, 'alive', 'Smithsonian National Zoo', 'China', null, null, null, '["golden-dataset"]', 0),
-  ('926abc78-1e79-55c6-b24a-d33b4e5f6443', 'xiao-qi-ji', '小奇迹', 'Xiao Qi Ji', 'male', '2020-08-21', null, 'alive', 'Smithsonian National Zoo', 'China', null, null, null, '["golden-dataset"]', 0),
-  ('434e10e3-7ba0-5de7-a59e-d3984524c58c', 'bao-li', '宝力', 'Bao Li', 'male', null, null, 'alive', null, null, null, null, null, '["golden-dataset"]', 0)
+  ('1a05a5dc-1926-5355-9d81-c2a43189d50b', 'bei-bei', '贝贝', 'Bei Bei', 'male', '2015-08-22', null, 'alive', 'Smithsonian National Zoo', 'Wolong Shenshuping Base', null, null, null, '["golden-dataset"]', 0),
+  ('926abc78-1e79-55c6-b24a-d33b4e5f6443', 'xiao-qi-ji', '小奇迹', 'Xiao Qi Ji', 'male', '2020-08-21', null, 'alive', 'Smithsonian National Zoo', 'Wolong Shenshuping Base', null, null, null, '["golden-dataset"]', 0),
+  ('434e10e3-7ba0-5de7-a59e-d3984524c58c', 'bao-li', '宝力', 'Bao Li', 'male', '2021-08-04', null, 'alive', null, 'Smithsonian National Zoo', null, null, null, '["golden-dataset"]', 0)
 on conflict(id) do update set
   slug = excluded.slug,
   name_zh = excluded.name_zh,
@@ -486,7 +639,21 @@ on conflict(id) do update set
 update pandas
 set
   record_tier = 'identity_first_pass',
-  public_revision_json = '{"data_version":"2026.07.14.1","public_schema_version":"1.0.0","summaries":[]}'
+  localized_content_json = case id
+    when '96d00a39-7865-55db-b5c2-f339ef692258' then '[{"locale":"zh-CN","summary":"美香与添添之子，2005 年出生于史密森国家动物园，现有公开证据仅确认其已返回中国。"},{"locale":"en","summary":"Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2005; current public evidence confirms only his return to China."}]'
+    when '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6' then '[{"locale":"zh-CN","summary":"美香与添添之女，2013 年出生于史密森国家动物园，也是宝力的母亲。"},{"locale":"en","summary":"Daughter of Mei Xiang and Tian Tian, born at the Smithsonian in 2013, and mother of Bao Li."}]'
+    when '1a05a5dc-1926-5355-9d81-c2a43189d50b' then '[{"locale":"zh-CN","summary":"美香与添添之子，2015 年出生于史密森国家动物园，现居卧龙神树坪基地。"},{"locale":"en","summary":"Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2015 and currently recorded at Wolong Shenshuping Base."}]'
+    when '926abc78-1e79-55c6-b24a-d33b4e5f6443' then '[{"locale":"zh-CN","summary":"美香与添添之子，2020 年出生于史密森国家动物园，并于 2023 年随父母返回中国。"},{"locale":"en","summary":"Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2020 and returned to China with his parents in 2023."}]'
+    when '434e10e3-7ba0-5de7-a59e-d3984524c58c' then '[{"locale":"zh-CN","summary":"宝宝之子，是美香与添添的外孙，现居史密森国家动物园。"},{"locale":"en","summary":"Son of Bao Bao and grandson of Mei Xiang and Tian Tian, currently living at the Smithsonian National Zoo."}]'
+  end,
+  media_release_json = '{"license_state":"no_licensed_media","display_mode":"designed_empty_state","source_ids":[]}',
+  public_revision_json = case id
+    when '96d00a39-7865-55db-b5c2-f339ef692258' then '{"data_version":"2026.07.14.2","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成身份、亲本、出生日期与国家级现居记录的公开整理。"},{"locale":"en","summary":"Public review of identity, parentage, birth date, and country-level current residency."}]}'
+    when '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6' then '{"data_version":"2026.07.14.2","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成身份、亲本、出生日期、子代关系与国家级现居记录的公开整理。"},{"locale":"en","summary":"Public review of identity, parentage, birth date, offspring relationship, and country-level current residency."}]}'
+    when '1a05a5dc-1926-5355-9d81-c2a43189d50b' then '{"data_version":"2026.07.14.2","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成身份、亲本、出生日期与现居基地的公开整理。"},{"locale":"en","summary":"Public review of identity, parentage, birth date, and current facility."}]}'
+    when '926abc78-1e79-55c6-b24a-d33b4e5f6443' then '{"data_version":"2026.07.14.2","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成身份、亲本、出生日期、多人回国事件与现居基地的公开整理。"},{"locale":"en","summary":"Public review of identity, parentage, birth date, shared return event, and current facility."}]}'
+    when '434e10e3-7ba0-5de7-a59e-d3984524c58c' then '{"data_version":"2026.07.14.2","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成三代身份、母系亲缘与现居机构的公开整理。"},{"locale":"en","summary":"Public review of third-generation identity, maternal lineage, and current institution."}]}'
+  end
 where id in (
   '96d00a39-7865-55db-b5c2-f339ef692258',
   '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6',
@@ -556,7 +723,8 @@ insert into panda_residencies (
   ('res-tai-shan-china-country-level', '96d00a39-7865-55db-b5c2-f339ef692258', null, 'China', 'primary', '2010-02-04', 'day', null, null, 'confirmed_country_level', 'published'),
   ('res-bao-bao-china-country-level', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', null, 'China', 'primary', '2017-02-21', 'day', null, null, 'confirmed_country_level', 'published'),
   ('res-bei-bei-shenshuping', '1a05a5dc-1926-5355-9d81-c2a43189d50b', '89f620b2-37d0-51ba-aafa-6844404a5b2c', null, 'primary', '2019-11-19', 'day', null, null, 'confirmed', 'published'),
-  ('res-xiao-qi-ji-shenshuping', '926abc78-1e79-55c6-b24a-d33b4e5f6443', '89f620b2-37d0-51ba-aafa-6844404a5b2c', null, 'primary', '2023-11-08', 'day', null, null, 'confirmed', 'published')
+  ('res-xiao-qi-ji-shenshuping', '926abc78-1e79-55c6-b24a-d33b4e5f6443', '89f620b2-37d0-51ba-aafa-6844404a5b2c', null, 'primary', '2023-11-08', 'day', null, null, 'confirmed', 'published'),
+  ('res-bao-li-smithsonian', '434e10e3-7ba0-5de7-a59e-d3984524c58c', 'afb0f227-dd5e-5076-88e3-74e9807a6049', null, 'primary', '2024-10-15', 'day', null, null, 'confirmed', 'published')
 on conflict(id) do update set
   panda_id = excluded.panda_id,
   facility_id = excluded.facility_id,
@@ -570,13 +738,18 @@ on conflict(id) do update set
   publication_status = excluded.publication_status;
 
 insert into residency_sources (residency_id, source_id)
-select id, 'src_smithsonian_history'
+select id, case
+  when id in ('res-bei-bei-shenshuping', 'res-xiao-qi-ji-shenshuping') then 'src_ccrcgp_2025_birthday_season'
+  when id = 'res-bao-li-smithsonian' then 'src_smithsonian_giant_panda_faq'
+  else 'src_smithsonian_history'
+end
 from panda_residencies
 where id in (
   'res-mei-xiang-smithsonian', 'res-mei-xiang-china',
   'res-tian-tian-smithsonian', 'res-tian-tian-china',
   'res-tai-shan-china-country-level', 'res-bao-bao-china-country-level',
-  'res-bei-bei-shenshuping', 'res-xiao-qi-ji-shenshuping'
+  'res-bei-bei-shenshuping', 'res-xiao-qi-ji-shenshuping',
+  'res-bao-li-smithsonian'
 )
 on conflict do nothing;
 
