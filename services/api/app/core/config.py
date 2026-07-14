@@ -1,4 +1,6 @@
+import json
 from collections.abc import Sequence
+from uuid import UUID
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -9,6 +11,10 @@ class Settings(BaseSettings):
     app_port: int = Field(default=8000, alias="APP_PORT")
     cors_allow_origins: str = Field(default="http://localhost:3000", alias="CORS_ALLOW_ORIGINS")
     admin_api_token: str = Field(default="dev-admin-token", alias="ADMIN_API_TOKEN")
+    workflow_actor_tokens_json: str = Field(
+        default="{}",
+        alias="WORKFLOW_ACTOR_TOKENS_JSON",
+    )
     database_url: str | None = Field(default=None, alias="DATABASE_URL")
     db_use_mock_fallback: bool | None = Field(default=None, alias="DB_USE_MOCK_FALLBACK")
 
@@ -26,6 +32,15 @@ class Settings(BaseSettings):
 
     def is_local_environment(self) -> bool:
         return self.app_env.lower().strip() in {"development", "dev", "local", "test"}
+
+    def workflow_actor_tokens(self) -> dict[UUID, str]:
+        value = json.loads(self.workflow_actor_tokens_json)
+        if not isinstance(value, dict):
+            raise ValueError("WORKFLOW_ACTOR_TOKENS_JSON must be a JSON object")
+        actor_tokens = {UUID(actor_id): str(token) for actor_id, token in value.items()}
+        if len(set(actor_tokens.values())) != len(actor_tokens):
+            raise ValueError("Workflow actor bearer tokens must be unique")
+        return actor_tokens
 
 
 settings = Settings()

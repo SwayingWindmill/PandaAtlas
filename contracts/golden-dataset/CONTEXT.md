@@ -77,6 +77,26 @@ A real-world occurrence such as a transfer. One event may have multiple panda pa
 
 The readiness of a record for projection: `published`, `draft`, or `restricted`. A published record cannot depend on an unpublished object.
 
+## Entity Revision
+
+An immutable snapshot of one Trusted Archive entity. A correction creates a new revision; it never overwrites an earlier revision. The actor who made the last substantive change is retained for independent-review enforcement.
+
+## Change Set
+
+A curator-authored group of meaningful entity revisions that moves from draft to submitted, then to either approved or rejected. Approval must come from someone who did not make a substantive revision in the change set.
+
+## Publication Batch
+
+An immutable public data version assembled only from approved change sets. A published batch records its Public Schema version, data version, actor, reason, correlation ID, and prior active batch.
+
+## Public Release Pointer
+
+The single transactional reference to the active publication batch. Publishing, rollback, and withdrawal switch this pointer atomically rather than rewriting a prior published batch.
+
+## Audit Event
+
+An append-only record of a curation or publication action. Audit events retain the responsible actor and reason; release events also carry the correlation and version context needed for operational tracing.
+
 ## Fixture Consumer
 
 One of the test layers that reads the golden dataset: domain, API, projection, snapshot, or browser. Consumers may adapt the fixture shape, but they must not maintain separate business truth.

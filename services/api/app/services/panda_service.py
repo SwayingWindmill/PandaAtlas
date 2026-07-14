@@ -41,6 +41,8 @@ from app.schemas.panda import (
     PandaLineageResponse,
     PandaListItem,
 )
+from app.schemas.publication import PANDA_PUBLIC_REVISION_FIELDS
+from app.services.publication_service import get_active_public_record
 
 
 @dataclass(frozen=True)
@@ -154,9 +156,9 @@ def _resolve_public_media_url(storage_path: str | None) -> str | None:
 
 def _order_clause(sort: str) -> str:
     mapping = {
-        "name_asc": "p.name_zh asc",
-        "name_desc": "p.name_zh desc",
-        "birth_date_desc": "p.birth_date desc nulls last",
+        "name_asc": "public_name_zh asc",
+        "name_desc": "public_name_zh desc",
+        "birth_date_desc": "public_birth_date desc nulls last",
         "created_at_desc": "p.created_at desc",
     }
     return mapping.get(sort, "p.created_at desc")
@@ -221,16 +223,37 @@ def _list_pandas_from_db(
         "offset": offset,
     }
 
+    public_name_zh = "coalesce(active_record.public_record ->> 'name_zh', p.name_zh)"
+    public_name_en = (
+        "case when active_record.public_record ? 'name_en' "
+        "then active_record.public_record ->> 'name_en' else p.name_en end"
+    )
+    public_gender = "coalesce(active_record.public_record ->> 'gender', p.gender)"
+    public_status = (
+        "coalesce(active_record.public_record ->> 'status', p.status::text)"
+    )
+    public_birth_date = (
+        "case when active_record.public_record ? 'birth_date' "
+        "then (active_record.public_record ->> 'birth_date')::date "
+        "else p.birth_date end"
+    )
+    public_current_location = (
+        "case when active_record.public_record ? 'current_location' "
+        "then active_record.public_record ->> 'current_location' "
+        "else p.current_location end"
+    )
+    public_featured = (
+        "coalesce((active_record.public_record ->> 'is_featured')::boolean, p.is_featured)"
+    )
+
     if q_like:
         where_clauses.append(
-            """
+            f"""
             (
-              p.name_zh ilike :q_like
-              or coalesce(p.name_en, '') ilike :q_like
-              or exists (
-                select 1 from unnest(coalesce(p.tags, '{}'::text[])) as tag
-                where tag ilike :q_like
-              )
+              {public_name_zh} ilike :q_like
+              or coalesce({public_name_en}, '') ilike :q_like
+              or coalesce(active_record.public_record -> 'tags', to_jsonb(p.tags))::text
+                ilike :q_like
               or exists (
                 select 1
                 from public.panda_names pn
@@ -265,11 +288,11 @@ def _list_pandas_from_db(
         )
 
     if status:
-        where_clauses.append("p.status::text = :status")
+        where_clauses.append(f"{public_status} = :status")
         params["status"] = status
 
     if gender:
-        where_clauses.append("p.gender = :gender")
+        where_clauses.append(f"{public_gender} = :gender")
         params["gender"] = gender
 
     if habitat_id is not None:
@@ -286,24 +309,61 @@ def _list_pandas_from_db(
         params["habitat_id"] = habitat_id
 
     if featured is not None:
-        where_clauses.append("p.is_featured = :featured")
+        where_clauses.append(f"{public_featured} = :featured")
         params["featured"] = featured
+
+    where_clauses.append(
+        "(active_record.entity_id is null or active_record.operation <> 'withdrawal')"
+    )
+
+    active_records_cte = """
+        active_release as (
+          select
+            batch.operation,
+            case
+              when batch.operation = 'withdrawal' then batch.withdrawal_target_id
+              else batch.id
+            end as source_batch_id
+          from public.public_release_pointer pointer
+          join public.publication_batches batch on batch.id = pointer.active_batch_id
+          where pointer.singleton = true
+        ),
+        active_records as (
+          select distinct on (revision.entity_id)
+            revision.entity_id,
+            revision.payload -> 'public_record' as public_record,
+            active_release.operation
+          from active_release
+          join public.publication_batch_change_sets batch_link
+            on batch_link.batch_id = active_release.source_batch_id
+          join public.change_set_revisions change_link
+            on change_link.change_set_id = batch_link.change_set_id
+          join public.entity_revisions revision on revision.id = change_link.revision_id
+          where revision.entity_type = 'panda'
+          order by
+            revision.entity_id,
+            revision.revision_number desc,
+            revision.created_at desc
+        )
+    """
 
     sql = text(
         f"""
+        with {active_records_cte}
         select
           p.id,
           coalesce(canonical_slug.slug, p.slug) as slug,
-          p.name_zh,
-          p.name_en,
-          p.gender,
-          p.status::text as status,
-          p.birth_date,
-          p.current_location,
+          {public_name_zh} as public_name_zh,
+          {public_name_en} as public_name_en,
+          {public_gender} as public_gender,
+          {public_status} as public_status,
+          {public_birth_date} as public_birth_date,
+          {public_current_location} as public_current_location,
           p.tags,
           p.is_featured,
           cover.cover_image_url
         from public.pandas p
+        left join active_records active_record on active_record.entity_id = p.id::text
         left join public.panda_slugs canonical_slug
           on canonical_slug.panda_id = p.id
           and canonical_slug.slug_kind = 'canonical'
@@ -324,8 +384,10 @@ def _list_pandas_from_db(
 
     count_sql = text(
         f"""
+        with {active_records_cte}
         select count(*) as total
         from public.pandas p
+        left join active_records active_record on active_record.entity_id = p.id::text
         where {" and ".join(where_clauses)}
         """
     )
@@ -341,12 +403,12 @@ def _list_pandas_from_db(
         PandaListItem(
             id=row["id"],
             slug=row["slug"],
-            name_zh=row["name_zh"],
-            name_en=row["name_en"],
-            gender=row["gender"],
-            status=row["status"],
-            birth_date=row["birth_date"],
-            current_location=row["current_location"],
+            name_zh=row["public_name_zh"],
+            name_en=row["public_name_en"],
+            gender=row["public_gender"],
+            status=row["public_status"],
+            birth_date=row["public_birth_date"],
+            current_location=row["public_current_location"],
             cover_image_url=_resolve_public_media_url(row["cover_image_url"]),
         )
         for row in rows
@@ -963,7 +1025,20 @@ def get_panda_by_ref(panda_ref: str) -> PandaDetail:
 
     if has_database():
         try:
-            return _get_panda_by_id_from_db(reference.id)
+            detail = _get_panda_by_id_from_db(reference.id)
+            public_record = get_active_public_record("panda", str(reference.id))
+            if public_record and public_record.get("_withdrawn") is True:
+                raise HTTPException(status_code=404, detail="Panda withdrawn from public release")
+            if public_record:
+                overlay = {
+                    key: value
+                    for key, value in public_record.items()
+                    if key in PANDA_PUBLIC_REVISION_FIELDS
+                }
+                return PandaDetail.model_validate(
+                    {**detail.model_dump(mode="json"), **overlay}
+                )
+            return detail
         except SQLAlchemyError as err:
             if not settings.db_use_mock_fallback:
                 raise HTTPException(status_code=503, detail="Database unavailable") from err

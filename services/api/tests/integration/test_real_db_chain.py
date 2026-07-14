@@ -1,5 +1,7 @@
+import json
 import os
 from collections.abc import Iterator
+from uuid import uuid4
 
 import psycopg
 import pytest
@@ -52,9 +54,17 @@ def real_db_url() -> Iterator[str]:
 
     prev_database_url = settings.database_url
     prev_db_use_mock_fallback = settings.db_use_mock_fallback
+    prev_workflow_actor_tokens_json = settings.workflow_actor_tokens_json
 
     settings.database_url = database_url
     settings.db_use_mock_fallback = False
+    settings.workflow_actor_tokens_json = json.dumps(
+        {
+            "11111111-1111-4111-8111-111111111111": "editor-secret",
+            "22222222-2222-4222-8222-222222222222": "reviewer-secret",
+            "33333333-3333-4333-8333-333333333333": "publisher-secret",
+        }
+    )
     configure_database(database_url)
 
     try:
@@ -62,6 +72,7 @@ def real_db_url() -> Iterator[str]:
     finally:
         settings.database_url = prev_database_url
         settings.db_use_mock_fallback = prev_db_use_mock_fallback
+        settings.workflow_actor_tokens_json = prev_workflow_actor_tokens_json
         configure_database(prev_database_url)
 
 
@@ -92,8 +103,41 @@ def test_real_db_pandas_endpoint(client: TestClient, real_db_url: str) -> None:
 
     payload = response.json()
     endpoint_total = payload["meta"]["total"]
-    db_total = _query_scalar(real_db_url, "select count(*) from public.pandas")
-    assert endpoint_total == db_total
+    visible_db_total = _query_scalar(
+        real_db_url,
+        """
+        with active_release as (
+          select
+            batch.operation,
+            case
+              when batch.operation = 'withdrawal' then batch.withdrawal_target_id
+              else batch.id
+            end as source_batch_id
+          from public.public_release_pointer pointer
+          join public.publication_batches batch on batch.id = pointer.active_batch_id
+          where pointer.singleton = true
+        ),
+        withdrawn_entities as (
+          select distinct revision.entity_id
+          from active_release
+          join public.publication_batch_change_sets batch_link
+            on batch_link.batch_id = active_release.source_batch_id
+          join public.change_set_revisions change_link
+            on change_link.change_set_id = batch_link.change_set_id
+          join public.entity_revisions revision on revision.id = change_link.revision_id
+          where active_release.operation = 'withdrawal'
+            and revision.entity_type = 'panda'
+        )
+        select count(*)
+        from public.pandas panda
+        where not exists (
+          select 1
+          from withdrawn_entities withdrawn
+          where withdrawn.entity_id = panda.id::text
+        )
+        """,
+    )
+    assert endpoint_total == visible_db_total
 
 
 def test_real_db_detail_endpoint(client: TestClient, real_db_url: str) -> None:
@@ -297,3 +341,172 @@ def test_real_db_stats_endpoint(client: TestClient, real_db_url: str) -> None:
         "select max(snapshot_date)::text as snapshot_date from public.distribution_snapshots",
     )
     assert payload["latest_snapshot_date"] == latest_snapshot["snapshot_date"]
+
+
+def test_real_db_four_eyes_publication_is_atomic_and_audited(
+    client: TestClient,
+    real_db_url: str,
+) -> None:
+    if _query_scalar(
+        real_db_url,
+        """
+        select count(*)
+        from pg_tables
+        where schemaname = 'public' and tablename = 'publication_batches'
+        """,
+    ) == 0:
+        pytest.fail("Issue #9 publication workflow migration is not loaded")
+
+    actors = {
+        "11111111-1111-4111-8111-111111111111": "editor-secret",
+        "22222222-2222-4222-8222-222222222222": "reviewer-secret",
+        "33333333-3333-4333-8333-333333333333": "publisher-secret",
+    }
+    editor_id, reviewer_id, publisher_id = actors
+    suffix = uuid4().hex
+    panda = _get_first_panda(client)
+
+    def headers(actor_id: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {actors[actor_id]}",
+            "X-Actor-Id": actor_id,
+        }
+
+    def revision_payload(birthplace: str) -> dict[str, object]:
+        return {
+            "public_record": {"birthplace": birthplace},
+            "publication_checks": {
+                "references": [],
+                "residencies": [],
+                "translations": [],
+                "sources": [],
+                "media": [],
+            },
+        }
+
+    def create_change_set(label: str) -> str:
+        response = client.post(
+            "/api/v1/admin/change-sets",
+            headers=headers(editor_id),
+            json={
+                "title": f"Integration publication {label} {suffix}",
+                "reason": "Exercise the authoritative four-eyes workflow",
+                "revisions": [
+                    {
+                        "entity_type": "panda",
+                        "entity_id": panda["id"],
+                        "payload": revision_payload(label),
+                    }
+                ],
+            },
+        )
+        assert response.status_code == 201
+        assert response.json()["status"] == "draft"
+        return response.json()["id"]
+
+    def submit(change_set_id: str) -> None:
+        response = client.post(
+            f"/api/v1/admin/change-sets/{change_set_id}/submit",
+            headers=headers(editor_id),
+        )
+        assert response.status_code == 200
+
+    def approve(change_set_id: str) -> None:
+        response = client.post(
+            f"/api/v1/admin/change-sets/{change_set_id}/reviews",
+            headers=headers(reviewer_id),
+            json={"decision": "approved", "reason": "Independent review complete"},
+        )
+        assert response.status_code == 200
+
+    def publish(change_set_id: str, version: str) -> dict[str, object]:
+        batch = client.post(
+            "/api/v1/admin/publication-batches",
+            headers=headers(publisher_id),
+            json={
+                "change_set_ids": [change_set_id],
+                "public_schema_version": "1.0.0",
+                "data_version": version,
+                "reason": "Publish integration release",
+                "correlation_id": str(uuid4()),
+            },
+        )
+        assert batch.status_code == 201
+        response = client.post(
+            f"/api/v1/admin/publication-batches/{batch.json()['id']}/publish",
+            headers=headers(publisher_id),
+        )
+        assert response.status_code == 200
+        return response.json()
+
+    rejected_id = create_change_set("Rejected")
+    submit(rejected_id)
+    rejected = client.post(
+        f"/api/v1/admin/change-sets/{rejected_id}/reviews",
+        headers=headers(reviewer_id),
+        json={"decision": "rejected", "reason": "Evidence remains ambiguous"},
+    )
+    assert rejected.status_code == 200
+    assert rejected.json()["status"] == "rejected"
+
+    first_id = create_change_set("First visible birthplace")
+    submit(first_id)
+    denied = client.post(
+        f"/api/v1/admin/change-sets/{first_id}/reviews",
+        headers=headers(editor_id),
+        json={"decision": "approved", "reason": "Self approval must fail"},
+    )
+    assert denied.status_code == 409
+    approve(first_id)
+    first_batch = publish(first_id, f"integration-{suffix}-1")
+    first_detail = client.get(f"/api/v1/pandas/{panda['slug']}")
+    assert first_detail.status_code == 200
+    assert first_detail.json()["birthplace"] == "First visible birthplace"
+
+    second_id = create_change_set("Second visible birthplace")
+    submit(second_id)
+    approve(second_id)
+    publish(second_id, f"integration-{suffix}-2")
+    second_detail = client.get(f"/api/v1/pandas/{panda['slug']}")
+    assert second_detail.status_code == 200
+    assert second_detail.json()["birthplace"] == "Second visible birthplace"
+
+    rollback = client.post(
+        f"/api/v1/admin/publication-batches/{first_batch['id']}/rollback",
+        headers=headers(publisher_id),
+        json={
+            "reason": "Restore the prior public snapshot",
+            "correlation_id": str(uuid4()),
+            "data_version": f"integration-{suffix}-3",
+        },
+    )
+    assert rollback.status_code == 201
+    rolled_back_detail = client.get(f"/api/v1/pandas/{panda['slug']}")
+    assert rolled_back_detail.status_code == 200
+    assert rolled_back_detail.json()["birthplace"] == "First visible birthplace"
+
+    withdrawal = client.post(
+        f"/api/v1/admin/publication-batches/{rollback.json()['id']}/withdraw",
+        headers=headers(publisher_id),
+        json={
+            "reason": "Emergency copyright withdrawal",
+            "correlation_id": str(uuid4()),
+            "data_version": f"integration-{suffix}-4",
+        },
+    )
+    assert withdrawal.status_code == 201
+    assert client.get(f"/api/v1/pandas/{panda['slug']}").status_code == 404
+
+    active = _query_one(
+        real_db_url,
+        """
+        select active_batch_id::text as active_batch_id
+        from public.public_release_pointer
+        where singleton
+        """,
+    )
+    assert active["active_batch_id"] == withdrawal.json()["id"]
+    assert _query_scalar(
+        real_db_url,
+        "select count(*) from public.audit_events where event_type like 'publication_batch.%%'",
+    ) >= 6
