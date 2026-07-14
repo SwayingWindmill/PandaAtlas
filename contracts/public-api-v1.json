@@ -134,7 +134,10 @@
         "media": { "required": false, "nullable": false },
         "identity": { "required": false, "nullable": true },
         "conclusions": { "required": false, "nullable": false },
-        "sources": { "required": false, "nullable": false }
+        "sources": { "required": false, "nullable": false },
+        "current_place": { "required": false, "nullable": true },
+        "residencies": { "required": false, "nullable": false },
+        "events": { "required": false, "nullable": false }
       }
     }
   }

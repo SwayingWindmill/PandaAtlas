@@ -220,9 +220,9 @@ insert into public.fact_assertions (
 )
 values
   ('fact-mei-xiang-birth-date', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"'::jsonb, 'confirmed', 'published', '2026-05-09'),
-  ('fact-mei-xiang-current-place', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"'::jsonb, 'provisional', 'published', '2026-05-09'),
+  ('fact-mei-xiang-current-place', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_coarse_location', '"China"'::jsonb, 'confirmed', 'published', '2026-05-09'),
   ('fact-tian-tian-birth-date', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"'::jsonb, 'confirmed', 'published', '2026-05-09'),
-  ('fact-tian-tian-current-place', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"'::jsonb, 'provisional', 'published', '2026-05-09')
+  ('fact-tian-tian-current-place', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_coarse_location', '"China"'::jsonb, 'confirmed', 'published', '2026-05-09')
 on conflict (id) do update set
   panda_id = excluded.panda_id,
   field_key = excluded.field_key,
@@ -252,9 +252,9 @@ insert into public.public_fact_conclusions (
 )
 values
   ('d0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"'::jsonb, 'confirmed', '2026-05-09', 1, true, 'published'),
-  ('d0000000-0000-5000-8000-000000000002', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"'::jsonb, 'provisional', '2026-05-09', 1, true, 'published'),
+  ('d0000000-0000-5000-8000-000000000002', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_coarse_location', '"China"'::jsonb, 'confirmed', '2026-05-09', 1, true, 'published'),
   ('d0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"'::jsonb, 'confirmed', '2026-05-09', 1, true, 'published'),
-  ('d0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"'::jsonb, 'provisional', '2026-05-09', 1, true, 'published')
+  ('d0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_coarse_location', '"China"'::jsonb, 'confirmed', '2026-05-09', 1, true, 'published')
 on conflict (id) do update set
   panda_id = excluded.panda_id,
   field_key = excluded.field_key,

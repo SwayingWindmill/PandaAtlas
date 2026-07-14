@@ -21,7 +21,13 @@ const DEFAULT_BBOX = "100,25,110,36";
 
 type FallbackPandaSeed = Omit<
   PandaDetail,
-  "birthplace" | "identity" | "conclusions" | "sources"
+  | "birthplace"
+  | "identity"
+  | "conclusions"
+  | "sources"
+  | "current_place"
+  | "residencies"
+  | "events"
 > & {
   birthplace?: string | null;
 };
@@ -387,7 +393,10 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
       birthplace: profileOverride?.birthplace ?? detail.birthplace ?? null,
       identity: null,
       conclusions: [],
-      sources: []
+      sources: [],
+      current_place: null,
+      residencies: [],
+      events: []
     };
   }
 
@@ -400,7 +409,10 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
     habitats: override.habitats ?? detail.habitats,
     identity: null,
     conclusions: [],
-    sources: []
+    sources: [],
+    current_place: null,
+    residencies: [],
+    events: []
   };
 }
 
@@ -667,21 +679,10 @@ function findFallbackPandaDetailForReference(
   return rawIdOrSlug ? findFallbackPandaDetail(rawIdOrSlug) : undefined;
 }
 
-function mergePandaDetail(apiDetail: PandaDetail, fallbackDetail?: PandaDetail): PandaDetail {
-  if (!fallbackDetail) {
-    return apiDetail;
+class ApiRequestError extends Error {
+  constructor(readonly status: number) {
+    super(`Request failed with ${status}`);
   }
-
-  return {
-    ...apiDetail,
-    intro: apiDetail.intro ?? fallbackDetail.intro,
-    birthplace: apiDetail.birthplace ?? fallbackDetail.birthplace,
-    tags: apiDetail.tags.length > 0 ? apiDetail.tags : fallbackDetail.tags,
-    father_id: apiDetail.father_id ?? fallbackDetail.father_id,
-    mother_id: apiDetail.mother_id ?? fallbackDetail.mother_id,
-    habitats: apiDetail.habitats.length > 0 ? apiDetail.habitats : fallbackDetail.habitats,
-    media: apiDetail.media.length > 0 ? apiDetail.media : fallbackDetail.media
-  };
 }
 
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
@@ -691,7 +692,7 @@ async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed with ${response.status}`);
+    throw new ApiRequestError(response.status);
   }
 
   return (await response.json()) as T;
@@ -714,41 +715,57 @@ export interface HabitatQueryOptions {
   level?: string;
 }
 
+const ATLAS_PAGE_SIZE = 100;
+
+async function fetchPandaPage(page: number, pageSize: number): Promise<PaginatedPandasResponse> {
+  const query = buildQuery({ page, page_size: pageSize });
+  return fetchJson<PaginatedPandasResponse>(`/api/v1/pandas?${query}`);
+}
+
 export async function listPandas(): Promise<PaginatedPandasResponse> {
   try {
-    return await fetchJson<PaginatedPandasResponse>("/api/v1/pandas");
+    return await fetchPandaPage(1, 20);
   } catch {
     return FALLBACK_PANDAS;
   }
 }
 
 export async function listAtlasPandas(): Promise<PaginatedPandasResponse> {
-  const apiData = await listPandas();
-  const merged = new Map<string, PandaListItem>();
+  try {
+    const firstPage = await fetchPandaPage(1, ATLAS_PAGE_SIZE);
+    const pageCount = Math.ceil(firstPage.meta.total / ATLAS_PAGE_SIZE);
+    const additionalPages = pageCount > 1
+      ? await Promise.all(
+          Array.from({ length: pageCount - 1 }, (_, index) =>
+            fetchPandaPage(index + 2, ATLAS_PAGE_SIZE)
+          )
+        )
+      : [];
 
-  for (const item of FALLBACK_PANDA_LIST) {
-    merged.set(item.id, item);
-  }
-  for (const item of apiData.items) {
-    merged.set(item.id, item);
-  }
-
-  const items = [...merged.values()].sort((a, b) => {
-    const dateCompare = (b.birth_date ?? "").localeCompare(a.birth_date ?? "");
-    if (dateCompare !== 0) {
-      return dateCompare;
+    const byId = new Map<string, PandaListItem>();
+    for (const item of [firstPage, ...additionalPages].flatMap((page) => page.items)) {
+      byId.set(item.id, item);
     }
-    return a.name_zh.localeCompare(b.name_zh);
-  });
 
-  return {
-    items,
-    meta: {
-      page: 1,
-      page_size: items.length,
-      total: items.length
-    }
-  };
+    const items = [...byId.values()].sort((a, b) => {
+      const dateCompare = (b.birth_date ?? "").localeCompare(a.birth_date ?? "");
+      if (dateCompare !== 0) {
+        return dateCompare;
+      }
+      return a.name_zh.localeCompare(b.name_zh);
+    });
+
+    return {
+      items,
+      meta: {
+        page: 1,
+        page_size: items.length,
+        total: firstPage.meta.total
+      }
+    };
+  } catch {
+    return FALLBACK_PANDAS;
+  }
 }
 
 export async function resolvePandaReference(idOrSlug: string): Promise<PandaReference | null> {
@@ -757,13 +774,24 @@ export async function resolvePandaReference(idOrSlug: string): Promise<PandaRefe
     return null;
   }
 
-  const generatedReference = TRUSTED_PANDA_REFERENCES[normalized];
-  if (generatedReference) {
-    return generatedReference;
-  }
+  try {
+    const detail = await fetchJson<PandaDetail>(
+      `/api/v1/pandas/${encodeURIComponent(normalized)}`
+    );
+    return { id: detail.id, slug: detail.slug };
+  } catch (error) {
+    if (error instanceof ApiRequestError && error.status === 404) {
+      return null;
+    }
 
-  const atlas = await listAtlasPandas();
-  return findResolvedReference(normalized, atlas.items);
+    const generatedReference = TRUSTED_PANDA_REFERENCES[normalized];
+    if (generatedReference) {
+      return generatedReference;
+    }
+
+    const atlas = await listAtlasPandas();
+    return findResolvedReference(normalized, atlas.items);
+  }
 }
 
 export async function getPandaDetail(
@@ -779,8 +807,11 @@ export async function getPandaDetail(
     const apiDetail = await fetchJson<PandaDetail>(
       `/api/v1/pandas/${encodeURIComponent(requestRef)}`
     );
-    return mergePandaDetail(apiDetail, fallback);
-  } catch {
+    return apiDetail;
+  } catch (error) {
+    if (error instanceof ApiRequestError && error.status === 404) {
+      return null;
+    }
     return fallback ?? null;
   }
 }
@@ -826,6 +857,7 @@ function buildFallbackLineageResponse(focusId?: string): PandaLineageResponse {
     focus_id: resolvedFocusId,
     nodes,
     edges,
+    relationships: [],
     meta: {
       ancestor_depth: 6,
       descendant_depth: 6

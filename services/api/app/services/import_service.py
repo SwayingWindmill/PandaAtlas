@@ -1,6 +1,7 @@
 import json
 from datetime import UTC, datetime
 from pathlib import Path
+from threading import RLock
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException
@@ -34,6 +35,7 @@ from app.schemas.panda import (
 
 # Temporary in-memory store for scaffold stage.
 IMPORT_JOBS: dict[UUID, ImportJob] = {}
+IMPORT_JOBS_LOCK = RLock()
 
 
 def list_import_sources() -> ImportSourceList:
@@ -171,18 +173,25 @@ def _create_import_job_in_memory(payload: ImportJobCreate) -> ImportJob:
         ),
         created_at=now,
     )
-    IMPORT_JOBS[job.id] = job
+    with IMPORT_JOBS_LOCK:
+        IMPORT_JOBS[job.id] = job
     return job
 
 
 def _get_import_job_in_memory(job_id: UUID) -> ImportJob:
-    job = IMPORT_JOBS.get(job_id)
+    with IMPORT_JOBS_LOCK:
+        job = IMPORT_JOBS.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Import job not found")
     return job
 
 
 def _run_import_job_in_memory(job_id: UUID) -> ImportJob:
+    with IMPORT_JOBS_LOCK:
+        return _run_import_job_in_memory_locked(job_id)
+
+
+def _run_import_job_in_memory_locked(job_id: UUID) -> ImportJob:
     existing = _get_import_job_in_memory(job_id)
     _assert_job_runnable(existing)
 
@@ -382,25 +391,76 @@ def _update_import_job_in_db(
     return _job_from_row(dict(row))
 
 
+def _claim_import_job_in_db(
+    *,
+    job_id: UUID,
+    source: ImportSourceOption,
+    started_at: datetime,
+) -> ImportJob:
+    if text is None:
+        raise SQLAlchemyError("SQLAlchemy text() unavailable")
+
+    summary = _build_summary(
+        source=source,
+        mode="database",
+        rows_total=0,
+        rows_success=0,
+        rows_failed=0,
+    )
+    sql = text(
+        """
+        update public.admin_import_jobs
+        set
+          status = 'running'::public.import_job_status,
+          summary = cast(:summary as jsonb),
+          error_log = null,
+          started_at = :started_at,
+          finished_at = null
+        where id = :job_id
+          and status in ('queued'::public.import_job_status, 'failed'::public.import_job_status)
+        returning
+          id,
+          source_name,
+          source_uri,
+          status::text as status,
+          summary,
+          error_log,
+          started_at,
+          finished_at,
+          created_at
+        """
+    )
+
+    with session_scope() as session:
+        if session is None:
+            raise SQLAlchemyError("Database session unavailable")
+        row = session.execute(
+            sql,
+            {
+                "job_id": job_id,
+                "summary": json.dumps(summary.model_dump()),
+                "started_at": started_at,
+            },
+        ).mappings().first()
+        if row is not None:
+            session.commit()
+
+    if row is None:
+        current = _get_import_job_from_db(job_id)
+        _assert_job_runnable(current)
+        raise HTTPException(status_code=409, detail="Import job could not be claimed")
+
+    return _job_from_row(dict(row))
+
+
 def _run_import_job_in_db(job_id: UUID) -> ImportJob:
     existing = _get_import_job_from_db(job_id)
-    _assert_job_runnable(existing)
-
     source, source_path = _resolve_source_path(existing.source_name)
     started_at = datetime.now(UTC)
-    _update_import_job_in_db(
+    _claim_import_job_in_db(
         job_id=job_id,
-        status="running",
-        summary=_build_summary(
-            source=source,
-            mode="database",
-            rows_total=0,
-            rows_success=0,
-            rows_failed=0,
-        ),
-        error_log=None,
+        source=source,
         started_at=started_at,
-        finished_at=None,
     )
 
     try:

@@ -86,6 +86,37 @@ class PandaListItem(PandaBase):
     pass
 
 
+class CurrentPlaceSummary(BaseModel):
+    facility_id: UUID | None = None
+    coarse_location: str | None = None
+    status: str = Field(pattern="^(confirmed|confirmed_country_level|provisional)$")
+
+
+class PandaResidencySummary(CurrentPlaceSummary):
+    id: str
+    residency_type: str = Field(pattern="^(primary|temporary|transit|quarantine)$")
+    start_date: date
+    start_precision: str = Field(default="day", pattern="^(day|month|year)$")
+    end_date: date | None = None
+    end_precision: str | None = Field(default=None, pattern="^(day|month|year)$")
+    source_ids: list[str]
+
+
+class PandaDomainEventSummary(BaseModel):
+    id: str
+    event_type: str = Field(pattern="^transfer$")
+    event_status: str = Field(pattern="^(announced|completed|cancelled|disputed)$")
+    event_date: date
+    event_date_precision: str = Field(default="day", pattern="^(day|month|year)$")
+    participants: list[UUID]
+    from_facility_id: UUID | None = None
+    from_coarse_location: str | None = None
+    to_facility_id: UUID | None = None
+    to_coarse_location: str | None = None
+    source_ids: list[str]
+    changes_current_residency: bool
+
+
 class PandaDetail(PandaBase):
     intro: str | None = None
     birthplace: str | None = None
@@ -97,6 +128,9 @@ class PandaDetail(PandaBase):
     identity: PandaIdentityProfile | None = None
     conclusions: list[PublicFactConclusion] = Field(default_factory=list)
     sources: list[PublicSourceSummary] = Field(default_factory=list)
+    current_place: CurrentPlaceSummary | None = None
+    residencies: list[PandaResidencySummary] = Field(default_factory=list)
+    events: list[PandaDomainEventSummary] = Field(default_factory=list)
 
 
 class PandaLineageNode(PandaBase):
@@ -111,6 +145,13 @@ class PandaLineageEdge(BaseModel):
     child_id: UUID
 
 
+class PandaLineageRelationship(BaseModel):
+    subject_id: UUID
+    related_id: UUID
+    kind: str = Field(pattern="^(parent|child|sibling|grandparent)$")
+    path: list[UUID]
+
+
 class PandaLineageMeta(BaseModel):
     ancestor_depth: int
     descendant_depth: int
@@ -120,6 +161,7 @@ class PandaLineageResponse(BaseModel):
     focus_id: UUID
     nodes: list[PandaLineageNode]
     edges: list[PandaLineageEdge]
+    relationships: list[PandaLineageRelationship] = Field(default_factory=list)
     meta: PandaLineageMeta
 
 

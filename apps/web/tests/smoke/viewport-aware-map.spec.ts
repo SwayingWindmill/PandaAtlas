@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { createMapViewport, mapViewportEquals, mapViewportToQuery } from "@/components/atlas/map-viewport";
 
+type DistributionTestWindow = typeof globalThis & {
+  allowDistributionRequests: () => Promise<void>;
+};
+
 test("normalizes map viewport values for API queries", () => {
   const viewport = createMapViewport(
     { west: 100.1234567, south: 25.7654321, east: 110.9876549, north: 36.1234567 },
@@ -99,17 +103,22 @@ test("queries distribution data from the current map viewport", async ({ page })
 });
 
 test("retries the current viewport after a distribution request fails", async ({ page }) => {
-  let failNextRequest = false;
+  let rejectDistributionRequests = false;
   let failedRequestKey: string | null = null;
+  let failedRequestCount = 0;
   const successfulRequestKeys: string[] = [];
   const postFailureRequestKeys: string[] = [];
+
+  await page.exposeFunction("allowDistributionRequests", () => {
+    rejectDistributionRequests = false;
+  });
 
   await page.route("**/api/v1/map/distribution?**", async (route) => {
     const requestUrl = new URL(route.request().url());
     const key = requestKey(requestUrl);
-    if (failNextRequest) {
-      failNextRequest = false;
+    if (rejectDistributionRequests) {
       failedRequestKey = key;
+      failedRequestCount += 1;
       await route.fulfill({
         status: 503,
         contentType: "application/json",
@@ -135,14 +144,28 @@ test("retries the current viewport after a distribution request fails", async ({
   await expect.poll(() => successfulRequestKeys.length, { timeout: 15_000 }).toBeGreaterThan(0);
   await page.waitForTimeout(400);
 
-  failNextRequest = true;
+  rejectDistributionRequests = true;
   await page.getByRole("button", { name: "放大地图" }).click();
   await expect.poll(() => failedRequestKey, { timeout: 15_000 }).not.toBeNull();
 
   const retryButton = page.getByRole("button", { name: "重新刷新" });
   await expect(retryButton).toBeVisible({ timeout: 15_000 });
+  await expect
+    .poll(
+      async () => {
+        const countBeforeSettling = failedRequestCount;
+        await page.waitForTimeout(250);
+        return failedRequestCount === countBeforeSettling;
+      },
+      { timeout: 15_000 },
+    )
+    .toBe(true);
+
   const requestCountBeforeRetry = postFailureRequestKeys.length;
-  await retryButton.click();
+  await retryButton.evaluate(async (button) => {
+    await (globalThis as DistributionTestWindow).allowDistributionRequests();
+    (button as HTMLButtonElement).click();
+  });
   await expect
     .poll(
       () =>

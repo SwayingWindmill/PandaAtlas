@@ -37,6 +37,7 @@ htmlcov/
 
 # Local agent/planning state
 .claude/
+.ai-bridge/
 .codex/
 .codex-temp/
 .planning/
@@ -46,4 +47,3 @@ htmlcov/
 Thumbs.db
 .vscode/
 .idea/
-

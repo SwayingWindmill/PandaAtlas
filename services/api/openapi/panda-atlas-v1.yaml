@@ -607,6 +607,97 @@ components:
         access_state:
           type: string
 
+    CurrentPlaceSummary:
+      type: object
+      required: [facility_id, coarse_location, status]
+      properties:
+        facility_id:
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
+        coarse_location:
+          type: [string, 'null']
+        status:
+          type: string
+          enum: [confirmed, confirmed_country_level, provisional]
+
+    PandaResidencySummary:
+      allOf:
+        - $ref: '#/components/schemas/CurrentPlaceSummary'
+        - type: object
+          required: [id, residency_type, start_date, start_precision, end_date, end_precision, source_ids]
+          properties:
+            id:
+              type: string
+            residency_type:
+              type: string
+              enum: [primary, temporary, transit, quarantine]
+            start_date:
+              type: string
+              format: date
+            start_precision:
+              type: string
+              enum: [day, month, year]
+            end_date:
+              anyOf:
+                - type: string
+                  format: date
+                - type: 'null'
+            end_precision:
+              anyOf:
+                - type: string
+                  enum: [day, month, year]
+                - type: 'null'
+            source_ids:
+              type: array
+              items:
+                type: string
+
+    PandaDomainEventSummary:
+      type: object
+      required: [id, event_type, event_status, event_date, event_date_precision, participants, from_facility_id, from_coarse_location, to_facility_id, to_coarse_location, source_ids, changes_current_residency]
+      properties:
+        id:
+          type: string
+        event_type:
+          type: string
+          enum: [transfer]
+        event_status:
+          type: string
+          enum: [announced, completed, cancelled, disputed]
+        event_date:
+          type: string
+          format: date
+        event_date_precision:
+          type: string
+          enum: [day, month, year]
+        participants:
+          type: array
+          items:
+            type: string
+            format: uuid
+        from_facility_id:
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
+        from_coarse_location:
+          type: [string, 'null']
+        to_facility_id:
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
+        to_coarse_location:
+          type: [string, 'null']
+        source_ids:
+          type: array
+          items:
+            type: string
+        changes_current_residency:
+          type: boolean
+
     PandaDetail:
       allOf:
         - $ref: '#/components/schemas/PandaListItem'
@@ -650,6 +741,18 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PublicSourceSummary'
+            current_place:
+              anyOf:
+                - $ref: '#/components/schemas/CurrentPlaceSummary'
+                - type: 'null'
+            residencies:
+              type: array
+              items:
+                $ref: '#/components/schemas/PandaResidencySummary'
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/PandaDomainEventSummary'
 
     PandaLineageNode:
       allOf:
@@ -683,6 +786,26 @@ components:
           type: string
           format: uuid
 
+    PandaLineageRelationship:
+      type: object
+      required: [subject_id, related_id, kind, path]
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+        related_id:
+          type: string
+          format: uuid
+        kind:
+          type: string
+          enum: [parent, child, sibling, grandparent]
+        path:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: uuid
+
     PandaLineageMeta:
       type: object
       required: [ancestor_depth, descendant_depth]
@@ -696,7 +819,7 @@ components:
 
     PandaLineageResponse:
       type: object
-      required: [focus_id, nodes, edges, meta]
+      required: [focus_id, nodes, edges, relationships, meta]
       properties:
         focus_id:
           type: string
@@ -709,6 +832,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PandaLineageEdge'
+        relationships:
+          type: array
+          items:
+            $ref: '#/components/schemas/PandaLineageRelationship'
         meta:
           $ref: '#/components/schemas/PandaLineageMeta'
 

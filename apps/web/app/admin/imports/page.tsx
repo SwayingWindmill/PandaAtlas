@@ -7,7 +7,7 @@ export default function AdminImportsPage() {
         <h1>本地运维导入台</h1>
         <p>
           创建、执行并追踪导入任务状态。当前流程仅用于本地运维和受控导入验证，浏览器不会暴露后端
-          Admin Token。
+          Admin Token。管理代理默认关闭，只能在本机开发环境中显式启用；公开部署不会提供这些操作路由。
         </p>
       </section>
 

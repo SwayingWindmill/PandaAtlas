@@ -125,23 +125,6 @@
       }
     },
     {
-      "id": "108f227d-2510-554a-98fb-395e58ca4433",
-      "publication_status": "published",
-      "public": {
-        "canonical_slug": "china-country-level-last-verified",
-        "names": [
-          { "language": "en", "value": "China — exact facility not publicly verified", "kind": "display" },
-          { "language": "zh-Hans", "value": "中国——具体场所尚未公开核实", "kind": "display" }
-        ],
-        "country_code": "CN",
-        "locality": null,
-        "facility_type": "country_level_placeholder"
-      },
-      "restricted": {
-        "curator_notes": "Used when a current country is supported but an exact post-return facility is not."
-      }
-    },
-    {
       "id": "60c7e1a3-d286-5366-8d41-32c11df58b5c",
       "publication_status": "published",
       "public": {
@@ -407,9 +390,9 @@
       "publication_status": "published",
       "public": {
         "subject_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-        "field": "current_facility_id",
-        "value": "108f227d-2510-554a-98fb-395e58ca4433",
-        "conclusion_status": "provisional",
+        "field": "current_coarse_location",
+        "value": "China",
+        "conclusion_status": "confirmed",
         "precision": "country_level",
         "source_ids": ["src_smithsonian_history"],
         "last_verified_at": "2026-05-09",
@@ -436,9 +419,9 @@
       "publication_status": "published",
       "public": {
         "subject_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-        "field": "current_facility_id",
-        "value": "108f227d-2510-554a-98fb-395e58ca4433",
-        "conclusion_status": "provisional",
+        "field": "current_coarse_location",
+        "value": "China",
+        "conclusion_status": "confirmed",
         "precision": "country_level",
         "source_ids": ["src_smithsonian_history"],
         "last_verified_at": "2026-05-09",
@@ -463,11 +446,11 @@
   ],
   "residencies": [
     { "id": "res-mei-xiang-smithsonian", "publication_status": "published", "public": { "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049", "residency_type": "primary", "start_date": "2000-12-06", "end_date": "2023-11-08", "status": "confirmed", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "" } },
-    { "id": "res-mei-xiang-china", "publication_status": "published", "public": { "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact facility is not asserted." } },
+    { "id": "res-mei-xiang-china", "publication_status": "published", "public": { "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed", "coarse_location": "China", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact facility is not asserted." } },
     { "id": "res-tian-tian-smithsonian", "publication_status": "published", "public": { "panda_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049", "residency_type": "primary", "start_date": "2000-12-06", "end_date": "2023-11-08", "status": "confirmed", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "" } },
-    { "id": "res-tian-tian-china", "publication_status": "published", "public": { "panda_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact facility is not asserted." } },
-    { "id": "res-tai-shan-china-country-level", "publication_status": "published", "public": { "panda_id": "96d00a39-7865-55db-b5c2-f339ef692258", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2010-02-04", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact current holder requires primary confirmation." } },
-    { "id": "res-bao-bao-china-country-level", "publication_status": "published", "public": { "panda_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6", "facility_id": "108f227d-2510-554a-98fb-395e58ca4433", "residency_type": "primary", "start_date": "2017-02-21", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact current holder requires primary confirmation." } },
+    { "id": "res-tian-tian-china", "publication_status": "published", "public": { "panda_id": "38cd1cad-3e34-5511-bc35-a091ece74e11", "coarse_location": "China", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact facility is not asserted." } },
+    { "id": "res-tai-shan-china-country-level", "publication_status": "published", "public": { "panda_id": "96d00a39-7865-55db-b5c2-f339ef692258", "coarse_location": "China", "residency_type": "primary", "start_date": "2010-02-04", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact current holder requires primary confirmation." } },
+    { "id": "res-bao-bao-china-country-level", "publication_status": "published", "public": { "panda_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6", "coarse_location": "China", "residency_type": "primary", "start_date": "2017-02-21", "end_date": null, "status": "confirmed_country_level", "source_ids": ["src_smithsonian_history"] }, "restricted": { "curator_notes": "Exact current holder requires primary confirmation." } },
     { "id": "res-bei-bei-shenshuping", "publication_status": "published", "public": { "panda_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b", "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c", "residency_type": "primary", "start_date": "2019-11-19", "end_date": null, "status": "confirmed", "source_ids": ["src_ccrcgp_2025_birthday_season"] }, "restricted": { "curator_notes": "" } },
     { "id": "res-xiao-qi-ji-shenshuping", "publication_status": "published", "public": { "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443", "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c", "residency_type": "primary", "start_date": "2023-11-08", "end_date": null, "status": "confirmed", "source_ids": ["src_ccrcgp_2025_birthday_season", "src_smithsonian_history"] }, "restricted": { "curator_notes": "" } }
   ],
@@ -481,7 +464,7 @@
         "event_date": "2020-12-07",
         "participants": ["2939c16f-1938-5629-928c-b36b1d5cd6ed", "38cd1cad-3e34-5511-bc35-a091ece74e11", "926abc78-1e79-55c6-b24a-d33b4e5f6443"],
         "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
-        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "to_coarse_location": "China",
         "source_ids": ["src_smithsonian_agreement_2020"],
         "changes_current_residency": false
       },
@@ -496,7 +479,7 @@
         "event_date": "2023-11-08",
         "participants": ["2939c16f-1938-5629-928c-b36b1d5cd6ed", "38cd1cad-3e34-5511-bc35-a091ece74e11", "926abc78-1e79-55c6-b24a-d33b4e5f6443"],
         "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
-        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "to_coarse_location": "China",
         "source_ids": ["src_smithsonian_history"],
         "changes_current_residency": true
       },

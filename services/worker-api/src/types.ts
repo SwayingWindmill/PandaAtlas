@@ -84,6 +84,40 @@ export interface PandaDetail extends PandaListItem {
   identity: PandaIdentityProfile | null;
   conclusions: PublicFactConclusion[];
   sources: PublicSourceSummary[];
+  current_place: CurrentPlaceSummary | null;
+  residencies: PandaResidencySummary[];
+  events: PandaDomainEventSummary[];
+}
+
+export interface CurrentPlaceSummary {
+  facility_id: string | null;
+  coarse_location: string | null;
+  status: "confirmed" | "confirmed_country_level" | "provisional";
+}
+
+export interface PandaResidencySummary extends CurrentPlaceSummary {
+  id: string;
+  residency_type: "primary" | "temporary" | "transit" | "quarantine";
+  start_date: string;
+  start_precision: "day" | "month" | "year";
+  end_date: string | null;
+  end_precision: "day" | "month" | "year" | null;
+  source_ids: string[];
+}
+
+export interface PandaDomainEventSummary {
+  id: string;
+  event_type: "transfer";
+  event_status: "announced" | "completed" | "cancelled" | "disputed";
+  event_date: string;
+  event_date_precision: "day" | "month" | "year";
+  participants: string[];
+  from_facility_id: string | null;
+  from_coarse_location: string | null;
+  to_facility_id: string | null;
+  to_coarse_location: string | null;
+  source_ids: string[];
+  changes_current_residency: boolean;
 }
 
 export interface PandaLineageNode extends PandaListItem {
@@ -91,6 +125,19 @@ export interface PandaLineageNode extends PandaListItem {
   tags: string[];
   father_id: string | null;
   mother_id: string | null;
+}
+
+export interface ParentageRow {
+  child_id: string;
+  parent_id: string;
+  parent_role: "father" | "mother";
+}
+
+export interface PandaLineageRelationship {
+  subject_id: string;
+  related_id: string;
+  kind: "parent" | "child" | "sibling" | "grandparent";
+  path: string[];
 }
 
 export interface GeoJsonGeometry {

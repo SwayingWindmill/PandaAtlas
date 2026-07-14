@@ -17,10 +17,12 @@ def _normalize_dsn(database_url: str) -> str:
     return database_url
 
 
-def _query_scalar(database_url: str, sql: str) -> int:
+def _query_scalar(
+    database_url: str, sql: str, params: tuple[object, ...] | None = None
+) -> int:
     with psycopg.connect(_normalize_dsn(database_url)) as conn:
         with conn.cursor() as cursor:
-            cursor.execute(sql)
+            cursor.execute(sql, params or ())
             value = cursor.fetchone()
             if not value:
                 raise RuntimeError("No query result returned")
@@ -103,9 +105,41 @@ def test_real_db_detail_endpoint(client: TestClient, real_db_url: str) -> None:
     db_row = _query_one(
         real_db_url,
         """
-        select slug, birthplace, father_id::text as father_id, mother_id::text as mother_id
-        from public.pandas
-        where id = %s
+        select
+          p.slug,
+          p.birthplace,
+          (
+            select pa.parent_id::text
+            from public.parentage_assertions pa
+            where pa.child_id = p.id
+              and pa.parent_role = 'father'
+              and pa.status = 'confirmed'
+              and pa.publication_status = 'published'
+              and exists (
+                select 1 from public.parentage_assertion_sources pas
+                join public.public_evidence_sources source on source.id = pas.source_id
+                where pas.assertion_id = pa.id
+              )
+            order by pa.parent_id
+            limit 1
+          ) as father_id,
+          (
+            select pa.parent_id::text
+            from public.parentage_assertions pa
+            where pa.child_id = p.id
+              and pa.parent_role = 'mother'
+              and pa.status = 'confirmed'
+              and pa.publication_status = 'published'
+              and exists (
+                select 1 from public.parentage_assertion_sources pas
+                join public.public_evidence_sources source on source.id = pas.source_id
+                where pas.assertion_id = pa.id
+              )
+            order by pa.parent_id
+            limit 1
+          ) as mother_id
+        from public.pandas p
+        where p.id = %s
         """,
         (first_panda["id"],),
     )
@@ -113,6 +147,50 @@ def test_real_db_detail_endpoint(client: TestClient, real_db_url: str) -> None:
     assert payload["birthplace"] == db_row["birthplace"]
     assert payload["father_id"] == db_row["father_id"]
     assert payload["mother_id"] == db_row["mother_id"]
+
+
+def test_real_db_reviewed_lineage_residency_and_events(
+    client: TestClient, real_db_url: str
+) -> None:
+    tai_shan_id = "96d00a39-7865-55db-b5c2-f339ef692258"
+    if _query_scalar(
+        real_db_url,
+        "select count(*) from public.pandas where id = %s::uuid",
+        (tai_shan_id,),
+    ) == 0:
+        pytest.skip("Issue #8 golden seed is not loaded")
+
+    lineage = client.get(
+        "/api/v1/pandas/tai-shan/lineage",
+        params={"ancestor_depth": 0, "descendant_depth": 0},
+    )
+    assert lineage.status_code == 200
+    lineage_payload = lineage.json()
+    node_ids = {node["id"] for node in lineage_payload["nodes"]}
+    assert "2939c16f-1938-5629-928c-b36b1d5cd6ed" in node_ids
+    assert any(
+        relationship["subject_id"] == tai_shan_id
+        and relationship["related_id"] == "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
+        and relationship["kind"] == "sibling"
+        for relationship in lineage_payload["relationships"]
+    )
+
+    detail = client.get("/api/v1/pandas/mei-xiang")
+    assert detail.status_code == 200
+    detail_payload = detail.json()
+    assert detail_payload["current_place"] == {
+        "facility_id": None,
+        "coarse_location": "China",
+        "status": "confirmed_country_level",
+    }
+    assert len(detail_payload["events"]) == 2
+    assert len(
+        next(
+            event
+            for event in detail_payload["events"]
+            if event["id"] == "event-smithsonian-departure-2023"
+        )["participants"]
+    ) == 3
 
 
 def test_real_db_lineage_endpoint(client: TestClient) -> None:

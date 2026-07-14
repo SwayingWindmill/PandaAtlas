@@ -1,5 +1,6 @@
 ﻿import json
 from dataclasses import dataclass
+from datetime import date
 from uuid import UUID
 
 from fastapi import HTTPException
@@ -18,11 +19,14 @@ from app.core.config import settings
 from app.data.golden_dataset import (
     find_trusted_panda,
     public_trusted_panda_record,
+    trusted_lineage_pandas,
     trusted_panda_details,
     trusted_panda_matches,
+    trusted_parentage_assertions,
 )
 from app.data.mock_data import MOCK_PANDAS
 from app.db.session import has_database, session_scope
+from app.domain.archive_relationships import LineageGraph, derive_lineage
 from app.domain.trusted_identity import normalize_identity_term
 from app.schemas.panda import (
     HabitatSummary,
@@ -33,6 +37,7 @@ from app.schemas.panda import (
     PandaLineageEdge,
     PandaLineageMeta,
     PandaLineageNode,
+    PandaLineageRelationship,
     PandaLineageResponse,
     PandaListItem,
 )
@@ -116,7 +121,7 @@ def _list_pandas_from_mock(
 def _get_panda_by_id_from_mock(panda_id: UUID) -> PandaDetail:
     for detail in _all_mock_panda_details():
         if detail.id == panda_id:
-            return detail
+            return detail.model_copy(update={"father_id": None, "mother_id": None})
 
     raise HTTPException(status_code=404, detail="Panda not found")
 
@@ -178,6 +183,14 @@ def _resolve_public_ref_from_mock(panda_ref: str) -> PandaReference:
         return PandaReference(id=UUID(trusted["id"]), slug=trusted["slug"])
 
     uuid_ref = _try_parse_uuid(normalized)
+    for lineage_record in trusted_lineage_pandas():
+        if lineage_record["slug"] == normalized or (
+            uuid_ref is not None and lineage_record["id"] == uuid_ref
+        ):
+            return PandaReference(
+                id=lineage_record["id"], slug=lineage_record["slug"]
+            )
+
     for detail in _all_mock_panda_details():
         if detail.slug == normalized or (uuid_ref is not None and detail.id == uuid_ref):
             return PandaReference(id=detail.id, slug=detail.slug)
@@ -439,8 +452,40 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
           p.current_location,
           p.intro,
           p.tags,
-          p.father_id,
-          p.mother_id,
+          (
+            select pa.parent_id
+            from public.parentage_assertions pa
+            where pa.child_id = p.id
+              and pa.parent_role = 'father'
+              and pa.status = 'confirmed'
+              and pa.publication_status = 'published'
+              and exists (
+                select 1
+                from public.parentage_assertion_sources pas
+                join public.public_evidence_sources public_source
+                  on public_source.id = pas.source_id
+                where pas.assertion_id = pa.id
+              )
+            order by pa.parent_id
+            limit 1
+          ) as father_id,
+          (
+            select pa.parent_id
+            from public.parentage_assertions pa
+            where pa.child_id = p.id
+              and pa.parent_role = 'mother'
+              and pa.status = 'confirmed'
+              and pa.publication_status = 'published'
+              and exists (
+                select 1
+                from public.parentage_assertion_sources pas
+                join public.public_evidence_sources public_source
+                  on public_source.id = pas.source_id
+                where pas.assertion_id = pa.id
+              )
+            order by pa.parent_id
+            limit 1
+          ) as mother_id,
           cover.cover_image_url
         from public.pandas p
         left join public.panda_slugs canonical_slug
@@ -574,6 +619,55 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
         """
     )
 
+    residencies_sql = text(
+        """
+        select
+          r.id,
+          r.facility_id,
+          r.coarse_location,
+          r.residency_type,
+          r.start_date,
+          r.start_precision,
+          r.end_date,
+          r.end_precision,
+          r.status,
+          array_agg(distinct public_source.id) as source_ids
+        from public.panda_residencies r
+        join public.residency_sources rs on rs.residency_id = r.id
+        join public.public_evidence_sources public_source on public_source.id = rs.source_id
+        where r.panda_id = :panda_id
+          and r.publication_status = 'published'
+        group by r.id
+        order by r.start_date, r.id
+        """
+    )
+
+    events_sql = text(
+        """
+        select
+          e.id,
+          e.event_type,
+          e.event_status,
+          e.event_date,
+          e.event_date_precision,
+          e.from_facility_id,
+          e.from_coarse_location,
+          e.to_facility_id,
+          e.to_coarse_location,
+          array_agg(distinct participant.panda_id) as participants,
+          array_agg(distinct public_source.id) as source_ids
+        from public.domain_events e
+        join public.domain_event_participants focus
+          on focus.event_id = e.id and focus.panda_id = :panda_id
+        join public.domain_event_participants participant on participant.event_id = e.id
+        join public.domain_event_sources es on es.event_id = e.id
+        join public.public_evidence_sources public_source on public_source.id = es.source_id
+        where e.publication_status = 'published'
+        group by e.id
+        order by e.event_date, e.id
+        """
+    )
+
     public_sources_sql = text(
         """
         select
@@ -615,6 +709,10 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
         conclusion_rows = (
             session.execute(conclusions_sql, {"panda_id": panda_id}).mappings().all()
         )
+        residency_rows = (
+            session.execute(residencies_sql, {"panda_id": panda_id}).mappings().all()
+        )
+        event_rows = session.execute(events_sql, {"panda_id": panda_id}).mappings().all()
         source_ids = sorted(
             {
                 str(source_id)
@@ -623,6 +721,8 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
                     *identity_slug_rows,
                     *external_identifier_rows,
                     *conclusion_rows,
+                    *residency_rows,
+                    *event_rows,
                 )
                 for source_id in (source_row["source_ids"] or [])
             }
@@ -724,6 +824,51 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
         }
         for conclusion_row in conclusion_rows
     ]
+    residencies = [
+        {
+            "id": residency_row["id"],
+            "facility_id": residency_row["facility_id"],
+            "coarse_location": residency_row["coarse_location"],
+            "residency_type": residency_row["residency_type"],
+            "start_date": residency_row["start_date"],
+            "start_precision": residency_row["start_precision"],
+            "end_date": residency_row["end_date"],
+            "end_precision": residency_row["end_precision"],
+            "status": residency_row["status"],
+            "source_ids": [str(value) for value in residency_row["source_ids"]],
+        }
+        for residency_row in residency_rows
+    ]
+    current_residency = next(
+        (
+            residency
+            for residency in reversed(residencies)
+            if residency["residency_type"] == "primary"
+            and residency["start_date"] <= date.today()
+            and (
+                residency["end_date"] is None or date.today() < residency["end_date"]
+            )
+            and residency["status"] in {"confirmed", "confirmed_country_level"}
+        ),
+        None,
+    )
+    events = [
+        {
+            "id": event_row["id"],
+            "event_type": event_row["event_type"],
+            "event_status": event_row["event_status"],
+            "event_date": event_row["event_date"],
+            "event_date_precision": event_row["event_date_precision"],
+            "participants": sorted(event_row["participants"], key=str),
+            "from_facility_id": event_row["from_facility_id"],
+            "from_coarse_location": event_row["from_coarse_location"],
+            "to_facility_id": event_row["to_facility_id"],
+            "to_coarse_location": event_row["to_coarse_location"],
+            "source_ids": [str(value) for value in event_row["source_ids"]],
+            "changes_current_residency": event_row["event_status"] == "completed",
+        }
+        for event_row in event_rows
+    ]
 
     cover_image_url = _resolve_public_media_url(row["cover_image_url"])
     if cover_image_url is None:
@@ -749,6 +894,17 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
         identity=identity,
         conclusions=conclusions,
         sources=[dict(source_row) for source_row in source_rows],
+        current_place=(
+            {
+                "facility_id": current_residency["facility_id"],
+                "coarse_location": current_residency["coarse_location"],
+                "status": current_residency["status"],
+            }
+            if current_residency
+            else None
+        ),
+        residencies=residencies,
+        events=events,
     )
 
 
@@ -843,9 +999,49 @@ def _build_lineage_edges(nodes: list[PandaLineageNode]) -> list[PandaLineageEdge
     return edges
 
 
+def _build_lineage_relationships(
+    nodes: list[PandaLineageNode], edges: list[PandaLineageEdge]
+) -> list[PandaLineageRelationship]:
+    node_ids = {node.id for node in nodes}
+    graph = LineageGraph(
+        edges=tuple((edge.parent_id, edge.child_id) for edge in edges)
+    )
+    relationships: list[PandaLineageRelationship] = []
+    for subject_id in sorted(node_ids, key=str):
+        related_by_kind = (
+            ("parent", graph.parents_of(subject_id)),
+            ("child", graph.children_of(subject_id)),
+            ("sibling", graph.siblings_of(subject_id)),
+            ("grandparent", graph.grandparents_of(subject_id)),
+        )
+        for kind, related_ids in related_by_kind:
+            for related_id in related_ids:
+                if related_id not in node_ids:
+                    continue
+                path = graph.relationship_path(subject_id, related_id)
+                if path is not None:
+                    relationships.append(
+                        PandaLineageRelationship(
+                            subject_id=subject_id,
+                            related_id=related_id,
+                            kind=kind,
+                            path=list(path),
+                        )
+                    )
+    return relationships
+
+
 def _get_panda_lineage_from_mock(
     panda_id: UUID, *, ancestor_depth: int, descendant_depth: int
 ) -> PandaLineageResponse:
+    trusted_response = _get_panda_lineage_from_trusted_archive(
+        panda_id,
+        ancestor_depth=ancestor_depth,
+        descendant_depth=descendant_depth,
+    )
+    if trusted_response is not None:
+        return trusted_response
+
     rows = _all_mock_panda_details()
     by_id = {row.id: row for row in rows}
 
@@ -853,24 +1049,58 @@ def _get_panda_lineage_from_mock(
     if focus is None:
         raise HTTPException(status_code=404, detail="Panda not found")
 
-    children_by_parent: dict[UUID, list[UUID]] = {}
-    for row in rows:
-        for parent_id in (row.father_id, row.mother_id):
-            if parent_id is None:
-                continue
-            children_by_parent.setdefault(parent_id, []).append(row.id)
+    nodes = [
+        PandaLineageNode(
+            id=focus.id,
+            slug=focus.slug,
+            name_zh=focus.name_zh,
+            name_en=focus.name_en,
+            gender=focus.gender,
+            status=focus.status,
+            birth_date=focus.birth_date,
+            current_location=focus.current_location,
+            cover_image_url=focus.cover_image_url,
+            intro=focus.intro,
+            tags=focus.tags,
+            father_id=None,
+            mother_id=None,
+        )
+    ]
+    edges: list[PandaLineageEdge] = []
 
+    return PandaLineageResponse(
+        focus_id=panda_id,
+        nodes=nodes,
+        edges=edges,
+        relationships=_build_lineage_relationships(nodes, edges),
+        meta=PandaLineageMeta(
+            ancestor_depth=ancestor_depth,
+            descendant_depth=descendant_depth,
+        ),
+    )
+
+
+def _get_panda_lineage_from_trusted_archive(
+    panda_id: UUID,
+    *,
+    ancestor_depth: int,
+    descendant_depth: int,
+) -> PandaLineageResponse | None:
+    rows = trusted_lineage_pandas()
+    by_id = {row["id"]: row for row in rows}
+    if panda_id not in by_id:
+        return None
+
+    assertions = trusted_parentage_assertions()
+    graph = derive_lineage(assertions)
     ancestor_ids: set[UUID] = {panda_id}
     ancestor_queue: list[tuple[UUID, int]] = [(panda_id, 0)]
     while ancestor_queue:
         current_id, depth = ancestor_queue.pop(0)
         if depth >= ancestor_depth:
             continue
-        current = by_id.get(current_id)
-        if current is None:
-            continue
-        for parent_id in (current.father_id, current.mother_id):
-            if parent_id is None or parent_id not in by_id or parent_id in ancestor_ids:
+        for parent_id in graph.parents_of(current_id):
+            if parent_id not in by_id or parent_id in ancestor_ids:
                 continue
             ancestor_ids.add(parent_id)
             ancestor_queue.append((parent_id, depth + 1))
@@ -881,39 +1111,75 @@ def _get_panda_lineage_from_mock(
         current_id, depth = descendant_queue.pop(0)
         if depth >= descendant_depth:
             continue
-        for child_id in children_by_parent.get(current_id, []):
-            if child_id in descendant_ids:
+        for child_id in graph.children_of(current_id):
+            if child_id not in by_id or child_id in descendant_ids:
                 continue
             descendant_ids.add(child_id)
             descendant_queue.append((child_id, depth + 1))
 
-    selected_ids = ancestor_ids | descendant_ids
+    sibling_ids = set(graph.siblings_of(panda_id))
+    sibling_parent_ids = set(graph.parents_of(panda_id)) if sibling_ids else set()
+    selected_ids = ancestor_ids | descendant_ids | sibling_ids | sibling_parent_ids
+    eligible_assertions = [
+        assertion
+        for assertion in assertions
+        if assertion.publication_status == "published"
+        and assertion.status == "confirmed"
+        and assertion.source_ids
+    ]
+    father_by_child = {
+        assertion.child_id: assertion.parent_id
+        for assertion in eligible_assertions
+        if assertion.role == "father"
+    }
+    mother_by_child = {
+        assertion.child_id: assertion.parent_id
+        for assertion in eligible_assertions
+        if assertion.role == "mother"
+    }
     nodes = [
         PandaLineageNode(
-            id=row.id,
-            slug=row.slug,
-            name_zh=row.name_zh,
-            name_en=row.name_en,
-            gender=row.gender,
-            status=row.status,
-            birth_date=row.birth_date,
-            current_location=row.current_location,
-            cover_image_url=row.cover_image_url,
-            intro=row.intro,
-            tags=row.tags,
-            father_id=row.father_id,
-            mother_id=row.mother_id,
+            **row,
+            father_id=father_by_child.get(row_id),
+            mother_id=mother_by_child.get(row_id),
         )
         for row_id, row in by_id.items()
         if row_id in selected_ids
     ]
     nodes.sort(key=_lineage_sort_key)
-    edges = _build_lineage_edges(nodes)
-
+    edges = [
+        PandaLineageEdge(parent_id=parent_id, child_id=child_id)
+        for parent_id, child_id in graph.edges
+        if parent_id in selected_ids and child_id in selected_ids
+    ]
+    relationships: list[PandaLineageRelationship] = []
+    for subject_id in sorted(selected_ids, key=str):
+        related_by_kind = (
+            ("parent", graph.parents_of(subject_id)),
+            ("child", graph.children_of(subject_id)),
+            ("sibling", graph.siblings_of(subject_id)),
+            ("grandparent", graph.grandparents_of(subject_id)),
+        )
+        for kind, related_ids in related_by_kind:
+            for related_id in related_ids:
+                if related_id not in selected_ids:
+                    continue
+                path = graph.relationship_path(subject_id, related_id)
+                if path is None:
+                    continue
+                relationships.append(
+                    PandaLineageRelationship(
+                        subject_id=subject_id,
+                        related_id=related_id,
+                        kind=kind,
+                        path=list(path),
+                    )
+                )
     return PandaLineageResponse(
         focus_id=panda_id,
         nodes=nodes,
         edges=edges,
+        relationships=relationships,
         meta=PandaLineageMeta(
             ancestor_depth=ancestor_depth,
             descendant_depth=descendant_depth,
@@ -929,17 +1195,28 @@ def _get_panda_lineage_from_db(
 
     lineage_sql = text(
         """
-        with recursive ancestors as (
+        with recursive eligible_parentage as (
+          select pa.child_id, pa.parent_id, pa.parent_role
+          from public.parentage_assertions pa
+          where pa.publication_status = 'published'
+            and pa.status = 'confirmed'
+            and exists (
+              select 1
+              from public.parentage_assertion_sources pas
+              join public.public_evidence_sources public_source
+                on public_source.id = pas.source_id
+              where pas.assertion_id = pa.id
+            )
+        ),
+        ancestors as (
           select p.id, 0 as depth
           from public.pandas p
           where p.id = :panda_id
           union
           select parent.id, a.depth + 1
           from ancestors a
-          join public.pandas child on child.id = a.id
-          join public.pandas parent
-            on parent.id = child.father_id
-            or parent.id = child.mother_id
+          join eligible_parentage ep on ep.child_id = a.id
+          join public.pandas parent on parent.id = ep.parent_id
           where a.depth < :ancestor_depth
         ),
         descendants as (
@@ -949,15 +1226,33 @@ def _get_panda_lineage_from_db(
           union
           select child.id, d.depth + 1
           from descendants d
-          join public.pandas child
-            on child.father_id = d.id
-            or child.mother_id = d.id
+          join eligible_parentage ep on ep.parent_id = d.id
+          join public.pandas child on child.id = ep.child_id
           where d.depth < :descendant_depth
+        ),
+        siblings as (
+          select sibling.child_id as id
+          from eligible_parentage focus_parent
+          join eligible_parentage sibling on sibling.parent_id = focus_parent.parent_id
+          where focus_parent.child_id = :panda_id
+            and sibling.child_id <> :panda_id
+        ),
+        sibling_parents as (
+          select distinct focus_parent.parent_id as id
+          from eligible_parentage focus_parent
+          where focus_parent.child_id = :panda_id
+            and exists (
+              select 1 from siblings
+            )
         ),
         selected_ids as (
           select id from ancestors
           union
           select id from descendants
+          union
+          select id from siblings
+          union
+          select id from sibling_parents
         )
         select
           p.id,
@@ -970,8 +1265,20 @@ def _get_panda_lineage_from_db(
           p.current_location,
           p.intro,
           p.tags,
-          p.father_id,
-          p.mother_id,
+          (
+            select ep.parent_id
+            from eligible_parentage ep
+            where ep.child_id = p.id and ep.parent_role = 'father'
+            order by ep.parent_id
+            limit 1
+          ) as father_id,
+          (
+            select ep.parent_id
+            from eligible_parentage ep
+            where ep.child_id = p.id and ep.parent_role = 'mother'
+            order by ep.parent_id
+            limit 1
+          ) as mother_id,
           cover.cover_image_url
         from public.pandas p
         join selected_ids ids on ids.id = p.id
@@ -1026,6 +1333,7 @@ def _get_panda_lineage_from_db(
         focus_id=panda_id,
         nodes=nodes,
         edges=edges,
+        relationships=_build_lineage_relationships(nodes, edges),
         meta=PandaLineageMeta(
             ancestor_depth=ancestor_depth,
             descendant_depth=descendant_depth,
