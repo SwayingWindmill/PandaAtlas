@@ -74,4 +74,4 @@ insert into public_release_withdrawals (
 );
 ```
 
-The `current_public_release` view becomes empty immediately, so the Worker returns `503` for public API access. Historical release and record rows remain unchanged. An entity-scoped withdrawal supplies both `entity_type` and `entity_id`; `current_public_records` then excludes only that record.
+The `current_public_release` view becomes empty immediately, so the Worker returns `410` for public release API access. Historical release and record rows remain unchanged. An entity-scoped withdrawal supplies both `entity_type` and `entity_id`; `current_public_records` then excludes only that record.

@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from app.projection import postgres_source
+from app.projection.public_release import build_public_release
 
 
 class _Result:
@@ -48,7 +49,7 @@ class _Connection:
         return _Result(
             rows=[
                 {
-                    "entity_type": "pandas",
+                    "entity_type": "panda",
                     "entity_id": "panda-1",
                     "payload": {"public_record": {"name_zh": "测试熊猫"}},
                 }
@@ -84,8 +85,22 @@ def test_postgres_source_accepts_only_published_release_batch(monkeypatch) -> No
     assert release_input.database_migration_version == "0006"
     assert release_input.source_state["dataset"]["version"] == "2026.07.14.9"
     assert release_input.source_state["records"] == [
-        {"entity_type": "pandas", "id": "panda-1", "public": {"name_zh": "测试熊猫"}}
+        {"entity_type": "panda", "id": "panda-1", "public": {"name_zh": "测试熊猫"}}
     ]
     assert "status = 'published'" in connection.queries[0]
     assert "operation = 'release'" in connection.queries[0]
     assert engine.disposed is True
+
+
+def test_postgres_revision_vocabulary_projects_to_public_panda_records(monkeypatch) -> None:
+    batch_id = UUID("11111111-1111-4111-8111-111111111111")
+    engine = _Engine(_Connection(batch_id))
+    monkeypatch.setattr(postgres_source, "create_engine", lambda *_args, **_kwargs: engine)
+
+    release_input = postgres_source.load_reviewed_postgres_release(
+        database_url="postgresql+psycopg://example",
+        publication_batch_id=batch_id,
+    )
+    release = build_public_release(release_input)
+
+    assert '"id": "panda-1"' in release.files["pandas.json"]

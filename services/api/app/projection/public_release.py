@@ -4,6 +4,7 @@ import csv
 import hashlib
 import io
 import json
+import re
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
@@ -109,6 +110,21 @@ SENSITIVE_FIELD_MARKERS = (
     "evidence_body",
 )
 _OMIT = object()
+CANONICAL_ENTITY_TYPES = {
+    "panda": "pandas",
+    "source": "sources",
+    "facility": "facilities",
+    "institution": "institutions",
+    "fact": "facts",
+    "parentage_assertion": "parentage_assertions",
+    "residency": "residencies",
+    "event": "events",
+    "media_item": "media",
+}
+EMAIL_PATTERN = re.compile(r"\b[^\s@]+@[^\s@]+\.[^\s@]+\b")
+PRECISE_COORDINATE_PATTERN = re.compile(
+    r"(?<!\d)-?\d{1,3}\.\d{4,}\s*[,/]\s*-?\d{1,3}\.\d{4,}(?!\d)"
+)
 
 
 class ProjectionSecurityError(ValueError):
@@ -157,6 +173,12 @@ def _sanitize_public_value(value: Any, *, path: str, published_sources: set[str]
             for item in value
         ]
         return [item for item in sanitized if item is not _OMIT]
+    if isinstance(value, str):
+        if EMAIL_PATTERN.search(value):
+            raise ProjectionSecurityError(f"Personal email is not allowed at {path}")
+        if PRECISE_COORDINATE_PATTERN.search(value):
+            raise ProjectionSecurityError(f"Precise coordinates are not allowed at {path}")
+        return value
     if not isinstance(value, dict):
         return value
 
@@ -216,7 +238,9 @@ def _project_records(source_state: dict[str, Any]) -> list[dict[str, Any]]:
             )
             records.append(
                 {
-                    "entity_type": str(source_record["entity_type"]),
+                    "entity_type": CANONICAL_ENTITY_TYPES.get(
+                        str(source_record["entity_type"]), str(source_record["entity_type"])
+                    ),
                     "id": str(source_record["id"]),
                     "public": public,
                 }
