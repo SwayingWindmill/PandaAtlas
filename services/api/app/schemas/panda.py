@@ -74,6 +74,8 @@ class LocalizedPublicContent(BaseModel):
     locale: str
     summary: str
 
+    model_config = {"extra": "forbid"}
+
 
 class PublicMediaRelease(BaseModel):
     license_state: str = Field(
@@ -83,6 +85,8 @@ class PublicMediaRelease(BaseModel):
         pattern="^(gallery|designed_empty_state|link_to_source)$"
     )
     source_ids: list[str]
+
+    model_config = {"extra": "forbid"}
 
 
 class PublicRevisionSummary(BaseModel):

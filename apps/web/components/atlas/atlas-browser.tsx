@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Search, SlidersHorizontal } from "lucide-rea
 import { PandaCard } from "@/components/atlas/panda-card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import type { AtlasAgeStage, AtlasPandaCard, AtlasSortOption } from "@/lib/atlas-presenters";
+import { normalizeAtlasSearchText, type AtlasAgeStage, type AtlasPandaCard, type AtlasSortOption } from "@/lib/atlas-presenters";
 
 type AgeFilter = "all" | AtlasAgeStage;
 type GenderFilter = "all" | AtlasPandaCard["gender"];
@@ -123,11 +123,7 @@ export function AtlasBrowser({ items }: AtlasBrowserProps) {
   }
 
   const filteredItems = useMemo(() => {
-    const normalizedKeyword = deferredKeyword
-      .trim()
-      .normalize("NFKD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
+    const normalizedKeyword = normalizeAtlasSearchText(deferredKeyword);
 
     const rows = items.filter((item) => {
       if (ageStage !== "all" && item.ageStage !== ageStage) {

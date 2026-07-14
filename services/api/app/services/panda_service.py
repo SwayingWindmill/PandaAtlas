@@ -1066,7 +1066,17 @@ def get_panda_by_ref(panda_ref: str) -> PandaDetail:
                     key: value
                     for key, value in public_record.items()
                     if key in PANDA_PUBLIC_REVISION_FIELDS
+                    and key in PandaDetail.model_fields
                 }
+                publication = public_record.get("_publication")
+                if isinstance(publication, dict):
+                    overlay["public_revision"] = {
+                        "data_version": publication.get("data_version"),
+                        "public_schema_version": publication.get(
+                            "public_schema_version"
+                        ),
+                        "summaries": public_record.get("revision_summaries", []),
+                    }
                 return PandaDetail.model_validate(
                     {**detail.model_dump(mode="json"), **overlay}
                 )

@@ -32,6 +32,8 @@ test("serves bilingual canonical routes and permanently redirects legacy slugs",
     expect(response.status(), path).toBe(200);
     expect(await response.text()).toContain("Mei Xiang");
   }
+
+  expect((await request.get("/en/atlas/tian-tian")).status()).toBe(404);
 });
 
 test("renders the reviewed identity, family, footprint, evidence, no-image, and revision loop", async ({ page }) => {
@@ -41,12 +43,18 @@ test("renders the reviewed identity, family, footprint, evidence, no-image, and 
   await expect(page.getByRole("heading", { level: 1, name: /美香/ })).toBeVisible();
   await expect(page.getByText("完整档案").first()).toBeVisible();
   await expect(page.getByText("最后核实：2026-05-09").first()).toBeVisible();
+  for (const fact of ["fact-birth", "fact-sex", "fact-place"]) {
+    await expect(page.getByTestId(fact)).toContainText("来源");
+    await expect(page.getByTestId(fact).getByRole("link")).toHaveCount(1);
+  }
+  await expect(page.getByTestId("fact-parents")).toContainText("暂无已审核来源结论");
   await expect(page.getByTestId("lineage-text-view")).toContainText("小奇迹");
   await expect(page.getByTestId("footprint-text-view")).toContainText("史密森国家动物园");
   await expect(page.getByTestId("footprint-text-view")).toContainText("中国（国家级记录）");
   await expect(page.getByTestId("evidence-list").getByRole("link")).toHaveCount(2);
   await expect(page.getByTestId("media-empty-state")).toContainText("暂无可公开授权影像");
   await expect(page.getByTestId("revision-summary")).toContainText("2026.07.14.1");
+  await expect(page.getByTestId("timeline-list")).toContainText("来源发布日期");
 });
 
 test("keeps favorites local-only and keyboard operable", async ({ page }) => {
@@ -58,6 +66,26 @@ test("keeps favorites local-only and keyboard operable", async ({ page }) => {
   await expect(favorite).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText(/仅保存在此浏览器/)).toBeVisible();
   await expect.poll(() => page.evaluate(() => localStorage.getItem("panda-atlas:saved-profiles"))).toContain("mei-xiang");
+});
+
+test("exposes the full reading loop through sequential keyboard navigation", async ({ page }) => {
+  await page.goto("/zh/atlas/mei-xiang");
+  const visited = new Set<string>();
+
+  for (let index = 0; index < 100; index += 1) {
+    await page.keyboard.press("Tab");
+    const target = await page.evaluate(() => {
+      const element = document.activeElement as HTMLElement | null;
+      return element?.getAttribute("href") ?? element?.getAttribute("aria-label") ?? "";
+    });
+    if (target) visited.add(target);
+  }
+
+  expect([...visited].some((target) => target.includes("#timeline"))).toBe(true);
+  expect([...visited].some((target) => target.includes("/en/atlas/mei-xiang"))).toBe(true);
+  expect([...visited].some((target) => target.includes("/lineage?focus=tian-tian"))).toBe(true);
+  expect([...visited].some((target) => target.startsWith("http"))).toBe(true);
+  expect(visited.has("收藏美香")).toBe(true);
 });
 
 test("keeps the server-rendered profile readable without JavaScript", async ({ browser }) => {
@@ -72,10 +100,13 @@ test("keeps the server-rendered profile readable without JavaScript", async ({ b
   await context.close();
 });
 
-test("reflows the complete reading loop at a narrow 200-percent-equivalent viewport", async ({ page }) => {
-  await page.setViewportSize({ width: 640, height: 900 });
+test("reflows the complete reading loop at actual 200-percent browser zoom", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const session = await page.context().newCDPSession(page);
   await page.goto("/zh/atlas/mei-xiang");
+  await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 2 });
 
+  await expect.poll(() => page.evaluate(() => window.visualViewport?.scale ?? 1)).toBe(2);
   const hasHorizontalOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
   );

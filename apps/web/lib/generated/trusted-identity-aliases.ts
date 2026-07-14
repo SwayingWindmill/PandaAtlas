@@ -161,6 +161,20 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "candidate_values": [],
         "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-09",
+        "assertion_ids": [
+          "fact-mei-xiang-sex"
+        ],
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
       }
     ],
     "sources": [

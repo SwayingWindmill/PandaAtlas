@@ -65,7 +65,7 @@ export default async function PandaDetailPage({ params }: DetailPageProps) {
     notFound();
   }
 
-  if (reference.slug === "mei-xiang" || reference.slug === "tian-tian") {
+  if (reference.slug === "mei-xiang") {
     permanentRedirect(`/zh/atlas/${reference.slug}` as Route);
   }
 

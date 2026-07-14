@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: LocalizedPandaPageProps): Pro
   const locale = parseLocale(rawLocale);
   const reference = locale ? await resolvePandaReference(slug) : null;
   const panda = reference ? await getPandaDetail(reference.slug, reference) : null;
-  if (!locale || !reference || !panda?.identity) return {};
+  if (!locale || !reference || reference.slug !== "mei-xiang" || !panda?.identity) return {};
 
   const title = locale === "zh"
     ? `${panda.name_zh} | 大熊猫可信档案`
@@ -50,7 +50,7 @@ export default async function LocalizedPandaPage({ params }: LocalizedPandaPageP
     getPandaDetail(reference.slug, reference),
     getPandaLineage(reference.slug, { ancestorDepth: 8, descendantDepth: 8, reference }),
   ]);
-  if (!panda?.identity || panda.record_tier !== "complete_first_pass") notFound();
+  if (panda?.slug !== "mei-xiang" || !panda.identity || panda.record_tier !== "complete_first_pass") notFound();
 
   return <TrustedPandaProfile locale={locale} panda={panda} lineage={lineage} />;
 }

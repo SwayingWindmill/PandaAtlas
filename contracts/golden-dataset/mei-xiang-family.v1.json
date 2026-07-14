@@ -376,6 +376,20 @@
   ],
   "facts": [
     {
+      "id": "fact-mei-xiang-sex",
+      "publication_status": "published",
+      "public": {
+        "subject_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+        "field": "sex",
+        "value": "female",
+        "conclusion_status": "confirmed",
+        "source_ids": ["src_smithsonian_history"],
+        "last_verified_at": "2026-05-09",
+        "freshness": { "policy": "stable_identity_fact", "max_age_days": null, "state": "current" }
+      },
+      "restricted": { "curator_notes": "Public sex field is tied to the same reviewed identity source." }
+    },
+    {
       "id": "fact-mei-xiang-birth-date",
       "publication_status": "published",
       "public": {

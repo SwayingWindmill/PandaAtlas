@@ -85,6 +85,8 @@ def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> 
     assert "smithsonian_history_key:mei-xiang" in list_item["search_terms"]
 
     conclusions = {item["field"]: item for item in payload["conclusions"]}
+    assert conclusions["sex"]["value"] == "female"
+    assert conclusions["sex"]["source_ids"] == ["src_smithsonian_history"]
     assert conclusions["birth_date"]["status"] == "confirmed"
     assert conclusions["birth_date"]["last_verified_at"] == "2026-05-09"
     assert conclusions["current_coarse_location"]["status"] == "confirmed"
