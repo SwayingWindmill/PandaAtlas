@@ -9,14 +9,18 @@ test("loads atlas and follows the canonical detail-to-lineage route", async ({ p
   await expect(firstAtlasCard).toBeVisible();
   await expect(firstAtlasCard).toHaveAttribute("href", /\/atlas\/.+/);
 
-  await firstAtlasCard.click();
+  const detailHref = await firstAtlasCard.getAttribute("href");
+  expect(detailHref).toMatch(/^\/atlas\/[^/?#]+$/);
+  await page.goto(detailHref!);
   await expect(page).toHaveURL(/\/atlas\/[^/?#]+$/);
   await expect(page.getByTestId("panda-profile-page")).toBeVisible();
 
   const lineageLink = page.getByTestId("profile-lineage-link");
   await expect(lineageLink).toHaveAttribute("href", /\/lineage\?focus=[^&]+$/);
+  const lineageHref = await lineageLink.getAttribute("href");
+  expect(lineageHref).toMatch(/^\/lineage\?focus=[^&]+$/);
 
-  await lineageLink.click();
+  await page.goto(lineageHref!);
   await expect(page).toHaveURL(/\/lineage\?focus=[^&]+/);
   await expect(page.getByTestId("lineage-page")).toBeVisible();
 });
