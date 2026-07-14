@@ -136,6 +136,8 @@ class PublicationBatchCreate(BaseModel):
     change_set_ids: list[UUID] = Field(min_length=1)
     public_schema_version: Literal["1.0.0"]
     data_version: str = Field(min_length=1, max_length=120)
+    database_migration_version: str = Field(default="0006", min_length=1, max_length=120)
+    projection_code_version: str = Field(default="public-release-v1", min_length=1, max_length=200)
     reason: str = Field(min_length=1, max_length=2000)
     correlation_id: UUID
 
@@ -157,6 +159,8 @@ class PublicationBatchRead(BaseModel):
     change_set_ids: list[UUID]
     public_schema_version: str
     data_version: str
+    database_migration_version: str
+    projection_code_version: str
     reason: str
     correlation_id: UUID
     operation: PublicationOperation

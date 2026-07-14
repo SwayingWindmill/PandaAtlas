@@ -1,0 +1,38 @@
+{
+  "database_migration_version": "0006",
+  "dataset_release_version": "2026.07.14.2",
+  "files": {
+    "d1.sql": {
+      "bytes": 35696,
+      "sha256": "3367e26a5a730f4c7cf5a1e2d92bb66bceaf6faf82f909145cdfa9faa4ffbd23"
+    },
+    "pandas.csv": {
+      "bytes": 10889,
+      "sha256": "2613503b61f44540e25ef418900ed706efa3e25bf787ea21e00ff33980cea401"
+    },
+    "pandas.json": {
+      "bytes": 15419,
+      "sha256": "1bbd488bdf35fa4a1689bbceacd69697dc0dfc88c3278daa02f9812df9a91e6e"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "public-release-v1",
+  "public_schema_version": "1.0.0",
+  "publication_batch_id": "golden-dataset",
+  "record_counts": {
+    "events": 2,
+    "facilities": 3,
+    "facts": 21,
+    "institutions": 0,
+    "media": 7,
+    "pandas": 7,
+    "parentage_assertions": 12,
+    "residencies": 9,
+    "sources": 5
+  },
+  "released_at": "2026-07-14T00:00:00Z"
+}

@@ -58,6 +58,8 @@ Update `wrangler.jsonc`:
 
 Production data must come from a reviewed, versioned projection artifact built from authoritative PostgreSQL data. Apply it through D1 migrations or a controlled deployment job outside the public Worker runtime. Do not treat `infra/cloudflare/d1/seed.sql` as an independent production fact source.
 
+The release builder and atomic rollback/withdrawal procedure are documented in `docs/release/versioned-public-projection.md`. Every `/api/v1/*` Worker response is gated by `current_public_release` and exposes the active dataset, Public Schema, and database migration versions in response headers.
+
 Deploy after the projection contract and migration checks pass:
 
 ```powershell

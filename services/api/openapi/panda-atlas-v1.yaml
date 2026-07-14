@@ -616,6 +616,27 @@ paths:
         '409':
           description: Withdrawal target is not a published batch
 
+  /api/v1/releases/current:
+    get:
+      tags: [releases]
+      summary: Get the immutable public release currently served by all public surfaces
+      responses:
+        '200':
+          description: Current public release metadata
+          headers:
+            X-PandaAtlas-Dataset-Version:
+              schema: { type: string }
+            X-PandaAtlas-Public-Schema-Version:
+              schema: { type: string }
+            X-PandaAtlas-Database-Migration-Version:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicReleaseMetadata'
+        '410':
+          description: Current release was withdrawn
+
 components:
   securitySchemes:
     BearerAuth:
@@ -1679,6 +1700,12 @@ components:
           enum: [1.0.0]
         data_version:
           type: string
+        database_migration_version:
+          type: string
+          default: '0006'
+        projection_code_version:
+          type: string
+          default: public-release-v1
         reason:
           type: string
         correlation_id:
@@ -1715,6 +1742,35 @@ components:
           items:
             $ref: '#/components/schemas/PublicationIssue'
 
+    PublicReleaseMetadata:
+      type: object
+      description: The immutable dataset release currently served by every public surface.
+      required:
+        - dataset_release_version
+        - public_schema_version
+        - database_migration_version
+        - publication_batch_id
+        - projection_code_version
+        - released_at
+        - licenses
+      properties:
+        dataset_release_version:
+          type: string
+        public_schema_version:
+          type: string
+        database_migration_version:
+          type: string
+        publication_batch_id:
+          type: string
+        projection_code_version:
+          type: string
+        released_at:
+          type: string
+        licenses:
+          type: object
+          additionalProperties:
+            type: string
+
     PublicationBatch:
       type: object
       required:
@@ -1722,6 +1778,8 @@ components:
         - change_set_ids
         - public_schema_version
         - data_version
+        - database_migration_version
+        - projection_code_version
         - reason
         - correlation_id
         - operation
@@ -1739,6 +1797,10 @@ components:
         public_schema_version:
           type: string
         data_version:
+          type: string
+        database_migration_version:
+          type: string
+        projection_code_version:
           type: string
         reason:
           type: string

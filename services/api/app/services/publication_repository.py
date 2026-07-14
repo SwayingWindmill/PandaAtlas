@@ -119,6 +119,8 @@ def _batch_from_row(row: object, change_set_ids: list[UUID]) -> PublicationBatch
         change_set_ids=change_set_ids,
         public_schema_version=row["public_schema_version"],
         data_version=row["data_version"],
+        database_migration_version=row["database_migration_version"],
+        projection_code_version=row["projection_code_version"],
         reason=row["reason"],
         correlation_id=row["correlation_id"],
         operation=row["operation"],
@@ -137,7 +139,8 @@ def _batch_from_db(session: Session, batch_id: UUID) -> PublicationBatchRead:
         text(
             """
             select
-              id, public_schema_version, data_version, reason, correlation_id,
+              id, public_schema_version, data_version, database_migration_version,
+              projection_code_version, reason, correlation_id,
               operation, status, created_by, published_by, published_at,
               previous_batch_id, rollback_target_id, withdrawal_target_id
             from public.publication_batches
@@ -409,9 +412,11 @@ def create_publication_batch(
             text(
                 """
                 insert into public.publication_batches (
-                  public_schema_version, data_version, reason, correlation_id, created_by
+                  public_schema_version, data_version, database_migration_version,
+                  projection_code_version, reason, correlation_id, created_by
                 ) values (
-                  :public_schema_version, :data_version, :reason, :correlation_id, :actor_id
+                  :public_schema_version, :data_version, :database_migration_version,
+                  :projection_code_version, :reason, :correlation_id, :actor_id
                 )
                 returning id
                 """
@@ -419,6 +424,8 @@ def create_publication_batch(
             {
                 "public_schema_version": payload.public_schema_version,
                 "data_version": payload.data_version,
+                "database_migration_version": payload.database_migration_version,
+                "projection_code_version": payload.projection_code_version,
                 "reason": payload.reason,
                 "correlation_id": payload.correlation_id,
                 "actor_id": actor_id,
@@ -663,16 +670,19 @@ def publish_release_action(
             text(
                 """
                 insert into public.publication_batches (
-                  public_schema_version, data_version, reason, correlation_id,
+                  public_schema_version, data_version, database_migration_version,
+                  projection_code_version, reason, correlation_id,
                   operation, status, created_by, published_by, published_at,
                   previous_batch_id, rollback_target_id, withdrawal_target_id
                 ) values (
-                  :public_schema_version, :data_version, :reason, :correlation_id,
+                  :public_schema_version, :data_version, :database_migration_version,
+                  :projection_code_version, :reason, :correlation_id,
                   :operation, 'draft', :actor_id, null, null,
                   :previous_batch_id, :rollback_target_id, :withdrawal_target_id
                 )
                 returning
-                  id, public_schema_version, data_version, reason, correlation_id,
+                  id, public_schema_version, data_version, database_migration_version,
+                  projection_code_version, reason, correlation_id,
                   operation, status, created_by, published_by, published_at,
                   previous_batch_id, rollback_target_id, withdrawal_target_id
                 """
@@ -680,6 +690,8 @@ def publish_release_action(
             {
                 "public_schema_version": target.public_schema_version,
                 "data_version": payload.data_version,
+                "database_migration_version": target.database_migration_version,
+                "projection_code_version": target.projection_code_version,
                 "reason": payload.reason,
                 "correlation_id": payload.correlation_id,
                 "operation": operation,
@@ -712,7 +724,8 @@ def publish_release_action(
             set status = 'published', published_by = :actor_id, published_at = :published_at
             where id = :batch_id
             returning
-              id, public_schema_version, data_version, reason, correlation_id,
+              id, public_schema_version, data_version, database_migration_version,
+              projection_code_version, reason, correlation_id,
               operation, status, created_by, published_by, published_at,
               previous_batch_id, rollback_target_id, withdrawal_target_id
             """
@@ -741,6 +754,8 @@ def publish_release_action(
             "target_batch_id": str(target.id),
             "public_schema_version": row["public_schema_version"],
             "data_version": row["data_version"],
+            "database_migration_version": row["database_migration_version"],
+            "projection_code_version": row["projection_code_version"],
         },
     )
     change_set_ids = target.change_set_ids if operation == "rollback" else []

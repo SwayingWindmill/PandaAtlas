@@ -27,6 +27,7 @@
     "test:golden-dataset": "node --test scripts/golden-dataset/tests/*.test.mjs",
     "check:public-api-boundary": "node scripts/check-public-api-boundary.mjs",
     "test:release-gate": "node --test scripts/release/tests/*.test.mjs",
+    "build:public-release": "uv run --project services/api python services/api/scripts/build_public_release.py",
     "deploy:api:cf": "npm run deploy -w worker-api",
     "release:default": "node scripts/release/default.mjs",
     "release:extended": "node scripts/release/extended.mjs"

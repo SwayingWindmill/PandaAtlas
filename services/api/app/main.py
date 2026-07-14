@@ -1,11 +1,13 @@
 ﻿from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.api.router import api_router
 from app.core.config import settings
 from app.db.session import configure_database, database_health
+from app.services.release_service import get_current_release_metadata, release_headers
 
 
 @asynccontextmanager
@@ -28,6 +30,23 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def attach_public_release(request: Request, call_next):
+    path = request.url.path
+    is_public_api = path.startswith("/api/v1/") and not path.startswith("/api/v1/admin/")
+    metadata = None
+    if is_public_api:
+        try:
+            metadata = get_current_release_metadata()
+        except HTTPException as error:
+            return JSONResponse(status_code=error.status_code, content={"detail": error.detail})
+    response = await call_next(request)
+    if metadata is not None:
+        for name, value in release_headers(metadata).items():
+            response.headers[name] = value
+    return response
 
 
 @app.get("/health", tags=["health"])

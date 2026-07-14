@@ -22,6 +22,7 @@ REQUIRED_ROUTE_METHODS: tuple[tuple[str, str], ...] = (
     ("/api/v1/map/habitats", "get"),
     ("/api/v1/map/snapshots", "get"),
     ("/api/v1/stats/overview", "get"),
+    ("/api/v1/releases/current", "get"),
     ("/api/v1/admin/import-sources", "get"),
     ("/api/v1/admin/import-jobs", "post"),
     ("/api/v1/admin/import-jobs/{job_id}", "get"),

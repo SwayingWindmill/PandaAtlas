@@ -14,6 +14,7 @@ import { parseBBox } from "./geo";
 import { getDistribution, getHabitats, listDistributionSnapshots } from "./repositories/map";
 import { getPandaDetail, getPandaLineage, listPandas } from "./repositories/pandas";
 import { getOverviewStats } from "./repositories/stats";
+import { releaseHeaders, requireCurrentRelease } from "./repositories/releases";
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -44,6 +45,13 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
     return jsonResponse({ status: "ok", version: "0.1.0-cloudflare", db });
   }
 
+  const release = path.startsWith("/api/v1/") ? await requireCurrentRelease(env) : null;
+  const versionHeaders = release ? releaseHeaders(release) : {};
+
+  if (request.method === "GET" && path === "/api/v1/releases/current") {
+    return jsonResponse(release, 200, versionHeaders);
+  }
+
   if (request.method === "GET" && path === "/api/v1/pandas") {
     return jsonResponse(
       await listPandas(env, {
@@ -55,7 +63,9 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
         habitatId: url.searchParams.get("habitat_id"),
         featured: parseBooleanParam(url.searchParams, "featured"),
         sort: url.searchParams.get("sort") ?? "created_at_desc"
-      })
+      }),
+      200,
+      versionHeaders
     );
   }
 
@@ -65,13 +75,19 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
       await getPandaLineage(env, decodeURIComponent(pandaLineageMatch[1]), {
         ancestorDepth: parseIntegerParam(url.searchParams, "ancestor_depth", 6, 0, 16),
         descendantDepth: parseIntegerParam(url.searchParams, "descendant_depth", 6, 0, 16)
-      })
+      }),
+      200,
+      versionHeaders
     );
   }
 
   const pandaDetailMatch = path.match(/^\/api\/v1\/pandas\/([^/]+)$/);
   if (request.method === "GET" && pandaDetailMatch) {
-    return jsonResponse(await getPandaDetail(env, decodeURIComponent(pandaDetailMatch[1])));
+    return jsonResponse(
+      await getPandaDetail(env, decodeURIComponent(pandaDetailMatch[1])),
+      200,
+      versionHeaders
+    );
   }
 
   if (request.method === "GET" && path === "/api/v1/map/distribution") {
@@ -81,22 +97,30 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
         snapshotDate: url.searchParams.get("snapshot_date"),
         layer: parseDistributionLayer(url.searchParams.get("layer")),
         zoom: parseNullableInteger(url.searchParams.get("zoom"), "zoom", 0, 22)
-      })
+      }),
+      200,
+      versionHeaders
     );
   }
 
   if (request.method === "GET" && path === "/api/v1/map/habitats") {
     return jsonResponse(
-      await getHabitats(env, parseBBox(url.searchParams.get("bbox"), false), url.searchParams.get("level"))
+      await getHabitats(env, parseBBox(url.searchParams.get("bbox"), false), url.searchParams.get("level")),
+      200,
+      versionHeaders
     );
   }
 
   if (request.method === "GET" && path === "/api/v1/map/snapshots") {
-    return jsonResponse(await listDistributionSnapshots(env, parseIntegerParam(url.searchParams, "limit", 24, 1, 120)));
+    return jsonResponse(
+      await listDistributionSnapshots(env, parseIntegerParam(url.searchParams, "limit", 24, 1, 120)),
+      200,
+      versionHeaders
+    );
   }
 
   if (request.method === "GET" && path === "/api/v1/stats/overview") {
-    return jsonResponse(await getOverviewStats(env));
+    return jsonResponse(await getOverviewStats(env), 200, versionHeaders);
   }
 
   return errorResponse(404, "Not found");
