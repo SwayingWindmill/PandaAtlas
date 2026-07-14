@@ -762,17 +762,21 @@ export async function resolvePandaReference(idOrSlug: string): Promise<PandaRefe
     return null;
   }
 
-  const generatedReference = TRUSTED_PANDA_REFERENCES[normalized];
-  if (generatedReference) {
-    return generatedReference;
-  }
-
   try {
     const detail = await fetchJson<PandaDetail>(
       `/api/v1/pandas/${encodeURIComponent(normalized)}`
     );
     return { id: detail.id, slug: detail.slug };
-  } catch {
+  } catch (error) {
+    if (error instanceof ApiRequestError && error.status === 404) {
+      return null;
+    }
+
+    const generatedReference = TRUSTED_PANDA_REFERENCES[normalized];
+    if (generatedReference) {
+      return generatedReference;
+    }
+
     const atlas = await listAtlasPandas();
     return findResolvedReference(normalized, atlas.items);
   }
