@@ -1,13 +1,12 @@
 import json
 
 import pytest
-from pydantic import ValidationError
-
-from app.schemas.publication import EntityRevisionCreate
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from app.core.config import settings
 from app.main import app
+from app.schemas.publication import EntityRevisionCreate
 
 client = TestClient(app)
 EDITOR_ID = "11111111-1111-4111-8111-111111111111"

@@ -393,9 +393,27 @@ insert into panda_external_identifier_sources (external_identifier_id, source_id
   ('c0000000-0000-5000-8000-000000000011', 'src_smithsonian_history')
 on conflict do nothing;
 
+-- Reviewed public-profile presentation projection from the golden dataset.
+update pandas
+set
+  record_tier = 'complete_first_pass',
+  localized_content_json = '[{"locale":"zh-CN","summary":"曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。"},{"locale":"en","summary":"Former Smithsonian female and mother of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji."}]',
+  media_release_json = '{"license_state":"no_licensed_media","display_mode":"designed_empty_state","source_ids":[]}',
+  public_revision_json = '{"data_version":"2026.07.14.1","public_schema_version":"1.0.0","summaries":[{"locale":"zh-CN","summary":"完成身份、出生日期、居住记录、迁移事件与公开来源的首轮整理。"},{"locale":"en","summary":"First public review of identity, birth date, residencies, transfer events, and sources."}]}'
+where id = '2939c16f-1938-5629-928c-b36b1d5cd6ed';
+
+update pandas
+set
+  record_tier = 'complete_first_pass',
+  localized_content_json = '[{"locale":"zh-CN","summary":"曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。"},{"locale":"en","summary":"Former Smithsonian male and father of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji."}]',
+  media_release_json = '{"license_state":"source_link_only","display_mode":"link_to_source","source_ids":["src_smithsonian_history"]}',
+  public_revision_json = '{"data_version":"2026.07.14.1","public_schema_version":"1.0.0","summaries":[]}'
+where id = '38cd1cad-3e34-5511-bc35-a091ece74e11';
+
 insert into fact_assertions (
   id, panda_id, field_key, value_json, certainty, last_verified_at
 ) values
+  ('fact-mei-xiang-sex', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'sex', '"female"', 'confirmed', '2026-05-09'),
   ('fact-mei-xiang-birth-date', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"', 'confirmed', '2026-05-09'),
   ('fact-mei-xiang-current-place', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09'),
   ('fact-tian-tian-birth-date', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"', 'confirmed', '2026-05-09'),
@@ -408,6 +426,7 @@ on conflict(id) do update set
   last_verified_at = excluded.last_verified_at;
 
 insert into fact_assertion_sources (assertion_id, source_id, stance) values
+  ('fact-mei-xiang-sex', 'src_smithsonian_history', 'supports'),
   ('fact-mei-xiang-birth-date', 'src_smithsonian_agreement_2020', 'supports'),
   ('fact-mei-xiang-current-place', 'src_smithsonian_history', 'supports'),
   ('fact-tian-tian-birth-date', 'src_smithsonian_agreement_2020', 'supports'),
@@ -418,6 +437,7 @@ insert into public_fact_conclusions (
   id, panda_id, field_key, value_json, status, last_verified_at,
   candidate_values_json, superseded_values_json, conclusion_version, is_current
 ) values
+  ('d0000000-0000-5000-8000-000000000003', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'sex', '"female"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
   ('d0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
   ('d0000000-0000-5000-8000-000000000002', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_coarse_location', '"China"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
   ('d0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
@@ -434,6 +454,7 @@ on conflict(id) do update set
   is_current = excluded.is_current;
 
 insert into public_fact_conclusion_assertions (conclusion_id, assertion_id) values
+  ('d0000000-0000-5000-8000-000000000003', 'fact-mei-xiang-sex'),
   ('d0000000-0000-5000-8000-000000000001', 'fact-mei-xiang-birth-date'),
   ('d0000000-0000-5000-8000-000000000002', 'fact-mei-xiang-current-place'),
   ('d0000000-0000-5000-8000-000000000011', 'fact-tian-tian-birth-date'),
@@ -461,6 +482,18 @@ on conflict(id) do update set
   current_location = excluded.current_location,
   father_id = null,
   mother_id = null;
+
+update pandas
+set
+  record_tier = 'identity_first_pass',
+  public_revision_json = '{"data_version":"2026.07.14.1","public_schema_version":"1.0.0","summaries":[]}'
+where id in (
+  '96d00a39-7865-55db-b5c2-f339ef692258',
+  '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6',
+  '1a05a5dc-1926-5355-9d81-c2a43189d50b',
+  '926abc78-1e79-55c6-b24a-d33b4e5f6443',
+  '434e10e3-7ba0-5de7-a59e-d3984524c58c'
+);
 
 insert into institutions (id, name_zh, name_en, publication_status) values
   ('f141af52-52c7-5d2f-a01a-2ce0c547b920', '史密森国家动物园与保护生物学研究所', 'Smithsonian National Zoo and Conservation Biology Institute', 'published')
