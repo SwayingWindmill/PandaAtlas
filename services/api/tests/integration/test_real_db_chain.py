@@ -1,5 +1,6 @@
 import os
 from collections.abc import Iterator
+from uuid import uuid4
 
 import psycopg
 import pytest
@@ -297,3 +298,127 @@ def test_real_db_stats_endpoint(client: TestClient, real_db_url: str) -> None:
         "select max(snapshot_date)::text as snapshot_date from public.distribution_snapshots",
     )
     assert payload["latest_snapshot_date"] == latest_snapshot["snapshot_date"]
+
+
+def test_real_db_four_eyes_publication_is_atomic_and_audited(
+    client: TestClient,
+    real_db_url: str,
+) -> None:
+    if _query_scalar(
+        real_db_url,
+        """
+        select count(*)
+        from pg_tables
+        where schemaname = 'public' and tablename = 'publication_batches'
+        """,
+    ) == 0:
+        pytest.fail("Issue #9 publication workflow migration is not loaded")
+
+    editor_id = "11111111-1111-4111-8111-111111111111"
+    reviewer_id = "22222222-2222-4222-8222-222222222222"
+    publisher_id = "33333333-3333-4333-8333-333333333333"
+    suffix = uuid4().hex
+
+    def headers(actor_id: str) -> dict[str, str]:
+        return {
+            "Authorization": "Bearer dev-admin-token",
+            "X-Actor-Id": actor_id,
+        }
+
+    created = client.post(
+        "/api/v1/admin/change-sets",
+        headers=headers(editor_id),
+        json={
+            "title": f"Integration publication {suffix}",
+            "reason": "Exercise the authoritative four-eyes workflow",
+            "revisions": [
+                {
+                    "entity_type": "panda",
+                    "entity_id": f"integration-{suffix}",
+                    "payload": {"publication_checks": {}},
+                }
+            ],
+        },
+    )
+    assert created.status_code == 201
+    change_set_id = created.json()["id"]
+
+    submitted = client.post(
+        f"/api/v1/admin/change-sets/{change_set_id}/submit",
+        headers=headers(editor_id),
+    )
+    assert submitted.status_code == 200
+
+    denied = client.post(
+        f"/api/v1/admin/change-sets/{change_set_id}/reviews",
+        headers=headers(editor_id),
+        json={"decision": "approved", "reason": "Self approval must fail"},
+    )
+    assert denied.status_code == 409
+
+    approved = client.post(
+        f"/api/v1/admin/change-sets/{change_set_id}/reviews",
+        headers=headers(reviewer_id),
+        json={"decision": "approved", "reason": "Independent review complete"},
+    )
+    assert approved.status_code == 200
+
+    batch = client.post(
+        "/api/v1/admin/publication-batches",
+        headers=headers(publisher_id),
+        json={
+            "change_set_ids": [change_set_id],
+            "public_schema_version": "1.0.0",
+            "data_version": f"integration-{suffix}-1",
+            "reason": "Publish integration release",
+            "correlation_id": str(uuid4()),
+        },
+    )
+    assert batch.status_code == 201
+    batch_id = batch.json()["id"]
+
+    published = client.post(
+        f"/api/v1/admin/publication-batches/{batch_id}/publish",
+        headers=headers(publisher_id),
+    )
+    assert published.status_code == 200
+    assert published.json()["status"] == "published"
+
+    active = _query_one(
+        real_db_url,
+        """
+        select active_batch_id::text as active_batch_id
+        from public.public_release_pointer
+        where singleton
+        """,
+    )
+    assert active["active_batch_id"] == batch_id
+    assert _query_scalar(
+        real_db_url,
+        "select count(*) from public.audit_events where subject_id = %s::uuid",
+        (batch_id,),
+    ) >= 2
+
+    rollback = client.post(
+        f"/api/v1/admin/publication-batches/{batch_id}/rollback",
+        headers=headers(publisher_id),
+        json={
+            "reason": "Exercise append-only rollback",
+            "correlation_id": str(uuid4()),
+            "data_version": f"integration-{suffix}-2",
+        },
+    )
+    assert rollback.status_code == 201
+    assert rollback.json()["operation"] == "rollback"
+
+    withdrawal = client.post(
+        f"/api/v1/admin/publication-batches/{rollback.json()['id']}/withdraw",
+        headers=headers(publisher_id),
+        json={
+            "reason": "Exercise append-only emergency withdrawal",
+            "correlation_id": str(uuid4()),
+            "data_version": f"integration-{suffix}-3",
+        },
+    )
+    assert withdrawal.status_code == 201
+    assert withdrawal.json()["operation"] == "withdrawal"
