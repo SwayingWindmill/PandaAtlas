@@ -216,14 +216,26 @@ function validateReferences(dataset, errors) {
       records: pandas,
       owner: record,
     });
-    assertReference({
-      errors,
-      pathValue: `residencies[${index}].public.facility_id`,
-      type: "facility",
-      id: record.public.facility_id,
-      records: facilities,
-      owner: record,
-    });
+    const hasFacility = typeof record.public.facility_id === "string";
+    const hasCoarseLocation = typeof record.public.coarse_location === "string";
+    if (hasFacility === hasCoarseLocation) {
+      errors.push(
+        issue(
+          "invalid_place_reference",
+          `residencies[${index}].public`,
+          "Residency must define exactly one of facility_id or coarse_location.",
+        ),
+      );
+    } else if (hasFacility) {
+      assertReference({
+        errors,
+        pathValue: `residencies[${index}].public.facility_id`,
+        type: "facility",
+        id: record.public.facility_id,
+        records: facilities,
+        owner: record,
+      });
+    }
   }
 
   for (const [index, record] of (dataset.events ?? []).entries()) {
@@ -248,6 +260,20 @@ function validateReferences(dataset, errors) {
         records: facilities,
         owner: record,
       });
+    }
+    for (const prefix of ["from", "to"]) {
+      if (
+        record.public[`${prefix}_facility_id`] != null
+        && record.public[`${prefix}_coarse_location`] != null
+      ) {
+        errors.push(
+          issue(
+            "invalid_place_reference",
+            `events[${index}].public.${prefix}`,
+            "Event place cannot define both facility_id and coarse_location.",
+          ),
+        );
+      }
     }
   }
 

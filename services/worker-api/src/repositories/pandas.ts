@@ -286,6 +286,7 @@ async function resolvePandaRef(env: Env, pandaRef: string): Promise<{ id: string
   if (!row) {
     throw new HttpError(404, "Panda not found");
   }
+
   return row;
 }
 
@@ -499,6 +500,27 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
     throw new HttpError(404, "Panda not found");
   }
 
+  const reviewedParents = await env.DB.prepare(`
+    select pa.parent_id, pa.parent_role
+    from parentage_assertions pa
+    where pa.child_id = ?
+      and pa.status = 'confirmed'
+      and pa.publication_status = 'published'
+      and exists (
+        select 1 from parentage_assertion_sources pas
+        where pas.assertion_id = pa.id
+      )
+    order by pa.parent_id
+  `)
+    .bind(row.id)
+    .all<{ parent_id: string; parent_role: "father" | "mother" }>();
+  const reviewedFather = reviewedParents.results?.find(
+    (parent) => parent.parent_role === "father"
+  )?.parent_id ?? null;
+  const reviewedMother = reviewedParents.results?.find(
+    (parent) => parent.parent_role === "mother"
+  )?.parent_id ?? null;
+
   const habitatsResult = await env.DB.prepare(
     `
     select distinct h.id, h.name, h.province
@@ -575,7 +597,9 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
     .find(
       (residency) =>
         residency.residency_type === "primary" &&
-        residency.end_date === null &&
+        residency.start_date <= new Date().toISOString().slice(0, 10) &&
+        (residency.end_date === null ||
+          new Date().toISOString().slice(0, 10) < residency.end_date) &&
         (residency.status === "confirmed" ||
           residency.status === "confirmed_country_level")
     );
@@ -642,8 +666,8 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
     intro: row.intro,
     birthplace: row.birthplace,
     tags: parseTags(row.tags_json),
-    father_id: row.father_id,
-    mother_id: row.mother_id,
+    father_id: reviewedFather,
+    mother_id: reviewedMother,
     habitats: habitatsResult.results ?? [],
     media,
     identity,
@@ -683,8 +707,8 @@ export async function getPandaLineage(env: Env, pandaRef: string, options: Linea
   }
   const rows = (rowsResult.results ?? []).map((row) => ({
     ...row,
-    father_id: fatherByChild.get(row.id) ?? row.father_id,
-    mother_id: motherByChild.get(row.id) ?? row.mother_id
+    father_id: fatherByChild.get(row.id) ?? null,
+    mother_id: motherByChild.get(row.id) ?? null
   }));
   const byId = new Map(rows.map((row) => [row.id, row]));
   if (!byId.has(focus.id)) {
@@ -706,6 +730,16 @@ export async function getPandaLineage(env: Env, pandaRef: string, options: Linea
   const ancestorIds = traverseAncestors(byId, focus.id, options.ancestorDepth);
   const descendantIds = traverseDescendants(childrenByParent, focus.id, options.descendantDepth);
   const selectedIds = new Set<string>([...ancestorIds, ...descendantIds]);
+  const focusRow = byId.get(focus.id);
+  for (const parentId of [focusRow?.father_id, focusRow?.mother_id]) {
+    if (!parentId) {
+      continue;
+    }
+    selectedIds.add(parentId);
+    for (const siblingId of childrenByParent.get(parentId) ?? []) {
+      selectedIds.add(siblingId);
+    }
+  }
   const nodes = rows.filter((row) => selectedIds.has(row.id)).map(toLineageNode);
   const nodeIds = new Set(nodes.map((node) => node.id));
   const edges = buildLineageEdges(nodes, nodeIds);

@@ -44,7 +44,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "gender": "female",
     "status": "alive",
     "birth_date": "1998-07-22",
-    "current_location": "中国——具体场所尚未公开核实",
+    "current_location": "China",
     "cover_image_url": null,
     "intro": "曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。",
     "birthplace": null,
@@ -139,9 +139,9 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "superseded_values": []
       },
       {
-        "field": "current_facility_id",
-        "value": "108f227d-2510-554a-98fb-395e58ca4433",
-        "status": "provisional",
+        "field": "current_coarse_location",
+        "value": "China",
+        "status": "confirmed",
         "last_verified_at": "2026-05-09",
         "assertion_ids": [
           "fact-mei-xiang-current-place"
@@ -176,8 +176,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       }
     ],
     "current_place": {
-      "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-      "coarse_location": null,
+      "facility_id": null,
+      "coarse_location": "China",
       "status": "confirmed_country_level"
     },
     "residencies": [
@@ -197,8 +197,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       },
       {
         "id": "res-mei-xiang-china",
-        "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-        "coarse_location": null,
+        "facility_id": null,
+        "coarse_location": "China",
         "residency_type": "primary",
         "start_date": "2023-11-08",
         "start_precision": "day",
@@ -224,8 +224,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
         "from_coarse_location": null,
-        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-        "to_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "China",
         "source_ids": [
           "src_smithsonian_agreement_2020"
         ],
@@ -244,8 +244,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
         "from_coarse_location": null,
-        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-        "to_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "China",
         "source_ids": [
           "src_smithsonian_history"
         ],
@@ -261,7 +261,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "gender": "male",
     "status": "alive",
     "birth_date": "1997-08-27",
-    "current_location": "中国——具体场所尚未公开核实",
+    "current_location": "China",
     "cover_image_url": null,
     "intro": "曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。",
     "birthplace": null,
@@ -356,9 +356,9 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "superseded_values": []
       },
       {
-        "field": "current_facility_id",
-        "value": "108f227d-2510-554a-98fb-395e58ca4433",
-        "status": "provisional",
+        "field": "current_coarse_location",
+        "value": "China",
+        "status": "confirmed",
         "last_verified_at": "2026-05-09",
         "assertion_ids": [
           "fact-tian-tian-current-place"
@@ -393,8 +393,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       }
     ],
     "current_place": {
-      "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-      "coarse_location": null,
+      "facility_id": null,
+      "coarse_location": "China",
       "status": "confirmed_country_level"
     },
     "residencies": [
@@ -414,8 +414,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       },
       {
         "id": "res-tian-tian-china",
-        "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-        "coarse_location": null,
+        "facility_id": null,
+        "coarse_location": "China",
         "residency_type": "primary",
         "start_date": "2023-11-08",
         "start_precision": "day",
@@ -441,8 +441,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
         "from_coarse_location": null,
-        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-        "to_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "China",
         "source_ids": [
           "src_smithsonian_agreement_2020"
         ],
@@ -461,8 +461,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
         "from_coarse_location": null,
-        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-        "to_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "China",
         "source_ids": [
           "src_smithsonian_history"
         ],

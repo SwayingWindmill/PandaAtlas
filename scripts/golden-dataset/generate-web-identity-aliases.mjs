@@ -73,6 +73,11 @@ function buildSourceSummaries(dataset, sourceIds) {
 }
 
 export function buildTrustedPandaDetails(dataset) {
+  const publishedSourceIds = new Set(
+    (dataset.sources ?? [])
+      .filter((source) => source.publication_status === "published")
+      .map((source) => source.id),
+  );
   const facilities = new Map(
     (dataset.facilities ?? []).map((facility) => [facility.id, facility]),
   );
@@ -129,7 +134,9 @@ export function buildTrustedPandaDetails(dataset) {
         .filter(
           (residency) => residency.publication_status === "published"
             && residency.public?.panda_id === record.id
-            && (residency.public.source_ids ?? []).length > 0,
+            && (residency.public.source_ids ?? []).some(
+              (sourceId) => publishedSourceIds.has(sourceId),
+            ),
         )
         .map((residency) => ({
           id: residency.id,
@@ -142,21 +149,29 @@ export function buildTrustedPandaDetails(dataset) {
           end_precision: residency.public.end_precision
             ?? (residency.public.end_date ? "day" : null),
           status: residency.public.status,
-          source_ids: residency.public.source_ids ?? [],
+          source_ids: (residency.public.source_ids ?? []).filter(
+            (sourceId) => publishedSourceIds.has(sourceId),
+          ),
         }))
         .sort((left, right) => left.start_date.localeCompare(right.start_date));
       const currentResidency = [...residencies]
         .reverse()
         .find(
           (residency) => residency.residency_type === "primary"
-            && residency.end_date === null
+            && residency.start_date <= new Date().toISOString().slice(0, 10)
+            && (
+              residency.end_date === null
+              || new Date().toISOString().slice(0, 10) < residency.end_date
+            )
             && ["confirmed", "confirmed_country_level"].includes(residency.status),
         );
       const events = (dataset.events ?? [])
         .filter(
           (event) => event.publication_status === "published"
             && (event.public?.participants ?? []).includes(record.id)
-            && (event.public.source_ids ?? []).length > 0,
+            && (event.public.source_ids ?? []).some(
+              (sourceId) => publishedSourceIds.has(sourceId),
+            ),
         )
         .map((event) => ({
           id: event.id,
@@ -169,7 +184,9 @@ export function buildTrustedPandaDetails(dataset) {
           from_coarse_location: event.public.from_coarse_location ?? null,
           to_facility_id: event.public.to_facility_id ?? null,
           to_coarse_location: event.public.to_coarse_location ?? null,
-          source_ids: event.public.source_ids ?? [],
+          source_ids: (event.public.source_ids ?? []).filter(
+            (sourceId) => publishedSourceIds.has(sourceId),
+          ),
           changes_current_residency: Boolean(event.public.changes_current_residency),
         }))
         .sort((left, right) => left.event_date.localeCompare(right.event_date));
@@ -185,14 +202,11 @@ export function buildTrustedPandaDetails(dataset) {
         ].flatMap((item) => item.source_ids),
       );
       const birthDate = conclusions.find((item) => item.field === "birth_date")?.value;
-      const currentFacilityId = conclusions.find(
-        (item) => item.field === "current_facility_id",
-      )?.value;
-      const currentFacility = facilities.get(currentFacilityId);
+      const currentFacility = facilities.get(currentResidency?.facility_id);
       const currentLocation = currentFacility
         ? displayName(currentFacility.public, "zh-Hans")
           ?? displayName(currentFacility.public, "en")
-        : null;
+        : currentResidency?.coarse_location ?? null;
       const approvedContent = new Map(
         (publicRecord.content ?? [])
           .filter((content) => content.translation_status === "approved")

@@ -62,12 +62,13 @@ def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> 
     conclusions = {item["field"]: item for item in payload["conclusions"]}
     assert conclusions["birth_date"]["status"] == "confirmed"
     assert conclusions["birth_date"]["last_verified_at"] == "2026-05-09"
-    assert conclusions["current_facility_id"]["status"] == "provisional"
-    assert conclusions["current_facility_id"]["source_ids"]
+    assert conclusions["current_coarse_location"]["status"] == "confirmed"
+    assert conclusions["current_coarse_location"]["value"] == "China"
+    assert conclusions["current_coarse_location"]["source_ids"]
 
     source_ids = {source["id"] for source in payload["sources"]}
     assert set(conclusions["birth_date"]["source_ids"]) <= source_ids
-    assert set(conclusions["current_facility_id"]["source_ids"]) <= source_ids
+    assert set(conclusions["current_coarse_location"]["source_ids"]) <= source_ids
 
     serialized = json.dumps(payload, ensure_ascii=False)
     assert "curator_notes" not in serialized
@@ -91,6 +92,20 @@ def test_public_lineage_is_derived_from_reviewed_parentage_assertions() -> None:
         "kind": "sibling",
         "path": [TAI_SHAN_ID, MEI_XIANG_ID, BAO_BAO_ID],
     } in payload["relationships"]
+
+    child_response = client.get(
+        "/api/v1/pandas/tai-shan/lineage",
+        params={"ancestor_depth": 0},
+    )
+    assert child_response.status_code == 200
+    assert {
+        "subject_id": TAI_SHAN_ID,
+        "related_id": BAO_BAO_ID,
+        "kind": "sibling",
+        "path": [TAI_SHAN_ID, MEI_XIANG_ID, BAO_BAO_ID],
+    } in child_response.json()["relationships"]
+    child_node_ids = {node["id"] for node in child_response.json()["nodes"]}
+    assert MEI_XIANG_ID in child_node_ids
     assert {
         "subject_id": BAO_LI_ID,
         "related_id": MEI_XIANG_ID,
@@ -105,8 +120,8 @@ def test_detail_projects_current_residency_and_shared_transfer_events() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["current_place"] == {
-        "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
-        "coarse_location": None,
+        "facility_id": None,
+        "coarse_location": "China",
         "status": "confirmed_country_level",
     }
     assert [item["id"] for item in payload["residencies"]] == [

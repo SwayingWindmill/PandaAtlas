@@ -125,11 +125,38 @@ create policy institutions_public_read on public.institutions
 for select using (publication_status = 'published');
 create policy facilities_public_read on public.facilities
 for select using (publication_status = 'published');
-create policy parentage_public_read on public.parentage_assertions
-for select using (publication_status = 'published' and status = 'confirmed');
 create policy residencies_public_read on public.panda_residencies
 for select using (publication_status = 'published');
+create policy residency_sources_public_read on public.residency_sources
+for select using (
+  exists (
+    select 1 from public.panda_residencies residency
+    where residency.id = residency_id and residency.publication_status = 'published'
+  )
+  and exists (
+    select 1 from public.public_evidence_sources source
+    where source.id = source_id
+  )
+);
 create policy domain_events_public_read on public.domain_events
 for select using (publication_status = 'published');
+create policy event_participants_public_read on public.domain_event_participants
+for select using (
+  exists (
+    select 1 from public.domain_events event
+    where event.id = event_id and event.publication_status = 'published'
+  )
+);
+create policy event_sources_public_read on public.domain_event_sources
+for select using (
+  exists (
+    select 1 from public.domain_events event
+    where event.id = event_id and event.publication_status = 'published'
+  )
+  and exists (
+    select 1 from public.public_evidence_sources source
+    where source.id = source_id
+  )
+);
 
 commit;

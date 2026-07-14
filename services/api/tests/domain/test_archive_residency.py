@@ -8,8 +8,9 @@ import pytest
 from app.domain.archive_events import DomainEvent
 from app.domain.archive_residency import (
     ArchiveDate,
+    CoarseLocationReference,
+    FacilityReference,
     OverlappingResidencyError,
-    PlaceReference,
     Residency,
     derive_current_place,
     validate_residencies,
@@ -17,7 +18,7 @@ from app.domain.archive_residency import (
 
 MEI_XIANG = UUID("2939c16f-1938-5629-928c-b36b1d5cd6ed")
 SMITHSONIAN = UUID("afb0f227-dd5e-5076-88e3-74e9807a6049")
-CHINA = UUID("108f227d-2510-554a-98fb-395e58ca4433")
+CHINA = "China"
 
 
 def test_primary_residency_intervals_cannot_overlap() -> None:
@@ -25,7 +26,7 @@ def test_primary_residency_intervals_cannot_overlap() -> None:
         Residency(
             id="smithsonian",
             panda_id=MEI_XIANG,
-            place=PlaceReference(kind="facility", id=SMITHSONIAN),
+            place=FacilityReference(id=SMITHSONIAN),
             residency_type="primary",
             start=ArchiveDate(date(2000, 12, 6), precision="day"),
             end=ArchiveDate(date(2023, 11, 8), precision="day"),
@@ -36,7 +37,7 @@ def test_primary_residency_intervals_cannot_overlap() -> None:
         Residency(
             id="china",
             panda_id=MEI_XIANG,
-            place=PlaceReference(kind="coarse_location", id=CHINA),
+            place=CoarseLocationReference(id=CHINA),
             residency_type="primary",
             start=ArchiveDate(date(2023, 11, 7), precision="day"),
             end=None,
@@ -54,7 +55,7 @@ def test_announced_move_does_not_change_current_place() -> None:
     smithsonian_residency = Residency(
         id="smithsonian",
         panda_id=MEI_XIANG,
-        place=PlaceReference(kind="facility", id=SMITHSONIAN),
+        place=FacilityReference(id=SMITHSONIAN),
         residency_type="primary",
         start=ArchiveDate(date(2000, 12, 6), precision="day"),
         end=ArchiveDate(date(2023, 11, 8), precision="day"),
@@ -68,8 +69,8 @@ def test_announced_move_does_not_change_current_place() -> None:
         status="announced",
         occurred_on=ArchiveDate(date(2020, 12, 7), precision="day"),
         participant_ids=(MEI_XIANG,),
-        from_place=PlaceReference(kind="facility", id=SMITHSONIAN),
-        to_place=PlaceReference(kind="coarse_location", id=CHINA),
+        from_place=FacilityReference(id=SMITHSONIAN),
+        to_place=CoarseLocationReference(id=CHINA),
         publication_status="published",
         source_ids=("src-agreement",),
     )
@@ -81,5 +82,5 @@ def test_announced_move_does_not_change_current_place() -> None:
     )
 
     assert current is not None
-    assert current.place == PlaceReference(kind="facility", id=SMITHSONIAN)
+    assert current.place == FacilityReference(id=SMITHSONIAN)
     assert current.start.precision == "day"

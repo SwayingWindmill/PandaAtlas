@@ -612,12 +612,12 @@ components:
       required: [facility_id, coarse_location, status]
       properties:
         facility_id:
-          type: string
-          format: uuid
-          nullable: true
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
         coarse_location:
-          type: string
-          nullable: true
+          type: [string, 'null']
         status:
           type: string
           enum: [confirmed, confirmed_country_level, provisional]
@@ -640,13 +640,15 @@ components:
               type: string
               enum: [day, month, year]
             end_date:
-              type: string
-              format: date
-              nullable: true
+              anyOf:
+                - type: string
+                  format: date
+                - type: 'null'
             end_precision:
-              type: string
-              enum: [day, month, year]
-              nullable: true
+              anyOf:
+                - type: string
+                  enum: [day, month, year]
+                - type: 'null'
             source_ids:
               type: array
               items:
@@ -676,19 +678,19 @@ components:
             type: string
             format: uuid
         from_facility_id:
-          type: string
-          format: uuid
-          nullable: true
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
         from_coarse_location:
-          type: string
-          nullable: true
+          type: [string, 'null']
         to_facility_id:
-          type: string
-          format: uuid
-          nullable: true
+          anyOf:
+            - type: string
+              format: uuid
+            - type: 'null'
         to_coarse_location:
-          type: string
-          nullable: true
+          type: [string, 'null']
         source_ids:
           type: array
           items:

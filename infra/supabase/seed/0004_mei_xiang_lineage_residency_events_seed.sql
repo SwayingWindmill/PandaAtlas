@@ -70,7 +70,6 @@ insert into public.facilities (
 )
 values
   ('afb0f227-dd5e-5076-88e3-74e9807a6049', 'f141af52-52c7-5d2f-a01a-2ce0c547b920', '史密森国家动物园', 'Smithsonian National Zoo', 'US', 'published'),
-  ('108f227d-2510-554a-98fb-395e58ca4433', null, '中国——具体场所尚未公开核实', 'China — exact facility not publicly verified', 'CN', 'published'),
   ('60c7e1a3-d286-5366-8d41-32c11df58b5c', null, '中国大熊猫保护研究中心卧龙耿达基地', 'CCRCGP Wolong Gengda Base', 'CN', 'published'),
   ('89f620b2-37d0-51ba-aafa-6844404a5b2c', null, '中国大熊猫保护研究中心卧龙神树坪基地', 'CCRCGP Wolong Shenshuping Base', 'CN', 'published')
 on conflict (id) do update set
@@ -122,11 +121,11 @@ insert into public.panda_residencies (
 )
 values
   ('res-mei-xiang-smithsonian', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'afb0f227-dd5e-5076-88e3-74e9807a6049', null, 'primary', '2000-12-06', 'day', '2023-11-08', 'day', 'confirmed', 'published'),
-  ('res-mei-xiang-china', '2939c16f-1938-5629-928c-b36b1d5cd6ed', '108f227d-2510-554a-98fb-395e58ca4433', null, 'primary', '2023-11-08', 'day', null, null, 'confirmed_country_level', 'published'),
+  ('res-mei-xiang-china', '2939c16f-1938-5629-928c-b36b1d5cd6ed', null, 'China', 'primary', '2023-11-08', 'day', null, null, 'confirmed_country_level', 'published'),
   ('res-tian-tian-smithsonian', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'afb0f227-dd5e-5076-88e3-74e9807a6049', null, 'primary', '2000-12-06', 'day', '2023-11-08', 'day', 'confirmed', 'published'),
-  ('res-tian-tian-china', '38cd1cad-3e34-5511-bc35-a091ece74e11', '108f227d-2510-554a-98fb-395e58ca4433', null, 'primary', '2023-11-08', 'day', null, null, 'confirmed_country_level', 'published'),
-  ('res-tai-shan-china-country-level', '96d00a39-7865-55db-b5c2-f339ef692258', '108f227d-2510-554a-98fb-395e58ca4433', null, 'primary', '2010-02-04', 'day', null, null, 'confirmed_country_level', 'published'),
-  ('res-bao-bao-china-country-level', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', '108f227d-2510-554a-98fb-395e58ca4433', null, 'primary', '2017-02-21', 'day', null, null, 'confirmed_country_level', 'published'),
+  ('res-tian-tian-china', '38cd1cad-3e34-5511-bc35-a091ece74e11', null, 'China', 'primary', '2023-11-08', 'day', null, null, 'confirmed_country_level', 'published'),
+  ('res-tai-shan-china-country-level', '96d00a39-7865-55db-b5c2-f339ef692258', null, 'China', 'primary', '2010-02-04', 'day', null, null, 'confirmed_country_level', 'published'),
+  ('res-bao-bao-china-country-level', '7cf4e916-4801-5b2e-b49b-4e33bb50d5d6', null, 'China', 'primary', '2017-02-21', 'day', null, null, 'confirmed_country_level', 'published'),
   ('res-bei-bei-shenshuping', '1a05a5dc-1926-5355-9d81-c2a43189d50b', '89f620b2-37d0-51ba-aafa-6844404a5b2c', null, 'primary', '2019-11-19', 'day', null, null, 'confirmed', 'published'),
   ('res-xiao-qi-ji-shenshuping', '926abc78-1e79-55c6-b24a-d33b4e5f6443', '89f620b2-37d0-51ba-aafa-6844404a5b2c', null, 'primary', '2023-11-08', 'day', null, null, 'confirmed', 'published')
 on conflict (id) do update set
@@ -157,8 +156,8 @@ insert into public.domain_events (
   publication_status
 )
 values
-  ('event-smithsonian-return-plan-2020', 'transfer', 'announced', '2020-12-07', 'day', 'afb0f227-dd5e-5076-88e3-74e9807a6049', null, '108f227d-2510-554a-98fb-395e58ca4433', null, 'published'),
-  ('event-smithsonian-departure-2023', 'transfer', 'completed', '2023-11-08', 'day', 'afb0f227-dd5e-5076-88e3-74e9807a6049', null, '108f227d-2510-554a-98fb-395e58ca4433', null, 'published')
+  ('event-smithsonian-return-plan-2020', 'transfer', 'announced', '2020-12-07', 'day', 'afb0f227-dd5e-5076-88e3-74e9807a6049', null, null, 'China', 'published'),
+  ('event-smithsonian-departure-2023', 'transfer', 'completed', '2023-11-08', 'day', 'afb0f227-dd5e-5076-88e3-74e9807a6049', null, null, 'China', 'published')
 on conflict (id) do update set
   event_type = excluded.event_type,
   event_status = excluded.event_status,

@@ -134,6 +134,7 @@ async function prepareD1Projection() {
   const d1Args = [wranglerBin(), "d1", "execute", "panda-atlas", "--local", "--persist-to", PERSIST_PATH];
   await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/schema.sql"]);
   await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/seed.sql"]);
+  await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/seed.sql"]);
 
   const identityCheck = await runCommandCapture(process.execPath, [
     ...d1Args,
@@ -158,6 +159,19 @@ async function prepareD1Projection() {
     || !/"departure_participant_count":\s*3/.test(archiveRelationshipCheck)
   ) {
     throw new Error(`D1 archive relationship assertion failed: ${archiveRelationshipCheck}`);
+  }
+
+  let overlapRejected = false;
+  try {
+    await runCommandCapture(process.execPath, [
+      ...d1Args,
+      "--command=insert into panda_residencies (id, panda_id, facility_id, coarse_location, residency_type, start_date, start_precision, end_date, end_precision, status, publication_status) values ('overlap-canary', '2939c16f-1938-5629-928c-b36b1d5cd6ed', null, 'China', 'primary', '2023-01-01', 'day', null, null, 'confirmed', 'published')",
+    ]);
+  } catch (error) {
+    overlapRejected = /primary residency intervals overlap/.test(String(error));
+  }
+  if (!overlapRejected) {
+    throw new Error("D1 accepted overlapping primary residency intervals");
   }
 
   const sourceColumns = await runCommandCapture(process.execPath, [
@@ -237,7 +251,7 @@ async function runHttpSmoke() {
       || trustedDetail?.identity?.stable_id !== "2939c16f-1938-5629-928c-b36b1d5cd6ed"
       || trustedDetail?.conclusions?.length !== 2
       || trustedDetail?.sources?.length < 2
-      || trustedDetail?.current_place?.facility_id !== "108f227d-2510-554a-98fb-395e58ca4433"
+      || trustedDetail?.current_place?.coarse_location !== "China"
       || trustedDetail?.residencies?.length !== 2
       || trustedDetail?.events?.length !== 2
       || trustedDetail.events.find(

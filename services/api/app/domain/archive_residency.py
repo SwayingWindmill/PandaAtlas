@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from app.domain.archive_events import DomainEvent
 
 DatePrecision = Literal["day", "month", "year"]
-PlaceKind = Literal["facility", "coarse_location"]
 ResidencyType = Literal["primary", "temporary", "transit", "quarantine"]
 ResidencyStatus = Literal["confirmed", "confirmed_country_level", "provisional"]
 
@@ -23,9 +22,18 @@ class ArchiveDate:
 
 
 @dataclass(frozen=True)
-class PlaceReference:
-    kind: PlaceKind
+class FacilityReference:
     id: UUID
+    kind: Literal["facility"] = "facility"
+
+
+@dataclass(frozen=True)
+class CoarseLocationReference:
+    id: str
+    kind: Literal["coarse_location"] = "coarse_location"
+
+
+PlaceReference = FacilityReference | CoarseLocationReference
 
 
 @dataclass(frozen=True)

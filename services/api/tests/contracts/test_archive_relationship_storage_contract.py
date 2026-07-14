@@ -44,6 +44,13 @@ def test_postgres_models_reviewed_relationships_and_non_overlapping_residency() 
     assert "start_precision" in sql
     assert "event_date_precision" in sql
     assert "unique (event_id, panda_id)" in sql
+    for policy in (
+        "residency_sources_public_read",
+        "event_participants_public_read",
+        "event_sources_public_read",
+    ):
+        assert f"create policy {policy}" in sql
+    assert "create policy parentage_public_read" not in sql
 
 
 def test_d1_projection_has_public_relationship_residency_and_event_tables() -> None:
@@ -56,6 +63,10 @@ def test_d1_projection_has_public_relationship_residency_and_event_tables() -> N
 
     assert migration.count("publication_status text not null") >= 5
     assert schema.count("publication_status text not null") >= 5
+    for sql in (migration, schema):
+        assert "prevent_primary_residency_overlap_insert" in sql
+        assert "prevent_primary_residency_overlap_update" in sql
+        assert "check ((facility_id is null) <> (coarse_location is null))" in sql
 
 
 def test_storage_seeds_reviewed_third_generation_and_shared_event() -> None:
