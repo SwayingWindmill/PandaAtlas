@@ -260,13 +260,6 @@ Panda Atlas is a brownfield full-stack monorepo for a giant panda encyclopedia a
 Project skills are installed under `.agents/skills/`. Discover the available skills from the workspace inventory and load the relevant `SKILL.md` before using one.
 <!-- GSD:skills-end -->
 
-<!-- GSD:profile-start -->
-## Developer Profile
-
-> Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
-> This section is managed by `generate-claude-profile` -- do not edit manually.
-<!-- GSD:profile-end -->
-
 ## Agent skills
 
 ### Issue tracker

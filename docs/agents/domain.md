@@ -10,42 +10,30 @@ Read the context documents relevant to the work being performed.
 
 Also inspect:
 
-- `docs/adr/` for system-wide architectural decisions
-- `<context>/docs/adr/` for context-specific decisions
+- `docs/architecture/` for system-wide architectural decisions
+- context-specific architecture documents linked by the root context map
 
 Missing files should not block work or produce warnings. The `domain-modeling`, `grill-with-docs`, and `improve-codebase-architecture` skills create domain documentation lazily when terminology or architectural decisions are resolved.
 
 ## Multi-context layout
 
-PandaAtlas uses the following intended domain documentation structure:
+PandaAtlas uses the following domain documentation structure:
 
 ```text
 /
 ├── CONTEXT-MAP.md
 ├── docs/
-│   └── adr/
-├── apps/
-│   └── web/
-│       ├── CONTEXT.md
-│       └── docs/adr/
-├── services/
-│   ├── api/
-│   │   ├── CONTEXT.md
-│   │   └── docs/adr/
-│   └── worker-api/
-│       ├── CONTEXT.md
-│       └── docs/adr/
-└── infra/
-    ├── CONTEXT.md
-    └── docs/adr/
+│   └── architecture/
+└── contracts/
+    └── golden-dataset/
+        └── CONTEXT.md
 ```
 
 The primary contexts are:
 
-- **Web experience** — public atlas UI, panda profiles, lineage browsing, maps, and Next.js BFF routes
-- **FastAPI service** — REST API behavior, validation, imports, and PostGIS access
-- **Cloudflare Worker read projection** — versioned public GET behavior backed by D1 and R2; no domain writes or admin imports
-- **Infrastructure and data** — database migrations, seed data, Cloudflare resources, and deployment infrastructure
+- **Trusted Archive** — stable identities, sourced assertions, relationships, residencies, domain events, publication readiness, and the golden dataset
+- **Curation Intake** — incomplete or contradictory working records awaiting review
+- **Public Projection** — reviewed, versioned, public-safe data consumed by APIs, D1, snapshots, and browser experiences
 
 The root `CONTEXT-MAP.md` should describe relationships and ownership boundaries between these contexts.
 
