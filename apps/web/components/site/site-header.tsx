@@ -52,7 +52,7 @@ export function SiteHeader({
   statusValue?: string;
 }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-[rgba(63,125,72,0.08)] bg-[rgba(246,247,246,0.94)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[rgba(63,125,72,0.08)] bg-[var(--bg)]">
       <div className={`${siteShellClassName} flex h-[78px] items-center justify-between gap-4 py-2`}>
         <div className="flex items-center gap-7">
           <Link href="/" className="flex items-center gap-3">
@@ -76,7 +76,7 @@ export function SiteHeader({
 
         <div className="flex items-center gap-3">
           {statusLabel || statusValue ? (
-            <span className="hidden rounded-full border border-[rgba(47,92,69,0.1)] bg-white/80 px-4 py-2 text-xs text-[var(--muted)] lg:inline-flex">
+            <span className="hidden rounded-full border border-[rgba(47,92,69,0.1)] bg-[var(--card)] px-4 py-2 text-xs text-[var(--muted)] lg:inline-flex">
               {statusLabel}
               {statusLabel && statusValue ? <span className="px-1.5">·</span> : null}
               {statusValue}

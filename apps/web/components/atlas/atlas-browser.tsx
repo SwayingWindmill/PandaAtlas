@@ -123,7 +123,11 @@ export function AtlasBrowser({ items }: AtlasBrowserProps) {
   }
 
   const filteredItems = useMemo(() => {
-    const normalizedKeyword = deferredKeyword.trim().toLowerCase();
+    const normalizedKeyword = deferredKeyword
+      .trim()
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
 
     const rows = items.filter((item) => {
       if (ageStage !== "all" && item.ageStage !== ageStage) {

@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -62,6 +63,10 @@ export default async function PandaDetailPage({ params }: DetailPageProps) {
   const reference = await resolvePandaReference(slug);
   if (!reference) {
     notFound();
+  }
+
+  if (reference.slug === "mei-xiang" || reference.slug === "tian-tian") {
+    permanentRedirect(`/zh/atlas/${reference.slug}` as Route);
   }
 
   if (slug !== reference.slug) {

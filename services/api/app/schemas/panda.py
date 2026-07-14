@@ -70,6 +70,27 @@ class PublicSourceSummary(BaseModel):
     access_state: str
 
 
+class LocalizedPublicContent(BaseModel):
+    locale: str
+    summary: str
+
+
+class PublicMediaRelease(BaseModel):
+    license_state: str = Field(
+        pattern="^(licensed|no_licensed_media|source_link_only)$"
+    )
+    display_mode: str = Field(
+        pattern="^(gallery|designed_empty_state|link_to_source)$"
+    )
+    source_ids: list[str]
+
+
+class PublicRevisionSummary(BaseModel):
+    data_version: str
+    public_schema_version: str
+    summaries: list[LocalizedPublicContent]
+
+
 class PandaBase(BaseModel):
     id: UUID
     slug: str
@@ -80,6 +101,7 @@ class PandaBase(BaseModel):
     birth_date: date | None = None
     current_location: str | None = None
     cover_image_url: str | None = None
+    search_terms: list[str] = Field(default_factory=list)
 
 
 class PandaListItem(PandaBase):
@@ -131,6 +153,10 @@ class PandaDetail(PandaBase):
     current_place: CurrentPlaceSummary | None = None
     residencies: list[PandaResidencySummary] = Field(default_factory=list)
     events: list[PandaDomainEventSummary] = Field(default_factory=list)
+    record_tier: str | None = None
+    localized_content: list[LocalizedPublicContent] = Field(default_factory=list)
+    media_release: PublicMediaRelease | None = None
+    public_revision: PublicRevisionSummary | None = None
 
 
 class PandaLineageNode(PandaBase):

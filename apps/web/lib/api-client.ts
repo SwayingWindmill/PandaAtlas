@@ -12,6 +12,8 @@ import type {
   PandaListItem
 } from "@/lib/types";
 import {
+  TRUSTED_LINEAGE_EDGES,
+  TRUSTED_LINEAGE_NODES,
   TRUSTED_PANDA_DETAILS,
   TRUSTED_PANDA_REFERENCES
 } from "@/lib/generated/trusted-identity-aliases";
@@ -28,6 +30,11 @@ type FallbackPandaSeed = Omit<
   | "current_place"
   | "residencies"
   | "events"
+  | "search_terms"
+  | "record_tier"
+  | "localized_content"
+  | "media_release"
+  | "public_revision"
 > & {
   birthplace?: string | null;
 };
@@ -391,12 +398,17 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
       ...detail,
       ...profileOverride,
       birthplace: profileOverride?.birthplace ?? detail.birthplace ?? null,
+      search_terms: [detail.name_zh, detail.name_en ?? "", detail.slug].filter(Boolean),
       identity: null,
       conclusions: [],
       sources: [],
       current_place: null,
       residencies: [],
-      events: []
+      events: [],
+      record_tier: null,
+      localized_content: [],
+      media_release: null,
+      public_revision: null
     };
   }
 
@@ -405,6 +417,7 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
     ...override,
     ...profileOverride,
     birthplace: profileOverride?.birthplace ?? detail.birthplace ?? null,
+    search_terms: [detail.name_zh, detail.name_en ?? "", detail.slug].filter(Boolean),
     tags: override.tags ?? detail.tags,
     habitats: override.habitats ?? detail.habitats,
     identity: null,
@@ -412,7 +425,11 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
     sources: [],
     current_place: null,
     residencies: [],
-    events: []
+    events: [],
+    record_tier: null,
+    localized_content: [],
+    media_release: null,
+    public_revision: null
   };
 }
 
@@ -426,7 +443,8 @@ function toListItem(detail: PandaDetail): PandaListItem {
     status: detail.status,
     birth_date: detail.birth_date,
     current_location: detail.current_location,
-    cover_image_url: detail.cover_image_url
+    cover_image_url: detail.cover_image_url,
+    search_terms: detail.search_terms ?? []
   };
 }
 
@@ -865,6 +883,22 @@ function buildFallbackLineageResponse(focusId?: string): PandaLineageResponse {
   };
 }
 
+function buildTrustedFallbackLineageResponse(focusId: string): PandaLineageResponse | null {
+  const focus = TRUSTED_LINEAGE_NODES.find(
+    (node) => node.id === focusId || node.slug === focusId,
+  );
+  if (!focus) {
+    return null;
+  }
+  return {
+    focus_id: focus.id,
+    nodes: TRUSTED_LINEAGE_NODES,
+    edges: TRUSTED_LINEAGE_EDGES,
+    relationships: [],
+    meta: { ancestor_depth: 8, descendant_depth: 8 },
+  };
+}
+
 export async function getPandaLineage(
   focusId?: string,
   options: { ancestorDepth?: number; descendantDepth?: number; reference?: PandaReference | null } = {}
@@ -893,7 +927,8 @@ export async function getPandaLineage(
   }
 
   if (!resolvedReference) {
-    return buildFallbackLineageResponse(normalizedFocus || focusId);
+    return buildTrustedFallbackLineageResponse(normalizedFocus || focusId || "")
+      ?? buildFallbackLineageResponse(normalizedFocus || focusId);
   }
 
   const requestFocus = normalizedFocus || resolvedReference.slug || resolvedReference.id;
@@ -909,7 +944,8 @@ export async function getPandaLineage(
       { cache: "no-store" }
     );
   } catch {
-    return buildFallbackLineageResponse(resolvedReference.slug || resolvedReference.id);
+    return buildTrustedFallbackLineageResponse(resolvedReference.slug || resolvedReference.id)
+      ?? buildFallbackLineageResponse(resolvedReference.slug || resolvedReference.id);
   }
 }
 

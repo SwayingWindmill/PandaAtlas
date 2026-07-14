@@ -11,6 +11,7 @@ export interface PandaListItem {
   birth_date: string | null;
   current_location: string | null;
   cover_image_url: string | null;
+  search_terms?: string[];
 }
 
 export interface IdentityNameRecord {
@@ -65,6 +66,23 @@ export interface PublicSourceSummary {
   access_state: string;
 }
 
+export interface LocalizedPublicContent {
+  locale: string;
+  summary: string;
+}
+
+export interface PublicMediaRelease {
+  license_state: "licensed" | "no_licensed_media" | "source_link_only";
+  display_mode: "gallery" | "designed_empty_state" | "link_to_source";
+  source_ids: string[];
+}
+
+export interface PublicRevisionSummary {
+  data_version: string;
+  public_schema_version: string;
+  summaries: LocalizedPublicContent[];
+}
+
 export interface PandaDetail extends PandaListItem {
   intro: string | null;
   birthplace: string | null;
@@ -86,6 +104,10 @@ export interface PandaDetail extends PandaListItem {
   current_place: CurrentPlaceSummary | null;
   residencies: PandaResidencySummary[];
   events: PandaDomainEventSummary[];
+  record_tier: string | null;
+  localized_content: LocalizedPublicContent[];
+  media_release: PublicMediaRelease | null;
+  public_revision: PublicRevisionSummary | null;
 }
 
 export interface CurrentPlaceSummary {

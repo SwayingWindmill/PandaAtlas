@@ -2,6 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 
 const browserChannel = process.env.PLAYWRIGHT_BROWSER_CHANNEL?.trim() || undefined;
 const productionServer = process.env.PLAYWRIGHT_WEB_SERVER_MODE === "production";
+const port = Number(process.env.PLAYWRIGHT_PORT ?? "3000");
+const baseURL = `http://127.0.0.1:${port}`;
 const reuseExistingServer =
   process.env.PLAYWRIGHT_REUSE_EXISTING_SERVER === undefined
     ? true
@@ -10,7 +12,7 @@ const reuseExistingServer =
 export default defineConfig({
   testDir: "./tests/smoke",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL,
   },
   projects: [
     {
@@ -23,9 +25,9 @@ export default defineConfig({
   ],
   webServer: {
     command: productionServer
-      ? "npm run start -- --hostname 127.0.0.1 --port 3000"
-      : "npm run dev -- --hostname 127.0.0.1 --port 3000",
-    url: "http://127.0.0.1:3000/atlas",
+      ? `npm run start -- --hostname 127.0.0.1 --port ${port}`
+      : `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
+    url: `${baseURL}/atlas`,
     reuseExistingServer,
     env: {
       ...process.env,

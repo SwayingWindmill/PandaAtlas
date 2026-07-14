@@ -292,8 +292,10 @@ export function buildAtlasPandaCard(item: PandaListItem): AtlasPandaCard {
     ageStageLabel: stageLabelValue,
     location: item.current_location ?? "基地待补录",
     locationShort,
-    searchText: [item.name_zh, item.name_en ?? "", item.slug, item.current_location ?? "", summary, ...tags]
+    searchText: [item.name_zh, item.name_en ?? "", item.slug, item.current_location ?? "", summary, ...tags, ...(item.search_terms ?? [])]
       .join(" ")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase(),
   };
 }

@@ -42,6 +42,22 @@ def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> 
     assert payload["slug"] == "mei-xiang"
     assert payload["identity"]["stable_id"] == MEI_XIANG_ID
     assert payload["identity"]["canonical_slug"] == "mei-xiang"
+    assert payload["record_tier"] == "complete_first_pass"
+    assert {item["locale"] for item in payload["localized_content"]} == {
+        "zh-CN",
+        "en",
+    }
+    assert payload["media_release"] == {
+        "license_state": "no_licensed_media",
+        "display_mode": "designed_empty_state",
+        "source_ids": [],
+    }
+    assert payload["public_revision"]["data_version"] == "2026.07.14.1"
+    assert payload["public_revision"]["public_schema_version"] == "1.0.0"
+    assert {item["locale"] for item in payload["public_revision"]["summaries"]} == {
+        "zh-CN",
+        "en",
+    }
     assert {name["language"] for name in payload["identity"]["names"]} >= {
         "zh-Hans",
         "en",
@@ -58,6 +74,15 @@ def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> 
         identifier["source_ids"]
         for identifier in payload["identity"]["external_identifiers"]
     )
+
+    list_response = client.get("/api/v1/pandas", params={"q": "美香"})
+    list_item = next(
+        item for item in list_response.json()["items"] if item["id"] == MEI_XIANG_ID
+    )
+    assert {"美香", "Měixiāng", "Mei-Xiang", "meixiang"} <= set(
+        list_item["search_terms"]
+    )
+    assert "smithsonian_history_key:mei-xiang" in list_item["search_terms"]
 
     conclusions = {item["field"]: item for item in payload["conclusions"]}
     assert conclusions["birth_date"]["status"] == "confirmed"

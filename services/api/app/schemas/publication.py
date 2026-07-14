@@ -27,6 +27,11 @@ PANDA_PUBLIC_REVISION_FIELDS = {
     "intro",
     "tags",
     "is_featured",
+    "search_terms",
+    "record_tier",
+    "localized_content",
+    "media_release",
+    "public_revision",
 }
 
 
