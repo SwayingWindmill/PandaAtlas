@@ -99,14 +99,17 @@ test("queries distribution data from the current map viewport", async ({ page })
 });
 
 test("retries the current viewport after a distribution request fails", async ({ page }) => {
-  let shouldSucceed = false;
-  const failedRequestKeys = new Set<string>();
+  let failNextRequest = false;
+  let failedRequestKey: string | null = null;
   const successfulRequestKeys: string[] = [];
+  const postFailureRequestKeys: string[] = [];
 
   await page.route("**/api/v1/map/distribution?**", async (route) => {
     const requestUrl = new URL(route.request().url());
-    if (!shouldSucceed) {
-      failedRequestKeys.add(requestKey(requestUrl));
+    const key = requestKey(requestUrl);
+    if (failNextRequest) {
+      failNextRequest = false;
+      failedRequestKey = key;
       await route.fulfill({
         status: 503,
         contentType: "application/json",
@@ -116,7 +119,10 @@ test("retries the current viewport after a distribution request fails", async ({
       return;
     }
 
-    successfulRequestKeys.push(requestKey(requestUrl));
+    successfulRequestKeys.push(key);
+    if (failedRequestKey !== null) {
+      postFailureRequestKeys.push(key);
+    }
     await route.fulfill({
       contentType: "application/json",
       headers: { "Access-Control-Allow-Origin": "*" },
@@ -125,15 +131,24 @@ test("retries the current viewport after a distribution request fails", async ({
   });
 
   await page.goto("/global-distribution");
+  await expect(page.getByTestId("global-distribution-shell")).toBeVisible();
+  await expect.poll(() => successfulRequestKeys.length, { timeout: 15_000 }).toBeGreaterThan(0);
+  await page.waitForTimeout(400);
+
+  failNextRequest = true;
+  await page.getByRole("button", { name: "放大地图" }).click();
+  await expect.poll(() => failedRequestKey, { timeout: 15_000 }).not.toBeNull();
+
   const retryButton = page.getByRole("button", { name: "重新刷新" });
   await expect(retryButton).toBeVisible({ timeout: 15_000 });
-  await expect.poll(() => failedRequestKeys.size, { timeout: 15_000 }).toBeGreaterThan(0);
-
-  shouldSucceed = true;
+  const requestCountBeforeRetry = postFailureRequestKeys.length;
   await retryButton.click();
   await expect
     .poll(
-      () => successfulRequestKeys.some((key) => failedRequestKeys.has(key)),
+      () =>
+        postFailureRequestKeys
+          .slice(requestCountBeforeRetry)
+          .some((key) => key === failedRequestKey),
       { timeout: 15_000 },
     )
     .toBe(true);
