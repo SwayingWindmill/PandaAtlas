@@ -1457,13 +1457,15 @@ components:
           additionalProperties: false
           properties:
             name_zh:
-              type: string
+              type: [string, 'null']
             name_en:
               type: string
               nullable: true
             gender:
-              type: string
-              enum: [male, female, unknown]
+              anyOf:
+                - type: string
+                  enum: [male, female, unknown]
+                - type: 'null'
             birth_date:
               type: string
               format: date
@@ -1473,8 +1475,10 @@ components:
               format: date
               nullable: true
             status:
-              type: string
-              enum: [alive, deceased, unknown]
+              anyOf:
+                - type: string
+                  enum: [alive, deceased, unknown]
+                - type: 'null'
             birthplace:
               type: string
               nullable: true
@@ -1485,11 +1489,13 @@ components:
               type: string
               nullable: true
             tags:
-              type: array
-              items:
-                type: string
+              anyOf:
+                - type: array
+                  items:
+                    type: string
+                - type: 'null'
             is_featured:
-              type: boolean
+              type: [boolean, 'null']
             search_terms:
               anyOf:
                 - type: array
