@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { createMapViewport, mapViewportEquals, mapViewportToQuery } from "@/components/atlas/map-viewport";
 
+type DistributionTestWindow = typeof globalThis & {
+  allowDistributionRequests: () => Promise<void>;
+};
+
 test("normalizes map viewport values for API queries", () => {
   const viewport = createMapViewport(
     { west: 100.1234567, south: 25.7654321, east: 110.9876549, north: 36.1234567 },
@@ -105,6 +109,10 @@ test("retries the current viewport after a distribution request fails", async ({
   const successfulRequestKeys: string[] = [];
   const postFailureRequestKeys: string[] = [];
 
+  await page.exposeFunction("allowDistributionRequests", () => {
+    rejectDistributionRequests = false;
+  });
+
   await page.route("**/api/v1/map/distribution?**", async (route) => {
     const requestUrl = new URL(route.request().url());
     const key = requestKey(requestUrl);
@@ -154,8 +162,10 @@ test("retries the current viewport after a distribution request fails", async ({
     .toBe(true);
 
   const requestCountBeforeRetry = postFailureRequestKeys.length;
-  rejectDistributionRequests = false;
-  await retryButton.click();
+  await retryButton.evaluate(async (button) => {
+    await (globalThis as DistributionTestWindow).allowDistributionRequests();
+    (button as HTMLButtonElement).click();
+  });
   await expect
     .poll(
       () =>
