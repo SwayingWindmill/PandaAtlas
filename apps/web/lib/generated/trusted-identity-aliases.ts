@@ -174,6 +174,83 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "language": "en",
         "access_state": "accessible"
       }
+    ],
+    "current_place": {
+      "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+      "coarse_location": null,
+      "status": "confirmed_country_level"
+    },
+    "residencies": [
+      {
+        "id": "res-mei-xiang-smithsonian",
+        "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2000-12-06",
+        "start_precision": "day",
+        "end_date": "2023-11-08",
+        "end_precision": "day",
+        "status": "confirmed",
+        "source_ids": [
+          "src_smithsonian_history"
+        ]
+      },
+      {
+        "id": "res-mei-xiang-china",
+        "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2023-11-08",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed_country_level",
+        "source_ids": [
+          "src_smithsonian_history"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-smithsonian-return-plan-2020",
+        "event_type": "transfer",
+        "event_status": "announced",
+        "event_date": "2020-12-07",
+        "event_date_precision": "day",
+        "participants": [
+          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+          "38cd1cad-3e34-5511-bc35-a091ece74e11",
+          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+        ],
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "from_coarse_location": null,
+        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_agreement_2020"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-smithsonian-departure-2023",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2023-11-08",
+        "event_date_precision": "day",
+        "participants": [
+          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+          "38cd1cad-3e34-5511-bc35-a091ece74e11",
+          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+        ],
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "from_coarse_location": null,
+        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "changes_current_residency": true
+      }
     ]
   },
   {
@@ -313,6 +390,83 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "last_verified_at": "2026-05-09",
         "language": "en",
         "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+      "coarse_location": null,
+      "status": "confirmed_country_level"
+    },
+    "residencies": [
+      {
+        "id": "res-tian-tian-smithsonian",
+        "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2000-12-06",
+        "start_precision": "day",
+        "end_date": "2023-11-08",
+        "end_precision": "day",
+        "status": "confirmed",
+        "source_ids": [
+          "src_smithsonian_history"
+        ]
+      },
+      {
+        "id": "res-tian-tian-china",
+        "facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2023-11-08",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed_country_level",
+        "source_ids": [
+          "src_smithsonian_history"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-smithsonian-return-plan-2020",
+        "event_type": "transfer",
+        "event_status": "announced",
+        "event_date": "2020-12-07",
+        "event_date_precision": "day",
+        "participants": [
+          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+          "38cd1cad-3e34-5511-bc35-a091ece74e11",
+          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+        ],
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "from_coarse_location": null,
+        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_agreement_2020"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-smithsonian-departure-2023",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2023-11-08",
+        "event_date_precision": "day",
+        "participants": [
+          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+          "38cd1cad-3e34-5511-bc35-a091ece74e11",
+          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+        ],
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "from_coarse_location": null,
+        "to_facility_id": "108f227d-2510-554a-98fb-395e58ca4433",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "changes_current_residency": true
       }
     ]
   }

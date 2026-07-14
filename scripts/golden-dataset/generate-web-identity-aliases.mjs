@@ -125,6 +125,54 @@ export function buildTrustedPandaDetails(dataset) {
           superseded_values: fact.public.superseded_values ?? [],
         }))
         .sort((left, right) => left.field.localeCompare(right.field));
+      const residencies = (dataset.residencies ?? [])
+        .filter(
+          (residency) => residency.publication_status === "published"
+            && residency.public?.panda_id === record.id
+            && (residency.public.source_ids ?? []).length > 0,
+        )
+        .map((residency) => ({
+          id: residency.id,
+          facility_id: residency.public.facility_id ?? null,
+          coarse_location: residency.public.coarse_location ?? null,
+          residency_type: residency.public.residency_type,
+          start_date: residency.public.start_date,
+          start_precision: residency.public.start_precision ?? "day",
+          end_date: residency.public.end_date ?? null,
+          end_precision: residency.public.end_precision
+            ?? (residency.public.end_date ? "day" : null),
+          status: residency.public.status,
+          source_ids: residency.public.source_ids ?? [],
+        }))
+        .sort((left, right) => left.start_date.localeCompare(right.start_date));
+      const currentResidency = [...residencies]
+        .reverse()
+        .find(
+          (residency) => residency.residency_type === "primary"
+            && residency.end_date === null
+            && ["confirmed", "confirmed_country_level"].includes(residency.status),
+        );
+      const events = (dataset.events ?? [])
+        .filter(
+          (event) => event.publication_status === "published"
+            && (event.public?.participants ?? []).includes(record.id)
+            && (event.public.source_ids ?? []).length > 0,
+        )
+        .map((event) => ({
+          id: event.id,
+          event_type: event.public.event_type,
+          event_status: event.public.event_status,
+          event_date: event.public.event_date,
+          event_date_precision: event.public.event_date_precision ?? "day",
+          participants: event.public.participants ?? [],
+          from_facility_id: event.public.from_facility_id ?? null,
+          from_coarse_location: event.public.from_coarse_location ?? null,
+          to_facility_id: event.public.to_facility_id ?? null,
+          to_coarse_location: event.public.to_coarse_location ?? null,
+          source_ids: event.public.source_ids ?? [],
+          changes_current_residency: Boolean(event.public.changes_current_residency),
+        }))
+        .sort((left, right) => left.event_date.localeCompare(right.event_date));
       const sourceIds = new Set(
         [
           ...identity.names,
@@ -132,6 +180,8 @@ export function buildTrustedPandaDetails(dataset) {
           ...identity.legacy_slugs,
           ...identity.external_identifiers,
           ...conclusions,
+          ...residencies,
+          ...events,
         ].flatMap((item) => item.source_ids),
       );
       const birthDate = conclusions.find((item) => item.field === "birth_date")?.value;
@@ -169,6 +219,15 @@ export function buildTrustedPandaDetails(dataset) {
         identity,
         conclusions,
         sources: buildSourceSummaries(dataset, sourceIds),
+        current_place: currentResidency
+          ? {
+              facility_id: currentResidency.facility_id,
+              coarse_location: currentResidency.coarse_location,
+              status: currentResidency.status,
+            }
+          : null,
+        residencies,
+        events,
       };
     });
 }

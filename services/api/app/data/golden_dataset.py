@@ -5,7 +5,9 @@ import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
+from uuid import UUID
 
+from app.domain.archive_relationships import ParentageAssertion
 from app.domain.trusted_identity import normalize_identity_term
 
 GOLDEN_DATASET_FILENAME = "mei-xiang-family.v1.json"
@@ -170,6 +172,61 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
 
         identity = _identity_payload(record)
         conclusions = _conclusions(dataset, record["id"])
+        residencies = [
+            {
+                "id": residency["id"],
+                "facility_id": residency_public.get("facility_id"),
+                "coarse_location": residency_public.get("coarse_location"),
+                "residency_type": residency_public["residency_type"],
+                "start_date": residency_public["start_date"],
+                "start_precision": residency_public.get("start_precision", "day"),
+                "end_date": residency_public.get("end_date"),
+                "end_precision": residency_public.get("end_precision")
+                or ("day" if residency_public.get("end_date") else None),
+                "status": residency_public["status"],
+                "source_ids": residency_public.get("source_ids", []),
+            }
+            for residency in dataset.get("residencies", [])
+            if residency.get("publication_status") == "published"
+            and (residency_public := residency.get("public", {})).get("panda_id")
+            == record["id"]
+            and residency_public.get("source_ids")
+        ]
+        residencies.sort(key=lambda item: item["start_date"])
+        current_residency = next(
+            (
+                item
+                for item in reversed(residencies)
+                if item["residency_type"] == "primary"
+                and item["end_date"] is None
+                and item["status"] in {"confirmed", "confirmed_country_level"}
+            ),
+            None,
+        )
+        events = [
+            {
+                "id": event["id"],
+                "event_type": event_public["event_type"],
+                "event_status": event_public["event_status"],
+                "event_date": event_public["event_date"],
+                "event_date_precision": event_public.get("event_date_precision", "day"),
+                "participants": event_public.get("participants", []),
+                "from_facility_id": event_public.get("from_facility_id"),
+                "from_coarse_location": event_public.get("from_coarse_location"),
+                "to_facility_id": event_public.get("to_facility_id"),
+                "to_coarse_location": event_public.get("to_coarse_location"),
+                "source_ids": event_public.get("source_ids", []),
+                "changes_current_residency": bool(
+                    event_public.get("changes_current_residency", False)
+                ),
+            }
+            for event in dataset.get("events", [])
+            if event.get("publication_status") == "published"
+            and record["id"]
+            in (event_public := event.get("public", {})).get("participants", [])
+            and event_public.get("source_ids")
+        ]
+        events.sort(key=lambda item: (item["event_date"], item["id"]))
         source_ids = {
             source_id
             for section in (
@@ -178,6 +235,8 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
                 identity["legacy_slugs"],
                 identity["external_identifiers"],
                 conclusions,
+                residencies,
+                events,
             )
             for item in section
             for source_id in item.get("source_ids", [])
@@ -231,6 +290,17 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
                 "identity": identity,
                 "conclusions": conclusions,
                 "sources": _source_summaries(dataset, source_ids),
+                "current_place": (
+                    {
+                        "facility_id": current_residency["facility_id"],
+                        "coarse_location": current_residency["coarse_location"],
+                        "status": current_residency["status"],
+                    }
+                    if current_residency
+                    else None
+                ),
+                "residencies": residencies,
+                "events": events,
                 "_search_terms": sorted(_search_terms(identity)),
             }
         )
@@ -262,3 +332,57 @@ def trusted_panda_matches(panda_id: str, query: str) -> bool:
 
 def public_trusted_panda_record(record: dict[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in record.items() if not key.startswith("_")}
+
+
+@lru_cache(maxsize=1)
+def trusted_parentage_assertions() -> tuple[ParentageAssertion, ...]:
+    dataset = load_golden_dataset()
+    return tuple(
+        ParentageAssertion(
+            id=record["id"],
+            child_id=UUID(public["child_id"]),
+            parent_id=UUID(public["parent_id"]),
+            role=public["role"],
+            status=public["status"],
+            publication_status=record["publication_status"],
+            source_ids=tuple(public.get("source_ids", [])),
+        )
+        for record in dataset.get("parentage_assertions", [])
+        if (public := record.get("public", {}))
+    )
+
+
+@lru_cache(maxsize=1)
+def trusted_lineage_pandas() -> tuple[dict[str, Any], ...]:
+    dataset = load_golden_dataset()
+    records: list[dict[str, Any]] = []
+    for record in dataset.get("pandas", []):
+        if record.get("publication_status") != "published":
+            continue
+        public = record.get("public", {})
+        conclusions = _conclusions(dataset, record["id"])
+        birth_date = next(
+            (
+                conclusion["value"]
+                for conclusion in conclusions
+                if conclusion["field"] == "birth_date"
+            ),
+            None,
+        )
+        records.append(
+            {
+                "id": UUID(record["id"]),
+                "slug": public["canonical_slug"],
+                "name_zh": _display_name(public, "zh-Hans")
+                or public["canonical_slug"],
+                "name_en": _display_name(public, "en"),
+                "gender": public.get("sex", "unknown"),
+                "status": public.get("life_status", "unknown"),
+                "birth_date": birth_date,
+                "current_location": None,
+                "cover_image_url": None,
+                "intro": None,
+                "tags": ["trusted-archive", "golden-dataset"],
+            }
+        )
+    return tuple(records)

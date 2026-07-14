@@ -21,7 +21,13 @@ const DEFAULT_BBOX = "100,25,110,36";
 
 type FallbackPandaSeed = Omit<
   PandaDetail,
-  "birthplace" | "identity" | "conclusions" | "sources"
+  | "birthplace"
+  | "identity"
+  | "conclusions"
+  | "sources"
+  | "current_place"
+  | "residencies"
+  | "events"
 > & {
   birthplace?: string | null;
 };
@@ -387,7 +393,10 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
       birthplace: profileOverride?.birthplace ?? detail.birthplace ?? null,
       identity: null,
       conclusions: [],
-      sources: []
+      sources: [],
+      current_place: null,
+      residencies: [],
+      events: []
     };
   }
 
@@ -400,7 +409,10 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
     habitats: override.habitats ?? detail.habitats,
     identity: null,
     conclusions: [],
-    sources: []
+    sources: [],
+    current_place: null,
+    residencies: [],
+    events: []
   };
 }
 
@@ -845,6 +857,7 @@ function buildFallbackLineageResponse(focusId?: string): PandaLineageResponse {
     focus_id: resolvedFocusId,
     nodes,
     edges,
+    relationships: [],
     meta: {
       ancestor_depth: 6,
       descendant_depth: 6

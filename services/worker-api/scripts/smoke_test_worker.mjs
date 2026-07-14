@@ -149,6 +149,17 @@ async function prepareD1Projection() {
     }
   }
 
+  const archiveRelationshipCheck = await runCommandCapture(process.execPath, [
+    ...d1Args,
+    "--command=select (select count(*) from parentage_assertions where status = 'confirmed') as confirmed_parentage_count, (select count(*) from domain_event_participants where event_id = 'event-smithsonian-departure-2023') as departure_participant_count",
+  ]);
+  if (
+    !/"confirmed_parentage_count":\s*9/.test(archiveRelationshipCheck)
+    || !/"departure_participant_count":\s*3/.test(archiveRelationshipCheck)
+  ) {
+    throw new Error(`D1 archive relationship assertion failed: ${archiveRelationshipCheck}`);
+  }
+
   const sourceColumns = await runCommandCapture(process.execPath, [
     ...d1Args,
     "--command=pragma table_info(evidence_sources)",
@@ -226,12 +237,33 @@ async function runHttpSmoke() {
       || trustedDetail?.identity?.stable_id !== "2939c16f-1938-5629-928c-b36b1d5cd6ed"
       || trustedDetail?.conclusions?.length !== 2
       || trustedDetail?.sources?.length < 2
+      || trustedDetail?.current_place?.facility_id !== "108f227d-2510-554a-98fb-395e58ca4433"
+      || trustedDetail?.residencies?.length !== 2
+      || trustedDetail?.events?.length !== 2
+      || trustedDetail.events.find(
+        (event) => event.id === "event-smithsonian-return-plan-2020",
+      )?.changes_current_residency !== false
+      || trustedDetail.events.find(
+        (event) => event.id === "event-smithsonian-departure-2023",
+      )?.participants?.length !== 3
     ) {
       throw new Error(`Worker trusted detail was incomplete: ${JSON.stringify(trustedDetail)}`);
     }
     const trustedSerialized = JSON.stringify(trustedDetail);
     if (/internal_notes|restricted_excerpt|content_hash|curator_notes/.test(trustedSerialized)) {
       throw new Error(`Worker trusted detail leaked restricted evidence: ${trustedSerialized}`);
+    }
+
+    const trustedLineage = await expectJson("/api/v1/pandas/mei-xiang/lineage", 200);
+    if (
+      !trustedLineage?.edges?.some(
+        (edge) =>
+          edge.parent_id === "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+          && edge.child_id === "96d00a39-7865-55db-b5c2-f339ef692258",
+      )
+      || !Array.isArray(trustedLineage?.relationships)
+    ) {
+      throw new Error(`Worker trusted lineage was not assertion-derived: ${JSON.stringify(trustedLineage)}`);
     }
 
     const distribution = await expectJson(

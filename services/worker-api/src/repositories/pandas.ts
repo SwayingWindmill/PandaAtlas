@@ -7,10 +7,12 @@ import type {
   PandaDetail,
   PandaIdentityProfile,
   PandaLineageNode,
+  PandaLineageRelationship,
   PandaListItem,
   PandaRow,
   PandaStatus,
   PandaGender,
+  ParentageRow,
   PublicFactConclusion,
   PublicSourceSummary
 } from "../types";
@@ -531,13 +533,106 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
     ...asset,
     signed_url: resolvePublicMediaUrl(asset.storage_path)
   }));
+  const residenciesResult = await env.DB.prepare(
+    `
+    select
+      r.id,
+      r.facility_id,
+      r.coarse_location,
+      r.residency_type,
+      r.start_date,
+      r.start_precision,
+      r.end_date,
+      r.end_precision,
+      r.status,
+      group_concat(distinct rs.source_id) as source_ids
+    from panda_residencies r
+    join residency_sources rs on rs.residency_id = r.id
+    where r.panda_id = ? and r.publication_status = 'published'
+    group by r.id
+    order by r.start_date, r.id
+    `
+  )
+    .bind(row.id)
+    .all<{
+      id: string;
+      facility_id: string | null;
+      coarse_location: string | null;
+      residency_type: "primary" | "temporary" | "transit" | "quarantine";
+      start_date: string;
+      start_precision: "day" | "month" | "year";
+      end_date: string | null;
+      end_precision: "day" | "month" | "year" | null;
+      status: "confirmed" | "confirmed_country_level" | "provisional";
+      source_ids: string | null;
+    }>();
+  const residencies = (residenciesResult.results ?? []).map((residency) => ({
+    ...residency,
+    source_ids: splitSourceIds(residency.source_ids)
+  }));
+  const currentResidency = [...residencies]
+    .reverse()
+    .find(
+      (residency) =>
+        residency.residency_type === "primary" &&
+        residency.end_date === null &&
+        (residency.status === "confirmed" ||
+          residency.status === "confirmed_country_level")
+    );
+
+  const eventsResult = await env.DB.prepare(
+    `
+    select
+      e.id,
+      e.event_type,
+      e.event_status,
+      e.event_date,
+      e.event_date_precision,
+      e.from_facility_id,
+      e.from_coarse_location,
+      e.to_facility_id,
+      e.to_coarse_location,
+      group_concat(distinct participant.panda_id) as participants,
+      group_concat(distinct es.source_id) as source_ids
+    from domain_events e
+    join domain_event_participants focus
+      on focus.event_id = e.id and focus.panda_id = ?
+    join domain_event_participants participant on participant.event_id = e.id
+    join domain_event_sources es on es.event_id = e.id
+    where e.publication_status = 'published'
+    group by e.id
+    order by e.event_date, e.id
+    `
+  )
+    .bind(row.id)
+    .all<{
+      id: string;
+      event_type: "transfer";
+      event_status: "announced" | "completed" | "cancelled" | "disputed";
+      event_date: string;
+      event_date_precision: "day" | "month" | "year";
+      from_facility_id: string | null;
+      from_coarse_location: string | null;
+      to_facility_id: string | null;
+      to_coarse_location: string | null;
+      participants: string | null;
+      source_ids: string | null;
+    }>();
+  const events = (eventsResult.results ?? []).map((event) => ({
+    ...event,
+    participants: splitSourceIds(event.participants).sort(),
+    source_ids: splitSourceIds(event.source_ids),
+    changes_current_residency: event.event_status === "completed"
+  }));
   const [identity, conclusions] = await Promise.all([
     loadPandaIdentity(env, row.id, ref.slug),
     loadPublicConclusions(env, row.id)
   ]);
   const sourceIds = new Set([
     ...identitySourceIds(identity),
-    ...conclusions.flatMap((conclusion) => conclusion.source_ids)
+    ...conclusions.flatMap((conclusion) => conclusion.source_ids),
+    ...residencies.flatMap((residency) => residency.source_ids),
+    ...events.flatMap((event) => event.source_ids)
   ]);
   const sources = await loadPublicSources(env, sourceIds);
 
@@ -553,14 +648,44 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
     media,
     identity,
     conclusions,
-    sources
+    sources,
+    current_place: currentResidency
+      ? {
+          facility_id: currentResidency.facility_id,
+          coarse_location: currentResidency.coarse_location,
+          status: currentResidency.status
+        }
+      : null,
+    residencies,
+    events
   };
 }
 
 export async function getPandaLineage(env: Env, pandaRef: string, options: LineageOptions) {
   const focus = await resolvePandaRef(env, pandaRef);
   const rowsResult = await env.DB.prepare(`${pandaSelectSql()} order by p.birth_date asc, p.name_zh asc`).all<PandaRow>();
-  const rows = rowsResult.results ?? [];
+  const parentageResult = await env.DB.prepare(`
+    select pa.child_id, pa.parent_id, pa.parent_role
+    from parentage_assertions pa
+    where pa.status = 'confirmed'
+      and pa.publication_status = 'published'
+      and exists (
+        select 1
+        from parentage_assertion_sources pas
+        where pas.assertion_id = pa.id
+      )
+  `).all<ParentageRow>();
+  const fatherByChild = new Map<string, string>();
+  const motherByChild = new Map<string, string>();
+  for (const assertion of parentageResult.results ?? []) {
+    const target = assertion.parent_role === "father" ? fatherByChild : motherByChild;
+    target.set(assertion.child_id, assertion.parent_id);
+  }
+  const rows = (rowsResult.results ?? []).map((row) => ({
+    ...row,
+    father_id: fatherByChild.get(row.id) ?? row.father_id,
+    mother_id: motherByChild.get(row.id) ?? row.mother_id
+  }));
   const byId = new Map(rows.map((row) => [row.id, row]));
   if (!byId.has(focus.id)) {
     throw new HttpError(404, "Panda not found");
@@ -584,16 +709,90 @@ export async function getPandaLineage(env: Env, pandaRef: string, options: Linea
   const nodes = rows.filter((row) => selectedIds.has(row.id)).map(toLineageNode);
   const nodeIds = new Set(nodes.map((node) => node.id));
   const edges = buildLineageEdges(nodes, nodeIds);
+  const relationships = buildLineageRelationships(nodeIds, edges);
 
   return {
     focus_id: focus.id,
     nodes,
     edges,
+    relationships,
     meta: {
       ancestor_depth: options.ancestorDepth,
       descendant_depth: options.descendantDepth
     }
   };
+}
+
+function buildLineageRelationships(
+  nodeIds: Set<string>,
+  edges: Array<{ parent_id: string; child_id: string }>
+): PandaLineageRelationship[] {
+  const parentsByChild = new Map<string, Set<string>>();
+  const childrenByParent = new Map<string, Set<string>>();
+  const neighbours = new Map<string, Set<string>>();
+  for (const edge of edges) {
+    addToSet(parentsByChild, edge.child_id, edge.parent_id);
+    addToSet(childrenByParent, edge.parent_id, edge.child_id);
+    addToSet(neighbours, edge.parent_id, edge.child_id);
+    addToSet(neighbours, edge.child_id, edge.parent_id);
+  }
+
+  const relationships: PandaLineageRelationship[] = [];
+  for (const subjectId of [...nodeIds].sort()) {
+    const parents = parentsByChild.get(subjectId) ?? new Set<string>();
+    const children = childrenByParent.get(subjectId) ?? new Set<string>();
+    const siblings = new Set<string>();
+    const grandparents = new Set<string>();
+    for (const parentId of parents) {
+      for (const siblingId of childrenByParent.get(parentId) ?? []) {
+        if (siblingId !== subjectId) siblings.add(siblingId);
+      }
+      for (const grandparentId of parentsByChild.get(parentId) ?? []) {
+        grandparents.add(grandparentId);
+      }
+    }
+    for (const [kind, relatedIds] of [
+      ["parent", parents],
+      ["child", children],
+      ["sibling", siblings],
+      ["grandparent", grandparents]
+    ] as const) {
+      for (const relatedId of [...relatedIds].sort()) {
+        const path = shortestPath(neighbours, subjectId, relatedId);
+        if (path) {
+          relationships.push({ subject_id: subjectId, related_id: relatedId, kind, path });
+        }
+      }
+    }
+  }
+  return relationships;
+}
+
+function addToSet(index: Map<string, Set<string>>, key: string, value: string) {
+  const values = index.get(key) ?? new Set<string>();
+  values.add(value);
+  index.set(key, values);
+}
+
+function shortestPath(
+  neighbours: Map<string, Set<string>>,
+  startId: string,
+  endId: string
+): string[] | null {
+  const queue: string[][] = [[startId]];
+  const visited = new Set<string>([startId]);
+  while (queue.length > 0) {
+    const path = queue.shift();
+    if (!path) continue;
+    for (const neighbour of [...(neighbours.get(path[path.length - 1]) ?? [])].sort()) {
+      if (visited.has(neighbour)) continue;
+      const nextPath = [...path, neighbour];
+      if (neighbour === endId) return nextPath;
+      visited.add(neighbour);
+      queue.push(nextPath);
+    }
+  }
+  return null;
 }
 
 function traverseAncestors(byId: Map<string, PandaRow>, focusId: string, maxDepth: number): Set<string> {
