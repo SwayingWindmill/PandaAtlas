@@ -31,10 +31,6 @@ def require_workflow_actor(
     actor_id: Annotated[UUID, Header(alias="X-Actor-Id")],
     credentials: HTTPAuthorizationCredentials | None = auth_credentials,
 ) -> UUID:
-    if settings.is_local_environment():
-        require_admin_token(credentials)
-        return actor_id
-
     try:
         actor_tokens = settings.workflow_actor_tokens()
     except (ValueError, TypeError) as error:
@@ -46,7 +42,7 @@ def require_workflow_actor(
     if not actor_tokens:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="WORKFLOW_ACTOR_TOKENS_JSON must configure independent staff actors",
+            detail="WORKFLOW_ACTOR_TOKENS_JSON must configure uniquely authenticated staff actors",
         )
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing bearer token")

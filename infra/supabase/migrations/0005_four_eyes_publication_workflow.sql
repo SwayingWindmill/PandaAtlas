@@ -227,11 +227,13 @@ begin
   if tg_table_name = 'change_set_revisions' then
     select status into container_status
     from public.change_sets
-    where id = coalesce(new.change_set_id, old.change_set_id);
+    where id = coalesce(new.change_set_id, old.change_set_id)
+    for share;
   else
     select status into container_status
     from public.publication_batches
-    where id = coalesce(new.batch_id, old.batch_id);
+    where id = coalesce(new.batch_id, old.batch_id)
+    for share;
   end if;
 
   if container_status <> 'draft' then
@@ -268,6 +270,7 @@ set search_path = public
 as $$
 declare
   current_batch_id uuid;
+  requested_batch_status text;
   published_batch public.publication_batches;
 begin
   select active_batch_id into current_batch_id
@@ -275,10 +278,12 @@ begin
   where singleton = true
   for update;
 
-  if not exists (
-    select 1 from public.publication_batches
-    where id = requested_batch_id and status = 'draft' and operation = 'release'
-  ) then
+  select status into requested_batch_status
+  from public.publication_batches
+  where id = requested_batch_id and operation = 'release'
+  for update;
+
+  if requested_batch_status is distinct from 'draft' then
     raise exception 'Publication batch is missing or immutable' using errcode = '23514';
   end if;
 
@@ -293,6 +298,17 @@ begin
     raise exception 'Publication batch contains an unreviewed change set'
       using errcode = '23514';
   end if;
+
+  -- A release batch is a complete immutable snapshot. Inherit the currently
+  -- active snapshot before adding the newly approved change sets already linked
+  -- to the requested batch. A withdrawal intentionally starts from no snapshot.
+  insert into public.publication_batch_change_sets (batch_id, change_set_id)
+  select requested_batch_id, existing.change_set_id
+  from public.publication_batch_change_sets existing
+  join public.publication_batches active on active.id = current_batch_id
+  where existing.batch_id = current_batch_id
+    and active.operation <> 'withdrawal'
+  on conflict (batch_id, change_set_id) do nothing;
 
   update public.publication_batches
   set
@@ -322,6 +338,15 @@ begin
 
   return published_batch;
 end;
+$$;
+
+revoke all on function public.publish_publication_batch(uuid, uuid) from public;
+do $$
+begin
+  if exists (select 1 from pg_roles where rolname = 'service_role') then
+    execute 'grant execute on function public.publish_publication_batch(uuid, uuid) to service_role';
+  end if;
+end
 $$;
 
 alter table public.entity_revisions enable row level security;
@@ -354,13 +379,28 @@ begin
       table_name
     );
     execute format(
-      'create policy %I on public.%I for all using '
-      || '(public.has_any_role(array[''admin'', ''editor'', ''reviewer'']::public.app_user_role[])) '
-      || 'with check '
-      || '(public.has_any_role(array[''admin'', ''editor'', ''reviewer'']::public.app_user_role[]))',
-      table_name || '_staff_access',
+      'drop policy if exists %I on public.%I',
+      table_name || '_staff_read',
       table_name
     );
+    execute format(
+      'create policy %I on public.%I for select using '
+      || '(public.has_any_role(array[''admin'', ''editor'', ''reviewer'']::public.app_user_role[]))',
+      table_name || '_staff_read',
+      table_name
+    );
+    if exists (select 1 from pg_roles where rolname = 'service_role') then
+      execute format(
+        'drop policy if exists %I on public.%I',
+        table_name || '_backend_write',
+        table_name
+      );
+      execute format(
+        'create policy %I on public.%I for all to service_role using (true) with check (true)',
+        table_name || '_backend_write',
+        table_name
+      );
+    end if;
   end loop;
 end
 $$;

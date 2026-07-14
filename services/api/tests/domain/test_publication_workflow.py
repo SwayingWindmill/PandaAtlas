@@ -94,3 +94,37 @@ def test_publication_preview_reports_every_required_problem_category() -> None:
         "source_availability",
         "license_problem",
     }
+
+
+def test_publication_preview_detects_residency_conflicts_across_revisions() -> None:
+    revisions = tuple(
+        EntityRevision.create(
+            entity_type="residency",
+            entity_id=f"residency-{index}",
+            actor_id=EDITOR_ID,
+            payload={
+                "public_record": {},
+                "publication_checks": {
+                    "references": [],
+                    "residencies": [
+                        {
+                            "panda_id": "mei-xiang",
+                            "start_date": start,
+                            "end_date": end,
+                        }
+                    ],
+                    "translations": [],
+                    "sources": [],
+                    "media": [],
+                },
+            },
+        )
+        for index, (start, end) in enumerate(
+            (("2023-01-01", "2023-12-01"), ("2023-11-01", None)),
+            start=1,
+        )
+    )
+
+    preview = preview_revisions(revisions)
+
+    assert [issue.category for issue in preview.issues] == ["residency_conflict"]

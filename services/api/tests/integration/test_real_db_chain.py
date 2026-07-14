@@ -1,3 +1,4 @@
+import json
 import os
 from collections.abc import Iterator
 from uuid import uuid4
@@ -53,9 +54,17 @@ def real_db_url() -> Iterator[str]:
 
     prev_database_url = settings.database_url
     prev_db_use_mock_fallback = settings.db_use_mock_fallback
+    prev_workflow_actor_tokens_json = settings.workflow_actor_tokens_json
 
     settings.database_url = database_url
     settings.db_use_mock_fallback = False
+    settings.workflow_actor_tokens_json = json.dumps(
+        {
+            "11111111-1111-4111-8111-111111111111": "editor-secret",
+            "22222222-2222-4222-8222-222222222222": "reviewer-secret",
+            "33333333-3333-4333-8333-333333333333": "publisher-secret",
+        }
+    )
     configure_database(database_url)
 
     try:
@@ -63,6 +72,7 @@ def real_db_url() -> Iterator[str]:
     finally:
         settings.database_url = prev_database_url
         settings.db_use_mock_fallback = prev_db_use_mock_fallback
+        settings.workflow_actor_tokens_json = prev_workflow_actor_tokens_json
         configure_database(prev_database_url)
 
 
@@ -314,75 +324,145 @@ def test_real_db_four_eyes_publication_is_atomic_and_audited(
     ) == 0:
         pytest.fail("Issue #9 publication workflow migration is not loaded")
 
-    editor_id = "11111111-1111-4111-8111-111111111111"
-    reviewer_id = "22222222-2222-4222-8222-222222222222"
-    publisher_id = "33333333-3333-4333-8333-333333333333"
+    actors = {
+        "11111111-1111-4111-8111-111111111111": "editor-secret",
+        "22222222-2222-4222-8222-222222222222": "reviewer-secret",
+        "33333333-3333-4333-8333-333333333333": "publisher-secret",
+    }
+    editor_id, reviewer_id, publisher_id = actors
     suffix = uuid4().hex
+    panda = _get_first_panda(client)
 
     def headers(actor_id: str) -> dict[str, str]:
         return {
-            "Authorization": "Bearer dev-admin-token",
+            "Authorization": f"Bearer {actors[actor_id]}",
             "X-Actor-Id": actor_id,
         }
 
-    created = client.post(
-        "/api/v1/admin/change-sets",
-        headers=headers(editor_id),
-        json={
-            "title": f"Integration publication {suffix}",
-            "reason": "Exercise the authoritative four-eyes workflow",
-            "revisions": [
-                {
-                    "entity_type": "panda",
-                    "entity_id": f"integration-{suffix}",
-                    "payload": {"publication_checks": {}},
-                }
-            ],
-        },
-    )
-    assert created.status_code == 201
-    change_set_id = created.json()["id"]
+    def revision_payload(birthplace: str) -> dict[str, object]:
+        return {
+            "public_record": {"birthplace": birthplace},
+            "publication_checks": {
+                "references": [],
+                "residencies": [],
+                "translations": [],
+                "sources": [],
+                "media": [],
+            },
+        }
 
-    submitted = client.post(
-        f"/api/v1/admin/change-sets/{change_set_id}/submit",
-        headers=headers(editor_id),
-    )
-    assert submitted.status_code == 200
+    def create_change_set(label: str) -> str:
+        response = client.post(
+            "/api/v1/admin/change-sets",
+            headers=headers(editor_id),
+            json={
+                "title": f"Integration publication {label} {suffix}",
+                "reason": "Exercise the authoritative four-eyes workflow",
+                "revisions": [
+                    {
+                        "entity_type": "panda",
+                        "entity_id": panda["id"],
+                        "payload": revision_payload(label),
+                    }
+                ],
+            },
+        )
+        assert response.status_code == 201
+        assert response.json()["status"] == "draft"
+        return response.json()["id"]
 
+    def submit(change_set_id: str) -> None:
+        response = client.post(
+            f"/api/v1/admin/change-sets/{change_set_id}/submit",
+            headers=headers(editor_id),
+        )
+        assert response.status_code == 200
+
+    def approve(change_set_id: str) -> None:
+        response = client.post(
+            f"/api/v1/admin/change-sets/{change_set_id}/reviews",
+            headers=headers(reviewer_id),
+            json={"decision": "approved", "reason": "Independent review complete"},
+        )
+        assert response.status_code == 200
+
+    def publish(change_set_id: str, version: str) -> dict[str, object]:
+        batch = client.post(
+            "/api/v1/admin/publication-batches",
+            headers=headers(publisher_id),
+            json={
+                "change_set_ids": [change_set_id],
+                "public_schema_version": "1.0.0",
+                "data_version": version,
+                "reason": "Publish integration release",
+                "correlation_id": str(uuid4()),
+            },
+        )
+        assert batch.status_code == 201
+        response = client.post(
+            f"/api/v1/admin/publication-batches/{batch.json()['id']}/publish",
+            headers=headers(publisher_id),
+        )
+        assert response.status_code == 200
+        return response.json()
+
+    rejected_id = create_change_set("Rejected")
+    submit(rejected_id)
+    rejected = client.post(
+        f"/api/v1/admin/change-sets/{rejected_id}/reviews",
+        headers=headers(reviewer_id),
+        json={"decision": "rejected", "reason": "Evidence remains ambiguous"},
+    )
+    assert rejected.status_code == 200
+    assert rejected.json()["status"] == "rejected"
+
+    first_id = create_change_set("First visible birthplace")
+    submit(first_id)
     denied = client.post(
-        f"/api/v1/admin/change-sets/{change_set_id}/reviews",
+        f"/api/v1/admin/change-sets/{first_id}/reviews",
         headers=headers(editor_id),
         json={"decision": "approved", "reason": "Self approval must fail"},
     )
     assert denied.status_code == 409
+    approve(first_id)
+    first_batch = publish(first_id, f"integration-{suffix}-1")
+    first_detail = client.get(f"/api/v1/pandas/{panda['slug']}")
+    assert first_detail.status_code == 200
+    assert first_detail.json()["birthplace"] == "First visible birthplace"
 
-    approved = client.post(
-        f"/api/v1/admin/change-sets/{change_set_id}/reviews",
-        headers=headers(reviewer_id),
-        json={"decision": "approved", "reason": "Independent review complete"},
-    )
-    assert approved.status_code == 200
+    second_id = create_change_set("Second visible birthplace")
+    submit(second_id)
+    approve(second_id)
+    publish(second_id, f"integration-{suffix}-2")
+    second_detail = client.get(f"/api/v1/pandas/{panda['slug']}")
+    assert second_detail.status_code == 200
+    assert second_detail.json()["birthplace"] == "Second visible birthplace"
 
-    batch = client.post(
-        "/api/v1/admin/publication-batches",
+    rollback = client.post(
+        f"/api/v1/admin/publication-batches/{first_batch['id']}/rollback",
         headers=headers(publisher_id),
         json={
-            "change_set_ids": [change_set_id],
-            "public_schema_version": "1.0.0",
-            "data_version": f"integration-{suffix}-1",
-            "reason": "Publish integration release",
+            "reason": "Restore the prior public snapshot",
             "correlation_id": str(uuid4()),
+            "data_version": f"integration-{suffix}-3",
         },
     )
-    assert batch.status_code == 201
-    batch_id = batch.json()["id"]
+    assert rollback.status_code == 201
+    rolled_back_detail = client.get(f"/api/v1/pandas/{panda['slug']}")
+    assert rolled_back_detail.status_code == 200
+    assert rolled_back_detail.json()["birthplace"] == "First visible birthplace"
 
-    published = client.post(
-        f"/api/v1/admin/publication-batches/{batch_id}/publish",
+    withdrawal = client.post(
+        f"/api/v1/admin/publication-batches/{rollback.json()['id']}/withdraw",
         headers=headers(publisher_id),
+        json={
+            "reason": "Emergency copyright withdrawal",
+            "correlation_id": str(uuid4()),
+            "data_version": f"integration-{suffix}-4",
+        },
     )
-    assert published.status_code == 200
-    assert published.json()["status"] == "published"
+    assert withdrawal.status_code == 201
+    assert client.get(f"/api/v1/pandas/{panda['slug']}").status_code == 404
 
     active = _query_one(
         real_db_url,
@@ -392,33 +472,8 @@ def test_real_db_four_eyes_publication_is_atomic_and_audited(
         where singleton
         """,
     )
-    assert active["active_batch_id"] == batch_id
+    assert active["active_batch_id"] == withdrawal.json()["id"]
     assert _query_scalar(
         real_db_url,
-        "select count(*) from public.audit_events where subject_id = %s::uuid",
-        (batch_id,),
-    ) >= 2
-
-    rollback = client.post(
-        f"/api/v1/admin/publication-batches/{batch_id}/rollback",
-        headers=headers(publisher_id),
-        json={
-            "reason": "Exercise append-only rollback",
-            "correlation_id": str(uuid4()),
-            "data_version": f"integration-{suffix}-2",
-        },
-    )
-    assert rollback.status_code == 201
-    assert rollback.json()["operation"] == "rollback"
-
-    withdrawal = client.post(
-        f"/api/v1/admin/publication-batches/{rollback.json()['id']}/withdraw",
-        headers=headers(publisher_id),
-        json={
-            "reason": "Exercise append-only emergency withdrawal",
-            "correlation_id": str(uuid4()),
-            "data_version": f"integration-{suffix}-3",
-        },
-    )
-    assert withdrawal.status_code == 201
-    assert withdrawal.json()["operation"] == "withdrawal"
+        "select count(*) from public.audit_events where event_type like 'publication_batch.%%'",
+    ) >= 6

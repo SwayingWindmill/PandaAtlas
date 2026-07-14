@@ -42,6 +42,7 @@ class EntityRevision:
     id: UUID
     entity_type: str
     entity_id: str
+    revision_number: int
     payload: dict[str, Any]
     created_by: UUID
     substantive_modified_by: UUID
@@ -59,6 +60,7 @@ class EntityRevision:
             id=uuid4(),
             entity_type=entity_type,
             entity_id=entity_id,
+            revision_number=1,
             payload=payload,
             created_by=actor_id,
             substantive_modified_by=actor_id,
@@ -139,10 +141,19 @@ def _issue(
 
 def preview_revisions(revisions: tuple[EntityRevision, ...]) -> PublicationPreview:
     issues: list[PublicationIssue] = []
+    by_panda: dict[str, list[tuple[date, date | None, EntityRevision]]] = {}
 
     for revision in revisions:
-        checks = revision.payload.get("publication_checks", {})
+        checks = revision.payload.get("publication_checks")
         if not isinstance(checks, dict):
+            for category in (
+                "unresolved_reference",
+                "residency_conflict",
+                "translation_state",
+                "source_availability",
+                "license_problem",
+            ):
+                issues.append(_issue(revision, category, "missing_check_manifest"))
             continue
 
         for reference in checks.get("references", []):
@@ -157,7 +168,6 @@ def preview_revisions(revisions: tuple[EntityRevision, ...]) -> PublicationPrevi
             for residency in checks.get("residencies", [])
             if isinstance(residency, dict)
         ]
-        by_panda: dict[str, list[tuple[date, date | None]]] = {}
         for residency in residencies:
             panda_id = str(residency.get("panda_id", revision.entity_id))
             start_value = residency.get("start_date")
@@ -172,15 +182,7 @@ def preview_revisions(revisions: tuple[EntityRevision, ...]) -> PublicationPrevi
                     _issue(revision, "residency_conflict", f"invalid_interval:{panda_id}")
                 )
                 continue
-            by_panda.setdefault(panda_id, []).append((start, end))
-        for panda_id, intervals in by_panda.items():
-            ordered = sorted(intervals, key=lambda item: item[0])
-            for previous, current in zip(ordered, ordered[1:], strict=False):
-                if previous[1] is None or current[0] < previous[1]:
-                    issues.append(
-                        _issue(revision, "residency_conflict", f"overlap:{panda_id}")
-                    )
-                    break
+            by_panda.setdefault(panda_id, []).append((start, end, revision))
 
         for translation in checks.get("translations", []):
             if isinstance(translation, dict) and translation.get("status") != "approved":
@@ -215,5 +217,14 @@ def preview_revisions(revisions: tuple[EntityRevision, ...]) -> PublicationPrevi
                         str(media.get("id", "unknown")),
                     )
                 )
+
+    for panda_id, intervals in by_panda.items():
+        ordered = sorted(intervals, key=lambda item: item[0])
+        for previous, current in zip(ordered, ordered[1:], strict=False):
+            if previous[1] is None or current[0] < previous[1]:
+                issues.append(
+                    _issue(current[2], "residency_conflict", f"overlap:{panda_id}")
+                )
+                break
 
     return PublicationPreview(issues=tuple(issues))

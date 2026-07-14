@@ -1383,21 +1383,133 @@ components:
       properties:
         entity_type:
           type: string
+          enum: [panda]
         entity_id:
           type: string
         payload:
+          $ref: '#/components/schemas/EntityRevisionPayload'
+
+    EntityRevisionPayload:
+      type: object
+      required: [public_record, publication_checks]
+      properties:
+        public_record:
           type: object
-          additionalProperties: true
+          minProperties: 1
+          additionalProperties: false
+          properties:
+            name_zh:
+              type: string
+            name_en:
+              type: string
+              nullable: true
+            gender:
+              type: string
+              enum: [male, female, unknown]
+            birth_date:
+              type: string
+              format: date
+              nullable: true
+            death_date:
+              type: string
+              format: date
+              nullable: true
+            status:
+              type: string
+              enum: [alive, deceased, unknown]
+            birthplace:
+              type: string
+              nullable: true
+            current_location:
+              type: string
+              nullable: true
+            intro:
+              type: string
+              nullable: true
+            tags:
+              type: array
+              items:
+                type: string
+            is_featured:
+              type: boolean
+        publication_checks:
+          $ref: '#/components/schemas/PublicationChecks'
+
+    PublicationChecks:
+      type: object
+      required: [references, residencies, translations, sources, media]
+      properties:
+        references:
+          type: array
+          items:
+            type: object
+            required: [target_type, target_id, resolved]
+            properties:
+              target_type:
+                type: string
+              target_id:
+                type: string
+              resolved:
+                type: boolean
+        residencies:
+          type: array
+          items:
+            type: object
+            required: [panda_id, start_date]
+            properties:
+              panda_id:
+                type: string
+              start_date:
+                type: string
+                format: date
+              end_date:
+                type: string
+                format: date
+                nullable: true
+        translations:
+          type: array
+          items:
+            type: object
+            required: [language_tag, status]
+            properties:
+              language_tag:
+                type: string
+              status:
+                type: string
+        sources:
+          type: array
+          items:
+            type: object
+            required: [id, access_state]
+            properties:
+              id:
+                type: string
+              access_state:
+                type: string
+        media:
+          type: array
+          items:
+            type: object
+            required: [id, license]
+            properties:
+              id:
+                type: string
+              license:
+                type: string
+                nullable: true
 
     EntityRevision:
       allOf:
         - $ref: '#/components/schemas/EntityRevisionInput'
         - type: object
-          required: [id, created_by, substantive_modified_by]
+          required: [id, revision_number, created_by, substantive_modified_by]
           properties:
             id:
               type: string
               format: uuid
+            revision_number:
+              type: integer
+              minimum: 1
             created_by:
               type: string
               format: uuid
@@ -1471,6 +1583,7 @@ components:
             format: uuid
         public_schema_version:
           type: string
+          enum: [1.0.0]
         data_version:
           type: string
         reason:

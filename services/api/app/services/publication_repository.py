@@ -51,6 +51,7 @@ def _change_set_from_db(session: Session, change_set_id: UUID) -> ChangeSet:
               revision.id,
               revision.entity_type,
               revision.entity_id,
+              revision.revision_number,
               revision.payload,
               revision.created_by,
               revision.substantive_modified_by
@@ -67,6 +68,7 @@ def _change_set_from_db(session: Session, change_set_id: UUID) -> ChangeSet:
             id=revision["id"],
             entity_type=revision["entity_type"],
             entity_id=revision["entity_id"],
+            revision_number=revision["revision_number"],
             payload=_json_object(revision["payload"]),
             created_by=revision["created_by"],
             substantive_modified_by=revision["substantive_modified_by"],
@@ -99,6 +101,7 @@ def _change_set_read(change_set: ChangeSet) -> ChangeSetRead:
                 id=revision.id,
                 entity_type=revision.entity_type,
                 entity_id=revision.entity_id,
+                revision_number=revision.revision_number,
                 payload=revision.payload,
                 created_by=revision.created_by,
                 substantive_modified_by=revision.substantive_modified_by,
@@ -205,6 +208,44 @@ def create_change_set(
     payload: ChangeSetCreate,
     actor_id: UUID,
 ) -> ChangeSetRead:
+    base_records: dict[str, dict[str, Any]] = {}
+    for revision in payload.revisions:
+        panda_row = session.execute(
+            text(
+                """
+                select
+                  name_zh,
+                  name_en,
+                  gender,
+                  birth_date::text as birth_date,
+                  death_date::text as death_date,
+                  status::text as status,
+                  birthplace,
+                  current_location,
+                  intro,
+                  tags,
+                  is_featured
+                from public.pandas
+                where id::text = :panda_id
+                """
+            ),
+            {"panda_id": revision.entity_id},
+        ).mappings().first()
+        if panda_row is None:
+            raise HTTPException(
+                status_code=422,
+                detail="Publication revisions require an existing trusted panda identity",
+            )
+        base_record = dict(panda_row)
+        active_public_record = get_active_public_record(
+            session,
+            revision.entity_type,
+            revision.entity_id,
+        )
+        if active_public_record and not active_public_record.get("_withdrawn"):
+            base_record.update(active_public_record)
+        base_records[revision.entity_id] = base_record
+
     change_set_id = session.execute(
         text(
             """
@@ -217,6 +258,11 @@ def create_change_set(
     ).scalar_one()
 
     for revision in payload.revisions:
+        revision_payload = revision.payload.model_dump(mode="json")
+        revision_payload["public_record"] = {
+            **base_records[revision.entity_id],
+            **revision_payload["public_record"],
+        }
         revision_id = session.execute(
             text(
                 """
@@ -241,7 +287,7 @@ def create_change_set(
             {
                 "entity_type": revision.entity_type,
                 "entity_id": revision.entity_id,
-                "payload": json.dumps(revision.payload),
+                "payload": json.dumps(revision_payload),
                 "actor_id": actor_id,
             },
         ).scalar_one()
@@ -402,7 +448,157 @@ def get_batch(session: Session, batch_id: UUID) -> PublicationBatchRead:
 
 def get_batch_change_sets(session: Session, batch_id: UUID) -> list[ChangeSet]:
     batch = _batch_from_db(session, batch_id)
-    return [_change_set_from_db(session, item) for item in batch.change_set_ids]
+    change_set_ids = set(batch.change_set_ids)
+    if batch.status == "draft":
+        active_row = session.execute(
+            text(
+                """
+                select batch.id, batch.operation
+                from public.public_release_pointer pointer
+                join public.publication_batches batch on batch.id = pointer.active_batch_id
+                where pointer.singleton = true
+                """
+            )
+        ).mappings().first()
+        if active_row is not None and active_row["operation"] != "withdrawal":
+            change_set_ids.update(
+                session.execute(
+                    text(
+                        """
+                        select change_set_id
+                        from public.publication_batch_change_sets
+                        where batch_id = :batch_id
+                        """
+                    ),
+                    {"batch_id": active_row["id"]},
+                ).scalars()
+            )
+    return [_change_set_from_db(session, item) for item in sorted(change_set_ids, key=str)]
+
+
+def hydrate_revisions_for_preview(
+    session: Session,
+    revisions: tuple[EntityRevision, ...],
+) -> tuple[EntityRevision, ...]:
+    revision_keys = {(item.entity_type, item.entity_id) for item in revisions}
+    reference_queries = {
+        "panda": "select exists(select 1 from public.pandas where id::text = :id or slug = :id)",
+        "evidence_source": """
+            select exists(
+              select 1 from public.evidence_sources
+              where id = :id and publication_status = 'published'
+            )
+        """,
+        "institution": """
+            select exists(
+              select 1 from public.institutions
+              where id::text = :id and publication_status = 'published'
+            )
+        """,
+        "facility": """
+            select exists(
+              select 1 from public.facilities
+              where id::text = :id and publication_status = 'published'
+            )
+        """,
+        "domain_event": """
+            select exists(
+              select 1 from public.domain_events
+              where id = :id and publication_status = 'published'
+            )
+        """,
+        "residency": """
+            select exists(
+              select 1 from public.panda_residencies
+              where id = :id and publication_status = 'published'
+            )
+        """,
+    }
+    hydrated: list[EntityRevision] = []
+
+    for revision in revisions:
+        payload = json.loads(json.dumps(revision.payload))
+        checks = payload.get("publication_checks")
+        if not isinstance(checks, dict):
+            hydrated.append(revision)
+            continue
+
+        for reference in checks.get("references", []):
+            if not isinstance(reference, dict):
+                continue
+            key = (str(reference.get("target_type")), str(reference.get("target_id")))
+            resolved = key in revision_keys
+            query = reference_queries.get(key[0])
+            if not resolved and query is not None:
+                resolved = bool(session.execute(text(query), {"id": key[1]}).scalar_one())
+            reference["resolved"] = resolved
+
+        for source in checks.get("sources", []):
+            if not isinstance(source, dict):
+                continue
+            state = session.execute(
+                text(
+                    """
+                    select access_state
+                    from public.evidence_sources
+                    where id = :id and publication_status = 'published'
+                    """
+                ),
+                {"id": source.get("id")},
+            ).scalar_one_or_none()
+            source["access_state"] = state or "missing"
+
+        for media in checks.get("media", []):
+            if not isinstance(media, dict):
+                continue
+            license_value = session.execute(
+                text("select license from public.media_assets where id::text = :id"),
+                {"id": media.get("id")},
+            ).scalar_one_or_none()
+            media["license"] = license_value
+
+        hydrated.append(
+            EntityRevision(
+                id=revision.id,
+                entity_type=revision.entity_type,
+                entity_id=revision.entity_id,
+                revision_number=revision.revision_number,
+                payload=payload,
+                created_by=revision.created_by,
+                substantive_modified_by=revision.substantive_modified_by,
+            )
+        )
+
+    return tuple(hydrated)
+
+
+def lock_batch_for_publication(session: Session, batch_id: UUID) -> None:
+    row = session.execute(
+        text(
+            """
+            select status
+            from public.publication_batches
+            where id = :batch_id
+            for update
+            """
+        ),
+        {"batch_id": batch_id},
+    ).first()
+    if row is None:
+        raise HTTPException(status_code=404, detail="Publication batch not found")
+
+
+def lock_release_pointer(session: Session) -> None:
+    session.execute(
+        text(
+            """
+            select active_batch_id
+            from public.public_release_pointer
+            where singleton = true
+            for update
+            """
+        )
+    ).one()
 
 
 def publish_batch(
@@ -466,7 +662,7 @@ def publish_release_action(
                   previous_batch_id, rollback_target_id, withdrawal_target_id
                 ) values (
                   :public_schema_version, :data_version, :reason, :correlation_id,
-                  :operation, 'published', :actor_id, :actor_id, :published_at,
+                  :operation, 'draft', :actor_id, null, null,
                   :previous_batch_id, :rollback_target_id, :withdrawal_target_id
                 )
                 returning
@@ -482,7 +678,6 @@ def publish_release_action(
                 "correlation_id": payload.correlation_id,
                 "operation": operation,
                 "actor_id": actor_id,
-                "published_at": datetime.now(UTC),
                 "previous_batch_id": current_batch_id,
                 "rollback_target_id": target.id if operation == "rollback" else None,
                 "withdrawal_target_id": target.id if operation == "withdrawal" else None,
@@ -490,6 +685,34 @@ def publish_release_action(
         ).mappings().one()
     except IntegrityError as error:
         raise HTTPException(status_code=409, detail="Data version already exists") from error
+    if operation == "rollback":
+        session.execute(
+            text(
+                """
+                insert into public.publication_batch_change_sets (batch_id, change_set_id)
+                select :batch_id, change_set_id
+                from public.publication_batch_change_sets
+                where batch_id = :target_batch_id
+                """
+            ),
+            {"batch_id": row["id"], "target_batch_id": target.id},
+        )
+
+    published_at = datetime.now(UTC)
+    row = session.execute(
+        text(
+            """
+            update public.publication_batches
+            set status = 'published', published_by = :actor_id, published_at = :published_at
+            where id = :batch_id
+            returning
+              id, public_schema_version, data_version, reason, correlation_id,
+              operation, status, created_by, published_by, published_at,
+              previous_batch_id, rollback_target_id, withdrawal_target_id
+            """
+        ),
+        {"batch_id": row["id"], "actor_id": actor_id, "published_at": published_at},
+    ).mappings().one()
     session.execute(
         text(
             """
@@ -498,7 +721,7 @@ def publish_release_action(
             where singleton = true
             """
         ),
-        {"batch_id": row["id"], "published_at": row["published_at"]},
+        {"batch_id": row["id"], "published_at": published_at},
     )
     _insert_audit(
         session,
@@ -508,7 +731,55 @@ def publish_release_action(
         actor_id=actor_id,
         reason=payload.reason,
         correlation_id=payload.correlation_id,
-        metadata={"target_batch_id": str(target.id)},
+        metadata={
+            "target_batch_id": str(target.id),
+            "public_schema_version": row["public_schema_version"],
+            "data_version": row["data_version"],
+        },
     )
     change_set_ids = target.change_set_ids if operation == "rollback" else []
     return _batch_from_row(dict(row), change_set_ids)
+
+
+def get_active_public_record(
+    session: Session,
+    entity_type: str,
+    entity_id: str,
+) -> dict[str, Any] | None:
+    row = session.execute(
+        text(
+            """
+            with active as (
+              select
+                batch.id,
+                batch.operation,
+                case
+                  when batch.operation = 'withdrawal' then batch.withdrawal_target_id
+                  else batch.id
+                end as source_batch_id
+              from public.public_release_pointer pointer
+              join public.publication_batches batch on batch.id = pointer.active_batch_id
+              where pointer.singleton = true
+            )
+            select revision.payload, active.operation
+            from active
+            join public.publication_batch_change_sets batch_link
+              on batch_link.batch_id = active.source_batch_id
+            join public.change_set_revisions change_link
+              on change_link.change_set_id = batch_link.change_set_id
+            join public.entity_revisions revision on revision.id = change_link.revision_id
+            where revision.entity_type = :entity_type
+              and revision.entity_id = :entity_id
+            order by revision.revision_number desc, revision.created_at desc
+            limit 1
+            """
+        ),
+        {"entity_type": entity_type, "entity_id": entity_id},
+    ).mappings().first()
+    if row is None:
+        return None
+    if row["operation"] == "withdrawal":
+        return {"_withdrawn": True}
+    payload = _json_object(row["payload"])
+    public_record = payload.get("public_record")
+    return public_record if isinstance(public_record, dict) else None

@@ -37,7 +37,10 @@ class Settings(BaseSettings):
         value = json.loads(self.workflow_actor_tokens_json)
         if not isinstance(value, dict):
             raise ValueError("WORKFLOW_ACTOR_TOKENS_JSON must be a JSON object")
-        return {UUID(actor_id): str(token) for actor_id, token in value.items()}
+        actor_tokens = {UUID(actor_id): str(token) for actor_id, token in value.items()}
+        if len(set(actor_tokens.values())) != len(actor_tokens):
+            raise ValueError("Workflow actor bearer tokens must be unique")
+        return actor_tokens
 
 
 settings = Settings()

@@ -29,6 +29,7 @@ def test_postgres_models_immutable_reviewed_publication_workflow() -> None:
     assert "create or replace function public.publish_publication_batch" in sql
     assert "for update" in sql
     assert "public_release_pointer" in sql
+    assert "a release batch is a complete immutable snapshot" in sql
     assert "public_schema_version" in sql
     assert "data_version" in sql
     assert "correlation_id" in sql
@@ -43,3 +44,6 @@ def test_published_versions_revisions_and_audit_events_are_append_only() -> None
     assert "trg_published_batches_immutable" in sql
     assert "rollback_target_id" in sql
     assert "withdrawal_target_id" in sql
+    assert "revoke all on function public.publish_publication_batch" in sql
+    assert "for select using" in sql
+    assert "for all to service_role" in sql
