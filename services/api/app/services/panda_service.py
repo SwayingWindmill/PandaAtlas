@@ -19,9 +19,9 @@ from app.data.golden_dataset import (
     find_trusted_panda,
     public_trusted_panda_record,
     trusted_lineage_pandas,
-    trusted_parentage_assertions,
     trusted_panda_details,
     trusted_panda_matches,
+    trusted_parentage_assertions,
 )
 from app.data.mock_data import MOCK_PANDAS
 from app.db.session import has_database, session_scope
