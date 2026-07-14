@@ -243,7 +243,13 @@ def create_change_set(
             revision.entity_id,
         )
         if active_public_record and not active_public_record.get("_withdrawn"):
-            base_record.update(active_public_record)
+            base_record.update(
+                {
+                    key: value
+                    for key, value in active_public_record.items()
+                    if not key.startswith("_")
+                }
+            )
         base_records[revision.entity_id] = base_record
 
     change_set_id = session.execute(
@@ -753,6 +759,8 @@ def get_active_public_record(
               select
                 batch.id,
                 batch.operation,
+                batch.public_schema_version,
+                batch.data_version,
                 case
                   when batch.operation = 'withdrawal' then batch.withdrawal_target_id
                   else batch.id
@@ -761,7 +769,11 @@ def get_active_public_record(
               join public.publication_batches batch on batch.id = pointer.active_batch_id
               where pointer.singleton = true
             )
-            select revision.payload, active.operation
+            select
+              revision.payload,
+              active.operation,
+              active.public_schema_version,
+              active.data_version
             from active
             join public.publication_batch_change_sets batch_link
               on batch_link.batch_id = active.source_batch_id
@@ -782,4 +794,12 @@ def get_active_public_record(
         return {"_withdrawn": True}
     payload = _json_object(row["payload"])
     public_record = payload.get("public_record")
-    return public_record if isinstance(public_record, dict) else None
+    if not isinstance(public_record, dict):
+        return None
+    return {
+        **public_record,
+        "_publication": {
+            "public_schema_version": row["public_schema_version"],
+            "data_version": row["data_version"],
+        },
+    }

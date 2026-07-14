@@ -20,6 +20,10 @@ create table if not exists pandas (
   intro text,
   tags_json text not null default '[]',
   is_featured integer not null default 0 check (is_featured in (0, 1)),
+  record_tier text check (record_tier in ('complete_first_pass', 'identity_first_pass', 'dependency_stub')),
+  localized_content_json text not null default '[]',
+  media_release_json text,
+  public_revision_json text,
   created_at text not null default (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
   updated_at text not null default (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
 );

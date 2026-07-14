@@ -79,7 +79,8 @@ function toListItem(row: PandaRow): PandaListItem {
     status: row.status,
     birth_date: row.birth_date,
     current_location: row.current_location,
-    cover_image_url: resolvePublicMediaUrl(row.cover_image_url)
+    cover_image_url: resolvePublicMediaUrl(row.cover_image_url),
+    search_terms: parseJsonValue<string[]>(row.search_terms_json, [])
   };
 }
 
@@ -117,6 +118,23 @@ function coverImageSql(): string {
   `;
 }
 
+function searchTermsSql(): string {
+  return `
+    (
+      select json_group_array(identity_term.term)
+      from (
+        select pn.panda_id, pn.value as term from panda_names pn
+        union
+        select ps.panda_id, ps.slug as term from panda_slugs ps
+        union
+        select pei.panda_id, pei.system || ':' || pei.value as term
+        from panda_external_identifiers pei
+      ) identity_term
+      where identity_term.panda_id = p.id
+    ) as search_terms_json
+  `;
+}
+
 function pandaSelectSql(): string {
   return `
     select
@@ -134,6 +152,11 @@ function pandaSelectSql(): string {
       p.father_id,
       p.mother_id,
       p.is_featured,
+      p.record_tier,
+      p.localized_content_json,
+      p.media_release_json,
+      p.public_revision_json,
+      ${searchTermsSql()},
       ${coverImageSql()}
     from pandas p
     left join panda_slugs canonical_slug
@@ -681,7 +704,11 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
         }
       : null,
     residencies,
-    events
+    events,
+    record_tier: row.record_tier,
+    localized_content: parseJsonValue(row.localized_content_json, []),
+    media_release: parseJsonValue(row.media_release_json, null),
+    public_revision: parseJsonValue(row.public_revision_json, null)
   };
 }
 

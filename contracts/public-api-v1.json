@@ -13,7 +13,8 @@
         "status": { "required": true, "nullable": false },
         "birth_date": { "required": false, "nullable": true },
         "current_location": { "required": false, "nullable": true },
-        "cover_image_url": { "required": false, "nullable": true }
+        "cover_image_url": { "required": false, "nullable": true },
+        "search_terms": { "required": false, "nullable": false }
       }
     },
     "DistributionFeatureProperties": {
@@ -113,6 +114,29 @@
         "access_state": { "required": true, "nullable": false }
       }
     },
+    "LocalizedPublicContent": {
+      "description": "One approved localized public summary.",
+      "fields": {
+        "locale": { "required": true, "nullable": false },
+        "summary": { "required": true, "nullable": false }
+      }
+    },
+    "PublicMediaRelease": {
+      "description": "Reviewed public media license and rendering policy for one panda.",
+      "fields": {
+        "license_state": { "required": true, "nullable": false },
+        "display_mode": { "required": true, "nullable": false },
+        "source_ids": { "required": true, "nullable": false }
+      }
+    },
+    "PublicRevisionSummary": {
+      "description": "Version metadata and approved summaries for the current public revision.",
+      "fields": {
+        "data_version": { "required": true, "nullable": false },
+        "public_schema_version": { "required": true, "nullable": false },
+        "summaries": { "required": true, "nullable": false }
+      }
+    },
     "PandaDetail": {
       "description": "One public panda profile with structured identity and fact provenance.",
       "fields": {
@@ -125,6 +149,7 @@
         "birth_date": { "required": false, "nullable": true },
         "current_location": { "required": false, "nullable": true },
         "cover_image_url": { "required": false, "nullable": true },
+        "search_terms": { "required": false, "nullable": false },
         "intro": { "required": false, "nullable": true },
         "birthplace": { "required": false, "nullable": true },
         "tags": { "required": false, "nullable": false },
@@ -137,7 +162,11 @@
         "sources": { "required": false, "nullable": false },
         "current_place": { "required": false, "nullable": true },
         "residencies": { "required": false, "nullable": false },
-        "events": { "required": false, "nullable": false }
+        "events": { "required": false, "nullable": false },
+        "record_tier": { "required": false, "nullable": true },
+        "localized_content": { "required": false, "nullable": false },
+        "media_release": { "required": false, "nullable": true },
+        "public_revision": { "required": false, "nullable": true }
       }
     }
   }

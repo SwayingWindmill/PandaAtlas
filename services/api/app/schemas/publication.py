@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
+
+from app.schemas.panda import LocalizedPublicContent, PublicMediaRelease
 
 ChangeSetStatus = Literal["draft", "submitted", "approved", "rejected"]
 ReviewDecision = Literal["approved", "rejected"]
@@ -15,19 +17,32 @@ PreviewCategory = Literal[
     "source_availability",
     "license_problem",
 ]
-PANDA_PUBLIC_REVISION_FIELDS = {
-    "name_zh",
-    "name_en",
-    "gender",
-    "birth_date",
-    "death_date",
-    "status",
-    "birthplace",
-    "current_location",
-    "intro",
-    "tags",
-    "is_featured",
-}
+
+
+class PandaPublicRecord(BaseModel):
+    name_zh: str | None = None
+    name_en: str | None = None
+    gender: Literal["male", "female", "unknown"] | None = None
+    birth_date: date | None = None
+    death_date: date | None = None
+    status: Literal["alive", "deceased", "unknown"] | None = None
+    birthplace: str | None = None
+    current_location: str | None = None
+    intro: str | None = None
+    tags: list[str] | None = None
+    is_featured: bool | None = None
+    search_terms: list[str] | None = None
+    record_tier: Literal[
+        "complete_first_pass", "identity_first_pass", "dependency_stub"
+    ] | None = None
+    localized_content: list[LocalizedPublicContent] | None = None
+    media_release: PublicMediaRelease | None = None
+    revision_summaries: list[LocalizedPublicContent] | None = None
+
+    model_config = {"extra": "forbid"}
+
+
+PANDA_PUBLIC_REVISION_FIELDS = set(PandaPublicRecord.model_fields)
 
 
 class EntityRevisionCreate(BaseModel):
@@ -44,6 +59,7 @@ class EntityRevisionCreate(BaseModel):
         if unsupported:
             fields = ", ".join(sorted(unsupported))
             raise ValueError(f"Unsupported or restricted panda public fields: {fields}")
+        PandaPublicRecord.model_validate(self.payload.public_record)
         return self
 
 

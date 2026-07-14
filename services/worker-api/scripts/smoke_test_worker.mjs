@@ -143,7 +143,7 @@ async function prepareD1Projection() {
   for (const expected of [
     /"legacy_slug_count":\s*1/,
     /"searchable_name_count":\s*[1-9]\d*/,
-    /"conclusion_count":\s*2/,
+    /"conclusion_count":\s*3/,
   ]) {
     if (!expected.test(identityCheck)) {
       throw new Error(`D1 trusted identity assertion failed: ${identityCheck}`);
@@ -237,10 +237,15 @@ async function runHttpSmoke() {
       "/api/v1/pandas?q=M%C4%9Bixi%C4%81ng&page_size=100",
       200,
     );
+    const meiXiangSearchResult = identitySearch?.items?.find(
+      (item) => item.id === "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    );
     if (
-      !identitySearch?.items?.some(
-        (item) => item.id === "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-      )
+      !meiXiangSearchResult
+      || !Array.isArray(meiXiangSearchResult.search_terms)
+      || !meiXiangSearchResult.search_terms.includes("Měixiāng")
+      || !meiXiangSearchResult.search_terms.includes("meixiang")
+      || !meiXiangSearchResult.search_terms.includes("smithsonian_history_key:mei-xiang")
     ) {
       throw new Error(`Worker identity search missed Mei Xiang: ${JSON.stringify(identitySearch)}`);
     }
@@ -249,11 +254,15 @@ async function runHttpSmoke() {
     if (
       trustedDetail?.slug !== "mei-xiang"
       || trustedDetail?.identity?.stable_id !== "2939c16f-1938-5629-928c-b36b1d5cd6ed"
-      || trustedDetail?.conclusions?.length !== 2
+      || trustedDetail?.conclusions?.length !== 3
       || trustedDetail?.sources?.length < 2
       || trustedDetail?.current_place?.coarse_location !== "China"
       || trustedDetail?.residencies?.length !== 2
       || trustedDetail?.events?.length !== 2
+      || trustedDetail?.record_tier !== "complete_first_pass"
+      || trustedDetail?.localized_content?.length !== 2
+      || trustedDetail?.media_release?.display_mode !== "designed_empty_state"
+      || trustedDetail?.public_revision?.data_version !== "2026.07.14.1"
       || trustedDetail.events.find(
         (event) => event.id === "event-smithsonian-return-plan-2020",
       )?.changes_current_residency !== false

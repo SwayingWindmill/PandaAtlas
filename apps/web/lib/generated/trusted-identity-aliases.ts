@@ -1,7 +1,7 @@
 // Generated from contracts/golden-dataset/mei-xiang-family.v1.json.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
-import type { PandaDetail } from "@/lib/types";
+import type { PandaDetail, PandaLineageEdge, PandaLineageNode } from "@/lib/types";
 
 export interface TrustedPandaReference {
   id: string;
@@ -46,6 +46,16 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "birth_date": "1998-07-22",
     "current_location": "China",
     "cover_image_url": null,
+    "search_terms": [
+      "mei-xiang",
+      "美香",
+      "Mei Xiang",
+      "Měixiāng",
+      "Mei-Xiang",
+      "meixiang",
+      "mei_xiang",
+      "smithsonian_history_key:mei-xiang"
+    ],
     "intro": "曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。",
     "birthplace": null,
     "tags": [
@@ -145,6 +155,20 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "last_verified_at": "2026-05-09",
         "assertion_ids": [
           "fact-mei-xiang-current-place"
+        ],
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-09",
+        "assertion_ids": [
+          "fact-mei-xiang-sex"
         ],
         "source_ids": [
           "src_smithsonian_history"
@@ -251,7 +275,37 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "changes_current_residency": true
       }
-    ]
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former Smithsonian female and mother of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.14.1",
+      "public_schema_version": "1.0.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生日期、居住记录、迁移事件与公开来源的首轮整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "First public review of identity, birth date, residencies, transfer events, and sources."
+        }
+      ]
+    }
   },
   {
     "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
@@ -263,6 +317,16 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "birth_date": "1997-08-27",
     "current_location": "China",
     "cover_image_url": null,
+    "search_terms": [
+      "tian-tian",
+      "添添",
+      "Tian Tian",
+      "Tiāntiān",
+      "Tian-Tian",
+      "tiantian",
+      "tian_tian",
+      "smithsonian_history_key:tian-tian"
+    ],
     "intro": "曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。",
     "birthplace": null,
     "tags": [
@@ -468,6 +532,204 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "changes_current_residency": true
       }
-    ]
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former Smithsonian male and father of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji."
+      }
+    ],
+    "media_release": {
+      "license_state": "source_link_only",
+      "display_mode": "link_to_source",
+      "source_ids": [
+        "src_smithsonian_history"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.14.1",
+      "public_schema_version": "1.0.0",
+      "summaries": []
+    }
+  }
+];
+
+export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
+  {
+    "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "slug": "mei-xiang",
+    "name_zh": "美香",
+    "name_en": "Mei Xiang",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "1998-07-22",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null
+  },
+  {
+    "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "slug": "tian-tian",
+    "name_zh": "添添",
+    "name_en": "Tian Tian",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "1997-08-27",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null
+  },
+  {
+    "id": "96d00a39-7865-55db-b5c2-f339ef692258",
+    "slug": "tai-shan",
+    "name_zh": "泰山",
+    "name_en": "Tai Shan",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+  },
+  {
+    "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "slug": "bao-bao",
+    "name_zh": "宝宝",
+    "name_en": "Bao Bao",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+  },
+  {
+    "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+    "slug": "bei-bei",
+    "name_zh": "贝贝",
+    "name_en": "Bei Bei",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+  },
+  {
+    "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+    "slug": "xiao-qi-ji",
+    "name_zh": "小奇迹",
+    "name_en": "Xiao Qi Ji",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+  },
+  {
+    "id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+    "slug": "bao-li",
+    "name_zh": "宝力",
+    "name_en": "Bao Li",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
+  }
+];
+
+export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
+  {
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258"
+  },
+  {
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258"
+  },
+  {
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
+  },
+  {
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
+  },
+  {
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b"
+  },
+  {
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b"
+  },
+  {
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+  },
+  {
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+  },
+  {
+    "parent_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c"
   }
 ];

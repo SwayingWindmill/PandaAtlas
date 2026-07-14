@@ -14,6 +14,16 @@
   --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+  .trusted-profile-theme {
+    --bg: #101611;
+    --card: #18211a;
+    --fg: #edf3ee;
+    --muted: #b3c2b5;
+    --accent: #78aa7e;
+  }
+}
+
 * {
   border-color: var(--line);
 }

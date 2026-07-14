@@ -361,7 +361,38 @@ def _list_pandas_from_db(
           {public_current_location} as public_current_location,
           p.tags,
           p.is_featured,
-          cover.cover_image_url
+          cover.cover_image_url,
+          array_remove(
+            array[
+              coalesce(canonical_slug.slug, p.slug),
+              {public_name_zh},
+              {public_name_en}
+            ]
+            || array(
+              select pn.value
+              from public.panda_names pn
+              where pn.panda_id = p.id
+                and pn.publication_status = 'published'
+            )
+            || array(
+              select ps.slug
+              from public.panda_slugs ps
+              where ps.panda_id = p.id
+                and ps.publication_status = 'published'
+            )
+            || array(
+              select pei.value
+              from public.panda_external_identifiers pei
+              where pei.panda_id = p.id
+                and pei.publication_status = 'published'
+              union all
+              select pei.system || ':' || pei.value
+              from public.panda_external_identifiers pei
+              where pei.panda_id = p.id
+                and pei.publication_status = 'published'
+            ),
+            null::text
+          ) as search_terms
         from public.pandas p
         left join active_records active_record on active_record.entity_id = p.id::text
         left join public.panda_slugs canonical_slug
@@ -410,6 +441,7 @@ def _list_pandas_from_db(
             birth_date=row["public_birth_date"],
             current_location=row["public_current_location"],
             cover_image_url=_resolve_public_media_url(row["cover_image_url"]),
+            search_terms=list(dict.fromkeys(row["search_terms"] or [])),
         )
         for row in rows
     ]
@@ -1034,7 +1066,17 @@ def get_panda_by_ref(panda_ref: str) -> PandaDetail:
                     key: value
                     for key, value in public_record.items()
                     if key in PANDA_PUBLIC_REVISION_FIELDS
+                    and key in PandaDetail.model_fields
                 }
+                publication = public_record.get("_publication")
+                if isinstance(publication, dict):
+                    overlay["public_revision"] = {
+                        "data_version": publication.get("data_version"),
+                        "public_schema_version": publication.get(
+                            "public_schema_version"
+                        ),
+                        "summaries": public_record.get("revision_summaries", []),
+                    }
                 return PandaDetail.model_validate(
                     {**detail.model_dump(mode="json"), **overlay}
                 )

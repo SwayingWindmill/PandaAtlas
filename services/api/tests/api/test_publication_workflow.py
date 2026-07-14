@@ -1,9 +1,12 @@
 import json
 
+import pytest
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from app.core.config import settings
 from app.main import app
+from app.schemas.publication import EntityRevisionCreate
 
 client = TestClient(app)
 EDITOR_ID = "11111111-1111-4111-8111-111111111111"
@@ -85,3 +88,33 @@ def test_duplicate_actor_tokens_are_rejected(monkeypatch) -> None:
     )
     assert response.status_code == 503
     assert response.json()["detail"] == "WORKFLOW_ACTOR_TOKENS_JSON is invalid"
+
+
+def test_public_revision_metadata_cannot_be_authored_in_revision_payload() -> None:
+    payload = _payload()["revisions"][0]
+    payload["payload"]["public_record"] = {
+        "public_revision": {
+            "data_version": "forged",
+            "public_schema_version": "1.0.0",
+            "summaries": [],
+        }
+    }
+
+    with pytest.raises(ValidationError, match="Unsupported or restricted"):
+        EntityRevisionCreate.model_validate(payload)
+
+
+def test_nested_public_projection_rejects_restricted_fields() -> None:
+    payload = _payload()["revisions"][0]
+    payload["payload"]["public_record"] = {
+        "localized_content": [
+            {
+                "locale": "zh-CN",
+                "summary": "reviewed summary",
+                "curator_notes": "must remain private",
+            }
+        ]
+    }
+
+    with pytest.raises(ValidationError, match="Extra inputs are not permitted"):
+        EntityRevisionCreate.model_validate(payload)

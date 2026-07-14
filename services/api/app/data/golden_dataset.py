@@ -124,6 +124,18 @@ def _search_terms(identity: dict[str, Any]) -> set[str]:
     return {normalize_identity_term(term) for term in terms if term}
 
 
+def _public_search_terms(identity: dict[str, Any]) -> list[str]:
+    terms = [identity["canonical_slug"]]
+    terms.extend(item["value"] for item in identity["names"])
+    terms.extend(item["value"] for item in identity["aliases"])
+    terms.extend(item["value"] for item in identity["legacy_slugs"])
+    for identifier in identity["external_identifiers"]:
+        terms.extend(
+            [identifier["value"], f"{identifier['system']}:{identifier['value']}"]
+        )
+    return list(dict.fromkeys(str(term) for term in terms if term))
+
+
 def _source_summaries(dataset: dict[str, Any], source_ids: set[str]) -> list[dict[str, Any]]:
     summaries = []
     for source in dataset.get("sources", []):
@@ -194,6 +206,7 @@ def _published_source_ids(dataset: dict[str, Any]) -> set[str]:
 @lru_cache(maxsize=1)
 def trusted_panda_details() -> tuple[dict[str, Any], ...]:
     dataset = load_golden_dataset()
+    dataset_meta = dataset["dataset"]
     published_source_ids = _published_source_ids(dataset)
     facilities = {facility["id"]: facility for facility in dataset.get("facilities", [])}
     records: list[dict[str, Any]] = []
@@ -314,6 +327,27 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
             for content in public.get("content", [])
             if content.get("translation_status") == "approved"
         }
+        localized_content = [
+            {"locale": content["locale"], "summary": content["summary"]}
+            for content in public.get("content", [])
+            if content.get("translation_status") == "approved"
+        ]
+        media_release = next(
+            (
+                {
+                    "license_state": media_public["license_state"],
+                    "display_mode": media_public["display_mode"],
+                    "source_ids": _public_source_ids(
+                        media_public.get("source_ids", []), published_source_ids
+                    ),
+                }
+                for media in dataset.get("media", [])
+                if media.get("publication_status") == "published"
+                and (media_public := media.get("public", {})).get("panda_id")
+                == record["id"]
+            ),
+            None,
+        )
 
         records.append(
             {
@@ -326,6 +360,7 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
                 "birth_date": birth_date,
                 "current_location": current_location,
                 "cover_image_url": None,
+                "search_terms": _public_search_terms(identity),
                 "intro": summaries.get("zh-CN") or summaries.get("en"),
                 "birthplace": None,
                 "tags": ["trusted-identity", "golden-dataset"],
@@ -347,6 +382,14 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
                 ),
                 "residencies": residencies,
                 "events": events,
+                "record_tier": public.get("record_tier"),
+                "localized_content": localized_content,
+                "media_release": media_release,
+                "public_revision": {
+                    "data_version": dataset_meta["version"],
+                    "public_schema_version": dataset_meta["public_schema_version"],
+                    "summaries": list(public.get("revision_summaries", [])),
+                },
                 "_search_terms": sorted(_search_terms(identity)),
             }
         )

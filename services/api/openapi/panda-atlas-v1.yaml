@@ -702,6 +702,10 @@ components:
           type: string
           format: uri
           nullable: true
+        search_terms:
+          type: array
+          items:
+            type: string
 
 
     IdentityNameRecord:
@@ -826,6 +830,45 @@ components:
           type: string
         access_state:
           type: string
+
+    LocalizedPublicContent:
+      type: object
+      additionalProperties: false
+      required: [locale, summary]
+      properties:
+        locale:
+          type: string
+        summary:
+          type: string
+
+    PublicMediaRelease:
+      type: object
+      additionalProperties: false
+      required: [license_state, display_mode, source_ids]
+      properties:
+        license_state:
+          type: string
+          enum: [licensed, no_licensed_media, source_link_only]
+        display_mode:
+          type: string
+          enum: [gallery, designed_empty_state, link_to_source]
+        source_ids:
+          type: array
+          items:
+            type: string
+
+    PublicRevisionSummary:
+      type: object
+      required: [data_version, public_schema_version, summaries]
+      properties:
+        data_version:
+          type: string
+        public_schema_version:
+          type: string
+        summaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalizedPublicContent'
 
     CurrentPlaceSummary:
       type: object
@@ -973,6 +1016,21 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PandaDomainEventSummary'
+            record_tier:
+              type: string
+              nullable: true
+            localized_content:
+              type: array
+              items:
+                $ref: '#/components/schemas/LocalizedPublicContent'
+            media_release:
+              anyOf:
+                - $ref: '#/components/schemas/PublicMediaRelease'
+                - type: 'null'
+            public_revision:
+              anyOf:
+                - $ref: '#/components/schemas/PublicRevisionSummary'
+                - type: 'null'
 
     PandaLineageNode:
       allOf:
@@ -1399,13 +1457,15 @@ components:
           additionalProperties: false
           properties:
             name_zh:
-              type: string
+              type: [string, 'null']
             name_en:
               type: string
               nullable: true
             gender:
-              type: string
-              enum: [male, female, unknown]
+              anyOf:
+                - type: string
+                  enum: [male, female, unknown]
+                - type: 'null'
             birth_date:
               type: string
               format: date
@@ -1415,8 +1475,10 @@ components:
               format: date
               nullable: true
             status:
-              type: string
-              enum: [alive, deceased, unknown]
+              anyOf:
+                - type: string
+                  enum: [alive, deceased, unknown]
+                - type: 'null'
             birthplace:
               type: string
               nullable: true
@@ -1427,11 +1489,40 @@ components:
               type: string
               nullable: true
             tags:
-              type: array
-              items:
-                type: string
+              anyOf:
+                - type: array
+                  items:
+                    type: string
+                - type: 'null'
             is_featured:
-              type: boolean
+              type: [boolean, 'null']
+            search_terms:
+              anyOf:
+                - type: array
+                  items:
+                    type: string
+                - type: 'null'
+            record_tier:
+              anyOf:
+                - type: string
+                  enum: [complete_first_pass, identity_first_pass, dependency_stub]
+                - type: 'null'
+            localized_content:
+              anyOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/LocalizedPublicContent'
+                - type: 'null'
+            media_release:
+              anyOf:
+                - $ref: '#/components/schemas/PublicMediaRelease'
+                - type: 'null'
+            revision_summaries:
+              anyOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/LocalizedPublicContent'
+                - type: 'null'
         publication_checks:
           $ref: '#/components/schemas/PublicationChecks'
 

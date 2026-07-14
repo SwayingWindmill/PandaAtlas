@@ -2,7 +2,7 @@
   "contract_version": "1.0.0",
   "dataset": {
     "id": "mei-xiang-family",
-    "version": "2026.07.13.1",
+    "version": "2026.07.14.1",
     "public_schema_version": "1.0.0",
     "title": "Mei Xiang–Tian Tian family golden dataset",
     "core_panda_count": 7,
@@ -224,6 +224,10 @@
         "content": [
           { "locale": "zh-CN", "translation_status": "approved", "summary": "曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。" },
           { "locale": "en", "translation_status": "approved", "summary": "Former Smithsonian female and mother of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji." }
+        ],
+        "revision_summaries": [
+          { "locale": "zh-CN", "summary": "完成身份、出生日期、居住记录、迁移事件与公开来源的首轮整理。" },
+          { "locale": "en", "summary": "First public review of identity, birth date, residencies, transfer events, and sources." }
         ]
       },
       "restricted": {
@@ -371,6 +375,20 @@
     }
   ],
   "facts": [
+    {
+      "id": "fact-mei-xiang-sex",
+      "publication_status": "published",
+      "public": {
+        "subject_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+        "field": "sex",
+        "value": "female",
+        "conclusion_status": "confirmed",
+        "source_ids": ["src_smithsonian_history"],
+        "last_verified_at": "2026-05-09",
+        "freshness": { "policy": "stable_identity_fact", "max_age_days": null, "state": "current" }
+      },
+      "restricted": { "curator_notes": "Public sex field is tied to the same reviewed identity source." }
+    },
     {
       "id": "fact-mei-xiang-birth-date",
       "publication_status": "published",
