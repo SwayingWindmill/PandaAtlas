@@ -1,4 +1,5 @@
 import type { PandaListItem, PandaStatus } from "@/lib/types";
+import { TRUSTED_PANDA_REFERENCES } from "@/lib/generated/trusted-identity-aliases";
 
 export type AtlasAgeStage = "cub" | "juvenile" | "adult" | "senior" | "unknown";
 export type AtlasSortOption = "recommended" | "popular" | "latest" | "youngest" | "oldest" | "name_asc";
@@ -278,7 +279,9 @@ export function buildAtlasPandaCard(item: PandaListItem): AtlasPandaCard {
   return {
     id: item.id,
     slug: item.slug,
-    href: `/atlas/${item.slug || item.id}`,
+    href: TRUSTED_PANDA_REFERENCES[item.slug]
+      ? `/zh/atlas/${item.slug}`
+      : `/atlas/${item.slug || item.id}`,
     recordCode: buildRecordCode(item),
     nameZh: item.name_zh,
     nameEn: item.name_en,

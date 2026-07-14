@@ -59,6 +59,9 @@ const copy = {
     media: "影像与许可",
     noMedia: "暂无可公开授权影像",
     noMediaBody: "档案明确记录为无已授权媒体。页面不会用来源不明的图片替代。",
+    sourceMedia: "仅提供来源媒体链接",
+    sourceMediaBody: "来源页面可供查阅，但其影像未导入图鉴，也不在本站重新授权。",
+    sourceMediaAction: "前往来源页面",
     evidence: "资料依据",
     evidenceIntro: "每条关键结论只连接公开来源元数据，不公开内部审核材料。",
     published: "来源发布日期",
@@ -115,6 +118,9 @@ const copy = {
     media: "Media and licensing",
     noMedia: "No licensed public media",
     noMediaBody: "The record explicitly states that no licensed media is available. Unverified imagery is not substituted.",
+    sourceMedia: "Source-linked media only",
+    sourceMediaBody: "The source page may be consulted, but its media is not imported or relicensed by Panda Atlas.",
+    sourceMediaAction: "Open source page",
     evidence: "Evidence",
     evidenceIntro: "Key conclusions link only to public source metadata. Internal review material remains private.",
     published: "Source published",
@@ -218,7 +224,22 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
     .filter((edge) => edge.parent_id === panda.id)
     .map((edge) => lineage.nodes.find((node) => node.id === edge.child_id))
     .filter((node): node is NonNullable<typeof node> => Boolean(node));
-  const related = lineage.nodes.filter((node) => node.slug === "tian-tian" && node.id !== panda.id);
+  const relatedIds = new Set(
+    lineage.relationships
+      .filter((relationship) => relationship.subject_id === panda.id)
+      .map((relationship) => relationship.related_id),
+  );
+  const childIds = new Set(
+    lineage.edges
+      .filter((edge) => edge.parent_id === panda.id)
+      .map((edge) => edge.child_id),
+  );
+  for (const edge of lineage.edges) {
+    if (childIds.has(edge.child_id) && edge.parent_id !== panda.id) {
+      relatedIds.add(edge.parent_id);
+    }
+  }
+  const related = lineage.nodes.filter((node) => relatedIds.has(node.id));
   const footprintStops = panda.residencies.map((item) => ({
     ...item,
     label: placeLabel(item.facility_id, item.coarse_location, locale),
@@ -272,7 +293,7 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
               <div data-testid="fact-birth"><dt className="text-xs font-semibold text-[var(--muted)]">{t.birth}</dt><dd className="mt-2 text-lg font-semibold">{dateLabel(panda.birth_date, locale)}</dd><FactProvenance conclusion={birthConclusion} locale={locale} panda={panda} /></div>
               <div data-testid="fact-sex"><dt className="text-xs font-semibold text-[var(--muted)]">{t.sex}</dt><dd className="mt-2 text-lg font-semibold">{panda.gender === "female" ? t.female : panda.gender === "male" ? t.male : t.unknown}</dd><FactProvenance conclusion={sexConclusion} locale={locale} panda={panda} /></div>
               <div data-testid="fact-place"><dt className="text-xs font-semibold text-[var(--muted)]">{t.place}</dt><dd className="mt-2 text-lg font-semibold">{placeLabel(panda.current_place?.facility_id ?? null, panda.current_place?.coarse_location ?? panda.current_location, locale)}</dd><FactProvenance conclusion={placeConclusion} locale={locale} panda={panda} /></div>
-              <div data-testid="fact-parents"><dt className="text-xs font-semibold text-[var(--muted)]">{t.parents}</dt><dd className="mt-2 text-lg font-semibold">{parents.length ? parents.map((item) => locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh).join(", ") : t.noParents}</dd>{parents.length === 0 ? <p className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</p> : null}</div>
+              <div data-testid="fact-parents"><dt className="text-xs font-semibold text-[var(--muted)]">{t.parents}</dt><dd className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-lg font-semibold">{parents.length ? parents.map((item) => <Link key={item.id} href={`/${locale}/atlas/${item.slug}`} className="text-[var(--accent)] hover:underline">{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</Link>) : t.noParents}</dd>{parents.length === 0 ? <p className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</p> : null}</div>
             </dl>
           </div>
 
@@ -324,7 +345,7 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
             <div data-testid="lineage-text-view">
               <h3 className="text-xl font-semibold">{t.children}</h3>
               <ol className="mt-4 grid gap-3">
-                {children.map((child, index) => <li key={child.id} className="rounded-xl border border-[rgba(47,92,69,0.09)] p-4"><span className="mr-3 text-[var(--accent)]">{index + 1}.</span>{locale === "zh" ? child.name_zh : child.name_en ?? child.name_zh}</li>)}
+                {children.map((child, index) => <li key={child.id} className="rounded-xl border border-[rgba(47,92,69,0.09)] p-4"><span className="mr-3 text-[var(--accent)]">{index + 1}.</span><Link href={`/${locale}/atlas/${child.slug}`} className="font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? child.name_zh : child.name_en ?? child.name_zh}</Link></li>)}
               </ol>
             </div>
           </div>
@@ -354,6 +375,16 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
               <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">{t.noMediaBody}</p>
             </div>
           ) : null}
+          {panda.media_release?.display_mode === "link_to_source" ? (
+            <div className="mt-8 rounded-2xl border border-[rgba(47,92,69,0.12)] bg-[rgba(63,125,71,0.05)] p-8 sm:p-12" data-testid="media-source-link-state">
+              <p className="text-2xl font-semibold">{t.sourceMedia}</p>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">{t.sourceMediaBody}</p>
+              {panda.media_release.source_ids.map((sourceId) => {
+                const source = panda.sources.find((item) => item.id === sourceId);
+                return source ? <a key={sourceId} href={source.url} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] hover:underline">{t.sourceMediaAction}<ExternalLink className="h-4 w-4" aria-hidden="true" /></a> : null;
+              })}
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -375,7 +406,7 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
           <div>
             <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.related}</h2>
             <div className="mt-5 grid gap-3">
-              {related.map((item) => <a key={item.id} href={`/lineage?focus=${item.slug}`} className="rounded-xl border border-[rgba(47,92,69,0.09)] p-5 transition-colors hover:bg-[rgba(63,125,71,0.05)]"><p className="text-lg font-semibold">{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</p><span className="mt-2 inline-block text-sm font-semibold text-[var(--accent)]">{t.openProfile}</span></a>)}
+              {related.map((item) => <Link key={item.id} href={`/${locale}/atlas/${item.slug}`} className="rounded-xl border border-[rgba(47,92,69,0.09)] p-5 transition-colors hover:bg-[rgba(63,125,71,0.05)]"><p className="text-lg font-semibold">{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</p><span className="mt-2 inline-block text-sm font-semibold text-[var(--accent)]">{t.openProfile}</span></Link>)}
             </div>
           </div>
         </div>

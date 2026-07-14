@@ -84,6 +84,32 @@ test("golden dataset covers the required domain cases", async () => {
   assert.ok(dataset.events.some((event) => event.public.event_status === "completed"));
 });
 
+test("every core profile declares completeness gaps and current-place verification", async () => {
+  const dataset = await loadGoldenDataset();
+
+  for (const panda of dataset.pandas) {
+    if (panda.public.record_tier !== "complete_first_pass") {
+      assert.ok(
+        panda.restricted.missing_requirements?.length > 0,
+        `${panda.public.canonical_slug} must declare missing archive requirements`,
+      );
+    }
+
+    const currentResidency = dataset.residencies
+      .filter((residency) => residency.public.panda_id === panda.id)
+      .filter((residency) => residency.public.residency_type === "primary")
+      .find((residency) => residency.public.end_date == null);
+    assert.ok(currentResidency, `${panda.public.canonical_slug} needs a current residency`);
+    assert.match(currentResidency.public.last_verified_at, /^\d{4}-\d{2}-\d{2}$/);
+  }
+
+  for (const assertion of dataset.parentage_assertions) {
+    if (assertion.public.status === "confirmed") {
+      assert.ok(assertion.public.source_ids.length > 0);
+    }
+  }
+});
+
 test("generated web identity aliases match the canonical golden dataset", async () => {
   const dataset = await loadGoldenDataset();
   const generated = await readFile(generatedIdentityAliasesPath, "utf8");
@@ -95,12 +121,23 @@ test("generated web identity aliases match the canonical golden dataset", async 
   assert.deepEqual(
     new Set(Object.keys(buildTrustedIdentityReferences(dataset))),
     new Set([
+      "bao-bao",
+      "bao-li",
+      "baobao-smithsonian",
+      "baoli",
+      "bei-bei",
+      "beibei",
       "mei-xiang",
       "mei_xiang",
       "meixiang",
+      "tai-shan",
+      "taishan",
       "tian-tian",
       "tian_tian",
       "tiantian",
+      "xiao-qi-ji",
+      "xiao_qi_ji",
+      "xiaoqiji",
     ]),
   );
   assert.match(generated, /"meixiang"/);
@@ -120,12 +157,12 @@ test("all test layers load one fixture and the public projection strips restrict
   const identityLists = fixtures.map((dataset) => dataset.pandas.map((record) => record.id));
 
   for (const dataset of fixtures) {
-    assert.equal(dataset.dataset.version, "2026.07.14.1");
+    assert.equal(dataset.dataset.version, "2026.07.14.2");
     assert.deepEqual(dataset.pandas.map((record) => record.id), identityLists[0]);
   }
 
   const projection = buildPublicProjection(fixtures[0]);
-  assert.equal(projection.dataset.version, "2026.07.14.1");
+  assert.equal(projection.dataset.version, "2026.07.14.2");
   assert.equal(projection.pandas.length, 7);
   assert.equal(JSON.stringify(projection).includes("restricted"), false);
   assert.equal(JSON.stringify(projection).includes("curator_notes"), false);

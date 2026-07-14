@@ -152,11 +152,12 @@ async function prepareD1Projection() {
 
   const archiveRelationshipCheck = await runCommandCapture(process.execPath, [
     ...d1Args,
-    "--command=select (select count(*) from parentage_assertions where status = 'confirmed') as confirmed_parentage_count, (select count(*) from domain_event_participants where event_id = 'event-smithsonian-departure-2023') as departure_participant_count",
+    "--command=select (select count(*) from parentage_assertions where status = 'confirmed') as confirmed_parentage_count, (select count(*) from domain_event_participants where event_id = 'event-smithsonian-departure-2023') as departure_participant_count, (select count(*) from pandas where slug in ('bei-bei', 'xiao-qi-ji') and current_location = 'Wolong Shenshuping Base') as shenshuping_current_count",
   ]);
   if (
     !/"confirmed_parentage_count":\s*9/.test(archiveRelationshipCheck)
     || !/"departure_participant_count":\s*3/.test(archiveRelationshipCheck)
+    || !/"shenshuping_current_count":\s*2/.test(archiveRelationshipCheck)
   ) {
     throw new Error(`D1 archive relationship assertion failed: ${archiveRelationshipCheck}`);
   }
@@ -262,7 +263,7 @@ async function runHttpSmoke() {
       || trustedDetail?.record_tier !== "complete_first_pass"
       || trustedDetail?.localized_content?.length !== 2
       || trustedDetail?.media_release?.display_mode !== "designed_empty_state"
-      || trustedDetail?.public_revision?.data_version !== "2026.07.14.1"
+      || trustedDetail?.public_revision?.data_version !== "2026.07.14.2"
       || trustedDetail.events.find(
         (event) => event.id === "event-smithsonian-return-plan-2020",
       )?.changes_current_residency !== false

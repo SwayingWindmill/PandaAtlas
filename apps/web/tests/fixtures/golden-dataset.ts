@@ -6,6 +6,8 @@ export interface GoldenPandaFixture {
   publication_status: "published" | "draft" | "restricted";
   public: {
     canonical_slug: string;
+    legacy_slugs?: Array<{ value: string }>;
+    record_tier?: "complete_first_pass" | "identity_first_pass" | "dependency_stub";
     names: Array<{ language: string; value: string }>;
   };
   restricted: Record<string, unknown>;

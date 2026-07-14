@@ -12,7 +12,7 @@ from app.domain.archive_relationships import ParentageAssertion
 from app.domain.trusted_identity import normalize_identity_term
 
 GOLDEN_DATASET_FILENAME = "mei-xiang-family.v1.json"
-TRUSTED_SLUGS = ("mei-xiang", "tian-tian")
+PUBLIC_PROFILE_TIERS = {"complete_first_pass", "identity_first_pass"}
 
 
 def _candidate_paths() -> tuple[Path, ...]:
@@ -215,7 +215,7 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
         public = record.get("public", {})
         if (
             record.get("publication_status") != "published"
-            or public.get("canonical_slug") not in TRUSTED_SLUGS
+            or public.get("record_tier") not in PUBLIC_PROFILE_TIERS
         ):
             continue
 

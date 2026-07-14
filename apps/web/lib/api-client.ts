@@ -8,6 +8,7 @@ import type {
   OverviewStats,
   PaginatedPandasResponse,
   PandaDetail,
+  PandaLineageRelationship,
   PandaLineageResponse,
   PandaListItem
 } from "@/lib/types";
@@ -875,12 +876,52 @@ function buildFallbackLineageResponse(focusId?: string): PandaLineageResponse {
     focus_id: resolvedFocusId,
     nodes,
     edges,
-    relationships: [],
+    relationships: buildLineageRelationships(nodes, edges),
     meta: {
       ancestor_depth: 6,
       descendant_depth: 6
     }
   };
+}
+
+function buildLineageRelationships(
+  nodes: PandaLineageResponse["nodes"],
+  edges: PandaLineageResponse["edges"],
+): PandaLineageRelationship[] {
+  const nodeIds = new Set(nodes.map((node) => node.id));
+  const parentsByChild = new Map<string, string[]>();
+  const childrenByParent = new Map<string, string[]>();
+  for (const edge of edges) {
+    if (!nodeIds.has(edge.parent_id) || !nodeIds.has(edge.child_id)) continue;
+    parentsByChild.set(edge.child_id, [...(parentsByChild.get(edge.child_id) ?? []), edge.parent_id]);
+    childrenByParent.set(edge.parent_id, [...(childrenByParent.get(edge.parent_id) ?? []), edge.child_id]);
+  }
+
+  const relationships = new Map<string, PandaLineageRelationship>();
+  function add(relationship: PandaLineageRelationship) {
+    const key = `${relationship.subject_id}:${relationship.kind}:${relationship.related_id}`;
+    if (!relationships.has(key)) relationships.set(key, relationship);
+  }
+
+  for (const subject of nodes) {
+    const parents = parentsByChild.get(subject.id) ?? [];
+    const children = childrenByParent.get(subject.id) ?? [];
+    for (const parentId of parents) {
+      add({ subject_id: subject.id, related_id: parentId, kind: "parent", path: [subject.id, parentId] });
+      for (const siblingId of childrenByParent.get(parentId) ?? []) {
+        if (siblingId !== subject.id) {
+          add({ subject_id: subject.id, related_id: siblingId, kind: "sibling", path: [subject.id, parentId, siblingId] });
+        }
+      }
+      for (const grandparentId of parentsByChild.get(parentId) ?? []) {
+        add({ subject_id: subject.id, related_id: grandparentId, kind: "grandparent", path: [subject.id, parentId, grandparentId] });
+      }
+    }
+    for (const childId of children) {
+      add({ subject_id: subject.id, related_id: childId, kind: "child", path: [subject.id, childId] });
+    }
+  }
+  return [...relationships.values()];
 }
 
 function buildTrustedFallbackLineageResponse(focusId: string): PandaLineageResponse | null {
@@ -894,7 +935,7 @@ function buildTrustedFallbackLineageResponse(focusId: string): PandaLineageRespo
     focus_id: focus.id,
     nodes: TRUSTED_LINEAGE_NODES,
     edges: TRUSTED_LINEAGE_EDGES,
-    relationships: [],
+    relationships: buildLineageRelationships(TRUSTED_LINEAGE_NODES, TRUSTED_LINEAGE_EDGES),
     meta: { ancestor_depth: 8, descendant_depth: 8 },
   };
 }

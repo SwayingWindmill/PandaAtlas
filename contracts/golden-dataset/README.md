@@ -14,7 +14,7 @@ The contract contains stable identities for:
 6. Xiao Qi Ji
 7. Bao Li
 
-Mei Xiang and Tian Tian have complete first-pass fixture records. The other five records establish stable identities and the relationships required by later Phase 1 work.
+Mei Xiang and Tian Tian have complete first-pass fixture records. The other five records are published identity-first profiles with bilingual summaries, sourced key facts, current-place verification, reviewed relationships, explicit media states, and structured internal `missing_requirements` explaining why they remain below the complete-archive tier.
 
 The fixture also covers registered sources, multilingual names, aliases, external identifiers, old slugs, source-backed facts, confirmed and tentative parentage, non-overlapping residencies, announced and completed multi-participant events, freshness policy, media-license states, approved bilingual content, and restricted draft content.
 
