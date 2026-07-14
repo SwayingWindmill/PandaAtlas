@@ -34,6 +34,7 @@ test("serves bilingual canonical routes and permanently redirects legacy slugs",
   }
 
   expect((await request.get("/en/atlas/tian-tian")).status()).toBe(404);
+  expect((await request.get("/en/atlas/tiantian", { maxRedirects: 0 })).status()).toBe(404);
 });
 
 test("renders the reviewed identity, family, footprint, evidence, no-image, and revision loop", async ({ page }) => {
@@ -100,18 +101,35 @@ test("keeps the server-rendered profile readable without JavaScript", async ({ b
   await context.close();
 });
 
-test("reflows the complete reading loop at actual 200-percent browser zoom", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
+test("reflows at the effective CSS viewport produced by 200-percent browser zoom", async ({ page }) => {
   const session = await page.context().newCDPSession(page);
+  await session.send("Emulation.setDeviceMetricsOverride", {
+    width: 640,
+    height: 450,
+    screenWidth: 1280,
+    screenHeight: 900,
+    deviceScaleFactor: 1,
+    mobile: false,
+  });
   await page.goto("/zh/atlas/mei-xiang");
-  await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 2 });
 
-  await expect.poll(() => page.evaluate(() => window.visualViewport?.scale ?? 1)).toBe(2);
+  expect(await page.evaluate(() => screen.width / innerWidth)).toBe(2);
   const hasHorizontalOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
   );
   expect(hasHorizontalOverflow).toBe(false);
   await expect(page.getByTestId("footprint-text-view")).toBeVisible();
+});
+
+test("keeps the complete public loop usable on a mobile viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/zh/atlas/mei-xiang");
+
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+  await expect(page.getByTestId("identity-first-card")).toBeVisible();
+  await expect(page.getByTestId("timeline-list")).toBeVisible();
+  await expect(page.getByTestId("footprint-text-view")).toBeVisible();
+  await expect(page.getByTestId("media-empty-state")).toBeVisible();
 });
 
 test("uses the trusted profile theme in dark color scheme", async ({ page }) => {

@@ -833,6 +833,7 @@ components:
 
     LocalizedPublicContent:
       type: object
+      additionalProperties: false
       required: [locale, summary]
       properties:
         locale:
@@ -842,6 +843,7 @@ components:
 
     PublicMediaRelease:
       type: object
+      additionalProperties: false
       required: [license_state, display_mode, source_ids]
       properties:
         license_state:
@@ -1488,6 +1490,33 @@ components:
                 type: string
             is_featured:
               type: boolean
+            search_terms:
+              anyOf:
+                - type: array
+                  items:
+                    type: string
+                - type: 'null'
+            record_tier:
+              anyOf:
+                - type: string
+                  enum: [complete_first_pass, identity_first_pass, dependency_stub]
+                - type: 'null'
+            localized_content:
+              anyOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/LocalizedPublicContent'
+                - type: 'null'
+            media_release:
+              anyOf:
+                - $ref: '#/components/schemas/PublicMediaRelease'
+                - type: 'null'
+            revision_summaries:
+              anyOf:
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/LocalizedPublicContent'
+                - type: 'null'
         publication_checks:
           $ref: '#/components/schemas/PublicationChecks'
 

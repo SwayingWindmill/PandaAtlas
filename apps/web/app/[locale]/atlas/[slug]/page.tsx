@@ -44,6 +44,7 @@ export default async function LocalizedPandaPage({ params }: LocalizedPandaPageP
 
   const reference = await resolvePandaReference(slug);
   if (!reference) notFound();
+  if (reference.slug !== "mei-xiang") notFound();
   if (slug !== reference.slug) permanentRedirect(`/${locale}/atlas/${reference.slug}` as Route);
 
   const [panda, lineage] = await Promise.all([
