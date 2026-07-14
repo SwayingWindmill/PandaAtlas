@@ -20,6 +20,77 @@ ENTITY_COLLECTIONS = (
     "media",
 )
 SUPPORTED_PUBLIC_SCHEMA_VERSIONS = {"1.0.0"}
+ALLOWED_PUBLIC_FIELDS = {
+    "access_state",
+    "aliases",
+    "canonical_slug",
+    "changes_current_residency",
+    "child_id",
+    "coarse_location",
+    "conclusion_status",
+    "content",
+    "country_code",
+    "display_mode",
+    "birth_date",
+    "birthplace",
+    "current_location",
+    "death_date",
+    "end_date",
+    "event_date",
+    "event_status",
+    "event_type",
+    "evidence_tier",
+    "external_identifiers",
+    "facility_id",
+    "facility_type",
+    "field",
+    "freshness",
+    "from_facility_id",
+    "gender",
+    "kind",
+    "intro",
+    "is_featured",
+    "language",
+    "last_verified_at",
+    "legacy_slugs",
+    "license_state",
+    "life_status",
+    "locale",
+    "localized_content",
+    "locality",
+    "max_age_days",
+    "media_release",
+    "name_en",
+    "name_zh",
+    "names",
+    "panda_id",
+    "parent_id",
+    "participants",
+    "policy",
+    "precision",
+    "primary",
+    "published_at",
+    "publisher",
+    "record_tier",
+    "residency_type",
+    "revision_summaries",
+    "role",
+    "sex",
+    "source_ids",
+    "search_terms",
+    "start_date",
+    "state",
+    "status",
+    "subject_id",
+    "summary",
+    "system",
+    "title",
+    "tags",
+    "to_coarse_location",
+    "translation_status",
+    "url",
+    "value",
+}
 DROP_PUBLIC_FIELDS = {
     "precise_wildlife_location",
     "precise_location",
@@ -98,8 +169,15 @@ def _sanitize_public_value(value: Any, *, path: str, published_sources: set[str]
         lowered = key.lower()
         if lowered in DROP_PUBLIC_FIELDS:
             continue
-        if any(marker in lowered for marker in SENSITIVE_FIELD_MARKERS):
-            raise ProjectionSecurityError(f"Sensitive field is not allowed at {path}.{key}")
+        if key not in ALLOWED_PUBLIC_FIELDS:
+            classification = (
+                "Sensitive"
+                if any(marker in lowered for marker in SENSITIVE_FIELD_MARKERS)
+                else "Unknown"
+            )
+            raise ProjectionSecurityError(
+                f"{classification} public field is not allowed at {path}.{key}"
+            )
         item = value[key]
         if key == "source_ids" and isinstance(item, list):
             result[key] = sorted(
@@ -123,6 +201,28 @@ def _project_records(source_state: dict[str, Any]) -> list[dict[str, Any]]:
         if record.get("publication_status") == "published"
     }
     records: list[dict[str, Any]] = []
+    direct_records = source_state.get("records")
+    if isinstance(direct_records, list):
+        published_sources.update(
+            str(record["id"])
+            for record in direct_records
+            if record.get("entity_type") in {"source", "sources"}
+        )
+        for source_record in direct_records:
+            public = _sanitize_public_value(
+                source_record.get("public", {}),
+                path=f"records.{source_record.get('id', 'unknown')}.public",
+                published_sources=published_sources,
+            )
+            records.append(
+                {
+                    "entity_type": str(source_record["entity_type"]),
+                    "id": str(source_record["id"]),
+                    "public": public,
+                }
+            )
+        records.sort(key=lambda record: (record["entity_type"], record["id"]))
+        return records
     for entity_type in ENTITY_COLLECTIONS:
         for source_record in source_state.get(entity_type, []):
             if source_record.get("publication_status") != "published":

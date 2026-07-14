@@ -10,7 +10,16 @@ The publication batch also pins `publication_batch_id` and `projection_code_vers
 
 ## Build
 
-From the repository root, run:
+For a production candidate, build directly from a published PostgreSQL publication batch. The batch supplies the data, schema, migration, projection-code, and release-time provenance:
+
+```powershell
+npm run build:public-release -- `
+  --database-url $env:DATABASE_URL `
+  --publication-batch-id 11111111-1111-4111-8111-111111111111 `
+  --output data/public-releases
+```
+
+The JSON source mode is reserved for the reviewed golden fixture and contract tests:
 
 ```powershell
 npm run build:public-release -- `
@@ -35,6 +44,8 @@ Before switching a release:
 3. Run the API contract, projection, and D1 SQLite tests.
 4. Apply `d1.sql` as one transaction. It inserts immutable history first and updates only `public_release_pointer` last.
 5. Confirm `GET /api/v1/releases/current` and the `X-PandaAtlas-*` headers match the manifest on both FastAPI and Worker.
+
+`GET /api/v1/releases/current/pandas` serves the exact JSON records behind the D1 `current_public_records` view and the checked snapshot. Legacy catalog/map routes are intentionally not given release headers until their repositories are migrated to version-scoped records.
 
 ## Rollback
 

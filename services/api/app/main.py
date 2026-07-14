@@ -35,7 +35,7 @@ app.add_middleware(
 @app.middleware("http")
 async def attach_public_release(request: Request, call_next):
     path = request.url.path
-    is_public_api = path.startswith("/api/v1/") and not path.startswith("/api/v1/admin/")
+    is_public_api = path.startswith("/api/v1/releases/")
     metadata = None
     if is_public_api:
         try:

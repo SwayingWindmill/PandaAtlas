@@ -149,6 +149,13 @@
         "licenses": { "required": true, "nullable": false }
       }
     },
+    "PublicPandaRelease": {
+      "description": "The exact versioned panda records served by the active public release.",
+      "fields": {
+        "release": { "required": true, "nullable": false },
+        "records": { "required": true, "nullable": false }
+      }
+    },
     "PandaDetail": {
       "description": "One public panda profile with structured identity and fact provenance.",
       "fields": {

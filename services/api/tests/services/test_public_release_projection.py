@@ -86,6 +86,23 @@ def test_projection_fails_closed_when_sensitive_field_is_not_on_the_drop_list() 
         build_public_release(release_input)
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("coordinates", [102.654321, 30.123456]),
+        ("latitude", 30.123456),
+        ("gps", "30.123456,102.654321"),
+        ("home_address", "Private residence"),
+    ],
+)
+def test_projection_rejects_unapproved_public_fields(field: str, value: object) -> None:
+    release_input = _release_input()
+    release_input.source_state["pandas"][0]["public"][field] = value
+
+    with pytest.raises(ProjectionSecurityError, match=field):
+        build_public_release(release_input)
+
+
 def test_projection_rejects_an_incompatible_public_schema() -> None:
     release_input = _release_input()
     release_input.source_state["dataset"]["public_schema_version"] = "2.0.0"

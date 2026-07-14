@@ -28,6 +28,19 @@ export async function requireCurrentRelease(env: Env): Promise<PublicReleaseMeta
     from current_public_release
   `).first<PublicReleaseRow>();
   if (!row) {
+    const withdrawn = await env.DB.prepare(`
+      select 1 as withdrawn
+      from public_release_pointer pointer
+      join public_release_withdrawals withdrawal
+        on withdrawal.dataset_release_version = pointer.dataset_release_version
+      where pointer.singleton = 1
+        and withdrawal.entity_type is null
+        and withdrawal.entity_id is null
+      limit 1
+    `).first<{ withdrawn: number }>();
+    if (withdrawn) {
+      throw new HttpError(410, "Current public release is withdrawn");
+    }
     throw new HttpError(503, "No active public release");
   }
   if (row.public_schema_version !== "1.0.0") {

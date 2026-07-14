@@ -637,6 +637,29 @@ paths:
         '410':
           description: Current release was withdrawn
 
+  /api/v1/releases/current/pandas:
+    get:
+      tags: [releases]
+      summary: Get panda records from the immutable current public release
+      responses:
+        '200':
+          description: Current release panda snapshot
+          headers:
+            X-PandaAtlas-Dataset-Version:
+              schema: { type: string }
+            X-PandaAtlas-Public-Schema-Version:
+              schema: { type: string }
+            X-PandaAtlas-Database-Migration-Version:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicPandaRelease'
+        '410':
+          description: Current release was withdrawn
+        '503':
+          description: Release artifact is unavailable or mismatched
+
 components:
   securitySchemes:
     BearerAuth:
@@ -1770,6 +1793,19 @@ components:
           type: object
           additionalProperties:
             type: string
+
+    PublicPandaRelease:
+      type: object
+      description: The exact versioned panda records served by the active public release.
+      required: [release, records]
+      properties:
+        release:
+          $ref: '#/components/schemas/PublicReleaseMetadata'
+        records:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
 
     PublicationBatch:
       type: object

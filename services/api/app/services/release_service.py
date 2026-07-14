@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from fastapi import HTTPException
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -7,7 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import settings
 from app.data.golden_dataset import load_golden_dataset
 from app.db.session import has_database, session_scope
-from app.schemas.release import PublicReleaseMetadata
+from app.schemas.release import PublicPandaRelease, PublicReleaseMetadata
 
 DATABASE_MIGRATION_VERSION = "0006"
 PROJECTION_CODE_VERSION = "public-release-v1"
@@ -40,7 +43,7 @@ def _database_release_metadata() -> PublicReleaseMetadata | None:
                   batch.operation,
                   batch.database_migration_version,
                   batch.projection_code_version,
-                  batch.created_at
+                  coalesce(batch.published_at, batch.created_at) as released_at
                 from public.public_release_pointer pointer
                 join public.publication_batches batch on batch.id = pointer.active_batch_id
                 where pointer.singleton = true
@@ -51,7 +54,7 @@ def _database_release_metadata() -> PublicReleaseMetadata | None:
         return None
     if row["operation"] == "withdrawal":
         raise HTTPException(status_code=410, detail="Current public release is withdrawn")
-    released_at = row["created_at"]
+    released_at = row["released_at"]
     if hasattr(released_at, "isoformat"):
         released_at = released_at.isoformat().replace("+00:00", "Z")
     return PublicReleaseMetadata(
@@ -85,3 +88,34 @@ def release_headers(metadata: PublicReleaseMetadata) -> dict[str, str]:
         "X-PandaAtlas-Public-Schema-Version": metadata.public_schema_version,
         "X-PandaAtlas-Database-Migration-Version": metadata.database_migration_version,
     }
+
+
+def _release_artifact_candidates(version: str) -> tuple[Path, ...]:
+    module_path = Path(__file__).resolve()
+    candidates = [
+        parent / "data" / "public-releases" / version / "pandas.json"
+        for parent in module_path.parents
+    ]
+    candidates.append(Path.cwd() / "data" / "public-releases" / version / "pandas.json")
+    return tuple(dict.fromkeys(path.resolve() for path in candidates))
+
+
+def get_current_panda_release() -> PublicPandaRelease:
+    metadata = get_current_release_metadata()
+    for path in _release_artifact_candidates(metadata.dataset_release_version):
+        if not path.is_file():
+            continue
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        artifact_release = payload.get("release", {})
+        for field in (
+            "dataset_release_version",
+            "public_schema_version",
+            "database_migration_version",
+            "publication_batch_id",
+            "projection_code_version",
+            "released_at",
+        ):
+            if artifact_release.get(field) != getattr(metadata, field):
+                raise HTTPException(status_code=503, detail="Public release artifact mismatch")
+        return PublicPandaRelease(release=metadata, records=payload.get("records", []))
+    raise HTTPException(status_code=503, detail="Public release artifact unavailable")
