@@ -27,7 +27,9 @@ export default {
       if (error instanceof HttpError) {
         return errorResponse(error.status, error.message);
       }
-      console.error("Unhandled Panda Atlas Worker error", error);
+      console.error("Unhandled Panda Atlas Worker error", {
+        error_type: error instanceof Error ? error.name : typeof error,
+      });
       return errorResponse(500, "Internal server error");
     }
   }
