@@ -103,8 +103,41 @@ def test_real_db_pandas_endpoint(client: TestClient, real_db_url: str) -> None:
 
     payload = response.json()
     endpoint_total = payload["meta"]["total"]
-    db_total = _query_scalar(real_db_url, "select count(*) from public.pandas")
-    assert endpoint_total == db_total
+    visible_db_total = _query_scalar(
+        real_db_url,
+        """
+        with active_release as (
+          select
+            batch.operation,
+            case
+              when batch.operation = 'withdrawal' then batch.withdrawal_target_id
+              else batch.id
+            end as source_batch_id
+          from public.public_release_pointer pointer
+          join public.publication_batches batch on batch.id = pointer.active_batch_id
+          where pointer.singleton = true
+        ),
+        withdrawn_entities as (
+          select distinct revision.entity_id
+          from active_release
+          join public.publication_batch_change_sets batch_link
+            on batch_link.batch_id = active_release.source_batch_id
+          join public.change_set_revisions change_link
+            on change_link.change_set_id = batch_link.change_set_id
+          join public.entity_revisions revision on revision.id = change_link.revision_id
+          where active_release.operation = 'withdrawal'
+            and revision.entity_type = 'panda'
+        )
+        select count(*)
+        from public.pandas panda
+        where not exists (
+          select 1
+          from withdrawn_entities withdrawn
+          where withdrawn.entity_id = panda.id::text
+        )
+        """,
+    )
+    assert endpoint_total == visible_db_total
 
 
 def test_real_db_detail_endpoint(client: TestClient, real_db_url: str) -> None:
