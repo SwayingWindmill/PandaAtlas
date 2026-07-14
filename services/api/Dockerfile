@@ -2,9 +2,10 @@
 
 WORKDIR /app
 
-COPY pyproject.toml README.md ./
-COPY app ./app
-COPY tests ./tests
+COPY services/api/pyproject.toml services/api/README.md ./
+COPY services/api/app ./app
+COPY services/api/tests ./tests
+COPY contracts/golden-dataset/mei-xiang-family.v1.json ./contracts/golden-dataset/mei-xiang-family.v1.json
 
 RUN pip install --no-cache-dir .
 

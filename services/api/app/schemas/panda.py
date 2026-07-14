@@ -1,4 +1,5 @@
 from datetime import UTC, date, datetime
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -17,6 +18,56 @@ class MediaAsset(BaseModel):
     title: str | None = None
     photographer: str | None = None
     signed_url: str | None = None
+
+
+class IdentityNameRecord(BaseModel):
+    value: str
+    language: str
+    kind: str
+    primary: bool
+    source_ids: list[str]
+
+
+class LegacySlugRecord(BaseModel):
+    value: str
+    source_ids: list[str]
+
+
+class ExternalIdentifierRecord(BaseModel):
+    system: str
+    value: str
+    source_ids: list[str]
+
+
+class PandaIdentityProfile(BaseModel):
+    stable_id: UUID
+    canonical_slug: str
+    names: list[IdentityNameRecord]
+    aliases: list[IdentityNameRecord]
+    legacy_slugs: list[LegacySlugRecord]
+    external_identifiers: list[ExternalIdentifierRecord]
+
+
+class PublicFactConclusion(BaseModel):
+    field: str
+    value: Any | None
+    status: str = Field(pattern="^(confirmed|provisional|disputed|superseded)$")
+    last_verified_at: date
+    assertion_ids: list[str]
+    source_ids: list[str]
+    candidate_values: list[Any]
+    superseded_values: list[Any]
+
+
+class PublicSourceSummary(BaseModel):
+    id: str
+    publisher: str
+    title: str
+    url: str
+    published_at: date | None = None
+    last_verified_at: date
+    language: str
+    access_state: str
 
 
 class PandaBase(BaseModel):
@@ -43,6 +94,9 @@ class PandaDetail(PandaBase):
     mother_id: UUID | None = None
     habitats: list[HabitatSummary] = Field(default_factory=list)
     media: list[MediaAsset] = Field(default_factory=list)
+    identity: PandaIdentityProfile | None = None
+    conclusions: list[PublicFactConclusion] = Field(default_factory=list)
+    sources: list[PublicSourceSummary] = Field(default_factory=list)
 
 
 class PandaLineageNode(PandaBase):

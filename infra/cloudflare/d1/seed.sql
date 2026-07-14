@@ -250,3 +250,184 @@ insert into panda_media (panda_id, media_id, is_cover, display_order) values
 on conflict(panda_id, media_id) do update set
   is_cover = excluded.is_cover,
   display_order = excluded.display_order;
+
+-- Mei Xiang–Tian Tian trusted identity public projection.
+insert into pandas (
+  id, slug, name_zh, name_en, gender, birth_date, death_date, status, birthplace,
+  current_location, father_id, mother_id, intro, tags_json, is_featured
+) values
+  (
+    '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'mei-xiang', '美香', 'Mei Xiang', 'female',
+    '1998-07-22', null, 'alive', 'Wolong, China', '中国——具体场所尚未公开核实',
+    null, null,
+    '曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。',
+    '["trusted-identity","golden-dataset"]', 0
+  ),
+  (
+    '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tian-tian', '添添', 'Tian Tian', 'male',
+    '1997-08-27', null, 'alive', 'Wolong, China', '中国——具体场所尚未公开核实',
+    null, null,
+    '曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。',
+    '["trusted-identity","golden-dataset"]', 0
+  )
+on conflict(id) do update set
+  slug = excluded.slug,
+  name_zh = excluded.name_zh,
+  name_en = excluded.name_en,
+  gender = excluded.gender,
+  birth_date = excluded.birth_date,
+  death_date = excluded.death_date,
+  status = excluded.status,
+  birthplace = excluded.birthplace,
+  current_location = excluded.current_location,
+  father_id = excluded.father_id,
+  mother_id = excluded.mother_id,
+  intro = excluded.intro,
+  tags_json = excluded.tags_json,
+  is_featured = excluded.is_featured,
+  updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now');
+
+insert into evidence_sources (
+  id, publisher, title, url, published_at, last_verified_at, language_tag,
+  access_state, evidence_tier, public_summary
+) values
+  (
+    'src_smithsonian_agreement_2020',
+    'Smithsonian National Zoo and Conservation Biology Institute',
+    'Smithsonian extends giant panda agreement',
+    'https://nationalzoo.si.edu/news/smithsonians-national-zoo-and-conservation-biology-institute-extends-giant-panda-agreement',
+    '2020-12-07', '2026-05-09', 'en', 'accessible', 'primary_fact',
+    'Family birth dates and the planned 2023 return context.'
+  ),
+  (
+    'src_smithsonian_history',
+    'Smithsonian National Zoo and Conservation Biology Institute',
+    'History of Giant Pandas at the Smithsonian National Zoo and Conservation Biology Institute',
+    'https://nationalzoo.si.edu/animals/history-giant-pandas-zoo',
+    null, '2026-05-09', 'en', 'accessible', 'primary_fact',
+    'Smithsonian panda timeline, births, returns, and the 2023 departure.'
+  )
+on conflict(id) do update set
+  publisher = excluded.publisher,
+  title = excluded.title,
+  url = excluded.url,
+  published_at = excluded.published_at,
+  last_verified_at = excluded.last_verified_at,
+  language_tag = excluded.language_tag,
+  access_state = excluded.access_state,
+  evidence_tier = excluded.evidence_tier,
+  public_summary = excluded.public_summary;
+
+insert into panda_names (
+  id, panda_id, language_tag, name_kind, value, normalized_value, is_primary
+) values
+  ('a0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'zh-Hans', 'official', '美香', '美香', 1),
+  ('a0000000-0000-5000-8000-000000000002', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'en', 'official_romanization', 'Mei Xiang', 'meixiang', 1),
+  ('a0000000-0000-5000-8000-000000000003', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'pinyin', 'pinyin', 'Měixiāng', 'meixiang', 1),
+  ('a0000000-0000-5000-8000-000000000004', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'en', 'historic_spelling', 'Mei-Xiang', 'meixiang', 0),
+  ('a0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'zh-Hans', 'official', '添添', '添添', 1),
+  ('a0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'en', 'official_romanization', 'Tian Tian', 'tiantian', 1),
+  ('a0000000-0000-5000-8000-000000000013', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'pinyin', 'pinyin', 'Tiāntiān', 'tiantian', 1),
+  ('a0000000-0000-5000-8000-000000000014', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'en', 'historic_spelling', 'Tian-Tian', 'tiantian', 0)
+on conflict(id) do update set
+  panda_id = excluded.panda_id,
+  language_tag = excluded.language_tag,
+  name_kind = excluded.name_kind,
+  value = excluded.value,
+  normalized_value = excluded.normalized_value,
+  is_primary = excluded.is_primary;
+
+insert into panda_name_sources (panda_name_id, source_id) values
+  ('a0000000-0000-5000-8000-000000000001', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000002', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000003', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000004', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000011', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000012', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000013', 'src_smithsonian_history'),
+  ('a0000000-0000-5000-8000-000000000014', 'src_smithsonian_history')
+on conflict do nothing;
+
+insert into panda_slugs (id, panda_id, slug, slug_kind) values
+  ('b0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'mei-xiang', 'canonical'),
+  ('b0000000-0000-5000-8000-000000000002', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'meixiang', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000003', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'mei_xiang', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tian-tian', 'canonical'),
+  ('b0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tiantian', 'legacy'),
+  ('b0000000-0000-5000-8000-000000000013', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'tian_tian', 'legacy')
+on conflict(id) do update set
+  panda_id = excluded.panda_id,
+  slug = excluded.slug,
+  slug_kind = excluded.slug_kind;
+
+insert into panda_slug_sources (panda_slug_id, source_id) values
+  ('b0000000-0000-5000-8000-000000000001', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000002', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000003', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000011', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000012', 'src_smithsonian_history'),
+  ('b0000000-0000-5000-8000-000000000013', 'src_smithsonian_history')
+on conflict do nothing;
+
+insert into panda_external_identifiers (
+  id, panda_id, system, value, normalized_value
+) values
+  ('c0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'smithsonian_history_key', 'mei-xiang', 'meixiang'),
+  ('c0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'smithsonian_history_key', 'tian-tian', 'tiantian')
+on conflict(id) do update set
+  panda_id = excluded.panda_id,
+  system = excluded.system,
+  value = excluded.value,
+  normalized_value = excluded.normalized_value;
+
+insert into panda_external_identifier_sources (external_identifier_id, source_id) values
+  ('c0000000-0000-5000-8000-000000000001', 'src_smithsonian_history'),
+  ('c0000000-0000-5000-8000-000000000011', 'src_smithsonian_history')
+on conflict do nothing;
+
+insert into fact_assertions (
+  id, panda_id, field_key, value_json, certainty, last_verified_at
+) values
+  ('fact-mei-xiang-birth-date', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"', 'confirmed', '2026-05-09'),
+  ('fact-mei-xiang-current-place', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"', 'provisional', '2026-05-09'),
+  ('fact-tian-tian-birth-date', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"', 'confirmed', '2026-05-09'),
+  ('fact-tian-tian-current-place', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"', 'provisional', '2026-05-09')
+on conflict(id) do update set
+  panda_id = excluded.panda_id,
+  field_key = excluded.field_key,
+  value_json = excluded.value_json,
+  certainty = excluded.certainty,
+  last_verified_at = excluded.last_verified_at;
+
+insert into fact_assertion_sources (assertion_id, source_id, stance) values
+  ('fact-mei-xiang-birth-date', 'src_smithsonian_agreement_2020', 'supports'),
+  ('fact-mei-xiang-current-place', 'src_smithsonian_history', 'supports'),
+  ('fact-tian-tian-birth-date', 'src_smithsonian_agreement_2020', 'supports'),
+  ('fact-tian-tian-current-place', 'src_smithsonian_history', 'supports')
+on conflict do nothing;
+
+insert into public_fact_conclusions (
+  id, panda_id, field_key, value_json, status, last_verified_at,
+  candidate_values_json, superseded_values_json, conclusion_version, is_current
+) values
+  ('d0000000-0000-5000-8000-000000000001', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'birth_date', '"1998-07-22"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000002', '2939c16f-1938-5629-928c-b36b1d5cd6ed', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"', 'provisional', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000011', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'birth_date', '"1997-08-27"', 'confirmed', '2026-05-09', '[]', '[]', 1, 1),
+  ('d0000000-0000-5000-8000-000000000012', '38cd1cad-3e34-5511-bc35-a091ece74e11', 'current_facility_id', '"108f227d-2510-554a-98fb-395e58ca4433"', 'provisional', '2026-05-09', '[]', '[]', 1, 1)
+on conflict(id) do update set
+  panda_id = excluded.panda_id,
+  field_key = excluded.field_key,
+  value_json = excluded.value_json,
+  status = excluded.status,
+  last_verified_at = excluded.last_verified_at,
+  candidate_values_json = excluded.candidate_values_json,
+  superseded_values_json = excluded.superseded_values_json,
+  conclusion_version = excluded.conclusion_version,
+  is_current = excluded.is_current;
+
+insert into public_fact_conclusion_assertions (conclusion_id, assertion_id) values
+  ('d0000000-0000-5000-8000-000000000001', 'fact-mei-xiang-birth-date'),
+  ('d0000000-0000-5000-8000-000000000002', 'fact-mei-xiang-current-place'),
+  ('d0000000-0000-5000-8000-000000000011', 'fact-tian-tian-birth-date'),
+  ('d0000000-0000-5000-8000-000000000012', 'fact-tian-tian-current-place')
+on conflict do nothing;

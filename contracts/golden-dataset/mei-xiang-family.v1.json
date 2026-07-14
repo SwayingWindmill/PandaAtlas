@@ -220,12 +220,15 @@
       "publication_status": "published",
       "public": {
         "canonical_slug": "mei-xiang",
-        "legacy_slugs": ["meixiang", "mei_xiang"],
+        "legacy_slugs": [
+          { "value": "meixiang", "source_ids": ["src_smithsonian_history"] },
+          { "value": "mei_xiang", "source_ids": ["src_smithsonian_history"] }
+        ],
         "record_tier": "complete_first_pass",
         "names": [
-          { "language": "zh-Hans", "value": "美香", "kind": "official", "primary": true },
-          { "language": "en", "value": "Mei Xiang", "kind": "official_romanization", "primary": true },
-          { "language": "pinyin", "value": "Měixiāng", "kind": "pinyin", "primary": true }
+          { "language": "zh-Hans", "value": "美香", "kind": "official", "primary": true, "source_ids": ["src_smithsonian_history"] },
+          { "language": "en", "value": "Mei Xiang", "kind": "official_romanization", "primary": true, "source_ids": ["src_smithsonian_history"] },
+          { "language": "pinyin", "value": "Měixiāng", "kind": "pinyin", "primary": true, "source_ids": ["src_smithsonian_history"] }
         ],
         "aliases": [
           { "language": "en", "value": "Mei-Xiang", "kind": "historic_spelling", "source_ids": ["src_smithsonian_history"] }
@@ -251,12 +254,15 @@
       "publication_status": "published",
       "public": {
         "canonical_slug": "tian-tian",
-        "legacy_slugs": ["tiantian", "tian_tian"],
+        "legacy_slugs": [
+          { "value": "tiantian", "source_ids": ["src_smithsonian_history"] },
+          { "value": "tian_tian", "source_ids": ["src_smithsonian_history"] }
+        ],
         "record_tier": "complete_first_pass",
         "names": [
-          { "language": "zh-Hans", "value": "添添", "kind": "official", "primary": true },
-          { "language": "en", "value": "Tian Tian", "kind": "official_romanization", "primary": true },
-          { "language": "pinyin", "value": "Tiāntiān", "kind": "pinyin", "primary": true }
+          { "language": "zh-Hans", "value": "添添", "kind": "official", "primary": true, "source_ids": ["src_smithsonian_history"] },
+          { "language": "en", "value": "Tian Tian", "kind": "official_romanization", "primary": true, "source_ids": ["src_smithsonian_history"] },
+          { "language": "pinyin", "value": "Tiāntiān", "kind": "pinyin", "primary": true, "source_ids": ["src_smithsonian_history"] }
         ],
         "aliases": [
           { "language": "en", "value": "Tian-Tian", "kind": "historic_spelling", "source_ids": ["src_smithsonian_history"] }
@@ -403,7 +409,8 @@
         "subject_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
         "field": "current_facility_id",
         "value": "108f227d-2510-554a-98fb-395e58ca4433",
-        "conclusion_status": "confirmed_country_level",
+        "conclusion_status": "provisional",
+        "precision": "country_level",
         "source_ids": ["src_smithsonian_history"],
         "last_verified_at": "2026-05-09",
         "freshness": { "policy": "current_location", "max_age_days": 180, "state": "current" }
@@ -431,7 +438,8 @@
         "subject_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
         "field": "current_facility_id",
         "value": "108f227d-2510-554a-98fb-395e58ca4433",
-        "conclusion_status": "confirmed_country_level",
+        "conclusion_status": "provisional",
+        "precision": "country_level",
         "source_ids": ["src_smithsonian_history"],
         "last_verified_at": "2026-05-09",
         "freshness": { "policy": "current_location", "max_age_days": 180, "state": "current" }

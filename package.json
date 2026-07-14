@@ -22,6 +22,8 @@
     "smoke:api:cf:d1": "npm run smoke:d1 -w worker-api",
     "smoke:api:cf:http": "npm run smoke:http -w worker-api",
     "check:golden-dataset": "node scripts/golden-dataset/validate.mjs",
+    "generate:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs",
+    "check:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs --check",
     "test:golden-dataset": "node --test scripts/golden-dataset/tests/*.test.mjs",
     "check:public-api-boundary": "node scripts/check-public-api-boundary.mjs",
     "test:release-gate": "node --test scripts/release/tests/*.test.mjs",

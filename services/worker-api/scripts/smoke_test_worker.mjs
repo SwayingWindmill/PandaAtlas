@@ -38,6 +38,38 @@ function runCommand(command, args) {
   });
 }
 
+function runCommandCapture(command, args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      cwd: process.cwd(),
+      env: process.env,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.on("error", reject);
+    child.on("exit", (code, signal) => {
+      if (code === 0) {
+        resolve(`${stdout}\n${stderr}`);
+        return;
+      }
+      reject(
+        new Error(
+          `${command} ${args.join(" ")} failed with code ${code ?? "null"}${signal ? ` (${signal})` : ""}: ${stderr}`,
+        ),
+      );
+    });
+  });
+}
+
 async function waitForServer(child) {
   let lastError;
   for (let attempt = 0; attempt < 60; attempt += 1) {
@@ -102,6 +134,29 @@ async function prepareD1Projection() {
   const d1Args = [wranglerBin(), "d1", "execute", "panda-atlas", "--local", "--persist-to", PERSIST_PATH];
   await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/schema.sql"]);
   await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/seed.sql"]);
+
+  const identityCheck = await runCommandCapture(process.execPath, [
+    ...d1Args,
+    "--command=select (select count(*) from panda_slugs where slug = 'meixiang' and slug_kind = 'legacy') as legacy_slug_count, (select count(*) from panda_names where normalized_value = 'meixiang') as searchable_name_count, (select count(*) from public_fact_conclusions where panda_id = '2939c16f-1938-5629-928c-b36b1d5cd6ed' and status in ('confirmed', 'provisional')) as conclusion_count",
+  ]);
+  for (const expected of [
+    /"legacy_slug_count":\s*1/,
+    /"searchable_name_count":\s*[1-9]\d*/,
+    /"conclusion_count":\s*2/,
+  ]) {
+    if (!expected.test(identityCheck)) {
+      throw new Error(`D1 trusted identity assertion failed: ${identityCheck}`);
+    }
+  }
+
+  const sourceColumns = await runCommandCapture(process.execPath, [
+    ...d1Args,
+    "--command=pragma table_info(evidence_sources)",
+  ]);
+  if (/internal_notes|restricted_excerpt|content_hash/.test(sourceColumns)) {
+    throw new Error(`D1 evidence_sources leaked restricted columns: ${sourceColumns}`);
+  }
+
   console.log("WORKER_SMOKE_RESULT status=passed scope=d1");
 }
 
@@ -151,6 +206,32 @@ async function runHttpSmoke() {
     const pandas = await expectJson("/api/v1/pandas?page_size=3", 200);
     if (!Array.isArray(pandas?.items) || pandas.items.length === 0) {
       throw new Error("Worker panda list smoke response was empty");
+    }
+
+    const identitySearch = await expectJson(
+      "/api/v1/pandas?q=M%C4%9Bixi%C4%81ng&page_size=100",
+      200,
+    );
+    if (
+      !identitySearch?.items?.some(
+        (item) => item.id === "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+      )
+    ) {
+      throw new Error(`Worker identity search missed Mei Xiang: ${JSON.stringify(identitySearch)}`);
+    }
+
+    const trustedDetail = await expectJson("/api/v1/pandas/meixiang", 200);
+    if (
+      trustedDetail?.slug !== "mei-xiang"
+      || trustedDetail?.identity?.stable_id !== "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+      || trustedDetail?.conclusions?.length !== 2
+      || trustedDetail?.sources?.length < 2
+    ) {
+      throw new Error(`Worker trusted detail was incomplete: ${JSON.stringify(trustedDetail)}`);
+    }
+    const trustedSerialized = JSON.stringify(trustedDetail);
+    if (/internal_notes|restricted_excerpt|content_hash|curator_notes/.test(trustedSerialized)) {
+      throw new Error(`Worker trusted detail leaked restricted evidence: ${trustedSerialized}`);
     }
 
     const distribution = await expectJson(

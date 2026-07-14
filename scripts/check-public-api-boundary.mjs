@@ -38,9 +38,39 @@ function readInterfaces(sourceText, filePath) {
         nullable: isNullable(member.type),
       });
     }
-    interfaces.set(statement.name.text, fields);
+    const parents = (statement.heritageClauses ?? [])
+      .flatMap((clause) => clause.types)
+      .map((type) => type.expression)
+      .filter(ts.isIdentifier)
+      .map((identifier) => identifier.text);
+    interfaces.set(statement.name.text, { fields, parents });
   }
   return interfaces;
+}
+
+function resolveInterfaceFields(interfaces, interfaceName, stack = []) {
+  const definition = interfaces.get(interfaceName);
+  if (!definition) {
+    return undefined;
+  }
+  if (stack.includes(interfaceName)) {
+    throw new Error(`Public interface inheritance cycle: ${[...stack, interfaceName].join(" -> ")}`);
+  }
+
+  const fields = new Map();
+  for (const parent of definition.parents) {
+    const parentFields = resolveInterfaceFields(interfaces, parent, [...stack, interfaceName]);
+    if (!parentFields) {
+      continue;
+    }
+    for (const [fieldName, field] of parentFields) {
+      fields.set(fieldName, field);
+    }
+  }
+  for (const [fieldName, field] of definition.fields) {
+    fields.set(fieldName, field);
+  }
+  return fields;
 }
 
 function compareSchema(targetLabel, schemaName, expectedFields, actualFields) {
@@ -78,7 +108,12 @@ for (const target of targets) {
   const sourceText = await readFile(target.path, "utf8");
   const interfaces = readInterfaces(sourceText, target.path);
   for (const [schemaName, schema] of Object.entries(manifest.schemas)) {
-    compareSchema(target.label, schemaName, schema.fields, interfaces.get(schemaName));
+    compareSchema(
+      target.label,
+      schemaName,
+      schema.fields,
+      resolveInterfaceFields(interfaces, schemaName),
+    );
   }
 }
 await assertWorkerIsReadOnly();

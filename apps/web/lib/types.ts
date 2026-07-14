@@ -13,6 +13,58 @@ export interface PandaListItem {
   cover_image_url: string | null;
 }
 
+export interface IdentityNameRecord {
+  value: string;
+  language: string;
+  kind: string;
+  primary: boolean;
+  source_ids: string[];
+}
+
+export interface LegacySlugRecord {
+  value: string;
+  source_ids: string[];
+}
+
+export interface ExternalIdentifierRecord {
+  system: string;
+  value: string;
+  source_ids: string[];
+}
+
+export interface PandaIdentityProfile {
+  stable_id: string;
+  canonical_slug: string;
+  names: IdentityNameRecord[];
+  aliases: IdentityNameRecord[];
+  legacy_slugs: LegacySlugRecord[];
+  external_identifiers: ExternalIdentifierRecord[];
+}
+
+export type PublicConclusionStatus = "confirmed" | "provisional" | "disputed" | "superseded";
+
+export interface PublicFactConclusion {
+  field: string;
+  value: unknown | null;
+  status: PublicConclusionStatus;
+  last_verified_at: string;
+  assertion_ids: string[];
+  source_ids: string[];
+  candidate_values: unknown[];
+  superseded_values: unknown[];
+}
+
+export interface PublicSourceSummary {
+  id: string;
+  publisher: string;
+  title: string;
+  url: string;
+  published_at: string | null;
+  last_verified_at: string;
+  language: string;
+  access_state: string;
+}
+
 export interface PandaDetail extends PandaListItem {
   intro: string | null;
   birthplace: string | null;
@@ -28,6 +80,9 @@ export interface PandaDetail extends PandaListItem {
     photographer: string | null;
     signed_url: string | null;
   }>;
+  identity: PandaIdentityProfile | null;
+  conclusions: PublicFactConclusion[];
+  sources: PublicSourceSummary[];
 }
 
 export interface PandaLineageNode extends PandaListItem {

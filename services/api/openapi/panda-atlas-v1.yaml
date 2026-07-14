@@ -483,6 +483,130 @@ components:
           format: uri
           nullable: true
 
+
+    IdentityNameRecord:
+      type: object
+      required: [value, language, kind, primary, source_ids]
+      properties:
+        value:
+          type: string
+        language:
+          type: string
+        kind:
+          type: string
+        primary:
+          type: boolean
+        source_ids:
+          type: array
+          items:
+            type: string
+
+    LegacySlugRecord:
+      type: object
+      required: [value, source_ids]
+      properties:
+        value:
+          type: string
+        source_ids:
+          type: array
+          items:
+            type: string
+
+    ExternalIdentifierRecord:
+      type: object
+      required: [system, value, source_ids]
+      properties:
+        system:
+          type: string
+        value:
+          type: string
+        source_ids:
+          type: array
+          items:
+            type: string
+
+    PandaIdentityProfile:
+      type: object
+      required: [stable_id, canonical_slug, names, aliases, legacy_slugs, external_identifiers]
+      properties:
+        stable_id:
+          type: string
+          format: uuid
+        canonical_slug:
+          type: string
+        names:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentityNameRecord'
+        aliases:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdentityNameRecord'
+        legacy_slugs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegacySlugRecord'
+        external_identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifierRecord'
+
+    PublicFactConclusion:
+      type: object
+      required: [field, value, status, last_verified_at, assertion_ids, source_ids, candidate_values, superseded_values]
+      properties:
+        field:
+          type: string
+        value:
+          anyOf:
+            - {}
+            - type: 'null'
+        status:
+          type: string
+          enum: [confirmed, provisional, disputed, superseded]
+        last_verified_at:
+          type: string
+          format: date
+        assertion_ids:
+          type: array
+          items:
+            type: string
+        source_ids:
+          type: array
+          items:
+            type: string
+        candidate_values:
+          type: array
+          items: {}
+        superseded_values:
+          type: array
+          items: {}
+
+    PublicSourceSummary:
+      type: object
+      required: [id, publisher, title, url, last_verified_at, language, access_state]
+      properties:
+        id:
+          type: string
+        publisher:
+          type: string
+        title:
+          type: string
+        url:
+          type: string
+        published_at:
+          anyOf:
+            - type: string
+              format: date
+            - type: 'null'
+        last_verified_at:
+          type: string
+          format: date
+        language:
+          type: string
+        access_state:
+          type: string
+
     PandaDetail:
       allOf:
         - $ref: '#/components/schemas/PandaListItem'
@@ -514,6 +638,18 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/MediaAsset'
+            identity:
+              anyOf:
+                - $ref: '#/components/schemas/PandaIdentityProfile'
+                - type: 'null'
+            conclusions:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicFactConclusion'
+            sources:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicSourceSummary'
 
     PandaLineageNode:
       allOf:

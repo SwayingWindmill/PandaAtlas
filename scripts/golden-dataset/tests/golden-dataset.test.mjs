@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+import {
+  buildTrustedIdentityReferences,
+  generatedIdentityAliasesPath,
+  normalizeGeneratedModule,
+  renderTrustedIdentityAliasModule,
+} from "../generate-web-identity-aliases.mjs";
 import {
   buildPublicProjection,
   CORE_PANDA_SLUGS,
@@ -27,6 +34,16 @@ test("canonical golden dataset defines seven stable identities and complete anch
     assert.ok(panda.public.aliases.length >= 1);
     assert.ok(panda.public.external_identifiers.length >= 1);
     assert.ok(panda.public.legacy_slugs.length >= 1);
+    assert.ok(panda.public.names.every((name) => name.source_ids.length >= 1));
+    assert.ok(panda.public.aliases.every((alias) => alias.source_ids.length >= 1));
+    assert.ok(
+      panda.public.external_identifiers.every(
+        (identifier) => identifier.source_ids.length >= 1,
+      ),
+    );
+    assert.ok(
+      panda.public.legacy_slugs.every((legacySlug) => legacySlug.source_ids.length >= 1),
+    );
     assert.ok(panda.restricted.curator_notes.length >= 1);
   }
 });
@@ -65,6 +82,35 @@ test("golden dataset covers the required domain cases", async () => {
   );
   assert.ok(dataset.events.some((event) => event.public.event_status === "announced"));
   assert.ok(dataset.events.some((event) => event.public.event_status === "completed"));
+});
+
+test("generated web identity aliases match the canonical golden dataset", async () => {
+  const dataset = await loadGoldenDataset();
+  const generated = await readFile(generatedIdentityAliasesPath, "utf8");
+
+  assert.equal(
+    normalizeGeneratedModule(generated),
+    normalizeGeneratedModule(renderTrustedIdentityAliasModule(dataset)),
+  );
+  assert.deepEqual(
+    new Set(Object.keys(buildTrustedIdentityReferences(dataset))),
+    new Set([
+      "mei-xiang",
+      "mei_xiang",
+      "meixiang",
+      "tian-tian",
+      "tian_tian",
+      "tiantian",
+    ]),
+  );
+  assert.match(generated, /"meixiang"/);
+  assert.match(generated, /"mei-xiang"/);
+  assert.match(generated, /TRUSTED_PANDA_DETAILS/);
+  assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
+  assert.doesNotMatch(
+    generated,
+    /curator_notes|pending_content|content_hash|review_owner|restricted_excerpt/,
+  );
 });
 
 test("all test layers load one fixture and the public projection strips restricted data", async () => {

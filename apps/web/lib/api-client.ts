@@ -11,11 +11,18 @@ import type {
   PandaLineageResponse,
   PandaListItem
 } from "@/lib/types";
+import {
+  TRUSTED_PANDA_DETAILS,
+  TRUSTED_PANDA_REFERENCES
+} from "@/lib/generated/trusted-identity-aliases";
 import { DEFAULT_LINEAGE_FOCUS_ID, LINEAGE_PANDAS } from "@/lib/lineage-data";
 
 const DEFAULT_BBOX = "100,25,110,36";
 
-type FallbackPandaSeed = Omit<PandaDetail, "birthplace"> & {
+type FallbackPandaSeed = Omit<
+  PandaDetail,
+  "birthplace" | "identity" | "conclusions" | "sources"
+> & {
   birthplace?: string | null;
 };
 
@@ -377,7 +384,10 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
     return {
       ...detail,
       ...profileOverride,
-      birthplace: profileOverride?.birthplace ?? detail.birthplace ?? null
+      birthplace: profileOverride?.birthplace ?? detail.birthplace ?? null,
+      identity: null,
+      conclusions: [],
+      sources: []
     };
   }
 
@@ -388,6 +398,9 @@ function normalizeFallbackPandaDetail(detail: FallbackPandaSeed): PandaDetail {
     birthplace: profileOverride?.birthplace ?? detail.birthplace ?? null,
     tags: override.tags ?? detail.tags,
     habitats: override.habitats ?? detail.habitats,
+    identity: null,
+    conclusions: [],
+    sources: []
   };
 }
 
@@ -405,7 +418,10 @@ function toListItem(detail: PandaDetail): PandaListItem {
   };
 }
 
-const NORMALIZED_FALLBACK_PANDA_DETAILS = FALLBACK_PANDA_DETAILS.map(normalizeFallbackPandaDetail);
+const NORMALIZED_FALLBACK_PANDA_DETAILS = [
+  ...FALLBACK_PANDA_DETAILS.map(normalizeFallbackPandaDetail),
+  ...TRUSTED_PANDA_DETAILS
+];
 
 const FALLBACK_PANDA_LIST: PandaListItem[] = NORMALIZED_FALLBACK_PANDA_DETAILS.map(toListItem);
 
@@ -607,6 +623,11 @@ export interface PandaReference {
 }
 
 function findFallbackReference(idOrSlug: string): PandaReference | null {
+  const trustedReference = TRUSTED_PANDA_REFERENCES[idOrSlug];
+  if (trustedReference) {
+    return trustedReference;
+  }
+
   const detail = findFallbackPandaDetail(idOrSlug);
   if (!detail) {
     return null;
@@ -734,6 +755,11 @@ export async function resolvePandaReference(idOrSlug: string): Promise<PandaRefe
   const normalized = idOrSlug.trim();
   if (!normalized) {
     return null;
+  }
+
+  const generatedReference = TRUSTED_PANDA_REFERENCES[normalized];
+  if (generatedReference) {
+    return generatedReference;
   }
 
   const atlas = await listAtlasPandas();

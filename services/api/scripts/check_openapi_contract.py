@@ -93,6 +93,44 @@ def schema_allows_null(field_schema: dict[str, Any]) -> bool:
     return False
 
 
+def resolve_schema_shape(
+    components: dict[str, Any],
+    definition: dict[str, Any],
+    stack: tuple[str, ...] = (),
+) -> tuple[dict[str, Any], set[str]]:
+    properties: dict[str, Any] = {}
+    required: set[str] = set()
+
+    reference = definition.get("$ref")
+    if isinstance(reference, str):
+        reference_name = reference.rsplit("/", maxsplit=1)[-1]
+        if reference_name in stack:
+            cycle = " -> ".join((*stack, reference_name))
+            raise ContractCheckError(f"OpenAPI schema reference cycle: {cycle}")
+        referenced = components.get(reference_name)
+        if not isinstance(referenced, dict):
+            raise ContractCheckError(f"OpenAPI schema reference is missing: {reference}")
+        return resolve_schema_shape(components, referenced, (*stack, reference_name))
+
+    all_of = definition.get("allOf", [])
+    if isinstance(all_of, list):
+        for part in all_of:
+            if not isinstance(part, dict):
+                continue
+            part_properties, part_required = resolve_schema_shape(components, part, stack)
+            properties.update(part_properties)
+            required.update(part_required)
+
+    direct_properties = definition.get("properties", {})
+    if isinstance(direct_properties, dict):
+        properties.update(direct_properties)
+    direct_required = definition.get("required", [])
+    if isinstance(direct_required, list):
+        required.update(item for item in direct_required if isinstance(item, str))
+
+    return properties, required
+
+
 def validate_public_schema(
     schema_name: str,
     document: dict[str, Any],
@@ -108,8 +146,10 @@ def validate_public_schema(
             raise ContractCheckError(f"{schema_name} schema is missing public schema {public_name}")
 
         expected_fields = public_definition.get("fields", {})
-        actual_fields = actual_definition.get("properties", {})
-        if not isinstance(expected_fields, dict) or not isinstance(actual_fields, dict):
+        actual_fields, actual_required = resolve_schema_shape(
+            components, actual_definition, (public_name,)
+        )
+        if not isinstance(expected_fields, dict):
             raise ContractCheckError(
                 f"{schema_name} public schema {public_name} has invalid fields"
             )
@@ -127,7 +167,6 @@ def validate_public_schema(
             for field_name, field_definition in expected_fields.items()
             if field_definition.get("required") is True
         }
-        actual_required = set(actual_definition.get("required", []))
         if actual_required != expected_required:
             raise ContractCheckError(
                 f"{schema_name} public schema {public_name} required fields drifted: "

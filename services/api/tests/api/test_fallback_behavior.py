@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
+from app.data.golden_dataset import trusted_panda_details
 from app.data.mock_data import MOCK_PANDAS
 from app.main import app
 from app.services import map_service, panda_service, stats_service
@@ -47,7 +48,15 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
     pandas_response = client.get("/api/v1/pandas")
     assert pandas_response.status_code == 200
     pandas_payload = pandas_response.json()
-    assert pandas_payload["meta"]["total"] == len(MOCK_PANDAS)
+    expected_ids = {
+        *(str(item["id"]) for item in MOCK_PANDAS),
+        *(record["id"] for record in trusted_panda_details()),
+    }
+    assert pandas_payload["meta"]["total"] == len(expected_ids)
+    assert {item["id"] for item in pandas_payload["items"]} == expected_ids
+    assert {"mei-xiang", "tian-tian"} <= {
+        item["slug"] for item in pandas_payload["items"]
+    }
 
     panda_slug = pandas_payload["items"][0]["slug"]
 

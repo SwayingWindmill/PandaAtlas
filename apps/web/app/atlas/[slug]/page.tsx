@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, ArrowRight, BookOpen, Camera, Leaf } from "lucide-react";
 import { ProfileHeroActions } from "@/components/atlas/profile-hero-actions";
 import { SiteHeader } from "@/components/site/site-header";
@@ -65,7 +65,7 @@ export default async function PandaDetailPage({ params }: DetailPageProps) {
   }
 
   if (slug !== reference.slug) {
-    redirect(`/atlas/${reference.slug}`);
+    permanentRedirect(`/atlas/${reference.slug}`);
   }
 
   const [panda, atlasPandas] = await Promise.all([

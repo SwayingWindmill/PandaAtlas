@@ -15,8 +15,15 @@ except ModuleNotFoundError:  # pragma: no cover - runtime fallback for lightweig
 
 
 from app.core.config import settings
+from app.data.golden_dataset import (
+    find_trusted_panda,
+    public_trusted_panda_record,
+    trusted_panda_details,
+    trusted_panda_matches,
+)
 from app.data.mock_data import MOCK_PANDAS
 from app.db.session import has_database, session_scope
+from app.domain.trusted_identity import normalize_identity_term
 from app.schemas.panda import (
     HabitatSummary,
     MediaAsset,
@@ -37,6 +44,17 @@ class PandaReference:
     slug: str
 
 
+def _all_mock_panda_details() -> list[PandaDetail]:
+    by_id = {
+        detail.id: detail
+        for detail in (PandaDetail.model_validate(item) for item in MOCK_PANDAS)
+    }
+    for record in trusted_panda_details():
+        detail = PandaDetail.model_validate(public_trusted_panda_record(record))
+        by_id[detail.id] = detail
+    return list(by_id.values())
+
+
 def _list_pandas_from_mock(
     *,
     page: int,
@@ -48,7 +66,7 @@ def _list_pandas_from_mock(
     featured: bool | None,
     sort: str,
 ) -> PaginatedPandasResponse:
-    rows = [PandaDetail.model_validate(item) for item in MOCK_PANDAS]
+    rows = _all_mock_panda_details()
 
     if q:
         lowered = q.lower().strip()
@@ -58,6 +76,7 @@ def _list_pandas_from_mock(
             if lowered in row.name_zh.lower()
             or (row.name_en and lowered in row.name_en.lower())
             or any(lowered in tag.lower() for tag in row.tags)
+            or trusted_panda_matches(str(row.id), q)
         ]
 
     if status:
@@ -95,8 +114,7 @@ def _list_pandas_from_mock(
 
 
 def _get_panda_by_id_from_mock(panda_id: UUID) -> PandaDetail:
-    for item in MOCK_PANDAS:
-        detail = PandaDetail.model_validate(item)
+    for detail in _all_mock_panda_details():
         if detail.id == panda_id:
             return detail
 
@@ -155,10 +173,12 @@ def _normalize_public_ref(panda_ref: str) -> str:
 
 def _resolve_public_ref_from_mock(panda_ref: str) -> PandaReference:
     normalized = _normalize_public_ref(panda_ref)
-    uuid_ref = _try_parse_uuid(normalized)
+    trusted = find_trusted_panda(normalized)
+    if trusted is not None:
+        return PandaReference(id=UUID(trusted["id"]), slug=trusted["slug"])
 
-    for item in MOCK_PANDAS:
-        detail = PandaDetail.model_validate(item)
+    uuid_ref = _try_parse_uuid(normalized)
+    for detail in _all_mock_panda_details():
         if detail.slug == normalized or (uuid_ref is not None and detail.id == uuid_ref):
             return PandaReference(id=detail.id, slug=detail.slug)
 
@@ -198,10 +218,38 @@ def _list_pandas_from_db(
                 select 1 from unnest(coalesce(p.tags, '{}'::text[])) as tag
                 where tag ilike :q_like
               )
+              or exists (
+                select 1
+                from public.panda_names pn
+                where pn.panda_id = p.id
+                  and pn.publication_status = 'published'
+                  and pn.normalized_value like :q_normalized
+              )
+              or exists (
+                select 1
+                from public.panda_slugs ps
+                where ps.panda_id = p.id
+                  and ps.publication_status = 'published'
+                  and ps.slug ilike :q_like
+              )
+              or exists (
+                select 1
+                from public.panda_external_identifiers pei
+                where pei.panda_id = p.id
+                  and pei.publication_status = 'published'
+                  and (
+                    pei.normalized_value like :q_normalized
+                    or (pei.system || ':' || pei.value) ilike :q_like
+                  )
+              )
             )
             """
         )
+        normalized_query = normalize_identity_term(q or "")
         params["q_like"] = q_like
+        params["q_normalized"] = (
+            f"%{normalized_query}%" if normalized_query else "__no_identity_match__"
+        )
 
     if status:
         where_clauses.append("p.status::text = :status")
@@ -232,7 +280,7 @@ def _list_pandas_from_db(
         f"""
         select
           p.id,
-          p.slug,
+          coalesce(canonical_slug.slug, p.slug) as slug,
           p.name_zh,
           p.name_en,
           p.gender,
@@ -243,6 +291,10 @@ def _list_pandas_from_db(
           p.is_featured,
           cover.cover_image_url
         from public.pandas p
+        left join public.panda_slugs canonical_slug
+          on canonical_slug.panda_id = p.id
+          and canonical_slug.slug_kind = 'canonical'
+          and canonical_slug.publication_status = 'published'
         left join lateral (
           select m.storage_path as cover_image_url
           from public.panda_media pm
@@ -322,13 +374,45 @@ def _resolve_public_ref_from_db(panda_ref: str) -> PandaReference:
         row = session.execute(
             text(
                 """
-                select p.id, p.slug
+                select p.id, coalesce(canonical_slug.slug, p.slug) as slug
                 from public.pandas p
-                where p.slug = :panda_slug
+                left join public.panda_slugs canonical_slug
+                  on canonical_slug.panda_id = p.id
+                  and canonical_slug.slug_kind = 'canonical'
+                  and canonical_slug.publication_status = 'published'
+                where p.slug = :panda_ref
+                  or exists (
+                    select 1
+                    from public.panda_slugs ps
+                    where ps.panda_id = p.id
+                      and ps.publication_status = 'published'
+                      and ps.slug = :panda_ref
+                  )
+                  or exists (
+                    select 1
+                    from public.panda_names pn
+                    where pn.panda_id = p.id
+                      and pn.publication_status = 'published'
+                      and pn.normalized_value = :normalized_ref
+                  )
+                  or exists (
+                    select 1
+                    from public.panda_external_identifiers pei
+                    where pei.panda_id = p.id
+                      and pei.publication_status = 'published'
+                      and (
+                        pei.normalized_value = :normalized_ref
+                        or lower(pei.system || ':' || pei.value) = lower(:panda_ref)
+                      )
+                  )
+                order by case when p.slug = :panda_ref then 0 else 1 end
                 limit 1
                 """
             ),
-            {"panda_slug": normalized},
+            {
+                "panda_ref": normalized,
+                "normalized_ref": normalize_identity_term(normalized),
+            },
         ).mappings().first()
 
     if row is None:
@@ -345,7 +429,7 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
         """
         select
           p.id,
-          p.slug,
+          coalesce(canonical_slug.slug, p.slug) as slug,
           p.name_zh,
           p.name_en,
           p.gender,
@@ -359,6 +443,10 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
           p.mother_id,
           cover.cover_image_url
         from public.pandas p
+        left join public.panda_slugs canonical_slug
+          on canonical_slug.panda_id = p.id
+          and canonical_slug.slug_kind = 'canonical'
+          and canonical_slug.publication_status = 'published'
         left join lateral (
           select m.storage_path as cover_image_url
           from public.panda_media pm
@@ -391,6 +479,118 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
         """
     )
 
+    identity_names_sql = text(
+        """
+        select
+          pn.value,
+          pn.language_tag,
+          pn.name_kind,
+          pn.is_primary,
+          coalesce(
+            array_remove(array_agg(distinct public_source.id), null),
+            '{}'::text[]
+          ) as source_ids
+        from public.panda_names pn
+        left join public.panda_name_sources pns on pns.panda_name_id = pn.id
+        left join public.public_evidence_sources public_source
+          on public_source.id = pns.source_id
+        where pn.panda_id = :panda_id
+          and pn.publication_status = 'published'
+        group by pn.id, pn.value, pn.language_tag, pn.name_kind, pn.is_primary
+        order by pn.is_primary desc, pn.language_tag, pn.name_kind, pn.value
+        """
+    )
+
+    identity_slugs_sql = text(
+        """
+        select
+          ps.slug,
+          ps.slug_kind,
+          coalesce(
+            array_remove(array_agg(distinct public_source.id), null),
+            '{}'::text[]
+          ) as source_ids
+        from public.panda_slugs ps
+        left join public.panda_slug_sources pss on pss.panda_slug_id = ps.id
+        left join public.public_evidence_sources public_source
+          on public_source.id = pss.source_id
+        where ps.panda_id = :panda_id
+          and ps.publication_status = 'published'
+        group by ps.id, ps.slug, ps.slug_kind
+        order by ps.slug_kind, ps.slug
+        """
+    )
+
+    external_identifiers_sql = text(
+        """
+        select
+          pei.system,
+          pei.value,
+          coalesce(
+            array_remove(array_agg(distinct public_source.id), null),
+            '{}'::text[]
+          ) as source_ids
+        from public.panda_external_identifiers pei
+        left join public.panda_external_identifier_sources peis
+          on peis.external_identifier_id = pei.id
+        left join public.public_evidence_sources public_source
+          on public_source.id = peis.source_id
+        where pei.panda_id = :panda_id
+          and pei.publication_status = 'published'
+        group by pei.id, pei.system, pei.value
+        order by pei.system, pei.value
+        """
+    )
+
+    conclusions_sql = text(
+        """
+        select
+          c.field_key,
+          c.value_json,
+          c.status,
+          c.last_verified_at,
+          c.candidate_values_json,
+          c.superseded_values_json,
+          coalesce(
+            array_remove(array_agg(distinct pca.assertion_id), null),
+            '{}'::text[]
+          ) as assertion_ids,
+          coalesce(
+            array_remove(array_agg(distinct public_source.id), null),
+            '{}'::text[]
+          ) as source_ids
+        from public.public_fact_conclusions c
+        left join public.public_fact_conclusion_assertions pca
+          on pca.conclusion_id = c.id
+        left join public.fact_assertion_sources fas
+          on fas.assertion_id = pca.assertion_id
+        left join public.public_evidence_sources public_source
+          on public_source.id = fas.source_id
+        where c.panda_id = :panda_id
+          and c.is_current
+          and c.publication_status = 'published'
+        group by c.id
+        order by c.field_key
+        """
+    )
+
+    public_sources_sql = text(
+        """
+        select
+          id,
+          publisher,
+          title,
+          url,
+          published_at,
+          last_verified_at,
+          language_tag as language,
+          access_state
+        from public.public_evidence_sources
+        where id = any(:source_ids)
+        order by id
+        """
+    )
+
     with session_scope() as session:
         if session is None:
             raise SQLAlchemyError("Database session unavailable")
@@ -401,6 +601,39 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
 
         habitat_rows = session.execute(habitat_sql, {"panda_id": panda_id}).mappings().all()
         media_rows = session.execute(media_sql, {"panda_id": panda_id}).mappings().all()
+        identity_name_rows = (
+            session.execute(identity_names_sql, {"panda_id": panda_id}).mappings().all()
+        )
+        identity_slug_rows = (
+            session.execute(identity_slugs_sql, {"panda_id": panda_id}).mappings().all()
+        )
+        external_identifier_rows = (
+            session.execute(external_identifiers_sql, {"panda_id": panda_id})
+            .mappings()
+            .all()
+        )
+        conclusion_rows = (
+            session.execute(conclusions_sql, {"panda_id": panda_id}).mappings().all()
+        )
+        source_ids = sorted(
+            {
+                str(source_id)
+                for source_row in (
+                    *identity_name_rows,
+                    *identity_slug_rows,
+                    *external_identifier_rows,
+                    *conclusion_rows,
+                )
+                for source_id in (source_row["source_ids"] or [])
+            }
+        )
+        source_rows = (
+            session.execute(public_sources_sql, {"source_ids": source_ids})
+            .mappings()
+            .all()
+            if source_ids
+            else []
+        )
 
     habitats = [
         HabitatSummary(id=h["id"], name=h["name"], province=h["province"]) for h in habitat_rows
@@ -415,6 +648,81 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
             signed_url=_resolve_public_media_url(m["storage_path"]),
         )
         for m in media_rows
+    ]
+
+    alias_kinds = {"alias", "historic_spelling", "historical_name", "nickname"}
+
+    def identity_name_payload(name_row: object) -> dict[str, object]:
+        return {
+            "value": name_row["value"],
+            "language": name_row["language_tag"],
+            "kind": name_row["name_kind"],
+            "primary": bool(name_row["is_primary"]),
+            "source_ids": [str(source_id) for source_id in name_row["source_ids"] or []],
+        }
+
+    identity = None
+    if identity_name_rows or identity_slug_rows or external_identifier_rows:
+        canonical_slug = next(
+            (
+                slug_row["slug"]
+                for slug_row in identity_slug_rows
+                if slug_row["slug_kind"] == "canonical"
+            ),
+            row["slug"],
+        )
+        identity = {
+            "stable_id": row["id"],
+            "canonical_slug": canonical_slug,
+            "names": [
+                identity_name_payload(name_row)
+                for name_row in identity_name_rows
+                if name_row["name_kind"] not in alias_kinds
+            ],
+            "aliases": [
+                identity_name_payload(name_row)
+                for name_row in identity_name_rows
+                if name_row["name_kind"] in alias_kinds
+            ],
+            "legacy_slugs": [
+                {
+                    "value": slug_row["slug"],
+                    "source_ids": [
+                        str(source_id) for source_id in slug_row["source_ids"] or []
+                    ],
+                }
+                for slug_row in identity_slug_rows
+                if slug_row["slug_kind"] == "legacy"
+            ],
+            "external_identifiers": [
+                {
+                    "system": identifier_row["system"],
+                    "value": identifier_row["value"],
+                    "source_ids": [
+                        str(source_id)
+                        for source_id in identifier_row["source_ids"] or []
+                    ],
+                }
+                for identifier_row in external_identifier_rows
+            ],
+        }
+
+    conclusions = [
+        {
+            "field": conclusion_row["field_key"],
+            "value": conclusion_row["value_json"],
+            "status": conclusion_row["status"],
+            "last_verified_at": conclusion_row["last_verified_at"],
+            "assertion_ids": [
+                str(assertion_id) for assertion_id in conclusion_row["assertion_ids"] or []
+            ],
+            "source_ids": [
+                str(source_id) for source_id in conclusion_row["source_ids"] or []
+            ],
+            "candidate_values": conclusion_row["candidate_values_json"] or [],
+            "superseded_values": conclusion_row["superseded_values_json"] or [],
+        }
+        for conclusion_row in conclusion_rows
     ]
 
     cover_image_url = _resolve_public_media_url(row["cover_image_url"])
@@ -438,6 +746,9 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
         mother_id=row["mother_id"],
         habitats=habitats,
         media=media,
+        identity=identity,
+        conclusions=conclusions,
+        sources=[dict(source_row) for source_row in source_rows],
     )
 
 
@@ -535,7 +846,7 @@ def _build_lineage_edges(nodes: list[PandaLineageNode]) -> list[PandaLineageEdge
 def _get_panda_lineage_from_mock(
     panda_id: UUID, *, ancestor_depth: int, descendant_depth: int
 ) -> PandaLineageResponse:
-    rows = [PandaDetail.model_validate(item) for item in MOCK_PANDAS]
+    rows = _all_mock_panda_details()
     by_id = {row.id: row for row in rows}
 
     focus = by_id.get(panda_id)

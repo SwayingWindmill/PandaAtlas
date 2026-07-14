@@ -1,0 +1,1 @@
+"""Trusted Archive domain behavior."""
