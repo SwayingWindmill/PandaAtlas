@@ -257,21 +257,8 @@ Panda Atlas is a brownfield full-stack monorepo for a giant panda encyclopedia a
 <!-- GSD:skills-start source:skills/ -->
 ## Project Skills
 
-No project skills found. Add skills to any of: `.claude/skills/`, `.agents/skills/`, `.cursor/skills/`, or `.github/skills/` with a `SKILL.md` index file.
+Project skills are installed under `.agents/skills/`. Discover the available skills from the workspace inventory and load the relevant `SKILL.md` before using one.
 <!-- GSD:skills-end -->
-
-<!-- GSD:workflow-start source:GSD defaults -->
-## GSD Workflow Enforcement
-
-Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
-
-Use these entry points:
-- `/gsd-quick` for small fixes, doc updates, and ad-hoc tasks
-- `/gsd-debug` for investigation and bug fixing
-- `/gsd-execute-phase` for planned phase work
-
-Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
-<!-- GSD:workflow-end -->
 
 <!-- GSD:profile-start -->
 ## Developer Profile
@@ -279,3 +266,17 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
+
+## Agent skills
+
+### Issue tracker
+
+Issues and engineering work are tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the default mattpocock/skills triage label vocabulary. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use a multi-context domain documentation layout with a root `CONTEXT-MAP.md` and context-specific `CONTEXT.md` files. See `docs/agents/domain.md`.
