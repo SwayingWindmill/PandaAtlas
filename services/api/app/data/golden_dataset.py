@@ -203,12 +203,27 @@ def _published_source_ids(dataset: dict[str, Any]) -> set[str]:
     }
 
 
-@lru_cache(maxsize=1)
-def trusted_panda_details() -> tuple[dict[str, Any], ...]:
-    dataset = load_golden_dataset()
+def project_panda_details(
+    dataset: dict[str, Any], *, effective_date: date | None = None
+) -> tuple[dict[str, Any], ...]:
     dataset_meta = dataset["dataset"]
     published_source_ids = _published_source_ids(dataset)
     facilities = {facility["id"]: facility for facility in dataset.get("facilities", [])}
+    current_date = (effective_date or date.today()).isoformat()
+    parentage: dict[str, dict[str, str]] = {}
+    for assertion in dataset.get("parentage_assertions", []):
+        public_assertion = assertion.get("public", {})
+        if (
+            assertion.get("publication_status") == "published"
+            and public_assertion.get("status") == "confirmed"
+            and any(
+                source_id in published_source_ids
+                for source_id in public_assertion.get("source_ids", [])
+            )
+        ):
+            parentage.setdefault(str(public_assertion["child_id"]), {})[
+                str(public_assertion["role"])
+            ] = str(public_assertion["parent_id"])
     records: list[dict[str, Any]] = []
 
     for record in dataset.get("pandas", []):
@@ -254,10 +269,10 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
                 item
                 for item in reversed(residencies)
                 if item["residency_type"] == "primary"
-                and item["start_date"] <= date.today().isoformat()
+                and item["start_date"] <= current_date
                 and (
                     item["end_date"] is None
-                    or date.today().isoformat() < item["end_date"]
+                    or current_date < item["end_date"]
                 )
                 and item["status"] in {"confirmed", "confirmed_country_level"}
             ),
@@ -364,8 +379,8 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
                 "intro": summaries.get("zh-CN") or summaries.get("en"),
                 "birthplace": None,
                 "tags": ["trusted-identity", "golden-dataset"],
-                "father_id": None,
-                "mother_id": None,
+                "father_id": parentage.get(record["id"], {}).get("father"),
+                "mother_id": parentage.get(record["id"], {}).get("mother"),
                 "habitats": [],
                 "media": [],
                 "identity": identity,
@@ -395,6 +410,11 @@ def trusted_panda_details() -> tuple[dict[str, Any], ...]:
         )
 
     return tuple(records)
+
+
+@lru_cache(maxsize=1)
+def trusted_panda_details() -> tuple[dict[str, Any], ...]:
+    return project_panda_details(load_golden_dataset())
 
 
 def find_trusted_panda(reference: str) -> dict[str, Any] | None:

@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { access, rm } from "node:fs/promises";
+import { access, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { setTimeout as delay } from "node:timers/promises";
@@ -33,7 +33,11 @@ function runCommand(command, args) {
         resolve(undefined);
         return;
       }
-      reject(new Error(`${command} ${args.join(" ")} failed with code ${code ?? "null"}${signal ? ` (${signal})` : ""}`));
+      reject(
+        new Error(
+          `${command} ${args.join(" ")} failed with code ${code ?? "null"}${signal ? ` (${signal})` : ""}`,
+        ),
+      );
     });
   });
 }
@@ -74,7 +78,9 @@ async function waitForServer(child) {
   let lastError;
   for (let attempt = 0; attempt < 60; attempt += 1) {
     if (child.exitCode !== null) {
-      throw new Error(`Worker exited before becoming ready with code ${child.exitCode}`);
+      throw new Error(
+        `Worker exited before becoming ready with code ${child.exitCode}`,
+      );
     }
     try {
       const response = await fetch(`${BASE_URL}/health`);
@@ -102,7 +108,24 @@ async function expectJson(requestPath, expectedStatus, init) {
     }
   }
   if (response.status !== expectedStatus) {
-    throw new Error(`${requestPath} returned ${response.status}, expected ${expectedStatus}: ${text}`);
+    throw new Error(
+      `${requestPath} returned ${response.status}, expected ${expectedStatus}: ${text}`,
+    );
+  }
+  if (
+    expectedStatus === 200 &&
+    /^\/api\/v1\/(pandas|map|stats|releases)(\/|\?|$)/.test(requestPath)
+  ) {
+    const versions = [
+      response.headers.get("X-PandaAtlas-Dataset-Version"),
+      response.headers.get("X-PandaAtlas-Public-Schema-Version"),
+      response.headers.get("X-PandaAtlas-Database-Migration-Version"),
+    ];
+    if (versions.some((value) => !value)) {
+      throw new Error(
+        `${requestPath} omitted active release headers: ${versions.join(",")}`,
+      );
+    }
   }
   return payload;
 }
@@ -126,15 +149,54 @@ async function stopProcess(child) {
 }
 
 function wranglerBin() {
-  return path.resolve(process.cwd(), "../../node_modules/wrangler/bin/wrangler.js");
+  return path.resolve(
+    process.cwd(),
+    "../../node_modules/wrangler/bin/wrangler.js",
+  );
 }
 
 async function prepareD1Projection() {
   await rm(PERSIST_PATH, { recursive: true, force: true });
-  const d1Args = [wranglerBin(), "d1", "execute", "panda-atlas", "--local", "--persist-to", PERSIST_PATH];
-  await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/schema.sql"]);
-  await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/seed.sql"]);
-  await runCommand(process.execPath, [...d1Args, "--file=../../infra/cloudflare/d1/seed.sql"]);
+  const d1Args = [
+    wranglerBin(),
+    "d1",
+    "execute",
+    "panda-atlas",
+    "--local",
+    "--persist-to",
+    PERSIST_PATH,
+  ];
+  await runCommand(process.execPath, [
+    ...d1Args,
+    "--file=../../infra/cloudflare/d1/schema.sql",
+  ]);
+  await runCommand(process.execPath, [
+    ...d1Args,
+    "--file=../../infra/cloudflare/d1/seed.sql",
+  ]);
+  await runCommand(process.execPath, [
+    ...d1Args,
+    "--file=../../infra/cloudflare/d1/seed.sql",
+  ]);
+  const releaseSql = await readFile(
+    "../../data/public-releases/2026.07.14.3/d1.sql",
+    "utf8",
+  );
+  const wranglerReleaseSql = path.join(
+    PERSIST_PATH,
+    "release-2026.07.14.3.sql",
+  );
+  await writeFile(
+    wranglerReleaseSql,
+    releaseSql
+      .replace(/^begin immediate;\s*/i, "")
+      .replace(/\s*commit;\s*$/i, ""),
+    "utf8",
+  );
+  await runCommand(process.execPath, [
+    ...d1Args,
+    `--file=${wranglerReleaseSql}`,
+  ]);
 
   const identityCheck = await runCommandCapture(process.execPath, [
     ...d1Args,
@@ -155,11 +217,13 @@ async function prepareD1Projection() {
     "--command=select (select count(*) from parentage_assertions where status = 'confirmed') as confirmed_parentage_count, (select count(*) from domain_event_participants where event_id = 'event-smithsonian-departure-2023') as departure_participant_count, (select count(*) from pandas where slug in ('bei-bei', 'xiao-qi-ji') and current_location = 'Wolong Shenshuping Base') as shenshuping_current_count",
   ]);
   if (
-    !/"confirmed_parentage_count":\s*9/.test(archiveRelationshipCheck)
-    || !/"departure_participant_count":\s*3/.test(archiveRelationshipCheck)
-    || !/"shenshuping_current_count":\s*2/.test(archiveRelationshipCheck)
+    !/"confirmed_parentage_count":\s*9/.test(archiveRelationshipCheck) ||
+    !/"departure_participant_count":\s*3/.test(archiveRelationshipCheck) ||
+    !/"shenshuping_current_count":\s*2/.test(archiveRelationshipCheck)
   ) {
-    throw new Error(`D1 archive relationship assertion failed: ${archiveRelationshipCheck}`);
+    throw new Error(
+      `D1 archive relationship assertion failed: ${archiveRelationshipCheck}`,
+    );
   }
 
   let overlapRejected = false;
@@ -180,7 +244,9 @@ async function prepareD1Projection() {
     "--command=pragma table_info(evidence_sources)",
   ]);
   if (/internal_notes|restricted_excerpt|content_hash/.test(sourceColumns)) {
-    throw new Error(`D1 evidence_sources leaked restricted columns: ${sourceColumns}`);
+    throw new Error(
+      `D1 evidence_sources leaked restricted columns: ${sourceColumns}`,
+    );
   }
 
   console.log("WORKER_SMOKE_RESULT status=passed scope=d1");
@@ -198,7 +264,9 @@ async function runHttpSmoke() {
   try {
     await access(PERSIST_PATH);
   } catch {
-    throw new Error("Worker HTTP smoke requires prepared D1 state; run --mode=d1 first");
+    throw new Error(
+      "Worker HTTP smoke requires prepared D1 state; run --mode=d1 first",
+    );
   }
 
   const worker = spawn(
@@ -226,11 +294,17 @@ async function runHttpSmoke() {
 
     const health = await expectJson("/health", 200);
     if (health?.db !== "ok") {
-      throw new Error(`Worker health did not report db=ok: ${JSON.stringify(health)}`);
+      throw new Error(
+        `Worker health did not report db=ok: ${JSON.stringify(health)}`,
+      );
     }
 
     const pandas = await expectJson("/api/v1/pandas?page_size=3", 200);
-    if (!Array.isArray(pandas?.items) || pandas.items.length === 0) {
+    if (
+      !Array.isArray(pandas?.items) ||
+      pandas.items.length === 0 ||
+      pandas?.meta?.total !== 7
+    ) {
       throw new Error("Worker panda list smoke response was empty");
     }
 
@@ -242,60 +316,90 @@ async function runHttpSmoke() {
       (item) => item.id === "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     );
     if (
-      !meiXiangSearchResult
-      || !Array.isArray(meiXiangSearchResult.search_terms)
-      || !meiXiangSearchResult.search_terms.includes("Měixiāng")
-      || !meiXiangSearchResult.search_terms.includes("meixiang")
-      || !meiXiangSearchResult.search_terms.includes("smithsonian_history_key:mei-xiang")
+      !meiXiangSearchResult ||
+      !Array.isArray(meiXiangSearchResult.search_terms) ||
+      !meiXiangSearchResult.search_terms.includes("Měixiāng") ||
+      !meiXiangSearchResult.search_terms.includes("meixiang") ||
+      !meiXiangSearchResult.search_terms.includes(
+        "smithsonian_history_key:mei-xiang",
+      )
     ) {
-      throw new Error(`Worker identity search missed Mei Xiang: ${JSON.stringify(identitySearch)}`);
+      throw new Error(
+        `Worker identity search missed Mei Xiang: ${JSON.stringify(identitySearch)}`,
+      );
     }
 
     const trustedDetail = await expectJson("/api/v1/pandas/meixiang", 200);
     if (
-      trustedDetail?.slug !== "mei-xiang"
-      || trustedDetail?.identity?.stable_id !== "2939c16f-1938-5629-928c-b36b1d5cd6ed"
-      || trustedDetail?.conclusions?.length !== 3
-      || trustedDetail?.sources?.length < 2
-      || trustedDetail?.current_place?.coarse_location !== "China"
-      || trustedDetail?.residencies?.length !== 2
-      || trustedDetail?.events?.length !== 2
-      || trustedDetail?.record_tier !== "complete_first_pass"
-      || trustedDetail?.localized_content?.length !== 2
-      || trustedDetail?.media_release?.display_mode !== "designed_empty_state"
-      || trustedDetail?.public_revision?.data_version !== "2026.07.14.2"
-      || trustedDetail.events.find(
+      trustedDetail?.slug !== "mei-xiang" ||
+      trustedDetail?.identity?.stable_id !==
+        "2939c16f-1938-5629-928c-b36b1d5cd6ed" ||
+      trustedDetail?.conclusions?.length !== 3 ||
+      trustedDetail?.sources?.length < 2 ||
+      trustedDetail?.current_place?.coarse_location !== "China" ||
+      trustedDetail?.residencies?.length !== 2 ||
+      trustedDetail?.events?.length !== 2 ||
+      trustedDetail?.record_tier !== "complete_first_pass" ||
+      trustedDetail?.localized_content?.length !== 2 ||
+      trustedDetail?.media_release?.display_mode !== "designed_empty_state" ||
+      trustedDetail?.public_revision?.data_version !== "2026.07.14.3" ||
+      trustedDetail.events.find(
         (event) => event.id === "event-smithsonian-return-plan-2020",
-      )?.changes_current_residency !== false
-      || trustedDetail.events.find(
+      )?.changes_current_residency !== false ||
+      trustedDetail.events.find(
         (event) => event.id === "event-smithsonian-departure-2023",
       )?.participants?.length !== 3
     ) {
-      throw new Error(`Worker trusted detail was incomplete: ${JSON.stringify(trustedDetail)}`);
+      throw new Error(
+        `Worker trusted detail was incomplete: ${JSON.stringify(trustedDetail)}`,
+      );
     }
     const trustedSerialized = JSON.stringify(trustedDetail);
-    if (/internal_notes|restricted_excerpt|content_hash|curator_notes/.test(trustedSerialized)) {
-      throw new Error(`Worker trusted detail leaked restricted evidence: ${trustedSerialized}`);
+    if (
+      /internal_notes|restricted_excerpt|content_hash|curator_notes/.test(
+        trustedSerialized,
+      )
+    ) {
+      throw new Error(
+        `Worker trusted detail leaked restricted evidence: ${trustedSerialized}`,
+      );
     }
 
-    const trustedLineage = await expectJson("/api/v1/pandas/mei-xiang/lineage", 200);
+    const trustedLineage = await expectJson(
+      "/api/v1/pandas/mei-xiang/lineage",
+      200,
+    );
     if (
       !trustedLineage?.edges?.some(
         (edge) =>
-          edge.parent_id === "2939c16f-1938-5629-928c-b36b1d5cd6ed"
-          && edge.child_id === "96d00a39-7865-55db-b5c2-f339ef692258",
-      )
-      || !Array.isArray(trustedLineage?.relationships)
+          edge.parent_id === "2939c16f-1938-5629-928c-b36b1d5cd6ed" &&
+          edge.child_id === "96d00a39-7865-55db-b5c2-f339ef692258",
+      ) ||
+      !Array.isArray(trustedLineage?.relationships)
     ) {
-      throw new Error(`Worker trusted lineage was not assertion-derived: ${JSON.stringify(trustedLineage)}`);
+      throw new Error(
+        `Worker trusted lineage was not assertion-derived: ${JSON.stringify(trustedLineage)}`,
+      );
     }
 
     const distribution = await expectJson(
       "/api/v1/map/distribution?bbox=100,25,110,36&layer=wild&zoom=4",
       200,
     );
-    if (distribution?.meta?.limit !== 1500 || distribution.meta.requested_zoom !== 4) {
-      throw new Error(`Unexpected distribution metadata: ${JSON.stringify(distribution?.meta)}`);
+    if (
+      distribution?.meta?.limit !== 1500 ||
+      distribution.meta.requested_zoom !== 4
+    ) {
+      throw new Error(
+        `Unexpected distribution metadata: ${JSON.stringify(distribution?.meta)}`,
+      );
+    }
+
+    const stats = await expectJson("/api/v1/stats/overview", 200);
+    if (stats?.total_pandas !== pandas.meta.total) {
+      throw new Error(
+        `Worker stats escaped active release: ${JSON.stringify(stats)}`,
+      );
     }
 
     await expectJson("/api/v1/admin/import-sources", 404);

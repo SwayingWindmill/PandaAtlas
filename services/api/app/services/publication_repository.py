@@ -211,35 +211,38 @@ def create_change_set(
     payload: ChangeSetCreate,
     actor_id: UUID,
 ) -> ChangeSetRead:
-    base_records: dict[str, dict[str, Any]] = {}
+    base_records: dict[tuple[str, str], dict[str, Any]] = {}
     for revision in payload.revisions:
-        panda_row = session.execute(
-            text(
-                """
-                select
-                  name_zh,
-                  name_en,
-                  gender,
-                  birth_date::text as birth_date,
-                  death_date::text as death_date,
-                  status::text as status,
-                  birthplace,
-                  current_location,
-                  intro,
-                  tags,
-                  is_featured
-                from public.pandas
-                where id::text = :panda_id
-                """
-            ),
-            {"panda_id": revision.entity_id},
-        ).mappings().first()
-        if panda_row is None:
-            raise HTTPException(
-                status_code=422,
-                detail="Publication revisions require an existing trusted panda identity",
-            )
-        base_record = dict(panda_row)
+        base_record: dict[str, Any] = {}
+        if revision.entity_type == "panda":
+            panda_row = session.execute(
+                text(
+                    """
+                    select
+                      slug,
+                      name_zh,
+                      name_en,
+                      gender,
+                      birth_date::text as birth_date,
+                      death_date::text as death_date,
+                      status::text as status,
+                      birthplace,
+                      current_location,
+                      intro,
+                      tags,
+                      is_featured
+                    from public.pandas
+                    where id::text = :panda_id
+                    """
+                ),
+                {"panda_id": revision.entity_id},
+            ).mappings().first()
+            if panda_row is None:
+                raise HTTPException(
+                    status_code=422,
+                    detail="Publication revisions require an existing trusted panda identity",
+                )
+            base_record.update(dict(panda_row))
         active_public_record = get_active_public_record(
             session,
             revision.entity_type,
@@ -253,7 +256,7 @@ def create_change_set(
                     if not key.startswith("_")
                 }
             )
-        base_records[revision.entity_id] = base_record
+        base_records[(revision.entity_type, revision.entity_id)] = base_record
 
     change_set_id = session.execute(
         text(
@@ -269,7 +272,7 @@ def create_change_set(
     for revision in payload.revisions:
         revision_payload = revision.payload.model_dump(mode="json")
         revision_payload["public_record"] = {
-            **base_records[revision.entity_id],
+            **base_records[(revision.entity_type, revision.entity_id)],
             **revision_payload["public_record"],
         }
         revision_id = session.execute(

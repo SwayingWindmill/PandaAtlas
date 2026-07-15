@@ -1,8 +1,13 @@
 from datetime import UTC, datetime
 from uuid import UUID
 
+import pytest
+
 from app.projection import postgres_source
-from app.projection.public_release import build_public_release
+from app.projection.public_release import (
+    ProjectionCompatibilityError,
+    build_public_release,
+)
 
 
 class _Result:
@@ -92,7 +97,7 @@ def test_postgres_source_accepts_only_published_release_batch(monkeypatch) -> No
     assert engine.disposed is True
 
 
-def test_postgres_revision_vocabulary_projects_to_public_panda_records(monkeypatch) -> None:
+def test_postgres_release_fails_closed_without_complete_runtime_snapshot(monkeypatch) -> None:
     batch_id = UUID("11111111-1111-4111-8111-111111111111")
     engine = _Engine(_Connection(batch_id))
     monkeypatch.setattr(postgres_source, "create_engine", lambda *_args, **_kwargs: engine)
@@ -101,6 +106,5 @@ def test_postgres_revision_vocabulary_projects_to_public_panda_records(monkeypat
         database_url="postgresql+psycopg://example",
         publication_batch_id=batch_id,
     )
-    release = build_public_release(release_input)
-
-    assert '"id": "panda-1"' in release.files["pandas.json"]
+    with pytest.raises(ProjectionCompatibilityError, match="api_pandas"):
+        build_public_release(release_input)

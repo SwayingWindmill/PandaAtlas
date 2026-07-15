@@ -2,7 +2,7 @@
   "contract_version": "1.0.0",
   "dataset": {
     "id": "mei-xiang-family",
-    "version": "2026.07.14.2",
+    "version": "2026.07.14.3",
     "public_schema_version": "1.0.0",
     "title": "Mei Xiang–Tian Tian family golden dataset",
     "core_panda_count": 7,

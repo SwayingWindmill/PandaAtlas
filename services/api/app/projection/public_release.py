@@ -6,8 +6,17 @@ import io
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
+
+from app.data.golden_dataset import project_panda_details, public_trusted_panda_record
+from app.data.mock_data import MOCK_DISTRIBUTION, MOCK_HABITATS
+from app.schemas.map import (
+    DistributionGeoJsonFeature,
+    DistributionSnapshot,
+    HabitatGeoJsonFeature,
+)
+from app.schemas.panda import PandaDetail
 
 ENTITY_COLLECTIONS = (
     "sources",
@@ -30,8 +39,10 @@ ALLOWED_PUBLIC_FIELDS = {
     "coarse_location",
     "conclusion_status",
     "content",
+    "coordinates",
     "country_code",
     "display_mode",
+    "density",
     "birth_date",
     "birthplace",
     "current_location",
@@ -46,12 +57,14 @@ ALLOWED_PUBLIC_FIELDS = {
     "facility_type",
     "field",
     "freshness",
+    "geometry",
     "from_facility_id",
     "gender",
     "kind",
     "intro",
     "is_featured",
     "language",
+    "level",
     "last_verified_at",
     "legacy_slugs",
     "license_state",
@@ -62,6 +75,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "max_age_days",
     "media_release",
     "name_en",
+    "name",
     "name_zh",
     "names",
     "panda_id",
@@ -70,6 +84,8 @@ ALLOWED_PUBLIC_FIELDS = {
     "policy",
     "precision",
     "primary",
+    "province",
+    "properties",
     "published_at",
     "publisher",
     "record_tier",
@@ -84,13 +100,18 @@ ALLOWED_PUBLIC_FIELDS = {
     "status",
     "subject_id",
     "summary",
+    "snapshot_date",
     "system",
     "title",
+    "type",
     "tags",
     "to_coarse_location",
     "translation_status",
     "url",
     "value",
+    "version",
+    "notes",
+    "cell_code",
 }
 DROP_PUBLIC_FIELDS = {
     "precise_wildlife_location",
@@ -179,6 +200,10 @@ def _sanitize_public_value(value: Any, *, path: str, published_sources: set[str]
         if PRECISE_COORDINATE_PATTERN.search(value):
             raise ProjectionSecurityError(f"Precise coordinates are not allowed at {path}")
         return value
+    if isinstance(value, (int, float)) and "coordinates" in path:
+        if abs(float(value) - round(float(value), 3)) > 1e-9:
+            raise ProjectionSecurityError(f"Precise coordinates are not allowed at {path}")
+        return value
     if not isinstance(value, dict):
         return value
 
@@ -231,16 +256,45 @@ def _project_records(source_state: dict[str, Any]) -> list[dict[str, Any]]:
             if record.get("entity_type") in {"source", "sources"}
         )
         for source_record in direct_records:
-            public = _sanitize_public_value(
-                source_record.get("public", {}),
-                path=f"records.{source_record.get('id', 'unknown')}.public",
-                published_sources=published_sources,
+            entity_type = CANONICAL_ENTITY_TYPES.get(
+                str(source_record["entity_type"]), str(source_record["entity_type"])
             )
+            if entity_type.startswith("api_"):
+                public = source_record.get("public", {})
+                _assert_runtime_safe(
+                    public,
+                    path=f"records.{source_record.get('id', 'unknown')}.public",
+                )
+                entity_id = str(source_record["id"])
+                if entity_type == "api_pandas" and str(public.get("id")) != entity_id:
+                    raise ProjectionCompatibilityError(
+                        "api_pandas entity id must match its public id"
+                    )
+                if entity_type in {"api_distribution", "api_habitats"} and str(
+                    public.get("id")
+                ) != entity_id:
+                    raise ProjectionCompatibilityError(
+                        f"{entity_type} entity id must match its public id"
+                    )
+                if entity_type == "api_snapshots" and str(
+                    public.get("version")
+                ) != entity_id:
+                    raise ProjectionCompatibilityError(
+                        "api_snapshots entity id must match its public version"
+                    )
+                if entity_type == "api_stats" and entity_id != "overview":
+                    raise ProjectionCompatibilityError(
+                        "api_stats entity id must be overview"
+                    )
+            else:
+                public = _sanitize_public_value(
+                    source_record.get("public", {}),
+                    path=f"records.{source_record.get('id', 'unknown')}.public",
+                    published_sources=published_sources,
+                )
             records.append(
                 {
-                    "entity_type": CANONICAL_ENTITY_TYPES.get(
-                        str(source_record["entity_type"]), str(source_record["entity_type"])
-                    ),
+                    "entity_type": entity_type,
                     "id": str(source_record["id"]),
                     "public": public,
                 }
@@ -264,6 +318,295 @@ def _project_records(source_state: dict[str, Any]) -> list[dict[str, Any]]:
                 }
             )
     records.sort(key=lambda record: (record["entity_type"], record["id"]))
+    return records
+
+
+def _runtime_dataset(
+    source_state: dict[str, Any], projected_records: list[dict[str, Any]]
+) -> dict[str, Any]:
+    dataset: dict[str, Any] = {
+        "dataset": source_state["dataset"],
+        **{collection: [] for collection in ENTITY_COLLECTIONS},
+    }
+    for record in projected_records:
+        collection = str(record.get("entity_type"))
+        if collection in ENTITY_COLLECTIONS:
+            dataset[collection].append(
+                {
+                    "id": str(record["id"]),
+                    "publication_status": "published",
+                    "public": record.get("public", {}),
+                }
+            )
+    return dataset
+
+
+def _runtime_api(
+    source_state: dict[str, Any], release: dict[str, str], projected_records: list[dict[str, Any]]
+) -> dict[str, Any]:
+    dataset = _runtime_dataset(source_state, projected_records)
+    api_panda_records = [
+        record["public"]
+        for record in projected_records
+        if record["entity_type"] == "api_pandas"
+    ]
+    if api_panda_records:
+        pandas = api_panda_records
+    else:
+        pandas = [
+            public_trusted_panda_record(record)
+            for record in project_panda_details(
+                dataset, effective_date=date.fromisoformat(release["released_at"][:10])
+            )
+        ]
+    if "records" in source_state and any(
+        record["entity_type"] == "pandas" for record in projected_records
+    ) and not api_panda_records:
+        raise ProjectionCompatibilityError(
+            "Reviewed PostgreSQL releases require api_pandas snapshot revisions"
+        )
+    if "records" in source_state:
+        entity_types = {record["entity_type"] for record in projected_records}
+        required_runtime_types = {
+            "api_pandas",
+            "api_distribution",
+            "api_habitats",
+            "api_snapshots",
+        }
+        missing = sorted(required_runtime_types - entity_types)
+        if missing:
+            raise ProjectionCompatibilityError(
+                "Reviewed PostgreSQL release is missing runtime snapshot revisions: "
+                + ", ".join(missing)
+            )
+        archive_panda_ids = {
+            record["id"]
+            for record in projected_records
+            if record["entity_type"] == "pandas"
+            and record["public"].get("record_tier") != "dependency_stub"
+        }
+        api_panda_ids = {
+            str(record["public"].get("id"))
+            for record in projected_records
+            if record["entity_type"] == "api_pandas"
+        }
+        if not archive_panda_ids:
+            raise ProjectionCompatibilityError(
+                "Reviewed PostgreSQL releases require archive panda revisions for CSV/JSON exports"
+            )
+        if archive_panda_ids != api_panda_ids:
+            raise ProjectionCompatibilityError(
+                "Reviewed PostgreSQL api_pandas snapshot does not cover the published panda set"
+            )
+        archive_by_id = {
+            record["id"]: record["public"]
+            for record in projected_records
+            if record["entity_type"] == "pandas"
+        }
+        api_by_id = {
+            str(record["public"]["id"]): record["public"]
+            for record in projected_records
+            if record["entity_type"] == "api_pandas"
+        }
+        for panda_id in sorted(api_panda_ids):
+            archive = archive_by_id[panda_id]
+            api_record = api_by_id[panda_id]
+            names = archive.get("names", [])
+            archive_values = {
+                "slug": archive.get("canonical_slug") or archive.get("slug"),
+                "name_zh": next(
+                    (
+                        item.get("value")
+                        for item in names
+                        if item.get("language") == "zh-Hans" and item.get("primary")
+                    ),
+                    archive.get("name_zh"),
+                ),
+                "name_en": next(
+                    (
+                        item.get("value")
+                        for item in names
+                        if item.get("language") == "en" and item.get("primary")
+                    ),
+                    archive.get("name_en"),
+                ),
+                "gender": archive.get("sex") or archive.get("gender"),
+                "status": archive.get("life_status") or archive.get("status"),
+            }
+            conflicts = sorted(
+                field
+                for field, archive_value in archive_values.items()
+                if archive_value != api_record.get(field)
+            )
+            revision = api_record.get("public_revision") or {}
+            if revision.get("data_version") != release["dataset_release_version"]:
+                conflicts.append("public_revision.data_version")
+            if revision.get("public_schema_version") != release["public_schema_version"]:
+                conflicts.append("public_revision.public_schema_version")
+            if conflicts:
+                raise ProjectionCompatibilityError(
+                    f"Archive/API panda semantics conflict for {panda_id}: "
+                    + ", ".join(conflicts)
+                )
+    supplied = source_state.get("runtime_api")
+    if isinstance(supplied, dict):
+        _assert_runtime_safe(supplied)
+        distribution = supplied.get("distribution", {"type": "FeatureCollection", "features": []})
+        habitats = supplied.get("habitats", {"type": "FeatureCollection", "features": []})
+        snapshots = supplied.get("snapshots", [])
+    elif "pandas" in source_state:
+        distribution = MOCK_DISTRIBUTION
+        habitats = MOCK_HABITATS
+        snapshot_dates = sorted(
+            {
+                str(feature.get("properties", {}).get("snapshot_date"))
+                for feature in MOCK_DISTRIBUTION.get("features", [])
+                if feature.get("properties", {}).get("snapshot_date")
+            },
+            reverse=True,
+        )
+        snapshots = [
+            {"snapshot_date": value, "version": f"release-{index + 1}", "notes": None}
+            for index, value in enumerate(snapshot_dates)
+        ]
+    else:
+        distribution = {
+            "type": "FeatureCollection",
+            "features": [
+                record["public"]
+                for record in projected_records
+                if record["entity_type"]
+                in {"distribution_cell", "distribution_cells", "api_distribution"}
+            ],
+        }
+        habitats = {
+            "type": "FeatureCollection",
+            "features": [
+                record["public"]
+                for record in projected_records
+                if record["entity_type"] in {"habitat", "habitats", "api_habitats"}
+            ],
+        }
+        snapshots = [
+            record["public"]
+            for record in projected_records
+            if record["entity_type"]
+            in {"distribution_snapshot", "distribution_snapshots", "api_snapshots"}
+        ]
+    pandas = [
+        PandaDetail.model_validate(item).model_dump(mode="json") for item in pandas
+    ]
+    distribution_features = [
+        DistributionGeoJsonFeature.model_validate(item).model_dump(mode="json")
+        for item in distribution.get("features", [])
+    ]
+    habitat_features = [
+        HabitatGeoJsonFeature.model_validate(item).model_dump(mode="json")
+        for item in habitats.get("features", [])
+    ]
+    snapshots = [
+        DistributionSnapshot.model_validate(item).model_dump(mode="json")
+        for item in snapshots
+    ]
+    snapshots.sort(key=lambda item: (item["snapshot_date"], item["version"]), reverse=True)
+    _assert_wildlife_geometry_is_generalized(distribution_features)
+    latest_snapshot = snapshots[0]["snapshot_date"] if snapshots else release["released_at"][:10]
+    stats = {
+        "total_pandas": len(pandas),
+        "active_habitats": len(habitat_features),
+        "latest_snapshot_date": latest_snapshot,
+        "wild_distribution_cells": sum(
+            feature.get("properties", {}).get("layer") == "wild"
+            and feature.get("properties", {}).get("snapshot_date") == latest_snapshot
+            for feature in distribution_features
+        ),
+        "featured_pandas": sum("featured" in record.get("tags", []) for record in pandas),
+    }
+    runtime = {
+        "release": release,
+        "pandas": pandas,
+        "distribution": {"type": "FeatureCollection", "features": distribution_features},
+        "habitats": {"type": "FeatureCollection", "features": habitat_features},
+        "snapshots": snapshots,
+        "stats": stats,
+    }
+    _assert_runtime_safe(runtime)
+    return runtime
+
+
+def _assert_runtime_safe(value: Any, *, path: str = "runtime_api") -> None:
+    if isinstance(value, str):
+        if EMAIL_PATTERN.search(value):
+            raise ProjectionSecurityError(f"Personal email is not allowed at {path}")
+        if PRECISE_COORDINATE_PATTERN.search(value):
+            raise ProjectionSecurityError(f"Precise coordinates are not allowed at {path}")
+        return
+    if isinstance(value, list):
+        for index, item in enumerate(value):
+            _assert_runtime_safe(item, path=f"{path}[{index}]")
+        return
+    if isinstance(value, dict):
+        for key, item in value.items():
+            lowered = str(key).lower()
+            if lowered in DROP_PUBLIC_FIELDS or any(
+                marker in lowered for marker in SENSITIVE_FIELD_MARKERS
+            ):
+                raise ProjectionSecurityError(f"Sensitive public field at {path}.{key}")
+            _assert_runtime_safe(item, path=f"{path}.{key}")
+
+
+def _coordinate_positions(value: Any) -> list[tuple[float, float]]:
+    if isinstance(value, list):
+        if len(value) >= 2 and all(isinstance(item, (int, float)) for item in value[:2]):
+            return [(float(value[0]), float(value[1]))]
+        return [position for item in value for position in _coordinate_positions(item)]
+    return []
+
+
+def _assert_wildlife_geometry_is_generalized(
+    features: list[dict[str, Any]],
+) -> None:
+    for feature in features:
+        if feature.get("properties", {}).get("layer") != "wild":
+            continue
+        geometry = feature.get("geometry", {})
+        if geometry.get("type") in {"Point", "MultiPoint", "LineString"}:
+            raise ProjectionSecurityError("Wild distribution must use aggregated polygon cells")
+        positions = _coordinate_positions(geometry.get("coordinates"))
+        if not positions:
+            raise ProjectionSecurityError("Wild distribution cell has no polygon coordinates")
+        longitude_span = max(item[0] for item in positions) - min(item[0] for item in positions)
+        latitude_span = max(item[1] for item in positions) - min(item[1] for item in positions)
+        if longitude_span < 0.05 or latitude_span < 0.05:
+            raise ProjectionSecurityError("Wild distribution cell is too precise for publication")
+
+
+def _runtime_records(runtime: dict[str, Any]) -> list[dict[str, Any]]:
+    records = [
+        {"entity_type": "api_pandas", "id": str(item["id"]), "public": item}
+        for item in runtime["pandas"]
+    ]
+    records.extend(
+        {
+            "entity_type": "api_distribution",
+            "id": str(feature.get("id", index)),
+            "public": feature,
+        }
+        for index, feature in enumerate(runtime["distribution"]["features"])
+    )
+    records.extend(
+        {
+            "entity_type": "api_habitats",
+            "id": str(feature.get("id", index)),
+            "public": feature,
+        }
+        for index, feature in enumerate(runtime["habitats"]["features"])
+    )
+    records.extend(
+        {"entity_type": "api_snapshots", "id": str(item["version"]), "public": item}
+        for item in runtime["snapshots"]
+    )
+    records.append({"entity_type": "api_stats", "id": "overview", "public": runtime["stats"]})
     return records
 
 
@@ -304,14 +647,14 @@ def _panda_csv(records: list[dict[str, Any]], release: dict[str, str]) -> str:
                 "dataset_release_version": release["dataset_release_version"],
                 "public_schema_version": release["public_schema_version"],
                 "id": record["id"],
-                "canonical_slug": public.get("canonical_slug", ""),
+                "canonical_slug": public.get("canonical_slug", public.get("slug", "")),
                 "name_zh": next(
                     (
                         name.get("value", "")
                         for name in names
                         if name.get("language") == "zh-Hans" and name.get("primary")
                     ),
-                    "",
+                    public.get("name_zh", ""),
                 ),
                 "name_en": next(
                     (
@@ -319,10 +662,10 @@ def _panda_csv(records: list[dict[str, Any]], release: dict[str, str]) -> str:
                         for name in names
                         if name.get("language") == "en" and name.get("primary")
                     ),
-                    "",
+                    public.get("name_en", ""),
                 ),
-                "sex": public.get("sex", "unknown"),
-                "life_status": public.get("life_status", "unknown"),
+                "sex": public.get("sex", public.get("gender", "unknown")),
+                "life_status": public.get("life_status", public.get("status", "unknown")),
                 "public_json": _canonical_json(public),
             }
         )
@@ -397,15 +740,37 @@ def build_public_release(release_input: PublicReleaseInput) -> PublicRelease:
         "released_at": _iso_z(release_input.released_at),
     }
     records = _project_records(release_input.source_state)
+    archive_records = [
+        record for record in records if not record["entity_type"].startswith("api_")
+    ]
+    runtime = _runtime_api(release_input.source_state, release, records)
+    runtime_records = _runtime_records(runtime)
     files = {
-        "pandas.csv": _panda_csv(records, release),
-        "pandas.json": _panda_json(records, release),
-        "d1.sql": _d1_sql(records, release, dataset["licenses"]),
+        "pandas.csv": _panda_csv(archive_records, release),
+        "pandas.json": _panda_json(archive_records, release),
+        "api.json": _canonical_json(runtime, pretty=True),
+        "d1.sql": _d1_sql(
+            [*archive_records, *runtime_records], release, dataset["licenses"]
+        ),
     }
     counts = {
-        entity_type: sum(record["entity_type"] == entity_type for record in records)
+        entity_type: sum(
+            record["entity_type"] == entity_type for record in archive_records
+        )
         for entity_type in ENTITY_COLLECTIONS
     }
+    counts.update(
+        {
+            entity_type: sum(record["entity_type"] == entity_type for record in runtime_records)
+            for entity_type in (
+                "api_pandas",
+                "api_distribution",
+                "api_habitats",
+                "api_snapshots",
+                "api_stats",
+            )
+        }
+    )
     manifest_files = {
         filename: {
             "bytes": len(content.encode("utf-8")),
