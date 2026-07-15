@@ -1,0 +1,39 @@
+{
+  "version": "1",
+  "expected_confirmed_parentage_assertion_ids": [
+    "parent-bao-bao-father",
+    "parent-bao-bao-mother",
+    "parent-bao-li-mother",
+    "parent-bei-bei-father",
+    "parent-bei-bei-mother",
+    "parent-tai-shan-father",
+    "parent-tai-shan-mother",
+    "parent-xiao-qi-ji-father",
+    "parent-xiao-qi-ji-mother"
+  ],
+  "allowed_reviewed_source_states": ["accessible", "redirected", "archived"],
+  "required_release_files": ["api.json", "d1.sql", "pandas.csv", "pandas.json"],
+  "forbidden_public_keys": [
+    "contact_email",
+    "content_hash",
+    "curator_notes",
+    "internal_completeness_score",
+    "internal_notes",
+    "pending_content",
+    "precise_wildlife_location",
+    "restricted_excerpt",
+    "review_owner"
+  ],
+  "forbidden_client_markers": ["ADMIN_API_TOKEN", "dev-admin-token"],
+  "hard_gate_ids": [
+    "accessibility-core-journeys",
+    "admin-auth-mfa",
+    "independent-review",
+    "no-sensitive-public-data",
+    "release-atomicity-and-rollback",
+    "release-version-consistency",
+    "restore-and-withdrawal-drills",
+    "trusted-parentage-and-residency"
+  ],
+  "waiver_required_fields": ["user_impact", "mitigation", "owner", "deadline"]
+}
