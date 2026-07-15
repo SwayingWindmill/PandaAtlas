@@ -67,6 +67,22 @@ def test_build_public_read_summary_accepts_disabled_database_state() -> None:
     assert summary["health_db"] == "disabled"
 
 
+def test_build_public_read_summary_accepts_zero_featured_pandas() -> None:
+    requester = _requester_factory(
+        {
+            "api/v1/stats/overview": {
+                "total_pandas": 12,
+                "latest_snapshot_date": "2026-03-05",
+                "featured_pandas": 0,
+            }
+        }
+    )
+
+    summary = build_public_read_summary(requester)
+
+    assert summary["stats_featured_pandas"] == 0
+
+
 def test_build_public_read_summary_raises_on_empty_pandas() -> None:
     requester = _requester_factory({"api/v1/pandas": {"meta": {"total": 0}, "items": []}})
 
@@ -118,4 +134,19 @@ def test_build_public_read_summary_raises_on_invalid_stats() -> None:
     )
 
     with pytest.raises(RuntimeError, match="stats endpoint returned invalid"):
+        build_public_read_summary(requester)
+
+
+def test_build_public_read_summary_raises_on_negative_featured_pandas() -> None:
+    requester = _requester_factory(
+        {
+            "api/v1/stats/overview": {
+                "total_pandas": 12,
+                "latest_snapshot_date": "2026-03-05",
+                "featured_pandas": -1,
+            }
+        }
+    )
+
+    with pytest.raises(RuntimeError, match="invalid featured pandas count"):
         build_public_read_summary(requester)

@@ -15,7 +15,11 @@ def _validate_stats_payload(stats: dict[str, object]) -> None:
         raise RuntimeError(f"stats endpoint returned invalid dataset: {stats}")
     if not isinstance(latest_snapshot_date, str) or not latest_snapshot_date:
         raise RuntimeError(f"stats endpoint returned invalid latest snapshot: {stats}")
-    if int(featured_pandas or 0) < 1:
+    if (
+        not isinstance(featured_pandas, int)
+        or isinstance(featured_pandas, bool)
+        or featured_pandas < 0
+    ):
         raise RuntimeError(f"stats endpoint returned invalid featured pandas count: {stats}")
 
 

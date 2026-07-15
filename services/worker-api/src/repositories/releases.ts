@@ -1,15 +1,6 @@
 import type { Env } from "../bindings";
 import { HttpError } from "../http";
-
-export interface PublicReleaseMetadata {
-  dataset_release_version: string;
-  public_schema_version: string;
-  database_migration_version: string;
-  publication_batch_id: string;
-  projection_code_version: string;
-  released_at: string;
-  licenses: Record<string, string>;
-}
+import type { PublicReleaseMetadata } from "../types";
 
 interface PublicReleaseRow extends Omit<PublicReleaseMetadata, "licenses"> {
   licenses_json: string;
