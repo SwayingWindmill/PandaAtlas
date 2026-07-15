@@ -137,6 +137,25 @@
         "summaries": { "required": true, "nullable": false }
       }
     },
+    "PublicReleaseMetadata": {
+      "description": "The immutable dataset release currently served by every public surface.",
+      "fields": {
+        "dataset_release_version": { "required": true, "nullable": false },
+        "public_schema_version": { "required": true, "nullable": false },
+        "database_migration_version": { "required": true, "nullable": false },
+        "publication_batch_id": { "required": true, "nullable": false },
+        "projection_code_version": { "required": true, "nullable": false },
+        "released_at": { "required": true, "nullable": false },
+        "licenses": { "required": true, "nullable": false }
+      }
+    },
+    "PublicPandaRelease": {
+      "description": "The exact versioned panda records served by the active public release.",
+      "fields": {
+        "release": { "required": true, "nullable": false },
+        "records": { "required": true, "nullable": false }
+      }
+    },
     "PandaDetail": {
       "description": "One public panda profile with structured identity and fact provenance.",
       "fields": {

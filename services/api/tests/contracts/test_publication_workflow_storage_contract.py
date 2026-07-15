@@ -47,3 +47,11 @@ def test_published_versions_revisions_and_audit_events_are_append_only() -> None
     assert "revoke all on function public.publish_publication_batch" in sql
     assert "for select using" in sql
     assert "for all to service_role" in sql
+
+
+def test_publication_batch_pins_projection_and_database_versions() -> None:
+    migration = MIGRATION.with_name("0006_versioned_public_projection.sql")
+    sql = migration.read_text(encoding="utf-8").lower()
+
+    assert "database_migration_version" in sql
+    assert "projection_code_version" in sql

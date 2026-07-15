@@ -157,12 +157,12 @@ test("all test layers load one fixture and the public projection strips restrict
   const identityLists = fixtures.map((dataset) => dataset.pandas.map((record) => record.id));
 
   for (const dataset of fixtures) {
-    assert.equal(dataset.dataset.version, "2026.07.14.2");
+    assert.equal(dataset.dataset.version, "2026.07.14.3");
     assert.deepEqual(dataset.pandas.map((record) => record.id), identityLists[0]);
   }
 
   const projection = buildPublicProjection(fixtures[0]);
-  assert.equal(projection.dataset.version, "2026.07.14.2");
+  assert.equal(projection.dataset.version, "2026.07.14.3");
   assert.equal(projection.pandas.length, 7);
   assert.equal(JSON.stringify(projection).includes("restricted"), false);
   assert.equal(JSON.stringify(projection).includes("curator_notes"), false);

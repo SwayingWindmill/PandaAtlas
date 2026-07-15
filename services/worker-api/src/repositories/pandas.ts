@@ -784,7 +784,7 @@ export async function getPandaLineage(env: Env, pandaRef: string, options: Linea
   };
 }
 
-function buildLineageRelationships(
+export function buildLineageRelationships(
   nodeIds: Set<string>,
   edges: Array<{ parent_id: string; child_id: string }>
 ): PandaLineageRelationship[] {

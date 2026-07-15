@@ -4,9 +4,10 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.data.mock_data import MOCK_PANDAS
+from app.data.golden_dataset import trusted_panda_details
 from app.main import app
 from app.schemas.panda import ImportSourceOption
+from app.services import map_service, panda_service, stats_service
 
 client = TestClient(app)
 ADMIN_HEADERS = {"Authorization": "Bearer dev-admin-token"}
@@ -27,21 +28,111 @@ def test_list_pandas() -> None:
     assert len(payload["items"]) >= 1
 
 
-def test_list_pandas_filters_by_habitat() -> None:
-    habitat_id = str(MOCK_PANDAS[0]["habitats"][0]["id"])
-    expected_ids = {
-        str(item["id"])
-        for item in MOCK_PANDAS
-        if any(str(habitat["id"]) == habitat_id for habitat in item["habitats"])
+def test_public_read_endpoints_share_the_active_release() -> None:
+    release_response = client.get("/api/v1/releases/current")
+    assert release_response.status_code == 200
+    release = release_response.json()
+    expected_headers = {
+        "x-pandaatlas-dataset-version": release["dataset_release_version"],
+        "x-pandaatlas-public-schema-version": release["public_schema_version"],
+        "x-pandaatlas-database-migration-version": release[
+            "database_migration_version"
+        ],
     }
+
+    pandas_response = client.get("/api/v1/pandas", params={"page_size": 100})
+    assert pandas_response.status_code == 200
+    pandas = pandas_response.json()
+    assert pandas["meta"]["total"] == 7
+    panda = next(item for item in pandas["items"] if item["slug"] == "xiao-qi-ji")
+
+    responses = [
+        pandas_response,
+        client.get(f"/api/v1/pandas/{panda['slug']}"),
+        client.get(f"/api/v1/pandas/{panda['slug']}/lineage"),
+        client.get(
+            "/api/v1/map/distribution",
+            params={"bbox": "100,25,110,36", "layer": "wild"},
+        ),
+        client.get("/api/v1/map/habitats"),
+        client.get("/api/v1/map/snapshots"),
+        client.get("/api/v1/stats/overview"),
+    ]
+    for response in responses:
+        assert response.status_code == 200
+        for header, value in expected_headers.items():
+            assert response.headers[header] == value
+
+    detail = responses[1].json()
+    assert detail["public_revision"]["data_version"] == release[
+        "dataset_release_version"
+    ]
+    assert {node["id"] for node in responses[2].json()["nodes"]} <= {
+        item["id"] for item in pandas["items"]
+    }
+    assert responses[-1].json()["total_pandas"] == pandas["meta"]["total"]
+
+
+def test_public_reads_do_not_consult_mutable_legacy_repositories(monkeypatch) -> None:
+    def fail(*_args: object, **_kwargs: object) -> object:
+        raise AssertionError("mutable legacy repository was called")
+
+    monkeypatch.setattr(panda_service, "list_pandas", fail)
+    monkeypatch.setattr(panda_service, "get_panda_by_ref", fail)
+    monkeypatch.setattr(panda_service, "get_panda_lineage_by_ref", fail)
+    monkeypatch.setattr(map_service, "get_distribution", fail)
+    monkeypatch.setattr(map_service, "get_habitats", fail)
+    monkeypatch.setattr(map_service, "list_distribution_snapshots", fail)
+    monkeypatch.setattr(stats_service, "get_overview_stats", fail)
+
+    for path, params in (
+        ("/api/v1/pandas", None),
+        ("/api/v1/pandas/mei-xiang", None),
+        ("/api/v1/pandas/mei-xiang/lineage", None),
+        ("/api/v1/map/distribution", {"bbox": "100,25,110,36"}),
+        ("/api/v1/map/habitats", None),
+        ("/api/v1/map/snapshots", None),
+        ("/api/v1/stats/overview", None),
+    ):
+        assert client.get(path, params=params).status_code == 200
+
+
+def test_generated_openapi_declares_release_headers_and_failure_states() -> None:
+    schema = client.get("/openapi.json").json()
+    for path in (
+        "/api/v1/pandas",
+        "/api/v1/pandas/{panda_ref}",
+        "/api/v1/pandas/{panda_ref}/lineage",
+        "/api/v1/map/distribution",
+        "/api/v1/map/habitats",
+        "/api/v1/map/snapshots",
+        "/api/v1/stats/overview",
+    ):
+        responses = schema["paths"][path]["get"]["responses"]
+        assert {"200", "410", "503"} <= set(responses)
+        assert "X-PandaAtlas-Dataset-Version" in responses["200"]["headers"]
+
+
+def test_list_pandas_filters_by_habitat() -> None:
+    habitat_id = str(uuid4())
 
     response = client.get("/api/v1/pandas", params={"habitat_id": habitat_id})
     assert response.status_code == 200
 
     payload = response.json()
     actual_ids = {item["id"] for item in payload["items"]}
-    assert actual_ids == expected_ids
-    assert 0 < len(actual_ids) < len(MOCK_PANDAS)
+    assert actual_ids == set()
+
+
+def test_list_pandas_filters_within_current_release() -> None:
+    expected_ids = {
+        record["id"]
+        for record in trusted_panda_details()
+        if record["gender"] == "female"
+    }
+    response = client.get("/api/v1/pandas", params={"gender": "female"})
+    assert response.status_code == 200
+    assert {item["id"] for item in response.json()["items"]} == expected_ids
 
 
 def test_get_panda_detail() -> None:

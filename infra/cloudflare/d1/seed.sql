@@ -784,3 +784,24 @@ insert into domain_event_sources (event_id, source_id) values
   ('event-smithsonian-return-plan-2020', 'src_smithsonian_agreement_2020'),
   ('event-smithsonian-departure-2023', 'src_smithsonian_history')
 on conflict do nothing;
+-- Activate the golden dataset as the local immutable public release.
+insert into public_releases (
+  dataset_release_version, public_schema_version, database_migration_version,
+  publication_batch_id, projection_code_version, released_at, licenses_json
+) values (
+  '2026.07.14.2', '1.0.0', '0006', 'golden-dataset', 'public-release-v1',
+  '2026-07-14T00:00:00Z',
+  '{"original_text":"CC-BY-4.0","structured_data":"ODC-By-1.0","third_party_media":"per-item"}'
+) on conflict do nothing;
+
+insert into public_release_records (
+  dataset_release_version, entity_type, entity_id, public_json
+)
+select '2026.07.14.2', 'pandas', id, json_object('id', id, 'slug', slug)
+from pandas
+where 1 = 1
+on conflict do nothing;
+
+update public_release_pointer
+set dataset_release_version = '2026.07.14.2', switched_at = '2026-07-14T00:00:00Z'
+where singleton = 1;

@@ -337,7 +337,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.2",
+      "data_version": "2026.07.14.3",
       "public_schema_version": "1.0.0",
       "summaries": [
         {
@@ -610,7 +610,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.14.2",
+      "data_version": "2026.07.14.3",
       "public_schema_version": "1.0.0",
       "summaries": []
     }
@@ -789,7 +789,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.2",
+      "data_version": "2026.07.14.3",
       "public_schema_version": "1.0.0",
       "summaries": [
         {
@@ -977,7 +977,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.2",
+      "data_version": "2026.07.14.3",
       "public_schema_version": "1.0.0",
       "summaries": [
         {
@@ -1175,7 +1175,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.2",
+      "data_version": "2026.07.14.3",
       "public_schema_version": "1.0.0",
       "summaries": [
         {
@@ -1432,7 +1432,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.2",
+      "data_version": "2026.07.14.3",
       "public_schema_version": "1.0.0",
       "summaries": [
         {
@@ -1620,7 +1620,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.2",
+      "data_version": "2026.07.14.3",
       "public_schema_version": "1.0.0",
       "summaries": [
         {

@@ -4,6 +4,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
   "Access-Control-Allow-Headers": "Authorization,Content-Type",
+  "Access-Control-Expose-Headers": "X-PandaAtlas-Dataset-Version,X-PandaAtlas-Public-Schema-Version,X-PandaAtlas-Database-Migration-Version",
   "Access-Control-Max-Age": "86400"
 };
 
@@ -20,11 +21,16 @@ export function optionsResponse(): Response {
   return new Response(null, { status: 204, headers: CORS_HEADERS });
 }
 
-export function jsonResponse(data: unknown, status = 200): Response {
+export function jsonResponse(
+  data: unknown,
+  status = 200,
+  headers: Record<string, string> = {}
+): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       ...CORS_HEADERS,
+      ...headers,
       "Content-Type": "application/json; charset=utf-8"
     }
   });

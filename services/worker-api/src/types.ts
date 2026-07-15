@@ -219,6 +219,21 @@ export interface OverviewStats {
   featured_pandas: number;
 }
 
+export interface PublicReleaseMetadata {
+  dataset_release_version: string;
+  public_schema_version: string;
+  database_migration_version: string;
+  publication_batch_id: string;
+  projection_code_version: string;
+  released_at: string;
+  licenses: Record<string, string>;
+}
+
+export interface PublicPandaRelease {
+  release: PublicReleaseMetadata;
+  records: Array<Record<string, unknown>>;
+}
+
 export interface PandaRow {
   id: string;
   slug: string;

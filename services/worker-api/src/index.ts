@@ -8,12 +8,19 @@ import {
   parseDistributionLayer,
   parseIntegerParam,
   parsePandaGender,
-  parsePandaStatus
+  parsePandaStatus,
 } from "./http";
 import { parseBBox } from "./geo";
-import { getDistribution, getHabitats, listDistributionSnapshots } from "./repositories/map";
-import { getPandaDetail, getPandaLineage, listPandas } from "./repositories/pandas";
-import { getOverviewStats } from "./repositories/stats";
+import { releaseHeaders, requireCurrentRelease } from "./repositories/releases";
+import {
+  getReleaseDistribution,
+  getReleaseHabitats,
+  getReleaseLineage,
+  getReleasePanda,
+  getReleaseStats,
+  listReleasePandas,
+  listReleaseSnapshots,
+} from "./repositories/release-reads";
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -32,7 +39,7 @@ export default {
       });
       return errorResponse(500, "Internal server error");
     }
-  }
+  },
 };
 
 async function routeRequest(request: Request, env: Env): Promise<Response> {
@@ -44,9 +51,33 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
     return jsonResponse({ status: "ok", version: "0.1.0-cloudflare", db });
   }
 
+  if (request.method === "GET" && path === "/api/v1/releases/current") {
+    const release = await requireCurrentRelease(env);
+    const versionHeaders = releaseHeaders(release);
+    return jsonResponse(release, 200, versionHeaders);
+  }
+
+  if (request.method === "GET" && path === "/api/v1/releases/current/pandas") {
+    const release = await requireCurrentRelease(env);
+    const result = await env.DB.prepare(
+      `
+      select entity_id, public_json
+      from current_public_records
+      where entity_type = 'pandas'
+      order by entity_id
+    `,
+    ).all<{ entity_id: string; public_json: string }>();
+    const records = (result.results ?? []).map((row) => ({
+      id: row.entity_id,
+      ...(JSON.parse(row.public_json) as Record<string, unknown>),
+    }));
+    return jsonResponse({ release, records }, 200, releaseHeaders(release));
+  }
+
   if (request.method === "GET" && path === "/api/v1/pandas") {
+    const release = await requireCurrentRelease(env);
     return jsonResponse(
-      await listPandas(env, {
+      await listReleasePandas(env, release.dataset_release_version, {
         page: parseIntegerParam(url.searchParams, "page", 1, 1, 1_000_000),
         pageSize: parseIntegerParam(url.searchParams, "page_size", 20, 1, 100),
         q: url.searchParams.get("q"),
@@ -54,49 +85,102 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
         gender: parsePandaGender(url.searchParams.get("gender")),
         habitatId: url.searchParams.get("habitat_id"),
         featured: parseBooleanParam(url.searchParams, "featured"),
-        sort: url.searchParams.get("sort") ?? "created_at_desc"
-      })
+        sort: url.searchParams.get("sort") ?? "created_at_desc",
+      }),
+      200,
+      releaseHeaders(release),
     );
   }
 
   const pandaLineageMatch = path.match(/^\/api\/v1\/pandas\/([^/]+)\/lineage$/);
   if (request.method === "GET" && pandaLineageMatch) {
-    return jsonResponse(
-      await getPandaLineage(env, decodeURIComponent(pandaLineageMatch[1]), {
-        ancestorDepth: parseIntegerParam(url.searchParams, "ancestor_depth", 6, 0, 16),
-        descendantDepth: parseIntegerParam(url.searchParams, "descendant_depth", 6, 0, 16)
-      })
+    const release = await requireCurrentRelease(env);
+    const lineage = await getReleaseLineage(
+      env,
+      release.dataset_release_version,
+      decodeURIComponent(pandaLineageMatch[1]),
+      {
+        ancestorDepth: parseIntegerParam(
+          url.searchParams,
+          "ancestor_depth",
+          6,
+          0,
+          16,
+        ),
+        descendantDepth: parseIntegerParam(
+          url.searchParams,
+          "descendant_depth",
+          6,
+          0,
+          16,
+        ),
+      },
     );
+    return jsonResponse(lineage, 200, releaseHeaders(release));
   }
 
   const pandaDetailMatch = path.match(/^\/api\/v1\/pandas\/([^/]+)$/);
   if (request.method === "GET" && pandaDetailMatch) {
-    return jsonResponse(await getPandaDetail(env, decodeURIComponent(pandaDetailMatch[1])));
+    const release = await requireCurrentRelease(env);
+    return jsonResponse(
+      await getReleasePanda(
+        env,
+        release.dataset_release_version,
+        decodeURIComponent(pandaDetailMatch[1]),
+      ),
+      200,
+      releaseHeaders(release),
+    );
   }
 
   if (request.method === "GET" && path === "/api/v1/map/distribution") {
+    const release = await requireCurrentRelease(env);
     return jsonResponse(
-      await getDistribution(env, {
+      await getReleaseDistribution(env, release.dataset_release_version, {
         bbox: requireBBox(url.searchParams.get("bbox")),
         snapshotDate: url.searchParams.get("snapshot_date"),
         layer: parseDistributionLayer(url.searchParams.get("layer")),
-        zoom: parseNullableInteger(url.searchParams.get("zoom"), "zoom", 0, 22)
-      })
+        zoom: parseNullableInteger(url.searchParams.get("zoom"), "zoom", 0, 22),
+      }),
+      200,
+      releaseHeaders(release),
     );
   }
 
   if (request.method === "GET" && path === "/api/v1/map/habitats") {
+    const release = await requireCurrentRelease(env);
     return jsonResponse(
-      await getHabitats(env, parseBBox(url.searchParams.get("bbox"), false), url.searchParams.get("level"))
+      await getReleaseHabitats(
+        env,
+        release.dataset_release_version,
+        parseBBox(url.searchParams.get("bbox"), false),
+        url.searchParams.get("level"),
+      ),
+      200,
+      releaseHeaders(release),
     );
   }
 
   if (request.method === "GET" && path === "/api/v1/map/snapshots") {
-    return jsonResponse(await listDistributionSnapshots(env, parseIntegerParam(url.searchParams, "limit", 24, 1, 120)));
+    const release = await requireCurrentRelease(env);
+    return jsonResponse(
+      await listReleaseSnapshots(
+        env,
+        release.dataset_release_version,
+        parseIntegerParam(url.searchParams, "limit", 24, 1, 120),
+      ),
+      200,
+      releaseHeaders(release),
+    );
   }
 
   if (request.method === "GET" && path === "/api/v1/stats/overview") {
-    return jsonResponse(await getOverviewStats(env));
+    const release = await requireCurrentRelease(env);
+    return jsonResponse(
+      await getReleaseStats(env, release.dataset_release_version),
+      200,
+      releaseHeaders(release),
+    );
   }
 
   return errorResponse(404, "Not found");
@@ -110,13 +194,21 @@ function requireBBox(raw: string | null) {
   return bbox;
 }
 
-function parseNullableInteger(raw: string | null, name: string, min: number, max: number): number | null {
+function parseNullableInteger(
+  raw: string | null,
+  name: string,
+  min: number,
+  max: number,
+): number | null {
   if (raw === null || raw === "") {
     return null;
   }
   const parsed = Number.parseInt(raw, 10);
   if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
-    throw new HttpError(422, `${name} must be an integer between ${min} and ${max}`);
+    throw new HttpError(
+      422,
+      `${name} must be an integer between ${min} and ${max}`,
+    );
   }
   return parsed;
 }

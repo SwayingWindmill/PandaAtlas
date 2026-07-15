@@ -119,6 +119,8 @@ def _batch_from_row(row: object, change_set_ids: list[UUID]) -> PublicationBatch
         change_set_ids=change_set_ids,
         public_schema_version=row["public_schema_version"],
         data_version=row["data_version"],
+        database_migration_version=row["database_migration_version"],
+        projection_code_version=row["projection_code_version"],
         reason=row["reason"],
         correlation_id=row["correlation_id"],
         operation=row["operation"],
@@ -137,7 +139,8 @@ def _batch_from_db(session: Session, batch_id: UUID) -> PublicationBatchRead:
         text(
             """
             select
-              id, public_schema_version, data_version, reason, correlation_id,
+              id, public_schema_version, data_version, database_migration_version,
+              projection_code_version, reason, correlation_id,
               operation, status, created_by, published_by, published_at,
               previous_batch_id, rollback_target_id, withdrawal_target_id
             from public.publication_batches
@@ -208,35 +211,38 @@ def create_change_set(
     payload: ChangeSetCreate,
     actor_id: UUID,
 ) -> ChangeSetRead:
-    base_records: dict[str, dict[str, Any]] = {}
+    base_records: dict[tuple[str, str], dict[str, Any]] = {}
     for revision in payload.revisions:
-        panda_row = session.execute(
-            text(
-                """
-                select
-                  name_zh,
-                  name_en,
-                  gender,
-                  birth_date::text as birth_date,
-                  death_date::text as death_date,
-                  status::text as status,
-                  birthplace,
-                  current_location,
-                  intro,
-                  tags,
-                  is_featured
-                from public.pandas
-                where id::text = :panda_id
-                """
-            ),
-            {"panda_id": revision.entity_id},
-        ).mappings().first()
-        if panda_row is None:
-            raise HTTPException(
-                status_code=422,
-                detail="Publication revisions require an existing trusted panda identity",
-            )
-        base_record = dict(panda_row)
+        base_record: dict[str, Any] = {}
+        if revision.entity_type == "panda":
+            panda_row = session.execute(
+                text(
+                    """
+                    select
+                      slug,
+                      name_zh,
+                      name_en,
+                      gender,
+                      birth_date::text as birth_date,
+                      death_date::text as death_date,
+                      status::text as status,
+                      birthplace,
+                      current_location,
+                      intro,
+                      tags,
+                      is_featured
+                    from public.pandas
+                    where id::text = :panda_id
+                    """
+                ),
+                {"panda_id": revision.entity_id},
+            ).mappings().first()
+            if panda_row is None:
+                raise HTTPException(
+                    status_code=422,
+                    detail="Publication revisions require an existing trusted panda identity",
+                )
+            base_record.update(dict(panda_row))
         active_public_record = get_active_public_record(
             session,
             revision.entity_type,
@@ -250,7 +256,7 @@ def create_change_set(
                     if not key.startswith("_")
                 }
             )
-        base_records[revision.entity_id] = base_record
+        base_records[(revision.entity_type, revision.entity_id)] = base_record
 
     change_set_id = session.execute(
         text(
@@ -266,7 +272,7 @@ def create_change_set(
     for revision in payload.revisions:
         revision_payload = revision.payload.model_dump(mode="json")
         revision_payload["public_record"] = {
-            **base_records[revision.entity_id],
+            **base_records[(revision.entity_type, revision.entity_id)],
             **revision_payload["public_record"],
         }
         revision_id = session.execute(
@@ -409,9 +415,11 @@ def create_publication_batch(
             text(
                 """
                 insert into public.publication_batches (
-                  public_schema_version, data_version, reason, correlation_id, created_by
+                  public_schema_version, data_version, database_migration_version,
+                  projection_code_version, reason, correlation_id, created_by
                 ) values (
-                  :public_schema_version, :data_version, :reason, :correlation_id, :actor_id
+                  :public_schema_version, :data_version, :database_migration_version,
+                  :projection_code_version, :reason, :correlation_id, :actor_id
                 )
                 returning id
                 """
@@ -419,6 +427,8 @@ def create_publication_batch(
             {
                 "public_schema_version": payload.public_schema_version,
                 "data_version": payload.data_version,
+                "database_migration_version": payload.database_migration_version,
+                "projection_code_version": payload.projection_code_version,
                 "reason": payload.reason,
                 "correlation_id": payload.correlation_id,
                 "actor_id": actor_id,
@@ -663,16 +673,19 @@ def publish_release_action(
             text(
                 """
                 insert into public.publication_batches (
-                  public_schema_version, data_version, reason, correlation_id,
+                  public_schema_version, data_version, database_migration_version,
+                  projection_code_version, reason, correlation_id,
                   operation, status, created_by, published_by, published_at,
                   previous_batch_id, rollback_target_id, withdrawal_target_id
                 ) values (
-                  :public_schema_version, :data_version, :reason, :correlation_id,
+                  :public_schema_version, :data_version, :database_migration_version,
+                  :projection_code_version, :reason, :correlation_id,
                   :operation, 'draft', :actor_id, null, null,
                   :previous_batch_id, :rollback_target_id, :withdrawal_target_id
                 )
                 returning
-                  id, public_schema_version, data_version, reason, correlation_id,
+                  id, public_schema_version, data_version, database_migration_version,
+                  projection_code_version, reason, correlation_id,
                   operation, status, created_by, published_by, published_at,
                   previous_batch_id, rollback_target_id, withdrawal_target_id
                 """
@@ -680,6 +693,8 @@ def publish_release_action(
             {
                 "public_schema_version": target.public_schema_version,
                 "data_version": payload.data_version,
+                "database_migration_version": target.database_migration_version,
+                "projection_code_version": target.projection_code_version,
                 "reason": payload.reason,
                 "correlation_id": payload.correlation_id,
                 "operation": operation,
@@ -712,7 +727,8 @@ def publish_release_action(
             set status = 'published', published_by = :actor_id, published_at = :published_at
             where id = :batch_id
             returning
-              id, public_schema_version, data_version, reason, correlation_id,
+              id, public_schema_version, data_version, database_migration_version,
+              projection_code_version, reason, correlation_id,
               operation, status, created_by, published_by, published_at,
               previous_batch_id, rollback_target_id, withdrawal_target_id
             """
@@ -741,6 +757,8 @@ def publish_release_action(
             "target_batch_id": str(target.id),
             "public_schema_version": row["public_schema_version"],
             "data_version": row["data_version"],
+            "database_migration_version": row["database_migration_version"],
+            "projection_code_version": row["projection_code_version"],
         },
     )
     change_set_ids = target.change_set_ids if operation == "rollback" else []

@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 
 from app.core.config import settings
 from app.data.golden_dataset import trusted_panda_details
-from app.data.mock_data import MOCK_PANDAS
 from app.main import app
 from app.services import map_service, panda_service, stats_service
 
@@ -48,10 +47,7 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
     pandas_response = client.get("/api/v1/pandas")
     assert pandas_response.status_code == 200
     pandas_payload = pandas_response.json()
-    expected_ids = {
-        *(str(item["id"]) for item in MOCK_PANDAS),
-        *(record["id"] for record in trusted_panda_details()),
-    }
+    expected_ids = {record["id"] for record in trusted_panda_details()}
     assert pandas_payload["meta"]["total"] == len(expected_ids)
     assert {item["id"] for item in pandas_payload["items"]} == expected_ids
     assert {"mei-xiang", "tian-tian"} <= {
@@ -92,7 +88,7 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
     stats_response = client.get("/api/v1/stats/overview")
     assert stats_response.status_code == 200
     stats_payload = stats_response.json()
-    assert stats_payload["total_pandas"] == len(MOCK_PANDAS)
+    assert stats_payload["total_pandas"] == len(trusted_panda_details())
     assert stats_payload["latest_snapshot_date"] == "2026-03-05"
 
 
@@ -100,9 +96,9 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
     ("path", "params"),
     [
         ("/api/v1/pandas", None),
-        (f"/api/v1/pandas/{MOCK_PANDAS[0]['slug']}", None),
+        (f"/api/v1/pandas/{trusted_panda_details()[0]['slug']}", None),
         (
-            f"/api/v1/pandas/{MOCK_PANDAS[0]['slug']}/lineage",
+            f"/api/v1/pandas/{trusted_panda_details()[0]['slug']}/lineage",
             {"ancestor_depth": 2, "descendant_depth": 2},
         ),
         ("/api/v1/map/distribution", {"bbox": "100,25,110,36", "layer": "wild"}),
@@ -111,7 +107,7 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
         ("/api/v1/stats/overview", None),
     ],
 )
-def test_public_reads_return_503_when_fallback_disabled(
+def test_versioned_snapshot_survives_legacy_db_outage_when_fallback_disabled(
     path: str,
     params: dict[str, object] | None,
     simulate_db_outage: None,
@@ -120,5 +116,4 @@ def test_public_reads_return_503_when_fallback_disabled(
     monkeypatch.setattr(settings, "db_use_mock_fallback", False)
 
     response = client.get(path, params=params)
-    assert response.status_code == 503
-    assert response.json()["detail"] == "Database unavailable"
+    assert response.status_code == 200

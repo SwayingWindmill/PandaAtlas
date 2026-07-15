@@ -1,4 +1,4 @@
-﻿openapi: 3.1.0
+openapi: 3.1.0
 info:
   title: Panda Atlas API
   version: 0.1.0-draft
@@ -100,11 +100,22 @@ paths:
             default: created_at_desc
       responses:
         '200':
-          description: Paginated panda list
+          description: Paginated panda list from the active immutable release
+          headers: &PublicReleaseHeaders
+            X-PandaAtlas-Dataset-Version:
+              schema: { type: string }
+            X-PandaAtlas-Public-Schema-Version:
+              schema: { type: string }
+            X-PandaAtlas-Database-Migration-Version:
+              schema: { type: string }
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedPandasResponse'
+        '410': &PublicReleaseWithdrawn
+          description: Current public release was withdrawn
+        '503': &PublicReleaseUnavailable
+          description: Active public release or its immutable API snapshot is unavailable
 
   /api/v1/pandas/{panda_ref}:
     get:
@@ -122,6 +133,7 @@ paths:
       responses:
         '200':
           description: Panda detail, including the trusted seven-family public projection when the database fallback is active
+          headers: *PublicReleaseHeaders
           content:
             application/json:
               schema:
@@ -132,6 +144,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
 
   /api/v1/pandas/{panda_ref}/lineage:
     get:
@@ -163,6 +177,7 @@ paths:
       responses:
         '200':
           description: Lineage graph centered on the target panda
+          headers: *PublicReleaseHeaders
           content:
             application/json:
               schema:
@@ -173,6 +188,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
 
   /api/v1/map/distribution:
     get:
@@ -206,10 +223,13 @@ paths:
       responses:
         '200':
           description: Distribution features
+          headers: *PublicReleaseHeaders
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DistributionFeatureCollection'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
 
   /api/v1/map/habitats:
     get:
@@ -229,10 +249,13 @@ paths:
       responses:
         '200':
           description: Habitat polygons in GeoJSON
+          headers: *PublicReleaseHeaders
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HabitatFeatureCollection'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
 
   /api/v1/map/snapshots:
     get:
@@ -250,10 +273,13 @@ paths:
       responses:
         '200':
           description: Snapshot metadata list
+          headers: *PublicReleaseHeaders
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/DistributionSnapshotList'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
 
   /api/v1/stats/overview:
     get:
@@ -262,11 +288,14 @@ paths:
       operationId: getOverviewStats
       responses:
         '200':
-          description: Overview metrics
+          description: Overview metrics scoped to the active immutable release
+          headers: *PublicReleaseHeaders
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OverviewStats'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
 
   /api/v1/admin/import-sources:
     get:
@@ -615,6 +644,50 @@ paths:
                 $ref: '#/components/schemas/PublicationBatch'
         '409':
           description: Withdrawal target is not a published batch
+
+  /api/v1/releases/current:
+    get:
+      tags: [releases]
+      summary: Get the immutable public release currently served by all public surfaces
+      responses:
+        '200':
+          description: Current public release metadata
+          headers:
+            X-PandaAtlas-Dataset-Version:
+              schema: { type: string }
+            X-PandaAtlas-Public-Schema-Version:
+              schema: { type: string }
+            X-PandaAtlas-Database-Migration-Version:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicReleaseMetadata'
+        '410':
+          description: Current release was withdrawn
+
+  /api/v1/releases/current/pandas:
+    get:
+      tags: [releases]
+      summary: Get panda records from the immutable current public release
+      responses:
+        '200':
+          description: Current release panda snapshot
+          headers:
+            X-PandaAtlas-Dataset-Version:
+              schema: { type: string }
+            X-PandaAtlas-Public-Schema-Version:
+              schema: { type: string }
+            X-PandaAtlas-Database-Migration-Version:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicPandaRelease'
+        '410':
+          description: Current release was withdrawn
+        '503':
+          description: Release artifact is unavailable or mismatched
 
 components:
   securitySchemes:
@@ -1679,6 +1752,12 @@ components:
           enum: [1.0.0]
         data_version:
           type: string
+        database_migration_version:
+          type: string
+          default: '0007'
+        projection_code_version:
+          type: string
+          default: public-release-v2
         reason:
           type: string
         correlation_id:
@@ -1715,6 +1794,48 @@ components:
           items:
             $ref: '#/components/schemas/PublicationIssue'
 
+    PublicReleaseMetadata:
+      type: object
+      description: The immutable dataset release currently served by every public surface.
+      required:
+        - dataset_release_version
+        - public_schema_version
+        - database_migration_version
+        - publication_batch_id
+        - projection_code_version
+        - released_at
+        - licenses
+      properties:
+        dataset_release_version:
+          type: string
+        public_schema_version:
+          type: string
+        database_migration_version:
+          type: string
+        publication_batch_id:
+          type: string
+        projection_code_version:
+          type: string
+        released_at:
+          type: string
+        licenses:
+          type: object
+          additionalProperties:
+            type: string
+
+    PublicPandaRelease:
+      type: object
+      description: The exact versioned panda records served by the active public release.
+      required: [release, records]
+      properties:
+        release:
+          $ref: '#/components/schemas/PublicReleaseMetadata'
+        records:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
     PublicationBatch:
       type: object
       required:
@@ -1722,6 +1843,8 @@ components:
         - change_set_ids
         - public_schema_version
         - data_version
+        - database_migration_version
+        - projection_code_version
         - reason
         - correlation_id
         - operation
@@ -1739,6 +1862,10 @@ components:
         public_schema_version:
           type: string
         data_version:
+          type: string
+        database_migration_version:
+          type: string
+        projection_code_version:
           type: string
         reason:
           type: string
