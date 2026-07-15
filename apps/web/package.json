@@ -13,6 +13,8 @@
         "preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
         "predeploy:cf": "npm run guard:public-admin-proxy",
         "deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+        "predeploy:cf:staging": "npm run guard:public-admin-proxy",
+        "deploy:cf:staging": "opennextjs-cloudflare build && wrangler deploy --config wrangler.staging.jsonc",
         "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
         "lint": "eslint .",
         "typecheck": "tsc --noEmit",
