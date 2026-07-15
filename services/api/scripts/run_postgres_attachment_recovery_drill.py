@@ -14,6 +14,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 MIGRATIONS_DIR = REPO_ROOT / "infra" / "supabase" / "migrations"
+ENVIRONMENT_POLICY = REPO_ROOT / "contracts" / "recovery-drill-environments.v1.json"
 DEFAULT_REPORT = REPO_ROOT / ".release-gate" / "postgres-attachment-recovery.json"
 POSTGRES_IMAGE = "postgis/postgis:16-3.4"
 SOURCE_DATABASE = "panda_recovery_source"
@@ -23,8 +24,12 @@ SOURCE_ID = "recovery-drill-evidence-source"
 ATTACHMENT_BUCKET = "restricted-evidence"
 ATTACHMENT_KEY = "recovery-drill/safe-fixture.txt"
 ATTACHMENT_VERSION = "drill-v1"
+REPLACEMENT_ATTACHMENT_VERSION = "drill-v2"
 ATTACHMENT_BYTES = (
     b"PandaAtlas non-production recovery fixture. No personal or restricted data.\n"
+)
+REPLACEMENT_ATTACHMENT_BYTES = (
+    b"PandaAtlas replacement fixture committed after the logical recovery point.\n"
 )
 
 
@@ -173,12 +178,13 @@ insert into public.evidence_attachments (
   {len(ATTACHMENT_BYTES)}, 'text/plain', 'restricted'
 );
 
-create table public.recovery_drill_checkpoint (
-  singleton boolean primary key default true check (singleton),
-  operation_sequence bigint not null,
+create table public.recovery_drill_journal (
+  operation_sequence bigint primary key,
+  operation text not null,
   recorded_at timestamptz not null default now()
 );
-insert into public.recovery_drill_checkpoint (operation_sequence) values (1);
+insert into public.recovery_drill_journal (operation_sequence, operation)
+values (1, 'attachment-committed-before-backup');
 """,
     )
 
@@ -208,22 +214,46 @@ from (
 ) record;
 """,
     )
-    checkpoint = int(
-        _psql(
-            container,
-            database,
-            "select operation_sequence from public.recovery_drill_checkpoint where singleton;",
-        )
+    journal_json = _psql(
+        container,
+        database,
+        """
+select coalesce(json_agg(row_to_json(record) order by record.operation_sequence), '[]'::json)::text
+from (
+  select operation_sequence, operation
+  from public.recovery_drill_journal
+) record;
+""",
     )
     return {
         "sources": json.loads(source_json),
         "attachments": json.loads(attachment_json),
-        "checkpoint_operation_sequence": checkpoint,
+        "journal": json.loads(journal_json),
     }
 
 
 def _record_check(checks: list[dict[str, str]], check_id: str, detail: str) -> None:
     checks.append({"id": check_id, "status": "passed", "detail": detail})
+
+
+def _load_environment_policy() -> tuple[dict[str, Any], str]:
+    policy_bytes = ENVIRONMENT_POLICY.read_bytes()
+    policy = json.loads(policy_bytes)
+    approved = policy["approved_environment"]
+    requirements = approved["requirements"]
+    if approved["postgres_image"] != POSTGRES_IMAGE:
+        raise RecoveryDrillError("environment policy does not approve the pinned image")
+    expected_requirements = {
+        "synthetic_data_only": True,
+        "host_ports_published": False,
+        "existing_database_connections_allowed": False,
+        "container_removed_after_drill": True,
+        "provider_managed_recovery_claim_allowed": False,
+        "independent_failure_domain_claim_allowed": False,
+    }
+    if requirements != expected_requirements:
+        raise RecoveryDrillError("environment policy safety requirements changed")
+    return policy, _sha256_bytes(policy_bytes)
 
 
 def run_recovery_drill(report_path: Path) -> dict[str, Any]:
@@ -234,6 +264,12 @@ def run_recovery_drill(report_path: Path) -> dict[str, Any]:
     evidence: dict[str, Any] = {}
     container = f"panda-atlas-recovery-{uuid.uuid4().hex[:12]}"
     container_started = False
+    policy, policy_sha256 = _load_environment_policy()
+    approved_environment = policy["approved_environment"]
+    recovery_objectives = policy["recovery_objectives_seconds"]
+    rpo_target_seconds = int(recovery_objectives["rpo"])
+    critical_backend_rto_target_seconds = int(recovery_objectives["critical_backend_rto"])
+    evidence["environment_policy_sha256"] = policy_sha256
 
     try:
         _run(["docker", "version", "--format", "{{.Server.Version}}"], environment_check=True)
@@ -271,18 +307,24 @@ def run_recovery_drill(report_path: Path) -> dict[str, Any]:
         with tempfile.TemporaryDirectory(prefix="panda-postgres-attachment-recovery-") as temp:
             workspace = Path(temp)
             source_store = workspace / "source-store"
-            backup_store = workspace / "independent-backup"
+            backup_store = workspace / "separate-backup-copy"
             restored_store = workspace / "restored-store"
-            source_object = source_store / ATTACHMENT_KEY
-            backup_object = backup_store / ATTACHMENT_KEY
+            source_object = source_store / "current" / ATTACHMENT_KEY
+            source_version_one = source_store / "versions" / ATTACHMENT_VERSION / ATTACHMENT_KEY
+            source_version_two = (
+                source_store / "versions" / REPLACEMENT_ATTACHMENT_VERSION / ATTACHMENT_KEY
+            )
+            backup_object = backup_store / "versions" / ATTACHMENT_VERSION / ATTACHMENT_KEY
             restored_object = restored_store / ATTACHMENT_KEY
+            source_version_one.parent.mkdir(parents=True, exist_ok=True)
+            source_version_one.write_bytes(ATTACHMENT_BYTES)
             source_object.parent.mkdir(parents=True, exist_ok=True)
             source_object.write_bytes(ATTACHMENT_BYTES)
             _seed_recovery_fixture(container, attachment_sha256)
 
-            source_state = _logical_state(container, SOURCE_DATABASE)
-            source_state_sha256 = _sha256_json(source_state)
-            evidence["source_state_sha256"] = source_state_sha256
+            backup_state = _logical_state(container, SOURCE_DATABASE)
+            backup_state_sha256 = _sha256_json(backup_state)
+            evidence["source_state_sha256"] = backup_state_sha256
             evidence["attachment_sha256"] = attachment_sha256
 
             backup_started = time.monotonic()
@@ -305,22 +347,49 @@ def run_recovery_drill(report_path: Path) -> dict[str, Any]:
             ).split()[0]
             backup_object.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source_object, backup_object)
-            metrics["logical_backup_seconds"] = round(time.monotonic() - backup_started, 6)
+            backup_completed = time.monotonic()
+            metrics["logical_backup_seconds"] = round(backup_completed - backup_started, 6)
             evidence["logical_dump_sha256"] = dump_sha256
             evidence["attachment_backup_sha256"] = _sha256_bytes(backup_object.read_bytes())
             _record_check(
                 checks,
                 "logical-backup",
-                "Created a PostgreSQL custom-format dump and independent attachment copy",
+                "Created a PostgreSQL custom-format dump and separate attachment backup copy",
             )
 
+            replacement_sha256 = _sha256_bytes(REPLACEMENT_ATTACHMENT_BYTES)
+            source_version_two.parent.mkdir(parents=True, exist_ok=True)
+            source_version_two.write_bytes(REPLACEMENT_ATTACHMENT_BYTES)
+            source_object.write_bytes(REPLACEMENT_ATTACHMENT_BYTES)
             _psql(
                 container,
                 SOURCE_DATABASE,
-                "delete from public.evidence_attachments where id = "
-                f"'{ATTACHMENT_ID}'::uuid;",
+                """
+update public.evidence_attachments
+set object_version = '"""
+                + REPLACEMENT_ATTACHMENT_VERSION
+                + "', content_sha256 = '"
+                + replacement_sha256
+                + "', byte_size = "
+                + str(len(REPLACEMENT_ATTACHMENT_BYTES))
+                + " where id = '"
+                + ATTACHMENT_ID
+                + "'::uuid;\n"
+                + """
+insert into public.recovery_drill_journal (operation_sequence, operation)
+values (2, 'attachment-version-v2-committed-after-backup');
+delete from public.evidence_attachments where id = '"""
+                + ATTACHMENT_ID
+                + "'::uuid;",
             )
             source_object.unlink()
+            incident_state = _logical_state(container, SOURCE_DATABASE)
+            recovery_point_age_seconds = round(time.monotonic() - backup_completed, 6)
+            evidence["available_object_versions_before_incident"] = [
+                ATTACHMENT_VERSION,
+                REPLACEMENT_ATTACHMENT_VERSION,
+            ]
+            evidence["restored_object_version"] = ATTACHMENT_VERSION
             remaining = int(
                 _psql(
                     container,
@@ -356,7 +425,7 @@ def run_recovery_drill(report_path: Path) -> dict[str, Any]:
             restored_state = _logical_state(container, RESTORE_DATABASE)
             restored_state_sha256 = _sha256_json(restored_state)
             evidence["restored_state_sha256"] = restored_state_sha256
-            if restored_state_sha256 != source_state_sha256:
+            if restored_state_sha256 != backup_state_sha256:
                 raise RecoveryDrillError(
                     "restored PostgreSQL logical state differs from backup state"
                 )
@@ -375,7 +444,7 @@ def run_recovery_drill(report_path: Path) -> dict[str, Any]:
             _record_check(
                 checks,
                 "attachment-restore",
-                "Restored the versioned attachment from the independent backup copy",
+                "Restored the versioned attachment from the separate backup copy",
             )
 
             integrity_count = int(
@@ -387,6 +456,7 @@ select count(*)
 from public.evidence_attachments attachment
 join public.evidence_sources source on source.id = attachment.source_id
 where attachment.id = '6f6137b2-57d5-4ef2-b0bc-3712d2ac4d23'::uuid
+  and attachment.object_version = 'drill-v1'
   and attachment.content_sha256 = '"""
                     + attachment_sha256
                     + "'\n  and attachment.byte_size = "
@@ -402,19 +472,39 @@ where attachment.id = '6f6137b2-57d5-4ef2-b0bc-3712d2ac4d23'::uuid
                 "Restored metadata references the restored object with matching size and checksum",
             )
 
-            target_checkpoint = int(source_state["checkpoint_operation_sequence"])
-            restored_checkpoint = int(restored_state["checkpoint_operation_sequence"])
-            recovery_point_loss = target_checkpoint - restored_checkpoint
-            metrics["target_checkpoint_operations"] = target_checkpoint
+            backup_checkpoint = int(backup_state["journal"][-1]["operation_sequence"])
+            incident_checkpoint = int(incident_state["journal"][-1]["operation_sequence"])
+            restored_checkpoint = int(restored_state["journal"][-1]["operation_sequence"])
+            recovery_point_loss = incident_checkpoint - restored_checkpoint
+            database_attachment_restore_seconds = round(time.monotonic() - restore_started, 6)
+            metrics["backup_checkpoint_operations"] = backup_checkpoint
+            metrics["incident_checkpoint_operations"] = incident_checkpoint
             metrics["restored_checkpoint_operations"] = restored_checkpoint
             metrics["recovery_point_loss_operations"] = recovery_point_loss
-            metrics["recovery_time_seconds"] = round(time.monotonic() - restore_started, 6)
-            if recovery_point_loss != 0:
-                raise RecoveryDrillError("restored checkpoint lost committed recovery operations")
+            metrics["recovery_point_age_seconds"] = recovery_point_age_seconds
+            metrics["rpo_target_seconds"] = rpo_target_seconds
+            metrics["database_attachment_restore_seconds"] = (
+                database_attachment_restore_seconds
+            )
+            metrics["critical_backend_rto_target_seconds"] = (
+                critical_backend_rto_target_seconds
+            )
+            metrics["rpo_within_target"] = recovery_point_age_seconds <= rpo_target_seconds
+            metrics["restore_component_within_rto_target"] = (
+                database_attachment_restore_seconds <= critical_backend_rto_target_seconds
+            )
+            if backup_checkpoint != restored_checkpoint or recovery_point_loss != 1:
+                raise RecoveryDrillError(
+                    "restored checkpoint did not expose expected recovery loss"
+                )
+            if not metrics["rpo_within_target"] or not metrics[
+                "restore_component_within_rto_target"
+            ]:
+                raise RecoveryDrillError("measured recovery objectives exceed approved targets")
             _record_check(
                 checks,
                 "recovery-objectives",
-                "Recovered the selected logical point with zero lost committed operations",
+                "Measured RPO and the database/attachment restore component within targets",
             )
 
         report = {
@@ -424,7 +514,8 @@ where attachment.id = '6f6137b2-57d5-4ef2-b0bc-3712d2ac4d23'::uuid
             "started_at": started_at,
             "completed_at": _utc_now(),
             "environment": {
-                "classification": "approved-disposable-local-non-production",
+                "approval_id": approved_environment["id"],
+                "classification": approved_environment["classification"],
                 "postgres_image": POSTGRES_IMAGE,
                 "attachment_store": "local-filesystem-versioned-surrogate",
             },
@@ -437,6 +528,11 @@ where attachment.id = '6f6137b2-57d5-4ef2-b0bc-3712d2ac4d23'::uuid
             "limitations": [
                 "Exercises PostgreSQL logical restore, not provider-managed PITR/WAL recovery.",
                 "Exercises a versioned local-filesystem attachment surrogate, not remote R2.",
+                "The attachment backup is a separate copy, not an independent failure domain.",
+                (
+                    "Restore timing excludes incident response, API startup, and backend "
+                    "health checks."
+                ),
                 "Provider-managed PITR and remote attachment restore remain staging requirements.",
             ],
         }

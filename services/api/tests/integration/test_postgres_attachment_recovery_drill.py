@@ -34,18 +34,28 @@ def test_postgres_and_attachment_recovery_cli_leaves_sanitized_evidence(
     report = json.loads(report_path.read_text(encoding="utf-8"))
     assert report["status"] == "passed"
     assert report["environment"] == {
+        "approval_id": "disposable-local-postgis-synthetic-only",
         "classification": "approved-disposable-local-non-production",
         "postgres_image": "postgis/postgis:16-3.4",
         "attachment_store": "local-filesystem-versioned-surrogate",
     }
-    assert report["metrics"]["recovery_point_loss_operations"] == 0
-    assert report["metrics"]["recovery_time_seconds"] >= 0
+    assert report["metrics"]["recovery_point_loss_operations"] == 1
+    assert report["metrics"]["recovery_point_age_seconds"] <= 900
+    assert report["metrics"]["rpo_within_target"] is True
+    assert report["metrics"]["database_attachment_restore_seconds"] >= 0
+    assert report["metrics"]["database_attachment_restore_seconds"] <= 14400
+    assert report["metrics"]["restore_component_within_rto_target"] is True
     assert report["evidence"]["source_state_sha256"] == report["evidence"][
         "restored_state_sha256"
     ]
     assert report["evidence"]["attachment_sha256"] == report["evidence"][
         "restored_attachment_sha256"
     ]
+    assert report["evidence"]["available_object_versions_before_incident"] == [
+        "drill-v1",
+        "drill-v2",
+    ]
+    assert report["evidence"]["restored_object_version"] == "drill-v1"
     assert "database_url" not in json.dumps(report).lower()
     assert [check["id"] for check in report["checks"]] == [
         "docker-runtime",
