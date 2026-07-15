@@ -183,7 +183,7 @@ test("non-canonical D1 record inserts cannot bypass structured validation", asyn
     const d1 = await readFile(d1Path, "utf8");
     const unsafe = d1.replace(
       "insert into public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2026.07.14.3', 'events'",
-      "  insert into public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2025.01.01.1', 'events'",
+      "insert\ninto public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2025.01.01.1', 'events'",
     );
     assert.notEqual(unsafe, d1);
     await writeFile(d1Path, unsafe, "utf8");

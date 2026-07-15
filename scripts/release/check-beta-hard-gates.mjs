@@ -130,7 +130,7 @@ function parseD1Release(d1) {
 
 function parseD1Records(d1) {
   const prefix = "insert into public_release_records ";
-  const declaredRecordCount = d1.match(/\binsert into public_release_records\b/gi)?.length ?? 0;
+  const declaredRecordCount = d1.match(/\bpublic_release_records\b/gi)?.length ?? 0;
   const records = d1
     .split(/\r?\n/)
     .filter((line) => line.startsWith(prefix))
