@@ -133,6 +133,20 @@ test("personal location fields fail the public data boundary", async () => {
   });
 });
 
+test("unknown correction-personal fields fail the public allowlist", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
+    const api = JSON.parse(await readFile(apiPath, "utf8"));
+    api.pandas[0].submitter_name = "Jane Doe";
+    api.pandas[0].correction_text = "Please update this profile.";
+    await writeFile(apiPath, `${JSON.stringify(api, null, 2)}\n`, "utf8");
+    await updateManifestFile(directory, "api.json");
+
+    assertFailedCheck(await runFixture(directory), "public-data-boundary", /submitter_name.*allowlist/);
+  });
+});
+
 test("each CSV row must carry the exact release version", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
@@ -159,6 +173,23 @@ test("D1 release registry must carry the exact release version", async () => {
       "release-integrity",
       /d1\.sql release registry dataset_release_version drifted/,
     );
+  });
+});
+
+test("non-canonical D1 record inserts cannot bypass structured validation", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const d1Path = path.join(directory, "data/public-releases/2026.07.14.3/d1.sql");
+    const d1 = await readFile(d1Path, "utf8");
+    const unsafe = d1.replace(
+      "insert into public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2026.07.14.3', 'events'",
+      "  insert into public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2025.01.01.1', 'events'",
+    );
+    assert.notEqual(unsafe, d1);
+    await writeFile(d1Path, unsafe, "utf8");
+    await updateManifestFile(directory, "d1.sql");
+
+    assertFailedCheck(await runFixture(directory), "release-integrity", /non-canonical public release record insert/);
   });
 });
 

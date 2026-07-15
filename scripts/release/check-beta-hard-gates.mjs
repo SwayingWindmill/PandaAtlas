@@ -61,6 +61,10 @@ function walkPublicValue(value, contract, location = "public") {
   }
   if (!value || typeof value !== "object") return;
   for (const [key, child] of Object.entries(value)) {
+    requireCondition(
+      contract.allowed_public_keys.includes(key),
+      `${location}.${key} is not in the public-field allowlist`,
+    );
     requireCondition(!contract.forbidden_public_keys.includes(key), `${location}.${key} is forbidden in public output`);
     const normalizedKey = key.toLowerCase();
     requireCondition(
@@ -126,7 +130,8 @@ function parseD1Release(d1) {
 
 function parseD1Records(d1) {
   const prefix = "insert into public_release_records ";
-  return d1
+  const declaredRecordCount = d1.match(/\binsert into public_release_records\b/gi)?.length ?? 0;
+  const records = d1
     .split(/\r?\n/)
     .filter((line) => line.startsWith(prefix))
     .map((line, index) => {
@@ -145,6 +150,11 @@ function parseD1Records(d1) {
         public: publicValue,
       };
     });
+  requireCondition(
+    records.length === declaredRecordCount,
+    `d1.sql contains ${declaredRecordCount - records.length} non-canonical public release record insert(s)`,
+  );
+  return records;
 }
 
 function coordinatePositions(value) {
