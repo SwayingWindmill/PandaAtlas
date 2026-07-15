@@ -2,19 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const workflowPath = new URL(
-  "../../../.github/workflows/release-gate.yml",
-  import.meta.url,
-);
+const workflowPath = new URL("../../../.github/workflows/release-gate.yml", import.meta.url);
 const defaultGatePath = new URL("../default.mjs", import.meta.url);
-const workerPackagePath = new URL(
-  "../../../services/worker-api/package.json",
-  import.meta.url,
-);
-const webPackagePath = new URL(
-  "../../../apps/web/package.json",
-  import.meta.url,
-);
+const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
+const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
 const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
 const rootPackagePath = new URL("../../../package.json", import.meta.url);
 
@@ -38,10 +29,7 @@ test("CI declares reproducible Linux and Windows default gates", async () => {
     "if-no-files-found: error",
     "run: git diff --exit-code",
   ]) {
-    assert.match(
-      workflow,
-      new RegExp(requiredText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
-    );
+    assert.match(workflow, new RegExp(requiredText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 });
 

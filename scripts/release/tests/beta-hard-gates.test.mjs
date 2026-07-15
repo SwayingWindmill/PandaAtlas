@@ -7,17 +7,10 @@ import { spawnSync } from "node:child_process";
 import test from "node:test";
 
 const repoRoot = path.resolve(import.meta.dirname, "../../..");
-const preflightPath = path.join(
-  repoRoot,
-  "scripts",
-  "release",
-  "check-beta-hard-gates.mjs",
-);
+const preflightPath = path.join(repoRoot, "scripts", "release", "check-beta-hard-gates.mjs");
 
 async function withTempDirectory(run) {
-  const directory = await mkdtemp(
-    path.join(os.tmpdir(), "panda-beta-preflight-"),
-  );
+  const directory = await mkdtemp(path.join(os.tmpdir(), "panda-beta-preflight-"));
   try {
     await run(directory);
   } finally {
@@ -72,11 +65,7 @@ async function updateManifestFile(directory, filename) {
     bytes: content.byteLength,
     sha256: createHash("sha256").update(content).digest("hex"),
   };
-  await writeFile(
-    manifestPath,
-    `${JSON.stringify(manifest, null, 2)}\n`,
-    "utf8",
-  );
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
 
 test("clean repository satisfies the Beta hard-gate preflight and writes evidence", async () => {
@@ -90,13 +79,7 @@ test("clean repository satisfies the Beta hard-gate preflight and writes evidenc
     assert.equal(report.dataset_release_version, "2026.07.14.3");
     assert.deepEqual(
       report.checks.map((check) => check.id),
-      [
-        "release-integrity",
-        "public-data-boundary",
-        "trusted-archive",
-        "admin-token-boundary",
-        "waiver-policy",
-      ],
+      ["release-integrity", "public-data-boundary", "trusted-archive", "admin-token-boundary", "waiver-policy"],
     );
     assert.ok(report.checks.every((check) => check.status === "passed"));
   });
@@ -105,116 +88,136 @@ test("clean repository satisfies the Beta hard-gate preflight and writes evidenc
 test("manifest corruption fails release integrity", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const apiPath = path.join(
-      directory,
-      "data/public-releases/2026.07.14.3/api.json",
-    );
+    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
     await writeFile(apiPath, `${await readFile(apiPath, "utf8")} `, "utf8");
 
-    assertFailedCheck(
-      await runFixture(directory),
-      "release-integrity",
-      /byte count|SHA-256/,
-    );
+    assertFailedCheck(await runFixture(directory), "release-integrity", /byte count|SHA-256/);
   });
 });
 
 test("missing manifest descriptors fail release integrity", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const manifestPath = path.join(
-      directory,
-      "data/public-releases/2026.07.14.3/manifest.json",
-    );
+    const manifestPath = path.join(directory, "data/public-releases/2026.07.14.3/manifest.json");
     const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
     delete manifest.files["d1.sql"];
-    await writeFile(
-      manifestPath,
-      `${JSON.stringify(manifest, null, 2)}\n`,
-      "utf8",
-    );
+    await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 
-    assertFailedCheck(
-      await runFixture(directory),
-      "release-integrity",
-      /manifest file set drifted/,
-    );
+    assertFailedCheck(await runFixture(directory), "release-integrity", /manifest file set drifted/);
   });
 });
 
 test("private fields fail the public data boundary even with a valid manifest", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const apiPath = path.join(
-      directory,
-      "data/public-releases/2026.07.14.3/api.json",
-    );
+    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
     const api = JSON.parse(await readFile(apiPath, "utf8"));
     api.pandas[0].contact_email = "curator@example.org";
     await writeFile(apiPath, `${JSON.stringify(api, null, 2)}\n`, "utf8");
     await updateManifestFile(directory, "api.json");
 
+    assertFailedCheck(await runFixture(directory), "public-data-boundary", /contact_email/);
+  });
+});
+
+test("personal location fields fail the public data boundary", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
+    const api = JSON.parse(await readFile(apiPath, "utf8"));
+    api.pandas[0].home_address = "Private residence";
+    await writeFile(apiPath, `${JSON.stringify(api, null, 2)}\n`, "utf8");
+    await updateManifestFile(directory, "api.json");
+
+    assertFailedCheck(await runFixture(directory), "public-data-boundary", /home_address/);
+  });
+});
+
+test("each CSV row must carry the exact release version", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const csvPath = path.join(directory, "data/public-releases/2026.07.14.3/pandas.csv");
+    const lines = (await readFile(csvPath, "utf8")).split(/\r?\n/);
+    lines[1] = lines[1].replace(/^2026\.07\.14\.3/, "2025.01.01.1").replace(/}"$/, ',"release_note":"2026.07.14.3"}"');
+    await writeFile(csvPath, lines.join("\n"), "utf8");
+    await updateManifestFile(directory, "pandas.csv");
+
+    assertFailedCheck(await runFixture(directory), "release-integrity", /pandas\.csv row 2 dataset release drifted/);
+  });
+});
+
+test("D1 release registry must carry the exact release version", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const d1Path = path.join(directory, "data/public-releases/2026.07.14.3/d1.sql");
+    const d1 = await readFile(d1Path, "utf8");
+    await writeFile(d1Path, d1.replace("'2026.07.14.3', '1.0.0', '0007'", "'2025.01.01.1', '1.0.0', '0007'"), "utf8");
+    await updateManifestFile(directory, "d1.sql");
+
     assertFailedCheck(
       await runFixture(directory),
-      "public-data-boundary",
-      /contact_email/,
+      "release-integrity",
+      /d1\.sql release registry dataset_release_version drifted/,
     );
+  });
+});
+
+test("precise D1 wild geometry fails the public data boundary", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const d1Path = path.join(directory, "data/public-releases/2026.07.14.3/d1.sql");
+    const d1 = await readFile(d1Path, "utf8");
+    const unsafe = d1.replace(
+      "[[[[103.5,31.2],[103.9,31.2],[103.9,31.6],[103.5,31.6],[103.5,31.2]]]]",
+      "[[[[103.5,31.2],[103.501,31.2],[103.501,31.201],[103.5,31.201],[103.5,31.2]]]]",
+    );
+    assert.notEqual(unsafe, d1);
+    await writeFile(d1Path, unsafe, "utf8");
+    await updateManifestFile(directory, "d1.sql");
+
+    assertFailedCheck(await runFixture(directory), "public-data-boundary", /too precise for publication/);
   });
 });
 
 test("unreviewed lineage sources fail the trusted archive gate", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const datasetPath = path.join(
-      directory,
-      "contracts/golden-dataset/mei-xiang-family.v1.json",
-    );
+    const datasetPath = path.join(directory, "contracts/golden-dataset/mei-xiang-family.v1.json");
     const dataset = JSON.parse(await readFile(datasetPath, "utf8"));
     const sourceId = dataset.parentage_assertions[0].public.source_ids[0];
-    dataset.sources.find(
-      (source) => source.id === sourceId,
-    ).public.access_state = "unavailable";
-    await writeFile(
-      datasetPath,
-      `${JSON.stringify(dataset, null, 2)}\n`,
-      "utf8",
-    );
+    dataset.sources.find((source) => source.id === sourceId).public.access_state = "unavailable";
+    await writeFile(datasetPath, `${JSON.stringify(dataset, null, 2)}\n`, "utf8");
 
-    assertFailedCheck(
-      await runFixture(directory),
-      "trusted-archive",
-      /not reviewed and accessible/,
-    );
+    assertFailedCheck(await runFixture(directory), "trusted-archive", /not reviewed and accessible/);
+  });
+});
+
+test("unverified confirmed facts fail the trusted archive gate", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const datasetPath = path.join(directory, "contracts/golden-dataset/mei-xiang-family.v1.json");
+    const dataset = JSON.parse(await readFile(datasetPath, "utf8"));
+    dataset.facts[0].public.last_verified_at = null;
+    await writeFile(datasetPath, `${JSON.stringify(dataset, null, 2)}\n`, "utf8");
+
+    assertFailedCheck(await runFixture(directory), "trusted-archive", /confirmed fact is unverified/);
   });
 });
 
 test("missing current residency fails the trusted archive gate", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const datasetPath = path.join(
-      directory,
-      "contracts/golden-dataset/mei-xiang-family.v1.json",
-    );
+    const datasetPath = path.join(directory, "contracts/golden-dataset/mei-xiang-family.v1.json");
     const dataset = JSON.parse(await readFile(datasetPath, "utf8"));
     const pandaId = dataset.pandas[0].id;
     const residency = dataset.residencies.find(
       (item) =>
-        item.public.panda_id === pandaId &&
-        item.public.residency_type === "primary" &&
-        item.public.end_date == null,
+        item.public.panda_id === pandaId && item.public.residency_type === "primary" && item.public.end_date == null,
     );
     residency.public.end_date = "2026-07-14";
-    await writeFile(
-      datasetPath,
-      `${JSON.stringify(dataset, null, 2)}\n`,
-      "utf8",
-    );
+    await writeFile(datasetPath, `${JSON.stringify(dataset, null, 2)}\n`, "utf8");
 
-    assertFailedCheck(
-      await runFixture(directory),
-      "trusted-archive",
-      /exactly one current primary residency/,
-    );
+    assertFailedCheck(await runFixture(directory), "trusted-archive", /exactly one current primary residency/);
   });
 });
 
@@ -243,11 +246,7 @@ test("hard gates cannot be waived", async () => {
       "utf8",
     );
 
-    assertFailedCheck(
-      await runFixture(directory),
-      "waiver-policy",
-      /cannot be waived/,
-    );
+    assertFailedCheck(await runFixture(directory), "waiver-policy", /cannot be waived/);
   });
 });
 
@@ -262,10 +261,21 @@ test("admin token markers fail when they reach client source", async () => {
       "utf8",
     );
 
-    assertFailedCheck(
-      await runFixture(directory),
-      "admin-token-boundary",
-      /ADMIN_API_TOKEN/,
+    assertFailedCheck(await runFixture(directory), "admin-token-boundary", /ADMIN_API_TOKEN/);
+  });
+});
+
+test("admin token markers fail in server components that can render browser payloads", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const serverComponentPath = path.join(directory, "apps/web/app/leak/page.tsx");
+    await mkdir(path.dirname(serverComponentPath), { recursive: true });
+    await writeFile(
+      serverComponentPath,
+      "export default function Leak() { return <p>{process.env.ADMIN_API_TOKEN}</p>; }\n",
+      "utf8",
     );
+
+    assertFailedCheck(await runFixture(directory), "admin-token-boundary", /ADMIN_API_TOKEN/);
   });
 });

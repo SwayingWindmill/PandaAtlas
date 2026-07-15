@@ -65,11 +65,8 @@ export async function runCommand(command, args, options = {}) {
   console.log(`\n> ${formatCommand(command, args)}`);
 
   await new Promise((resolve, reject) => {
-    const useCommandProcessor =
-      process.platform === "win32" && command === "npm";
-    const executable = useCommandProcessor
-      ? (process.env.ComSpec ?? "cmd.exe")
-      : command;
+    const useCommandProcessor = process.platform === "win32" && command === "npm";
+    const executable = useCommandProcessor ? process.env.ComSpec ?? "cmd.exe" : command;
     const executableArgs = useCommandProcessor
       ? ["/d", "/s", "/c", windowsCommandLine(command, args)]
       : args;
@@ -82,12 +79,9 @@ export async function runCommand(command, args, options = {}) {
     child.on("error", (error) => {
       if (error?.code === "ENOENT") {
         reject(
-          new EnvironmentBlockedError(
-            `Required command is unavailable: ${command}`,
-            {
-              cause: error,
-            },
-          ),
+          new EnvironmentBlockedError(`Required command is unavailable: ${command}`, {
+            cause: error,
+          }),
         );
         return;
       }
@@ -161,9 +155,7 @@ export async function waitForServer(url, child, attempts = 30) {
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     if (child?.exitCode !== null) {
-      throw new Error(
-        `API server exited before becoming ready (exit code: ${child.exitCode})`,
-      );
+      throw new Error(`API server exited before becoming ready (exit code: ${child.exitCode})`);
     }
 
     try {
@@ -179,9 +171,7 @@ export async function waitForServer(url, child, attempts = 30) {
     await delay(1000);
   }
 
-  throw new Error(
-    `Timed out waiting for ${url}${lastError ? `: ${String(lastError)}` : ""}`,
-  );
+  throw new Error(`Timed out waiting for ${url}${lastError ? `: ${String(lastError)}` : ""}`);
 }
 
 export async function stopProcess(child) {
@@ -210,16 +200,10 @@ function resolvePlaywrightEnv() {
   };
 
   if (process.env.PLAYWRIGHT_BROWSER_CHANNEL) {
-    return {
-      ...env,
-      PLAYWRIGHT_BROWSER_CHANNEL: process.env.PLAYWRIGHT_BROWSER_CHANNEL,
-    };
+    return { ...env, PLAYWRIGHT_BROWSER_CHANNEL: process.env.PLAYWRIGHT_BROWSER_CHANNEL };
   }
 
-  if (
-    process.platform !== "win32" ||
-    process.env.RELEASE_GATE_USE_SYSTEM_EDGE === "0"
-  ) {
+  if (process.platform !== "win32" || process.env.RELEASE_GATE_USE_SYSTEM_EDGE === "0") {
     return env;
   }
 
@@ -227,13 +211,7 @@ function resolvePlaywrightEnv() {
     "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
     "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
     process.env.LOCALAPPDATA
-      ? path.join(
-          process.env.LOCALAPPDATA,
-          "Microsoft",
-          "Edge",
-          "Application",
-          "msedge.exe",
-        )
+      ? path.join(process.env.LOCALAPPDATA, "Microsoft", "Edge", "Application", "msedge.exe")
       : null,
   ].filter(Boolean);
 
@@ -348,42 +326,30 @@ export async function runDefaultReleaseGate() {
         id: "api-sync",
         label: "FastAPI locked dependency sync",
         run: () =>
-          runCommand(
-            uv,
-            ["sync", "--frozen", "--extra", "dev", "--python", "3.12"],
-            {
-              cwd: apiDir,
-              env: apiReleaseEnv,
-            },
-          ),
+          runCommand(uv, ["sync", "--frozen", "--extra", "dev", "--python", "3.12"], {
+            cwd: apiDir,
+            env: apiReleaseEnv,
+          }),
       },
       {
         id: "api-compile",
         label: "FastAPI compile",
         dependsOn: ["api-sync"],
         run: () =>
-          runCommand(
-            uv,
-            [...uvRunPrefix, "python", "-m", "compileall", "app"],
-            {
-              cwd: apiDir,
-              env: apiReleaseEnv,
-            },
-          ),
+          runCommand(uv, [...uvRunPrefix, "python", "-m", "compileall", "app"], {
+            cwd: apiDir,
+            env: apiReleaseEnv,
+          }),
       },
       {
         id: "api-lint",
         label: "FastAPI Ruff",
         dependsOn: ["api-sync"],
         run: () =>
-          runCommand(
-            uv,
-            [...uvRunPrefix, "ruff", "check", "app", "tests", "scripts"],
-            {
-              cwd: apiDir,
-              env: apiReleaseEnv,
-            },
-          ),
+          runCommand(uv, [...uvRunPrefix, "ruff", "check", "app", "tests", "scripts"], {
+            cwd: apiDir,
+            env: apiReleaseEnv,
+          }),
       },
       {
         id: "api-tests",
@@ -400,14 +366,10 @@ export async function runDefaultReleaseGate() {
         label: "FastAPI OpenAPI contract",
         dependsOn: ["api-sync"],
         run: () =>
-          runCommand(
-            uv,
-            [...uvRunPrefix, "python", "scripts/check_openapi_contract.py"],
-            {
-              cwd: apiDir,
-              env: apiReleaseEnv,
-            },
-          ),
+          runCommand(uv, [...uvRunPrefix, "python", "scripts/check_openapi_contract.py"], {
+            cwd: apiDir,
+            env: apiReleaseEnv,
+          }),
       },
       {
         id: "api-public-smoke",
@@ -428,8 +390,7 @@ export async function runDefaultReleaseGate() {
         id: "web-browser-smoke",
         label: "Web production browser smoke",
         dependsOn: ["web-build", "browser-runtime"],
-        run: () =>
-          runCommand(npm, ["run", "smoke:web"], { env: playwrightEnv }),
+        run: () => runCommand(npm, ["run", "smoke:web"], { env: playwrightEnv }),
       },
     ],
   });
