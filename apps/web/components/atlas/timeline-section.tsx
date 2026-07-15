@@ -86,20 +86,20 @@ function ChangeDetail({
             {change.title}
           </h3>
         </div>
-        <span className="text-[12px] leading-5 text-[#6D7C6E]">{formatDateLabel(change.date)}</span>
+        <span className="text-[12px] leading-5 text-[#526354]">{formatDateLabel(change.date)}</span>
       </div>
 
       <p className="mt-4 text-[14px] leading-7 text-[#5F6E61]">{change.summary}</p>
 
       <dl className="mt-6 divide-y divide-[rgba(63,125,72,0.08)] border-y border-[rgba(63,125,72,0.08)] text-[14px] leading-6">
         <div className="flex items-start justify-between gap-4 py-3">
-          <dt className="text-[#6D7C6E]">对应快照</dt>
+          <dt className="text-[#526354]">对应快照</dt>
           <dd className="max-w-[12rem] text-right text-[#233126]">
             {formatDateLabel(closestSnapshotDate(change.date, availableSnapshotDates))}
           </dd>
         </div>
         <div className="flex items-start justify-between gap-4 py-3">
-          <dt className="text-[#6D7C6E]">关联对象</dt>
+          <dt className="text-[#526354]">关联对象</dt>
           <dd className="max-w-[12rem] text-right text-[#233126]">{detailLabel(change, itemNames)}</dd>
         </div>
       </dl>
@@ -153,12 +153,12 @@ function ChangeList({
                     <p className="text-[16px] leading-6 text-[#233126]">{change.title}</p>
                     <p className="mt-1 text-[13px] leading-6 text-[#5F6E61]">{change.summary}</p>
                   </div>
-                  <span className="shrink-0 text-[12px] leading-5 text-[#6D7C6E]">{formatDateLabel(change.date)}</span>
+                  <span className="shrink-0 text-[12px] leading-5 text-[#526354]">{formatDateLabel(change.date)}</span>
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[12px] leading-5">
                   <span className={toneClassName(change)}>{modeLabel(change)}</span>
-                  <span className="text-[#6D7C6E]">{detailLabel(change, itemNames)}</span>
+                  <span className="text-[#526354]">{detailLabel(change, itemNames)}</span>
                 </div>
               </div>
             </button>
@@ -245,7 +245,7 @@ export function TimelineSection({
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="hidden text-[12px] leading-5 text-[#6D7C6E] md:block">
+              <div className="hidden text-[12px] leading-5 text-[#526354] md:block">
                 当前快照 · {formatDateLabel(selectedSnapshotDate)}
               </div>
               <Button

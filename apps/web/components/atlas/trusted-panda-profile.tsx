@@ -192,13 +192,13 @@ function FactProvenance({
   panda: PandaDetail;
 }) {
   const t = copy[locale];
-  if (!conclusion) return <p className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</p>;
+  if (!conclusion) return <dd className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</dd>;
   return (
-    <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
+    <dd className="mt-1 text-xs leading-5 text-[var(--muted)]">
       {t.source}: {conclusion.source_ids.map((sourceId, index) => (
         <span key={sourceId}>{index ? ", " : ""}<a href={`#${sourceId}`} className="font-semibold text-[var(--accent)] hover:underline">{sourceNames([sourceId], panda)}</a></span>
       ))} | {t.verified}{locale === "zh" ? "：" : ": "}{conclusion.last_verified_at}
-    </p>
+    </dd>
   );
 }
 
@@ -293,7 +293,7 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
               <div data-testid="fact-birth"><dt className="text-xs font-semibold text-[var(--muted)]">{t.birth}</dt><dd className="mt-2 text-lg font-semibold">{dateLabel(panda.birth_date, locale)}</dd><FactProvenance conclusion={birthConclusion} locale={locale} panda={panda} /></div>
               <div data-testid="fact-sex"><dt className="text-xs font-semibold text-[var(--muted)]">{t.sex}</dt><dd className="mt-2 text-lg font-semibold">{panda.gender === "female" ? t.female : panda.gender === "male" ? t.male : t.unknown}</dd><FactProvenance conclusion={sexConclusion} locale={locale} panda={panda} /></div>
               <div data-testid="fact-place"><dt className="text-xs font-semibold text-[var(--muted)]">{t.place}</dt><dd className="mt-2 text-lg font-semibold">{placeLabel(panda.current_place?.facility_id ?? null, panda.current_place?.coarse_location ?? panda.current_location, locale)}</dd><FactProvenance conclusion={placeConclusion} locale={locale} panda={panda} /></div>
-              <div data-testid="fact-parents"><dt className="text-xs font-semibold text-[var(--muted)]">{t.parents}</dt><dd className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-lg font-semibold">{parents.length ? parents.map((item) => <Link key={item.id} href={`/${locale}/atlas/${item.slug}`} className="text-[var(--accent)] hover:underline">{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</Link>) : t.noParents}</dd>{parents.length === 0 ? <p className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</p> : null}</div>
+              <div data-testid="fact-parents"><dt className="text-xs font-semibold text-[var(--muted)]">{t.parents}</dt><dd className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-lg font-semibold">{parents.length ? parents.map((item) => <Link key={item.id} href={`/${locale}/atlas/${item.slug}`} className="text-[var(--accent)] hover:underline">{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</Link>) : t.noParents}</dd>{parents.length === 0 ? <dd className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</dd> : null}</div>
             </dl>
           </div>
 

@@ -41,6 +41,19 @@ test("default gate includes golden dataset validation", async () => {
   assert.match(defaultGate, /Golden dataset contract/);
 });
 
+test("default gate records automated bilingual WCAG acceptance", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+  const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));
+
+  assert.equal(
+    webPackage.scripts["test:accessibility"],
+    "playwright test --config playwright.accessibility.config.ts",
+  );
+  assert.match(defaultGate, /id: "web-accessibility"/);
+  assert.match(defaultGate, /dependsOn: \["web-build", "browser-runtime"\]/);
+  assert.match(defaultGate, /test:accessibility/);
+});
+
 test("default gate runs the Beta hard-gate preflight after the production build", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
