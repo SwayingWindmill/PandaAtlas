@@ -1,6 +1,6 @@
 # Cross-platform release gate
 
-The default release gate is the supported pre-release verification path for Panda Atlas. It runs Web, FastAPI, public-contract, and Worker checks serially and writes machine-readable and human-readable reports.
+The default release gate is the supported pre-release verification path for Panda Atlas. It runs Web, FastAPI, public-contract, Worker, and Beta hard-gate checks serially and writes machine-readable and human-readable reports.
 
 ## Supported toolchain
 
@@ -58,6 +58,7 @@ The gate writes:
 ```text
 .release-gate/default.json
 .release-gate/default.md
+.release-gate/beta-hard-gates.json
 ```
 
 Extended verification also writes `extended.json` and `extended.md`.
@@ -70,6 +71,24 @@ Every step has exactly one status:
 - `environment-blocked`: a required executable, browser, secret, or external runtime is unavailable.
 
 A report with `failed` or `environment-blocked` steps exits non-zero. Intentional `skipped` steps remain visible but do not by themselves fail the platform-specific gate.
+
+## Beta hard-gate preflight
+
+The default gate runs `npm run check:beta-hard-gates` after the production Web build. The preflight fails closed when it detects:
+
+- release-version drift, byte-count changes, or SHA-256 manifest corruption;
+- forbidden private fields, personal email addresses, or precise wild-location geometry in public release artifacts;
+- missing or unreviewed sources for confirmed parentage and current primary residencies;
+- backend admin-token names or development token values in client source or built browser assets;
+- a waiver for any hard gate, or an incomplete nonblocking waiver.
+
+The checked-in policy is `contracts/beta-hard-gates.v1.json`; the waiver register is `data/beta-launch/waivers.json`. Nonblocking waivers must name the user impact, mitigation, owner, and deadline. Hard gates listed by the policy cannot be waived.
+
+The standalone command writes `.release-gate/beta-hard-gates.json` and exits non-zero if any check fails:
+
+```powershell
+npm run check:beta-hard-gates
+```
 
 ## Clean-checkout reproduction
 

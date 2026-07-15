@@ -7,6 +7,7 @@ const defaultGatePath = new URL("../default.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
 const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
 const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
+const rootPackagePath = new URL("../../../package.json", import.meta.url);
 
 test("CI declares reproducible Linux and Windows default gates", async () => {
   const workflow = await readFile(workflowPath, "utf8");
@@ -37,6 +38,19 @@ test("default gate includes golden dataset validation", async () => {
 
   assert.match(defaultGate, /test:golden-dataset/);
   assert.match(defaultGate, /Golden dataset contract/);
+});
+
+test("default gate runs the Beta hard-gate preflight after the production build", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+
+  assert.equal(
+    rootPackage.scripts["check:beta-hard-gates"],
+    "node scripts/release/check-beta-hard-gates.mjs",
+  );
+  assert.match(defaultGate, /id: "beta-hard-gates"/);
+  assert.match(defaultGate, /dependsOn: \["golden-dataset", "web-build"\]/);
+  assert.match(defaultGate, /check:beta-hard-gates/);
 });
 
 test("default gate separates D1 and HTTP Worker smoke", async () => {

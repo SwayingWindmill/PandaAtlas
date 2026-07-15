@@ -294,6 +294,12 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "build:web"]),
       },
       {
+        id: "beta-hard-gates",
+        label: "Beta trust, privacy, and release consistency preflight",
+        dependsOn: ["golden-dataset", "web-build"],
+        run: () => runCommand(npm, ["run", "check:beta-hard-gates"]),
+      },
+      {
         id: "public-contract",
         label: "Public API boundary contract",
         run: () => runCommand(npm, ["run", "check:public-api-boundary"]),
