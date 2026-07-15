@@ -37,7 +37,7 @@ for (const journey of coreJourneys) {
   });
 
   test(`${journey.name} remains accessible at a mobile viewport`, async ({ page }, testInfo) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+    await page.setViewportSize({ width: 320, height: 800 });
     await page.goto(journey.path);
     await expect(page.locator("main").first()).toBeVisible();
 
@@ -72,20 +72,21 @@ for (const { locale, path, buttonName, pressedButtonName } of [
   });
 }
 
-test("bilingual profiles reflow at effective 200-percent browser zoom", async ({ page }) => {
-  const session = await page.context().newCDPSession(page);
-  await session.send("Emulation.setDeviceMetricsOverride", {
-    width: 640,
-    height: 450,
-    screenWidth: 1280,
-    screenHeight: 900,
-    deviceScaleFactor: 1,
-    mobile: false,
-  });
-
+test("bilingual profiles tolerate a simulated 200-percent text-only resize", async ({ page }) => {
   for (const path of ["/zh/atlas/mei-xiang", "/en/atlas/mei-xiang"]) {
     await page.goto(path);
-    expect(await page.evaluate(() => screen.width / innerWidth)).toBe(2);
+    await page.locator("body").evaluate((body) => {
+      const elements = [body, ...body.querySelectorAll<HTMLElement>("*")];
+      const originalFontSizes = elements.map((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+
+      elements.forEach((element, index) => {
+        const originalFontSize = originalFontSizes[index];
+        if (Number.isFinite(originalFontSize) && originalFontSize > 0) {
+          (element as HTMLElement).style.fontSize = `${originalFontSize * 2}px`;
+        }
+      });
+    });
+
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
     await expect(page.getByTestId("footprint-text-view")).toBeVisible();
   }

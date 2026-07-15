@@ -11,6 +11,14 @@ Overall human acceptance status: **PENDING — not approved for a WCAG 2.2 AA cl
 This checklist implements the human evidence requirements in
 [`wcag-2.2-aa-evidence-baseline.md`](./wcag-2.2-aa-evidence-baseline.md). Automated axe and Playwright results cannot change any row below from `PENDING`; a named human evaluator must operate the journey, record the environment and evidence, and sign the result.
 
+## Current release blockers
+
+- English distribution and lineage journeys are not currently available, so equivalent bilingual acceptance cannot be completed.
+- Automated checks cover representative initial desktop and 320 CSS px states, bilingual profile keyboard action, profile text resize, the expanded mobile distribution controls, and reduced motion. They do not yet exercise every search/filter, selection, drawer, loading, empty, error, map, or lineage interaction.
+- Human keyboard, real screen-reader, visual, text-resize, reflow, motion, map-equivalence, and lineage-equivalence sessions below have not been signed.
+
+These gaps make the current decision **No-Go for a WCAG 2.2 AA claim** even when the automated core checks pass.
+
 ## Required sessions
 
 | Session | Locale and journey coverage | Required environment | Status | Human evaluator | Date | Evidence / defects |

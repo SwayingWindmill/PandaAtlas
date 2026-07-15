@@ -402,7 +402,7 @@ export async function runDefaultReleaseGate() {
       },
       {
         id: "web-accessibility",
-        label: "Automated bilingual WCAG acceptance",
+        label: "Automated core WCAG checks",
         dependsOn: ["web-build", "browser-runtime"],
         run: () =>
           runCommand(npm, ["run", "test:accessibility", "-w", "web"], {

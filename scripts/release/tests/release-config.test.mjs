@@ -41,7 +41,7 @@ test("default gate includes golden dataset validation", async () => {
   assert.match(defaultGate, /Golden dataset contract/);
 });
 
-test("default gate records automated bilingual WCAG acceptance", async () => {
+test("default gate records automated core WCAG checks", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));
 
