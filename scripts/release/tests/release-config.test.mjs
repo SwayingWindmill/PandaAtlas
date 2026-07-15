@@ -69,6 +69,16 @@ test("Cloudflare staging deploy is isolated from production routes", async () =>
   assert.equal(stagingConfig.name, "panda-atlas-web-staging");
   assert.equal(stagingConfig.workers_dev, true);
   assert.deepEqual(stagingConfig.routes, []);
+  for (const sharedKey of [
+    "main",
+    "compatibility_date",
+    "compatibility_flags",
+    "assets",
+    "observability",
+    "vars",
+  ]) {
+    assert.deepEqual(stagingConfig[sharedKey], productionConfig[sharedKey]);
+  }
 });
 
 test("default gate runs the Beta hard-gate preflight after the production build", async () => {

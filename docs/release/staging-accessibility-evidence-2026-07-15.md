@@ -21,6 +21,17 @@ All checks below ran against the public Cloudflare staging URL, not a local serv
 - TypeScript check: passed.
 - Release configuration tests, including staging/production route isolation: `27 passed`.
 
+The retained machine-readable axe evidence is [`staging-accessibility-axe-2026-07-15.json`](./staging-accessibility-axe-2026-07-15.json). It records 11 rendered-state scans, the exact staging URLs and timestamps, axe/runner versions, Windows/Edge user agent, rule configuration, DOM targets, `0` automated violations, and `11` `color-contrast` incomplete results that still require human visual resolution.
+
+Commands used for the deployed checks:
+
+```powershell
+$env:PLAYWRIGHT_BASE_URL='https://panda-atlas-web-staging.hao1012812011.workers.dev'
+$env:PLAYWRIGHT_BROWSER_CHANNEL='msedge'
+npm run test:accessibility -w web
+npm run smoke:web
+```
+
 The Playwright configuration accepts `PLAYWRIGHT_BASE_URL` so the same browser suites can target a deployed candidate without starting a local web server.
 
 ## Human acceptance status
