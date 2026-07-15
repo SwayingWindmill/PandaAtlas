@@ -724,7 +724,7 @@ export function MapStage({
                     className="border border-[rgba(63,125,72,0.12)] bg-white/80 px-4 py-3 text-left transition-colors hover:bg-white"
                   >
                     <span className="block text-[14px] font-medium text-[#233126]">{item.name}</span>
-                    <span className="mt-1 block text-[12px] leading-5 text-[#6D7C6E]">
+                    <span className="mt-1 block text-[12px] leading-5 text-[var(--atlas-muted-fg)]">
                       {item.kind === "wild_region" ? "野生分布区" : item.kindLabel}
                     </span>
                   </button>
@@ -746,7 +746,7 @@ export function MapStage({
           }}
         >
           <p className="text-[14px] font-medium leading-6 text-[#233126]">{hoverCard.title}</p>
-          <p className="text-[12px] leading-5 text-[#6D7C6E]">{hoverCard.subtitle}</p>
+          <p className="text-[12px] leading-5 text-[var(--atlas-muted-fg)]">{hoverCard.subtitle}</p>
         </div>
       ) : null}
 

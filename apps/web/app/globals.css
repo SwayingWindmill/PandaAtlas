@@ -6,7 +6,8 @@
   --bg: #f6f7f6;
   --fg: #223126;
   --card: #ffffff;
-  --muted: #6a736b;
+  --muted: #626c63;
+  --atlas-muted-fg: #526354;
   --line: #dde2da;
   --accent: #3f7d48;
   --accent-2: #c66b2f;
@@ -26,6 +27,22 @@
 
 * {
   border-color: var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
 }
 
 html,

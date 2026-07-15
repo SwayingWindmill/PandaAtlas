@@ -34,7 +34,7 @@ export function MapOverlay({
     <>
       <div className="pointer-events-none absolute left-5 top-5 z-20 max-w-[560px]">
         <div className="border-l-2 border-[rgba(47,107,59,0.3)] bg-[linear-gradient(90deg,rgba(247,246,242,0.84),rgba(247,246,242,0))] pl-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6D7C6E]">{modeHint}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--atlas-muted-fg)]">{modeHint}</p>
           <p
             className="mt-1 text-[19px] leading-7 text-[#233126]"
             style={{ fontFamily: "var(--font-display)" }}
@@ -48,14 +48,14 @@ export function MapOverlay({
             <div key={item.label} className="flex items-center gap-2 text-[12px] leading-5 text-[#233126]">
               <span className="inline-flex h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
               <span className="font-medium">{item.label}</span>
-              <span className="text-[#6D7C6E]">{item.description}</span>
+              <span className="text-[var(--atlas-muted-fg)]">{item.description}</span>
             </div>
           ))}
         </div>
       </div>
 
       <div className="pointer-events-none absolute right-5 top-5 z-20 hidden max-w-[280px] border-l border-[rgba(63,125,72,0.12)] bg-[linear-gradient(270deg,rgba(247,246,242,0.86),rgba(247,246,242,0))] pl-4 text-right md:block">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6D7C6E]">{viewLabel}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--atlas-muted-fg)]">{viewLabel}</p>
         <div className="mt-1 flex items-center justify-end gap-2 text-[13px] leading-6 text-[#233126]">
           {isUpdating ? <span className="inline-flex h-2 w-2 rounded-full bg-[#C98A45]" /> : null}
           <span>{snapshotDateLabel}</span>

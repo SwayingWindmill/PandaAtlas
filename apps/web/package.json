@@ -13,10 +13,13 @@
         "preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
         "predeploy:cf": "npm run guard:public-admin-proxy",
         "deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+        "predeploy:cf:staging": "npm run guard:public-admin-proxy",
+        "deploy:cf:staging": "opennextjs-cloudflare build && wrangler deploy --config wrangler.staging.jsonc",
         "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
         "lint": "eslint .",
         "typecheck": "tsc --noEmit",
         "smoke": "playwright test",
+        "test:accessibility": "playwright test --config playwright.accessibility.config.ts",
         "check:browser": "node scripts/check-playwright-runtime.mjs",
         "test:admin-proxy": "node scripts/smoke-admin-proxy.mjs",
         "test:admin-proxy:production": "node scripts/smoke-admin-proxy.mjs --production",
@@ -34,6 +37,7 @@
         "tailwind-merge": "^2.5.4"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.12.1",
         "@eslint/eslintrc": "^3.3.4",
         "@opennextjs/cloudflare": "^1.19.9",
         "@playwright/test": "^1.54.1",

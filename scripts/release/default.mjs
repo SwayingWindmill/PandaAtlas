@@ -401,9 +401,18 @@ export async function runDefaultReleaseGate() {
           }),
       },
       {
+        id: "web-accessibility",
+        label: "Automated core WCAG checks",
+        dependsOn: ["web-build", "browser-runtime"],
+        run: () =>
+          runCommand(npm, ["run", "test:accessibility", "-w", "web"], {
+            env: playwrightEnv,
+          }),
+      },
+      {
         id: "web-browser-smoke",
         label: "Web production browser smoke",
-        dependsOn: ["web-build", "browser-runtime"],
+        dependsOn: ["web-build", "browser-runtime", "web-accessibility"],
         run: () => runCommand(npm, ["run", "smoke:web"], { env: playwrightEnv }),
       },
     ],

@@ -1,0 +1,1707 @@
+{
+  "schemaVersion": 1,
+  "deploymentUrl": "https://panda-atlas-web-staging.hao1012812011.workers.dev",
+  "cloudflareWorkerVersion": "e9b31ccb-4e6f-42d0-b9fc-07ca3accd71d",
+  "gitCommit": "739064ffcd866e0acd8fb6795d9e461b6e6e6904",
+  "sourceReport": "accessibility-automated.json",
+  "scanCount": 11,
+  "violationCount": 0,
+  "incompleteCount": 11,
+  "scans": [
+    {
+      "testTitle": "Chinese trusted profile has no automated WCAG A/AA violations",
+      "state": "axe-desktop-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/zh/atlas/mei-xiang",
+      "timestamp": "2026-07-15T11:18:54.459Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                ".bg-\\[linear-gradient\\(135deg\\,rgba\\(63\\,125\\,71\\,0\\.11\\)\\,rgba\\(63\\,125\\,71\\,0\\.03\\)\\)\\] > .text-sm.text-\\[var\\(--muted\\)\\]"
+              ],
+              "html": "<p class=\"text-sm text-[var(--muted)]\">公开记录没有足够精度用于地理地图。这里采用不带坐标的路线示意。</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(1) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">史密森国家动物园</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(2) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">中国（国家级记录）</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "Chinese trusted profile remains accessible at a mobile viewport",
+      "state": "axe-mobile-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/zh/atlas/mei-xiang",
+      "timestamp": "2026-07-15T11:18:58.076Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 320,
+        "windowHeight": 800,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                "a[href$=\"#evidence\"]"
+              ],
+              "html": "<a href=\"#evidence\" class=\"whitespace-nowrap rounded-lg px-2 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]\">资料依据</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+            },
+            {
+              "target": [
+                ".bg-\\[linear-gradient\\(135deg\\,rgba\\(63\\,125\\,71\\,0\\.11\\)\\,rgba\\(63\\,125\\,71\\,0\\.03\\)\\)\\] > .text-sm.text-\\[var\\(--muted\\)\\]"
+              ],
+              "html": "<p class=\"text-sm text-[var(--muted)]\">公开记录没有足够精度用于地理地图。这里采用不带坐标的路线示意。</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(1) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">史密森国家动物园</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(2) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">中国（国家级记录）</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "English trusted profile has no automated WCAG A/AA violations",
+      "state": "axe-desktop-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/en/atlas/mei-xiang",
+      "timestamp": "2026-07-15T11:19:01.010Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                ".bg-\\[linear-gradient\\(135deg\\,rgba\\(63\\,125\\,71\\,0\\.11\\)\\,rgba\\(63\\,125\\,71\\,0\\.03\\)\\)\\] > .text-sm.text-\\[var\\(--muted\\)\\]"
+              ],
+              "html": "<p class=\"text-sm text-[var(--muted)]\">The public record is not precise enough for a geographic map. This is a coordinate-free route diagram.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(1) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">Smithsonian's National Zoo</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(2) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">China (country-level record)</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "English trusted profile remains accessible at a mobile viewport",
+      "state": "axe-mobile-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/en/atlas/mei-xiang",
+      "timestamp": "2026-07-15T11:19:04.133Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 320,
+        "windowHeight": 800,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                "a[href$=\"#media\"]"
+              ],
+              "html": "<a href=\"#media\" class=\"whitespace-nowrap rounded-lg px-2 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]\">Media</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+            },
+            {
+              "target": [
+                "a[href$=\"#evidence\"]"
+              ],
+              "html": "<a href=\"#evidence\" class=\"whitespace-nowrap rounded-lg px-2 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]\">Evidence</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it's partially obscured by another element"
+            },
+            {
+              "target": [
+                ".bg-\\[linear-gradient\\(135deg\\,rgba\\(63\\,125\\,71\\,0\\.11\\)\\,rgba\\(63\\,125\\,71\\,0\\.03\\)\\)\\] > .text-sm.text-\\[var\\(--muted\\)\\]"
+              ],
+              "html": "<p class=\"text-sm text-[var(--muted)]\">The public record is not precise enough for a geographic map. This is a coordinate-free route diagram.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(1) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">Smithsonian's National Zoo</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(2) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">China (country-level record)</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "distribution map and text alternative has no automated WCAG A/AA violations",
+      "state": "axe-desktop-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/global-distribution",
+      "timestamp": "2026-07-15T11:19:07.283Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                ".bg-\\[rgba\\(63\\,125\\,71\\,0\\.1\\)\\]"
+              ],
+              "html": "<span class=\"inline-flex rounded-full bg-[rgba(63,125,71,0.1)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--accent)]\">GLOBAL OVERVIEW</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".mb-3.justify-between.items-center > div > .tracking-\\[0\\.2em\\].text-\\[var\\(--accent\\)\\].uppercase"
+              ],
+              "html": "<p class=\"text-[12px] font-semibold uppercase tracking-[0.2em] text-[var(--accent)]\">阅读模式</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".mb-3.justify-between.items-center > div > .text-\\[13px\\].text-\\[var\\(--muted\\)\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[13px] text-[var(--muted)]\">切换空间语义与对象层级</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".mb-3.justify-between.items-center > .text-\\[var\\(--muted\\)\\].text-\\[12px\\]"
+              ],
+              "html": "<span class=\"text-[12px] text-[var(--muted)]\">2026/03/05</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".shadow-\\[0_10px_24px_rgba\\(47\\,92\\,69\\,0\\.08\\)\\] > .text-\\[var\\(--fg\\)\\].text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold text-[var(--fg)]\">全球总览</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".shadow-\\[0_10px_24px_rgba\\(47\\,92\\,69\\,0\\.08\\)\\] > .leading-5.text-\\[var\\(--muted\\)\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5 text-[var(--muted)]\">野生 + 国内 + 海外</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".bg-\\[rgba\\(247\\,248\\,245\\,0\\.72\\)\\].hover\\:bg-\\[rgba\\(63\\,125\\,71\\,0\\.05\\)\\].rounded-\\[1\\.1rem\\]:nth-child(2) > .text-\\[var\\(--fg\\)\\].text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold text-[var(--fg)]\">中国野生</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".bg-\\[rgba\\(247\\,248\\,245\\,0\\.72\\)\\].hover\\:bg-\\[rgba\\(63\\,125\\,71\\,0\\.05\\)\\].rounded-\\[1\\.1rem\\]:nth-child(2) > .leading-5.text-\\[var\\(--muted\\)\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5 text-[var(--muted)]\">野生分布</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".bg-\\[rgba\\(247\\,248\\,245\\,0\\.72\\)\\].hover\\:bg-\\[rgba\\(63\\,125\\,71\\,0\\.05\\)\\].rounded-\\[1\\.1rem\\]:nth-child(3) > .text-\\[var\\(--fg\\)\\].text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold text-[var(--fg)]\">中国圈养</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".bg-\\[rgba\\(247\\,248\\,245\\,0\\.72\\)\\].hover\\:bg-\\[rgba\\(63\\,125\\,71\\,0\\.05\\)\\].rounded-\\[1\\.1rem\\]:nth-child(3) > .leading-5.text-\\[var\\(--muted\\)\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5 text-[var(--muted)]\">国内机构</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".bg-\\[rgba\\(247\\,248\\,245\\,0\\.72\\)\\].hover\\:bg-\\[rgba\\(63\\,125\\,71\\,0\\.05\\)\\].rounded-\\[1\\.1rem\\]:nth-child(4) > .text-\\[var\\(--fg\\)\\].text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold text-[var(--fg)]\">海外圈养</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".bg-\\[rgba\\(247\\,248\\,245\\,0\\.72\\)\\].hover\\:bg-\\[rgba\\(63\\,125\\,71\\,0\\.05\\)\\].rounded-\\[1\\.1rem\\]:nth-child(4) > .leading-5.text-\\[var\\(--muted\\)\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5 text-[var(--muted)]\">海外合作</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".mb-3 > .tracking-\\[0\\.2em\\].text-\\[var\\(--accent\\)\\].uppercase"
+              ],
+              "html": "<p class=\"text-[12px] font-semibold uppercase tracking-[0.2em] text-[var(--accent)]\">搜索与筛选</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".mb-3 > .text-\\[13px\\].text-\\[var\\(--muted\\)\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[13px] text-[var(--muted)]\">搜索国家、城市、机构或区域</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".rounded-\\[1\\.4rem\\].bg-white\\/92.p-4:nth-child(3) > .space-y-3 > input"
+              ],
+              "html": "<input class=\"flex w-full border p...\" placeholder=\"搜索国家、城市、机构、熊猫名称或区域\" value=\"\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "label:nth-child(1) > .text-\\[var\\(--muted\\)\\].text-\\[12px\\]"
+              ],
+              "html": "<span class=\"text-[12px] text-[var(--muted)]\">区域</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".rounded-\\[1\\.4rem\\].bg-white\\/92.p-4:nth-child(3) > .space-y-3 > .grid-cols-2.grid.gap-3 > label:nth-child(1) > .relative > select"
+              ],
+              "html": "<select class=\"w-full appearance-no...\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "label:nth-child(2) > .text-\\[var\\(--muted\\)\\].text-\\[12px\\]"
+              ],
+              "html": "<span class=\"text-[12px] text-[var(--muted)]\">状态</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".rounded-\\[1\\.4rem\\].bg-white\\/92.p-4:nth-child(3) > .space-y-3 > .grid-cols-2.grid.gap-3 > label:nth-child(2) > .relative > select"
+              ],
+              "html": "<select class=\"w-full appearance-no...\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".col-span-2 > .text-\\[var\\(--muted\\)\\].text-\\[12px\\]"
+              ],
+              "html": "<span class=\"text-[12px] text-[var(--muted)]\">机构类型</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".rounded-\\[1\\.4rem\\].bg-white\\/92.p-4:nth-child(3) > .space-y-3 > .grid-cols-2.grid.gap-3 > .col-span-2 > .relative > select"
+              ],
+              "html": "<select class=\"w-full appearance-no...\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".pt-3.border-t.justify-between > span:nth-child(1)"
+              ],
+              "html": "<span>当前命中 <!-- -->14<!-- --> 个对象</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".pt-3.border-t.justify-between > .text-\\[var\\(--accent\\)\\]"
+              ],
+              "html": "<span class=\"text-[var(--accent)]\">已是最新</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".border-y"
+              ],
+              "html": "<div class=\"border-y border-[rgba(63,125,72,0.12)] bg-[rgba(250,248,243,0.9)] px-5 py-2 text-[14px] leading-6 text-[#5F6E61]\">正在准备地图视图</div>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".tracking-\\[0\\.18em\\].uppercase.text-\\[11px\\]"
+              ],
+              "html": "<p class=\"text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--atlas-muted-fg)]\">野生核心 + 国内 + 海外</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-\\[19px\\].leading-7.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"mt-1 text-[19px] leading-7 text-[#233126]\" style=\"font-family:var(--font-display)\">全球总览</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".gap-2.text-\\[\\#233126\\].leading-5:nth-child(1) > .font-medium"
+              ],
+              "html": "<span class=\"font-medium\">中国野生分布</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".gap-2.text-\\[\\#233126\\].leading-5:nth-child(1) > .text-\\[var\\(--atlas-muted-fg\\)\\]"
+              ],
+              "html": "<span class=\"text-[var(--atlas-muted-fg)]\">自然分布核心</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".gap-2.text-\\[\\#233126\\].leading-5:nth-child(2) > .font-medium"
+              ],
+              "html": "<span class=\"font-medium\">中国圈养机构</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".gap-2.text-\\[\\#233126\\].leading-5:nth-child(2) > .text-\\[var\\(--atlas-muted-fg\\)\\]"
+              ],
+              "html": "<span class=\"text-[var(--atlas-muted-fg)]\">国内保育网络</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".gap-2.text-\\[\\#233126\\].leading-5:nth-child(3) > .font-medium"
+              ],
+              "html": "<span class=\"font-medium\">海外合作机构</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".gap-2.text-\\[\\#233126\\].leading-5:nth-child(3) > .text-\\[var\\(--atlas-muted-fg\\)\\]"
+              ],
+              "html": "<span class=\"text-[var(--atlas-muted-fg)]\">国际合作节点</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".tracking-\\[0\\.14em\\]"
+              ],
+              "html": "<p class=\"text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--atlas-muted-fg)]\">全球总览模式</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".justify-end > span"
+              ],
+              "html": "<span>2026/03/05</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".border-\\[rgba\\(63\\,125\\,72\\,0\\.16\\)\\].px-0.pointer-events-auto"
+              ],
+              "html": "<button class=\"inline-flex items-ce...\" type=\"button\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(1) > .font-medium.gap-2.leading-5 > span:nth-child(2)"
+              ],
+              "html": "<span>野生</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(1) > .items-end.gap-4.mt-2 > .text-\\[24px\\].leading-none.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"text-[24px] leading-none text-[#233126]\" style=\"font-family:var(--font-display)\">1</p>",
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(1) > .items-end.gap-4.mt-2 > .max-w-\\[12rem\\].text-right.leading-5"
+              ],
+              "html": "<p class=\"max-w-[12rem] text-right text-[12px] leading-5 text-[var(--atlas-muted-fg)]\">自然分布核心</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(2) > .font-medium.gap-2.leading-5 > span:nth-child(2)"
+              ],
+              "html": "<span>国内</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(2) > .items-end.gap-4.mt-2 > .text-\\[24px\\].leading-none.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"text-[24px] leading-none text-[#233126]\" style=\"font-family:var(--font-display)\">7</p>",
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(2) > .items-end.gap-4.mt-2 > .max-w-\\[12rem\\].text-right.leading-5"
+              ],
+              "html": "<p class=\"max-w-[12rem] text-right text-[12px] leading-5 text-[var(--atlas-muted-fg)]\">圈养与保育机构</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(3) > .font-medium.gap-2.leading-5 > span:nth-child(2)"
+              ],
+              "html": "<span>海外</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(3) > .items-end.gap-4.mt-2 > .text-\\[24px\\].leading-none.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"text-[24px] leading-none text-[#233126]\" style=\"font-family:var(--font-display)\">6</p>",
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(3) > .items-end.gap-4.mt-2 > .max-w-\\[12rem\\].text-right.leading-5"
+              ],
+              "html": "<p class=\"max-w-[12rem] text-right text-[12px] leading-5 text-[var(--atlas-muted-fg)]\">国际合作机构</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "distribution map and text alternative remains accessible at a mobile viewport",
+      "state": "axe-mobile-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/global-distribution",
+      "timestamp": "2026-07-15T11:19:10.741Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 320,
+        "windowHeight": 800,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                ".border-y"
+              ],
+              "html": "<div class=\"border-y border-[rgba(63,125,72,0.12)] bg-[rgba(250,248,243,0.9)] px-5 py-2 text-[14px] leading-6 text-[#5F6E61]\">正在准备地图视图</div>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".tracking-\\[0\\.18em\\].uppercase.text-\\[11px\\]"
+              ],
+              "html": "<p class=\"text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--atlas-muted-fg)]\">野生核心 + 国内 + 海外</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".text-\\[19px\\].leading-7.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"mt-1 text-[19px] leading-7 text-[#233126]\" style=\"font-family:var(--font-display)\">全球总览</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".border-\\[rgba\\(63\\,125\\,72\\,0\\.16\\)\\].px-0.pointer-events-auto"
+              ],
+              "html": "<button class=\"inline-flex items-ce...\" type=\"button\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(1) > .font-medium.gap-2.leading-5 > span:nth-child(2)"
+              ],
+              "html": "<span>野生</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(1) > .items-end.gap-4.mt-2 > .text-\\[24px\\].leading-none.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"text-[24px] leading-none text-[#233126]\" style=\"font-family:var(--font-display)\">1</p>",
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(1) > .items-end.gap-4.mt-2 > .max-w-\\[12rem\\].text-right.leading-5"
+              ],
+              "html": "<p class=\"max-w-[12rem] text-right text-[12px] leading-5 text-[var(--atlas-muted-fg)]\">自然分布核心</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(2) > .font-medium.gap-2.leading-5 > span:nth-child(2)"
+              ],
+              "html": "<span>国内</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(2) > .items-end.gap-4.mt-2 > .text-\\[24px\\].leading-none.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"text-[24px] leading-none text-[#233126]\" style=\"font-family:var(--font-display)\">7</p>",
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(2) > .items-end.gap-4.mt-2 > .max-w-\\[12rem\\].text-right.leading-5"
+              ],
+              "html": "<p class=\"max-w-[12rem] text-right text-[12px] leading-5 text-[var(--atlas-muted-fg)]\">圈养与保育机构</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(3) > .font-medium.gap-2.leading-5 > span:nth-child(2)"
+              ],
+              "html": "<span>海外</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(3) > .items-end.gap-4.mt-2 > .text-\\[24px\\].leading-none.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"text-[24px] leading-none text-[#233126]\" style=\"font-family:var(--font-display)\">6</p>",
+              "failureSummary": "Fix any of the following:\n  Element content is too short to determine if it is actual text content"
+            },
+            {
+              "target": [
+                ".px-5.py-3:nth-child(3) > .items-end.gap-4.mt-2 > .max-w-\\[12rem\\].text-right.leading-5"
+              ],
+              "html": "<p class=\"max-w-[12rem] text-right text-[12px] leading-5 text-[var(--atlas-muted-fg)]\">国际合作机构</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "lineage explorer and structured relationship content has no automated WCAG A/AA violations",
+      "state": "axe-desktop-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/lineage?focus=2939c16f-1938-5629-928c-b36b1d5cd6ed",
+      "timestamp": "2026-07-15T11:19:12.949Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                "h1"
+              ],
+              "html": "<h1>熊猫谱系探索</h1>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-topbar-title > p"
+              ],
+              "html": "<p>拖动画布以平移，滚轮缩放，点选节点即可在当前谱系视图中查看个体关系与档案入口。</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                "label > span"
+              ],
+              "html": "<span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".is-selected > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">美香</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".is-selected > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">美香</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".is-selected > .lineage-name-en"
+              ],
+              "html": "<span class=\"lineage-name-en\">Mei Xiang</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(2) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">泰山</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(2) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">泰山</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(3) > .gender-female.lineage-panda-node[data-node=\"true\"] > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">宝宝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(3) > .gender-female.lineage-panda-node[data-node=\"true\"] > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">宝宝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(4) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">贝贝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(4) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">贝贝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(5) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">小奇</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(5) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">小奇迹</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".is-active"
+              ],
+              "html": "<button type=\"button\" class=\"is-active\" aria-label=\"切换到树状谱系视图\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                "button[aria-label=\"切换到环状谱系视图\"]"
+              ],
+              "html": "<button type=\"button\" class=\"\" aria-label=\"切换到环状谱系视图\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-zoom-readout"
+              ],
+              "html": "<div class=\"lineage-zoom-readout\">100<!-- -->%</div>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-center-btn"
+              ],
+              "html": "<button type=\"button\" class=\"lineage-center-btn\" aria-label=\"居中当前焦点\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                "h2"
+              ],
+              "html": "<h2>个体档案</h2>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".lineage-drawer-cover-empty"
+              ],
+              "html": "<div class=\"lineage-drawer-cover-empty\">美香</div>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                "h3"
+              ],
+              "html": "<h3>美香</h3>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-drawer-en"
+              ],
+              "html": "<p class=\"lineage-drawer-en\">Mei Xiang</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-drawer-intro"
+              ],
+              "html": "<p class=\"lineage-drawer-intro\">No biography yet.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "a[href$=\"mei-xiang\"]"
+              ],
+              "html": "<a href=\"/atlas/mei-xiang\">打开完整档案</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(1) > dt"
+              ],
+              "html": "<dt>出生日期</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(1) > dd"
+              ],
+              "html": "<dd>1998/07/22</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(2) > dt"
+              ],
+              "html": "<dt>性别</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(2) > dd"
+              ],
+              "html": "<dd>雌性</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(3) > dt"
+              ],
+              "html": "<dt>所在地点</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(3) > dd"
+              ],
+              "html": "<dd>待补录</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(4) > dt"
+              ],
+              "html": "<dt>父母记录</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(4) > dd"
+              ],
+              "html": "<dd>待补录</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(5) > dt"
+              ],
+              "html": "<dt>子代数量</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "div:nth-child(5) > dd"
+              ],
+              "html": "<dd>4 只</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "h4:nth-child(7)"
+              ],
+              "html": "<h4>子代</h4>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "a[href$=\"tai-shan\"]"
+              ],
+              "html": "<a href=\"/atlas/tai-shan\">泰山</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "a[href$=\"bao-bao\"]"
+              ],
+              "html": "<a href=\"/atlas/bao-bao\">宝宝</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "a[href$=\"bei-bei\"]"
+              ],
+              "html": "<a href=\"/atlas/bei-bei\">贝贝</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "a[href$=\"xiao-qi-ji\"]"
+              ],
+              "html": "<a href=\"/atlas/xiao-qi-ji\">小奇迹</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "h4:nth-child(9)"
+              ],
+              "html": "<h4>观察标签</h4>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "ul:nth-child(10) > li:nth-child(1)"
+              ],
+              "html": "<li>trusted-archive</li>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "ul:nth-child(10) > li:nth-child(2)"
+              ],
+              "html": "<li>golden-dataset</li>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "lineage explorer and structured relationship content remains accessible at a mobile viewport",
+      "state": "axe-mobile-initial",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/lineage?focus=2939c16f-1938-5629-928c-b36b1d5cd6ed",
+      "timestamp": "2026-07-15T11:19:15.277Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 320,
+        "windowHeight": 800,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                "h1"
+              ],
+              "html": "<h1>熊猫谱系探索</h1>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-topbar-title > p"
+              ],
+              "html": "<p>拖动画布以平移，滚轮缩放，点选节点即可在当前谱系视图中查看个体关系与档案入口。</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "label > span"
+              ],
+              "html": "<span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".is-selected > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">美香</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".is-selected > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">美香</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".is-selected > .lineage-name-en"
+              ],
+              "html": "<span class=\"lineage-name-en\">Mei Xiang</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(3) > .gender-female.lineage-panda-node[data-node=\"true\"] > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">宝宝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(3) > .gender-female.lineage-panda-node[data-node=\"true\"] > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">宝宝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(3) > .gender-female.lineage-panda-node[data-node=\"true\"] > .lineage-name-en"
+              ],
+              "html": "<span class=\"lineage-name-en\">Bao Bao</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(4) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-avatar-wrap > .lineage-avatar-fallback"
+              ],
+              "html": "<span class=\"lineage-avatar-fallback\">贝贝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(4) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-name-zh"
+              ],
+              "html": "<span class=\"lineage-name-zh\">贝贝</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-node-anchor:nth-child(4) > .gender-male.lineage-panda-node[data-node=\"true\"] > .lineage-name-en"
+              ],
+              "html": "<span class=\"lineage-name-en\">Bei Bei</span>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".is-active"
+              ],
+              "html": "<button type=\"button\" class=\"is-active\" aria-label=\"切换到树状谱系视图\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                "button[aria-label=\"切换到环状谱系视图\"]"
+              ],
+              "html": "<button type=\"button\" class=\"\" aria-label=\"切换到环状谱系视图\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-zoom-readout"
+              ],
+              "html": "<div class=\"lineage-zoom-readout\">100<!-- -->%</div>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".lineage-center-btn"
+              ],
+              "html": "<button type=\"button\" class=\"lineage-center-btn\" aria-label=\"居中当前焦点\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                "h2"
+              ],
+              "html": "<h2>个体档案</h2>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                ".lineage-drawer-cover-empty"
+              ],
+              "html": "<div class=\"lineage-drawer-cover-empty\">美香</div>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                "h3"
+              ],
+              "html": "<h3>美香</h3>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-drawer-en"
+              ],
+              "html": "<p class=\"lineage-drawer-en\">Mei Xiang</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".lineage-drawer-intro"
+              ],
+              "html": "<p class=\"lineage-drawer-intro\">No biography yet.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "a[href$=\"mei-xiang\"]"
+              ],
+              "html": "<a href=\"/atlas/mei-xiang\">打开完整档案</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(1) > dt"
+              ],
+              "html": "<dt>出生日期</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(1) > dd"
+              ],
+              "html": "<dd>1998/07/22</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(2) > dt"
+              ],
+              "html": "<dt>性别</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(2) > dd"
+              ],
+              "html": "<dd>雌性</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                "div:nth-child(3) > dt"
+              ],
+              "html": "<dt>所在地点</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "div:nth-child(3) > dd"
+              ],
+              "html": "<dd>待补录</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "div:nth-child(4) > dt"
+              ],
+              "html": "<dt>父母记录</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "div:nth-child(4) > dd"
+              ],
+              "html": "<dd>待补录</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "div:nth-child(5) > dt"
+              ],
+              "html": "<dt>子代数量</dt>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "div:nth-child(5) > dd"
+              ],
+              "html": "<dd>4 只</dd>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "h4:nth-child(7)"
+              ],
+              "html": "<h4>子代</h4>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            },
+            {
+              "target": [
+                "a[href$=\"tai-shan\"]"
+              ],
+              "html": "<a href=\"/atlas/tai-shan\">泰山</a>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because element contains an image node"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "zh profile action is keyboard operable and remains accessible",
+      "state": "axe-keyboard-favorite-zh",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/zh/atlas/mei-xiang",
+      "timestamp": "2026-07-15T11:19:21.060Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                ".bg-\\[linear-gradient\\(135deg\\,rgba\\(63\\,125\\,71\\,0\\.11\\)\\,rgba\\(63\\,125\\,71\\,0\\.03\\)\\)\\] > .text-sm.text-\\[var\\(--muted\\)\\]"
+              ],
+              "html": "<p class=\"text-sm text-[var(--muted)]\">公开记录没有足够精度用于地理地图。这里采用不带坐标的路线示意。</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(1) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">史密森国家动物园</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(2) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">中国（国家级记录）</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "en profile action is keyboard operable and remains accessible",
+      "state": "axe-keyboard-favorite-en",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/en/atlas/mei-xiang",
+      "timestamp": "2026-07-15T11:19:24.289Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                ".bg-\\[linear-gradient\\(135deg\\,rgba\\(63\\,125\\,71\\,0\\.11\\)\\,rgba\\(63\\,125\\,71\\,0\\.03\\)\\)\\] > .text-sm.text-\\[var\\(--muted\\)\\]"
+              ],
+              "html": "<p class=\"text-sm text-[var(--muted)]\">The public record is not precise enough for a geographic map. This is a coordinate-free route diagram.</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(1) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">Smithsonian's National Zoo</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-center.relative:nth-child(2) > .sm\\:text-sm.mt-3.text-xs"
+              ],
+              "html": "<p class=\"mt-3 text-xs font-semibold sm:text-sm\">China (country-level record)</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "testTitle": "distribution controls remain accessible in their expanded mobile state",
+      "state": "axe-mobile-distribution-controls-open",
+      "url": "https://panda-atlas-web-staging.hao1012812011.workers.dev/global-distribution",
+      "timestamp": "2026-07-15T11:19:31.933Z",
+      "toolOptions": {
+        "runOnly": {
+          "type": "tag",
+          "values": [
+            "wcag2a",
+            "wcag2aa",
+            "wcag21a",
+            "wcag21aa",
+            "wcag22aa"
+          ]
+        },
+        "reporter": "v1"
+      },
+      "testEngine": {
+        "name": "axe-core",
+        "version": "4.12.1"
+      },
+      "testRunner": {
+        "name": "axe"
+      },
+      "testEnvironment": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36",
+        "windowWidth": 390,
+        "windowHeight": 844,
+        "orientationAngle": 0,
+        "orientationType": "landscape-primary"
+      },
+      "violations": [],
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "helpUrl": "https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright",
+          "nodes": [
+            {
+              "target": [
+                ".border-y"
+              ],
+              "html": "<div class=\"border-y border-[rgba(63,125,72,0.12)] bg-[rgba(250,248,243,0.9)] px-5 py-2 text-[14px] leading-6 text-[#5F6E61]\">正在准备地图视图</div>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".tracking-\\[0\\.18em\\].uppercase.text-\\[11px\\]"
+              ],
+              "html": "<p class=\"text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--atlas-muted-fg)]\">野生核心 + 国内 + 海外</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".text-\\[19px\\].leading-7.text-\\[\\#233126\\]"
+              ],
+              "html": "<p class=\"mt-1 text-[19px] leading-7 text-[#233126]\" style=\"font-family:var(--font-display)\">全球总览</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".right-6 > .border-\\[rgba\\(63\\,125\\,72\\,0\\.16\\)\\].px-0.h-10"
+              ],
+              "html": "<button class=\"inline-flex items-ce...\" type=\"button\">",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it is overlapped by another element"
+            },
+            {
+              "target": [
+                ".min-w-0 > .tracking-\\[0\\.18em\\].uppercase.font-semibold"
+              ],
+              "html": "<p class=\"text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--atlas-muted-fg)]\">地图控制</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".leading-\\[1\\.1\\]"
+              ],
+              "html": "<h2 class=\"mt-2 text-[24px] leading-[1.1] text-[#233126]\" style=\"font-family:var(--font-display)\">全球总览</h2>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".mt-2.leading-6.text-\\[13px\\]"
+              ],
+              "html": "<p class=\"mt-2 text-[13px] leading-6 text-[var(--atlas-muted-fg)]\">当前命中 <!-- -->14<!-- --> 个对象，快照 <!-- -->2026/03/05</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined because it partially overlaps other elements"
+            },
+            {
+              "target": [
+                ".space-y-3:nth-child(1) > div:nth-child(1) > .tracking-\\[0\\.16em\\].uppercase.font-semibold"
+              ],
+              "html": "<p class=\"text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]\">阅读模式</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".space-y-3:nth-child(1) > div:nth-child(1) > .leading-6.text-\\[13px\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[13px] leading-6 text-[var(--atlas-muted-fg)]\">中国是自然分布核心，国内圈养机构与海外合作节点以点状网络延展。点击地图对象后，右侧抽屉负责对象阅读，底部摘要负责变化速览。</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".grid-cols-2.grid.gap-2 > .border-\\[rgba\\(63\\,125\\,72\\,0\\.18\\)\\].bg-\\[rgba\\(63\\,125\\,71\\,0\\.08\\)\\].text-left > .text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold\">全球总览</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".grid-cols-2.grid.gap-2 > .border-\\[rgba\\(63\\,125\\,72\\,0\\.18\\)\\].bg-\\[rgba\\(63\\,125\\,71\\,0\\.08\\)\\].text-left > .leading-5.mt-1.text-\\[12px\\]"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5\">野生 + 国内 + 海外</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-\\[\\#5F6E61\\].text-left.rounded-\\[18px\\]:nth-child(2) > .text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold\">中国野生</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-\\[\\#5F6E61\\].text-left.rounded-\\[18px\\]:nth-child(2) > .leading-5.mt-1.text-\\[12px\\]"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5\">野生分布</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-\\[\\#5F6E61\\].text-left.rounded-\\[18px\\]:nth-child(3) > .text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold\">中国圈养</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-\\[\\#5F6E61\\].text-left.rounded-\\[18px\\]:nth-child(3) > .leading-5.mt-1.text-\\[12px\\]"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5\">国内机构</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-\\[\\#5F6E61\\].text-left.rounded-\\[18px\\]:nth-child(4) > .text-\\[14px\\].font-semibold"
+              ],
+              "html": "<p class=\"text-[14px] font-semibold\">海外圈养</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".text-\\[\\#5F6E61\\].text-left.rounded-\\[18px\\]:nth-child(4) > .leading-5.mt-1.text-\\[12px\\]"
+              ],
+              "html": "<p class=\"mt-1 text-[12px] leading-5\">海外合作</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".space-y-3:nth-child(2) > div:nth-child(1) > .tracking-\\[0\\.16em\\].uppercase.font-semibold"
+              ],
+              "html": "<p class=\"text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]\">搜索与筛选</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            },
+            {
+              "target": [
+                ".space-y-3:nth-child(2) > div:nth-child(1) > .leading-6.text-\\[13px\\].mt-1"
+              ],
+              "html": "<p class=\"mt-1 text-[13px] leading-6 text-[var(--atlas-muted-fg)]\">搜索区域、城市、机构或相关标签</p>",
+              "failureSummary": "Fix any of the following:\n  Element's background color could not be determined due to a background gradient"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

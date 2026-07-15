@@ -7,6 +7,8 @@ const defaultGatePath = new URL("../default.mjs", import.meta.url);
 const extendedGatePath = new URL("../extended.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
 const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
+const webProductionWranglerPath = new URL("../../../apps/web/wrangler.jsonc", import.meta.url);
+const webStagingWranglerPath = new URL("../../../apps/web/wrangler.staging.jsonc", import.meta.url);
 const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
 const rootPackagePath = new URL("../../../package.json", import.meta.url);
 
@@ -39,6 +41,44 @@ test("default gate includes golden dataset validation", async () => {
 
   assert.match(defaultGate, /test:golden-dataset/);
   assert.match(defaultGate, /Golden dataset contract/);
+});
+
+test("default gate records automated core WCAG checks", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+  const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));
+
+  assert.equal(
+    webPackage.scripts["test:accessibility"],
+    "playwright test --config playwright.accessibility.config.ts",
+  );
+  assert.match(defaultGate, /id: "web-accessibility"/);
+  assert.match(defaultGate, /dependsOn: \["web-build", "browser-runtime"\]/);
+  assert.match(defaultGate, /test:accessibility/);
+});
+
+test("Cloudflare staging deploy is isolated from production routes", async () => {
+  const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));
+  const productionConfig = JSON.parse(await readFile(webProductionWranglerPath, "utf8"));
+  const stagingConfig = JSON.parse(await readFile(webStagingWranglerPath, "utf8"));
+
+  assert.equal(
+    webPackage.scripts["deploy:cf:staging"],
+    "opennextjs-cloudflare build && wrangler deploy --config wrangler.staging.jsonc",
+  );
+  assert.notEqual(stagingConfig.name, productionConfig.name);
+  assert.equal(stagingConfig.name, "panda-atlas-web-staging");
+  assert.equal(stagingConfig.workers_dev, true);
+  assert.deepEqual(stagingConfig.routes, []);
+  for (const sharedKey of [
+    "main",
+    "compatibility_date",
+    "compatibility_flags",
+    "assets",
+    "observability",
+    "vars",
+  ]) {
+    assert.deepEqual(stagingConfig[sharedKey], productionConfig[sharedKey]);
+  }
 });
 
 test("default gate runs the Beta hard-gate preflight after the production build", async () => {
