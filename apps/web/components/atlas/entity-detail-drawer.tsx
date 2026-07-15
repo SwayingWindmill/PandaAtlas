@@ -66,7 +66,7 @@ export function EntityDetailDrawer({
         <div className="flex items-start justify-between gap-4 border-b border-[rgba(63,125,72,0.08)] px-5 py-5">
           <div className="min-w-0">
             <div className="flex flex-wrap gap-3 text-[12px] leading-5">
-              <span className="text-[#526354]">{detailTypeLabel(item)}</span>
+              <span className="text-[var(--atlas-muted-fg)]">{detailTypeLabel(item)}</span>
               <span className={`rounded-full border px-3 py-1 ${itemBadgeClass(item)}`}>{item.badge}</span>
             </div>
             <h2
@@ -75,7 +75,7 @@ export function EntityDetailDrawer({
             >
               {item.name}
             </h2>
-            <p className="mt-2 text-[13px] leading-6 text-[#526354]">
+            <p className="mt-2 text-[13px] leading-6 text-[var(--atlas-muted-fg)]">
               右侧抽屉只保留对象阅读，不再承载时间轴或最近变化。
             </p>
           </div>
@@ -102,7 +102,7 @@ export function EntityDetailDrawer({
                   { label: "更新时间", value: formatDateLabel(detailDate) }
                 ].map((meta) => (
                   <div key={meta.label} className="flex items-start justify-between gap-4 py-3">
-                    <p className="text-[12px] leading-5 text-[#526354]">{meta.label}</p>
+                    <p className="text-[12px] leading-5 text-[var(--atlas-muted-fg)]">{meta.label}</p>
                     <p className="max-w-[13rem] text-right text-[15px] leading-7 text-[#233126]">{meta.value}</p>
                   </div>
                 ))}
@@ -110,16 +110,16 @@ export function EntityDetailDrawer({
             </section>
 
             <section className="border-t border-[rgba(63,125,72,0.08)] pt-5">
-              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#526354]">简介</p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]">简介</p>
               <p className="mt-3 text-[15px] leading-7 text-[#5F6E61]">{item.description}</p>
             </section>
 
             <section className="border-t border-[rgba(63,125,72,0.08)] pt-5">
-              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#526354]">动态属性</p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]">动态属性</p>
               <div className="mt-3 divide-y divide-[rgba(63,125,72,0.08)]">
                 {facts.map((fact) => (
                   <div key={fact.label} className="py-3">
-                    <p className="text-[12px] leading-5 text-[#526354]">{fact.label}</p>
+                    <p className="text-[12px] leading-5 text-[var(--atlas-muted-fg)]">{fact.label}</p>
                     <p className="mt-1 text-[15px] leading-7 text-[#233126]">{fact.value}</p>
                     <p className="mt-1 text-[12px] leading-5 text-[#7B897C]">{fact.note}</p>
                   </div>
@@ -128,7 +128,7 @@ export function EntityDetailDrawer({
             </section>
 
             <section className="border-t border-[rgba(63,125,72,0.08)] pt-5">
-              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#526354]">相关标签</p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]">相关标签</p>
               <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-[12px] leading-5 text-[#2F6B3B]">
                 {item.tags.map((tag) => (
                   <span key={tag}>{tag}</span>

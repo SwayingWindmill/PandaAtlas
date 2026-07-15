@@ -67,7 +67,11 @@ export function MobileMapControls({
   const isLatest = selectedSnapshotDate === latestSnapshotDate;
 
   return (
-    <div className={cn("absolute inset-0 z-30 xl:hidden", open ? "pointer-events-auto" : "pointer-events-none")}>
+    <div
+      aria-hidden={!open}
+      inert={!open}
+      className={cn("absolute inset-0 z-30 xl:hidden", open ? "pointer-events-auto" : "pointer-events-none")}
+    >
       <button
         type="button"
         aria-label="关闭地图控制面板"
@@ -83,14 +87,14 @@ export function MobileMapControls({
       >
         <div className="flex items-start justify-between gap-4 border-b border-[rgba(63,125,72,0.08)] px-4 py-4">
           <div className="min-w-0">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#526354]">地图控制</p>
+            <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--atlas-muted-fg)]">地图控制</p>
             <h2
               className="mt-2 text-[24px] leading-[1.1] text-[#233126]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {modeMeta.label}
             </h2>
-            <p className="mt-2 text-[13px] leading-6 text-[#526354]">
+            <p className="mt-2 text-[13px] leading-6 text-[var(--atlas-muted-fg)]">
               当前命中 {resultCount} 个对象，快照 {formatDateLabel(selectedSnapshotDate)}
             </p>
           </div>
@@ -109,8 +113,8 @@ export function MobileMapControls({
         <div className="flex-1 space-y-5 overflow-y-auto px-4 py-4">
           <section className="space-y-3">
             <div>
-              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#526354]">阅读模式</p>
-              <p className="mt-1 text-[13px] leading-6 text-[#526354]">{modeMeta.description}</p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]">阅读模式</p>
+              <p className="mt-1 text-[13px] leading-6 text-[var(--atlas-muted-fg)]">{modeMeta.description}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -139,8 +143,8 @@ export function MobileMapControls({
 
           <section className="space-y-3">
             <div>
-              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#526354]">搜索与筛选</p>
-              <p className="mt-1 text-[13px] leading-6 text-[#526354]">搜索区域、城市、机构或相关标签</p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]">搜索与筛选</p>
+              <p className="mt-1 text-[13px] leading-6 text-[var(--atlas-muted-fg)]">搜索区域、城市、机构或相关标签</p>
             </div>
 
             <Input
@@ -152,7 +156,7 @@ export function MobileMapControls({
 
             <div className="grid grid-cols-2 gap-3">
               <label className="space-y-1.5">
-                <span className="text-[12px] text-[#526354]">区域</span>
+                <span className="text-[12px] text-[var(--atlas-muted-fg)]">区域</span>
                 <Select
                   value={regionFilter}
                   onChange={(event) => onRegionChange(event.target.value as AtlasRegionFilter)}
@@ -167,7 +171,7 @@ export function MobileMapControls({
               </label>
 
               <label className="space-y-1.5">
-                <span className="text-[12px] text-[#526354]">状态</span>
+                <span className="text-[12px] text-[var(--atlas-muted-fg)]">状态</span>
                 <Select
                   value={statusFilter}
                   onChange={(event) => onStatusChange(event.target.value as AtlasStatusFilter)}
@@ -182,7 +186,7 @@ export function MobileMapControls({
               </label>
 
               <label className="col-span-2 space-y-1.5">
-                <span className="text-[12px] text-[#526354]">机构类型</span>
+                <span className="text-[12px] text-[var(--atlas-muted-fg)]">机构类型</span>
                 <Select
                   value={typeFilter}
                   onChange={(event) => onTypeChange(event.target.value as AtlasInstitutionTypeFilter)}
@@ -201,8 +205,8 @@ export function MobileMapControls({
           <section className="space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#526354]">时间快照</p>
-                <p className="mt-1 text-[13px] leading-6 text-[#526354]">当前快照 {formatDateLabel(selectedSnapshotDate)}</p>
+                <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]">时间快照</p>
+                <p className="mt-1 text-[13px] leading-6 text-[var(--atlas-muted-fg)]">当前快照 {formatDateLabel(selectedSnapshotDate)}</p>
               </div>
 
               {!isLatest ? (
@@ -220,6 +224,7 @@ export function MobileMapControls({
             </div>
 
             <Select
+              aria-label="选择时间快照"
               value={selectedSnapshotDate}
               onChange={(event) => onSnapshotChange(event.target.value)}
               className="h-11 rounded-[18px] border-[rgba(47,92,69,0.08)] bg-[rgba(246,247,244,0.86)] shadow-none"
@@ -232,7 +237,7 @@ export function MobileMapControls({
             </Select>
           </section>
 
-          <section className="border-t border-[rgba(47,92,69,0.08)] pt-4 text-[12px] leading-6 text-[#526354]">
+          <section className="border-t border-[rgba(47,92,69,0.08)] pt-4 text-[12px] leading-6 text-[var(--atlas-muted-fg)]">
             <p>{ATLAS_DATA_STATUS}</p>
             <p className="mt-1">{ATLAS_DATA_SOURCE}</p>
           </section>

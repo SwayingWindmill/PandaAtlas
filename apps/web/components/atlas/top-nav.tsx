@@ -45,7 +45,7 @@ export function TopNav({
               >
                 大熊猫图鉴 / Panda Atlas
               </p>
-              <p className="truncate pt-1 text-[12px] leading-5 text-[#526354]">分布地图与保育图谱工作台</p>
+              <p className="truncate pt-1 text-[12px] leading-5 text-[var(--atlas-muted-fg)]">分布地图与保育图谱工作台</p>
             </div>
           </Link>
 
@@ -85,16 +85,16 @@ export function TopNav({
           ) : null}
 
           <div className="hidden items-center gap-3 border-l border-[rgba(63,125,72,0.12)] pl-4 lg:flex">
-            <Compass className="h-4 w-4 text-[#526354]" />
+            <Compass className="h-4 w-4 text-[var(--atlas-muted-fg)]" />
             <div className="leading-none">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#526354]">Current View</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--atlas-muted-fg)]">Current View</p>
               <p className="mt-1 text-[13px] text-[#233126]">{activeModeLabel}</p>
             </div>
           </div>
 
           <div className="hidden items-center gap-2 border-l border-[rgba(63,125,72,0.12)] pl-4 sm:flex">
             <span className="inline-flex h-2 w-2 rounded-full bg-[#2F6B3B]" />
-            <span className="text-[13px] leading-5 text-[#526354]">当前数据快照 {formatDateLabel(selectedSnapshotDate)}</span>
+            <span className="text-[13px] leading-5 text-[var(--atlas-muted-fg)]">当前数据快照 {formatDateLabel(selectedSnapshotDate)}</span>
           </div>
 
           {!isLatest ? (
@@ -108,8 +108,8 @@ export function TopNav({
             </Button>
           ) : (
             <div className="hidden items-center gap-2 border-l border-[rgba(63,125,72,0.12)] pl-4 md:flex">
-              <ShieldCheck className="h-4 w-4 text-[#526354]" />
-              <span className="text-[13px] leading-5 text-[#526354]">已是最新</span>
+              <ShieldCheck className="h-4 w-4 text-[var(--atlas-muted-fg)]" />
+              <span className="text-[13px] leading-5 text-[var(--atlas-muted-fg)]">已是最新</span>
             </div>
           )}
         </div>
