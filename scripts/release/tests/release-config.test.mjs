@@ -53,6 +53,19 @@ test("default gate runs the Beta hard-gate preflight after the production build"
   assert.match(defaultGate, /check:beta-hard-gates/);
 });
 
+test("default gate records the release recovery drill after locked API setup", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+
+  assert.equal(
+    rootPackage.scripts["drill:release-recovery"],
+    "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
+  );
+  assert.match(defaultGate, /id: "release-recovery-drill"/);
+  assert.match(defaultGate, /dependsOn: \["api-sync", "beta-hard-gates"\]/);
+  assert.match(defaultGate, /run_release_recovery_drill\.py/);
+});
+
 test("default gate separates D1 and HTTP Worker smoke", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const workerPackage = JSON.parse(await readFile(workerPackagePath, "utf8"));

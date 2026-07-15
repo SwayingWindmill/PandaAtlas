@@ -59,6 +59,7 @@ The gate writes:
 .release-gate/default.json
 .release-gate/default.md
 .release-gate/beta-hard-gates.json
+.release-gate/recovery-drill.json
 ```
 
 Extended verification also writes `extended.json` and `extended.md`.
@@ -89,6 +90,18 @@ The standalone command writes `.release-gate/beta-hard-gates.json` and exits non
 ```powershell
 npm run check:beta-hard-gates
 ```
+
+## Release recovery drill
+
+After the locked FastAPI environment and Beta hard-gate preflight pass, the default gate exercises atomic release switching, prior-version rollback, entity and whole-release withdrawal, cache invalidation, immutable history, and deterministic D1 reconstruction. The drill exits non-zero on any invariant failure and writes `.release-gate/recovery-drill.json`.
+
+Run it independently with:
+
+```powershell
+npm run drill:release-recovery
+```
+
+See [Immutable release recovery drill](recovery-drill.md) for the sequence, report fields, and the explicit boundary between clean-checkout cache/D1 evidence and a real staging-provider exercise.
 
 ## Clean-checkout reproduction
 

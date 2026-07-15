@@ -332,6 +332,20 @@ export async function runDefaultReleaseGate() {
           }),
       },
       {
+        id: "release-recovery-drill",
+        label: "Immutable release rollback and D1 rebuild drill",
+        dependsOn: ["api-sync", "beta-hard-gates"],
+        run: () =>
+          runCommand(
+            uv,
+            [...uvRunPrefix, "python", "scripts/run_release_recovery_drill.py"],
+            {
+              cwd: apiDir,
+              env: apiReleaseEnv,
+            },
+          ),
+      },
+      {
         id: "api-compile",
         label: "FastAPI compile",
         dependsOn: ["api-sync"],
