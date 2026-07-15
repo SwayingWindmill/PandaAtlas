@@ -103,7 +103,7 @@ export async function runCommand(command, args, options = {}) {
   });
 }
 
-async function runEnvironmentCheck(command, args, options = {}) {
+export async function runEnvironmentCheck(command, args, options = {}) {
   try {
     await runCommand(command, args, options);
   } catch (error) {

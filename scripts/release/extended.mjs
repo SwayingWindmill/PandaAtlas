@@ -9,6 +9,7 @@ import {
   releaseReportDir,
   runCommand,
   runDefaultReleaseGate,
+  runEnvironmentCheck,
   startApiServer,
   stopProcess,
   uvRunPrefix,
@@ -71,6 +72,7 @@ export async function runExtendedReleaseGate() {
   const uv = "uv";
   const runRealDbTests = envFlag("RUN_REAL_DB_TESTS");
   const runAdminImport = envFlag("RUN_ADMIN_IMPORT_SMOKE");
+  const runPostgresAttachmentRecovery = envFlag("RUN_POSTGRES_ATTACHMENT_RECOVERY");
 
   await runDefaultReleaseGate();
 
@@ -78,6 +80,22 @@ export async function runExtendedReleaseGate() {
     gate: "extended",
     reportDir: releaseReportDir,
     steps: [
+      {
+        id: "postgres-attachment-recovery",
+        label: "PostgreSQL and evidence-attachment recovery drill",
+        skipReason: runPostgresAttachmentRecovery
+          ? undefined
+          : "RUN_POSTGRES_ATTACHMENT_RECOVERY is not enabled",
+        run: () =>
+          runEnvironmentCheck(
+            uv,
+            [...uvRunPrefix, "python", "scripts/run_postgres_attachment_recovery_drill.py"],
+            {
+              cwd: apiDir,
+              env: apiReleaseEnv,
+            },
+          ),
+      },
       {
         id: "real-db-tests",
         label: "FastAPI real database integration tests",

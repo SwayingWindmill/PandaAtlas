@@ -4,6 +4,7 @@ import test from "node:test";
 
 const workflowPath = new URL("../../../.github/workflows/release-gate.yml", import.meta.url);
 const defaultGatePath = new URL("../default.mjs", import.meta.url);
+const extendedGatePath = new URL("../extended.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
 const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
 const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
@@ -64,6 +65,19 @@ test("default gate records the release recovery drill after locked API setup", a
   assert.match(defaultGate, /id: "release-recovery-drill"/);
   assert.match(defaultGate, /dependsOn: \["api-sync", "beta-hard-gates"\]/);
   assert.match(defaultGate, /run_release_recovery_drill\.py/);
+});
+
+test("extended gate can require the PostgreSQL and attachment recovery drill", async () => {
+  const extendedGate = await readFile(extendedGatePath, "utf8");
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+
+  assert.equal(
+    rootPackage.scripts["drill:postgres-attachment-recovery"],
+    "uv run --directory services/api --frozen --extra dev python scripts/run_postgres_attachment_recovery_drill.py",
+  );
+  assert.match(extendedGate, /RUN_POSTGRES_ATTACHMENT_RECOVERY/);
+  assert.match(extendedGate, /id: "postgres-attachment-recovery"/);
+  assert.match(extendedGate, /run_postgres_attachment_recovery_drill\.py/);
 });
 
 test("default gate separates D1 and HTTP Worker smoke", async () => {
