@@ -1,42 +1,48 @@
-# WCAG 2.2 AA human acceptance checklist
+# WCAG 2.2 AA 人工验收清单
 
-Release identifier: `PENDING`
+发布版本标识：`PENDING`
 
-Environment and build URL: `PENDING`
+验收环境与构建地址：`PENDING`
 
-Release owner: `PENDING`
+发布负责人：`PENDING`
 
-Overall human acceptance status: **PENDING — not approved for a WCAG 2.2 AA claim**
+人工验收总状态：**PENDING — 尚不具备声明符合 WCAG 2.2 AA 的条件**
 
-This checklist implements the human evidence requirements in
-[`wcag-2.2-aa-evidence-baseline.md`](./wcag-2.2-aa-evidence-baseline.md). Automated axe and Playwright results cannot change any row below from `PENDING`; a named human evaluator must operate the journey, record the environment and evidence, and sign the result.
+本清单用于落实 [`WCAG 2.2 AA 证据基线`](./wcag-2.2-aa-evidence-baseline.md)中的人工证据要求。axe 和 Playwright 的自动化结果不能把下表中的任何一项从 `PENDING` 改为通过；每项都必须由具名的人工验收人员亲自操作、记录环境与证据，并签署结论。
 
-## Current release blockers
+## 当前发布阻塞项
 
-- English distribution and lineage journeys are not currently available, so equivalent bilingual acceptance cannot be completed.
-- Automated checks cover representative initial desktop and 320 CSS px states, bilingual profile keyboard action, profile text resize, the expanded mobile distribution controls, and reduced motion. They do not yet exercise every search/filter, selection, drawer, loading, empty, error, map, or lineage interaction.
-- Human keyboard, real screen-reader, visual, text-resize, reflow, motion, map-equivalence, and lineage-equivalence sessions below have not been signed.
+- 英文版分布地图和谱系旅程目前尚未提供，因此无法完成等价的中英文双语验收。
+- 自动化检查已经覆盖具有代表性的桌面初始状态、320 CSS 像素状态、中英文档案键盘操作、档案文字放大、移动端地图控制面板展开状态和减少动态效果模式；但尚未覆盖全部搜索、筛选、选择、抽屉、加载、空结果、错误、地图和谱系交互状态。
+- 下表所列的键盘、真实读屏软件、视觉、文字缩放、页面重排、动态效果、地图等价信息和谱系等价信息验收均未完成人工签署。
 
-These gaps make the current decision **No-Go for a WCAG 2.2 AA claim** even when the automated core checks pass.
+即使自动化核心检查全部通过，只要上述缺口仍然存在，当前发布结论就是：**不允许声明符合 WCAG 2.2 AA（No-Go）**。
 
-## Required sessions
+## 必须完成的人工验收
 
-| Session | Locale and journey coverage | Required environment | Status | Human evaluator | Date | Evidence / defects |
+| 验收项目 | 语言与旅程范围 | 环境要求 | 状态 | 验收人员 | 日期 | 证据或缺陷 |
 | --- | --- | --- | --- | --- | --- | --- |
-| Keyboard and focus | Chinese and English: navigation, profile, distribution text path, lineage text path, filters, drawers and actions | OS, browser and versions recorded | PENDING | PENDING | PENDING | PENDING |
-| Chinese screen reader | Complete Chinese journeys, including announcements, reading order, focus recovery, dynamic updates, map facts and lineage facts | Real screen reader + supported browser + OS; all versions recorded | PENDING | PENDING | PENDING | PENDING |
-| English screen reader | Complete English journeys with the same coverage | Real screen reader + supported browser + OS; all versions recorded | PENDING | PENDING | PENDING | PENDING |
-| 200% text resize | Chinese and English complete journeys and all drawers/states | Desktop browser and viewport recorded | PENDING | PENDING | PENDING | PENDING |
-| 320 CSS px reflow | Chinese and English complete journeys and all drawers/states | Browser, viewport and device emulation/real device recorded | PENDING | PENDING | PENDING | PENDING |
-| Text spacing and visual review | Both locales: text spacing, contrast over imagery/gradients, colour-independent meaning, hover/focus content and focus indicators | Browser and display settings recorded | PENDING | PENDING | PENDING | PENDING |
-| Reduced motion | Both locales: navigation, map movement, page/drawer transitions, loading and interaction feedback | OS reduced-motion preference enabled; browser/OS versions recorded | PENDING | PENDING | PENDING | PENDING |
-| Distribution equivalence | Complete the distribution journey without seeing or manipulating the map; compare facts, filters, selection and navigation | Keyboard and real screen reader sessions referenced | PENDING | PENDING | PENDING | PENDING |
-| Lineage equivalence | Linearize lineage identity, direction, generations, uncertainty, selection and navigation without the graph | Keyboard and real screen reader sessions referenced | PENDING | PENDING | PENDING | PENDING |
+| 键盘与焦点 | 中文和英文：导航、档案、分布信息文字路径、谱系文字路径、筛选器、抽屉和各项操作 | 记录操作系统、浏览器及其版本 | PENDING | PENDING | PENDING | PENDING |
+| 中文读屏软件 | 完成全部中文旅程，检查控件播报、阅读顺序、焦点恢复、动态更新、地图事实和谱系事实 | 使用真实读屏软件、受支持浏览器和操作系统，并记录全部版本 | PENDING | PENDING | PENDING | PENDING |
+| 英文读屏软件 | 按相同范围完成全部英文旅程 | 使用真实读屏软件、受支持浏览器和操作系统，并记录全部版本 | PENDING | PENDING | PENDING | PENDING |
+| 200% 文字放大 | 完成中英文全部旅程，并覆盖所有抽屉和交互状态 | 记录桌面浏览器和视口信息 | PENDING | PENDING | PENDING | PENDING |
+| 320 CSS 像素页面重排 | 完成中英文全部旅程，并覆盖所有抽屉和交互状态 | 记录浏览器、视口，以及设备模拟或真实设备信息 | PENDING | PENDING | PENDING | PENDING |
+| 文字间距与视觉检查 | 两种语言均检查文字间距、图片或渐变背景上的对比度、不依赖颜色表达含义、悬停或聚焦内容以及焦点指示器 | 记录浏览器和显示设置 | PENDING | PENDING | PENDING | PENDING |
+| 减少动态效果 | 两种语言均检查导航、地图移动、页面或抽屉过渡、加载效果和交互反馈 | 开启操作系统的“减少动态效果”偏好，并记录浏览器和操作系统版本 | PENDING | PENDING | PENDING | PENDING |
+| 分布地图信息等价性 | 在不查看、不操作地图的情况下完成分布旅程，核对事实、筛选、选择和导航信息是否等价 | 引用对应的键盘和真实读屏软件验收记录 | PENDING | PENDING | PENDING | PENDING |
+| 谱系信息等价性 | 不依赖关系图，按线性内容理解个体身份、关系方向、世代、不确定状态、选择和导航 | 引用对应的键盘和真实读屏软件验收记录 | PENDING | PENDING | PENDING | PENDING |
 
-## Sign-off rule
+## 签署规则
 
-The release owner may change the overall status to `PASS` only when every required session is `PASS`, every row names its human evaluator and exact environment, retained evidence is linked, and no unresolved WCAG 2.2 Level A or AA failure remains. `BLOCKED`, `FAIL`, or `PENDING` in any row means **No-Go for a WCAG 2.2 AA claim**.
+只有在以下条件全部满足时，发布负责人才可以把人工验收总状态改为 `PASS`：
 
-Human accessibility evaluator signature: `PENDING`
+- 每个必须完成的验收项目均为 `PASS`；
+- 每行都填写了具名验收人员和准确的验收环境；
+- 每项都链接了留存证据；
+- 不存在尚未解决的 WCAG 2.2 A 级或 AA 级问题。
 
-Release owner signature: `PENDING`
+只要任意一项仍为 `BLOCKED`、`FAIL` 或 `PENDING`，结论就是：**不允许声明符合 WCAG 2.2 AA（No-Go）**。
+
+无障碍人工验收人员签名：`PENDING`
+
+发布负责人签名：`PENDING`
