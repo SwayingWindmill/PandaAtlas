@@ -22,6 +22,7 @@ MIGRATION = (
 )
 FIRST_VERSION = "2026.07.14.3"
 SECOND_VERSION = "2026.07.14.4"
+CHECKED_RELEASE_DIR = ROOT / "data" / "public-releases" / FIRST_VERSION
 DRILL_TIME = datetime(2026, 7, 15, 8, 0, tzinfo=UTC)
 STATE_TABLES = (
     "public_releases",
@@ -46,6 +47,34 @@ def _sha256(value: str) -> str:
 
 def _canonical_json(value: object) -> str:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+
+
+def _load_checked_release() -> PublicRelease:
+    manifest = json.loads((CHECKED_RELEASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    d1_sql = (CHECKED_RELEASE_DIR / "d1.sql").read_text(encoding="utf-8")
+    descriptor = manifest["files"]["d1.sql"]
+    _require(len(d1_sql.encode("utf-8")) == descriptor["bytes"], "checked D1 byte count drifted")
+    _require(_sha256(d1_sql) == descriptor["sha256"], "checked D1 SHA-256 drifted")
+    release_metadata = {
+        key: str(manifest[key])
+        for key in (
+            "dataset_release_version",
+            "public_schema_version",
+            "database_migration_version",
+            "publication_batch_id",
+            "projection_code_version",
+            "released_at",
+        )
+    }
+    _require(
+        release_metadata["dataset_release_version"] == FIRST_VERSION,
+        "checked release version does not match the drill baseline",
+    )
+    return PublicRelease(
+        release_metadata=release_metadata,
+        manifest=manifest,
+        files={"d1.sql": d1_sql},
+    )
 
 
 def _build_release(version: str, batch_id: str) -> PublicRelease:
@@ -98,33 +127,47 @@ def _switch_pointer(database: sqlite3.Connection, version: str, switched_at: str
     database.commit()
 
 
+def _append_operation(journal: list[dict[str, Any]], operation: str, **payload: str) -> None:
+    journal.append({"sequence": len(journal) + 1, "operation": operation, **payload})
+
+
+def _execute_release_inside_transaction(database: sqlite3.Connection, d1_sql: str) -> None:
+    statement = ""
+    for line in d1_sql.splitlines():
+        statement += f"{line}\n"
+        if not sqlite3.complete_statement(statement):
+            continue
+        normalized = statement.strip().lower()
+        if normalized not in {"begin immediate;", "commit;"}:
+            database.execute(statement)
+        statement = ""
+    _require(not statement.strip(), "D1 artifact ended with an incomplete SQL statement")
+
+
 def _exercise_atomic_switch(
     database: sqlite3.Connection,
     first: PublicRelease,
     second: PublicRelease,
+    journal: list[dict[str, Any]],
 ) -> None:
     database.executescript(first.files["d1.sql"])
     _require(_current_version(database) == FIRST_VERSION, "first release did not become active")
+    _append_operation(journal, "apply-release", dataset_release_version=FIRST_VERSION)
 
     try:
         database.execute("begin immediate")
-        metadata = second.release_metadata
-        values = (
-            metadata["dataset_release_version"],
-            metadata["public_schema_version"],
-            metadata["database_migration_version"],
-            metadata["publication_batch_id"],
-            metadata["projection_code_version"],
-            metadata["released_at"],
-            _canonical_json(second.manifest["licenses"]),
+        _execute_release_inside_transaction(database, second.files["d1.sql"])
+        _require(
+            database.execute(
+                "select dataset_release_version from public_release_pointer where singleton = 1"
+            ).fetchone()
+            == (SECOND_VERSION,),
+            "candidate pointer was not reached before failure injection",
         )
         database.execute(
-            "insert into public_releases values (?, ?, ?, ?, ?, ?, ?)",
-            values,
-        )
-        database.execute(
-            "insert into public_releases values (?, ?, ?, ?, ?, ?, ?)",
-            values,
+            "insert into public_releases select * from public_releases "
+            "where dataset_release_version = ?",
+            (SECOND_VERSION,),
         )
     except sqlite3.IntegrityError:
         database.rollback()
@@ -145,6 +188,7 @@ def _exercise_atomic_switch(
     )
 
     database.executescript(second.files["d1.sql"])
+    _append_operation(journal, "apply-release", dataset_release_version=SECOND_VERSION)
     _require(
         _current_version(database) == SECOND_VERSION, "second release did not switch atomically"
     )
@@ -154,20 +198,31 @@ def _exercise_atomic_switch(
     )
 
 
-def _exercise_rollback(database: sqlite3.Connection) -> None:
-    _switch_pointer(database, FIRST_VERSION, "2026-07-15T08:01:00Z")
+def _exercise_rollback(database: sqlite3.Connection, journal: list[dict[str, Any]]) -> None:
+    switched_at = "2026-07-15T08:01:00Z"
+    _switch_pointer(database, FIRST_VERSION, switched_at)
     _require(
         _current_version(database) == FIRST_VERSION, "rollback did not restore the prior release"
     )
+    _append_operation(
+        journal,
+        "switch-pointer",
+        dataset_release_version=FIRST_VERSION,
+        switched_at=switched_at,
+    )
 
 
-def _exercise_entity_withdrawal(database: sqlite3.Connection) -> tuple[str, str]:
+def _exercise_entity_withdrawal(
+    database: sqlite3.Connection, journal: list[dict[str, Any]]
+) -> tuple[str, str]:
     entity = database.execute(
         "select entity_type, entity_id from current_public_records "
         "where entity_type = 'api_pandas' order by entity_id limit 1"
     ).fetchone()
     _require(entity is not None, "no current entity was available for withdrawal")
     before = database.execute("select count(*) from current_public_records").fetchone()[0]
+    reason = "Recovery drill entity withdrawal"
+    withdrawn_at = "2026-07-15T08:02:00Z"
     database.execute(
         "insert into public_release_withdrawals "
         "(dataset_release_version, entity_type, entity_id, reason, withdrawn_at) "
@@ -176,25 +231,38 @@ def _exercise_entity_withdrawal(database: sqlite3.Connection) -> tuple[str, str]
             FIRST_VERSION,
             entity[0],
             entity[1],
-            "Recovery drill entity withdrawal",
-            "2026-07-15T08:02:00Z",
+            reason,
+            withdrawn_at,
         ),
     )
     database.commit()
     after = database.execute("select count(*) from current_public_records").fetchone()[0]
     _require(after == before - 1, "entity withdrawal did not remove exactly one current record")
     _require(_current_version(database) == FIRST_VERSION, "entity withdrawal hid the whole release")
+    _append_operation(
+        journal,
+        "withdraw-entity",
+        dataset_release_version=FIRST_VERSION,
+        entity_type=str(entity[0]),
+        entity_id=str(entity[1]),
+        reason=reason,
+        withdrawn_at=withdrawn_at,
+    )
     return str(entity[0]), str(entity[1])
 
 
-def _exercise_whole_release_withdrawal(database: sqlite3.Connection) -> None:
+def _exercise_whole_release_withdrawal(
+    database: sqlite3.Connection, journal: list[dict[str, Any]]
+) -> None:
+    reason = "Recovery drill whole-release withdrawal"
+    withdrawn_at = "2026-07-15T08:03:00Z"
     database.execute(
         "insert into public_release_withdrawals "
         "(dataset_release_version, reason, withdrawn_at) values (?, ?, ?)",
         (
             FIRST_VERSION,
-            "Recovery drill whole-release withdrawal",
-            "2026-07-15T08:03:00Z",
+            reason,
+            withdrawn_at,
         ),
     )
     database.commit()
@@ -202,6 +270,13 @@ def _exercise_whole_release_withdrawal(database: sqlite3.Connection) -> None:
     _require(
         database.execute("select count(*) from public_releases").fetchone() == (2,),
         "whole-release withdrawal rewrote release history",
+    )
+    _append_operation(
+        journal,
+        "withdraw-release",
+        dataset_release_version=FIRST_VERSION,
+        reason=reason,
+        withdrawn_at=withdrawn_at,
     )
 
 
@@ -223,70 +298,121 @@ def _exercise_cache_purge(cache_root: Path) -> tuple[int, int, int]:
     return before, after, duration_ms
 
 
-def _assert_immutable_history(database: sqlite3.Connection, history_before: str) -> str:
+def _expect_immutable_rejection(
+    database: sqlite3.Connection, statement: str, failure_message: str
+) -> None:
     try:
-        database.execute(
-            "update public_release_records set public_json = '{}' "
-            "where dataset_release_version = ?",
-            (SECOND_VERSION,),
-        )
+        database.execute(statement)
     except sqlite3.IntegrityError:
         database.rollback()
     else:
         database.rollback()
-        raise RecoveryDrillError("immutable release records accepted an update")
+        raise RecoveryDrillError(failure_message)
 
-    try:
-        database.execute("update public_release_withdrawals set reason = 'rewritten'")
-    except sqlite3.IntegrityError:
-        database.rollback()
-    else:
-        database.rollback()
-        raise RecoveryDrillError("append-only withdrawals accepted an update")
+
+def _assert_immutable_history(
+    database: sqlite3.Connection, history_before: str
+) -> tuple[str, str, str]:
+    append_only_before = _state_sha256(
+        database,
+        ("public_releases", "public_release_records", "public_release_withdrawals"),
+    )
+    mutations = (
+        (
+            "update public_releases set publication_batch_id = 'rewritten'",
+            "immutable release metadata accepted an update",
+        ),
+        ("delete from public_releases", "immutable release metadata accepted a delete"),
+        (
+            "update public_release_records set public_json = '{}'",
+            "immutable release records accepted an update",
+        ),
+        ("delete from public_release_records", "immutable release records accepted a delete"),
+        (
+            "update public_release_withdrawals set reason = 'rewritten'",
+            "append-only withdrawals accepted an update",
+        ),
+        (
+            "delete from public_release_withdrawals",
+            "append-only withdrawals accepted a delete",
+        ),
+    )
+    for statement, failure_message in mutations:
+        _expect_immutable_rejection(database, statement, failure_message)
 
     history_after = _state_sha256(database, ("public_releases", "public_release_records"))
     _require(history_after == history_before, "rollback or withdrawal rewrote immutable history")
-    return history_after
+    append_only_after = _state_sha256(
+        database,
+        ("public_releases", "public_release_records", "public_release_withdrawals"),
+    )
+    _require(
+        append_only_after == append_only_before,
+        "rejected mutations changed append-only operational history",
+    )
+    return history_after, append_only_before, append_only_after
 
 
 def _rebuild_database(
-    first: PublicRelease,
-    second: PublicRelease,
-    operational: sqlite3.Connection,
-) -> tuple[sqlite3.Connection, int]:
+    releases: dict[str, PublicRelease],
+    journal: list[dict[str, Any]],
+) -> tuple[sqlite3.Connection, int, int]:
     started = time.perf_counter_ns()
     rebuilt = _open_database()
-    rebuilt.executescript(first.files["d1.sql"])
-    rebuilt.executescript(second.files["d1.sql"])
-    pointer = operational.execute(
-        "select dataset_release_version, switched_at "
-        "from public_release_pointer where singleton = 1"
-    ).fetchone()
-    _switch_pointer(rebuilt, str(pointer[0]), str(pointer[1]))
-    withdrawals = operational.execute(
-        "select dataset_release_version, entity_type, entity_id, reason, withdrawn_at "
-        "from public_release_withdrawals order by id"
-    ).fetchall()
-    rebuilt.executemany(
-        "insert into public_release_withdrawals "
-        "(dataset_release_version, entity_type, entity_id, reason, withdrawn_at) "
-        "values (?, ?, ?, ?, ?)",
-        withdrawals,
-    )
-    rebuilt.commit()
+    replayed = 0
+    for item in journal:
+        operation = item["operation"]
+        if operation == "apply-release":
+            version = str(item["dataset_release_version"])
+            rebuilt.executescript(releases[version].files["d1.sql"])
+        elif operation == "switch-pointer":
+            _switch_pointer(
+                rebuilt,
+                str(item["dataset_release_version"]),
+                str(item["switched_at"]),
+            )
+        elif operation == "withdraw-entity":
+            rebuilt.execute(
+                "insert into public_release_withdrawals "
+                "(dataset_release_version, entity_type, entity_id, reason, withdrawn_at) "
+                "values (?, ?, ?, ?, ?)",
+                (
+                    item["dataset_release_version"],
+                    item["entity_type"],
+                    item["entity_id"],
+                    item["reason"],
+                    item["withdrawn_at"],
+                ),
+            )
+            rebuilt.commit()
+        elif operation == "withdraw-release":
+            rebuilt.execute(
+                "insert into public_release_withdrawals "
+                "(dataset_release_version, reason, withdrawn_at) values (?, ?, ?)",
+                (
+                    item["dataset_release_version"],
+                    item["reason"],
+                    item["withdrawn_at"],
+                ),
+            )
+            rebuilt.commit()
+        else:
+            raise RecoveryDrillError(f"unknown recovery journal operation: {operation}")
+        replayed += 1
     duration_ms = max(0, round((time.perf_counter_ns() - started) / 1_000_000))
-    return rebuilt, duration_ms
+    return rebuilt, duration_ms, replayed
 
 
 def run_recovery_drill(report_path: Path) -> dict[str, Any]:
     checks: list[dict[str, str]] = []
     evidence: dict[str, Any] = {"cache_mode": "local-filesystem-surrogate"}
-    metrics: dict[str, int] = {"recovery_point_loss_operations": 0}
+    metrics: dict[str, int] = {}
+    journal: list[dict[str, Any]] = []
     active_check = "setup"
     started_at = datetime.now(UTC)
 
     try:
-        first = _build_release(FIRST_VERSION, "recovery-drill-a")
+        first = _load_checked_release()
         second = _build_release(SECOND_VERSION, "recovery-drill-b")
         repeated_second = _build_release(SECOND_VERSION, "recovery-drill-b")
         _require(
@@ -296,26 +422,28 @@ def run_recovery_drill(report_path: Path) -> dict[str, Any]:
             FIRST_VERSION: _sha256(first.files["d1.sql"]),
             SECOND_VERSION: _sha256(second.files["d1.sql"]),
         }
+        evidence["checked_manifest_d1_sha256"] = first.manifest["files"]["d1.sql"]["sha256"]
 
         with tempfile.TemporaryDirectory(prefix="panda-recovery-drill-") as temporary:
             database = _open_database()
             active_check = "atomic-switch"
-            _exercise_atomic_switch(database, first, second)
+            _exercise_atomic_switch(database, first, second, journal)
+            evidence["atomic_failure_stage"] = "after-record-inserts-and-pointer-update"
             checks.append({"id": active_check, "status": "passed"})
             history_before = _state_sha256(database, ("public_releases", "public_release_records"))
             evidence["history_sha256_before"] = history_before
 
             active_check = "prior-version-rollback"
-            _exercise_rollback(database)
+            _exercise_rollback(database, journal)
             checks.append({"id": active_check, "status": "passed"})
 
             active_check = "entity-withdrawal"
-            entity_type, entity_id = _exercise_entity_withdrawal(database)
+            entity_type, entity_id = _exercise_entity_withdrawal(database, journal)
             evidence["withdrawn_entity"] = {"entity_type": entity_type, "entity_id": entity_id}
             checks.append({"id": active_check, "status": "passed"})
 
             active_check = "whole-release-withdrawal"
-            _exercise_whole_release_withdrawal(database)
+            _exercise_whole_release_withdrawal(database, journal)
             checks.append({"id": active_check, "status": "passed"})
 
             active_check = "cache-purge"
@@ -328,17 +456,31 @@ def run_recovery_drill(report_path: Path) -> dict[str, Any]:
             checks.append({"id": active_check, "status": "passed"})
 
             active_check = "immutable-history"
-            evidence["history_sha256_after"] = _assert_immutable_history(database, history_before)
+            (
+                evidence["history_sha256_after"],
+                evidence["append_only_history_sha256_before_mutation"],
+                evidence["append_only_history_sha256_after_mutation"],
+            ) = _assert_immutable_history(database, history_before)
             checks.append({"id": active_check, "status": "passed"})
 
             active_check = "deterministic-d1-rebuild"
             evidence["operational_state_sha256"] = _state_sha256(database)
-            rebuilt, rebuild_duration_ms = _rebuild_database(first, second, database)
+            releases = {FIRST_VERSION: first, SECOND_VERSION: second}
+            rebuilt, rebuild_duration_ms, replayed = _rebuild_database(releases, journal)
             evidence["rebuilt_state_sha256"] = _state_sha256(rebuilt)
+            evidence["operation_journal"] = journal
+            evidence["operation_journal_sha256"] = _sha256(_canonical_json(journal))
             metrics["d1_rebuild_duration_ms"] = rebuild_duration_ms
+            metrics["journal_operations"] = len(journal)
+            metrics["replayed_operations"] = replayed
+            metrics["recovery_point_loss_operations"] = len(journal) - replayed
             _require(
                 evidence["operational_state_sha256"] == evidence["rebuilt_state_sha256"],
                 "rebuilt D1 state differs from the exercised operational state",
+            )
+            _require(
+                metrics["recovery_point_loss_operations"] == 0,
+                "D1 rebuild did not replay every append-only operation",
             )
             checks.append({"id": active_check, "status": "passed"})
             rebuilt.close()

@@ -12,17 +12,17 @@ The default Release Gate runs the same drill after the locked FastAPI environmen
 
 ## Drill sequence
 
-The drill creates a temporary SQLite database from the production D1 versioned-release migration, builds two deterministic releases from the reviewed golden dataset, and performs these checks:
+The drill creates a temporary SQLite database from the production D1 versioned-release migration. It verifies and loads the checked-in `2026.07.14.3` D1 artifact against its manifest, then builds a deterministic `2026.07.14.4` candidate from the reviewed golden dataset and performs these checks:
 
 1. Apply the first release and confirm its pointer is active.
-2. Inject a failed second-release transaction and confirm neither the pointer nor partial candidate history changes.
+2. Insert the complete second release and switch its pointer inside a transaction, inject a late failure, then confirm neither the pointer nor partial candidate history changes.
 3. Apply the second release successfully and retain both immutable versions.
 4. Roll the singleton pointer back to the first version.
 5. Append one entity withdrawal and confirm only that current record disappears.
 6. Append a whole-release withdrawal and confirm public reads fail closed while both releases remain stored.
 7. Purge a temporary release-keyed filesystem cache and prove no stale entries remain.
 8. Attempt to mutate release records and withdrawal events and confirm the database rejects both changes.
-9. Rebuild a clean D1 database from the immutable release artifacts plus the append-only pointer/withdrawal journal, then compare the complete logical state checksum.
+9. Rebuild a clean D1 database by replaying every immutable-release, pointer-switch, and withdrawal operation from the ordered drill journal, then compare the complete logical state checksum.
 
 All databases and cache entries used by the clean-checkout drill are temporary and deleted after the report is written.
 
@@ -34,7 +34,7 @@ The drill writes:
 .release-gate/recovery-drill.json
 ```
 
-The report records the two release versions, every check status, immutable-history checksums, operational and rebuilt state checksums, the withdrawn entity, cache entry counts, measured cache-purge and D1-rebuild durations, and recovery-point loss. A passing deterministic rebuild reports zero lost operations.
+The report records the two release versions, the checked manifest checksum, the late-failure stage, every check status, immutable and append-only history checksums, the ordered operation journal and its checksum, operational and rebuilt state checksums, the withdrawn entity, cache entry counts, measured cache-purge and D1-rebuild durations, and recovery-point loss. A passing deterministic rebuild reports equal journal/replay counts and zero lost operations.
 
 Any failed invariant exits non-zero and fails the default Release Gate. CI uploads the report with the other `.release-gate/` evidence.
 
