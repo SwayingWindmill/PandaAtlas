@@ -40,6 +40,10 @@ Professional or internal fields that must never enter public projection, includi
 
 A registered evidence record that identifies a publisher, title, URL, publication date, verification date, language, and access state.
 
+## Evidence Attachment
+
+A restricted, versioned object linked to a Source. The Trusted Archive owns only its storage bucket/key/version, checksum, byte size, media type, and restricted publication state; object bytes remain in a private versioned attachment store. Evidence Attachments never enter Public Projection, and restoring one requires reconciling the database reference with the exact object checksum and size.
+
 ## Fact Assertion
 
 A source-backed statement about one field of one subject. Multiple assertions may coexist when evidence is tentative or conflicting. Assertions are retained as history and are never overwritten by a newer conclusion.

@@ -99,6 +99,7 @@ jobs:
     env:
       RUN_REAL_DB_TESTS: "1"
       RUN_ADMIN_IMPORT_SMOKE: "1"
+      RUN_POSTGRES_ATTACHMENT_RECOVERY: "1"
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ADMIN_API_TOKEN: ${{ secrets.ADMIN_API_TOKEN }}
     steps:

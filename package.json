@@ -28,6 +28,7 @@
     "check:public-api-boundary": "node scripts/check-public-api-boundary.mjs",
     "check:beta-hard-gates": "node scripts/release/check-beta-hard-gates.mjs",
     "drill:release-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
+    "drill:postgres-attachment-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_postgres_attachment_recovery_drill.py",
     "test:release-gate": "node --test scripts/release/tests/*.test.mjs",
     "build:public-release": "uv run --project services/api python services/api/scripts/build_public_release.py",
     "deploy:api:cf": "npm run deploy -w worker-api",

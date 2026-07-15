@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "approved_environment": {
+    "id": "disposable-local-postgis-synthetic-only",
+    "classification": "approved-disposable-local-non-production",
+    "postgres_image": "postgis/postgis:16-3.4",
+    "requirements": {
+      "synthetic_data_only": true,
+      "host_ports_published": false,
+      "existing_database_connections_allowed": false,
+      "container_removed_after_drill": true,
+      "provider_managed_recovery_claim_allowed": false,
+      "independent_failure_domain_claim_allowed": false
+    }
+  },
+  "recovery_objectives_seconds": {
+    "rpo": 900,
+    "critical_backend_rto": 14400
+  }
+}

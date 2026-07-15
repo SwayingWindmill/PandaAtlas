@@ -63,6 +63,8 @@ The gate writes:
 ```
 
 Extended verification also writes `extended.json` and `extended.md`.
+When enabled, PostgreSQL and attachment recovery also writes
+`postgres-attachment-recovery.json`.
 
 Every step has exactly one status:
 
@@ -126,7 +128,10 @@ $env:RUN_REAL_DB_TESTS="1"
 $env:DATABASE_URL="postgresql+psycopg://..."
 $env:RUN_ADMIN_IMPORT_SMOKE="1"
 $env:ADMIN_API_TOKEN="..."
+$env:RUN_POSTGRES_ATTACHMENT_RECOVERY="1"
 npm run release:extended
 ```
 
 Missing required variables are classified as `environment-blocked`. Disabled optional checks are classified as `skipped`.
+
+The PostgreSQL/attachment step is self-contained and ignores `DATABASE_URL`: it creates a disposable PostGIS container approved by the checked environment policy, applies the production migrations, performs a custom-format logical backup and restore, restores a safe synthetic attachment from a separate versioned filesystem copy, and writes sanitized measured evidence. The local copy is explicitly not an independent failure domain. Docker unavailability is classified as `environment-blocked`. See [PostgreSQL and evidence-attachment recovery drill](postgres-attachment-recovery.md) for its safety properties and the remaining provider-managed staging boundary.
