@@ -82,31 +82,3 @@ create index if not exists idx_parentage_child on parentage_assertions(child_id,
 create index if not exists idx_parentage_parent on parentage_assertions(parent_id, status);
 create index if not exists idx_residencies_panda on panda_residencies(panda_id, start_date desc);
 create index if not exists idx_event_participants_panda on domain_event_participants(panda_id);
-
-create trigger if not exists prevent_primary_residency_overlap_insert
-before insert on panda_residencies
-when new.residency_type = 'primary' and exists (
-  select 1 from panda_residencies existing
-  where existing.id <> new.id
-    and existing.panda_id = new.panda_id
-    and existing.residency_type = 'primary'
-    and new.start_date < coalesce(existing.end_date, '9999-12-31')
-    and existing.start_date < coalesce(new.end_date, '9999-12-31')
-)
-begin
-  select raise(abort, 'primary residency intervals overlap');
-end;
-
-create trigger if not exists prevent_primary_residency_overlap_update
-before update on panda_residencies
-when new.residency_type = 'primary' and exists (
-  select 1 from panda_residencies existing
-  where existing.id <> new.id
-    and existing.panda_id = new.panda_id
-    and existing.residency_type = 'primary'
-    and new.start_date < coalesce(existing.end_date, '9999-12-31')
-    and existing.start_date < coalesce(new.end_date, '9999-12-31')
-)
-begin
-  select raise(abort, 'primary residency intervals overlap');
-end;

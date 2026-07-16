@@ -147,6 +147,15 @@ test("default gate separates D1 and HTTP Worker smoke", async () => {
   );
 });
 
+test("Worker D1 migration scripts use the atomic trigger-safe runner", async () => {
+  const workerPackage = JSON.parse(await readFile(workerPackagePath, "utf8"));
+
+  assert.match(workerPackage.scripts["d1:migrate"], /apply-d1-migrations\.mjs/);
+  assert.match(workerPackage.scripts["d1:migrate:local"], /apply-d1-migrations\.mjs/);
+  assert.doesNotMatch(workerPackage.scripts["d1:migrate"], /wrangler d1 migrations apply/);
+  assert.doesNotMatch(workerPackage.scripts["d1:migrate:local"], /wrangler d1 migrations apply/);
+});
+
 test("web lockfile retains Linux native optional packages", async () => {
   const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));
   const packageLock = JSON.parse(await readFile(packageLockPath, "utf8"));

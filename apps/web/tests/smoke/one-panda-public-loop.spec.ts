@@ -92,7 +92,7 @@ test("exposes the full reading loop through sequential keyboard navigation", asy
 
   expect([...visited].some((target) => target.includes("#timeline"))).toBe(true);
   expect([...visited].some((target) => target.includes("/en/atlas/mei-xiang"))).toBe(true);
-  expect([...visited].some((target) => target.includes("/zh/atlas/tian-tian"))).toBe(true);
+  expect([...visited].some((target) => target.includes("/zh/atlas/tai-shan"))).toBe(true);
   expect([...visited].some((target) => target.startsWith("http"))).toBe(true);
   expect(visited.has("收藏美香")).toBe(true);
 });

@@ -23,6 +23,18 @@ test("classifies an isolated public style change as Level 1", () => {
   assert.equal(result.level, 1);
 });
 
+test("classifies public release migration and Cloudflare entry changes as Level 3", () => {
+  const result = classifyFrontendRisk([
+    "apps/web/cloudflare/worker-entry.mjs",
+    "apps/web/wrangler.staging.jsonc",
+    "infra/cloudflare/d1/migrations/0007a_public_releases_immutable_update.sql",
+    "scripts/release/apply-d1-migrations.mjs",
+  ]);
+
+  assert.equal(result.level, 3);
+  assert.ok(result.matches.every((match) => match.level === 3));
+});
+
 test("validates the issue 40 manifest and keeps the release blocked", async () => {
   const manifest = JSON.parse(
     await readFile(new URL("../../../data/frontend-evidence/issue-40.json", import.meta.url), "utf8"),
@@ -83,6 +95,7 @@ test("a GO decision must be bound to immutable build and deployment identities",
     await readFile(new URL("../../../data/frontend-evidence/issue-40.json", import.meta.url), "utf8"),
   );
   for (const item of Object.values(manifest.check_groups)) item.status = "PASS";
+  manifest.artifact.commit = "UNBOUND_WORKING_TREE";
   manifest.staging = { status: "PASS", detail: "Staging passed.", evidence: ["staging-run"] };
   manifest.human_signoff = { status: "PASS", detail: "Human sign-off passed.", evidence: ["human-record"] };
   manifest.release_decision = { status: "GO", detail: "All evidence passed." };

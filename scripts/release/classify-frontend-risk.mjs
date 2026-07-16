@@ -5,6 +5,17 @@ import { pathToFileURL } from "node:url";
 const RULES = [
   {
     level: 3,
+    reason: "Cloudflare public entry, versioned release schema or production migration semantics",
+    patterns: [
+      /^apps\/web\/cloudflare\//,
+      /^apps\/web\/wrangler(?:\.staging)?\.jsonc$/,
+      /^infra\/cloudflare\/d1\/migrations\//,
+      /^scripts\/release\/apply-d1-migrations\.mjs$/,
+      /^services\/worker-api\/package\.json$/,
+    ],
+  },
+  {
+    level: 3,
     reason: "Global shell, locale architecture, Public Content Envelope or delivery semantics",
     patterns: [
       /^apps\/web\/app\/\[locale\]\/layout\.tsx$/,

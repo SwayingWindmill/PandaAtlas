@@ -34,36 +34,6 @@ create table if not exists public_release_withdrawals (
   withdrawn_at text not null
 );
 
-create trigger if not exists public_releases_immutable_update
-before update on public_releases begin
-  select raise(abort, 'public releases are immutable');
-end;
-
-create trigger if not exists public_releases_immutable_delete
-before delete on public_releases begin
-  select raise(abort, 'public releases are immutable');
-end;
-
-create trigger if not exists public_release_records_immutable_update
-before update on public_release_records begin
-  select raise(abort, 'public release records are immutable');
-end;
-
-create trigger if not exists public_release_records_immutable_delete
-before delete on public_release_records begin
-  select raise(abort, 'public release records are immutable');
-end;
-
-create trigger if not exists public_release_withdrawals_immutable_update
-before update on public_release_withdrawals begin
-  select raise(abort, 'public release withdrawals are immutable');
-end;
-
-create trigger if not exists public_release_withdrawals_immutable_delete
-before delete on public_release_withdrawals begin
-  select raise(abort, 'public release withdrawals are immutable');
-end;
-
 create view if not exists current_public_release as
 select release.*
 from public_release_pointer pointer
