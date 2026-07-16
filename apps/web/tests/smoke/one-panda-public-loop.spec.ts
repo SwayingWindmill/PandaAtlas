@@ -65,6 +65,25 @@ test("renders the reviewed identity, family, footprint, evidence, no-image, and 
   await expect(page.getByTestId("timeline-list")).toContainText("来源发布日期");
 });
 
+test("renders partial, tentative, facility, source-link-only, and revision states truthfully", async ({ page }) => {
+  await page.goto("/zh/atlas/bei-bei");
+  await expect(page.getByTestId("fact-place")).toContainText("中国大熊猫保护研究中心卧龙神树坪基地");
+  await expect(page.getByText("当前时间线是已发布子集，不代表完整生平。")).toBeVisible();
+
+  await page.goto("/zh/atlas/bao-li");
+  const parentRelations = page.getByTestId("parent-relations");
+  await expect(parentRelations).toContainText("An An");
+  await expect(parentRelations).toContainText("暂定关系");
+  await expect(parentRelations).toContainText("仅有关系依赖记录，暂无完整档案");
+  await expect(parentRelations.getByRole("link", { name: "An An" })).toHaveCount(0);
+
+  await page.goto("/zh/atlas/tian-tian");
+  await expect(page.getByTestId("media-source-link-state")).toContainText("仅提供来源媒体链接");
+  await expect(page.getByTestId("media-source-link-state").getByRole("link")).toHaveCount(1);
+  await expect(page.getByTestId("revision-summary")).toContainText("版本标识可用，但当前语言的修订摘要尚未发布");
+  await expect(page.getByTestId("evidence-list")).toContainText("可访问");
+});
+
 test("keeps favorites local-only and keyboard operable", async ({ page }) => {
   await page.goto("/zh/atlas/mei-xiang");
 

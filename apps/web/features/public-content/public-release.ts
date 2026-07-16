@@ -1,8 +1,19 @@
 import {
+  TRUSTED_FACILITIES,
+  TRUSTED_LINEAGE_EDGES,
+  TRUSTED_LINEAGE_NODES,
   TRUSTED_PANDA_DETAILS,
   TRUSTED_PANDA_REFERENCES,
+  TRUSTED_PARENTAGE_ASSERTIONS,
 } from "@/lib/generated/trusted-identity-aliases";
-import type { PandaDetail, PublicSourceSummary } from "@/lib/types";
+import type {
+  PandaDetail,
+  PandaLineageRelationship,
+  PandaLineageResponse,
+  PublicFacilitySummary,
+  PublicParentageAssertionSummary,
+  PublicSourceSummary,
+} from "@/lib/types";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { publicLanguageTag } from "@/foundation/content/locales";
 
@@ -60,6 +71,9 @@ export interface PublicAtlasSearch {
 
 export interface PublicProfileRecord {
   panda: PandaDetail;
+  facilities: PublicFacilitySummary[];
+  lineage: PandaLineageResponse;
+  parentageAssertions: PublicParentageAssertionSummary[];
 }
 
 const canonicalDetails = [...TRUSTED_PANDA_DETAILS].sort((left, right) =>
@@ -73,6 +87,57 @@ function normalizeSearchTerm(value: string): string {
     .toLocaleLowerCase()
     .replace(/[\s_\-:]+/g, "")
     .trim();
+}
+
+function buildLineageRelationships(
+  nodes: PandaLineageResponse["nodes"],
+  edges: PandaLineageResponse["edges"],
+): PandaLineageRelationship[] {
+  const nodeIds = new Set(nodes.map((node) => node.id));
+  const parentsByChild = new Map<string, string[]>();
+  const childrenByParent = new Map<string, string[]>();
+  for (const edge of edges) {
+    if (!nodeIds.has(edge.parent_id) || !nodeIds.has(edge.child_id)) continue;
+    parentsByChild.set(edge.child_id, [...(parentsByChild.get(edge.child_id) ?? []), edge.parent_id]);
+    childrenByParent.set(edge.parent_id, [...(childrenByParent.get(edge.parent_id) ?? []), edge.child_id]);
+  }
+
+  const relationships = new Map<string, PandaLineageRelationship>();
+  const add = (relationship: PandaLineageRelationship) => {
+    const key = `${relationship.subject_id}:${relationship.kind}:${relationship.related_id}`;
+    if (!relationships.has(key)) relationships.set(key, relationship);
+  };
+
+  for (const subject of nodes) {
+    const parents = parentsByChild.get(subject.id) ?? [];
+    const children = childrenByParent.get(subject.id) ?? [];
+    for (const parentId of parents) {
+      add({ subject_id: subject.id, related_id: parentId, kind: "parent", path: [subject.id, parentId] });
+      for (const siblingId of childrenByParent.get(parentId) ?? []) {
+        if (siblingId !== subject.id) {
+          add({ subject_id: subject.id, related_id: siblingId, kind: "sibling", path: [subject.id, parentId, siblingId] });
+        }
+      }
+      for (const grandparentId of parentsByChild.get(parentId) ?? []) {
+        add({ subject_id: subject.id, related_id: grandparentId, kind: "grandparent", path: [subject.id, parentId, grandparentId] });
+      }
+    }
+    for (const childId of children) {
+      add({ subject_id: subject.id, related_id: childId, kind: "child", path: [subject.id, childId] });
+    }
+  }
+
+  return [...relationships.values()];
+}
+
+function trustedLineageFor(panda: PandaDetail): PandaLineageResponse {
+  return {
+    focus_id: panda.id,
+    nodes: TRUSTED_LINEAGE_NODES,
+    edges: TRUSTED_LINEAGE_EDGES,
+    relationships: buildLineageRelationships(TRUSTED_LINEAGE_NODES, TRUSTED_LINEAGE_EDGES),
+    meta: { ancestor_depth: 8, descendant_depth: 8 },
+  };
 }
 
 function releaseIdentity(detail: PandaDetail): PublicReleaseIdentity {
@@ -200,7 +265,12 @@ export function loadPublishedPandaProfile(
   if (!panda?.identity || !panda.public_revision || panda.sources.length === 0) return null;
 
   return buildEnvelope(
-    { panda },
+    {
+      panda,
+      facilities: TRUSTED_FACILITIES,
+      lineage: trustedLineageFor(panda),
+      parentageAssertions: TRUSTED_PARENTAGE_ASSERTIONS,
+    },
     [panda],
     locale,
     {

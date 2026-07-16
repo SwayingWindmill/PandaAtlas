@@ -66,11 +66,15 @@ test("renders reviewed source-link media without importing unlicensed imagery", 
   await expect(mediaState.getByRole("link")).toHaveAttribute("href", /^https:\/\//);
 });
 
-test("keeps Bao Li third-generation relationship paths in degraded API mode", async ({ page }) => {
+test("keeps Bao Li third-generation relationship paths inside the trusted release", async ({ page }) => {
   await page.goto("/en/atlas/bao-li");
 
-  const related = page.getByRole("heading", { name: "Continue exploring" }).locator("..");
-  await expect(related.getByRole("link", { name: /Bao Bao/ })).toBeVisible();
-  await expect(related.getByRole("link", { name: /Mei Xiang/ })).toBeVisible();
-  await expect(related.getByRole("link", { name: /Tian Tian/ })).toBeVisible();
+  const parents = page.getByTestId("parent-relations");
+  await expect(parents.getByRole("link", { name: "Bao Bao" })).toBeVisible();
+  await expect(parents).toContainText("An An");
+  await expect(parents).toContainText("Tentative relationship");
+
+  const grandparents = page.getByRole("heading", { name: "Grandparents" }).locator("..");
+  await expect(grandparents.getByRole("link", { name: "Mei Xiang" })).toBeVisible();
+  await expect(grandparents.getByRole("link", { name: "Tian Tian" })).toBeVisible();
 });

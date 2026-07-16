@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
+  buildPublishedParentageAssertions,
+  buildTrustedFacilities,
   buildTrustedIdentityReferences,
   generatedIdentityAliasesPath,
   normalizeGeneratedModule,
@@ -143,7 +145,21 @@ test("generated web identity aliases match the canonical golden dataset", async 
   assert.match(generated, /"meixiang"/);
   assert.match(generated, /"mei-xiang"/);
   assert.match(generated, /TRUSTED_PANDA_DETAILS/);
+  assert.match(generated, /TRUSTED_FACILITIES/);
+  assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
+  const facilities = buildTrustedFacilities(dataset);
+  assert.equal(
+    facilities.find((facility) => facility.id === "89f620b2-37d0-51ba-aafa-6844404a5b2c")
+      ?.names.find((name) => name.language === "zh-Hans")?.value,
+    "中国大熊猫保护研究中心卧龙神树坪基地",
+  );
+  const assertions = buildPublishedParentageAssertions(dataset);
+  assert.equal(
+    assertions.find((assertion) => assertion.id === "parent-bao-li-father")?.status,
+    "tentative",
+  );
+  assert.match(generated, /"profile_available": false/);
   assert.doesNotMatch(
     generated,
     /curator_notes|pending_content|content_hash|review_owner|restricted_excerpt/,

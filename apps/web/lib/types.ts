@@ -66,6 +66,32 @@ export interface PublicSourceSummary {
   access_state: string;
 }
 
+export type PublicParentageStatus = "confirmed" | "tentative" | "disputed" | "superseded";
+
+export interface PublicParentageAssertionSummary {
+  id: string;
+  child_id: string;
+  parent_id: string;
+  role: "father" | "mother";
+  status: PublicParentageStatus;
+  source_ids: string[];
+}
+
+export interface PublicFacilityName {
+  language: string;
+  value: string;
+  kind: string;
+}
+
+export interface PublicFacilitySummary {
+  id: string;
+  canonical_slug: string;
+  names: PublicFacilityName[];
+  country_code: string | null;
+  locality: string | null;
+  facility_type: string | null;
+}
+
 export interface LocalizedPublicContent {
   locale: string;
   summary: string;
@@ -114,6 +140,7 @@ export interface CurrentPlaceSummary {
   facility_id: string | null;
   coarse_location: string | null;
   status: "confirmed" | "confirmed_country_level" | "provisional";
+  last_verified_at: string | null;
 }
 
 export interface PandaResidencySummary extends CurrentPlaceSummary {
@@ -146,6 +173,11 @@ export interface PandaLineageNode extends PandaListItem {
   tags: string[];
   father_id: string | null;
   mother_id: string | null;
+}
+
+export interface PandaLineageNode {
+  record_tier?: string | null;
+  profile_available?: boolean;
 }
 
 export interface PandaLineageEdge {

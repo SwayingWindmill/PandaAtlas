@@ -15,6 +15,7 @@
   --atlas-muted-fg: #526354;
   --line: #dde2da;
   --accent: #3f7d48;
+  --accent-strong: #2f5c45;
   --accent-2: #c66b2f;
   --font-display: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
@@ -27,6 +28,7 @@
     --fg: #edf3ee;
     --muted: #b3c2b5;
     --accent: #78aa7e;
+    --accent-strong: #a4d3aa;
   }
 }
 

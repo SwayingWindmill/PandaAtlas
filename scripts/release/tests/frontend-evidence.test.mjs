@@ -44,6 +44,15 @@ test("validates the issue 40 manifest and keeps the release blocked", async () =
   assert.equal(computeFrontendReleaseDecision(manifest), "BLOCKED");
 });
 
+test("validates the issue 43 Slice 2 manifest and keeps the release blocked", async () => {
+  const manifest = JSON.parse(
+    await readFile(new URL("../../../data/frontend-evidence/issue-43.json", import.meta.url), "utf8"),
+  );
+
+  assert.deepEqual(validateFrontendEvidenceManifest(manifest), []);
+  assert.equal(computeFrontendReleaseDecision(manifest), "BLOCKED");
+});
+
 test("rejects a declared risk below the computed risk", async () => {
   const manifest = JSON.parse(
     await readFile(new URL("../../../data/frontend-evidence/issue-40.json", import.meta.url), "utf8"),

@@ -74,6 +74,50 @@ function buildSourceSummaries(dataset, sourceIds) {
     }));
 }
 
+export function buildTrustedFacilities(dataset) {
+  return (dataset.facilities ?? [])
+    .filter((facility) => facility.publication_status === "published")
+    .map((facility) => ({
+      id: facility.id,
+      canonical_slug: facility.public.canonical_slug,
+      names: (facility.public.names ?? []).map((name) => ({
+        language: name.language,
+        value: name.value,
+        kind: name.kind,
+      })),
+      country_code: facility.public.country_code ?? null,
+      locality: facility.public.locality ?? null,
+      facility_type: facility.public.facility_type ?? null,
+    }))
+    .sort((left, right) => left.canonical_slug.localeCompare(right.canonical_slug));
+}
+
+export function buildPublishedParentageAssertions(dataset) {
+  const publishedSourceIds = new Set(
+    (dataset.sources ?? [])
+      .filter((source) => source.publication_status === "published")
+      .map((source) => source.id),
+  );
+  return (dataset.parentage_assertions ?? [])
+    .filter(
+      (assertion) => assertion.publication_status === "published"
+        && (assertion.public?.source_ids ?? []).some(
+          (sourceId) => publishedSourceIds.has(sourceId),
+        ),
+    )
+    .map((assertion) => ({
+      id: assertion.id,
+      child_id: assertion.public.child_id,
+      parent_id: assertion.public.parent_id,
+      role: assertion.public.role,
+      status: assertion.public.status,
+      source_ids: (assertion.public.source_ids ?? []).filter(
+        (sourceId) => publishedSourceIds.has(sourceId),
+      ),
+    }))
+    .sort((left, right) => left.id.localeCompare(right.id));
+}
+
 export function buildTrustedPandaDetails(dataset) {
   const publishedSourceIds = new Set(
     (dataset.sources ?? [])
@@ -148,6 +192,7 @@ export function buildTrustedPandaDetails(dataset) {
           end_precision: residency.public.end_precision
             ?? (residency.public.end_date ? "day" : null),
           status: residency.public.status,
+          last_verified_at: residency.public.last_verified_at ?? null,
           source_ids: (residency.public.source_ids ?? []).filter(
             (sourceId) => publishedSourceIds.has(sourceId),
           ),
@@ -255,6 +300,7 @@ export function buildTrustedPandaDetails(dataset) {
               facility_id: currentResidency.facility_id,
               coarse_location: currentResidency.coarse_location,
               status: currentResidency.status,
+              last_verified_at: currentResidency.last_verified_at,
             }
           : null,
         residencies,
@@ -299,7 +345,14 @@ export function buildTrustedLineage(dataset) {
     current[`${assertion.public.role}_id`] = assertion.public.parent_id;
     parentFields.set(assertion.public.child_id, current);
   }
-  const nodes = (dataset.pandas ?? [])
+  const lineageRecords = [
+    ...(dataset.pandas ?? []),
+    ...(dataset.related_pandas ?? []),
+  ];
+  const profileRecordIds = new Set(
+    (dataset.pandas ?? []).filter(isPublicProfileRecord).map((record) => record.id),
+  );
+  const nodes = lineageRecords
     .filter((record) => record.publication_status === "published")
     .map((record) => {
       const birthDate = (dataset.facts ?? []).find(
@@ -323,6 +376,8 @@ export function buildTrustedLineage(dataset) {
         tags: ["trusted-archive", "golden-dataset"],
         father_id: parents.father_id,
         mother_id: parents.mother_id,
+        record_tier: record.public.record_tier ?? null,
+        profile_available: profileRecordIds.has(record.id),
       };
     });
   const nodeIds = new Set(nodes.map((node) => node.id));
@@ -345,16 +400,20 @@ export function normalizeGeneratedModule(value) {
 export function renderTrustedIdentityAliasModule(dataset) {
   const references = buildTrustedIdentityReferences(dataset);
   const details = buildTrustedPandaDetails(dataset);
+  const facilities = buildTrustedFacilities(dataset);
+  const parentageAssertions = buildPublishedParentageAssertions(dataset);
   const lineage = buildTrustedLineage(dataset);
   return `// Generated from contracts/golden-dataset/mei-xiang-family.v1.json.\n`
     + `// Run npm run generate:trusted-identity-aliases after changing trusted identity data.\n\n`
-    + `import type { PandaDetail, PandaLineageEdge, PandaLineageNode } from \"@/lib/types\";\n\n`
+    + `import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicParentageAssertionSummary } from \"@/lib/types\";\n\n`
     + `export interface TrustedPandaReference {\n`
     + `  id: string;\n`
     + `  slug: string;\n`
     + `}\n\n`
     + `export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaReference>> = ${JSON.stringify(references, null, 2)};\n\n`
     + `export const TRUSTED_PANDA_DETAILS: PandaDetail[] = ${JSON.stringify(details, null, 2)};\n`
+    + `\nexport const TRUSTED_FACILITIES: PublicFacilitySummary[] = ${JSON.stringify(facilities, null, 2)};\n`
+    + `\nexport const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = ${JSON.stringify(parentageAssertions, null, 2)};\n`
     + `\nexport const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = ${JSON.stringify(lineage.nodes, null, 2)};\n`
     + `\nexport const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = ${JSON.stringify(lineage.edges, null, 2)};\n`;
 }
