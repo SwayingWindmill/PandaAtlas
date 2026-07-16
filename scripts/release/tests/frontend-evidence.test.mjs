@@ -96,6 +96,9 @@ test("a GO decision must be bound to immutable build and deployment identities",
   );
   for (const item of Object.values(manifest.check_groups)) item.status = "PASS";
   manifest.artifact.commit = "UNBOUND_WORKING_TREE";
+  manifest.artifact.build_checksum = null;
+  manifest.artifact.frontend_deployment_id = null;
+  manifest.artifact.api_deployment_id = null;
   manifest.staging = { status: "PASS", detail: "Staging passed.", evidence: ["staging-run"] };
   manifest.human_signoff = { status: "PASS", detail: "Human sign-off passed.", evidence: ["human-record"] };
   manifest.release_decision = { status: "GO", detail: "All evidence passed." };

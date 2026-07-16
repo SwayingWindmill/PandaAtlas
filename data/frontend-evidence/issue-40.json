@@ -2,10 +2,10 @@
   "schema_version": 1,
   "issue": 40,
   "artifact": {
-    "commit": "6fed399b5cb9c97dbde60a85cf2e40c76877a6f1",
-    "build_checksum": null,
-    "frontend_deployment_id": null,
-    "api_deployment_id": null
+    "commit": "99ef1c9c6b711a612457e2e16d150c4e0a4bd661",
+    "build_checksum": "sha256:126d21d94d21d32505b219eb553b3acab04582beb0b045a98a91e61e3bef126c",
+    "frontend_deployment_id": "3eda6d1e-69a0-4e68-8cb8-d19bfd833b46",
+    "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
   },
   "risk": {
     "declared_level": 3,
@@ -14,107 +14,116 @@
       "Global Product Shell",
       "locale architecture",
       "Public Content Envelope and delivery semantics",
-      "canonical public route migration"
+      "canonical public route migration",
+      "Cloudflare public entry and versioned D1 migration semantics"
     ]
   },
   "public_release": {
     "id": "2026.07.14.3",
     "schema_version": "1.0.0",
     "projection_version": "public-release-v2",
-    "delivery": "versioned-local-public-release",
+    "delivery": "versioned-public-release",
     "delivery_state": "cached"
   },
   "check_groups": {
     "reproducibility": {
       "status": "PASS",
-      "detail": "GitHub Actions completed the pinned default Release Gate from a clean checkout on Linux and Windows for implementation commit 6fed399; both jobs passed and uploaded immutable reports with recorded SHA-256 digests.",
+      "detail": "GitHub Actions completed the pinned default Release Gate from a clean checkout on Linux and Windows for implementation commit 99ef1c9; both jobs passed, verified that the gate did not modify tracked files, and uploaded immutable reports with recorded SHA-256 digests.",
       "evidence": [
-        "Release Gate run 29490274913: https://github.com/SwayingWindmill/PandaAtlas/actions/runs/29490274913",
-        "Linux job 87594438726: PASS; artifact 8372171907 release-gate-linux; sha256:56864e65d81b634eeb9b3275d97954a6072c631c25ab3fd6767eb0f604d6b0d4",
-        "Windows job 87594438719: PASS; artifact 8372260857 release-gate-windows; sha256:1584bbd8be0ff9d6cf322c2acd7378713f258befb1a6681297f52d1d50572d4f"
+        "Release Gate run 29498808199: https://github.com/SwayingWindmill/PandaAtlas/actions/runs/29498808199",
+        "Linux job 87622202183: PASS; artifact 8375613717 release-gate-linux; sha256:60ea4c8f5ed873294d9962d3915302ec24a89ef9a006b549cd400e8321a06a59",
+        "Windows job 87622202179: PASS; artifact 8375658774 release-gate-windows; sha256:2771a3a06e166147ee025af4c72dda3bacdfac605826b248c146b225dc923e17"
       ]
     },
     "static_correctness": {
       "status": "PASS",
-      "detail": "Web lint, TypeScript typecheck, production build, trust/privacy preflight and release-gate tests pass locally and in the Linux and Windows clean-checkout Release Gate.",
+      "detail": "Web lint, TypeScript typecheck, production build, trust/privacy preflight, release-gate tests, Worker checks, FastAPI tests and the immutable release recovery drill pass locally and in the Linux and Windows clean-checkout Release Gate.",
       "evidence": [
-        "npm run lint -w web",
-        "npm run typecheck -w web",
-        "npm run build -w web",
-        "npm run test:release-gate: 35 passed",
-        "GitHub Actions run 29490274913 Linux and Windows default gates: PASS"
+        "npm run test:release-gate: 44 passed",
+        "uv run --directory services/api --frozen --extra dev pytest -q: 133 passed, 12 skipped",
+        "uv run --directory services/api --frozen --extra dev ruff check .: PASS",
+        "release recovery drill: atomic switch, rollback, withdrawal, immutable history and deterministic D1 rebuild PASS",
+        "GitHub Actions run 29498808199 Linux and Windows default gates: PASS"
       ]
     },
     "public_contracts": {
       "status": "PASS",
-      "detail": "Localized search, trusted identity resolution, language-aware canonical redirects, query preservation, unreviewed legacy 404 and versioned cached delivery behavior pass the complete browser smoke suite.",
+      "detail": "Localized search, trusted identity resolution, language-aware canonical redirects, query preservation, unreviewed legacy 404 behavior, malformed-path fail-closed handling and versioned public delivery pass the complete browser and release-gate suites.",
       "evidence": [
         "apps/web/tests/smoke/localized-trust-spine.spec.ts",
         "apps/web/tests/smoke/critical-public-journeys.spec.ts",
         "apps/web/tests/smoke/one-panda-public-loop.spec.ts",
         "apps/web/tests/smoke/seven-panda-expansion.spec.ts",
-        "npm run smoke -w web: 28 passed on Windows Microsoft Edge"
+        "apps/web/cloudflare/request-guard.mjs",
+        "Staging browser suite: 28 passed"
       ]
     },
     "media_and_content_truth": {
       "status": "PASS",
-      "detail": "The new routes expose only TRUSTED_PANDA_DETAILS, label the versioned local release cached, distinguish complete and partial coverage, preserve fact status/precision/sources, render no-media states and do not expose generated legacy profiles.",
+      "detail": "Public routes expose only reviewed trusted details, identify the versioned release and delivery state, distinguish complete and partial coverage, preserve fact status, precision and sources, render no-media states and do not expose generated legacy profiles.",
       "evidence": [
         "apps/web/features/public-content/public-release.ts",
         "apps/web/features/profile/profile-page-view-model.ts",
         "apps/web/app/atlas/[slug]/page.tsx",
-        "apps/web/components/atlas/trusted-panda-profile.tsx"
+        "apps/web/components/atlas/trusted-panda-profile.tsx",
+        "Staging /zh/atlas/mei-xiang and /en/atlas/mei-xiang browser assertions: PASS"
       ]
     },
     "browser_journeys": {
       "status": "PASS",
-      "detail": "The complete 28-test production browser suite passes with the pinned Playwright Chromium runtime in both Linux and Windows clean checkouts; local Edge runs also cover bilingual, no-JavaScript, mobile and keyboard journeys.",
+      "detail": "The complete 28-test production browser suite passes in both Linux and Windows clean checkouts and against the immutable Cloudflare Staging deployment; coverage includes bilingual, no-JavaScript, mobile, keyboard, zoom, fallback and canonical-route journeys.",
       "evidence": [
-        "GitHub Actions run 29490274913: Linux Default gate PASS",
-        "GitHub Actions run 29490274913: Windows Default gate PASS",
-        "release-gate-linux artifact 8372171907",
-        "release-gate-windows artifact 8372260857",
-        "npm run smoke -w web: 28 passed locally on Windows Microsoft Edge",
-        "npm run smoke:production -w web: 28 passed locally on Windows Microsoft Edge"
+        "GitHub Actions run 29498808199: Linux Default gate PASS",
+        "GitHub Actions run 29498808199: Windows Default gate PASS",
+        "Staging URL https://panda-atlas-web-staging.hao1012812011.workers.dev: 28/28 PASS",
+        "Cloudflare frontend Version ID 3eda6d1e-69a0-4e68-8cb8-d19bfd833b46"
       ]
     },
     "automated_accessibility": {
       "status": "PASS",
-      "detail": "Dynamic axe WCAG A/AA scans, retained incomplete-result annotations, keyboard behavior, 320x800 reflow, bilingual language declaration, 200-percent text resizing and reduced-motion assertions pass in pinned Playwright Chromium on Linux and Windows clean checkouts.",
+      "detail": "Dynamic axe WCAG A/AA scans, retained incomplete-result annotations, keyboard behavior, 320x800 reflow, bilingual language declaration, 200-percent text resizing, expanded mobile controls and reduced-motion assertions pass in clean-checkout CI and against the immutable Staging deployment.",
       "evidence": [
-        "GitHub Actions run 29490274913 Linux and Windows Automated core WCAG checks: PASS",
-        "release-gate-linux artifact 8372171907 includes accessibility-automated.json",
-        "release-gate-windows artifact 8372260857 includes accessibility-automated.json",
-        "npm run test:accessibility -w web: 14 passed locally"
+        "GitHub Actions run 29498808199 Linux and Windows Automated core WCAG checks: PASS",
+        "release-gate-linux artifact 8375613717 includes accessibility-automated.json",
+        "release-gate-windows artifact 8375658774 includes accessibility-automated.json",
+        "Staging automated accessibility suite: 14/14 PASS"
       ]
     },
     "visual_regression": {
       "status": "BLOCKED",
-      "detail": "Required deterministic Linux Chromium 390x844 and 1440x900 screenshot baselines and semantic visual review are not yet recorded.",
+      "detail": "Required deterministic Linux Chromium 390x844 and 1440x900 screenshot baselines, diff artifacts and named semantic visual review are not yet recorded.",
       "evidence": []
     },
     "performance_budgets": {
       "status": "PASS",
-      "detail": "The production build reports 103 kB shared First Load JS, 107 kB localized Home/Atlas and 108 kB trusted Profile, all within the Slice 1 limits.",
+      "detail": "The final Cloudflare production build reports 103 kB shared First Load JS, 107 kB localized Home and Atlas, 108 kB trusted Profile, 128 kB Lineage and 143 kB Global Distribution, all within the approved Slice 1 route budgets.",
       "evidence": [
         "shared First Load JS: 103 kB (budget 110 kB)",
         "localized Home and Atlas: 107 kB (budgets 140 kB and 170 kB)",
-        "trusted Profile: 108 kB (budget 170 kB)"
+        "trusted Profile: 108 kB (budget 170 kB)",
+        "Lineage: 128 kB and Global Distribution: 143 kB (complex-route budget 220 kB)"
       ]
     }
   },
   "staging": {
-    "status": "BLOCKED",
-    "detail": "No immutable Staging deployment is currently bound to a commit, build checksum, API deployment and Public Release identity.",
-    "evidence": []
+    "status": "PASS",
+    "detail": "Implementation commit 99ef1c9 is bound to an immutable Cloudflare frontend Version ID and content checksum, the public API is bound to its active Worker Version ID and release headers, and the complete browser and automated accessibility suites pass against the deployed Staging URL.",
+    "evidence": [
+      "Commit 99ef1c9c6b711a612457e2e16d150c4e0a4bd661",
+      "Frontend Version ID 3eda6d1e-69a0-4e68-8cb8-d19bfd833b46",
+      "OpenNext bundle sha256:126d21d94d21d32505b219eb553b3acab04582beb0b045a98a91e61e3bef126c across 1391 files",
+      "API Worker Version ID 7a2814ed-002f-4f0b-b54c-13a27f0db4af at 100 percent traffic",
+      "API response headers: dataset 2026.07.14.3; public schema 1.0.0; database migration 0007",
+      "Staging browser suite 28/28 PASS; automated accessibility suite 14/14 PASS"
+    ]
   },
   "human_signoff": {
     "status": "BLOCKED",
-    "detail": "Named bilingual, keyboard, zoom, visual, Edge plus Narrator and Firefox plus NVDA sign-off is not yet recorded.",
+    "detail": "Named bilingual, keyboard, real 200-percent browser zoom, visual, Edge plus Narrator and Firefox plus NVDA sign-off is not yet recorded.",
     "evidence": []
   },
   "release_decision": {
     "status": "BLOCKED",
-    "detail": "Clean-checkout automation is now complete for implementation commit 6fed399, but Level 3 immutable Staging identity, deterministic visual evidence and named human bilingual/accessibility sign-off remain incomplete. This manifest must not be interpreted as a release PASS."
+    "detail": "Clean-checkout automation and immutable Staging verification are complete for commit 99ef1c9, but Level 3 deterministic screenshot evidence and named bilingual, visual and assistive-technology human sign-off remain incomplete. This manifest must not be interpreted as a release GO."
   }
 }
