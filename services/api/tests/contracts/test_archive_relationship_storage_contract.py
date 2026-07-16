@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from app.projection.d1_migrations import (
+    D1_RELATIONSHIP_MIGRATIONS,
+    read_d1_migration_bundle,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[4]
 POSTGRES_MIGRATION = (
     REPO_ROOT / "infra/supabase/migrations/0004_lineage_residency_events.sql"
-)
-D1_MIGRATION = (
-    REPO_ROOT / "infra/cloudflare/d1/migrations/0003_lineage_residency_events.sql"
 )
 D1_SCHEMA = REPO_ROOT / "infra/cloudflare/d1/schema.sql"
 POSTGRES_SEED = (
@@ -54,7 +56,9 @@ def test_postgres_models_reviewed_relationships_and_non_overlapping_residency() 
 
 
 def test_d1_projection_has_public_relationship_residency_and_event_tables() -> None:
-    migration = normalized_sql(D1_MIGRATION)
+    migration = " ".join(
+        read_d1_migration_bundle(REPO_ROOT, D1_RELATIONSHIP_MIGRATIONS).lower().split()
+    )
     schema = normalized_sql(D1_SCHEMA)
 
     for table in REQUIRED_TABLES:

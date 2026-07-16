@@ -13,13 +13,15 @@ from pathlib import Path
 from typing import Any
 
 from app.data.golden_dataset import load_golden_dataset
+from app.projection.d1_migrations import (
+    D1_PUBLIC_RELEASE_MIGRATIONS,
+    read_d1_migration_bundle,
+)
 from app.projection.public_release import PublicRelease, PublicReleaseInput, build_public_release
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REPORT = ROOT / ".release-gate" / "recovery-drill.json"
-MIGRATION = (
-    ROOT / "infra" / "cloudflare" / "d1" / "migrations" / "0005_versioned_public_releases.sql"
-)
+MIGRATION_SQL = read_d1_migration_bundle(ROOT, D1_PUBLIC_RELEASE_MIGRATIONS)
 FIRST_VERSION = "2026.07.14.3"
 SECOND_VERSION = "2026.07.14.4"
 CHECKED_RELEASE_DIR = ROOT / "data" / "public-releases" / FIRST_VERSION
@@ -93,7 +95,7 @@ def _build_release(version: str, batch_id: str) -> PublicRelease:
 
 def _open_database() -> sqlite3.Connection:
     database = sqlite3.connect(":memory:")
-    database.executescript(MIGRATION.read_text(encoding="utf-8"))
+    database.executescript(MIGRATION_SQL)
     return database
 
 

@@ -11,6 +11,10 @@ from pathlib import Path
 import pytest
 
 from app.data.golden_dataset import load_golden_dataset
+from app.projection.d1_migrations import (
+    D1_PUBLIC_RELEASE_MIGRATIONS,
+    read_d1_migration_bundle,
+)
 from app.projection.public_release import (
     ProjectionCompatibilityError,
     ProjectionSecurityError,
@@ -241,9 +245,10 @@ def test_reviewed_record_state_builds_a_complete_runtime_snapshot() -> None:
     assert rebuilt_api["habitats"]["features"]
     assert rebuilt_api["snapshots"]
     database = sqlite3.connect(":memory:")
-    migration = (
-        ROOT / "infra" / "cloudflare" / "d1" / "migrations" / "0005_versioned_public_releases.sql"
-    ).read_text(encoding="utf-8")
+    migration = read_d1_migration_bundle(
+        ROOT,
+        D1_PUBLIC_RELEASE_MIGRATIONS,
+    )
     database.executescript(migration)
     database.executescript(release.files["d1.sql"])
 
@@ -317,9 +322,10 @@ def test_d1_projection_is_immutable_and_switches_only_the_single_pointer() -> No
 
 def test_d1_release_can_roll_back_and_withdraw_without_rewriting_history() -> None:
     database = sqlite3.connect(":memory:")
-    migration = (
-        ROOT / "infra" / "cloudflare" / "d1" / "migrations" / "0005_versioned_public_releases.sql"
-    ).read_text(encoding="utf-8")
+    migration = read_d1_migration_bundle(
+        ROOT,
+        D1_PUBLIC_RELEASE_MIGRATIONS,
+    )
     database.executescript(migration)
 
     first = build_public_release(_release_input())
