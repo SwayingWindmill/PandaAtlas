@@ -197,6 +197,7 @@ function resolvePlaywrightEnv() {
   const env = {
     PLAYWRIGHT_WEB_SERVER_MODE: "production",
     PLAYWRIGHT_REUSE_EXISTING_SERVER: "0",
+    PLAYWRIGHT_NEXT_DIST_DIR: ".next",
   };
 
   if (process.env.PLAYWRIGHT_BROWSER_CHANNEL) {
