@@ -1,0 +1,19 @@
+:root {
+  --pa-color-canvas: #f3f0e8;
+  --pa-color-surface: #fffdf7;
+  --pa-color-surface-subtle: #e8eee5;
+  --pa-color-ink: #1f2c22;
+  --pa-color-ink-muted: #59665b;
+  --pa-color-accent: #315f43;
+  --pa-color-accent-strong: #214832;
+  --pa-color-accent-soft: #dce8dc;
+  --pa-color-line: #cfd8ce;
+  --pa-color-warning: #845c19;
+  --pa-radius-sm: 0.65rem;
+  --pa-radius-md: 1rem;
+  --pa-radius-lg: 1.5rem;
+  --pa-shadow-card: 0 1.25rem 3rem rgba(28, 43, 31, 0.08);
+  --pa-focus-ring: 0 0 0 0.2rem var(--pa-color-canvas), 0 0 0 0.4rem var(--pa-color-accent);
+  --pa-space-page: clamp(1rem, 4vw, 4rem);
+  --pa-content-max: 76rem;
+}

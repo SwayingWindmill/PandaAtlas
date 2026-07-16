@@ -3,8 +3,11 @@ import { headers } from "next/headers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "大熊猫图鉴",
-  description: "大熊猫图鉴与分布地图"
+  title: {
+    default: "PandaAtlas",
+    template: "%s | PandaAtlas",
+  },
+  description: "A bilingual, evidence-first public archive of giant panda identities and reviewed facts.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,10 +16,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={language}>
-      <body>
-        <div className="app-bg" aria-hidden="true" />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

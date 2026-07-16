@@ -1,56 +1,81 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { TrustedPandaProfile, type PublicProfileLocale } from "@/components/atlas/trusted-panda-profile";
-import { getPandaDetail, getPandaLineage, resolvePandaReference } from "@/lib/api-client";
+import { TrustedPandaProfile } from "@/components/atlas/trusted-panda-profile";
+import {
+  loadPublishedPandaProfile,
+  resolvePublishedPandaReference,
+} from "@/features/public-content/public-release";
+import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
+import { parsePublicLocale } from "@/foundation/content/locales";
+import {
+  localizedPublicDestination,
+  type PublicSearchParams,
+} from "@/foundation/routing/public-redirects";
+import { getPandaLineage } from "@/lib/api-client";
 
 interface LocalizedPandaPageProps {
   params: Promise<{ locale: string; slug: string }>;
-}
-
-function parseLocale(value: string): PublicProfileLocale | null {
-  return value === "zh" || value === "en" ? value : null;
+  searchParams: Promise<PublicSearchParams>;
 }
 
 export async function generateMetadata({ params }: LocalizedPandaPageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
-  const locale = parseLocale(rawLocale);
-  const reference = locale ? await resolvePandaReference(slug) : null;
-  const panda = reference ? await getPandaDetail(reference.slug, reference) : null;
-  if (!locale || !reference || !panda?.identity) return {};
+  const locale = parsePublicLocale(rawLocale);
+  const envelope = locale ? loadPublishedPandaProfile(slug, locale) : null;
+  if (!locale || !envelope) return {};
 
+  const { panda } = envelope.data;
+  const profile = buildTrustedProfilePageViewModel(panda, locale);
   const title = locale === "zh"
-    ? `${panda.name_zh} | 大熊猫可信档案`
-    : `${panda.name_en ?? panda.name_zh} | Trusted giant panda profile`;
-  const description = panda.localized_content.find(
-    (item) => item.locale === (locale === "zh" ? "zh-CN" : "en"),
-  )?.summary ?? panda.intro ?? undefined;
+    ? `${profile.displayName} | 大熊猫可信档案`
+    : `${profile.displayName} | Trusted giant panda profile`;
+
   return {
     title,
-    description,
+    description: profile.summary ?? undefined,
     alternates: {
-      canonical: `/${locale}/atlas/${reference.slug}`,
+      canonical: `/${locale}/atlas/${profile.canonicalSlug}`,
       languages: {
-        "zh-CN": `/zh/atlas/${reference.slug}`,
-        en: `/en/atlas/${reference.slug}`,
+        "zh-CN": `/zh/atlas/${profile.canonicalSlug}`,
+        en: `/en/atlas/${profile.canonicalSlug}`,
+        "x-default": `/zh/atlas/${profile.canonicalSlug}`,
       },
     },
   };
 }
 
-export default async function LocalizedPandaPage({ params }: LocalizedPandaPageProps) {
-  const { locale: rawLocale, slug } = await params;
-  const locale = parseLocale(rawLocale);
+export default async function LocalizedPandaPage({ params, searchParams }: LocalizedPandaPageProps) {
+  const [{ locale: rawLocale, slug }, query] = await Promise.all([params, searchParams]);
+  const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const reference = await resolvePandaReference(slug);
+  const reference = resolvePublishedPandaReference(slug);
   if (!reference) notFound();
-  if (slug !== reference.slug) permanentRedirect(`/${locale}/atlas/${reference.slug}` as Route);
+  if (slug !== reference.slug) {
+    permanentRedirect(
+      localizedPublicDestination(locale, `/atlas/${reference.slug}`, query) as Route,
+    );
+  }
 
-  const [panda, lineage] = await Promise.all([
-    getPandaDetail(reference.slug, reference),
-    getPandaLineage(reference.slug, { ancestorDepth: 8, descendantDepth: 8, reference }),
-  ]);
-  if (panda?.slug !== reference.slug || !panda.identity) notFound();
+  const envelope = loadPublishedPandaProfile(reference.slug, locale);
+  if (!envelope) notFound();
 
-  return <TrustedPandaProfile locale={locale} panda={panda} lineage={lineage} />;
+  const { panda } = envelope.data;
+  const profile = buildTrustedProfilePageViewModel(panda, locale);
+
+  const lineage = await getPandaLineage(profile.canonicalSlug, {
+    ancestorDepth: 8,
+    descendantDepth: 8,
+    reference: { id: panda.id, slug: profile.canonicalSlug },
+  });
+
+  return (
+    <TrustedPandaProfile
+      locale={locale}
+      panda={panda}
+      lineage={lineage}
+      profile={profile}
+      envelope={envelope}
+    />
+  );
 }

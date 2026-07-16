@@ -65,9 +65,17 @@ The public interpretation state of a conclusion:
 
 A source-backed claim that one panda is a parent of another, with an explicit role and conclusion status. Public lineage derives from assertions rather than from editable father or mother fields.
 
+## Institution
+
+An organization such as a zoo, conservation body, breeding center, or research center. An Institution may manage one or more Places and may participate in events or cooperation relationships. A panda living at a Place associated with an Institution does not by itself establish legal ownership by that Institution.
+
+## Place
+
+A physical location where a panda may live, quarantine, breed, transfer, or be publicly located. A Place may be managed by or associated with an Institution, and its public coordinates may be deliberately coarse. Residencies reference Places rather than treating an Institution as the physical location.
+
 ## Residency
 
-A time-bounded statement that a panda lived at a facility or at a deliberately coarse location. Primary residency intervals for one panda must not overlap.
+A time-bounded statement that a panda lived at a Place or at a deliberately coarse location. Primary residency intervals for one panda must not overlap.
 
 ## Current Place
 

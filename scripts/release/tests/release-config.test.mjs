@@ -7,6 +7,7 @@ const defaultGatePath = new URL("../default.mjs", import.meta.url);
 const extendedGatePath = new URL("../extended.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
 const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
+const webPlaywrightConfigPath = new URL("../../../apps/web/playwright.config.ts", import.meta.url);
 const webProductionWranglerPath = new URL("../../../apps/web/wrangler.jsonc", import.meta.url);
 const webStagingWranglerPath = new URL("../../../apps/web/wrangler.staging.jsonc", import.meta.url);
 const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
@@ -54,6 +55,15 @@ test("default gate records automated core WCAG checks", async () => {
   assert.match(defaultGate, /id: "web-accessibility"/);
   assert.match(defaultGate, /dependsOn: \["web-build", "browser-runtime"\]/);
   assert.match(defaultGate, /test:accessibility/);
+});
+
+test("release browser checks reuse the clean production build and honor the Edge opt-out", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+  const playwrightConfig = await readFile(webPlaywrightConfigPath, "utf8");
+
+  assert.match(defaultGate, /PLAYWRIGHT_NEXT_DIST_DIR: "\.next"/);
+  assert.match(playwrightConfig, /process\.env\.PLAYWRIGHT_NEXT_DIST_DIR/);
+  assert.match(playwrightConfig, /process\.env\.RELEASE_GATE_USE_SYSTEM_EDGE !== "0"/);
 });
 
 test("Cloudflare staging deploy is isolated from production routes", async () => {
@@ -135,6 +145,15 @@ test("default gate separates D1 and HTTP Worker smoke", async () => {
     workerPackage.scripts["smoke:http"],
     "node scripts/smoke_test_worker.mjs --mode=http",
   );
+});
+
+test("Worker D1 migration scripts use the atomic trigger-safe runner", async () => {
+  const workerPackage = JSON.parse(await readFile(workerPackagePath, "utf8"));
+
+  assert.match(workerPackage.scripts["d1:migrate"], /apply-d1-migrations\.mjs/);
+  assert.match(workerPackage.scripts["d1:migrate:local"], /apply-d1-migrations\.mjs/);
+  assert.doesNotMatch(workerPackage.scripts["d1:migrate"], /wrangler d1 migrations apply/);
+  assert.doesNotMatch(workerPackage.scripts["d1:migrate:local"], /wrangler d1 migrations apply/);
 });
 
 test("web lockfile retains Linux native optional packages", async () => {

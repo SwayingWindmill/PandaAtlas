@@ -1,0 +1,29 @@
+.pa-public-register {
+  min-height: 100vh;
+  background: var(--pa-color-canvas);
+  color: var(--pa-color-ink);
+}
+
+.pa-public-register *,
+.pa-public-register *::before,
+.pa-public-register *::after {
+  box-sizing: border-box;
+}
+
+.pa-public-register a {
+  color: inherit;
+}
+
+.pa-public-register :where(a, button, input):focus-visible {
+  outline: none;
+  box-shadow: var(--pa-focus-ring);
+}
+
+.pa-public-register input,
+.pa-public-register button {
+  font: inherit;
+}
+
+.pa-public-register button {
+  cursor: pointer;
+}

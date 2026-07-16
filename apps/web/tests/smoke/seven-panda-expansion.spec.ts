@@ -36,9 +36,8 @@ test("serves bilingual canonical profiles and legacy redirects for all seven pan
 });
 
 test("completes the Xiao Qi Ji family-to-evidence golden journey", async ({ page }) => {
-  await page.goto("/atlas");
-  await page.getByLabel("搜索").fill("小奇迹");
-  await page.getByTestId("panda-card-link-xiao-qi-ji").click();
+  await page.goto(`/zh/atlas?q=${encodeURIComponent("小奇迹")}`);
+  await page.getByRole("link", { name: /小奇迹.*Xiao Qi Ji/ }).click();
 
   await expect(page).toHaveURL(/\/zh\/atlas\/xiao-qi-ji$/);
   await page.getByTestId("fact-parents").getByRole("link", { name: "美香" }).click();

@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "panda-atlas-web-staging",
-  "main": ".open-next/worker.js",
+  "main": "cloudflare/worker-entry.mjs",
   "compatibility_date": "2026-05-12",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,

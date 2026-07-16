@@ -1,13 +1,19 @@
 import sqlite3
 from pathlib import Path
 
+from app.projection.d1_migrations import (
+    D1_PUBLIC_RELEASE_MIGRATIONS,
+    read_d1_migration_bundle,
+)
+
 ROOT = Path(__file__).resolve().parents[4]
 
 
 def test_d1_versioned_release_storage_supports_atomic_switch_and_withdrawal() -> None:
-    migration = (
-        ROOT / "infra" / "cloudflare" / "d1" / "migrations" / "0005_versioned_public_releases.sql"
-    ).read_text(encoding="utf-8").lower()
+    migration = read_d1_migration_bundle(
+        ROOT,
+        D1_PUBLIC_RELEASE_MIGRATIONS,
+    ).lower()
 
     assert "create table if not exists public_releases" in migration
     assert "create table if not exists public_release_records" in migration
