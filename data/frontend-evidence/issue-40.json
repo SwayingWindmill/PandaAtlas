@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "issue": 40,
+  "artifact": {
+    "commit": "UNBOUND_WORKING_TREE",
+    "build_checksum": null,
+    "frontend_deployment_id": null,
+    "api_deployment_id": null
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "Global Product Shell",
+      "locale architecture",
+      "Public Content Envelope and delivery semantics",
+      "canonical public route migration"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.14.3",
+    "schema_version": "1.0.0",
+    "projection_version": "public-release-v2",
+    "delivery": "versioned-local-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "BLOCKED",
+      "detail": "Windows working-tree verification is available, but Linux and Windows clean-checkout evidence is not yet bound to an immutable commit.",
+      "evidence": []
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Web lint, TypeScript typecheck, standard and isolated production builds, and release-gate unit tests pass in the Windows working tree.",
+      "evidence": [
+        "npm run lint -w web",
+        "npm run typecheck -w web",
+        "npm run build -w web",
+        "npm run build:production-smoke -w web",
+        "npm run test:release-gate: 34 passed"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "Localized search, trusted identity resolution, language-aware canonical redirects, query preservation, unreviewed legacy 404 and versioned cached delivery behavior pass the complete browser smoke suite.",
+      "evidence": [
+        "apps/web/tests/smoke/localized-trust-spine.spec.ts",
+        "apps/web/tests/smoke/critical-public-journeys.spec.ts",
+        "apps/web/tests/smoke/one-panda-public-loop.spec.ts",
+        "apps/web/tests/smoke/seven-panda-expansion.spec.ts",
+        "npm run smoke -w web: 28 passed on Windows Microsoft Edge"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "The new routes expose only TRUSTED_PANDA_DETAILS, label the versioned local release cached, distinguish complete and partial coverage, preserve fact status/precision/sources, render no-media states and do not expose generated legacy profiles.",
+      "evidence": [
+        "apps/web/features/public-content/public-release.ts",
+        "apps/web/features/profile/profile-page-view-model.ts",
+        "apps/web/app/atlas/[slug]/page.tsx",
+        "apps/web/components/atlas/trusted-panda-profile.tsx"
+      ]
+    },
+    "browser_journeys": {
+      "status": "BLOCKED",
+      "detail": "The full 28-test browser suite passes against both the development server and an isolated production server on Windows Microsoft Edge, including bilingual, no-JavaScript, mobile and keyboard journeys; required fixed Playwright Chromium clean-checkout evidence on Linux and Windows is still missing.",
+      "evidence": [
+        "npm run smoke -w web: 28 passed on Windows Microsoft Edge",
+        "npm run smoke:production -w web: 28 passed on Windows Microsoft Edge",
+        "19 localized trust-spine and trusted-profile tracer tests passed on Windows Microsoft Edge"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Dynamic axe WCAG A/AA scans, incomplete-result retention, keyboard behavior, 320x800 reflow, bilingual language declaration, 200-percent text resizing and reduced-motion assertions pass in Windows Microsoft Edge.",
+      "evidence": [
+        "npm run test:accessibility -w web: 14 passed",
+        "axe JSON attached for desktop, mobile and keyboard states",
+        "axe incomplete counts retained as test annotations"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "Required deterministic Linux Chromium 390x844 and 1440x900 screenshot baselines and semantic visual review are not yet recorded.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "The production build reports 103 kB shared First Load JS, 107 kB localized Home/Atlas and 108 kB trusted Profile, all within the Slice 1 limits.",
+      "evidence": [
+        "shared First Load JS: 103 kB (budget 110 kB)",
+        "localized Home and Atlas: 107 kB (budgets 140 kB and 170 kB)",
+        "trusted Profile: 108 kB (budget 170 kB)"
+      ]
+    }
+  },
+  "staging": {
+    "status": "BLOCKED",
+    "detail": "No immutable Staging deployment is currently bound to a commit, build checksum, API deployment and Public Release identity.",
+    "evidence": []
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Named bilingual, keyboard, zoom, visual, Edge plus Narrator and Firefox plus NVDA sign-off is not yet recorded.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Working-tree automation passes for the implemented slice, but Level 3 clean-checkout, immutable Staging, deterministic visual and named human evidence is incomplete. This manifest must not be interpreted as a release PASS."
+  }
+}

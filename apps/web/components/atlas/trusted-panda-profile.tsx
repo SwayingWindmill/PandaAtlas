@@ -1,7 +1,15 @@
+import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-import { SiteHeader, siteShellClassName } from "@/components/site/site-header";
+import { siteShellClassName } from "@/components/site/site-header";
 import { TrustedProfileFavorite } from "@/components/atlas/trusted-profile-favorite";
+import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
+import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
+import type {
+  TrustedProfileFactViewModel,
+  TrustedProfilePageViewModel,
+} from "@/features/profile/profile-page-view-model";
 import type { PandaDetail, PandaLineageResponse } from "@/lib/types";
 
 export type PublicProfileLocale = "zh" | "en";
@@ -10,6 +18,8 @@ interface TrustedPandaProfileProps {
   locale: PublicProfileLocale;
   panda: PandaDetail;
   lineage: PandaLineageResponse;
+  profile: TrustedProfilePageViewModel;
+  envelope: PublicContentEnvelope<PublicProfileRecord>;
 }
 
 const SMITHSONIAN_ID = "afb0f227-dd5e-5076-88e3-74e9807a6049";
@@ -21,11 +31,26 @@ const copy = {
     basic: "基础资料",
     organizing: "资料整理中",
     aliases: "名称与检索线索",
+    stableIdentity: "稳定身份",
+    lifeStatus: "生命状态",
     birth: "出生日期",
     sex: "性别",
     female: "雌性",
     male: "雄性",
+    alive: "存活",
+    deceased: "已死亡",
     unknown: "暂无已审核记录",
+    conclusionStatus: "结论状态",
+    precision: "精度",
+    confirmed: "已确认",
+    provisional: "暂定",
+    disputedConclusion: "有争议",
+    superseded: "已取代",
+    precisionDay: "日",
+    precisionCountry: "国家级",
+    precisionCategorical: "分类值",
+    precisionUnknown: "未声明",
+    missingTranslation: "当前语言名称尚未审核，保留原文名称。",
     place: "当前经核实地点",
     parents: "亲本",
     noParents: "暂无已审核亲本结论",
@@ -80,11 +105,26 @@ const copy = {
     basic: "Basic record",
     organizing: "Record in progress",
     aliases: "Names and search references",
+    stableIdentity: "Stable identity",
+    lifeStatus: "Life status",
     birth: "Birth date",
     sex: "Sex",
     female: "Female",
     male: "Male",
+    alive: "Alive",
+    deceased: "Deceased",
     unknown: "No reviewed record",
+    conclusionStatus: "Conclusion status",
+    precision: "Precision",
+    confirmed: "Confirmed",
+    provisional: "Provisional",
+    disputedConclusion: "Disputed",
+    superseded: "Superseded",
+    precisionDay: "Day",
+    precisionCountry: "Country-level",
+    precisionCategorical: "Categorical",
+    precisionUnknown: "Not stated",
+    missingTranslation: "The English name has not been reviewed; the original-language name is retained.",
     place: "Current verified place",
     parents: "Parents",
     noParents: "No reviewed parent conclusion",
@@ -138,7 +178,6 @@ const copy = {
 function localizedSummary(panda: PandaDetail, locale: PublicProfileLocale): string {
   const key = locale === "zh" ? "zh-CN" : "en";
   return panda.localized_content.find((item) => item.locale === key)?.summary
-    ?? panda.intro
     ?? copy[locale].unknown;
 }
 
@@ -182,40 +221,75 @@ function eventStatusLabel(status: PandaDetail["events"][number]["event_status"],
   }
 }
 
+function conclusionStatusLabel(
+  status: TrustedProfileFactViewModel["status"],
+  locale: PublicProfileLocale,
+): string {
+  const t = copy[locale];
+  switch (status) {
+    case "confirmed": return t.confirmed;
+    case "provisional": return t.provisional;
+    case "disputed": return t.disputedConclusion;
+    case "superseded": return t.superseded;
+    case "unknown": return t.unknown;
+  }
+}
+
+function precisionLabel(
+  precision: TrustedProfileFactViewModel["precision"],
+  locale: PublicProfileLocale,
+): string {
+  const t = copy[locale];
+  switch (precision) {
+    case "day": return t.precisionDay;
+    case "country": return t.precisionCountry;
+    case "categorical": return t.precisionCategorical;
+    case "unknown": return t.precisionUnknown;
+  }
+}
+
 function FactProvenance({
-  conclusion,
+  fact,
   locale,
   panda,
 }: {
-  conclusion: PandaDetail["conclusions"][number] | undefined;
+  fact: TrustedProfileFactViewModel;
   locale: PublicProfileLocale;
   panda: PandaDetail;
 }) {
   const t = copy[locale];
-  if (!conclusion) return <dd className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</dd>;
+  const colon = locale === "zh" ? "：" : ": ";
   return (
     <dd className="mt-1 text-xs leading-5 text-[var(--muted)]">
-      {t.source}: {conclusion.source_ids.map((sourceId, index) => (
-        <span key={sourceId}>{index ? ", " : ""}<a href={`#${sourceId}`} className="font-semibold text-[var(--accent)] hover:underline">{sourceNames([sourceId], panda)}</a></span>
-      ))} | {t.verified}{locale === "zh" ? "：" : ": "}{conclusion.last_verified_at}
+      {t.conclusionStatus}{colon}{conclusionStatusLabel(fact.status, locale)} | {t.precision}{colon}{precisionLabel(fact.precision, locale)}
+      {fact.sourceIds.length ? (
+        <> | {t.source}{colon}{fact.sourceIds.map((sourceId, index) => (
+          <span key={sourceId}>{index ? ", " : ""}<a href={`#${sourceId}`} className="font-semibold text-[var(--accent)] hover:underline">{sourceNames([sourceId], panda)}</a></span>
+        ))}</>
+      ) : <> | {t.noReviewedSource}</>}
+      {fact.lastVerifiedAt ? <> | {t.verified}{locale === "zh" ? "：" : ": "}{fact.lastVerifiedAt}</> : null}
     </dd>
   );
 }
 
-export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProfileProps) {
+export function TrustedPandaProfile({ locale, panda, lineage, profile, envelope }: TrustedPandaProfileProps) {
   const t = copy[locale];
   const otherLocale = locale === "zh" ? "en" : "zh";
-  const name = locale === "zh" ? panda.name_zh : (panda.name_en ?? panda.name_zh);
+  const name = profile.displayName;
   const pinyin = panda.identity?.names.find((item) => item.language === "pinyin")?.value;
   const aliases = [
     ...(panda.identity?.aliases.map((item) => item.value) ?? []),
     ...(panda.identity?.legacy_slugs.map((item) => item.value) ?? []),
     ...(panda.identity?.external_identifiers.map((item) => `${item.system}: ${item.value}`) ?? []),
   ];
-  const conclusionByField = new Map(panda.conclusions.map((item) => [item.field, item]));
-  const placeConclusion = conclusionByField.get("current_coarse_location");
-  const birthConclusion = conclusionByField.get("birth_date");
-  const sexConclusion = conclusionByField.get("sex");
+  const factByField = new Map(profile.facts.map((item) => [item.field, item]));
+  const lifeStatusFact = factByField.get("life_status");
+  const birthFact = factByField.get("birth_date");
+  const sexFact = factByField.get("sex");
+  const placeFact = factByField.get("current_coarse_location");
+  if (!lifeStatusFact || !birthFact || !sexFact || !placeFact) {
+    throw new Error("Trusted profile view model is missing an above-the-fold fact.");
+  }
   const parents = lineage.edges
     .filter((edge) => edge.child_id === panda.id)
     .map((edge) => lineage.nodes.find((node) => node.id === edge.parent_id))
@@ -269,30 +343,50 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
   )?.summary;
 
   return (
-    <main lang={locale === "zh" ? "zh-CN" : "en"} className="trusted-profile-theme bg-[var(--bg)] pb-20 text-[var(--fg)]" data-testid="trusted-panda-profile">
-      <SiteHeader activeHref="/atlas" statusLabel={t.archive} statusValue={name} />
+    <>
+      <GlobalNavigation locale={locale} active="profile" alternatePath={profile.alternateLanguageHref} />
+      <main id="main-content" lang={locale === "zh" ? "zh-CN" : "en"} className="trusted-profile-theme bg-[var(--bg)] pb-20 text-[var(--fg)]" data-testid="trusted-panda-profile">
+        <section className={`${publicShellClassName} pt-6`}>
+          <PublicDeliveryNotice locale={locale} release={envelope.release} delivery={envelope.delivery} coverage={envelope.coverage} localeDelivery={envelope.locale} />
+        </section>
 
       <section className={`${siteShellClassName} py-8 lg:py-12`}>
         <div data-testid="identity-first-card" className="grid gap-8 rounded-2xl border border-[rgba(47,92,69,0.1)] bg-[var(--card)] p-6 shadow-[0_24px_60px_rgba(30,44,31,0.08)] md:p-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)]">
           <div>
             <div className="flex flex-wrap items-center gap-3 text-sm">
-              <Link href="/atlas" className="font-semibold text-[var(--accent)] hover:underline">{t.back}</Link>
+              <Link href={profile.atlasHref as Route} className="font-semibold text-[var(--accent)] hover:underline">{t.back}</Link>
               <span aria-hidden="true">/</span>
               <span>{archiveLabel(panda, locale)}</span>
             </div>
             <p className="mt-8 text-sm font-semibold text-[var(--accent)]">{t.archive}</p>
-            <h1 className="mt-3 text-5xl leading-tight text-[var(--fg)] sm:text-6xl" style={{ fontFamily: "var(--font-display)" }}>
+            <h1
+              lang={profile.displayNameLanguage}
+              className="mt-3 text-5xl leading-tight text-[var(--fg)] sm:text-6xl"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
               {name}
             </h1>
+            {profile.displayNameTranslation === "missing" ? (
+              <p className="mt-2 text-sm text-[var(--muted)]">{t.missingTranslation}</p>
+            ) : null}
             <p className="mt-2 text-lg text-[var(--muted)]">
               {locale === "zh" ? panda.name_en : panda.name_zh}{pinyin ? ` / ${pinyin}` : ""}
             </p>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]">{localizedSummary(panda, locale)}</p>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]">{profile.summary ?? localizedSummary(panda, locale)}</p>
 
             <dl className="mt-8 grid gap-5 sm:grid-cols-2">
-              <div data-testid="fact-birth"><dt className="text-xs font-semibold text-[var(--muted)]">{t.birth}</dt><dd className="mt-2 text-lg font-semibold">{dateLabel(panda.birth_date, locale)}</dd><FactProvenance conclusion={birthConclusion} locale={locale} panda={panda} /></div>
-              <div data-testid="fact-sex"><dt className="text-xs font-semibold text-[var(--muted)]">{t.sex}</dt><dd className="mt-2 text-lg font-semibold">{panda.gender === "female" ? t.female : panda.gender === "male" ? t.male : t.unknown}</dd><FactProvenance conclusion={sexConclusion} locale={locale} panda={panda} /></div>
-              <div data-testid="fact-place"><dt className="text-xs font-semibold text-[var(--muted)]">{t.place}</dt><dd className="mt-2 text-lg font-semibold">{placeLabel(panda.current_place?.facility_id ?? null, panda.current_place?.coarse_location ?? panda.current_location, locale)}</dd><FactProvenance conclusion={placeConclusion} locale={locale} panda={panda} /></div>
+              <div data-testid="fact-life-status">
+                <dt className="text-xs font-semibold text-[var(--muted)]">{t.lifeStatus}</dt><dd className="mt-2 text-lg font-semibold">{lifeStatusFact.value === "alive" ? t.alive : lifeStatusFact.value === "deceased" ? t.deceased : t.unknown}</dd><FactProvenance fact={lifeStatusFact} locale={locale} panda={panda} />
+              </div>
+              <div data-testid="fact-birth">
+                <dt className="text-xs font-semibold text-[var(--muted)]">{t.birth}</dt><dd className="mt-2 text-lg font-semibold">{dateLabel(typeof birthFact.value === "string" ? birthFact.value : null, locale)}</dd><FactProvenance fact={birthFact} locale={locale} panda={panda} />
+              </div>
+              <div data-testid="fact-sex">
+                <dt className="text-xs font-semibold text-[var(--muted)]">{t.sex}</dt><dd className="mt-2 text-lg font-semibold">{sexFact.value === "female" ? t.female : sexFact.value === "male" ? t.male : t.unknown}</dd><FactProvenance fact={sexFact} locale={locale} panda={panda} />
+              </div>
+              <div data-testid="fact-place">
+                <dt className="text-xs font-semibold text-[var(--muted)]">{t.place}</dt><dd className="mt-2 text-lg font-semibold">{placeLabel(panda.current_place?.facility_id ?? null, typeof placeFact.value === "string" ? placeFact.value : null, locale)}</dd><FactProvenance fact={placeFact} locale={locale} panda={panda} />
+              </div>
               <div data-testid="fact-parents"><dt className="text-xs font-semibold text-[var(--muted)]">{t.parents}</dt><dd className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-lg font-semibold">{parents.length ? parents.map((item) => <Link key={item.id} href={`/${locale}/atlas/${item.slug}`} className="text-[var(--accent)] hover:underline">{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</Link>) : t.noParents}</dd>{parents.length === 0 ? <dd className="mt-1 text-xs text-[var(--muted)]">{t.noReviewedSource}</dd> : null}</div>
             </dl>
           </div>
@@ -300,13 +394,19 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
           <aside className="flex flex-col justify-between gap-8 rounded-2xl bg-[rgba(63,125,71,0.07)] p-6">
             <div>
               <p className="text-sm font-semibold text-[var(--accent)]">{archiveLabel(panda, locale)}</p>
+              <dl className="mt-4 text-xs">
+                <div>
+                  <dt className="text-[var(--muted)]">{t.stableIdentity}</dt>
+                  <dd className="mt-1 break-all font-semibold">{profile.stableId}</dd>
+                </div>
+              </dl>
               <p className="mt-3 text-sm leading-7 text-[var(--muted)]">{t.aliases}</p>
               <ul className="mt-4 flex flex-wrap gap-2" aria-label={t.aliases}>
                 {aliases.map((alias) => <li key={alias} className="rounded-lg border border-[rgba(47,92,69,0.12)] bg-[var(--card)] px-3 py-2 text-xs">{alias}</li>)}
               </ul>
             </div>
             <TrustedProfileFavorite slug={panda.slug} name={panda.name_zh} locale={locale} />
-            <a href={`/${otherLocale}/atlas/${panda.slug}`} hrefLang={otherLocale === "zh" ? "zh-CN" : "en"} className="text-sm font-semibold text-[var(--accent)] hover:underline">
+            <a href={profile.alternateLanguageHref} hrefLang={otherLocale === "zh" ? "zh-CN" : "en"} hidden className="text-sm font-semibold text-[var(--accent)] hover:underline">
               {t.language}
             </a>
           </aside>
@@ -412,6 +512,7 @@ export function TrustedPandaProfile({ locale, panda, lineage }: TrustedPandaProf
         </div>
       </section>
 
-    </main>
+      </main>
+    </>
   );
 }

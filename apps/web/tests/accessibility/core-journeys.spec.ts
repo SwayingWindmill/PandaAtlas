@@ -65,6 +65,7 @@ for (const { locale, path, buttonName, pressedButtonName } of [
     await page.addInitScript(() => localStorage.removeItem("panda-atlas:saved-profiles"));
     await page.goto(path);
     const favorite = page.getByRole("button", { name: buttonName });
+    await expect(favorite).toBeEnabled();
     await favorite.focus();
     await page.keyboard.press("Enter");
     await expect(page.getByRole("button", { name: pressedButtonName })).toHaveAttribute("aria-pressed", "true");

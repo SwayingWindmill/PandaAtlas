@@ -1,0 +1,17 @@
+.pa-result-card,
+.pa-principle-card,
+.pa-search-row button,
+.pa-language-link,
+.pa-desktop-nav a {
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-result-card,
+  .pa-principle-card,
+  .pa-search-row button,
+  .pa-language-link,
+  .pa-desktop-nav a {
+    transition: none;
+  }
+}

@@ -1,28 +1,16 @@
 import { expect, test } from "@playwright/test";
 
-test("loads atlas and follows the canonical detail-to-lineage route", async ({ page }) => {
-  await page.goto("/atlas");
+test("searches the localized Atlas and opens the canonical trusted profile", async ({ page }) => {
+  await page.goto("/zh/atlas?q=%E7%BE%8E%E9%A6%99");
 
-  await expect(page.getByTestId("atlas-page")).toBeVisible();
+  await expect(page.getByTestId("localized-atlas-page")).toBeVisible();
+  const profileLink = page.getByRole("link", { name: /美香.*Mei Xiang/ });
+  await expect(profileLink).toHaveAttribute("href", "/zh/atlas/mei-xiang");
 
-  const firstAtlasCard = page.locator('[data-testid^="panda-card-link-"]').first();
-  await expect(firstAtlasCard).toBeVisible();
-  await expect(firstAtlasCard).toHaveAttribute("href", /\/atlas\/.+/);
-
-  const detailHref = await firstAtlasCard.getAttribute("href");
-  expect(detailHref).toMatch(/^\/atlas\/[^/?#]+$/);
-  await page.goto(detailHref!);
-  await expect(page).toHaveURL(/\/atlas\/[^/?#]+$/);
-  await expect(page.getByTestId("panda-profile-page")).toBeVisible();
-
-  const lineageLink = page.getByTestId("profile-lineage-link");
-  await expect(lineageLink).toHaveAttribute("href", /\/lineage\?focus=[^&]+$/);
-  const lineageHref = await lineageLink.getAttribute("href");
-  expect(lineageHref).toMatch(/^\/lineage\?focus=[^&]+$/);
-
-  await page.goto(lineageHref!);
-  await expect(page).toHaveURL(/\/lineage\?focus=[^&]+/);
-  await expect(page.getByTestId("lineage-page")).toBeVisible();
+  await profileLink.click();
+  await expect(page).toHaveURL(/\/zh\/atlas\/mei-xiang$/);
+  await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
+  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.14.3");
 });
 
 test("loads the global distribution shell directly", async ({ page }) => {

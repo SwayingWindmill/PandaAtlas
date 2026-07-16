@@ -4,8 +4,9 @@ test("legacy panda slugs permanently redirect to the canonical profile", async (
   const response = await request.get("/atlas/meixiang", { maxRedirects: 0 });
 
   expect(response.status()).toBe(308);
-  const locations = response.headers().location.split(",").map((value) => value.trim());
-  expect(new Set(locations)).toEqual(new Set(["/zh/atlas/mei-xiang"]));
+  const location = new URL(response.headers().location, "http://localhost");
+  expect(location.pathname).toBe("/zh/atlas/mei-xiang");
+  expect(location.search).toBe("");
 
   const canonicalResponse = await request.get("/zh/atlas/mei-xiang");
   expect(canonicalResponse.status()).toBe(200);

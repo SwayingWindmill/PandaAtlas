@@ -1,9 +1,6 @@
 import { expect, test } from "@playwright/test";
 
 test("finds Mei Xiang by every reviewed public identity form", async ({ page }) => {
-  await page.goto("/atlas");
-  const search = page.getByLabel("搜索");
-
   for (const query of [
     "美香",
     "Mei Xiang",
@@ -12,9 +9,12 @@ test("finds Mei Xiang by every reviewed public identity form", async ({ page }) 
     "meixiang",
     "smithsonian_history_key:mei-xiang",
   ]) {
-    await search.fill(query);
-    await expect(page.getByRole("heading", { name: "1 份档案" }), query).toBeVisible();
-    await expect(page.getByTestId("panda-card-link-mei-xiang"), query).toBeVisible();
+    await page.goto(`/zh/atlas?q=${encodeURIComponent(query)}`);
+    await expect(page.getByRole("heading", { name: "1 份已发布档案" }), query).toBeVisible();
+    await expect(page.getByRole("link", { name: /美香.*Mei Xiang/ }), query).toHaveAttribute(
+      "href",
+      "/zh/atlas/mei-xiang",
+    );
   }
 });
 
@@ -44,8 +44,13 @@ test("renders the reviewed identity, family, footprint, evidence, no-image, and 
 
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: /美香/ })).toBeVisible();
+  await expect(page.getByText("稳定身份")).toBeVisible();
   await expect(page.getByText("完整档案").first()).toBeVisible();
   await expect(page.getByText("最后核实：2026-05-09").first()).toBeVisible();
+  await expect(page.getByTestId("fact-life-status")).toContainText("存活");
+  await expect(page.getByTestId("fact-life-status")).toContainText("分类值");
+  await expect(page.getByTestId("fact-birth")).toContainText("结论状态：已确认");
+  await expect(page.getByTestId("fact-birth")).toContainText("精度：日");
   for (const fact of ["fact-birth", "fact-sex", "fact-place"]) {
     await expect(page.getByTestId(fact)).toContainText("来源");
     await expect(page.getByTestId(fact).getByRole("link")).toHaveCount(1);
@@ -64,6 +69,7 @@ test("keeps favorites local-only and keyboard operable", async ({ page }) => {
   await page.goto("/zh/atlas/mei-xiang");
 
   const favorite = page.getByRole("button", { name: "收藏美香" });
+  await expect(favorite).toBeEnabled();
   await favorite.focus();
   await page.keyboard.press("Enter");
   await expect(favorite).toHaveAttribute("aria-pressed", "true");
