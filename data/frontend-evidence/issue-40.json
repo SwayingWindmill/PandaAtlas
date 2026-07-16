@@ -2,7 +2,7 @@
   "schema_version": 1,
   "issue": 40,
   "artifact": {
-    "commit": "UNBOUND_WORKING_TREE",
+    "commit": "6fed399b5cb9c97dbde60a85cf2e40c76877a6f1",
     "build_checksum": null,
     "frontend_deployment_id": null,
     "api_deployment_id": null
@@ -26,19 +26,23 @@
   },
   "check_groups": {
     "reproducibility": {
-      "status": "BLOCKED",
-      "detail": "Windows working-tree verification is available, but Linux and Windows clean-checkout evidence is not yet bound to an immutable commit.",
-      "evidence": []
+      "status": "PASS",
+      "detail": "GitHub Actions completed the pinned default Release Gate from a clean checkout on Linux and Windows for implementation commit 6fed399; both jobs passed and uploaded immutable reports with recorded SHA-256 digests.",
+      "evidence": [
+        "Release Gate run 29490274913: https://github.com/SwayingWindmill/PandaAtlas/actions/runs/29490274913",
+        "Linux job 87594438726: PASS; artifact 8372171907 release-gate-linux; sha256:56864e65d81b634eeb9b3275d97954a6072c631c25ab3fd6767eb0f604d6b0d4",
+        "Windows job 87594438719: PASS; artifact 8372260857 release-gate-windows; sha256:1584bbd8be0ff9d6cf322c2acd7378713f258befb1a6681297f52d1d50572d4f"
+      ]
     },
     "static_correctness": {
       "status": "PASS",
-      "detail": "Web lint, TypeScript typecheck, standard and isolated production builds, and release-gate unit tests pass in the Windows working tree.",
+      "detail": "Web lint, TypeScript typecheck, production build, trust/privacy preflight and release-gate tests pass locally and in the Linux and Windows clean-checkout Release Gate.",
       "evidence": [
         "npm run lint -w web",
         "npm run typecheck -w web",
         "npm run build -w web",
-        "npm run build:production-smoke -w web",
-        "npm run test:release-gate: 34 passed"
+        "npm run test:release-gate: 35 passed",
+        "GitHub Actions run 29490274913 Linux and Windows default gates: PASS"
       ]
     },
     "public_contracts": {
@@ -63,21 +67,25 @@
       ]
     },
     "browser_journeys": {
-      "status": "BLOCKED",
-      "detail": "The full 28-test browser suite passes against both the development server and an isolated production server on Windows Microsoft Edge, including bilingual, no-JavaScript, mobile and keyboard journeys; required fixed Playwright Chromium clean-checkout evidence on Linux and Windows is still missing.",
+      "status": "PASS",
+      "detail": "The complete 28-test production browser suite passes with the pinned Playwright Chromium runtime in both Linux and Windows clean checkouts; local Edge runs also cover bilingual, no-JavaScript, mobile and keyboard journeys.",
       "evidence": [
-        "npm run smoke -w web: 28 passed on Windows Microsoft Edge",
-        "npm run smoke:production -w web: 28 passed on Windows Microsoft Edge",
-        "19 localized trust-spine and trusted-profile tracer tests passed on Windows Microsoft Edge"
+        "GitHub Actions run 29490274913: Linux Default gate PASS",
+        "GitHub Actions run 29490274913: Windows Default gate PASS",
+        "release-gate-linux artifact 8372171907",
+        "release-gate-windows artifact 8372260857",
+        "npm run smoke -w web: 28 passed locally on Windows Microsoft Edge",
+        "npm run smoke:production -w web: 28 passed locally on Windows Microsoft Edge"
       ]
     },
     "automated_accessibility": {
       "status": "PASS",
-      "detail": "Dynamic axe WCAG A/AA scans, incomplete-result retention, keyboard behavior, 320x800 reflow, bilingual language declaration, 200-percent text resizing and reduced-motion assertions pass in Windows Microsoft Edge.",
+      "detail": "Dynamic axe WCAG A/AA scans, retained incomplete-result annotations, keyboard behavior, 320x800 reflow, bilingual language declaration, 200-percent text resizing and reduced-motion assertions pass in pinned Playwright Chromium on Linux and Windows clean checkouts.",
       "evidence": [
-        "npm run test:accessibility -w web: 14 passed",
-        "axe JSON attached for desktop, mobile and keyboard states",
-        "axe incomplete counts retained as test annotations"
+        "GitHub Actions run 29490274913 Linux and Windows Automated core WCAG checks: PASS",
+        "release-gate-linux artifact 8372171907 includes accessibility-automated.json",
+        "release-gate-windows artifact 8372260857 includes accessibility-automated.json",
+        "npm run test:accessibility -w web: 14 passed locally"
       ]
     },
     "visual_regression": {
@@ -107,6 +115,6 @@
   },
   "release_decision": {
     "status": "BLOCKED",
-    "detail": "Working-tree automation passes for the implemented slice, but Level 3 clean-checkout, immutable Staging, deterministic visual and named human evidence is incomplete. This manifest must not be interpreted as a release PASS."
+    "detail": "Clean-checkout automation is now complete for implementation commit 6fed399, but Level 3 immutable Staging identity, deterministic visual evidence and named human bilingual/accessibility sign-off remain incomplete. This manifest must not be interpreted as a release PASS."
   }
 }
