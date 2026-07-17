@@ -2,9 +2,9 @@
   "schema_version": 1,
   "issue": 47,
   "artifact": {
-    "commit": "UNBOUND_WORKING_TREE",
-    "build_checksum": null,
-    "frontend_deployment_id": null,
+    "commit": "abf3a85b763530a9e79dce6309135d2994a739aa",
+    "build_checksum": "sha256:5d880f554bc226fe978aa1dc6046bb1581140eb1d0cfebfbab43c3025b26bfaf",
+    "frontend_deployment_id": "3696b00d-aaec-4cc1-ac72-0941a986e981",
     "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
   },
   "risk": {
@@ -26,18 +26,23 @@
   },
   "check_groups": {
     "reproducibility": {
-      "status": "BLOCKED",
-      "detail": "The Slice 4 implementation has not yet completed Linux and Windows clean-checkout CI from an immutable commit.",
-      "evidence": []
+      "status": "PASS",
+      "detail": "GitHub Actions completed the pinned default Release Gate from clean Linux and Windows checkouts for implementation commit abf3a85; both jobs passed and uploaded immutable reports with recorded SHA-256 digests.",
+      "evidence": [
+        "Release Gate run 29561279925",
+        "Windows job 87824080643: PASS; artifact 8399463741 release-gate-windows; sha256:7f2b6cbca94702a574ba9159f189a42c2ced52d006ebbe84fe27563bb1fc5d9f",
+        "Linux job 87824080661: PASS; artifact 8399424835 release-gate-linux; sha256:aa97ab274b622ea370ef1ac06b8214ce4d9c4e82182bc0231703b81ec7dc0154"
+      ]
     },
     "static_correctness": {
       "status": "PASS",
-      "detail": "Web lint, TypeScript typecheck, production build and release-gate ownership and trust checks pass locally.",
+      "detail": "Web lint, TypeScript typecheck, production build and release-gate ownership and trust checks pass locally and in Linux and Windows clean checkouts.",
       "evidence": [
         "npm run lint:web: PASS",
         "npm run typecheck:web: PASS",
         "npm run build:web: PASS",
-        "npm run test:release-gate: 49/49 PASS"
+        "npm run test:release-gate: 50/50 PASS",
+        "GitHub Actions run 29561279925 Linux and Windows default gates: PASS"
       ]
     },
     "public_contracts": {
@@ -62,29 +67,31 @@
     },
     "browser_journeys": {
       "status": "PASS",
-      "detail": "The complete 42-test browser suite covers graph-free structured relationships, URL normalization, relation selection, bilingual state preservation, native keyboard controls, no-JavaScript rendering, trusted profile continuation, existing Atlas/profile journeys and map behavior.",
+      "detail": "The complete 42-test browser suite passes locally, in clean-checkout CI and against the immutable Staging deployment; it covers graph-free structured relationships, URL normalization, relation selection, bilingual state preservation, native keyboard controls, no-JavaScript rendering, trusted profile continuation, existing Atlas/profile journeys and map behavior.",
       "evidence": [
-        "smoke group 1: 17/17 PASS",
-        "smoke group 2: 25/25 PASS",
-        "targeted structured lineage suite: 7/7 PASS"
+        "npm run smoke:web: 42/42 PASS",
+        "targeted structured lineage suite: 7/7 PASS",
+        "GitHub Actions run 29561279925 Linux and Windows browser checks: PASS",
+        "Staging browser suite: 42/42 PASS"
       ]
     },
     "automated_accessibility": {
       "status": "PASS",
-      "detail": "Chinese and English structured lineage pages pass desktop and 320-pixel mobile axe WCAG A/AA scans, keyboard-native scope controls, no-horizontal-overflow checks and reduced-motion verification.",
+      "detail": "Chinese and English structured lineage pages pass desktop and 320-pixel mobile axe WCAG A/AA scans, keyboard-native scope controls, no-horizontal-overflow checks and reduced-motion verification locally, in CI and against Staging.",
       "evidence": [
         "npm run test:accessibility -w web: 20/20 PASS",
-        "Chinese and English structured lineage desktop/mobile axe journeys: PASS"
+        "GitHub Actions run 29561279925 Linux and Windows automated core WCAG checks: PASS",
+        "Staging automated accessibility suite: 20/20 PASS"
       ]
     },
     "visual_regression": {
       "status": "BLOCKED",
-      "detail": "No immutable Slice 4 Staging deployment and named semantic visual review are yet bound to this implementation.",
+      "detail": "The immutable Slice 4 Staging deployment is bound to this implementation, but a named semantic visual review of the bilingual lineage journey is not yet recorded.",
       "evidence": []
     },
     "performance_budgets": {
       "status": "PASS",
-      "detail": "The production build reports 107 kB First Load JS for the localized structured lineage route, below the structured public-route budget of 170 KiB.",
+      "detail": "The production and Cloudflare builds report 107 kB First Load JS for the localized structured lineage route, below the structured public-route budget of 170 KiB.",
       "evidence": [
         "/[locale]/lineage: 107 kB First Load JS",
         "Structured public route budget: 170 KiB"
@@ -92,9 +99,15 @@
     }
   },
   "staging": {
-    "status": "BLOCKED",
-    "detail": "An immutable Cloudflare Staging deployment, bundle checksum and Staging browser/accessibility results are not yet recorded for Slice 4.",
-    "evidence": []
+    "status": "PASS",
+    "detail": "Implementation commit abf3a85 is bound to an immutable Cloudflare frontend Version ID and bundle checksum, and the complete browser and automated accessibility suites pass against the deployed Staging URL.",
+    "evidence": [
+      "Commit abf3a85b763530a9e79dce6309135d2994a739aa",
+      "Frontend Version ID 3696b00d-aaec-4cc1-ac72-0941a986e981",
+      "OpenNext bundle sha256:5d880f554bc226fe978aa1dc6046bb1581140eb1d0cfebfbab43c3025b26bfaf",
+      "Staging URL https://panda-atlas-web-staging.hao1012812011.workers.dev",
+      "Staging browser suite 42/42 PASS; automated accessibility suite 20/20 PASS"
+    ]
   },
   "human_signoff": {
     "status": "BLOCKED",
@@ -103,6 +116,6 @@
   },
   "release_decision": {
     "status": "BLOCKED",
-    "detail": "Local implementation evidence is complete, but clean-checkout CI, immutable Staging identity and named Slice 4 review remain incomplete. This manifest must not be interpreted as release GO."
+    "detail": "Clean-checkout automation and immutable Staging verification are complete for implementation commit abf3a85, but named semantic visual and product-owner review remain incomplete. This manifest must not be interpreted as release GO."
   }
 }
