@@ -2,9 +2,9 @@
   "schema_version": 1,
   "issue": 49,
   "artifact": {
-    "commit": "UNBOUND_WORKING_TREE",
-    "build_checksum": null,
-    "frontend_deployment_id": null,
+    "commit": "c2e2eec14148acb12fab0d63b4b09a7ee7470d8d",
+    "build_checksum": "sha256:e3a6a84a84cd61f99b087851a7ab955b38aa163c20a0c86a55c91b83165aca4b",
+    "frontend_deployment_id": "576b719a-b8d5-4fd2-9369-0b806529ad49",
     "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
   },
   "risk": {
@@ -27,19 +27,24 @@
   },
   "check_groups": {
     "reproducibility": {
-      "status": "BLOCKED",
-      "detail": "The Slice 6 implementation has not yet completed Linux and Windows clean-checkout CI from an immutable implementation commit.",
-      "evidence": []
+      "status": "PASS",
+      "detail": "GitHub Actions completed the pinned default Release Gate from clean Linux and Windows checkouts for immutable implementation commit c2e2eec; both jobs passed, preserved tracked-file cleanliness, and uploaded reports with recorded SHA-256 digests.",
+      "evidence": [
+        "Release Gate run 29576672540",
+        "Linux job 87872588900: PASS; artifact 8405363149 release-gate-linux; sha256:57930b1329173b762e779a3e6850646840b76a9528ee0baa38601474dff1fa59",
+        "Windows job 87872588913: PASS; artifact 8405400226 release-gate-windows; sha256:997b137bb9b577d3d401d6df4aabc8784ab7be46a6ef90c94f2d5cb102562fc7"
+      ]
     },
     "static_correctness": {
       "status": "PASS",
-      "detail": "Web lint, TypeScript typecheck, production build, release ownership, public-boundary, and provider-contract checks pass locally.",
+      "detail": "Web lint, TypeScript typecheck, production and OpenNext builds, release ownership, public-boundary, provider-contract, and frontend-evidence checks pass locally and in Linux and Windows clean checkouts.",
       "evidence": [
         "npm run lint:web: PASS",
         "npm run typecheck:web: PASS",
         "npm run build:web: PASS",
         "npm run test:release-gate: 52/52 PASS",
-        "scripts/release/tests/structured-map-ownership.test.mjs: PASS"
+        "scripts/release/tests/structured-map-ownership.test.mjs: PASS",
+        "GitHub Actions run 29576672540 Linux and Windows default gates: PASS"
       ]
     },
     "public_contracts": {
@@ -61,34 +66,39 @@
         "apps/web/features/map/cached-habitat-release.ts",
         "apps/web/features/map/map-provider-registry.ts",
         "apps/web/features/public-content/public-release.ts",
+        "Staging live API returned 6 conservation features with latest snapshot 2026-03-05",
+        "Staging page rendered PandaAtlas live habitat API source state rather than cached-release state",
         "country-level records are not rendered as institution points: PASS"
       ]
     },
     "browser_journeys": {
       "status": "PASS",
-      "detail": "The complete browser suite covers all three structured map modes, reviewed current and historical footprints, URL normalization, result selection, bilingual state preservation, native keyboard controls, no-JavaScript rendering, legacy redirects, existing Atlas/profile/lineage journeys, and provider-free completion.",
+      "detail": "The complete 46-test browser suite passes locally and against immutable Staging, covering all three structured map modes, reviewed current and historical footprints, URL normalization, result selection, bilingual state preservation, native keyboard controls, no-JavaScript rendering, legacy redirects, existing Atlas/profile/lineage journeys, and provider-free completion.",
       "evidence": [
         "targeted structured map suite: 8/8 PASS",
-        "npm run smoke:web: 46/46 PASS"
+        "local complete browser suite: 46/46 PASS",
+        "Staging complete browser suite: 46/46 PASS",
+        "test-only live API multiplicity fix commit 9ba4199a3ddeca54d1472ca50f645d4f8fbaeaad"
       ]
     },
     "automated_accessibility": {
       "status": "PASS",
-      "detail": "Chinese and English structured map pages pass desktop and 320-pixel mobile axe WCAG A/AA scans, native keyboard filtering, no-horizontal-overflow checks, and reduced-motion verification.",
+      "detail": "Chinese and English structured map pages pass desktop and 320-pixel mobile axe WCAG A/AA scans, native keyboard filtering, no-horizontal-overflow checks, and reduced-motion verification locally and against immutable Staging.",
       "evidence": [
-        "npm run test:accessibility -w web: 22/22 PASS",
+        "local automated accessibility suite: 22/22 PASS",
+        "Staging automated accessibility suite: 22/22 PASS",
         "Chinese institutions and English wild-conservation desktop/mobile axe journeys: PASS",
         "mobile native structured-map filter journey: PASS"
       ]
     },
     "visual_regression": {
       "status": "BLOCKED",
-      "detail": "No immutable Slice 6 Staging deployment and named semantic visual review are yet bound to this implementation.",
+      "detail": "The immutable Slice 6 Staging deployment is bound to this implementation, but a named semantic visual review of the bilingual structured map journey is not yet recorded.",
       "evidence": []
     },
     "performance_budgets": {
       "status": "PASS",
-      "detail": "The production build reports 107 kB First Load JS for the localized structured map route, below the 220 KiB structured-route budget and without loading MapLibre or external map tiles.",
+      "detail": "The production and OpenNext builds report 107 kB First Load JS for the localized structured map route, below the 220 KiB structured-route budget and without loading MapLibre or external map tiles.",
       "evidence": [
         "/[locale]/map: 107 kB First Load JS",
         "Structured route budget: 220 KiB",
@@ -97,9 +107,16 @@
     }
   },
   "staging": {
-    "status": "BLOCKED",
-    "detail": "An immutable Cloudflare Staging deployment, bundle checksum, real API verification, and Staging browser/accessibility results are not yet recorded for Slice 6.",
-    "evidence": []
+    "status": "PASS",
+    "detail": "Implementation commit c2e2eec is bound to an immutable Cloudflare frontend Version ID and a reproducible OpenNext directory checksum; complete browser and automated accessibility suites pass against the deployed Staging URL, and the Staging route consumes the real public habitat API.",
+    "evidence": [
+      "Commit c2e2eec14148acb12fab0d63b4b09a7ee7470d8d",
+      "Frontend Version ID 576b719a-b8d5-4fd2-9369-0b806529ad49",
+      "OpenNext directory sha256:e3a6a84a84cd61f99b087851a7ab955b38aa163c20a0c86a55c91b83165aca4b across 1387 files using sorted relative path + NUL + bytes + NUL",
+      "Staging URL https://panda-atlas-web-staging.hao1012812011.workers.dev",
+      "Staging browser suite 46/46 PASS; automated accessibility suite 22/22 PASS",
+      "Real habitat API verification: 6 features; latest snapshot 2026-03-05; Staging live-source rendering PASS"
+    ]
   },
   "human_signoff": {
     "status": "BLOCKED",
@@ -108,6 +125,6 @@
   },
   "release_decision": {
     "status": "BLOCKED",
-    "detail": "Local implementation evidence is complete, but clean-checkout CI, immutable Staging identity, real API verification, and named Slice 6 review remain incomplete. This manifest must not be interpreted as release GO."
+    "detail": "Clean-checkout automation, immutable Staging identity, real API verification, browser journeys, and automated accessibility are complete for Slice 6, but named semantic visual and product-owner review remain incomplete. This manifest must not be interpreted as release GO."
   }
 }
