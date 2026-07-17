@@ -10,7 +10,7 @@ test("finds Mei Xiang by every reviewed public identity form", async ({ page }) 
     "smithsonian_history_key:mei-xiang",
   ]) {
     await page.goto(`/zh/atlas?q=${encodeURIComponent(query)}`);
-    await expect(page.getByRole("heading", { name: "1 份已发布档案" }), query).toBeVisible();
+    await expect(page.getByTestId("atlas-result-summary"), query).toContainText("共匹配 1 项");
     await expect(page.getByRole("link", { name: /美香.*Mei Xiang/ }), query).toHaveAttribute(
       "href",
       "/zh/atlas/mei-xiang",

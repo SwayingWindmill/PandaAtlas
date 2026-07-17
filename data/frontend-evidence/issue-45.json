@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "issue": 45,
+  "artifact": {
+    "commit": "UNBOUND_WORKING_TREE",
+    "build_checksum": null,
+    "frontend_deployment_id": null,
+    "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "localized public Atlas route and native form semantics",
+      "Public Content Envelope Atlas dataset interface",
+      "server-owned query normalization, filtering, sorting and pagination",
+      "bilingual URL-state preservation and no-JavaScript discovery"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.14.3",
+    "schema_version": "1.0.0",
+    "projection_version": "public-release-v2",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "BLOCKED",
+      "detail": "The Slice 3 implementation has not yet completed Linux and Windows clean-checkout CI from an immutable commit.",
+      "evidence": []
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Web lint, TypeScript typecheck, production build and release-gate ownership and trust checks pass locally.",
+      "evidence": [
+        "npm run lint:web: PASS",
+        "npm run typecheck:web: PASS",
+        "npm run build:web: PASS",
+        "npm run test:release-gate: 47/47 PASS"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "The localized Atlas uses canonical URL state for q, status, sex, facility, completeness, sort and page; invalid, unsupported and repeated values are normalized by permanent redirect; browser history and locale switching preserve compatible task state.",
+      "evidence": [
+        "apps/web/features/atlas/atlas-query.ts",
+        "apps/web/app/[locale]/atlas/page.tsx",
+        "apps/web/tests/smoke/localized-atlas-discovery.spec.ts",
+        "full browser suite: 35/35 PASS"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "Results are limited to reviewed pandas with trusted profile destinations, use only auditable relevance, name and birth sorting, distinguish complete and partial records and truthful media states, and preserve country-level location precision when no reviewed facility exists.",
+      "evidence": [
+        "apps/web/features/atlas/atlas-search.ts",
+        "apps/web/features/public-content/public-release.ts",
+        "Mei Xiang remains labeled China country-level rather than an inferred facility",
+        "legacy popularity and featured presenters deleted"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "The complete 35-test production browser suite covers search-to-profile navigation, combined filters, deterministic sorting, pagination and history restore, invalid URL normalization, bilingual state preservation, keyboard submission, mobile layout and no-JavaScript results.",
+      "evidence": [
+        "npm run smoke:web: 35/35 PASS",
+        "targeted Atlas discovery suite: 6/6 PASS",
+        "targeted Atlas and trust-spine suites: 22/22 PASS"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Desktop and 320-pixel mobile axe WCAG A/AA scans cover Chinese and English Atlas discovery, with native keyboard-operable form controls, no horizontal overflow and reduced-motion verification.",
+      "evidence": [
+        "npm run test:accessibility -w web: 18/18 PASS",
+        "Chinese and English Atlas discovery desktop/mobile axe journeys: PASS"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "No immutable Slice 3 Staging deployment and named visual review are yet bound to this implementation.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "The production build reports 107 kB First Load JS for the localized Atlas, below the Slice 3 route budget of 170 KiB.",
+      "evidence": [
+        "/[locale]/atlas: 107 kB First Load JS",
+        "Slice 3 Atlas budget: 170 KiB"
+      ]
+    }
+  },
+  "staging": {
+    "status": "BLOCKED",
+    "detail": "An immutable Cloudflare Staging deployment, bundle checksum and Staging browser/accessibility results are not yet recorded for Slice 3.",
+    "evidence": []
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Named product-owner review of bilingual filters, result summaries, pagination, mobile reflow and URL sharing is not yet recorded for Slice 3.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Local implementation evidence is complete, but clean-checkout CI, immutable Staging identity and named Slice 3 review remain incomplete. This manifest must not be interpreted as release GO."
+  }
+}
