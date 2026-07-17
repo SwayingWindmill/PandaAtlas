@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "issue": 49,
+  "artifact": {
+    "commit": "UNBOUND_WORKING_TREE",
+    "build_checksum": null,
+    "frontend_deployment_id": null,
+    "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "localized structured geography route and global navigation",
+      "reviewed facility, residency, and habitat public projections",
+      "public location precision and country-level privacy semantics",
+      "map provider attribution, failure, and export contract",
+      "map-free accessible equivalent journey"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.14.3",
+    "schema_version": "1.0.0",
+    "projection_version": "public-release-v2",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "BLOCKED",
+      "detail": "The Slice 6 implementation has not yet completed Linux and Windows clean-checkout CI from an immutable implementation commit.",
+      "evidence": []
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Web lint, TypeScript typecheck, production build, release ownership, public-boundary, and provider-contract checks pass locally.",
+      "evidence": [
+        "npm run lint:web: PASS",
+        "npm run typecheck:web: PASS",
+        "npm run build:web: PASS",
+        "npm run test:release-gate: 52/52 PASS",
+        "scripts/release/tests/structured-map-ownership.test.mjs: PASS"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "The localized map route uses canonical URL state for mode, focus, country, status, immutable data snapshot, and selected result; invalid values normalize by permanent redirect; /map and /global-distribution redirect by request language while preserving task state.",
+      "evidence": [
+        "apps/web/features/map/map-query.ts",
+        "apps/web/app/[locale]/map/page.tsx",
+        "apps/web/app/map/page.tsx",
+        "apps/web/app/(site)/global-distribution/page.tsx",
+        "apps/web/tests/smoke/localized-structured-map.spec.ts"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "Institutions and individual footprints derive from reviewed facilities and residency records; current and historical states remain distinct; wild conservation data is identified as live API or a named partial cached public release; public precision is facility, locality, province, or country and precise geometry is not exposed in structured result content.",
+      "evidence": [
+        "apps/web/features/map/map-view-model.ts",
+        "apps/web/features/map/cached-habitat-release.ts",
+        "apps/web/features/map/map-provider-registry.ts",
+        "apps/web/features/public-content/public-release.ts",
+        "country-level records are not rendered as institution points: PASS"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "The complete browser suite covers all three structured map modes, reviewed current and historical footprints, URL normalization, result selection, bilingual state preservation, native keyboard controls, no-JavaScript rendering, legacy redirects, existing Atlas/profile/lineage journeys, and provider-free completion.",
+      "evidence": [
+        "targeted structured map suite: 8/8 PASS",
+        "npm run smoke:web: 46/46 PASS"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Chinese and English structured map pages pass desktop and 320-pixel mobile axe WCAG A/AA scans, native keyboard filtering, no-horizontal-overflow checks, and reduced-motion verification.",
+      "evidence": [
+        "npm run test:accessibility -w web: 22/22 PASS",
+        "Chinese institutions and English wild-conservation desktop/mobile axe journeys: PASS",
+        "mobile native structured-map filter journey: PASS"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "No immutable Slice 6 Staging deployment and named semantic visual review are yet bound to this implementation.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "The production build reports 107 kB First Load JS for the localized structured map route, below the 220 KiB structured-route budget and without loading MapLibre or external map tiles.",
+      "evidence": [
+        "/[locale]/map: 107 kB First Load JS",
+        "Structured route budget: 220 KiB",
+        "structured route map canvas count: 0"
+      ]
+    }
+  },
+  "staging": {
+    "status": "BLOCKED",
+    "detail": "An immutable Cloudflare Staging deployment, bundle checksum, real API verification, and Staging browser/accessibility results are not yet recorded for Slice 6.",
+    "evidence": []
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Named product-owner review of bilingual geography wording, current versus historical semantics, public precision, source states, provider attribution, mobile reflow, and URL sharing is not yet recorded for Slice 6.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Local implementation evidence is complete, but clean-checkout CI, immutable Staging identity, real API verification, and named Slice 6 review remain incomplete. This manifest must not be interpreted as release GO."
+  }
+}

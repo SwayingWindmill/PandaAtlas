@@ -17,6 +17,7 @@ interface MobileNavigationProps {
     home: string;
     atlas: string;
     lineage: string;
+    map: string;
     language: string;
   };
 }
@@ -59,6 +60,7 @@ export function MobileNavigation({
           <Link href={`/${locale}`} onClick={() => setOpen(false)}>{labels.home}</Link>
           <Link href={`/${locale}/atlas`} onClick={() => setOpen(false)}>{labels.atlas}</Link>
           <Link href={`/${locale}/lineage` as Route} onClick={() => setOpen(false)}>{labels.lineage}</Link>
+          <Link href={`/${locale}/map` as Route} onClick={() => setOpen(false)}>{labels.map}</Link>
           <Link href={languageHref as Route} hrefLang={languageHrefLang} onClick={() => setOpen(false)}>
             {labels.language}
           </Link>
