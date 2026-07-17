@@ -36,6 +36,7 @@ export interface StructuredMapResult {
   sources: PublicSourceSummary[];
   sourceLabel: string;
   profileHref: string | null;
+  visualizationKey: string | null;
   searchText: string;
 }
 
@@ -146,6 +147,7 @@ function buildInstitutionResults(
       sources,
       sourceLabel: locale === "zh" ? "已审核机构与驻留记录" : "Reviewed facility and residency records",
       profileHref: null,
+      visualizationKey: facility.id,
       searchText: normalized([
         name,
         facility.canonical_slug,
@@ -196,6 +198,7 @@ function buildIndividualResults(
         sources,
         sourceLabel: locale === "zh" ? "已审核个体驻留记录" : "Reviewed individual residency record",
         profileHref: `/${locale}/atlas/${panda.slug}`,
+        visualizationKey: facility?.id ?? null,
         searchText: normalized([
           title,
           panda.slug,
@@ -241,6 +244,7 @@ function buildWildResults(
       sources: [],
       sourceLabel,
       profileHref: null,
+      visualizationKey: id,
       searchText: normalized(`${name} ${province ?? ""} CN ${level}`),
     };
   });

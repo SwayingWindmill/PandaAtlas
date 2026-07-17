@@ -3,6 +3,8 @@ import Link from "next/link";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { ACTIVE_STRUCTURED_MAP_PROVIDER } from "@/features/map/map-provider-registry";
+import { MapVisualizationEnhancement } from "@/features/map/visualization/map-visualization-enhancement";
+import type { MapVisualizationModel } from "@/features/map/visualization/map-visual-model";
 import {
   structuredMapHref,
   type StructuredMapMode,
@@ -25,6 +27,7 @@ interface StructuredMapPageProps {
   locale: PublicLocale;
   state: StructuredMapQueryState;
   view: StructuredMapViewModel;
+  visualization: MapVisualizationModel;
   release: PublicReleaseIdentity;
   delivery: PublicDelivery;
   coverage: PublicCoverage;
@@ -203,6 +206,7 @@ export function StructuredMapPage({
   locale,
   state,
   view,
+  visualization,
   release,
   delivery,
   coverage,
@@ -219,6 +223,7 @@ export function StructuredMapPage({
     status: "all",
     snapshot: state.snapshot,
     selected: "",
+    view: state.view,
   };
 
   return (
@@ -250,6 +255,7 @@ export function StructuredMapPage({
                 status: "all",
                 snapshot: state.snapshot,
                 selected: "",
+                view: "",
               };
               return (
                 <Link
@@ -306,6 +312,8 @@ export function StructuredMapPage({
               <Link href={structuredMapHref(locale, resetState) as Route}>{t.reset}</Link>
             </div>
           </form>
+
+          <MapVisualizationEnhancement locale={locale} state={state} model={visualization} />
 
           {view.selected ? (
             <section className="pa-structured-map-selected" data-testid="selected-structured-map-result" aria-labelledby="selected-map-heading">

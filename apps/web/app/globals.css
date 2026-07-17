@@ -8,7 +8,7 @@
 @import "../styles/atlas-discovery.css";
 @import "../styles/structured-lineage.css";
 @import "../styles/structured-map.css";
-@import "maplibre-gl/dist/maplibre-gl.css";
+@import "../styles/map-visualization.css";
 
 :root {
   --bg: #f6f7f6;

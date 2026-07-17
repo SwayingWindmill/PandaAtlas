@@ -295,6 +295,12 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "build:web"]),
       },
       {
+        id: "map-visualization-budget",
+        label: "Map visualization chunk budget",
+        dependsOn: ["web-build"],
+        run: () => runCommand(npm, ["run", "check:map-visualization-budget"]),
+      },
+      {
         id: "beta-hard-gates",
         label: "Beta trust, privacy, and release consistency preflight",
         dependsOn: ["golden-dataset", "web-build"],

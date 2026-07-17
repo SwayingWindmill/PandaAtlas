@@ -4,6 +4,7 @@ import { StructuredMapPage } from "@/features/map/structured-map-page";
 import { CACHED_HABITAT_PUBLIC_RELEASE } from "@/features/map/cached-habitat-release";
 import { parseStructuredMapQuery, structuredMapHref } from "@/features/map/map-query";
 import { buildStructuredMapViewModel } from "@/features/map/map-view-model";
+import { buildMapVisualizationModel } from "@/features/map/visualization/map-visual-model";
 import {
   loadPublishedMapDataset,
   type PublicCoverage,
@@ -85,6 +86,7 @@ export default async function LocalizedMapPage({ params, searchParams }: Localiz
   const view = country === parsed.state.country && selected === parsed.state.selected
     ? initialView
     : buildStructuredMapViewModel(envelope.data, envelope.sources, habitatInput, canonicalState, locale);
+  const visualization = buildMapVisualizationModel(view, habitatInput, locale, canonicalState);
   const coverage: PublicCoverage = view.hasPartialCoverage
     ? {
         state: "partial",
@@ -99,6 +101,7 @@ export default async function LocalizedMapPage({ params, searchParams }: Localiz
       locale={locale}
       state={canonicalState}
       view={view}
+      visualization={visualization}
       release={envelope.release}
       delivery={envelope.delivery}
       coverage={coverage}
