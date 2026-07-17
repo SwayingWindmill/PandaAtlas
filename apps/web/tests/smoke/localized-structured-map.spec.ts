@@ -36,7 +36,7 @@ test("keeps wild conservation usable without a visual provider and states public
 
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-conservation:"]').first()).toBeVisible();
-  await expect(page.getByText(/PandaAtlas (实时栖息地接口|缓存的部分栖息地发布)/)).toBeVisible();
+  await expect(page.getByText(/PandaAtlas (实时栖息地接口|缓存的部分栖息地发布)/).first()).toBeVisible();
   await expect(page.getByText(/省级|国家级/).first()).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(0);
   await expect(page.getByText("© OpenStreetMap contributors · © CARTO")).toBeHidden();
