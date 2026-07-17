@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "issue": 43,
+  "artifact": {
+    "commit": "UNBOUND_WORKING_TREE",
+    "build_checksum": null,
+    "frontend_deployment_id": null,
+    "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "Public Content Envelope record shape",
+      "trusted profile module ownership",
+      "bilingual public profile semantics",
+      "lineage and parentage publication semantics"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.14.3",
+    "schema_version": "1.0.0",
+    "projection_version": "public-release-v2",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "BLOCKED",
+      "detail": "The Slice 2 implementation has not yet completed Linux and Windows clean-checkout CI from an immutable commit.",
+      "evidence": []
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Web lint, TypeScript typecheck, production build, generated-release consistency, golden-dataset tests and release-gate tests pass locally.",
+      "evidence": [
+        "npm run lint:web: PASS",
+        "npm run typecheck:web: PASS",
+        "npm run build:web: PASS",
+        "npm run test:golden-dataset: 8/8 PASS",
+        "npm run test:release-gate: 45/45 PASS"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "Localized canonical profiles, legacy redirects, stable section anchors, no-JavaScript rendering and same-release family, facility, source and revision data pass the complete browser suite.",
+      "evidence": [
+        "apps/web/app/[locale]/atlas/[slug]/page.tsx",
+        "apps/web/features/profile/trusted-profile-page.tsx",
+        "apps/web/tests/smoke/one-panda-public-loop.spec.ts",
+        "apps/web/tests/smoke/seven-panda-expansion.spec.ts",
+        "npm run smoke:web: 29/29 PASS"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "The profile renders reviewed story content only, distinguishes complete, partial, empty and unavailable modules, labels tentative relationships and dependency stubs, resolves reviewed facility names, preserves source access and revision states, and separates no-licensed-media from source-link-only media.",
+      "evidence": [
+        "apps/web/features/profile/profile-page-view-model.ts",
+        "apps/web/features/public-content/public-release.ts",
+        "apps/web/lib/generated/trusted-identity-aliases.ts",
+        "scripts/golden-dataset/generate-web-identity-aliases.mjs",
+        "Slice 2 browser truth-state journey: PASS"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "The complete 29-test browser suite covers bilingual canonical routes, section navigation, reviewed story, facts, tentative and confirmed relationships, timeline, footprint, media, sources, revisions, local favorites, no-JavaScript, mobile, zoom and dark mode.",
+      "evidence": [
+        "npm run smoke:web: 29/29 PASS",
+        "targeted trusted-profile suites: 14/14 PASS"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Dynamic axe WCAG A/AA scans, keyboard operation, bilingual language declaration, mobile reflow, 200-percent text resizing and reduced-motion assertions pass after correcting new status-badge contrast.",
+      "evidence": [
+        "npm run test:accessibility -w web: 14/14 PASS",
+        "status badge foreground uses --accent-strong with light and dark theme values"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "No immutable Slice 2 Staging deployment and named visual review are yet bound to this implementation.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "The production build reports 108 kB First Load JS for the localized trusted profile, below the Slice 2 route budget of 170 KiB.",
+      "evidence": [
+        "/[locale]/atlas/[slug]: 108 kB First Load JS",
+        "Slice 2 profile budget: 170 KiB"
+      ]
+    }
+  },
+  "staging": {
+    "status": "BLOCKED",
+    "detail": "An immutable Cloudflare Staging deployment, bundle checksum, source URL verification and Staging browser/accessibility results are not yet recorded for Slice 2.",
+    "evidence": []
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Named product-owner review of the complete bilingual profile, long-content states, keyboard anchors and media/source semantics is not yet recorded for Slice 2.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Local implementation evidence is complete, but clean-checkout CI, immutable Staging identity and named Slice 2 review remain incomplete. This manifest must not be interpreted as release GO."
+  }
+}

@@ -1,7 +1,7 @@
 // Generated from contracts/golden-dataset/mei-xiang-family.v1.json.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
-import type { PandaDetail, PandaLineageEdge, PandaLineageNode } from "@/lib/types";
+import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicParentageAssertionSummary } from "@/lib/types";
 
 export interface TrustedPandaReference {
   id: string;
@@ -246,7 +246,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "current_place": {
       "facility_id": null,
       "coarse_location": "China",
-      "status": "confirmed_country_level"
+      "status": "confirmed_country_level",
+      "last_verified_at": "2026-05-09"
     },
     "residencies": [
       {
@@ -259,6 +260,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": "2023-11-08",
         "end_precision": "day",
         "status": "confirmed",
+        "last_verified_at": null,
         "source_ids": [
           "src_smithsonian_history"
         ]
@@ -273,6 +275,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed_country_level",
+        "last_verified_at": "2026-05-09",
         "source_ids": [
           "src_smithsonian_history"
         ]
@@ -517,7 +520,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "current_place": {
       "facility_id": null,
       "coarse_location": "China",
-      "status": "confirmed_country_level"
+      "status": "confirmed_country_level",
+      "last_verified_at": "2026-05-09"
     },
     "residencies": [
       {
@@ -530,6 +534,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": "2023-11-08",
         "end_precision": "day",
         "status": "confirmed",
+        "last_verified_at": null,
         "source_ids": [
           "src_smithsonian_history"
         ]
@@ -544,6 +549,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed_country_level",
+        "last_verified_at": "2026-05-09",
         "source_ids": [
           "src_smithsonian_history"
         ]
@@ -753,7 +759,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "current_place": {
       "facility_id": null,
       "coarse_location": "China",
-      "status": "confirmed_country_level"
+      "status": "confirmed_country_level",
+      "last_verified_at": "2026-05-09"
     },
     "residencies": [
       {
@@ -766,6 +773,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed_country_level",
+        "last_verified_at": "2026-05-09",
         "source_ids": [
           "src_smithsonian_history"
         ]
@@ -941,7 +949,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "current_place": {
       "facility_id": null,
       "coarse_location": "China",
-      "status": "confirmed_country_level"
+      "status": "confirmed_country_level",
+      "last_verified_at": "2026-05-09"
     },
     "residencies": [
       {
@@ -954,6 +963,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed_country_level",
+        "last_verified_at": "2026-05-09",
         "source_ids": [
           "src_smithsonian_history"
         ]
@@ -1139,7 +1149,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "current_place": {
       "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
       "coarse_location": null,
-      "status": "confirmed"
+      "status": "confirmed",
+      "last_verified_at": "2026-05-10"
     },
     "residencies": [
       {
@@ -1152,6 +1163,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed",
+        "last_verified_at": "2026-05-10",
         "source_ids": [
           "src_ccrcgp_2025_birthday_season"
         ]
@@ -1354,7 +1366,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "current_place": {
       "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
       "coarse_location": null,
-      "status": "confirmed"
+      "status": "confirmed",
+      "last_verified_at": "2026-05-10"
     },
     "residencies": [
       {
@@ -1367,6 +1380,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed",
+        "last_verified_at": "2026-05-10",
         "source_ids": [
           "src_ccrcgp_2025_birthday_season",
           "src_smithsonian_history"
@@ -1584,7 +1598,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "current_place": {
       "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
       "coarse_location": null,
-      "status": "confirmed"
+      "status": "confirmed",
+      "last_verified_at": "2026-05-09"
     },
     "residencies": [
       {
@@ -1597,6 +1612,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed",
+        "last_verified_at": "2026-05-09",
         "source_ids": [
           "src_smithsonian_giant_panda_faq"
         ]
@@ -1636,6 +1652,189 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
   }
 ];
 
+export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
+  {
+    "id": "60c7e1a3-d286-5366-8d41-32c11df58b5c",
+    "canonical_slug": "ccrcgp-wolong-gengda-base",
+    "names": [
+      {
+        "language": "en",
+        "value": "CCRCGP Wolong Gengda Base",
+        "kind": "display"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "中国大熊猫保护研究中心卧龙耿达基地",
+        "kind": "display"
+      }
+    ],
+    "country_code": "CN",
+    "locality": "Wolong, Sichuan",
+    "facility_type": "conservation_center"
+  },
+  {
+    "id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
+    "canonical_slug": "ccrcgp-wolong-shenshuping-base",
+    "names": [
+      {
+        "language": "en",
+        "value": "CCRCGP Wolong Shenshuping Base",
+        "kind": "display"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "中国大熊猫保护研究中心卧龙神树坪基地",
+        "kind": "display"
+      }
+    ],
+    "country_code": "CN",
+    "locality": "Wolong, Sichuan",
+    "facility_type": "conservation_center"
+  },
+  {
+    "id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+    "canonical_slug": "smithsonian-national-zoo",
+    "names": [
+      {
+        "language": "en",
+        "value": "Smithsonian's National Zoo",
+        "kind": "official"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "史密森国家动物园",
+        "kind": "translated"
+      }
+    ],
+    "country_code": "US",
+    "locality": "Washington, D.C.",
+    "facility_type": "zoo"
+  }
+];
+
+export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
+  {
+    "id": "parent-bao-bao-father",
+    "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "role": "father",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-bao-bao-mother",
+    "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-bao-li-father",
+    "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+    "parent_id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
+    "role": "father",
+    "status": "tentative",
+    "source_ids": [
+      "src_smithsonian_giant_panda_faq"
+    ]
+  },
+  {
+    "id": "parent-bao-li-mother",
+    "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+    "parent_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_giant_panda_faq"
+    ]
+  },
+  {
+    "id": "parent-bei-bei-father",
+    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "role": "father",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-bei-bei-mother",
+    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-tai-shan-father",
+    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258",
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "role": "father",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-tai-shan-mother",
+    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258",
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-tian-tian-father",
+    "child_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "parent_id": "b53e84dd-31f1-56a8-b8dd-ab0b75dc7a1a",
+    "role": "father",
+    "status": "tentative",
+    "source_ids": [
+      "src_gpg_yongba_death"
+    ]
+  },
+  {
+    "id": "parent-tian-tian-mother",
+    "child_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "parent_id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+    "role": "mother",
+    "status": "tentative",
+    "source_ids": [
+      "src_gpg_yongba_death"
+    ]
+  },
+  {
+    "id": "parent-xiao-qi-ji-father",
+    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "role": "father",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-xiao-qi-ji-mother",
+    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_smithsonian_agreement_2020"
+    ]
+  }
+];
+
 export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
   {
     "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
@@ -1654,7 +1853,9 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null
+    "mother_id": null,
+    "record_tier": "complete_first_pass",
+    "profile_available": true
   },
   {
     "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
@@ -1673,7 +1874,9 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null
+    "mother_id": null,
+    "record_tier": "complete_first_pass",
+    "profile_available": true
   },
   {
     "id": "96d00a39-7865-55db-b5c2-f339ef692258",
@@ -1692,7 +1895,9 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
   },
   {
     "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
@@ -1711,7 +1916,9 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
   },
   {
     "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
@@ -1730,7 +1937,9 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
   },
   {
     "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
@@ -1749,7 +1958,9 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
   },
   {
     "id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
@@ -1768,7 +1979,72 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
+    "mother_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
+    "slug": "an-an-bao-li-father",
+    "name_zh": "an-an-bao-li-father",
+    "name_en": "An An",
+    "gender": "unknown",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "dependency_stub",
+    "profile_available": false
+  },
+  {
+    "id": "b53e84dd-31f1-56a8-b8dd-ab0b75dc7a1a",
+    "slug": "pan-pan-baoxing",
+    "name_zh": "pan-pan-baoxing",
+    "name_en": "Pan Pan",
+    "gender": "unknown",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "dependency_stub",
+    "profile_available": false
+  },
+  {
+    "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+    "slug": "yong-ba",
+    "name_zh": "yong-ba",
+    "name_en": "Yong Ba",
+    "gender": "unknown",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "dependency_stub",
+    "profile_available": false
   }
 ];
 
