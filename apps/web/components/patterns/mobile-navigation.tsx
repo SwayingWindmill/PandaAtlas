@@ -16,6 +16,7 @@ interface MobileNavigationProps {
     navigation: string;
     home: string;
     atlas: string;
+    lineage: string;
     language: string;
   };
 }
@@ -57,6 +58,7 @@ export function MobileNavigation({
         <nav id="public-mobile-navigation" aria-label={labels.navigation} className="pa-mobile-nav-panel">
           <Link href={`/${locale}`} onClick={() => setOpen(false)}>{labels.home}</Link>
           <Link href={`/${locale}/atlas`} onClick={() => setOpen(false)}>{labels.atlas}</Link>
+          <Link href={`/${locale}/lineage` as Route} onClick={() => setOpen(false)}>{labels.lineage}</Link>
           <Link href={languageHref as Route} hrefLang={languageHrefLang} onClick={() => setOpen(false)}>
             {labels.language}
           </Link>

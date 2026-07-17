@@ -74,6 +74,11 @@ export interface PublicAtlasDataset {
   facilities: PublicFacilitySummary[];
 }
 
+export interface PublicLineageDataset {
+  nodes: PandaLineageResponse["nodes"];
+  parentageAssertions: PublicParentageAssertionSummary[];
+}
+
 export interface PublicProfileRecord {
   panda: PandaDetail;
   facilities: PublicFacilitySummary[];
@@ -259,6 +264,23 @@ export function loadPublishedAtlasDataset(
     {
       state: "complete",
       scope: "all reviewed panda identity records in the versioned public release",
+    },
+  );
+}
+
+export function loadPublishedLineageDataset(
+  locale: PublicLocale,
+): PublicContentEnvelope<PublicLineageDataset> {
+  return buildEnvelope(
+    {
+      nodes: TRUSTED_LINEAGE_NODES,
+      parentageAssertions: TRUSTED_PARENTAGE_ASSERTIONS,
+    },
+    canonicalDetails,
+    locale,
+    {
+      state: "complete",
+      scope: "reviewed lineage identities and published parentage assertions",
     },
   );
 }
