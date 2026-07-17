@@ -25,8 +25,12 @@ const coreJourneys = [
   { name: "English trusted profile", path: "/en/atlas/mei-xiang" },
   { name: "distribution map and text alternative", path: "/global-distribution" },
   {
-    name: "lineage explorer and structured relationship content",
-    path: "/lineage?focus=2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    name: "Chinese structured lineage relationship content",
+    path: "/zh/lineage?focus=mei-xiang",
+  },
+  {
+    name: "English structured lineage relationship content",
+    path: "/en/lineage?focus=bao-li&descendants=1",
   },
 ];
 
@@ -112,7 +116,8 @@ test("reduced-motion removes nonessential animation from core journeys", async (
     "/zh/atlas/mei-xiang",
     "/en/atlas/mei-xiang",
     "/global-distribution",
-    "/lineage?focus=2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "/zh/lineage?focus=mei-xiang",
+    "/en/lineage?focus=bao-li&descendants=1",
   ]) {
     await page.goto(path);
     const movingElements = await page.locator("*").evaluateAll((elements) =>

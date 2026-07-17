@@ -7,7 +7,7 @@ import { MobileNavigation } from "@/components/patterns/mobile-navigation";
 
 interface GlobalNavigationProps {
   locale: PublicLocale;
-  active: "home" | "atlas" | "profile";
+  active: "home" | "atlas" | "profile" | "lineage";
   alternatePath?: string;
 }
 
@@ -17,6 +17,7 @@ const copy = {
     description: "可信的大熊猫公开档案",
     home: "首页",
     atlas: "熊猫档案",
+    lineage: "谱系",
     trust: "来源优先",
     nav: "主导航",
     mobileNav: "移动导航",
@@ -29,6 +30,7 @@ const copy = {
     description: "Trusted public giant panda archive",
     home: "Home",
     atlas: "Panda profiles",
+    lineage: "Lineage",
     trust: "Evidence first",
     nav: "Primary navigation",
     mobileNav: "Mobile navigation",
@@ -64,6 +66,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
           <nav className="pa-desktop-nav" aria-label={t.nav}>
             <Link href={`/${locale}` as Route} aria-current={active === "home" ? "page" : undefined}>{t.home}</Link>
             <Link href={`/${locale}/atlas` as Route} aria-current={active === "atlas" || active === "profile" ? "page" : undefined}>{t.atlas}</Link>
+            <Link href={`/${locale}/lineage` as Route} aria-current={active === "lineage" ? "page" : undefined}>{t.lineage}</Link>
           </nav>
 
           <div className="pa-header-actions">
@@ -81,6 +84,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
                 navigation: t.mobileNav,
                 home: t.home,
                 atlas: t.atlas,
+                lineage: t.lineage,
                 language: t.language,
               }}
             />

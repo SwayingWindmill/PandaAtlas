@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "issue": 47,
+  "artifact": {
+    "commit": "UNBOUND_WORKING_TREE",
+    "build_checksum": null,
+    "frontend_deployment_id": null,
+    "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "localized structured lineage route and global navigation",
+      "Public Content Envelope lineage dataset interface",
+      "reviewed relationship assertion semantics and uncertainty states",
+      "graph-free accessible equivalent journey"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.14.3",
+    "schema_version": "1.0.0",
+    "projection_version": "public-release-v2",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "BLOCKED",
+      "detail": "The Slice 4 implementation has not yet completed Linux and Windows clean-checkout CI from an immutable commit.",
+      "evidence": []
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Web lint, TypeScript typecheck, production build and release-gate ownership and trust checks pass locally.",
+      "evidence": [
+        "npm run lint:web: PASS",
+        "npm run typecheck:web: PASS",
+        "npm run build:web: PASS",
+        "npm run test:release-gate: 49/49 PASS"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "The localized lineage route uses canonical URL state for focus, ancestor depth, descendant depth and selected relationship; invalid values normalize by permanent redirect; the legacy route redirects by request language while preserving task state.",
+      "evidence": [
+        "apps/web/features/lineage/lineage-query.ts",
+        "apps/web/app/[locale]/lineage/page.tsx",
+        "apps/web/app/lineage/page.tsx",
+        "apps/web/tests/smoke/localized-structured-lineage.spec.ts"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "Parents, children, ancestors, descendants and siblings are computed from reviewed parentage assertions rather than father_id or mother_id fields; assertion paths preserve confirmed, tentative, disputed and superseded semantics, source IDs and dependency-profile availability.",
+      "evidence": [
+        "apps/web/features/lineage/lineage-view-model.ts",
+        "apps/web/features/public-content/public-release.ts",
+        "Bao Li tentative father journey: PASS",
+        "scripts/release/tests/structured-lineage-ownership.test.mjs"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "The complete 42-test browser suite covers graph-free structured relationships, URL normalization, relation selection, bilingual state preservation, native keyboard controls, no-JavaScript rendering, trusted profile continuation, existing Atlas/profile journeys and map behavior.",
+      "evidence": [
+        "smoke group 1: 17/17 PASS",
+        "smoke group 2: 25/25 PASS",
+        "targeted structured lineage suite: 7/7 PASS"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Chinese and English structured lineage pages pass desktop and 320-pixel mobile axe WCAG A/AA scans, keyboard-native scope controls, no-horizontal-overflow checks and reduced-motion verification.",
+      "evidence": [
+        "npm run test:accessibility -w web: 20/20 PASS",
+        "Chinese and English structured lineage desktop/mobile axe journeys: PASS"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "No immutable Slice 4 Staging deployment and named semantic visual review are yet bound to this implementation.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "The production build reports 107 kB First Load JS for the localized structured lineage route, below the structured public-route budget of 170 KiB.",
+      "evidence": [
+        "/[locale]/lineage: 107 kB First Load JS",
+        "Structured public route budget: 170 KiB"
+      ]
+    }
+  },
+  "staging": {
+    "status": "BLOCKED",
+    "detail": "An immutable Cloudflare Staging deployment, bundle checksum and Staging browser/accessibility results are not yet recorded for Slice 4.",
+    "evidence": []
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Named product-owner review of bilingual relationship wording, uncertainty states, source paths, mobile reflow and URL sharing is not yet recorded for Slice 4.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Local implementation evidence is complete, but clean-checkout CI, immutable Staging identity and named Slice 4 review remain incomplete. This manifest must not be interpreted as release GO."
+  }
+}

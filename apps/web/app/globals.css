@@ -6,6 +6,7 @@
 @import "../styles/motion.css";
 @import "../styles/registers.css";
 @import "../styles/atlas-discovery.css";
+@import "../styles/structured-lineage.css";
 @import "maplibre-gl/dist/maplibre-gl.css";
 
 :root {

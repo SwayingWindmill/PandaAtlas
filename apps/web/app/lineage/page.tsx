@@ -1,26 +1,18 @@
-import { LineageExplorer } from "@/components/lineage/lineage-explorer";
-import { SiteHeader } from "@/components/site/site-header";
-import { getPandaLineage, resolvePandaReference } from "@/lib/api-client";
+import type { Route } from "next";
+import { headers } from "next/headers";
+import { permanentRedirect } from "next/navigation";
+import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
+import {
+  localizedPublicDestination,
+  type PublicSearchParams,
+} from "@/foundation/routing/public-redirects";
 
-interface LineagePageProps {
-  searchParams?: Promise<{ focus?: string }>;
+interface LegacyLineagePageProps {
+  searchParams: Promise<PublicSearchParams>;
 }
 
-export default async function LineagePage({ searchParams }: LineagePageProps) {
-  const resolvedSearchParams = searchParams ? await searchParams : {};
-  const focus = resolvedSearchParams?.focus?.trim() || undefined;
-  const reference = focus ? await resolvePandaReference(focus) : null;
-
-  const initialLineage = await getPandaLineage(focus, {
-    ancestorDepth: 8,
-    descendantDepth: 8,
-    reference
-  });
-
-  return (
-    <main className="lineage-page pb-0 pt-0" data-testid="lineage-page">
-      <SiteHeader statusLabel="谱系图谱" statusValue="关系探索" />
-      <LineageExplorer initialLineage={initialLineage} />
-    </main>
-  );
+export default async function LegacyLineagePage({ searchParams }: LegacyLineagePageProps) {
+  const [requestHeaders, query] = await Promise.all([headers(), searchParams]);
+  const locale = resolvePreferredPublicLocale(requestHeaders.get("accept-language"));
+  permanentRedirect(localizedPublicDestination(locale, "/lineage", query) as Route);
 }
