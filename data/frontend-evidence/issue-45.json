@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "issue": 45,
+  "artifact": {
+    "commit": "71ad281743e6c2db6ee24c593afad703534c4b32",
+    "build_checksum": "sha256:b13335700e108fc8058c57a6fdb56ce2b7c58b19cd44994f54762232ddbb2615",
+    "frontend_deployment_id": "d444fe44-1bc7-4cf1-8bf0-a17e29ec6de7",
+    "api_deployment_id": "7a2814ed-002f-4f0b-b54c-13a27f0db4af"
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "localized public Atlas route and native form semantics",
+      "Public Content Envelope Atlas dataset interface",
+      "server-owned query normalization, filtering, sorting and pagination",
+      "bilingual URL-state preservation and no-JavaScript discovery"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.14.3",
+    "schema_version": "1.0.0",
+    "projection_version": "public-release-v2",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "PASS",
+      "detail": "GitHub Actions completed the pinned default Release Gate from a clean checkout on Linux and Windows for implementation commit 71ad281; both jobs passed and uploaded immutable reports with recorded SHA-256 digests.",
+      "evidence": [
+        "Release Gate run 29552556299",
+        "Linux job 87798078085: PASS; artifact 8396312544 release-gate-linux; sha256:75c52cac1714c48d8e98f9eff9547c2fc7dc9a47a9de11c57046a83718fe4bf2",
+        "Windows job 87798078083: PASS; artifact 8396340167 release-gate-windows; sha256:5a918023daa6bf05d7e72bb749699e3eab880a4560265946e660f71463bda5d5"
+      ]
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Web lint, TypeScript typecheck, production build and release-gate ownership and trust checks pass locally and in Linux and Windows clean checkouts.",
+      "evidence": [
+        "npm run lint:web: PASS",
+        "npm run typecheck:web: PASS",
+        "npm run build:web: PASS",
+        "npm run test:release-gate: 48/48 PASS",
+        "GitHub Actions run 29552556299 Linux and Windows default gates: PASS"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "The localized Atlas uses canonical URL state for q, status, sex, facility, completeness, sort and page; invalid, unsupported and repeated values are normalized by permanent redirect; browser history and locale switching preserve compatible task state.",
+      "evidence": [
+        "apps/web/features/atlas/atlas-query.ts",
+        "apps/web/app/[locale]/atlas/page.tsx",
+        "apps/web/tests/smoke/localized-atlas-discovery.spec.ts",
+        "local and Staging full browser suites: 35/35 PASS"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "Results are limited to reviewed pandas with trusted profile destinations, use only auditable relevance, name and birth sorting, distinguish complete and partial records and truthful media states, and preserve country-level location precision when no reviewed facility exists.",
+      "evidence": [
+        "apps/web/features/atlas/atlas-search.ts",
+        "apps/web/features/public-content/public-release.ts",
+        "Mei Xiang remains labeled China country-level rather than an inferred facility",
+        "legacy popularity and featured presenters deleted"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "The complete 35-test production browser suite passes locally, in clean-checkout CI and against the immutable Staging deployment; it covers search-to-profile navigation, combined filters, deterministic sorting, pagination and history restore, invalid URL normalization, bilingual state preservation, keyboard submission, mobile layout and no-JavaScript results.",
+      "evidence": [
+        "npm run smoke:web: 35/35 PASS",
+        "targeted Atlas discovery suite: 6/6 PASS",
+        "GitHub Actions run 29552556299 Linux and Windows browser checks: PASS",
+        "Staging browser suite: 35/35 PASS"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Desktop and 320-pixel mobile axe WCAG A/AA scans cover Chinese and English Atlas discovery, with native keyboard-operable form controls, no horizontal overflow and reduced-motion verification locally, in CI and against Staging.",
+      "evidence": [
+        "npm run test:accessibility -w web: 18/18 PASS",
+        "GitHub Actions run 29552556299 Linux and Windows automated core WCAG checks: PASS",
+        "Staging automated accessibility suite: 18/18 PASS"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "A named semantic visual review of the Slice 3 Staging deployment is not yet recorded.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "The production and Cloudflare builds report 107 kB First Load JS for the localized Atlas, below the Slice 3 route budget of 170 KiB.",
+      "evidence": [
+        "/[locale]/atlas: 107 kB First Load JS",
+        "Slice 3 Atlas budget: 170 KiB"
+      ]
+    }
+  },
+  "staging": {
+    "status": "PASS",
+    "detail": "Implementation commit 71ad281 is bound to an immutable Cloudflare frontend Version ID and bundle checksum, and the complete browser and automated accessibility suites pass against the deployed Staging URL.",
+    "evidence": [
+      "Commit 71ad281743e6c2db6ee24c593afad703534c4b32",
+      "Frontend Version ID d444fe44-1bc7-4cf1-8bf0-a17e29ec6de7",
+      "OpenNext bundle sha256:b13335700e108fc8058c57a6fdb56ce2b7c58b19cd44994f54762232ddbb2615 across 1391 files",
+      "Staging URL https://panda-atlas-web-staging.hao1012812011.workers.dev",
+      "Staging browser suite 35/35 PASS; automated accessibility suite 18/18 PASS"
+    ]
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Named product-owner review of bilingual filters, result summaries, pagination, mobile reflow and URL sharing is not yet recorded for Slice 3.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Clean-checkout automation and immutable Staging verification are complete for implementation commit 71ad281, but named semantic visual and product-owner review remain incomplete. This manifest must not be interpreted as release GO."
+  }
+}

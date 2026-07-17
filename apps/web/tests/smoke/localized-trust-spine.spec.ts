@@ -9,8 +9,8 @@ test("completes the localized search-to-profile trust spine", async ({ page }) =
   await search.getByRole("button", { name: "搜索" }).click();
 
   await expect(page).toHaveURL(/\/zh\/atlas\?q=%E7%BE%8E%E9%A6%99$/);
-  await expect(page.getByRole("heading", { level: 1, name: "搜索公开档案" })).toBeVisible();
-  await expect(page.getByText("1 份已发布档案")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "熊猫档案检索" })).toBeVisible();
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("共匹配 1 项");
   await expect(page.getByTestId("public-delivery-notice")).toContainText("缓存的可信发布版本");
 
   const result = page.getByRole("link", { name: /美香.*Mei Xiang/ });
@@ -28,8 +28,8 @@ test("completes the localized search-to-profile trust spine", async ({ page }) =
 test("uses the same reviewed identity release in English", async ({ page }) => {
   await page.goto("/en/atlas?q=Mei%20Xiang");
 
-  await expect(page.getByRole("heading", { level: 1, name: "Search public profiles" })).toBeVisible();
-  await expect(page.getByText("1 published profile")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Panda profile discovery" })).toBeVisible();
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 matches");
   await expect(page.getByRole("link", { name: /Mei Xiang.*美香/ })).toHaveAttribute(
     "href",
     "/en/atlas/mei-xiang",

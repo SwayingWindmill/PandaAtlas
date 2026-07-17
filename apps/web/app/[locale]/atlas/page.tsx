@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { ArrowRight, Search } from "lucide-react";
+import type { Route } from "next";
+import Link from "next/link";
+import { notFound, permanentRedirect } from "next/navigation";
+import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
-import { searchPublishedPandas } from "@/features/public-content/public-release";
+import { atlasHref, parseAtlasQuery, type AtlasQueryState } from "@/features/atlas/atlas-query";
+import { buildAtlasSearchViewModel } from "@/features/atlas/atlas-search";
+import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
 
 interface LocalizedAtlasPageProps {
@@ -13,49 +17,113 @@ interface LocalizedAtlasPageProps {
 
 const copy = {
   zh: {
-    title: "搜索公开档案",
-    description: "当前切片只搜索已审核个体身份。筛选、排序和混合实体结果将在后续 Atlas 切片中提供。",
-    searchLabel: "搜索公开档案",
+    title: "熊猫档案检索",
+    description: "在版本化公开档案中按名称、状态、性别、现居机构和档案完整度查找个体。结果只包含已有可信档案目的地的熊猫。",
+    searchLabel: "搜索与筛选公开档案",
     inputLabel: "熊猫名称或公开标识",
     placeholder: "例如：美香、Mei Xiang、meixiang",
-    submit: "搜索",
-    emptyQuery: "输入已审核名称、别名、历史拼写或公开标识开始查证。",
-    noResults: "当前已发布身份范围内没有匹配结果。这不代表现实中不存在该个体。",
-    result: (count: number) => `${count} 份已发布档案`,
+    filters: "筛选条件",
     status: "生命状态",
+    sex: "性别",
+    facility: "当前机构",
+    completeness: "档案完整度",
+    sort: "排序",
+    all: "全部",
     alive: "存活",
     deceased: "已死亡",
-    birth: "出生日期",
-    location: "当前公开位置",
-    china: "中国（国家级记录）",
+    unknown: "未知",
+    male: "雄性",
+    female: "雌性",
+    complete: "完整首轮档案",
+    partial: "部分公开档案",
+    relevance: "相关度",
+    name: "名称",
+    birth: "出生日期（新到旧）",
+    submit: "应用搜索与筛选",
+    reset: "清除全部条件",
+    resultSummary: (first: number, last: number, matched: number, total: number) =>
+      matched ? `显示第 ${first}–${last} 项，共匹配 ${matched} 项；公开档案总数 ${total} 项。` : `没有匹配项；公开档案总数 ${total} 项。`,
+    querySummary: (query: string) => `搜索“${query}”`,
+    activeFilters: (count: number) => `${count} 个筛选条件生效`,
+    noResults: "当前已发布范围内没有同时满足这些条件的档案。调整筛选不会改变已发布数据本身。",
+    currentLocation: "当前公开机构",
+    birthDate: "出生日期",
+    recordState: "档案状态",
+    mediaState: "媒体状态",
     open: "打开可信档案",
-    unknown: "暂无已审核记录",
-    missingEnglishName: "英文名称尚未审核",
+    noLicensedMedia: "无可展示授权媒体",
+    sourceLinkOnly: "仅提供来源链接",
+    licensedMedia: "有授权媒体",
+    mediaUnavailable: "媒体状态未发布",
+    previous: "上一页",
+    next: "下一页",
+    page: (current: number, total: number) => `第 ${current} 页，共 ${total} 页`,
+    facilityCount: (count: number) => `${count} 只`,
+    id: "稳定标识",
   },
   en: {
-    title: "Search public profiles",
-    description: "This slice searches reviewed panda identities only. Filters, sorting and mixed entity results belong to the later Atlas slice.",
-    searchLabel: "Search public profiles",
+    title: "Panda profile discovery",
+    description: "Find individuals in the versioned public archive by name, life status, sex, current facility, and profile completeness. Results include only pandas with a trusted profile destination.",
+    searchLabel: "Search and filter public profiles",
     inputLabel: "Panda name or public identifier",
     placeholder: "For example: Mei Xiang, 美香, meixiang",
-    submit: "Search",
-    emptyQuery: "Enter a reviewed name, alias, historic spelling or public identifier to begin verification.",
-    noResults: "No match exists in the currently published identity scope. This does not claim that the panda does not exist in reality.",
-    result: (count: number) => `${count} published ${count === 1 ? "profile" : "profiles"}`,
+    filters: "Filters",
     status: "Life status",
+    sex: "Sex",
+    facility: "Current facility",
+    completeness: "Profile completeness",
+    sort: "Sort",
+    all: "All",
     alive: "Alive",
     deceased: "Deceased",
-    birth: "Birth date",
-    location: "Current public location",
-    china: "China (country-level record)",
+    unknown: "Unknown",
+    male: "Male",
+    female: "Female",
+    complete: "Complete first-pass profile",
+    partial: "Partial public profile",
+    relevance: "Relevance",
+    name: "Name",
+    birth: "Birth date (newest first)",
+    submit: "Apply search and filters",
+    reset: "Clear all conditions",
+    resultSummary: (first: number, last: number, matched: number, total: number) =>
+      matched ? `Showing ${first}–${last} of ${matched} matches across ${total} published profiles.` : `No matches across ${total} published profiles.`,
+    querySummary: (query: string) => `Search: “${query}”`,
+    activeFilters: (count: number) => `${count} active ${count === 1 ? "filter" : "filters"}`,
+    noResults: "No published profile satisfies all of these conditions. Changing filters does not change the underlying published release.",
+    currentLocation: "Current public facility",
+    birthDate: "Birth date",
+    recordState: "Profile state",
+    mediaState: "Media state",
     open: "Open trusted profile",
-    unknown: "No reviewed record",
-    missingEnglishName: "English name not reviewed",
+    noLicensedMedia: "No licensed display media",
+    sourceLinkOnly: "Source link only",
+    licensedMedia: "Licensed media available",
+    mediaUnavailable: "Media state unavailable",
+    previous: "Previous",
+    next: "Next",
+    page: (current: number, total: number) => `Page ${current} of ${total}`,
+    facilityCount: (count: number) => `${count} ${count === 1 ? "panda" : "pandas"}`,
+    id: "Stable identifier",
   },
 } as const;
 
-function firstSearchParam(value: string | string[] | undefined): string {
-  return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+function localizedStatus(value: string, locale: "zh" | "en") {
+  const t = copy[locale];
+  if (value === "alive") return t.alive;
+  if (value === "deceased") return t.deceased;
+  return t.unknown;
+}
+
+function localizedSex(value: string, locale: "zh" | "en") {
+  const t = copy[locale];
+  if (value === "male") return t.male;
+  if (value === "female") return t.female;
+  return t.unknown;
+}
+
+function pageState(state: AtlasQueryState, page: number): AtlasQueryState {
+  return { ...state, page };
 }
 
 export async function generateMetadata({ params }: LocalizedAtlasPageProps): Promise<Metadata> {
@@ -74,63 +142,147 @@ export async function generateMetadata({ params }: LocalizedAtlasPageProps): Pro
 }
 
 export default async function LocalizedAtlasPage({ params, searchParams }: LocalizedAtlasPageProps) {
-  const [{ locale: rawLocale }, queryParameters] = await Promise.all([params, searchParams]);
+  const [{ locale: rawLocale }, rawQuery] = await Promise.all([params, searchParams]);
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const query = firstSearchParam(queryParameters.q).trim();
-  const envelope = searchPublishedPandas(query, locale);
+
+  const envelope = loadPublishedAtlasDataset(locale);
+  const parsed = parseAtlasQuery(rawQuery, envelope.data.facilities);
+  const view = buildAtlasSearchViewModel(envelope.data.pandas, envelope.data.facilities, parsed.state, locale);
+  const canonicalState = { ...parsed.state, page: view.page };
+  const canonicalHref = atlasHref(locale, canonicalState);
+  if (parsed.needsNormalization || view.page !== parsed.state.page) permanentRedirect(canonicalHref as Route);
+
   const t = copy[locale];
+  const alternateLocale = locale === "zh" ? "en" : "zh";
+  const mediaLabel = (state: string) => {
+    if (state === "licensed") return t.licensedMedia;
+    if (state === "source_link_only") return t.sourceLinkOnly;
+    if (state === "no_licensed_media") return t.noLicensedMedia;
+    return t.mediaUnavailable;
+  };
 
   return (
     <>
-      <GlobalNavigation locale={locale} active="atlas" alternatePath={`/${locale === "zh" ? "en" : "zh"}/atlas${query ? `?q=${encodeURIComponent(query)}` : ""}`} />
+      <GlobalNavigation locale={locale} active="atlas" alternatePath={atlasHref(alternateLocale, canonicalState)} />
       <main id="main-content" className="pa-public-main" data-testid="localized-atlas-page">
         <section className={`${publicShellClassName} pa-atlas-header`}>
           <p className="pa-eyebrow">PandaAtlas / Public identities</p>
           <h1>{t.title}</h1>
           <p className="pa-lede">{t.description}</p>
-          <form role="search" aria-label={t.searchLabel} action={`/${locale}/atlas`} method="get" className="pa-search-form pa-search-form-compact">
-            <label htmlFor="atlas-query">{t.inputLabel}</label>
-            <div className="pa-search-row">
-              <span className="pa-search-icon" aria-hidden="true"><Search /></span>
-              <input id="atlas-query" name="q" type="search" defaultValue={query} placeholder={t.placeholder} autoComplete="off" />
-              <button type="submit">{t.submit}</button>
+
+          <form role="search" aria-label={t.searchLabel} action={`/${locale}/atlas`} method="get" className="pa-atlas-discovery-form" data-testid="atlas-discovery-form">
+            <div className="pa-search-form pa-search-form-compact">
+              <label htmlFor="atlas-query">{t.inputLabel}</label>
+              <div className="pa-search-row">
+                <span className="pa-search-icon" aria-hidden="true"><Search /></span>
+                <input id="atlas-query" name="q" type="search" defaultValue={canonicalState.q} placeholder={t.placeholder} autoComplete="off" />
+                <button type="submit">{t.submit}</button>
+              </div>
             </div>
+
+            <fieldset className="pa-filter-panel">
+              <legend>{t.filters}</legend>
+              <div className="pa-filter-grid">
+                <label>{t.status}
+                  <select name="status" defaultValue={canonicalState.status}>
+                    <option value="all">{t.all}</option>
+                    <option value="alive">{t.alive}</option>
+                    <option value="deceased">{t.deceased}</option>
+                    <option value="unknown">{t.unknown}</option>
+                  </select>
+                </label>
+                <label>{t.sex}
+                  <select name="sex" defaultValue={canonicalState.sex}>
+                    <option value="all">{t.all}</option>
+                    <option value="male">{t.male}</option>
+                    <option value="female">{t.female}</option>
+                    <option value="unknown">{t.unknown}</option>
+                  </select>
+                </label>
+                <label>{t.facility}
+                  <select name="facility" defaultValue={canonicalState.facility}>
+                    <option value="all">{t.all}</option>
+                    {view.facilities.map((facility) => (
+                      <option key={facility.id} value={facility.id}>{facility.name} · {t.facilityCount(facility.resultCount)}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>{t.completeness}
+                  <select name="completeness" defaultValue={canonicalState.completeness}>
+                    <option value="all">{t.all}</option>
+                    <option value="complete">{t.complete}</option>
+                    <option value="partial">{t.partial}</option>
+                  </select>
+                </label>
+                <label>{t.sort}
+                  <select name="sort" defaultValue={canonicalState.sort}>
+                    <option value="relevance">{t.relevance}</option>
+                    <option value="name">{t.name}</option>
+                    <option value="birth">{t.birth}</option>
+                  </select>
+                </label>
+              </div>
+              <div className="pa-filter-actions">
+                <button type="submit">{t.submit}</button>
+                <Link href={`/${locale}/atlas` as Route}>{t.reset}</Link>
+              </div>
+            </fieldset>
           </form>
         </section>
 
         <section className={`${publicShellClassName} pa-section`}>
           <PublicDeliveryNotice locale={locale} release={envelope.release} delivery={envelope.delivery} coverage={envelope.coverage} localeDelivery={envelope.locale} />
-          <div className="pa-results-heading">
-            <h2>{query ? t.result(envelope.data.results.length) : t.emptyQuery}</h2>
-            {query && envelope.data.results.length === 0 ? <p>{t.noResults}</p> : null}
+
+          <div className="pa-results-heading" aria-live="polite" data-testid="atlas-result-summary">
+            <h2>{t.resultSummary(view.firstResult, view.lastResult, view.totalMatched, view.totalPublished)}</h2>
+            <div className="pa-active-query-summary">
+              {canonicalState.q ? <span>{t.querySummary(canonicalState.q)}</span> : null}
+              {view.activeFilterCount ? <span>{t.activeFilters(view.activeFilterCount)}</span> : null}
+              <span>{t.page(view.page, view.pageCount)}</span>
+            </div>
+            {!view.totalMatched ? <p>{t.noResults}</p> : null}
           </div>
 
-          {envelope.data.results.length ? (
-            <ol className="pa-result-list">
-              {envelope.data.results.map((result) => (
+          {view.results.length ? (
+            <ol className="pa-result-list" data-testid="atlas-result-list">
+              {view.results.map((result) => (
                 <li key={result.id}>
-                  <a href={`/${locale}/atlas/${result.slug}`} className="pa-result-card">
+                  <Link href={`/${locale}/atlas/${result.slug}` as Route} className="pa-result-card">
                     <div>
-                      <p className="pa-result-kicker">{result.id}</p>
-                      <h2 lang={locale === "en" && result.nameEnTranslation === "missing" ? "zh-CN" : undefined}>
-                        {locale === "zh" ? result.nameZh : result.nameEn ?? result.nameZh}
-                      </h2>
-                      <p className="pa-result-alternate">
-                        {locale === "zh" ? result.nameEn : result.nameZh}
-                        {locale === "en" && result.nameEnTranslation === "missing" ? ` · ${t.missingEnglishName}` : null}
-                      </p>
+                      <p className="pa-result-kicker">{t.id}: {result.id}</p>
+                      <h2 lang={result.nameLanguage}>{result.name}</h2>
+                      {result.alternateName ? <p className="pa-result-alternate">{result.alternateName}</p> : null}
                     </div>
                     <dl>
-                      <div><dt>{t.status}</dt><dd>{result.status === "alive" ? t.alive : result.status === "deceased" ? t.deceased : t.unknown}</dd></div>
-                      <div><dt>{t.birth}</dt><dd>{result.birthDate ?? t.unknown}</dd></div>
-                      <div><dt>{t.location}</dt><dd>{result.currentLocation === "China" ? t.china : result.currentLocation ?? t.unknown}</dd></div>
+                      <div><dt>{t.status}</dt><dd>{localizedStatus(result.status, locale)}</dd></div>
+                      <div><dt>{t.sex}</dt><dd>{localizedSex(result.sex, locale)}</dd></div>
+                      <div><dt>{t.birthDate}</dt><dd>{result.birthDate ?? t.unknown}</dd></div>
+                      <div><dt>{t.currentLocation}</dt><dd>{result.facilityName ?? t.unknown}</dd></div>
+                      <div><dt>{t.recordState}</dt><dd>{result.completeness === "complete" ? t.complete : t.partial}</dd></div>
+                      <div><dt>{t.mediaState}</dt><dd>{mediaLabel(result.mediaState)}</dd></div>
                     </dl>
                     <span className="pa-result-action">{t.open}<ArrowRight aria-hidden="true" /></span>
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ol>
+          ) : null}
+
+          {view.pageCount > 1 ? (
+            <nav className="pa-pagination" aria-label={t.page(view.page, view.pageCount)} data-testid="atlas-pagination">
+              {view.hasPreviousPage ? (
+                <Link href={atlasHref(locale, pageState(canonicalState, view.page - 1)) as Route} rel="prev">
+                  <ArrowLeft aria-hidden="true" />{t.previous}
+                </Link>
+              ) : <span aria-disabled="true"><ArrowLeft aria-hidden="true" />{t.previous}</span>}
+              <strong>{t.page(view.page, view.pageCount)}</strong>
+              {view.hasNextPage ? (
+                <Link href={atlasHref(locale, pageState(canonicalState, view.page + 1)) as Route} rel="next">
+                  {t.next}<ArrowRight aria-hidden="true" />
+                </Link>
+              ) : <span aria-disabled="true">{t.next}<ArrowRight aria-hidden="true" /></span>}
+            </nav>
           ) : null}
         </section>
       </main>

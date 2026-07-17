@@ -19,6 +19,8 @@ async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentN
 }
 
 const coreJourneys = [
+  { name: "Chinese Atlas discovery", path: "/zh/atlas?status=alive&sort=name" },
+  { name: "English Atlas discovery", path: "/en/atlas?status=alive&sort=name" },
   { name: "Chinese trusted profile", path: "/zh/atlas/mei-xiang" },
   { name: "English trusted profile", path: "/en/atlas/mei-xiang" },
   { name: "distribution map and text alternative", path: "/global-distribution" },
@@ -105,6 +107,8 @@ test("reduced-motion removes nonessential animation from core journeys", async (
   await page.emulateMedia({ reducedMotion: "reduce" });
 
   for (const path of [
+    "/zh/atlas?status=alive&sort=name",
+    "/en/atlas?status=alive&sort=name",
     "/zh/atlas/mei-xiang",
     "/en/atlas/mei-xiang",
     "/global-distribution",

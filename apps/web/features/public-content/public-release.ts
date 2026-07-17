@@ -69,6 +69,11 @@ export interface PublicAtlasSearch {
   totalPublished: number;
 }
 
+export interface PublicAtlasDataset {
+  pandas: PandaDetail[];
+  facilities: PublicFacilitySummary[];
+}
+
 export interface PublicProfileRecord {
   panda: PandaDetail;
   facilities: PublicFacilitySummary[];
@@ -237,6 +242,23 @@ export function searchPublishedPandas(
     {
       state: normalizedQuery ? "complete" : "none",
       scope: "reviewed identity records in the versioned public release",
+    },
+  );
+}
+
+export function loadPublishedAtlasDataset(
+  locale: PublicLocale,
+): PublicContentEnvelope<PublicAtlasDataset> {
+  return buildEnvelope(
+    {
+      pandas: canonicalDetails,
+      facilities: TRUSTED_FACILITIES,
+    },
+    canonicalDetails,
+    locale,
+    {
+      state: "complete",
+      scope: "all reviewed panda identity records in the versioned public release",
     },
   );
 }
