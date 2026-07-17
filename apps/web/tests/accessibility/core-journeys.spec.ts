@@ -23,7 +23,8 @@ const coreJourneys = [
   { name: "English Atlas discovery", path: "/en/atlas?status=alive&sort=name" },
   { name: "Chinese trusted profile", path: "/zh/atlas/mei-xiang" },
   { name: "English trusted profile", path: "/en/atlas/mei-xiang" },
-  { name: "distribution map and text alternative", path: "/global-distribution" },
+  { name: "Chinese structured map journey", path: "/zh/map?mode=institutions&snapshot=2026.07.14.3" },
+  { name: "English structured map journey", path: "/en/map?mode=wild&snapshot=2026.07.14.3" },
   {
     name: "Chinese structured lineage relationship content",
     path: "/zh/lineage?focus=mei-xiang",
@@ -99,12 +100,16 @@ test("bilingual profiles tolerate a simulated 200-percent text-only resize", asy
   }
 });
 
-test("distribution controls remain accessible in their expanded mobile state", async ({ page }, testInfo) => {
+test("structured map filters remain keyboard operable and accessible", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/global-distribution");
-  await page.getByRole("button", { name: "地图控制", exact: true }).click();
-  await expect(page.getByRole("button", { name: "关闭地图控制面板" }).last()).toBeVisible();
-  await scanForWcagViolations(page, testInfo, "axe-mobile-distribution-controls-open");
+  await page.goto("/en/map?mode=institutions&snapshot=2026.07.14.3");
+  const form = page.getByRole("form", { name: "Filter structured results" });
+  await form.getByLabel("Panda, institution, or place").fill("Smithsonian");
+  await form.getByLabel("Country scope").selectOption("US");
+  await form.getByRole("button", { name: "Update results" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { level: 3, name: "Smithsonian's National Zoo" })).toBeVisible();
+  await scanForWcagViolations(page, testInfo, "axe-mobile-structured-map-filtered");
 });
 
 test("reduced-motion removes nonessential animation from core journeys", async ({ page }) => {
@@ -115,7 +120,8 @@ test("reduced-motion removes nonessential animation from core journeys", async (
     "/en/atlas?status=alive&sort=name",
     "/zh/atlas/mei-xiang",
     "/en/atlas/mei-xiang",
-    "/global-distribution",
+    "/zh/map?mode=institutions&snapshot=2026.07.14.3",
+    "/en/map?mode=wild&snapshot=2026.07.14.3",
     "/zh/lineage?focus=mei-xiang",
     "/en/lineage?focus=bao-li&descendants=1",
   ]) {

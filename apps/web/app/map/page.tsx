@@ -1,5 +1,18 @@
-import { redirect } from "next/navigation";
+import type { Route } from "next";
+import { headers } from "next/headers";
+import { permanentRedirect } from "next/navigation";
+import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
+import {
+  localizedPublicDestination,
+  type PublicSearchParams,
+} from "@/foundation/routing/public-redirects";
 
-export default function MapPage() {
-  redirect("/global-distribution");
+interface LegacyMapPageProps {
+  searchParams: Promise<PublicSearchParams>;
+}
+
+export default async function LegacyMapPage({ searchParams }: LegacyMapPageProps) {
+  const [requestHeaders, query] = await Promise.all([headers(), searchParams]);
+  const locale = resolvePreferredPublicLocale(requestHeaders.get("accept-language"));
+  permanentRedirect(localizedPublicDestination(locale, "/map", query) as Route);
 }

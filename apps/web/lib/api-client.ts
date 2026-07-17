@@ -19,6 +19,7 @@ import {
   TRUSTED_PANDA_REFERENCES
 } from "@/lib/generated/trusted-identity-aliases";
 import { DEFAULT_LINEAGE_FOCUS_ID, LINEAGE_PANDAS } from "@/lib/lineage-data";
+import { CACHED_HABITAT_PUBLIC_RELEASE } from "@/features/map/cached-habitat-release";
 
 const DEFAULT_BBOX = "100,25,110,36";
 
@@ -544,30 +545,6 @@ const FALLBACK_DISTRIBUTION: CompleteGeoJsonFeatureCollection<DistributionFeatur
   ]
 };
 
-const FALLBACK_HABITATS: CompleteGeoJsonFeatureCollection<HabitatFeatureProperties> = {
-  type: "FeatureCollection",
-  meta: {
-    truncated: false,
-    limit: 2000,
-    requested_zoom: null
-  },
-  features: [
-    {
-      type: "Feature",
-      id: "habitat-001",
-      geometry: {
-        type: "MultiPolygon",
-        coordinates: [[[[103.2, 30.9], [104, 30.9], [104, 31.7], [103.2, 31.7], [103.2, 30.9]]]]
-      },
-      properties: {
-        name: "岷山片区",
-        province: "四川",
-        level: "national"
-      }
-    }
-  ]
-};
-
 const FALLBACK_STATS: OverviewStats = {
   total_pandas: FALLBACK_PANDA_LIST.length,
   active_habitats: 3,
@@ -732,6 +709,11 @@ export interface DistributionResponse {
 export interface HabitatQueryOptions {
   bbox?: string;
   level?: string;
+}
+
+export interface HabitatResponse {
+  data: CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>;
+  source: "api" | "cached-release";
 }
 
 const ATLAS_PAGE_SIZE = 100;
@@ -1062,30 +1044,43 @@ export async function getDistribution(
   return result.data;
 }
 
-export async function getHabitats(
+export async function getHabitatsWithSource(
   options: HabitatQueryOptions = {}
-): Promise<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>> {
+): Promise<HabitatResponse> {
   const query = buildQuery({
     bbox: options.bbox ?? DEFAULT_BBOX,
     level: options.level
   });
 
   try {
-    return await fetchJson<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>>(
-      `/api/v1/map/habitats?${query}`,
-      { cache: "no-store" }
-    );
+    return {
+      data: await fetchJson<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>>(
+        `/api/v1/map/habitats?${query}`,
+        { cache: "no-store" }
+      ),
+      source: "api"
+    };
   } catch {
     const fallbackBBox = parseBBox(options.bbox ?? DEFAULT_BBOX);
     return {
-      ...FALLBACK_HABITATS,
-      features: FALLBACK_HABITATS.features.filter(
-        (feature) =>
-          geometryIntersectsBBox(feature.geometry.coordinates, fallbackBBox) &&
-          (!options.level || feature.properties.level === options.level)
-      )
+      data: {
+        ...CACHED_HABITAT_PUBLIC_RELEASE.data,
+        features: CACHED_HABITAT_PUBLIC_RELEASE.data.features.filter(
+          (feature) =>
+            geometryIntersectsBBox(feature.geometry.coordinates, fallbackBBox) &&
+            (!options.level || feature.properties.level === options.level)
+        )
+      },
+      source: "cached-release"
     };
   }
+}
+
+export async function getHabitats(
+  options: HabitatQueryOptions = {}
+): Promise<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>> {
+  const result = await getHabitatsWithSource(options);
+  return result.data;
 }
 
 export async function getOverviewStats(): Promise<OverviewStats> {

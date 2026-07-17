@@ -13,11 +13,11 @@ test("searches the localized Atlas and opens the canonical trusted profile", asy
   await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.14.3");
 });
 
-test("loads the global distribution shell directly", async ({ page }) => {
+test("redirects the legacy global distribution route into the localized structured map", async ({ page }) => {
   await page.goto("/global-distribution");
 
-  await expect(page.getByTestId("global-distribution-page")).toBeVisible();
-  await expect(page.getByTestId("global-distribution-shell")).toBeVisible();
+  await expect(page).toHaveURL(/\/(zh|en)\/map\?mode=institutions&snapshot=2026\.07\.14\.3$/);
+  await expect(page.getByTestId("structured-map-page")).toBeVisible();
 });
 
 test("keeps the local admin proxy disabled by default", async ({ request }) => {
