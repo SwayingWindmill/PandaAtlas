@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "issue": 57,
+  "artifact": {
+    "commit": "061a6f3246e89f7ccc0e1fb85e7d68c5db0c095d",
+    "build_checksum": "sha256:c9601bd973be6c48628804eefd693d8e0fc8f3bd2aa912064e1b3ab785e1c8cf",
+    "frontend_deployment_id": "d8f85419-d9f6-4644-92f5-0e64cf8c68a4",
+    "api_deployment_id": null
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "localized public My Pandas route",
+      "global desktop and mobile navigation",
+      "browser-local preferences persistence",
+      "legacy saved-profile migration",
+      "profile visit client island"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.18.1",
+    "schema_version": "1.1.0",
+    "projection_version": "public-release-v3",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "PASS",
+      "detail": "Clean Linux and Windows default gates passed for immutable implementation commit 061a6f3, and both jobs verified that the gate did not modify tracked files.",
+      "evidence": [
+        "Release Gate run 29653598275 SUCCESS",
+        "Linux default gate job 88103958542 SUCCESS",
+        "Windows default gate job 88103958521 SUCCESS",
+        "Extended Linux job skipped as configured"
+      ]
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Lint, typecheck, production build, release ownership checks, Golden Dataset validation, and the default release gate pass.",
+      "evidence": [
+        "Release tests 66/66 PASS",
+        "Golden Dataset 8/8 PASS",
+        "Web lint PASS",
+        "Web typecheck PASS",
+        "Web production build PASS",
+        "Default Release Gate 22 passed, 0 failed, 1 expected skip"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "The server owns all public panda facts while the preferences module is the sole application localStorage boundary and persists only stable profile IDs plus local timestamps.",
+      "evidence": [
+        "Localized My Pandas route loads the versioned public Release on the server",
+        "Browser storage payload is limited to version, saved {id, at}, and recent {id, at}",
+        "Application localStorage ownership gate PASS",
+        "Legacy saved slugs migrate to stable profile IDs",
+        "No account, authentication, cloud sync, analytics, ranking, or recommendation profile is introduced"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "Names, status, current place, links, and release identity are resolved from the current public Release; stale IDs are disclosed without restoring public facts from browser cache.",
+      "evidence": [
+        "No public profile facts are persisted in browser storage",
+        "Unavailable stable IDs render an explicit removable disclosure",
+        "No new media or unsupported claims are introduced",
+        "No-JavaScript mode preserves privacy explanation and ordinary archive navigation"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "Saved profiles, recent visits, migration, sorting, clearing, stale IDs, locale switching, no-JavaScript behavior, keyboard operation, and narrow text-resize reflow pass against the immutable Staging deployment.",
+      "evidence": [
+        "My Pandas Staging targeted journeys 8/8 PASS",
+        "Full Staging browser smoke shard 1: 39/39 PASS",
+        "Full Staging browser smoke shard 2: 36/36 PASS",
+        "Full Staging browser smoke total: 75/75 PASS",
+        "A prior full run had one transient net::ERR_CONNECTION_CLOSED; the affected file then passed 10/10 before the clean 75/75 rerun",
+        "320 CSS pixel plus simulated 200-percent text resize journey PASS"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Chinese and English My Pandas surfaces and the complete public journey matrix pass automated WCAG A/AA checks on the Staging deployment.",
+      "evidence": [
+        "Staging automated accessibility 40/40 PASS",
+        "Chinese and English My Pandas desktop Axe checks PASS",
+        "Chinese and English My Pandas mobile Axe checks PASS",
+        "Keyboard controls and live feedback coverage PASS"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "Named bilingual semantic visual review for the My Pandas desktop, mobile, populated, empty, and stale-ID states is not recorded.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "The localized My Pandas route remains within its reproducible JavaScript and initial-transfer budgets.",
+      "evidence": [
+        "My Pandas First Load JS 111 kB",
+        "JavaScript gzip 111194 of 143360 bytes",
+        "Initial static asset transfer 129852 of 512000 bytes",
+        "My Pandas performance budget is part of the default release gate"
+      ]
+    }
+  },
+  "staging": {
+    "status": "PASS",
+    "detail": "Immutable implementation commit 061a6f3 is deployed to the isolated Cloudflare Workers Staging service and passes targeted, full-browser, and accessibility verification.",
+    "evidence": [
+      "URL https://panda-atlas-web-staging.hao1012812011.workers.dev",
+      "Cloudflare Version d8f85419-d9f6-4644-92f5-0e64cf8c68a4",
+      "OpenNext checksum sha256:c9601bd973be6c48628804eefd693d8e0fc8f3bd2aa912064e1b3ab785e1c8cf across 1413 files",
+      "My Pandas targeted 8/8 PASS",
+      "Full browser smoke 75/75 PASS",
+      "Automated accessibility 40/40 PASS",
+      "Staging has no production routes and uses NEXT_PUBLIC_API_BASE_URL=https://api.zhipanda.com"
+    ]
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Product-owner, named bilingual visual review, and named manual screen-reader review are not recorded.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Implementation, clean CI, and Staging automation pass, but production release remains blocked by incomplete visual review and human sign-off."
+  }
+}
