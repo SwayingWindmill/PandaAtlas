@@ -3,10 +3,10 @@ import { expect, test } from "@playwright/test";
 test("completes the localized search-to-profile trust spine", async ({ page }) => {
   await page.goto("/zh");
 
-  await expect(page.getByRole("heading", { level: 1, name: /可信的大熊猫公开档案/ })).toBeVisible();
-  const search = page.getByRole("search", { name: "搜索公开档案" });
-  await search.getByLabel("熊猫名称或公开标识").fill("美香");
-  await search.getByRole("button", { name: "搜索" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "从一只熊猫开始，查证身份、亲缘与迁移" })).toBeVisible();
+  const search = page.getByRole("search", { name: "搜索公开熊猫档案" });
+  await search.getByLabel("熊猫名称、别名或公开标识").fill("美香");
+  await search.getByRole("button", { name: "搜索档案" }).click();
 
   await expect(page).toHaveURL(/\/zh\/atlas\?q=%E7%BE%8E%E9%A6%99$/);
   await expect(page.getByRole("heading", { level: 1, name: "熊猫档案检索" })).toBeVisible();

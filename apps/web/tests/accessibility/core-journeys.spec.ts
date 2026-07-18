@@ -23,6 +23,8 @@ async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentN
 }
 
 const coreJourneys = [
+  { name: "Chinese Editorial Home", path: "/zh" },
+  { name: "English Editorial Home", path: "/en" },
   { name: "Chinese Atlas discovery", path: "/zh/atlas?status=alive&sort=name" },
   { name: "English Atlas discovery", path: "/en/atlas?status=alive&sort=name" },
   { name: "Chinese trusted profile", path: "/zh/atlas/mei-xiang" },
@@ -108,6 +110,39 @@ test("bilingual profiles tolerate a simulated 200-percent text-only resize", asy
   }
 });
 
+test("bilingual Editorial Home tolerates a simulated 200-percent text-only resize", async ({ page }) => {
+  for (const path of ["/zh", "/en"]) {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(path);
+    await page.locator("body").evaluate((body) => {
+      const elements = [body, ...body.querySelectorAll<HTMLElement>("*")];
+      const originalFontSizes = elements.map((element) => Number.parseFloat(getComputedStyle(element).fontSize));
+
+      elements.forEach((element, index) => {
+        const originalFontSize = originalFontSizes[index];
+        if (Number.isFinite(originalFontSize) && originalFontSize > 0) {
+          (element as HTMLElement).style.fontSize = `${originalFontSize * 2}px`;
+        }
+      });
+    });
+
+    const overflowing = await page.locator("*").evaluateAll((elements) => elements
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          tag: element.tagName.toLowerCase(),
+          className: element instanceof HTMLElement ? element.className : "",
+          text: element.textContent?.trim().slice(0, 80) ?? "",
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+        };
+      })
+      .filter((item) => item.left < -1 || item.right > innerWidth + 1));
+    expect(overflowing).toEqual([]);
+    await expect(page.getByTestId("archive-method")).toBeVisible();
+  }
+});
+
 test("structured map filters remain keyboard operable and accessible", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/en/map?mode=institutions&snapshot=2026.07.18.1");
@@ -124,6 +159,8 @@ test("reduced-motion removes nonessential animation from core journeys", async (
   await page.emulateMedia({ reducedMotion: "reduce" });
 
   for (const path of [
+    "/zh",
+    "/en",
     "/zh/atlas?status=alive&sort=name",
     "/en/atlas?status=alive&sort=name",
     "/zh/atlas/mei-xiang",
