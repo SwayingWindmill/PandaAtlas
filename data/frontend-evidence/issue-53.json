@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "issue": 53,
+  "artifact": {
+    "commit": "663122cb415568848ddf65695ea6f6cedd7849ad",
+    "build_checksum": "sha256:3a7399aad98d3cfb369537f7f803ea1bcda0599d48748ffd8d075d90920083a2",
+    "frontend_deployment_id": null,
+    "api_deployment_id": null
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "localized public entity routes",
+      "Public Content Envelope expansion",
+      "Public Schema 1.1.0",
+      "versioned release projection v3",
+      "cross-surface Atlas, Map, and profile links"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.18.1",
+    "schema_version": "1.1.0",
+    "projection_version": "public-release-v3",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "PASS",
+      "detail": "Clean Linux and Windows default gates passed for immutable implementation commit 663122c, including Linux Worker HTTP smoke against Public Schema 1.1.0.",
+      "evidence": [
+        "Release Gate run 29639325641 attempt 1 SUCCESS",
+        "Linux job 88067049284 SUCCESS",
+        "Linux artifact 8428139661 sha256:7608d216c683252fb46c09acfc2503fca866180efc49c94bb86863984f965eb4",
+        "Windows job 88067049290 SUCCESS",
+        "Windows artifact 8428164038 sha256:e3531999a6e8417d6830726d3517eb5e5d373405a8388c9f69224ecdd0977495"
+      ]
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Lint, typecheck, production build, release ownership checks, public release projection, API tests, and the default release gate pass locally.",
+      "evidence": [
+        "Release tests 58/58 PASS",
+        "Golden Dataset 8/8 PASS",
+        "FastAPI 133 passed and 12 skipped",
+        "Public release projection 17/17 PASS",
+        "Default Release Gate 20 passed, 0 failed, 1 expected Windows skip"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "Institution and Place are independent stable public entities with explicit facility crosswalks, canonical routes, sources, revisions, precision, and release metadata.",
+      "evidence": [
+        "PublicInstitutionSummary and PublicPlaceSummary are independent contracts",
+        "Public Release 2026.07.18.1 includes institutions and places in API and D1 projections",
+        "Institution/Place ownership gate PASS",
+        "Worker accepts Public Schema 1.0.0 rollback releases and current 1.1.0 releases",
+        "No numbered releases repository duplicate remains",
+        "Unsupported Gengda compatibility facility returns 404"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "The entity pages are no-media-safe, preserve source-backed organization/place distinctions, and do not infer coordinates from locality or country precision.",
+      "evidence": [
+        "All published Place records declare locality precision",
+        "PublicPlaceSummary contains no coordinate field",
+        "No unlicensed entity media is introduced",
+        "Beta trust and public-data hard gates PASS"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "Canonical entity pages, redirects, old slugs, Atlas/Map/Profile integration, unsupported records, and no-JS behavior pass automated browser tests.",
+      "evidence": [
+        "Slice 8 targeted browser journeys 7/7 PASS",
+        "Full browser smoke 60/60 PASS",
+        "Canonical and locale redirect assertions PASS",
+        "No-JS entity journey PASS"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "Chinese and English Institution and Place pages pass automated WCAG A/AA checks and 320-pixel mobile reflow assertions.",
+      "evidence": [
+        "Automated accessibility 31/31 PASS",
+        "Chinese and English Institution entity Axe checks PASS",
+        "Chinese and English Place entity Axe checks PASS",
+        "320 CSS pixel horizontal-overflow checks PASS"
+      ]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "Named bilingual semantic visual review for the new Institution and Place surfaces is not recorded.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "Institution and Place routes each load 108 kB of first-load JavaScript, below the Slice 8 route target of 170 kB.",
+      "evidence": [
+        "Institution route First Load JS 108 kB",
+        "Place route First Load JS 108 kB",
+        "Shared First Load JS 103 kB",
+        "Map visualization budget remains PASS"
+      ]
+    }
+  },
+  "staging": {
+    "status": "BLOCKED",
+    "detail": "The OpenNext Staging build completed, but deployment could not proceed because the current execution environment has no Cloudflare deployment credential.",
+    "evidence": [
+      "OpenNext web build completed for the Slice 8 web tree; the final 663122c fix changed Worker-only code",
+      "OpenNext checksum sha256:3a7399aad98d3cfb369537f7f803ea1bcda0599d48748ffd8d075d90920083a2 across 1414 files",
+      "Wrangler deployment stopped before upload because the required credential is unavailable",
+      "No temporary Cloudflare account was used"
+    ]
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Product-owner, bilingual semantic/source/precision review, and named screen-reader review are not recorded.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Implementation and local automation pass, but production release remains blocked by incomplete Staging deployment, visual review, and human sign-off."
+  }
+}
