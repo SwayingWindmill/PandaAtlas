@@ -1,0 +1,17 @@
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+.pa-map-visualization-island .maplibregl-ctrl-attrib {
+  max-width: calc(100% - 1rem);
+  background: rgba(255, 253, 248, 0.94);
+  color: #26382b;
+  font-size: 0.72rem;
+}
+
+.pa-map-visualization-island .maplibregl-ctrl-attrib a {
+  color: #2f6b3b;
+}
+
+.pa-map-visualization-island .maplibregl-canvas:focus-visible {
+  outline: 3px solid #2f6b3b;
+  outline-offset: -4px;
+}

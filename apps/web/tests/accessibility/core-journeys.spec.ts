@@ -2,6 +2,10 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+const TRANSPARENT_MAP_TILE = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl8sAAAAASUVORK5CYII=",
+  "base64",
+);
 
 async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentName: string) {
   const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
@@ -146,4 +150,26 @@ test("reduced-motion removes nonessential animation from core journeys", async (
 
     expect(movingElements, `${path} retains motion under prefers-reduced-motion`).toEqual([]);
   }
+});
+
+test("activated map visualization remains keyboard-equivalent and accessible", async ({ page }, testInfo) => {
+  await page.route("https://basemaps.cartocdn.com/**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "image/png",
+      body: TRANSPARENT_MAP_TILE,
+    });
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/en/map?mode=institutions&snapshot=2026.07.14.3");
+  await page.getByTestId("activate-map-visualization").click();
+
+  const island = page.getByTestId("map-visualization-island");
+  await expect(island).toBeVisible();
+  await expect(page.getByRole("region", { name: "Interactive map visualization enhancement" })).toBeVisible();
+  await expect(page.getByLabel("Non-drag selection")).toBeVisible();
+  await expect(page.locator(".pa-map-visualization-attribution").getByRole("link")).toHaveCount(2);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+
+  await scanForWcagViolations(page, testInfo, "axe-mobile-activated-map-visualization");
 });

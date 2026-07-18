@@ -1,3 +1,5 @@
+import { canonicalMapViewportValue } from "@/features/map/visualization/map-viewport-domain";
+
 export const STRUCTURED_MAP_MODES = ["institutions", "individual", "wild"] as const;
 export const STRUCTURED_MAP_STATUSES = ["all", "current", "historical"] as const;
 
@@ -11,6 +13,7 @@ export interface StructuredMapQueryState {
   status: StructuredMapStatus;
   snapshot: string;
   selected: string;
+  view: string;
 }
 
 export interface ParsedStructuredMapQuery {
@@ -21,7 +24,7 @@ export interface ParsedStructuredMapQuery {
 
 type RawSearchParams = Record<string, string | string[] | undefined>;
 
-const supportedKeys = new Set(["mode", "focus", "country", "status", "snapshot", "selected"]);
+const supportedKeys = new Set(["mode", "focus", "country", "status", "snapshot", "selected", "view"]);
 
 function first(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
@@ -60,6 +63,7 @@ export function structuredMapQueryString(state: StructuredMapQueryState): string
   if (state.status !== "all") query.set("status", state.status);
   query.set("snapshot", state.snapshot);
   if (state.selected) query.set("selected", state.selected);
+  if (state.view) query.set("view", state.view);
   return query.toString();
 }
 
@@ -71,13 +75,15 @@ export function parseStructuredMapQuery(
   raw: RawSearchParams,
   releaseId: string,
 ): ParsedStructuredMapQuery {
+  const mode = parseMode(first(raw.mode));
   const state: StructuredMapQueryState = {
-    mode: parseMode(first(raw.mode)),
+    mode,
     focus: cleanText(first(raw.focus), 120),
     country: parseCountry(first(raw.country)),
     status: parseStatus(first(raw.status)),
     snapshot: releaseId,
     selected: cleanText(first(raw.selected), 180),
+    view: canonicalMapViewportValue(first(raw.view), mode),
   };
   const canonicalQuery = structuredMapQueryString(state);
   const incoming = new URLSearchParams();

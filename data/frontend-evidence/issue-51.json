@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "issue": 51,
+  "artifact": {
+    "commit": "8e61c5665b4004a9293f2cb39157a5e8a5f729a0",
+    "build_checksum": "sha256:8ee36497154dba232686e9d3b01d1d384124d4b4ff68ef96fa9debfb3175587d",
+    "frontend_deployment_id": "ad74f7ef-842d-4701-99df-aaaabed208c3",
+    "api_deployment_id": null
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": ["public map visualization", "public precision geometry", "external provider", "viewport URL state"]
+  },
+  "public_release": {
+    "id": "2026.07.14.3",
+    "schema_version": "1.0.0",
+    "projection_version": "public-release-v2",
+    "delivery": "versioned-public-release",
+    "delivery_state": "cached"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "PASS",
+      "detail": "Clean Linux and Windows gates passed for immutable commit 8e61c56.",
+      "evidence": [
+        "Release Gate run 29587610802 attempt 2 SUCCESS",
+        "Linux artifact 8426598876 sha256:40feefe22c193ecda23cae98dd94ad4c558ed850101fe3422698b6c4eafbba7d",
+        "Windows artifact 8409816833 sha256:0172b7b15ecc2220ef75e183e3fc9ebe1e2764aa0c2f53a81a46455c3c125558"
+      ]
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "Lint, typecheck, build, ownership tests, and default release gate pass.",
+      "evidence": ["lint PASS", "typecheck PASS", "build PASS", "release tests 53/53 PASS", "default gate 20 passed"]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "The structured map remains canonical and shares filters, IDs, selection, precision, source, and viewport state with the optional visualization.",
+      "evidence": ["structured-map-page.tsx", "map-query.ts", "map-visualization-enhancement.tsx", "map-visualization-island.tsx"]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "Only published public-precision geometry is rendered; country-only records are not assigned invented points.",
+      "evidence": ["map-visual-model.ts", "map-provider-adapter.ts", "country precision assertions PASS", "attribution assertions PASS"]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "Local and clean-checkout browser gates cover activation, selection, focus, provider failure, offline recovery, reduced motion, viewport state, and mobile reflow.",
+      "evidence": ["Slice 7 local 7/7 PASS", "local browser 53/53 PASS", "Linux and Windows browser smoke PASS"]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "The visualization and map-free journey pass automated WCAG A and AA checks.",
+      "evidence": ["local accessibility 23/23 PASS", "keyboard-equivalent Axe journey PASS", "clean CI accessibility PASS"]
+    },
+    "visual_regression": {
+      "status": "BLOCKED",
+      "detail": "Named bilingual semantic visual review is not recorded.",
+      "evidence": []
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "Route First Load JS is 111 kB. Largest map asset is 117078 gzip bytes below the 180 KiB limit; aggregate activation assets are 366180 gzip bytes.",
+      "evidence": ["map route 111 kB", "largest asset 117078 gzip bytes", "aggregate 366180 gzip bytes", "provider requests before activation 0"]
+    }
+  },
+  "staging": {
+    "status": "BLOCKED",
+    "detail": "The immutable deployment is reachable and initially passed 7/7, but later runs had random connection closures and intermittent 503 responses.",
+    "evidence": [
+      "Version ad74f7ef-842d-4701-99df-aaaabed208c3",
+      "OpenNext checksum sha256:8ee36497154dba232686e9d3b01d1d384124d4b4ff68ef96fa9debfb3175587d across 1401 files",
+      "initial Staging targeted suite 7/7 PASS",
+      "later non-deterministic connection and 503 failures"
+    ]
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "Product-owner, semantic visual, and real iOS Safari evidence are not recorded.",
+    "evidence": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "Implementation and clean CI pass, but release remains blocked by unstable Staging and incomplete human and iOS evidence."
+  }
+}
