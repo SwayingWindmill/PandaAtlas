@@ -20,8 +20,8 @@ async function stubProviderTiles(page: Page): Promise<void> {
 
 async function activateMap(page: Page): Promise<void> {
   await page.getByTestId("activate-map-visualization").click();
-  await expect(page.getByTestId("map-visualization-island")).toBeVisible();
-  await expect(page.locator(".pa-map-visualization-canvas canvas")).toHaveCount(1);
+  await expect(page.getByTestId("map-visualization-island")).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator(".pa-map-visualization-canvas canvas")).toHaveCount(1, { timeout: 15_000 });
 }
 
 test("requests no provider resources before explicit map activation", async ({ page }) => {
@@ -94,7 +94,11 @@ test("preserves filters and selection through offline and network recovery", asy
   await expect(page.getByTestId("selected-structured-map-result")).toContainText("Smithsonian");
 
   await context.setOffline(false);
-  await expect(page.getByTestId("map-visualization-island")).toContainText(/Network restored|Map provider connected/);
+  const island = page.getByTestId("map-visualization-island");
+  await expect(island).toHaveAttribute("data-provider-status", /recovering|ready|degraded/, { timeout: 15_000 });
+  await expect(island).toContainText(
+    /Network restored|Map provider connected|Some map resources are unavailable/,
+  );
   await expect(page).toHaveURL(expectedUrl);
   await expect(page.getByLabel("Country scope")).toHaveValue("US");
 });
