@@ -1,0 +1,470 @@
+.my-pandas-page {
+  min-height: 100vh;
+  padding-bottom: 5rem;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.my-pandas-delivery {
+  padding-top: 1.5rem;
+}
+
+.my-pandas-hero {
+  margin-top: 1rem;
+  border-block: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 82% 12%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 28%),
+    linear-gradient(135deg, var(--card), color-mix(in srgb, var(--bg) 88%, var(--accent) 12%));
+}
+
+.my-pandas-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 0.7fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: end;
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+}
+
+.my-pandas-hero-grid > * {
+  min-width: 0;
+}
+
+.my-pandas-eyebrow,
+.my-pandas-count {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.my-pandas-hero h1 {
+  max-width: 12ch;
+  margin: 0.8rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6.75rem);
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+}
+
+.my-pandas-hero-description {
+  max-width: 48rem;
+  margin: 1.5rem 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.8;
+}
+
+.my-pandas-hero-link,
+.my-pandas-primary-action,
+.my-pandas-empty a,
+.my-pandas-noscript a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.my-pandas-page .my-pandas-hero-link {
+  margin-top: 1.75rem;
+  padding: 0.8rem 1.2rem;
+  background: var(--accent-strong);
+  color: var(--pa-color-surface);
+}
+
+.my-pandas-hero-link svg,
+.my-pandas-primary-action svg,
+.my-pandas-empty a svg,
+.my-pandas-noscript a svg,
+.my-pandas-secondary-action svg,
+.my-pandas-clear-action svg {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+}
+
+.my-pandas-release-card {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border: 1px solid color-mix(in srgb, var(--line) 70%, var(--accent) 30%);
+  border-radius: 1.5rem;
+  padding: 1.4rem;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  box-shadow: 0 1rem 2.6rem color-mix(in srgb, var(--fg) 9%, transparent);
+}
+
+.my-pandas-release-card > svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--accent);
+}
+
+.my-pandas-release-card strong,
+.my-pandas-release-card span,
+.my-pandas-release-card small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.my-pandas-release-card span {
+  margin-top: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.86rem;
+}
+
+.my-pandas-release-card small {
+  margin-top: 0.3rem;
+  color: var(--muted);
+}
+
+.my-pandas-privacy {
+  margin-top: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 1.5rem;
+  padding: clamp(1.4rem, 4vw, 2.4rem);
+  background: var(--card);
+}
+
+.my-pandas-privacy-heading {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.my-pandas-privacy-heading > svg {
+  width: 2rem;
+  height: 2rem;
+  color: var(--accent);
+}
+
+.my-pandas-privacy h2,
+.my-pandas-section h2,
+.my-pandas-noscript h2 {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.08;
+}
+
+.my-pandas-privacy > p {
+  max-width: 58rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.my-pandas-privacy ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.my-pandas-local {
+  display: grid;
+  gap: 2rem;
+  padding-top: 2rem;
+}
+
+.my-pandas-loading,
+.my-pandas-noscript {
+  margin-top: 2rem;
+  border: 1px dashed var(--line);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  background: var(--card);
+  color: var(--muted);
+}
+
+.my-pandas-noscript p {
+  max-width: 52rem;
+  line-height: 1.8;
+}
+
+.my-pandas-noscript a,
+.my-pandas-empty a {
+  margin-top: 1rem;
+  color: var(--accent-strong);
+}
+
+.my-pandas-section {
+  border: 1px solid var(--line);
+  border-radius: 1.75rem;
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  background: var(--card);
+}
+
+.my-pandas-section-heading {
+  display: flex;
+  gap: 1.5rem;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.my-pandas-section-heading > div:first-child {
+  min-width: 0;
+}
+
+.my-pandas-section-heading p:not(.my-pandas-count) {
+  max-width: 46rem;
+  margin: 0.8rem 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.my-pandas-section-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+  justify-content: flex-end;
+}
+
+.my-pandas-section-controls label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.my-pandas-section-controls select {
+  min-height: 2.75rem;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  padding: 0.6rem 2.4rem 0.6rem 0.8rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+}
+
+.my-pandas-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.my-pandas-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  background: var(--bg);
+}
+
+.my-pandas-card-unavailable {
+  border-style: dashed;
+}
+
+.my-pandas-card-heading {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.my-pandas-card-mark {
+  display: inline-grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent-strong);
+}
+
+.my-pandas-card-mark svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.my-pandas-card h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.my-pandas-alternate-name,
+.my-pandas-stable-id,
+.my-pandas-card > p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.my-pandas-card-facts {
+  display: grid;
+  gap: 0.7rem;
+  margin: 1rem 0 0;
+}
+
+.my-pandas-card-facts div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.4fr) minmax(0, 1fr);
+  gap: 0.8rem;
+}
+
+.my-pandas-card-facts dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.my-pandas-card-facts dd {
+  margin: 0;
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
+}
+
+.my-pandas-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.1rem;
+}
+
+.my-pandas-primary-action,
+.my-pandas-secondary-action,
+.my-pandas-clear-action {
+  min-height: 2.75rem;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.my-pandas-page .my-pandas-primary-action {
+  background: var(--accent-strong);
+  color: var(--pa-color-surface);
+}
+
+.my-pandas-secondary-action,
+.my-pandas-clear-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.my-pandas-clear-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.my-pandas-empty {
+  display: grid;
+  justify-items: start;
+  margin-top: 1.5rem;
+  border: 1px dashed var(--line);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  color: var(--muted);
+}
+
+.my-pandas-empty > svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--accent);
+}
+
+.my-pandas-empty p {
+  max-width: 42rem;
+  margin: 0.8rem 0 0;
+  line-height: 1.7;
+}
+
+.my-pandas-page a:focus-visible,
+.my-pandas-page button:focus-visible,
+.my-pandas-page select:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 860px) {
+  .my-pandas-hero-grid,
+  .my-pandas-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .my-pandas-section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .my-pandas-section-controls {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .pa-public-register:has(.my-pandas-page) .pa-brand > span:last-child,
+  .pa-public-register:has(.my-pandas-page) .pa-language-link {
+    display: none;
+  }
+
+  .pa-public-register:has(.my-pandas-page) .pa-brand-mark,
+  .pa-public-register:has(.my-pandas-page) .pa-icon-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .pa-public-register:has(.my-pandas-page) .pa-brand-mark svg,
+  .pa-public-register:has(.my-pandas-page) .pa-icon-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .my-pandas-delivery .pa-delivery-notice {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .my-pandas-delivery .pa-delivery-notice > *,
+  .my-pandas-delivery .pa-delivery-notice p {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .my-pandas-hero h1 {
+    font-size: clamp(2.7rem, 18vw, 4.5rem);
+  }
+
+  .my-pandas-section-controls,
+  .my-pandas-card-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .my-pandas-section-controls label,
+  .my-pandas-section-controls select,
+  .my-pandas-primary-action,
+  .my-pandas-secondary-action,
+  .my-pandas-clear-action {
+    width: 100%;
+  }
+
+  .my-pandas-card-facts div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
+  }
+}

@@ -93,7 +93,11 @@ test("keeps favorites local-only and keyboard operable", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(favorite).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText(/仅保存在此浏览器/)).toBeVisible();
-  await expect.poll(() => page.evaluate(() => localStorage.getItem("panda-atlas:saved-profiles"))).toContain("mei-xiang");
+  await expect.poll(() => page.evaluate(() => {
+    const raw = localStorage.getItem("panda-atlas:profile-preferences");
+    const parsed = raw ? JSON.parse(raw) as { saved?: Array<{ id?: string }> } : null;
+    return parsed?.saved?.[0]?.id ?? null;
+  })).toMatch(/[0-9a-f-]{36}/);
 });
 
 test("exposes the full reading loop through sequential keyboard navigation", async ({ page }) => {

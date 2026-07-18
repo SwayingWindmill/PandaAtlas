@@ -49,7 +49,11 @@ test("completes the Xiao Qi Ji family-to-evidence golden journey", async ({ page
   await expect(evidenceLink).toHaveAttribute("href", /^https:\/\//);
 
   await page.getByRole("button", { name: "收藏美香" }).click();
-  await expect.poll(() => page.evaluate(() => localStorage.getItem("panda-atlas:saved-profiles"))).toContain("mei-xiang");
+  await expect.poll(() => page.evaluate(() => {
+    const raw = localStorage.getItem("panda-atlas:profile-preferences");
+    const parsed = raw ? JSON.parse(raw) as { saved?: Array<{ id?: string }> } : null;
+    return parsed?.saved?.[0]?.id ?? null;
+  })).toMatch(/[0-9a-f-]{36}/);
   await page.getByRole("link", { name: "English" }).click();
   await expect(page).toHaveURL(/\/en\/atlas\/mei-xiang$/);
   await expect(page.getByRole("heading", { level: 1, name: "Mei Xiang" })).toBeVisible();

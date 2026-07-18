@@ -7,7 +7,7 @@ import { MobileNavigation } from "@/components/patterns/mobile-navigation";
 
 interface GlobalNavigationProps {
   locale: PublicLocale;
-  active: "home" | "atlas" | "profile" | "lineage" | "map";
+  active: "home" | "atlas" | "profile" | "lineage" | "map" | "my-pandas";
   alternatePath?: string;
 }
 
@@ -19,6 +19,7 @@ const copy = {
     atlas: "熊猫档案",
     lineage: "谱系",
     map: "地图",
+    myPandas: "我的熊猫",
     trust: "来源优先",
     nav: "主导航",
     mobileNav: "移动导航",
@@ -33,6 +34,7 @@ const copy = {
     atlas: "Panda profiles",
     lineage: "Lineage",
     map: "Map",
+    myPandas: "My Pandas",
     trust: "Evidence first",
     nav: "Primary navigation",
     mobileNav: "Mobile navigation",
@@ -70,6 +72,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
             <Link href={`/${locale}/atlas` as Route} aria-current={active === "atlas" || active === "profile" ? "page" : undefined}>{t.atlas}</Link>
             <Link href={`/${locale}/lineage` as Route} aria-current={active === "lineage" ? "page" : undefined}>{t.lineage}</Link>
             <Link href={`/${locale}/map` as Route} aria-current={active === "map" ? "page" : undefined}>{t.map}</Link>
+            <Link href={`/${locale}/my-pandas` as Route} aria-current={active === "my-pandas" ? "page" : undefined}>{t.myPandas}</Link>
           </nav>
 
           <div className="pa-header-actions">
@@ -89,6 +92,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
                 atlas: t.atlas,
                 lineage: t.lineage,
                 map: t.map,
+                myPandas: t.myPandas,
                 language: t.language,
               }}
             />
