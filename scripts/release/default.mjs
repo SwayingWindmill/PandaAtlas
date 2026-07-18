@@ -301,6 +301,12 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "check:map-visualization-budget"]),
       },
       {
+        id: "editorial-home-budget",
+        label: "Editorial Home performance budget",
+        dependsOn: ["web-build"],
+        run: () => runCommand(npm, ["run", "check:editorial-home-budget"]),
+      },
+      {
         id: "beta-hard-gates",
         label: "Beta trust, privacy, and release consistency preflight",
         dependsOn: ["golden-dataset", "web-build"],
