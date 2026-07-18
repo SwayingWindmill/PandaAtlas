@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.18.1",
+  "files": {
+    "api.json": {
+      "bytes": 61563,
+      "sha256": "4bddffed69b60ed6bafde1c2e67e51b662623f82edb79cc47dc6831a1fd5f2ce"
+    },
+    "d1.sql": {
+      "bytes": 76638,
+      "sha256": "4dc0e434a86e6db910185560cd03e6f2b6afa9754c2e03a29cadc866ca3d531c"
+    },
+    "pandas.csv": {
+      "bytes": 10889,
+      "sha256": "2c10c00b22fe9862067c9560d58d72c28b923d16eff8cd7f621c4a2ac82e0c0c"
+    },
+    "pandas.json": {
+      "bytes": 15419,
+      "sha256": "ef994d8b326821d62755e3e16d938a64d0094ad2a5f0a4276c4ad26e85a7323c"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "public-release-v3",
+  "public_schema_version": "1.1.0",
+  "publication_batch_id": "golden-dataset",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 7,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 2,
+    "facilities": 3,
+    "facts": 21,
+    "institutions": 2,
+    "media": 7,
+    "pandas": 7,
+    "parentage_assertions": 12,
+    "places": 2,
+    "residencies": 9,
+    "sources": 5
+  },
+  "released_at": "2026-07-18T12:00:00Z"
+}

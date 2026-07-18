@@ -36,6 +36,7 @@ export interface StructuredMapResult {
   sources: PublicSourceSummary[];
   sourceLabel: string;
   profileHref: string | null;
+  entityHref: string | null;
   visualizationKey: string | null;
   searchText: string;
 }
@@ -82,6 +83,17 @@ function facilityName(facility: PublicFacilitySummary, locale: PublicLocale): st
     ?? facility.canonical_slug;
 }
 
+function entityName(
+  names: Array<{ language: string; value: string }>,
+  locale: PublicLocale,
+  fallback: string,
+): string {
+  const preferredLanguage = locale === "zh" ? "zh-Hans" : "en";
+  return names.find((name) => name.language === preferredLanguage)?.value
+    ?? names[0]?.value
+    ?? fallback;
+}
+
 function maxDate(values: Array<string | null | undefined>): string | null {
   return values.filter((value): value is string => Boolean(value)).sort().at(-1) ?? null;
 }
@@ -114,11 +126,21 @@ function buildInstitutionResults(
         .map((residency) => ({ panda, residency })),
     );
     const currentPandas = dataset.pandas.filter((panda) => panda.current_place?.facility_id === facility.id);
-    const sourceIds = linkedResidencies.flatMap(({ residency }) => residency.source_ids);
+    const institution = dataset.institutions.find((item) => item.facility_ids.includes(facility.id)) ?? null;
+    const publishedPlace = dataset.places.find((item) => item.facility_ids.includes(facility.id)) ?? null;
+    const sourceIds = [
+      ...(institution?.source_ids ?? []),
+      ...(publishedPlace?.source_ids ?? []),
+      ...linkedResidencies.flatMap(({ residency }) => residency.source_ids),
+    ];
     const sources = sourceSubset(sourceIds, sourcesById);
     const status: StructuredMapResultStatus = currentPandas.length ? "current" : "historical";
-    const name = facilityName(facility, locale);
-    const locality = facility.locality ?? countryLabel(facility.country_code ?? "UN", locale);
+    const name = institution
+      ? entityName(institution.names, locale, institution.canonical_slug)
+      : facilityName(facility, locale);
+    const locality = publishedPlace
+      ? entityName(publishedPlace.names, locale, publishedPlace.locality ?? publishedPlace.canonical_slug)
+      : facility.locality ?? countryLabel(facility.country_code ?? "UN", locale);
     const associatedNames = [...new Set(linkedResidencies.map(({ panda }) => localizedPandaName(panda, locale)))];
     const statusDetail = locale === "zh"
       ? currentPandas.length
@@ -135,18 +157,23 @@ function buildInstitutionResults(
       subtitle: associatedNames.length
         ? associatedNames.join(locale === "zh" ? "、" : ", ")
         : locale === "zh" ? "暂无已发布个体关联" : "No published panda association",
-      countryCode: facility.country_code ?? "UN",
-      countryLabel: countryLabel(facility.country_code ?? "UN", locale),
+      countryCode: publishedPlace?.country_code ?? facility.country_code ?? "UN",
+      countryLabel: countryLabel(publishedPlace?.country_code ?? facility.country_code ?? "UN", locale),
       placeLabel: locality,
-      precision: facility.locality ? "locality" : "country",
+      precision: publishedPlace?.precision ?? (facility.locality ? "locality" : "country"),
       status,
       statusDetail,
       dateRange: locale === "zh" ? "按当前公开发布版本" : "As of the current public release",
-      lastVerified: maxDate(linkedResidencies.map(({ residency }) => residency.last_verified_at)),
+      lastVerified: maxDate([
+        institution?.last_verified_at,
+        publishedPlace?.last_verified_at,
+        ...linkedResidencies.map(({ residency }) => residency.last_verified_at),
+      ]),
       sourceIds: [...new Set(sourceIds)],
       sources,
-      sourceLabel: locale === "zh" ? "已审核机构与驻留记录" : "Reviewed facility and residency records",
+      sourceLabel: locale === "zh" ? "已审核机构、场所与驻留记录" : "Reviewed institution, place, and residency records",
       profileHref: null,
+      entityHref: institution ? `/${locale}/institutions/${institution.canonical_slug}` : null,
       visualizationKey: facility.id,
       searchText: normalized([
         name,
@@ -169,6 +196,9 @@ function buildIndividualResults(
   return dataset.pandas.flatMap((panda) =>
     panda.residencies.map((residency) => {
       const facility = residency.facility_id ? facilitiesById.get(residency.facility_id) ?? null : null;
+      const placeEntity = residency.facility_id
+        ? dataset.places.find((item) => item.facility_ids.includes(residency.facility_id!)) ?? null
+        : null;
       const current = residency.end_date === null
         && (panda.current_place?.facility_id === residency.facility_id
           || (!residency.facility_id && panda.current_place?.coarse_location === residency.coarse_location));
@@ -198,6 +228,7 @@ function buildIndividualResults(
         sources,
         sourceLabel: locale === "zh" ? "已审核个体驻留记录" : "Reviewed individual residency record",
         profileHref: `/${locale}/atlas/${panda.slug}`,
+        entityHref: placeEntity ? `/${locale}/places/${placeEntity.canonical_slug}` : null,
         visualizationKey: facility?.id ?? null,
         searchText: normalized([
           title,
@@ -244,6 +275,7 @@ function buildWildResults(
       sources: [],
       sourceLabel,
       profileHref: null,
+      entityHref: null,
       visualizationKey: id,
       searchText: normalized(`${name} ${province ?? ""} CN ${level}`),
     };

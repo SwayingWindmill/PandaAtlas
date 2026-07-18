@@ -36,8 +36,8 @@ async function copyFixture(directory) {
     await cp(path.join(repoRoot, relative), target);
   }
   await cp(
-    path.join(repoRoot, "data/public-releases/2026.07.14.3"),
-    path.join(directory, "data/public-releases/2026.07.14.3"),
+    path.join(repoRoot, "data/public-releases/2026.07.18.1"),
+    path.join(directory, "data/public-releases/2026.07.18.1"),
     { recursive: true },
   );
 }
@@ -57,7 +57,7 @@ function assertFailedCheck(run, id, detailPattern) {
 }
 
 async function updateManifestFile(directory, filename) {
-  const releaseDir = path.join(directory, "data/public-releases/2026.07.14.3");
+  const releaseDir = path.join(directory, "data/public-releases/2026.07.18.1");
   const content = await readFile(path.join(releaseDir, filename));
   const manifestPath = path.join(releaseDir, "manifest.json");
   const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
@@ -76,7 +76,7 @@ test("clean repository satisfies the Beta hard-gate preflight and writes evidenc
     assert.equal(result.status, 0, result.stderr || result.stdout);
     const report = JSON.parse(await readFile(reportPath, "utf8"));
     assert.equal(report.outcome, "passed");
-    assert.equal(report.dataset_release_version, "2026.07.14.3");
+    assert.equal(report.dataset_release_version, "2026.07.18.1");
     assert.deepEqual(
       report.checks.map((check) => check.id),
       ["release-integrity", "public-data-boundary", "trusted-archive", "admin-token-boundary", "waiver-policy"],
@@ -88,7 +88,7 @@ test("clean repository satisfies the Beta hard-gate preflight and writes evidenc
 test("manifest corruption fails release integrity", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
+    const apiPath = path.join(directory, "data/public-releases/2026.07.18.1/api.json");
     await writeFile(apiPath, `${await readFile(apiPath, "utf8")} `, "utf8");
 
     assertFailedCheck(await runFixture(directory), "release-integrity", /byte count|SHA-256/);
@@ -98,7 +98,7 @@ test("manifest corruption fails release integrity", async () => {
 test("missing manifest descriptors fail release integrity", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const manifestPath = path.join(directory, "data/public-releases/2026.07.14.3/manifest.json");
+    const manifestPath = path.join(directory, "data/public-releases/2026.07.18.1/manifest.json");
     const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
     delete manifest.files["d1.sql"];
     await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
@@ -110,7 +110,7 @@ test("missing manifest descriptors fail release integrity", async () => {
 test("private fields fail the public data boundary even with a valid manifest", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
+    const apiPath = path.join(directory, "data/public-releases/2026.07.18.1/api.json");
     const api = JSON.parse(await readFile(apiPath, "utf8"));
     api.pandas[0].contact_email = "curator@example.org";
     await writeFile(apiPath, `${JSON.stringify(api, null, 2)}\n`, "utf8");
@@ -123,7 +123,7 @@ test("private fields fail the public data boundary even with a valid manifest", 
 test("personal location fields fail the public data boundary", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
+    const apiPath = path.join(directory, "data/public-releases/2026.07.18.1/api.json");
     const api = JSON.parse(await readFile(apiPath, "utf8"));
     api.pandas[0].home_address = "Private residence";
     await writeFile(apiPath, `${JSON.stringify(api, null, 2)}\n`, "utf8");
@@ -136,7 +136,7 @@ test("personal location fields fail the public data boundary", async () => {
 test("unknown correction-personal fields fail the public allowlist", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const apiPath = path.join(directory, "data/public-releases/2026.07.14.3/api.json");
+    const apiPath = path.join(directory, "data/public-releases/2026.07.18.1/api.json");
     const api = JSON.parse(await readFile(apiPath, "utf8"));
     api.pandas[0].submitter_name = "Jane Doe";
     api.pandas[0].correction_text = "Please update this profile.";
@@ -150,9 +150,9 @@ test("unknown correction-personal fields fail the public allowlist", async () =>
 test("each CSV row must carry the exact release version", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const csvPath = path.join(directory, "data/public-releases/2026.07.14.3/pandas.csv");
+    const csvPath = path.join(directory, "data/public-releases/2026.07.18.1/pandas.csv");
     const lines = (await readFile(csvPath, "utf8")).split(/\r?\n/);
-    lines[1] = lines[1].replace(/^2026\.07\.14\.3/, "2025.01.01.1").replace(/}"$/, ',"release_note":"2026.07.14.3"}"');
+    lines[1] = lines[1].replace(/^2026\.07\.18\.1/, "2025.01.01.1");
     await writeFile(csvPath, lines.join("\n"), "utf8");
     await updateManifestFile(directory, "pandas.csv");
 
@@ -163,9 +163,9 @@ test("each CSV row must carry the exact release version", async () => {
 test("D1 release registry must carry the exact release version", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const d1Path = path.join(directory, "data/public-releases/2026.07.14.3/d1.sql");
+    const d1Path = path.join(directory, "data/public-releases/2026.07.18.1/d1.sql");
     const d1 = await readFile(d1Path, "utf8");
-    await writeFile(d1Path, d1.replace("'2026.07.14.3', '1.0.0', '0007'", "'2025.01.01.1', '1.0.0', '0007'"), "utf8");
+    await writeFile(d1Path, d1.replace("'2026.07.18.1', '1.1.0', '0007'", "'2025.01.01.1', '1.1.0', '0007'"), "utf8");
     await updateManifestFile(directory, "d1.sql");
 
     assertFailedCheck(
@@ -179,10 +179,10 @@ test("D1 release registry must carry the exact release version", async () => {
 test("non-canonical D1 record inserts cannot bypass structured validation", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const d1Path = path.join(directory, "data/public-releases/2026.07.14.3/d1.sql");
+    const d1Path = path.join(directory, "data/public-releases/2026.07.18.1/d1.sql");
     const d1 = await readFile(d1Path, "utf8");
     const unsafe = d1.replace(
-      "insert into public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2026.07.14.3', 'events'",
+      "insert into public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2026.07.18.1', 'events'",
       "insert\ninto public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2025.01.01.1', 'events'",
     );
     assert.notEqual(unsafe, d1);
@@ -196,7 +196,7 @@ test("non-canonical D1 record inserts cannot bypass structured validation", asyn
 test("precise D1 wild geometry fails the public data boundary", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const d1Path = path.join(directory, "data/public-releases/2026.07.14.3/d1.sql");
+    const d1Path = path.join(directory, "data/public-releases/2026.07.18.1/d1.sql");
     const d1 = await readFile(d1Path, "utf8");
     const unsafe = d1.replace(
       "[[[[103.5,31.2],[103.9,31.2],[103.9,31.6],[103.5,31.6],[103.5,31.2]]]]",

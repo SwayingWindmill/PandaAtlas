@@ -13,7 +13,7 @@ def test_all_consumers_load_the_same_golden_dataset() -> None:
     fixtures = [load_golden_dataset(consumer) for consumer in GOLDEN_DATASET_CONSUMERS]
     expected_ids = [record["id"] for record in fixtures[0]["pandas"]]
 
-    assert fixtures[0]["dataset"]["version"] == "2026.07.14.3"
+    assert fixtures[0]["dataset"]["version"] == "2026.07.18.1"
     for fixture in fixtures:
         assert [record["id"] for record in fixture["pandas"]] == expected_ids
 

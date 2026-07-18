@@ -1,7 +1,7 @@
 // Generated from contracts/golden-dataset/mei-xiang-family.v1.json.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
-import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicParentageAssertionSummary } from "@/lib/types";
+import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
 
 export interface TrustedPandaReference {
   id: string;
@@ -340,8 +340,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.3",
-      "public_schema_version": "1.0.0",
+      "data_version": "2026.07.18.1",
+      "public_schema_version": "1.1.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -616,8 +616,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.14.3",
-      "public_schema_version": "1.0.0",
+      "data_version": "2026.07.18.1",
+      "public_schema_version": "1.1.0",
       "summaries": []
     }
   },
@@ -797,8 +797,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.3",
-      "public_schema_version": "1.0.0",
+      "data_version": "2026.07.18.1",
+      "public_schema_version": "1.1.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -987,8 +987,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.3",
-      "public_schema_version": "1.0.0",
+      "data_version": "2026.07.18.1",
+      "public_schema_version": "1.1.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1187,8 +1187,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.3",
-      "public_schema_version": "1.0.0",
+      "data_version": "2026.07.18.1",
+      "public_schema_version": "1.1.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1446,8 +1446,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.3",
-      "public_schema_version": "1.0.0",
+      "data_version": "2026.07.18.1",
+      "public_schema_version": "1.1.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1636,8 +1636,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.14.3",
-      "public_schema_version": "1.0.0",
+      "data_version": "2026.07.18.1",
+      "public_schema_version": "1.1.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1652,10 +1652,179 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
   }
 ];
 
+export const TRUSTED_INSTITUTIONS: PublicInstitutionSummary[] = [
+  {
+    "id": "institution-ccrcgp",
+    "canonical_slug": "china-conservation-and-research-center-for-the-giant-panda",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "China Conservation and Research Center for the Giant Panda",
+        "kind": "official_translation"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "中国大熊猫保护研究中心",
+        "kind": "official"
+      }
+    ],
+    "institution_type": "conservation_center",
+    "facility_ids": [
+      "89f620b2-37d0-51ba-aafa-6844404a5b2c"
+    ],
+    "place_ids": [
+      "place-wolong-shenshuping-base"
+    ],
+    "source_ids": [
+      "src_ccrcgp_2025_birthday_season"
+    ],
+    "last_verified_at": "2026-05-10",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立保护研究机构与神树坪基地的显式组织—场所关系。"
+      },
+      {
+        "locale": "en",
+        "summary": "Introduced the explicit organization-to-place relationship for the conservation center and Shenshuping Base."
+      }
+    ]
+  },
+  {
+    "id": "institution-smithsonian-national-zoo",
+    "canonical_slug": "smithsonian-national-zoo",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Smithsonian's National Zoo",
+        "kind": "official"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "史密森国家动物园",
+        "kind": "translated"
+      }
+    ],
+    "institution_type": "zoo",
+    "facility_ids": [
+      "afb0f227-dd5e-5076-88e3-74e9807a6049"
+    ],
+    "place_ids": [
+      "place-smithsonian-national-zoo-dc"
+    ],
+    "source_ids": [
+      "src_smithsonian_history",
+      "src_smithsonian_giant_panda_faq"
+    ],
+    "last_verified_at": "2026-05-09",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立机构身份、关联园区、驻留与迁移来源的首轮公开记录。"
+      },
+      {
+        "locale": "en",
+        "summary": "First public record of institution identity, associated campus, residencies, and migration sources."
+      }
+    ]
+  }
+];
+
+export const TRUSTED_PLACES: PublicPlaceSummary[] = [
+  {
+    "id": "place-smithsonian-national-zoo-dc",
+    "canonical_slug": "smithsonian-national-zoo-washington-dc",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Smithsonian's National Zoo, Washington, D.C.",
+        "kind": "display"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "史密森国家动物园（华盛顿特区园区）",
+        "kind": "translated"
+      }
+    ],
+    "country_code": "US",
+    "locality": "Washington, D.C.",
+    "precision": "locality",
+    "place_type": "zoo_campus",
+    "facility_ids": [
+      "afb0f227-dd5e-5076-88e3-74e9807a6049"
+    ],
+    "institution_ids": [
+      "institution-smithsonian-national-zoo"
+    ],
+    "source_ids": [
+      "src_smithsonian_history",
+      "src_smithsonian_giant_panda_faq"
+    ],
+    "last_verified_at": "2026-05-09",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "以城市级精度发布华盛顿特区园区，不补造精确坐标。"
+      },
+      {
+        "locale": "en",
+        "summary": "Published the Washington, D.C. campus at locality precision without inferred coordinates."
+      }
+    ]
+  },
+  {
+    "id": "place-wolong-shenshuping-base",
+    "canonical_slug": "wolong-shenshuping-base",
+    "legacy_slugs": [
+      "ccrcgp-wolong-shenshuping-base"
+    ],
+    "names": [
+      {
+        "language": "en",
+        "value": "Wolong Shenshuping Base",
+        "kind": "display"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "卧龙神树坪基地",
+        "kind": "official_short"
+      }
+    ],
+    "country_code": "CN",
+    "locality": "Wolong, Sichuan",
+    "precision": "locality",
+    "place_type": "conservation_base",
+    "facility_ids": [
+      "89f620b2-37d0-51ba-aafa-6844404a5b2c"
+    ],
+    "institution_ids": [
+      "institution-ccrcgp"
+    ],
+    "source_ids": [
+      "src_ccrcgp_2025_birthday_season"
+    ],
+    "last_verified_at": "2026-05-10",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "以卧龙、四川的地区级精度发布神树坪基地，不推断精确位置。"
+      },
+      {
+        "locale": "en",
+        "summary": "Published Shenshuping Base at Wolong, Sichuan locality precision without inferring an exact position."
+      }
+    ]
+  }
+];
+
 export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
   {
     "id": "60c7e1a3-d286-5366-8d41-32c11df58b5c",
     "canonical_slug": "ccrcgp-wolong-gengda-base",
+    "legacy_slugs": [],
     "names": [
       {
         "language": "en",
@@ -1668,6 +1837,14 @@ export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
         "kind": "display"
       }
     ],
+    "institution_type": null,
+    "facility_ids": [
+      "60c7e1a3-d286-5366-8d41-32c11df58b5c"
+    ],
+    "place_ids": [],
+    "source_ids": [],
+    "last_verified_at": null,
+    "revision_summaries": [],
     "country_code": "CN",
     "locality": "Wolong, Sichuan",
     "facility_type": "conservation_center"
@@ -1675,6 +1852,7 @@ export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
   {
     "id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
     "canonical_slug": "ccrcgp-wolong-shenshuping-base",
+    "legacy_slugs": [],
     "names": [
       {
         "language": "en",
@@ -1687,6 +1865,27 @@ export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
         "kind": "display"
       }
     ],
+    "institution_type": "conservation_center",
+    "facility_ids": [
+      "89f620b2-37d0-51ba-aafa-6844404a5b2c"
+    ],
+    "place_ids": [
+      "place-wolong-shenshuping-base"
+    ],
+    "source_ids": [
+      "src_ccrcgp_2025_birthday_season"
+    ],
+    "last_verified_at": "2026-05-10",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立保护研究机构与神树坪基地的显式组织—场所关系。"
+      },
+      {
+        "locale": "en",
+        "summary": "Introduced the explicit organization-to-place relationship for the conservation center and Shenshuping Base."
+      }
+    ],
     "country_code": "CN",
     "locality": "Wolong, Sichuan",
     "facility_type": "conservation_center"
@@ -1694,6 +1893,7 @@ export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
   {
     "id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
     "canonical_slug": "smithsonian-national-zoo",
+    "legacy_slugs": [],
     "names": [
       {
         "language": "en",
@@ -1704,6 +1904,28 @@ export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
         "language": "zh-Hans",
         "value": "史密森国家动物园",
         "kind": "translated"
+      }
+    ],
+    "institution_type": "zoo",
+    "facility_ids": [
+      "afb0f227-dd5e-5076-88e3-74e9807a6049"
+    ],
+    "place_ids": [
+      "place-smithsonian-national-zoo-dc"
+    ],
+    "source_ids": [
+      "src_smithsonian_history",
+      "src_smithsonian_giant_panda_faq"
+    ],
+    "last_verified_at": "2026-05-09",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立机构身份、关联园区、驻留与迁移来源的首轮公开记录。"
+      },
+      {
+        "locale": "en",
+        "summary": "First public record of institution identity, associated campus, residencies, and migration sources."
       }
     ],
     "country_code": "US",

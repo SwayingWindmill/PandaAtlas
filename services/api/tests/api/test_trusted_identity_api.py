@@ -98,8 +98,8 @@ def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> 
         "display_mode": "designed_empty_state",
         "source_ids": [],
     }
-    assert payload["public_revision"]["data_version"] == "2026.07.14.3"
-    assert payload["public_revision"]["public_schema_version"] == "1.0.0"
+    assert payload["public_revision"]["data_version"] == "2026.07.18.1"
+    assert payload["public_revision"]["public_schema_version"] == "1.1.0"
     assert {item["locale"] for item in payload["public_revision"]["summaries"]} == {
         "zh-CN",
         "en",

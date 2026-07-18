@@ -72,6 +72,7 @@ const copy = {
     sourceUnavailable: "当前发布未提供可点击的外部来源；来源状态已在记录中明确标注。",
     openResult: "查看此结果",
     openProfile: "打开可信档案",
+    openEntity: "打开机构或场所实体",
     providerContract: "地图 Provider 契约",
     providerName: "底图服务",
     attribution: "署名",
@@ -119,6 +120,7 @@ const copy = {
     sourceUnavailable: "This release provides no clickable external source for this record; the source state is stated explicitly.",
     openResult: "View this result",
     openProfile: "Open trusted profile",
+    openEntity: "Open institution or place entity",
     providerContract: "Map provider contract",
     providerName: "Basemap provider",
     attribution: "Attribution",
@@ -197,6 +199,7 @@ function resultCard(
       <footer>
         <Link href={structuredMapHref(locale, selectedState) as Route}>{t.openResult}</Link>
         {result.profileHref ? <Link href={result.profileHref as Route}>{t.openProfile}</Link> : null}
+        {result.entityHref ? <Link href={result.entityHref as Route}>{t.openEntity}</Link> : null}
       </footer>
     </article>
   );

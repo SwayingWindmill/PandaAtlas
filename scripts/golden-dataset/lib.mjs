@@ -23,6 +23,8 @@ export const GOLDEN_DATASET_CONSUMERS = [
 const RECORD_COLLECTIONS = [
   "sources",
   "facilities",
+  "institutions",
+  "places",
   "related_pandas",
   "pandas",
   "facts",
@@ -145,6 +147,8 @@ function parseIntervalDate(value, pathValue, errors, { openEnded = false } = {})
 function validateReferences(dataset, errors) {
   const sources = recordMap(dataset.sources);
   const facilities = recordMap(dataset.facilities);
+  const institutions = recordMap(dataset.institutions);
+  const places = recordMap(dataset.places);
   const pandas = recordMap([...(dataset.pandas ?? []), ...(dataset.related_pandas ?? [])]);
 
   for (const collection of RECORD_COLLECTIONS) {
@@ -187,6 +191,54 @@ function validateReferences(dataset, errors) {
         type: "facility",
         id: record.public.value,
         records: facilities,
+        owner: record,
+      });
+    }
+  }
+
+  for (const [index, record] of (dataset.institutions ?? []).entries()) {
+    if (!record.public || typeof record.public !== "object") continue;
+    for (const [facilityIndex, facilityId] of (record.public.facility_ids ?? []).entries()) {
+      assertReference({
+        errors,
+        pathValue: `institutions[${index}].public.facility_ids[${facilityIndex}]`,
+        type: "facility",
+        id: facilityId,
+        records: facilities,
+        owner: record,
+      });
+    }
+    for (const [placeIndex, placeId] of (record.public.place_ids ?? []).entries()) {
+      assertReference({
+        errors,
+        pathValue: `institutions[${index}].public.place_ids[${placeIndex}]`,
+        type: "place",
+        id: placeId,
+        records: places,
+        owner: record,
+      });
+    }
+  }
+
+  for (const [index, record] of (dataset.places ?? []).entries()) {
+    if (!record.public || typeof record.public !== "object") continue;
+    for (const [facilityIndex, facilityId] of (record.public.facility_ids ?? []).entries()) {
+      assertReference({
+        errors,
+        pathValue: `places[${index}].public.facility_ids[${facilityIndex}]`,
+        type: "facility",
+        id: facilityId,
+        records: facilities,
+        owner: record,
+      });
+    }
+    for (const [institutionIndex, institutionId] of (record.public.institution_ids ?? []).entries()) {
+      assertReference({
+        errors,
+        pathValue: `places[${index}].public.institution_ids[${institutionIndex}]`,
+        type: "institution",
+        id: institutionId,
+        records: institutions,
         owner: record,
       });
     }
