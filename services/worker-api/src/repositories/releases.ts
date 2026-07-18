@@ -6,6 +6,8 @@ interface PublicReleaseRow extends Omit<PublicReleaseMetadata, "licenses"> {
   licenses_json: string;
 }
 
+const SUPPORTED_PUBLIC_SCHEMA_VERSIONS = new Set(["1.0.0", "1.1.0"]);
+
 export async function requireCurrentRelease(env: Env): Promise<PublicReleaseMetadata> {
   const row = await env.DB.prepare(`
     select
@@ -34,7 +36,7 @@ export async function requireCurrentRelease(env: Env): Promise<PublicReleaseMeta
     }
     throw new HttpError(503, "No active public release");
   }
-  if (row.public_schema_version !== "1.0.0") {
+  if (!SUPPORTED_PUBLIC_SCHEMA_VERSIONS.has(row.public_schema_version)) {
     throw new HttpError(503, `Unsupported Public Schema version: ${row.public_schema_version}`);
   }
   return {

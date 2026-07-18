@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const root = new URL("../../../", import.meta.url);
@@ -70,4 +70,21 @@ test("Slice 8 canonical pages do not publish unsupported compatibility facilitie
   assert.match(atlasPage, /institution and physical place|机构和物理场所/);
   assert.match(mapModel, /entityHref/);
   assert.match(profileModel, /entityHref/);
+});
+
+test("Slice 8 Worker accepts current and rollback Public Schema versions without duplicate repositories", async () => {
+  const [releaseRepository, repositoryEntries] = await Promise.all([
+    source("services/worker-api/src/repositories/releases.ts"),
+    readdir(new URL("services/worker-api/src/repositories/", root)),
+  ]);
+
+  assert.match(
+    releaseRepository,
+    /SUPPORTED_PUBLIC_SCHEMA_VERSIONS = new Set\(\["1\.0\.0", "1\.1\.0"\]\)/,
+  );
+  assert.doesNotMatch(releaseRepository, /public_schema_version !== "1\.0\.0"/);
+  assert.deepEqual(
+    repositoryEntries.filter((entry) => /^releases \(\d+\)\.ts$/.test(entry)),
+    [],
+  );
 });
