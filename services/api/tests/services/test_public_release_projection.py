@@ -42,8 +42,8 @@ def test_golden_release_is_deterministic_and_cross_surface_versions_match() -> N
 
     assert first.files == second.files
     assert first.manifest == second.manifest
-    assert first.manifest["dataset_release_version"] == "2026.07.14.3"
-    assert first.manifest["public_schema_version"] == "1.0.0"
+    assert first.manifest["dataset_release_version"] == "2026.07.18.1"
+    assert first.manifest["public_schema_version"] == "1.1.0"
     assert first.manifest["database_migration_version"] == "0006"
     assert first.manifest["publication_batch_id"] == "batch-golden-2026-07-14"
     assert first.manifest["projection_code_version"] == "git:db1e0fd"
@@ -55,6 +55,15 @@ def test_golden_release_is_deterministic_and_cross_surface_versions_match() -> N
 
     api_snapshot = json.loads(first.files["api.json"])
     assert api_snapshot["release"] == first.release_metadata
+    assert {item["id"] for item in api_snapshot["institutions"]} == {
+        "institution-ccrcgp",
+        "institution-smithsonian-national-zoo",
+    }
+    assert {item["id"] for item in api_snapshot["places"]} == {
+        "place-smithsonian-national-zoo-dc",
+        "place-wolong-shenshuping-base",
+    }
+    assert all(item["precision"] == "locality" for item in api_snapshot["places"])
     assert len(api_snapshot["pandas"]) == 7
     assert api_snapshot["distribution"]["type"] == "FeatureCollection"
     assert api_snapshot["habitats"]["type"] == "FeatureCollection"
@@ -64,8 +73,8 @@ def test_golden_release_is_deterministic_and_cross_surface_versions_match() -> N
 
     csv_rows = list(csv.DictReader(io.StringIO(first.files["pandas.csv"])))
     assert len(csv_rows) == 7
-    assert {row["dataset_release_version"] for row in csv_rows} == {"2026.07.14.3"}
-    assert {row["public_schema_version"] for row in csv_rows} == {"1.0.0"}
+    assert {row["dataset_release_version"] for row in csv_rows} == {"2026.07.18.1"}
+    assert {row["public_schema_version"] for row in csv_rows} == {"1.1.0"}
 
     for filename, descriptor in first.manifest["files"].items():
         assert descriptor["sha256"] == first.checksum(filename)
@@ -367,12 +376,12 @@ def test_checked_in_golden_release_rebuilds_byte_for_byte() -> None:
         PublicReleaseInput(
             source_state=deepcopy(load_golden_dataset()),
             publication_batch_id="golden-dataset",
-            projection_code_version="public-release-v2",
+            projection_code_version="public-release-v3",
             database_migration_version="0007",
-            released_at=datetime(2026, 7, 14, 12, tzinfo=UTC),
+            released_at=datetime(2026, 7, 18, 12, tzinfo=UTC),
         )
     )
-    directory = ROOT / "data" / "public-releases" / "2026.07.14.3"
+    directory = ROOT / "data" / "public-releases" / "2026.07.18.1"
 
     for filename, content in release.files.items():
         assert (directory / filename).read_text(encoding="utf-8") == content

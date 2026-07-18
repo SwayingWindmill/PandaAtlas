@@ -94,6 +94,7 @@ const copy = {
     footprintIntro: "只展示已发布的机构或粗粒度地点，不推测更精确坐标。",
     noCoordinates: "公开记录没有足够精度用于地理地图。这里采用不带坐标的顺序记录。",
     noFootprint: "暂无已发布居住记录。",
+    openPlace: "打开场所实体",
     media: "影像与许可",
     noMedia: "暂无可公开授权影像",
     noMediaBody: "档案明确记录为无已授权媒体。页面不会用来源不明的图片替代。",
@@ -191,6 +192,7 @@ const copy = {
     footprintIntro: "Only published institutions or coarse locations are shown. More precise coordinates are not inferred.",
     noCoordinates: "The public record is not precise enough for a geographic map. This is a coordinate-free ordered record.",
     noFootprint: "No published residency records are available.",
+    openPlace: "Open place entity",
     media: "Media and licensing",
     noMedia: "No licensed public media",
     noMediaBody: "The record explicitly states that no licensed media is available. Unverified imagery is not substituted.",
@@ -600,6 +602,11 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
                   <p className="mt-2 text-sm text-[var(--muted)]">{dateLabel(item.startDate, locale, item.startPrecision)} - {item.endDate ? dateLabel(item.endDate, locale, item.endPrecision ?? "day") : t.current}</p>
                   {item.lastVerifiedAt ? <p className="mt-2 text-xs text-[var(--muted)]">{t.verified}: {item.lastVerifiedAt}</p> : null}
                   <p className="mt-2 text-xs text-[var(--muted)]">{t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} /></p>
+                  {item.entityHref ? (
+                    <Link href={item.entityHref as Route} className="mt-3 inline-flex text-sm font-semibold text-[var(--accent)] hover:underline">
+                      {t.openPlace}
+                    </Link>
+                  ) : null}
                 </li>
               ))}
             </ol>

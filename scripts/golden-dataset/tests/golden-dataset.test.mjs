@@ -6,6 +6,8 @@ import {
   buildPublishedParentageAssertions,
   buildTrustedFacilities,
   buildTrustedIdentityReferences,
+  buildTrustedInstitutions,
+  buildTrustedPlaces,
   generatedIdentityAliasesPath,
   normalizeGeneratedModule,
   renderTrustedIdentityAliasModule,
@@ -145,6 +147,8 @@ test("generated web identity aliases match the canonical golden dataset", async 
   assert.match(generated, /"meixiang"/);
   assert.match(generated, /"mei-xiang"/);
   assert.match(generated, /TRUSTED_PANDA_DETAILS/);
+  assert.match(generated, /TRUSTED_INSTITUTIONS/);
+  assert.match(generated, /TRUSTED_PLACES/);
   assert.match(generated, /TRUSTED_FACILITIES/);
   assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
@@ -154,6 +158,19 @@ test("generated web identity aliases match the canonical golden dataset", async 
       ?.names.find((name) => name.language === "zh-Hans")?.value,
     "中国大熊猫保护研究中心卧龙神树坪基地",
   );
+  const institutions = buildTrustedInstitutions(dataset);
+  assert.equal(institutions.length, 2);
+  assert.deepEqual(
+    institutions.find((institution) => institution.id === "institution-ccrcgp")?.place_ids,
+    ["place-wolong-shenshuping-base"],
+  );
+  const places = buildTrustedPlaces(dataset);
+  assert.equal(places.length, 2);
+  assert.equal(
+    places.find((place) => place.id === "place-wolong-shenshuping-base")?.precision,
+    "locality",
+  );
+  assert.ok(places.every((place) => place.source_ids.length > 0));
   const assertions = buildPublishedParentageAssertions(dataset);
   assert.equal(
     assertions.find((assertion) => assertion.id === "parent-bao-li-father")?.status,
@@ -173,12 +190,12 @@ test("all test layers load one fixture and the public projection strips restrict
   const identityLists = fixtures.map((dataset) => dataset.pandas.map((record) => record.id));
 
   for (const dataset of fixtures) {
-    assert.equal(dataset.dataset.version, "2026.07.14.3");
+    assert.equal(dataset.dataset.version, "2026.07.18.1");
     assert.deepEqual(dataset.pandas.map((record) => record.id), identityLists[0]);
   }
 
   const projection = buildPublicProjection(fixtures[0]);
-  assert.equal(projection.dataset.version, "2026.07.14.3");
+  assert.equal(projection.dataset.version, "2026.07.18.1");
   assert.equal(projection.pandas.length, 7);
   assert.equal(JSON.stringify(projection).includes("restricted"), false);
   assert.equal(JSON.stringify(projection).includes("curator_notes"), false);

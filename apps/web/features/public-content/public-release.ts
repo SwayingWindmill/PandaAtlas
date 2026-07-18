@@ -1,17 +1,21 @@
 import {
   TRUSTED_FACILITIES,
+  TRUSTED_INSTITUTIONS,
   TRUSTED_LINEAGE_EDGES,
   TRUSTED_LINEAGE_NODES,
   TRUSTED_PANDA_DETAILS,
   TRUSTED_PANDA_REFERENCES,
   TRUSTED_PARENTAGE_ASSERTIONS,
+  TRUSTED_PLACES,
 } from "@/lib/generated/trusted-identity-aliases";
 import type {
   PandaDetail,
   PandaLineageRelationship,
   PandaLineageResponse,
   PublicFacilitySummary,
+  PublicInstitutionSummary,
   PublicParentageAssertionSummary,
+  PublicPlaceSummary,
   PublicSourceSummary,
 } from "@/lib/types";
 import type { PublicLocale } from "@/foundation/content/locales";
@@ -72,11 +76,15 @@ export interface PublicAtlasSearch {
 export interface PublicAtlasDataset {
   pandas: PandaDetail[];
   facilities: PublicFacilitySummary[];
+  institutions: PublicInstitutionSummary[];
+  places: PublicPlaceSummary[];
 }
 
 export interface PublicMapDataset {
   pandas: PandaDetail[];
   facilities: PublicFacilitySummary[];
+  institutions: PublicInstitutionSummary[];
+  places: PublicPlaceSummary[];
 }
 
 export interface PublicLineageDataset {
@@ -86,9 +94,23 @@ export interface PublicLineageDataset {
 
 export interface PublicProfileRecord {
   panda: PandaDetail;
+  institutions: PublicInstitutionSummary[];
+  places: PublicPlaceSummary[];
   facilities: PublicFacilitySummary[];
   lineage: PandaLineageResponse;
   parentageAssertions: PublicParentageAssertionSummary[];
+}
+
+export interface PublicInstitutionRecord {
+  institution: PublicInstitutionSummary;
+  places: PublicPlaceSummary[];
+  pandas: PandaDetail[];
+}
+
+export interface PublicPlaceRecord {
+  place: PublicPlaceSummary;
+  institutions: PublicInstitutionSummary[];
+  pandas: PandaDetail[];
 }
 
 const canonicalDetails = [...TRUSTED_PANDA_DETAILS].sort((left, right) =>
@@ -263,6 +285,8 @@ export function loadPublishedAtlasDataset(
     {
       pandas: canonicalDetails,
       facilities: TRUSTED_FACILITIES,
+      institutions: TRUSTED_INSTITUTIONS,
+      places: TRUSTED_PLACES,
     },
     canonicalDetails,
     locale,
@@ -280,6 +304,8 @@ export function loadPublishedMapDataset(
     {
       pandas: canonicalDetails,
       facilities: TRUSTED_FACILITIES,
+      institutions: TRUSTED_INSTITUTIONS,
+      places: TRUSTED_PLACES,
     },
     canonicalDetails,
     locale,
@@ -334,6 +360,8 @@ export function loadPublishedPandaProfile(
     {
       panda,
       facilities: TRUSTED_FACILITIES,
+      institutions: TRUSTED_INSTITUTIONS,
+      places: TRUSTED_PLACES,
       lineage: trustedLineageFor(panda),
       parentageAssertions: TRUSTED_PARENTAGE_ASSERTIONS,
     },
@@ -344,6 +372,89 @@ export function loadPublishedPandaProfile(
       scope: panda.record_tier === "complete_first_pass"
         ? "trusted profile identity, reviewed facts and public source summaries"
         : "reviewed identity and the currently published subset of profile facts",
+    },
+  );
+}
+
+function resolveEntityReference<T extends { id: string; canonical_slug: string; legacy_slugs: string[] }>(
+  records: readonly T[],
+  input: string,
+): { id: string; slug: string } | null {
+  const normalized = normalizeSearchTerm(input);
+  if (!normalized) return null;
+  const record = records.find((candidate) =>
+    candidate.id === input
+    || normalizeSearchTerm(candidate.canonical_slug) === normalized
+    || candidate.legacy_slugs.some((slug) => normalizeSearchTerm(slug) === normalized),
+  );
+  return record ? { id: record.id, slug: record.canonical_slug } : null;
+}
+
+function pandasLinkedToFacilities(facilityIds: readonly string[]): PandaDetail[] {
+  const ids = new Set(facilityIds);
+  return canonicalDetails.filter((panda) =>
+    panda.residencies.some((residency) => residency.facility_id && ids.has(residency.facility_id))
+    || panda.events.some((event) =>
+      (event.from_facility_id && ids.has(event.from_facility_id))
+      || (event.to_facility_id && ids.has(event.to_facility_id)),
+    ),
+  );
+}
+
+export function resolvePublishedInstitutionReference(input: string): { id: string; slug: string } | null {
+  return resolveEntityReference(TRUSTED_INSTITUTIONS, input);
+}
+
+export function loadPublishedInstitution(
+  input: string,
+  locale: PublicLocale,
+): PublicContentEnvelope<PublicInstitutionRecord> | null {
+  const reference = resolvePublishedInstitutionReference(input);
+  if (!reference) return null;
+  const institution = TRUSTED_INSTITUTIONS.find((item) => item.id === reference.id);
+  if (!institution || institution.source_ids.length === 0) return null;
+  const pandas = pandasLinkedToFacilities(institution.facility_ids);
+  return buildEnvelope(
+    {
+      institution,
+      places: TRUSTED_PLACES.filter((place) => institution.place_ids.includes(place.id)),
+      pandas,
+    },
+    pandas,
+    locale,
+    {
+      state: "complete",
+      scope: "reviewed institution identity, places, panda residencies, migrations, sources, and revision state",
+    },
+  );
+}
+
+export function resolvePublishedPlaceReference(input: string): { id: string; slug: string } | null {
+  return resolveEntityReference(TRUSTED_PLACES, input);
+}
+
+export function loadPublishedPlace(
+  input: string,
+  locale: PublicLocale,
+): PublicContentEnvelope<PublicPlaceRecord> | null {
+  const reference = resolvePublishedPlaceReference(input);
+  if (!reference) return null;
+  const place = TRUSTED_PLACES.find((item) => item.id === reference.id);
+  if (!place || place.source_ids.length === 0) return null;
+  const pandas = pandasLinkedToFacilities(place.facility_ids);
+  return buildEnvelope(
+    {
+      place,
+      institutions: TRUSTED_INSTITUTIONS.filter((institution) =>
+        place.institution_ids.includes(institution.id),
+      ),
+      pandas,
+    },
+    pandas,
+    locale,
+    {
+      state: "complete",
+      scope: "reviewed physical place identity, public precision, institution relationship, residencies, migrations, sources, and revision state",
     },
   );
 }

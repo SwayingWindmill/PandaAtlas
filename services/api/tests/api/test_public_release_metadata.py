@@ -18,8 +18,8 @@ def test_current_release_reports_independent_versions_and_licenses() -> None:
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["dataset_release_version"] == "2026.07.14.3"
-    assert payload["public_schema_version"] == "1.0.0"
+    assert payload["dataset_release_version"] == "2026.07.18.1"
+    assert payload["public_schema_version"] == "1.1.0"
     assert payload["database_migration_version"] == "0007"
     assert payload["licenses"]["structured_data"] == "ODC-By-1.0"
 
@@ -28,8 +28,8 @@ def test_release_api_responses_carry_current_release_headers() -> None:
     response = client.get("/api/v1/releases/current")
 
     assert response.status_code == 200
-    assert response.headers["X-PandaAtlas-Dataset-Version"] == "2026.07.14.3"
-    assert response.headers["X-PandaAtlas-Public-Schema-Version"] == "1.0.0"
+    assert response.headers["X-PandaAtlas-Dataset-Version"] == "2026.07.18.1"
+    assert response.headers["X-PandaAtlas-Public-Schema-Version"] == "1.1.0"
     assert response.headers["X-PandaAtlas-Database-Migration-Version"] == "0007"
 
 
@@ -38,7 +38,7 @@ def test_release_api_serves_the_exact_versioned_panda_snapshot() -> None:
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["release"]["dataset_release_version"] == "2026.07.14.3"
+    assert payload["release"]["dataset_release_version"] == "2026.07.18.1"
     assert len(payload["records"]) == 7
     assert {record["canonical_slug"] for record in payload["records"]} >= {
         "mei-xiang",
@@ -69,7 +69,7 @@ class _WithdrawalSession:
 def test_fastapi_entity_and_whole_release_withdrawals_are_fail_closed(monkeypatch) -> None:
     payload = json.loads(
         (
-            ROOT / "data" / "public-releases" / "2026.07.14.3" / "api.json"
+            ROOT / "data" / "public-releases" / "2026.07.18.1" / "api.json"
         ).read_text(encoding="utf-8")
     )
     panda_id = payload["pandas"][0]["id"]
@@ -81,7 +81,7 @@ def test_fastapi_entity_and_whole_release_withdrawals_are_fail_closed(monkeypatc
         )
 
     monkeypatch.setattr(release_service, "session_scope", entity_session)
-    filtered = release_service._apply_database_withdrawals(payload, "2026.07.14.3")
+    filtered = release_service._apply_database_withdrawals(payload, "2026.07.18.1")
     assert panda_id not in {item["id"] for item in filtered["pandas"]}
     assert filtered["stats"]["total_pandas"] == 6
 
@@ -91,7 +91,7 @@ def test_fastapi_entity_and_whole_release_withdrawals_are_fail_closed(monkeypatc
 
     monkeypatch.setattr(release_service, "session_scope", whole_session)
     with pytest.raises(HTTPException) as error:
-        release_service._apply_database_withdrawals(payload, "2026.07.14.3")
+        release_service._apply_database_withdrawals(payload, "2026.07.18.1")
     assert error.value.status_code == 410
 
 
@@ -111,7 +111,7 @@ def test_configured_database_metadata_failure_never_falls_back(monkeypatch) -> N
 
 def test_stats_withdrawal_does_not_withdraw_other_release_entities(monkeypatch) -> None:
     payload = json.loads(
-        (ROOT / "data" / "public-releases" / "2026.07.14.3" / "api.json").read_text(
+        (ROOT / "data" / "public-releases" / "2026.07.18.1" / "api.json").read_text(
             encoding="utf-8"
         )
     )
@@ -123,7 +123,7 @@ def test_stats_withdrawal_does_not_withdraw_other_release_entities(monkeypatch) 
         )
 
     monkeypatch.setattr(release_service, "session_scope", stats_session)
-    filtered = release_service._apply_database_withdrawals(payload, "2026.07.14.3")
+    filtered = release_service._apply_database_withdrawals(payload, "2026.07.18.1")
 
     assert filtered["pandas"] == payload["pandas"]
     assert "stats" not in filtered

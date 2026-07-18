@@ -74,21 +74,75 @@ function buildSourceSummaries(dataset, sourceIds) {
     }));
 }
 
+function publicNames(record) {
+  return (record.public.names ?? []).map((name) => ({
+    language: name.language,
+    value: name.value,
+    kind: name.kind,
+  }));
+}
+
+export function buildTrustedInstitutions(dataset) {
+  return (dataset.institutions ?? [])
+    .filter((institution) => institution.publication_status === "published")
+    .map((institution) => ({
+      id: institution.id,
+      canonical_slug: institution.public.canonical_slug,
+      legacy_slugs: institution.public.legacy_slugs ?? [],
+      names: publicNames(institution),
+      institution_type: institution.public.institution_type ?? null,
+      facility_ids: institution.public.facility_ids ?? [],
+      place_ids: institution.public.place_ids ?? [],
+      source_ids: institution.public.source_ids ?? [],
+      last_verified_at: institution.public.last_verified_at ?? null,
+      revision_summaries: institution.public.revision_summaries ?? [],
+    }))
+    .sort((left, right) => left.canonical_slug.localeCompare(right.canonical_slug));
+}
+
+export function buildTrustedPlaces(dataset) {
+  return (dataset.places ?? [])
+    .filter((place) => place.publication_status === "published")
+    .map((place) => ({
+      id: place.id,
+      canonical_slug: place.public.canonical_slug,
+      legacy_slugs: place.public.legacy_slugs ?? [],
+      names: publicNames(place),
+      country_code: place.public.country_code ?? null,
+      locality: place.public.locality ?? null,
+      precision: place.public.precision,
+      place_type: place.public.place_type ?? null,
+      facility_ids: place.public.facility_ids ?? [],
+      institution_ids: place.public.institution_ids ?? [],
+      source_ids: place.public.source_ids ?? [],
+      last_verified_at: place.public.last_verified_at ?? null,
+      revision_summaries: place.public.revision_summaries ?? [],
+    }))
+    .sort((left, right) => left.canonical_slug.localeCompare(right.canonical_slug));
+}
+
 export function buildTrustedFacilities(dataset) {
+  const institutions = buildTrustedInstitutions(dataset);
   return (dataset.facilities ?? [])
     .filter((facility) => facility.publication_status === "published")
-    .map((facility) => ({
-      id: facility.id,
-      canonical_slug: facility.public.canonical_slug,
-      names: (facility.public.names ?? []).map((name) => ({
-        language: name.language,
-        value: name.value,
-        kind: name.kind,
-      })),
-      country_code: facility.public.country_code ?? null,
-      locality: facility.public.locality ?? null,
-      facility_type: facility.public.facility_type ?? null,
-    }))
+    .map((facility) => {
+      const institution = institutions.find((item) => item.facility_ids.includes(facility.id));
+      return {
+        id: facility.id,
+        canonical_slug: facility.public.canonical_slug,
+        legacy_slugs: institution?.legacy_slugs ?? [],
+        names: publicNames(facility),
+        institution_type: institution?.institution_type ?? null,
+        facility_ids: [facility.id],
+        place_ids: institution?.place_ids ?? [],
+        source_ids: institution?.source_ids ?? [],
+        last_verified_at: institution?.last_verified_at ?? null,
+        revision_summaries: institution?.revision_summaries ?? [],
+        country_code: facility.public.country_code ?? null,
+        locality: facility.public.locality ?? null,
+        facility_type: facility.public.facility_type ?? null,
+      };
+    })
     .sort((left, right) => left.canonical_slug.localeCompare(right.canonical_slug));
 }
 
@@ -400,18 +454,22 @@ export function normalizeGeneratedModule(value) {
 export function renderTrustedIdentityAliasModule(dataset) {
   const references = buildTrustedIdentityReferences(dataset);
   const details = buildTrustedPandaDetails(dataset);
+  const institutions = buildTrustedInstitutions(dataset);
+  const places = buildTrustedPlaces(dataset);
   const facilities = buildTrustedFacilities(dataset);
   const parentageAssertions = buildPublishedParentageAssertions(dataset);
   const lineage = buildTrustedLineage(dataset);
   return `// Generated from contracts/golden-dataset/mei-xiang-family.v1.json.\n`
     + `// Run npm run generate:trusted-identity-aliases after changing trusted identity data.\n\n`
-    + `import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicParentageAssertionSummary } from \"@/lib/types\";\n\n`
+    + `import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from \"@/lib/types\";\n\n`
     + `export interface TrustedPandaReference {\n`
     + `  id: string;\n`
     + `  slug: string;\n`
     + `}\n\n`
     + `export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaReference>> = ${JSON.stringify(references, null, 2)};\n\n`
     + `export const TRUSTED_PANDA_DETAILS: PandaDetail[] = ${JSON.stringify(details, null, 2)};\n`
+    + `\nexport const TRUSTED_INSTITUTIONS: PublicInstitutionSummary[] = ${JSON.stringify(institutions, null, 2)};\n`
+    + `\nexport const TRUSTED_PLACES: PublicPlaceSummary[] = ${JSON.stringify(places, null, 2)};\n`
     + `\nexport const TRUSTED_FACILITIES: PublicFacilitySummary[] = ${JSON.stringify(facilities, null, 2)};\n`
     + `\nexport const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = ${JSON.stringify(parentageAssertions, null, 2)};\n`
     + `\nexport const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = ${JSON.stringify(lineage.nodes, null, 2)};\n`

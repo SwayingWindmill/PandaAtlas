@@ -179,12 +179,12 @@ async function prepareD1Projection() {
     "--file=../../infra/cloudflare/d1/seed.sql",
   ]);
   const releaseSql = await readFile(
-    "../../data/public-releases/2026.07.14.3/d1.sql",
+    "../../data/public-releases/2026.07.18.1/d1.sql",
     "utf8",
   );
   const wranglerReleaseSql = path.join(
     PERSIST_PATH,
-    "release-2026.07.14.3.sql",
+    "release-2026.07.18.1.sql",
   );
   await writeFile(
     wranglerReleaseSql,
@@ -342,7 +342,7 @@ async function runHttpSmoke() {
       trustedDetail?.record_tier !== "complete_first_pass" ||
       trustedDetail?.localized_content?.length !== 2 ||
       trustedDetail?.media_release?.display_mode !== "designed_empty_state" ||
-      trustedDetail?.public_revision?.data_version !== "2026.07.14.3" ||
+      trustedDetail?.public_revision?.data_version !== "2026.07.18.1" ||
       trustedDetail.events.find(
         (event) => event.id === "event-smithsonian-return-plan-2020",
       )?.changes_current_residency !== false ||

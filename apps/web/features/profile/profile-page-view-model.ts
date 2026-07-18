@@ -70,6 +70,7 @@ export interface TrustedProfileFootprintStopViewModel {
   lastVerifiedAt: string | null;
   sourceIds: string[];
   current: boolean;
+  entityHref: string | null;
 }
 
 export interface TrustedProfileSourceViewModel {
@@ -379,7 +380,7 @@ export function buildTrustedProfilePageViewModel(
   record: PublicProfileRecord,
   locale: PublicLocale,
 ): TrustedProfilePageViewModel {
-  const { panda, facilities } = record;
+  const { panda, facilities, places } = record;
   if (!panda.identity) {
     throw new Error("A trusted profile view model requires a reviewed identity.");
   }
@@ -421,6 +422,12 @@ export function buildTrustedProfilePageViewModel(
     lastVerifiedAt: residency.last_verified_at,
     sourceIds: residency.source_ids,
     current: residency.end_date === null,
+    entityHref: residency.facility_id
+      ? (() => {
+          const place = places.find((item) => item.facility_ids.includes(residency.facility_id!));
+          return place ? `/${locale}/places/${place.canonical_slug}` : null;
+        })()
+      : null,
   }));
   const revisionSummary = panda.public_revision?.summaries.find(
     (item) => item.locale === requestedContentLocale,

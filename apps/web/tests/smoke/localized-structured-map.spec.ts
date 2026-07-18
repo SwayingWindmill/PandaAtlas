@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const RELEASE_ID = "2026.07.14.3";
+const RELEASE_ID = "2026.07.18.1";
 const SMITHSONIAN_RESULT = "institution:afb0f227-dd5e-5076-88e3-74e9807a6049";
 
 

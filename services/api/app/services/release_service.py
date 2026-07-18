@@ -14,7 +14,7 @@ from app.db.session import has_database, session_scope
 from app.schemas.release import PublicPandaRelease, PublicReleaseMetadata
 
 DATABASE_MIGRATION_VERSION = "0007"
-PROJECTION_CODE_VERSION = "public-release-v2"
+PROJECTION_CODE_VERSION = "public-release-v3"
 _request_release: ContextVar[PublicReleaseMetadata | None] = ContextVar(
     "request_public_release", default=None
 )
@@ -28,7 +28,7 @@ def _golden_release_metadata() -> PublicReleaseMetadata:
         database_migration_version=DATABASE_MIGRATION_VERSION,
         publication_batch_id="golden-dataset",
         projection_code_version=PROJECTION_CODE_VERSION,
-        released_at="2026-07-14T12:00:00Z",
+        released_at="2026-07-18T12:00:00Z",
         licenses=dataset["licenses"],
     )
 

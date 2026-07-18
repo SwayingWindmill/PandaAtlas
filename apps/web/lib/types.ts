@@ -77,20 +77,54 @@ export interface PublicParentageAssertionSummary {
   source_ids: string[];
 }
 
-export interface PublicFacilityName {
+export interface PublicEntityName {
   language: string;
   value: string;
   kind: string;
 }
 
-export interface PublicFacilitySummary {
+export interface PublicRevisionText {
+  locale: string;
+  summary: string;
+}
+
+export interface PublicInstitutionSummary {
   id: string;
   canonical_slug: string;
-  names: PublicFacilityName[];
+  legacy_slugs: string[];
+  names: PublicEntityName[];
+  institution_type: string | null;
+  facility_ids: string[];
+  place_ids: string[];
+  source_ids: string[];
+  last_verified_at: string | null;
+  revision_summaries: PublicRevisionText[];
+}
+
+export interface PublicPlaceSummary {
+  id: string;
+  canonical_slug: string;
+  legacy_slugs: string[];
+  names: PublicEntityName[];
+  country_code: string | null;
+  locality: string | null;
+  precision: "locality" | "country";
+  place_type: string | null;
+  facility_ids: string[];
+  institution_ids: string[];
+  source_ids: string[];
+  last_verified_at: string | null;
+  revision_summaries: PublicRevisionText[];
+}
+
+/** Compatibility alias for residency and map callers during Slice 8 migration. */
+export type PublicFacilitySummary = PublicInstitutionSummary & {
   country_code: string | null;
   locality: string | null;
   facility_type: string | null;
-}
+};
+
+export type PublicFacilityName = PublicEntityName;
 
 export interface LocalizedPublicContent {
   locale: string;

@@ -60,6 +60,10 @@ const copy = {
     page: (current: number, total: number) => `第 ${current} 页，共 ${total} 页`,
     facilityCount: (count: number) => `${count} 只`,
     id: "稳定标识",
+    relatedEntities: "匹配的机构与场所",
+    institutionEntity: "机构",
+    placeEntity: "场所",
+    noEntityConflation: "机构和物理场所是独立实体，结果不会把两者合并。",
   },
   en: {
     title: "Panda profile discovery",
@@ -105,6 +109,10 @@ const copy = {
     page: (current: number, total: number) => `Page ${current} of ${total}`,
     facilityCount: (count: number) => `${count} ${count === 1 ? "panda" : "pandas"}`,
     id: "Stable identifier",
+    relatedEntities: "Matching institutions and places",
+    institutionEntity: "Institution",
+    placeEntity: "Place",
+    noEntityConflation: "Institutions and physical places are separate entities and are not merged in these results.",
   },
 } as const;
 
@@ -120,6 +128,26 @@ function localizedSex(value: string, locale: "zh" | "en") {
   if (value === "male") return t.male;
   if (value === "female") return t.female;
   return t.unknown;
+}
+
+function normalizedEntityTerm(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase()
+    .replace(/[\s_\-:,.()'’]+/g, "")
+    .trim();
+}
+
+function localizedEntityName(
+  names: Array<{ language: string; value: string }>,
+  locale: "zh" | "en",
+  fallback: string,
+): string {
+  const language = locale === "zh" ? "zh-Hans" : "en";
+  return names.find((name) => name.language === language)?.value
+    ?? names[0]?.value
+    ?? fallback;
 }
 
 function pageState(state: AtlasQueryState, page: number): AtlasQueryState {
@@ -161,6 +189,34 @@ export default async function LocalizedAtlasPage({ params, searchParams }: Local
     if (state === "no_licensed_media") return t.noLicensedMedia;
     return t.mediaUnavailable;
   };
+  const normalizedEntityQuery = normalizedEntityTerm(canonicalState.q);
+  const entityMatches = normalizedEntityQuery
+    ? [
+        ...envelope.data.institutions.map((institution) => ({
+          id: institution.id,
+          kind: "institution" as const,
+          slug: institution.canonical_slug,
+          name: localizedEntityName(institution.names, locale, institution.canonical_slug),
+          searchText: normalizedEntityTerm([
+            institution.canonical_slug,
+            ...institution.legacy_slugs,
+            ...institution.names.map((name) => name.value),
+          ].join(" ")),
+        })),
+        ...envelope.data.places.map((place) => ({
+          id: place.id,
+          kind: "place" as const,
+          slug: place.canonical_slug,
+          name: localizedEntityName(place.names, locale, place.canonical_slug),
+          searchText: normalizedEntityTerm([
+            place.canonical_slug,
+            ...place.legacy_slugs,
+            ...place.names.map((name) => name.value),
+            place.locality ?? "",
+          ].join(" ")),
+        })),
+      ].filter((entity) => entity.searchText.includes(normalizedEntityQuery))
+    : [];
 
   return (
     <>
@@ -233,6 +289,28 @@ export default async function LocalizedAtlasPage({ params, searchParams }: Local
 
         <section className={`${publicShellClassName} pa-section`}>
           <PublicDeliveryNotice locale={locale} release={envelope.release} delivery={envelope.delivery} coverage={envelope.coverage} localeDelivery={envelope.locale} />
+
+          {entityMatches.length ? (
+            <section className="rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-6" aria-labelledby="atlas-entity-results-heading" data-testid="atlas-entity-results">
+              <h2 id="atlas-entity-results-heading" className="text-2xl font-semibold">{t.relatedEntities}</h2>
+              <p className="mt-2 text-sm text-[var(--muted)]">{t.noEntityConflation}</p>
+              <ul className="mt-5 grid gap-3 md:grid-cols-2">
+                {entityMatches.map((entity) => (
+                  <li key={entity.id}>
+                    <Link
+                      href={`/${locale}/${entity.kind === "institution" ? "institutions" : "places"}/${entity.slug}` as Route}
+                      className="block rounded-2xl bg-[var(--surface-muted)] p-4 hover:underline"
+                    >
+                      <span className="text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
+                        {entity.kind === "institution" ? t.institutionEntity : t.placeEntity}
+                      </span>
+                      <strong className="mt-1 block">{entity.name}</strong>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
           <div className="pa-results-heading" aria-live="polite" data-testid="atlas-result-summary">
             <h2>{t.resultSummary(view.firstResult, view.lastResult, view.totalMatched, view.totalPublished)}</h2>

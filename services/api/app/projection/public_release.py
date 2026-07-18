@@ -21,6 +21,7 @@ from app.schemas.panda import PandaDetail
 ENTITY_COLLECTIONS = (
     "sources",
     "institutions",
+    "places",
     "facilities",
     "pandas",
     "facts",
@@ -29,7 +30,7 @@ ENTITY_COLLECTIONS = (
     "events",
     "media",
 )
-SUPPORTED_PUBLIC_SCHEMA_VERSIONS = {"1.0.0"}
+SUPPORTED_PUBLIC_SCHEMA_VERSIONS = {"1.0.0", "1.1.0"}
 ALLOWED_PUBLIC_FIELDS = {
     "access_state",
     "aliases",
@@ -54,6 +55,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "evidence_tier",
     "external_identifiers",
     "facility_id",
+    "facility_ids",
     "facility_type",
     "field",
     "freshness",
@@ -62,6 +64,8 @@ ALLOWED_PUBLIC_FIELDS = {
     "gender",
     "kind",
     "intro",
+    "institution_ids",
+    "institution_type",
     "is_featured",
     "language",
     "level",
@@ -81,6 +85,8 @@ ALLOWED_PUBLIC_FIELDS = {
     "panda_id",
     "parent_id",
     "participants",
+    "place_ids",
+    "place_type",
     "policy",
     "precision",
     "primary",
@@ -136,6 +142,7 @@ CANONICAL_ENTITY_TYPES = {
     "source": "sources",
     "facility": "facilities",
     "institution": "institutions",
+    "place": "places",
     "fact": "facts",
     "parentage_assertion": "parentage_assertions",
     "residency": "residencies",
@@ -345,6 +352,16 @@ def _runtime_api(
     source_state: dict[str, Any], release: dict[str, str], projected_records: list[dict[str, Any]]
 ) -> dict[str, Any]:
     dataset = _runtime_dataset(source_state, projected_records)
+    institutions = [
+        {"id": str(record["id"]), **record["public"]}
+        for record in projected_records
+        if record["entity_type"] == "institutions"
+    ]
+    places = [
+        {"id": str(record["id"]), **record["public"]}
+        for record in projected_records
+        if record["entity_type"] == "places"
+    ]
     api_panda_records = [
         record["public"]
         for record in projected_records
@@ -524,6 +541,8 @@ def _runtime_api(
     }
     runtime = {
         "release": release,
+        "institutions": institutions,
+        "places": places,
         "pandas": pandas,
         "distribution": {"type": "FeatureCollection", "features": distribution_features},
         "habitats": {"type": "FeatureCollection", "features": habitat_features},
