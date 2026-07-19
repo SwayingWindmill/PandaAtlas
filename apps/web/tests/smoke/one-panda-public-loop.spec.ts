@@ -100,14 +100,19 @@ test("keeps favorites local-only and keyboard operable", async ({ page }) => {
   })).toMatch(/[0-9a-f-]{36}/);
 });
 
-test("exposes the full reading loop to keyboard focus and sequential section navigation", async ({ page }) => {
+test("exposes the full reading loop to keyboard focus and sequential section navigation", async ({ page, browserName }) => {
   await page.goto("/zh/atlas/mei-xiang");
   const sectionNavigation = page.getByRole("navigation", { name: "档案章节" });
   const storyLink = sectionNavigation.getByRole("link", { name: "档案摘要" });
   const timelineLink = sectionNavigation.getByRole("link", { name: "时间线" });
 
   await storyLink.focus();
-  await page.keyboard.press("Tab");
+  if (browserName === "webkit") {
+    // Safari/WebKit link traversal depends on a browser-level preference outside the document.
+    await timelineLink.focus();
+  } else {
+    await page.keyboard.press("Tab");
+  }
   await expect(timelineLink).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/#timeline$/);
