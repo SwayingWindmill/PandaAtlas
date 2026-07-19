@@ -44,6 +44,17 @@ test("default gate includes golden dataset validation", async () => {
   assert.match(defaultGate, /Golden dataset contract/);
 });
 
+test("default gate includes panda curation and minimum photo validation", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+
+  assert.equal(rootPackage.scripts["test:panda-curation"], "python -m unittest discover -s scripts/curation/tests -p \"test_*.py\"");
+  assert.equal(rootPackage.scripts["check:panda-curation"], "python scripts/curation/validate_panda_curation.py");
+  assert.match(defaultGate, /id: "panda-curation-contract"/);
+  assert.match(defaultGate, /id: "panda-curation-data"/);
+  assert.match(defaultGate, /dependsOn: \["panda-curation-contract"\]/);
+});
+
 test("default gate records automated core WCAG checks", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));

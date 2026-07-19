@@ -26,6 +26,8 @@
     "generate:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs",
     "check:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs --check",
     "test:golden-dataset": "node --test scripts/golden-dataset/tests/*.test.mjs",
+    "check:panda-curation": "python scripts/curation/validate_panda_curation.py",
+    "test:panda-curation": "python -m unittest discover -s scripts/curation/tests -p \"test_*.py\"",
     "check:public-api-boundary": "node scripts/check-public-api-boundary.mjs",
     "check:beta-hard-gates": "node scripts/release/check-beta-hard-gates.mjs",
     "check:map-visualization-budget": "node scripts/release/check-map-visualization-budget.mjs",

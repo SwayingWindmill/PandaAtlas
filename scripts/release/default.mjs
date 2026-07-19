@@ -284,6 +284,17 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "test:golden-dataset"]),
       },
       {
+        id: "panda-curation-contract",
+        label: "Panda expansion and minimum photo contract",
+        run: () => runCommand(npm, ["run", "test:panda-curation"]),
+      },
+      {
+        id: "panda-curation-data",
+        label: "Panda curation data validation",
+        dependsOn: ["panda-curation-contract"],
+        run: () => runCommand(npm, ["run", "check:panda-curation"]),
+      },
+      {
         id: "web-lint",
         label: "Web lint",
         run: () => runCommand(npm, ["run", "lint:web"]),

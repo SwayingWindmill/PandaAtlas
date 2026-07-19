@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "title": "PandaAtlas Panda Expansion and Minimum Photo Contract",
+  "scope": "Working curation records promoted into a reviewed public panda release",
+  "panda_publication": {
+    "approval_field": "review_status",
+    "approval_value": "approved",
+    "required_identity_fields": [
+      "slug",
+      "name_zh",
+      "name_en",
+      "gender",
+      "status"
+    ],
+    "required_trust_fields": [
+      "birth_date_or_text",
+      "current_location",
+      "primary_source_ids",
+      "intro"
+    ],
+    "required_evidence_status": "verified",
+    "complete_archive_minimum_approved_events": 3,
+    "rules": {
+      "current_location_must_come_from_reviewed_residency": true,
+      "current_location_requires_last_verified_date": true,
+      "parentage_must_use_reviewed_assertions": true,
+      "unknown_or_disputed_values_must_be_explicit": true,
+      "facts_must_not_be_inferred_from_photo_captions": true,
+      "approved_panda_requires_approved_photo": true
+    }
+  },
+  "photo_intake": {
+    "human_entered_fields": [
+      "panda_slug",
+      "asset",
+      "source_url",
+      "rights",
+      "credit",
+      "alt_zh",
+      "alt_en",
+      "review_status"
+    ],
+    "optional_human_fields": [
+      "notes"
+    ],
+    "system_managed_fields": [
+      "media_id",
+      "sha256",
+      "mime_type",
+      "width",
+      "height",
+      "derivatives"
+    ],
+    "review_statuses": [
+      "draft",
+      "approved",
+      "rejected",
+      "withdrawn"
+    ],
+    "approved_requires": [
+      "panda_slug",
+      "asset",
+      "source_url",
+      "rights",
+      "credit",
+      "alt_zh",
+      "alt_en"
+    ],
+    "rules": {
+      "panda_reference_must_exist": true,
+      "source_url_must_use_https": true,
+      "unknown_rights_cannot_be_approved": true,
+      "generic_or_other_panda_images_do_not_satisfy_requirement": true,
+      "technical_metadata_is_not_manually_required": true
+    }
+  }
+}
