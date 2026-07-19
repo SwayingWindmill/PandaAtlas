@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { TrustedProfileFavorite } from "@/components/atlas/trusted-profile-favorite";
 import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
-import { siteShellClassName } from "@/components/site/site-header";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
@@ -306,7 +305,7 @@ function sourceNames(sourceIds: string[], profile: TrustedProfilePageViewModel):
 
 function ModuleState({ state, locale }: { state: ProfileModuleState; locale: PublicProfileLocale }) {
   return (
-    <span className="inline-flex rounded-full border border-[rgba(47,92,69,0.14)] bg-[rgba(63,125,71,0.06)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
+    <span className="inline-flex rounded-full border border-[var(--pa-color-accent-border-14)] bg-[var(--pa-color-accent-fill-06)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
       {stateLabel(state, locale)}
     </span>
   );
@@ -378,7 +377,7 @@ function RelationList({
       <h3 className="text-xl font-semibold">{title}</h3>
       <ol className="mt-4 grid gap-3">
         {items.map((item, index) => (
-          <li key={`${item.relation}-${item.id}`} className="rounded-xl border border-[rgba(47,92,69,0.09)] p-4">
+          <li key={`${item.relation}-${item.id}`} className="rounded-xl border border-[var(--pa-color-accent-border-09)] p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p>
                 <span className="mr-3 text-[var(--accent)]">{index + 1}.</span>
@@ -388,7 +387,7 @@ function RelationList({
                   </Link>
                 ) : <span lang={item.nameLanguage} className="font-semibold">{item.name}</span>}
               </p>
-              <span className="rounded-full bg-[rgba(63,125,71,0.08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
+              <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
                 {relationStatusLabel(item.status, locale)}
               </span>
             </div>
@@ -440,8 +439,8 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
           />
         </section>
 
-        <section id="overview" className={`${siteShellClassName} scroll-mt-36 py-8 lg:py-12`}>
-          <div data-testid="identity-first-card" className="grid gap-8 rounded-2xl border border-[rgba(47,92,69,0.1)] bg-[var(--card)] p-6 shadow-[0_24px_60px_rgba(30,44,31,0.08)] md:p-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)]">
+        <section id="overview" className={`${publicShellClassName} scroll-mt-36 py-8 lg:py-12`}>
+          <div data-testid="identity-first-card" className="grid gap-8 rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-6 shadow-[var(--pa-shadow-profile)] md:p-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)]">
             <div>
               <div className="flex flex-wrap items-center gap-3 text-sm">
                 <Link href={profile.atlasHref as Route} className="font-semibold text-[var(--accent)] hover:underline">{t.back}</Link>
@@ -486,7 +485,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
               </dl>
             </div>
 
-            <aside className="flex flex-col justify-between gap-8 rounded-2xl bg-[rgba(63,125,71,0.07)] p-6">
+            <aside className="flex flex-col justify-between gap-8 rounded-2xl bg-[var(--pa-color-accent-fill-07)] p-6">
               <div>
                 <p className="text-sm font-semibold text-[var(--accent)]">{archiveLabel(profile, locale)}</p>
                 <dl className="mt-4 text-xs">
@@ -498,7 +497,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
                 <p className="mt-5 text-sm leading-7 text-[var(--muted)]">{t.aliases}</p>
                 <ul className="mt-4 grid gap-2" aria-label={t.aliases}>
                   {profile.identityReferences.map((reference) => (
-                    <li key={`${reference.kind}-${reference.value}`} className="rounded-lg border border-[rgba(47,92,69,0.12)] bg-[var(--card)] px-3 py-2 text-xs">
+                    <li key={`${reference.kind}-${reference.value}`} className="rounded-lg border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] px-3 py-2 text-xs">
                       <span className="font-semibold">{reference.value}</span>
                       <span className="mt-1 block text-[var(--muted)]">{t.source}: {sourceNames(reference.sourceIds, profile) || t.noReviewedSource}</span>
                     </li>
@@ -515,8 +514,8 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
           </div>
         </section>
 
-        <nav aria-label={t.navLabel} className="sticky top-[78px] z-20 border-y border-[rgba(47,92,69,0.08)] bg-[var(--card)]">
-          <div className={`${siteShellClassName} flex gap-5 overflow-x-auto py-3 text-sm font-semibold`}>
+        <nav aria-label={t.navLabel} className="sticky top-[78px] z-20 border-y border-[var(--pa-color-accent-border-08)] bg-[var(--card)]">
+          <div className={`${publicShellClassName} flex gap-5 overflow-x-auto py-3 text-sm font-semibold`}>
             {t.nav.map(([label, id]) => (
               <a key={id} href={`#${id}`} className="whitespace-nowrap rounded-lg px-2 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
                 {label}
@@ -525,7 +524,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
           </div>
         </nav>
 
-        <section id="story" className={`${siteShellClassName} scroll-mt-36 py-14`} data-testid="reviewed-story">
+        <section id="story" className={`${publicShellClassName} scroll-mt-36 py-14`} data-testid="reviewed-story">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.reviewedStory}</h2>
             <ModuleState state={profile.story.state === "reviewed" ? "complete" : "unavailable"} locale={locale} />
@@ -537,17 +536,17 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
           ) : <p className="mt-6 text-sm leading-7 text-[var(--muted)]">{t.storyUnavailable}</p>}
         </section>
 
-        <section id="timeline" className={`${siteShellClassName} scroll-mt-36 py-14`}>
+        <section id="timeline" className={`${publicShellClassName} scroll-mt-36 py-14`}>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.timeline}</h2>
             <ModuleState state={profile.timeline.state} locale={locale} />
           </div>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">{t.timelineIntro}</p>
-          {profile.timeline.state === "partial" ? <p className="mt-3 rounded-xl bg-[rgba(186,126,48,0.09)] p-4 text-sm">{t.partialTimeline}</p> : null}
+          {profile.timeline.state === "partial" ? <p className="mt-3 rounded-xl bg-[var(--pa-color-warning-fill-09)] p-4 text-sm">{t.partialTimeline}</p> : null}
           {profile.timeline.items.length ? (
             <ol className="mt-8 grid gap-4" data-testid="timeline-list">
               {profile.timeline.items.map((item) => (
-                <li key={item.id} className="grid gap-3 rounded-xl border border-[rgba(47,92,69,0.09)] bg-[var(--card)] p-5 sm:grid-cols-[9rem_1fr]">
+                <li key={item.id} className="grid gap-3 rounded-xl border border-[var(--pa-color-accent-border-09)] bg-[var(--card)] p-5 sm:grid-cols-[9rem_1fr]">
                   <div>
                     <time className="font-semibold" dateTime={item.date}>{dateLabel(item.date, locale, item.datePrecision)}</time>
                     <p className="mt-1 text-xs text-[var(--accent)]">{item.kind === "residency" ? t.residency : t.transfer}</p>
@@ -555,7 +554,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
                   <div>
                     <div className="flex flex-wrap items-center gap-3">
                       <p className="font-semibold">{item.fromLabel ? `${item.fromLabel} → ${item.toLabel}` : item.toLabel || t.unknown}</p>
-                      <span className="rounded-full bg-[rgba(63,125,71,0.08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">{eventStatusLabel(item.status, locale)}</span>
+                      <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">{eventStatusLabel(item.status, locale)}</span>
                     </div>
                     {item.endDate ? <p className="mt-2 text-sm text-[var(--muted)]">{dateLabel(item.date, locale, item.datePrecision)} - {dateLabel(item.endDate, locale, item.endPrecision ?? "day")}</p> : item.kind === "residency" ? <p className="mt-2 text-sm text-[var(--muted)]">{t.current}</p> : null}
                     {item.changesCurrentResidency ? <p className="mt-2 text-xs font-semibold text-[var(--accent)]">{t.changesCurrent}</p> : null}
@@ -574,7 +573,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
         </section>
 
         <section id="family" className="scroll-mt-36 bg-[var(--card)] py-14">
-          <div className={siteShellClassName}>
+          <div className={publicShellClassName}>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.family}</h2>
               <ModuleState state={profile.family.state} locale={locale} />
@@ -591,7 +590,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
           </div>
         </section>
 
-        <section id="footprint" className={`${siteShellClassName} scroll-mt-36 py-14`}>
+        <section id="footprint" className={`${publicShellClassName} scroll-mt-36 py-14`}>
           <div className="flex flex-wrap items-center justify-between gap-4">
             <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.footprint}</h2>
             <ModuleState state={profile.footprint.state} locale={locale} />
@@ -601,10 +600,10 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
           {profile.footprint.stops.length ? (
             <ol className="mt-8 grid gap-3" data-testid="footprint-text-view">
               {profile.footprint.stops.map((item, index) => (
-                <li key={item.id} className="rounded-xl border border-[rgba(47,92,69,0.09)] bg-[var(--card)] p-5">
+                <li key={item.id} className="rounded-xl border border-[var(--pa-color-accent-border-09)] bg-[var(--card)] p-5">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <p className="font-semibold">{index + 1}. {item.label || t.unknown}</p>
-                    <span className="rounded-full bg-[rgba(63,125,71,0.08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">{eventStatusLabel(item.status, locale)}</span>
+                    <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">{eventStatusLabel(item.status, locale)}</span>
                   </div>
                   <p className="mt-2 text-sm text-[var(--muted)]">{dateLabel(item.startDate, locale, item.startPrecision)} - {item.endDate ? dateLabel(item.endDate, locale, item.endPrecision ?? "day") : t.current}</p>
                   {item.lastVerifiedAt ? <p className="mt-2 text-xs text-[var(--muted)]">{t.verified}: {item.lastVerifiedAt}</p> : null}
@@ -621,16 +620,16 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
         </section>
 
         <section id="media" className="scroll-mt-36 bg-[var(--card)] py-14">
-          <div className={siteShellClassName}>
+          <div className={publicShellClassName}>
             <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.media}</h2>
             {profile.media.state === "no_licensed_media" ? (
-              <div className="mt-8 rounded-2xl border border-dashed border-[rgba(47,92,69,0.22)] bg-[rgba(63,125,71,0.05)] p-8 sm:p-12" data-testid="media-empty-state">
+              <div className="mt-8 rounded-2xl border border-dashed border-[var(--pa-color-accent-border-22)] bg-[var(--pa-color-accent-fill-05)] p-8 sm:p-12" data-testid="media-empty-state">
                 <p className="text-2xl font-semibold">{t.noMedia}</p>
                 <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">{t.noMediaBody}</p>
               </div>
             ) : null}
             {profile.media.state === "source_link_only" ? (
-              <div className="mt-8 rounded-2xl border border-[rgba(47,92,69,0.12)] bg-[rgba(63,125,71,0.05)] p-8 sm:p-12" data-testid="media-source-link-state">
+              <div className="mt-8 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--pa-color-accent-fill-05)] p-8 sm:p-12" data-testid="media-source-link-state">
                 <p className="text-2xl font-semibold">{t.sourceMedia}</p>
                 <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">{t.sourceMediaBody}</p>
                 {mediaSources.map((source) => (
@@ -644,15 +643,15 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
           </div>
         </section>
 
-        <section id="sources" className={`${siteShellClassName} scroll-mt-36 py-14`}>
+        <section id="sources" className={`${publicShellClassName} scroll-mt-36 py-14`}>
           <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.sources}</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">{t.sourcesIntro}</p>
           <div className="mt-8 grid gap-4" data-testid="evidence-list">
             {profile.sources.map((source) => (
-              <article id={source.id} key={source.id} className="scroll-mt-36 rounded-xl border border-[rgba(47,92,69,0.09)] bg-[var(--card)] p-5">
+              <article id={source.id} key={source.id} className="scroll-mt-36 rounded-xl border border-[var(--pa-color-accent-border-09)] bg-[var(--card)] p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <p className="text-xs font-semibold text-[var(--accent)]">{source.publisher}</p>
-                  <span className="rounded-full bg-[rgba(63,125,71,0.08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
+                  <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
                     {source.accessState === "accessible" ? t.accessible : source.accessState === "changed" ? t.changed : source.accessState === "restricted" ? t.restricted : t.unavailable}
                   </span>
                 </div>
@@ -668,7 +667,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
         </section>
 
         <section id="revisions" className="scroll-mt-36 bg-[var(--card)] py-14">
-          <div className={siteShellClassName} data-testid="revision-summary">
+          <div className={publicShellClassName} data-testid="revision-summary">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.revisions}</h2>
               <ModuleState state={profile.revision.state === "reviewed" ? "complete" : profile.revision.state === "partial" ? "partial" : "unavailable"} locale={locale} />

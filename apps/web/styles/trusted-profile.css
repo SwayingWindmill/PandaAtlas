@@ -1,0 +1,10 @@
+@media (prefers-color-scheme: dark) {
+  .trusted-profile-theme {
+    --bg: var(--pa-color-dark-canvas);
+    --card: var(--pa-color-dark-surface);
+    --fg: var(--pa-color-dark-ink);
+    --muted: var(--pa-color-dark-muted);
+    --accent: var(--pa-color-dark-accent);
+    --accent-strong: var(--pa-color-dark-accent-strong);
+  }
+}

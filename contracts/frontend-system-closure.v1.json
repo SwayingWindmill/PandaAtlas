@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "issue": 59,
+  "canonical_surface_ids": [
+    "home",
+    "atlas",
+    "profile",
+    "lineage",
+    "map",
+    "my-pandas",
+    "institution",
+    "place"
+  ],
+  "redirect_only_routes": [
+    "apps/web/app/page.tsx",
+    "apps/web/app/atlas/page.tsx",
+    "apps/web/app/atlas/[slug]/page.tsx",
+    "apps/web/app/lineage/page.tsx",
+    "apps/web/app/map/page.tsx",
+    "apps/web/app/my-pandas/page.tsx",
+    "apps/web/app/institutions/[slug]/page.tsx",
+    "apps/web/app/places/[slug]/page.tsx",
+    "apps/web/app/(site)/global-distribution/page.tsx"
+  ],
+  "forbidden_legacy_paths": [
+    "apps/web/app/atlas/layout.tsx",
+    "apps/web/components/site/site-header.tsx",
+    "apps/web/components/atlas/helpers.ts",
+    "apps/web/components/atlas/secondary-meta.tsx",
+    "apps/web/components/atlas/timeline-section.tsx",
+    "apps/web/components/atlas/trusted-panda-profile.tsx",
+    "apps/web/components/lineage/lineage-copy.ts",
+    "apps/web/components/lineage/lineage-explorer.tsx",
+    "apps/web/lib/api-client.ts",
+    "apps/web/lib/atlas-copy.ts",
+    "apps/web/lib/lineage-data.ts",
+    "apps/web/lib/panda-atlas.ts"
+  ],
+  "allowed_cross_feature_targets": [
+    "preferences",
+    "public-content"
+  ],
+  "forbidden_production_import_segments": [
+    "mock",
+    "demo",
+    "fixture",
+    "seed"
+  ],
+  "explicit_fallback_provenance": [
+    {
+      "path": "apps/web/features/map/map-data-source.ts",
+      "required_markers": [
+        "source: \"api\" | \"cached-release\"",
+        "source: \"api\"",
+        "source: \"cached-release\""
+      ]
+    }
+  ],
+  "silent_fallback_source_allowlist": [
+    "apps/web/features/preferences/profile-preferences.ts"
+  ],
+  "raw_design_value_source_allowlist": [
+    "apps/web/features/map/visualization/map-layer-model.ts"
+  ],
+  "style_entry": "apps/web/app/globals.css",
+  "design_system_style": "apps/web/styles/tokens.css",
+  "media_manifest": "data/frontend-system/public-media-manifest.json",
+  "state_registry": "data/frontend-system/public-surface-state-registry.json",
+  "screenshot_inventory": "data/frontend-system/canonical-screenshot-inventory.json",
+  "route_budget_inventory": "data/frontend-system/route-performance-budgets.json",
+  "browser_matrix": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ]
+}

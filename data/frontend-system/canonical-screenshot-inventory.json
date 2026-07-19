@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "viewports": {
+    "desktop": { "width": 1280, "height": 900 },
+    "mobile": { "width": 390, "height": 844 },
+    "narrow_text_resize": { "width": 320, "height": 800, "text_scale_percent": 200 }
+  },
+  "surfaces": [
+    { "id": "home", "paths": ["/zh", "/en"], "scenarios": ["desktop", "mobile", "narrow_text_resize"] },
+    { "id": "atlas", "paths": ["/zh/atlas", "/en/atlas"], "scenarios": ["results", "no-results", "mobile"] },
+    { "id": "profile", "paths": ["/zh/atlas/mei-xiang", "/en/atlas/mei-xiang"], "scenarios": ["complete", "no-media", "mobile"] },
+    { "id": "lineage", "paths": ["/zh/lineage", "/en/lineage"], "scenarios": ["complete", "unknown-focus", "mobile"] },
+    { "id": "map", "paths": ["/zh/map", "/en/map"], "scenarios": ["structured", "visualization", "provider-degraded", "mobile"] },
+    { "id": "my-pandas", "paths": ["/zh/my-pandas", "/en/my-pandas"], "scenarios": ["empty", "populated", "stale-id", "mobile", "narrow_text_resize"] },
+    { "id": "institution", "paths": ["/zh/institutions/smithsonian-national-zoo", "/en/institutions/smithsonian-national-zoo"], "scenarios": ["complete", "unsupported", "mobile"] },
+    { "id": "place", "paths": ["/zh/places/wolong-shenshuping-base", "/en/places/wolong-shenshuping-base"], "scenarios": ["complete", "no-coordinates", "mobile"] }
+  ]
+}

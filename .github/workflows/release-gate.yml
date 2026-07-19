@@ -64,18 +64,19 @@ jobs:
       - name: Install workspace dependencies from lockfile
         run: npm ci
 
-      - name: Install Chromium and Linux runtime dependencies
+      - name: Install browser matrix and Linux runtime dependencies
         if: runner.os == 'Linux'
         working-directory: apps/web
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
 
-      - name: Install Chromium on Windows
+      - name: Install browser matrix on Windows
         if: runner.os == 'Windows'
         working-directory: apps/web
-        run: npx playwright install chromium
+        run: npx playwright install chromium firefox webkit
 
       - name: Run default release gate
         env:
+          PLAYWRIGHT_BROWSER_MATRIX: "1"
           RELEASE_GATE_USE_SYSTEM_EDGE: "0"
         run: npm run release:default
 
@@ -127,12 +128,13 @@ jobs:
       - name: Install workspace dependencies from lockfile
         run: npm ci
 
-      - name: Install Chromium and Linux runtime dependencies
+      - name: Install browser matrix and Linux runtime dependencies
         working-directory: apps/web
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Run extended release gate
         env:
+          PLAYWRIGHT_BROWSER_MATRIX: "1"
           RELEASE_GATE_USE_SYSTEM_EDGE: "0"
         run: npm run release:extended
 

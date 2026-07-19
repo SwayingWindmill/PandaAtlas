@@ -74,7 +74,7 @@ test("Slice 10 exposes local disclosure, stale-ID handling, canonical links, and
   assert.doesNotMatch(viewModel, /recommendation_score|popularity_rank|followers_count|sharing_count|behavior_profile/i);
   assert.match(route, /robots: \{ index: false, follow: true \}/);
   assert.match(route, /"x-default": "\/zh\/my-pandas"/);
-  assert.match(legacyRoute, /permanentRedirect\(`\/\$\{locale\}\/my-pandas`/);
+  assert.match(legacyRoute, /permanentRedirect\(localizedPublicDestination\(locale, ["']\/my-pandas["']\)/);
 });
 
 test("Slice 10 performance budget is reproducible and part of the default gate", async () => {

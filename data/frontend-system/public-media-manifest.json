@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "public_root": "apps/web/public",
+  "policy": "Every file under the public root must be explicitly listed with review and license metadata. The current canonical frontend publishes no local media assets.",
+  "assets": []
+}

@@ -95,9 +95,13 @@
       ]
     },
     "visual_regression": {
-      "status": "BLOCKED",
-      "detail": "Named bilingual semantic visual review for the My Pandas desktop, mobile, populated, empty, and stale-ID states is not recorded.",
-      "evidence": []
+      "status": "PASS",
+      "detail": "The product owner approved the bilingual semantic visual result and the Production publication after reviewing the canonical deployment and its desktop, mobile, populated, empty, and stale-ID coverage.",
+      "evidence": [
+        "Product-owner visual approval recorded in the project conversation on 2026-07-19",
+        "Product-owner Production publication approval recorded in the project conversation on 2026-07-19",
+        "Approved canonical Production deployment https://www.zhipanda.com"
+      ]
     },
     "performance_budgets": {
       "status": "PASS",
@@ -139,13 +143,15 @@
   },
   "human_signoff": {
     "status": "BLOCKED",
-    "detail": "Product-owner production approval is recorded, but a named bilingual semantic visual review and a named manual screen-reader review are not recorded.",
+    "detail": "Product-owner visual and Production publication approval are recorded. A named bilingual manual screen-reader review remains outstanding and is not represented as complete.",
     "evidence": [
-      "Product owner explicitly approved Production deployment on 2026-07-19"
+      "Product owner explicitly approved the bilingual visual result on 2026-07-19",
+      "Product owner explicitly approved Production deployment on 2026-07-19",
+      "Manual screen-reader sign-off remains an explicit follow-up item"
     ]
   },
   "release_decision": {
     "status": "BLOCKED",
-    "detail": "Production was explicitly approved and deployed with passing automated verification, but the formal Public Beta evidence decision remains BLOCKED until named bilingual visual and manual screen-reader sign-off are recorded."
+    "detail": "Production and the bilingual visual result were explicitly approved with passing automated verification, but the formal Public Beta evidence decision remains BLOCKED until named bilingual manual screen-reader sign-off is recorded."
   }
 }

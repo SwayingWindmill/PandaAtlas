@@ -20,6 +20,7 @@
         "lint": "eslint .",
         "typecheck": "tsc --noEmit",
         "smoke": "playwright test",
+        "smoke:matrix": "node scripts/run-browser-matrix.mjs",
         "smoke:production": "playwright test",
         "test:accessibility": "playwright test --config playwright.accessibility.config.ts",
         "check:browser": "node scripts/check-playwright-runtime.mjs",

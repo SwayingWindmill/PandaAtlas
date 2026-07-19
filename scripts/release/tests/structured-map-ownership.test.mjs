@@ -17,10 +17,10 @@ test("localized structured map owns the production route without a map-only depe
   const page = await source("apps/web/features/map/structured-map-page.tsx");
   const providerRegistry = await source("apps/web/features/map/map-provider-registry.ts");
   const publicRelease = await source("apps/web/features/public-content/public-release.ts");
-  const apiClient = await source("apps/web/lib/api-client.ts");
+  const mapDataSource = await source("apps/web/features/map/map-data-source.ts");
 
   assert.match(localizedPage, /loadPublishedMapDataset/);
-  assert.match(localizedPage, /getHabitatsWithSource/);
+  assert.match(localizedPage, /loadHabitatMapInput/);
   assert.match(localizedPage, /buildStructuredMapViewModel/);
   assert.doesNotMatch(localizedPage, /GlobalDistributionShell|MapStage|MapLibre|PandaAtlasExplorer/);
   assert.doesNotMatch(page, /["']use client["']|maplibre-gl|GlobalDistributionShell|api-client/);
@@ -61,8 +61,9 @@ test("localized structured map owns the production route without a map-only depe
 
   assert.match(publicRelease, /loadPublishedMapDataset/);
   assert.match(publicRelease, /TRUSTED_FACILITIES/);
-  assert.match(apiClient, /getHabitatsWithSource/);
-  assert.match(apiClient, /source:\s*["']cached-release["']/);
+  assert.match(mapDataSource, /loadHabitatMapInput/);
+  assert.match(mapDataSource, /source:\s*["']cached-release["']/);
+  assert.doesNotMatch(mapDataSource, /FALLBACK_PANDA|LINEAGE_PANDAS|FALLBACK_STATS/);
 
   await assert.rejects(source("apps/web/components/map/map-shell.tsx"));
   await assert.rejects(source("apps/web/components/map/panda-atlas-explorer.tsx"));

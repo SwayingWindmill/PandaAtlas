@@ -9,11 +9,43 @@
   --pa-color-accent-soft: #dce8dc;
   --pa-color-line: #cfd8ce;
   --pa-color-warning: #845c19;
+  --pa-color-dark-canvas: #101611;
+  --pa-color-dark-surface: #18211a;
+  --pa-color-dark-ink: #edf3ee;
+  --pa-color-dark-muted: #b3c2b5;
+  --pa-color-dark-accent: #78aa7e;
+  --pa-color-dark-accent-strong: #a4d3aa;
+  --pa-color-accent-border-08: rgba(47, 92, 69, 0.08);
+  --pa-color-accent-border-09: rgba(47, 92, 69, 0.09);
+  --pa-color-accent-border-10: rgba(47, 92, 69, 0.1);
+  --pa-color-accent-border-12: rgba(47, 92, 69, 0.12);
+  --pa-color-accent-border-14: rgba(47, 92, 69, 0.14);
+  --pa-color-accent-border-22: rgba(47, 92, 69, 0.22);
+  --pa-color-accent-fill-05: rgba(63, 125, 71, 0.05);
+  --pa-color-accent-fill-06: rgba(63, 125, 71, 0.06);
+  --pa-color-accent-fill-07: rgba(63, 125, 71, 0.07);
+  --pa-color-accent-fill-08: rgba(63, 125, 71, 0.08);
+  --pa-color-warning-fill-09: rgba(186, 126, 48, 0.09);
   --pa-radius-sm: 0.65rem;
   --pa-radius-md: 1rem;
   --pa-radius-lg: 1.5rem;
+  --pa-radius-xl: 2rem;
   --pa-shadow-card: 0 1.25rem 3rem rgba(28, 43, 31, 0.08);
+  --pa-shadow-profile: 0 1.5rem 3.75rem rgba(30, 44, 31, 0.08);
   --pa-focus-ring: 0 0 0 0.2rem var(--pa-color-canvas), 0 0 0 0.4rem var(--pa-color-accent);
   --pa-space-page: clamp(1rem, 4vw, 4rem);
   --pa-content-max: 76rem;
+  --font-display: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+
+  /* Compatibility aliases used by the trusted profile and admin console. */
+  --bg: var(--pa-color-canvas);
+  --fg: var(--pa-color-ink);
+  --card: var(--pa-color-surface);
+  --muted: var(--pa-color-ink-muted);
+  --atlas-muted-fg: var(--pa-color-ink-muted);
+  --line: var(--pa-color-line);
+  --accent: var(--pa-color-accent);
+  --accent-strong: var(--pa-color-accent-strong);
+  --accent-2: var(--pa-color-warning);
 }
