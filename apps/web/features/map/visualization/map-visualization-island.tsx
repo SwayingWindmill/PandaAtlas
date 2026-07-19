@@ -272,7 +272,7 @@ export function MapVisualizationIsland({ locale, state, model, loadingLabel, onM
       map.remove();
       mapRef.current = null;
     };
-  }, [locale, router, t.regionLabel]);
+  }, [locale, router, t.canvasLabel]);
 
   useEffect(() => {
     const map = mapRef.current;
