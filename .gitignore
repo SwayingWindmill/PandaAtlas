@@ -25,6 +25,8 @@ venv/
 .uv-cache/
 services/api/.uv-cache-codex/
 services/api/.venv-release/
+.media-work/
+data/curation/pandas/media-inbox/
 *.egg-info/
 .coverage
 coverage.xml

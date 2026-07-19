@@ -41,6 +41,15 @@ The human-entered fields in `media.csv` are intentionally small:
 
 Approved photos require all fields except `notes`. The pipeline, not the curator, owns media IDs, hashes, dimensions, MIME types, and derivatives.
 
+Place local reviewed files below `media-inbox/`, then run:
+
+```bash
+npm run test:panda-media
+npm run process:panda-media
+```
+
+Remote HTTPS assets remain disabled unless the operator explicitly adds `--allow-network`. See [Panda photo intake and processing](../../../docs/release/panda-photo-processing.md) for the complete workflow.
+
 ## Promotion Path
 
 Curated records should move through these layers:
