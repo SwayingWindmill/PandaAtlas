@@ -140,7 +140,7 @@ export function PublicEntityPage({
       <GlobalNavigation locale={locale} active="map" alternatePath={entity.alternateLanguageHref} />
       <main id="main-content" className="pb-20 pt-8" data-testid={`${entity.kind}-entity-page`}>
         <div className={`${publicShellClassName} grid min-w-0 gap-8 [&>*]:min-w-0`}>
-          <header className="rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm md:p-10">
+          <header className="rounded-[var(--pa-radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm md:p-10">
             <p className="pa-eyebrow">{t.evidence} · {isInstitution ? t.institution : t.place}</p>
             <h1 className="mt-3 break-words text-4xl font-semibold tracking-tight [overflow-wrap:anywhere] md:text-6xl">{entity.displayName}</h1>
             {entity.alternateName ? <p className="mt-2 text-lg text-[var(--muted)]">{entity.alternateName}</p> : null}
@@ -158,7 +158,7 @@ export function PublicEntityPage({
             localeDelivery={localeDelivery}
           />
 
-          <section aria-labelledby="entity-identity-heading" className="rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-6 md:p-8">
+          <section aria-labelledby="entity-identity-heading" className="rounded-[var(--pa-radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 md:p-8">
             <p className="pa-eyebrow">{entity.typeLabel}</p>
             <h2 id="entity-identity-heading" className="mt-2 text-2xl font-semibold">{t.identity}</h2>
             <dl className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -207,7 +207,7 @@ export function PublicEntityPage({
             ) : <p className="mt-4">{t.noMigrations}</p>}
           </section>
 
-          <section aria-labelledby="entity-sources-heading" className="rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-6 md:p-8">
+          <section aria-labelledby="entity-sources-heading" className="rounded-[var(--pa-radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 md:p-8">
             <h2 id="entity-sources-heading" className="text-2xl font-semibold">{t.sources}</h2>
             <ul className="mt-4 grid gap-4">
               {entity.sources.map((source) => (
@@ -221,7 +221,7 @@ export function PublicEntityPage({
             </ul>
           </section>
 
-          <section aria-labelledby="entity-revision-heading" className="rounded-[2rem] bg-[var(--surface-muted)] p-6">
+          <section aria-labelledby="entity-revision-heading" className="rounded-[var(--pa-radius-xl)] bg-[var(--surface-muted)] p-6">
             <h2 id="entity-revision-heading" className="text-xl font-semibold">{t.revision}</h2>
             <p className="mt-2">{entity.revisionSummary ?? t.noRevision}</p>
             <p className="mt-2 break-words text-sm text-[var(--muted)] [overflow-wrap:anywhere]">{release.id} · Public Schema {release.schemaVersion} · {entity.stableId}</p>

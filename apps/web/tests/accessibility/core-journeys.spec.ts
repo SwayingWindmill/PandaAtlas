@@ -155,7 +155,13 @@ test("structured map filters remain keyboard operable and accessible", async ({ 
   await form.getByLabel("Panda, institution, or place").fill("Smithsonian");
   await form.getByLabel("Country scope").selectOption("US");
   await form.getByRole("button", { name: "Update results" }).focus();
-  await page.keyboard.press("Enter");
+  await Promise.all([
+    page.waitForURL(
+      (url) => url.searchParams.get("focus") === "Smithsonian" && url.searchParams.get("country") === "US",
+      { waitUntil: "domcontentloaded" },
+    ),
+    page.keyboard.press("Enter"),
+  ]);
   await expect(page.getByRole("heading", { level: 3, name: "Smithsonian's National Zoo" })).toBeVisible();
   await scanForWcagViolations(page, testInfo, "axe-mobile-structured-map-filtered");
 });
@@ -211,10 +217,26 @@ test("activated map visualization remains keyboard-equivalent and accessible", a
   await page.getByTestId("activate-map-visualization").click();
 
   const island = page.getByTestId("map-visualization-island");
-  await expect(island).toBeVisible();
-  await expect(page.getByRole("region", { name: "Interactive map visualization enhancement" })).toBeVisible();
-  await expect(page.getByLabel("Non-drag selection")).toBeVisible();
-  await expect(page.locator(".pa-map-visualization-attribution").getByRole("link")).toHaveCount(2);
+  const failure = page.getByTestId("map-visualization-failure");
+  await expect.poll(async () => {
+    if (await island.isVisible()) return "island";
+    if (await failure.isVisible()) return "failure";
+    return "loading";
+  }, { timeout: 15_000 }).toMatch(/island|failure/);
+
+  if (await island.isVisible()) {
+    await expect(island).toHaveAttribute(
+      "data-provider-status",
+      /ready|degraded|offline|recovering/,
+      { timeout: 15_000 },
+    );
+    await expect(page.getByRole("region", { name: "Interactive map visualization enhancement" })).toBeVisible();
+    await expect(page.getByLabel("Non-drag selection")).toBeVisible();
+    await expect(page.locator(".pa-map-visualization-attribution").getByRole("link")).toHaveCount(2);
+  } else {
+    await expect(failure).toContainText("The optional map visualization is unavailable");
+    await expect(page.getByRole("heading", { level: 3, name: "Smithsonian's National Zoo" })).toBeVisible();
+  }
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
 
   await scanForWcagViolations(page, testInfo, "axe-mobile-activated-map-visualization");

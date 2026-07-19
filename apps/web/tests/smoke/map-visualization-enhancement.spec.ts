@@ -24,6 +24,35 @@ async function activateMap(page: Page): Promise<void> {
   await expect(page.locator(".pa-map-visualization-canvas canvas")).toHaveCount(1, { timeout: 15_000 });
 }
 
+test("keeps the structured journey usable across optional visual runtime outcomes", async ({ page, browserName }) => {
+  test.skip(browserName === "chromium", "Chromium is covered by the full MapLibre runtime contract below.");
+  await stubProviderTiles(page);
+  await page.goto(`/en/map?mode=institutions&country=US&snapshot=${RELEASE_ID}`);
+  await page.getByTestId("activate-map-visualization").click();
+
+  const island = page.getByTestId("map-visualization-island");
+  const failure = page.getByTestId("map-visualization-failure");
+  await expect.poll(async () => {
+    if (await island.isVisible()) return "island";
+    if (await failure.isVisible()) return "failure";
+    return "loading";
+  }, { timeout: 15_000 }).toMatch(/island|failure/);
+
+  if (await island.isVisible()) {
+    await expect(island).toHaveAttribute("data-provider-status", /ready|degraded|offline|recovering/);
+    await expect(page.getByRole("region", { name: "Interactive map visualization enhancement" })).toBeVisible();
+    await expect(page.getByLabel("Non-drag selection")).toBeVisible();
+  } else {
+    await expect(failure).toContainText("The optional map visualization is unavailable");
+  }
+  await expect(page.getByTestId(`structured-map-result-${SMITHSONIAN_RESULT}`)).toBeVisible();
+});
+
+test.describe("full MapLibre runtime", () => {
+  test.beforeEach(({ browserName }) => {
+    test.skip(browserName !== "chromium", "The optional MapLibre runtime is fully exercised in Chromium; other engines verify explicit degradation above.");
+  });
+
 test("requests no provider resources before explicit map activation", async ({ page }) => {
   let providerRequests = 0;
   page.on("request", (request) => {
@@ -141,4 +170,5 @@ test("uses the reduced-motion camera path and reflows in portrait and short land
   await page.setViewportSize({ width: 667, height: 375 });
   await expect(page.getByRole("button", { name: "Reset view" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
 });

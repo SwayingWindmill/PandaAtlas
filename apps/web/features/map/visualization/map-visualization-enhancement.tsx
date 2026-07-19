@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { StructuredMapQueryState } from "@/features/map/map-query";
 import type { MapVisualizationModel } from "@/features/map/visualization/map-visual-model";
 import { MapVisualizationErrorBoundary } from "@/features/map/visualization/map-visualization-error-boundary";
@@ -49,9 +49,13 @@ const copy = {
   },
 } as const;
 
+const MAP_VISUALIZATION_LOAD_TIMEOUT_MS = 10_000;
+type MapVisualizationLoadState = "idle" | "loading" | "mounted" | "failed";
+
 export function MapVisualizationEnhancement({ locale, state, model }: MapVisualizationEnhancementProps) {
   const t = copy[locale];
   const [active, setActive] = useState(false);
+  const [loadState, setLoadState] = useState<MapVisualizationLoadState>("idle");
   const [online, setOnline] = useState(true);
   const [resetKey, setResetKey] = useState(0);
 
@@ -66,10 +70,53 @@ export function MapVisualizationEnhancement({ locale, state, model }: MapVisuali
     };
   }, []);
 
+  const activate = useCallback(() => {
+    setLoadState("loading");
+    setActive(true);
+  }, []);
+
+  const markMounted = useCallback(() => setLoadState("mounted"), []);
+
+  useEffect(() => {
+    if (!active || loadState !== "loading") return;
+    const timeout = window.setTimeout(() => {
+      setLoadState("failed");
+      setActive(false);
+    }, MAP_VISUALIZATION_LOAD_TIMEOUT_MS);
+    return () => window.clearTimeout(timeout);
+  }, [active, loadState]);
+
   const retry = () => {
     setResetKey((value) => value + 1);
     setActive(false);
-    window.requestAnimationFrame(() => setActive(true));
+    setLoadState("idle");
+    window.requestAnimationFrame(activate);
+  };
+
+  const failurePanel = (
+    <div className="pa-map-visualization-failure" role="status" data-testid="map-visualization-failure">
+      <p>{t.failed}</p>
+      <button type="button" onClick={retry} disabled={!online}>{t.retry}</button>
+    </div>
+  );
+
+  const renderMapContent = () => {
+    if (!active) return loadState === "failed" ? failurePanel : null;
+    return (
+      <MapVisualizationErrorBoundary resetKey={resetKey} fallback={failurePanel}>
+        {loadState === "loading" ? (
+          <p role="status" data-testid="map-visualization-loading">{t.loading}</p>
+        ) : null}
+        <MapVisualizationIsland
+          key={resetKey}
+          locale={locale}
+          state={state}
+          model={model}
+          loadingLabel={t.loading}
+          onMount={markMounted}
+        />
+      </MapVisualizationErrorBoundary>
+    );
   };
 
   return (
@@ -88,12 +135,12 @@ export function MapVisualizationEnhancement({ locale, state, model }: MapVisuali
 
       <p className="pa-map-visualization-privacy">{t.privacy}</p>
 
-      {!active ? (
+      {!active && loadState !== "failed" ? (
         <div className="pa-map-visualization-activation">
           {model.visualizedCount > 0 ? (
             <button
               type="button"
-              onClick={() => setActive(true)}
+              onClick={activate}
               disabled={!online}
               data-testid="activate-map-visualization"
             >
@@ -102,25 +149,7 @@ export function MapVisualizationEnhancement({ locale, state, model }: MapVisuali
           ) : <p>{t.unavailable}</p>}
           {!online ? <p role="status">{t.offline}</p> : null}
         </div>
-      ) : (
-        <MapVisualizationErrorBoundary
-          resetKey={resetKey}
-          fallback={(
-            <div className="pa-map-visualization-failure" role="status" data-testid="map-visualization-failure">
-              <p>{t.failed}</p>
-              <button type="button" onClick={retry} disabled={!online}>{t.retry}</button>
-            </div>
-          )}
-        >
-          <MapVisualizationIsland
-            key={resetKey}
-            locale={locale}
-            state={state}
-            model={model}
-            loadingLabel={t.loading}
-          />
-        </MapVisualizationErrorBoundary>
-      )}
+      ) : renderMapContent()}
 
       {model.omitted.length ? (
         <details className="pa-map-visualization-omitted">

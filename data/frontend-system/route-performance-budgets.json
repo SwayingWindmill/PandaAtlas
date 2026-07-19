@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "defaults": {
+    "first_load_javascript_gzip_limit_bytes": 143360,
+    "initial_static_transfer_gzip_limit_bytes": 512000
+  },
+  "surfaces": [
+    { "id": "home", "manifest_entry": "/[locale]/page", "html_paths": ["server/app/zh.html", "server/app/en.html"] },
+    { "id": "atlas", "manifest_entry": "/[locale]/atlas/page", "html_paths": ["server/app/zh/atlas.html", "server/app/en/atlas.html"] },
+    { "id": "profile", "manifest_entry": "/[locale]/atlas/[slug]/page", "html_paths": [] },
+    { "id": "lineage", "manifest_entry": "/[locale]/lineage/page", "html_paths": ["server/app/zh/lineage.html", "server/app/en/lineage.html"] },
+    { "id": "map", "manifest_entry": "/[locale]/map/page", "html_paths": ["server/app/zh/map.html", "server/app/en/map.html"] },
+    { "id": "my-pandas", "manifest_entry": "/[locale]/my-pandas/page", "html_paths": ["server/app/zh/my-pandas.html", "server/app/en/my-pandas.html"] },
+    { "id": "institution", "manifest_entry": "/[locale]/institutions/[slug]/page", "html_paths": [] },
+    { "id": "place", "manifest_entry": "/[locale]/places/[slug]/page", "html_paths": [] }
+  ]
+}

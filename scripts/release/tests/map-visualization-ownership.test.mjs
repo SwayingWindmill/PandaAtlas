@@ -28,7 +28,9 @@ test("Slice 7 remains an optional client island owned by the structured map", as
   assert.match(enhancement, /dynamic\(/);
   assert.match(enhancement, /ssr:\s*false/);
   assert.match(enhancement, /activate-map-visualization/);
-  assert.match(enhancement, /active\s*\?/);
+  assert.match(enhancement, /!active\s*&&/);
+  assert.match(enhancement, /MAP_VISUALIZATION_LOAD_TIMEOUT_MS/);
+  assert.match(enhancement, /map-visualization-failure/);
   assert.match(enhancement, /navigator\.onLine/);
   assert.match(enhancement, /MapVisualizationErrorBoundary/);
 
@@ -38,6 +40,7 @@ test("Slice 7 remains an optional client island owned by the structured map", as
   assert.match(island, /prefersReducedMapMotion/);
   assert.match(island, /structuredMapHref/);
   assert.match(island, /router\.(?:push|replace)/);
+  assert.match(island, /role=["']region["']/);
   assert.match(island, /pa-map-visualization-attribution/);
   assert.match(island, /Non-drag selection|非拖拽选择/);
 

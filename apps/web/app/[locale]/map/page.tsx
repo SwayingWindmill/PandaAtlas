@@ -1,7 +1,7 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { StructuredMapPage } from "@/features/map/structured-map-page";
-import { CACHED_HABITAT_PUBLIC_RELEASE } from "@/features/map/cached-habitat-release";
+import { loadHabitatMapInput } from "@/features/map/map-data-source";
 import { parseStructuredMapQuery, structuredMapHref } from "@/features/map/map-query";
 import { buildStructuredMapViewModel } from "@/features/map/map-view-model";
 import { buildMapVisualizationModel } from "@/features/map/visualization/map-visual-model";
@@ -10,7 +10,6 @@ import {
   type PublicCoverage,
 } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
-import { getHabitatsWithSource, getOverviewStats } from "@/lib/api-client";
 
 interface LocalizedMapPageProps {
   params: Promise<{ locale: string }>;
@@ -53,18 +52,8 @@ export default async function LocalizedMapPage({ params, searchParams }: Localiz
   if (!locale) notFound();
 
   const envelope = loadPublishedMapDataset(locale);
-  const [habitatResponse, overview] = await Promise.all([
-    getHabitatsWithSource({ bbox: "73,18,136,54" }),
-    getOverviewStats(),
-  ]);
+  const habitatInput = await loadHabitatMapInput({ bbox: "73,18,136,54" });
   const parsed = parseStructuredMapQuery(rawQuery, envelope.release.id);
-  const habitatInput = {
-    collection: habitatResponse.data,
-    source: habitatResponse.source,
-    snapshotDate: habitatResponse.source === "api"
-      ? overview.latest_snapshot_date
-      : CACHED_HABITAT_PUBLIC_RELEASE.snapshotDate,
-  } as const;
   const initialView = buildStructuredMapViewModel(
     envelope.data,
     envelope.sources,
@@ -90,7 +79,7 @@ export default async function LocalizedMapPage({ params, searchParams }: Localiz
   const coverage: PublicCoverage = view.hasPartialCoverage
     ? {
         state: "partial",
-        scope: habitatResponse.source === "api"
+        scope: habitatInput.source === "api"
           ? "reviewed structured geography with some records lacking clickable source links"
           : "reviewed institutions and residencies plus an explicitly cached partial habitat release",
       }

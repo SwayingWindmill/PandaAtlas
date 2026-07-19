@@ -291,7 +291,7 @@ export default async function LocalizedAtlasPage({ params, searchParams }: Local
           <PublicDeliveryNotice locale={locale} release={envelope.release} delivery={envelope.delivery} coverage={envelope.coverage} localeDelivery={envelope.locale} />
 
           {entityMatches.length ? (
-            <section className="rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-6" aria-labelledby="atlas-entity-results-heading" data-testid="atlas-entity-results">
+            <section className="rounded-[var(--pa-radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6" aria-labelledby="atlas-entity-results-heading" data-testid="atlas-entity-results">
               <h2 id="atlas-entity-results-heading" className="text-2xl font-semibold">{t.relatedEntities}</h2>
               <p className="mt-2 text-sm text-[var(--muted)]">{t.noEntityConflation}</p>
               <ul className="mt-5 grid gap-3 md:grid-cols-2">

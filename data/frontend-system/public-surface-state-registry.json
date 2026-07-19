@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "surfaces": [
+    {
+      "id": "home",
+      "route_pattern": "/{locale}",
+      "states": ["complete", "partial-release", "no-javascript"]
+    },
+    {
+      "id": "atlas",
+      "route_pattern": "/{locale}/atlas",
+      "states": ["results", "empty-query", "no-results", "normalized-query", "no-javascript"]
+    },
+    {
+      "id": "profile",
+      "route_pattern": "/{locale}/atlas/{slug}",
+      "states": ["complete", "partial", "unavailable", "no-media", "no-javascript"]
+    },
+    {
+      "id": "lineage",
+      "route_pattern": "/{locale}/lineage",
+      "states": ["complete", "partial", "unknown-focus", "no-javascript"]
+    },
+    {
+      "id": "map",
+      "route_pattern": "/{locale}/map",
+      "states": ["api", "cached-release", "provider-degraded", "structured-only", "no-javascript"]
+    },
+    {
+      "id": "my-pandas",
+      "route_pattern": "/{locale}/my-pandas",
+      "states": ["empty", "populated", "stale-id", "legacy-migration", "no-javascript"]
+    },
+    {
+      "id": "institution",
+      "route_pattern": "/{locale}/institutions/{slug}",
+      "states": ["complete", "partial", "unsupported", "no-media", "no-javascript"]
+    },
+    {
+      "id": "place",
+      "route_pattern": "/{locale}/places/{slug}",
+      "states": ["complete", "partial", "unsupported", "no-coordinates", "no-javascript"]
+    }
+  ]
+}

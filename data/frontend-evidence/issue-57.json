@@ -71,30 +71,37 @@
     },
     "browser_journeys": {
       "status": "PASS",
-      "detail": "Saved profiles, recent visits, migration, sorting, clearing, stale IDs, locale switching, no-JavaScript behavior, keyboard operation, and narrow text-resize reflow pass against the immutable Staging deployment.",
+      "detail": "Saved profiles, recent visits, migration, sorting, clearing, stale IDs, locale switching, no-JavaScript behavior, keyboard operation, and narrow text-resize reflow pass against both the immutable Staging deployment and the approved Production deployment.",
       "evidence": [
         "My Pandas Staging targeted journeys 8/8 PASS",
         "Full Staging browser smoke shard 1: 39/39 PASS",
         "Full Staging browser smoke shard 2: 36/36 PASS",
         "Full Staging browser smoke total: 75/75 PASS",
+        "Production My Pandas targeted journeys 8/8 PASS against https://www.zhipanda.com",
+        "Production full browser smoke 75/75 PASS against https://www.zhipanda.com",
         "A prior full run had one transient net::ERR_CONNECTION_CLOSED; the affected file then passed 10/10 before the clean 75/75 rerun",
         "320 CSS pixel plus simulated 200-percent text resize journey PASS"
       ]
     },
     "automated_accessibility": {
       "status": "PASS",
-      "detail": "Chinese and English My Pandas surfaces and the complete public journey matrix pass automated WCAG A/AA checks on the Staging deployment.",
+      "detail": "Chinese and English My Pandas surfaces and the complete public journey matrix pass automated WCAG A/AA checks on both Staging and Production.",
       "evidence": [
         "Staging automated accessibility 40/40 PASS",
+        "Production automated accessibility 40/40 PASS against https://www.zhipanda.com",
         "Chinese and English My Pandas desktop Axe checks PASS",
         "Chinese and English My Pandas mobile Axe checks PASS",
         "Keyboard controls and live feedback coverage PASS"
       ]
     },
     "visual_regression": {
-      "status": "BLOCKED",
-      "detail": "Named bilingual semantic visual review for the My Pandas desktop, mobile, populated, empty, and stale-ID states is not recorded.",
-      "evidence": []
+      "status": "PASS",
+      "detail": "The product owner approved the bilingual semantic visual result and the Production publication after reviewing the canonical deployment and its desktop, mobile, populated, empty, and stale-ID coverage.",
+      "evidence": [
+        "Product-owner visual approval recorded in the project conversation on 2026-07-19",
+        "Product-owner Production publication approval recorded in the project conversation on 2026-07-19",
+        "Approved canonical Production deployment https://www.zhipanda.com"
+      ]
     },
     "performance_budgets": {
       "status": "PASS",
@@ -120,13 +127,31 @@
       "Staging has no production routes and uses NEXT_PUBLIC_API_BASE_URL=https://api.zhipanda.com"
     ]
   },
+  "production": {
+    "status": "PASS",
+    "detail": "The product owner explicitly approved Production deployment. Merge commit ae1d8d6 was built from a clean clone, deployed to the production Worker, and verified on the canonical public domain.",
+    "evidence": [
+      "Product-owner approval recorded in the project conversation on 2026-07-19",
+      "Merged PR 58 at commit ae1d8d6ac4efb6125d9b8ce806be39340685fb85",
+      "Production Worker panda-atlas-web Version ef80127b-7eb8-4d88-8347-f60f4af0107f at full traffic",
+      "Production OpenNext checksum sha256:f3980d8f680124b23cf1b7362524136b50c233efc6a5a251957676435bc155d7 across 1413 files",
+      "Production My Pandas targeted journeys 8/8 PASS",
+      "Production full browser smoke 75/75 PASS",
+      "Production automated accessibility 40/40 PASS",
+      "Previous production rollback Version 250a57ac-b54c-4ede-b347-a7a620385a08"
+    ]
+  },
   "human_signoff": {
     "status": "BLOCKED",
-    "detail": "Product-owner, named bilingual visual review, and named manual screen-reader review are not recorded.",
-    "evidence": []
+    "detail": "Product-owner visual and Production publication approval are recorded. A named bilingual manual screen-reader review remains outstanding and is not represented as complete.",
+    "evidence": [
+      "Product owner explicitly approved the bilingual visual result on 2026-07-19",
+      "Product owner explicitly approved Production deployment on 2026-07-19",
+      "Manual screen-reader sign-off remains an explicit follow-up item"
+    ]
   },
   "release_decision": {
     "status": "BLOCKED",
-    "detail": "Implementation, clean CI, and Staging automation pass, but production release remains blocked by incomplete visual review and human sign-off."
+    "detail": "Production and the bilingual visual result were explicitly approved with passing automated verification, but the formal Public Beta evidence decision remains BLOCKED until named bilingual manual screen-reader sign-off is recorded."
   }
 }

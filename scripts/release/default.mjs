@@ -274,6 +274,11 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "test:release-gate"]),
       },
       {
+        id: "frontend-system-closure",
+        label: "Frontend system closure architecture",
+        run: () => runCommand(npm, ["run", "check:frontend-system-closure"]),
+      },
+      {
         id: "golden-dataset",
         label: "Golden dataset contract",
         run: () => runCommand(npm, ["run", "test:golden-dataset"]),
@@ -311,6 +316,12 @@ export async function runDefaultReleaseGate() {
         label: "My Pandas performance budget",
         dependsOn: ["web-build"],
         run: () => runCommand(npm, ["run", "check:my-pandas-budget"]),
+      },
+      {
+        id: "canonical-route-budgets",
+        label: "Canonical route performance budgets",
+        dependsOn: ["web-build"],
+        run: () => runCommand(npm, ["run", "check:route-performance-budgets"]),
       },
       {
         id: "beta-hard-gates",
