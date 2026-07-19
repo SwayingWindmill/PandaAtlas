@@ -2,6 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { TrustedProfileFavorite } from "@/components/atlas/trusted-profile-favorite";
+import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
 import { siteShellClassName } from "@/components/site/site-header";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
@@ -421,6 +422,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
 
   return (
     <>
+      <ProfileVisitRecorder stableId={profile.stableId} slug={profile.canonicalSlug} />
       <GlobalNavigation locale={locale} active="profile" alternatePath={profile.alternateLanguageHref} />
       <main
         id="main-content"
@@ -503,7 +505,12 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
                   ))}
                 </ul>
               </div>
-              <TrustedProfileFavorite slug={profile.canonicalSlug} name={profile.displayName} locale={locale} />
+              <TrustedProfileFavorite
+                stableId={profile.stableId}
+                slug={profile.canonicalSlug}
+                name={profile.displayName}
+                locale={locale}
+              />
             </aside>
           </div>
         </section>

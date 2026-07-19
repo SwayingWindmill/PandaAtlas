@@ -18,6 +18,7 @@ interface MobileNavigationProps {
     atlas: string;
     lineage: string;
     map: string;
+    myPandas: string;
     language: string;
   };
 }
@@ -61,6 +62,7 @@ export function MobileNavigation({
           <Link href={`/${locale}/atlas`} onClick={() => setOpen(false)}>{labels.atlas}</Link>
           <Link href={`/${locale}/lineage` as Route} onClick={() => setOpen(false)}>{labels.lineage}</Link>
           <Link href={`/${locale}/map` as Route} onClick={() => setOpen(false)}>{labels.map}</Link>
+          <Link href={`/${locale}/my-pandas` as Route} onClick={() => setOpen(false)}>{labels.myPandas}</Link>
           <Link href={languageHref as Route} hrefLang={languageHrefLang} onClick={() => setOpen(false)}>
             {labels.language}
           </Link>

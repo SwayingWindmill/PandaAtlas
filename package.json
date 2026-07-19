@@ -29,6 +29,7 @@
     "check:beta-hard-gates": "node scripts/release/check-beta-hard-gates.mjs",
     "check:map-visualization-budget": "node scripts/release/check-map-visualization-budget.mjs",
     "check:editorial-home-budget": "node scripts/release/check-editorial-home-budget.mjs",
+    "check:my-pandas-budget": "node scripts/release/check-my-pandas-budget.mjs",
     "drill:release-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
     "drill:postgres-attachment-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_postgres_attachment_recovery_drill.py",
     "test:release-gate": "node --test scripts/release/tests/*.test.mjs",

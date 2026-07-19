@@ -307,6 +307,12 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "check:editorial-home-budget"]),
       },
       {
+        id: "my-pandas-budget",
+        label: "My Pandas performance budget",
+        dependsOn: ["web-build"],
+        run: () => runCommand(npm, ["run", "check:my-pandas-budget"]),
+      },
+      {
         id: "beta-hard-gates",
         label: "Beta trust, privacy, and release consistency preflight",
         dependsOn: ["golden-dataset", "web-build"],

@@ -25,6 +25,8 @@ async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentN
 const coreJourneys = [
   { name: "Chinese Editorial Home", path: "/zh" },
   { name: "English Editorial Home", path: "/en" },
+  { name: "Chinese My Pandas", path: "/zh/my-pandas" },
+  { name: "English My Pandas", path: "/en/my-pandas" },
   { name: "Chinese Atlas discovery", path: "/zh/atlas?status=alive&sort=name" },
   { name: "English Atlas discovery", path: "/en/atlas?status=alive&sort=name" },
   { name: "Chinese trusted profile", path: "/zh/atlas/mei-xiang" },
@@ -79,7 +81,10 @@ for (const { locale, path, buttonName, pressedButtonName } of [
   { locale: "en", path: "/en/atlas/mei-xiang", buttonName: /^Save /, pressedButtonName: /^Remove / },
 ]) {
   test(`${locale} profile action is keyboard operable and remains accessible`, async ({ page }, testInfo) => {
-    await page.addInitScript(() => localStorage.removeItem("panda-atlas:saved-profiles"));
+    await page.addInitScript(() => {
+      localStorage.removeItem("panda-atlas:saved-profiles");
+      localStorage.removeItem("panda-atlas:profile-preferences");
+    });
     await page.goto(path);
     const favorite = page.getByRole("button", { name: buttonName });
     await expect(favorite).toBeEnabled();

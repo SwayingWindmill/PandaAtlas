@@ -1,58 +1,35 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useSyncExternalStore } from "react";
-
-const STORAGE_KEY = "panda-atlas:saved-profiles";
-const FAVORITES_CHANGE_EVENT = "panda-atlas:favorites-change";
-
-function readFavorites(): string[] {
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]");
-    return Array.isArray(parsed)
-      ? parsed.filter((value): value is string => typeof value === "string")
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-function subscribeToFavorites(onStoreChange: () => void): () => void {
-  window.addEventListener("storage", onStoreChange);
-  window.addEventListener(FAVORITES_CHANGE_EVENT, onStoreChange);
-  return () => {
-    window.removeEventListener("storage", onStoreChange);
-    window.removeEventListener(FAVORITES_CHANGE_EVENT, onStoreChange);
-  };
-}
+import { useMemo, useSyncExternalStore } from "react";
+import {
+  readProfilePreferences,
+  subscribeToProfilePreferences,
+  toggleSavedProfile,
+} from "@/features/preferences/profile-preferences";
 
 function subscribeToHydration(): () => void {
   return () => undefined;
 }
 
 interface TrustedProfileFavoriteProps {
+  stableId: string;
   slug: string;
   name: string;
   locale: "zh" | "en";
 }
 
-export function TrustedProfileFavorite({ slug, name, locale }: TrustedProfileFavoriteProps) {
+export function TrustedProfileFavorite({ stableId, slug, name, locale }: TrustedProfileFavoriteProps) {
+  const references = useMemo(() => [{ id: stableId, aliases: [slug] }], [slug, stableId]);
   const ready = useSyncExternalStore(subscribeToHydration, () => true, () => false);
   const saved = useSyncExternalStore(
-    subscribeToFavorites,
-    () => readFavorites().includes(slug),
+    subscribeToProfilePreferences,
+    () => readProfilePreferences(references).saved.some((entry) => entry.id === stableId),
     () => false,
   );
 
   function toggleFavorite() {
-    const favorites = new Set(readFavorites());
-    if (favorites.has(slug)) {
-      favorites.delete(slug);
-    } else {
-      favorites.add(slug);
-    }
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...favorites]));
-    window.dispatchEvent(new Event(FAVORITES_CHANGE_EVENT));
+    toggleSavedProfile(stableId, references);
   }
 
   const label = locale === "zh"
