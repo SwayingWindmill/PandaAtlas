@@ -18,6 +18,8 @@ test("localized structured map owns the production route without a map-only depe
   const providerRegistry = await source("apps/web/features/map/map-provider-registry.ts");
   const publicRelease = await source("apps/web/features/public-content/public-release.ts");
   const mapDataSource = await source("apps/web/features/map/map-data-source.ts");
+  const visualizationEnhancement = await source("apps/web/features/map/visualization/map-visualization-enhancement.tsx");
+  const visualizationIsland = await source("apps/web/features/map/visualization/map-visualization-island.tsx");
 
   assert.match(localizedPage, /loadPublishedMapDataset/);
   assert.match(localizedPage, /loadHabitatMapInput/);
@@ -64,6 +66,10 @@ test("localized structured map owns the production route without a map-only depe
   assert.match(mapDataSource, /loadHabitatMapInput/);
   assert.match(mapDataSource, /source:\s*["']cached-release["']/);
   assert.doesNotMatch(mapDataSource, /FALLBACK_PANDA|LINEAGE_PANDAS|FALLBACK_STATS/);
+  assert.match(visualizationEnhancement, /MAP_VISUALIZATION_LOAD_TIMEOUT_MS/);
+  assert.match(visualizationEnhancement, /map-visualization-loading/);
+  assert.match(visualizationEnhancement, /map-visualization-failure/);
+  assert.match(visualizationIsland, /onMount/);
 
   await assert.rejects(source("apps/web/components/map/map-shell.tsx"));
   await assert.rejects(source("apps/web/components/map/panda-atlas-explorer.tsx"));

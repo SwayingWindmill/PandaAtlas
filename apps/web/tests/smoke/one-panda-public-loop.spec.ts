@@ -104,7 +104,7 @@ test("exposes the full reading loop through sequential keyboard navigation", asy
   await page.goto("/zh/atlas/mei-xiang");
   const visited = new Set<string>();
 
-  for (let index = 0; index < 100; index += 1) {
+  for (let index = 0; index < 250; index += 1) {
     await page.keyboard.press("Tab");
     const target = await page.evaluate(() => {
       const element = document.activeElement as HTMLElement | null;
@@ -132,7 +132,11 @@ test("keeps the server-rendered profile readable without JavaScript", async ({ b
   await context.close();
 });
 
-test("reflows at the effective CSS viewport produced by 200-percent browser zoom", async ({ page }) => {
+test("reflows at the effective CSS viewport produced by 200-percent browser zoom", async ({ page, browserName }) => {
+  test.skip(
+    browserName !== "chromium",
+    "Browser zoom emulation requires Chromium CDP; cross-browser text reflow is covered by accessibility checks.",
+  );
   const session = await page.context().newCDPSession(page);
   await session.send("Emulation.setDeviceMetricsOverride", {
     width: 640,

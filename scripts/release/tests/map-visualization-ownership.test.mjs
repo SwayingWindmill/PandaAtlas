@@ -28,7 +28,9 @@ test("Slice 7 remains an optional client island owned by the structured map", as
   assert.match(enhancement, /dynamic\(/);
   assert.match(enhancement, /ssr:\s*false/);
   assert.match(enhancement, /activate-map-visualization/);
-  assert.match(enhancement, /active\s*\?/);
+  assert.match(enhancement, /!active\s*&&/);
+  assert.match(enhancement, /MAP_VISUALIZATION_LOAD_TIMEOUT_MS/);
+  assert.match(enhancement, /map-visualization-failure/);
   assert.match(enhancement, /navigator\.onLine/);
   assert.match(enhancement, /MapVisualizationErrorBoundary/);
 

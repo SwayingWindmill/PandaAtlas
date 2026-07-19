@@ -30,6 +30,7 @@ interface MapVisualizationIslandProps {
   state: StructuredMapQueryState;
   model: MapVisualizationModel;
   loadingLabel: string;
+  onMount: () => void;
 }
 
 type ProviderStatus = "loading" | "ready" | "degraded" | "offline" | "recovering";
@@ -110,7 +111,7 @@ function currentViewport(map: MapLibreMap): MapViewportState {
   return { longitude: center.lng, latitude: center.lat, zoom: map.getZoom() };
 }
 
-export function MapVisualizationIsland({ locale, state, model, loadingLabel }: MapVisualizationIslandProps) {
+export function MapVisualizationIsland({ locale, state, model, loadingLabel, onMount }: MapVisualizationIslandProps) {
   const t = copy[locale];
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -128,6 +129,8 @@ export function MapVisualizationIsland({ locale, state, model, loadingLabel }: M
   const [hovered, setHovered] = useState<string | null>(null);
   const [draftChoice, setDraftChoice] = useState("");
   const [queryP95, setQueryP95] = useState<number | null>(null);
+
+  useEffect(() => onMount(), [onMount]);
 
   const featureById = useMemo(
     () => new Map(model.collection.features.map((feature) => [feature.properties.id, feature])),
