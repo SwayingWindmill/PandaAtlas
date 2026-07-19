@@ -48,6 +48,84 @@ function validateEvidenceItem(item, path, errors) {
   }
 }
 
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.trim() !== "";
+}
+
+function validateNamedVersion(value, path, errors) {
+  if (!value || typeof value !== "object") {
+    errors.push(`${path} must be an object`);
+    return;
+  }
+  if (!isNonEmptyString(value.name)) errors.push(`${path}.name is required`);
+  if (!isNonEmptyString(value.version)) errors.push(`${path}.version is required`);
+}
+
+function validateHumanSignoff(item, path, expectedProductionVersion, errors) {
+  validateEvidenceItem(item, path, errors);
+  if (item?.status !== "PASS") return;
+
+  if (!Array.isArray(item.sessions) || item.sessions.length === 0) {
+    errors.push(`${path}.sessions must contain signed human sessions when status is PASS`);
+    return;
+  }
+
+  const coveredLocales = new Set();
+  item.sessions.forEach((session, index) => {
+    const sessionPath = `${path}.sessions[${index}]`;
+    if (!session || typeof session !== "object") {
+      errors.push(`${sessionPath} must be an object`);
+      return;
+    }
+    if (!isNonEmptyString(session.evaluator)) errors.push(`${sessionPath}.evaluator is required`);
+    if (!isNonEmptyString(session.language_proficiency)) {
+      errors.push(`${sessionPath}.language_proficiency is required`);
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(session.date ?? "")) {
+      errors.push(`${sessionPath}.date must use YYYY-MM-DD`);
+    }
+    if (!Array.isArray(session.locales) || session.locales.length === 0) {
+      errors.push(`${sessionPath}.locales must contain at least one locale`);
+    } else {
+      for (const locale of session.locales) {
+        if (locale !== "zh-CN" && locale !== "en") {
+          errors.push(`${sessionPath}.locales contains unsupported locale ${String(locale)}`);
+        } else {
+          coveredLocales.add(locale);
+        }
+      }
+    }
+    validateNamedVersion(session.os, `${sessionPath}.os`, errors);
+    validateNamedVersion(session.browser, `${sessionPath}.browser`, errors);
+    validateNamedVersion(
+      session.assistive_technology,
+      `${sessionPath}.assistive_technology`,
+      errors,
+    );
+    if (!isNonEmptyString(session.production_version)) {
+      errors.push(`${sessionPath}.production_version is required`);
+    } else if (
+      isNonEmptyString(expectedProductionVersion)
+      && session.production_version !== expectedProductionVersion
+    ) {
+      errors.push(`${sessionPath}.production_version must match artifact.frontend_deployment_id`);
+    }
+    if (!Array.isArray(session.journeys) || session.journeys.length === 0) {
+      errors.push(`${sessionPath}.journeys must contain at least one exercised journey`);
+    }
+    if (!Array.isArray(session.observations) || session.observations.length === 0) {
+      errors.push(`${sessionPath}.observations must contain observed announcements or failures`);
+    }
+    if (session.result !== "PASS") errors.push(`${sessionPath}.result must equal PASS`);
+  });
+
+  for (const requiredLocale of ["zh-CN", "en"]) {
+    if (!coveredLocales.has(requiredLocale)) {
+      errors.push(`${path}.sessions must cover ${requiredLocale}`);
+    }
+  }
+}
+
 export function validateFrontendEvidenceManifest(manifest) {
   const errors = [];
   if (!manifest || typeof manifest !== "object") {
@@ -69,7 +147,15 @@ export function validateFrontendEvidenceManifest(manifest) {
     validateEvidenceItem(manifest.check_groups?.[group], `check_groups.${group}`, errors);
   }
   validateEvidenceItem(manifest.staging, "staging", errors);
-  validateEvidenceItem(manifest.human_signoff, "human_signoff", errors);
+  if (manifest.production !== undefined) {
+    validateEvidenceItem(manifest.production, "production", errors);
+  }
+  validateHumanSignoff(
+    manifest.human_signoff,
+    "human_signoff",
+    manifest.artifact?.frontend_deployment_id,
+    errors,
+  );
 
   const effectiveRiskLevel = Math.max(
     manifest.risk?.computed_level ?? 0,
@@ -100,8 +186,26 @@ export function validateFrontendEvidenceManifest(manifest) {
     if (!manifest.artifact?.frontend_deployment_id) {
       errors.push("a GO decision requires artifact.frontend_deployment_id");
     }
+    if (!manifest.artifact?.staging_frontend_deployment_id) {
+      errors.push("a GO decision requires artifact.staging_frontend_deployment_id");
+    }
     if (!manifest.artifact?.api_deployment_id) {
       errors.push("a GO decision requires artifact.api_deployment_id");
+    }
+    if (!manifest.artifact?.d1_bookmark) {
+      errors.push("a GO decision requires artifact.d1_bookmark");
+    }
+    if (!manifest.artifact?.rollback_frontend_deployment_id) {
+      errors.push("a GO decision requires artifact.rollback_frontend_deployment_id");
+    }
+    if (!manifest.artifact?.rollback_public_release_id) {
+      errors.push("a GO decision requires artifact.rollback_public_release_id");
+    }
+    if (!manifest.public_release?.projection_version) {
+      errors.push("a GO decision requires public_release.projection_version");
+    }
+    if (manifest.production?.status !== "PASS") {
+      errors.push("a GO decision requires production.status PASS");
     }
   }
 
@@ -113,6 +217,7 @@ export function computeFrontendReleaseDecision(manifest) {
     ...REQUIRED_GROUPS.map((group) => manifest.check_groups[group]),
     manifest.staging,
     manifest.human_signoff,
+    ...(manifest.production ? [manifest.production] : []),
   ];
   if (evidence.some((item) => item.status === "FAIL")) return "NO_GO";
   if (evidence.some((item) => item.status === "BLOCKED")) return "BLOCKED";

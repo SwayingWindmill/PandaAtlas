@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "issue": 62,
+  "evidence_kind": "public_beta_release",
+  "artifact": {
+    "commit": "2c5e5eb0bb923aac216acdad7b21b594811b933d",
+    "source_tree": "c8e37ba9e74d2e8068fbb567cfc319304c172256",
+    "build_checksum": "sha256:574558de820538a150d732ed0e3e18d9374a17bc334daac1b3420a7763579e8b",
+    "build_file_count": 1396,
+    "staging_frontend_deployment_id": "65433436-c154-4408-ad92-edb66c66b386",
+    "frontend_deployment_id": "1d4d0f1f-356b-42d0-b205-82a1236257b1",
+    "api_deployment_id": "d282c4da-6729-4bac-b2fb-e4c58e9c5f2e",
+    "d1_bookmark": "00000ef8-00000028-000050ad-affa0015aa57c704688a26162f24e702",
+    "rollback_frontend_deployment_id": "7905ffcb-d3ae-4028-9018-f98ce37e0788",
+    "rollback_public_release_id": "2026.07.14.3"
+  },
+  "risk": {
+    "declared_level": 3,
+    "computed_level": 3,
+    "reasons": [
+      "formal Public Beta release candidate",
+      "same-artifact staging and production promotion",
+      "production D1 Public Release pointer update",
+      "complete bilingual public frontend scope",
+      "mandatory human assistive-technology evidence"
+    ]
+  },
+  "public_release": {
+    "id": "2026.07.18.1",
+    "schema_version": "1.1.0",
+    "projection_version": "public-release-v3",
+    "database_migration_version": "0007",
+    "publication_batch_id": "golden-dataset",
+    "delivery": "versioned-public-release",
+    "delivery_state": "api-current"
+  },
+  "check_groups": {
+    "reproducibility": {
+      "status": "PASS",
+      "detail": "The deployed OpenNext artifact was built from the exact source tree of merge commit 2c5e5eb and the same unmodified artifact was promoted from Staging to Production.",
+      "evidence": [
+        "Merge commit 2c5e5eb0bb923aac216acdad7b21b594811b933d has source tree c8e37ba9e74d2e8068fbb567cfc319304c172256",
+        "Local source tree before build matched c8e37ba9e74d2e8068fbb567cfc319304c172256",
+        "OpenNext artifact checksum sha256:574558de820538a150d732ed0e3e18d9374a17bc334daac1b3420a7763579e8b across 1396 files",
+        "Staging and Production were deployed without rebuilding between promotions",
+        "Release Gate Run 29682915629 passed Linux and Windows Default Gates"
+      ]
+    },
+    "static_correctness": {
+      "status": "PASS",
+      "detail": "The immutable system-closure source passed its clean-checkout gates and produced a successful production OpenNext build for the final release promotion.",
+      "evidence": [
+        "Release Gate Run 29682915629 SUCCESS",
+        "Linux Default Gate job 88182153124 SUCCESS",
+        "Windows Default Gate job 88182153134 SUCCESS",
+        "OpenNext Cloudflare build completed successfully on 2026-07-19",
+        "Next.js production build completed with type and lint validation"
+      ]
+    },
+    "public_contracts": {
+      "status": "PASS",
+      "detail": "The canonical frontend and production API now expose the same Public Release, schema, projection and migration identities.",
+      "evidence": [
+        "Production API /api/v1/releases/current returned HTTP 200",
+        "X-PandaAtlas-Dataset-Version: 2026.07.18.1",
+        "X-PandaAtlas-Public-Schema-Version: 1.1.0",
+        "X-PandaAtlas-Database-Migration-Version: 0007",
+        "Production API projection_code_version public-release-v3",
+        "Production pandas list, Mei Xiang lineage and distribution endpoints returned HTTP 200 after the D1 pointer switch",
+        "Frontend public delivery notice identifies release 2026.07.18.1 and schema 1.1.0"
+      ]
+    },
+    "media_and_content_truth": {
+      "status": "PASS",
+      "detail": "The promoted release is the reviewed Golden Dataset projection with explicit source, media-license, uncertainty and publication-state handling.",
+      "evidence": [
+        "Public Release manifest data/public-releases/2026.07.18.1/manifest.json",
+        "Public Release api.json checksum 4bddffed69b60ed6bafde1c2e67e51b662623f82edb79cc47dc6831a1fd5f2ce",
+        "Public Release d1.sql checksum 4dc0e434a86e6db910185560cd03e6f2b6afa9754c2e03a29cadc866ca3d531c",
+        "Release contains 7 pandas, 12 parentage assertions, 5 sources, 7 media records, 2 institutions and 2 places",
+        "No unsupported public-media claim or silent evidence-state upgrade is introduced"
+      ]
+    },
+    "browser_journeys": {
+      "status": "PASS",
+      "detail": "The complete production browser journey suite passed against both the final Staging deployment and the promoted canonical Production deployment.",
+      "evidence": [
+        "Staging browser smoke 75/75 PASS with 1 expected skip",
+        "Production browser smoke 75/75 PASS with 1 expected skip",
+        "One transient Production net::ERR_CONNECTION_CLOSED was followed by 70/70 Editorial Home repetitions and a clean 75/75 full rerun",
+        "Staging URL https://panda-atlas-web-staging.hao1012812011.workers.dev",
+        "Production URL https://www.zhipanda.com",
+        "Chinese and English Home, Atlas, profile, map, lineage, institution, place and My Pandas journeys covered"
+      ]
+    },
+    "automated_accessibility": {
+      "status": "PASS",
+      "detail": "The complete bilingual automated WCAG A/AA matrix passed against the final Staging and Production deployments.",
+      "evidence": [
+        "Staging automated accessibility 40/40 PASS",
+        "Production automated accessibility 40/40 PASS",
+        "Windows Edge Playwright and axe-core execution",
+        "Desktop and mobile bilingual route coverage",
+        "Keyboard, text resize, reduced motion, structured map and structured lineage automated checks passed"
+      ]
+    },
+    "visual_regression": {
+      "status": "PASS",
+      "detail": "The product owner approved the bilingual frontend system result, and the final deployment uses the identical reviewed source tree and Public Release content.",
+      "evidence": [
+        "Product-owner bilingual visual approval recorded on 2026-07-19",
+        "Final deployment source tree matches reviewed merge commit 2c5e5eb0bb923aac216acdad7b21b594811b933d",
+        "Current Staging and Production browser suites rendered all canonical public surfaces without regression"
+      ]
+    },
+    "performance_budgets": {
+      "status": "PASS",
+      "detail": "All canonical routes remain within the release budgets in the final production build.",
+      "evidence": [
+        "Shared First Load JS 103 kB",
+        "Localized Home and Atlas First Load JS 108 kB",
+        "Localized profile First Load JS 110 kB",
+        "Localized lineage First Load JS 108 kB",
+        "Localized map and My Pandas First Load JS 111 kB",
+        "Canonical route performance budget gate passed in Release Gate Run 29682915629"
+      ]
+    }
+  },
+  "staging": {
+    "status": "PASS",
+    "detail": "The immutable OpenNext artifact was deployed to the isolated Staging Worker and passed complete browser and automated accessibility verification before Production promotion.",
+    "evidence": [
+      "Staging Worker version 65433436-c154-4408-ad92-edb66c66b386",
+      "URL https://panda-atlas-web-staging.hao1012812011.workers.dev",
+      "OpenNext checksum sha256:574558de820538a150d732ed0e3e18d9374a17bc334daac1b3420a7763579e8b across 1396 files",
+      "Browser smoke 75/75 PASS with 1 expected skip",
+      "Automated accessibility 40/40 PASS",
+      "Staging has no production routes and uses https://api.zhipanda.com"
+    ]
+  },
+  "production": {
+    "status": "PASS",
+    "detail": "The exact Staging artifact was promoted to the canonical production domains, the versioned D1 release was published, and frontend/API release identities now agree.",
+    "evidence": [
+      "Production frontend Worker version 1d4d0f1f-356b-42d0-b205-82a1236257b1 at full traffic",
+      "Production API Worker version d282c4da-6729-4bac-b2fb-e4c58e9c5f2e at full traffic",
+      "Production D1 bookmark 00000ef8-00000028-000050ad-affa0015aa57c704688a26162f24e702",
+      "Production API current release 2026.07.18.1 / schema 1.1.0 / projection public-release-v3",
+      "Production browser smoke 75/75 PASS with 1 expected skip",
+      "Production automated accessibility 40/40 PASS",
+      "Rollback frontend Worker version 7905ffcb-d3ae-4028-9018-f98ce37e0788",
+      "Rollback Public Release pointer 2026.07.14.3"
+    ]
+  },
+  "human_signoff": {
+    "status": "BLOCKED",
+    "detail": "The product owner reported no blocking issues in the earlier bilingual human review, but that record is bound to the previous frontend Worker and omits the required evaluator, language proficiency, browser, assistive-technology and OS versions. A signed review against the current Production version remains required.",
+    "evidence": [
+      "Issue #61 owner comment dated 2026-07-19 confirms the earlier bilingual screen-reader review found no blocking issue",
+      "Issue #61 was bound to previous Production Worker ef80127b-7eb8-4d88-8347-f60f4af0107f",
+      "Current Production Worker is 1d4d0f1f-356b-42d0-b205-82a1236257b1",
+      "Current Production Public Release is 2026.07.18.1",
+      "Required signed current-version environment and observed-announcement records are not yet attached"
+    ],
+    "sessions": []
+  },
+  "release_decision": {
+    "status": "BLOCKED",
+    "detail": "The same-artifact Staging-to-Production promotion, API release alignment, automated checks and production verification pass. Formal Public Beta GO remains BLOCKED only until signed bilingual real-screen-reader session metadata is recorded against Production Worker 1d4d0f1f-356b-42d0-b205-82a1236257b1."
+  }
+}
