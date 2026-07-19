@@ -2,6 +2,11 @@
   "schema_version": 1,
   "issue": 62,
   "evidence_kind": "public_beta_release",
+  "release_profile": "public_beta_without_wcag_conformance_claim",
+  "accessibility_conformance_claim": {
+    "status": "NOT_CLAIMED",
+    "detail": "This Public Beta release is approved as a product release based on automated, keyboard and owner review evidence. It does not claim WCAG 2.2 Level AA conformance because deployment-bound real-screen-reader session records are not required for this release profile."
+  },
   "artifact": {
     "commit": "2c5e5eb0bb923aac216acdad7b21b594811b933d",
     "source_tree": "c8e37ba9e74d2e8068fbb567cfc319304c172256",
@@ -22,7 +27,7 @@
       "same-artifact staging and production promotion",
       "production D1 Public Release pointer update",
       "complete bilingual public frontend scope",
-      "mandatory human assistive-technology evidence"
+      "product-owner release approval without a WCAG conformance claim"
     ]
   },
   "public_release": {
@@ -153,19 +158,18 @@
     ]
   },
   "human_signoff": {
-    "status": "BLOCKED",
-    "detail": "The product owner reported no blocking issues in the earlier bilingual human review, but that record is bound to the previous frontend Worker and omits the required evaluator, language proficiency, browser, assistive-technology and OS versions. A signed review against the current Production version remains required.",
+    "status": "NOT_APPLICABLE_WITH_REASON",
+    "detail": "The product owner explicitly removed deployment-bound real-screen-reader records from the Public Beta release criteria on 2026-07-19. This waiver applies only to the product release decision and does not establish or imply WCAG 2.2 Level AA conformance.",
     "evidence": [
-      "Issue #61 owner comment dated 2026-07-19 confirms the earlier bilingual screen-reader review found no blocking issue",
-      "Issue #61 was bound to previous Production Worker ef80127b-7eb8-4d88-8347-f60f4af0107f",
-      "Current Production Worker is 1d4d0f1f-356b-42d0-b205-82a1236257b1",
-      "Current Production Public Release is 2026.07.18.1",
-      "Required signed current-version environment and observed-announcement records are not yet attached"
+      "Issue #61 owner review reported no blocking product issue",
+      "Product owner directed on 2026-07-19 that no real-screen-reader record is required for this Public Beta release",
+      "Automated accessibility passed 40/40 on both Staging and Production",
+      "The release profile explicitly records accessibility_conformance_claim.status as NOT_CLAIMED"
     ],
     "sessions": []
   },
   "release_decision": {
-    "status": "BLOCKED",
-    "detail": "The same-artifact Staging-to-Production promotion, API release alignment, automated checks and production verification pass. Formal Public Beta GO remains BLOCKED only until signed bilingual real-screen-reader session metadata is recorded against Production Worker 1d4d0f1f-356b-42d0-b205-82a1236257b1."
+    "status": "GO",
+    "detail": "Product Public Beta GO is approved for Production Worker 1d4d0f1f-356b-42d0-b205-82a1236257b1 and Public Release 2026.07.18.1. All deployment, contract, browser, automated accessibility and performance gates pass. No WCAG 2.2 Level AA conformance claim is made for this release."
   }
 }

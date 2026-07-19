@@ -20,6 +20,8 @@ const REQUIRED_GROUPS = [
   "performance_budgets",
 ];
 
+const PUBLIC_BETA_NO_WCAG_CLAIM = "public_beta_without_wcag_conformance_claim";
+
 function validateEvidenceItem(item, path, errors) {
   if (!item || typeof item !== "object") {
     errors.push(`${path} must be an object`);
@@ -143,6 +145,20 @@ export function validateFrontendEvidenceManifest(manifest) {
     errors.push("public_release.id and public_release.schema_version are required");
   }
 
+  const humanSignoffWaived = manifest.release_profile === PUBLIC_BETA_NO_WCAG_CLAIM;
+  if (manifest.release_profile !== undefined
+    && manifest.release_profile !== PUBLIC_BETA_NO_WCAG_CLAIM) {
+    errors.push(`release_profile must equal ${PUBLIC_BETA_NO_WCAG_CLAIM} when present`);
+  }
+  if (humanSignoffWaived) {
+    if (manifest.accessibility_conformance_claim?.status !== "NOT_CLAIMED") {
+      errors.push("a Public Beta release without human screen-reader evidence must set accessibility_conformance_claim.status to NOT_CLAIMED");
+    }
+    if (!isNonEmptyString(manifest.accessibility_conformance_claim?.detail)) {
+      errors.push("accessibility_conformance_claim.detail is required when no WCAG claim is made");
+    }
+  }
+
   for (const group of REQUIRED_GROUPS) {
     validateEvidenceItem(manifest.check_groups?.[group], `check_groups.${group}`, errors);
   }
@@ -165,8 +181,11 @@ export function validateFrontendEvidenceManifest(manifest) {
     if (manifest.staging?.status === "NOT_APPLICABLE_WITH_REASON") {
       errors.push("Level 3 evidence cannot mark staging as not applicable");
     }
-    if (manifest.human_signoff?.status === "NOT_APPLICABLE_WITH_REASON") {
-      errors.push("Level 3 evidence cannot mark human_signoff as not applicable");
+    if (
+      manifest.human_signoff?.status === "NOT_APPLICABLE_WITH_REASON"
+      && !humanSignoffWaived
+    ) {
+      errors.push("Level 3 evidence cannot mark human_signoff as not applicable without an explicit no-WCAG-claim release profile");
     }
   }
 
@@ -206,6 +225,13 @@ export function validateFrontendEvidenceManifest(manifest) {
     }
     if (manifest.production?.status !== "PASS") {
       errors.push("a GO decision requires production.status PASS");
+    }
+    if (humanSignoffWaived) {
+      if (manifest.human_signoff?.status !== "NOT_APPLICABLE_WITH_REASON") {
+        errors.push("a no-WCAG-claim GO decision requires human_signoff.status NOT_APPLICABLE_WITH_REASON");
+      }
+    } else if (effectiveRiskLevel === 3 && manifest.human_signoff?.status !== "PASS") {
+      errors.push("a Level 3 GO decision with a WCAG conformance claim requires human_signoff.status PASS");
     }
   }
 
