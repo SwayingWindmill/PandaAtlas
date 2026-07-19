@@ -8,14 +8,14 @@ This folder is the working intake layer for Panda Atlas profile data. It is inte
 2. Add or update individuals in `pandas.csv`.
 3. Use `events.csv` for births, arrivals, transfers, returns, naming events, and public debuts.
 4. Use `sightings.csv` only for location/observation records that should eventually map to `public.sightings`.
-5. Use `media.csv` only for media metadata. Do not save copyrighted images in Git.
+5. Use `media.csv` for the minimum reviewed photo record: panda, asset, original source, rights basis, public credit, bilingual alt text, and review status. Technical metadata is generated later. Do not save copyrighted images in Git.
 6. Run the validator:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/curation/validate_panda_curation.ps1
 ```
 
-There is also a Python version at `scripts/curation/validate_panda_curation.py` for environments with a working Python interpreter.
+The Python entry point is available at `scripts/curation/validate_panda_curation.py`.
 
 ## Evidence Rules
 
@@ -23,16 +23,32 @@ There is also a Python version at `scripts/curation/validate_panda_curation.py` 
 - `partial`: the row has a reliable source but still misses at least one database-critical field, such as exact birth date, current facility, or parent identity.
 - `needs_primary_source`: the row is only supported by secondary reporting or needs a stronger source before promotion.
 
-Only rows with `evidence_status=verified` and `review_status=approved` should be converted to SQL seed files.
+Only panda rows with `evidence_status=verified` and `review_status=approved` may be treated as public-ready. An approved panda must also have the trusted identity and current-location fields required by `contracts/panda-expansion.v1.json`, at least three approved verified events, and at least one approved photo.
+
+## Minimum Photo Record
+
+The human-entered fields in `media.csv` are intentionally small:
+
+- `panda_slug`
+- `asset`
+- `source_url`
+- `rights`
+- `credit`
+- `alt_zh`
+- `alt_en`
+- `review_status`
+- optional `notes`
+
+Approved photos require all fields except `notes`. The pipeline, not the curator, owns media IDs, hashes, dimensions, MIME types, and derivatives.
 
 ## Promotion Path
 
 Curated records should move through these layers:
 
 1. `data/curation/pandas/*.csv` for source-backed working data.
-2. `infra/supabase/seed/0003_panda_profiles_seed.sql` for reviewed import data.
-3. `services/api/app/data/import_sources.py` whitelist update after the SQL seed is ready.
-4. Supabase/Postgres import through the existing admin import path.
+2. Reviewed PostgreSQL records and publication workflow.
+3. Immutable Public Release projection and media processing.
+4. D1/API, CSV/JSON snapshots, and the public frontend.
 
 ## Source Priority
 
