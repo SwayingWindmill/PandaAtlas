@@ -107,6 +107,131 @@ test("validates the issue 57 Slice 10 manifest and keeps the release blocked", a
   assert.equal(computeFrontendReleaseDecision(manifest), "BLOCKED");
 });
 
+test("validates the final Public Beta product GO without a WCAG conformance claim", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL("../../../data/frontend-evidence/public-beta-2026.07.18.1.json", import.meta.url),
+      "utf8",
+    ),
+  );
+
+  assert.deepEqual(validateFrontendEvidenceManifest(manifest), []);
+  assert.equal(computeFrontendReleaseDecision(manifest), "GO");
+});
+
+test("a human-signoff waiver must explicitly decline a WCAG conformance claim", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL("../../../data/frontend-evidence/public-beta-2026.07.18.1.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  manifest.accessibility_conformance_claim.status = "CLAIMED";
+
+  assert.ok(
+    validateFrontendEvidenceManifest(manifest).includes(
+      "a Public Beta release without human screen-reader evidence must set accessibility_conformance_claim.status to NOT_CLAIMED",
+    ),
+  );
+});
+
+test("a final GO decision with a WCAG conformance claim requires explicit bilingual human session metadata", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL("../../../data/frontend-evidence/public-beta-2026.07.18.1.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  delete manifest.release_profile;
+  delete manifest.accessibility_conformance_claim;
+  manifest.human_signoff = {
+    status: "PASS",
+    detail: "Human review passed.",
+    evidence: ["owner approval"],
+    sessions: [],
+  };
+  manifest.release_decision = { status: "GO", detail: "All evidence passed." };
+
+  const errors = validateFrontendEvidenceManifest(manifest);
+  assert.ok(
+    errors.includes(
+      "human_signoff.sessions must contain signed human sessions when status is PASS",
+    ),
+  );
+});
+
+test("human sessions for a WCAG conformance claim must be bound to the current Production deployment", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL("../../../data/frontend-evidence/public-beta-2026.07.18.1.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  delete manifest.release_profile;
+  delete manifest.accessibility_conformance_claim;
+  manifest.human_signoff = {
+    status: "PASS",
+    detail: "Human review passed.",
+    evidence: ["signed session record"],
+    sessions: [{
+      evaluator: "Named human evaluator",
+      language_proficiency: "Professional proficiency in Chinese and English",
+      date: "2026-07-19",
+      locales: ["zh-CN", "en"],
+      os: { name: "Recorded OS", version: "recorded-version" },
+      browser: { name: "Recorded browser", version: "recorded-version" },
+      assistive_technology: { name: "Recorded screen reader", version: "recorded-version" },
+      production_version: "previous-production-version",
+      journeys: ["Complete bilingual canonical public journeys"],
+      observations: ["Observed announcements and task completion"],
+      result: "PASS",
+    }],
+  };
+  manifest.release_decision = { status: "GO", detail: "All evidence passed." };
+
+  assert.ok(
+    validateFrontendEvidenceManifest(manifest).includes(
+      "human_signoff.sessions[0].production_version must match artifact.frontend_deployment_id",
+    ),
+  );
+});
+
+test("a WCAG-claiming Public Beta manifest becomes eligible for GO with complete bilingual sessions", async () => {
+  const manifest = JSON.parse(
+    await readFile(
+      new URL("../../../data/frontend-evidence/public-beta-2026.07.18.1.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  delete manifest.release_profile;
+  delete manifest.accessibility_conformance_claim;
+  const environment = {
+    evaluator: "Named human evaluator",
+    language_proficiency: "Professional proficiency in Chinese and English",
+    date: "2026-07-19",
+    locales: ["zh-CN", "en"],
+    os: { name: "Recorded OS", version: "recorded-version" },
+    browser: { name: "Recorded browser", version: "recorded-version" },
+    assistive_technology: { name: "Recorded screen reader", version: "recorded-version" },
+    production_version: manifest.artifact.frontend_deployment_id,
+    journeys: ["Complete bilingual canonical public journeys"],
+    observations: [
+      "Observed names, roles, states, dynamic announcements, map and lineage equivalents",
+    ],
+    result: "PASS",
+  };
+  manifest.human_signoff = {
+    status: "PASS",
+    detail: "Signed bilingual human screen-reader review passed with explicit environment records.",
+    evidence: ["signed session record"],
+    sessions: [environment],
+  };
+  manifest.release_decision = { status: "GO", detail: "All required evidence passed." };
+
+  assert.deepEqual(validateFrontendEvidenceManifest(manifest), []);
+  assert.equal(computeFrontendReleaseDecision(manifest), "GO");
+});
+
 test("rejects a declared risk below the computed risk", async () => {
   const manifest = JSON.parse(
     await readFile(new URL("../../../data/frontend-evidence/issue-40.json", import.meta.url), "utf8"),
@@ -150,7 +275,11 @@ test("Level 3 evidence cannot bypass staging or human sign-off as not applicable
 
   const errors = validateFrontendEvidenceManifest(manifest);
   assert.ok(errors.includes("Level 3 evidence cannot mark staging as not applicable"));
-  assert.ok(errors.includes("Level 3 evidence cannot mark human_signoff as not applicable"));
+  assert.ok(
+    errors.includes(
+      "Level 3 evidence cannot mark human_signoff as not applicable without an explicit no-WCAG-claim release profile",
+    ),
+  );
 });
 
 test("a GO decision must be bound to immutable build and deployment identities", async () => {
