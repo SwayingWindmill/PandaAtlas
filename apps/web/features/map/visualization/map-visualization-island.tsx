@@ -38,6 +38,7 @@ type ProviderStatus = "loading" | "ready" | "degraded" | "offline" | "recovering
 const copy = {
   zh: {
     regionLabel: "交互式地图可视增强",
+    canvasLabel: "交互式地图画布",
     providerReady: "地图服务已连接",
     providerDegraded: "部分地图资源不可用；结构化列表保持完整。",
     providerOffline: "当前离线；结构化列表保持完整。",
@@ -54,6 +55,7 @@ const copy = {
   },
   en: {
     regionLabel: "Interactive map visualization enhancement",
+    canvasLabel: "Interactive map canvas",
     providerReady: "Map provider connected",
     providerDegraded: "Some map resources are unavailable; the structured list remains complete.",
     providerOffline: "Offline; the structured list remains complete.",
@@ -199,7 +201,7 @@ export function MapVisualizationIsland({ locale, state, model, loadingLabel, onM
         source?.setData(modelRef.current.collection);
         synchronizeSelectedMapLayers(map, stateRef.current.selected);
         map.getCanvas().setAttribute("role", "region");
-        map.getCanvas().setAttribute("aria-label", t.regionLabel);
+        map.getCanvas().setAttribute("aria-label", t.canvasLabel);
         setProviderStatus(navigator.onLine ? "ready" : "offline");
         map.resize();
       });
@@ -352,8 +354,12 @@ export function MapVisualizationIsland({ locale, state, model, loadingLabel, onM
         {queryP95 !== null ? <span data-testid="map-query-p95">{t.scheduler}: {Math.round(queryP95)} ms</span> : null}
       </div>
 
-      <div className="pa-map-visualization-canvas-wrap">
-        <div ref={containerRef} className="pa-map-visualization-canvas" aria-label={t.regionLabel} />
+      <div
+        className="pa-map-visualization-canvas-wrap"
+        role="region"
+        aria-label={t.regionLabel}
+      >
+        <div ref={containerRef} className="pa-map-visualization-canvas" />
         <div className="pa-map-visualization-controls" aria-label={t.regionLabel}>
           <button
             type="button"
