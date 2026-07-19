@@ -40,7 +40,7 @@ test("Slice 11 inventories cover every canonical public surface", async () => {
   }
 });
 
-test("Slice 11 architecture and canonical budgets are part of the Default Gate", async () => {
+test("Slice 11 architecture, browser matrix, and canonical budgets are release gates", async () => {
   const defaultGate = await readFile(path.join(repoRoot, "scripts/release/default.mjs"), "utf8");
   const rootPackage = await json("package.json");
   const webPackage = await json("apps/web/package.json");
@@ -55,7 +55,8 @@ test("Slice 11 architecture and canonical budgets are part of the Default Gate",
   assert.match(defaultGate, /check:route-performance-budgets/);
   assert.equal(rootPackage.scripts["smoke:web:matrix"], "npm run smoke:matrix -w web");
   assert.equal(webPackage.scripts["smoke:matrix"], "node scripts/run-browser-matrix.mjs");
-  assert.match(browserMatrixRunner, /process\.platform === "win32" \? "npm\.cmd" : "npm"/);
+  assert.match(browserMatrixRunner, /cmd\.exe/);
+  assert.match(browserMatrixRunner, /npm exec playwright -- test/);
   assert.match(browserMatrixRunner, /PLAYWRIGHT_BROWSER_MATRIX: "1"/);
   assert.match(browserRuntimeCheck, /chromium, firefox, webkit/);
   assert.match(browserRuntimeCheck, /RELEASE_GATE_USE_SYSTEM_EDGE/);

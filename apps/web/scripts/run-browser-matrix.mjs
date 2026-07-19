@@ -1,8 +1,12 @@
 import { spawn } from "node:child_process";
 import process from "node:process";
 
-const command = process.platform === "win32" ? "npm.cmd" : "npm";
-const child = spawn(command, ["exec", "playwright", "--", "test"], {
+const isWindows = process.platform === "win32";
+const command = isWindows ? process.env.ComSpec ?? "cmd.exe" : "npm";
+const args = isWindows
+  ? ["/d", "/s", "/c", "npm exec playwright -- test"]
+  : ["exec", "playwright", "--", "test"];
+const child = spawn(command, args, {
   cwd: process.cwd(),
   env: {
     ...process.env,

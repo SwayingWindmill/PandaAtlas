@@ -243,10 +243,17 @@ export async function validateFrontendSystemClosure(root = defaultRoot) {
   }
 
   const playwrightConfig = await readFile(path.join(root, "apps/web/playwright.config.ts"), "utf8");
+  const releaseWorkflow = await readFile(path.join(root, ".github/workflows/release-gate.yml"), "utf8");
   for (const browser of contract.browser_matrix ?? []) {
     if (!playwrightConfig.includes(`name: "${browser}"`)) {
       errors.push(`Playwright browser matrix is missing ${browser}`);
     }
+    if (!releaseWorkflow.includes(browser)) {
+      errors.push(`Release workflow does not install ${browser}`);
+    }
+  }
+  if (!releaseWorkflow.includes('PLAYWRIGHT_BROWSER_MATRIX: "1"')) {
+    errors.push("Release workflow must enable the Playwright browser matrix");
   }
 
   return errors;
