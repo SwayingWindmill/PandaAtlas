@@ -17,6 +17,17 @@ export const generatedIdentityAliasesPath = path.resolve(
   "trusted-identity-aliases.ts",
 );
 
+export const WEB_RELEASE_VERSION = "2026.07.20.1";
+export const webReleaseDatasetPath = path.resolve(
+  scriptDir,
+  "..",
+  "..",
+  "data",
+  "reviewed-batches",
+  WEB_RELEASE_VERSION,
+  "source.json",
+);
+
 function legacySlugValue(value) {
   return typeof value === "string" ? value : value.value;
 }
@@ -181,6 +192,16 @@ export function buildTrustedPandaDetails(dataset) {
   const facilities = new Map(
     (dataset.facilities ?? []).map((facility) => [facility.id, facility]),
   );
+  const parentageByChild = new Map();
+  for (const assertion of buildPublishedParentageAssertions(dataset)) {
+    if (assertion.status !== "confirmed") continue;
+    const parents = parentageByChild.get(assertion.child_id) ?? {
+      father_id: null,
+      mother_id: null,
+    };
+    parents[`${assertion.role}_id`] = assertion.parent_id;
+    parentageByChild.set(assertion.child_id, parents);
+  }
   return (dataset.pandas ?? [])
     .filter(isPublicProfileRecord)
     .map((record) => {
@@ -323,7 +344,41 @@ export function buildTrustedPandaDetails(dataset) {
           `${item.system}:${item.value}`,
         ]),
       ].filter((value, index, values) => value && values.indexOf(value) === index);
-      const mediaReleaseRecord = (dataset.media ?? []).find(
+      const mediaRecords = (dataset.media ?? []).filter(
+        (media) => media.publication_status === "published"
+          && media.public?.panda_id === record.id,
+      );
+      const mediaAssets = mediaRecords
+        .filter((media) => ["available", "withdrawn", "unavailable"].includes(media.public.status))
+        .map((media) => ({
+          id: media.id,
+          panda_id: media.public.panda_id ?? null,
+          url: media.public.url ?? null,
+          source_url: media.public.source_url ?? null,
+          rights: media.public.rights ?? null,
+          credit: media.public.credit ?? null,
+          alt_zh: media.public.alt_zh ?? null,
+          alt_en: media.public.alt_en ?? null,
+          status: media.public.status,
+          sha256: media.public.sha256 ?? null,
+          mime_type: media.public.mime_type ?? null,
+          width: media.public.width ?? null,
+          height: media.public.height ?? null,
+          bytes: media.public.bytes ?? null,
+          derivatives: media.public.derivatives ?? [],
+          source_ids: (media.public.source_ids ?? []).filter(
+            (sourceId) => publishedSourceIds.has(sourceId),
+          ),
+        }));
+      for (const sourceId of mediaAssets.flatMap((media) => media.source_ids)) {
+        sourceIds.add(sourceId);
+      }
+      const availableMedia = mediaAssets.find((media) => media.status === "available") ?? null;
+      const parents = parentageByChild.get(record.id) ?? {
+        father_id: null,
+        mother_id: null,
+      };
+      const mediaReleaseRecord = mediaRecords.find(
         (media) => media.publication_status === "published"
           && media.public?.panda_id === record.id,
       );
@@ -337,15 +392,15 @@ export function buildTrustedPandaDetails(dataset) {
         status: publicRecord.life_status,
         birth_date: typeof birthDate === "string" ? birthDate : null,
         current_location: currentLocation,
-        cover_image_url: null,
+        cover_image_url: availableMedia?.url ?? null,
         search_terms: searchTerms,
         intro: approvedContent.get("zh-CN") ?? approvedContent.get("en") ?? null,
         birthplace: null,
         tags: ["trusted-identity", "golden-dataset"],
-        father_id: null,
-        mother_id: null,
+        father_id: parents.father_id,
+        mother_id: parents.mother_id,
         habitats: [],
-        media: [],
+        media: mediaAssets,
         identity,
         conclusions,
         sources: buildSourceSummaries(dataset, sourceIds),
@@ -361,15 +416,21 @@ export function buildTrustedPandaDetails(dataset) {
         events,
         record_tier: publicRecord.record_tier ?? null,
         localized_content: localizedContent,
-        media_release: mediaReleaseRecord
+        media_release: mediaAssets.length > 0
           ? {
-              license_state: mediaReleaseRecord.public.license_state,
-              display_mode: mediaReleaseRecord.public.display_mode,
-              source_ids: (mediaReleaseRecord.public.source_ids ?? []).filter(
-                (sourceId) => publishedSourceIds.has(sourceId),
-              ),
+              license_state: "licensed",
+              display_mode: availableMedia ? "gallery" : "designed_empty_state",
+              source_ids: [...new Set(mediaAssets.flatMap((media) => media.source_ids))],
             }
-          : null,
+          : mediaReleaseRecord
+            ? {
+                license_state: mediaReleaseRecord.public.license_state,
+                display_mode: mediaReleaseRecord.public.display_mode,
+                source_ids: (mediaReleaseRecord.public.source_ids ?? []).filter(
+                  (sourceId) => publishedSourceIds.has(sourceId),
+                ),
+              }
+            : null,
         public_revision: {
           data_version: dataset.dataset.version,
           public_schema_version: dataset.dataset.public_schema_version,
@@ -459,7 +520,7 @@ export function renderTrustedIdentityAliasModule(dataset) {
   const facilities = buildTrustedFacilities(dataset);
   const parentageAssertions = buildPublishedParentageAssertions(dataset);
   const lineage = buildTrustedLineage(dataset);
-  return `// Generated from contracts/golden-dataset/mei-xiang-family.v1.json.\n`
+  return `// Generated from reviewed Public Release ${dataset.dataset.version}.\n`
     + `// Run npm run generate:trusted-identity-aliases after changing trusted identity data.\n\n`
     + `import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from \"@/lib/types\";\n\n`
     + `export interface TrustedPandaReference {\n`
@@ -480,8 +541,12 @@ export async function readGoldenDataset() {
   return JSON.parse(await readFile(goldenDatasetPath, "utf8"));
 }
 
+export async function readWebReleaseDataset() {
+  return JSON.parse(await readFile(webReleaseDatasetPath, "utf8"));
+}
+
 async function main() {
-  const dataset = await readGoldenDataset();
+  const dataset = await readWebReleaseDataset();
   const expected = renderTrustedIdentityAliasModule(dataset);
   if (process.argv.includes("--check")) {
     const actual = await readFile(generatedIdentityAliasesPath, "utf8").catch(() => "");

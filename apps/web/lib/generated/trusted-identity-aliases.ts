@@ -1,4 +1,4 @@
-// Generated from contracts/golden-dataset/mei-xiang-family.v1.json.
+// Generated from reviewed Public Release 2026.07.20.1.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
 import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
@@ -32,6 +32,14 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "beibei": {
     "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
     "slug": "bei-bei"
+  },
+  "lun-lun": {
+    "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "slug": "lun-lun"
+  },
+  "lunlun": {
+    "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "slug": "lun-lun"
   },
   "mei_xiang": {
     "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
@@ -76,6 +84,22 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "xiaoqiji": {
     "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
     "slug": "xiao-qi-ji"
+  },
+  "ya-lun": {
+    "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+    "slug": "ya-lun"
+  },
+  "yalun": {
+    "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+    "slug": "ya-lun"
+  },
+  "yang-yang": {
+    "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "slug": "yang-yang"
+  },
+  "yangyang": {
+    "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "slug": "yang-yang"
   }
 };
 
@@ -340,8 +364,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.18.1",
-      "public_schema_version": "1.1.0",
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -616,8 +640,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.18.1",
-      "public_schema_version": "1.1.0",
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
       "summaries": []
     }
   },
@@ -645,8 +669,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "trusted-identity",
       "golden-dataset"
     ],
-    "father_id": null,
-    "mother_id": null,
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "habitats": [],
     "media": [],
     "identity": {
@@ -797,8 +821,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.18.1",
-      "public_schema_version": "1.1.0",
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -835,8 +859,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "trusted-identity",
       "golden-dataset"
     ],
-    "father_id": null,
-    "mother_id": null,
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "habitats": [],
     "media": [],
     "identity": {
@@ -987,8 +1011,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.18.1",
-      "public_schema_version": "1.1.0",
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1025,8 +1049,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "trusted-identity",
       "golden-dataset"
     ],
-    "father_id": null,
-    "mother_id": null,
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "habitats": [],
     "media": [],
     "identity": {
@@ -1187,8 +1211,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.18.1",
-      "public_schema_version": "1.1.0",
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1226,8 +1250,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "trusted-identity",
       "golden-dataset"
     ],
-    "father_id": null,
-    "mother_id": null,
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "habitats": [],
     "media": [],
     "identity": {
@@ -1446,8 +1470,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.18.1",
-      "public_schema_version": "1.1.0",
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1485,7 +1509,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
+    "mother_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
     "habitats": [],
     "media": [],
     "identity": {
@@ -1636,8 +1660,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.18.1",
-      "public_schema_version": "1.1.0",
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1649,10 +1673,1049 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         }
       ]
     }
+  },
+  {
+    "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "slug": "lun-lun",
+    "name_zh": "伦伦",
+    "name_en": "Lun Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "1997-08-25",
+    "current_location": "成都大熊猫繁育研究基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+    "search_terms": [
+      "lun-lun",
+      "伦伦",
+      "Lun Lun",
+      "lunlun",
+      "zoo_atlanta_profile_key:lun-lun"
+    ],
+    "intro": "曾生活于亚特兰大动物园的雌性大熊猫，是七只幼崽的母亲，2024 年返回成都基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-lun-lun-a089c7f24bdfbc26",
+        "panda_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Lun_Lun_at_Zoo_Atlanta.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "伦伦坐在亚特兰大动物园的木质栖架旁",
+        "alt_en": "Lun Lun sitting beside a wooden habitat structure at Zoo Atlanta",
+        "status": "available",
+        "sha256": "a8e714b320935368572d87b1fb6bd7a754eabf906e4b537acf498ec13f8b63b1",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 130622,
+        "derivatives": [
+          {
+            "bytes": 34690,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "be926c7f103a290d67c611c26b68e7249e1a7521a9a4f9cee39852f21a88d91c",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 130622,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "a8e714b320935368572d87b1fb6bd7a754eabf906e4b537acf498ec13f8b63b1",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_lun_lun_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+      "canonical_slug": "lun-lun",
+      "names": [
+        {
+          "value": "伦伦",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_lun_lun",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        },
+        {
+          "value": "Lun Lun",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_lun_lun",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "lunlun",
+          "source_ids": [
+            "src_zooatlanta_lun_lun"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "zoo_atlanta_profile_key",
+          "value": "lun-lun",
+          "source_ids": [
+            "src_zooatlanta_lun_lun"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "1997-08-25",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-lun-lun-birth-date"
+        ],
+        "source_ids": [
+          "src_zooatlanta_lun_lun"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-lun-lun-current-place"
+        ],
+        "source_ids": [
+          "src_zooatlanta_lun_lun",
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-lun-lun-sex"
+        ],
+        "source_ids": [
+          "src_zooatlanta_lun_lun"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_lun_lun_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Lun Lun at Zoo Atlanta",
+        "url": "https://commons.wikimedia.org/wiki/File:Lun_Lun_at_Zoo_Atlanta.jpg",
+        "published_at": "2022-02-08",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_arrival_china_2024",
+        "publisher": "Zoo Atlanta",
+        "title": "Giant Pandas Have Arrived in China",
+        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+        "published_at": "2024-10-13",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_lun_lun",
+        "publisher": "Zoo Atlanta",
+        "title": "Lun Lun",
+        "url": "https://zooatlanta.org/animal-legend/lun-lun/",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_yang_yang",
+        "publisher": "Zoo Atlanta",
+        "title": "Yang Yang",
+        "url": "https://zooatlanta.org/animal-legend/yang-yang/",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-20"
+    },
+    "residencies": [
+      {
+        "id": "res-lun-lun-zoo-atlanta",
+        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "1999-11-05",
+        "start_precision": "day",
+        "end_date": "2024-10-12",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_zooatlanta_lun_lun"
+        ]
+      },
+      {
+        "id": "res-lun-lun-chengdu",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-10-13",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "source_ids": [
+          "src_zooatlanta_lun_lun",
+          "src_zooatlanta_arrival_china_2024"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-lun-lun-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "1997-08-25",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_lun_lun"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-pair-arrival-1999",
+        "event_type": "arrival",
+        "event_status": "completed",
+        "event_date": "1999-11-05",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "db108e44-8893-54e1-8cb5-8c5238b75089"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_lun_lun",
+          "src_zooatlanta_yang_yang"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-return-2024",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2024-10-12",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "db108e44-8893-54e1-8cb5-8c5238b75089",
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "曾生活于亚特兰大动物园的雌性大熊猫，是七只幼崽的母亲，2024 年返回成都基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former Zoo Atlanta female, mother of seven cubs; returned to Chengdu in 2024."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_lun_lun_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "slug": "yang-yang",
+    "name_zh": "洋洋",
+    "name_en": "Yang Yang",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "1997-09-09",
+    "current_location": "成都大熊猫繁育研究基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+    "search_terms": [
+      "yang-yang",
+      "洋洋",
+      "Yang Yang",
+      "yangyang",
+      "zoo_atlanta_profile_key:yang-yang"
+    ],
+    "intro": "曾生活于亚特兰大动物园的雄性大熊猫，是七只幼崽的父亲，2024 年返回成都基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-yang-yang-8e30a6c81892cbde",
+        "panda_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "洋洋在亚特兰大动物园的栖息地内休息",
+        "alt_en": "Yang Yang resting in his habitat at Zoo Atlanta",
+        "status": "available",
+        "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 106314,
+        "derivatives": [
+          {
+            "bytes": 23356,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "29994d619b7d21af748b2ce87af3fc8839797923facda6c115febfa9e9c239fa",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 106314,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_yang_yang_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+      "canonical_slug": "yang-yang",
+      "names": [
+        {
+          "value": "洋洋",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_yang_yang",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        },
+        {
+          "value": "Yang Yang",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_yang_yang",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "yangyang",
+          "source_ids": [
+            "src_zooatlanta_yang_yang"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "zoo_atlanta_profile_key",
+          "value": "yang-yang",
+          "source_ids": [
+            "src_zooatlanta_yang_yang"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "1997-09-09",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-yang-yang-birth-date"
+        ],
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-yang-yang-current-place"
+        ],
+        "source_ids": [
+          "src_zooatlanta_yang_yang",
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-yang-yang-sex"
+        ],
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_yang_yang_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Yang Yang at Zoo Atlanta",
+        "url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
+        "published_at": "2022-02-08",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_arrival_china_2024",
+        "publisher": "Zoo Atlanta",
+        "title": "Giant Pandas Have Arrived in China",
+        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+        "published_at": "2024-10-13",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_lun_lun",
+        "publisher": "Zoo Atlanta",
+        "title": "Lun Lun",
+        "url": "https://zooatlanta.org/animal-legend/lun-lun/",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_yang_yang",
+        "publisher": "Zoo Atlanta",
+        "title": "Yang Yang",
+        "url": "https://zooatlanta.org/animal-legend/yang-yang/",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-20"
+    },
+    "residencies": [
+      {
+        "id": "res-yang-yang-zoo-atlanta",
+        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "1999-11-05",
+        "start_precision": "day",
+        "end_date": "2024-10-12",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ]
+      },
+      {
+        "id": "res-yang-yang-chengdu",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-10-13",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "source_ids": [
+          "src_zooatlanta_yang_yang",
+          "src_zooatlanta_arrival_china_2024"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-yang-yang-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "1997-09-09",
+        "event_date_precision": "day",
+        "participants": [
+          "db108e44-8893-54e1-8cb5-8c5238b75089"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-pair-arrival-1999",
+        "event_type": "arrival",
+        "event_status": "completed",
+        "event_date": "1999-11-05",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "db108e44-8893-54e1-8cb5-8c5238b75089"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_lun_lun",
+          "src_zooatlanta_yang_yang"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-return-2024",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2024-10-12",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "db108e44-8893-54e1-8cb5-8c5238b75089",
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "曾生活于亚特兰大动物园的雄性大熊猫，是七只幼崽的父亲，2024 年返回成都基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former Zoo Atlanta male, father of seven cubs; returned to Chengdu in 2024."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_yang_yang_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+    "slug": "ya-lun",
+    "name_zh": "雅伦",
+    "name_en": "Ya Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2016-09-03",
+    "current_location": "成都大熊猫繁育研究基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+    "search_terms": [
+      "ya-lun",
+      "雅伦",
+      "Ya Lun",
+      "yalun",
+      "zoo_atlanta_profile_key:ya-lun"
+    ],
+    "intro": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，2024 年返回成都基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-ya-lun-4006c2e608f8e671",
+        "panda_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "雅伦在亚特兰大动物园的栖息地内坐着",
+        "alt_en": "Ya Lun sitting in her habitat at Zoo Atlanta",
+        "status": "available",
+        "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 113818,
+        "derivatives": [
+          {
+            "bytes": 24312,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "76fff6de4f34f0ba9b309990e4a2c744bab40fea27d1d1a38bae70343a7f2c7c",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 113818,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_ya_lun_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+      "canonical_slug": "ya-lun",
+      "names": [
+        {
+          "value": "雅伦",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        },
+        {
+          "value": "Ya Lun",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "yalun",
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "zoo_atlanta_profile_key",
+          "value": "ya-lun",
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2016-09-03",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-ya-lun-birth-date"
+        ],
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-ya-lun-current-place"
+        ],
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-ya-lun-sex"
+        ],
+        "source_ids": [
+          "src_zooatlanta_twins_names"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_ya_lun_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Ya Lun at Zoo Atlanta",
+        "url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
+        "published_at": "2022-02-08",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_2016_public_debut",
+        "publisher": "Zoo Atlanta",
+        "title": "Zoo Atlanta closes 2016",
+        "url": "https://zooatlanta.org/press-release/zoo-atlanta-closes-2016/",
+        "published_at": "2016-12-29",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_arrival_china_2024",
+        "publisher": "Zoo Atlanta",
+        "title": "Giant Pandas Have Arrived in China",
+        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+        "published_at": "2024-10-13",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_cubs_birth",
+        "publisher": "Zoo Atlanta",
+        "title": "Lun Lun's Second Cub Has Been Born",
+        "url": "https://zooatlanta.org/press-release/lun-luns-second-cub-has-been-born/",
+        "published_at": "2016-09-03",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_twins_names",
+        "publisher": "Zoo Atlanta",
+        "title": "Meet the Giant Panda Cub Twins",
+        "url": "https://zooatlanta.org/meet-giant-panda-cub-twins-zoo-atlanta/",
+        "published_at": "2017-04-03",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-20"
+    },
+    "residencies": [
+      {
+        "id": "res-ya-lun-zoo-atlanta",
+        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2016-09-03",
+        "start_precision": "day",
+        "end_date": "2024-10-12",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ]
+      },
+      {
+        "id": "res-ya-lun-chengdu",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-10-13",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-ya-lun-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2016-09-03",
+        "event_date_precision": "day",
+        "participants": [
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-ya-lun-public-debut",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2016-12-27",
+        "event_date_precision": "day",
+        "participants": [
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_2016_public_debut"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-return-2024",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2024-10-12",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "db108e44-8893-54e1-8cb5-8c5238b75089",
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，2024 年返回成都基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Daughter of Lun Lun and Yang Yang; born in Atlanta in 2016 and returned in 2024."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_ya_lun_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.20.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ]
+    }
   }
 ];
 
 export const TRUSTED_INSTITUTIONS: PublicInstitutionSummary[] = [
+  {
+    "id": "institution-chengdu-research-base",
+    "canonical_slug": "chengdu-research-base",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "kind": "official_translation"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "成都大熊猫繁育研究基地",
+        "kind": "official"
+      }
+    ],
+    "institution_type": "conservation_center",
+    "facility_ids": [
+      "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0"
+    ],
+    "place_ids": [
+      "place-chengdu-research-base"
+    ],
+    "source_ids": [
+      "src_zooatlanta_arrival_china_2024"
+    ],
+    "last_verified_at": "2026-07-20",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立成都基地的机构与场所关系。"
+      },
+      {
+        "locale": "en",
+        "summary": "Established the Chengdu institution and place."
+      }
+    ]
+  },
   {
     "id": "institution-ccrcgp",
     "canonical_slug": "china-conservation-and-research-center-for-the-giant-panda",
@@ -1729,10 +2792,90 @@ export const TRUSTED_INSTITUTIONS: PublicInstitutionSummary[] = [
         "summary": "First public record of institution identity, associated campus, residencies, and migration sources."
       }
     ]
+  },
+  {
+    "id": "institution-zoo-atlanta",
+    "canonical_slug": "zoo-atlanta",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Zoo Atlanta",
+        "kind": "official"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "亚特兰大动物园",
+        "kind": "translated"
+      }
+    ],
+    "institution_type": "zoo",
+    "facility_ids": [
+      "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2"
+    ],
+    "place_ids": [
+      "place-zoo-atlanta"
+    ],
+    "source_ids": [
+      "src_zooatlanta_lun_lun",
+      "src_zooatlanta_yang_yang"
+    ],
+    "last_verified_at": "2026-07-20",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立亚特兰大动物园的机构与园区关系。"
+      },
+      {
+        "locale": "en",
+        "summary": "Established the Zoo Atlanta institution and campus."
+      }
+    ]
   }
 ];
 
 export const TRUSTED_PLACES: PublicPlaceSummary[] = [
+  {
+    "id": "place-chengdu-research-base",
+    "canonical_slug": "chengdu-research-base-chengdu-sichuan",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan",
+        "kind": "display"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "成都大熊猫繁育研究基地（四川成都）",
+        "kind": "display"
+      }
+    ],
+    "country_code": "CN",
+    "locality": "Chengdu, Sichuan",
+    "precision": "locality",
+    "place_type": "conservation_base",
+    "facility_ids": [
+      "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0"
+    ],
+    "institution_ids": [
+      "institution-chengdu-research-base"
+    ],
+    "source_ids": [
+      "src_zooatlanta_arrival_china_2024"
+    ],
+    "last_verified_at": "2026-07-20",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "以城市级精度发布成都基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Published the Chengdu base at locality precision."
+      }
+    ]
+  },
   {
     "id": "place-smithsonian-national-zoo-dc",
     "canonical_slug": "smithsonian-national-zoo-washington-dc",
@@ -1817,6 +2960,48 @@ export const TRUSTED_PLACES: PublicPlaceSummary[] = [
         "summary": "Published Shenshuping Base at Wolong, Sichuan locality precision without inferring an exact position."
       }
     ]
+  },
+  {
+    "id": "place-zoo-atlanta",
+    "canonical_slug": "zoo-atlanta-atlanta-georgia",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Zoo Atlanta, Atlanta, Georgia",
+        "kind": "display"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "亚特兰大动物园（美国佐治亚州）",
+        "kind": "translated"
+      }
+    ],
+    "country_code": "US",
+    "locality": "Atlanta, Georgia",
+    "precision": "locality",
+    "place_type": "zoo_campus",
+    "facility_ids": [
+      "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2"
+    ],
+    "institution_ids": [
+      "institution-zoo-atlanta"
+    ],
+    "source_ids": [
+      "src_zooatlanta_lun_lun",
+      "src_zooatlanta_yang_yang"
+    ],
+    "last_verified_at": "2026-07-20",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "以城市级精度发布亚特兰大园区。"
+      },
+      {
+        "locale": "en",
+        "summary": "Published the Atlanta campus at locality precision."
+      }
+    ]
   }
 ];
 
@@ -1891,6 +3076,47 @@ export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
     "facility_type": "conservation_center"
   },
   {
+    "id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+    "canonical_slug": "chengdu-research-base",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "kind": "official_translation"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "成都大熊猫繁育研究基地",
+        "kind": "official"
+      }
+    ],
+    "institution_type": "conservation_center",
+    "facility_ids": [
+      "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0"
+    ],
+    "place_ids": [
+      "place-chengdu-research-base"
+    ],
+    "source_ids": [
+      "src_zooatlanta_arrival_china_2024"
+    ],
+    "last_verified_at": "2026-07-20",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立成都基地的机构与场所关系。"
+      },
+      {
+        "locale": "en",
+        "summary": "Established the Chengdu institution and place."
+      }
+    ],
+    "country_code": "CN",
+    "locality": "Chengdu, Sichuan",
+    "facility_type": "conservation_center"
+  },
+  {
     "id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
     "canonical_slug": "smithsonian-national-zoo",
     "legacy_slugs": [],
@@ -1930,6 +3156,48 @@ export const TRUSTED_FACILITIES: PublicFacilitySummary[] = [
     ],
     "country_code": "US",
     "locality": "Washington, D.C.",
+    "facility_type": "zoo"
+  },
+  {
+    "id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+    "canonical_slug": "zoo-atlanta",
+    "legacy_slugs": [],
+    "names": [
+      {
+        "language": "en",
+        "value": "Zoo Atlanta",
+        "kind": "official"
+      },
+      {
+        "language": "zh-Hans",
+        "value": "亚特兰大动物园",
+        "kind": "translated"
+      }
+    ],
+    "institution_type": "zoo",
+    "facility_ids": [
+      "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2"
+    ],
+    "place_ids": [
+      "place-zoo-atlanta"
+    ],
+    "source_ids": [
+      "src_zooatlanta_lun_lun",
+      "src_zooatlanta_yang_yang"
+    ],
+    "last_verified_at": "2026-07-20",
+    "revision_summaries": [
+      {
+        "locale": "zh-CN",
+        "summary": "建立亚特兰大动物园的机构与园区关系。"
+      },
+      {
+        "locale": "en",
+        "summary": "Established the Zoo Atlanta institution and campus."
+      }
+    ],
+    "country_code": "US",
+    "locality": "Atlanta, Georgia",
     "facility_type": "zoo"
   }
 ];
@@ -2053,6 +3321,28 @@ export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
     "status": "confirmed",
     "source_ids": [
       "src_smithsonian_agreement_2020"
+    ]
+  },
+  {
+    "id": "parent-ya-lun-father",
+    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+    "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "role": "father",
+    "status": "confirmed",
+    "source_ids": [
+      "src_zooatlanta_cubs_birth",
+      "src_zooatlanta_twins_names"
+    ]
+  },
+  {
+    "id": "parent-ya-lun-mother",
+    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+    "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_zooatlanta_cubs_birth",
+      "src_zooatlanta_twins_names"
     ]
   }
 ];
@@ -2206,6 +3496,69 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "slug": "lun-lun",
+    "name_zh": "伦伦",
+    "name_en": "Lun Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "1997-08-25",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "slug": "yang-yang",
+    "name_zh": "洋洋",
+    "name_en": "Yang Yang",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "1997-09-09",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+    "slug": "ya-lun",
+    "name_zh": "雅伦",
+    "name_en": "Ya Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2016-09-03",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
     "slug": "an-an-bao-li-father",
     "name_zh": "an-an-bao-li-father",
@@ -2306,5 +3659,13 @@ export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
   {
     "parent_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
     "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c"
+  },
+  {
+    "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
+  },
+  {
+    "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
   }
 ];

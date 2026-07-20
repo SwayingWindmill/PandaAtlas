@@ -10,13 +10,13 @@ test("searches the localized Atlas and opens the canonical trusted profile", asy
   await profileLink.click();
   await expect(page).toHaveURL(/\/zh\/atlas\/mei-xiang$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.18.1");
+  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.20.1");
 });
 
 test("redirects the legacy global distribution route into the localized structured map", async ({ page }) => {
   await page.goto("/global-distribution");
 
-  await expect(page).toHaveURL(/\/(zh|en)\/map\?mode=institutions&snapshot=2026\.07\.18\.1$/);
+  await expect(page).toHaveURL(/\/(zh|en)\/map\?mode=institutions&snapshot=2026\.07\.20\.1$/);
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
 });
 

@@ -11,7 +11,7 @@ test("restores URL-driven Atlas pagination through browser history", async ({ pa
 
   await next.click();
   await expect(page).toHaveURL(/\/zh\/atlas\?page=2$/);
-  await expect(page.getByTestId("atlas-result-list").getByRole("listitem")).toHaveCount(3);
+  await expect(page.getByTestId("atlas-result-list").getByRole("listitem")).toHaveCount(4);
 
   await page.goBack();
   await expect(page).toHaveURL(/\/zh\/atlas$/);
@@ -31,7 +31,7 @@ test("normalizes unsupported and invalid URL state instead of silently retaining
   await page.goto("/en/atlas?status=invalid&page=0&unsupported=value");
 
   await expect(page).toHaveURL(/\/en\/atlas$/);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("7 published profiles");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("10 published profiles");
 });
 
 test("preserves compatible discovery state across the locale switch", async ({ page }) => {

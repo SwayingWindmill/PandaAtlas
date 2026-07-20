@@ -162,7 +162,10 @@ export interface TrustedProfilePageViewModel {
 }
 
 function conclusionFor(panda: PandaDetail, field: string): PublicFactConclusion | undefined {
-  return panda.conclusions.find((conclusion) => conclusion.field === field);
+  const aliases = field === "current_coarse_location"
+    ? new Set(["current_coarse_location", "current_facility"])
+    : new Set([field]);
+  return panda.conclusions.find((conclusion) => aliases.has(conclusion.field));
 }
 
 function fact(
