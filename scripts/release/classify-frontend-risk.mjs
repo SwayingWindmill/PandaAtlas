@@ -14,6 +14,8 @@ const RULES = [
       /^scripts\/release\/d1-public-release\.mjs$/,
       /^scripts\/release\/apply-public-release-d1\.mjs$/,
       /^scripts\/release\/rollback-public-release-d1\.mjs$/,
+      /^scripts\/release\/check-beta-hard-gates\.mjs$/,
+      /^scripts\/release\/media-integrity\.mjs$/,
       /^services\/worker-api\/package\.json$/,
     ],
   },

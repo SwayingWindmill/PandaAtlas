@@ -32,6 +32,8 @@ test("classifies public release migration and Cloudflare entry changes as Level 
     "scripts/release/d1-public-release.mjs",
     "scripts/release/apply-public-release-d1.mjs",
     "scripts/release/rollback-public-release-d1.mjs",
+    "scripts/release/check-beta-hard-gates.mjs",
+    "scripts/release/media-integrity.mjs",
   ]);
 
   assert.equal(result.level, 3);
