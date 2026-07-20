@@ -56,9 +56,11 @@ Update `wrangler.jsonc`:
 - keep `DB` as the D1 binding name;
 - add `GEO_BUCKET` and `MEDIA_BUCKET` only after R2 is enabled.
 
-Production data must come from a reviewed, versioned projection artifact built from authoritative PostgreSQL data. Apply it through D1 migrations or a controlled deployment job outside the public Worker runtime. Do not treat `infra/cloudflare/d1/seed.sql` as an independent production fact source.
+Production data must come from a reviewed, versioned projection artifact built from authoritative PostgreSQL data. Apply schema changes through the migration runner and activate immutable Public Releases through the guarded root commands documented below. Do not treat `infra/cloudflare/d1/seed.sql` as an independent production fact source and do not hand-edit a tracked release artifact for D1 compatibility.
 
 The release builder and atomic rollback/withdrawal procedure are documented in `docs/release/versioned-public-projection.md`. Every `/api/v1/*` Worker response is gated by `current_public_release` and exposes the active dataset, Public Schema, and database migration versions in response headers.
+
+From the repository root, use `npm run release:d1:preflight -- ...` before any candidate write, `npm run release:d1:apply -- ...` only after review, and the corresponding `release:d1:rollback:preflight` / `release:d1:rollback` commands for pointer-only rollback. Remote writes always require the explicit write script; the preflight variants are read-only.
 
 Deploy after the projection contract and migration checks pass:
 

@@ -57,9 +57,57 @@ Before switching a release:
 
 `GET /api/v1/releases/current/pandas` serves the canonical archive records. The companion `api.json` and the `api_pandas`, `api_distribution`, `api_habitats`, `api_snapshots`, and `api_stats` D1 records contain the complete immutable bodies used by the catalog, detail, lineage, map, snapshot, and stats routes. Neither runtime consults legacy read tables for these public responses.
 
+### Controlled D1 activation
+
+Do not edit a tracked `data/public-releases/<version>/d1.sql` file to make it acceptable to remote D1. The controlled activation command verifies the immutable artifact, removes only its reviewed outer `BEGIN IMMEDIATE`/`COMMIT` envelope in a temporary file, and delegates the rollback-safe file batch to Wrangler. The pointer update must remain the final statement.
+
+Run preflight first. It performs no write and records an auditable JSON report under `.release-gate/` by default:
+
+```powershell
+npm run release:d1:preflight -- `
+  --release 2026.07.20.3 `
+  --database panda-atlas `
+  --config services/worker-api/wrangler.jsonc `
+  --remote
+```
+
+Preflight validates the manifest identity, `d1.sql` byte size and SHA-256, expected Public Release record count, `api_pandas` count, SQL transaction envelope, candidate release insert, final pointer ordering, current rollback release, and absence of conflicting candidate rows or withdrawals.
+
+Only after the report is reviewed, repeat the same arguments with the explicit write command:
+
+```powershell
+npm run release:d1:apply -- `
+  --release 2026.07.20.3 `
+  --database panda-atlas `
+  --config services/worker-api/wrangler.jsonc `
+  --remote
+```
+
+The command executes the temporary SQL with `wrangler d1 execute --file`, deletes the temporary file, and verifies the active pointer, release metadata, total record count, `api_pandas` count, lack of a whole-release withdrawal, and retained rollback history. A duplicate, partially imported, already-current, withdrawn, or metadata-drifted target fails closed.
+
 ## Rollback
 
-Rollback switches the singleton pointer; it does not copy or rewrite records:
+Rollback switches the singleton pointer; it does not copy or rewrite records. Run the pointer-only preflight first:
+
+```powershell
+npm run release:d1:rollback:preflight -- `
+  --to 2026.07.20.2 `
+  --database panda-atlas `
+  --config services/worker-api/wrangler.jsonc `
+  --remote
+```
+
+After reviewing the source release, target history, target withdrawal state, and record count, execute explicitly:
+
+```powershell
+npm run release:d1:rollback -- `
+  --to 2026.07.20.2 `
+  --database panda-atlas `
+  --config services/worker-api/wrangler.jsonc `
+  --remote
+```
+
+The update is guarded by the observed source release so a concurrent pointer change cannot be overwritten silently. Post-verification proves that both the source and rollback target remain in immutable history. The equivalent SQL shape is:
 
 ```sql
 begin immediate;

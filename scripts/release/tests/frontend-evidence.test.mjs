@@ -29,6 +29,9 @@ test("classifies public release migration and Cloudflare entry changes as Level 
     "apps/web/wrangler.staging.jsonc",
     "infra/cloudflare/d1/migrations/0007a_public_releases_immutable_update.sql",
     "scripts/release/apply-d1-migrations.mjs",
+    "scripts/release/d1-public-release.mjs",
+    "scripts/release/apply-public-release-d1.mjs",
+    "scripts/release/rollback-public-release-d1.mjs",
   ]);
 
   assert.equal(result.level, 3);
