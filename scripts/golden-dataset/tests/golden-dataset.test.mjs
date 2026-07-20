@@ -8,9 +8,12 @@ import {
   buildTrustedIdentityReferences,
   buildTrustedInstitutions,
   buildTrustedPlaces,
+  buildTrustedPandaDetails,
   generatedIdentityAliasesPath,
   normalizeGeneratedModule,
+  readWebReleaseDataset,
   renderTrustedIdentityAliasModule,
+  WEB_RELEASE_VERSION,
 } from "../generate-web-identity-aliases.mjs";
 import {
   buildPublicProjection,
@@ -114,8 +117,10 @@ test("every core profile declares completeness gaps and current-place verificati
   }
 });
 
-test("generated web identity aliases match the canonical golden dataset", async () => {
-  const dataset = await loadGoldenDataset();
+test("generated web identity aliases match the current reviewed release", async () => {
+  const dataset = await readWebReleaseDataset();
+  assert.equal(dataset.dataset.version, WEB_RELEASE_VERSION);
+  assert.equal(dataset.pandas.length, 10);
   const generated = await readFile(generatedIdentityAliasesPath, "utf8");
 
   assert.equal(
@@ -131,6 +136,8 @@ test("generated web identity aliases match the canonical golden dataset", async 
       "baoli",
       "bei-bei",
       "beibei",
+      "lun-lun",
+      "lunlun",
       "mei-xiang",
       "mei_xiang",
       "meixiang",
@@ -139,6 +146,10 @@ test("generated web identity aliases match the canonical golden dataset", async 
       "tian-tian",
       "tian_tian",
       "tiantian",
+      "ya-lun",
+      "yalun",
+      "yang-yang",
+      "yangyang",
       "xiao-qi-ji",
       "xiao_qi_ji",
       "xiaoqiji",
@@ -152,6 +163,26 @@ test("generated web identity aliases match the canonical golden dataset", async 
   assert.match(generated, /TRUSTED_FACILITIES/);
   assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
+  const details = buildTrustedPandaDetails(dataset);
+  assert.equal(details.length, 10);
+  const lunLun = details.find((detail) => detail.slug === "lun-lun");
+  const yangYang = details.find((detail) => detail.slug === "yang-yang");
+  const yaLun = details.find((detail) => detail.slug === "ya-lun");
+  for (const detail of [lunLun, yangYang, yaLun]) {
+    assert.ok(detail);
+    assert.equal(detail.public_revision.data_version, WEB_RELEASE_VERSION);
+    assert.equal(detail.current_place.last_verified_at, "2026-07-20");
+    assert.ok(detail.events.length >= 3);
+    assert.equal(detail.media.length, 1);
+    assert.equal(detail.media[0].status, "available");
+    assert.match(detail.cover_image_url, /\/media\/releases\/2026\.07\.20\.1\/.*-w1200\.webp$/);
+    assert.equal(detail.media_release.license_state, "licensed");
+    assert.equal(detail.media_release.display_mode, "gallery");
+  }
+  assert.equal(yaLun.mother_id, lunLun.id);
+  assert.equal(yaLun.father_id, yangYang.id);
+  assert.ok(yaLun.sources.some((source) => source.id === "src_commons_ya_lun_photo"));
+
   const facilities = buildTrustedFacilities(dataset);
   assert.equal(
     facilities.find((facility) => facility.id === "89f620b2-37d0-51ba-aafa-6844404a5b2c")
@@ -159,13 +190,13 @@ test("generated web identity aliases match the canonical golden dataset", async 
     "中国大熊猫保护研究中心卧龙神树坪基地",
   );
   const institutions = buildTrustedInstitutions(dataset);
-  assert.equal(institutions.length, 2);
+  assert.equal(institutions.length, 4);
   assert.deepEqual(
     institutions.find((institution) => institution.id === "institution-ccrcgp")?.place_ids,
     ["place-wolong-shenshuping-base"],
   );
   const places = buildTrustedPlaces(dataset);
-  assert.equal(places.length, 2);
+  assert.equal(places.length, 4);
   assert.equal(
     places.find((place) => place.id === "place-wolong-shenshuping-base")?.precision,
     "locality",

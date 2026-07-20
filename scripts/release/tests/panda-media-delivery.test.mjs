@@ -74,3 +74,20 @@ test("trusted profile renders release-owned media with explicit failure and with
   assert.match(page, /TrustedProfileMediaGallery/);
   assert.match(page, /profile\.media\.state === "gallery"/);
 });
+
+test("Worker serves only immutable versioned WebP objects from the media bucket", async () => {
+  const [worker, bindings] = await Promise.all([
+    source("services/worker-api/src/index.ts"),
+    source("services/worker-api/src/bindings.ts"),
+  ]);
+
+  assert.match(worker, /const PUBLIC_MEDIA_KEY = \/\^releases\\\//);
+  assert.match(worker, /request\.method === "GET" \|\| request\.method === "HEAD"/);
+  assert.match(worker, /env\.MEDIA_BUCKET\.get\(key\)/);
+  assert.match(worker, /max-age=31536000, immutable/);
+  assert.match(worker, /"Content-Type": "image\/webp"/);
+  assert.match(worker, /"X-Content-Type-Options": "nosniff"/);
+  assert.doesNotMatch(worker, /MEDIA_BUCKET\.get\(decodeURIComponent/);
+  assert.match(bindings, /body: ReadableStream<Uint8Array>/);
+  assert.match(bindings, /etag: string/);
+});

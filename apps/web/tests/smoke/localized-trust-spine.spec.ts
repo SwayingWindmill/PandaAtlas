@@ -21,7 +21,7 @@ test("completes the localized search-to-profile trust spine", async ({ page }) =
 
   await expect(page).toHaveURL(/\/zh\/atlas\/mei-xiang$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.18.1");
+  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.20.1");
   await expect(page.getByTestId("fact-birth")).toContainText("来源");
 });
 

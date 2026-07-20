@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const RELEASE_ID = "2026.07.18.1";
+const RELEASE_ID = "2026.07.20.1";
 const SMITHSONIAN_RESULT = "institution:afb0f227-dd5e-5076-88e3-74e9807a6049";
 
 
@@ -10,7 +10,7 @@ test("renders the canonical graph-free institution journey", async ({ page }) =>
   await expect(page).toHaveURL(`/zh/map?mode=institutions&snapshot=${RELEASE_ID}`);
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: "结构化全球分布与足迹" })).toBeVisible();
-  await expect(page.locator('[data-testid^="structured-map-result-institution:"]')).toHaveCount(3);
+  await expect(page.locator('[data-testid^="structured-map-result-institution:"]')).toHaveCount(5);
   await expect(page.getByText("地图画布不是完成任务的前提")).toBeVisible();
   await expect(page.getByText("结构化页面未加载地图服务")).toBeVisible();
 });
