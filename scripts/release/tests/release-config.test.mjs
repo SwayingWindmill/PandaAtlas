@@ -7,6 +7,8 @@ const defaultGatePath = new URL("../default.mjs", import.meta.url);
 const extendedGatePath = new URL("../extended.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
 const workerSmokePath = new URL("../../../services/worker-api/scripts/smoke_test_worker.mjs", import.meta.url);
+const workerProductionWranglerPath = new URL("../../../services/worker-api/wrangler.jsonc", import.meta.url);
+const workerStagingWranglerPath = new URL("../../../services/worker-api/wrangler.staging.jsonc", import.meta.url);
 const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
 const webPlaywrightConfigPath = new URL("../../../apps/web/playwright.config.ts", import.meta.url);
 const webProductionWranglerPath = new URL("../../../apps/web/wrangler.jsonc", import.meta.url);
@@ -131,6 +133,63 @@ test("Cloudflare staging deploy is isolated from production routes", async () =>
   ]) {
     assert.deepEqual(stagingConfig[sharedKey], productionConfig[sharedKey]);
   }
+});
+
+test("Cloudflare API staging deploy is isolated from Production D1, R2, and routes", async () => {
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+  const workerPackage = JSON.parse(await readFile(workerPackagePath, "utf8"));
+  const production = JSON.parse(await readFile(workerProductionWranglerPath, "utf8"));
+  const staging = JSON.parse(await readFile(workerStagingWranglerPath, "utf8"));
+
+  assert.equal(
+    workerPackage.scripts["deploy:staging"],
+    "wrangler deploy --config wrangler.staging.jsonc",
+  );
+  assert.equal(
+    rootPackage.scripts["staging:api:plan"],
+    "node scripts/release/run-api-staging-withdrawal.mjs --action plan",
+  );
+  for (const script of [
+    "staging:api:bootstrap",
+    "staging:api:deploy",
+    "staging:api:drill",
+    "staging:api:full",
+  ]) {
+    assert.match(rootPackage.scripts[script], /--execute$/);
+  }
+
+  assert.equal(staging.name, "panda-atlas-api-staging");
+  assert.notEqual(staging.name, production.name);
+  assert.equal(staging.workers_dev, true);
+  assert.deepEqual(staging.routes, []);
+  assert.equal(staging.vars.APP_ENV, "staging");
+  assert.equal(production.vars.APP_ENV, "production");
+  for (const sharedKey of ["main", "compatibility_date", "observability"]) {
+    assert.deepEqual(staging[sharedKey], production[sharedKey]);
+  }
+
+  assert.equal(staging.d1_databases.length, 1);
+  assert.equal(staging.d1_databases[0].binding, "DB");
+  assert.equal(staging.d1_databases[0].database_name, "panda-atlas-staging");
+  assert.notEqual(
+    staging.d1_databases[0].database_id,
+    production.d1_databases[0].database_id,
+  );
+  assert.equal(
+    staging.d1_databases[0].migrations_dir,
+    production.d1_databases[0].migrations_dir,
+  );
+
+  const stagingBuckets = new Map(
+    staging.r2_buckets.map((item) => [item.binding, item.bucket_name]),
+  );
+  const productionBuckets = new Map(
+    production.r2_buckets.map((item) => [item.binding, item.bucket_name]),
+  );
+  assert.equal(stagingBuckets.get("MEDIA_BUCKET"), "panda-atlas-media-staging");
+  assert.equal(stagingBuckets.get("GEO_BUCKET"), "panda-atlas-geo-staging");
+  assert.notEqual(stagingBuckets.get("MEDIA_BUCKET"), productionBuckets.get("MEDIA_BUCKET"));
+  assert.notEqual(stagingBuckets.get("GEO_BUCKET"), productionBuckets.get("GEO_BUCKET"));
 });
 
 test("default gate runs the Beta hard-gate preflight after the production build", async () => {

@@ -61,6 +61,11 @@
     "release:d1:apply": "node scripts/release/apply-public-release-d1.mjs --execute",
     "release:d1:rollback:preflight": "node scripts/release/rollback-public-release-d1.mjs",
     "release:d1:rollback": "node scripts/release/rollback-public-release-d1.mjs --execute",
+    "staging:api:plan": "node scripts/release/run-api-staging-withdrawal.mjs --action plan",
+    "staging:api:bootstrap": "node scripts/release/run-api-staging-withdrawal.mjs --action bootstrap --execute",
+    "staging:api:deploy": "node scripts/release/run-api-staging-withdrawal.mjs --action deploy --execute",
+    "staging:api:drill": "node scripts/release/run-api-staging-withdrawal.mjs --action drill --execute",
+    "staging:api:full": "node scripts/release/run-api-staging-withdrawal.mjs --action full --execute",
     "deploy:api:cf": "npm run deploy -w worker-api",
     "release:default": "node scripts/release/default.mjs",
     "release:extended": "node scripts/release/extended.mjs"
