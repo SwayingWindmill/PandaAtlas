@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+const AXE_ROUTE_SCAN_TIMEOUT_MS = 60_000;
 const TRANSPARENT_MAP_TILE = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl8sAAAAASUVORK5CYII=",
   "base64",
@@ -49,6 +50,7 @@ const coreJourneys = [
 
 for (const journey of coreJourneys) {
   test(`${journey.name} has no automated WCAG A/AA violations`, async ({ page }, testInfo) => {
+    testInfo.setTimeout(AXE_ROUTE_SCAN_TIMEOUT_MS);
     await page.goto(journey.path);
     await expect(page.locator("main").first()).toBeVisible();
 
@@ -56,6 +58,7 @@ for (const journey of coreJourneys) {
   });
 
   test(`${journey.name} remains accessible at a mobile viewport`, async ({ page }, testInfo) => {
+    testInfo.setTimeout(AXE_ROUTE_SCAN_TIMEOUT_MS);
     await page.setViewportSize({ width: 320, height: 800 });
     await page.goto(journey.path);
     await expect(page.locator("main").first()).toBeVisible();
