@@ -107,6 +107,38 @@ test("missing manifest descriptors fail release integrity", async () => {
   });
 });
 
+test("expanded releases require a tracked base release manifest", async () => {
+  await withTempDirectory(async (directory) => {
+    await copyFixture(directory);
+    const datasetPath = path.join(directory, "data/reviewed-batches/2026.07.20.1/source.json");
+    await mkdir(path.dirname(datasetPath), { recursive: true });
+    await cp(path.join(repoRoot, "data/reviewed-batches/2026.07.20.1/source.json"), datasetPath);
+    await cp(
+      path.join(repoRoot, "data/public-releases/2026.07.20.1"),
+      path.join(directory, "data/public-releases/2026.07.20.1"),
+      { recursive: true },
+    );
+    const dataset = JSON.parse(await readFile(datasetPath, "utf8"));
+    dataset.dataset.base_dataset_version = "2026.07.19.99";
+    await writeFile(datasetPath, `${JSON.stringify(dataset, null, 2)}\n`, "utf8");
+    const reportPath = path.join(directory, "report.json");
+    const result = runPreflight(
+      "--root",
+      directory,
+      "--report",
+      reportPath,
+      "--dataset",
+      datasetPath,
+    );
+    const report = JSON.parse(await readFile(reportPath, "utf8"));
+
+    assert.equal(result.status, 1, result.stderr || result.stdout);
+    const check = report.checks.find((item) => item.id === "release-integrity");
+    assert.equal(check?.status, "failed");
+    assert.match(check?.detail ?? "", /2026\.07\.19\.99/);
+  });
+});
+
 test("private fields fail the public data boundary even with a valid manifest", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);

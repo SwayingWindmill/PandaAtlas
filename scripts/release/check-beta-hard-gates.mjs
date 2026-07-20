@@ -216,6 +216,16 @@ async function listFiles(directory) {
 async function assertReleaseIntegrity(root, dataset, contract) {
   const releaseDir = path.join(root, "data", "public-releases", dataset.dataset.version);
   const manifest = await readJson(path.join(releaseDir, "manifest.json"));
+  const baseVersion = dataset.dataset.base_dataset_version;
+  if (typeof baseVersion === "string") {
+    const baseManifest = await readJson(
+      path.join(root, "data", "public-releases", baseVersion, "manifest.json"),
+    );
+    requireCondition(
+      baseManifest.dataset_release_version === baseVersion,
+      `base release identity drifted: expected ${baseVersion}; got ${baseManifest.dataset_release_version}`,
+    );
+  }
   const manifestFiles = Object.keys(manifest.files ?? {}).sort();
   const requiredFiles = [...contract.required_release_files].sort();
   requireCondition(
@@ -326,8 +336,9 @@ function assertExpandedArchive(dataset) {
   requireCondition(dataset?.contract_version === "1.0.0", "expanded dataset contract_version must be 1.0.0");
   requireCondition(dataset?.dataset?.id === "panda-atlas-public", "expanded dataset id must be panda-atlas-public");
   requireCondition(
-    dataset.dataset.base_dataset_version === "2026.07.18.1",
-    "expanded dataset must declare the reviewed golden base version",
+    /^\d{4}\.\d{2}\.\d{2}\.\d+$/.test(dataset.dataset.base_dataset_version ?? "") &&
+      dataset.dataset.base_dataset_version !== dataset.dataset.version,
+    "expanded dataset must declare a distinct versioned reviewed base release",
   );
   requireCondition(Array.isArray(dataset.dataset.expansion_panda_ids), "expanded dataset must declare expansion_panda_ids");
   for (const collection of [
@@ -452,6 +463,31 @@ function assertTrustedArchive(dataset, contract) {
   }
 }
 
+export function classifyGeneratedWebArtifact(relative) {
+  const nextBuild = relative.match(/^apps\/web\/(\.next(?:-[^/]+)?)\//)?.[1];
+  if (nextBuild) {
+    const nextBuildPrefix = `apps/web/${nextBuild}/`;
+    return {
+      isGenerated: true,
+      isBrowserBuild:
+        relative.startsWith(`${nextBuildPrefix}static/`) ||
+        (relative.startsWith(`${nextBuildPrefix}server/app/`) &&
+          /\.(?:html|rsc|txt)$/.test(relative)),
+    };
+  }
+  const openNextPrefix = "apps/web/.open-next/";
+  if (relative.startsWith(openNextPrefix)) {
+    return {
+      isGenerated: true,
+      isBrowserBuild:
+        relative.startsWith(`${openNextPrefix}assets/`) ||
+        /\/\.next\/static\//.test(relative) ||
+        (/\/\.next\/server\/app\//.test(relative) && /\.(?:html|rsc|txt)$/.test(relative)),
+    };
+  }
+  return { isGenerated: false, isBrowserBuild: false };
+}
+
 async function assertAdminTokenBoundary(root, contract) {
   const sourceFiles = await listFiles(path.join(root, "apps", "web"));
   const allowlist = new Set(contract.admin_token_server_source_allowlist);
@@ -459,10 +495,7 @@ async function assertAdminTokenBoundary(root, contract) {
   for (const filename of candidates) {
     const content = await readFile(filename, "utf8");
     const relative = path.relative(root, filename).replaceAll("\\", "/");
-    const isGenerated = relative.startsWith("apps/web/.next/");
-    const isBrowserBuild =
-      relative.startsWith("apps/web/.next/static/") ||
-      (/^apps\/web\/\.next\/server\/app\//.test(relative) && /\.(?:html|rsc|txt)$/.test(relative));
+    const { isGenerated, isBrowserBuild } = classifyGeneratedWebArtifact(relative);
     if (isGenerated && !isBrowserBuild) continue;
     if (!isGenerated && allowlist.has(relative)) continue;
     for (const marker of contract.forbidden_client_markers) {

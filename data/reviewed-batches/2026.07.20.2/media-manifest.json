@@ -1,0 +1,122 @@
+{
+  "batch_version": "2026.07.20.2",
+  "generated_at": "2026-07-20T08:30:00Z",
+  "records": [
+    {
+      "alt_en": "Lei Lei and Xiao Xiao together in their habitat at Ueno Zoo",
+      "alt_zh": "蕾蕾与晓晓在上野动物园的栖息地内相伴",
+      "credit": "江戸村のとくぞう / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 31488,
+          "filename": "media-lei-lei-0ab099655565d415-w480.webp",
+          "height": 390,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "55e84e692983374a629173cddfb0ca0927356e0b16b2b02b6ccb142e2b45b75c",
+          "width": 480
+        },
+        {
+          "bytes": 161952,
+          "filename": "media-lei-lei-0ab099655565d415-w1200.webp",
+          "height": 976,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "2fe959d611ea18e2804ab0c10708df11f6a04871d15e800761fe30f1151cb00a",
+          "width": 1200
+        }
+      ],
+      "media_id": "media-lei-lei-0ab099655565d415",
+      "panda_slug": "lei-lei",
+      "rights": "CC BY-SA 4.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Lei_Lei_Xiao_Xiao_220610h.jpg"
+    },
+    {
+      "alt_en": "Ri Ri at Ueno Zoo",
+      "alt_zh": "力力在上野动物园",
+      "credit": "EleniXDD / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 49486,
+          "filename": "media-ri-ri-03e20f3f6a0e2db3-w480.webp",
+          "height": 360,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "2b38313c0a7b54725958328ab4b4c532be03dfe3e0caf86b136a577b15c81230",
+          "width": 480
+        },
+        {
+          "bytes": 180764,
+          "filename": "media-ri-ri-03e20f3f6a0e2db3-w1200.webp",
+          "height": 901,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "6c82d51b23005880d5121e1d310994dce18a1a28f495779e72f7a81b7ef7910d",
+          "width": 1200
+        }
+      ],
+      "media_id": "media-ri-ri-03e20f3f6a0e2db3",
+      "panda_slug": "ri-ri",
+      "rights": "CC BY-SA 4.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ri_Ri.jpg"
+    },
+    {
+      "alt_en": "Shin Shin eating bamboo at Ueno Zoo",
+      "alt_zh": "真真在上野动物园吃竹子",
+      "credit": "EleniXDD / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 60930,
+          "filename": "media-shin-shin-6b36624de9829665-w480.webp",
+          "height": 360,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "d937360864bdae72e2fa093c5fa4ee244b9777e4b5b1b2543ca0b2931fe7561a",
+          "width": 480
+        },
+        {
+          "bytes": 282766,
+          "filename": "media-shin-shin-6b36624de9829665-w1200.webp",
+          "height": 901,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
+          "width": 1200
+        }
+      ],
+      "media_id": "media-shin-shin-6b36624de9829665",
+      "panda_slug": "shin-shin",
+      "rights": "CC BY-SA 4.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Shin_Shin_03.jpg"
+    },
+    {
+      "alt_en": "Xiao Xiao in his habitat at Ueno Zoo",
+      "alt_zh": "晓晓在上野动物园的栖息地内",
+      "credit": "江戸村のとくぞう / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 26032,
+          "filename": "media-xiao-xiao-ae1f68080472412c-w480.webp",
+          "height": 436,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "ceb36d0ecf06610f698262e9323c465fd485569c16f9c5cb76ed65593cadf3e6",
+          "width": 480
+        },
+        {
+          "bytes": 114184,
+          "filename": "media-xiao-xiao-ae1f68080472412c-w1200.webp",
+          "height": 1091,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
+          "width": 1200
+        }
+      ],
+      "media_id": "media-xiao-xiao-ae1f68080472412c",
+      "panda_slug": "xiao-xiao",
+      "rights": "CC BY-SA 4.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Xiao_Xiao_220518e.jpg"
+    }
+  ]
+}

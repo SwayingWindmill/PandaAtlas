@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.20.2",
+  "files": {
+    "api.json": {
+      "bytes": 148654,
+      "sha256": "4291908657a9ed3fec4e11409519957646bdb7d2093da57d8b8d07d514bbca09"
+    },
+    "d1.sql": {
+      "bytes": 203865,
+      "sha256": "0b259cfb1d0e77cabb8895fc8a58ff61a38e55e3a66d51c3d43e166c200aca50"
+    },
+    "pandas.csv": {
+      "bytes": 34081,
+      "sha256": "18865924d898ca681590cf004c43fdf7f29d01739dcf3d1358890a5d001888c9"
+    },
+    "pandas.json": {
+      "bytes": 59068,
+      "sha256": "3750dc2e37b3b40726b97888a0594c78da146606a14183cccce917d1ff64ba73"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "public-release-v4",
+  "public_schema_version": "1.2.0",
+  "publication_batch_id": "ueno-family-photo-batch",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 14,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 15,
+    "facilities": 8,
+    "facts": 42,
+    "institutions": 5,
+    "media": 14,
+    "pandas": 14,
+    "parentage_assertions": 18,
+    "places": 7,
+    "residencies": 23,
+    "sources": 24
+  },
+  "released_at": "2026-07-20T10:15:00Z"
+}

@@ -71,6 +71,18 @@ test("default gate includes panda curation and minimum photo validation", async 
   assert.match(defaultGate, /id: "atlanta-photo-batch-tests"/);
   assert.match(defaultGate, /id: "atlanta-photo-hard-gates"/);
   assert.match(defaultGate, /dependsOn: \["atlanta-photo-batch-tests", "web-build"\]/);
+  assert.equal(
+    rootPackage.scripts["check:ueno-family-photo-batch"],
+    "python scripts/curation/build_ueno_family_photo_batch.py --check",
+  );
+  assert.equal(
+    rootPackage.scripts["check:ueno-family-photo-release"],
+    "node scripts/release/check-beta-hard-gates.mjs --dataset data/reviewed-batches/2026.07.20.2/source.json --report .release-gate/ueno-family-photo-hard-gates.json",
+  );
+  assert.match(defaultGate, /id: "ueno-family-photo-batch"/);
+  assert.match(defaultGate, /id: "ueno-family-photo-batch-tests"/);
+  assert.match(defaultGate, /id: "ueno-family-photo-hard-gates"/);
+  assert.match(defaultGate, /dependsOn: \["ueno-family-photo-batch-tests", "web-build"\]/);
 });
 
 test("default gate records automated core WCAG checks", async () => {
@@ -144,7 +156,7 @@ test("default gate records the release recovery drill after locked API setup", a
   assert.match(defaultGate, /id: "release-recovery-drill"/);
   assert.match(
     defaultGate,
-    /dependsOn: \["api-sync", "beta-hard-gates", "atlanta-photo-hard-gates"\]/,
+    /dependsOn: \[[\s\S]*"api-sync",[\s\S]*"beta-hard-gates",[\s\S]*"atlanta-photo-hard-gates",[\s\S]*"ueno-family-photo-hard-gates",[\s\S]*\]/,
   );
   assert.match(defaultGate, /run_release_recovery_drill\.py/);
 });
