@@ -295,6 +295,12 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "check:panda-curation"]),
       },
       {
+        id: "panda-media-pipeline",
+        label: "Panda photo processing pipeline",
+        dependsOn: ["panda-curation-data"],
+        run: () => runCommand(npm, ["run", "test:panda-media"]),
+      },
+      {
         id: "web-lint",
         label: "Web lint",
         run: () => runCommand(npm, ["run", "lint:web"]),
