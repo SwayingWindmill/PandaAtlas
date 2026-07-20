@@ -5,6 +5,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import { validateGoldenDataset } from "../golden-dataset/lib.mjs";
+import { assertReviewedMediaArchive } from "./media-integrity.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const defaultRoot = path.resolve(path.dirname(scriptPath), "../..");
@@ -213,7 +214,45 @@ async function listFiles(directory) {
   }
 }
 
+async function reviewedPublicReleaseVersions(root) {
+  const releaseRoot = path.join(root, "data", "public-releases");
+  const entries = await readdir(releaseRoot, { withFileTypes: true });
+  const versions = new Set();
+  for (const entry of entries) {
+    if (!entry.isDirectory() || !/^\d{4}\.\d{2}\.\d{2}\.\d+$/.test(entry.name)) continue;
+    const releaseDir = path.join(releaseRoot, entry.name);
+    const manifest = await readJson(path.join(releaseDir, "manifest.json"));
+    requireCondition(
+      manifest.dataset_release_version === entry.name,
+      `tracked release directory ${entry.name} has manifest identity ${String(manifest.dataset_release_version)}`,
+    );
+    const manifestFiles = Object.entries(manifest.files ?? {});
+    requireCondition(
+      manifestFiles.length > 0,
+      `tracked release ${entry.name} manifest has no files`,
+    );
+    for (const [filename, descriptor] of manifestFiles) {
+      const content = await readFile(path.join(releaseDir, filename));
+      requireCondition(
+        content.byteLength === descriptor.bytes,
+        `tracked release ${entry.name} ${filename} byte count does not match manifest`,
+      );
+      requireCondition(
+        sha256(content) === descriptor.sha256,
+        `tracked release ${entry.name} ${filename} SHA-256 does not match manifest`,
+      );
+    }
+    if (Object.hasOwn(manifest.files, "api.json")) versions.add(entry.name);
+  }
+  requireCondition(
+    versions.size > 0,
+    "no tracked reviewed Public Releases with api.json were found",
+  );
+  return versions;
+}
+
 async function assertReleaseIntegrity(root, dataset, contract) {
+  const trackedReleaseVersions = await reviewedPublicReleaseVersions(root);
   const releaseDir = path.join(root, "data", "public-releases", dataset.dataset.version);
   const manifest = await readJson(path.join(releaseDir, "manifest.json"));
   const baseVersion = dataset.dataset.base_dataset_version;
@@ -290,7 +329,15 @@ async function assertReleaseIntegrity(root, dataset, contract) {
       `d1.sql ${record.entity_type}/${record.entity_id} dataset release drifted`,
     );
   }
-  return { releaseDir, manifest, api, pandas, csvPublicValues, d1Records };
+  return {
+    releaseDir,
+    manifest,
+    api,
+    pandas,
+    csvPublicValues,
+    d1Records,
+    trackedReleaseVersions,
+  };
 }
 
 async function assertPublicDataBoundary(release, contract) {
@@ -364,6 +411,10 @@ function assertExpandedArchive(dataset) {
       approvedLocales.has("zh-CN") && approvedLocales.has("en"),
       `${panda.public.canonical_slug} requires approved Chinese and English content`,
     );
+    requireCondition(
+      panda.public.record_tier === "complete_first_pass",
+      `${panda.public.canonical_slug} must remain complete_first_pass; got ${String(panda.public.record_tier)}`,
+    );
     const factFields = new Set(
       dataset.facts
         .filter(
@@ -384,17 +435,10 @@ function assertExpandedArchive(dataset) {
       (item) => item.publication_status === "published" && item.public.participants?.includes(pandaId),
     ).length;
     requireCondition(eventCount >= 3, `${panda.public.canonical_slug} requires at least three reviewed events`);
-    const mediaCount = dataset.media.filter(
-      (item) =>
-        item.publication_status === "published" &&
-        item.public.panda_id === pandaId &&
-        item.public.status === "available",
-    ).length;
-    requireCondition(mediaCount >= 1, `${panda.public.canonical_slug} requires an available reviewed photo`);
   }
 }
 
-function assertTrustedArchive(dataset, contract) {
+function assertTrustedArchive(dataset, contract, api, trackedReleaseVersions) {
   const isGoldenBaseline = dataset?.dataset?.id === "mei-xiang-family";
   if (isGoldenBaseline) {
     const report = validateGoldenDataset(dataset);
@@ -402,6 +446,7 @@ function assertTrustedArchive(dataset, contract) {
   } else {
     assertExpandedArchive(dataset);
   }
+  assertReviewedMediaArchive(dataset, contract, api, trackedReleaseVersions);
   const publicPandas = dataset.pandas.filter((item) => item.publication_status === "published");
   requireCondition(publicPandas.length === dataset.dataset.core_panda_count, "published core panda count drifted");
   const expectedParentage = [...contract.expected_confirmed_parentage_assertion_ids].sort();
@@ -549,7 +594,15 @@ export async function runBetaHardGatePreflight({ root, report, dataset }) {
     requireCondition(release, "release integrity must pass before public data checks");
     await assertPublicDataBoundary(release, contract);
   });
-  await runCheck("trusted-archive", async () => assertTrustedArchive(datasetState, contract));
+  await runCheck("trusted-archive", async () => {
+    requireCondition(release, "release integrity must pass before trusted archive projection checks");
+    assertTrustedArchive(
+      datasetState,
+      contract,
+      release.api,
+      release.trackedReleaseVersions,
+    );
+  });
   await runCheck("admin-token-boundary", async () => assertAdminTokenBoundary(root, contract));
   await runCheck("waiver-policy", async () => assertWaiverPolicy(root, contract));
   const outcome = checks.every((check) => check.status === "passed") ? "passed" : "failed";
