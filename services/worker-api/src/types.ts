@@ -78,6 +78,40 @@ export interface PublicMediaRelease {
   source_ids: string[];
 }
 
+export interface PublicMediaDerivative {
+  kind: string;
+  url: string;
+  sha256: string;
+  mime_type: string;
+  width: number;
+  height: number;
+  bytes: number;
+}
+
+export interface PublicPandaMediaAsset {
+  id: string;
+  panda_id: string | null;
+  url: string | null;
+  source_url: string | null;
+  rights: string | null;
+  credit: string | null;
+  alt_zh: string | null;
+  alt_en: string | null;
+  status: "available" | "withdrawn" | "unavailable";
+  sha256: string | null;
+  mime_type: string | null;
+  width: number | null;
+  height: number | null;
+  bytes: number | null;
+  derivatives: PublicMediaDerivative[];
+  source_ids: string[];
+  storage_bucket?: string | null;
+  storage_path?: string | null;
+  title?: string | null;
+  photographer?: string | null;
+  signed_url?: string | null;
+}
+
 export interface PublicRevisionSummary {
   data_version: string;
   public_schema_version: string;
@@ -91,14 +125,7 @@ export interface PandaDetail extends PandaListItem {
   father_id: string | null;
   mother_id: string | null;
   habitats: Array<{ id: string; name: string; province: string | null }>;
-  media: Array<{
-    id: string;
-    storage_bucket: string;
-    storage_path: string;
-    title: string | null;
-    photographer: string | null;
-    signed_url: string | null;
-  }>;
+  media: PublicPandaMediaAsset[];
   identity: PandaIdentityProfile | null;
   conclusions: PublicFactConclusion[];
   sources: PublicSourceSummary[];
