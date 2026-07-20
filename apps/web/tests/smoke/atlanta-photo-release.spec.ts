@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
+import { Buffer } from "node:buffer";
 
 const RELEASE_ID = "2026.07.20.1";
+const ONE_PIXEL_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+  "base64",
+);
 
 const profiles = [
   {
@@ -22,6 +27,19 @@ const profiles = [
     altZh: "雅伦在亚特兰大动物园的栖息地内坐着",
   },
 ] as const;
+
+test.beforeEach(async ({ page }) => {
+  await page.route(`**/media/releases/${RELEASE_ID}/*.webp`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "image/png",
+      body: ONE_PIXEL_PNG,
+      headers: {
+        "Cache-Control": "public, max-age=31536000, immutable",
+      },
+    });
+  });
+});
 
 test("publishes ten reviewed panda profiles in the current Web release", async ({ page }) => {
   await page.goto("/zh/atlas");
