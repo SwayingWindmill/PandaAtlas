@@ -24,7 +24,10 @@ async function listFiles(directory) {
   const files = [];
   async function walk(current) {
     for (const entry of await readdir(current, { withFileTypes: true })) {
-      if (entry.isDirectory() && ignoredDirectoryNames.has(entry.name)) continue;
+      if (
+        entry.isDirectory() &&
+        (ignoredDirectoryNames.has(entry.name) || entry.name.startsWith(".next-"))
+      ) continue;
       const absolute = path.join(current, entry.name);
       if (entry.isDirectory()) await walk(absolute);
       else if (entry.isFile()) files.push(absolute);

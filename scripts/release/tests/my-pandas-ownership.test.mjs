@@ -11,7 +11,14 @@ async function sourceFiles(directory) {
   const entries = await readdir(path.join(root, directory), { withFileTypes: true });
   const nested = await Promise.all(entries.map(async (entry) => {
     const relative = path.join(directory, entry.name);
-    if (entry.isDirectory()) return sourceFiles(relative);
+    if (entry.isDirectory()) {
+      const ignored =
+        entry.name === ".next" ||
+        entry.name.startsWith(".next-") ||
+        entry.name === ".open-next" ||
+        entry.name === "node_modules";
+      return ignored ? [] : sourceFiles(relative);
+    }
     return /\.(?:ts|tsx|js|jsx)$/.test(entry.name) ? [relative] : [];
   }));
   return nested.flat();

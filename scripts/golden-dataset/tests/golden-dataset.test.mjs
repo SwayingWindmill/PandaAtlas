@@ -120,7 +120,7 @@ test("every core profile declares completeness gaps and current-place verificati
 test("generated web identity aliases match the current reviewed release", async () => {
   const dataset = await readWebReleaseDataset();
   assert.equal(dataset.dataset.version, WEB_RELEASE_VERSION);
-  assert.equal(dataset.pandas.length, 10);
+  assert.equal(dataset.pandas.length, 14);
   const generated = await readFile(generatedIdentityAliasesPath, "utf8");
 
   assert.equal(
@@ -136,11 +136,17 @@ test("generated web identity aliases match the current reviewed release", async 
       "baoli",
       "bei-bei",
       "beibei",
+      "lei-lei",
+      "leilei",
       "lun-lun",
       "lunlun",
       "mei-xiang",
       "mei_xiang",
       "meixiang",
+      "ri-ri",
+      "riri",
+      "shin-shin",
+      "shinshin",
       "tai-shan",
       "taishan",
       "tian-tian",
@@ -151,8 +157,10 @@ test("generated web identity aliases match the current reviewed release", async 
       "yang-yang",
       "yangyang",
       "xiao-qi-ji",
+      "xiao-xiao",
       "xiao_qi_ji",
       "xiaoqiji",
+      "xiaoxiao",
     ]),
   );
   assert.match(generated, /"meixiang"/);
@@ -164,10 +172,13 @@ test("generated web identity aliases match the current reviewed release", async 
   assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
   const details = buildTrustedPandaDetails(dataset);
-  assert.equal(details.length, 10);
+  assert.equal(details.length, 14);
   const lunLun = details.find((detail) => detail.slug === "lun-lun");
   const yangYang = details.find((detail) => detail.slug === "yang-yang");
   const yaLun = details.find((detail) => detail.slug === "ya-lun");
+  const uenoFamily = ["ri-ri", "shin-shin", "xiao-xiao", "lei-lei"].map((slug) =>
+    details.find((detail) => detail.slug === slug),
+  );
   for (const detail of [lunLun, yangYang, yaLun]) {
     assert.ok(detail);
     assert.equal(detail.public_revision.data_version, WEB_RELEASE_VERSION);
@@ -178,6 +189,15 @@ test("generated web identity aliases match the current reviewed release", async 
     assert.match(detail.cover_image_url, /\/media\/releases\/2026\.07\.20\.1\/.*-w1200\.webp$/);
     assert.equal(detail.media_release.license_state, "licensed");
     assert.equal(detail.media_release.display_mode, "gallery");
+  }
+  for (const detail of uenoFamily) {
+    assert.ok(detail);
+    assert.equal(detail.public_revision.data_version, WEB_RELEASE_VERSION);
+    assert.match(detail.current_place.last_verified_at, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(detail.events.length >= 3);
+    assert.equal(detail.media.length, 1);
+    assert.equal(detail.media[0].status, "available");
+    assert.match(detail.cover_image_url, /\/media\/releases\/2026\.07\.20\.2\/.*-w1200\.webp$/);
   }
   assert.equal(yaLun.mother_id, lunLun.id);
   assert.equal(yaLun.father_id, yangYang.id);
@@ -190,13 +210,19 @@ test("generated web identity aliases match the current reviewed release", async 
     "中国大熊猫保护研究中心卧龙神树坪基地",
   );
   const institutions = buildTrustedInstitutions(dataset);
-  assert.equal(institutions.length, 4);
+  assert.equal(institutions.length, 5);
+  assert.ok(institutions.some((institution) => institution.id === "institution-ueno-zoo"));
   assert.deepEqual(
     institutions.find((institution) => institution.id === "institution-ccrcgp")?.place_ids,
-    ["place-wolong-shenshuping-base"],
+    [
+      "place-ccrcgp-bifengxia-base",
+      "place-ccrcgp-yaan-base",
+      "place-wolong-shenshuping-base",
+    ],
   );
   const places = buildTrustedPlaces(dataset);
-  assert.equal(places.length, 4);
+  assert.equal(places.length, 7);
+  assert.ok(places.some((place) => place.id === "place-ueno-zoo"));
   assert.equal(
     places.find((place) => place.id === "place-wolong-shenshuping-base")?.precision,
     "locality",

@@ -313,6 +313,18 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "test:atlanta-photo-batch"]),
       },
       {
+        id: "ueno-family-photo-batch",
+        label: "Ueno family reviewed photo batch reproducibility",
+        dependsOn: ["atlanta-photo-batch-tests"],
+        run: () => runCommand(npm, ["run", "check:ueno-family-photo-batch"]),
+      },
+      {
+        id: "ueno-family-photo-batch-tests",
+        label: "Ueno family reviewed photo batch tests",
+        dependsOn: ["ueno-family-photo-batch"],
+        run: () => runCommand(npm, ["run", "test:ueno-family-photo-batch"]),
+      },
+      {
         id: "web-lint",
         label: "Web lint",
         run: () => runCommand(npm, ["run", "lint:web"]),
@@ -365,6 +377,12 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "check:atlanta-photo-release"]),
       },
       {
+        id: "ueno-family-photo-hard-gates",
+        label: "Ueno family photo expansion trust and release preflight",
+        dependsOn: ["ueno-family-photo-batch-tests", "web-build"],
+        run: () => runCommand(npm, ["run", "check:ueno-family-photo-release"]),
+      },
+      {
         id: "public-contract",
         label: "Public API boundary contract",
         run: () => runCommand(npm, ["run", "check:public-api-boundary"]),
@@ -405,7 +423,12 @@ export async function runDefaultReleaseGate() {
       {
         id: "release-recovery-drill",
         label: "Immutable release rollback and D1 rebuild drill",
-        dependsOn: ["api-sync", "beta-hard-gates", "atlanta-photo-hard-gates"],
+        dependsOn: [
+          "api-sync",
+          "beta-hard-gates",
+          "atlanta-photo-hard-gates",
+          "ueno-family-photo-hard-gates",
+        ],
         run: () =>
           runCommand(
             uv,

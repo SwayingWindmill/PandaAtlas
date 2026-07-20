@@ -52,7 +52,10 @@ def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
-def read_approved_media(curation_dir: Path) -> list[dict[str, str]]:
+def read_approved_media(
+    curation_dir: Path,
+    panda_slugs: set[str] | None = None,
+) -> list[dict[str, str]]:
     errors, _ = validate_curation(curation_dir)
     if errors:
         joined = "\n".join(f"- {error}" for error in errors)
@@ -60,9 +63,21 @@ def read_approved_media(curation_dir: Path) -> list[dict[str, str]]:
 
     media_path = curation_dir / "media.csv"
     with media_path.open("r", encoding="utf-8-sig", newline="") as handle:
-        return [
+        approved = [
             dict(row) for row in csv.DictReader(handle) if row.get("review_status") == "approved"
         ]
+
+
+    if panda_slugs is None:
+        return approved
+    selected = [row for row in approved if row["panda_slug"] in panda_slugs]
+    found = {row["panda_slug"] for row in selected}
+    missing = sorted(panda_slugs - found)
+    if missing:
+        raise MediaProcessingError(
+            "No approved media row found for requested panda slug(s): " + ", ".join(missing)
+        )
+    return selected
 
 
 def _read_limited(response: Any, maximum_bytes: int) -> bytes:
@@ -271,6 +286,7 @@ def process_media(
     *,
     allow_network: bool = False,
     force: bool = False,
+    panda_slugs: set[str] | None = None,
 ) -> dict[str, Any]:
     curation_dir = curation_dir.resolve()
     output_dir = output_dir.resolve()
@@ -287,10 +303,10 @@ def process_media(
 
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     temporary_dir = Path(
-        tempfile.mkdtemp(prefix=f".{output_dir.name}-build-", dir=output_dir.parent)
+        tempfile.mkdtemp(prefix=f"{output_dir.name}-build-", dir=output_dir.parent)
     )
     try:
-        rows = read_approved_media(curation_dir)
+        rows = read_approved_media(curation_dir, panda_slugs)
         records = [
             process_media_row(
                 row,
@@ -335,6 +351,12 @@ def parse_args() -> argparse.Namespace:
         help="Allow approved HTTPS assets to be downloaded. Network access is off by default.",
     )
     parser.add_argument(
+        "--panda-slug",
+        action="append",
+        default=[],
+        help="Process only the approved media for this panda slug; may be repeated.",
+    )
+    parser.add_argument(
         "--force",
         action="store_true",
         help="Replace an existing output directory instead of preserving it as immutable.",
@@ -350,6 +372,7 @@ def main() -> int:
             args.output_dir,
             allow_network=args.allow_network,
             force=args.force,
+            panda_slugs=set(args.panda_slug) or None,
         )
     except MediaProcessingError as error:
         print(f"ERROR: {error}")

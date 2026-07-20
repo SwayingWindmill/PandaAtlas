@@ -2,6 +2,7 @@
 node_modules/
 .npm/
 apps/web/.next/
+apps/web/.next-*/
 apps/web/.open-next/
 apps/web/.vercel/
 apps/web/out/
@@ -26,6 +27,8 @@ venv/
 services/api/.uv-cache-codex/
 services/api/.venv-release/
 .media-work/
+.media-work-*/
+.release-candidate*/
 data/curation/pandas/media-inbox/
 *.egg-info/
 .coverage
