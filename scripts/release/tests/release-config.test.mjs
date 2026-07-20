@@ -6,6 +6,7 @@ const workflowPath = new URL("../../../.github/workflows/release-gate.yml", impo
 const defaultGatePath = new URL("../default.mjs", import.meta.url);
 const extendedGatePath = new URL("../extended.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
+const workerSmokePath = new URL("../../../services/worker-api/scripts/smoke_test_worker.mjs", import.meta.url);
 const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url);
 const webPlaywrightConfigPath = new URL("../../../apps/web/playwright.config.ts", import.meta.url);
 const webProductionWranglerPath = new URL("../../../apps/web/wrangler.jsonc", import.meta.url);
@@ -186,16 +187,27 @@ test("default gate separates D1 and HTTP Worker smoke", async () => {
   assert.match(defaultGate, /process\.platform === "win32"/);
   assert.equal(
     workerPackage.scripts["smoke:d1"],
-    "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.20.1",
+    "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.20.2",
   );
   assert.equal(
     workerPackage.scripts["smoke:d1:rollback"],
-    "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.18.1",
+    "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.20.1",
   );
   assert.equal(
     workerPackage.scripts["smoke:http"],
-    "node scripts/smoke_test_worker.mjs --mode=http --release=2026.07.20.1",
+    "node scripts/smoke_test_worker.mjs --mode=http --release=2026.07.20.2",
   );
+});
+
+test("Worker HTTP smoke covers the activated Ueno release", async () => {
+  const workerSmoke = await readFile(workerSmokePath, "utf8");
+
+  assert.match(workerSmoke, /releaseVersion === "2026\.07\.20\.2"/);
+  for (const slug of ["ri-ri", "shin-shin", "xiao-xiao", "lei-lei"]) {
+    assert.match(workerSmoke, new RegExp(`"${slug}"`));
+  }
+  assert.match(workerSmoke, /Worker Ueno detail was incomplete/);
+  assert.match(workerSmoke, /Worker Ueno parentage was incomplete/);
 });
 
 test("Worker D1 migration scripts use the atomic trigger-safe runner", async () => {
