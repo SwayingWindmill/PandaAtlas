@@ -36,6 +36,59 @@ def _release_input() -> PublicReleaseInput:
     )
 
 
+def _licensed_media_record(panda_id: str) -> dict[str, object]:
+    return {
+        "id": "media-mei-xiang-licensed",
+        "publication_status": "published",
+        "public": {
+            "panda_id": panda_id,
+            "url": "https://media.example.org/media-mei-xiang-licensed-w1200.webp",
+            "source_url": "https://commons.wikimedia.org/wiki/File:Mei_Xiang.jpg",
+            "rights": "CC BY-SA 4.0",
+            "credit": "Example Author / Wikimedia Commons",
+            "alt_zh": "美香坐在竹子旁",
+            "alt_en": "Mei Xiang sitting beside bamboo",
+            "status": "available",
+            "sha256": "a" * 64,
+            "mime_type": "image/webp",
+            "width": 1200,
+            "height": 800,
+            "bytes": 120000,
+            "derivatives": [
+                {
+                    "kind": "width-480",
+                    "url": "https://media.example.org/media-mei-xiang-licensed-w480.webp",
+                    "sha256": "b" * 64,
+                    "mime_type": "image/webp",
+                    "width": 480,
+                    "height": 320,
+                    "bytes": 24000,
+                },
+                {
+                    "kind": "width-1200",
+                    "url": "https://media.example.org/media-mei-xiang-licensed-w1200.webp",
+                    "sha256": "c" * 64,
+                    "mime_type": "image/webp",
+                    "width": 1200,
+                    "height": 800,
+                    "bytes": 88000,
+                },
+            ],
+            "source_ids": ["src_smithsonian_history"],
+        },
+    }
+
+
+def _release_input_with_media() -> PublicReleaseInput:
+    release_input = _release_input()
+    release_input.source_state["dataset"]["version"] = "2026.07.18.2"
+    release_input.source_state["dataset"]["public_schema_version"] = "1.2.0"
+    release_input.source_state["media"].append(
+        _licensed_media_record("2939c16f-1938-5629-928c-b36b1d5cd6ed")
+    )
+    return release_input
+
+
 def test_golden_release_is_deterministic_and_cross_surface_versions_match() -> None:
     first = build_public_release(_release_input())
     second = build_public_release(_release_input())
@@ -79,6 +132,78 @@ def test_golden_release_is_deterministic_and_cross_surface_versions_match() -> N
     for filename, descriptor in first.manifest["files"].items():
         assert descriptor["sha256"] == first.checksum(filename)
         assert descriptor["bytes"] == len(first.files[filename].encode("utf-8"))
+
+
+def test_public_media_is_identical_across_snapshot_api_csv_and_d1() -> None:
+    release = build_public_release(_release_input_with_media())
+    snapshot = json.loads(release.files["pandas.json"])
+    api = json.loads(release.files["api.json"])
+    csv_rows = list(csv.DictReader(io.StringIO(release.files["pandas.csv"])))
+
+    media = next(item for item in snapshot["media"] if item["id"] == "media-mei-xiang-licensed")
+    snapshot_panda = next(
+        item for item in snapshot["records"] if item["id"] == "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+    )
+    api_panda = next(item for item in api["pandas"] if item["id"] == snapshot_panda["id"])
+    csv_panda = next(
+        json.loads(row["public_json"]) for row in csv_rows if row["id"] == snapshot_panda["id"]
+    )
+
+    assert snapshot_panda["media"] == [media]
+    assert api_panda["media"] == [media]
+    assert not {
+        "storage_bucket",
+        "storage_path",
+        "title",
+        "photographer",
+        "signed_url",
+    } & media.keys()
+    assert csv_panda["media"] == [media]
+    assert snapshot_panda["cover_image_url"] == media["url"]
+    assert api_panda["cover_image_url"] == media["url"]
+    assert api_panda["media_release"] == {
+        "license_state": "licensed",
+        "display_mode": "gallery",
+        "source_ids": ["src_smithsonian_history"],
+    }
+
+    database = sqlite3.connect(":memory:")
+    database.executescript(read_d1_migration_bundle(ROOT, D1_PUBLIC_RELEASE_MIGRATIONS))
+    database.executescript(release.files["d1.sql"])
+    d1_media = json.loads(
+        database.execute(
+            "select public_json from current_public_records "
+            "where entity_type = 'media' and entity_id = 'media-mei-xiang-licensed'"
+        ).fetchone()[0]
+    )
+    d1_api_panda = json.loads(
+        database.execute(
+            "select public_json from current_public_records "
+            "where entity_type = 'api_pandas' and entity_id = ?",
+            (snapshot_panda["id"],),
+        ).fetchone()[0]
+    )
+    assert {"id": "media-mei-xiang-licensed", **d1_media} == media
+    assert d1_api_panda["media"] == [media]
+
+
+def test_withdrawn_public_media_exposes_no_image_or_derivative_url() -> None:
+    release_input = _release_input_with_media()
+    media_public = release_input.source_state["media"][-1]["public"]
+    media_public["status"] = "withdrawn"
+    media_public["url"] = None
+    media_public["derivatives"] = []
+
+    release = build_public_release(release_input)
+    api = json.loads(release.files["api.json"])
+    panda = next(
+        item for item in api["pandas"] if item["id"] == "2939c16f-1938-5629-928c-b36b1d5cd6ed"
+    )
+    assert panda["cover_image_url"] is None
+    assert panda["media"][0]["status"] == "withdrawn"
+    assert panda["media"][0]["url"] is None
+    assert panda["media"][0]["derivatives"] == []
+    assert "media.example.org" not in "\n".join(release.files.values())
 
 
 def test_projection_excludes_restricted_drafts_and_precise_sensitive_locations() -> None:

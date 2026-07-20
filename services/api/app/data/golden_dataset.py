@@ -360,6 +360,7 @@ def project_panda_details(
                 if media.get("publication_status") == "published"
                 and (media_public := media.get("public", {})).get("panda_id")
                 == record["id"]
+                and "license_state" in media_public
             ),
             None,
         )

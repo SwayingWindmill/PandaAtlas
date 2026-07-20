@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { TrustedProfileFavorite } from "@/components/atlas/trusted-profile-favorite";
 import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
+import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
@@ -622,6 +623,9 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
         <section id="media" className="scroll-mt-36 bg-[var(--card)] py-14">
           <div className={publicShellClassName}>
             <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.media}</h2>
+            {profile.media.state === "gallery" ? (
+              <TrustedProfileMediaGallery locale={locale} media={profile.media} />
+            ) : null}
             {profile.media.state === "no_licensed_media" ? (
               <div className="mt-8 rounded-2xl border border-dashed border-[var(--pa-color-accent-border-22)] bg-[var(--pa-color-accent-fill-05)] p-8 sm:p-12" data-testid="media-empty-state">
                 <p className="text-2xl font-semibold">{t.noMedia}</p>

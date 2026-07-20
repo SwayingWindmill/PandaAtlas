@@ -8,6 +8,7 @@ import re
 from dataclasses import dataclass
 from datetime import date, datetime
 from typing import Any
+from urllib.parse import urlparse
 
 from app.data.golden_dataset import project_panda_details, public_trusted_panda_record
 from app.data.mock_data import MOCK_DISTRIBUTION, MOCK_HABITATS
@@ -30,10 +31,13 @@ ENTITY_COLLECTIONS = (
     "events",
     "media",
 )
-SUPPORTED_PUBLIC_SCHEMA_VERSIONS = {"1.0.0", "1.1.0"}
+SUPPORTED_PUBLIC_SCHEMA_VERSIONS = {"1.0.0", "1.1.0", "1.2.0"}
 ALLOWED_PUBLIC_FIELDS = {
     "access_state",
     "aliases",
+    "alt_en",
+    "alt_zh",
+    "bytes",
     "canonical_slug",
     "changes_current_residency",
     "child_id",
@@ -41,6 +45,8 @@ ALLOWED_PUBLIC_FIELDS = {
     "conclusion_status",
     "content",
     "coordinates",
+    "cover_image_url",
+    "credit",
     "country_code",
     "display_mode",
     "density",
@@ -48,6 +54,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "birthplace",
     "current_location",
     "death_date",
+    "derivatives",
     "end_date",
     "event_date",
     "event_status",
@@ -62,6 +69,8 @@ ALLOWED_PUBLIC_FIELDS = {
     "geometry",
     "from_facility_id",
     "gender",
+    "height",
+    "id",
     "kind",
     "intro",
     "institution_ids",
@@ -78,6 +87,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "locality",
     "max_age_days",
     "media_release",
+    "mime_type",
     "name_en",
     "name",
     "name_zh",
@@ -96,11 +106,14 @@ ALLOWED_PUBLIC_FIELDS = {
     "publisher",
     "record_tier",
     "residency_type",
+    "rights",
     "revision_summaries",
     "role",
     "sex",
     "source_ids",
     "search_terms",
+    "sha256",
+    "source_url",
     "start_date",
     "state",
     "status",
@@ -116,6 +129,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "url",
     "value",
     "version",
+    "width",
     "notes",
     "cell_code",
 }
@@ -153,6 +167,8 @@ EMAIL_PATTERN = re.compile(r"\b[^\s@]+@[^\s@]+\.[^\s@]+\b")
 PRECISE_COORDINATE_PATTERN = re.compile(
     r"(?<!\d)-?\d{1,3}\.\d{4,}\s*[,/]\s*-?\d{1,3}\.\d{4,}(?!\d)"
 )
+PUBLIC_MEDIA_SCHEMA_VERSION = "1.2.0"
+SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 
 class ProjectionSecurityError(ValueError):
@@ -328,6 +344,315 @@ def _project_records(source_state: dict[str, Any]) -> list[dict[str, Any]]:
     return records
 
 
+def _required_media_text(public: dict[str, Any], field: str, media_id: str) -> str:
+    value = public.get(field)
+    if not isinstance(value, str) or not value.strip():
+        raise ProjectionCompatibilityError(f"Public media {media_id} requires non-empty {field}")
+    return value.strip()
+
+
+def _https_media_url(value: Any, label: str) -> str:
+    if not isinstance(value, str):
+        raise ProjectionCompatibilityError(f"{label} must be an HTTPS URL")
+    parsed = urlparse(value)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ProjectionCompatibilityError(f"{label} must be an HTTPS URL")
+    return value
+
+
+def _positive_media_integer(value: Any, label: str, *, allow_zero: bool = False) -> int:
+    minimum = 0 if allow_zero else 1
+    if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+        comparator = "non-negative" if allow_zero else "positive"
+        raise ProjectionCompatibilityError(f"{label} must be a {comparator} integer")
+    return value
+
+
+def _validated_public_media(record: dict[str, Any]) -> dict[str, Any]:
+    media_id = str(record["id"])
+    public = dict(record.get("public", {}))
+    panda_id = _required_media_text(public, "panda_id", media_id)
+    source_url = _https_media_url(
+        _required_media_text(public, "source_url", media_id),
+        f"Public media {media_id} source_url",
+    )
+    rights = _required_media_text(public, "rights", media_id)
+    credit = _required_media_text(public, "credit", media_id)
+    alt_zh = _required_media_text(public, "alt_zh", media_id)
+    alt_en = _required_media_text(public, "alt_en", media_id)
+    source_ids = public.get("source_ids")
+    if (
+        not isinstance(source_ids, list)
+        or not source_ids
+        or not all(isinstance(source_id, str) and source_id for source_id in source_ids)
+    ):
+        raise ProjectionCompatibilityError(
+            f"Public media {media_id} requires at least one reviewed source_id"
+        )
+    status = public.get("status")
+    if status not in {"available", "withdrawn", "unavailable"}:
+        raise ProjectionCompatibilityError(
+            f"Public media {media_id} has unsupported status {status!r}"
+        )
+
+    normalized = {
+        **public,
+        "panda_id": panda_id,
+        "source_url": source_url,
+        "rights": rights,
+        "credit": credit,
+        "alt_zh": alt_zh,
+        "alt_en": alt_en,
+        "status": status,
+        "source_ids": sorted(set(source_ids)),
+    }
+    for optional_field in (
+        "url",
+        "sha256",
+        "mime_type",
+        "width",
+        "height",
+        "bytes",
+    ):
+        normalized.setdefault(optional_field, None)
+    normalized.setdefault("derivatives", [])
+    if status != "available":
+        if public.get("url") not in {None, ""}:
+            raise ProjectionCompatibilityError(
+                f"Public media {media_id} cannot expose an image URL while {status}"
+            )
+        if public.get("derivatives") not in (None, []):
+            raise ProjectionCompatibilityError(
+                f"Public media {media_id} cannot expose derivatives while {status}"
+            )
+        normalized.update({"url": None, "derivatives": []})
+        return {"id": media_id, **normalized}
+
+    normalized["url"] = _https_media_url(public.get("url"), f"Public media {media_id} url")
+    sha256 = public.get("sha256")
+    if not isinstance(sha256, str) or not SHA256_PATTERN.fullmatch(sha256):
+        raise ProjectionCompatibilityError(f"Public media {media_id} requires a lowercase SHA-256")
+    mime_type = public.get("mime_type")
+    if mime_type not in {"image/jpeg", "image/png", "image/webp"}:
+        raise ProjectionCompatibilityError(
+            f"Public media {media_id} has unsupported MIME type {mime_type!r}"
+        )
+    normalized.update(
+        {
+            "sha256": sha256,
+            "mime_type": mime_type,
+            "width": _positive_media_integer(public.get("width"), f"Public media {media_id} width"),
+            "height": _positive_media_integer(
+                public.get("height"), f"Public media {media_id} height"
+            ),
+            "bytes": _positive_media_integer(
+                public.get("bytes"), f"Public media {media_id} bytes", allow_zero=True
+            ),
+        }
+    )
+    derivatives = public.get("derivatives")
+    if not isinstance(derivatives, list) or not derivatives:
+        raise ProjectionCompatibilityError(
+            f"Public media {media_id} requires at least one generated derivative"
+        )
+    normalized_derivatives = []
+    for index, derivative in enumerate(derivatives):
+        if not isinstance(derivative, dict):
+            raise ProjectionCompatibilityError(
+                f"Public media {media_id} derivative {index} must be an object"
+            )
+        derivative_sha256 = derivative.get("sha256")
+        if not isinstance(derivative_sha256, str) or not SHA256_PATTERN.fullmatch(
+            derivative_sha256
+        ):
+            raise ProjectionCompatibilityError(
+                f"Public media {media_id} derivative {index} requires a lowercase SHA-256"
+            )
+        if derivative.get("mime_type") != "image/webp":
+            raise ProjectionCompatibilityError(
+                f"Public media {media_id} derivative {index} must be image/webp"
+            )
+        normalized_derivatives.append(
+            {
+                **derivative,
+                "kind": _required_media_text(derivative, "kind", f"{media_id} derivative {index}"),
+                "url": _https_media_url(
+                    derivative.get("url"),
+                    f"Public media {media_id} derivative {index} url",
+                ),
+                "sha256": derivative_sha256,
+                "mime_type": "image/webp",
+                "width": _positive_media_integer(
+                    derivative.get("width"),
+                    f"Public media {media_id} derivative {index} width",
+                ),
+                "height": _positive_media_integer(
+                    derivative.get("height"),
+                    f"Public media {media_id} derivative {index} height",
+                ),
+                "bytes": _positive_media_integer(
+                    derivative.get("bytes"),
+                    f"Public media {media_id} derivative {index} bytes",
+                    allow_zero=True,
+                ),
+            }
+        )
+    normalized["derivatives"] = sorted(
+        normalized_derivatives, key=lambda item: (item["width"], item["kind"])
+    )
+    return {"id": media_id, **normalized}
+
+
+def _validated_media_release_record(record: dict[str, Any]) -> dict[str, Any]:
+    media_id = str(record["id"])
+    public = dict(record.get("public", {}))
+    panda_id = _required_media_text(public, "panda_id", media_id)
+    license_state = public.get("license_state")
+    display_mode = public.get("display_mode")
+    valid_pairs = {
+        "no_licensed_media": "designed_empty_state",
+        "source_link_only": "link_to_source",
+    }
+    if valid_pairs.get(license_state) != display_mode:
+        raise ProjectionCompatibilityError(
+            f"Public media policy {media_id} has inconsistent license/display state"
+        )
+    source_ids = public.get("source_ids")
+    if not isinstance(source_ids, list) or not all(
+        isinstance(source_id, str) and source_id for source_id in source_ids
+    ):
+        raise ProjectionCompatibilityError(f"Public media policy {media_id} has invalid source_ids")
+    return {
+        **public,
+        "panda_id": panda_id,
+        "license_state": license_state,
+        "display_mode": display_mode,
+        "source_ids": sorted(set(source_ids)),
+    }
+
+
+def _attach_public_media(
+    records: list[dict[str, Any]], public_schema_version: str
+) -> list[dict[str, Any]]:
+    if public_schema_version != PUBLIC_MEDIA_SCHEMA_VERSION:
+        return records
+
+    panda_ids = {record["id"] for record in records if record["entity_type"] == "pandas"}
+    media_by_panda: dict[str, list[dict[str, Any]]] = {}
+    media_release_by_panda: dict[str, dict[str, Any]] = {}
+    normalized_media: dict[str, dict[str, Any]] = {}
+    for record in records:
+        if record["entity_type"] != "media":
+            continue
+        if "status" in record.get("public", {}):
+            media = _validated_public_media(record)
+            media_by_panda.setdefault(media["panda_id"], []).append(media)
+        else:
+            policy = _validated_media_release_record(record)
+            media = {"id": str(record["id"]), **policy}
+            if policy["panda_id"] in media_release_by_panda:
+                raise ProjectionCompatibilityError(
+                    f"Panda {policy['panda_id']} has multiple public media policies"
+                )
+            media_release_by_panda[policy["panda_id"]] = {
+                "license_state": policy["license_state"],
+                "display_mode": policy["display_mode"],
+                "source_ids": policy["source_ids"],
+            }
+        if media["panda_id"] not in panda_ids:
+            raise ProjectionCompatibilityError(
+                f"Public media {media['id']} references unpublished panda {media['panda_id']}"
+            )
+        normalized_media[record["id"]] = media
+
+    result = []
+    for record in records:
+        if record["entity_type"] == "media":
+            media = normalized_media[record["id"]]
+            result.append(
+                {
+                    **record,
+                    "public": {key: value for key, value in media.items() if key != "id"},
+                }
+            )
+            continue
+        if record["entity_type"] != "pandas":
+            result.append(record)
+            continue
+        media = sorted(
+            media_by_panda.get(record["id"], []),
+            key=lambda item: (item["status"] != "available", item["id"]),
+        )
+        cover = next((item["url"] for item in media if item["status"] == "available"), None)
+        derived_media_release = (
+            {
+                "license_state": "licensed",
+                "display_mode": "gallery",
+                "source_ids": sorted(
+                    {source_id for item in media for source_id in item["source_ids"]}
+                ),
+            }
+            if media
+            else media_release_by_panda.get(record["id"], record["public"].get("media_release"))
+        )
+        result.append(
+            {
+                **record,
+                "public": {
+                    **record["public"],
+                    "media": media,
+                    "cover_image_url": cover,
+                    "media_release": derived_media_release,
+                },
+            }
+        )
+    return result
+
+
+def _bind_runtime_media(
+    pandas: list[dict[str, Any]],
+    projected_records: list[dict[str, Any]],
+    release: dict[str, str],
+) -> list[dict[str, Any]]:
+    if release["public_schema_version"] != PUBLIC_MEDIA_SCHEMA_VERSION:
+        return pandas
+
+    archive_by_id = {
+        record["id"]: record["public"]
+        for record in projected_records
+        if record["entity_type"] == "pandas"
+    }
+    result = []
+    for panda in pandas:
+        panda_id = str(panda["id"])
+        archive = archive_by_id.get(panda_id)
+        if archive is None:
+            raise ProjectionCompatibilityError(
+                f"Runtime panda {panda_id} has no archive panda record"
+            )
+        expected_media = archive.get("media", [])
+        supplied_media = panda.get("media") or []
+        if supplied_media and _canonical_json(supplied_media) != _canonical_json(expected_media):
+            raise ProjectionCompatibilityError(
+                f"Archive/API media semantics conflict for {panda_id}"
+            )
+        expected_cover = archive.get("cover_image_url")
+        supplied_cover = panda.get("cover_image_url")
+        if supplied_cover not in {None, expected_cover}:
+            raise ProjectionCompatibilityError(
+                f"Archive/API cover image semantics conflict for {panda_id}"
+            )
+        result.append(
+            {
+                **panda,
+                "media": expected_media,
+                "cover_image_url": expected_cover,
+                "media_release": archive.get("media_release"),
+            }
+        )
+    return result
+
+
 def _runtime_dataset(
     source_state: dict[str, Any], projected_records: list[dict[str, Any]]
 ) -> dict[str, Any]:
@@ -376,6 +701,7 @@ def _runtime_api(
                 dataset, effective_date=date.fromisoformat(release["released_at"][:10])
             )
         ]
+    pandas = _bind_runtime_media(pandas, projected_records, release)
     if "records" in source_state and any(
         record["entity_type"] == "pandas" for record in projected_records
     ) and not api_panda_records:
@@ -636,7 +962,14 @@ def _panda_json(records: list[dict[str, Any]], release: dict[str, str]) -> str:
         if record["entity_type"] == "pandas"
         and record["public"].get("record_tier") != "dependency_stub"
     ]
-    return _canonical_json({"release": release, "records": pandas}, pretty=True)
+    payload: dict[str, Any] = {"release": release, "records": pandas}
+    if release["public_schema_version"] == PUBLIC_MEDIA_SCHEMA_VERSION:
+        payload["media"] = [
+            {"id": record["id"], **record["public"]}
+            for record in records
+            if record["entity_type"] == "media"
+        ]
+    return _canonical_json(payload, pretty=True)
 
 
 def _panda_csv(records: list[dict[str, Any]], release: dict[str, str]) -> str:
@@ -759,6 +1092,7 @@ def build_public_release(release_input: PublicReleaseInput) -> PublicRelease:
         "released_at": _iso_z(release_input.released_at),
     }
     records = _project_records(release_input.source_state)
+    records = _attach_public_media(records, public_schema_version)
     archive_records = [
         record for record in records if not record["entity_type"].startswith("api_")
     ]

@@ -90,9 +90,28 @@ export interface TrustedProfileStoryViewModel {
   paragraphs: string[];
 }
 
+export interface TrustedProfileMediaDerivativeViewModel {
+  url: string;
+  width: number;
+}
+
+export interface TrustedProfileMediaItemViewModel {
+  id: string;
+  url: string | null;
+  sourceUrl: string | null;
+  rights: string | null;
+  credit: string | null;
+  alt: string;
+  status: PandaDetail["media"][number]["status"];
+  width: number | null;
+  height: number | null;
+  derivatives: TrustedProfileMediaDerivativeViewModel[];
+}
+
 export interface TrustedProfileMediaViewModel {
   state: ProfileMediaState;
   sourceIds: string[];
+  items: TrustedProfileMediaItemViewModel[];
 }
 
 export interface TrustedProfileRevisionViewModel {
@@ -365,15 +384,54 @@ function buildTimeline(
   };
 }
 
-function buildMedia(panda: PandaDetail): TrustedProfileMediaViewModel {
-  if (!panda.media_release) return { state: "unavailable", sourceIds: [] };
+function httpsUrl(value: string | null | undefined): string | null {
+  if (!value || !URL.canParse(value)) return null;
+  return new URL(value).protocol === "https:" ? value : null;
+}
+
+function buildMedia(panda: PandaDetail, locale: PublicLocale): TrustedProfileMediaViewModel {
+  const items = panda.media.map((item) => ({
+    id: item.id,
+    url: item.status === "available"
+      ? httpsUrl(item.url) ?? httpsUrl(item.signed_url) ?? httpsUrl(item.storage_path)
+      : null,
+    sourceUrl: httpsUrl(item.source_url),
+    rights: item.rights,
+    credit: item.credit ?? item.photographer ?? null,
+    alt: locale === "zh"
+      ? item.alt_zh ?? item.alt_en ?? panda.name_zh
+      : item.alt_en ?? item.alt_zh ?? panda.name_en ?? panda.name_zh,
+    status: item.status,
+    width: item.width,
+    height: item.height,
+    derivatives: item.status === "available"
+      ? item.derivatives
+        .filter((derivative) => Boolean(httpsUrl(derivative.url)))
+        .map((derivative) => ({ url: derivative.url, width: derivative.width }))
+        .sort((left, right) => left.width - right.width)
+      : [],
+  }));
+
+  if (!panda.media_release) return { state: "unavailable", sourceIds: [], items };
   if (panda.media_release.license_state === "no_licensed_media") {
-    return { state: "no_licensed_media", sourceIds: panda.media_release.source_ids };
+    return {
+      state: "no_licensed_media",
+      sourceIds: panda.media_release.source_ids,
+      items,
+    };
   }
   if (panda.media_release.license_state === "source_link_only") {
-    return { state: "source_link_only", sourceIds: panda.media_release.source_ids };
+    return {
+      state: "source_link_only",
+      sourceIds: panda.media_release.source_ids,
+      items,
+    };
   }
-  return { state: panda.media.length ? "gallery" : "unavailable", sourceIds: panda.media_release.source_ids };
+  return {
+    state: items.length ? "gallery" : "unavailable",
+    sourceIds: panda.media_release.source_ids,
+    items,
+  };
 }
 
 export function buildTrustedProfilePageViewModel(
@@ -493,7 +551,7 @@ export function buildTrustedProfilePageViewModel(
           : "complete",
       stops: footprintStops,
     },
-    media: buildMedia(panda),
+    media: buildMedia(panda, locale),
     sources: panda.sources.map((source) => ({
       id: source.id,
       publisher: source.publisher,

@@ -14,6 +14,7 @@ import type {
   PandaGender,
   ParentageRow,
   PublicFactConclusion,
+  PublicPandaMediaAsset,
   PublicSourceSummary
 } from "../types";
 
@@ -99,7 +100,7 @@ function resolvePublicMediaUrl(storagePath: string | null): string | null {
     return null;
   }
   const lowered = storagePath.toLowerCase();
-  if (lowered.startsWith("http://") || lowered.startsWith("https://")) {
+  if (lowered.startsWith("https://")) {
     return storagePath;
   }
   return null;
@@ -558,7 +559,15 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
 
   const mediaResult = await env.DB.prepare(
     `
-    select m.id, m.storage_bucket, m.storage_path, m.title, m.photographer
+    select
+      m.id,
+      m.storage_bucket,
+      m.storage_path,
+      m.title,
+      m.photographer,
+      m.copyright_text,
+      m.license,
+      m.metadata_json
     from panda_media pm
     join media_assets m on m.id = pm.media_id
     where pm.panda_id = ?
@@ -572,12 +581,48 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
       storage_path: string;
       title: string | null;
       photographer: string | null;
+      copyright_text: string | null;
+      license: string | null;
+      metadata_json: string;
     }>();
 
-  const media = (mediaResult.results ?? []).map((asset) => ({
-    ...asset,
-    signed_url: resolvePublicMediaUrl(asset.storage_path)
-  }));
+  const media: PublicPandaMediaAsset[] = (mediaResult.results ?? []).map((asset) => {
+    const metadata = parseJsonValue<Partial<PublicPandaMediaAsset>>(
+      asset.metadata_json,
+      {}
+    );
+    const publicUrl = resolvePublicMediaUrl(metadata.url ?? asset.storage_path);
+    const status = metadata.status === "withdrawn" || metadata.status === "unavailable"
+      ? metadata.status
+      : publicUrl
+        ? "available"
+        : "unavailable";
+    return {
+      id: asset.id,
+      panda_id: row.id,
+      url: status === "available" ? publicUrl : null,
+      source_url: resolvePublicMediaUrl(metadata.source_url ?? null),
+      rights: metadata.rights ?? asset.license,
+      credit: metadata.credit ?? asset.photographer ?? asset.copyright_text,
+      alt_zh: metadata.alt_zh ?? null,
+      alt_en: metadata.alt_en ?? null,
+      status,
+      sha256: metadata.sha256 ?? null,
+      mime_type: metadata.mime_type ?? null,
+      width: metadata.width ?? null,
+      height: metadata.height ?? null,
+      bytes: metadata.bytes ?? null,
+      derivatives: status === "available" && Array.isArray(metadata.derivatives)
+        ? metadata.derivatives
+        : [],
+      source_ids: Array.isArray(metadata.source_ids) ? metadata.source_ids : [],
+      storage_bucket: asset.storage_bucket,
+      storage_path: asset.storage_path,
+      title: asset.title,
+      photographer: asset.photographer,
+      signed_url: status === "available" ? publicUrl : null
+    };
+  });
   const residenciesResult = await env.DB.prepare(
     `
     select

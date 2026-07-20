@@ -37,6 +37,14 @@ A reviewed PostgreSQL release batch must include the complete archive panda revi
 
 Projection is fail-closed. Only `publication_status=published` records and their `public` payloads are considered. Restricted payloads, unapproved translations, unpublished source references, personal/contact fields, and precise wildlife locations cannot enter an artifact. Unknown sensitive-looking fields stop the build.
 
+### Public Schema 1.2 media
+
+Public Schema `1.2.0` adds reviewed panda media without adding curator-maintained technical fields. A published media asset must identify its panda and provide an HTTPS source page, rights basis, public credit, Chinese and English alt text, reviewed source IDs, status, SHA-256, MIME type, dimensions, byte size, and at least one generated WebP derivative. The processing pipeline owns the technical values.
+
+The same media ID and normalized object are embedded in archive panda records, `api_pandas`, `pandas.csv`, `pandas.json`, `api.json`, and D1. `pandas.json` also exposes the release media collection for independent audit. Legacy storage buckets, internal paths, and signed URLs are compatibility inputs only and are excluded from Public Release output.
+
+`withdrawn` and `unavailable` media retain source, rights, credit, and alt-text evidence but expose no image or derivative URL. A replacement or withdrawal requires a new immutable Public Release; historical release files and rows are never rewritten.
+
 ## Compatibility gate
 
 Before switching a release:

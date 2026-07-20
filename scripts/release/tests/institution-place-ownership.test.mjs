@@ -80,7 +80,7 @@ test("Slice 8 Worker accepts current and rollback Public Schema versions without
 
   assert.match(
     releaseRepository,
-    /SUPPORTED_PUBLIC_SCHEMA_VERSIONS = new Set\(\["1\.0\.0", "1\.1\.0"\]\)/,
+    /SUPPORTED_PUBLIC_SCHEMA_VERSIONS = new Set\(\["1\.0\.0", "1\.1\.0", "1\.2\.0"\]\)/,
   );
   assert.doesNotMatch(releaseRepository, /public_schema_version !== "1\.0\.0"/);
   assert.deepEqual(

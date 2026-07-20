@@ -11,13 +11,38 @@ class HabitatSummary(BaseModel):
     province: str | None = None
 
 
+class MediaDerivative(BaseModel):
+    kind: str
+    url: str
+    sha256: str
+    mime_type: str
+    width: int = Field(gt=0)
+    height: int = Field(gt=0)
+    bytes: int = Field(ge=0)
+
+
 class MediaAsset(BaseModel):
-    id: UUID
-    storage_bucket: str
-    storage_path: str
-    title: str | None = None
-    photographer: str | None = None
-    signed_url: str | None = None
+    id: str
+    panda_id: str | None = None
+    url: str | None = None
+    source_url: str | None = None
+    rights: str | None = None
+    credit: str | None = None
+    alt_zh: str | None = None
+    alt_en: str | None = None
+    status: str = Field(default="unavailable", pattern="^(available|withdrawn|unavailable)$")
+    sha256: str | None = None
+    mime_type: str | None = None
+    width: int | None = Field(default=None, gt=0)
+    height: int | None = Field(default=None, gt=0)
+    bytes: int | None = Field(default=None, ge=0)
+    derivatives: list[MediaDerivative] = Field(default_factory=list)
+    source_ids: list[str] = Field(default_factory=list)
+    storage_bucket: str | None = Field(default=None, exclude=True)
+    storage_path: str | None = Field(default=None, exclude=True)
+    title: str | None = Field(default=None, exclude=True)
+    photographer: str | None = Field(default=None, exclude=True)
+    signed_url: str | None = Field(default=None, exclude=True)
 
 
 class IdentityNameRecord(BaseModel):

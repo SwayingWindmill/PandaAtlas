@@ -6,7 +6,7 @@ interface PublicReleaseRow extends Omit<PublicReleaseMetadata, "licenses"> {
   licenses_json: string;
 }
 
-const SUPPORTED_PUBLIC_SCHEMA_VERSIONS = new Set(["1.0.0", "1.1.0"]);
+const SUPPORTED_PUBLIC_SCHEMA_VERSIONS = new Set(["1.0.0", "1.1.0", "1.2.0"]);
 
 export async function requireCurrentRelease(env: Env): Promise<PublicReleaseMetadata> {
   const row = await env.DB.prepare(`
