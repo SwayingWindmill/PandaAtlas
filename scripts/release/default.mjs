@@ -375,9 +375,15 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "typecheck:api:cf"]),
       },
       {
-        id: "worker-d1-smoke",
-        label: "Worker D1 projection smoke",
+        id: "worker-d1-rollback-smoke",
+        label: "Worker rollback D1 projection smoke",
         dependsOn: ["worker-typecheck"],
+        run: () => runCommand(npm, ["run", "smoke:api:cf:d1:rollback"]),
+      },
+      {
+        id: "worker-d1-smoke",
+        label: "Worker current D1 projection smoke",
+        dependsOn: ["worker-d1-rollback-smoke"],
         run: () => runCommand(npm, ["run", "smoke:api:cf:d1"]),
       },
       {

@@ -21,6 +21,7 @@
     "typecheck:api:cf": "npm run typecheck -w worker-api",
     "smoke:api:cf": "npm run smoke -w worker-api",
     "smoke:api:cf:d1": "npm run smoke:d1 -w worker-api",
+    "smoke:api:cf:d1:rollback": "npm run smoke:d1:rollback -w worker-api",
     "smoke:api:cf:http": "npm run smoke:http -w worker-api",
     "check:golden-dataset": "node scripts/golden-dataset/validate.mjs",
     "generate:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs",

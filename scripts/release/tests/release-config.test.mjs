@@ -166,16 +166,23 @@ test("default gate separates D1 and HTTP Worker smoke", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const workerPackage = JSON.parse(await readFile(workerPackagePath, "utf8"));
 
+  assert.match(defaultGate, /id: "worker-d1-rollback-smoke"/);
+  assert.match(defaultGate, /smoke:api:cf:d1:rollback/);
+  assert.match(defaultGate, /dependsOn: \["worker-d1-rollback-smoke"\]/);
   assert.match(defaultGate, /smoke:api:cf:d1/);
   assert.match(defaultGate, /smoke:api:cf:http/);
   assert.match(defaultGate, /process\.platform === "win32"/);
   assert.equal(
     workerPackage.scripts["smoke:d1"],
-    "node scripts/smoke_test_worker.mjs --mode=d1",
+    "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.20.1",
+  );
+  assert.equal(
+    workerPackage.scripts["smoke:d1:rollback"],
+    "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.18.1",
   );
   assert.equal(
     workerPackage.scripts["smoke:http"],
-    "node scripts/smoke_test_worker.mjs --mode=http",
+    "node scripts/smoke_test_worker.mjs --mode=http --release=2026.07.20.1",
   );
 });
 

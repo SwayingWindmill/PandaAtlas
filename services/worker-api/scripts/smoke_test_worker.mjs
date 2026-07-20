@@ -19,6 +19,15 @@ function parseMode(argv) {
   return mode;
 }
 
+function parseReleaseVersion(argv) {
+  const argument = argv.find((value) => value.startsWith("--release="));
+  const version = argument?.slice("--release=".length) ?? "2026.07.18.1";
+  if (!/^\d{4}\.\d{2}\.\d{2}\.\d+$/.test(version)) {
+    throw new Error(`Unsupported Worker smoke release: ${version}`);
+  }
+  return version;
+}
+
 function runCommand(command, args) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
@@ -155,7 +164,7 @@ function wranglerBin() {
   );
 }
 
-async function prepareD1Projection() {
+async function prepareD1Projection(releaseVersion) {
   await rm(PERSIST_PATH, { recursive: true, force: true });
   const d1Args = [
     wranglerBin(),
@@ -179,12 +188,12 @@ async function prepareD1Projection() {
     "--file=../../infra/cloudflare/d1/seed.sql",
   ]);
   const releaseSql = await readFile(
-    "../../data/public-releases/2026.07.18.1/d1.sql",
+    `../../data/public-releases/${releaseVersion}/d1.sql`,
     "utf8",
   );
   const wranglerReleaseSql = path.join(
     PERSIST_PATH,
-    "release-2026.07.18.1.sql",
+    `release-${releaseVersion}.sql`,
   );
   await writeFile(
     wranglerReleaseSql,
@@ -216,8 +225,11 @@ async function prepareD1Projection() {
     ...d1Args,
     "--command=select (select count(*) from parentage_assertions where status = 'confirmed') as confirmed_parentage_count, (select count(*) from domain_event_participants where event_id = 'event-smithsonian-departure-2023') as departure_participant_count, (select count(*) from pandas where slug in ('bei-bei', 'xiao-qi-ji') and current_location = 'Wolong Shenshuping Base') as shenshuping_current_count",
   ]);
+  const confirmedParentageMatch = archiveRelationshipCheck.match(
+    /"confirmed_parentage_count":\s*(\d+)/,
+  );
   if (
-    !/"confirmed_parentage_count":\s*9/.test(archiveRelationshipCheck) ||
+    Number(confirmedParentageMatch?.[1] ?? 0) < 9 ||
     !/"departure_participant_count":\s*3/.test(archiveRelationshipCheck) ||
     !/"shenshuping_current_count":\s*2/.test(archiveRelationshipCheck)
   ) {
@@ -252,7 +264,7 @@ async function prepareD1Projection() {
   console.log("WORKER_SMOKE_RESULT status=passed scope=d1");
 }
 
-async function runHttpSmoke() {
+async function runHttpSmoke(releaseVersion) {
   if (process.platform === "win32") {
     console.error(
       "WORKER_SMOKE_RESULT status=environment-blocked scope=http reason=Workerd HTTP smoke is supported by the Linux CI job; run the D1 mode on Windows.",
@@ -267,6 +279,14 @@ async function runHttpSmoke() {
     throw new Error(
       "Worker HTTP smoke requires prepared D1 state; run --mode=d1 first",
     );
+  }
+
+  const checkedRelease = JSON.parse(
+    await readFile(`../../data/public-releases/${releaseVersion}/api.json`, "utf8"),
+  );
+  const expectedPandaTotal = checkedRelease?.pandas?.length;
+  if (!Number.isInteger(expectedPandaTotal) || expectedPandaTotal <= 0) {
+    throw new Error(`Checked release ${releaseVersion} has no panda records`);
   }
 
   const worker = spawn(
@@ -303,9 +323,11 @@ async function runHttpSmoke() {
     if (
       !Array.isArray(pandas?.items) ||
       pandas.items.length === 0 ||
-      pandas?.meta?.total !== 7
+      pandas?.meta?.total !== expectedPandaTotal
     ) {
-      throw new Error("Worker panda list smoke response was empty");
+      throw new Error(
+        `Worker panda list did not match ${releaseVersion}: ${JSON.stringify(pandas)}`,
+      );
     }
 
     const identitySearch = await expectJson(
@@ -342,7 +364,7 @@ async function runHttpSmoke() {
       trustedDetail?.record_tier !== "complete_first_pass" ||
       trustedDetail?.localized_content?.length !== 2 ||
       trustedDetail?.media_release?.display_mode !== "designed_empty_state" ||
-      trustedDetail?.public_revision?.data_version !== "2026.07.18.1" ||
+      trustedDetail?.public_revision?.data_version !== releaseVersion ||
       trustedDetail.events.find(
         (event) => event.id === "event-smithsonian-return-plan-2020",
       )?.changes_current_residency !== false ||
@@ -402,6 +424,35 @@ async function runHttpSmoke() {
       );
     }
 
+    if (releaseVersion === "2026.07.20.1") {
+      const expanded = await Promise.all(
+        ["lun-lun", "yang-yang", "ya-lun"].map((slug) =>
+          expectJson(`/api/v1/pandas/${slug}`, 200),
+        ),
+      );
+      for (const detail of expanded) {
+        if (
+          detail?.public_revision?.data_version !== releaseVersion ||
+          detail?.current_place?.last_verified_at !== "2026-07-20" ||
+          detail?.events?.length < 3 ||
+          detail?.media?.length !== 1 ||
+          detail.media[0]?.status !== "available" ||
+          !detail?.cover_image_url?.includes(`/media/releases/${releaseVersion}/`) ||
+          !detail.cover_image_url.endsWith("-w1200.webp")
+        ) {
+          throw new Error(
+            `Worker Atlanta detail was incomplete: ${JSON.stringify(detail)}`,
+          );
+        }
+      }
+      const [lunLun, yangYang, yaLun] = expanded;
+      if (yaLun.mother_id !== lunLun.id || yaLun.father_id !== yangYang.id) {
+        throw new Error(
+          `Worker Ya Lun parentage was incomplete: ${JSON.stringify(yaLun)}`,
+        );
+      }
+    }
+
     await expectJson("/api/v1/admin/import-sources", 404);
     await expectJson("/api/v1/admin/import-jobs", 404, {
       method: "POST",
@@ -419,12 +470,14 @@ async function runHttpSmoke() {
 }
 
 async function main() {
-  const mode = parseMode(process.argv.slice(2));
+  const argv = process.argv.slice(2);
+  const mode = parseMode(argv);
+  const releaseVersion = parseReleaseVersion(argv);
   if (mode === "d1" || mode === "full") {
-    await prepareD1Projection();
+    await prepareD1Projection(releaseVersion);
   }
   if (mode === "http" || mode === "full") {
-    await runHttpSmoke();
+    await runHttpSmoke(releaseVersion);
   }
 }
 
