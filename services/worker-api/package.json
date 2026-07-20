@@ -9,10 +9,10 @@
     "d1:migrate:local": "node ../../scripts/release/apply-d1-migrations.mjs --database panda-atlas --config services/worker-api/wrangler.jsonc --local --persist-to services/worker-api/.wrangler/state",
     "d1:migrate": "node ../../scripts/release/apply-d1-migrations.mjs --database panda-atlas --config services/worker-api/wrangler.jsonc --remote",
     "typecheck": "tsc --noEmit",
-    "smoke": "node scripts/smoke_test_worker.mjs --mode=full --release=2026.07.20.1",
-    "smoke:d1": "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.20.1",
-    "smoke:d1:rollback": "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.18.1",
-    "smoke:http": "node scripts/smoke_test_worker.mjs --mode=http --release=2026.07.20.1"
+    "smoke": "node scripts/smoke_test_worker.mjs --mode=full --release=2026.07.20.2",
+    "smoke:d1": "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.20.2",
+    "smoke:d1:rollback": "node scripts/smoke_test_worker.mjs --mode=d1 --release=2026.07.20.1",
+    "smoke:http": "node scripts/smoke_test_worker.mjs --mode=http --release=2026.07.20.2"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

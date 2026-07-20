@@ -21,7 +21,7 @@ function parseMode(argv) {
 
 function parseReleaseVersion(argv) {
   const argument = argv.find((value) => value.startsWith("--release="));
-  const version = argument?.slice("--release=".length) ?? "2026.07.18.1";
+  const version = argument?.slice("--release=".length) ?? "2026.07.20.2";
   if (!/^\d{4}\.\d{2}\.\d{2}\.\d+$/.test(version)) {
     throw new Error(`Unsupported Worker smoke release: ${version}`);
   }
@@ -450,6 +450,37 @@ async function runHttpSmoke(releaseVersion) {
         throw new Error(
           `Worker Ya Lun parentage was incomplete: ${JSON.stringify(yaLun)}`,
         );
+      }
+    }
+
+    if (releaseVersion === "2026.07.20.2") {
+      const expanded = await Promise.all(
+        ["ri-ri", "shin-shin", "xiao-xiao", "lei-lei"].map((slug) =>
+          expectJson(`/api/v1/pandas/${slug}`, 200),
+        ),
+      );
+      for (const detail of expanded) {
+        if (
+          detail?.public_revision?.data_version !== releaseVersion ||
+          !/^\d{4}-\d{2}-\d{2}$/.test(detail?.current_place?.last_verified_at ?? "") ||
+          detail?.events?.length < 3 ||
+          detail?.media?.length !== 1 ||
+          detail.media[0]?.status !== "available" ||
+          !detail?.cover_image_url?.includes(`/media/releases/${releaseVersion}/`) ||
+          !detail.cover_image_url.endsWith("-w1200.webp")
+        ) {
+          throw new Error(
+            `Worker Ueno detail was incomplete: ${JSON.stringify(detail)}`,
+          );
+        }
+      }
+      const [riRi, shinShin, xiaoXiao, leiLei] = expanded;
+      for (const twin of [xiaoXiao, leiLei]) {
+        if (twin.father_id !== riRi.id || twin.mother_id !== shinShin.id) {
+          throw new Error(
+            `Worker Ueno parentage was incomplete: ${JSON.stringify(twin)}`,
+          );
+        }
       }
     }
 
