@@ -24,8 +24,10 @@ import {
   buildStagingReleaseResetSql,
   buildWholeReleaseVerificationSql,
   buildWholeReleaseWithdrawalSql,
+  isRetryableCloudflareError,
   readStagingConfig,
   reviewedMediaObjects,
+  runWithBoundedRetry,
   validateBaselineVerification,
   validateEntityWithdrawalVerification,
   validateStagingBaseUrl,
@@ -58,6 +60,71 @@ function validConfig() {
     ],
   };
 }
+
+test("bounded retry recovers from transient Cloudflare transport failures", async () => {
+  let calls = 0;
+  const retries = [];
+  const result = await runWithBoundedRetry(
+    () => {
+      calls += 1;
+      if (calls < 3) throw new Error("fetch failed");
+      return "passed";
+    },
+    {
+      attempts: 4,
+      delayMs: 10,
+      sleep: async () => {},
+      onRetry(_error, attempt) {
+        retries.push(attempt);
+      },
+    },
+  );
+  assert.equal(result, "passed");
+  assert.equal(calls, 3);
+  assert.deepEqual(retries, [1, 2]);
+});
+
+test("bounded retry fails immediately for non-transport errors", async () => {
+  let calls = 0;
+  await assert.rejects(
+    runWithBoundedRetry(
+      () => {
+        calls += 1;
+        throw new Error("manifest mismatch");
+      },
+      { attempts: 5, delayMs: 0, sleep: async () => {} },
+    ),
+    /manifest mismatch/,
+  );
+  assert.equal(calls, 1);
+});
+
+test("bounded retry stops after the configured maximum", async () => {
+  let calls = 0;
+  await assert.rejects(
+    runWithBoundedRetry(
+      () => {
+        calls += 1;
+        throw new Error("UND_ERR_CONNECT_TIMEOUT");
+      },
+      { attempts: 3, delayMs: 0, sleep: async () => {} },
+    ),
+    /UND_ERR_CONNECT_TIMEOUT/,
+  );
+  assert.equal(calls, 3);
+});
+
+test("Cloudflare retry classification is narrow and transport-specific", () => {
+  for (const message of [
+    "fetch failed",
+    "read ECONNRESET",
+    "UND_ERR_CONNECT_TIMEOUT",
+    "socket hang up",
+  ]) {
+    assert.equal(isRetryableCloudflareError(new Error(message)), true, message);
+  }
+  assert.equal(isRetryableCloudflareError(new Error("release manifest mismatch")), false);
+});
 
 test("tracked API staging config is isolated and becomes executable only after provisioning", () => {
   const config = readStagingConfig();

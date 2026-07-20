@@ -84,6 +84,18 @@ The JSON report is written below `.release-gate/` unless `--report` supplies ano
 
 A completed drill intentionally leaves the Staging release withdrawn. Re-run `npm run staging:api:bootstrap` to restore the isolated environment for another drill.
 
+## Retry policy
+
+The runner uses a bounded retry only where repeating the operation is provably safe:
+
+- the migration runner may retry recognized transport failures because the D1 migration journal skips every committed migration;
+- Production R2 reads and Staging R2 put/get verification may retry because the reviewed object key and bytes are immutable and an identical put is idempotent;
+- the workers.dev baseline may retry before any withdrawal write, allowing deployment propagation to settle.
+
+Retries are limited, use increasing delays, and recognize transport failures such as fetch failed, connection resets, timeouts, DNS retry conditions, and Undici socket/connect errors. Manifest, hash, release-state, SQL, and business-rule failures are not retryable. Reset, seed import, release activation, Worker deployment, entity withdrawal, and whole-release withdrawal are not blindly retried; inspect their persisted state before resuming.
+
+WRANGLER_LOG=debug writes diagnostic text to stdout and can corrupt commands whose callers parse JSON output. Use it for an isolated probe or inspect Wrangler's log file; do not enable it around the JSON-parsing migration or activation runners.
+
 ## Frontend architecture limitation
 
 Localized Atlas profile pages currently consume build-time Public Release data from `apps/web/features/public-content/public-release.ts`. They do not dynamically read D1. This API drill therefore does **not** claim that an entity or whole-release D1 withdrawal automatically changes an already built frontend profile.

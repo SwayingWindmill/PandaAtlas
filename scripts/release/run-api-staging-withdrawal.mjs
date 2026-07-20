@@ -41,6 +41,7 @@ import {
   repositoryRoot,
   reviewedMediaObjects,
   runCommand,
+  runWithBoundedRetry,
   sha256,
   stagingConfigChecksum,
   validateBaselineVerification,
@@ -119,17 +120,17 @@ function executeD1(configPath, sql, { json = false, label = "D1 command" } = {})
   return json ? parseWranglerRows(stdout, label) : null;
 }
 
-function resetAndMigrate(configPath, report) {
+async function resetAndMigrate(configPath, report) {
   executeD1(configPath, buildStagingReleaseResetSql());
   report.steps.push({ id: "release-storage-reset", status: "passed" });
-  runCommand(process.execPath, [
+  await runRetryableCommand(process.execPath, [
     migrationScriptPath,
     "--database",
     STAGING_DATABASE_NAME,
     "--config",
     configPath,
     "--remote",
-  ]);
+  ], { label: "Staging D1 migration runner", attempts: 8, delayMs: 2000 });
   report.steps.push({ id: "d1-migrations", status: "passed" });
 }
 
@@ -186,6 +187,35 @@ function wranglerArgs(...args) {
   return [wranglerCli, ...args];
 }
 
+function relayCommandOutput(result) {
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+}
+
+async function runRetryableCommand(
+  command,
+  args,
+  { label, attempts = 6, delayMs = 1000 } = {},
+) {
+  return runWithBoundedRetry(
+    () => {
+      const result = runCommand(command, args, { capture: true });
+      relayCommandOutput(result);
+      return result;
+    },
+    {
+      attempts,
+      delayMs,
+      onRetry(error, attempt, maximumAttempts) {
+        const detail = error instanceof Error ? error.message : String(error);
+        console.warn(
+          "[staging-retry] " + (label ?? command) + " failed on attempt " + attempt + "/" + maximumAttempts + ": " + detail,
+        );
+      },
+    },
+  );
+}
+
 function verifyFile(filename, expected, label) {
   const actualBytes = statSync(filename).size;
   const actualHash = sha256(readFileSync(filename));
@@ -197,36 +227,36 @@ function verifyFile(filename, expected, label) {
   }
 }
 
-function copyReviewedMedia(configPath, report) {
+async function copyReviewedMedia(configPath, report) {
   const objects = reviewedMediaObjects();
   const temporaryDirectory = mkdtempSync(path.join(tmpdir(), "panda-atlas-staging-media-"));
   try {
     for (const [index, object] of objects.entries()) {
-      const sourcePath = path.join(temporaryDirectory, `source-${index}.webp`);
-      const verifyPath = path.join(temporaryDirectory, `verify-${index}.webp`);
-      runCommand(process.execPath, wranglerArgs(
-        "r2", "object", "get", `${PRODUCTION_MEDIA_BUCKET}/${object.objectKey}`,
+      const sourcePath = path.join(temporaryDirectory, "source-" + index + ".webp");
+      const verifyPath = path.join(temporaryDirectory, "verify-" + index + ".webp");
+      await runRetryableCommand(process.execPath, wranglerArgs(
+        "r2", "object", "get", PRODUCTION_MEDIA_BUCKET + "/" + object.objectKey,
         "--file", sourcePath,
         "--remote",
         "--config", productionConfigPath,
-      ));
-      verifyFile(sourcePath, object, `Production R2 ${object.objectKey}`);
-      runCommand(process.execPath, wranglerArgs(
-        "r2", "object", "put", `${STAGING_MEDIA_BUCKET}/${object.objectKey}`,
+      ), { label: "Production R2 get " + object.objectKey });
+      verifyFile(sourcePath, object, "Production R2 " + object.objectKey);
+      await runRetryableCommand(process.execPath, wranglerArgs(
+        "r2", "object", "put", STAGING_MEDIA_BUCKET + "/" + object.objectKey,
         "--file", sourcePath,
         "--content-type", "image/webp",
         "--cache-control", CACHE_CONTROL,
         "--remote",
         "--force",
         "--config", configPath,
-      ));
-      runCommand(process.execPath, wranglerArgs(
-        "r2", "object", "get", `${STAGING_MEDIA_BUCKET}/${object.objectKey}`,
+      ), { label: "Staging R2 put " + object.objectKey });
+      await runRetryableCommand(process.execPath, wranglerArgs(
+        "r2", "object", "get", STAGING_MEDIA_BUCKET + "/" + object.objectKey,
         "--file", verifyPath,
         "--remote",
         "--config", configPath,
-      ));
-      verifyFile(verifyPath, object, `Staging R2 ${object.objectKey}`);
+      ), { label: "Staging R2 verify " + object.objectKey });
+      verifyFile(verifyPath, object, "Staging R2 " + object.objectKey);
     }
     report.steps.push({ id: "media-copy", status: "passed", objects: objects.length });
   } finally {
@@ -234,11 +264,11 @@ function copyReviewedMedia(configPath, report) {
   }
 }
 
-function bootstrap(configPath, report) {
-  resetAndMigrate(configPath, report);
+async function bootstrap(configPath, report) {
+  await resetAndMigrate(configPath, report);
   seedBaseline(configPath, report);
   activateExpandedReleases(configPath, report);
-  copyReviewedMedia(configPath, report);
+  await copyReviewedMedia(configPath, report);
 }
 
 function parseDeployment(output) {
@@ -346,6 +376,23 @@ async function baselineHttp(baseUrl, fixture) {
   return evidence;
 }
 
+async function baselineHttpWithPropagationRetry(baseUrl, fixture) {
+  return runWithBoundedRetry(
+    () => baselineHttp(baseUrl, fixture),
+    {
+      attempts: 6,
+      delayMs: 1500,
+      shouldRetry: () => true,
+      onRetry(error, attempt, maximumAttempts) {
+        const detail = error instanceof Error ? error.message : String(error);
+        console.warn(
+          "[staging-retry] workers.dev baseline failed on attempt " + attempt + "/" + maximumAttempts + ": " + detail,
+        );
+      },
+    },
+  );
+}
+
 function appendEntityWithdrawal(configPath, fixture, report) {
   const withdrawnAt = new Date().toISOString();
   const row = executeD1(configPath, buildEntityWithdrawalSql({
@@ -445,7 +492,7 @@ async function drill(configPath, baseUrl, report) {
   );
   report.http = {
     production_canary: { before: productionBefore },
-    baseline: await baselineHttp(baseUrl, fixture),
+    baseline: await baselineHttpWithPropagationRetry(baseUrl, fixture),
   };
   appendEntityWithdrawal(configPath, fixture, report);
   deleteWithdrawnMedia(configPath, fixture, report);
@@ -533,7 +580,7 @@ export async function runApiStagingWithdrawal(argv = process.argv.slice(2)) {
     steps: [],
   };
   try {
-    if (["bootstrap", "full"].includes(options.action)) bootstrap(options.config, report);
+    if (["bootstrap", "full"].includes(options.action)) await bootstrap(options.config, report);
     let baseUrl = options.baseUrl;
     if (["deploy", "full"].includes(options.action)) {
       baseUrl = deploy(options.config, report).url;

@@ -384,6 +384,42 @@ export function runCommand(command, args, { cwd = repositoryRoot, capture = fals
   return { stdout: result.stdout ?? "", stderr: result.stderr ?? "" };
 }
 
+export function isRetryableCloudflareError(error) {
+  const detail = error instanceof Error
+    ? error.name + ": " + error.message
+    : String(error);
+  return /fetch failed|ECONNRESET|ETIMEDOUT|EAI_AGAIN|ENETUNREACH|UND_ERR_(?:CONNECT_TIMEOUT|SOCKET)|socket hang up|network connectivity/i.test(detail);
+}
+
+export async function runWithBoundedRetry(
+  operation,
+  {
+    attempts = 5,
+    delayMs = 1000,
+    shouldRetry = isRetryableCloudflareError,
+    sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+    onRetry = () => {},
+  } = {},
+) {
+  requireCondition(Number.isInteger(attempts) && attempts >= 1, "Retry attempts must be a positive integer.");
+  requireCondition(Number.isFinite(delayMs) && delayMs >= 0, "Retry delay must be non-negative.");
+  requireCondition(typeof operation === "function", "Retry operation must be a function.");
+  requireCondition(typeof shouldRetry === "function", "Retry predicate must be a function.");
+  requireCondition(typeof sleep === "function", "Retry sleep must be a function.");
+  requireCondition(typeof onRetry === "function", "Retry observer must be a function.");
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await operation(attempt);
+    } catch (error) {
+      if (attempt >= attempts || !shouldRetry(error)) throw error;
+      onRetry(error, attempt, attempts);
+      await sleep(delayMs * attempt);
+    }
+  }
+  throw new Error("Retry operation exhausted without returning or throwing.");
+}
+
 export function stagingConfigChecksum(configPath = defaultStagingConfigPath) {
   return sha256(readFileSync(configPath));
 }
