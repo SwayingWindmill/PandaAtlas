@@ -1,0 +1,93 @@
+{
+  "batch_version": "2026.07.20.1",
+  "generated_at": "2026-07-20T03:30:00Z",
+  "records": [
+    {
+      "panda_slug": "lun-lun",
+      "media_id": "media-lun-lun-a089c7f24bdfbc26",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Lun_Lun_at_Zoo_Atlanta.jpg",
+      "rights": "CC BY-SA 4.0",
+      "credit": "O01326 / Wikimedia Commons",
+      "alt_zh": "伦伦坐在亚特兰大动物园的木质栖架旁",
+      "alt_en": "Lun Lun sitting beside a wooden habitat structure at Zoo Atlanta",
+      "derivatives": [
+        {
+          "kind": "width-480",
+          "filename": "media-lun-lun-a089c7f24bdfbc26-w480.webp",
+          "sha256": "be926c7f103a290d67c611c26b68e7249e1a7521a9a4f9cee39852f21a88d91c",
+          "mime_type": "image/webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 34690
+        },
+        {
+          "kind": "width-1200",
+          "filename": "media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+          "sha256": "a8e714b320935368572d87b1fb6bd7a754eabf906e4b537acf498ec13f8b63b1",
+          "mime_type": "image/webp",
+          "width": 1200,
+          "height": 800,
+          "bytes": 130622
+        }
+      ]
+    },
+    {
+      "panda_slug": "yang-yang",
+      "media_id": "media-yang-yang-8e30a6c81892cbde",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
+      "rights": "CC BY-SA 4.0",
+      "credit": "O01326 / Wikimedia Commons",
+      "alt_zh": "洋洋在亚特兰大动物园的栖息地内休息",
+      "alt_en": "Yang Yang resting in his habitat at Zoo Atlanta",
+      "derivatives": [
+        {
+          "kind": "width-480",
+          "filename": "media-yang-yang-8e30a6c81892cbde-w480.webp",
+          "sha256": "29994d619b7d21af748b2ce87af3fc8839797923facda6c115febfa9e9c239fa",
+          "mime_type": "image/webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 23356
+        },
+        {
+          "kind": "width-1200",
+          "filename": "media-yang-yang-8e30a6c81892cbde-w1200.webp",
+          "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+          "mime_type": "image/webp",
+          "width": 1200,
+          "height": 800,
+          "bytes": 106314
+        }
+      ]
+    },
+    {
+      "panda_slug": "ya-lun",
+      "media_id": "media-ya-lun-4006c2e608f8e671",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
+      "rights": "CC BY-SA 4.0",
+      "credit": "O01326 / Wikimedia Commons",
+      "alt_zh": "雅伦在亚特兰大动物园的栖息地内坐着",
+      "alt_en": "Ya Lun sitting in her habitat at Zoo Atlanta",
+      "derivatives": [
+        {
+          "kind": "width-480",
+          "filename": "media-ya-lun-4006c2e608f8e671-w480.webp",
+          "sha256": "76fff6de4f34f0ba9b309990e4a2c744bab40fea27d1d1a38bae70343a7f2c7c",
+          "mime_type": "image/webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 24312
+        },
+        {
+          "kind": "width-1200",
+          "filename": "media-ya-lun-4006c2e608f8e671-w1200.webp",
+          "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+          "mime_type": "image/webp",
+          "width": 1200,
+          "height": 800,
+          "bytes": 113818
+        }
+      ]
+    }
+  ]
+}

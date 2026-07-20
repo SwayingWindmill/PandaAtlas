@@ -248,6 +248,11 @@ def project_panda_details(
                 "end_precision": residency_public.get("end_precision")
                 or ("day" if residency_public.get("end_date") else None),
                 "status": residency_public["status"],
+                **(
+                    {"last_verified_at": residency_public.get("last_verified_at")}
+                    if dataset_meta.get("public_schema_version") == "1.2.0"
+                    else {}
+                ),
                 "source_ids": [
                     source_id
                     for source_id in residency_public.get("source_ids", [])
@@ -392,6 +397,11 @@ def project_panda_details(
                         "facility_id": current_residency["facility_id"],
                         "coarse_location": current_residency["coarse_location"],
                         "status": current_residency["status"],
+                        **(
+                            {"last_verified_at": current_residency.get("last_verified_at")}
+                            if dataset_meta.get("public_schema_version") == "1.2.0"
+                            else {}
+                        ),
                     }
                     if current_residency
                     else None

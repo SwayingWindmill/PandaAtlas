@@ -13,10 +13,11 @@ function parseArguments(argv) {
   const options = {
     root: defaultRoot,
     report: path.join(defaultRoot, ".release-gate", "beta-hard-gates.json"),
+    dataset: null,
   };
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
-    if (argument === "--root" || argument === "--report") {
+    if (argument === "--root" || argument === "--report" || argument === "--dataset") {
       const value = argv[index + 1];
       if (!value) throw new Error(`${argument} requires a value`);
       options[argument.slice(2)] = path.resolve(value);
@@ -25,6 +26,12 @@ function parseArguments(argv) {
     }
     throw new Error(`Unknown argument: ${argument}`);
   }
+  options.dataset ??= path.join(
+    options.root,
+    "contracts",
+    "golden-dataset",
+    "mei-xiang-family.v1.json",
+  );
   return options;
 }
 
@@ -315,19 +322,91 @@ function assertReviewedSource(source, allowedStates, label) {
   );
 }
 
+function assertExpandedArchive(dataset) {
+  requireCondition(dataset?.contract_version === "1.0.0", "expanded dataset contract_version must be 1.0.0");
+  requireCondition(dataset?.dataset?.id === "panda-atlas-public", "expanded dataset id must be panda-atlas-public");
+  requireCondition(
+    dataset.dataset.base_dataset_version === "2026.07.18.1",
+    "expanded dataset must declare the reviewed golden base version",
+  );
+  requireCondition(Array.isArray(dataset.dataset.expansion_panda_ids), "expanded dataset must declare expansion_panda_ids");
+  for (const collection of [
+    "sources", "facilities", "institutions", "places", "pandas", "facts",
+    "parentage_assertions", "residencies", "events", "media",
+  ]) {
+    requireCondition(Array.isArray(dataset[collection]), `expanded dataset is missing ${collection}`);
+  }
+  const publishedPandas = new Map(
+    dataset.pandas
+      .filter((item) => item.publication_status === "published")
+      .map((item) => [item.id, item]),
+  );
+  for (const pandaId of dataset.dataset.expansion_panda_ids) {
+    const panda = publishedPandas.get(pandaId);
+    requireCondition(panda, `expanded panda ${pandaId} is not published`);
+    const approvedLocales = new Set(
+      (panda.public.content ?? [])
+        .filter((item) => item.translation_status === "approved")
+        .map((item) => item.locale),
+    );
+    requireCondition(
+      approvedLocales.has("zh-CN") && approvedLocales.has("en"),
+      `${panda.public.canonical_slug} requires approved Chinese and English content`,
+    );
+    const factFields = new Set(
+      dataset.facts
+        .filter(
+          (item) =>
+            item.publication_status === "published" &&
+            item.public.subject_id === pandaId &&
+            item.public.conclusion_status === "confirmed",
+        )
+        .map((item) => item.public.field),
+    );
+    requireCondition(factFields.has("sex"), `${panda.public.canonical_slug} has no confirmed sex fact`);
+    requireCondition(factFields.has("birth_date"), `${panda.public.canonical_slug} has no confirmed birth fact`);
+    requireCondition(
+      factFields.has("current_facility") || factFields.has("current_coarse_location"),
+      `${panda.public.canonical_slug} has no confirmed current-place fact`,
+    );
+    const eventCount = dataset.events.filter(
+      (item) => item.publication_status === "published" && item.public.participants?.includes(pandaId),
+    ).length;
+    requireCondition(eventCount >= 3, `${panda.public.canonical_slug} requires at least three reviewed events`);
+    const mediaCount = dataset.media.filter(
+      (item) =>
+        item.publication_status === "published" &&
+        item.public.panda_id === pandaId &&
+        item.public.status === "available",
+    ).length;
+    requireCondition(mediaCount >= 1, `${panda.public.canonical_slug} requires an available reviewed photo`);
+  }
+}
+
 function assertTrustedArchive(dataset, contract) {
-  const report = validateGoldenDataset(dataset);
-  requireCondition(report.valid, `golden dataset is invalid: ${JSON.stringify(report.errors)}`);
+  const isGoldenBaseline = dataset?.dataset?.id === "mei-xiang-family";
+  if (isGoldenBaseline) {
+    const report = validateGoldenDataset(dataset);
+    requireCondition(report.valid, `golden dataset is invalid: ${JSON.stringify(report.errors)}`);
+  } else {
+    assertExpandedArchive(dataset);
+  }
   const publicPandas = dataset.pandas.filter((item) => item.publication_status === "published");
   requireCondition(publicPandas.length === dataset.dataset.core_panda_count, "published core panda count drifted");
   const expectedParentage = [...contract.expected_confirmed_parentage_assertion_ids].sort();
   const confirmedParentage = dataset.parentage_assertions
     .filter((item) => item.publication_status === "published" && item.public.status === "confirmed")
     .sort((left, right) => left.id.localeCompare(right.id));
-  requireCondition(
-    JSON.stringify(confirmedParentage.map((item) => item.id)) === JSON.stringify(expectedParentage),
-    `confirmed parentage set drifted: expected ${expectedParentage.join(", ")}; got ${confirmedParentage.map((item) => item.id).join(", ")}`,
-  );
+  const confirmedParentageIds = new Set(confirmedParentage.map((item) => item.id));
+  for (const assertionId of expectedParentage) {
+    requireCondition(confirmedParentageIds.has(assertionId), `required confirmed parentage ${assertionId} is missing`);
+  }
+  if (isGoldenBaseline) {
+    requireCondition(
+      confirmedParentage.length === expectedParentage.length,
+      `golden confirmed parentage set drifted: expected ${expectedParentage.length}; got ${confirmedParentage.length}`,
+    );
+  }
   const sources = new Map(dataset.sources.map((source) => [source.id, source]));
   const allowedStates = new Set(contract.allowed_reviewed_source_states);
   const confirmedFacts = dataset.facts.filter(
@@ -412,9 +491,10 @@ async function assertWaiverPolicy(root, contract) {
   }
 }
 
-export async function runBetaHardGatePreflight({ root, report }) {
+export async function runBetaHardGatePreflight({ root, report, dataset }) {
   const contract = await readJson(path.join(root, "contracts", "beta-hard-gates.v1.json"));
-  const dataset = await readJson(path.join(root, "contracts", "golden-dataset", "mei-xiang-family.v1.json"));
+  const datasetPath = dataset ?? path.join(root, "contracts", "golden-dataset", "mei-xiang-family.v1.json");
+  const datasetState = await readJson(datasetPath);
   const checks = [];
   let release;
   const runCheck = async (id, action) => {
@@ -430,19 +510,19 @@ export async function runBetaHardGatePreflight({ root, report }) {
     }
   };
   await runCheck("release-integrity", async () => {
-    release = await assertReleaseIntegrity(root, dataset, contract);
+    release = await assertReleaseIntegrity(root, datasetState, contract);
   });
   await runCheck("public-data-boundary", async () => {
     requireCondition(release, "release integrity must pass before public data checks");
     await assertPublicDataBoundary(release, contract);
   });
-  await runCheck("trusted-archive", async () => assertTrustedArchive(dataset, contract));
+  await runCheck("trusted-archive", async () => assertTrustedArchive(datasetState, contract));
   await runCheck("admin-token-boundary", async () => assertAdminTokenBoundary(root, contract));
   await runCheck("waiver-policy", async () => assertWaiverPolicy(root, contract));
   const outcome = checks.every((check) => check.status === "passed") ? "passed" : "failed";
   const result = {
     outcome,
-    dataset_release_version: dataset.dataset.version,
+    dataset_release_version: datasetState.dataset.version,
     generated_at: new Date().toISOString(),
     checks,
   };

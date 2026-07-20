@@ -216,7 +216,7 @@ export interface PandaResidencySummary extends CurrentPlaceSummary {
 
 export interface PandaDomainEventSummary {
   id: string;
-  event_type: "transfer";
+  event_type: "birth" | "arrival" | "transfer" | "return" | "naming" | "public_debut" | "selection" | "announcement" | "death";
   event_status: "announced" | "completed" | "cancelled" | "disputed";
   event_date: string;
   event_date_precision: "day" | "month" | "year";

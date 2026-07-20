@@ -658,6 +658,7 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
     }>();
   const residencies = (residenciesResult.results ?? []).map((residency) => ({
     ...residency,
+    last_verified_at: null,
     source_ids: splitSourceIds(residency.source_ids)
   }));
   const currentResidency = [...residencies]
@@ -699,7 +700,7 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
     .bind(row.id)
     .all<{
       id: string;
-      event_type: "transfer";
+      event_type: "birth" | "arrival" | "transfer" | "return" | "naming" | "public_debut" | "selection" | "announcement" | "death";
       event_status: "announced" | "completed" | "cancelled" | "disputed";
       event_date: string;
       event_date_precision: "day" | "month" | "year";
@@ -745,7 +746,8 @@ export async function getPandaDetail(env: Env, pandaRef: string): Promise<PandaD
       ? {
           facility_id: currentResidency.facility_id,
           coarse_location: currentResidency.coarse_location,
-          status: currentResidency.status
+          status: currentResidency.status,
+          last_verified_at: currentResidency.last_verified_at
         }
       : null,
     residencies,

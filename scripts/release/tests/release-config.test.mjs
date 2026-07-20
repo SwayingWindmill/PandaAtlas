@@ -59,6 +59,18 @@ test("default gate includes panda curation and minimum photo validation", async 
   );
   assert.match(defaultGate, /id: "panda-media-pipeline"/);
   assert.match(defaultGate, /dependsOn: \["panda-curation-data"\]/);
+  assert.equal(
+    rootPackage.scripts["check:atlanta-photo-batch"],
+    "python scripts/curation/build_atlanta_photo_batch.py --check",
+  );
+  assert.equal(
+    rootPackage.scripts["check:atlanta-photo-release"],
+    "node scripts/release/check-beta-hard-gates.mjs --dataset data/reviewed-batches/2026.07.20.1/source.json --report .release-gate/atlanta-photo-hard-gates.json",
+  );
+  assert.match(defaultGate, /id: "atlanta-photo-batch"/);
+  assert.match(defaultGate, /id: "atlanta-photo-batch-tests"/);
+  assert.match(defaultGate, /id: "atlanta-photo-hard-gates"/);
+  assert.match(defaultGate, /dependsOn: \["atlanta-photo-batch-tests", "web-build"\]/);
 });
 
 test("default gate records automated core WCAG checks", async () => {
@@ -130,7 +142,10 @@ test("default gate records the release recovery drill after locked API setup", a
     "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
   );
   assert.match(defaultGate, /id: "release-recovery-drill"/);
-  assert.match(defaultGate, /dependsOn: \["api-sync", "beta-hard-gates"\]/);
+  assert.match(
+    defaultGate,
+    /dependsOn: \["api-sync", "beta-hard-gates", "atlanta-photo-hard-gates"\]/,
+  );
   assert.match(defaultGate, /run_release_recovery_drill\.py/);
 });
 

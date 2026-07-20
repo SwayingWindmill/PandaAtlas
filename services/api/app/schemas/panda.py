@@ -141,6 +141,7 @@ class CurrentPlaceSummary(BaseModel):
     facility_id: UUID | None = None
     coarse_location: str | None = None
     status: str = Field(pattern="^(confirmed|confirmed_country_level|provisional)$")
+    last_verified_at: date | None = Field(default=None, exclude_if=lambda value: value is None)
 
 
 class PandaResidencySummary(CurrentPlaceSummary):
@@ -155,7 +156,9 @@ class PandaResidencySummary(CurrentPlaceSummary):
 
 class PandaDomainEventSummary(BaseModel):
     id: str
-    event_type: str = Field(pattern="^transfer$")
+    event_type: str = Field(
+        pattern="^(birth|arrival|transfer|return|naming|public_debut|selection|announcement|death)$"
+    )
     event_status: str = Field(pattern="^(announced|completed|cancelled|disputed)$")
     event_date: date
     event_date_precision: str = Field(default="day", pattern="^(day|month|year)$")

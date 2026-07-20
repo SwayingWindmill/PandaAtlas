@@ -301,6 +301,18 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "test:panda-media"]),
       },
       {
+        id: "atlanta-photo-batch",
+        label: "Atlanta reviewed photo batch reproducibility",
+        dependsOn: ["panda-media-pipeline"],
+        run: () => runCommand(npm, ["run", "check:atlanta-photo-batch"]),
+      },
+      {
+        id: "atlanta-photo-batch-tests",
+        label: "Atlanta reviewed photo batch tests",
+        dependsOn: ["atlanta-photo-batch"],
+        run: () => runCommand(npm, ["run", "test:atlanta-photo-batch"]),
+      },
+      {
         id: "web-lint",
         label: "Web lint",
         run: () => runCommand(npm, ["run", "lint:web"]),
@@ -347,6 +359,12 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "check:beta-hard-gates"]),
       },
       {
+        id: "atlanta-photo-hard-gates",
+        label: "Atlanta photo expansion trust and release preflight",
+        dependsOn: ["atlanta-photo-batch-tests", "web-build"],
+        run: () => runCommand(npm, ["run", "check:atlanta-photo-release"]),
+      },
+      {
         id: "public-contract",
         label: "Public API boundary contract",
         run: () => runCommand(npm, ["run", "check:public-api-boundary"]),
@@ -381,7 +399,7 @@ export async function runDefaultReleaseGate() {
       {
         id: "release-recovery-drill",
         label: "Immutable release rollback and D1 rebuild drill",
-        dependsOn: ["api-sync", "beta-hard-gates"],
+        dependsOn: ["api-sync", "beta-hard-gates", "atlanta-photo-hard-gates"],
         run: () =>
           runCommand(
             uv,

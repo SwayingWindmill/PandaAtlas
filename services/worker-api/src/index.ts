@@ -51,6 +51,11 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
     return jsonResponse({ status: "ok", version: "0.1.0-cloudflare", db });
   }
 
+  const mediaMatch = path.match(/^\/media\/(releases\/[^/]+\/[^/]+)$/);
+  if ((request.method === "GET" || request.method === "HEAD") && mediaMatch) {
+    return servePublicMedia(env, mediaMatch[1], request.method === "HEAD");
+  }
+
   if (request.method === "GET" && path === "/api/v1/releases/current") {
     const release = await requireCurrentRelease(env);
     const versionHeaders = releaseHeaders(release);
@@ -184,6 +189,32 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
   }
 
   return errorResponse(404, "Not found");
+}
+
+const PUBLIC_MEDIA_KEY = /^releases\/\d{4}\.\d{2}\.\d{2}\.\d+\/media-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9a-f]{16}-w(?:480|1200)\.webp$/;
+
+async function servePublicMedia(env: Env, key: string, headOnly: boolean): Promise<Response> {
+  if (!PUBLIC_MEDIA_KEY.test(key)) {
+    throw new HttpError(404, "Media not found");
+  }
+  if (!env.MEDIA_BUCKET) {
+    throw new HttpError(503, "Media storage is unavailable");
+  }
+  const object = await env.MEDIA_BUCKET.get(key);
+  if (!object) {
+    throw new HttpError(404, "Media not found");
+  }
+  return new Response(headOnly ? null : object.body, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "public, max-age=31536000, immutable",
+      "Content-Length": String(object.size),
+      "Content-Type": "image/webp",
+      "ETag": object.etag,
+      "X-Content-Type-Options": "nosniff"
+    }
+  });
 }
 
 function requireBBox(raw: string | null) {

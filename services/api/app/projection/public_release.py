@@ -125,6 +125,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "type",
     "tags",
     "to_coarse_location",
+    "to_facility_id",
     "translation_status",
     "url",
     "value",

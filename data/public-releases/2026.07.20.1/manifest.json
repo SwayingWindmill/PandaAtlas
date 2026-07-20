@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.20.1",
+  "files": {
+    "api.json": {
+      "bytes": 98892,
+      "sha256": "9a6216c654609fc017bdedefc26b9909fdaa0c4f905a5ebf6e55a6d9156535f4"
+    },
+    "d1.sql": {
+      "bytes": 131497,
+      "sha256": "a78c7a495c08d113acf4b1c2b0c32589f7b27f89a83c05b904e541b4582506d0"
+    },
+    "pandas.csv": {
+      "bytes": 21040,
+      "sha256": "2e9303f6220206c35febff1cd4b544f60921602cd501c05d3e3a1ef7d6d52cd4"
+    },
+    "pandas.json": {
+      "bytes": 35303,
+      "sha256": "c9a6bbc6ef009aac5faab6e74fbb838bfc23fc9ab0e5997363e70d808a782cf9"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "public-release-v4",
+  "public_schema_version": "1.2.0",
+  "publication_batch_id": "atlanta-first-photo-batch",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 10,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 8,
+    "facilities": 5,
+    "facts": 30,
+    "institutions": 4,
+    "media": 10,
+    "pandas": 10,
+    "parentage_assertions": 14,
+    "places": 4,
+    "residencies": 15,
+    "sources": 14
+  },
+  "released_at": "2026-07-20T03:30:00Z"
+}

@@ -18,6 +18,9 @@ export interface D1Database {
 }
 
 export interface R2ObjectBody {
+  body: ReadableStream<Uint8Array>;
+  size: number;
+  etag: string;
   json<T = unknown>(): Promise<T>;
   text(): Promise<string>;
 }
