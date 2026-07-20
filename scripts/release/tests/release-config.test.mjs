@@ -219,6 +219,27 @@ test("Worker D1 migration scripts use the atomic trigger-safe runner", async () 
   assert.doesNotMatch(workerPackage.scripts["d1:migrate:local"], /wrangler d1 migrations apply/);
 });
 
+test("root package exposes guarded Public Release D1 activation and rollback commands", async () => {
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+
+  assert.equal(
+    rootPackage.scripts["release:d1:preflight"],
+    "node scripts/release/apply-public-release-d1.mjs",
+  );
+  assert.equal(
+    rootPackage.scripts["release:d1:apply"],
+    "node scripts/release/apply-public-release-d1.mjs --execute",
+  );
+  assert.equal(
+    rootPackage.scripts["release:d1:rollback:preflight"],
+    "node scripts/release/rollback-public-release-d1.mjs",
+  );
+  assert.equal(
+    rootPackage.scripts["release:d1:rollback"],
+    "node scripts/release/rollback-public-release-d1.mjs --execute",
+  );
+});
+
 test("web lockfile retains Linux native optional packages", async () => {
   const webPackage = JSON.parse(await readFile(webPackagePath, "utf8"));
   const packageLock = JSON.parse(await readFile(packageLockPath, "utf8"));
