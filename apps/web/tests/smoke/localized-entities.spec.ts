@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const RELEASE_ID = "2026.07.20.1";
+const RELEASE_ID = "2026.07.20.2";
 const INSTITUTION_SLUG = "smithsonian-national-zoo";
 const PLACE_SLUG = "smithsonian-national-zoo-washington-dc";
 

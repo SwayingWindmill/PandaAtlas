@@ -61,7 +61,7 @@ test("renders the reviewed identity, family, footprint, evidence, no-image, and 
   await expect(page.getByTestId("footprint-text-view")).toContainText("中国（国家级记录）");
   await expect(page.getByTestId("evidence-list").getByRole("link")).toHaveCount(2);
   await expect(page.getByTestId("media-empty-state")).toContainText("暂无可公开授权影像");
-  await expect(page.getByTestId("revision-summary")).toContainText("2026.07.20.1");
+  await expect(page.getByTestId("revision-summary")).toContainText("2026.07.20.2");
   await expect(page.getByTestId("timeline-list")).toContainText("来源发布日期");
 });
 

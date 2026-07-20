@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { Buffer } from "node:buffer";
 
-const RELEASE_ID = "2026.07.20.1";
+const CURRENT_RELEASE_ID = "2026.07.20.2";
+const ATLANTA_MEDIA_RELEASE_ID = "2026.07.20.1";
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
   "base64",
@@ -29,7 +30,7 @@ const profiles = [
 ] as const;
 
 test.beforeEach(async ({ page }) => {
-  await page.route(`**/media/releases/${RELEASE_ID}/*.webp`, async (route) => {
+  await page.route(`**/media/releases/${ATLANTA_MEDIA_RELEASE_ID}/*.webp`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "image/png",
@@ -41,11 +42,11 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("publishes ten reviewed panda profiles in the current Web release", async ({ page }) => {
+test("publishes fourteen reviewed panda profiles in the current Web release", async ({ page }) => {
   await page.goto("/zh/atlas");
 
-  await expect(page.getByTestId("public-delivery-notice")).toContainText(RELEASE_ID);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("10");
+  await expect(page.getByTestId("public-delivery-notice")).toContainText(CURRENT_RELEASE_ID);
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("14");
 
   for (const profile of profiles) {
     await page.goto(`/zh/atlas?q=${encodeURIComponent(profile.nameEn)}`);
@@ -61,7 +62,7 @@ for (const profile of profiles) {
 
     await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: new RegExp(profile.nameZh) })).toBeVisible();
-    await expect(page.getByTestId("revision-summary")).toContainText(RELEASE_ID);
+    await expect(page.getByTestId("revision-summary")).toContainText(CURRENT_RELEASE_ID);
     await expect(page.getByTestId("fact-place")).toContainText("2026-07-20");
     await expect(page.getByTestId("timeline-list").locator(":scope > li")).toHaveCount(5);
 
@@ -72,7 +73,7 @@ for (const profile of profiles) {
     await expect(image).toBeVisible();
     await expect(image).toHaveAttribute(
       "src",
-      new RegExp(`/media/releases/${RELEASE_ID}/.*-w1200\\.webp$`),
+      new RegExp(`/media/releases/${ATLANTA_MEDIA_RELEASE_ID}/.*-w1200\\.webp$`),
     );
     await expect(gallery).toContainText("CC BY-SA 4.0");
     await expect(gallery).toContainText("O01326 / Wikimedia Commons");
