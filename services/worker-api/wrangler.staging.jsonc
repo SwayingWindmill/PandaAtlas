@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "panda-atlas-api-staging",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-01",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  },
+  "routes": [],
+  "vars": {
+    "APP_ENV": "staging"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "panda-atlas-staging",
+      "database_id": "826fffe9-25ea-444e-8226-4e337a95bba1",
+      "migrations_dir": "../../infra/cloudflare/d1/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "GEO_BUCKET",
+      "bucket_name": "panda-atlas-geo-staging"
+    },
+    {
+      "binding": "MEDIA_BUCKET",
+      "bucket_name": "panda-atlas-media-staging"
+    }
+  ]
+}

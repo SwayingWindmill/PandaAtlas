@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --config wrangler.staging.jsonc",
     "d1:migrate:local": "node ../../scripts/release/apply-d1-migrations.mjs --database panda-atlas --config services/worker-api/wrangler.jsonc --local --persist-to services/worker-api/.wrangler/state",
     "d1:migrate": "node ../../scripts/release/apply-d1-migrations.mjs --database panda-atlas --config services/worker-api/wrangler.jsonc --remote",
     "typecheck": "tsc --noEmit",
