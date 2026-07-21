@@ -2,34 +2,12 @@ name: Crawler PoC
 
 on:
   pull_request:
-    paths:
-      - ".github/workflows/crawler-poc.yml"
-      - "package.json"
-      - "services/api/pyproject.toml"
-      - "services/api/uv.lock"
-      - "data/acquisition-sources/**"
-      - "services/api/app/acquisition/**"
-      - "services/api/scripts/run_crawler_poc.py"
-      - "services/api/scripts/run_source_adapter.py"
-      - "services/api/tests/acquisition/**"
-      - "docs/data-acquisition/**"
-      - "scripts/release/tests/crawler-poc-config.test.mjs"
-  push:
-    branches:
-      - main
-      - master
-    paths:
-      - ".github/workflows/crawler-poc.yml"
-      - "package.json"
-      - "services/api/pyproject.toml"
-      - "services/api/uv.lock"
-      - "data/acquisition-sources/**"
-      - "services/api/app/acquisition/**"
-      - "services/api/scripts/run_crawler_poc.py"
-      - "services/api/scripts/run_source_adapter.py"
-      - "services/api/tests/acquisition/**"
-      - "docs/data-acquisition/**"
-      - "scripts/release/tests/crawler-poc-config.test.mjs"
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
   workflow_dispatch:
 
 permissions:
@@ -42,6 +20,10 @@ env:
 jobs:
   crawler-poc:
     name: Controlled crawler PoC (${{ matrix.platform }})
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
     strategy:
       fail-fast: false
       matrix:

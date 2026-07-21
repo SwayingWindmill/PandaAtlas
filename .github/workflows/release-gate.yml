@@ -2,10 +2,12 @@ name: Release Gate
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
-      - master
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
   workflow_dispatch:
     inputs:
       run_extended:
@@ -23,6 +25,10 @@ env:
 jobs:
   release-gate:
     name: Default gate (${{ matrix.platform }})
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
     strategy:
       fail-fast: false
       matrix:
