@@ -41,3 +41,15 @@ The `wayfinder` skill represents a work map as one GitHub issue with child issue
 - Otherwise, record relationships using task lists, `Part of #<map>`, and `Blocked by: #<issue>` lines.
 - Claim work with `gh issue edit <number> --add-assignee @me`.
 - Resolve work by commenting with the result and closing the issue.
+
+## Map-closing delivery rule
+
+Implementation maps use one deferred-verification closing ticket:
+
+- Create one final child issue named `Close <map name>: integration and verification`.
+- Make it depend on every implementation child issue in the map.
+- Mark its PR with the `delivery:map-close` label.
+- Every earlier child issue and PR must state `Verification: deferred to the map-closing ticket`.
+- Earlier child tickets do not own broad tests, Release Gate, Linux/Windows CI, browser or accessibility suites, Staging or publication evidence, immutable hashes, rollback/withdrawal drills, or cross-page frontend work.
+- The closing ticket performs those deferred activities once, fixes integration failures across the completed slices, and supplies the map's final acceptance evidence.
+- Do not close the parent map until the map-closing ticket has passed.

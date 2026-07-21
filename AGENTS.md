@@ -65,11 +65,14 @@ Database/Supabase:
 - Geo endpoints must return valid GeoJSON FeatureCollection payloads.
 - DB read paths must preserve `DB_USE_MOCK_FALLBACK=true` behavior for local resilience.
 
-## Testing Guidelines
-- For backend endpoint changes, add or update tests in `services/api/tests/api`.
-- For service logic changes, add unit tests in `services/api/tests/services`.
-- Minimum check before PR: `uv run python -m compileall app` and `uv run pytest -q`.
-- When frontend tooling is available, run lint + typecheck before PR.
+## Map-Scoped Delivery and Verification
+- Work performed as child tickets of a `wayfinder:map` uses deferred verification by default.
+- Ordinary child tickets implement only their bounded backend, data, crawler, component, or documentation slice.
+- Ordinary child tickets do not add or run the broad test matrix, Release Gate, Linux/Windows CI, browser suites, automated accessibility suites, Staging deployments, publication evidence, immutable-hash evidence, withdrawal/rollback drills, or cross-page frontend integration.
+- Ordinary child tickets may run only the smallest syntax, import, formatting, or type sanity check needed to avoid knowingly handing off an unparseable artifact. These checks are not acceptance evidence.
+- Every implementation map must end with one dedicated map-closing ticket and PR. That closing slice owns cross-ticket and cross-page integration, test creation and repair, full Release Gate execution, cross-platform CI, browser and accessibility verification, Staging and release evidence, immutable hashes, and rollback or withdrawal verification.
+- The map-closing ticket is blocked by every implementation child ticket. The map cannot close until the closing ticket passes its complete acceptance matrix.
+- A maintainer must explicitly override this policy when earlier verification is required; agents must not reintroduce per-ticket gates by assumption.
 
 ## Commit & Pull Request Guidelines
 Use Conventional Commits, for example:
