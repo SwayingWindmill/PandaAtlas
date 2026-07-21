@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { Buffer } from "node:buffer";
 
-const CURRENT_RELEASE_ID = "2026.07.20.2";
+const CURRENT_RELEASE_ID = "2026.07.21.1";
 const ATLANTA_MEDIA_RELEASE_ID = "2026.07.20.1";
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
@@ -42,11 +42,11 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("publishes fourteen reviewed panda profiles in the current Web release", async ({ page }) => {
+test("publishes fifteen reviewed panda profiles in the current Web release", async ({ page }) => {
   await page.goto("/zh/atlas");
 
   await expect(page.getByTestId("public-delivery-notice")).toContainText(CURRENT_RELEASE_ID);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("14");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("15");
 
   for (const profile of profiles) {
     await page.goto(`/zh/atlas?q=${encodeURIComponent(profile.nameEn)}`);

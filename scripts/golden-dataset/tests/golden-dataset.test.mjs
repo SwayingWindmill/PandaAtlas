@@ -120,7 +120,7 @@ test("every core profile declares completeness gaps and current-place verificati
 test("generated web identity aliases match the current reviewed release", async () => {
   const dataset = await readWebReleaseDataset();
   assert.equal(dataset.dataset.version, WEB_RELEASE_VERSION);
-  assert.equal(dataset.pandas.length, 14);
+  assert.equal(dataset.pandas.length, 15);
   const generated = await readFile(generatedIdentityAliasesPath, "utf8");
 
   assert.equal(
@@ -156,6 +156,8 @@ test("generated web identity aliases match the current reviewed release", async 
       "yalun",
       "yang-yang",
       "yangyang",
+      "xi-lun",
+      "xilun",
       "xiao-qi-ji",
       "xiao-xiao",
       "xiao_qi_ji",
@@ -172,10 +174,11 @@ test("generated web identity aliases match the current reviewed release", async 
   assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
   const details = buildTrustedPandaDetails(dataset);
-  assert.equal(details.length, 14);
+  assert.equal(details.length, 15);
   const lunLun = details.find((detail) => detail.slug === "lun-lun");
   const yangYang = details.find((detail) => detail.slug === "yang-yang");
   const yaLun = details.find((detail) => detail.slug === "ya-lun");
+  const xiLun = details.find((detail) => detail.slug === "xi-lun");
   const uenoFamily = ["ri-ri", "shin-shin", "xiao-xiao", "lei-lei"].map((slug) =>
     details.find((detail) => detail.slug === slug),
   );
@@ -202,6 +205,16 @@ test("generated web identity aliases match the current reviewed release", async 
   assert.equal(yaLun.mother_id, lunLun.id);
   assert.equal(yaLun.father_id, yangYang.id);
   assert.ok(yaLun.sources.some((source) => source.id === "src_commons_ya_lun_photo"));
+  assert.ok(xiLun);
+  assert.equal(xiLun.mother_id, lunLun.id);
+  assert.equal(xiLun.father_id, yangYang.id);
+  assert.equal(xiLun.public_revision.data_version, WEB_RELEASE_VERSION);
+  assert.equal(xiLun.current_place.last_verified_at, "2026-07-20");
+  assert.ok(xiLun.events.length >= 3);
+  assert.equal(xiLun.media.length, 1);
+  assert.equal(xiLun.media[0].status, "available");
+  assert.match(xiLun.cover_image_url, /\/media\/releases\/2026\.07\.21\.1\/.*-w1200\.webp$/);
+  assert.ok(xiLun.sources.some((source) => source.id === "src_commons_xi_lun_photo"));
 
   const facilities = buildTrustedFacilities(dataset);
   assert.equal(

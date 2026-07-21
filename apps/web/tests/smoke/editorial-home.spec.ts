@@ -37,7 +37,7 @@ test("links relationship and place exploration to existing canonical surfaces", 
   );
   await expect(exploration.getByRole("link", { name: "Open structured map" })).toHaveAttribute(
     "href",
-    "/en/map?mode=institutions&snapshot=2026.07.20.2",
+    "/en/map?mode=institutions&snapshot=2026.07.21.1",
   );
   await expect(exploration.getByRole("link", { name: "Smithsonian institution" })).toHaveAttribute(
     "href",
@@ -54,7 +54,7 @@ test("publishes only real localized revision summaries from the current release"
   const revisions = page.getByTestId("recent-archive-revisions");
 
   await expect(revisions.getByRole("listitem")).toHaveCount(4);
-  await expect(revisions).toContainText("Public release: 2026.07.20.2");
+  await expect(revisions).toContainText("Public release: 2026.07.21.1");
   await expect(revisions).toContainText("Reviewed identity, birth, residency, events, lineage, and licensed media.");
   await expect(revisions).not.toContainText("Tian Tian");
 });

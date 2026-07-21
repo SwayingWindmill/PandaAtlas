@@ -1,4 +1,4 @@
-// Generated from reviewed Public Release 2026.07.20.2.
+// Generated from reviewed Public Release 2026.07.21.1.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
 import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
@@ -97,6 +97,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
     "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "slug": "tian-tian"
   },
+  "xi-lun": {
+    "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+    "slug": "xi-lun"
+  },
   "xiao_qi_ji": {
     "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
     "slug": "xiao-qi-ji"
@@ -116,6 +120,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "xiaoxiao": {
     "id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
     "slug": "xiao-xiao"
+  },
+  "xilun": {
+    "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+    "slug": "xi-lun"
   },
   "ya-lun": {
     "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
@@ -396,7 +404,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -672,7 +680,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": []
     }
@@ -853,7 +861,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1043,7 +1051,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1243,7 +1251,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1502,7 +1510,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1692,7 +1700,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1990,6 +1998,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "event_date_precision": "day",
         "participants": [
           "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "d24087cd-70d6-5902-92dd-ecc95186937b",
           "db108e44-8893-54e1-8cb5-8c5238b75089",
           "fa8a0c14-b937-5de5-ae65-482cfd744482"
         ],
@@ -2022,7 +2031,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2320,6 +2329,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "event_date_precision": "day",
         "participants": [
           "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "d24087cd-70d6-5902-92dd-ecc95186937b",
           "db108e44-8893-54e1-8cb5-8c5238b75089",
           "fa8a0c14-b937-5de5-ae65-482cfd744482"
         ],
@@ -2352,7 +2362,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2661,6 +2671,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "event_date_precision": "day",
         "participants": [
           "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "d24087cd-70d6-5902-92dd-ecc95186937b",
           "db108e44-8893-54e1-8cb5-8c5238b75089",
           "fa8a0c14-b937-5de5-ae65-482cfd744482"
         ],
@@ -2693,7 +2704,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3049,7 +3060,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3405,7 +3416,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3737,7 +3748,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4069,7 +4080,349 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.20.2",
+      "data_version": "2026.07.21.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+    "slug": "xi-lun",
+    "name_zh": "喜伦",
+    "name_en": "Xi Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2016-09-03",
+    "current_location": "成都大熊猫繁育研究基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+    "search_terms": [
+      "xi-lun",
+      "喜伦",
+      "Xi Lun",
+      "xilun",
+      "zoo_atlanta_profile_key:xi-lun"
+    ],
+    "intro": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，与雅伦为双胞胎，2024 年返回成都基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-xi-lun-de9774371d2f2427",
+        "panda_id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "喜伦在亚特兰大动物园的栖息地内坐着",
+        "alt_en": "Xi Lun sitting in her habitat at Zoo Atlanta",
+        "status": "available",
+        "sha256": "59646c0e1cca83a35fa76efface934feb490ccc5a58871e5dc518f6f2e7485f6",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 232944,
+        "derivatives": [
+          {
+            "bytes": 41100,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "512163b2e0abbdb809b70e244e1c08b9eee5d1dfc4a8f50284eb77f3d4fba134",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 232944,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "59646c0e1cca83a35fa76efface934feb490ccc5a58871e5dc518f6f2e7485f6",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_xi_lun_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+      "canonical_slug": "xi-lun",
+      "names": [
+        {
+          "value": "喜伦",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        },
+        {
+          "value": "Xi Lun",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "xilun",
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "zoo_atlanta_profile_key",
+          "value": "xi-lun",
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2016-09-03",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-21",
+        "assertion_ids": [
+          "fact-xi-lun-birth-date"
+        ],
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-xi-lun-current-place"
+        ],
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-21",
+        "assertion_ids": [
+          "fact-xi-lun-sex"
+        ],
+        "source_ids": [
+          "src_zooatlanta_twins_names"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_zooatlanta_2016_public_debut",
+        "publisher": "Zoo Atlanta",
+        "title": "Zoo Atlanta closes 2016",
+        "url": "https://zooatlanta.org/press-release/zoo-atlanta-closes-2016/",
+        "published_at": "2016-12-29",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_arrival_china_2024",
+        "publisher": "Zoo Atlanta",
+        "title": "Giant Pandas Have Arrived in China",
+        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+        "published_at": "2024-10-13",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_cubs_birth",
+        "publisher": "Zoo Atlanta",
+        "title": "Lun Lun's Second Cub Has Been Born",
+        "url": "https://zooatlanta.org/press-release/lun-luns-second-cub-has-been-born/",
+        "published_at": "2016-09-03",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_twins_names",
+        "publisher": "Zoo Atlanta",
+        "title": "Meet the Giant Panda Cub Twins",
+        "url": "https://zooatlanta.org/meet-giant-panda-cub-twins-zoo-atlanta/",
+        "published_at": "2017-04-03",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_commons_xi_lun_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Xi Lun at Zoo Atlanta",
+        "url": "https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg",
+        "published_at": "2022-02-08",
+        "last_verified_at": "2026-07-21",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-20"
+    },
+    "residencies": [
+      {
+        "id": "res-xi-lun-zoo-atlanta",
+        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2016-09-03",
+        "start_precision": "day",
+        "end_date": "2024-10-12",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ]
+      },
+      {
+        "id": "res-xi-lun-chengdu",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-10-13",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-xi-lun-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2016-09-03",
+        "event_date_precision": "day",
+        "participants": [
+          "d24087cd-70d6-5902-92dd-ecc95186937b"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-xi-lun-public-debut",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2016-12-27",
+        "event_date_precision": "day",
+        "participants": [
+          "d24087cd-70d6-5902-92dd-ecc95186937b"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_2016_public_debut"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-return-2024",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2024-10-12",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "d24087cd-70d6-5902-92dd-ecc95186937b",
+          "db108e44-8893-54e1-8cb5-8c5238b75089",
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，与雅伦为双胞胎，2024 年返回成都基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Daughter of Lun Lun and Yang Yang, born at Zoo Atlanta in 2016, twin of Ya Lun, and returned to Chengdu in 2024."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_xi_lun_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.21.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5035,6 +5388,28 @@ export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
     ]
   },
   {
+    "id": "parent-xi-lun-father",
+    "child_id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+    "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "role": "father",
+    "status": "confirmed",
+    "source_ids": [
+      "src_zooatlanta_cubs_birth",
+      "src_zooatlanta_twins_names"
+    ]
+  },
+  {
+    "id": "parent-xi-lun-mother",
+    "child_id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+    "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_zooatlanta_cubs_birth",
+      "src_zooatlanta_twins_names"
+    ]
+  },
+  {
     "id": "parent-xiao-qi-ji-father",
     "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
     "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
@@ -5394,6 +5769,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+    "slug": "xi-lun",
+    "name_zh": "喜伦",
+    "name_en": "Xi Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2016-09-03",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
     "slug": "an-an-bao-li-father",
     "name_zh": "an-an-bao-li-father",
@@ -5518,5 +5914,13 @@ export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
   {
     "parent_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
     "child_id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
+  },
+  {
+    "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "child_id": "d24087cd-70d6-5902-92dd-ecc95186937b"
+  },
+  {
+    "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "child_id": "d24087cd-70d6-5902-92dd-ecc95186937b"
   }
 ];

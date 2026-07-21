@@ -87,6 +87,18 @@ test("default gate includes panda curation and minimum photo validation", async 
   assert.match(defaultGate, /id: "ueno-family-photo-batch-tests"/);
   assert.match(defaultGate, /id: "ueno-family-photo-hard-gates"/);
   assert.match(defaultGate, /dependsOn: \["ueno-family-photo-batch-tests", "web-build"\]/);
+  assert.equal(
+    rootPackage.scripts["check:xi-lun-photo-batch"],
+    "python scripts/curation/build_xi_lun_photo_batch.py --check",
+  );
+  assert.equal(
+    rootPackage.scripts["check:xi-lun-photo-release"],
+    "node scripts/release/check-beta-hard-gates.mjs --dataset data/reviewed-batches/2026.07.21.1/source.json --report .release-gate/xi-lun-photo-hard-gates.json",
+  );
+  assert.match(defaultGate, /id: "xi-lun-photo-batch"/);
+  assert.match(defaultGate, /id: "xi-lun-photo-batch-tests"/);
+  assert.match(defaultGate, /id: "xi-lun-photo-hard-gates"/);
+  assert.match(defaultGate, /dependsOn: \["xi-lun-photo-batch-tests", "web-build"\]/);
 });
 
 test("default gate records automated core WCAG checks", async () => {
