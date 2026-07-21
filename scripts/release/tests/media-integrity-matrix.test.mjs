@@ -89,11 +89,23 @@ for (const fixture of [
     dataset: "data/reviewed-batches/2026.07.20.2/source.json",
     api: "data/public-releases/2026.07.20.2/api.json",
   },
+  {
+    name: "Xi Lun photo expansion with inherited Atlanta and Ueno media",
+    dataset: "data/reviewed-batches/2026.07.21.1/source.json",
+    api: "data/public-releases/2026.07.21.1/api.json",
+  },
 ]) {
   test(`${fixture.name} satisfies the same immutable media contract`, async () => {
     const dataset = JSON.parse(await readFile(path.join(repoRoot, fixture.dataset), "utf8"));
     const api = JSON.parse(await readFile(path.join(repoRoot, fixture.api), "utf8"));
-    assert.doesNotThrow(() => assertReviewedMediaArchive(dataset, contract, api));
+    assert.doesNotThrow(() =>
+      assertReviewedMediaArchive(
+        dataset,
+        contract,
+        api,
+        new Set(["2026.07.18.1", "2026.07.20.1", "2026.07.20.2", "2026.07.21.1"]),
+      ),
+    );
   });
 }
 

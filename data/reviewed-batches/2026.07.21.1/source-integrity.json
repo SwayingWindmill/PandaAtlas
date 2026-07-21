@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "source_id": "src_commons_xi_lun_photo",
+  "candidate_fixture": "services/api/tests/acquisition/fixtures/commons-xi-lun-imageinfo.json",
+  "candidate_fixture_canonical_sha256": "20b004f13d9f51b8903cc303b3e191563995781f16a5685a60a7d4ac1125b028",
+  "commons_file": {
+    "title": "File:Xi Lun at Zoo Atlanta.jpg",
+    "uploader": "O01326",
+    "artist": "O01326",
+    "credit": "Own work",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "attribution_required": true,
+    "original_url": "https://upload.wikimedia.org/wikipedia/commons/8/82/Xi_Lun_at_Zoo_Atlanta.jpg",
+    "original_width": 5472,
+    "original_height": 3648,
+    "original_bytes": 18204374,
+    "original_mime": "image/jpeg",
+    "original_sha1": "e96415ba1e422405fe36278029dc211005971170"
+  },
+  "processing_input": {
+    "requested_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Xi_Lun_at_Zoo_Atlanta.jpg?width=1600",
+    "policy_reason": "Wikimedia returned HTTP 429 for the 18 MB original and instructed clients to use available thumbnail sizes; no identity, proxy, or User-Agent rotation was attempted.",
+    "actual_width": 1920,
+    "actual_height": 1280,
+    "actual_bytes": 762843,
+    "actual_mime": "image/jpeg",
+    "actual_sha256": "20ccab1f901b6821fda2b8b3f699a903fcd371a4adb119c5272c771fb0a06d92",
+    "processor_manifest_canonical_sha256": "ad247dcdb81db086464f3d682bfb6540064c1ac056fa021528afd84f4abc2629"
+  },
+  "review": {
+    "reviewed_at": "2026-07-21",
+    "review_state": "approved-for-batch",
+    "original_image_downloaded": false,
+    "publication_requires_release_gates": true
+  }
+}

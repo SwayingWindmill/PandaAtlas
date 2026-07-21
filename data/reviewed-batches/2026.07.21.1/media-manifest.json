@@ -1,0 +1,35 @@
+{
+  "batch_version": "2026.07.21.1",
+  "generated_at": "2026-07-21T10:15:00Z",
+  "records": [
+    {
+      "alt_en": "Xi Lun sitting in her habitat at Zoo Atlanta",
+      "alt_zh": "喜伦在亚特兰大动物园的栖息地内坐着",
+      "credit": "O01326 / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 41100,
+          "filename": "media-xi-lun-de9774371d2f2427-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "512163b2e0abbdb809b70e244e1c08b9eee5d1dfc4a8f50284eb77f3d4fba134",
+          "width": 480
+        },
+        {
+          "bytes": 232944,
+          "filename": "media-xi-lun-de9774371d2f2427-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "59646c0e1cca83a35fa76efface934feb490ccc5a58871e5dc518f6f2e7485f6",
+          "width": 1200
+        }
+      ],
+      "media_id": "media-xi-lun-de9774371d2f2427",
+      "panda_slug": "xi-lun",
+      "rights": "CC BY-SA 4.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg"
+    }
+  ]
+}

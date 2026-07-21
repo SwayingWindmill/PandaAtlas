@@ -31,7 +31,7 @@ test("normalizes unsupported and invalid URL state instead of silently retaining
   await page.goto("/en/atlas?status=invalid&page=0&unsupported=value");
 
   await expect(page).toHaveURL(/\/en\/atlas$/);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("14 published profiles");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("15 published profiles");
 });
 
 test("preserves compatible discovery state across the locale switch", async ({ page }) => {

@@ -325,6 +325,18 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "test:ueno-family-photo-batch"]),
       },
       {
+        id: "xi-lun-photo-batch",
+        label: "Xi Lun reviewed photo batch reproducibility",
+        dependsOn: ["ueno-family-photo-batch-tests"],
+        run: () => runCommand(npm, ["run", "check:xi-lun-photo-batch"]),
+      },
+      {
+        id: "xi-lun-photo-batch-tests",
+        label: "Xi Lun reviewed photo batch tests",
+        dependsOn: ["xi-lun-photo-batch"],
+        run: () => runCommand(npm, ["run", "test:xi-lun-photo-batch"]),
+      },
+      {
         id: "web-lint",
         label: "Web lint",
         run: () => runCommand(npm, ["run", "lint:web"]),
@@ -381,6 +393,12 @@ export async function runDefaultReleaseGate() {
         label: "Ueno family photo expansion trust and release preflight",
         dependsOn: ["ueno-family-photo-batch-tests", "web-build"],
         run: () => runCommand(npm, ["run", "check:ueno-family-photo-release"]),
+      },
+      {
+        id: "xi-lun-photo-hard-gates",
+        label: "Xi Lun photo expansion trust and release preflight",
+        dependsOn: ["xi-lun-photo-batch-tests", "web-build"],
+        run: () => runCommand(npm, ["run", "check:xi-lun-photo-release"]),
       },
       {
         id: "public-contract",

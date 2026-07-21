@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.21.1",
+  "files": {
+    "api.json": {
+      "bytes": 160100,
+      "sha256": "243ab9963bedd0cc53135039a698208252248d969bffe2030ae862f1cf25e236"
+    },
+    "d1.sql": {
+      "bytes": 220418,
+      "sha256": "8f5cfe1bf004a76e3c74210b4192e7d175efa52f4b6285e2c4b1f6655da08bd8"
+    },
+    "pandas.csv": {
+      "bytes": 37162,
+      "sha256": "0e48f9d97dbf3167f2b69d5e630ba478b44fc2e5d1aa6b9ae7b7e075277fb290"
+    },
+    "pandas.json": {
+      "bytes": 64745,
+      "sha256": "12317b8b4dd1ceb781a70bb5f789034427e5c0d4601c6a9a4e8aaa4b279bd72b"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "public-release-v4",
+  "public_schema_version": "1.2.0",
+  "publication_batch_id": "xi-lun-photo-batch",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 15,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 17,
+    "facilities": 8,
+    "facts": 45,
+    "institutions": 5,
+    "media": 15,
+    "pandas": 15,
+    "parentage_assertions": 20,
+    "places": 7,
+    "residencies": 25,
+    "sources": 25
+  },
+  "released_at": "2026-07-21T10:15:00Z"
+}
