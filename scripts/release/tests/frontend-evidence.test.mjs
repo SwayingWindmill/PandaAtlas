@@ -36,6 +36,11 @@ test("classifies public release migration and Cloudflare entry changes as Level 
     "scripts/release/media-integrity.mjs",
     "scripts/release/api-staging-withdrawal.mjs",
     "scripts/release/run-api-staging-withdrawal.mjs",
+    "scripts/release/frontend-staging-withdrawal.mjs",
+    "scripts/release/run-frontend-staging-withdrawal.mjs",
+    "apps/web/scripts/verify-frontend-staging-withdrawal.mjs",
+    "apps/web/wrangler.staging.withdrawn.jsonc",
+    "data/frontend-withdrawals/2026.07.20.2-ri-ri.json",
     "services/worker-api/wrangler.staging.jsonc",
   ]);
 

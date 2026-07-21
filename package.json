@@ -66,6 +66,11 @@
     "staging:api:deploy": "node scripts/release/run-api-staging-withdrawal.mjs --action deploy --execute",
     "staging:api:drill": "node scripts/release/run-api-staging-withdrawal.mjs --action drill --execute",
     "staging:api:full": "node scripts/release/run-api-staging-withdrawal.mjs --action full --execute",
+    "staging:web:plan": "node scripts/release/run-frontend-staging-withdrawal.mjs --action plan",
+    "staging:web:baseline": "node scripts/release/run-frontend-staging-withdrawal.mjs --action baseline --execute",
+    "staging:web:withdrawn": "node scripts/release/run-frontend-staging-withdrawal.mjs --action withdrawn --execute",
+    "staging:web:rollback": "node scripts/release/run-frontend-staging-withdrawal.mjs --action rollback --execute",
+    "staging:web:full": "node scripts/release/run-frontend-staging-withdrawal.mjs --action full --execute",
     "deploy:api:cf": "npm run deploy -w worker-api",
     "release:default": "node scripts/release/default.mjs",
     "release:extended": "node scripts/release/extended.mjs"

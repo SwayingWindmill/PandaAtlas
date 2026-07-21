@@ -20,6 +20,10 @@ import type {
 } from "@/lib/types";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { publicLanguageTag } from "@/foundation/content/locales";
+import {
+  applyFrontendWithdrawal,
+  resolveActiveFrontendWithdrawal,
+} from "@/features/public-content/frontend-withdrawal";
 
 export type PublicDeliveryState = "live" | "cached" | "partial" | "unavailable";
 export type PublicCoverageState = "complete" | "partial" | "none";
@@ -113,8 +117,18 @@ export interface PublicPlaceRecord {
   pandas: PandaDetail[];
 }
 
-const canonicalDetails = [...TRUSTED_PANDA_DETAILS].sort((left, right) =>
+const reviewedDetails = [...TRUSTED_PANDA_DETAILS].sort((left, right) =>
   left.name_zh.localeCompare(right.name_zh, "zh-CN"),
+);
+const activeWithdrawal = resolveActiveFrontendWithdrawal(reviewedDetails);
+const withdrawnPandaIds = new Set(activeWithdrawal?.panda_ids ?? []);
+const canonicalDetails = applyFrontendWithdrawal(reviewedDetails, activeWithdrawal);
+const publishedLineageNodes = TRUSTED_LINEAGE_NODES.filter((node) => !withdrawnPandaIds.has(node.id));
+const publishedLineageEdges = TRUSTED_LINEAGE_EDGES.filter(
+  (edge) => !withdrawnPandaIds.has(edge.parent_id) && !withdrawnPandaIds.has(edge.child_id),
+);
+const publishedParentageAssertions = TRUSTED_PARENTAGE_ASSERTIONS.filter(
+  (assertion) => !withdrawnPandaIds.has(assertion.parent_id) && !withdrawnPandaIds.has(assertion.child_id),
 );
 
 function normalizeSearchTerm(value: string): string {
@@ -170,9 +184,9 @@ function buildLineageRelationships(
 function trustedLineageFor(panda: PandaDetail): PandaLineageResponse {
   return {
     focus_id: panda.id,
-    nodes: TRUSTED_LINEAGE_NODES,
-    edges: TRUSTED_LINEAGE_EDGES,
-    relationships: buildLineageRelationships(TRUSTED_LINEAGE_NODES, TRUSTED_LINEAGE_EDGES),
+    nodes: publishedLineageNodes,
+    edges: publishedLineageEdges,
+    relationships: buildLineageRelationships(publishedLineageNodes, publishedLineageEdges),
     meta: { ancestor_depth: 8, descendant_depth: 8 },
   };
 }
@@ -321,8 +335,8 @@ export function loadPublishedLineageDataset(
 ): PublicContentEnvelope<PublicLineageDataset> {
   return buildEnvelope(
     {
-      nodes: TRUSTED_LINEAGE_NODES,
-      parentageAssertions: TRUSTED_PARENTAGE_ASSERTIONS,
+      nodes: publishedLineageNodes,
+      parentageAssertions: publishedParentageAssertions,
     },
     canonicalDetails,
     locale,
@@ -338,7 +352,7 @@ export function resolvePublishedPandaReference(input: string): { id: string; slu
   if (!normalized) return null;
 
   const direct = TRUSTED_PANDA_REFERENCES[normalized];
-  if (direct) return direct;
+  if (direct && !withdrawnPandaIds.has(direct.id)) return direct;
 
   const detail = canonicalDetails.find(
     (candidate) => candidate.id === normalized || candidate.slug === normalized,
@@ -363,7 +377,7 @@ export function loadPublishedPandaProfile(
       institutions: TRUSTED_INSTITUTIONS,
       places: TRUSTED_PLACES,
       lineage: trustedLineageFor(panda),
-      parentageAssertions: TRUSTED_PARENTAGE_ASSERTIONS,
+      parentageAssertions: publishedParentageAssertions,
     },
     [panda],
     locale,
