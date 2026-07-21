@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { chromium } from "@playwright/test";
@@ -152,10 +152,31 @@ async function verifyNoJavaScript(browser, baseUrl, mode) {
   }
 }
 
+function resolveChromiumExecutable() {
+  const candidates = [
+    process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+    chromium.executablePath(),
+    "C:/Program Files/Google/Chrome/Application/chrome.exe",
+    "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
+  ].filter(Boolean);
+  const executable = candidates.find((candidate) => existsSync(candidate));
+  if (!executable) {
+    throw new Error("No Playwright-managed or approved system Chromium executable is available.");
+  }
+  return executable;
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   mkdirSync(options.output, { recursive: true });
-  const browser = await chromium.launch({ headless: true });
+  const browserExecutable = resolveChromiumExecutable();
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: browserExecutable,
+  });
   const requests = [];
   const context = await browser.newContext({ serviceWorkers: "block" });
   await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
@@ -166,6 +187,7 @@ async function main() {
     mode: options.mode,
     phase: options.phase,
     baseUrl: options.baseUrl,
+    browserExecutable: path.basename(browserExecutable),
     started_at: new Date().toISOString(),
   };
   try {

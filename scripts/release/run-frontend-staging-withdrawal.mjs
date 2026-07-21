@@ -12,6 +12,7 @@ import {
   baselineConfigPath,
   inspectWebStagingConfigs,
   inspectWithdrawalArtifact,
+  isRetryableFrontendBrowserError,
   parseActiveDeployment,
   parseDeploymentOutput,
   readJson,
@@ -191,7 +192,7 @@ async function runBrowserEvidence({ baseUrl, mode, phase }) {
     {
       attempts: 6,
       delayMs: 1500,
-      shouldRetry: () => true,
+      shouldRetry: isRetryableFrontendBrowserError,
       onRetry(error, attempt, attempts) {
         console.warn(
           `[frontend-staging-retry] browser evidence ${phase} failed on attempt ${attempt}/${attempts}: ${error.message}`,

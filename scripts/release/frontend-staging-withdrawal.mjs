@@ -242,6 +242,11 @@ export function validateProductionCanary(before, after) {
   }
 }
 
+export function isRetryableFrontendBrowserError(error) {
+  const detail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+  return /fetch failed|ECONNRESET|ETIMEDOUT|EAI_AGAIN|ENETUNREACH|UND_ERR_(?:CONNECT_TIMEOUT|SOCKET)|socket hang up|network connectivity|net::ERR_|Navigation returned no response|Timeout .* exceeded|expected (?:200|404); got (?:200|404)/i.test(detail);
+}
+
 export function validateBrowserEvidence({ baseline, withdrawn, rollback }) {
   requireCondition(baseline.mode === "baseline" && baseline.outcome === "passed", "Baseline browser evidence failed.");
   requireCondition(withdrawn.mode === "withdrawn" && withdrawn.outcome === "passed", "Withdrawn browser evidence failed.");

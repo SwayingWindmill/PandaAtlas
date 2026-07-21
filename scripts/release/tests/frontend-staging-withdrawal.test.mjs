@@ -17,6 +17,7 @@ import {
   fileSha256,
   inspectWebStagingConfigs,
   inspectWithdrawalArtifact,
+  isRetryableFrontendBrowserError,
   parseActiveDeployment,
   parseDeploymentOutput,
   publicReleaseApiPath,
@@ -230,6 +231,24 @@ test("active deployment parser requires one exact Version at 100 percent", () =>
     () => parseActiveDeployment(JSON.stringify([{ ...deployment, versions: [{ version_id: versionId, percentage: 50 }] }]), versionId),
     /100 percent/,
   );
+});
+
+test("browser retries only transient transport and deployment propagation failures", () => {
+  for (const message of [
+    "fetch failed",
+    "page.goto: Timeout 30000ms exceeded",
+    "zh Ri Ri withdrawn profile expected 404; got 200.",
+    "net::ERR_CONNECTION_RESET",
+  ]) {
+    assert.equal(isRetryableFrontendBrowserError(new Error(message)), true, message);
+  }
+  for (const message of [
+    "Executable doesn't exist at chromium_headless_shell.exe",
+    "Ri Ri baseline lost reviewed credit.",
+    "Withdrawal manifest drifted.",
+  ]) {
+    assert.equal(isRetryableFrontendBrowserError(new Error(message)), false, message);
+  }
 });
 
 test("Production canary requires stable release, media, alt, credit, and HTML markers", () => {
