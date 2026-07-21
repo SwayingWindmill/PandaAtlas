@@ -13,6 +13,7 @@ const webPackagePath = new URL("../../../apps/web/package.json", import.meta.url
 const webPlaywrightConfigPath = new URL("../../../apps/web/playwright.config.ts", import.meta.url);
 const webProductionWranglerPath = new URL("../../../apps/web/wrangler.jsonc", import.meta.url);
 const webStagingWranglerPath = new URL("../../../apps/web/wrangler.staging.jsonc", import.meta.url);
+const webWithdrawnWranglerPath = new URL("../../../apps/web/wrangler.staging.withdrawn.jsonc", import.meta.url);
 const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
 const rootPackagePath = new URL("../../../package.json", import.meta.url);
 
@@ -132,6 +133,41 @@ test("Cloudflare staging deploy is isolated from production routes", async () =>
     "vars",
   ]) {
     assert.deepEqual(stagingConfig[sharedKey], productionConfig[sharedKey]);
+  }
+});
+
+test("frontend withdrawal Staging config and commands are guarded", async () => {
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+  const production = JSON.parse(await readFile(webProductionWranglerPath, "utf8"));
+  const baseline = JSON.parse(await readFile(webStagingWranglerPath, "utf8"));
+  const withdrawn = JSON.parse(await readFile(webWithdrawnWranglerPath, "utf8"));
+
+  assert.equal(
+    rootPackage.scripts["staging:web:plan"],
+    "node scripts/release/run-frontend-staging-withdrawal.mjs --action plan",
+  );
+  assert.equal(
+    rootPackage.scripts["staging:web:full"],
+    "node scripts/release/run-frontend-staging-withdrawal.mjs --action full --execute",
+  );
+  assert.equal(baseline.name, "panda-atlas-web-staging");
+  assert.equal(withdrawn.name, baseline.name);
+  assert.notEqual(withdrawn.name, production.name);
+  assert.equal(withdrawn.workers_dev, true);
+  assert.deepEqual(withdrawn.routes, []);
+  assert.equal(baseline.vars.PANDA_ATLAS_FRONTEND_WITHDRAWAL_ID, undefined);
+  assert.equal(
+    withdrawn.vars.PANDA_ATLAS_FRONTEND_WITHDRAWAL_ID,
+    "frontend-withdrawal-2026.07.20.2-ri-ri",
+  );
+  for (const sharedKey of [
+    "main",
+    "compatibility_date",
+    "compatibility_flags",
+    "assets",
+    "observability",
+  ]) {
+    assert.deepEqual(withdrawn[sharedKey], baseline[sharedKey]);
   }
 });
 

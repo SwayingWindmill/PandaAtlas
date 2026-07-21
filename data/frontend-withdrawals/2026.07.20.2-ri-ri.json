@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "withdrawal_id": "frontend-withdrawal-2026.07.20.2-ri-ri",
+  "review_state": "approved",
+  "dataset_release_version": "2026.07.20.2",
+  "public_schema_version": "1.2.0",
+  "database_migration_version": "0007",
+  "public_release_manifest_sha256": "34686af1929e355876e83ed02044ec9a32f053a664bf2b9ff7f14f63ec462f0c",
+  "reviewed_at": "2026-07-21T00:00:00Z",
+  "reason": "Frontend Staging licensed-media withdrawal and rollback evidence",
+  "panda_ids": [
+    "57c0a1bd-cc44-5a08-ba48-f224e9956064"
+  ],
+  "media_ids": [
+    "media-ri-ri-03e20f3f6a0e2db3"
+  ]
+}
