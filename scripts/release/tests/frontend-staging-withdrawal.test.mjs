@@ -282,15 +282,17 @@ test("browser evidence requires baseline, withdrawn, and restored baseline on on
   }), /Withdrawn browser evidence failed/);
 });
 
-test("full remote drill is rejected before remote access without explicit execute", () => {
-  const result = spawnSync(process.execPath, [runnerPath, "--action", "full"], {
-    cwd: repositoryRoot,
-    encoding: "utf8",
+for (const action of ["baseline", "withdrawn", "rollback", "full"]) {
+  test(`${action} remote stage is rejected before remote access without explicit execute`, () => {
+    const result = spawnSync(process.execPath, [runnerPath, "--action", action], {
+      cwd: repositoryRoot,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /requires explicit --execute/);
+    assert.doesNotMatch(`${result.stdout}\n${result.stderr}`, /wrangler|workers\.dev|Deploying/i);
   });
-  assert.equal(result.status, 1);
-  assert.match(result.stderr, /requires explicit --execute/);
-  assert.doesNotMatch(`${result.stdout}\n${result.stderr}`, /wrangler|workers\.dev|Deploying/i);
-});
+}
 
 test("frontend public content applies the reviewed build-time projection without D1 or client fetching", async () => {
   const [publicReleaseSource, runtimeSource, browserEvidenceSource] = await Promise.all([

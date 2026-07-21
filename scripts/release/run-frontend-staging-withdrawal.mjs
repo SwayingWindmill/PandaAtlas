@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -33,8 +33,9 @@ const openNextCli = path.join(
 );
 const browserScript = path.join(webRoot, "scripts/verify-frontend-staging-withdrawal.mjs");
 const evidenceRoot = path.join(repositoryRoot, ".release-gate/frontend-staging-withdrawal");
+const statePath = path.join(evidenceRoot, "state.json");
 const defaultReportPath = path.join(evidenceRoot, "report.json");
-const ACTIONS = new Set(["plan", "full"]);
+const ACTIONS = new Set(["plan", "baseline", "withdrawn", "rollback", "full"]);
 
 function parseArgs(argv) {
   const options = { action: "plan", execute: false, report: defaultReportPath };
@@ -55,8 +56,8 @@ function parseArgs(argv) {
     throw new Error(`Unknown argument ${argument}.`);
   }
   if (!ACTIONS.has(options.action)) throw new Error(`Unsupported action ${options.action}.`);
-  if (options.action === "full" && !options.execute) {
-    throw new Error("Frontend Staging full drill requires explicit --execute.");
+  if (options.action !== "plan" && !options.execute) {
+    throw new Error(`Frontend Staging ${options.action} requires explicit --execute.`);
   }
   if (options.action === "plan" && options.execute) {
     throw new Error("Plan mode does not accept --execute.");
@@ -247,85 +248,214 @@ function buildPlan() {
   };
 }
 
-async function runFull(reportPath) {
-  ensureCleanTrackedWorkspace();
-  rmSync(evidenceRoot, { recursive: true, force: true });
-  mkdirSync(evidenceRoot, { recursive: true });
-  const report = {
-    schema_version: 1,
-    operation: "frontend-staging-withdrawal-and-rollback",
-    outcome: "failed",
-    action: "full",
-    started_at: new Date().toISOString(),
+function currentIdentity() {
+  return {
     commit_sha: gitValue(["rev-parse", "HEAD"]),
     artifact: inspectWithdrawalArtifact(),
     configuration: inspectWebStagingConfigs(),
-    steps: [],
+  };
+}
+
+function loadStageState() {
+  if (!existsSync(statePath)) {
+    throw new Error("Frontend Staging state is missing; run the baseline stage first.");
+  }
+  const state = readJson(statePath);
+  const identity = currentIdentity();
+  if (state.commit_sha !== identity.commit_sha) {
+    throw new Error(`Frontend Staging state belongs to ${state.commit_sha}; current commit is ${identity.commit_sha}.`);
+  }
+  if (JSON.stringify(state.artifact) !== JSON.stringify(identity.artifact)) {
+    throw new Error("Frontend Staging state artifact identity drifted.");
+  }
+  if (JSON.stringify(state.configuration) !== JSON.stringify(identity.configuration)) {
+    throw new Error("Frontend Staging state configuration identity drifted.");
+  }
+  return state;
+}
+
+function canaryStep(id, canary) {
+  return {
+    id,
+    status: "passed",
+    httpStatus: canary.status,
+    bodySha256: canary.bodySha256,
+    contentType: canary.contentType,
+    cacheControl: canary.cacheControl,
+  };
+}
+
+function stageSummary(state, action) {
+  return {
+    schema_version: state.schema_version,
+    operation: state.operation,
+    outcome: state[action]?.status === "passed" ? "passed" : "in-progress",
+    action,
+    commit_sha: state.commit_sha,
+    artifact: state.artifact,
+    configuration: state.configuration,
+    baseUrl: state.baseUrl,
+    step: state[action],
+  };
+}
+
+async function runBaselineStage() {
+  ensureCleanTrackedWorkspace();
+  rmSync(evidenceRoot, { recursive: true, force: true });
+  mkdirSync(evidenceRoot, { recursive: true });
+  const state = {
+    schema_version: 1,
+    operation: "frontend-staging-withdrawal-and-rollback",
+    outcome: "in-progress",
+    started_at: new Date().toISOString(),
+    ...currentIdentity(),
   };
   try {
-    const productionBefore = await fetchCanary();
-    report.steps.push({ id: "production-canary-before", status: "passed", ...productionBefore, body: undefined });
-
-    const baselineBuild = buildFrontend("baseline");
-    const baselineDeployment = deployFrontend("baseline");
-    const baselineActiveDeployment = await inspectActiveDeployment(baselineDeployment.versionId);
-    const baseUrl = validateWebStagingBaseUrl(baselineDeployment.url);
-    const baselineBrowser = await runBrowserEvidence({ baseUrl, mode: "baseline", phase: "baseline" });
-    report.steps.push({
-      id: "baseline",
-      status: "passed",
-      build: baselineBuild,
-      deployment: baselineDeployment,
-      activeDeployment: baselineActiveDeployment,
-      browserReport: path.relative(repositoryRoot, path.join(evidenceRoot, "baseline/baseline-baseline.json")),
-    });
-
-    const withdrawnBuild = buildFrontend("withdrawn");
-    const withdrawnDeployment = deployFrontend("withdrawn");
-    const withdrawnActiveDeployment = await inspectActiveDeployment(withdrawnDeployment.versionId);
-    if (withdrawnDeployment.url !== baseUrl) throw new Error("Withdrawn deployment changed the Staging URL.");
-    const withdrawnBrowser = await runBrowserEvidence({ baseUrl, mode: "withdrawn", phase: "withdrawn" });
-    report.steps.push({
-      id: "withdrawn",
-      status: "passed",
-      build: withdrawnBuild,
-      deployment: withdrawnDeployment,
-      activeDeployment: withdrawnActiveDeployment,
-      browserReport: path.relative(repositoryRoot, path.join(evidenceRoot, "withdrawn/withdrawn-withdrawn.json")),
-    });
-
-    const rollback = rollbackToBaseline(baselineDeployment.versionId);
-    const rollbackActiveDeployment = await inspectActiveDeployment(baselineDeployment.versionId);
-    const rollbackBrowser = await runBrowserEvidence({ baseUrl, mode: "baseline", phase: "rollback" });
-    report.steps.push({
-      id: "rollback",
-      status: "passed",
-      ...rollback,
-      activeDeployment: rollbackActiveDeployment,
-      browserReport: path.relative(repositoryRoot, path.join(evidenceRoot, "rollback/rollback-baseline.json")),
-    });
-
-    validateBrowserEvidence({ baseline: baselineBrowser, withdrawn: withdrawnBrowser, rollback: rollbackBrowser });
-    const productionAfter = await fetchCanary();
-    validateProductionCanary(productionBefore, productionAfter);
-    report.steps.push({ id: "production-canary-after", status: "passed", ...productionAfter, body: undefined });
-    report.productionCanary = {
-      before: { ...productionBefore, body: undefined },
-      after: { ...productionAfter, body: undefined },
-    };
-    report.baseUrl = baseUrl;
-    report.baselineVersionId = baselineDeployment.versionId;
-    report.withdrawnVersionId = withdrawnDeployment.versionId;
-    report.finalActiveState = "baseline-restored";
-    report.outcome = "passed";
+    state.productionBefore = await fetchCanary();
+    const build = buildFrontend("baseline");
+    const deployment = deployFrontend("baseline");
+    const activeDeployment = await inspectActiveDeployment(deployment.versionId);
+    const baseUrl = validateWebStagingBaseUrl(deployment.url);
+    state.baseUrl = baseUrl;
+    state.baseline = { status: "deployed", build, deployment, activeDeployment };
+    writeReport(statePath, state);
+    const browser = await runBrowserEvidence({ baseUrl, mode: "baseline", phase: "baseline" });
+    state.baseline.status = "passed";
+    state.baseline.browserReport = path.relative(
+      repositoryRoot,
+      path.join(evidenceRoot, "baseline/baseline-baseline.json"),
+    );
+    state.baseline.browserOutcome = browser.outcome;
+    delete state.error;
+    writeReport(statePath, state);
+    return stageSummary(state, "baseline");
   } catch (error) {
-    report.error = error instanceof Error ? error.message : String(error);
+    state.error = error instanceof Error ? error.message : String(error);
+    writeReport(statePath, state);
     throw error;
-  } finally {
-    report.finished_at = new Date().toISOString();
-    writeReport(reportPath, report);
   }
-  return report;
+}
+
+async function runWithdrawnStage() {
+  ensureCleanTrackedWorkspace();
+  const state = loadStageState();
+  if (state.baseline?.status !== "passed") {
+    throw new Error("Frontend Staging baseline stage has not passed.");
+  }
+  try {
+    const build = buildFrontend("withdrawn");
+    const deployment = deployFrontend("withdrawn");
+    const activeDeployment = await inspectActiveDeployment(deployment.versionId);
+    if (deployment.url !== state.baseUrl) throw new Error("Withdrawn deployment changed the Staging URL.");
+    state.withdrawn = { status: "deployed", build, deployment, activeDeployment };
+    writeReport(statePath, state);
+    const browser = await runBrowserEvidence({
+      baseUrl: state.baseUrl,
+      mode: "withdrawn",
+      phase: "withdrawn",
+    });
+    state.withdrawn.status = "passed";
+    state.withdrawn.browserReport = path.relative(
+      repositoryRoot,
+      path.join(evidenceRoot, "withdrawn/withdrawn-withdrawn.json"),
+    );
+    state.withdrawn.browserOutcome = browser.outcome;
+    delete state.error;
+    writeReport(statePath, state);
+    return stageSummary(state, "withdrawn");
+  } catch (error) {
+    state.error = error instanceof Error ? error.message : String(error);
+    writeReport(statePath, state);
+    throw error;
+  }
+}
+
+async function runRollbackStage(reportPath) {
+  ensureCleanTrackedWorkspace();
+  const state = loadStageState();
+  if (!state.baseline?.deployment?.versionId) {
+    throw new Error("Frontend Staging baseline Version ID is missing.");
+  }
+  try {
+    const rollback = rollbackToBaseline(state.baseline.deployment.versionId);
+    const activeDeployment = await inspectActiveDeployment(state.baseline.deployment.versionId);
+    state.rollback = { status: "deployed", ...rollback, activeDeployment };
+    writeReport(statePath, state);
+    const rollbackBrowser = await runBrowserEvidence({
+      baseUrl: state.baseUrl,
+      mode: "baseline",
+      phase: "rollback",
+    });
+    state.rollback.status = "passed";
+    state.rollback.browserReport = path.relative(
+      repositoryRoot,
+      path.join(evidenceRoot, "rollback/rollback-baseline.json"),
+    );
+    state.rollback.browserOutcome = rollbackBrowser.outcome;
+
+    if (state.baseline.status !== "passed" || state.withdrawn?.status !== "passed") {
+      throw new Error("Baseline was restored, but the baseline or withdrawn evidence stage did not pass.");
+    }
+    const baselineBrowser = readJson(path.join(repositoryRoot, state.baseline.browserReport));
+    const withdrawnBrowser = readJson(path.join(repositoryRoot, state.withdrawn.browserReport));
+    validateBrowserEvidence({
+      baseline: baselineBrowser,
+      withdrawn: withdrawnBrowser,
+      rollback: rollbackBrowser,
+    });
+    const productionAfter = await fetchCanary();
+    validateProductionCanary(state.productionBefore, productionAfter);
+    state.productionAfter = productionAfter;
+    state.outcome = "passed";
+    state.finished_at = new Date().toISOString();
+    state.finalActiveState = "baseline-restored";
+    delete state.error;
+    writeReport(statePath, state);
+
+    const report = {
+      schema_version: state.schema_version,
+      operation: state.operation,
+      outcome: state.outcome,
+      action: "rollback",
+      started_at: state.started_at,
+      finished_at: state.finished_at,
+      commit_sha: state.commit_sha,
+      artifact: state.artifact,
+      configuration: state.configuration,
+      baseUrl: state.baseUrl,
+      baselineVersionId: state.baseline.deployment.versionId,
+      withdrawnVersionId: state.withdrawn.deployment.versionId,
+      finalActiveState: state.finalActiveState,
+      steps: [
+        canaryStep("production-canary-before", state.productionBefore),
+        { id: "baseline", ...state.baseline },
+        { id: "withdrawn", ...state.withdrawn },
+        { id: "rollback", ...state.rollback },
+        canaryStep("production-canary-after", state.productionAfter),
+      ],
+      productionCanary: {
+        before: { ...state.productionBefore, body: undefined },
+        after: { ...state.productionAfter, body: undefined },
+      },
+    };
+    writeReport(reportPath, report);
+    return report;
+  } catch (error) {
+    state.error = error instanceof Error ? error.message : String(error);
+    state.finished_at = new Date().toISOString();
+    writeReport(statePath, state);
+    throw error;
+  }
+}
+
+async function runFull(reportPath) {
+  const scriptPath = fileURLToPath(import.meta.url);
+  for (const action of ["baseline", "withdrawn", "rollback"]) {
+    const args = [scriptPath, "--action", action, "--execute"];
+    if (action === "rollback") args.push("--report", reportPath);
+    runCommand(process.execPath, args);
+  }
+  return readJson(reportPath);
 }
 
 export async function runFrontendStagingWithdrawal(argv = process.argv.slice(2)) {
@@ -335,9 +465,15 @@ export async function runFrontendStagingWithdrawal(argv = process.argv.slice(2))
     console.log(JSON.stringify(plan, null, 2));
     return plan;
   }
-  const report = await runFull(options.report);
-  console.log(JSON.stringify(report, null, 2));
-  return report;
+  const result = options.action === "baseline"
+    ? await runBaselineStage()
+    : options.action === "withdrawn"
+      ? await runWithdrawnStage()
+      : options.action === "rollback"
+        ? await runRollbackStage(options.report)
+        : await runFull(options.report);
+  console.log(JSON.stringify(result, null, 2));
+  return result;
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))) {

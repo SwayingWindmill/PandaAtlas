@@ -58,7 +58,17 @@ Real Staging drill:
 npm run staging:web:full
 ```
 
-The full command requires the tracked workspace to be clean and performs:
+The full command launches three independent, recoverable stage processes. The same stages may be run explicitly when a local build, browser runtime, or Cloudflare transport interruption requires a safe resume:
+
+```bash
+npm run staging:web:baseline
+npm run staging:web:withdrawn
+npm run staging:web:rollback
+```
+
+Each stage requires the tracked workspace to be clean and explicit write authorization. Baseline creates a SHA-bound state file; withdrawn and rollback refuse state from another commit, artifact, or configuration. Deployment identity is persisted immediately after activation, before browser evidence, so the exact baseline Version remains available for recovery even when a later assertion fails.
+
+The full command performs:
 
 1. Production Ri Ri read-only canary.
 2. Baseline OpenNext build and workers.dev deployment.

@@ -146,10 +146,12 @@ test("frontend withdrawal Staging config and commands are guarded", async () => 
     rootPackage.scripts["staging:web:plan"],
     "node scripts/release/run-frontend-staging-withdrawal.mjs --action plan",
   );
-  assert.equal(
-    rootPackage.scripts["staging:web:full"],
-    "node scripts/release/run-frontend-staging-withdrawal.mjs --action full --execute",
-  );
+  for (const action of ["baseline", "withdrawn", "rollback", "full"]) {
+    assert.equal(
+      rootPackage.scripts[`staging:web:${action}`],
+      `node scripts/release/run-frontend-staging-withdrawal.mjs --action ${action} --execute`,
+    );
+  }
   assert.equal(baseline.name, "panda-atlas-web-staging");
   assert.equal(withdrawn.name, baseline.name);
   assert.notEqual(withdrawn.name, production.name);
