@@ -38,6 +38,8 @@ def validate_source_policy(policy: SourcePolicy) -> None:
         raise ValueError("authorized sessions require a credential reference")
     if policy.capability is CapabilityMode.APPROVED_PROXY and not policy.approved_proxy_ref:
         raise ValueError("approved proxies require one stable proxy reference")
+    if policy.capability is CapabilityMode.BROWSER_STEALTH and not policy.fingerprint_review_ref:
+        raise ValueError("browser-stealth requires a source-specific fingerprint review reference")
     if policy.capability is CapabilityMode.STEALTH_LAB:
         for host in policy.allowed_hosts:
             if not _is_loopback_host(host):

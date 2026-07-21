@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import re
+import sys
 import threading
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
@@ -8,6 +10,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
 from scrapling.fetchers import DynamicFetcher, FetcherSession, StealthyFetcher
+
+_CHROME_UA_VERSION = re.compile(r"(?:Chrome|Chromium)/(\d+)")
+_CHROME_HINT_VERSION = re.compile(r'(?:Google Chrome|Chromium)";v="(\d+)"')
 
 
 class _LabHandler(BaseHTTPRequestHandler):
@@ -101,6 +106,7 @@ def controlled_lab_server() -> Iterator[str]:
 
 
 def run_scrapling_browser_lab() -> dict[str, Any]:
+    real_chrome = sys.platform == "win32"
     with controlled_lab_server() as base_url:
         with FetcherSession(
             stealthy_headers=True,
@@ -118,7 +124,7 @@ def run_scrapling_browser_lab() -> dict[str, Any]:
             lambda: DynamicFetcher.fetch(
                 f"{base_url}/js",
                 headless=True,
-                real_chrome=False,
+                real_chrome=real_chrome,
                 google_search=False,
                 wait_selector="#browser-probe",
                 timeout=30_000,
@@ -129,7 +135,7 @@ def run_scrapling_browser_lab() -> dict[str, Any]:
             lambda: StealthyFetcher.fetch(
                 f"{base_url}/js",
                 headless=True,
-                real_chrome=False,
+                real_chrome=real_chrome,
                 google_search=False,
                 solve_cloudflare=False,
                 hide_canvas=False,
@@ -166,10 +172,12 @@ def run_scrapling_browser_lab() -> dict[str, Any]:
     return {
         "outcome": outcome,
         "target_scope": "loopback-controlled-fixture-only",
+        "browser_runtime": "system-chrome" if real_chrome else "playwright-chromium",
         "static_http": {
             "status": static.status,
             "browser_consistent_user_agent": "Chrome" in (static_probe.get("user_agent") or ""),
             "request_fingerprint": static_probe,
+            "fingerprint_assessment": _request_fingerprint_assessment(static_probe),
         },
         "authorized_session": {
             "status": session.status,
@@ -192,10 +200,12 @@ def run_scrapling_browser_lab() -> dict[str, Any]:
 def _run_browser_probe(name: str, fetch: Callable[[], Any]) -> dict[str, Any]:
     try:
         response = fetch()
+        probe = _json_from_selector(response, "#browser-probe::text")
         return {
             "outcome": "passed",
             "status": response.status,
-            "probe": _json_from_selector(response, "#browser-probe::text"),
+            "probe": probe,
+            "fingerprint_assessment": _fingerprint_assessment(probe),
         }
     except Exception as error:
         detail = " ".join(str(error).split())
@@ -205,6 +215,34 @@ def _run_browser_probe(name: str, fetch: Callable[[], Any]) -> dict[str, Any]:
             "error_type": type(error).__name__,
             "error": detail[:500],
         }
+
+
+def _request_fingerprint_assessment(request: dict[str, Any]) -> dict[str, Any]:
+    user_agent = str(request.get("user_agent") or "")
+    client_hints = str(request.get("sec_ch_ua") or "")
+    ua_match = _CHROME_UA_VERSION.search(user_agent)
+    hint_versions = sorted({int(value) for value in _CHROME_HINT_VERSION.findall(client_hints)})
+    ua_major = int(ua_match.group(1)) if ua_match else None
+    return {
+        "chrome_user_agent": bool(ua_match),
+        "user_agent_major": ua_major,
+        "client_hint_majors": hint_versions,
+        "client_hint_version_consistent": ua_major is not None and ua_major in hint_versions,
+    }
+
+
+def _fingerprint_assessment(probe: dict[str, Any]) -> dict[str, Any]:
+    request = probe.get("request") or {}
+    navigator = probe.get("navigator") or {}
+    request_assessment = _request_fingerprint_assessment(request)
+    request_user_agent = str(request.get("user_agent") or "")
+    navigator_user_agent = str(navigator.get("userAgent") or "")
+    return {
+        **request_assessment,
+        "request_navigator_user_agent_match": request_user_agent == navigator_user_agent,
+        "webdriver_hidden": navigator.get("webdriver") in {False, None},
+        "languages_present": bool(navigator.get("languages")),
+    }
 
 
 def _browser_identity_passed(

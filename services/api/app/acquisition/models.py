@@ -11,6 +11,7 @@ class CapabilityMode(StrEnum):
     PUBLIC_HTTP = "public-http"
     AUTHORIZED_SESSION = "authorized-session"
     BROWSER_RENDERED = "browser-rendered"
+    BROWSER_STEALTH = "browser-stealth"
     APPROVED_PROXY = "approved-proxy"
     STEALTH_LAB = "stealth-lab"
 
@@ -33,6 +34,7 @@ class SourcePolicy:
     concurrency_per_host: int = 1
     authorized_session_ref: str | None = None
     approved_proxy_ref: str | None = None
+    fingerprint_review_ref: str | None = None
     proxy_rotation: bool = False
     challenge_action: str = "stop-and-review"
 

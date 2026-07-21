@@ -7,7 +7,7 @@ Issue: #87
 PandaAtlas uses a hybrid acquisition boundary:
 
 - **Scrapy is the primary orchestrator** for source scheduling, duplicate filtering, robots enforcement, rate limiting, retry policy, persistent jobs, and deterministic extraction.
-- **Scrapling is a specialized adapter** for browser-rendered sources, browser-consistent HTTP/TLS identity, authorized session persistence, and evidence-only adaptive selector suggestions.
+- **Scrapling is a specialized adapter** for browser-rendered sources, browser-consistent HTTP/TLS identity, authorized session persistence, source-reviewed browser-stealth sessions, and evidence-only adaptive selector suggestions.
 - Both engines emit the same candidate and evidence schema. Neither engine writes to PostgreSQL, Public Release, D1, R2, or the public frontend.
 - Every acquired record remains a candidate until a curator reviews the source, facts, relationships, media rights, attribution, and bilingual content.
 
@@ -46,6 +46,7 @@ The current candidate fixture contains only an individual name in Chinese and En
 | `public-http` | Public API or HTML source | robots, allowlist, domain delay, deterministic parser |
 | `authorized-session` | Account PandaAtlas is authorized to automate | credential reference outside reports, persistent cookies, no MFA bypass |
 | `browser-rendered` | JavaScript-required public source | Playwright-rendered session and browser evidence |
+| `browser-stealth` | Reviewed source where ordinary browser automation exposes detectable runtime markers | source-specific fingerprint review, StealthyFetcher, challenge solving disabled, no identity rotation |
 | `approved-proxy` | Stable approved egress or regional access | one configured proxy, no automatic rotation after blocking |
 | `stealth-lab` | PandaAtlas-owned loopback experiment only | no external host, no challenge solving, no Canvas hiding |
 
@@ -60,9 +61,20 @@ Anti-detection is a first-class evaluation dimension rather than an implicit byp
 - navigator and request fingerprints through `StealthyFetcher`;
 - behavior after a controlled 403 human challenge.
 
-The local static experiment produced a Chrome 146-style User-Agent, browser Accept and language headers, `sec-ch-ua`, `sec-fetch-site`, and a browser referer. The same fetcher session reused the loopback authorization cookie. The controlled challenge remained a terminal `stop-and-review` state and did not trigger identity switching.
+The Python 3.12 static experiment produced a Chrome 146-style User-Agent, browser Accept and language headers, `sec-ch-ua`, `sec-fetch-site`, and a browser referer. The same fetcher session reused the loopback authorization cookie. The controlled challenge remained a terminal `stop-and-review` state and did not trigger identity switching.
 
-The local WSL browser experiment may report `environment-blocked` when Chromium system libraries are missing. This is not treated as a passed browser result. The dedicated CI workflow installs browser dependencies and runs `--require-browser-lab`, where either browser fetcher being unavailable fails the job.
+The strict Windows experiment used installed system Chrome and measured a material difference:
+
+- `DynamicFetcher` executed JavaScript and returned a realistic Chrome environment, but exposed `navigator.webdriver=true`;
+- `StealthyFetcher` executed the same page and returned `navigator.webdriver=false`;
+- both request and navigator User-Agent values matched;
+- both browser modes emitted Chrome 150 client hints while the installed browser User-Agent reported Chrome 147.
+
+The client-hint version drift is retained as a machine-readable anti-detection quality warning. It does not invalidate the transport experiment, but a real source adapter must either align the hints with the selected browser or demonstrate that the source does not use the mismatch as a blocking signal. The PoC does not describe this result as complete fingerprint consistency.
+
+Python 3.13.13 produced `No active session available` from Scrapling's static session in the local environment, while the same locked code passed on Python 3.12.3 and Windows Python 3.12.13. The PoC and CI therefore pin Python 3.12. This is recorded as a compatibility risk rather than worked around inside PandaAtlas.
+
+The local WSL browser experiment reports `environment-blocked` when Chromium system libraries such as `libnspr4.so` are missing. This is not treated as a passed browser result, and the top-level report inherits the blocked outcome. The dedicated CI workflow installs browser dependencies and runs `--require-browser-lab`, where either browser fetcher being unavailable fails the job.
 
 ## Selector drift result
 

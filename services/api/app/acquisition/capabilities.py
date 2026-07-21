@@ -55,6 +55,7 @@ def build_fetch_plan(policy: SourcePolicy, engine: str) -> dict[str, Any]:
         "proxy_rotation": False,
         "authorized_session_configured": bool(policy.authorized_session_ref),
         "approved_proxy_configured": bool(policy.approved_proxy_ref),
+        "fingerprint_review_configured": bool(policy.fingerprint_review_ref),
     }
     if engine == "scrapy":
         return {
@@ -86,6 +87,16 @@ def build_fetch_plan(policy: SourcePolicy, engine: str) -> dict[str, Any]:
             "headless": True,
             "real_chrome": True,
             "network_idle": True,
+            "google_search": False,
+        }
+    if policy.capability is CapabilityMode.BROWSER_STEALTH:
+        fetcher = "StealthyFetcher"
+        options = {
+            "headless": True,
+            "real_chrome": True,
+            "solve_cloudflare": False,
+            "hide_canvas": False,
+            "block_webrtc": True,
             "google_search": False,
         }
     if policy.capability is CapabilityMode.STEALTH_LAB:

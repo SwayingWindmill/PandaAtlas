@@ -70,6 +70,12 @@ def build_comparison_report(
             allowed_hosts=("source.example",),
             capability=CapabilityMode.BROWSER_RENDERED,
         ),
+        "browser_stealth": SourcePolicy(
+            source_id="controlled-browser-stealth",
+            allowed_hosts=("source.example",),
+            capability=CapabilityMode.BROWSER_STEALTH,
+            fingerprint_review_ref="crawler-poc-windows-system-chrome",
+        ),
         "approved_proxy": SourcePolicy(
             source_id="controlled-approved-proxy",
             allowed_hosts=("source.example",),
@@ -107,6 +113,7 @@ def build_comparison_report(
             "specialized_adapter": "scrapling",
             "specialized_adapter_use": [
                 "browser-rendered sources",
+                "source-reviewed browser-stealth sessions with challenge solving disabled",
                 "browser-consistent HTTP/TLS identity",
                 "authorized session persistence",
                 "evidence-only adaptive selector suggestions",
@@ -139,7 +146,33 @@ def build_comparison_report(
         },
     }
     if include_browser_lab:
-        report["browser_lab"] = run_scrapling_browser_lab()
+        browser_lab = run_scrapling_browser_lab()
+        report["browser_lab"] = browser_lab
+        report["decision"]["browser_lab_findings"] = {
+            "runtime": browser_lab.get("browser_runtime"),
+            "dynamic_webdriver_hidden": (
+                browser_lab.get("dynamic_browser", {})
+                .get("fingerprint_assessment", {})
+                .get("webdriver_hidden")
+            ),
+            "stealth_webdriver_hidden": (
+                browser_lab.get("stealth_lab", {})
+                .get("fingerprint_assessment", {})
+                .get("webdriver_hidden")
+            ),
+            "dynamic_client_hint_version_consistent": (
+                browser_lab.get("dynamic_browser", {})
+                .get("fingerprint_assessment", {})
+                .get("client_hint_version_consistent")
+            ),
+            "stealth_client_hint_version_consistent": (
+                browser_lab.get("stealth_lab", {})
+                .get("fingerprint_assessment", {})
+                .get("client_hint_version_consistent")
+            ),
+        }
+        if browser_lab.get("outcome") != "passed":
+            report["outcome"] = browser_lab.get("outcome", "failed")
     return report
 
 

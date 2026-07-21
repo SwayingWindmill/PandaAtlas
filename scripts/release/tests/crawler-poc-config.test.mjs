@@ -74,9 +74,12 @@ test("crawler policy enables identity consistency but fails closed on blocking",
   assert.match(policy, /production acquisition must obey robots\.txt/);
   assert.match(policy, /automatic proxy rotation is not a production capability/);
   assert.match(policy, /stealth-lab is restricted to loopback-controlled fixtures/);
+  assert.match(policy, /browser-stealth requires a source-specific fingerprint review reference/);
+  assert.match(capabilities, /CapabilityMode\.BROWSER_STEALTH/);
   assert.match(capabilities, /"stealthy_headers": True/);
   assert.match(capabilities, /"impersonate": "chrome"/);
   assert.match(capabilities, /"on_401_403_429_challenge": "stop-and-review"/);
   assert.match(capabilities, /"automatic_identity_switch": False/);
   assert.match(capabilities, /"solve_cloudflare": False/);
+  assert.match(capabilities, /"block_webrtc": True/);
 });

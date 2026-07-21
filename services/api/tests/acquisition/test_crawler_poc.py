@@ -10,7 +10,7 @@ pytest.importorskip("scrapling")
 from app.acquisition import poc
 from app.acquisition.capabilities import build_fetch_plan
 from app.acquisition.engines import run_scrapling_parser, run_scrapy_parser
-from app.acquisition.lab import _browser_identity_passed
+from app.acquisition.lab import _browser_identity_passed, _fingerprint_assessment
 from app.acquisition.models import CapabilityMode, ResponseEnvelope, SourcePolicy
 from app.acquisition.poc import build_comparison_report
 from app.acquisition.policy import classify_block, validate_source_policy, validate_target
@@ -148,6 +148,16 @@ def test_source_policy_fails_closed(policy: SourcePolicy, message: str) -> None:
         validate_source_policy(policy)
 
 
+def test_browser_stealth_requires_source_specific_review() -> None:
+    policy = SourcePolicy(
+        source_id="missing-browser-review",
+        allowed_hosts=("source.example",),
+        capability=CapabilityMode.BROWSER_STEALTH,
+    )
+    with pytest.raises(ValueError, match="source-specific fingerprint review reference"):
+        validate_source_policy(policy)
+
+
 def test_target_allowlist_is_mandatory() -> None:
     with pytest.raises(ValueError, match="not allowlisted"):
         validate_target(public_policy(), "https://other.example/pandas")
@@ -158,6 +168,23 @@ def test_production_scrapling_plan_enables_identity_consistency_not_evasion() ->
     assert plan["fetcher"] == "Fetcher"
     assert plan["options"]["stealthy_headers"] is True
     assert plan["options"]["impersonate"] == "chrome"
+    assert plan["proxy_rotation"] is False
+    assert plan["automatic_identity_switch"] is False
+    assert plan["on_401_403_429_challenge"] == "stop-and-review"
+
+
+def test_production_browser_stealth_is_reviewed_and_does_not_solve_challenges() -> None:
+    policy = SourcePolicy(
+        source_id="reviewed-browser-stealth",
+        allowed_hosts=("source.example",),
+        capability=CapabilityMode.BROWSER_STEALTH,
+        fingerprint_review_ref="review-87-windows-system-chrome",
+    )
+    plan = build_fetch_plan(policy, "scrapling")
+    assert plan["fetcher"] == "StealthyFetcher"
+    assert plan["fingerprint_review_configured"] is True
+    assert plan["options"]["solve_cloudflare"] is False
+    assert plan["options"]["block_webrtc"] is True
     assert plan["proxy_rotation"] is False
     assert plan["automatic_identity_switch"] is False
     assert plan["on_401_403_429_challenge"] == "stop-and-review"
@@ -216,6 +243,39 @@ def test_browser_identity_requires_chrome_headers_and_hidden_webdriver() -> None
     }
     assert _browser_identity_passed(exposed)
     assert not _browser_identity_passed(exposed, require_hidden_webdriver=True)
+
+
+def test_fingerprint_assessment_surfaces_client_hint_drift() -> None:
+    probe = {
+        "request": {
+            "user_agent": "Mozilla/5.0 Chrome/147.0.0.0",
+            "sec_ch_ua": '"Chromium";v="150", "Google Chrome";v="150"',
+        },
+        "navigator": {
+            "userAgent": "Mozilla/5.0 Chrome/147.0.0.0",
+            "languages": ["en-US"],
+            "webdriver": False,
+        },
+    }
+    assessment = _fingerprint_assessment(probe)
+    assert assessment["user_agent_major"] == 147
+    assert assessment["client_hint_majors"] == [150]
+    assert assessment["client_hint_version_consistent"] is False
+    assert assessment["request_navigator_user_agent_match"] is True
+    assert assessment["webdriver_hidden"] is True
+
+
+def test_non_strict_browser_block_is_visible_in_top_level_outcome(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        poc,
+        "run_scrapling_browser_lab",
+        lambda: {"outcome": "environment-blocked", "error": "missing runtime"},
+    )
+    report = poc.build_comparison_report(tmp_path, include_browser_lab=True)
+    assert report["outcome"] == "environment-blocked"
 
 
 def test_strict_browser_failure_writes_report_before_raising(
