@@ -35,7 +35,7 @@ function requireCondition(condition, message) {
 }
 
 async function navigate(page, url) {
-  const response = await page.goto(url, { waitUntil: "networkidle" });
+  const response = await page.goto(url, { waitUntil: "load" });
   requireCondition(response, `Navigation returned no response for ${url}.`);
   return { status: response.status(), body: await page.content() };
 }
