@@ -74,7 +74,10 @@
     "crawler:poc": "uv run --isolated --directory services/api --frozen --extra crawler-poc python scripts/run_crawler_poc.py --browser-lab",
     "crawler:poc:strict": "uv run --isolated --directory services/api --frozen --extra crawler-poc python scripts/run_crawler_poc.py --require-browser-lab",
     "test:crawler-poc": "uv run --isolated --directory services/api --frozen --extra dev --extra crawler-poc pytest -q tests/acquisition",
-    "lint:crawler-poc": "uv run --isolated --directory services/api --frozen --extra dev --extra crawler-poc ruff check app/acquisition tests/acquisition scripts/run_crawler_poc.py",
+    "lint:crawler-poc": "uv run --isolated --directory services/api --frozen --extra dev --extra crawler-poc ruff check app/acquisition tests/acquisition scripts/run_crawler_poc.py scripts/run_source_adapter.py",
+    "source:xi-lun": "uv run --isolated --directory services/api --frozen --extra crawler-poc python scripts/run_source_adapter.py",
+    "source:xi-lun:live": "uv run --isolated --directory services/api --frozen --extra crawler-poc python scripts/run_source_adapter.py --live",
+    "test:source-adapters": "uv run --isolated --directory services/api --frozen --extra dev --extra crawler-poc pytest -q tests/acquisition/test_source_registry.py tests/acquisition/test_wikimedia_commons_adapter.py",
     "deploy:api:cf": "npm run deploy -w worker-api",
     "release:default": "node scripts/release/default.mjs",
     "release:extended": "node scripts/release/extended.mjs"

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "review_document": "docs/data-acquisition/source-review-2026-07-21.md",
+  "review_document_sha256": "26067e03b60c18f200935c7aca07ceba01486236c77a808499dc7188efa70270",
+  "sources": [
+    {
+      "source_id": "wikimedia-commons-action-api",
+      "label": "Wikimedia Commons Action API",
+      "access_status": "approved",
+      "base_url": "https://commons.wikimedia.org/w/api.php",
+      "allowed_hosts": [
+        "commons.wikimedia.org"
+      ],
+      "allowed_paths": [
+        "/w/api.php"
+      ],
+      "capability": "public-http",
+      "live_fetch": true,
+      "browser_impersonation": false,
+      "max_requests_per_minute": 6,
+      "concurrency_per_host": 1,
+      "media_reuse_policy": "per-file-license-required",
+      "terms_url": "https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_API_Usage_Guidelines/en",
+      "robots_url": "https://commons.wikimedia.org/robots.txt",
+      "policy_urls": [
+        "https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy/en",
+        "https://www.mediawiki.org/wiki/API:Imageinfo",
+        "https://www.mediawiki.org/wiki/Extension:CommonsMetadata/en"
+      ],
+      "reviewed_at": "2026-07-21",
+      "review_expires_at": "2027-01-21",
+      "notes": [
+        "Use a descriptive bot User-Agent with contact information.",
+        "Do not use browser User-Agent impersonation for automated API requests.",
+        "Stop and back off on throttling instructions."
+      ]
+    },
+    {
+      "source_id": "zoo-atlanta-public-pages",
+      "label": "Zoo Atlanta public pages",
+      "access_status": "permission-required",
+      "base_url": "https://zooatlanta.org/",
+      "allowed_hosts": [
+        "zooatlanta.org"
+      ],
+      "allowed_paths": [],
+      "capability": "manual-review",
+      "live_fetch": false,
+      "browser_impersonation": false,
+      "max_requests_per_minute": 0,
+      "concurrency_per_host": 0,
+      "media_reuse_policy": "written-permission-or-separate-license-required",
+      "terms_url": "https://zooatlanta.org/privacy-policy/",
+      "robots_url": "https://zooatlanta.org/robots.txt",
+      "policy_urls": [],
+      "reviewed_at": "2026-07-21",
+      "review_expires_at": "2027-01-21",
+      "notes": [
+        "Current Terms of Use prohibit scraping without express prior written authorization.",
+        "Existing manually reviewed citations may remain; no live adapter is approved."
+      ]
+    },
+    {
+      "source_id": "fu-bao-current-location-official-source",
+      "label": "Fu Bao current official residency source",
+      "access_status": "manual-review-required",
+      "base_url": null,
+      "allowed_hosts": [],
+      "allowed_paths": [],
+      "capability": "manual-review",
+      "live_fetch": false,
+      "browser_impersonation": false,
+      "max_requests_per_minute": 0,
+      "concurrency_per_host": 0,
+      "media_reuse_policy": "not-reviewed",
+      "terms_url": null,
+      "robots_url": null,
+      "policy_urls": [],
+      "reviewed_at": "2026-07-21",
+      "review_expires_at": "2026-10-21",
+      "notes": [
+        "News reports are discovery leads only.",
+        "Require a primary institutional or government source before enabling an adapter."
+      ]
+    }
+  ]
+}

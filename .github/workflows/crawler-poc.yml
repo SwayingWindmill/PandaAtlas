@@ -7,8 +7,10 @@ on:
       - "package.json"
       - "services/api/pyproject.toml"
       - "services/api/uv.lock"
+      - "data/acquisition-sources/**"
       - "services/api/app/acquisition/**"
       - "services/api/scripts/run_crawler_poc.py"
+      - "services/api/scripts/run_source_adapter.py"
       - "services/api/tests/acquisition/**"
       - "docs/data-acquisition/**"
       - "scripts/release/tests/crawler-poc-config.test.mjs"
@@ -21,8 +23,10 @@ on:
       - "package.json"
       - "services/api/pyproject.toml"
       - "services/api/uv.lock"
+      - "data/acquisition-sources/**"
       - "services/api/app/acquisition/**"
       - "services/api/scripts/run_crawler_poc.py"
+      - "services/api/scripts/run_source_adapter.py"
       - "services/api/tests/acquisition/**"
       - "docs/data-acquisition/**"
       - "scripts/release/tests/crawler-poc-config.test.mjs"
@@ -85,7 +89,11 @@ jobs:
 
       - name: Run acquisition lint
         working-directory: services/api
-        run: uv run ruff check app/acquisition tests/acquisition scripts/run_crawler_poc.py
+        run: uv run ruff check app/acquisition tests/acquisition scripts/run_crawler_poc.py scripts/run_source_adapter.py
+
+      - name: Build offline Xi Lun source candidate
+        working-directory: services/api
+        run: uv run python scripts/run_source_adapter.py
 
       - name: Run strict controlled browser and anti-detection lab
         working-directory: services/api
@@ -99,6 +107,6 @@ jobs:
         uses: actions/upload-artifact@v7.0.1
         with:
           name: crawler-poc-${{ matrix.platform }}
-          path: .release-gate/crawler-poc/
+          path: .release-gate/
           if-no-files-found: error
           include-hidden-files: true
