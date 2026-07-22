@@ -108,7 +108,7 @@ Reviewed variants normalize to:
 - `deceased`;
 - `unknown`.
 
-A source omission does not become an `alive` candidate.
+Explicit death terms such as `died` and `euthanized` normalize to `deceased`. A source omission does not become an `alive` candidate.
 
 ### Dates
 
@@ -125,7 +125,7 @@ Supported precision values are `day`, `month`, `year`, and `unknown`. Common ISO
 
 ### Locations
 
-Location text receives Unicode-safe whitespace normalization. Comparison may recognize a more detailed location when all current location tokens remain present as complete tokens. It does not use arbitrary substring matching: current `China` is compatible with `China, Sichuan`, but not `Chinatown Zoo`. The module does not geocode, translate, infer a holder, or collapse different institutions merely because they share a city or country.
+Location text receives Unicode-safe whitespace normalization. Comparison may recognize a more detailed location when all current location tokens remain present as complete tokens. A structured candidate may also use an explicit `institution` component as a compatibility anchor while treating an additional facility as enrichment; any stated city, region, state, province, or country must remain compatible with the current value. It does not use arbitrary substring matching: current `China` is compatible with `China, Sichuan`, but not `Chinatown Zoo`. The module does not geocode, translate, infer a holder, or collapse different institutions merely because they share a city or country.
 
 ### Parent references
 
