@@ -2,122 +2,150 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
-from app.acquisition.models import ResponseEnvelope
-from app.acquisition.source_registry import load_source_registry
-from app.acquisition.wikimedia_commons import (
-    DEFAULT_USER_AGENT,
-    XI_LUN_FILE_TITLE,
-    build_imageinfo_url,
-    fetch_imageinfo,
-    parse_xi_lun_result,
+from app.acquisition.adapters import DEFAULT_ADAPTER_REGISTRY
+from app.acquisition.contracts import AcquisitionMode
+from app.acquisition.runner import (
+    AdapterRunRequest,
+    AdapterRunStopped,
+    run_adapter,
 )
-
-_API_ROOT = Path(__file__).resolve().parents[1]
-_REPOSITORY_ROOT = _API_ROOT.parents[1]
-_DEFAULT_FIXTURE = (
-    _API_ROOT
-    / "tests"
-    / "acquisition"
-    / "fixtures"
-    / "commons-xi-lun-imageinfo.json"
-)
-_DEFAULT_OUTPUT = (
-    _REPOSITORY_ROOT / ".release-gate" / "acquisition-sources" / "xi-lun-commons.json"
-)
+from app.acquisition.wikimedia_commons import ADAPTER_ID, SOURCE_ID
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build a reviewed Xi Lun Wikimedia Commons metadata candidate."
+        description=(
+            "Run one registry-controlled acquisition adapter and write a review-only "
+            "candidate bundle below .acquisition/bundles."
+        )
+    )
+    parser.add_argument(
+        "--source-id",
+        default=SOURCE_ID,
+        help="Reviewed source registry ID.",
+    )
+    parser.add_argument(
+        "--adapter-id",
+        default=ADAPTER_ID,
+        help="Source-specific adapter ID allowlisted by the reviewed source.",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=[AcquisitionMode.FIXTURE.value, AcquisitionMode.LIVE.value],
+        default=AcquisitionMode.FIXTURE.value,
+        help="Use an offline fixture or execute the source's reviewed live request policy.",
     )
     parser.add_argument(
         "--live",
-        action="store_true",
-        help="Perform one reviewed Wikimedia Action API metadata request.",
+        action="store_const",
+        const=AcquisitionMode.LIVE.value,
+        dest="mode",
+        help="Compatibility alias for --mode live.",
+    )
+    parser.add_argument(
+        "--cohort",
+        help="Optional source-oriented cohort label; adapter default is used when omitted.",
     )
     parser.add_argument(
         "--fixture",
         type=Path,
-        default=_DEFAULT_FIXTURE,
-        help="Offline Action API response fixture used when --live is absent.",
+        help=(
+            "Offline response file, or a v1 fixture manifest for multi-request adapters. "
+            "The adapter default is used when omitted."
+        ),
     )
     parser.add_argument(
+        "--output-bundle",
         "--output",
+        dest="output_bundle",
         type=Path,
-        default=_DEFAULT_OUTPUT,
-        help="Machine-readable report path.",
+        help="JSON output path below .acquisition/bundles; defaults to the generated run ID.",
     )
     parser.add_argument(
-        "--user-agent",
-        default=DEFAULT_USER_AGENT,
-        help="Descriptive Wikimedia bot User-Agent with contact information.",
+        "--overwrite",
+        action="store_true",
+        help="Replace an existing local bundle at the requested output path.",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
-def main() -> None:
-    args = parse_args()
-    registry = load_source_registry()
-    source = registry.get("wikimedia-commons-action-api")
-
-    if args.live:
-        request_url, response = fetch_imageinfo(
-            registry,
-            title=XI_LUN_FILE_TITLE,
-            user_agent=args.user_agent,
+def main(argv: list[str] | None = None) -> None:
+    args = parse_args(argv)
+    request = AdapterRunRequest(
+        source_id=args.source_id,
+        adapter_id=args.adapter_id,
+        mode=AcquisitionMode(args.mode),
+        cohort=args.cohort,
+        fixture=args.fixture,
+        output_bundle=args.output_bundle,
+        overwrite=args.overwrite,
+    )
+    try:
+        result = run_adapter(
+            request,
+            adapter_registry=DEFAULT_ADAPTER_REGISTRY,
         )
-        mode = "live"
-    else:
-        request_url = build_imageinfo_url(source, title=XI_LUN_FILE_TITLE)
-        fixture_path = args.fixture.resolve()
-        if not fixture_path.is_file():
-            raise FileNotFoundError(f"Commons fixture not found: {fixture_path}")
-        response = ResponseEnvelope(
-            requested_url=request_url,
-            final_url=request_url,
-            status=200,
-            headers={
-                "content-type": "application/json; charset=utf-8",
-                "x-panda-atlas-fixture": fixture_path.name,
-            },
-            body=fixture_path.read_bytes(),
+    except AdapterRunStopped as error:
+        print(
+            json.dumps(
+                _summary(error.result, outcome="stopped", message=str(error)),
+                ensure_ascii=False,
+                indent=2,
+            ),
+            file=sys.stderr,
         )
-        mode = "fixture"
+        raise SystemExit(2) from error
+    except (FileExistsError, FileNotFoundError, KeyError, ValueError) as error:
+        print(
+            json.dumps(
+                {
+                    "outcome": "rejected",
+                    "message": str(error),
+                    "source_id": request.source_id,
+                    "adapter_id": request.adapter_id,
+                    "mode": request.mode.value,
+                    "trusted_write_targets": [],
+                    "publication_write_targets": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            file=sys.stderr,
+        )
+        raise SystemExit(2) from error
 
-    result = parse_xi_lun_result(
-        registry,
-        response,
-        request_url=request_url,
-        user_agent=args.user_agent,
-    )
-    report = result.to_dict()
-    report["mode"] = mode
-    report["fixture"] = None if args.live else str(args.fixture.resolve())
-
-    output_path = args.output.resolve()
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
     print(
         json.dumps(
-            {
-                "outcome": report["outcome"],
-                "mode": mode,
-                "output": str(output_path),
-                "candidate": report["candidate"]["panda_name_en"],
-                "license": report["candidate"]["license_short_name"],
-                "original_image_downloaded": report["candidate"][
-                    "original_image_downloaded"
-                ],
-            },
+            _summary(result, outcome="completed"),
             ensure_ascii=False,
             indent=2,
         )
     )
+
+
+def _summary(result, *, outcome: str, message: str | None = None) -> dict:
+    bundle = result.bundle
+    return {
+        "outcome": outcome,
+        "message": message,
+        "schema_version": bundle.schema_version,
+        "bundle_id": bundle.bundle_id,
+        "run_id": bundle.run.run_id,
+        "run_state": bundle.run.state.value,
+        "source_id": bundle.run.source_id,
+        "adapter_id": bundle.run.adapter_id,
+        "cohort": bundle.run.cohort,
+        "mode": bundle.run.mode.value,
+        "request_count": result.request_count,
+        "evidence_snapshot_count": len(bundle.evidence_snapshots),
+        "candidate_count": len(bundle.candidates),
+        "output_bundle": str(result.output_path),
+        "trusted_write_targets": [],
+        "publication_write_targets": [],
+    }
 
 
 if __name__ == "__main__":
