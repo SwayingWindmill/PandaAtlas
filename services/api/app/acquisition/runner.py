@@ -26,6 +26,7 @@ from .contracts import (
     FieldCandidate,
 )
 from .models import ResponseEnvelope
+from .reconciliation import reconcile_candidates
 from .source_registry import (
     AuthenticationMode,
     RedirectPolicy,
@@ -240,7 +241,13 @@ def run_adapter(
             responses=MappingProxyType(dict(responses)),
             evidence_snapshots=MappingProxyType(dict(evidence_by_request)),
         )
-        candidates = adapter.parse(context)
+        parsed_candidates = adapter.parse(context)
+        reconciliation = reconcile_candidates(
+            parsed_candidates,
+            source=source,
+            cohort=cohort,
+        )
+        candidates = reconciliation.candidates
         completed_at = _require_aware(now())
         bundle = _build_bundle(
             source=source,
@@ -254,6 +261,7 @@ def run_adapter(
             completed_at=completed_at,
             evidence=tuple(evidence_by_request[item.request_id] for item in planned_requests),
             candidates=candidates,
+            run_notes=reconciliation.summary.run_notes(),
         )
     except _ReviewedRequestStopped as error:
         responses.update(error.completed_responses)
@@ -625,6 +633,7 @@ def _build_bundle(
     evidence: tuple[EvidenceSnapshot, ...],
     candidates: tuple[FieldCandidate, ...],
     failure_message: str | None = None,
+    run_notes: tuple[str, ...] = (),
 ) -> AcquisitionBundle:
     notes = [
         f"source_registry_review={registry.review_document}",
@@ -633,6 +642,7 @@ def _build_bundle(
     ]
     if failure_message:
         notes.append(f"terminal_message={failure_message}")
+    notes.extend(run_notes)
     run = AcquisitionRun(
         run_id=run_id,
         source_id=source.source_id,
