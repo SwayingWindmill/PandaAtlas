@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-07-22",
+  "source_keys": [
+    {
+      "source_id": "wikimedia-commons-action-api",
+      "source_key": "xi-lun",
+      "canonical_slug": "xi-lun",
+      "basis": "The reviewed exact Commons file title and description explicitly identify Xi Lun."
+    }
+  ],
+  "external_identifiers": []
+}

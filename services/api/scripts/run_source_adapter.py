@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 from app.acquisition.adapters import DEFAULT_ADAPTER_REGISTRY
@@ -142,6 +143,12 @@ def _summary(result, *, outcome: str, message: str | None = None) -> dict:
         "request_count": result.request_count,
         "evidence_snapshot_count": len(bundle.evidence_snapshots),
         "candidate_count": len(bundle.candidates),
+        "identity_state_counts": dict(
+            sorted(Counter(item.identity_match.state.value for item in bundle.candidates).items())
+        ),
+        "conflict_state_counts": dict(
+            sorted(Counter(item.conflict_state.value for item in bundle.candidates).items())
+        ),
         "output_bundle": str(result.output_path),
         "trusted_write_targets": [],
         "publication_write_targets": [],

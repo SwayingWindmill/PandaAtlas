@@ -100,7 +100,7 @@ Ambiguous and unmatched candidates remain reviewable evidence. They are never si
 - `contradiction`
 - `missing-current-value`
 
-The conservative identity and field-diff ticket owns assigning these states. An adapter may leave every candidate as `not-compared`.
+The shared [conservative identity reconciliation](identity-reconciliation-v1.md) module now assigns these states after adapter parsing. Adapters leave identity and comparison unattempted unless they are preserving a source-local observation; adapter-provided `matched` states are not accepted as merge authority.
 
 ### Review states
 
@@ -245,7 +245,7 @@ This example writes only a local candidate bundle. It does not modify curation C
 
 ## Ownership of later work
 
-- The reviewed registry and runner ticket migrates existing adapters onto this contract.
-- The identity-matching ticket assigns matched identities and comparison states.
+- The reviewed registry and runner execute adapters through this contract.
+- Conservative identity reconciliation assigns matched identities, normalized values, current curation values, and comparison states.
 - The curator-decision ticket records accept/reject/defer decisions separately and exports accepted candidates as a curation-patch proposal.
 - The map-closing ticket owns schema validation tests, deduplication tests, cross-platform CI, Release Gate, and final immutable evidence.

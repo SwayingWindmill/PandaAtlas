@@ -76,7 +76,9 @@ A completed Xi Lun bundle records:
 - the reviewed source policy and review-document hash;
 - one response evidence snapshot with URL, HTTP metadata, byte count, and body SHA-256;
 - 20 `media-metadata` field candidates covering the exact file title, uploader, upload timestamp, source and description URLs, dimensions, source byte count, MIME, Wikimedia SHA-1, description, artist, credit, license, usage terms, attribution requirement, original capture text, categories, and `original_image_downloaded: false`;
-- a matched Xi Lun identity assertion based on the exact reviewed file title and description;
+- a source-local `xi-lun` subject key that the shared reconciliation module matches through the reviewed identity-link registry;
+- current curation values and stable field-level comparison states for mapped media fields;
+- reconciliation input hashes plus identity/conflict state counts in the run notes;
 - empty trusted and publication write-target lists.
 
 The legacy `parse_xi_lun_result` interface remains available for current callers, but the command-line workflow now uses the formal acquisition bundle contract.

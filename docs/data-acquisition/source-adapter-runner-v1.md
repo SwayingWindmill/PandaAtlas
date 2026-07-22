@@ -191,15 +191,25 @@ The Xi Lun Commons parser continues to expose the legacy `parse_xi_lun_result` i
 - original capture text and categories;
 - the explicit fact that original image bytes were not downloaded.
 
-The exact reviewed file title and description provide the existing Xi Lun identity assertion. General identity matching and comparison against trusted values remain owned by the later identity and diff ticket.
+The adapter preserves the reviewed source-local key `xi-lun` and leaves identity matching unattempted. The shared [conservative identity reconciliation](identity-reconciliation-v1.md) module resolves that key through the reviewed identity-link registry, normalizes the 20 values, attaches current curation values where mapped, and records field-level comparison states before the bundle is written.
+
+## Reconciliation after parsing
+
+Every successful adapter result is reconciled before `_build_bundle`:
+
+- adapter-provided `matched` states are not accepted as merge authority;
+- reviewed source keys and explicit external identifiers take precedence;
+- exact names and aliases are used only inside an unambiguous named source cohort;
+- raw values remain unchanged while normalized values, current values, identity states, and comparison states are added;
+- reconciliation input hashes and state counts are written into run notes.
+
+Invalid reconciliation inputs convert the source run into a failed evidence-only terminal bundle. Reconciliation never opens a trusted or publication write target.
 
 ## Out of scope
 
-This ticket does not implement:
+The runner and reconciliation modules still do not implement:
 
 - the Smithsonian HTML parser;
-- generalized panda identity matching;
-- current-value diffing;
 - curator decisions or curation-patch export;
 - scheduled runs;
 - trusted database writes;

@@ -374,10 +374,12 @@ def _to_field_candidates(
     evidence: BundleEvidenceSnapshot,
 ) -> tuple[FieldCandidate, ...]:
     identity = PandaIdentityMatch(
-        state=IdentityMatchState.MATCHED,
-        source_identity=candidate.panda_name_en,
-        matched_canonical_slug=candidate.panda_slug,
-        notes=("Exact reviewed Commons file title and description identify Xi Lun.",),
+        state=IdentityMatchState.NOT_ATTEMPTED,
+        source_identity=candidate.panda_slug,
+        notes=(
+            "The adapter preserves the reviewed Commons subject key; the shared "
+            "reconciliation module owns the curation identity match.",
+        ),
     )
     current = CurrentTrustedValue(present=False)
     values: tuple[tuple[str, Any, str], ...] = (
