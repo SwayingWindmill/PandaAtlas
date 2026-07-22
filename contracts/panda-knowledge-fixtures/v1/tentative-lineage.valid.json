@@ -1,0 +1,88 @@
+{
+  "bundle_id": "knowledge-fixture-tentative-lineage",
+  "created_at": "2026-07-23T00:00:00Z",
+  "records": [
+    {
+      "assertions": [],
+      "conclusions": [],
+      "contributions": [],
+      "identity": {
+        "aliases": [],
+        "canonical_panda_id": "panda-xing-xing",
+        "canonical_slug": "xing-xing",
+        "external_identifiers": [],
+        "identity_key": "panda-xing-xing",
+        "legacy_records": [],
+        "legacy_slugs": [],
+        "names": [
+          {
+            "is_primary": true,
+            "kind": "display",
+            "language": "en",
+            "source_ids": [
+              "source-example"
+            ],
+            "value": "Xing Xing"
+          }
+        ],
+        "population_context": "unknown",
+        "resolution": {
+          "auxiliary_features": {},
+          "candidate_panda_ids": [],
+          "confidence": "high",
+          "merged_from_ids": [],
+          "source_ids": [
+            "source-example"
+          ],
+          "split_from_id": null,
+          "state": "matched"
+        }
+      },
+      "locations": [],
+      "media": [],
+      "relationships": [
+        {
+          "confidence": "medium",
+          "last_verified_at": "2026-07-23",
+          "lifecycle": "active",
+          "object_id": "panda-mother",
+          "relationship_id": "relationship-tentative-mother",
+          "relationship_type": "mother",
+          "source_ids": [
+            "source-example"
+          ],
+          "status": "tentative",
+          "subject_id": "panda-xing-xing",
+          "superseded_by": null,
+          "withdrawal_reason": null
+        }
+      ],
+      "translations": []
+    }
+  ],
+  "schema_version": "panda-atlas-knowledge-bundle/v1",
+  "sources": [
+    {
+      "access_basis": "public",
+      "assessment": {
+        "authority_score": 0,
+        "confidence": "low",
+        "consistency_score": 0,
+        "corroboration_score": 0,
+        "rationale": [
+          "unreviewed-source-default"
+        ],
+        "recency_score": 0,
+        "specificity_score": 0
+      },
+      "captured_at": "2026-07-23T00:00:00Z",
+      "is_first_hand": true,
+      "kind": "official-institution",
+      "original_language": "en",
+      "publisher": "Example Panda Institution",
+      "source_id": "source-example",
+      "title": "Example panda profile",
+      "url": "https://example.org/pandas/source-example"
+    }
+  ]
+}
