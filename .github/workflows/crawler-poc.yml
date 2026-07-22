@@ -8,6 +8,17 @@ on:
       - reopened
       - labeled
       - unlabeled
+    paths:
+      - ".github/workflows/crawler-poc.yml"
+      - "data/acquisition-sources/**"
+      - "docs/data-acquisition/**"
+      - "services/api/app/acquisition/**"
+      - "services/api/tests/acquisition/**"
+      - "services/api/scripts/run_crawler_poc.py"
+      - "services/api/scripts/run_source_adapter.py"
+      - "services/api/pyproject.toml"
+      - "services/api/uv.lock"
+      - "package.json"
   workflow_dispatch:
 
 permissions:

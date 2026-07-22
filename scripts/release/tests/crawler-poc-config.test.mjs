@@ -19,7 +19,7 @@ const sourceRegistryPath = new URL(
   import.meta.url,
 );
 const sourceReviewPath = new URL(
-  "../../../docs/data-acquisition/source-review-2026-07-21.md",
+  "../../../docs/data-acquisition/source-review-2026-07-22.md",
   import.meta.url,
 );
 const commonsAdapterPath = new URL(
