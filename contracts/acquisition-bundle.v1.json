@@ -1,0 +1,543 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://panda-atlas.local/contracts/acquisition-bundle.v1.json",
+  "title": "Panda Atlas acquisition candidate bundle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "created_at",
+    "run",
+    "evidence_snapshots",
+    "candidates",
+    "write_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "panda-atlas-acquisition-bundle/v1"
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^bundle-[0-9a-f]{64}$"
+    },
+    "created_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "run": {
+      "$ref": "#/$defs/acquisitionRun"
+    },
+    "evidence_snapshots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidenceSnapshot"
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fieldCandidate"
+      }
+    },
+    "write_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trusted_write_targets",
+        "publication_write_targets"
+      ],
+      "properties": {
+        "trusted_write_targets": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "publication_write_targets": {
+          "type": "array",
+          "maxItems": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dateOrNull": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "stringOrNull": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "acquisitionRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "started"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "completed_at": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "completed_at": {
+                "$ref": "#/$defs/timestamp"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "live"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source_reviewed_at": {
+                "type": "string",
+                "format": "date"
+              },
+              "source_review_expires_at": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_reviewed_at": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source_review_expires_at": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "source_review_expires_at": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "run_id",
+        "source_id",
+        "adapter_id",
+        "adapter_version",
+        "parser_name",
+        "parser_version",
+        "mode",
+        "state",
+        "started_at",
+        "completed_at",
+        "cohort",
+        "source_reviewed_at",
+        "source_review_expires_at",
+        "notes"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "adapter_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "adapter_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parser_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parser_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "enum": [
+            "fixture",
+            "live",
+            "imported"
+          ]
+        },
+        "state": {
+          "enum": [
+            "started",
+            "completed",
+            "blocked",
+            "failed"
+          ]
+        },
+        "started_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "completed_at": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cohort": {
+          "$ref": "#/$defs/stringOrNull"
+        },
+        "source_reviewed_at": {
+          "$ref": "#/$defs/dateOrNull"
+        },
+        "source_review_expires_at": {
+          "$ref": "#/$defs/dateOrNull"
+        },
+        "notes": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "evidenceSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_snapshot_id",
+        "source_id",
+        "requested_url",
+        "final_url",
+        "captured_at",
+        "status",
+        "headers",
+        "body_bytes",
+        "body_sha256",
+        "block_state",
+        "capability",
+        "content_type",
+        "notes"
+      ],
+      "properties": {
+        "evidence_snapshot_id": {
+          "type": "string",
+          "pattern": "^evidence-[0-9a-f]{64}$"
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requested_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "final_url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "captured_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "body_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "body_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "block_state": {
+          "enum": [
+            "clear",
+            "authorization-required",
+            "human-challenge-required",
+            "rate-limited",
+            "blocked"
+          ]
+        },
+        "capability": {
+          "enum": [
+            "public-http",
+            "authorized-session",
+            "browser-rendered"
+          ]
+        },
+        "content_type": {
+          "$ref": "#/$defs/stringOrNull"
+        },
+        "notes": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "sourceLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value",
+        "attribute",
+        "occurrence"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "api-field",
+            "json-path",
+            "css-selector",
+            "xpath",
+            "text-span",
+            "document-section"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attribute": {
+          "$ref": "#/$defs/stringOrNull"
+        },
+        "occurrence": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "identityMatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "source_identity",
+        "matched_panda_id",
+        "matched_canonical_slug",
+        "candidate_panda_ids",
+        "notes"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "not-attempted",
+            "matched",
+            "ambiguous",
+            "unmatched"
+          ]
+        },
+        "source_identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "matched_panda_id": {
+          "$ref": "#/$defs/stringOrNull"
+        },
+        "matched_canonical_slug": {
+          "$ref": "#/$defs/stringOrNull"
+        },
+        "candidate_panda_ids": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "notes": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "currentTrustedValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "present": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "assertion_ids": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ],
+      "required": [
+        "present",
+        "value",
+        "assertion_ids"
+      ],
+      "properties": {
+        "present": {
+          "type": "boolean"
+        },
+        "value": true,
+        "assertion_ids": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "fieldCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "deduplication_key",
+        "source_id",
+        "evidence_snapshot_id",
+        "evidence_body_sha256",
+        "candidate_kind",
+        "subject_key",
+        "field_path",
+        "source_locator",
+        "raw_value",
+        "normalized_value",
+        "identity_match",
+        "current_trusted_value",
+        "parser_name",
+        "parser_version",
+        "conflict_state",
+        "review_state",
+        "notes"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string",
+          "pattern": "^candidate-[0-9a-f]{64}$"
+        },
+        "deduplication_key": {
+          "type": "string",
+          "pattern": "^dedupe-[0-9a-f]{64}$"
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_snapshot_id": {
+          "type": "string",
+          "pattern": "^evidence-[0-9a-f]{64}$"
+        },
+        "evidence_body_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "candidate_kind": {
+          "enum": [
+            "identity",
+            "relationship",
+            "residency",
+            "event",
+            "media-metadata"
+          ]
+        },
+        "subject_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "field_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_locator": {
+          "$ref": "#/$defs/sourceLocator"
+        },
+        "raw_value": true,
+        "normalized_value": true,
+        "identity_match": {
+          "$ref": "#/$defs/identityMatch"
+        },
+        "current_trusted_value": {
+          "$ref": "#/$defs/currentTrustedValue"
+        },
+        "parser_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parser_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conflict_state": {
+          "enum": [
+            "not-compared",
+            "new",
+            "unchanged",
+            "enrichment",
+            "contradiction",
+            "missing-current-value"
+          ]
+        },
+        "review_state": {
+          "enum": [
+            "unreviewed",
+            "accepted",
+            "rejected",
+            "deferred"
+          ]
+        },
+        "notes": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    }
+  }
+}

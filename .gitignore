@@ -13,6 +13,7 @@ apps/web/blob-report/
 **/.wrangler/
 *.wrangler-dev.*.log
 .release-gate/
+.acquisition/
 
 # Python
 __pycache__/
