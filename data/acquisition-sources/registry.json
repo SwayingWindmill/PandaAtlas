@@ -14,11 +14,41 @@
       "allowed_paths": [
         "/w/api.php"
       ],
+      "allowed_adapter_ids": [
+        "wikimedia-commons-xi-lun"
+      ],
       "capability": "public-http",
       "live_fetch": true,
       "browser_impersonation": false,
       "max_requests_per_minute": 6,
       "concurrency_per_host": 1,
+      "request_policy": {
+        "user_agent": "PandaAtlasBot/0.1 (https://github.com/SwayingWindmill/PandaAtlas; source metadata review)",
+        "accept": "application/json",
+        "allowed_methods": [
+          "GET"
+        ],
+        "allow_query_string": true,
+        "authentication": "none",
+        "send_cookies": false,
+        "timeout_seconds": 30,
+        "redirect_policy": "deny",
+        "max_redirects": 0,
+        "max_attempts": 1,
+        "retry_server_errors": false,
+        "retry_backoff_seconds": 60,
+        "honor_retry_after": true,
+        "stop_statuses": [
+          401,
+          403,
+          404,
+          407,
+          409,
+          429,
+          451
+        ],
+        "stop_on_challenge": true
+      },
       "media_reuse_policy": "per-file-license-required",
       "terms_url": "https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_API_Usage_Guidelines/en",
       "robots_url": "https://commons.wikimedia.org/robots.txt",
@@ -48,11 +78,41 @@
         "/animals/giant-panda-faqs",
         "/animals/history-giant-pandas-zoo"
       ],
+      "allowed_adapter_ids": [
+        "smithsonian-panda-profiles"
+      ],
       "capability": "public-http",
       "live_fetch": true,
       "browser_impersonation": false,
       "max_requests_per_minute": 2,
       "concurrency_per_host": 1,
+      "request_policy": {
+        "user_agent": "PandaAtlasBot/0.1 (https://github.com/SwayingWindmill/PandaAtlas; official-source evidence)",
+        "accept": "text/html",
+        "allowed_methods": [
+          "GET"
+        ],
+        "allow_query_string": false,
+        "authentication": "none",
+        "send_cookies": false,
+        "timeout_seconds": 30,
+        "redirect_policy": "same-host",
+        "max_redirects": 1,
+        "max_attempts": 2,
+        "retry_server_errors": true,
+        "retry_backoff_seconds": 60,
+        "honor_retry_after": true,
+        "stop_statuses": [
+          401,
+          403,
+          404,
+          407,
+          409,
+          429,
+          451
+        ],
+        "stop_on_challenge": true
+      },
       "media_reuse_policy": "facts-only-no-media-reuse",
       "terms_url": "https://www.si.edu/termsofuse",
       "robots_url": "https://nationalzoo.si.edu/robots.txt",
@@ -77,11 +137,13 @@
         "zooatlanta.org"
       ],
       "allowed_paths": [],
+      "allowed_adapter_ids": [],
       "capability": "manual-review",
       "live_fetch": false,
       "browser_impersonation": false,
       "max_requests_per_minute": 0,
       "concurrency_per_host": 0,
+      "request_policy": null,
       "media_reuse_policy": "written-permission-or-separate-license-required",
       "terms_url": "https://zooatlanta.org/privacy-policy/",
       "robots_url": "https://zooatlanta.org/robots.txt",
@@ -102,11 +164,13 @@
         "www.tokyo-zoo.net"
       ],
       "allowed_paths": [],
+      "allowed_adapter_ids": [],
       "capability": "manual-review",
       "live_fetch": false,
       "browser_impersonation": false,
       "max_requests_per_minute": 0,
       "concurrency_per_host": 0,
+      "request_policy": null,
       "media_reuse_policy": "not-reviewed-no-reuse",
       "terms_url": "https://www.tokyo-zoo.net/en/policy/index.html",
       "robots_url": "https://www.tokyo-zoo.net/robots.txt",
@@ -128,11 +192,13 @@
       "base_url": null,
       "allowed_hosts": [],
       "allowed_paths": [],
+      "allowed_adapter_ids": [],
       "capability": "manual-review",
       "live_fetch": false,
       "browser_impersonation": false,
       "max_requests_per_minute": 0,
       "concurrency_per_host": 0,
+      "request_policy": null,
       "media_reuse_policy": "not-reviewed",
       "terms_url": null,
       "robots_url": null,

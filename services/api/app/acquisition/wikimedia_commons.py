@@ -5,19 +5,40 @@ import re
 from dataclasses import asdict, dataclass
 from html import unescape
 from html.parser import HTMLParser
+from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode, urlparse
 
 import httpx
 
-from .models import CapabilityMode, EvidenceSnapshot, ResponseEnvelope
+from .contracts import (
+    CandidateKind,
+    ConflictState,
+    CurrentTrustedValue,
+    FieldCandidate,
+    IdentityMatchState,
+    PandaIdentityMatch,
+    SourceLocator,
+    SourceLocatorKind,
+)
+from .contracts import (
+    EvidenceSnapshot as BundleEvidenceSnapshot,
+)
+from .models import CapabilityMode, ResponseEnvelope
+from .models import EvidenceSnapshot as LegacyEvidenceSnapshot
+from .runner import AdapterParseContext, AdapterRequest
 from .source_registry import ReviewedSource, SourceRegistry
 
 SOURCE_ID = "wikimedia-commons-action-api"
+ADAPTER_ID = "wikimedia-commons-xi-lun"
+ADAPTER_VERSION = "1.0.0"
+PARSER_NAME = "wikimedia-commons-imageinfo-xi-lun"
+PARSER_VERSION = "1.0.0"
+REQUEST_ID = "xi-lun-imageinfo"
+DEFAULT_COHORT = "xi-lun-reviewed-media"
 XI_LUN_FILE_TITLE = "File:Xi Lun at Zoo Atlanta.jpg"
 DEFAULT_USER_AGENT = (
-    "PandaAtlasBot/0.1 "
-    "(https://github.com/SwayingWindmill/PandaAtlas; source metadata review)"
+    "PandaAtlasBot/0.1 (https://github.com/SwayingWindmill/PandaAtlas; source metadata review)"
 )
 _IMAGEINFO_PROPERTIES = "timestamp|user|url|size|sha1|mime|extmetadata"
 _EXTMETADATA_FILTER = (
@@ -28,6 +49,13 @@ _ALLOWED_LICENSES = {
     "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0",
 }
 _SHA1_PATTERN = re.compile(r"^[0-9a-f]{40}$")
+_DEFAULT_FIXTURE = (
+    Path(__file__).resolve().parents[2]
+    / "tests"
+    / "acquisition"
+    / "fixtures"
+    / "commons-xi-lun-imageinfo.json"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,7 +97,7 @@ class CommonsAdapterResult:
     source: ReviewedSource
     request_url: str
     user_agent: str
-    evidence: EvidenceSnapshot
+    evidence: LegacyEvidenceSnapshot
     candidate: CommonsMediaCandidate
 
     def to_dict(self) -> dict[str, Any]:
@@ -90,8 +118,51 @@ class CommonsAdapterResult:
         }
 
 
+@dataclass(frozen=True, slots=True)
+class WikimediaCommonsXiLunAdapter:
+    adapter_id: str = ADAPTER_ID
+    adapter_version: str = ADAPTER_VERSION
+    source_id: str = SOURCE_ID
+    parser_name: str = PARSER_NAME
+    parser_version: str = PARSER_VERSION
+    default_cohort: str | None = DEFAULT_COHORT
+    default_fixture: Path | None = _DEFAULT_FIXTURE
+
+    def build_requests(
+        self,
+        source: ReviewedSource,
+        *,
+        cohort: str | None,
+    ) -> tuple[AdapterRequest, ...]:
+        del cohort
+        return (
+            AdapterRequest(
+                request_id=REQUEST_ID,
+                url=build_imageinfo_url(source, title=XI_LUN_FILE_TITLE),
+            ),
+        )
+
+    def parse(self, context: AdapterParseContext) -> tuple[FieldCandidate, ...]:
+        response = context.responses.get(REQUEST_ID)
+        evidence = context.evidence_snapshots.get(REQUEST_ID)
+        if response is None or evidence is None:
+            raise ValueError("Commons adapter did not receive its planned response and evidence")
+        policy = context.source.request_policy
+        user_agent = policy.user_agent if policy is not None else DEFAULT_USER_AGENT
+        candidate = _parse_xi_lun_candidate(
+            context.source,
+            response,
+            request_url=response.requested_url,
+            user_agent=user_agent,
+        )
+        return _to_field_candidates(candidate, evidence)
+
+
+ADAPTER = WikimediaCommonsXiLunAdapter()
+
+
 def build_imageinfo_url(source: ReviewedSource, *, title: str = XI_LUN_FILE_TITLE) -> str:
-    source.assert_live_fetch_allowed()
+    source.assert_adapter_allowed(ADAPTER_ID)
     if source.source_id != SOURCE_ID or source.base_url is None:
         raise ValueError("Wikimedia adapter requires the reviewed Commons Action API source")
     parameters = {
@@ -129,13 +200,20 @@ def fetch_imageinfo(
 ) -> tuple[str, ResponseEnvelope]:
     source = registry.get(SOURCE_ID)
     source.assert_live_fetch_allowed()
+    source.assert_adapter_allowed(ADAPTER_ID)
     validate_bot_user_agent(user_agent)
+    policy = source.request_policy
+    if policy is None or user_agent != policy.user_agent:
+        raise ValueError("Wikimedia live requests must use the registry User-Agent")
+    if timeout_seconds != policy.timeout_seconds:
+        raise ValueError("Wikimedia live requests must use the registry timeout")
     request_url = build_imageinfo_url(source, title=title)
 
     with httpx.Client(
-        headers={"User-Agent": user_agent, "Accept": "application/json"},
+        headers={"User-Agent": user_agent, "Accept": policy.accept},
         timeout=timeout_seconds,
         follow_redirects=False,
+        cookies=None,
     ) as client:
         response = client.get(request_url)
 
@@ -161,10 +239,43 @@ def parse_xi_lun_result(
     user_agent: str = DEFAULT_USER_AGENT,
 ) -> CommonsAdapterResult:
     source = registry.get(SOURCE_ID)
-    source.assert_live_fetch_allowed()
+    source.assert_adapter_allowed(ADAPTER_ID)
+    candidate = _parse_xi_lun_candidate(
+        source,
+        response,
+        request_url=request_url or response.requested_url,
+        user_agent=user_agent,
+    )
+    evidence = LegacyEvidenceSnapshot.from_response(
+        engine=SOURCE_ID,
+        engine_version="imageinfo-v1",
+        response=response,
+        block_state=_clear_block_state(),
+        capability=CapabilityMode.PUBLIC_HTTP,
+        selector_mode="structured-json-exact-title",
+        notes=(
+            "Metadata only; original image bytes were not requested.",
+            "Candidate remains subject to curator identity and license review.",
+        ),
+    )
+    return CommonsAdapterResult(
+        source=source,
+        request_url=request_url or response.requested_url,
+        user_agent=user_agent,
+        evidence=evidence,
+        candidate=candidate,
+    )
+
+
+def _parse_xi_lun_candidate(
+    source: ReviewedSource,
+    response: ResponseEnvelope,
+    *,
+    request_url: str,
+    user_agent: str,
+) -> CommonsMediaCandidate:
     validate_bot_user_agent(user_agent)
-    effective_request_url = request_url or response.requested_url
-    _validate_request_target(source, effective_request_url)
+    _validate_request_target(source, request_url)
 
     content_type = _header(response.headers, "content-type")
     if response.status != 200:
@@ -179,7 +290,7 @@ def parse_xi_lun_result(
 
     if payload.get("error") or payload.get("warnings"):
         raise ValueError("Commons response contains API errors or warnings")
-    pages = ((payload.get("query") or {}).get("pages") or [])
+    pages = (payload.get("query") or {}).get("pages") or []
     if len(pages) != 1:
         raise ValueError("Commons response must contain exactly one page")
     page = pages[0]
@@ -203,9 +314,7 @@ def parse_xi_lun_result(
     attribution_required = _metadata_bool(metadata, "AttributionRequired")
     captured_at_text = _metadata_text(metadata, "DateTimeOriginal")
     categories = tuple(
-        item.strip()
-        for item in _metadata_text(metadata, "Categories").split("|")
-        if item.strip()
+        item.strip() for item in _metadata_text(metadata, "Categories").split("|") if item.strip()
     )
 
     if "Xi Lun" not in description:
@@ -233,19 +342,7 @@ def parse_xi_lun_result(
     if not _SHA1_PATTERN.fullmatch(file_sha1):
         raise ValueError("Commons source SHA-1 is invalid")
 
-    evidence = EvidenceSnapshot.from_response(
-        engine="wikimedia-commons-action-api",
-        engine_version="imageinfo-v1",
-        response=response,
-        block_state=_clear_block_state(),
-        capability=CapabilityMode.PUBLIC_HTTP,
-        selector_mode="structured-json-exact-title",
-        notes=(
-            "Metadata only; original image bytes were not requested.",
-            "Candidate remains subject to curator identity and license review.",
-        ),
-    )
-    candidate = CommonsMediaCandidate(
+    return CommonsMediaCandidate(
         source_id=SOURCE_ID,
         panda_slug="xi-lun",
         panda_name_zh="喜伦",
@@ -270,21 +367,116 @@ def parse_xi_lun_result(
         captured_at_text=captured_at_text,
         categories=categories,
     )
-    return CommonsAdapterResult(
-        source=source,
-        request_url=effective_request_url,
-        user_agent=user_agent,
-        evidence=evidence,
-        candidate=candidate,
+
+
+def _to_field_candidates(
+    candidate: CommonsMediaCandidate,
+    evidence: BundleEvidenceSnapshot,
+) -> tuple[FieldCandidate, ...]:
+    identity = PandaIdentityMatch(
+        state=IdentityMatchState.MATCHED,
+        source_identity=candidate.panda_name_en,
+        matched_canonical_slug=candidate.panda_slug,
+        notes=("Exact reviewed Commons file title and description identify Xi Lun.",),
+    )
+    current = CurrentTrustedValue(present=False)
+    values: tuple[tuple[str, Any, str], ...] = (
+        ("media.file_title", candidate.file_title, "query.pages[0].title"),
+        ("media.uploader", candidate.uploader, "query.pages[0].imageinfo[0].user"),
+        ("media.uploaded_at", candidate.uploaded_at, "query.pages[0].imageinfo[0].timestamp"),
+        ("media.original_url", candidate.original_url, "query.pages[0].imageinfo[0].url"),
+        (
+            "media.description_url",
+            candidate.description_url,
+            "query.pages[0].imageinfo[0].descriptionurl",
+        ),
+        ("media.width", candidate.width, "query.pages[0].imageinfo[0].width"),
+        ("media.height", candidate.height, "query.pages[0].imageinfo[0].height"),
+        ("media.bytes", candidate.bytes, "query.pages[0].imageinfo[0].size"),
+        ("media.mime", candidate.mime, "query.pages[0].imageinfo[0].mime"),
+        ("media.sha1", candidate.sha1, "query.pages[0].imageinfo[0].sha1"),
+        (
+            "media.description",
+            candidate.description,
+            "query.pages[0].imageinfo[0].extmetadata.ImageDescription.value",
+        ),
+        (
+            "media.artist",
+            candidate.artist,
+            "query.pages[0].imageinfo[0].extmetadata.Artist.value",
+        ),
+        (
+            "media.credit",
+            candidate.credit,
+            "query.pages[0].imageinfo[0].extmetadata.Credit.value",
+        ),
+        (
+            "media.license_short_name",
+            candidate.license_short_name,
+            "query.pages[0].imageinfo[0].extmetadata.LicenseShortName.value",
+        ),
+        (
+            "media.license_url",
+            candidate.license_url,
+            "query.pages[0].imageinfo[0].extmetadata.LicenseUrl.value",
+        ),
+        (
+            "media.usage_terms",
+            candidate.usage_terms,
+            "query.pages[0].imageinfo[0].extmetadata.UsageTerms.value",
+        ),
+        (
+            "media.attribution_required",
+            candidate.attribution_required,
+            "query.pages[0].imageinfo[0].extmetadata.AttributionRequired.value",
+        ),
+        (
+            "media.captured_at_text",
+            candidate.captured_at_text,
+            "query.pages[0].imageinfo[0].extmetadata.DateTimeOriginal.value",
+        ),
+        (
+            "media.categories",
+            list(candidate.categories),
+            "query.pages[0].imageinfo[0].extmetadata.Categories.value",
+        ),
+        (
+            "media.original_image_downloaded",
+            candidate.original_image_downloaded,
+            "adapter-policy:metadata-only",
+        ),
+    )
+    return tuple(
+        FieldCandidate(
+            source_id=SOURCE_ID,
+            evidence_snapshot_id=evidence.snapshot_id,
+            evidence_body_sha256=evidence.body_sha256,
+            candidate_kind=CandidateKind.MEDIA_METADATA,
+            subject_key=candidate.panda_slug,
+            field_path=field_path,
+            source_locator=SourceLocator(
+                kind=(
+                    SourceLocatorKind.DOCUMENT_SECTION
+                    if locator.startswith("adapter-policy:")
+                    else SourceLocatorKind.API_FIELD
+                ),
+                value=locator,
+            ),
+            raw_value=value,
+            normalized_value=value,
+            identity_match=identity,
+            current_trusted_value=current,
+            parser_name=PARSER_NAME,
+            parser_version=PARSER_VERSION,
+            conflict_state=ConflictState.NOT_COMPARED,
+            notes=("Review candidate only; no trusted or public data was modified.",),
+        )
+        for field_path, value, locator in values
     )
 
 
 def _validate_request_target(source: ReviewedSource, url: str) -> None:
-    parsed = urlparse(url)
-    if parsed.scheme != "https" or parsed.hostname not in source.allowed_hosts:
-        raise ValueError("Commons request target is outside the reviewed host allowlist")
-    if parsed.path not in source.allowed_paths:
-        raise ValueError("Commons request target is outside the reviewed path allowlist")
+    source.validate_request_target(url, live=False)
 
 
 def _metadata_text(metadata: dict[str, Any], key: str) -> str:
