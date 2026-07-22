@@ -96,13 +96,14 @@ A concrete adapter declares:
 
 `parse` receives immutable mappings of response envelopes and v1 evidence snapshots. It returns only `FieldCandidate` values. The runner builds the `AcquisitionRun` and `AcquisitionBundle` around those values.
 
-The default adapter registry currently contains one concrete adapter:
+The default adapter registry currently contains two concrete adapters:
 
 ```text
 wikimedia-commons-xi-lun
+smithsonian-panda-profiles
 ```
 
-The Smithsonian adapter ID is reserved in the reviewed source registry but is not registered until the adapter ticket implements it.
+The Smithsonian adapter plans three exact HTML requests and uses the same runner policy, evidence, reconciliation, and local bundle seam as the Commons adapter.
 
 ## Fixture mode
 
@@ -193,6 +194,12 @@ The Xi Lun Commons parser continues to expose the legacy `parse_xi_lun_result` i
 
 The adapter preserves the reviewed source-local key `xi-lun` and leaves identity matching unattempted. The shared [conservative identity reconciliation](identity-reconciliation-v1.md) module resolves that key through the reviewed identity-link registry, normalizes the 20 values, attaches current curation values where mapped, and records field-level comparison states before the bundle is written.
 
+## Smithsonian panda profiles
+
+The registered [Smithsonian panda profiles adapter](smithsonian-panda-profiles-adapter.md) plans the three exact HTML pages approved by the source review. It uses a standard-library semantic HTML parser, emits 74 facts-only candidates for 13 existing cohort identities, preserves CSS provenance and raw source values, and fails with evidence but zero candidates when reviewed headings or factual anchors drift.
+
+Its fixture manifest exercises the runner's multi-request path. Full source HTML and media are not committed.
+
 ## Reconciliation after parsing
 
 Every successful adapter result is reconciled before `_build_bundle`:
@@ -209,7 +216,6 @@ Invalid reconciliation inputs convert the source run into a failed evidence-only
 
 The runner and reconciliation modules still do not implement:
 
-- the Smithsonian HTML parser;
 - curator decisions or curation-patch export;
 - scheduled runs;
 - trusted database writes;

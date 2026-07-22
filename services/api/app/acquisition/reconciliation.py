@@ -101,6 +101,7 @@ _LIFE_STATUS_VALUES = {
     "deceased": "deceased",
     "dead": "deceased",
     "died": "deceased",
+    "euthanized": "deceased",
     "死亡": "deceased",
     "unknown": "unknown",
     "未知": "unknown",
@@ -907,6 +908,21 @@ def _compare_locations(candidate: JsonValue, current: JsonValue) -> ConflictStat
         return ConflictState.UNCHANGED
     candidate_tokens = _location_tokens(candidate_text)
     current_tokens = _location_tokens(current_text)
+    candidate_institution = _location_component_tokens(candidate, "institution")
+    candidate_context = frozenset().union(
+        *(
+            _location_component_tokens(candidate, key)
+            for key in ("city", "region", "state", "province", "country")
+        )
+    )
+    if candidate_institution and candidate_institution <= current_tokens:
+        if candidate_context and not candidate_context <= current_tokens:
+            return ConflictState.CONTRADICTION
+        return (
+            ConflictState.ENRICHMENT
+            if candidate_tokens - current_tokens
+            else ConflictState.UNCHANGED
+        )
     if current_tokens and current_tokens < candidate_tokens:
         return ConflictState.ENRICHMENT
     if candidate_tokens and candidate_tokens < current_tokens:
@@ -1246,6 +1262,13 @@ def _location_tokens(value: str) -> frozenset[str]:
         character for character in decomposed if not unicodedata.combining(character)
     )
     return frozenset(re.findall(r"[^\W_]+", normalized, flags=re.UNICODE))
+
+
+def _location_component_tokens(value: JsonValue, key: str) -> frozenset[str]:
+    if not isinstance(value, dict):
+        return frozenset()
+    text = _optional_text(value.get(key))
+    return _location_tokens(text) if text else frozenset()
 
 
 def _canonical_field_path(value: str) -> str:
