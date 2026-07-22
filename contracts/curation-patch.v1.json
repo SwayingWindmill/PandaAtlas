@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://panda-atlas.local/contracts/curation-patch.v1.json",
+  "title": "Panda Atlas curation patch proposal v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "patch_id",
+    "created_at",
+    "acquisition_bundle_id",
+    "decision_log_id",
+    "source_review",
+    "sources",
+    "proposals",
+    "proposal_counts",
+    "write_boundary"
+  ],
+  "properties": {
+    "schema_version": {"const": "panda-atlas-curation-patch/v1"},
+    "patch_id": {"type": "string", "pattern": "^curation-patch-[0-9a-f]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "acquisition_bundle_id": {"type": "string", "pattern": "^bundle-[0-9a-f]{64}$"},
+    "decision_log_id": {"type": "string", "pattern": "^decision-log-[0-9a-f]{64}$"},
+    "source_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewed_at", "expires_at"],
+      "properties": {
+        "reviewed_at": {"type": "string", "format": "date"},
+        "expires_at": {"type": "string", "format": "date"}
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/sourceEvidence"}
+    },
+    "proposals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pandas", "events", "relationships", "residencies"],
+      "properties": {
+        "pandas": {"type": "array", "items": {"$ref": "#/$defs/proposal"}},
+        "events": {"type": "array", "items": {"$ref": "#/$defs/proposal"}},
+        "relationships": {"type": "array", "items": {"$ref": "#/$defs/proposal"}},
+        "residencies": {"type": "array", "items": {"$ref": "#/$defs/proposal"}}
+      }
+    },
+    "proposal_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "panda": {"type": "integer", "minimum": 0},
+        "event": {"type": "integer", "minimum": 0},
+        "relationship": {"type": "integer", "minimum": 0},
+        "residency": {"type": "integer", "minimum": 0}
+      }
+    },
+    "write_boundary": {"$ref": "#/$defs/writeBoundary"}
+  },
+  "$defs": {
+    "jsonValue": {},
+    "sourceEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_evidence_id",
+        "source_id",
+        "evidence_snapshot_id",
+        "requested_url",
+        "final_url",
+        "captured_at",
+        "body_sha256",
+        "body_bytes",
+        "content_type",
+        "candidate_ids"
+      ],
+      "properties": {
+        "source_evidence_id": {"type": "string", "pattern": "^patch-source-[0-9a-f]{64}$"},
+        "source_id": {"type": "string", "minLength": 1},
+        "evidence_snapshot_id": {"type": "string", "pattern": "^evidence-[0-9a-f]{64}$"},
+        "requested_url": {"type": "string", "format": "uri"},
+        "final_url": {"type": "string", "format": "uri"},
+        "captured_at": {"type": "string", "format": "date-time"},
+        "body_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "body_bytes": {"type": "integer", "minimum": 0},
+        "content_type": {"type": ["string", "null"]},
+        "candidate_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^candidate-[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proposal_id", "intake_kind", "subject", "payload", "provenance"],
+      "properties": {
+        "proposal_id": {"type": "string", "pattern": "^proposal-[0-9a-f]{64}$"},
+        "intake_kind": {"enum": ["panda", "event", "relationship", "residency"]},
+        "subject": {"$ref": "#/$defs/subject"},
+        "payload": {"type": "object", "minProperties": 1},
+        "provenance": {"$ref": "#/$defs/provenance"}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "source_identity", "matched_panda_id", "matched_canonical_slug"],
+      "properties": {
+        "state": {"enum": ["matched", "unmatched"]},
+        "source_identity": {"type": "string", "minLength": 1},
+        "matched_panda_id": {"type": ["string", "null"]},
+        "matched_canonical_slug": {"type": ["string", "null"]}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acquisition_bundle_id",
+        "acquisition_run_id",
+        "candidate_id",
+        "decision",
+        "source_id",
+        "evidence_snapshot_id",
+        "evidence_body_sha256",
+        "parser_name",
+        "parser_version",
+        "source_locator",
+        "raw_value",
+        "normalized_value",
+        "prior_trusted_value",
+        "conflict_state",
+        "candidate_notes"
+      ],
+      "properties": {
+        "acquisition_bundle_id": {"type": "string"},
+        "acquisition_run_id": {"type": "string"},
+        "candidate_id": {"type": "string", "pattern": "^candidate-[0-9a-f]{64}$"},
+        "decision": {"type": "object"},
+        "source_id": {"type": "string"},
+        "evidence_snapshot_id": {"type": "string", "pattern": "^evidence-[0-9a-f]{64}$"},
+        "evidence_body_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "parser_name": {"type": "string"},
+        "parser_version": {"type": "string"},
+        "source_locator": {"type": "object"},
+        "raw_value": {"$ref": "#/$defs/jsonValue"},
+        "normalized_value": {"$ref": "#/$defs/jsonValue"},
+        "prior_trusted_value": {"type": "object"},
+        "conflict_state": {
+          "enum": ["not-compared", "new", "unchanged", "enrichment", "missing-current-value"]
+        },
+        "candidate_notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "emptyArray": {"type": "array", "maxItems": 0},
+    "writeBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_curation_write_targets",
+        "trusted_write_targets",
+        "publication_write_targets"
+      ],
+      "properties": {
+        "canonical_curation_write_targets": {"$ref": "#/$defs/emptyArray"},
+        "trusted_write_targets": {"$ref": "#/$defs/emptyArray"},
+        "publication_write_targets": {"$ref": "#/$defs/emptyArray"}
+      }
+    }
+  }
+}

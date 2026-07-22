@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://panda-atlas.local/contracts/curator-decisions.v1.json",
+  "title": "Panda Atlas curator decisions v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_log_id",
+    "acquisition_bundle_id",
+    "created_at",
+    "updated_at",
+    "decisions",
+    "write_boundary"
+  ],
+  "properties": {
+    "schema_version": {"const": "panda-atlas-curator-decisions/v1"},
+    "decision_log_id": {"type": "string", "pattern": "^decision-log-[0-9a-f]{64}$"},
+    "acquisition_bundle_id": {"type": "string", "pattern": "^bundle-[0-9a-f]{64}$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "decisions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/decision"}
+    },
+    "write_boundary": {"$ref": "#/$defs/writeBoundary"}
+  },
+  "$defs": {
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "candidate_id",
+        "evidence_snapshot_id",
+        "reviewer",
+        "decided_at",
+        "action",
+        "note"
+      ],
+      "properties": {
+        "decision_id": {"type": "string", "pattern": "^decision-[0-9a-f]{64}$"},
+        "candidate_id": {"type": "string", "pattern": "^candidate-[0-9a-f]{64}$"},
+        "evidence_snapshot_id": {"type": "string", "pattern": "^evidence-[0-9a-f]{64}$"},
+        "reviewer": {"type": "string", "minLength": 1},
+        "decided_at": {"type": "string", "format": "date-time"},
+        "action": {"enum": ["accepted", "rejected", "deferred"]},
+        "note": {"type": ["string", "null"], "minLength": 1}
+      }
+    },
+    "emptyArray": {"type": "array", "maxItems": 0},
+    "writeBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_curation_write_targets",
+        "trusted_write_targets",
+        "publication_write_targets"
+      ],
+      "properties": {
+        "canonical_curation_write_targets": {"$ref": "#/$defs/emptyArray"},
+        "trusted_write_targets": {"$ref": "#/$defs/emptyArray"},
+        "publication_write_targets": {"$ref": "#/$defs/emptyArray"}
+      }
+    }
+  }
+}
