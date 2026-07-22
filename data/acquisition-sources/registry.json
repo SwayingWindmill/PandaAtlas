@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "review_document": "docs/data-acquisition/source-review-2026-07-21.md",
-  "review_document_sha256": "26067e03b60c18f200935c7aca07ceba01486236c77a808499dc7188efa70270",
+  "review_document": "docs/data-acquisition/source-review-2026-07-22.md",
+  "review_document_sha256": "7eecd5e0d87985b0c25798e21a9731f290ae1776a057623d7ec0012d0653cf44",
   "sources": [
     {
       "source_id": "wikimedia-commons-action-api",
@@ -36,6 +36,39 @@
       ]
     },
     {
+      "source_id": "smithsonian-national-zoo-panda-pages",
+      "label": "Smithsonian National Zoo panda pages",
+      "access_status": "approved",
+      "base_url": "https://nationalzoo.si.edu/",
+      "allowed_hosts": [
+        "nationalzoo.si.edu"
+      ],
+      "allowed_paths": [
+        "/animals/giant-panda",
+        "/animals/giant-panda-faqs",
+        "/animals/history-giant-pandas-zoo"
+      ],
+      "capability": "public-http",
+      "live_fetch": true,
+      "browser_impersonation": false,
+      "max_requests_per_minute": 2,
+      "concurrency_per_host": 1,
+      "media_reuse_policy": "facts-only-no-media-reuse",
+      "terms_url": "https://www.si.edu/termsofuse",
+      "robots_url": "https://nationalzoo.si.edu/robots.txt",
+      "policy_urls": [
+        "https://nationalzoo.si.edu/about/contact-us"
+      ],
+      "reviewed_at": "2026-07-22",
+      "review_expires_at": "2026-10-22",
+      "notes": [
+        "Exact allowlisted HTML pages only; no site search, archive crawling, query discovery, APIs, webcams, forms, or media endpoints.",
+        "Use a descriptive PandaAtlasBot User-Agent with repository contact information; browser impersonation is prohibited.",
+        "Deterministic factual reference candidates only; no prose reproduction, generative-AI input, training, fine-tuning, or media-byte acquisition.",
+        "Stop on cross-host redirects, authentication, challenges, disallowed robots changes, HTTP 401/403/404/407/409/429/451, or parser drift."
+      ]
+    },
+    {
       "source_id": "zoo-atlanta-public-pages",
       "label": "Zoo Atlanta public pages",
       "access_status": "permission-required",
@@ -58,6 +91,34 @@
       "notes": [
         "Current Terms of Use prohibit scraping without express prior written authorization.",
         "Existing manually reviewed citations may remain; no live adapter is approved."
+      ]
+    },
+    {
+      "source_id": "tokyo-zoo-net-panda-pages",
+      "label": "Tokyo Zoo Net panda pages",
+      "access_status": "manual-review-required",
+      "base_url": "https://www.tokyo-zoo.net/en/ueno/panda/history/index.html",
+      "allowed_hosts": [
+        "www.tokyo-zoo.net"
+      ],
+      "allowed_paths": [],
+      "capability": "manual-review",
+      "live_fetch": false,
+      "browser_impersonation": false,
+      "max_requests_per_minute": 0,
+      "concurrency_per_host": 0,
+      "media_reuse_policy": "not-reviewed-no-reuse",
+      "terms_url": "https://www.tokyo-zoo.net/en/policy/index.html",
+      "robots_url": "https://www.tokyo-zoo.net/robots.txt",
+      "policy_urls": [
+        "https://www.tokyo-zoo.net/en/privacy/index.html"
+      ],
+      "reviewed_at": "2026-07-22",
+      "review_expires_at": "2026-10-22",
+      "notes": [
+        "The root robots endpoint returned HTTP 404 during review and no automated-access permission was identified.",
+        "Official pages remain valid manual citation sources, but live automated fetch is disabled.",
+        "Machine-translated English pages contain romanization inconsistencies and require curator identity review."
       ]
     },
     {
