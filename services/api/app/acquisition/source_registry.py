@@ -117,9 +117,14 @@ def validate_source_registry(registry: SourceRegistry, *, today: date) -> None:
         _validate_source(source, today=today)
 
     _validate_wikimedia_source(registry.get("wikimedia-commons-action-api"))
+    _validate_smithsonian_source(registry.get("smithsonian-national-zoo-panda-pages"))
     _validate_non_live_source(
         registry.get("zoo-atlanta-public-pages"),
         expected_status=AccessStatus.PERMISSION_REQUIRED,
+    )
+    _validate_non_live_source(
+        registry.get("tokyo-zoo-net-panda-pages"),
+        expected_status=AccessStatus.MANUAL_REVIEW_REQUIRED,
     )
     _validate_non_live_source(
         registry.get("fu-bao-current-location-official-source"),
@@ -170,6 +175,33 @@ def _validate_wikimedia_source(source: ReviewedSource) -> None:
         raise ValueError("Wikimedia source must require per-file license review")
     if not any("User-Agent_Policy" in url for url in source.policy_urls):
         raise ValueError("Wikimedia source lacks User-Agent policy evidence")
+
+
+def _validate_smithsonian_source(source: ReviewedSource) -> None:
+    source.assert_live_fetch_allowed()
+    if source.base_url != "https://nationalzoo.si.edu/":
+        raise ValueError("Smithsonian source base URL drifted")
+    if source.allowed_hosts != ("nationalzoo.si.edu",):
+        raise ValueError("Smithsonian source host allowlist drifted")
+    expected_paths = (
+        "/animals/giant-panda",
+        "/animals/giant-panda-faqs",
+        "/animals/history-giant-pandas-zoo",
+    )
+    if source.allowed_paths != expected_paths:
+        raise ValueError("Smithsonian source path allowlist drifted")
+    if source.capability != "public-http":
+        raise ValueError("Smithsonian source must use public-http")
+    if source.browser_impersonation:
+        raise ValueError("Smithsonian requests must not impersonate a browser")
+    if source.max_requests_per_minute != 2:
+        raise ValueError("Smithsonian source request rate drifted")
+    if source.media_reuse_policy != "facts-only-no-media-reuse":
+        raise ValueError("Smithsonian source must prohibit media reuse")
+    if source.terms_url != "https://www.si.edu/termsofuse":
+        raise ValueError("Smithsonian source terms URL drifted")
+    if source.robots_url != "https://nationalzoo.si.edu/robots.txt":
+        raise ValueError("Smithsonian source robots URL drifted")
 
 
 def _validate_non_live_source(
