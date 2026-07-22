@@ -1,0 +1,146 @@
+{
+  "bundle_id": "knowledge-fixture-conflict",
+  "created_at": "2026-07-23T00:00:00Z",
+  "records": [
+    {
+      "assertions": [
+        {
+          "assertion_id": "assertion-conflict-primary",
+          "confidence": "high",
+          "derivation": null,
+          "evidence": [],
+          "evidence_mode": "direct",
+          "field_path": "birth.date",
+          "last_verified_at": "2026-07-23",
+          "legacy_records": [],
+          "lifecycle": "active",
+          "normalized_value": "2019-08-08",
+          "publication_scope": "public",
+          "qualifier": null,
+          "raw_value": "2019-08-08",
+          "source_ids": [
+            "source-primary"
+          ],
+          "subject_id": "panda-xing-xing",
+          "superseded_by": null,
+          "withdrawal_reason": null
+        },
+        {
+          "assertion_id": "assertion-conflict-alternative",
+          "confidence": "medium",
+          "derivation": null,
+          "evidence": [],
+          "evidence_mode": "direct",
+          "field_path": "birth.date",
+          "last_verified_at": "2026-07-23",
+          "legacy_records": [],
+          "lifecycle": "active",
+          "normalized_value": "2019-08-09",
+          "publication_scope": "public",
+          "qualifier": null,
+          "raw_value": "2019-08-09",
+          "source_ids": [
+            "source-alternative"
+          ],
+          "subject_id": "panda-xing-xing",
+          "superseded_by": null,
+          "withdrawal_reason": null
+        }
+      ],
+      "conclusions": [
+        {
+          "alternative_assertion_ids": [
+            "assertion-conflict-alternative"
+          ],
+          "field_path": "birth.date",
+          "primary_assertion_id": "assertion-conflict-primary",
+          "status": "disputed"
+        }
+      ],
+      "contributions": [],
+      "identity": {
+        "aliases": [],
+        "canonical_panda_id": "panda-xing-xing",
+        "canonical_slug": "xing-xing",
+        "external_identifiers": [],
+        "identity_key": "panda-xing-xing",
+        "legacy_records": [],
+        "legacy_slugs": [],
+        "names": [
+          {
+            "is_primary": true,
+            "kind": "display",
+            "language": "en",
+            "source_ids": [
+              "source-primary"
+            ],
+            "value": "Xing Xing"
+          }
+        ],
+        "population_context": "unknown",
+        "resolution": {
+          "auxiliary_features": {},
+          "candidate_panda_ids": [],
+          "confidence": "high",
+          "merged_from_ids": [],
+          "source_ids": [
+            "source-primary"
+          ],
+          "split_from_id": null,
+          "state": "matched"
+        }
+      },
+      "locations": [],
+      "media": [],
+      "relationships": [],
+      "translations": []
+    }
+  ],
+  "schema_version": "panda-atlas-knowledge-bundle/v1",
+  "sources": [
+    {
+      "access_basis": "public",
+      "assessment": {
+        "authority_score": 0,
+        "confidence": "low",
+        "consistency_score": 0,
+        "corroboration_score": 0,
+        "rationale": [
+          "unreviewed-source-default"
+        ],
+        "recency_score": 0,
+        "specificity_score": 0
+      },
+      "captured_at": "2026-07-23T00:00:00Z",
+      "is_first_hand": true,
+      "kind": "official-institution",
+      "original_language": "en",
+      "publisher": "Example Panda Institution",
+      "source_id": "source-primary",
+      "title": "Example panda profile",
+      "url": "https://example.org/pandas/source-primary"
+    },
+    {
+      "access_basis": "public",
+      "assessment": {
+        "authority_score": 0,
+        "confidence": "low",
+        "consistency_score": 0,
+        "corroboration_score": 0,
+        "rationale": [
+          "unreviewed-source-default"
+        ],
+        "recency_score": 0,
+        "specificity_score": 0
+      },
+      "captured_at": "2026-07-23T00:00:00Z",
+      "is_first_hand": false,
+      "kind": "mainstream-media",
+      "original_language": "en",
+      "publisher": "Example News",
+      "source_id": "source-alternative",
+      "title": "Example birthday report",
+      "url": "https://example.org/news/xing-xing-birthday"
+    }
+  ]
+}
