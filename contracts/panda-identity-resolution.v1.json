@@ -1,0 +1,1043 @@
+{
+  "$defs": {
+    "CanonicalIdentityRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_slug": {
+          "minLength": 1,
+          "title": "Canonical Slug",
+          "type": "string"
+        },
+        "features": {
+          "$ref": "#/$defs/IdentityFeatureSet"
+        },
+        "names": {
+          "items": {
+            "$ref": "#/$defs/IdentityNameClaim"
+          },
+          "minItems": 1,
+          "title": "Names",
+          "type": "array"
+        },
+        "panda_id": {
+          "minLength": 1,
+          "title": "Panda Id",
+          "type": "string"
+        },
+        "population_context": {
+          "$ref": "#/$defs/PopulationContext",
+          "default": "unknown"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "panda_id",
+        "canonical_slug",
+        "names",
+        "features",
+        "source_ids"
+      ],
+      "title": "CanonicalIdentityRecord",
+      "type": "object"
+    },
+    "ConfidenceBand": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "ConfidenceBand",
+      "type": "string"
+    },
+    "ExternalIdentifier": {
+      "additionalProperties": false,
+      "properties": {
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "system": {
+          "minLength": 1,
+          "title": "System",
+          "type": "string"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system",
+        "value",
+        "source_ids"
+      ],
+      "title": "ExternalIdentifier",
+      "type": "object"
+    },
+    "IdentityAuditRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "actor": {
+          "minLength": 1,
+          "title": "Actor",
+          "type": "string"
+        },
+        "after_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "After Hashes",
+          "type": "array"
+        },
+        "audit_id": {
+          "pattern": "^identity-audit-[0-9a-f]{64}$",
+          "title": "Audit Id",
+          "type": "string"
+        },
+        "before_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Before Hashes",
+          "type": "array"
+        },
+        "decided_at": {
+          "format": "date-time",
+          "title": "Decided At",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/IdentityChangeKind"
+        },
+        "operation_id": {
+          "minLength": 1,
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "risk": {
+          "$ref": "#/$defs/IdentityRiskLevel"
+        },
+        "rollback_payload": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Rollback Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "audit_id",
+        "operation_id",
+        "kind",
+        "risk",
+        "decided_at",
+        "actor",
+        "evidence",
+        "before_hashes",
+        "after_hashes",
+        "rollback_payload"
+      ],
+      "title": "IdentityAuditRecord",
+      "type": "object"
+    },
+    "IdentityBatchSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_count": {
+          "minimum": 0,
+          "title": "Candidate Count",
+          "type": "integer"
+        },
+        "canonical_count": {
+          "minimum": 0,
+          "title": "Canonical Count",
+          "type": "integer"
+        },
+        "create_count": {
+          "minimum": 0,
+          "title": "Create Count",
+          "type": "integer"
+        },
+        "merge_count": {
+          "minimum": 0,
+          "title": "Merge Count",
+          "type": "integer"
+        },
+        "rejected_group_count": {
+          "minimum": 0,
+          "title": "Rejected Group Count",
+          "type": "integer"
+        },
+        "review_count": {
+          "minimum": 0,
+          "title": "Review Count",
+          "type": "integer"
+        },
+        "unresolved_count": {
+          "minimum": 0,
+          "title": "Unresolved Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "canonical_count",
+        "candidate_count",
+        "merge_count",
+        "review_count",
+        "create_count",
+        "unresolved_count",
+        "rejected_group_count"
+      ],
+      "title": "IdentityBatchSummary",
+      "type": "object"
+    },
+    "IdentityChangeKind": {
+      "enum": [
+        "merge",
+        "split"
+      ],
+      "title": "IdentityChangeKind",
+      "type": "string"
+    },
+    "IdentityChangeSet": {
+      "additionalProperties": false,
+      "properties": {
+        "after_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "After Hashes",
+          "type": "array"
+        },
+        "after_records": {
+          "items": {
+            "$ref": "#/$defs/CanonicalIdentityRecord"
+          },
+          "minItems": 1,
+          "title": "After Records",
+          "type": "array"
+        },
+        "audit": {
+          "$ref": "#/$defs/IdentityAuditRecord"
+        },
+        "before_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Before Hashes",
+          "type": "array"
+        },
+        "before_records": {
+          "items": {
+            "$ref": "#/$defs/CanonicalIdentityRecord"
+          },
+          "minItems": 1,
+          "title": "Before Records",
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/IdentityChangeKind"
+        },
+        "operation_id": {
+          "minLength": 1,
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "rollback": {
+          "$ref": "#/$defs/IdentityRollbackPlan"
+        }
+      },
+      "required": [
+        "operation_id",
+        "kind",
+        "before_records",
+        "after_records",
+        "before_hashes",
+        "after_hashes",
+        "audit",
+        "rollback"
+      ],
+      "title": "IdentityChangeSet",
+      "type": "object"
+    },
+    "IdentityDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_panda_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Candidate Panda Ids",
+          "type": "array"
+        },
+        "canonical_panda_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Canonical Panda Id"
+        },
+        "confidence": {
+          "$ref": "#/$defs/ConfidenceBand"
+        },
+        "created_panda_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created Panda Id"
+        },
+        "kind": {
+          "$ref": "#/$defs/IdentityDecisionKind"
+        },
+        "public_eligible": {
+          "title": "Public Eligible",
+          "type": "boolean"
+        },
+        "rationale": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Rationale",
+          "type": "array"
+        },
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        },
+        "scores": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IdentityMatchScore"
+          },
+          "title": "Scores",
+          "type": "array"
+        }
+      },
+      "required": [
+        "record_id",
+        "kind",
+        "confidence",
+        "public_eligible",
+        "rationale"
+      ],
+      "title": "IdentityDecision",
+      "type": "object"
+    },
+    "IdentityDecisionKind": {
+      "enum": [
+        "merge",
+        "review",
+        "create",
+        "unresolved",
+        "reject-group"
+      ],
+      "title": "IdentityDecisionKind",
+      "type": "string"
+    },
+    "IdentityEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "conflict": {
+          "default": false,
+          "title": "Conflict",
+          "type": "boolean"
+        },
+        "detail": {
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "weight": {
+          "title": "Weight",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "code",
+        "label",
+        "weight",
+        "detail"
+      ],
+      "title": "IdentityEvidence",
+      "type": "object"
+    },
+    "IdentityFeatureSet": {
+      "additionalProperties": false,
+      "properties": {
+        "birth_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Birth Date"
+        },
+        "birth_year": {
+          "anyOf": [
+            {
+              "maximum": 2200,
+              "minimum": 1800,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Birth Year"
+        },
+        "external_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IdentityIdentifierClaim"
+          },
+          "title": "External Identifiers",
+          "type": "array"
+        },
+        "institution_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Institution Ids",
+          "type": "array"
+        },
+        "is_group_observation": {
+          "default": false,
+          "title": "Is Group Observation",
+          "type": "boolean"
+        },
+        "movement_institution_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Movement Institution Ids",
+          "type": "array"
+        },
+        "parent_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Parent Ids",
+          "type": "array"
+        },
+        "parent_names": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Parent Names",
+          "type": "array"
+        },
+        "sex": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sex"
+        },
+        "source_relationship_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Relationship Ids",
+          "type": "array"
+        },
+        "stable_wild_identifier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stable Wild Identifier"
+        }
+      },
+      "title": "IdentityFeatureSet",
+      "type": "object"
+    },
+    "IdentityIdentifierClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "minLength": 1,
+          "title": "System",
+          "type": "string"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system",
+        "value"
+      ],
+      "title": "IdentityIdentifierClaim",
+      "type": "object"
+    },
+    "IdentityMatchScore": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/ConfidenceBand"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/IdentityEvidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "hard_conflicts": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Hard Conflicts",
+          "type": "array"
+        },
+        "panda_id": {
+          "minLength": 1,
+          "title": "Panda Id",
+          "type": "string"
+        },
+        "score": {
+          "title": "Score",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "panda_id",
+        "score",
+        "confidence",
+        "evidence"
+      ],
+      "title": "IdentityMatchScore",
+      "type": "object"
+    },
+    "IdentityName": {
+      "additionalProperties": false,
+      "properties": {
+        "is_primary": {
+          "default": false,
+          "title": "Is Primary",
+          "type": "boolean"
+        },
+        "kind": {
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "language": {
+          "minLength": 1,
+          "title": "Language",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "language",
+        "kind",
+        "source_ids"
+      ],
+      "title": "IdentityName",
+      "type": "object"
+    },
+    "IdentityNameClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "language": {
+          "minLength": 1,
+          "title": "Language",
+          "type": "string"
+        },
+        "normalized_forms": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Normalized Forms",
+          "type": "array"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "language",
+        "kind"
+      ],
+      "title": "IdentityNameClaim",
+      "type": "object"
+    },
+    "IdentityResolution": {
+      "additionalProperties": false,
+      "properties": {
+        "auxiliary_features": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Auxiliary Features",
+          "type": "object"
+        },
+        "candidate_panda_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Candidate Panda Ids",
+          "type": "array"
+        },
+        "confidence": {
+          "$ref": "#/$defs/ConfidenceBand"
+        },
+        "merged_from_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Merged From Ids",
+          "type": "array"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "split_from_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Split From Id"
+        },
+        "state": {
+          "$ref": "#/$defs/IdentityResolutionState"
+        }
+      },
+      "required": [
+        "state",
+        "confidence",
+        "source_ids"
+      ],
+      "title": "IdentityResolution",
+      "type": "object"
+    },
+    "IdentityResolutionBatch": {
+      "additionalProperties": false,
+      "properties": {
+        "batch_id": {
+          "minLength": 1,
+          "title": "Batch Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "decisions": {
+          "items": {
+            "$ref": "#/$defs/IdentityDecision"
+          },
+          "title": "Decisions",
+          "type": "array"
+        },
+        "public_candidate_record_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Public Candidate Record Ids",
+          "type": "array"
+        },
+        "review_record_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Review Record Ids",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "panda-atlas-identity-resolution/v1",
+          "default": "panda-atlas-identity-resolution/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "summary": {
+          "$ref": "#/$defs/IdentityBatchSummary"
+        },
+        "unresolved_record_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unresolved Record Ids",
+          "type": "array"
+        },
+        "validation_candidates": {
+          "items": {
+            "$ref": "#/$defs/PandaIdentity"
+          },
+          "title": "Validation Candidates",
+          "type": "array"
+        },
+        "write_boundary": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Write Boundary",
+          "type": "object"
+        }
+      },
+      "required": [
+        "batch_id",
+        "created_at",
+        "decisions",
+        "validation_candidates",
+        "public_candidate_record_ids",
+        "unresolved_record_ids",
+        "review_record_ids",
+        "summary"
+      ],
+      "title": "IdentityResolutionBatch",
+      "type": "object"
+    },
+    "IdentityResolutionState": {
+      "enum": [
+        "matched",
+        "created",
+        "merged",
+        "split",
+        "unresolved"
+      ],
+      "title": "IdentityResolutionState",
+      "type": "string"
+    },
+    "IdentityRiskLevel": {
+      "enum": [
+        "high"
+      ],
+      "title": "IdentityRiskLevel",
+      "type": "string"
+    },
+    "IdentityRollbackPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "remove_panda_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Remove Panda Ids",
+          "type": "array"
+        },
+        "restore_records": {
+          "items": {
+            "$ref": "#/$defs/CanonicalIdentityRecord"
+          },
+          "minItems": 1,
+          "title": "Restore Records",
+          "type": "array"
+        }
+      },
+      "required": [
+        "remove_panda_ids",
+        "restore_records"
+      ],
+      "title": "IdentityRollbackPlan",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "LegacyRecordReference": {
+      "additionalProperties": false,
+      "properties": {
+        "contract": {
+          "minLength": 1,
+          "title": "Contract",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Payload",
+          "type": "object"
+        },
+        "payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_type": {
+          "minLength": 1,
+          "title": "Record Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract",
+        "record_type",
+        "record_id",
+        "payload_sha256",
+        "payload"
+      ],
+      "title": "LegacyRecordReference",
+      "type": "object"
+    },
+    "LegacySlug": {
+      "additionalProperties": false,
+      "properties": {
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "source_ids"
+      ],
+      "title": "LegacySlug",
+      "type": "object"
+    },
+    "PandaIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IdentityName"
+          },
+          "title": "Aliases",
+          "type": "array"
+        },
+        "canonical_panda_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Canonical Panda Id"
+        },
+        "canonical_slug": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Canonical Slug"
+        },
+        "external_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ExternalIdentifier"
+          },
+          "title": "External Identifiers",
+          "type": "array"
+        },
+        "identity_key": {
+          "minLength": 1,
+          "title": "Identity Key",
+          "type": "string"
+        },
+        "legacy_records": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/LegacyRecordReference"
+          },
+          "title": "Legacy Records",
+          "type": "array"
+        },
+        "legacy_slugs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/LegacySlug"
+          },
+          "title": "Legacy Slugs",
+          "type": "array"
+        },
+        "names": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IdentityName"
+          },
+          "title": "Names",
+          "type": "array"
+        },
+        "population_context": {
+          "$ref": "#/$defs/PopulationContext",
+          "default": "unknown"
+        },
+        "resolution": {
+          "$ref": "#/$defs/IdentityResolution"
+        }
+      },
+      "required": [
+        "identity_key",
+        "resolution"
+      ],
+      "title": "PandaIdentity",
+      "type": "object"
+    },
+    "PopulationContext": {
+      "enum": [
+        "captive",
+        "wild",
+        "released",
+        "unknown"
+      ],
+      "title": "PopulationContext",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "batch": {
+      "$ref": "#/$defs/IdentityResolutionBatch"
+    },
+    "changesets": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/IdentityChangeSet"
+      },
+      "title": "Changesets",
+      "type": "array"
+    },
+    "package_id": {
+      "pattern": "^identity-package-[0-9a-f]{64}$",
+      "title": "Package Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "panda-atlas-identity-resolution/v1",
+      "default": "panda-atlas-identity-resolution/v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "package_id",
+    "batch"
+  ],
+  "title": "IdentityResolutionPackage",
+  "type": "object"
+}

@@ -1,0 +1,135 @@
+{
+  "batch": {
+    "batch_id": "identity-batch-same-name-different-panda",
+    "created_at": "2026-07-23T00:00:00Z",
+    "decisions": [
+      {
+        "candidate_panda_ids": [],
+        "canonical_panda_id": null,
+        "confidence": "high",
+        "created_panda_id": "panda-7f29964fb63843e3a910de0a",
+        "kind": "create",
+        "public_eligible": true,
+        "rationale": [
+          "No plausible canonical identity match remained after deterministic scoring.",
+          "The candidate has a sourced name and at least one auxiliary identity feature.",
+          "Existing same-name candidates contain incompatible identity features: birth-date-conflict, sex-conflict"
+        ],
+        "record_id": "le-le-young",
+        "scores": [
+          {
+            "confidence": "low",
+            "evidence": [
+              {
+                "code": "birth-date-conflict",
+                "conflict": true,
+                "detail": "Candidate birth date 2020-07-21 conflicts with 2005-08-08.",
+                "label": "Birth date conflict",
+                "weight": -450
+              },
+              {
+                "code": "name-match",
+                "conflict": false,
+                "detail": "Shared normalized name form: 乐乐.",
+                "label": "Name or alias match",
+                "weight": 400
+              },
+              {
+                "code": "population-context-match",
+                "conflict": false,
+                "detail": "Both records use population context captive.",
+                "label": "Population context match",
+                "weight": 30
+              },
+              {
+                "code": "sex-conflict",
+                "conflict": true,
+                "detail": "Candidate sex female conflicts with male.",
+                "label": "Sex conflict",
+                "weight": -150
+              }
+            ],
+            "hard_conflicts": [
+              "birth-date-conflict",
+              "sex-conflict"
+            ],
+            "panda_id": "panda-le-le-old",
+            "score": -170
+          }
+        ]
+      }
+    ],
+    "public_candidate_record_ids": [
+      "le-le-young"
+    ],
+    "review_record_ids": [],
+    "schema_version": "panda-atlas-identity-resolution/v1",
+    "summary": {
+      "candidate_count": 1,
+      "canonical_count": 1,
+      "create_count": 1,
+      "merge_count": 0,
+      "rejected_group_count": 0,
+      "review_count": 0,
+      "unresolved_count": 0
+    },
+    "unresolved_record_ids": [],
+    "validation_candidates": [
+      {
+        "aliases": [],
+        "canonical_panda_id": "panda-7f29964fb63843e3a910de0a",
+        "canonical_slug": "panda-7f29964fb63843e3a910de0a",
+        "external_identifiers": [],
+        "identity_key": "le-le-young",
+        "legacy_records": [],
+        "legacy_slugs": [],
+        "names": [
+          {
+            "is_primary": true,
+            "kind": "official",
+            "language": "zh-CN",
+            "source_ids": [
+              "source-le-le-young"
+            ],
+            "value": "乐乐"
+          }
+        ],
+        "population_context": "captive",
+        "resolution": {
+          "auxiliary_features": {
+            "birth_date": "2020-07-21",
+            "birth_year": 2020,
+            "candidate_record_id": "le-le-young",
+            "decision_kind": "create",
+            "external_identifiers": [],
+            "institution_ids": [
+              "institution-b"
+            ],
+            "is_group_observation": false,
+            "movement_institution_ids": [],
+            "parent_ids": [],
+            "parent_names": [],
+            "sex": "female",
+            "source_relationship_ids": [],
+            "stable_wild_identifier": null
+          },
+          "candidate_panda_ids": [],
+          "confidence": "high",
+          "merged_from_ids": [],
+          "source_ids": [
+            "source-le-le-young"
+          ],
+          "split_from_id": null,
+          "state": "created"
+        }
+      }
+    ],
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  },
+  "changesets": [],
+  "package_id": "identity-package-7080093c98708d78bf2ae33c2e98a6a97c7e78063420184b2e8da2116794acb1",
+  "schema_version": "panda-atlas-identity-resolution/v1"
+}
