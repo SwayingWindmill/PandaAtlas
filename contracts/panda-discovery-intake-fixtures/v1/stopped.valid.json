@@ -1,0 +1,44 @@
+{
+  "inventory": {
+    "items": [],
+    "schema_version": "panda-atlas-discovery-intake/v1"
+  },
+  "manifest": {
+    "created_at": "2026-07-23T00:00:00Z",
+    "entries": [],
+    "manifest_id": "manifest-8e08d12c1979d54f566d1564ce487dcbd8c473ccb767120571066bc5494bdf82",
+    "run_id": "discovery-fixture-stopped",
+    "schema_version": "panda-atlas-discovery-intake/v1",
+    "state": "stopped",
+    "stops": [
+      {
+        "access_basis": "public",
+        "collected_at": "2026-07-23T00:00:00Z",
+        "detail": "Rate limit boundary reached.",
+        "http_status": 429,
+        "policy_state": "http-429",
+        "query_id": "query-en",
+        "sequence": 1,
+        "url": "https://search.example.org/pandas"
+      }
+    ],
+    "summary": {
+      "changed_count": 0,
+      "entry_count": 0,
+      "intake_candidate_count": 0,
+      "languages": [
+        "en"
+      ],
+      "new_count": 0,
+      "query_count": 1,
+      "removed_count": 0,
+      "stop_count": 1,
+      "unchanged_count": 0,
+      "unknown_source_count": 0
+    },
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  }
+}
