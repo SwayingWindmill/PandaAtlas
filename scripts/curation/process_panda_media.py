@@ -18,7 +18,7 @@ from urllib.request import Request, urlopen
 
 from PIL import Image, ImageOps
 from PIL import __version__ as pillow_version
-from validate_panda_curation import CURATION_DIR, validate_curation
+from validate_panda_curation import CURATION_DIR, PROCESSABLE_MEDIA_STATUSES, validate_curation
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_DIR = REPO_ROOT / ".media-work"
@@ -52,7 +52,7 @@ def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
-def read_approved_media(
+def read_processable_media(
     curation_dir: Path,
     panda_slugs: set[str] | None = None,
 ) -> list[dict[str, str]]:
@@ -63,19 +63,20 @@ def read_approved_media(
 
     media_path = curation_dir / "media.csv"
     with media_path.open("r", encoding="utf-8-sig", newline="") as handle:
-        approved = [
-            dict(row) for row in csv.DictReader(handle) if row.get("review_status") == "approved"
+        processable = [
+            dict(row)
+            for row in csv.DictReader(handle)
+            if row.get("review_status") in PROCESSABLE_MEDIA_STATUSES
         ]
 
-
     if panda_slugs is None:
-        return approved
-    selected = [row for row in approved if row["panda_slug"] in panda_slugs]
+        return processable
+    selected = [row for row in processable if row["panda_slug"] in panda_slugs]
     found = {row["panda_slug"] for row in selected}
     missing = sorted(panda_slugs - found)
     if missing:
         raise MediaProcessingError(
-            "No approved media row found for requested panda slug(s): " + ", ".join(missing)
+            "No processable media row found for requested panda slug(s): " + ", ".join(missing)
         )
     return selected
 
@@ -100,9 +101,7 @@ def load_asset(
     parsed = urlparse(asset)
     if parsed.scheme == "https":
         if not allow_network:
-            raise MediaProcessingError(
-                "Remote assets are disabled; rerun with --allow-network after rights review"
-            )
+            raise MediaProcessingError("Remote assets are disabled; rerun with --allow-network")
         request = Request(asset, headers={"User-Agent": USER_AGENT})
         try:
             with urlopen(request, timeout=30) as response:  # noqa: S310 - HTTPS is enforced.
@@ -306,7 +305,7 @@ def process_media(
         tempfile.mkdtemp(prefix=f"{output_dir.name}-build-", dir=output_dir.parent)
     )
     try:
-        rows = read_approved_media(curation_dir, panda_slugs)
+        rows = read_processable_media(curation_dir, panda_slugs)
         records = [
             process_media_row(
                 row,
@@ -341,20 +340,20 @@ def process_media(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Archive approved panda photos and generate controlled WebP derivatives."
+        description="Archive collection photos and generate controlled WebP derivatives."
     )
     parser.add_argument("--curation-dir", type=Path, default=CURATION_DIR)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument(
         "--allow-network",
         action="store_true",
-        help="Allow approved HTTPS assets to be downloaded. Network access is off by default.",
+        help="Allow HTTPS assets to be downloaded. Network access is off by default.",
     )
     parser.add_argument(
         "--panda-slug",
         action="append",
         default=[],
-        help="Process only the approved media for this panda slug; may be repeated.",
+        help="Process only media for this panda slug; may be repeated.",
     )
     parser.add_argument(
         "--force",
@@ -378,7 +377,7 @@ def main() -> int:
         print(f"ERROR: {error}")
         return 1
     print(
-        f"OK: processed {manifest['record_count']} approved panda photo(s) into {args.output_dir}"
+        f"OK: processed {manifest['record_count']} collection media photo(s) into {args.output_dir}"
     )
     return 0
 

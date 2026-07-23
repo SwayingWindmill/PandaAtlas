@@ -1,0 +1,285 @@
+{
+  "batch_id": "fact-enrichment-batch-9f9f82dcf48eb70b7e5df90945cb5548619ce091d987b6160f56a572531b7765",
+  "facts": [
+    {
+      "confidence": "medium",
+      "derivation": null,
+      "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidence_mode": "direct",
+      "evidence_snapshot_id": "snapshot-inferred-source-inferred-a",
+      "field_path": "birth.year",
+      "intake_candidate_id": "intake-inferred",
+      "language": "en",
+      "last_verified_at": "2026-07-23",
+      "lifecycle": "active",
+      "normalized_value": 2020,
+      "parser_name": "fixture-fact-parser",
+      "parser_version": "1.0.0",
+      "publication_scope": "public",
+      "qualifier": null,
+      "raw_value": "Born in 2020",
+      "record_id": "identity-record-d9686852cde8090448f87ef249d8a8a456af8cf11e7ffab0b373aa10e2ddcd64",
+      "source_id": "source-inferred-a",
+      "source_locator": {
+        "field_path": "birth.year",
+        "fixture": "inferred"
+      },
+      "superseded_by_fact_id": null,
+      "withdrawal_reason": null
+    },
+    {
+      "confidence": "high",
+      "derivation": {
+        "explanation": "2026 minus seven gives an inferred 2019 birth year.",
+        "input_fact_ids": [
+          "fact-assertion-863ab6d8fd6683aad9216d26aa3b2512e1cd7434f1a3a1b4d8c5c9fa3afd416b"
+        ],
+        "rule": "subtract-age-from-reference-year"
+      },
+      "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidence_mode": "inferred",
+      "evidence_snapshot_id": "snapshot-inferred-source-inferred-a",
+      "field_path": "birth.year",
+      "intake_candidate_id": "intake-inferred",
+      "language": "en",
+      "last_verified_at": "2026-07-23",
+      "lifecycle": "active",
+      "normalized_value": 2019,
+      "parser_name": "fixture-fact-parser",
+      "parser_version": "1.0.0",
+      "publication_scope": "public",
+      "qualifier": null,
+      "raw_value": "Turned seven in 2026",
+      "record_id": "identity-record-d9686852cde8090448f87ef249d8a8a456af8cf11e7ffab0b373aa10e2ddcd64",
+      "source_id": "source-inferred-a",
+      "source_locator": {
+        "field_path": "birth.year",
+        "fixture": "inferred"
+      },
+      "superseded_by_fact_id": null,
+      "withdrawal_reason": null
+    }
+  ],
+  "identity_resolution_batch_id": "identity-resolution-inferred",
+  "knowledge_bundle": {
+    "bundle_id": "knowledge-bundle-bce4b214231e01c98fab5dca40c8f1db9879b4a1c757c0553c63af1e611a4583",
+    "created_at": "2026-07-23T12:00:00Z",
+    "records": [
+      {
+        "assertions": [
+          {
+            "assertion_id": "fact-assertion-863ab6d8fd6683aad9216d26aa3b2512e1cd7434f1a3a1b4d8c5c9fa3afd416b",
+            "confidence": "medium",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-inferred",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-inferred-source-inferred-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-inferred-a",
+                "source_locator": {
+                  "field_path": "birth.year",
+                  "fixture": "inferred"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "birth.year",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": 2020,
+            "publication_scope": "public",
+            "qualifier": null,
+            "raw_value": "Born in 2020",
+            "source_ids": [
+              "source-inferred-a"
+            ],
+            "subject_id": "identity-record-d9686852cde8090448f87ef249d8a8a456af8cf11e7ffab0b373aa10e2ddcd64",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          },
+          {
+            "assertion_id": "fact-assertion-8d2531763c51cbd4630b05831e17e0e50a57959d2c4c65ac178a619e03955392",
+            "confidence": "high",
+            "derivation": {
+              "explanation": "2026 minus seven gives an inferred 2019 birth year.",
+              "input_assertion_ids": [
+                "fact-assertion-863ab6d8fd6683aad9216d26aa3b2512e1cd7434f1a3a1b4d8c5c9fa3afd416b"
+              ],
+              "rule": "subtract-age-from-reference-year"
+            },
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-inferred",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-inferred-source-inferred-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-inferred-a",
+                "source_locator": {
+                  "field_path": "birth.year",
+                  "fixture": "inferred"
+                }
+              }
+            ],
+            "evidence_mode": "inferred",
+            "field_path": "birth.year",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": 2019,
+            "publication_scope": "public",
+            "qualifier": null,
+            "raw_value": "Turned seven in 2026",
+            "source_ids": [
+              "source-inferred-a"
+            ],
+            "subject_id": "identity-record-d9686852cde8090448f87ef249d8a8a456af8cf11e7ffab0b373aa10e2ddcd64",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          }
+        ],
+        "conclusions": [
+          {
+            "alternative_assertion_ids": [
+              "fact-assertion-8d2531763c51cbd4630b05831e17e0e50a57959d2c4c65ac178a619e03955392"
+            ],
+            "field_path": "birth.year",
+            "primary_assertion_id": "fact-assertion-863ab6d8fd6683aad9216d26aa3b2512e1cd7434f1a3a1b4d8c5c9fa3afd416b",
+            "status": "disputed"
+          }
+        ],
+        "contributions": [],
+        "identity": {
+          "aliases": [],
+          "canonical_panda_id": "panda-7bf453891699643bf7c2cc0b",
+          "canonical_slug": "panda-7bf453891699643bf7c2cc0b",
+          "external_identifiers": [],
+          "identity_key": "identity-record-d9686852cde8090448f87ef249d8a8a456af8cf11e7ffab0b373aa10e2ddcd64",
+          "legacy_records": [],
+          "legacy_slugs": [],
+          "names": [
+            {
+              "is_primary": true,
+              "kind": "primary",
+              "language": "en",
+              "source_ids": [
+                "source-inferred-a"
+              ],
+              "value": "Fixture Panda inferred"
+            }
+          ],
+          "population_context": "unknown",
+          "resolution": {
+            "auxiliary_features": {
+              "birth_date": null,
+              "birth_year": null,
+              "candidate_record_id": "identity-record-d9686852cde8090448f87ef249d8a8a456af8cf11e7ffab0b373aa10e2ddcd64",
+              "decision_kind": "create",
+              "external_identifiers": [],
+              "institution_ids": [],
+              "is_group_observation": false,
+              "movement_institution_ids": [],
+              "parent_ids": [],
+              "parent_names": [],
+              "sex": "female",
+              "source_relationship_ids": [],
+              "stable_wild_identifier": null
+            },
+            "candidate_panda_ids": [],
+            "confidence": "high",
+            "merged_from_ids": [],
+            "source_ids": [
+              "source-inferred-a"
+            ],
+            "split_from_id": null,
+            "state": "created"
+          }
+        },
+        "locations": [],
+        "media": [],
+        "relationships": [],
+        "translations": []
+      }
+    ],
+    "schema_version": "panda-atlas-knowledge-bundle/v1",
+    "sources": [
+      {
+        "access_basis": "public",
+        "assessment": {
+          "authority_score": 90,
+          "confidence": "high",
+          "consistency_score": 90,
+          "corroboration_score": 70,
+          "rationale": [
+            "fixture-source-assessment"
+          ],
+          "recency_score": 85,
+          "specificity_score": 95
+        },
+        "captured_at": "2026-07-23T12:00:00Z",
+        "is_first_hand": true,
+        "kind": "official-institution",
+        "original_language": "en",
+        "publisher": "Panda Fixture Publisher",
+        "source_id": "source-inferred-a",
+        "title": "Age and birth profile",
+        "url": "https://example.org/source-inferred-a"
+      }
+    ]
+  },
+  "relationships": [],
+  "resolved_record_ids": [
+    "identity-record-d9686852cde8090448f87ef249d8a8a456af8cf11e7ffab0b373aa10e2ddcd64"
+  ],
+  "schema_version": "panda-atlas-fact-enrichment/v1",
+  "selection_scores": [
+    {
+      "assertion_id": "fact-assertion-863ab6d8fd6683aad9216d26aa3b2512e1cd7434f1a3a1b4d8c5c9fa3afd416b",
+      "authority_score": 90,
+      "confidence_score": 600,
+      "consistency_score": 90,
+      "direct_evidence_score": 120,
+      "field_path": "birth.year",
+      "first_hand_score": 100,
+      "independent_corroboration_score": 0,
+      "recency_score": 85,
+      "source_confidence_score": 200,
+      "source_corroboration_score": 70,
+      "specificity_score": 95,
+      "total": 1450
+    },
+    {
+      "assertion_id": "fact-assertion-8d2531763c51cbd4630b05831e17e0e50a57959d2c4c65ac178a619e03955392",
+      "authority_score": 90,
+      "confidence_score": 1000,
+      "consistency_score": 90,
+      "direct_evidence_score": 0,
+      "field_path": "birth.year",
+      "first_hand_score": 100,
+      "independent_corroboration_score": 0,
+      "recency_score": 85,
+      "source_confidence_score": 200,
+      "source_corroboration_score": 70,
+      "specificity_score": 95,
+      "total": 1730
+    }
+  ],
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

@@ -1,0 +1,599 @@
+{
+  "batch_id": "bilingual-summary-batch-8873581504f5b900d0a9b65a86574476c47630cfcd6e8eb15cf8d26d58d7f0f8",
+  "fact_enrichment": {
+    "batch_id": "fact-enrichment-batch-ba0b5910e1898261061d2b4a30acdb64119e2f78273f7885d9422532ba909c60",
+    "facts": [
+      {
+        "confidence": "medium",
+        "derivation": null,
+        "evidence_body_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "evidence_mode": "direct",
+        "evidence_snapshot_id": "snapshot-conflict-source-conflict-b",
+        "field_path": "birth.date",
+        "intake_candidate_id": "intake-conflict",
+        "language": "en",
+        "last_verified_at": "2026-07-23",
+        "lifecycle": "active",
+        "normalized_value": "2020-07-05",
+        "parser_name": "fixture-fact-parser",
+        "parser_version": "1.0.0",
+        "publication_scope": "public",
+        "qualifier": null,
+        "raw_value": "Born on July 5, 2020",
+        "record_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+        "source_id": "source-conflict-b",
+        "source_locator": {
+          "field_path": "birth.date",
+          "fixture": "conflict"
+        },
+        "superseded_by_fact_id": null,
+        "withdrawal_reason": null
+      },
+      {
+        "confidence": "medium",
+        "derivation": null,
+        "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "evidence_mode": "direct",
+        "evidence_snapshot_id": "snapshot-conflict-source-conflict-a",
+        "field_path": "birth.date",
+        "intake_candidate_id": "intake-conflict",
+        "language": "en",
+        "last_verified_at": "2026-07-23",
+        "lifecycle": "active",
+        "normalized_value": "2020-07-04",
+        "parser_name": "fixture-fact-parser",
+        "parser_version": "1.0.0",
+        "publication_scope": "public",
+        "qualifier": null,
+        "raw_value": "Born on July 4, 2020",
+        "record_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+        "source_id": "source-conflict-a",
+        "source_locator": {
+          "field_path": "birth.date",
+          "fixture": "conflict"
+        },
+        "superseded_by_fact_id": null,
+        "withdrawal_reason": null
+      }
+    ],
+    "identity_resolution_batch_id": "identity-resolution-conflict",
+    "knowledge_bundle": {
+      "bundle_id": "knowledge-bundle-19a53cb6b7618ace8e92e01128a8d0a95e83f9cfd1bfc47b80a3bebd891bc91e",
+      "created_at": "2026-07-23T12:00:00Z",
+      "records": [
+        {
+          "assertions": [
+            {
+              "assertion_id": "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4",
+              "confidence": "medium",
+              "derivation": null,
+              "evidence": [
+                {
+                  "acquisition_bundle_id": null,
+                  "acquisition_run_id": null,
+                  "candidate_id": "intake-conflict",
+                  "decision_id": null,
+                  "evidence_body_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                  "evidence_snapshot_id": "snapshot-conflict-source-conflict-b",
+                  "legacy_payload": null,
+                  "parser_name": "fixture-fact-parser",
+                  "parser_version": "1.0.0",
+                  "proposal_id": null,
+                  "source_id": "source-conflict-b",
+                  "source_locator": {
+                    "field_path": "birth.date",
+                    "fixture": "conflict"
+                  }
+                }
+              ],
+              "evidence_mode": "direct",
+              "field_path": "birth.date",
+              "last_verified_at": "2026-07-23",
+              "legacy_records": [],
+              "lifecycle": "active",
+              "normalized_value": "2020-07-05",
+              "publication_scope": "public",
+              "qualifier": null,
+              "raw_value": "Born on July 5, 2020",
+              "source_ids": [
+                "source-conflict-b"
+              ],
+              "subject_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+              "superseded_by": null,
+              "withdrawal_reason": null
+            },
+            {
+              "assertion_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+              "confidence": "medium",
+              "derivation": null,
+              "evidence": [
+                {
+                  "acquisition_bundle_id": null,
+                  "acquisition_run_id": null,
+                  "candidate_id": "intake-conflict",
+                  "decision_id": null,
+                  "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "evidence_snapshot_id": "snapshot-conflict-source-conflict-a",
+                  "legacy_payload": null,
+                  "parser_name": "fixture-fact-parser",
+                  "parser_version": "1.0.0",
+                  "proposal_id": null,
+                  "source_id": "source-conflict-a",
+                  "source_locator": {
+                    "field_path": "birth.date",
+                    "fixture": "conflict"
+                  }
+                }
+              ],
+              "evidence_mode": "direct",
+              "field_path": "birth.date",
+              "last_verified_at": "2026-07-23",
+              "legacy_records": [],
+              "lifecycle": "active",
+              "normalized_value": "2020-07-04",
+              "publication_scope": "public",
+              "qualifier": null,
+              "raw_value": "Born on July 4, 2020",
+              "source_ids": [
+                "source-conflict-a"
+              ],
+              "subject_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+              "superseded_by": null,
+              "withdrawal_reason": null
+            }
+          ],
+          "conclusions": [
+            {
+              "alternative_assertion_ids": [
+                "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4"
+              ],
+              "field_path": "birth.date",
+              "primary_assertion_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+              "status": "disputed"
+            }
+          ],
+          "contributions": [],
+          "identity": {
+            "aliases": [],
+            "canonical_panda_id": "panda-f631724a5c0f826bb462ac1d",
+            "canonical_slug": "panda-f631724a5c0f826bb462ac1d",
+            "external_identifiers": [],
+            "identity_key": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+            "legacy_records": [],
+            "legacy_slugs": [],
+            "names": [
+              {
+                "is_primary": true,
+                "kind": "primary",
+                "language": "en",
+                "source_ids": [
+                  "source-conflict-a"
+                ],
+                "value": "Fixture Panda conflict"
+              }
+            ],
+            "population_context": "unknown",
+            "resolution": {
+              "auxiliary_features": {
+                "birth_date": null,
+                "birth_year": null,
+                "candidate_record_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+                "decision_kind": "create",
+                "external_identifiers": [],
+                "institution_ids": [],
+                "is_group_observation": false,
+                "movement_institution_ids": [],
+                "parent_ids": [],
+                "parent_names": [],
+                "sex": "female",
+                "source_relationship_ids": [],
+                "stable_wild_identifier": null
+              },
+              "candidate_panda_ids": [],
+              "confidence": "high",
+              "merged_from_ids": [],
+              "source_ids": [
+                "source-conflict-a"
+              ],
+              "split_from_id": null,
+              "state": "created"
+            }
+          },
+          "locations": [],
+          "media": [],
+          "relationships": [],
+          "translations": []
+        }
+      ],
+      "schema_version": "panda-atlas-knowledge-bundle/v1",
+      "sources": [
+        {
+          "access_basis": "public",
+          "assessment": {
+            "authority_score": 90,
+            "confidence": "high",
+            "consistency_score": 90,
+            "corroboration_score": 70,
+            "rationale": [
+              "fixture-source-assessment"
+            ],
+            "recency_score": 85,
+            "specificity_score": 95
+          },
+          "captured_at": "2026-07-23T12:00:00Z",
+          "is_first_hand": true,
+          "kind": "official-institution",
+          "original_language": "en",
+          "publisher": "Panda Fixture Publisher",
+          "source_id": "source-conflict-a",
+          "title": "Primary birth profile",
+          "url": "https://example.org/source-conflict-a"
+        },
+        {
+          "access_basis": "public",
+          "assessment": {
+            "authority_score": 40,
+            "confidence": "low",
+            "consistency_score": 55,
+            "corroboration_score": 30,
+            "rationale": [
+              "fixture-source-assessment"
+            ],
+            "recency_score": 85,
+            "specificity_score": 60
+          },
+          "captured_at": "2026-07-23T12:00:00Z",
+          "is_first_hand": false,
+          "kind": "mainstream-media",
+          "original_language": "en",
+          "publisher": "Panda Fixture Publisher",
+          "source_id": "source-conflict-b",
+          "title": "Secondary birth report",
+          "url": "https://example.org/source-conflict-b"
+        }
+      ]
+    },
+    "relationships": [],
+    "resolved_record_ids": [
+      "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9"
+    ],
+    "schema_version": "panda-atlas-fact-enrichment/v1",
+    "selection_scores": [
+      {
+        "assertion_id": "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4",
+        "authority_score": 40,
+        "confidence_score": 600,
+        "consistency_score": 55,
+        "direct_evidence_score": 120,
+        "field_path": "birth.date",
+        "first_hand_score": 0,
+        "independent_corroboration_score": 0,
+        "recency_score": 85,
+        "source_confidence_score": 0,
+        "source_corroboration_score": 30,
+        "specificity_score": 60,
+        "total": 990
+      },
+      {
+        "assertion_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+        "authority_score": 90,
+        "confidence_score": 600,
+        "consistency_score": 90,
+        "direct_evidence_score": 120,
+        "field_path": "birth.date",
+        "first_hand_score": 100,
+        "independent_corroboration_score": 0,
+        "recency_score": 85,
+        "source_confidence_score": 200,
+        "source_corroboration_score": 70,
+        "specificity_score": 95,
+        "total": 1450
+      }
+    ],
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  },
+  "generated_at": "2026-07-23T17:00:00Z",
+  "generator_version": "bilingual-summary/v1",
+  "knowledge_bundle": {
+    "bundle_id": "knowledge-bundle-4fdb8c9c933c359f86dc5edac20b9f69d65ab646e6ac331a1b2f435e4c284ef5",
+    "created_at": "2026-07-23T17:00:00Z",
+    "records": [
+      {
+        "assertions": [
+          {
+            "assertion_id": "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4",
+            "confidence": "medium",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-conflict",
+                "decision_id": null,
+                "evidence_body_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "evidence_snapshot_id": "snapshot-conflict-source-conflict-b",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-conflict-b",
+                "source_locator": {
+                  "field_path": "birth.date",
+                  "fixture": "conflict"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "birth.date",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": "2020-07-05",
+            "publication_scope": "public",
+            "qualifier": null,
+            "raw_value": "Born on July 5, 2020",
+            "source_ids": [
+              "source-conflict-b"
+            ],
+            "subject_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          },
+          {
+            "assertion_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+            "confidence": "medium",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-conflict",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-conflict-source-conflict-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-conflict-a",
+                "source_locator": {
+                  "field_path": "birth.date",
+                  "fixture": "conflict"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "birth.date",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": "2020-07-04",
+            "publication_scope": "public",
+            "qualifier": null,
+            "raw_value": "Born on July 4, 2020",
+            "source_ids": [
+              "source-conflict-a"
+            ],
+            "subject_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          }
+        ],
+        "conclusions": [
+          {
+            "alternative_assertion_ids": [
+              "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4"
+            ],
+            "field_path": "birth.date",
+            "primary_assertion_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+            "status": "disputed"
+          }
+        ],
+        "contributions": [],
+        "identity": {
+          "aliases": [],
+          "canonical_panda_id": "panda-f631724a5c0f826bb462ac1d",
+          "canonical_slug": "panda-f631724a5c0f826bb462ac1d",
+          "external_identifiers": [],
+          "identity_key": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+          "legacy_records": [],
+          "legacy_slugs": [],
+          "names": [
+            {
+              "is_primary": true,
+              "kind": "primary",
+              "language": "en",
+              "source_ids": [
+                "source-conflict-a"
+              ],
+              "value": "Fixture Panda conflict"
+            }
+          ],
+          "population_context": "unknown",
+          "resolution": {
+            "auxiliary_features": {
+              "birth_date": null,
+              "birth_year": null,
+              "candidate_record_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+              "decision_kind": "create",
+              "external_identifiers": [],
+              "institution_ids": [],
+              "is_group_observation": false,
+              "movement_institution_ids": [],
+              "parent_ids": [],
+              "parent_names": [],
+              "sex": "female",
+              "source_relationship_ids": [],
+              "stable_wild_identifier": null
+            },
+            "candidate_panda_ids": [],
+            "confidence": "high",
+            "merged_from_ids": [],
+            "source_ids": [
+              "source-conflict-a"
+            ],
+            "split_from_id": null,
+            "state": "created"
+          }
+        },
+        "locations": [],
+        "media": [],
+        "relationships": [],
+        "translations": [
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "zh",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "2020年7月4日",
+            "translation_id": "translation-0b975210917c9ce384ccc9fee16de882882905faf42a10c1d7bd34aa2fdbe015",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "en",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "July 5, 2020",
+            "translation_id": "translation-1ef0be7e3454da1a198ae1fc17b853e9cd306fa43f8e5bd3eba7c5ff9c7ae695",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "zh",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "2020年7月5日",
+            "translation_id": "translation-c78f8af82f4ab62b9e0804b78c5caaccc9441999214f8474c345a8412322ee81",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "en",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "July 4, 2020",
+            "translation_id": "translation-fd853b308760ca9a279e090e022cd891b1fda3462b027ffae80ee956552980f4",
+            "withdrawal_reason": null
+          }
+        ]
+      }
+    ],
+    "schema_version": "panda-atlas-knowledge-bundle/v1",
+    "sources": [
+      {
+        "access_basis": "public",
+        "assessment": {
+          "authority_score": 90,
+          "confidence": "high",
+          "consistency_score": 90,
+          "corroboration_score": 70,
+          "rationale": [
+            "fixture-source-assessment"
+          ],
+          "recency_score": 85,
+          "specificity_score": 95
+        },
+        "captured_at": "2026-07-23T12:00:00Z",
+        "is_first_hand": true,
+        "kind": "official-institution",
+        "original_language": "en",
+        "publisher": "Panda Fixture Publisher",
+        "source_id": "source-conflict-a",
+        "title": "Primary birth profile",
+        "url": "https://example.org/source-conflict-a"
+      },
+      {
+        "access_basis": "public",
+        "assessment": {
+          "authority_score": 40,
+          "confidence": "low",
+          "consistency_score": 55,
+          "corroboration_score": 30,
+          "rationale": [
+            "fixture-source-assessment"
+          ],
+          "recency_score": 85,
+          "specificity_score": 60
+        },
+        "captured_at": "2026-07-23T12:00:00Z",
+        "is_first_hand": false,
+        "kind": "mainstream-media",
+        "original_language": "en",
+        "publisher": "Panda Fixture Publisher",
+        "source_id": "source-conflict-b",
+        "title": "Secondary birth report",
+        "url": "https://example.org/source-conflict-b"
+      }
+    ]
+  },
+  "normalized_values": [
+    {
+      "assertion_id": "fact-assertion-e4a0fa71e6450af56c36738a0621873fb5152106cdf6eb8c54330e09eec93caf",
+      "en_text": "July 4, 2020",
+      "fact_enrichment_batch_id": "fact-enrichment-batch-ba0b5910e1898261061d2b4a30acdb64119e2f78273f7885d9422532ba909c60",
+      "field_path": "birth.date",
+      "generator_version": "bilingual-summary/v1",
+      "record_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+      "source_language": "en",
+      "value_id": "bilingual-value-a1dcede236f6fac08da557f0c2b18bcb72fa2b03dd08b0eefb9e5196257050bf",
+      "zh_text": "2020年7月4日"
+    },
+    {
+      "assertion_id": "fact-assertion-56b5f6adc86fb417121fd65efd36f5654e399bdbd33e6c4e26763ff71c55f5d4",
+      "en_text": "July 5, 2020",
+      "fact_enrichment_batch_id": "fact-enrichment-batch-ba0b5910e1898261061d2b4a30acdb64119e2f78273f7885d9422532ba909c60",
+      "field_path": "birth.date",
+      "generator_version": "bilingual-summary/v1",
+      "record_id": "identity-record-9d87076395ff98ee64d9c313ba63a2d6f3f322bb1152119a9388159f263dcec9",
+      "source_language": "en",
+      "value_id": "bilingual-value-ebd05c113bb4c95dce8c8b31c37b054bd9b832227d572407bc818165620e8743",
+      "zh_text": "2020年7月5日"
+    }
+  ],
+  "schema_version": "panda-atlas-bilingual-summary/v1",
+  "sentences": [],
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

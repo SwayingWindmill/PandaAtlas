@@ -1,0 +1,436 @@
+{
+  "batch_id": "bilingual-summary-batch-3640ad0d065ce92d60ec81e512cb1b49d39543382f3151afdcdddf2433d582cd",
+  "fact_enrichment": {
+    "batch_id": "fact-enrichment-batch-948d73e3c9983e2bb8945dc945e2f8c81ea71c3af61c2e9da5b818ec68f9a933",
+    "facts": [
+      {
+        "confidence": "medium",
+        "derivation": null,
+        "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "evidence_mode": "direct",
+        "evidence_snapshot_id": "snapshot-summary-tentative-source-summary-tentative-a",
+        "field_path": "birth.year",
+        "intake_candidate_id": "intake-summary-tentative",
+        "language": "en",
+        "last_verified_at": "2026-07-23",
+        "lifecycle": "active",
+        "normalized_value": 2020,
+        "parser_name": "fixture-fact-parser",
+        "parser_version": "1.0.0",
+        "publication_scope": "public",
+        "qualifier": null,
+        "raw_value": "Reported born in 2020",
+        "record_id": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+        "source_id": "source-summary-tentative-a",
+        "source_locator": {
+          "field_path": "birth.year",
+          "fixture": "summary-tentative"
+        },
+        "superseded_by_fact_id": null,
+        "withdrawal_reason": null
+      }
+    ],
+    "identity_resolution_batch_id": "identity-resolution-summary-tentative",
+    "knowledge_bundle": {
+      "bundle_id": "knowledge-bundle-d900bed0f332fde648b7faf5d2c5bcf97a8ab2c462fac6ded0cd425651d28530",
+      "created_at": "2026-07-23T17:00:00Z",
+      "records": [
+        {
+          "assertions": [
+            {
+              "assertion_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+              "confidence": "medium",
+              "derivation": null,
+              "evidence": [
+                {
+                  "acquisition_bundle_id": null,
+                  "acquisition_run_id": null,
+                  "candidate_id": "intake-summary-tentative",
+                  "decision_id": null,
+                  "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "evidence_snapshot_id": "snapshot-summary-tentative-source-summary-tentative-a",
+                  "legacy_payload": null,
+                  "parser_name": "fixture-fact-parser",
+                  "parser_version": "1.0.0",
+                  "proposal_id": null,
+                  "source_id": "source-summary-tentative-a",
+                  "source_locator": {
+                    "field_path": "birth.year",
+                    "fixture": "summary-tentative"
+                  }
+                }
+              ],
+              "evidence_mode": "direct",
+              "field_path": "birth.year",
+              "last_verified_at": "2026-07-23",
+              "legacy_records": [],
+              "lifecycle": "active",
+              "normalized_value": 2020,
+              "publication_scope": "public",
+              "qualifier": null,
+              "raw_value": "Reported born in 2020",
+              "source_ids": [
+                "source-summary-tentative-a"
+              ],
+              "subject_id": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+              "superseded_by": null,
+              "withdrawal_reason": null
+            }
+          ],
+          "conclusions": [
+            {
+              "alternative_assertion_ids": [],
+              "field_path": "birth.year",
+              "primary_assertion_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+              "status": "tentative"
+            }
+          ],
+          "contributions": [],
+          "identity": {
+            "aliases": [],
+            "canonical_panda_id": "panda-cc3180da5ee8a29d38b9d8ed",
+            "canonical_slug": "panda-cc3180da5ee8a29d38b9d8ed",
+            "external_identifiers": [],
+            "identity_key": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+            "legacy_records": [],
+            "legacy_slugs": [],
+            "names": [
+              {
+                "is_primary": true,
+                "kind": "primary",
+                "language": "en",
+                "source_ids": [
+                  "source-summary-tentative-a"
+                ],
+                "value": "Fixture Panda summary-tentative"
+              }
+            ],
+            "population_context": "unknown",
+            "resolution": {
+              "auxiliary_features": {
+                "birth_date": null,
+                "birth_year": null,
+                "candidate_record_id": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+                "decision_kind": "create",
+                "external_identifiers": [],
+                "institution_ids": [],
+                "is_group_observation": false,
+                "movement_institution_ids": [],
+                "parent_ids": [],
+                "parent_names": [],
+                "sex": "female",
+                "source_relationship_ids": [],
+                "stable_wild_identifier": null
+              },
+              "candidate_panda_ids": [],
+              "confidence": "high",
+              "merged_from_ids": [],
+              "source_ids": [
+                "source-summary-tentative-a"
+              ],
+              "split_from_id": null,
+              "state": "created"
+            }
+          },
+          "locations": [],
+          "media": [],
+          "relationships": [],
+          "translations": []
+        }
+      ],
+      "schema_version": "panda-atlas-knowledge-bundle/v1",
+      "sources": [
+        {
+          "access_basis": "public",
+          "assessment": {
+            "authority_score": 90,
+            "confidence": "medium",
+            "consistency_score": 90,
+            "corroboration_score": 70,
+            "rationale": [
+              "fixture-source-assessment"
+            ],
+            "recency_score": 85,
+            "specificity_score": 95
+          },
+          "captured_at": "2026-07-23T12:00:00Z",
+          "is_first_hand": true,
+          "kind": "official-institution",
+          "original_language": "en",
+          "publisher": "Panda Fixture Publisher",
+          "source_id": "source-summary-tentative-a",
+          "title": "Tentative birth year profile",
+          "url": "https://example.org/source-summary-tentative-a"
+        }
+      ]
+    },
+    "relationships": [],
+    "resolved_record_ids": [
+      "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1"
+    ],
+    "schema_version": "panda-atlas-fact-enrichment/v1",
+    "selection_scores": [
+      {
+        "assertion_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+        "authority_score": 90,
+        "confidence_score": 600,
+        "consistency_score": 90,
+        "direct_evidence_score": 120,
+        "field_path": "birth.year",
+        "first_hand_score": 100,
+        "independent_corroboration_score": 0,
+        "recency_score": 85,
+        "source_confidence_score": 100,
+        "source_corroboration_score": 70,
+        "specificity_score": 95,
+        "total": 1350
+      }
+    ],
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  },
+  "generated_at": "2026-07-23T17:00:00Z",
+  "generator_version": "bilingual-summary/v1",
+  "knowledge_bundle": {
+    "bundle_id": "knowledge-bundle-bb46d0317c01ecb63724ae39d7af504e2a1fba2931a4afb4cb0516a0fff04af0",
+    "created_at": "2026-07-23T17:00:00Z",
+    "records": [
+      {
+        "assertions": [
+          {
+            "assertion_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+            "confidence": "medium",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-summary-tentative",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-summary-tentative-source-summary-tentative-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-summary-tentative-a",
+                "source_locator": {
+                  "field_path": "birth.year",
+                  "fixture": "summary-tentative"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "birth.year",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": 2020,
+            "publication_scope": "public",
+            "qualifier": null,
+            "raw_value": "Reported born in 2020",
+            "source_ids": [
+              "source-summary-tentative-a"
+            ],
+            "subject_id": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          }
+        ],
+        "conclusions": [
+          {
+            "alternative_assertion_ids": [],
+            "field_path": "birth.year",
+            "primary_assertion_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+            "status": "tentative"
+          }
+        ],
+        "contributions": [],
+        "identity": {
+          "aliases": [],
+          "canonical_panda_id": "panda-cc3180da5ee8a29d38b9d8ed",
+          "canonical_slug": "panda-cc3180da5ee8a29d38b9d8ed",
+          "external_identifiers": [],
+          "identity_key": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+          "legacy_records": [],
+          "legacy_slugs": [],
+          "names": [
+            {
+              "is_primary": true,
+              "kind": "primary",
+              "language": "en",
+              "source_ids": [
+                "source-summary-tentative-a"
+              ],
+              "value": "Fixture Panda summary-tentative"
+            }
+          ],
+          "population_context": "unknown",
+          "resolution": {
+            "auxiliary_features": {
+              "birth_date": null,
+              "birth_year": null,
+              "candidate_record_id": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+              "decision_kind": "create",
+              "external_identifiers": [],
+              "institution_ids": [],
+              "is_group_observation": false,
+              "movement_institution_ids": [],
+              "parent_ids": [],
+              "parent_names": [],
+              "sex": "female",
+              "source_relationship_ids": [],
+              "stable_wild_identifier": null
+            },
+            "candidate_panda_ids": [],
+            "confidence": "high",
+            "merged_from_ids": [],
+            "source_ids": [
+              "source-summary-tentative-a"
+            ],
+            "split_from_id": null,
+            "state": "created"
+          }
+        },
+        "locations": [],
+        "media": [],
+        "relationships": [],
+        "translations": [
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "en",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "bilingual-summary-sentence-3c6f5a5d9341be6ffdf2fb10c4eeec75bd2d7a634aa1a6ade52d22a04a149e3f",
+            "subject_type": "summary-sentence",
+            "superseded_by": null,
+            "text": "Reported birth year: 2020.",
+            "translation_id": "translation-2d22340b0722bf75bf89a7d5672f629684915d548aca50343697e449fc0a2065",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "zh",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "2020年",
+            "translation_id": "translation-2e03e833a9e63e529a754bb70e24dc7fbb2396a7a200c546e1a8acbf7540d664",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "en",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "2020",
+            "translation_id": "translation-4468ee4adfd58a368c10da30a025e1ebf6064ad1a71c96c3d89060958cdbad4f",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "zh",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "bilingual-summary-sentence-3c6f5a5d9341be6ffdf2fb10c4eeec75bd2d7a634aa1a6ade52d22a04a149e3f",
+            "subject_type": "summary-sentence",
+            "superseded_by": null,
+            "text": "据报道，出生年份：2020年。",
+            "translation_id": "translation-cc82e92296ea857aa38be2d1fe5c3cb445d003a54c3e50b653b638d65f05e1cc",
+            "withdrawal_reason": null
+          }
+        ]
+      }
+    ],
+    "schema_version": "panda-atlas-knowledge-bundle/v1",
+    "sources": [
+      {
+        "access_basis": "public",
+        "assessment": {
+          "authority_score": 90,
+          "confidence": "medium",
+          "consistency_score": 90,
+          "corroboration_score": 70,
+          "rationale": [
+            "fixture-source-assessment"
+          ],
+          "recency_score": 85,
+          "specificity_score": 95
+        },
+        "captured_at": "2026-07-23T12:00:00Z",
+        "is_first_hand": true,
+        "kind": "official-institution",
+        "original_language": "en",
+        "publisher": "Panda Fixture Publisher",
+        "source_id": "source-summary-tentative-a",
+        "title": "Tentative birth year profile",
+        "url": "https://example.org/source-summary-tentative-a"
+      }
+    ]
+  },
+  "normalized_values": [
+    {
+      "assertion_id": "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5",
+      "en_text": "2020",
+      "fact_enrichment_batch_id": "fact-enrichment-batch-948d73e3c9983e2bb8945dc945e2f8c81ea71c3af61c2e9da5b818ec68f9a933",
+      "field_path": "birth.year",
+      "generator_version": "bilingual-summary/v1",
+      "record_id": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+      "source_language": "en",
+      "value_id": "bilingual-value-291e8fc6f7a287ccc088677fa4ba12be7465fd42b9e3715a385d2afb4bf80db4",
+      "zh_text": "2020年"
+    }
+  ],
+  "schema_version": "panda-atlas-bilingual-summary/v1",
+  "sentences": [
+    {
+      "based_on_assertion_ids": [
+        "fact-assertion-0154c31033fb93cc6d4ebdb6940ac3af2fc8b9d2da40859de5a946df8f7348c5"
+      ],
+      "en_text": "Reported birth year: 2020.",
+      "fact_enrichment_batch_id": "fact-enrichment-batch-948d73e3c9983e2bb8945dc945e2f8c81ea71c3af61c2e9da5b818ec68f9a933",
+      "field_path": "birth.year",
+      "generator_version": "bilingual-summary/v1",
+      "record_id": "identity-record-6955b97de254cbe770e8a384a67d5d4de328f3450ba217812259fcd62f253ad1",
+      "sentence_id": "bilingual-summary-sentence-3c6f5a5d9341be6ffdf2fb10c4eeec75bd2d7a634aa1a6ade52d22a04a149e3f",
+      "sentence_key": "summary.birth.year",
+      "source_language": "en",
+      "zh_text": "据报道，出生年份：2020年。"
+    }
+  ],
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

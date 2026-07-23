@@ -1,0 +1,223 @@
+{
+  "batch_id": "identity-extraction-batch-a812586e92b4b1512cf49a089a3b7a6f8cea182a2f78153f1a233d21d5c9b158",
+  "candidates": [
+    {
+      "features": {
+        "birth_date": null,
+        "birth_year": 2020,
+        "external_identifiers": [
+          {
+            "system": "institution-profile",
+            "value": "hua-hua"
+          }
+        ],
+        "institution_ids": [
+          "chengdu-base"
+        ],
+        "is_group_observation": false,
+        "movement_institution_ids": [],
+        "parent_ids": [],
+        "parent_names": [],
+        "sex": "female",
+        "source_relationship_ids": [],
+        "stable_wild_identifier": null
+      },
+      "names": [
+        {
+          "kind": "primary",
+          "language": "zh",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "花花"
+        },
+        {
+          "kind": "romanized",
+          "language": "en",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "Hua Hua"
+        },
+        {
+          "kind": "translated",
+          "language": "ja",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "ファファ"
+        },
+        {
+          "kind": "translated",
+          "language": "ko",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "화화"
+        }
+      ],
+      "population_context": "captive",
+      "record_id": "identity-record-e80cf6744424e02bddc81f2d2b737bfeb3e41e54c1e9af146d98699c0fa9eedd",
+      "source_ids": [
+        "source-multilingual-profile"
+      ]
+    }
+  ],
+  "extractions": [
+    {
+      "evidence": [
+        {
+          "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "evidence_snapshot_id": "snapshot-multilingual-hua-hua",
+          "field_path": "identity.names",
+          "language": "zh",
+          "normalized_value": [
+            "花花",
+            "Hua Hua",
+            "ファファ",
+            "화화"
+          ],
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "花花 / Hua Hua / ファファ / 화화",
+          "source_locator": {
+            "section": "identity.names"
+          }
+        },
+        {
+          "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "evidence_snapshot_id": "snapshot-multilingual-hua-hua",
+          "field_path": "identity.birth_year",
+          "language": "zh",
+          "normalized_value": 2020,
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "2020年出生",
+          "source_locator": {
+            "section": "identity.birth_year"
+          }
+        },
+        {
+          "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "evidence_snapshot_id": "snapshot-multilingual-hua-hua",
+          "field_path": "identity.sex",
+          "language": "zh",
+          "normalized_value": "female",
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "雌性",
+          "source_locator": {
+            "section": "identity.sex"
+          }
+        },
+        {
+          "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "evidence_snapshot_id": "snapshot-multilingual-hua-hua",
+          "field_path": "identity.institution_ids",
+          "language": "zh",
+          "normalized_value": [
+            "chengdu-base"
+          ],
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "成都大熊猫繁育研究基地",
+          "source_locator": {
+            "section": "identity.institution_ids"
+          }
+        },
+        {
+          "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "evidence_snapshot_id": "snapshot-multilingual-hua-hua",
+          "field_path": "identity.external_identifiers",
+          "language": "zh",
+          "normalized_value": {
+            "system": "institution-profile",
+            "value": "hua-hua"
+          },
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "档案编号 hua-hua",
+          "source_locator": {
+            "section": "identity.external_identifiers"
+          }
+        },
+        {
+          "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "evidence_snapshot_id": "snapshot-multilingual-hua-hua",
+          "field_path": "identity.population_context",
+          "language": "zh",
+          "normalized_value": "captive",
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "圈养大熊猫",
+          "source_locator": {
+            "section": "identity.population_context"
+          }
+        }
+      ],
+      "features": {
+        "birth_date": null,
+        "birth_year": 2020,
+        "external_identifiers": [
+          {
+            "system": "institution-profile",
+            "value": "hua-hua"
+          }
+        ],
+        "institution_ids": [
+          "chengdu-base"
+        ],
+        "is_group_observation": false,
+        "movement_institution_ids": [],
+        "parent_ids": [],
+        "parent_names": [],
+        "sex": "female",
+        "source_relationship_ids": [],
+        "stable_wild_identifier": null
+      },
+      "intake_candidate_id": "intake-multilingual-hua-hua",
+      "names": [
+        {
+          "kind": "primary",
+          "language": "zh",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "花花"
+        },
+        {
+          "kind": "romanized",
+          "language": "en",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "Hua Hua"
+        },
+        {
+          "kind": "translated",
+          "language": "ja",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "ファファ"
+        },
+        {
+          "kind": "translated",
+          "language": "ko",
+          "normalized_forms": [
+            "hua hua"
+          ],
+          "value": "화화"
+        }
+      ],
+      "population_context": "captive",
+      "source_id": "source-multilingual-profile",
+      "subject_key": "profile:花花"
+    }
+  ],
+  "schema_version": "panda-atlas-identity-extraction/v1",
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

@@ -1,0 +1,383 @@
+{
+  "$defs": {
+    "IdentityCandidateRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "features": {
+          "$ref": "#/$defs/IdentityFeatureSet"
+        },
+        "names": {
+          "items": {
+            "$ref": "#/$defs/IdentityNameClaim"
+          },
+          "minItems": 1,
+          "title": "Names",
+          "type": "array"
+        },
+        "population_context": {
+          "$ref": "#/$defs/PopulationContext",
+          "default": "unknown"
+        },
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "record_id",
+        "names",
+        "features",
+        "source_ids"
+      ],
+      "title": "IdentityCandidateRecord",
+      "type": "object"
+    },
+    "IdentityFeatureSet": {
+      "additionalProperties": false,
+      "properties": {
+        "birth_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Birth Date"
+        },
+        "birth_year": {
+          "anyOf": [
+            {
+              "maximum": 2200,
+              "minimum": 1800,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Birth Year"
+        },
+        "external_identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IdentityIdentifierClaim"
+          },
+          "title": "External Identifiers",
+          "type": "array"
+        },
+        "institution_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Institution Ids",
+          "type": "array"
+        },
+        "is_group_observation": {
+          "default": false,
+          "title": "Is Group Observation",
+          "type": "boolean"
+        },
+        "movement_institution_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Movement Institution Ids",
+          "type": "array"
+        },
+        "parent_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Parent Ids",
+          "type": "array"
+        },
+        "parent_names": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Parent Names",
+          "type": "array"
+        },
+        "sex": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sex"
+        },
+        "source_relationship_ids": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Relationship Ids",
+          "type": "array"
+        },
+        "stable_wild_identifier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stable Wild Identifier"
+        }
+      },
+      "title": "IdentityFeatureSet",
+      "type": "object"
+    },
+    "IdentityFieldEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_body_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Evidence Body Sha256",
+          "type": "string"
+        },
+        "evidence_snapshot_id": {
+          "minLength": 1,
+          "title": "Evidence Snapshot Id",
+          "type": "string"
+        },
+        "field_path": {
+          "minLength": 1,
+          "title": "Field Path",
+          "type": "string"
+        },
+        "language": {
+          "minLength": 1,
+          "title": "Language",
+          "type": "string"
+        },
+        "normalized_value": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "parser_name": {
+          "minLength": 1,
+          "title": "Parser Name",
+          "type": "string"
+        },
+        "parser_version": {
+          "minLength": 1,
+          "title": "Parser Version",
+          "type": "string"
+        },
+        "raw_value": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "source_locator": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "minProperties": 1,
+          "title": "Source Locator",
+          "type": "object"
+        }
+      },
+      "required": [
+        "evidence_snapshot_id",
+        "evidence_body_sha256",
+        "field_path",
+        "raw_value",
+        "normalized_value",
+        "language",
+        "source_locator",
+        "parser_name",
+        "parser_version"
+      ],
+      "title": "IdentityFieldEvidence",
+      "type": "object"
+    },
+    "IdentityIdentifierClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "minLength": 1,
+          "title": "System",
+          "type": "string"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system",
+        "value"
+      ],
+      "title": "IdentityIdentifierClaim",
+      "type": "object"
+    },
+    "IdentityNameClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "language": {
+          "minLength": 1,
+          "title": "Language",
+          "type": "string"
+        },
+        "normalized_forms": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Normalized Forms",
+          "type": "array"
+        },
+        "value": {
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "language",
+        "kind"
+      ],
+      "title": "IdentityNameClaim",
+      "type": "object"
+    },
+    "IdentitySubjectExtraction": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/IdentityFieldEvidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "features": {
+          "$ref": "#/$defs/IdentityFeatureSet"
+        },
+        "intake_candidate_id": {
+          "minLength": 1,
+          "title": "Intake Candidate Id",
+          "type": "string"
+        },
+        "names": {
+          "items": {
+            "$ref": "#/$defs/IdentityNameClaim"
+          },
+          "minItems": 1,
+          "title": "Names",
+          "type": "array"
+        },
+        "population_context": {
+          "$ref": "#/$defs/PopulationContext",
+          "default": "unknown"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "subject_key": {
+          "minLength": 1,
+          "title": "Subject Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "intake_candidate_id",
+        "subject_key",
+        "names",
+        "features",
+        "evidence"
+      ],
+      "title": "IdentitySubjectExtraction",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "PopulationContext": {
+      "enum": [
+        "captive",
+        "wild",
+        "released",
+        "unknown"
+      ],
+      "title": "PopulationContext",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "batch_id": {
+      "minLength": 1,
+      "title": "Batch Id",
+      "type": "string"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/IdentityCandidateRecord"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "extractions": {
+      "items": {
+        "$ref": "#/$defs/IdentitySubjectExtraction"
+      },
+      "title": "Extractions",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "panda-atlas-identity-extraction/v1",
+      "default": "panda-atlas-identity-extraction/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "write_boundary": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Write Boundary",
+      "type": "object"
+    }
+  },
+  "required": [
+    "batch_id",
+    "extractions",
+    "candidates"
+  ],
+  "title": "IdentityCandidateBatch",
+  "type": "object"
+}

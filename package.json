@@ -83,7 +83,9 @@
     "source:xi-lun:live": "uv run --isolated --directory services/api --frozen --extra crawler-poc python scripts/run_source_adapter.py --live",
     "test:source-adapters": "uv run --isolated --directory services/api --frozen --extra dev --extra crawler-poc pytest -q tests/acquisition/test_source_registry.py tests/acquisition/test_wikimedia_commons_adapter.py",
     "deploy:api:cf": "npm run deploy -w worker-api",
-    "release:default": "node scripts/release/default.mjs",
+    "release:default": "node scripts/release/private-collection.mjs",
+    "release:private": "node scripts/release/private-collection.mjs",
+
     "release:extended": "node scripts/release/extended.mjs"
   }
 }
