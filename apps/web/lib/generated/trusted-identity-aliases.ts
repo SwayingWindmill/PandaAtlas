@@ -1,4 +1,4 @@
-// Generated from reviewed Public Release 2026.07.21.1.
+// Generated from reviewed Public Release 2026.07.23.1.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
 import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
@@ -60,6 +60,14 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "meixiang": {
     "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "slug": "mei-xiang"
+  },
+  "qing-bao": {
+    "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+    "slug": "qing-bao"
+  },
+  "qingbao": {
+    "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+    "slug": "qing-bao"
   },
   "ri-ri": {
     "id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
@@ -144,6 +152,894 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
 };
 
 export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
+  {
+    "id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+    "slug": "shin-shin",
+    "name_zh": "真真",
+    "name_en": "Shin Shin",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2005-07-03",
+    "current_location": "中国大熊猫保护研究中心雅安碧峰峡基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+    "search_terms": [
+      "shin-shin",
+      "真真",
+      "Shin Shin",
+      "Xian Nu",
+      "Xin Xin",
+      "shinshin",
+      "tokyo_zoo_profile_key:shin-shin"
+    ],
+    "intro": "2005 年出生于卧龙、2011 年抵达上野动物园的雌性大熊猫，是香香、晓晓和蕾蕾的母亲，2024 年返回雅安碧峰峡基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-shin-shin-6b36624de9829665",
+        "panda_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Shin_Shin_03.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "EleniXDD / Wikimedia Commons",
+        "alt_zh": "真真在上野动物园吃竹子",
+        "alt_en": "Shin Shin eating bamboo at Ueno Zoo",
+        "status": "available",
+        "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 901,
+        "bytes": 282766,
+        "derivatives": [
+          {
+            "bytes": 60930,
+            "height": 360,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "d937360864bdae72e2fa093c5fa4ee244b9777e4b5b1b2543ca0b2931fe7561a",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 282766,
+            "height": 901,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_shin_shin_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+      "canonical_slug": "shin-shin",
+      "names": [
+        {
+          "value": "真真",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ]
+        },
+        {
+          "value": "Shin Shin",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ]
+        }
+      ],
+      "aliases": [
+        {
+          "value": "Xian Nu",
+          "language": "en",
+          "kind": "alternate_romanization",
+          "primary": false,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ]
+        },
+        {
+          "value": "Xin Xin",
+          "language": "en",
+          "kind": "alternate_romanization",
+          "primary": false,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ]
+        }
+      ],
+      "legacy_slugs": [
+        {
+          "value": "shinshin",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "tokyo_zoo_profile_key",
+          "value": "shin-shin",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2005-07-03",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-shin-shin-birth-date"
+        ],
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_return_riri_shinshin"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "CCRCGP Bifengxia Base",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-10",
+        "assertion_ids": [
+          "fact-shin-shin-current-place"
+        ],
+        "source_ids": [
+          "src_ueno_return_riri_shinshin",
+          "src_gpg_yaan_base_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-shin-shin-sex"
+        ],
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_return_riri_shinshin"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_shin_shin_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Shin Shin 03",
+        "url": "https://commons.wikimedia.org/wiki/File:Shin_Shin_03.jpg",
+        "published_at": "2024-07-03",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_yaan_base_profiles",
+        "publisher": "Giant Panda Global",
+        "title": "CCRCGP Ya'an Base giant pandas",
+        "url": "https://www.giantpandaglobal.com/en/zoo/ccrcgp-yaan-base",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_tokyo_zoo_ueno_panda_history",
+        "publisher": "Tokyo Zoological Park Society",
+        "title": "Past giant pandas kept at Ueno Zoo",
+        "url": "https://www.tokyo-zoo.net/ueno/panda/history/index.html",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_ueno_return_riri_shinshin",
+        "publisher": "Tokyo Zoological Park Society",
+        "title": "Regarding the return of Giant Panda Ri Ri and Shin Shin",
+        "url": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
+        "published_at": "2024-08-30",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "7e8c3dc5-0725-5c1e-bc97-53f3e9c47995",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-05-10"
+    },
+    "residencies": [
+      {
+        "id": "res-shin-shin-ueno",
+        "facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2011-02-21",
+        "start_precision": "day",
+        "end_date": "2024-09-29",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_return_riri_shinshin"
+        ]
+      },
+      {
+        "id": "res-shin-shin-bifengxia",
+        "facility_id": "7e8c3dc5-0725-5c1e-bc97-53f3e9c47995",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-09-29",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-05-10",
+        "source_ids": [
+          "src_ueno_return_riri_shinshin",
+          "src_gpg_yaan_base_profiles"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-shin-shin-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2005-07-03",
+        "event_date_precision": "day",
+        "participants": [
+          "01878819-1eda-5d9c-96ab-bab66d3b0b09"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_return_riri_shinshin"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-ueno-pair-arrival-2011",
+        "event_type": "arrival",
+        "event_status": "completed",
+        "event_date": "2011-02-21",
+        "event_date_precision": "day",
+        "participants": [
+          "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+          "01878819-1eda-5d9c-96ab-bab66d3b0b09"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_return_riri_shinshin"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-ueno-pair-return-2024",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2024-09-29",
+        "event_date_precision": "day",
+        "participants": [
+          "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+          "01878819-1eda-5d9c-96ab-bab66d3b0b09"
+        ],
+        "from_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "from_coarse_location": null,
+        "to_facility_id": "7e8c3dc5-0725-5c1e-bc97-53f3e9c47995",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_ueno_return_riri_shinshin"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "2005 年出生于卧龙、2011 年抵达上野动物园的雌性大熊猫，是香香、晓晓和蕾蕾的母亲，2024 年返回雅安碧峰峡基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Female giant panda born in Wolong in 2005, mother of Xiang Xiang, Xiao Xiao, and Lei Lei, and returned from Ueno to Bifengxia Base in 2024."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_shin_shin_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.23.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+    "slug": "bei-bei",
+    "name_zh": "贝贝",
+    "name_en": "Bei Bei",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2015-08-22",
+    "current_location": "中国大熊猫保护研究中心卧龙神树坪基地",
+    "cover_image_url": null,
+    "search_terms": [
+      "bei-bei",
+      "贝贝",
+      "Bei Bei",
+      "Bèibèi",
+      "beibei",
+      "smithsonian_history_key:bei-bei"
+    ],
+    "intro": "美香与添添之子，2015 年出生于史密森国家动物园，现居卧龙神树坪基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+      "canonical_slug": "bei-bei",
+      "names": [
+        {
+          "value": "贝贝",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "Bei Bei",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "Bèibèi",
+          "language": "pinyin",
+          "kind": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "beibei",
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "smithsonian_history_key",
+          "value": "bei-bei",
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2015-08-22",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-09",
+        "assertion_ids": [
+          "fact-bei-bei-birth-date"
+        ],
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Wolong Shenshuping Base",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-10",
+        "assertion_ids": [
+          "fact-bei-bei-current-place"
+        ],
+        "source_ids": [
+          "src_ccrcgp_2025_birthday_season"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-09",
+        "assertion_ids": [
+          "fact-bei-bei-sex"
+        ],
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_ccrcgp_2025_birthday_season",
+        "publisher": "China.org.cn / Xinhua",
+        "title": "前方高萌 卧龙神树坪基地举办大熊猫集体生日会",
+        "url": "https://www.china.org.cn/2025-07/18/content_117984485_4.shtml",
+        "published_at": "2025-07-18",
+        "last_verified_at": "2026-05-10",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_smithsonian_history",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-05-10"
+    },
+    "residencies": [
+      {
+        "id": "res-bei-bei-shenshuping",
+        "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2019-11-19",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-05-10",
+        "source_ids": [
+          "src_ccrcgp_2025_birthday_season"
+        ]
+      }
+    ],
+    "events": [],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "美香与添添之子，2015 年出生于史密森国家动物园，现居卧龙神树坪基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2015 and currently recorded at Wolong Shenshuping Base."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.23.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、亲本、出生日期与现居基地的公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Public review of identity, parentage, birth date, and current facility."
+        }
+      ]
+    }
+  },
+  {
+    "id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
+    "slug": "xiao-xiao",
+    "name_zh": "晓晓",
+    "name_en": "Xiao Xiao",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2021-06-23",
+    "current_location": "中国大熊猫保护研究中心雅安基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+    "search_terms": [
+      "xiao-xiao",
+      "晓晓",
+      "Xiao Xiao",
+      "xiaoxiao",
+      "tokyo_zoo_profile_key:xiao-xiao"
+    ],
+    "intro": "力力与真真之子，2021 年出生于上野动物园，与蕾蕾为双胞胎，2026 年返回雅安基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+    "mother_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-xiao-xiao-ae1f68080472412c",
+        "panda_id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Xiao_Xiao_220518e.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "江戸村のとくぞう / Wikimedia Commons",
+        "alt_zh": "晓晓在上野动物园的栖息地内",
+        "alt_en": "Xiao Xiao in his habitat at Ueno Zoo",
+        "status": "available",
+        "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 1091,
+        "bytes": 114184,
+        "derivatives": [
+          {
+            "bytes": 26032,
+            "height": 436,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "ceb36d0ecf06610f698262e9323c465fd485569c16f9c5cb76ed65593cadf3e6",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 114184,
+            "height": 1091,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_xiao_xiao_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
+      "canonical_slug": "xiao-xiao",
+      "names": [
+        {
+          "value": "晓晓",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_twins_names_2021",
+            "src_ueno_xiaolei_return_2026"
+          ]
+        },
+        {
+          "value": "Xiao Xiao",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_twins_names_2021",
+            "src_ueno_xiaolei_return_2026"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "xiaoxiao",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "tokyo_zoo_profile_key",
+          "value": "xiao-xiao",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2021-06-23",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-xiao-xiao-birth-date"
+        ],
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_twins_names_2021"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "CCRCGP Ya'an Base",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-10",
+        "assertion_ids": [
+          "fact-xiao-xiao-current-place"
+        ],
+        "source_ids": [
+          "src_ueno_xiaolei_return_2026"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-xiao-xiao-sex"
+        ],
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_twins_names_2021"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_xiao_xiao_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Ailuropoda melanoleuca Xiao Xiao 220518e",
+        "url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Xiao_Xiao_220518e.jpg",
+        "published_at": "2022-05-18",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_tokyo_zoo_ueno_panda_history",
+        "publisher": "Tokyo Zoological Park Society",
+        "title": "Past giant pandas kept at Ueno Zoo",
+        "url": "https://www.tokyo-zoo.net/ueno/panda/history/index.html",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_ueno_twins_names_2021",
+        "publisher": "Tokyo Zoological Park Society",
+        "title": "The names of Giant Panda twins have been decided as Xiao Xiao and Lei Lei",
+        "url": "https://www.tokyo-zoo.net/en/topics/news/ueno/1681_27052_2021-10-08.html",
+        "published_at": "2021-10-08",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_ueno_xiaolei_return_2026",
+        "publisher": "Tokyo Zoological Park Society",
+        "title": "Giant Panda Xiao Xiao and Lei Lei arrive at the Ya'an Base",
+        "url": "https://www.tokyo-zoo.net/en/ueno/news/5238/index.html",
+        "published_at": "2026-01-28",
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "d773a478-6014-5a4f-9e29-a0903f4beea6",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-05-10"
+    },
+    "residencies": [
+      {
+        "id": "res-xiao-xiao-ueno",
+        "facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2021-06-23",
+        "start_precision": "day",
+        "end_date": "2026-01-28",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history"
+        ]
+      },
+      {
+        "id": "res-xiao-xiao-yaan",
+        "facility_id": "d773a478-6014-5a4f-9e29-a0903f4beea6",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2026-01-28",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-05-10",
+        "source_ids": [
+          "src_ueno_xiaolei_return_2026"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-ueno-twins-birth-2021",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-06-23",
+        "event_date_precision": "day",
+        "participants": [
+          "275ad0df-c700-5991-a13a-0ca47c56eeba",
+          "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_tokyo_zoo_ueno_panda_history",
+          "src_ueno_twins_names_2021"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-ueno-twins-named-2021",
+        "event_type": "naming",
+        "event_status": "completed",
+        "event_date": "2021-10-08",
+        "event_date_precision": "day",
+        "participants": [
+          "275ad0df-c700-5991-a13a-0ca47c56eeba",
+          "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_ueno_twins_names_2021"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-ueno-twins-return-2026",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2026-01-28",
+        "event_date_precision": "day",
+        "participants": [
+          "275ad0df-c700-5991-a13a-0ca47c56eeba",
+          "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
+        ],
+        "from_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "from_coarse_location": null,
+        "to_facility_id": "d773a478-6014-5a4f-9e29-a0903f4beea6",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_ueno_xiaolei_return_2026"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "力力与真真之子，2021 年出生于上野动物园，与蕾蕾为双胞胎，2026 年返回雅安基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Son of Ri Ri and Shin Shin, born at Ueno Zoo in 2021, twin of Lei Lei, and returned to Ya'an Base in 2026."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_xiao_xiao_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.23.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
   {
     "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "slug": "mei-xiang",
@@ -302,7 +1198,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
         "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
         "published_at": null,
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
         "language": "en",
         "access_state": "accessible"
       }
@@ -404,7 +1300,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -576,7 +1472,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
         "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
         "published_at": null,
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
         "language": "en",
         "access_state": "accessible"
       }
@@ -680,848 +1576,9 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": []
-    }
-  },
-  {
-    "id": "96d00a39-7865-55db-b5c2-f339ef692258",
-    "slug": "tai-shan",
-    "name_zh": "泰山",
-    "name_en": "Tai Shan",
-    "gender": "male",
-    "status": "alive",
-    "birth_date": "2005-07-09",
-    "current_location": "China",
-    "cover_image_url": null,
-    "search_terms": [
-      "tai-shan",
-      "泰山",
-      "Tai Shan",
-      "Tàishān",
-      "taishan",
-      "smithsonian_history_key:tai-shan"
-    ],
-    "intro": "美香与添添之子，2005 年出生于史密森国家动物园，现有公开证据仅确认其已返回中国。",
-    "birthplace": null,
-    "tags": [
-      "trusted-identity",
-      "golden-dataset"
-    ],
-    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "habitats": [],
-    "media": [],
-    "identity": {
-      "stable_id": "96d00a39-7865-55db-b5c2-f339ef692258",
-      "canonical_slug": "tai-shan",
-      "names": [
-        {
-          "value": "泰山",
-          "language": "zh-Hans",
-          "kind": "official",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Tai Shan",
-          "language": "en",
-          "kind": "official_romanization",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Tàishān",
-          "language": "pinyin",
-          "kind": "pinyin",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "aliases": [],
-      "legacy_slugs": [
-        {
-          "value": "taishan",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "external_identifiers": [
-        {
-          "system": "smithsonian_history_key",
-          "value": "tai-shan",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ]
-    },
-    "conclusions": [
-      {
-        "field": "birth_date",
-        "value": "2005-07-09",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-tai-shan-birth-date"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "current_coarse_location",
-        "value": "China",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-tai-shan-current-place"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "sex",
-        "value": "male",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-tai-shan-sex"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      }
-    ],
-    "sources": [
-      {
-        "id": "src_smithsonian_history",
-        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
-        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
-        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
-        "published_at": null,
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      }
-    ],
-    "current_place": {
-      "facility_id": null,
-      "coarse_location": "China",
-      "status": "confirmed_country_level",
-      "last_verified_at": "2026-05-09"
-    },
-    "residencies": [
-      {
-        "id": "res-tai-shan-china-country-level",
-        "facility_id": null,
-        "coarse_location": "China",
-        "residency_type": "primary",
-        "start_date": "2010-02-04",
-        "start_precision": "day",
-        "end_date": null,
-        "end_precision": null,
-        "status": "confirmed_country_level",
-        "last_verified_at": "2026-05-09",
-        "source_ids": [
-          "src_smithsonian_history"
-        ]
-      }
-    ],
-    "events": [],
-    "record_tier": "identity_first_pass",
-    "localized_content": [
-      {
-        "locale": "zh-CN",
-        "summary": "美香与添添之子，2005 年出生于史密森国家动物园，现有公开证据仅确认其已返回中国。"
-      },
-      {
-        "locale": "en",
-        "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2005; current public evidence confirms only his return to China."
-      }
-    ],
-    "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
-    },
-    "public_revision": {
-      "data_version": "2026.07.21.1",
-      "public_schema_version": "1.2.0",
-      "summaries": [
-        {
-          "locale": "zh-CN",
-          "summary": "完成身份、亲本、出生日期与国家级现居记录的公开整理。"
-        },
-        {
-          "locale": "en",
-          "summary": "Public review of identity, parentage, birth date, and country-level current residency."
-        }
-      ]
-    }
-  },
-  {
-    "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
-    "slug": "bao-bao",
-    "name_zh": "宝宝",
-    "name_en": "Bao Bao",
-    "gender": "female",
-    "status": "alive",
-    "birth_date": "2013-08-23",
-    "current_location": "China",
-    "cover_image_url": null,
-    "search_terms": [
-      "bao-bao",
-      "宝宝",
-      "Bao Bao",
-      "Bǎobǎo",
-      "baobao-smithsonian",
-      "smithsonian_history_key:bao-bao"
-    ],
-    "intro": "美香与添添之女，2013 年出生于史密森国家动物园，也是宝力的母亲。",
-    "birthplace": null,
-    "tags": [
-      "trusted-identity",
-      "golden-dataset"
-    ],
-    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "habitats": [],
-    "media": [],
-    "identity": {
-      "stable_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
-      "canonical_slug": "bao-bao",
-      "names": [
-        {
-          "value": "宝宝",
-          "language": "zh-Hans",
-          "kind": "official",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Bao Bao",
-          "language": "en",
-          "kind": "official_romanization",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Bǎobǎo",
-          "language": "pinyin",
-          "kind": "pinyin",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "aliases": [],
-      "legacy_slugs": [
-        {
-          "value": "baobao-smithsonian",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "external_identifiers": [
-        {
-          "system": "smithsonian_history_key",
-          "value": "bao-bao",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ]
-    },
-    "conclusions": [
-      {
-        "field": "birth_date",
-        "value": "2013-08-23",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-bao-bao-birth-date"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "current_coarse_location",
-        "value": "China",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-bao-bao-current-place"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "sex",
-        "value": "female",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-bao-bao-sex"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      }
-    ],
-    "sources": [
-      {
-        "id": "src_smithsonian_history",
-        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
-        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
-        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
-        "published_at": null,
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      }
-    ],
-    "current_place": {
-      "facility_id": null,
-      "coarse_location": "China",
-      "status": "confirmed_country_level",
-      "last_verified_at": "2026-05-09"
-    },
-    "residencies": [
-      {
-        "id": "res-bao-bao-china-country-level",
-        "facility_id": null,
-        "coarse_location": "China",
-        "residency_type": "primary",
-        "start_date": "2017-02-21",
-        "start_precision": "day",
-        "end_date": null,
-        "end_precision": null,
-        "status": "confirmed_country_level",
-        "last_verified_at": "2026-05-09",
-        "source_ids": [
-          "src_smithsonian_history"
-        ]
-      }
-    ],
-    "events": [],
-    "record_tier": "identity_first_pass",
-    "localized_content": [
-      {
-        "locale": "zh-CN",
-        "summary": "美香与添添之女，2013 年出生于史密森国家动物园，也是宝力的母亲。"
-      },
-      {
-        "locale": "en",
-        "summary": "Daughter of Mei Xiang and Tian Tian, born at the Smithsonian in 2013, and mother of Bao Li."
-      }
-    ],
-    "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
-    },
-    "public_revision": {
-      "data_version": "2026.07.21.1",
-      "public_schema_version": "1.2.0",
-      "summaries": [
-        {
-          "locale": "zh-CN",
-          "summary": "完成身份、亲本、出生日期、子代关系与国家级现居记录的公开整理。"
-        },
-        {
-          "locale": "en",
-          "summary": "Public review of identity, parentage, birth date, offspring relationship, and country-level current residency."
-        }
-      ]
-    }
-  },
-  {
-    "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
-    "slug": "bei-bei",
-    "name_zh": "贝贝",
-    "name_en": "Bei Bei",
-    "gender": "male",
-    "status": "alive",
-    "birth_date": "2015-08-22",
-    "current_location": "中国大熊猫保护研究中心卧龙神树坪基地",
-    "cover_image_url": null,
-    "search_terms": [
-      "bei-bei",
-      "贝贝",
-      "Bei Bei",
-      "Bèibèi",
-      "beibei",
-      "smithsonian_history_key:bei-bei"
-    ],
-    "intro": "美香与添添之子，2015 年出生于史密森国家动物园，现居卧龙神树坪基地。",
-    "birthplace": null,
-    "tags": [
-      "trusted-identity",
-      "golden-dataset"
-    ],
-    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "habitats": [],
-    "media": [],
-    "identity": {
-      "stable_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
-      "canonical_slug": "bei-bei",
-      "names": [
-        {
-          "value": "贝贝",
-          "language": "zh-Hans",
-          "kind": "official",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Bei Bei",
-          "language": "en",
-          "kind": "official_romanization",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Bèibèi",
-          "language": "pinyin",
-          "kind": "pinyin",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "aliases": [],
-      "legacy_slugs": [
-        {
-          "value": "beibei",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "external_identifiers": [
-        {
-          "system": "smithsonian_history_key",
-          "value": "bei-bei",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ]
-    },
-    "conclusions": [
-      {
-        "field": "birth_date",
-        "value": "2015-08-22",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-bei-bei-birth-date"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "current_coarse_location",
-        "value": "Wolong Shenshuping Base",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-10",
-        "assertion_ids": [
-          "fact-bei-bei-current-place"
-        ],
-        "source_ids": [
-          "src_ccrcgp_2025_birthday_season"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "sex",
-        "value": "male",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-bei-bei-sex"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      }
-    ],
-    "sources": [
-      {
-        "id": "src_smithsonian_history",
-        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
-        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
-        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
-        "published_at": null,
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_ccrcgp_2025_birthday_season",
-        "publisher": "China.org.cn / Xinhua",
-        "title": "前方高萌 卧龙神树坪基地举办大熊猫集体生日会",
-        "url": "https://www.china.org.cn/2025-07/18/content_117984485_4.shtml",
-        "published_at": "2025-07-18",
-        "last_verified_at": "2026-05-10",
-        "language": "zh-Hans",
-        "access_state": "accessible"
-      }
-    ],
-    "current_place": {
-      "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
-      "coarse_location": null,
-      "status": "confirmed",
-      "last_verified_at": "2026-05-10"
-    },
-    "residencies": [
-      {
-        "id": "res-bei-bei-shenshuping",
-        "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "2019-11-19",
-        "start_precision": "day",
-        "end_date": null,
-        "end_precision": null,
-        "status": "confirmed",
-        "last_verified_at": "2026-05-10",
-        "source_ids": [
-          "src_ccrcgp_2025_birthday_season"
-        ]
-      }
-    ],
-    "events": [],
-    "record_tier": "identity_first_pass",
-    "localized_content": [
-      {
-        "locale": "zh-CN",
-        "summary": "美香与添添之子，2015 年出生于史密森国家动物园，现居卧龙神树坪基地。"
-      },
-      {
-        "locale": "en",
-        "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2015 and currently recorded at Wolong Shenshuping Base."
-      }
-    ],
-    "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
-    },
-    "public_revision": {
-      "data_version": "2026.07.21.1",
-      "public_schema_version": "1.2.0",
-      "summaries": [
-        {
-          "locale": "zh-CN",
-          "summary": "完成身份、亲本、出生日期与现居基地的公开整理。"
-        },
-        {
-          "locale": "en",
-          "summary": "Public review of identity, parentage, birth date, and current facility."
-        }
-      ]
-    }
-  },
-  {
-    "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
-    "slug": "xiao-qi-ji",
-    "name_zh": "小奇迹",
-    "name_en": "Xiao Qi Ji",
-    "gender": "male",
-    "status": "alive",
-    "birth_date": "2020-08-21",
-    "current_location": "中国大熊猫保护研究中心卧龙神树坪基地",
-    "cover_image_url": null,
-    "search_terms": [
-      "xiao-qi-ji",
-      "小奇迹",
-      "Xiao Qi Ji",
-      "Xiǎoqíjì",
-      "xiaoqiji",
-      "xiao_qi_ji",
-      "smithsonian_history_key:xiao-qi-ji"
-    ],
-    "intro": "美香与添添之子，2020 年出生于史密森国家动物园，并于 2023 年随父母返回中国。",
-    "birthplace": null,
-    "tags": [
-      "trusted-identity",
-      "golden-dataset"
-    ],
-    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "habitats": [],
-    "media": [],
-    "identity": {
-      "stable_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
-      "canonical_slug": "xiao-qi-ji",
-      "names": [
-        {
-          "value": "小奇迹",
-          "language": "zh-Hans",
-          "kind": "official",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Xiao Qi Ji",
-          "language": "en",
-          "kind": "official_romanization",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "Xiǎoqíjì",
-          "language": "pinyin",
-          "kind": "pinyin",
-          "primary": true,
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "aliases": [],
-      "legacy_slugs": [
-        {
-          "value": "xiaoqiji",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        },
-        {
-          "value": "xiao_qi_ji",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ],
-      "external_identifiers": [
-        {
-          "system": "smithsonian_history_key",
-          "value": "xiao-qi-ji",
-          "source_ids": [
-            "src_smithsonian_history"
-          ]
-        }
-      ]
-    },
-    "conclusions": [
-      {
-        "field": "birth_date",
-        "value": "2020-08-21",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-xiao-qi-ji-birth-date"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "current_coarse_location",
-        "value": "Wolong Shenshuping Base",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-10",
-        "assertion_ids": [
-          "fact-xiao-qi-ji-current-place"
-        ],
-        "source_ids": [
-          "src_ccrcgp_2025_birthday_season"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "sex",
-        "value": "male",
-        "status": "confirmed",
-        "last_verified_at": "2026-05-09",
-        "assertion_ids": [
-          "fact-xiao-qi-ji-sex"
-        ],
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      }
-    ],
-    "sources": [
-      {
-        "id": "src_smithsonian_agreement_2020",
-        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
-        "title": "Smithsonian extends giant panda agreement",
-        "url": "https://nationalzoo.si.edu/news/smithsonians-national-zoo-and-conservation-biology-institute-extends-giant-panda-agreement",
-        "published_at": "2020-12-07",
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_smithsonian_history",
-        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
-        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
-        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
-        "published_at": null,
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_ccrcgp_2025_birthday_season",
-        "publisher": "China.org.cn / Xinhua",
-        "title": "前方高萌 卧龙神树坪基地举办大熊猫集体生日会",
-        "url": "https://www.china.org.cn/2025-07/18/content_117984485_4.shtml",
-        "published_at": "2025-07-18",
-        "last_verified_at": "2026-05-10",
-        "language": "zh-Hans",
-        "access_state": "accessible"
-      }
-    ],
-    "current_place": {
-      "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
-      "coarse_location": null,
-      "status": "confirmed",
-      "last_verified_at": "2026-05-10"
-    },
-    "residencies": [
-      {
-        "id": "res-xiao-qi-ji-shenshuping",
-        "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "2023-11-08",
-        "start_precision": "day",
-        "end_date": null,
-        "end_precision": null,
-        "status": "confirmed",
-        "last_verified_at": "2026-05-10",
-        "source_ids": [
-          "src_ccrcgp_2025_birthday_season",
-          "src_smithsonian_history"
-        ]
-      }
-    ],
-    "events": [
-      {
-        "id": "event-smithsonian-return-plan-2020",
-        "event_type": "transfer",
-        "event_status": "announced",
-        "event_date": "2020-12-07",
-        "event_date_precision": "day",
-        "participants": [
-          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-          "38cd1cad-3e34-5511-bc35-a091ece74e11",
-          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
-        ],
-        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
-        "from_coarse_location": null,
-        "to_facility_id": null,
-        "to_coarse_location": "China",
-        "source_ids": [
-          "src_smithsonian_agreement_2020"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-smithsonian-departure-2023",
-        "event_type": "transfer",
-        "event_status": "completed",
-        "event_date": "2023-11-08",
-        "event_date_precision": "day",
-        "participants": [
-          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-          "38cd1cad-3e34-5511-bc35-a091ece74e11",
-          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
-        ],
-        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
-        "from_coarse_location": null,
-        "to_facility_id": null,
-        "to_coarse_location": "China",
-        "source_ids": [
-          "src_smithsonian_history"
-        ],
-        "changes_current_residency": true
-      }
-    ],
-    "record_tier": "identity_first_pass",
-    "localized_content": [
-      {
-        "locale": "zh-CN",
-        "summary": "美香与添添之子，2020 年出生于史密森国家动物园，并于 2023 年随父母返回中国。"
-      },
-      {
-        "locale": "en",
-        "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2020 and returned to China with his parents in 2023."
-      }
-    ],
-    "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
-    },
-    "public_revision": {
-      "data_version": "2026.07.21.1",
-      "public_schema_version": "1.2.0",
-      "summaries": [
-        {
-          "locale": "zh-CN",
-          "summary": "完成身份、亲本、出生日期、多人回国事件与现居基地的公开整理。"
-        },
-        {
-          "locale": "en",
-          "summary": "Public review of identity, parentage, birth date, shared return event, and current facility."
-        }
-      ]
     }
   },
   {
@@ -1533,17 +1590,17 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "status": "alive",
     "birth_date": "2021-08-04",
     "current_location": "史密森国家动物园",
-    "cover_image_url": null,
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
     "search_terms": [
       "bao-li",
       "宝力",
       "Bao Li",
       "Bǎolì",
       "baoli",
-      "smithsonian_faq_key:bao-li"
+      "smithsonian_profile_key:bao-li"
     ],
-    "intro": "宝宝之子，是美香与添添的外孙，现居史密森国家动物园。",
-    "birthplace": null,
+    "intro": "2021 年出生于四川，2024 年抵达史密森国家动物园，并于 2025 年 1 月公开亮相。",
+    "birthplace": "China Conservation and Research Center for the Giant Panda, Sichuan",
     "tags": [
       "trusted-identity",
       "golden-dataset"
@@ -1551,7 +1608,47 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "father_id": null,
     "mother_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
     "habitats": [],
-    "media": [],
+    "media": [
+      {
+        "id": "media-bao-li-ac4d18101cfe4209",
+        "panda_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Bao_Li.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "Melina Kolburn / Wikimedia Commons",
+        "alt_zh": "宝力在史密森尼国家动物园的栖息地内",
+        "alt_en": "Bao Li in his habitat at Smithsonian's National Zoo",
+        "status": "available",
+        "sha256": "1cf700a6670abc2374f468da27a83655be6d8d44efd3f18bb15737d659314819",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 166088,
+        "derivatives": [
+          {
+            "bytes": 35912,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "6a495a7d9d7d9442a90039e4330e78d4a72b17bdf7ea64667bb12e253bfd4464",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 166088,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "1cf700a6670abc2374f468da27a83655be6d8d44efd3f18bb15737d659314819",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_bao_li_photo"
+        ]
+      }
+    ],
     "identity": {
       "stable_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
       "canonical_slug": "bao-li",
@@ -1562,7 +1659,9 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
           "kind": "official",
           "primary": true,
           "source_ids": [
-            "src_smithsonian_giant_panda_faq"
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
           ]
         },
         {
@@ -1571,7 +1670,9 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
           "kind": "official_romanization",
           "primary": true,
           "source_ids": [
-            "src_smithsonian_giant_panda_faq"
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
           ]
         },
         {
@@ -1595,10 +1696,10 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ],
       "external_identifiers": [
         {
-          "system": "smithsonian_faq_key",
+          "system": "smithsonian_profile_key",
           "value": "bao-li",
           "source_ids": [
-            "src_smithsonian_giant_panda_faq"
+            "src_smithsonian_giant_panda_page"
           ]
         }
       ]
@@ -1608,26 +1709,43 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "field": "birth_date",
         "value": "2021-08-04",
         "status": "confirmed",
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
         "assertion_ids": [
           "fact-bao-li-birth-date"
         ],
         "source_ids": [
-          "src_smithsonian_giant_panda_faq"
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
         ],
         "candidate_values": [],
         "superseded_values": []
       },
       {
-        "field": "current_coarse_location",
-        "value": "Smithsonian's National Zoo",
+        "field": "birthplace",
+        "value": "China Conservation and Research Center for the Giant Panda, Sichuan",
         "status": "confirmed",
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
+        "assertion_ids": [
+          "fact-bao-li-birthplace"
+        ],
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "David M. Rubenstein and Family Giant Panda Habitat, Smithsonian National Zoo",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-23",
         "assertion_ids": [
           "fact-bao-li-current-place"
         ],
         "source_ids": [
-          "src_smithsonian_giant_panda_faq"
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -1636,12 +1754,13 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "field": "sex",
         "value": "male",
         "status": "confirmed",
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
         "assertion_ids": [
           "fact-bao-li-sex"
         ],
         "source_ids": [
-          "src_smithsonian_giant_panda_faq"
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -1649,12 +1768,42 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     ],
     "sources": [
       {
+        "id": "src_commons_bao_li_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Bao Li",
+        "url": "https://commons.wikimedia.org/wiki/File:Bao_Li.jpg",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
         "id": "src_smithsonian_giant_panda_faq",
         "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
         "title": "Giant Panda FAQs",
         "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
         "published_at": null,
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_smithsonian_giant_panda_page",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "Giant panda",
+        "url": "https://nationalzoo.si.edu/animals/giant-panda",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_smithsonian_history",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
         "language": "en",
         "access_state": "accessible"
       }
@@ -1663,7 +1812,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
       "coarse_location": null,
       "status": "confirmed",
-      "last_verified_at": "2026-05-09"
+      "last_verified_at": "2026-07-23"
     },
     "residencies": [
       {
@@ -1676,40 +1825,98 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "end_date": null,
         "end_precision": null,
         "status": "confirmed",
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
         "source_ids": [
-          "src_smithsonian_giant_panda_faq"
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_history"
         ]
       }
     ],
-    "events": [],
-    "record_tier": "identity_first_pass",
+    "events": [
+      {
+        "id": "event-bao-li-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-08-04",
+        "event_date_precision": "day",
+        "participants": [
+          "434e10e3-7ba0-5de7-a59e-d3984524c58c"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-bao-li-arrival-2024",
+        "event_type": "arrival",
+        "event_status": "completed",
+        "event_date": "2024-10-15",
+        "event_date_precision": "day",
+        "participants": [
+          "434e10e3-7ba0-5de7-a59e-d3984524c58c"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "changes_current_residency": true
+      },
+      {
+        "id": "event-bao-li-public-debut-2025",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2025-01-24",
+        "event_date_precision": "day",
+        "participants": [
+          "434e10e3-7ba0-5de7-a59e-d3984524c58c"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "complete_first_pass",
     "localized_content": [
       {
         "locale": "zh-CN",
-        "summary": "宝宝之子，是美香与添添的外孙，现居史密森国家动物园。"
+        "summary": "2021 年出生于四川，2024 年抵达史密森国家动物园，并于 2025 年 1 月公开亮相。"
       },
       {
         "locale": "en",
-        "summary": "Son of Bao Bao and grandson of Mei Xiang and Tian Tian, currently living at the Smithsonian's National Zoo."
+        "summary": "Born in Sichuan in 2021, arrived at the Smithsonian's National Zoo in 2024, and made his public debut in January 2025."
       }
     ],
     "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_bao_li_photo"
+      ]
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
-          "summary": "完成三代身份、母系亲缘与现居机构的公开整理。"
+          "summary": "补充出生地、抵达、公开亮相、现居场馆与收藏图片。"
         },
         {
           "locale": "en",
-          "summary": "Public review of third-generation identity, maternal lineage, and current institution."
+          "summary": "Added birthplace, arrival, public debut, current habitat, and collection media."
         }
       ]
     }
@@ -2031,680 +2238,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
-      "public_schema_version": "1.2.0",
-      "summaries": [
-        {
-          "locale": "zh-CN",
-          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
-        },
-        {
-          "locale": "en",
-          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
-        }
-      ]
-    }
-  },
-  {
-    "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
-    "slug": "yang-yang",
-    "name_zh": "洋洋",
-    "name_en": "Yang Yang",
-    "gender": "male",
-    "status": "alive",
-    "birth_date": "1997-09-09",
-    "current_location": "成都大熊猫繁育研究基地",
-    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
-    "search_terms": [
-      "yang-yang",
-      "洋洋",
-      "Yang Yang",
-      "yangyang",
-      "zoo_atlanta_profile_key:yang-yang"
-    ],
-    "intro": "曾生活于亚特兰大动物园的雄性大熊猫，是七只幼崽的父亲，2024 年返回成都基地。",
-    "birthplace": null,
-    "tags": [
-      "trusted-identity",
-      "golden-dataset"
-    ],
-    "father_id": null,
-    "mother_id": null,
-    "habitats": [],
-    "media": [
-      {
-        "id": "media-yang-yang-8e30a6c81892cbde",
-        "panda_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
-        "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
-        "rights": "CC BY-SA 4.0",
-        "credit": "O01326 / Wikimedia Commons",
-        "alt_zh": "洋洋在亚特兰大动物园的栖息地内休息",
-        "alt_en": "Yang Yang resting in his habitat at Zoo Atlanta",
-        "status": "available",
-        "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
-        "mime_type": "image/webp",
-        "width": 1200,
-        "height": 800,
-        "bytes": 106314,
-        "derivatives": [
-          {
-            "bytes": 23356,
-            "height": 320,
-            "kind": "width-480",
-            "mime_type": "image/webp",
-            "sha256": "29994d619b7d21af748b2ce87af3fc8839797923facda6c115febfa9e9c239fa",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w480.webp",
-            "width": 480
-          },
-          {
-            "bytes": 106314,
-            "height": 800,
-            "kind": "width-1200",
-            "mime_type": "image/webp",
-            "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
-            "width": 1200
-          }
-        ],
-        "source_ids": [
-          "src_commons_yang_yang_photo"
-        ]
-      }
-    ],
-    "identity": {
-      "stable_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
-      "canonical_slug": "yang-yang",
-      "names": [
-        {
-          "value": "洋洋",
-          "language": "zh-Hans",
-          "kind": "official",
-          "primary": true,
-          "source_ids": [
-            "src_zooatlanta_yang_yang",
-            "src_zooatlanta_arrival_china_2024"
-          ]
-        },
-        {
-          "value": "Yang Yang",
-          "language": "en",
-          "kind": "official_romanization",
-          "primary": true,
-          "source_ids": [
-            "src_zooatlanta_yang_yang",
-            "src_zooatlanta_arrival_china_2024"
-          ]
-        }
-      ],
-      "aliases": [],
-      "legacy_slugs": [
-        {
-          "value": "yangyang",
-          "source_ids": [
-            "src_zooatlanta_yang_yang"
-          ]
-        }
-      ],
-      "external_identifiers": [
-        {
-          "system": "zoo_atlanta_profile_key",
-          "value": "yang-yang",
-          "source_ids": [
-            "src_zooatlanta_yang_yang"
-          ]
-        }
-      ]
-    },
-    "conclusions": [
-      {
-        "field": "birth_date",
-        "value": "1997-09-09",
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "assertion_ids": [
-          "fact-yang-yang-birth-date"
-        ],
-        "source_ids": [
-          "src_zooatlanta_yang_yang"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "current_facility",
-        "value": "Chengdu Research Base of Giant Panda Breeding",
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "assertion_ids": [
-          "fact-yang-yang-current-place"
-        ],
-        "source_ids": [
-          "src_zooatlanta_yang_yang",
-          "src_zooatlanta_arrival_china_2024"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "sex",
-        "value": "male",
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "assertion_ids": [
-          "fact-yang-yang-sex"
-        ],
-        "source_ids": [
-          "src_zooatlanta_yang_yang"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      }
-    ],
-    "sources": [
-      {
-        "id": "src_commons_yang_yang_photo",
-        "publisher": "Wikimedia Commons",
-        "title": "Yang Yang at Zoo Atlanta",
-        "url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
-        "published_at": "2022-02-08",
-        "last_verified_at": "2026-07-20",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_zooatlanta_arrival_china_2024",
-        "publisher": "Zoo Atlanta",
-        "title": "Giant Pandas Have Arrived in China",
-        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
-        "published_at": "2024-10-13",
-        "last_verified_at": "2026-07-20",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_zooatlanta_lun_lun",
-        "publisher": "Zoo Atlanta",
-        "title": "Lun Lun",
-        "url": "https://zooatlanta.org/animal-legend/lun-lun/",
-        "published_at": null,
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_zooatlanta_yang_yang",
-        "publisher": "Zoo Atlanta",
-        "title": "Yang Yang",
-        "url": "https://zooatlanta.org/animal-legend/yang-yang/",
-        "published_at": null,
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      }
-    ],
-    "current_place": {
-      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
-      "coarse_location": null,
-      "status": "confirmed",
-      "last_verified_at": "2026-07-20"
-    },
-    "residencies": [
-      {
-        "id": "res-yang-yang-zoo-atlanta",
-        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "1999-11-05",
-        "start_precision": "day",
-        "end_date": "2024-10-12",
-        "end_precision": "day",
-        "status": "confirmed",
-        "last_verified_at": null,
-        "source_ids": [
-          "src_zooatlanta_yang_yang"
-        ]
-      },
-      {
-        "id": "res-yang-yang-chengdu",
-        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "2024-10-13",
-        "start_precision": "day",
-        "end_date": null,
-        "end_precision": null,
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "source_ids": [
-          "src_zooatlanta_yang_yang",
-          "src_zooatlanta_arrival_china_2024"
-        ]
-      }
-    ],
-    "events": [
-      {
-        "id": "event-yang-yang-birth",
-        "event_type": "birth",
-        "event_status": "completed",
-        "event_date": "1997-09-09",
-        "event_date_precision": "day",
-        "participants": [
-          "db108e44-8893-54e1-8cb5-8c5238b75089"
-        ],
-        "from_facility_id": null,
-        "from_coarse_location": null,
-        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_zooatlanta_yang_yang"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-zoo-atlanta-pair-arrival-1999",
-        "event_type": "arrival",
-        "event_status": "completed",
-        "event_date": "1999-11-05",
-        "event_date_precision": "day",
-        "participants": [
-          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
-          "db108e44-8893-54e1-8cb5-8c5238b75089"
-        ],
-        "from_facility_id": null,
-        "from_coarse_location": null,
-        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_zooatlanta_lun_lun",
-          "src_zooatlanta_yang_yang"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-zoo-atlanta-return-2024",
-        "event_type": "transfer",
-        "event_status": "completed",
-        "event_date": "2024-10-12",
-        "event_date_precision": "day",
-        "participants": [
-          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
-          "d24087cd-70d6-5902-92dd-ecc95186937b",
-          "db108e44-8893-54e1-8cb5-8c5238b75089",
-          "fa8a0c14-b937-5de5-ae65-482cfd744482"
-        ],
-        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
-        "from_coarse_location": null,
-        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_zooatlanta_arrival_china_2024"
-        ],
-        "changes_current_residency": true
-      }
-    ],
-    "record_tier": "complete_first_pass",
-    "localized_content": [
-      {
-        "locale": "zh-CN",
-        "summary": "曾生活于亚特兰大动物园的雄性大熊猫，是七只幼崽的父亲，2024 年返回成都基地。"
-      },
-      {
-        "locale": "en",
-        "summary": "Former Zoo Atlanta male, father of seven cubs; returned to Chengdu in 2024."
-      }
-    ],
-    "media_release": {
-      "license_state": "licensed",
-      "display_mode": "gallery",
-      "source_ids": [
-        "src_commons_yang_yang_photo"
-      ]
-    },
-    "public_revision": {
-      "data_version": "2026.07.21.1",
-      "public_schema_version": "1.2.0",
-      "summaries": [
-        {
-          "locale": "zh-CN",
-          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
-        },
-        {
-          "locale": "en",
-          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
-        }
-      ]
-    }
-  },
-  {
-    "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
-    "slug": "ya-lun",
-    "name_zh": "雅伦",
-    "name_en": "Ya Lun",
-    "gender": "female",
-    "status": "alive",
-    "birth_date": "2016-09-03",
-    "current_location": "成都大熊猫繁育研究基地",
-    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
-    "search_terms": [
-      "ya-lun",
-      "雅伦",
-      "Ya Lun",
-      "yalun",
-      "zoo_atlanta_profile_key:ya-lun"
-    ],
-    "intro": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，2024 年返回成都基地。",
-    "birthplace": null,
-    "tags": [
-      "trusted-identity",
-      "golden-dataset"
-    ],
-    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
-    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
-    "habitats": [],
-    "media": [
-      {
-        "id": "media-ya-lun-4006c2e608f8e671",
-        "panda_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
-        "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
-        "rights": "CC BY-SA 4.0",
-        "credit": "O01326 / Wikimedia Commons",
-        "alt_zh": "雅伦在亚特兰大动物园的栖息地内坐着",
-        "alt_en": "Ya Lun sitting in her habitat at Zoo Atlanta",
-        "status": "available",
-        "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
-        "mime_type": "image/webp",
-        "width": 1200,
-        "height": 800,
-        "bytes": 113818,
-        "derivatives": [
-          {
-            "bytes": 24312,
-            "height": 320,
-            "kind": "width-480",
-            "mime_type": "image/webp",
-            "sha256": "76fff6de4f34f0ba9b309990e4a2c744bab40fea27d1d1a38bae70343a7f2c7c",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w480.webp",
-            "width": 480
-          },
-          {
-            "bytes": 113818,
-            "height": 800,
-            "kind": "width-1200",
-            "mime_type": "image/webp",
-            "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
-            "width": 1200
-          }
-        ],
-        "source_ids": [
-          "src_commons_ya_lun_photo"
-        ]
-      }
-    ],
-    "identity": {
-      "stable_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
-      "canonical_slug": "ya-lun",
-      "names": [
-        {
-          "value": "雅伦",
-          "language": "zh-Hans",
-          "kind": "official",
-          "primary": true,
-          "source_ids": [
-            "src_zooatlanta_cubs_birth",
-            "src_zooatlanta_twins_names",
-            "src_zooatlanta_arrival_china_2024"
-          ]
-        },
-        {
-          "value": "Ya Lun",
-          "language": "en",
-          "kind": "official_romanization",
-          "primary": true,
-          "source_ids": [
-            "src_zooatlanta_cubs_birth",
-            "src_zooatlanta_twins_names",
-            "src_zooatlanta_arrival_china_2024"
-          ]
-        }
-      ],
-      "aliases": [],
-      "legacy_slugs": [
-        {
-          "value": "yalun",
-          "source_ids": [
-            "src_zooatlanta_cubs_birth"
-          ]
-        }
-      ],
-      "external_identifiers": [
-        {
-          "system": "zoo_atlanta_profile_key",
-          "value": "ya-lun",
-          "source_ids": [
-            "src_zooatlanta_cubs_birth"
-          ]
-        }
-      ]
-    },
-    "conclusions": [
-      {
-        "field": "birth_date",
-        "value": "2016-09-03",
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "assertion_ids": [
-          "fact-ya-lun-birth-date"
-        ],
-        "source_ids": [
-          "src_zooatlanta_cubs_birth",
-          "src_zooatlanta_twins_names"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "current_facility",
-        "value": "Chengdu Research Base of Giant Panda Breeding",
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "assertion_ids": [
-          "fact-ya-lun-current-place"
-        ],
-        "source_ids": [
-          "src_zooatlanta_arrival_china_2024"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      },
-      {
-        "field": "sex",
-        "value": "female",
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "assertion_ids": [
-          "fact-ya-lun-sex"
-        ],
-        "source_ids": [
-          "src_zooatlanta_twins_names"
-        ],
-        "candidate_values": [],
-        "superseded_values": []
-      }
-    ],
-    "sources": [
-      {
-        "id": "src_commons_ya_lun_photo",
-        "publisher": "Wikimedia Commons",
-        "title": "Ya Lun at Zoo Atlanta",
-        "url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
-        "published_at": "2022-02-08",
-        "last_verified_at": "2026-07-20",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_zooatlanta_2016_public_debut",
-        "publisher": "Zoo Atlanta",
-        "title": "Zoo Atlanta closes 2016",
-        "url": "https://zooatlanta.org/press-release/zoo-atlanta-closes-2016/",
-        "published_at": "2016-12-29",
-        "last_verified_at": "2026-07-20",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_zooatlanta_arrival_china_2024",
-        "publisher": "Zoo Atlanta",
-        "title": "Giant Pandas Have Arrived in China",
-        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
-        "published_at": "2024-10-13",
-        "last_verified_at": "2026-07-20",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_zooatlanta_cubs_birth",
-        "publisher": "Zoo Atlanta",
-        "title": "Lun Lun's Second Cub Has Been Born",
-        "url": "https://zooatlanta.org/press-release/lun-luns-second-cub-has-been-born/",
-        "published_at": "2016-09-03",
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_zooatlanta_twins_names",
-        "publisher": "Zoo Atlanta",
-        "title": "Meet the Giant Panda Cub Twins",
-        "url": "https://zooatlanta.org/meet-giant-panda-cub-twins-zoo-atlanta/",
-        "published_at": "2017-04-03",
-        "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      }
-    ],
-    "current_place": {
-      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
-      "coarse_location": null,
-      "status": "confirmed",
-      "last_verified_at": "2026-07-20"
-    },
-    "residencies": [
-      {
-        "id": "res-ya-lun-zoo-atlanta",
-        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "2016-09-03",
-        "start_precision": "day",
-        "end_date": "2024-10-12",
-        "end_precision": "day",
-        "status": "confirmed",
-        "last_verified_at": null,
-        "source_ids": [
-          "src_zooatlanta_cubs_birth",
-          "src_zooatlanta_twins_names"
-        ]
-      },
-      {
-        "id": "res-ya-lun-chengdu",
-        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "2024-10-13",
-        "start_precision": "day",
-        "end_date": null,
-        "end_precision": null,
-        "status": "confirmed",
-        "last_verified_at": "2026-07-20",
-        "source_ids": [
-          "src_zooatlanta_arrival_china_2024"
-        ]
-      }
-    ],
-    "events": [
-      {
-        "id": "event-ya-lun-birth",
-        "event_type": "birth",
-        "event_status": "completed",
-        "event_date": "2016-09-03",
-        "event_date_precision": "day",
-        "participants": [
-          "fa8a0c14-b937-5de5-ae65-482cfd744482"
-        ],
-        "from_facility_id": null,
-        "from_coarse_location": null,
-        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_zooatlanta_cubs_birth",
-          "src_zooatlanta_twins_names"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-ya-lun-public-debut",
-        "event_type": "public_debut",
-        "event_status": "completed",
-        "event_date": "2016-12-27",
-        "event_date_precision": "day",
-        "participants": [
-          "fa8a0c14-b937-5de5-ae65-482cfd744482"
-        ],
-        "from_facility_id": null,
-        "from_coarse_location": null,
-        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_zooatlanta_2016_public_debut"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-zoo-atlanta-return-2024",
-        "event_type": "transfer",
-        "event_status": "completed",
-        "event_date": "2024-10-12",
-        "event_date_precision": "day",
-        "participants": [
-          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
-          "d24087cd-70d6-5902-92dd-ecc95186937b",
-          "db108e44-8893-54e1-8cb5-8c5238b75089",
-          "fa8a0c14-b937-5de5-ae65-482cfd744482"
-        ],
-        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
-        "from_coarse_location": null,
-        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_zooatlanta_arrival_china_2024"
-        ],
-        "changes_current_residency": true
-      }
-    ],
-    "record_tier": "complete_first_pass",
-    "localized_content": [
-      {
-        "locale": "zh-CN",
-        "summary": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，2024 年返回成都基地。"
-      },
-      {
-        "locale": "en",
-        "summary": "Daughter of Lun Lun and Yang Yang; born in Atlanta in 2016 and returned in 2024."
-      }
-    ],
-    "media_release": {
-      "license_state": "licensed",
-      "display_mode": "gallery",
-      "source_ids": [
-        "src_commons_ya_lun_photo"
-      ]
-    },
-    "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3060,7 +2594,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3075,135 +2609,80 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     }
   },
   {
-    "id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
-    "slug": "shin-shin",
-    "name_zh": "真真",
-    "name_en": "Shin Shin",
+    "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "slug": "bao-bao",
+    "name_zh": "宝宝",
+    "name_en": "Bao Bao",
     "gender": "female",
     "status": "alive",
-    "birth_date": "2005-07-03",
-    "current_location": "中国大熊猫保护研究中心雅安碧峰峡基地",
-    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+    "birth_date": "2013-08-23",
+    "current_location": "China",
+    "cover_image_url": null,
     "search_terms": [
-      "shin-shin",
-      "真真",
-      "Shin Shin",
-      "Xian Nu",
-      "Xin Xin",
-      "shinshin",
-      "tokyo_zoo_profile_key:shin-shin"
+      "bao-bao",
+      "宝宝",
+      "Bao Bao",
+      "Bǎobǎo",
+      "baobao-smithsonian",
+      "smithsonian_history_key:bao-bao"
     ],
-    "intro": "2005 年出生于卧龙、2011 年抵达上野动物园的雌性大熊猫，是香香、晓晓和蕾蕾的母亲，2024 年返回雅安碧峰峡基地。",
+    "intro": "美香与添添之女，2013 年出生于史密森国家动物园，也是宝力的母亲。",
     "birthplace": null,
     "tags": [
       "trusted-identity",
       "golden-dataset"
     ],
-    "father_id": null,
-    "mother_id": null,
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "habitats": [],
-    "media": [
-      {
-        "id": "media-shin-shin-6b36624de9829665",
-        "panda_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
-        "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Shin_Shin_03.jpg",
-        "rights": "CC BY-SA 4.0",
-        "credit": "EleniXDD / Wikimedia Commons",
-        "alt_zh": "真真在上野动物园吃竹子",
-        "alt_en": "Shin Shin eating bamboo at Ueno Zoo",
-        "status": "available",
-        "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
-        "mime_type": "image/webp",
-        "width": 1200,
-        "height": 901,
-        "bytes": 282766,
-        "derivatives": [
-          {
-            "bytes": 60930,
-            "height": 360,
-            "kind": "width-480",
-            "mime_type": "image/webp",
-            "sha256": "d937360864bdae72e2fa093c5fa4ee244b9777e4b5b1b2543ca0b2931fe7561a",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w480.webp",
-            "width": 480
-          },
-          {
-            "bytes": 282766,
-            "height": 901,
-            "kind": "width-1200",
-            "mime_type": "image/webp",
-            "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
-            "width": 1200
-          }
-        ],
-        "source_ids": [
-          "src_commons_shin_shin_photo"
-        ]
-      }
-    ],
+    "media": [],
     "identity": {
-      "stable_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
-      "canonical_slug": "shin-shin",
+      "stable_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+      "canonical_slug": "bao-bao",
       "names": [
         {
-          "value": "真真",
+          "value": "宝宝",
           "language": "zh-Hans",
           "kind": "official",
           "primary": true,
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history",
-            "src_ueno_return_riri_shinshin"
+            "src_smithsonian_history"
           ]
         },
         {
-          "value": "Shin Shin",
+          "value": "Bao Bao",
           "language": "en",
           "kind": "official_romanization",
           "primary": true,
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history",
-            "src_ueno_return_riri_shinshin"
-          ]
-        }
-      ],
-      "aliases": [
-        {
-          "value": "Xian Nu",
-          "language": "en",
-          "kind": "alternate_romanization",
-          "primary": false,
-          "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history",
-            "src_ueno_return_riri_shinshin"
+            "src_smithsonian_history"
           ]
         },
         {
-          "value": "Xin Xin",
-          "language": "en",
-          "kind": "alternate_romanization",
-          "primary": false,
+          "value": "Bǎobǎo",
+          "language": "pinyin",
+          "kind": "pinyin",
+          "primary": true,
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history",
-            "src_ueno_return_riri_shinshin"
+            "src_smithsonian_history"
           ]
         }
       ],
+      "aliases": [],
       "legacy_slugs": [
         {
-          "value": "shinshin",
+          "value": "baobao-smithsonian",
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history"
+            "src_smithsonian_history"
           ]
         }
       ],
       "external_identifiers": [
         {
-          "system": "tokyo_zoo_profile_key",
-          "value": "shin-shin",
+          "system": "smithsonian_history_key",
+          "value": "bao-bao",
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history"
+            "src_smithsonian_history"
           ]
         }
       ]
@@ -3211,30 +2690,28 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "conclusions": [
       {
         "field": "birth_date",
-        "value": "2005-07-03",
+        "value": "2013-08-23",
         "status": "confirmed",
-        "last_verified_at": "2026-07-20",
+        "last_verified_at": "2026-05-09",
         "assertion_ids": [
-          "fact-shin-shin-birth-date"
+          "fact-bao-bao-birth-date"
         ],
         "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_return_riri_shinshin"
+          "src_smithsonian_history"
         ],
         "candidate_values": [],
         "superseded_values": []
       },
       {
-        "field": "current_facility",
-        "value": "CCRCGP Bifengxia Base",
+        "field": "current_coarse_location",
+        "value": "China",
         "status": "confirmed",
-        "last_verified_at": "2026-05-10",
+        "last_verified_at": "2026-05-09",
         "assertion_ids": [
-          "fact-shin-shin-current-place"
+          "fact-bao-bao-current-place"
         ],
         "source_ids": [
-          "src_ueno_return_riri_shinshin",
-          "src_gpg_yaan_base_profiles"
+          "src_smithsonian_history"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -3243,13 +2720,12 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "field": "sex",
         "value": "female",
         "status": "confirmed",
-        "last_verified_at": "2026-07-20",
+        "last_verified_at": "2026-05-09",
         "assertion_ids": [
-          "fact-shin-shin-sex"
+          "fact-bao-bao-sex"
         ],
         "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_return_riri_shinshin"
+          "src_smithsonian_history"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -3257,288 +2733,153 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     ],
     "sources": [
       {
-        "id": "src_commons_shin_shin_photo",
-        "publisher": "Wikimedia Commons",
-        "title": "Shin Shin 03",
-        "url": "https://commons.wikimedia.org/wiki/File:Shin_Shin_03.jpg",
-        "published_at": "2024-07-03",
-        "last_verified_at": "2026-07-20",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_gpg_yaan_base_profiles",
-        "publisher": "Giant Panda Global",
-        "title": "CCRCGP Ya'an Base giant pandas",
-        "url": "https://www.giantpandaglobal.com/en/zoo/ccrcgp-yaan-base",
+        "id": "src_smithsonian_history",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
         "published_at": null,
-        "last_verified_at": "2026-05-10",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_tokyo_zoo_ueno_panda_history",
-        "publisher": "Tokyo Zoological Park Society",
-        "title": "Past giant pandas kept at Ueno Zoo",
-        "url": "https://www.tokyo-zoo.net/ueno/panda/history/index.html",
-        "published_at": null,
-        "last_verified_at": "2026-05-10",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_ueno_return_riri_shinshin",
-        "publisher": "Tokyo Zoological Park Society",
-        "title": "Regarding the return of Giant Panda Ri Ri and Shin Shin",
-        "url": "https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html",
-        "published_at": "2024-08-30",
-        "last_verified_at": "2026-05-09",
+        "last_verified_at": "2026-07-23",
         "language": "en",
         "access_state": "accessible"
       }
     ],
     "current_place": {
-      "facility_id": "7e8c3dc5-0725-5c1e-bc97-53f3e9c47995",
-      "coarse_location": null,
-      "status": "confirmed",
-      "last_verified_at": "2026-05-10"
+      "facility_id": null,
+      "coarse_location": "China",
+      "status": "confirmed_country_level",
+      "last_verified_at": "2026-05-09"
     },
     "residencies": [
       {
-        "id": "res-shin-shin-ueno",
-        "facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
-        "coarse_location": null,
+        "id": "res-bao-bao-china-country-level",
+        "facility_id": null,
+        "coarse_location": "China",
         "residency_type": "primary",
-        "start_date": "2011-02-21",
-        "start_precision": "day",
-        "end_date": "2024-09-29",
-        "end_precision": "day",
-        "status": "confirmed",
-        "last_verified_at": null,
-        "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_return_riri_shinshin"
-        ]
-      },
-      {
-        "id": "res-shin-shin-bifengxia",
-        "facility_id": "7e8c3dc5-0725-5c1e-bc97-53f3e9c47995",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "2024-09-29",
+        "start_date": "2017-02-21",
         "start_precision": "day",
         "end_date": null,
         "end_precision": null,
-        "status": "confirmed",
-        "last_verified_at": "2026-05-10",
+        "status": "confirmed_country_level",
+        "last_verified_at": "2026-05-09",
         "source_ids": [
-          "src_ueno_return_riri_shinshin",
-          "src_gpg_yaan_base_profiles"
+          "src_smithsonian_history"
         ]
       }
     ],
-    "events": [
-      {
-        "id": "event-shin-shin-birth",
-        "event_type": "birth",
-        "event_status": "completed",
-        "event_date": "2005-07-03",
-        "event_date_precision": "day",
-        "participants": [
-          "01878819-1eda-5d9c-96ab-bab66d3b0b09"
-        ],
-        "from_facility_id": null,
-        "from_coarse_location": null,
-        "to_facility_id": null,
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_return_riri_shinshin"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-ueno-pair-arrival-2011",
-        "event_type": "arrival",
-        "event_status": "completed",
-        "event_date": "2011-02-21",
-        "event_date_precision": "day",
-        "participants": [
-          "57c0a1bd-cc44-5a08-ba48-f224e9956064",
-          "01878819-1eda-5d9c-96ab-bab66d3b0b09"
-        ],
-        "from_facility_id": null,
-        "from_coarse_location": null,
-        "to_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_return_riri_shinshin"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-ueno-pair-return-2024",
-        "event_type": "transfer",
-        "event_status": "completed",
-        "event_date": "2024-09-29",
-        "event_date_precision": "day",
-        "participants": [
-          "57c0a1bd-cc44-5a08-ba48-f224e9956064",
-          "01878819-1eda-5d9c-96ab-bab66d3b0b09"
-        ],
-        "from_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
-        "from_coarse_location": null,
-        "to_facility_id": "7e8c3dc5-0725-5c1e-bc97-53f3e9c47995",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_ueno_return_riri_shinshin"
-        ],
-        "changes_current_residency": true
-      }
-    ],
-    "record_tier": "complete_first_pass",
+    "events": [],
+    "record_tier": "identity_first_pass",
     "localized_content": [
       {
         "locale": "zh-CN",
-        "summary": "2005 年出生于卧龙、2011 年抵达上野动物园的雌性大熊猫，是香香、晓晓和蕾蕾的母亲，2024 年返回雅安碧峰峡基地。"
+        "summary": "美香与添添之女，2013 年出生于史密森国家动物园，也是宝力的母亲。"
       },
       {
         "locale": "en",
-        "summary": "Female giant panda born in Wolong in 2005, mother of Xiang Xiang, Xiao Xiao, and Lei Lei, and returned from Ueno to Bifengxia Base in 2024."
+        "summary": "Daughter of Mei Xiang and Tian Tian, born at the Smithsonian in 2013, and mother of Bao Li."
       }
     ],
     "media_release": {
-      "license_state": "licensed",
-      "display_mode": "gallery",
-      "source_ids": [
-        "src_commons_shin_shin_photo"
-      ]
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
-          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+          "summary": "完成身份、亲本、出生日期、子代关系与国家级现居记录的公开整理。"
         },
         {
           "locale": "en",
-          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+          "summary": "Public review of identity, parentage, birth date, offspring relationship, and country-level current residency."
         }
       ]
     }
   },
   {
-    "id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
-    "slug": "xiao-xiao",
-    "name_zh": "晓晓",
-    "name_en": "Xiao Xiao",
+    "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+    "slug": "xiao-qi-ji",
+    "name_zh": "小奇迹",
+    "name_en": "Xiao Qi Ji",
     "gender": "male",
     "status": "alive",
-    "birth_date": "2021-06-23",
-    "current_location": "中国大熊猫保护研究中心雅安基地",
-    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+    "birth_date": "2020-08-21",
+    "current_location": "中国大熊猫保护研究中心卧龙神树坪基地",
+    "cover_image_url": null,
     "search_terms": [
-      "xiao-xiao",
-      "晓晓",
-      "Xiao Xiao",
-      "xiaoxiao",
-      "tokyo_zoo_profile_key:xiao-xiao"
+      "xiao-qi-ji",
+      "小奇迹",
+      "Xiao Qi Ji",
+      "Xiǎoqíjì",
+      "xiaoqiji",
+      "xiao_qi_ji",
+      "smithsonian_history_key:xiao-qi-ji"
     ],
-    "intro": "力力与真真之子，2021 年出生于上野动物园，与蕾蕾为双胞胎，2026 年返回雅安基地。",
+    "intro": "美香与添添之子，2020 年出生于史密森国家动物园，并于 2023 年随父母返回中国。",
     "birthplace": null,
     "tags": [
       "trusted-identity",
       "golden-dataset"
     ],
-    "father_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
-    "mother_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "habitats": [],
-    "media": [
-      {
-        "id": "media-xiao-xiao-ae1f68080472412c",
-        "panda_id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
-        "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Xiao_Xiao_220518e.jpg",
-        "rights": "CC BY-SA 4.0",
-        "credit": "江戸村のとくぞう / Wikimedia Commons",
-        "alt_zh": "晓晓在上野动物园的栖息地内",
-        "alt_en": "Xiao Xiao in his habitat at Ueno Zoo",
-        "status": "available",
-        "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
-        "mime_type": "image/webp",
-        "width": 1200,
-        "height": 1091,
-        "bytes": 114184,
-        "derivatives": [
-          {
-            "bytes": 26032,
-            "height": 436,
-            "kind": "width-480",
-            "mime_type": "image/webp",
-            "sha256": "ceb36d0ecf06610f698262e9323c465fd485569c16f9c5cb76ed65593cadf3e6",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w480.webp",
-            "width": 480
-          },
-          {
-            "bytes": 114184,
-            "height": 1091,
-            "kind": "width-1200",
-            "mime_type": "image/webp",
-            "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
-            "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
-            "width": 1200
-          }
-        ],
-        "source_ids": [
-          "src_commons_xiao_xiao_photo"
-        ]
-      }
-    ],
+    "media": [],
     "identity": {
-      "stable_id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
-      "canonical_slug": "xiao-xiao",
+      "stable_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "canonical_slug": "xiao-qi-ji",
       "names": [
         {
-          "value": "晓晓",
+          "value": "小奇迹",
           "language": "zh-Hans",
           "kind": "official",
           "primary": true,
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history",
-            "src_ueno_twins_names_2021",
-            "src_ueno_xiaolei_return_2026"
+            "src_smithsonian_history"
           ]
         },
         {
-          "value": "Xiao Xiao",
+          "value": "Xiao Qi Ji",
           "language": "en",
           "kind": "official_romanization",
           "primary": true,
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history",
-            "src_ueno_twins_names_2021",
-            "src_ueno_xiaolei_return_2026"
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "Xiǎoqíjì",
+          "language": "pinyin",
+          "kind": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
           ]
         }
       ],
       "aliases": [],
       "legacy_slugs": [
         {
-          "value": "xiaoxiao",
+          "value": "xiaoqiji",
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history"
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "xiao_qi_ji",
+          "source_ids": [
+            "src_smithsonian_history"
           ]
         }
       ],
       "external_identifiers": [
         {
-          "system": "tokyo_zoo_profile_key",
-          "value": "xiao-xiao",
+          "system": "smithsonian_history_key",
+          "value": "xiao-qi-ji",
           "source_ids": [
-            "src_tokyo_zoo_ueno_panda_history"
+            "src_smithsonian_history"
           ]
         }
       ]
@@ -3546,29 +2887,28 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "conclusions": [
       {
         "field": "birth_date",
-        "value": "2021-06-23",
+        "value": "2020-08-21",
         "status": "confirmed",
-        "last_verified_at": "2026-07-20",
+        "last_verified_at": "2026-05-09",
         "assertion_ids": [
-          "fact-xiao-xiao-birth-date"
+          "fact-xiao-qi-ji-birth-date"
         ],
         "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_twins_names_2021"
+          "src_smithsonian_history"
         ],
         "candidate_values": [],
         "superseded_values": []
       },
       {
-        "field": "current_facility",
-        "value": "CCRCGP Ya'an Base",
+        "field": "current_coarse_location",
+        "value": "Wolong Shenshuping Base",
         "status": "confirmed",
         "last_verified_at": "2026-05-10",
         "assertion_ids": [
-          "fact-xiao-xiao-current-place"
+          "fact-xiao-qi-ji-current-place"
         ],
         "source_ids": [
-          "src_ueno_xiaolei_return_2026"
+          "src_ccrcgp_2025_birthday_season"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -3577,13 +2917,12 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "field": "sex",
         "value": "male",
         "status": "confirmed",
-        "last_verified_at": "2026-07-20",
+        "last_verified_at": "2026-05-09",
         "assertion_ids": [
-          "fact-xiao-xiao-sex"
+          "fact-xiao-qi-ji-sex"
         ],
         "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_twins_names_2021"
+          "src_smithsonian_history"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -3591,173 +2930,319 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     ],
     "sources": [
       {
-        "id": "src_commons_xiao_xiao_photo",
-        "publisher": "Wikimedia Commons",
-        "title": "Ailuropoda melanoleuca Xiao Xiao 220518e",
-        "url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Xiao_Xiao_220518e.jpg",
-        "published_at": "2022-05-18",
-        "last_verified_at": "2026-07-20",
+        "id": "src_ccrcgp_2025_birthday_season",
+        "publisher": "China.org.cn / Xinhua",
+        "title": "前方高萌 卧龙神树坪基地举办大熊猫集体生日会",
+        "url": "https://www.china.org.cn/2025-07/18/content_117984485_4.shtml",
+        "published_at": "2025-07-18",
+        "last_verified_at": "2026-05-10",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_smithsonian_agreement_2020",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "Smithsonian extends giant panda agreement",
+        "url": "https://nationalzoo.si.edu/news/smithsonians-national-zoo-and-conservation-biology-institute-extends-giant-panda-agreement",
+        "published_at": "2020-12-07",
+        "last_verified_at": "2026-05-09",
         "language": "en",
         "access_state": "accessible"
       },
       {
-        "id": "src_tokyo_zoo_ueno_panda_history",
-        "publisher": "Tokyo Zoological Park Society",
-        "title": "Past giant pandas kept at Ueno Zoo",
-        "url": "https://www.tokyo-zoo.net/ueno/panda/history/index.html",
+        "id": "src_smithsonian_history",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
         "published_at": null,
-        "last_verified_at": "2026-05-10",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_ueno_twins_names_2021",
-        "publisher": "Tokyo Zoological Park Society",
-        "title": "The names of Giant Panda twins have been decided as Xiao Xiao and Lei Lei",
-        "url": "https://www.tokyo-zoo.net/en/topics/news/ueno/1681_27052_2021-10-08.html",
-        "published_at": "2021-10-08",
-        "last_verified_at": "2026-07-20",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_ueno_xiaolei_return_2026",
-        "publisher": "Tokyo Zoological Park Society",
-        "title": "Giant Panda Xiao Xiao and Lei Lei arrive at the Ya'an Base",
-        "url": "https://www.tokyo-zoo.net/en/ueno/news/5238/index.html",
-        "published_at": "2026-01-28",
-        "last_verified_at": "2026-05-10",
+        "last_verified_at": "2026-07-23",
         "language": "en",
         "access_state": "accessible"
       }
     ],
     "current_place": {
-      "facility_id": "d773a478-6014-5a4f-9e29-a0903f4beea6",
+      "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
       "coarse_location": null,
       "status": "confirmed",
       "last_verified_at": "2026-05-10"
     },
     "residencies": [
       {
-        "id": "res-xiao-xiao-ueno",
-        "facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "id": "res-xiao-qi-ji-shenshuping",
+        "facility_id": "89f620b2-37d0-51ba-aafa-6844404a5b2c",
         "coarse_location": null,
         "residency_type": "primary",
-        "start_date": "2021-06-23",
-        "start_precision": "day",
-        "end_date": "2026-01-28",
-        "end_precision": "day",
-        "status": "confirmed",
-        "last_verified_at": null,
-        "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history"
-        ]
-      },
-      {
-        "id": "res-xiao-xiao-yaan",
-        "facility_id": "d773a478-6014-5a4f-9e29-a0903f4beea6",
-        "coarse_location": null,
-        "residency_type": "primary",
-        "start_date": "2026-01-28",
+        "start_date": "2023-11-08",
         "start_precision": "day",
         "end_date": null,
         "end_precision": null,
         "status": "confirmed",
         "last_verified_at": "2026-05-10",
         "source_ids": [
-          "src_ueno_xiaolei_return_2026"
+          "src_ccrcgp_2025_birthday_season",
+          "src_smithsonian_history"
         ]
       }
     ],
     "events": [
       {
-        "id": "event-ueno-twins-birth-2021",
-        "event_type": "birth",
-        "event_status": "completed",
-        "event_date": "2021-06-23",
+        "id": "event-smithsonian-return-plan-2020",
+        "event_type": "transfer",
+        "event_status": "announced",
+        "event_date": "2020-12-07",
         "event_date_precision": "day",
         "participants": [
-          "275ad0df-c700-5991-a13a-0ca47c56eeba",
-          "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
+          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+          "38cd1cad-3e34-5511-bc35-a091ece74e11",
+          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
         ],
-        "from_facility_id": null,
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
         "from_coarse_location": null,
-        "to_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
-        "to_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "China",
         "source_ids": [
-          "src_tokyo_zoo_ueno_panda_history",
-          "src_ueno_twins_names_2021"
+          "src_smithsonian_agreement_2020"
         ],
         "changes_current_residency": false
       },
       {
-        "id": "event-ueno-twins-named-2021",
-        "event_type": "naming",
-        "event_status": "completed",
-        "event_date": "2021-10-08",
-        "event_date_precision": "day",
-        "participants": [
-          "275ad0df-c700-5991-a13a-0ca47c56eeba",
-          "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
-        ],
-        "from_facility_id": null,
-        "from_coarse_location": null,
-        "to_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
-        "to_coarse_location": null,
-        "source_ids": [
-          "src_ueno_twins_names_2021"
-        ],
-        "changes_current_residency": false
-      },
-      {
-        "id": "event-ueno-twins-return-2026",
+        "id": "event-smithsonian-departure-2023",
         "event_type": "transfer",
         "event_status": "completed",
-        "event_date": "2026-01-28",
+        "event_date": "2023-11-08",
         "event_date_precision": "day",
         "participants": [
-          "275ad0df-c700-5991-a13a-0ca47c56eeba",
-          "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
+          "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+          "38cd1cad-3e34-5511-bc35-a091ece74e11",
+          "926abc78-1e79-55c6-b24a-d33b4e5f6443"
         ],
-        "from_facility_id": "3f805d86-f31c-5d2c-991e-0e7ad8d4afc9",
+        "from_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
         "from_coarse_location": null,
-        "to_facility_id": "d773a478-6014-5a4f-9e29-a0903f4beea6",
-        "to_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "China",
         "source_ids": [
-          "src_ueno_xiaolei_return_2026"
+          "src_smithsonian_history"
         ],
         "changes_current_residency": true
       }
     ],
-    "record_tier": "complete_first_pass",
+    "record_tier": "identity_first_pass",
     "localized_content": [
       {
         "locale": "zh-CN",
-        "summary": "力力与真真之子，2021 年出生于上野动物园，与蕾蕾为双胞胎，2026 年返回雅安基地。"
+        "summary": "美香与添添之子，2020 年出生于史密森国家动物园，并于 2023 年随父母返回中国。"
       },
       {
         "locale": "en",
-        "summary": "Son of Ri Ri and Shin Shin, born at Ueno Zoo in 2021, twin of Lei Lei, and returned to Ya'an Base in 2026."
+        "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2020 and returned to China with his parents in 2023."
       }
     ],
     "media_release": {
-      "license_state": "licensed",
-      "display_mode": "gallery",
-      "source_ids": [
-        "src_commons_xiao_xiao_photo"
-      ]
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
-          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+          "summary": "完成身份、亲本、出生日期、多人回国事件与现居基地的公开整理。"
         },
         {
           "locale": "en",
-          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+          "summary": "Public review of identity, parentage, birth date, shared return event, and current facility."
+        }
+      ]
+    }
+  },
+  {
+    "id": "96d00a39-7865-55db-b5c2-f339ef692258",
+    "slug": "tai-shan",
+    "name_zh": "泰山",
+    "name_en": "Tai Shan",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2005-07-09",
+    "current_location": "China",
+    "cover_image_url": null,
+    "search_terms": [
+      "tai-shan",
+      "泰山",
+      "Tai Shan",
+      "Tàishān",
+      "taishan",
+      "smithsonian_history_key:tai-shan"
+    ],
+    "intro": "美香与添添之子，2005 年出生于史密森国家动物园，现有公开证据仅确认其已返回中国。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "96d00a39-7865-55db-b5c2-f339ef692258",
+      "canonical_slug": "tai-shan",
+      "names": [
+        {
+          "value": "泰山",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "Tai Shan",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "Tàishān",
+          "language": "pinyin",
+          "kind": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "taishan",
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "smithsonian_history_key",
+          "value": "tai-shan",
+          "source_ids": [
+            "src_smithsonian_history"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2005-07-09",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-09",
+        "assertion_ids": [
+          "fact-tai-shan-birth-date"
+        ],
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "China",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-09",
+        "assertion_ids": [
+          "fact-tai-shan-current-place"
+        ],
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-09",
+        "assertion_ids": [
+          "fact-tai-shan-sex"
+        ],
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_smithsonian_history",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": null,
+      "coarse_location": "China",
+      "status": "confirmed_country_level",
+      "last_verified_at": "2026-05-09"
+    },
+    "residencies": [
+      {
+        "id": "res-tai-shan-china-country-level",
+        "facility_id": null,
+        "coarse_location": "China",
+        "residency_type": "primary",
+        "start_date": "2010-02-04",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed_country_level",
+        "last_verified_at": "2026-05-09",
+        "source_ids": [
+          "src_smithsonian_history"
+        ]
+      }
+    ],
+    "events": [],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "美香与添添之子，2005 年出生于史密森国家动物园，现有公开证据仅确认其已返回中国。"
+      },
+      {
+        "locale": "en",
+        "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2005; current public evidence confirms only his return to China."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.23.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、亲本、出生日期与国家级现居记录的公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Public review of identity, parentage, birth date, and country-level current residency."
         }
       ]
     }
@@ -4080,7 +3565,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4254,6 +3739,16 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     ],
     "sources": [
       {
+        "id": "src_commons_xi_lun_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Xi Lun at Zoo Atlanta",
+        "url": "https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg",
+        "published_at": "2022-02-08",
+        "last_verified_at": "2026-07-21",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
         "id": "src_zooatlanta_2016_public_debut",
         "publisher": "Zoo Atlanta",
         "title": "Zoo Atlanta closes 2016",
@@ -4290,16 +3785,6 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "url": "https://zooatlanta.org/meet-giant-panda-cub-twins-zoo-atlanta/",
         "published_at": "2017-04-03",
         "last_verified_at": "2026-05-09",
-        "language": "en",
-        "access_state": "accessible"
-      },
-      {
-        "id": "src_commons_xi_lun_photo",
-        "publisher": "Wikimedia Commons",
-        "title": "Xi Lun at Zoo Atlanta",
-        "url": "https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg",
-        "published_at": "2022-02-08",
-        "last_verified_at": "2026-07-21",
         "language": "en",
         "access_state": "accessible"
       }
@@ -4422,7 +3907,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.21.1",
+      "data_version": "2026.07.23.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4432,6 +3917,1019 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+    "slug": "qing-bao",
+    "name_zh": "青宝",
+    "name_en": "Qing Bao",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2021-09-12",
+    "current_location": "史密森国家动物园",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+    "search_terms": [
+      "qing-bao",
+      "青宝",
+      "Qing Bao",
+      "Qīngbǎo",
+      "qingbao",
+      "smithsonian_profile_key:qing-bao"
+    ],
+    "intro": "2021 年出生于四川，2024 年抵达史密森国家动物园，并于 2025 年 1 月公开亮相。",
+    "birthplace": "China Conservation and Research Center for the Giant Panda, Sichuan",
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-qing-bao-2cc0071c570b363c",
+        "panda_id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Qing_Bao-5_-_54260941750.jpg",
+        "rights": "CC BY 2.0",
+        "credit": "Mike Maguire / Wikimedia Commons",
+        "alt_zh": "疑似青宝在史密森尼国家动物园的雪地中吃竹子",
+        "alt_en": "Probable Qing Bao eating bamboo in the snow at Smithsonian's National Zoo",
+        "status": "available",
+        "sha256": "bcc5138ce5499457b00f0cfe2732f49670a82b97f801d1421e46c368702cee06",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 169446,
+        "derivatives": [
+          {
+            "bytes": 33342,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "62c35f22b5335e12bb03d31b860ba3e31ccce9ca4cd0251504502344042648ed",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 169446,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "bcc5138ce5499457b00f0cfe2732f49670a82b97f801d1421e46c368702cee06",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_qing_bao_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+      "canonical_slug": "qing-bao",
+      "names": [
+        {
+          "value": "青宝",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "Qing Bao",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
+          ]
+        },
+        {
+          "value": "Qīngbǎo",
+          "language": "pinyin",
+          "kind": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "qingbao",
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "smithsonian_profile_key",
+          "value": "qing-bao",
+          "source_ids": [
+            "src_smithsonian_giant_panda_page"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2021-09-12",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-23",
+        "assertion_ids": [
+          "fact-qing-bao-birth-date"
+        ],
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "China Conservation and Research Center for the Giant Panda, Sichuan",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-23",
+        "assertion_ids": [
+          "fact-qing-bao-birthplace"
+        ],
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "David M. Rubenstein and Family Giant Panda Habitat, Smithsonian National Zoo",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-23",
+        "assertion_ids": [
+          "fact-qing-bao-current-place"
+        ],
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-23",
+        "assertion_ids": [
+          "fact-qing-bao-sex"
+        ],
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_giant_panda_page"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_qing_bao_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Probable Qing Bao eating bamboo in snow",
+        "url": "https://commons.wikimedia.org/wiki/File:Qing_Bao-5_-_54260941750.jpg",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_smithsonian_giant_panda_faq",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "Giant Panda FAQs",
+        "url": "https://nationalzoo.si.edu/animals/giant-panda-faqs",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_smithsonian_giant_panda_page",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "Giant panda",
+        "url": "https://nationalzoo.si.edu/animals/giant-panda",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_smithsonian_history",
+        "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
+        "title": "History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+        "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-07-23",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-23"
+    },
+    "residencies": [
+      {
+        "id": "res-qing-bao-smithsonian",
+        "facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-10-15",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-23",
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq",
+          "src_smithsonian_history"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-qing-bao-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-09-12",
+        "event_date_precision": "day",
+        "participants": [
+          "d56dffc3-941c-5640-983d-4f4959c97e03"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_giant_panda_faq"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-qing-bao-arrival-2024",
+        "event_type": "arrival",
+        "event_status": "completed",
+        "event_date": "2024-10-15",
+        "event_date_precision": "day",
+        "participants": [
+          "d56dffc3-941c-5640-983d-4f4959c97e03"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "changes_current_residency": true
+      },
+      {
+        "id": "event-qing-bao-public-debut-2025",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2025-01-24",
+        "event_date_precision": "day",
+        "participants": [
+          "d56dffc3-941c-5640-983d-4f4959c97e03"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "afb0f227-dd5e-5076-88e3-74e9807a6049",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_smithsonian_history"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "2021 年出生于四川，2024 年抵达史密森国家动物园，并于 2025 年 1 月公开亮相。"
+      },
+      {
+        "locale": "en",
+        "summary": "Born in Sichuan in 2021, arrived at the Smithsonian's National Zoo in 2024, and made her public debut in January 2025."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_qing_bao_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.23.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充出生地、抵达、公开亮相、现居场馆与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added birthplace, arrival, public debut, current habitat, and collection media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "slug": "yang-yang",
+    "name_zh": "洋洋",
+    "name_en": "Yang Yang",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "1997-09-09",
+    "current_location": "成都大熊猫繁育研究基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+    "search_terms": [
+      "yang-yang",
+      "洋洋",
+      "Yang Yang",
+      "yangyang",
+      "zoo_atlanta_profile_key:yang-yang"
+    ],
+    "intro": "曾生活于亚特兰大动物园的雄性大熊猫，是七只幼崽的父亲，2024 年返回成都基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-yang-yang-8e30a6c81892cbde",
+        "panda_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "洋洋在亚特兰大动物园的栖息地内休息",
+        "alt_en": "Yang Yang resting in his habitat at Zoo Atlanta",
+        "status": "available",
+        "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 106314,
+        "derivatives": [
+          {
+            "bytes": 23356,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "29994d619b7d21af748b2ce87af3fc8839797923facda6c115febfa9e9c239fa",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 106314,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_yang_yang_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+      "canonical_slug": "yang-yang",
+      "names": [
+        {
+          "value": "洋洋",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_yang_yang",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        },
+        {
+          "value": "Yang Yang",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_yang_yang",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "yangyang",
+          "source_ids": [
+            "src_zooatlanta_yang_yang"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "zoo_atlanta_profile_key",
+          "value": "yang-yang",
+          "source_ids": [
+            "src_zooatlanta_yang_yang"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "1997-09-09",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-yang-yang-birth-date"
+        ],
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-yang-yang-current-place"
+        ],
+        "source_ids": [
+          "src_zooatlanta_yang_yang",
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-yang-yang-sex"
+        ],
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_yang_yang_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Yang Yang at Zoo Atlanta",
+        "url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
+        "published_at": "2022-02-08",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_arrival_china_2024",
+        "publisher": "Zoo Atlanta",
+        "title": "Giant Pandas Have Arrived in China",
+        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+        "published_at": "2024-10-13",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_lun_lun",
+        "publisher": "Zoo Atlanta",
+        "title": "Lun Lun",
+        "url": "https://zooatlanta.org/animal-legend/lun-lun/",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_yang_yang",
+        "publisher": "Zoo Atlanta",
+        "title": "Yang Yang",
+        "url": "https://zooatlanta.org/animal-legend/yang-yang/",
+        "published_at": null,
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-20"
+    },
+    "residencies": [
+      {
+        "id": "res-yang-yang-zoo-atlanta",
+        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "1999-11-05",
+        "start_precision": "day",
+        "end_date": "2024-10-12",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ]
+      },
+      {
+        "id": "res-yang-yang-chengdu",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-10-13",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "source_ids": [
+          "src_zooatlanta_yang_yang",
+          "src_zooatlanta_arrival_china_2024"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-yang-yang-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "1997-09-09",
+        "event_date_precision": "day",
+        "participants": [
+          "db108e44-8893-54e1-8cb5-8c5238b75089"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_yang_yang"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-pair-arrival-1999",
+        "event_type": "arrival",
+        "event_status": "completed",
+        "event_date": "1999-11-05",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "db108e44-8893-54e1-8cb5-8c5238b75089"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_lun_lun",
+          "src_zooatlanta_yang_yang"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-return-2024",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2024-10-12",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "d24087cd-70d6-5902-92dd-ecc95186937b",
+          "db108e44-8893-54e1-8cb5-8c5238b75089",
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "曾生活于亚特兰大动物园的雄性大熊猫，是七只幼崽的父亲，2024 年返回成都基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former Zoo Atlanta male, father of seven cubs; returned to Chengdu in 2024."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_yang_yang_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.23.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+    "slug": "ya-lun",
+    "name_zh": "雅伦",
+    "name_en": "Ya Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2016-09-03",
+    "current_location": "成都大熊猫繁育研究基地",
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+    "search_terms": [
+      "ya-lun",
+      "雅伦",
+      "Ya Lun",
+      "yalun",
+      "zoo_atlanta_profile_key:ya-lun"
+    ],
+    "intro": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，2024 年返回成都基地。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "habitats": [],
+    "media": [
+      {
+        "id": "media-ya-lun-4006c2e608f8e671",
+        "panda_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "雅伦在亚特兰大动物园的栖息地内坐着",
+        "alt_en": "Ya Lun sitting in her habitat at Zoo Atlanta",
+        "status": "available",
+        "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 113818,
+        "derivatives": [
+          {
+            "bytes": 24312,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "76fff6de4f34f0ba9b309990e4a2c744bab40fea27d1d1a38bae70343a7f2c7c",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 113818,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_ya_lun_photo"
+        ]
+      }
+    ],
+    "identity": {
+      "stable_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+      "canonical_slug": "ya-lun",
+      "names": [
+        {
+          "value": "雅伦",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        },
+        {
+          "value": "Ya Lun",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names",
+            "src_zooatlanta_arrival_china_2024"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [
+        {
+          "value": "yalun",
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ]
+        }
+      ],
+      "external_identifiers": [
+        {
+          "system": "zoo_atlanta_profile_key",
+          "value": "ya-lun",
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ]
+        }
+      ]
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2016-09-03",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-ya-lun-birth-date"
+        ],
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_facility",
+        "value": "Chengdu Research Base of Giant Panda Breeding",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-ya-lun-current-place"
+        ],
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "assertion_ids": [
+          "fact-ya-lun-sex"
+        ],
+        "source_ids": [
+          "src_zooatlanta_twins_names"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_commons_ya_lun_photo",
+        "publisher": "Wikimedia Commons",
+        "title": "Ya Lun at Zoo Atlanta",
+        "url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
+        "published_at": "2022-02-08",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_2016_public_debut",
+        "publisher": "Zoo Atlanta",
+        "title": "Zoo Atlanta closes 2016",
+        "url": "https://zooatlanta.org/press-release/zoo-atlanta-closes-2016/",
+        "published_at": "2016-12-29",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_arrival_china_2024",
+        "publisher": "Zoo Atlanta",
+        "title": "Giant Pandas Have Arrived in China",
+        "url": "https://zooatlanta.org/press-release/giant-pandas-have-arrived-in-china/",
+        "published_at": "2024-10-13",
+        "last_verified_at": "2026-07-20",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_cubs_birth",
+        "publisher": "Zoo Atlanta",
+        "title": "Lun Lun's Second Cub Has Been Born",
+        "url": "https://zooatlanta.org/press-release/lun-luns-second-cub-has-been-born/",
+        "published_at": "2016-09-03",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_zooatlanta_twins_names",
+        "publisher": "Zoo Atlanta",
+        "title": "Meet the Giant Panda Cub Twins",
+        "url": "https://zooatlanta.org/meet-giant-panda-cub-twins-zoo-atlanta/",
+        "published_at": "2017-04-03",
+        "last_verified_at": "2026-05-09",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-20"
+    },
+    "residencies": [
+      {
+        "id": "res-ya-lun-zoo-atlanta",
+        "facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2016-09-03",
+        "start_precision": "day",
+        "end_date": "2024-10-12",
+        "end_precision": "day",
+        "status": "confirmed",
+        "last_verified_at": null,
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ]
+      },
+      {
+        "id": "res-ya-lun-chengdu",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-10-13",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-20",
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "event-ya-lun-birth",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2016-09-03",
+        "event_date_precision": "day",
+        "participants": [
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_cubs_birth",
+          "src_zooatlanta_twins_names"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-ya-lun-public-debut",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2016-12-27",
+        "event_date_precision": "day",
+        "participants": [
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_2016_public_debut"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "event-zoo-atlanta-return-2024",
+        "event_type": "transfer",
+        "event_status": "completed",
+        "event_date": "2024-10-12",
+        "event_date_precision": "day",
+        "participants": [
+          "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "d24087cd-70d6-5902-92dd-ecc95186937b",
+          "db108e44-8893-54e1-8cb5-8c5238b75089",
+          "fa8a0c14-b937-5de5-ae65-482cfd744482"
+        ],
+        "from_facility_id": "8a89d2e0-9f81-5cdb-a69b-8c998d370fb2",
+        "from_coarse_location": null,
+        "to_facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "to_coarse_location": null,
+        "source_ids": [
+          "src_zooatlanta_arrival_china_2024"
+        ],
+        "changes_current_residency": true
+      }
+    ],
+    "record_tier": "complete_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，2024 年返回成都基地。"
+      },
+      {
+        "locale": "en",
+        "summary": "Daughter of Lun Lun and Yang Yang; born in Atlanta in 2016 and returned in 2024."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_ya_lun_photo"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.23.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
         }
       ]
     }
@@ -5475,6 +5973,69 @@ export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
 
 export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
   {
+    "id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+    "slug": "shin-shin",
+    "name_zh": "真真",
+    "name_en": "Shin Shin",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2005-07-03",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+    "slug": "bei-bei",
+    "name_zh": "贝贝",
+    "name_en": "Bei Bei",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2015-08-22",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
+    "slug": "xiao-xiao",
+    "name_zh": "晓晓",
+    "name_en": "Xiao Xiao",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2021-06-23",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+    "mother_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "slug": "mei-xiang",
     "name_zh": "美香",
@@ -5517,13 +6078,13 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
-    "id": "96d00a39-7865-55db-b5c2-f339ef692258",
-    "slug": "tai-shan",
-    "name_zh": "泰山",
-    "name_en": "Tai Shan",
+    "id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+    "slug": "bao-li",
+    "name_zh": "宝力",
+    "name_en": "Bao Li",
     "gender": "male",
     "status": "alive",
-    "birth_date": "2005-07-09",
+    "birth_date": "2021-08-04",
     "current_location": null,
     "cover_image_url": null,
     "search_terms": [],
@@ -5532,9 +6093,51 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "trusted-archive",
       "golden-dataset"
     ],
-    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "record_tier": "identity_first_pass",
+    "father_id": null,
+    "mother_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "slug": "lun-lun",
+    "name_zh": "伦伦",
+    "name_en": "Lun Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "1997-08-25",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+    "slug": "ri-ri",
+    "name_zh": "力力",
+    "name_en": "Ri Ri",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2005-08-16",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "complete_first_pass",
     "profile_available": true
   },
   {
@@ -5545,27 +6148,6 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "gender": "female",
     "status": "alive",
     "birth_date": "2013-08-23",
-    "current_location": null,
-    "cover_image_url": null,
-    "search_terms": [],
-    "intro": null,
-    "tags": [
-      "trusted-archive",
-      "golden-dataset"
-    ],
-    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "record_tier": "identity_first_pass",
-    "profile_available": true
-  },
-  {
-    "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
-    "slug": "bei-bei",
-    "name_zh": "贝贝",
-    "name_en": "Bei Bei",
-    "gender": "male",
-    "status": "alive",
-    "birth_date": "2015-08-22",
     "current_location": null,
     "cover_image_url": null,
     "search_terms": [],
@@ -5601,13 +6183,13 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
-    "id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
-    "slug": "bao-li",
-    "name_zh": "宝力",
-    "name_en": "Bao Li",
+    "id": "96d00a39-7865-55db-b5c2-f339ef692258",
+    "slug": "tai-shan",
+    "name_zh": "泰山",
+    "name_en": "Tai Shan",
     "gender": "male",
     "status": "alive",
-    "birth_date": "2021-08-04",
+    "birth_date": "2005-07-09",
     "current_location": null,
     "cover_image_url": null,
     "search_terms": [],
@@ -5616,19 +6198,61 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "trusted-archive",
       "golden-dataset"
     ],
-    "father_id": null,
-    "mother_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+    "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "record_tier": "identity_first_pass",
     "profile_available": true
   },
   {
-    "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
-    "slug": "lun-lun",
-    "name_zh": "伦伦",
-    "name_en": "Lun Lun",
+    "id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a",
+    "slug": "lei-lei",
+    "name_zh": "蕾蕾",
+    "name_en": "Lei Lei",
     "gender": "female",
     "status": "alive",
-    "birth_date": "1997-08-25",
+    "birth_date": "2021-06-23",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+    "mother_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+    "slug": "xi-lun",
+    "name_zh": "喜伦",
+    "name_en": "Xi Lun",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2016-09-03",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+    "slug": "qing-bao",
+    "name_zh": "青宝",
+    "name_en": "Qing Bao",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2021-09-12",
     "current_location": null,
     "cover_image_url": null,
     "search_terms": [],
@@ -5685,115 +6309,10 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
-    "id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
-    "slug": "ri-ri",
-    "name_zh": "力力",
-    "name_en": "Ri Ri",
-    "gender": "male",
-    "status": "alive",
-    "birth_date": "2005-08-16",
-    "current_location": null,
-    "cover_image_url": null,
-    "search_terms": [],
-    "intro": null,
-    "tags": [
-      "trusted-archive",
-      "golden-dataset"
-    ],
-    "father_id": null,
-    "mother_id": null,
-    "record_tier": "complete_first_pass",
-    "profile_available": true
-  },
-  {
-    "id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
-    "slug": "shin-shin",
-    "name_zh": "真真",
-    "name_en": "Shin Shin",
-    "gender": "female",
-    "status": "alive",
-    "birth_date": "2005-07-03",
-    "current_location": null,
-    "cover_image_url": null,
-    "search_terms": [],
-    "intro": null,
-    "tags": [
-      "trusted-archive",
-      "golden-dataset"
-    ],
-    "father_id": null,
-    "mother_id": null,
-    "record_tier": "complete_first_pass",
-    "profile_available": true
-  },
-  {
-    "id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
-    "slug": "xiao-xiao",
-    "name_zh": "晓晓",
-    "name_en": "Xiao Xiao",
-    "gender": "male",
-    "status": "alive",
-    "birth_date": "2021-06-23",
-    "current_location": null,
-    "cover_image_url": null,
-    "search_terms": [],
-    "intro": null,
-    "tags": [
-      "trusted-archive",
-      "golden-dataset"
-    ],
-    "father_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
-    "mother_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
-    "record_tier": "complete_first_pass",
-    "profile_available": true
-  },
-  {
-    "id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a",
-    "slug": "lei-lei",
-    "name_zh": "蕾蕾",
-    "name_en": "Lei Lei",
-    "gender": "female",
-    "status": "alive",
-    "birth_date": "2021-06-23",
-    "current_location": null,
-    "cover_image_url": null,
-    "search_terms": [],
-    "intro": null,
-    "tags": [
-      "trusted-archive",
-      "golden-dataset"
-    ],
-    "father_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
-    "mother_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
-    "record_tier": "complete_first_pass",
-    "profile_available": true
-  },
-  {
-    "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
-    "slug": "xi-lun",
-    "name_zh": "喜伦",
-    "name_en": "Xi Lun",
-    "gender": "female",
-    "status": "alive",
-    "birth_date": "2016-09-03",
-    "current_location": null,
-    "cover_image_url": null,
-    "search_terms": [],
-    "intro": null,
-    "tags": [
-      "trusted-archive",
-      "golden-dataset"
-    ],
-    "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
-    "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
-    "record_tier": "complete_first_pass",
-    "profile_available": true
-  },
-  {
-    "id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
-    "slug": "an-an-bao-li-father",
-    "name_zh": "an-an-bao-li-father",
-    "name_en": "An An",
+    "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+    "slug": "yong-ba",
+    "name_zh": "yong-ba",
+    "name_en": "Yong Ba",
     "gender": "unknown",
     "status": "unknown",
     "birth_date": null,
@@ -5832,10 +6351,10 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": false
   },
   {
-    "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
-    "slug": "yong-ba",
-    "name_zh": "yong-ba",
-    "name_en": "Yong Ba",
+    "id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
+    "slug": "an-an-bao-li-father",
+    "name_zh": "an-an-bao-li-father",
+    "name_en": "An An",
     "gender": "unknown",
     "status": "unknown",
     "birth_date": null,
@@ -5857,55 +6376,23 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
 export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
   {
     "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258"
-  },
-  {
-    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258"
-  },
-  {
-    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
   },
   {
     "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "child_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6"
-  },
-  {
-    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b"
-  },
-  {
-    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b"
-  },
-  {
-    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
-    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443"
-  },
-  {
-    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
-    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443"
   },
   {
     "parent_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
     "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c"
   },
   {
-    "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
-    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b"
   },
   {
-    "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
-    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
-  },
-  {
-    "parent_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
-    "child_id": "275ad0df-c700-5991-a13a-0ca47c56eeba"
-  },
-  {
-    "parent_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
-    "child_id": "275ad0df-c700-5991-a13a-0ca47c56eeba"
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b"
   },
   {
     "parent_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
@@ -5916,11 +6403,43 @@ export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
     "child_id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
   },
   {
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258"
+  },
+  {
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "child_id": "96d00a39-7865-55db-b5c2-f339ef692258"
+  },
+  {
     "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
     "child_id": "d24087cd-70d6-5902-92dd-ecc95186937b"
   },
   {
     "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
     "child_id": "d24087cd-70d6-5902-92dd-ecc95186937b"
+  },
+  {
+    "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+  },
+  {
+    "parent_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "child_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443"
+  },
+  {
+    "parent_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+    "child_id": "275ad0df-c700-5991-a13a-0ca47c56eeba"
+  },
+  {
+    "parent_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+    "child_id": "275ad0df-c700-5991-a13a-0ca47c56eeba"
+  },
+  {
+    "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
+  },
+  {
+    "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+    "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
   }
 ];

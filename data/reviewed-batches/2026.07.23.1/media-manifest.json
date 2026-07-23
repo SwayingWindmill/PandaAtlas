@@ -1,0 +1,66 @@
+{
+  "batch_version": "2026.07.23.1",
+  "generated_at": "2026-07-23T12:30:00Z",
+  "records": [
+    {
+      "alt_en": "Bao Li in his habitat at Smithsonian's National Zoo",
+      "alt_zh": "宝力在史密森尼国家动物园的栖息地内",
+      "credit": "Melina Kolburn / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 35912,
+          "filename": "media-bao-li-ac4d18101cfe4209-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "6a495a7d9d7d9442a90039e4330e78d4a72b17bdf7ea64667bb12e253bfd4464",
+          "width": 480
+        },
+        {
+          "bytes": 166088,
+          "filename": "media-bao-li-ac4d18101cfe4209-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "1cf700a6670abc2374f468da27a83655be6d8d44efd3f18bb15737d659314819",
+          "width": 1200
+        }
+      ],
+      "media_id": "media-bao-li-ac4d18101cfe4209",
+      "panda_slug": "bao-li",
+      "review_status": "approved",
+      "rights": "CC BY-SA 4.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Bao_Li.jpg"
+    },
+    {
+      "alt_en": "Probable Qing Bao eating bamboo in the snow at Smithsonian's National Zoo",
+      "alt_zh": "疑似青宝在史密森尼国家动物园的雪地中吃竹子",
+      "credit": "Mike Maguire / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 33342,
+          "filename": "media-qing-bao-2cc0071c570b363c-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "62c35f22b5335e12bb03d31b860ba3e31ccce9ca4cd0251504502344042648ed",
+          "width": 480
+        },
+        {
+          "bytes": 169446,
+          "filename": "media-qing-bao-2cc0071c570b363c-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "bcc5138ce5499457b00f0cfe2732f49670a82b97f801d1421e46c368702cee06",
+          "width": 1200
+        }
+      ],
+      "media_id": "media-qing-bao-2cc0071c570b363c",
+      "panda_slug": "qing-bao",
+      "review_status": "collection_only",
+      "rights": "CC BY 2.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Qing_Bao-5_-_54260941750.jpg"
+    }
+  ]
+}
