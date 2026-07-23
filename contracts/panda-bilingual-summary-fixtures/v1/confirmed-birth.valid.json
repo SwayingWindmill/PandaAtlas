@@ -1,0 +1,567 @@
+{
+  "batch_id": "bilingual-summary-batch-a1b085aa28c8e615fca137c2292c7e8ede620dc46cc811fc1fad365f85336be2",
+  "fact_enrichment": {
+    "batch_id": "fact-enrichment-batch-d38e145930b6a6202f685e8288ca3d969c262201e06f3a1ed49e6531d48e339f",
+    "facts": [
+      {
+        "confidence": "high",
+        "derivation": null,
+        "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "evidence_mode": "direct",
+        "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+        "field_path": "birth.date",
+        "intake_candidate_id": "intake-direct-review",
+        "language": "en",
+        "last_verified_at": "2026-07-23",
+        "lifecycle": "active",
+        "normalized_value": "2020-07-04",
+        "parser_name": "fixture-fact-parser",
+        "parser_version": "1.0.0",
+        "publication_scope": "public",
+        "qualifier": null,
+        "raw_value": "Born on July 4, 2020",
+        "record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+        "source_id": "source-direct-a",
+        "source_locator": {
+          "field_path": "birth.date",
+          "fixture": "direct-review"
+        },
+        "superseded_by_fact_id": null,
+        "withdrawal_reason": null
+      },
+      {
+        "confidence": "low",
+        "derivation": null,
+        "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "evidence_mode": "direct",
+        "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+        "field_path": "behavior.favorite_food",
+        "intake_candidate_id": "intake-direct-review",
+        "language": "en",
+        "last_verified_at": "2026-07-23",
+        "lifecycle": "active",
+        "normalized_value": "apples",
+        "parser_name": "fixture-fact-parser",
+        "parser_version": "1.0.0",
+        "publication_scope": "review-only",
+        "qualifier": null,
+        "raw_value": "May enjoy apples",
+        "record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+        "source_id": "source-direct-a",
+        "source_locator": {
+          "field_path": "behavior.favorite_food",
+          "fixture": "direct-review"
+        },
+        "superseded_by_fact_id": null,
+        "withdrawal_reason": null
+      }
+    ],
+    "identity_resolution_batch_id": "identity-resolution-direct-review",
+    "knowledge_bundle": {
+      "bundle_id": "knowledge-bundle-448df53afca15c0ec49bbcd3f0c6e3af6e4bcd17c6b8050b1e4bd710040151d7",
+      "created_at": "2026-07-23T12:00:00Z",
+      "records": [
+        {
+          "assertions": [
+            {
+              "assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+              "confidence": "high",
+              "derivation": null,
+              "evidence": [
+                {
+                  "acquisition_bundle_id": null,
+                  "acquisition_run_id": null,
+                  "candidate_id": "intake-direct-review",
+                  "decision_id": null,
+                  "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+                  "legacy_payload": null,
+                  "parser_name": "fixture-fact-parser",
+                  "parser_version": "1.0.0",
+                  "proposal_id": null,
+                  "source_id": "source-direct-a",
+                  "source_locator": {
+                    "field_path": "birth.date",
+                    "fixture": "direct-review"
+                  }
+                }
+              ],
+              "evidence_mode": "direct",
+              "field_path": "birth.date",
+              "last_verified_at": "2026-07-23",
+              "legacy_records": [],
+              "lifecycle": "active",
+              "normalized_value": "2020-07-04",
+              "publication_scope": "public",
+              "qualifier": null,
+              "raw_value": "Born on July 4, 2020",
+              "source_ids": [
+                "source-direct-a"
+              ],
+              "subject_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+              "superseded_by": null,
+              "withdrawal_reason": null
+            },
+            {
+              "assertion_id": "fact-assertion-e41a1d2c333ba382c33a17efab30f03fc8e787fa4c64f4481438242b3c0c341b",
+              "confidence": "low",
+              "derivation": null,
+              "evidence": [
+                {
+                  "acquisition_bundle_id": null,
+                  "acquisition_run_id": null,
+                  "candidate_id": "intake-direct-review",
+                  "decision_id": null,
+                  "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+                  "legacy_payload": null,
+                  "parser_name": "fixture-fact-parser",
+                  "parser_version": "1.0.0",
+                  "proposal_id": null,
+                  "source_id": "source-direct-a",
+                  "source_locator": {
+                    "field_path": "behavior.favorite_food",
+                    "fixture": "direct-review"
+                  }
+                }
+              ],
+              "evidence_mode": "direct",
+              "field_path": "behavior.favorite_food",
+              "last_verified_at": "2026-07-23",
+              "legacy_records": [],
+              "lifecycle": "active",
+              "normalized_value": "apples",
+              "publication_scope": "review-only",
+              "qualifier": null,
+              "raw_value": "May enjoy apples",
+              "source_ids": [
+                "source-direct-a"
+              ],
+              "subject_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+              "superseded_by": null,
+              "withdrawal_reason": null
+            }
+          ],
+          "conclusions": [
+            {
+              "alternative_assertion_ids": [],
+              "field_path": "behavior.favorite_food",
+              "primary_assertion_id": null,
+              "status": "unknown"
+            },
+            {
+              "alternative_assertion_ids": [],
+              "field_path": "birth.date",
+              "primary_assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+              "status": "confirmed"
+            }
+          ],
+          "contributions": [],
+          "identity": {
+            "aliases": [],
+            "canonical_panda_id": "panda-35b0b957c6c544db7578be65",
+            "canonical_slug": "panda-35b0b957c6c544db7578be65",
+            "external_identifiers": [],
+            "identity_key": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+            "legacy_records": [],
+            "legacy_slugs": [],
+            "names": [
+              {
+                "is_primary": true,
+                "kind": "primary",
+                "language": "en",
+                "source_ids": [
+                  "source-direct-a"
+                ],
+                "value": "Fixture Panda direct-review"
+              }
+            ],
+            "population_context": "unknown",
+            "resolution": {
+              "auxiliary_features": {
+                "birth_date": null,
+                "birth_year": null,
+                "candidate_record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+                "decision_kind": "create",
+                "external_identifiers": [],
+                "institution_ids": [],
+                "is_group_observation": false,
+                "movement_institution_ids": [],
+                "parent_ids": [],
+                "parent_names": [],
+                "sex": "female",
+                "source_relationship_ids": [],
+                "stable_wild_identifier": null
+              },
+              "candidate_panda_ids": [],
+              "confidence": "high",
+              "merged_from_ids": [],
+              "source_ids": [
+                "source-direct-a"
+              ],
+              "split_from_id": null,
+              "state": "created"
+            }
+          },
+          "locations": [],
+          "media": [],
+          "relationships": [],
+          "translations": []
+        }
+      ],
+      "schema_version": "panda-atlas-knowledge-bundle/v1",
+      "sources": [
+        {
+          "access_basis": "public",
+          "assessment": {
+            "authority_score": 90,
+            "confidence": "high",
+            "consistency_score": 90,
+            "corroboration_score": 70,
+            "rationale": [
+              "fixture-source-assessment"
+            ],
+            "recency_score": 85,
+            "specificity_score": 95
+          },
+          "captured_at": "2026-07-23T12:00:00Z",
+          "is_first_hand": true,
+          "kind": "official-institution",
+          "original_language": "en",
+          "publisher": "Panda Fixture Publisher",
+          "source_id": "source-direct-a",
+          "title": "Direct and review profile",
+          "url": "https://example.org/source-direct-a"
+        }
+      ]
+    },
+    "relationships": [],
+    "resolved_record_ids": [
+      "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1"
+    ],
+    "schema_version": "panda-atlas-fact-enrichment/v1",
+    "selection_scores": [
+      {
+        "assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+        "authority_score": 90,
+        "confidence_score": 1000,
+        "consistency_score": 90,
+        "direct_evidence_score": 120,
+        "field_path": "birth.date",
+        "first_hand_score": 100,
+        "independent_corroboration_score": 0,
+        "recency_score": 85,
+        "source_confidence_score": 200,
+        "source_corroboration_score": 70,
+        "specificity_score": 95,
+        "total": 1850
+      },
+      {
+        "assertion_id": "fact-assertion-e41a1d2c333ba382c33a17efab30f03fc8e787fa4c64f4481438242b3c0c341b",
+        "authority_score": 90,
+        "confidence_score": 0,
+        "consistency_score": 90,
+        "direct_evidence_score": 120,
+        "field_path": "behavior.favorite_food",
+        "first_hand_score": 100,
+        "independent_corroboration_score": 0,
+        "recency_score": 85,
+        "source_confidence_score": 200,
+        "source_corroboration_score": 70,
+        "specificity_score": 95,
+        "total": 850
+      }
+    ],
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  },
+  "generated_at": "2026-07-23T17:00:00Z",
+  "generator_version": "bilingual-summary/v1",
+  "knowledge_bundle": {
+    "bundle_id": "knowledge-bundle-373023cf4d7d81945f9fafe169435500e90c36807194cf7624e419617437869f",
+    "created_at": "2026-07-23T17:00:00Z",
+    "records": [
+      {
+        "assertions": [
+          {
+            "assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+            "confidence": "high",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-direct-review",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-direct-a",
+                "source_locator": {
+                  "field_path": "birth.date",
+                  "fixture": "direct-review"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "birth.date",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": "2020-07-04",
+            "publication_scope": "public",
+            "qualifier": null,
+            "raw_value": "Born on July 4, 2020",
+            "source_ids": [
+              "source-direct-a"
+            ],
+            "subject_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          },
+          {
+            "assertion_id": "fact-assertion-e41a1d2c333ba382c33a17efab30f03fc8e787fa4c64f4481438242b3c0c341b",
+            "confidence": "low",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-direct-review",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-direct-a",
+                "source_locator": {
+                  "field_path": "behavior.favorite_food",
+                  "fixture": "direct-review"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "behavior.favorite_food",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": "apples",
+            "publication_scope": "review-only",
+            "qualifier": null,
+            "raw_value": "May enjoy apples",
+            "source_ids": [
+              "source-direct-a"
+            ],
+            "subject_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          }
+        ],
+        "conclusions": [
+          {
+            "alternative_assertion_ids": [],
+            "field_path": "behavior.favorite_food",
+            "primary_assertion_id": null,
+            "status": "unknown"
+          },
+          {
+            "alternative_assertion_ids": [],
+            "field_path": "birth.date",
+            "primary_assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+            "status": "confirmed"
+          }
+        ],
+        "contributions": [],
+        "identity": {
+          "aliases": [],
+          "canonical_panda_id": "panda-35b0b957c6c544db7578be65",
+          "canonical_slug": "panda-35b0b957c6c544db7578be65",
+          "external_identifiers": [],
+          "identity_key": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+          "legacy_records": [],
+          "legacy_slugs": [],
+          "names": [
+            {
+              "is_primary": true,
+              "kind": "primary",
+              "language": "en",
+              "source_ids": [
+                "source-direct-a"
+              ],
+              "value": "Fixture Panda direct-review"
+            }
+          ],
+          "population_context": "unknown",
+          "resolution": {
+            "auxiliary_features": {
+              "birth_date": null,
+              "birth_year": null,
+              "candidate_record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+              "decision_kind": "create",
+              "external_identifiers": [],
+              "institution_ids": [],
+              "is_group_observation": false,
+              "movement_institution_ids": [],
+              "parent_ids": [],
+              "parent_names": [],
+              "sex": "female",
+              "source_relationship_ids": [],
+              "stable_wild_identifier": null
+            },
+            "candidate_panda_ids": [],
+            "confidence": "high",
+            "merged_from_ids": [],
+            "source_ids": [
+              "source-direct-a"
+            ],
+            "split_from_id": null,
+            "state": "created"
+          }
+        },
+        "locations": [],
+        "media": [],
+        "relationships": [],
+        "translations": [
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "en",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "bilingual-summary-sentence-5d825b418cd2f71035af7b87ff99748a2277aec6e4b7e61f2e1149d5bcae23d4",
+            "subject_type": "summary-sentence",
+            "superseded_by": null,
+            "text": "Birth date: July 4, 2020.",
+            "translation_id": "translation-1fedfc8264c4fc37e579fbc5a090dbc60b3bf66c5738776b9cb800fedbae94e6",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "zh",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "2020年7月4日",
+            "translation_id": "translation-2dff90b038b309b80546ff9dc5e9e31043baf8c62c11ab238c5cef23397ab8e6",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "en",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+            "subject_type": "fact-normalized-value",
+            "superseded_by": null,
+            "text": "July 4, 2020",
+            "translation_id": "translation-30abde2c3037fe86010c3f9cfe1b23417865bdef6d7978ec13d8a9d9b02f9da6",
+            "withdrawal_reason": null
+          },
+          {
+            "based_on_assertion_ids": [
+              "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1"
+            ],
+            "generated_at": "2026-07-23T17:00:00Z",
+            "generator_version": "bilingual-summary/v1",
+            "locale": "zh",
+            "reviewed_by": null,
+            "source_ids": [],
+            "source_language": "en",
+            "status": "generated",
+            "subject_id": "bilingual-summary-sentence-5d825b418cd2f71035af7b87ff99748a2277aec6e4b7e61f2e1149d5bcae23d4",
+            "subject_type": "summary-sentence",
+            "superseded_by": null,
+            "text": "出生日期：2020年7月4日。",
+            "translation_id": "translation-fdc68af9bbcf06af437cb2d0748f6c369c5d143942f1322775c332534b60d545",
+            "withdrawal_reason": null
+          }
+        ]
+      }
+    ],
+    "schema_version": "panda-atlas-knowledge-bundle/v1",
+    "sources": [
+      {
+        "access_basis": "public",
+        "assessment": {
+          "authority_score": 90,
+          "confidence": "high",
+          "consistency_score": 90,
+          "corroboration_score": 70,
+          "rationale": [
+            "fixture-source-assessment"
+          ],
+          "recency_score": 85,
+          "specificity_score": 95
+        },
+        "captured_at": "2026-07-23T12:00:00Z",
+        "is_first_hand": true,
+        "kind": "official-institution",
+        "original_language": "en",
+        "publisher": "Panda Fixture Publisher",
+        "source_id": "source-direct-a",
+        "title": "Direct and review profile",
+        "url": "https://example.org/source-direct-a"
+      }
+    ]
+  },
+  "normalized_values": [
+    {
+      "assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+      "en_text": "July 4, 2020",
+      "fact_enrichment_batch_id": "fact-enrichment-batch-d38e145930b6a6202f685e8288ca3d969c262201e06f3a1ed49e6531d48e339f",
+      "field_path": "birth.date",
+      "generator_version": "bilingual-summary/v1",
+      "record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+      "source_language": "en",
+      "value_id": "bilingual-value-befc56db27230e04871c8829c91ceb44ec04be90b572e0957357d9295a5cf65d",
+      "zh_text": "2020年7月4日"
+    }
+  ],
+  "schema_version": "panda-atlas-bilingual-summary/v1",
+  "sentences": [
+    {
+      "based_on_assertion_ids": [
+        "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1"
+      ],
+      "en_text": "Birth date: July 4, 2020.",
+      "fact_enrichment_batch_id": "fact-enrichment-batch-d38e145930b6a6202f685e8288ca3d969c262201e06f3a1ed49e6531d48e339f",
+      "field_path": "birth.date",
+      "generator_version": "bilingual-summary/v1",
+      "record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+      "sentence_id": "bilingual-summary-sentence-5d825b418cd2f71035af7b87ff99748a2277aec6e4b7e61f2e1149d5bcae23d4",
+      "sentence_key": "summary.birth.date",
+      "source_language": "en",
+      "zh_text": "出生日期：2020年7月4日。"
+    }
+  ],
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

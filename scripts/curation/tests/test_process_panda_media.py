@@ -285,14 +285,14 @@ class PandaMediaProcessorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             curation = self.make_curation(Path(temporary_directory))
 
-            rows = PROCESSOR.read_approved_media(curation, {"test-panda"})
+            rows = PROCESSOR.read_processable_media(curation, {"test-panda"})
 
             self.assertEqual([row["panda_slug"] for row in rows], ["test-panda"])
             with self.assertRaisesRegex(
                 PROCESSOR.MediaProcessingError,
-                "No approved media row found",
+                "No processable media row found",
             ):
-                PROCESSOR.read_approved_media(curation, {"missing-panda"})
+                PROCESSOR.read_processable_media(curation, {"missing-panda"})
 
     def test_draft_media_is_not_processed(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -305,6 +305,24 @@ class PandaMediaProcessorTests(unittest.TestCase):
             manifest = PROCESSOR.process_media(curation, root / "processed")
             self.assertEqual(manifest["record_count"], 0)
             self.assertEqual(manifest["records"], [])
+
+    def test_processes_collection_only_media(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            curation = self.make_curation(
+                root,
+                media_status="collection_only",
+                panda_status="reviewed",
+            )
+            manifest = PROCESSOR.process_media(
+                curation,
+                root / "processed",
+            )
+            self.assertEqual(manifest["record_count"], 1)
+            self.assertEqual(
+                manifest["record_count"],
+                1,
+            )
 
 
 if __name__ == "__main__":

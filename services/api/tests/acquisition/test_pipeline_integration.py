@@ -166,11 +166,11 @@ def test_smithsonian_fixture_pipeline_is_reproducible_and_exports_patch(
     )
     assert Counter(item.conflict_state for item in first_bundle.candidates) == Counter(
         {
-            ConflictState.UNCHANGED: 39,
+            ConflictState.UNCHANGED: 45,
             ConflictState.NOT_COMPARED: 14,
-            ConflictState.NEW: 9,
+            ConflictState.NEW: 5,
             ConflictState.MISSING_CURRENT_VALUE: 8,
-            ConflictState.ENRICHMENT: 4,
+            ConflictState.ENRICHMENT: 2,
         }
     )
     assert {item.identity_match.matched_canonical_slug for item in first_bundle.candidates} == {
@@ -207,8 +207,9 @@ def test_smithsonian_fixture_pipeline_is_reproducible_and_exports_patch(
     candidates = [
         item
         for item in first_bundle.candidates
-        if item.identity_match.matched_canonical_slug == "bao-li"
-        and item.candidate_kind is CandidateKind.RESIDENCY
+        if item.identity_match.matched_canonical_slug == "tai-shan"
+        and item.candidate_kind is CandidateKind.IDENTITY
+        and item.field_path == "identity.birthplace"
         and item.conflict_state is ConflictState.ENRICHMENT
     ]
     assert len(candidates) == 1
@@ -222,7 +223,7 @@ def test_smithsonian_fixture_pipeline_is_reproducible_and_exports_patch(
         reviewer="integration-test-curator",
         decided_at=decision_time,
         recorded_at=decision_time + timedelta(seconds=1),
-        note="Accept the source-stated Smithsonian facility enrichment.",
+        note="Accept the source-stated Smithsonian birthplace enrichment.",
     )
     decision_path = write_decision_log(
         decision_log,
@@ -244,7 +245,7 @@ def test_smithsonian_fixture_pipeline_is_reproducible_and_exports_patch(
     )
     patch_path = write_curation_patch(patch, "smithsonian.patch.json", overwrite=False)
     patch_payload = json.loads(patch_path.read_text(encoding="utf-8"))
-    assert patch.proposal_counts() == {"residency": 1}
+    assert patch.proposal_counts() == {"panda": 1}
     assert len(patch.sources) == 1
     assert patch_payload["write_boundary"] == {
         "canonical_curation_write_targets": [],

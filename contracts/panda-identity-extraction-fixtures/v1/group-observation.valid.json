@@ -1,0 +1,131 @@
+{
+  "batch_id": "identity-extraction-batch-97e39ee9a416ca0b23b41cf4f99c57c4b6416d19551a35b89729a5cd2cc38de0",
+  "candidates": [
+    {
+      "features": {
+        "birth_date": null,
+        "birth_year": null,
+        "external_identifiers": [],
+        "institution_ids": [
+          "qinling-field-team"
+        ],
+        "is_group_observation": true,
+        "movement_institution_ids": [],
+        "parent_ids": [],
+        "parent_names": [],
+        "sex": null,
+        "source_relationship_ids": [],
+        "stable_wild_identifier": null
+      },
+      "names": [
+        {
+          "kind": "observation-label",
+          "language": "en",
+          "normalized_forms": [
+            "qinling observation group"
+          ],
+          "value": "Qinling observation group"
+        }
+      ],
+      "population_context": "wild",
+      "record_id": "identity-record-a20d72ea7b147dae627a86e598871771f96896b5e6cc51820ccb8c05327001fc",
+      "source_ids": [
+        "source-field-observation"
+      ]
+    }
+  ],
+  "extractions": [
+    {
+      "evidence": [
+        {
+          "evidence_body_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "evidence_snapshot_id": "snapshot-field-group",
+          "field_path": "identity.names",
+          "language": "en",
+          "normalized_value": "Qinling observation group",
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "a group of giant pandas observed in Qinling",
+          "source_locator": {
+            "section": "identity.names"
+          }
+        },
+        {
+          "evidence_body_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "evidence_snapshot_id": "snapshot-field-group",
+          "field_path": "identity.group_observation",
+          "language": "en",
+          "normalized_value": true,
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "a group of giant pandas",
+          "source_locator": {
+            "section": "identity.group_observation"
+          }
+        },
+        {
+          "evidence_body_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "evidence_snapshot_id": "snapshot-field-group",
+          "field_path": "identity.institution_ids",
+          "language": "en",
+          "normalized_value": [
+            "qinling-field-team"
+          ],
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "Qinling field team",
+          "source_locator": {
+            "section": "identity.institution_ids"
+          }
+        },
+        {
+          "evidence_body_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "evidence_snapshot_id": "snapshot-field-group",
+          "field_path": "identity.population_context",
+          "language": "en",
+          "normalized_value": "wild",
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "wild observation",
+          "source_locator": {
+            "section": "identity.population_context"
+          }
+        }
+      ],
+      "features": {
+        "birth_date": null,
+        "birth_year": null,
+        "external_identifiers": [],
+        "institution_ids": [
+          "qinling-field-team"
+        ],
+        "is_group_observation": true,
+        "movement_institution_ids": [],
+        "parent_ids": [],
+        "parent_names": [],
+        "sex": null,
+        "source_relationship_ids": [],
+        "stable_wild_identifier": null
+      },
+      "intake_candidate_id": "intake-field-group",
+      "names": [
+        {
+          "kind": "observation-label",
+          "language": "en",
+          "normalized_forms": [
+            "qinling observation group"
+          ],
+          "value": "Qinling observation group"
+        }
+      ],
+      "population_context": "wild",
+      "source_id": "source-field-observation",
+      "subject_key": "observation:qinling-group"
+    }
+  ],
+  "schema_version": "panda-atlas-identity-extraction/v1",
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

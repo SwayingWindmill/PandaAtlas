@@ -17,7 +17,7 @@ export const generatedIdentityAliasesPath = path.resolve(
   "trusted-identity-aliases.ts",
 );
 
-export const WEB_RELEASE_VERSION = "2026.07.21.1";
+export const WEB_RELEASE_VERSION = "2026.07.23.1";
 export const webReleaseDatasetPath = path.resolve(
   scriptDir,
   "..",
@@ -321,6 +321,7 @@ export function buildTrustedPandaDetails(dataset) {
         ].flatMap((item) => item.source_ids),
       );
       const birthDate = conclusions.find((item) => item.field === "birth_date")?.value;
+      const birthplace = conclusions.find((item) => item.field === "birthplace")?.value;
       const currentFacility = facilities.get(currentResidency?.facility_id);
       const currentLocation = currentFacility
         ? displayName(currentFacility.public, "zh-Hans")
@@ -395,7 +396,7 @@ export function buildTrustedPandaDetails(dataset) {
         cover_image_url: availableMedia?.url ?? null,
         search_terms: searchTerms,
         intro: approvedContent.get("zh-CN") ?? approvedContent.get("en") ?? null,
-        birthplace: null,
+        birthplace: typeof birthplace === "string" ? birthplace : null,
         tags: ["trusted-identity", "golden-dataset"],
         father_id: parents.father_id,
         mother_id: parents.mother_id,

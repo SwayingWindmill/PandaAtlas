@@ -1,0 +1,277 @@
+{
+  "batch_id": "fact-enrichment-batch-d38e145930b6a6202f685e8288ca3d969c262201e06f3a1ed49e6531d48e339f",
+  "facts": [
+    {
+      "confidence": "high",
+      "derivation": null,
+      "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidence_mode": "direct",
+      "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+      "field_path": "birth.date",
+      "intake_candidate_id": "intake-direct-review",
+      "language": "en",
+      "last_verified_at": "2026-07-23",
+      "lifecycle": "active",
+      "normalized_value": "2020-07-04",
+      "parser_name": "fixture-fact-parser",
+      "parser_version": "1.0.0",
+      "publication_scope": "public",
+      "qualifier": null,
+      "raw_value": "Born on July 4, 2020",
+      "record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+      "source_id": "source-direct-a",
+      "source_locator": {
+        "field_path": "birth.date",
+        "fixture": "direct-review"
+      },
+      "superseded_by_fact_id": null,
+      "withdrawal_reason": null
+    },
+    {
+      "confidence": "low",
+      "derivation": null,
+      "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evidence_mode": "direct",
+      "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+      "field_path": "behavior.favorite_food",
+      "intake_candidate_id": "intake-direct-review",
+      "language": "en",
+      "last_verified_at": "2026-07-23",
+      "lifecycle": "active",
+      "normalized_value": "apples",
+      "parser_name": "fixture-fact-parser",
+      "parser_version": "1.0.0",
+      "publication_scope": "review-only",
+      "qualifier": null,
+      "raw_value": "May enjoy apples",
+      "record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+      "source_id": "source-direct-a",
+      "source_locator": {
+        "field_path": "behavior.favorite_food",
+        "fixture": "direct-review"
+      },
+      "superseded_by_fact_id": null,
+      "withdrawal_reason": null
+    }
+  ],
+  "identity_resolution_batch_id": "identity-resolution-direct-review",
+  "knowledge_bundle": {
+    "bundle_id": "knowledge-bundle-448df53afca15c0ec49bbcd3f0c6e3af6e4bcd17c6b8050b1e4bd710040151d7",
+    "created_at": "2026-07-23T12:00:00Z",
+    "records": [
+      {
+        "assertions": [
+          {
+            "assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+            "confidence": "high",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-direct-review",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-direct-a",
+                "source_locator": {
+                  "field_path": "birth.date",
+                  "fixture": "direct-review"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "birth.date",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": "2020-07-04",
+            "publication_scope": "public",
+            "qualifier": null,
+            "raw_value": "Born on July 4, 2020",
+            "source_ids": [
+              "source-direct-a"
+            ],
+            "subject_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          },
+          {
+            "assertion_id": "fact-assertion-e41a1d2c333ba382c33a17efab30f03fc8e787fa4c64f4481438242b3c0c341b",
+            "confidence": "low",
+            "derivation": null,
+            "evidence": [
+              {
+                "acquisition_bundle_id": null,
+                "acquisition_run_id": null,
+                "candidate_id": "intake-direct-review",
+                "decision_id": null,
+                "evidence_body_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "evidence_snapshot_id": "snapshot-direct-review-source-direct-a",
+                "legacy_payload": null,
+                "parser_name": "fixture-fact-parser",
+                "parser_version": "1.0.0",
+                "proposal_id": null,
+                "source_id": "source-direct-a",
+                "source_locator": {
+                  "field_path": "behavior.favorite_food",
+                  "fixture": "direct-review"
+                }
+              }
+            ],
+            "evidence_mode": "direct",
+            "field_path": "behavior.favorite_food",
+            "last_verified_at": "2026-07-23",
+            "legacy_records": [],
+            "lifecycle": "active",
+            "normalized_value": "apples",
+            "publication_scope": "review-only",
+            "qualifier": null,
+            "raw_value": "May enjoy apples",
+            "source_ids": [
+              "source-direct-a"
+            ],
+            "subject_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+            "superseded_by": null,
+            "withdrawal_reason": null
+          }
+        ],
+        "conclusions": [
+          {
+            "alternative_assertion_ids": [],
+            "field_path": "behavior.favorite_food",
+            "primary_assertion_id": null,
+            "status": "unknown"
+          },
+          {
+            "alternative_assertion_ids": [],
+            "field_path": "birth.date",
+            "primary_assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+            "status": "confirmed"
+          }
+        ],
+        "contributions": [],
+        "identity": {
+          "aliases": [],
+          "canonical_panda_id": "panda-35b0b957c6c544db7578be65",
+          "canonical_slug": "panda-35b0b957c6c544db7578be65",
+          "external_identifiers": [],
+          "identity_key": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+          "legacy_records": [],
+          "legacy_slugs": [],
+          "names": [
+            {
+              "is_primary": true,
+              "kind": "primary",
+              "language": "en",
+              "source_ids": [
+                "source-direct-a"
+              ],
+              "value": "Fixture Panda direct-review"
+            }
+          ],
+          "population_context": "unknown",
+          "resolution": {
+            "auxiliary_features": {
+              "birth_date": null,
+              "birth_year": null,
+              "candidate_record_id": "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1",
+              "decision_kind": "create",
+              "external_identifiers": [],
+              "institution_ids": [],
+              "is_group_observation": false,
+              "movement_institution_ids": [],
+              "parent_ids": [],
+              "parent_names": [],
+              "sex": "female",
+              "source_relationship_ids": [],
+              "stable_wild_identifier": null
+            },
+            "candidate_panda_ids": [],
+            "confidence": "high",
+            "merged_from_ids": [],
+            "source_ids": [
+              "source-direct-a"
+            ],
+            "split_from_id": null,
+            "state": "created"
+          }
+        },
+        "locations": [],
+        "media": [],
+        "relationships": [],
+        "translations": []
+      }
+    ],
+    "schema_version": "panda-atlas-knowledge-bundle/v1",
+    "sources": [
+      {
+        "access_basis": "public",
+        "assessment": {
+          "authority_score": 90,
+          "confidence": "high",
+          "consistency_score": 90,
+          "corroboration_score": 70,
+          "rationale": [
+            "fixture-source-assessment"
+          ],
+          "recency_score": 85,
+          "specificity_score": 95
+        },
+        "captured_at": "2026-07-23T12:00:00Z",
+        "is_first_hand": true,
+        "kind": "official-institution",
+        "original_language": "en",
+        "publisher": "Panda Fixture Publisher",
+        "source_id": "source-direct-a",
+        "title": "Direct and review profile",
+        "url": "https://example.org/source-direct-a"
+      }
+    ]
+  },
+  "relationships": [],
+  "resolved_record_ids": [
+    "identity-record-2b5ec48ee29d4ec032e21fd48ad7bf5305735e35cf80fe0ec7a90a415dde22e1"
+  ],
+  "schema_version": "panda-atlas-fact-enrichment/v1",
+  "selection_scores": [
+    {
+      "assertion_id": "fact-assertion-95dd54f357b6fdd3fe65e7f193563eb6610d78e71adce8159e7bffd51547b5f1",
+      "authority_score": 90,
+      "confidence_score": 1000,
+      "consistency_score": 90,
+      "direct_evidence_score": 120,
+      "field_path": "birth.date",
+      "first_hand_score": 100,
+      "independent_corroboration_score": 0,
+      "recency_score": 85,
+      "source_confidence_score": 200,
+      "source_corroboration_score": 70,
+      "specificity_score": 95,
+      "total": 1850
+    },
+    {
+      "assertion_id": "fact-assertion-e41a1d2c333ba382c33a17efab30f03fc8e787fa4c64f4481438242b3c0c341b",
+      "authority_score": 90,
+      "confidence_score": 0,
+      "consistency_score": 90,
+      "direct_evidence_score": 120,
+      "field_path": "behavior.favorite_food",
+      "first_hand_score": 100,
+      "independent_corroboration_score": 0,
+      "recency_score": 85,
+      "source_confidence_score": 200,
+      "source_corroboration_score": 70,
+      "specificity_score": 95,
+      "total": 850
+    }
+  ],
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

@@ -4,6 +4,7 @@ import test from "node:test";
 
 const workflowPath = new URL("../../../.github/workflows/release-gate.yml", import.meta.url);
 const defaultGatePath = new URL("../default.mjs", import.meta.url);
+const privateGatePath = new URL("../private-collection.mjs", import.meta.url);
 const extendedGatePath = new URL("../extended.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
 const workerSmokePath = new URL("../../../services/worker-api/scripts/smoke_test_worker.mjs", import.meta.url);
@@ -48,12 +49,34 @@ test("default gate includes golden dataset validation", async () => {
   assert.match(defaultGate, /Golden dataset contract/);
 });
 
-test("default gate includes panda curation and minimum photo validation", async () => {
+test("collection gate is the only user-facing release mode", async () => {
+  const privateGate = await readFile(privateGatePath, "utf8");
+  const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
+
+  assert.equal(rootPackage.scripts["release:default"], "node scripts/release/private-collection.mjs");
+  assert.equal(rootPackage.scripts["release:private"], "node scripts/release/private-collection.mjs");
+  assert.equal(rootPackage.scripts["release:public"], undefined);
+  assert.doesNotMatch(privateGate, /--scope|private_collection|scope public/);
+  assert.match(privateGate, /FastAPI regression tests/);
+  assert.match(privateGate, /Web production build/);
+  assert.doesNotMatch(privateGate, /check-beta-hard-gates/);
+  assert.doesNotMatch(privateGate, /staging/);
+  assert.doesNotMatch(privateGate, /human sign-off/i);
+});
+
+test("legacy full gate reuses the collection curation contract", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
 
   assert.equal(rootPackage.scripts["test:panda-curation"], "python -m unittest discover -s scripts/curation/tests -p \"test_validate_panda_curation.py\"");
-  assert.equal(rootPackage.scripts["check:panda-curation"], "python scripts/curation/validate_panda_curation.py");
+  assert.equal(
+    rootPackage.scripts["check:panda-curation"],
+    "python scripts/curation/validate_panda_curation.py",
+  );
+  assert.equal(
+    rootPackage.scripts["check:panda-curation:public"],
+    undefined,
+  );
   assert.match(defaultGate, /id: "panda-curation-contract"/);
   assert.match(defaultGate, /id: "panda-curation-data"/);
   assert.match(defaultGate, /dependsOn: \["panda-curation-contract"\]/);

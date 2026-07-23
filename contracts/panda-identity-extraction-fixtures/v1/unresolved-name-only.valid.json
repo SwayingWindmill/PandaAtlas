@@ -1,0 +1,86 @@
+{
+  "batch_id": "identity-extraction-batch-9ffeff1486cad9750dc4e6bbcb2fca3cace334c6acbcbc607fd40815287ceacb",
+  "candidates": [
+    {
+      "features": {
+        "birth_date": null,
+        "birth_year": null,
+        "external_identifiers": [],
+        "institution_ids": [],
+        "is_group_observation": false,
+        "movement_institution_ids": [],
+        "parent_ids": [],
+        "parent_names": [],
+        "sex": null,
+        "source_relationship_ids": [],
+        "stable_wild_identifier": null
+      },
+      "names": [
+        {
+          "kind": "primary",
+          "language": "zh",
+          "normalized_forms": [
+            "xiao xue"
+          ],
+          "value": "小雪"
+        }
+      ],
+      "population_context": "unknown",
+      "record_id": "identity-record-7218f2aed4acf9157ca927ec29c0baa5fa5849ee983e2dd7fc5cac2bb2926a59",
+      "source_ids": [
+        "source-name-only"
+      ]
+    }
+  ],
+  "extractions": [
+    {
+      "evidence": [
+        {
+          "evidence_body_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "evidence_snapshot_id": "snapshot-name-only",
+          "field_path": "identity.names",
+          "language": "zh",
+          "normalized_value": "小雪",
+          "parser_name": "identity-fixture-parser",
+          "parser_version": "1.0.0",
+          "raw_value": "小雪",
+          "source_locator": {
+            "section": "identity.names"
+          }
+        }
+      ],
+      "features": {
+        "birth_date": null,
+        "birth_year": null,
+        "external_identifiers": [],
+        "institution_ids": [],
+        "is_group_observation": false,
+        "movement_institution_ids": [],
+        "parent_ids": [],
+        "parent_names": [],
+        "sex": null,
+        "source_relationship_ids": [],
+        "stable_wild_identifier": null
+      },
+      "intake_candidate_id": "intake-name-only",
+      "names": [
+        {
+          "kind": "primary",
+          "language": "zh",
+          "normalized_forms": [
+            "xiao xue"
+          ],
+          "value": "小雪"
+        }
+      ],
+      "population_context": "unknown",
+      "source_id": "source-name-only",
+      "subject_key": "article:小雪"
+    }
+  ],
+  "schema_version": "panda-atlas-identity-extraction/v1",
+  "write_boundary": {
+    "publication_write_targets": [],
+    "trusted_write_targets": []
+  }
+}

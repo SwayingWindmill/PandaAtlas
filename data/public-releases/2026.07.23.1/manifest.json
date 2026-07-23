@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.23.1",
+  "files": {
+    "api.json": {
+      "bytes": 176896,
+      "sha256": "b39b05b8b8a729d427011cda40dbc888686fc017baa31601984c1d1cc9fce8ad"
+    },
+    "d1.sql": {
+      "bytes": 246190,
+      "sha256": "ed1f7cbe5534c73dcb761d3dc97affa536cb175fddfa8b049f6cfc51f723210f"
+    },
+    "pandas.csv": {
+      "bytes": 42031,
+      "sha256": "ab8ff960be14803866155cdc869079130a5075c132aa2c7ddb1c9bbfc236fd38"
+    },
+    "pandas.json": {
+      "bytes": 74202,
+      "sha256": "67cfb123056b06b8139f3575a93887f3bae5be43fd340dc019e82310f3de2b75"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "public-release-v4",
+  "public_schema_version": "1.2.0",
+  "publication_batch_id": "smithsonian-current-pair-batch",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 16,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 23,
+    "facilities": 8,
+    "facts": 50,
+    "institutions": 5,
+    "media": 16,
+    "pandas": 16,
+    "parentage_assertions": 20,
+    "places": 7,
+    "residencies": 26,
+    "sources": 28
+  },
+  "released_at": "2026-07-23T12:30:00Z"
+}

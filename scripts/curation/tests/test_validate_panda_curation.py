@@ -6,7 +6,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-
 MODULE_PATH = Path(__file__).resolve().parents[1] / "validate_panda_curation.py"
 SPEC = importlib.util.spec_from_file_location("validate_panda_curation", MODULE_PATH)
 assert SPEC and SPEC.loader
@@ -136,41 +135,49 @@ class CurationContractTests(unittest.TestCase):
     def test_draft_panda_does_not_require_photo(self) -> None:
         self.assertEqual(self.validate(), [])
 
-    def test_approved_panda_requires_trusted_data_events_and_photo(self) -> None:
-        errors = self.validate(pandas=[panda_row(review_status="approved")])
-        self.assertIn(
-            "pandas.csv[test-panda]: complete approved panda requires at least 3 approved verified events",
-            errors,
-        )
-        self.assertIn(
-            "pandas.csv[test-panda]: approved panda requires at least 1 approved photo",
-            errors,
-        )
-
-    def test_approved_photo_requires_minimum_human_fields(self) -> None:
-        errors = self.validate(media=[media_row(alt_en="")])
-        self.assertIn("media.csv[test-panda]: approved media requires alt_en", errors)
-
-    def test_approved_photo_rejects_unclear_rights(self) -> None:
-        errors = self.validate(media=[media_row(rights="unknown")])
-        self.assertIn("media.csv[test-panda]: approved media requires clear rights", errors)
-
-    def test_photo_does_not_replace_trusted_panda_data(self) -> None:
+    def test_approved_panda_does_not_require_complete_publication_metadata(self) -> None:
         errors = self.validate(
-            pandas=[panda_row(review_status="approved", evidence_status="partial", current_location="")],
-            events=[event_row(1), event_row(2), event_row(3)],
-            media=[media_row()],
-        )
-        self.assertIn("pandas.csv[test-panda]: approved panda must be verified", errors)
-        self.assertIn("pandas.csv[test-panda]: approved panda requires current_location", errors)
-
-    def test_complete_approved_panda_passes(self) -> None:
-        errors = self.validate(
-            pandas=[panda_row(review_status="approved")],
-            events=[event_row(1), event_row(2), event_row(3)],
-            media=[media_row()],
+            pandas=[
+                panda_row(
+                    review_status="approved",
+                    evidence_status="partial",
+                    current_location="",
+                    birth_date="",
+                    birth_date_precision="unknown",
+                    gender="unknown",
+                    status="unknown",
+                    primary_source_ids="",
+                )
+            ]
         )
         self.assertEqual(errors, [])
+
+    def test_collection_only_media_allows_unknown_rights_and_missing_human_fields(self) -> None:
+        errors = self.validate(
+            media=[
+                media_row(
+                    review_status="collection_only",
+                    rights="unknown",
+                    credit="",
+                    source_url="",
+                    alt_zh="",
+                    alt_en="",
+                )
+            ]
+        )
+        self.assertEqual(errors, [])
+
+    def test_processable_media_requires_an_asset(self) -> None:
+        errors = self.validate(media=[media_row(asset="")])
+        self.assertIn("media.csv[test-panda]: processable media requires asset", errors)
+
+    def test_invalid_date_is_rejected(self) -> None:
+        errors = self.validate(events=[event_row(1, event_date="not-a-date")])
+        self.assertIn("events.csv[event-1]: invalid ISO date 'not-a-date'", errors)
+
+    def test_missing_panda_reference_is_rejected(self) -> None:
+        errors = self.validate(events=[event_row(1, panda_slug="missing-panda")])
+        self.assertIn("events.csv[event-1]: unknown panda_slug 'missing-panda'", errors)
 
 
 if __name__ == "__main__":

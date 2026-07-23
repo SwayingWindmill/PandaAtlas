@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import argparse
 import csv
 from datetime import date
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[2]
 CURATION_DIR = ROOT / "data" / "curation" / "pandas"
@@ -13,7 +13,14 @@ PANDA_STATUSES = {"alive", "deceased", "unknown", ""}
 DATE_PRECISIONS = {"day", "month", "year", "year_text", "age_text", "unknown", ""}
 EVIDENCE_STATUSES = {"verified", "partial", "needs_primary_source"}
 REVIEW_STATUSES = {"draft", "reviewed", "approved", "rejected"}
-MEDIA_REVIEW_STATUSES = {"draft", "approved", "rejected", "withdrawn"}
+MEDIA_REVIEW_STATUSES = {
+    "draft",
+    "approved",
+    "collection_only",
+    "rejected",
+    "withdrawn",
+}
+PROCESSABLE_MEDIA_STATUSES = {"approved", "collection_only"}
 MEDIA_FIELDS = (
     "panda_slug",
     "asset",
@@ -25,16 +32,6 @@ MEDIA_FIELDS = (
     "review_status",
     "notes",
 )
-APPROVED_MEDIA_FIELDS = (
-    "panda_slug",
-    "asset",
-    "source_url",
-    "rights",
-    "credit",
-    "alt_zh",
-    "alt_en",
-)
-UNKNOWN_RIGHTS = {"unknown", "unclear", "copyright_unknown", "none"}
 
 
 def read_csv(path: Path) -> tuple[tuple[str, ...], list[dict[str, str]]]:
@@ -91,12 +88,21 @@ def validate_curation(curation_dir: Path) -> tuple[list[str], dict[str, int]]:
     panda_slugs = [row["slug"] for row in pandas]
     require(len(set(panda_slugs)) == len(panda_slugs), "duplicate slug in pandas.csv", errors)
     panda_slug_set = set(panda_slugs)
-    panda_by_slug = {row["slug"]: row for row in pandas}
 
     for row in pandas:
         label = f"pandas.csv[{row.get('slug', '<missing slug>')}]"
-        require(row["gender"] in PANDA_GENDERS, f"{label}: invalid gender {row['gender']!r}", errors)
-        require(row["status"] in PANDA_STATUSES, f"{label}: invalid status {row['status']!r}", errors)
+        require(bool(row["slug"].strip()), f"{label}: slug is required", errors)
+        require(bool(row["name_en"].strip()), f"{label}: name_en is required", errors)
+        require(
+            row["gender"] in PANDA_GENDERS,
+            f"{label}: invalid gender {row['gender']!r}",
+            errors,
+        )
+        require(
+            row["status"] in PANDA_STATUSES,
+            f"{label}: invalid status {row['status']!r}",
+            errors,
+        )
         require(
             row["birth_date_precision"] in DATE_PRECISIONS,
             f"{label}: invalid birth_date_precision {row['birth_date_precision']!r}",
@@ -133,10 +139,13 @@ def validate_curation(curation_dir: Path) -> tuple[list[str], dict[str, int]]:
 
     event_ids = [row["event_id"] for row in events]
     require(len(set(event_ids)) == len(event_ids), "duplicate event_id in events.csv", errors)
-    approved_event_counts: dict[str, int] = {}
     for row in events:
         label = f"events.csv[{row.get('event_id', '<missing event_id>')}]"
-        require(row["panda_slug"] in panda_slug_set, f"{label}: unknown panda_slug {row['panda_slug']!r}", errors)
+        require(
+            row["panda_slug"] in panda_slug_set,
+            f"{label}: unknown panda_slug {row['panda_slug']!r}",
+            errors,
+        )
         require(
             row["event_date_precision"] in DATE_PRECISIONS,
             f"{label}: invalid event_date_precision {row['event_date_precision']!r}",
@@ -156,57 +165,38 @@ def validate_curation(curation_dir: Path) -> tuple[list[str], dict[str, int]]:
         for source_id in split_ids(row["source_ids"]):
             require(source_id in source_ids, f"{label}: unknown source_id {source_id!r}", errors)
         for related_slug in split_ids(row["related_slugs"]):
-            require(related_slug in panda_slug_set, f"{label}: unknown related slug {related_slug!r}", errors)
-        if row["review_status"] == "approved" and row["evidence_status"] == "verified":
-            approved_event_counts[row["panda_slug"]] = approved_event_counts.get(row["panda_slug"], 0) + 1
+            require(
+                related_slug in panda_slug_set,
+                f"{label}: unknown related slug {related_slug!r}",
+                errors,
+            )
 
     media_keys: list[tuple[str, str]] = []
-    approved_media_counts: dict[str, int] = {}
     for index, row in enumerate(media, start=2):
         panda_slug = row.get("panda_slug", "")
         label = f"media.csv[{panda_slug or index}]"
-        require(panda_slug in panda_slug_set, f"{label}: unknown panda_slug {panda_slug!r}", errors)
+        require(
+            panda_slug in panda_slug_set,
+            f"{label}: unknown panda_slug {panda_slug!r}",
+            errors,
+        )
         status = row.get("review_status", "")
-        require(status in MEDIA_REVIEW_STATUSES, f"{label}: invalid review_status {status!r}", errors)
+        require(
+            status in MEDIA_REVIEW_STATUSES,
+            f"{label}: invalid review_status {status!r}",
+            errors,
+        )
         asset = row.get("asset", "").strip()
         if asset:
             media_keys.append((panda_slug, asset))
-        if status == "approved":
-            for field in APPROVED_MEDIA_FIELDS:
-                require(bool(row.get(field, "").strip()), f"{label}: approved media requires {field}", errors)
-            source_url = row.get("source_url", "").strip()
-            require(source_url.startswith("https://"), f"{label}: source_url must use https", errors)
-            rights = row.get("rights", "").strip().lower()
-            require(rights not in UNKNOWN_RIGHTS, f"{label}: approved media requires clear rights", errors)
-            if panda_slug in panda_slug_set:
-                approved_media_counts[panda_slug] = approved_media_counts.get(panda_slug, 0) + 1
+        if status in PROCESSABLE_MEDIA_STATUSES:
+            require(bool(asset), f"{label}: processable media requires asset", errors)
 
-    require(len(set(media_keys)) == len(media_keys), "duplicate panda_slug and asset in media.csv", errors)
-
-    for slug, row in panda_by_slug.items():
-        if row["review_status"] != "approved":
-            continue
-        label = f"pandas.csv[{slug}]"
-        require(row["evidence_status"] == "verified", f"{label}: approved panda must be verified", errors)
-        for field in ("name_zh", "name_en", "current_location", "primary_source_ids", "intro"):
-            require(bool(row[field].strip()), f"{label}: approved panda requires {field}", errors)
-        require(row["gender"] not in {"", "unknown"}, f"{label}: approved panda requires known gender", errors)
-        require(row["status"] not in {"", "unknown"}, f"{label}: approved panda requires known status", errors)
-        require(
-            bool(row["birth_date"].strip() or row["birth_date_text"].strip()),
-            f"{label}: approved panda requires birth_date or birth_date_text",
-            errors,
-        )
-        require(
-            approved_event_counts.get(slug, 0) >= 3,
-            f"{label}: complete approved panda requires at least 3 approved verified events",
-            errors,
-        )
-        require(
-            approved_media_counts.get(slug, 0) >= 1,
-            f"{label}: approved panda requires at least 1 approved photo",
-            errors,
-        )
+    require(
+        len(set(media_keys)) == len(media_keys),
+        "duplicate panda_slug and asset in media.csv",
+        errors,
+    )
 
     counts = {
         "sources": len(sources),
@@ -217,8 +207,15 @@ def validate_curation(curation_dir: Path) -> tuple[list[str], dict[str, int]]:
     return errors, counts
 
 
+def _arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Validate PandaAtlas collection CSVs")
+    parser.add_argument("--curation-dir", type=Path, default=CURATION_DIR)
+    return parser.parse_args()
+
+
 def main() -> int:
-    errors, counts = validate_curation(CURATION_DIR)
+    args = _arguments()
+    errors, counts = validate_curation(args.curation_dir)
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
