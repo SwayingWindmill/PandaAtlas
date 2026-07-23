@@ -1,0 +1,706 @@
+{
+  "$defs": {
+    "ConfidenceBand": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "title": "ConfidenceBand",
+      "type": "string"
+    },
+    "DiscoveryInventory": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DiscoveryInventoryItem"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "panda-atlas-discovery-intake/v1",
+          "default": "panda-atlas-discovery-intake/v1",
+          "title": "Schema Version",
+          "type": "string"
+        }
+      },
+      "title": "DiscoveryInventory",
+      "type": "object"
+    },
+    "DiscoveryInventoryItem": {
+      "additionalProperties": false,
+      "properties": {
+        "access_basis": {
+          "$ref": "#/$defs/SourceAccessBasis"
+        },
+        "body_bytes": {
+          "minimum": 0,
+          "title": "Body Bytes",
+          "type": "integer"
+        },
+        "canonical_url": {
+          "minLength": 1,
+          "title": "Canonical Url",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "is_first_hand": {
+          "title": "Is First Hand",
+          "type": "boolean"
+        },
+        "known_source_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Known Source Id"
+        },
+        "language": {
+          "minLength": 2,
+          "title": "Language",
+          "type": "string"
+        },
+        "last_collected_at": {
+          "format": "date-time",
+          "title": "Last Collected At",
+          "type": "string"
+        },
+        "publication_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Publication Date"
+        },
+        "publisher": {
+          "minLength": 1,
+          "title": "Publisher",
+          "type": "string"
+        },
+        "query_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Query Ids",
+          "type": "array"
+        },
+        "snapshot_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snapshot Reference"
+        },
+        "source_key": {
+          "minLength": 1,
+          "title": "Source Key",
+          "type": "string"
+        },
+        "source_kind": {
+          "$ref": "#/$defs/SourceKind"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_key",
+        "query_ids",
+        "canonical_url",
+        "content_sha256",
+        "title",
+        "publisher",
+        "language",
+        "source_kind",
+        "is_first_hand",
+        "access_basis",
+        "last_collected_at",
+        "body_bytes"
+      ],
+      "title": "DiscoveryInventoryItem",
+      "type": "object"
+    },
+    "DiscoveryManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "entries": {
+          "items": {
+            "$ref": "#/$defs/DiscoveryManifestEntry"
+          },
+          "title": "Entries",
+          "type": "array"
+        },
+        "manifest_id": {
+          "minLength": 1,
+          "title": "Manifest Id",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "panda-atlas-discovery-intake/v1",
+          "default": "panda-atlas-discovery-intake/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/DiscoveryRunState"
+        },
+        "stops": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DiscoveryStopRecord"
+          },
+          "title": "Stops",
+          "type": "array"
+        },
+        "summary": {
+          "$ref": "#/$defs/DiscoverySummary"
+        },
+        "write_boundary": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Write Boundary",
+          "type": "object"
+        }
+      },
+      "required": [
+        "manifest_id",
+        "run_id",
+        "created_at",
+        "state",
+        "entries",
+        "summary"
+      ],
+      "title": "DiscoveryManifest",
+      "type": "object"
+    },
+    "DiscoveryManifestEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "body_bytes": {
+          "minimum": 0,
+          "title": "Body Bytes",
+          "type": "integer"
+        },
+        "canonical_url": {
+          "minLength": 1,
+          "title": "Canonical Url",
+          "type": "string"
+        },
+        "change_state": {
+          "$ref": "#/$defs/MaterialChangeState"
+        },
+        "collected_at": {
+          "format": "date-time",
+          "title": "Collected At",
+          "type": "string"
+        },
+        "content_group_id": {
+          "minLength": 1,
+          "title": "Content Group Id",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "content_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Type"
+        },
+        "intake_candidate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intake Candidate Id"
+        },
+        "is_content_representative": {
+          "title": "Is Content Representative",
+          "type": "boolean"
+        },
+        "known_source_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Known Source Id"
+        },
+        "observed_urls": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Observed Urls",
+          "type": "array"
+        },
+        "policy_state": {
+          "$ref": "#/$defs/DiscoveryPolicyState"
+        },
+        "previous_content_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previous Content Sha256"
+        },
+        "publication_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Publication Date"
+        },
+        "query_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Query Ids",
+          "type": "array"
+        },
+        "snapshot_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snapshot Reference"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceEvidence"
+        },
+        "source_key": {
+          "minLength": 1,
+          "title": "Source Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_key",
+        "query_ids",
+        "change_state",
+        "canonical_url",
+        "observed_urls",
+        "content_sha256",
+        "content_group_id",
+        "is_content_representative",
+        "source",
+        "collected_at",
+        "body_bytes",
+        "policy_state"
+      ],
+      "title": "DiscoveryManifestEntry",
+      "type": "object"
+    },
+    "DiscoveryPolicyState": {
+      "enum": [
+        "clear",
+        "captcha",
+        "auth-mismatch",
+        "paywall",
+        "access-control",
+        "policy-mismatch",
+        "http-403",
+        "http-429",
+        "http-451",
+        "unexpected-blocking"
+      ],
+      "title": "DiscoveryPolicyState",
+      "type": "string"
+    },
+    "DiscoveryRunState": {
+      "enum": [
+        "completed",
+        "stopped"
+      ],
+      "title": "DiscoveryRunState",
+      "type": "string"
+    },
+    "DiscoveryStopRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "access_basis": {
+          "$ref": "#/$defs/SourceAccessBasis"
+        },
+        "collected_at": {
+          "format": "date-time",
+          "title": "Collected At",
+          "type": "string"
+        },
+        "detail": {
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Http Status"
+        },
+        "policy_state": {
+          "$ref": "#/$defs/DiscoveryPolicyState"
+        },
+        "query_id": {
+          "minLength": 1,
+          "title": "Query Id",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 1,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "url": {
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "query_id",
+        "sequence",
+        "url",
+        "access_basis",
+        "collected_at",
+        "policy_state",
+        "detail"
+      ],
+      "title": "DiscoveryStopRecord",
+      "type": "object"
+    },
+    "DiscoverySummary": {
+      "additionalProperties": false,
+      "properties": {
+        "changed_count": {
+          "minimum": 0,
+          "title": "Changed Count",
+          "type": "integer"
+        },
+        "entry_count": {
+          "minimum": 0,
+          "title": "Entry Count",
+          "type": "integer"
+        },
+        "intake_candidate_count": {
+          "minimum": 0,
+          "title": "Intake Candidate Count",
+          "type": "integer"
+        },
+        "languages": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Languages",
+          "type": "array"
+        },
+        "new_count": {
+          "minimum": 0,
+          "title": "New Count",
+          "type": "integer"
+        },
+        "query_count": {
+          "minimum": 1,
+          "title": "Query Count",
+          "type": "integer"
+        },
+        "removed_count": {
+          "minimum": 0,
+          "title": "Removed Count",
+          "type": "integer"
+        },
+        "stop_count": {
+          "minimum": 0,
+          "title": "Stop Count",
+          "type": "integer"
+        },
+        "unchanged_count": {
+          "minimum": 0,
+          "title": "Unchanged Count",
+          "type": "integer"
+        },
+        "unknown_source_count": {
+          "minimum": 0,
+          "title": "Unknown Source Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "query_count",
+        "entry_count",
+        "new_count",
+        "changed_count",
+        "removed_count",
+        "unchanged_count",
+        "unknown_source_count",
+        "intake_candidate_count",
+        "stop_count",
+        "languages"
+      ],
+      "title": "DiscoverySummary",
+      "type": "object"
+    },
+    "MaterialChangeState": {
+      "enum": [
+        "new",
+        "changed",
+        "removed",
+        "unchanged"
+      ],
+      "title": "MaterialChangeState",
+      "type": "string"
+    },
+    "SourceAccessBasis": {
+      "enum": [
+        "public",
+        "licensed-api",
+        "authorized-account",
+        "manual-permission"
+      ],
+      "title": "SourceAccessBasis",
+      "type": "string"
+    },
+    "SourceAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "authority_score": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Authority Score",
+          "type": "integer"
+        },
+        "confidence": {
+          "$ref": "#/$defs/ConfidenceBand",
+          "default": "low"
+        },
+        "consistency_score": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Consistency Score",
+          "type": "integer"
+        },
+        "corroboration_score": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Corroboration Score",
+          "type": "integer"
+        },
+        "rationale": {
+          "default": [
+            "unreviewed-source-default"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Rationale",
+          "type": "array"
+        },
+        "recency_score": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Recency Score",
+          "type": "integer"
+        },
+        "specificity_score": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Specificity Score",
+          "type": "integer"
+        }
+      },
+      "title": "SourceAssessment",
+      "type": "object"
+    },
+    "SourceEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "access_basis": {
+          "$ref": "#/$defs/SourceAccessBasis"
+        },
+        "assessment": {
+          "$ref": "#/$defs/SourceAssessment"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "is_first_hand": {
+          "title": "Is First Hand",
+          "type": "boolean"
+        },
+        "kind": {
+          "$ref": "#/$defs/SourceKind"
+        },
+        "original_language": {
+          "minLength": 1,
+          "title": "Original Language",
+          "type": "string"
+        },
+        "publisher": {
+          "minLength": 1,
+          "title": "Publisher",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "kind",
+        "access_basis",
+        "publisher",
+        "title",
+        "url",
+        "original_language",
+        "captured_at",
+        "is_first_hand"
+      ],
+      "title": "SourceEvidence",
+      "type": "object"
+    },
+    "SourceKind": {
+      "enum": [
+        "official-institution",
+        "government",
+        "research",
+        "mainstream-media",
+        "official-social",
+        "photographer",
+        "mature-database",
+        "community",
+        "unknown"
+      ],
+      "title": "SourceKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "inventory": {
+      "$ref": "#/$defs/DiscoveryInventory"
+    },
+    "manifest": {
+      "$ref": "#/$defs/DiscoveryManifest"
+    }
+  },
+  "required": [
+    "manifest",
+    "inventory"
+  ],
+  "title": "DiscoveryRunResult",
+  "type": "object"
+}

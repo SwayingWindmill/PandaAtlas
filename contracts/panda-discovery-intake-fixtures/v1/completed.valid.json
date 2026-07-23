@@ -1,0 +1,236 @@
+{
+  "inventory": {
+    "items": [
+      {
+        "access_basis": "public",
+        "body_bytes": 1001,
+        "canonical_url": "https://archive.example.jp/pandas/xing-xing",
+        "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "content_type": "text/html",
+        "is_first_hand": false,
+        "known_source_id": null,
+        "language": "ja",
+        "last_collected_at": "2026-07-23T00:00:00Z",
+        "publication_date": null,
+        "publisher": "Example Panda Publisher",
+        "query_ids": [
+          "query-ja"
+        ],
+        "snapshot_reference": "snapshot://discovery/query-ja/1",
+        "source_key": "source-901b8d5e8fbd790974200f34e918ab73d5c837fa9378cc58b1b762241f09816e",
+        "source_kind": "mature-database",
+        "title": "Panda discovery material 1"
+      },
+      {
+        "access_basis": "public",
+        "body_bytes": 1001,
+        "canonical_url": "https://unknown.example.cn/pandas/xing-xing",
+        "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "content_type": "text/html",
+        "is_first_hand": false,
+        "known_source_id": null,
+        "language": "zh-CN",
+        "last_collected_at": "2026-07-23T00:00:00Z",
+        "publication_date": null,
+        "publisher": "Example Panda Publisher",
+        "query_ids": [
+          "query-en",
+          "query-zh"
+        ],
+        "snapshot_reference": "snapshot://discovery/query-zh/1",
+        "source_key": "source-de5b17950e6de5724e7448f8082665614a7f08daaf6d2d56781295e0894bf8d7",
+        "source_kind": "mature-database",
+        "title": "Panda discovery material 1"
+      },
+      {
+        "access_basis": "public",
+        "body_bytes": 1001,
+        "canonical_url": "https://zoo.example.kr/pandas/panda-42",
+        "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "content_type": "text/html",
+        "is_first_hand": false,
+        "known_source_id": "known-korean-zoo",
+        "language": "ko",
+        "last_collected_at": "2026-07-23T00:00:00Z",
+        "publication_date": null,
+        "publisher": "Example Panda Publisher",
+        "query_ids": [
+          "query-ko"
+        ],
+        "snapshot_reference": "snapshot://discovery/query-ko/1",
+        "source_key": "source-0368bc9241680e8f3ad3626938e6400224692b5a1329c332d924d425811733e0",
+        "source_kind": "mature-database",
+        "title": "Panda discovery material 1"
+      }
+    ],
+    "schema_version": "panda-atlas-discovery-intake/v1"
+  },
+  "manifest": {
+    "created_at": "2026-07-23T00:00:00Z",
+    "entries": [
+      {
+        "body_bytes": 1001,
+        "canonical_url": "https://archive.example.jp/pandas/xing-xing",
+        "change_state": "new",
+        "collected_at": "2026-07-23T00:00:00Z",
+        "content_group_id": "content-4299fb662f86d720f9352b61a84cd7d918acb1438a5f517d830c9e42e1aa3d61",
+        "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "content_type": "text/html",
+        "intake_candidate_id": null,
+        "is_content_representative": false,
+        "known_source_id": null,
+        "observed_urls": [
+          "https://archive.example.jp/pandas/xing-xing"
+        ],
+        "policy_state": "clear",
+        "previous_content_sha256": null,
+        "publication_date": null,
+        "query_ids": [
+          "query-ja"
+        ],
+        "snapshot_reference": "snapshot://discovery/query-ja/1",
+        "source": {
+          "access_basis": "public",
+          "assessment": {
+            "authority_score": 0,
+            "confidence": "low",
+            "consistency_score": 0,
+            "corroboration_score": 0,
+            "rationale": [
+              "unreviewed-source-default"
+            ],
+            "recency_score": 0,
+            "specificity_score": 0
+          },
+          "captured_at": "2026-07-23T00:00:00Z",
+          "is_first_hand": false,
+          "kind": "mature-database",
+          "original_language": "ja",
+          "publisher": "Example Panda Publisher",
+          "source_id": "source-901b8d5e8fbd790974200f34e918ab73d5c837fa9378cc58b1b762241f09816e",
+          "title": "Panda discovery material 1",
+          "url": "https://archive.example.jp/pandas/xing-xing"
+        },
+        "source_key": "source-901b8d5e8fbd790974200f34e918ab73d5c837fa9378cc58b1b762241f09816e"
+      },
+      {
+        "body_bytes": 1001,
+        "canonical_url": "https://unknown.example.cn/pandas/xing-xing",
+        "change_state": "new",
+        "collected_at": "2026-07-23T00:00:00Z",
+        "content_group_id": "content-4299fb662f86d720f9352b61a84cd7d918acb1438a5f517d830c9e42e1aa3d61",
+        "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "content_type": "text/html",
+        "intake_candidate_id": "candidate-6610535c2c7734d109cf6fb6d6d73e8393f20426feeb3d0bc339f0d405a57ff5",
+        "is_content_representative": true,
+        "known_source_id": null,
+        "observed_urls": [
+          "https://unknown.example.cn/pandas/xing-xing?utm_medium=fixture",
+          "https://unknown.example.cn/pandas/xing-xing?utm_source=fixture"
+        ],
+        "policy_state": "clear",
+        "previous_content_sha256": null,
+        "publication_date": null,
+        "query_ids": [
+          "query-en",
+          "query-zh"
+        ],
+        "snapshot_reference": "snapshot://discovery/query-zh/1",
+        "source": {
+          "access_basis": "public",
+          "assessment": {
+            "authority_score": 0,
+            "confidence": "low",
+            "consistency_score": 0,
+            "corroboration_score": 0,
+            "rationale": [
+              "unreviewed-source-default"
+            ],
+            "recency_score": 0,
+            "specificity_score": 0
+          },
+          "captured_at": "2026-07-23T00:00:00Z",
+          "is_first_hand": false,
+          "kind": "mature-database",
+          "original_language": "zh-CN",
+          "publisher": "Example Panda Publisher",
+          "source_id": "source-de5b17950e6de5724e7448f8082665614a7f08daaf6d2d56781295e0894bf8d7",
+          "title": "Panda discovery material 1",
+          "url": "https://unknown.example.cn/pandas/xing-xing"
+        },
+        "source_key": "source-de5b17950e6de5724e7448f8082665614a7f08daaf6d2d56781295e0894bf8d7"
+      },
+      {
+        "body_bytes": 1001,
+        "canonical_url": "https://zoo.example.kr/pandas/panda-42",
+        "change_state": "new",
+        "collected_at": "2026-07-23T00:00:00Z",
+        "content_group_id": "content-2e41c3c83266998d7f67c966d342d610e123e8b1b37eafc24a371068446ac5a6",
+        "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "content_type": "text/html",
+        "intake_candidate_id": "candidate-f57a4a55c0ddc61a507e22f3619390c843995ed911ef94f608933f1610c03dc2",
+        "is_content_representative": true,
+        "known_source_id": "known-korean-zoo",
+        "observed_urls": [
+          "https://zoo.example.kr/pandas/panda-42"
+        ],
+        "policy_state": "clear",
+        "previous_content_sha256": null,
+        "publication_date": null,
+        "query_ids": [
+          "query-ko"
+        ],
+        "snapshot_reference": "snapshot://discovery/query-ko/1",
+        "source": {
+          "access_basis": "public",
+          "assessment": {
+            "authority_score": 0,
+            "confidence": "low",
+            "consistency_score": 0,
+            "corroboration_score": 0,
+            "rationale": [
+              "known-source-registry-match-unscored"
+            ],
+            "recency_score": 0,
+            "specificity_score": 0
+          },
+          "captured_at": "2026-07-23T00:00:00Z",
+          "is_first_hand": false,
+          "kind": "mature-database",
+          "original_language": "ko",
+          "publisher": "Example Panda Publisher",
+          "source_id": "known-korean-zoo",
+          "title": "Panda discovery material 1",
+          "url": "https://zoo.example.kr/pandas/panda-42"
+        },
+        "source_key": "source-0368bc9241680e8f3ad3626938e6400224692b5a1329c332d924d425811733e0"
+      }
+    ],
+    "manifest_id": "manifest-a8d1e94d4753bccc8250940140c3a23a25061e72490a8047f2488819e2a47870",
+    "run_id": "discovery-fixture-completed",
+    "schema_version": "panda-atlas-discovery-intake/v1",
+    "state": "completed",
+    "stops": [],
+    "summary": {
+      "changed_count": 0,
+      "entry_count": 3,
+      "intake_candidate_count": 2,
+      "languages": [
+        "en",
+        "ja",
+        "ko",
+        "zh-CN"
+      ],
+      "new_count": 3,
+      "query_count": 4,
+      "removed_count": 0,
+      "stop_count": 0,
+      "unchanged_count": 0,
+      "unknown_source_count": 2
+    },
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  }
+}
