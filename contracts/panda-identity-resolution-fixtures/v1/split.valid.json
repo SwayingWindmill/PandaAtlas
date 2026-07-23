@@ -1,0 +1,241 @@
+{
+  "batch": {
+    "batch_id": "identity-batch-operations",
+    "created_at": "2026-07-23T00:00:00Z",
+    "decisions": [],
+    "public_candidate_record_ids": [],
+    "review_record_ids": [],
+    "schema_version": "panda-atlas-identity-resolution/v1",
+    "summary": {
+      "candidate_count": 0,
+      "canonical_count": 1,
+      "create_count": 0,
+      "merge_count": 0,
+      "rejected_group_count": 0,
+      "review_count": 0,
+      "unresolved_count": 0
+    },
+    "unresolved_record_ids": [],
+    "validation_candidates": [],
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  },
+  "changesets": [
+    {
+      "after_hashes": [
+        "4e42a04f206ac639b5929a997720bc72294ad1b34d817c9561df86538a41d37b",
+        "bafb39536572a072c21316efebcc8905e5e014ce7335ace60f30301d47f48a71"
+      ],
+      "after_records": [
+        {
+          "canonical_slug": "xing-xing-old",
+          "features": {
+            "birth_date": null,
+            "birth_year": 2017,
+            "external_identifiers": [],
+            "institution_ids": [],
+            "is_group_observation": false,
+            "movement_institution_ids": [],
+            "parent_ids": [],
+            "parent_names": [],
+            "sex": null,
+            "source_relationship_ids": [],
+            "stable_wild_identifier": null
+          },
+          "names": [
+            {
+              "kind": "official",
+              "language": "zh-CN",
+              "normalized_forms": [],
+              "value": "星星"
+            }
+          ],
+          "panda_id": "panda-a",
+          "population_context": "captive",
+          "source_ids": [
+            "source-panda-a"
+          ]
+        },
+        {
+          "canonical_slug": "xing-xing-copy",
+          "features": {
+            "birth_date": null,
+            "birth_year": 2017,
+            "external_identifiers": [],
+            "institution_ids": [],
+            "is_group_observation": false,
+            "movement_institution_ids": [],
+            "parent_ids": [],
+            "parent_names": [],
+            "sex": null,
+            "source_relationship_ids": [],
+            "stable_wild_identifier": null
+          },
+          "names": [
+            {
+              "kind": "official",
+              "language": "en",
+              "normalized_forms": [],
+              "value": "Xing Xing"
+            }
+          ],
+          "panda_id": "panda-b",
+          "population_context": "captive",
+          "source_ids": [
+            "source-panda-b"
+          ]
+        }
+      ],
+      "audit": {
+        "actor": "identity-reviewer",
+        "after_hashes": [
+          "4e42a04f206ac639b5929a997720bc72294ad1b34d817c9561df86538a41d37b",
+          "bafb39536572a072c21316efebcc8905e5e014ce7335ace60f30301d47f48a71"
+        ],
+        "audit_id": "identity-audit-882fc26d1028bd014d9a56696e2181281ecf152b95659dd5530e02a0f41c1d37",
+        "before_hashes": [
+          "ed7d38b8352811d5b4179022b7fa8119f2dfd8acfc8b167e72b53e19b2732355"
+        ],
+        "decided_at": "2026-07-23T00:00:00Z",
+        "evidence": [
+          "corrected identity evidence"
+        ],
+        "kind": "split",
+        "operation_id": "split-a-b",
+        "risk": "high",
+        "rollback_payload": {
+          "remove_panda_ids": [
+            "panda-a",
+            "panda-b"
+          ],
+          "restore_records": [
+            {
+              "canonical_slug": "xing-xing",
+              "features": {
+                "birth_date": null,
+                "birth_year": 2017,
+                "external_identifiers": [],
+                "institution_ids": [],
+                "is_group_observation": false,
+                "movement_institution_ids": [],
+                "parent_ids": [],
+                "parent_names": [],
+                "sex": null,
+                "source_relationship_ids": [],
+                "stable_wild_identifier": null
+              },
+              "names": [
+                {
+                  "kind": "official",
+                  "language": "zh-CN",
+                  "normalized_forms": [],
+                  "value": "星星"
+                },
+                {
+                  "kind": "official",
+                  "language": "en",
+                  "normalized_forms": [],
+                  "value": "Xing Xing"
+                }
+              ],
+              "panda_id": "panda-a",
+              "population_context": "captive",
+              "source_ids": [
+                "source-panda-a"
+              ]
+            }
+          ]
+        }
+      },
+      "before_hashes": [
+        "ed7d38b8352811d5b4179022b7fa8119f2dfd8acfc8b167e72b53e19b2732355"
+      ],
+      "before_records": [
+        {
+          "canonical_slug": "xing-xing",
+          "features": {
+            "birth_date": null,
+            "birth_year": 2017,
+            "external_identifiers": [],
+            "institution_ids": [],
+            "is_group_observation": false,
+            "movement_institution_ids": [],
+            "parent_ids": [],
+            "parent_names": [],
+            "sex": null,
+            "source_relationship_ids": [],
+            "stable_wild_identifier": null
+          },
+          "names": [
+            {
+              "kind": "official",
+              "language": "zh-CN",
+              "normalized_forms": [],
+              "value": "星星"
+            },
+            {
+              "kind": "official",
+              "language": "en",
+              "normalized_forms": [],
+              "value": "Xing Xing"
+            }
+          ],
+          "panda_id": "panda-a",
+          "population_context": "captive",
+          "source_ids": [
+            "source-panda-a"
+          ]
+        }
+      ],
+      "kind": "split",
+      "operation_id": "split-a-b",
+      "rollback": {
+        "remove_panda_ids": [
+          "panda-a",
+          "panda-b"
+        ],
+        "restore_records": [
+          {
+            "canonical_slug": "xing-xing",
+            "features": {
+              "birth_date": null,
+              "birth_year": 2017,
+              "external_identifiers": [],
+              "institution_ids": [],
+              "is_group_observation": false,
+              "movement_institution_ids": [],
+              "parent_ids": [],
+              "parent_names": [],
+              "sex": null,
+              "source_relationship_ids": [],
+              "stable_wild_identifier": null
+            },
+            "names": [
+              {
+                "kind": "official",
+                "language": "zh-CN",
+                "normalized_forms": [],
+                "value": "星星"
+              },
+              {
+                "kind": "official",
+                "language": "en",
+                "normalized_forms": [],
+                "value": "Xing Xing"
+              }
+            ],
+            "panda_id": "panda-a",
+            "population_context": "captive",
+            "source_ids": [
+              "source-panda-a"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "package_id": "identity-package-4fd57ad7c7dee5936ad85a5d37815191e5d0aa4471819a38b06b52f8f01d010e",
+  "schema_version": "panda-atlas-identity-resolution/v1"
+}

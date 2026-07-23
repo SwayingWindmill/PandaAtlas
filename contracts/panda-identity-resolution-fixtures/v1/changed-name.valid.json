@@ -1,0 +1,154 @@
+{
+  "batch": {
+    "batch_id": "identity-batch-changed-name",
+    "created_at": "2026-07-23T00:00:00Z",
+    "decisions": [
+      {
+        "candidate_panda_ids": [
+          "panda-xing-xing"
+        ],
+        "canonical_panda_id": "panda-xing-xing",
+        "confidence": "high",
+        "created_panda_id": null,
+        "kind": "merge",
+        "public_eligible": true,
+        "rationale": [
+          "Unique high-confidence identity match to panda-xing-xing.",
+          "Both records state birth year 2017.",
+          "Shared normalized name form: 新星.",
+          "Both records use population context captive."
+        ],
+        "record_id": "changed-name",
+        "scores": [
+          {
+            "confidence": "high",
+            "evidence": [
+              {
+                "code": "birth-year-match",
+                "conflict": false,
+                "detail": "Both records state birth year 2017.",
+                "label": "Birth year match",
+                "weight": 180
+              },
+              {
+                "code": "name-match",
+                "conflict": false,
+                "detail": "Shared normalized name form: 新星.",
+                "label": "Name or alias match",
+                "weight": 400
+              },
+              {
+                "code": "population-context-match",
+                "conflict": false,
+                "detail": "Both records use population context captive.",
+                "label": "Population context match",
+                "weight": 30
+              }
+            ],
+            "hard_conflicts": [],
+            "panda_id": "panda-xing-xing",
+            "score": 610
+          }
+        ]
+      }
+    ],
+    "public_candidate_record_ids": [
+      "changed-name"
+    ],
+    "review_record_ids": [],
+    "schema_version": "panda-atlas-identity-resolution/v1",
+    "summary": {
+      "candidate_count": 1,
+      "canonical_count": 1,
+      "create_count": 0,
+      "merge_count": 1,
+      "rejected_group_count": 0,
+      "review_count": 0,
+      "unresolved_count": 0
+    },
+    "unresolved_record_ids": [],
+    "validation_candidates": [
+      {
+        "aliases": [],
+        "canonical_panda_id": "panda-xing-xing",
+        "canonical_slug": "xing-xing",
+        "external_identifiers": [],
+        "identity_key": "changed-name",
+        "legacy_records": [],
+        "legacy_slugs": [],
+        "names": [
+          {
+            "is_primary": true,
+            "kind": "official",
+            "language": "zh-CN",
+            "source_ids": [
+              "source-panda-xing-xing"
+            ],
+            "value": "星星"
+          },
+          {
+            "is_primary": false,
+            "kind": "romanized",
+            "language": "en",
+            "source_ids": [
+              "source-panda-xing-xing"
+            ],
+            "value": "Xing Xing"
+          },
+          {
+            "is_primary": false,
+            "kind": "translated",
+            "language": "ja",
+            "source_ids": [
+              "source-panda-xing-xing"
+            ],
+            "value": "シンシン"
+          },
+          {
+            "is_primary": false,
+            "kind": "historical",
+            "language": "zh-CN",
+            "source_ids": [
+              "source-panda-xing-xing"
+            ],
+            "value": "新星"
+          }
+        ],
+        "population_context": "captive",
+        "resolution": {
+          "auxiliary_features": {
+            "birth_date": null,
+            "birth_year": 2017,
+            "candidate_record_id": "changed-name",
+            "decision_kind": "merge",
+            "external_identifiers": [],
+            "institution_ids": [],
+            "is_group_observation": false,
+            "movement_institution_ids": [],
+            "parent_ids": [],
+            "parent_names": [],
+            "sex": null,
+            "source_relationship_ids": [],
+            "stable_wild_identifier": null
+          },
+          "candidate_panda_ids": [],
+          "confidence": "high",
+          "merged_from_ids": [],
+          "source_ids": [
+            "source-changed-name",
+            "source-panda-xing-xing"
+          ],
+          "split_from_id": null,
+          "state": "matched"
+        }
+      }
+    ],
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  },
+  "changesets": [],
+  "package_id": "identity-package-213cf365ccc9e481ada40b574b6af85f121021ef0a82d71660757acba8d69415",
+  "schema_version": "panda-atlas-identity-resolution/v1"
+}

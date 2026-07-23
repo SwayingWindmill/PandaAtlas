@@ -1,0 +1,70 @@
+{
+  "batch": {
+    "batch_id": "identity-batch-unresolved-name-only",
+    "created_at": "2026-07-23T00:00:00Z",
+    "decisions": [
+      {
+        "candidate_panda_ids": [
+          "panda-xing-xing"
+        ],
+        "canonical_panda_id": null,
+        "confidence": "low",
+        "created_panda_id": null,
+        "kind": "unresolved",
+        "public_eligible": false,
+        "rationale": [
+          "The candidate has a sourced name but no auxiliary identity feature.",
+          "Name-only records remain internal until identity evidence is added."
+        ],
+        "record_id": "name-only",
+        "scores": [
+          {
+            "confidence": "medium",
+            "evidence": [
+              {
+                "code": "name-match",
+                "conflict": false,
+                "detail": "Shared normalized name form: 星星.",
+                "label": "Name or alias match",
+                "weight": 400
+              },
+              {
+                "code": "population-context-match",
+                "conflict": false,
+                "detail": "Both records use population context captive.",
+                "label": "Population context match",
+                "weight": 30
+              }
+            ],
+            "hard_conflicts": [],
+            "panda_id": "panda-xing-xing",
+            "score": 430
+          }
+        ]
+      }
+    ],
+    "public_candidate_record_ids": [],
+    "review_record_ids": [],
+    "schema_version": "panda-atlas-identity-resolution/v1",
+    "summary": {
+      "candidate_count": 1,
+      "canonical_count": 1,
+      "create_count": 0,
+      "merge_count": 0,
+      "rejected_group_count": 0,
+      "review_count": 0,
+      "unresolved_count": 1
+    },
+    "unresolved_record_ids": [
+      "name-only"
+    ],
+    "validation_candidates": [],
+    "write_boundary": {
+      "publication_write_targets": [],
+      "trusted_write_targets": []
+    }
+  },
+  "changesets": [],
+  "package_id": "identity-package-700c0550b272640079c5d8c237687384c3dc7af7800c97dc7693971582b78e1e",
+  "schema_version": "panda-atlas-identity-resolution/v1"
+}
