@@ -1,0 +1,26 @@
+{
+  "dataset_release_version": "2026.07.24.2",
+  "files": {
+    "candidates.json": {
+      "bytes": 34529,
+      "sha256": "11da4f35869d5fe160a80da8d5d9f3944ca7a075dedae02f430b1a334600c0c5"
+    },
+    "coverage.json": {
+      "bytes": 238058,
+      "sha256": "5a6d1ef6619e3d307084d38ce89749d22aba62b6879387d5a29929ca15ed1a37"
+    },
+    "selections.json": {
+      "bytes": 9368,
+      "sha256": "8033dd2330d6a0bb91f7db3af5607321620b39a414ccf1310d3915c3c6e22a68"
+    }
+  },
+  "generated_at": "2026-07-24T06:00:00Z",
+  "inputs": {
+    "curation_media_sha256": "1f0b848f52d71e13b074616c92515c743aa63035a33746adcc14d460210edab6",
+    "curation_pandas_sha256": "fa613ba4380f223029be6663fefa2cde459a52f41ffd515ee5e4c2e09e444a3b",
+    "public_release_api_sha256": "2d5d9e6982c9f9e2f7d5a38863c5798b12fdd2aebd410bfe9c2df1cb1aa79125",
+    "public_release_manifest_sha256": "d2b3b6cc45ad5475e56df9d144bb6079fee01416201ebd3ea3fe8e4c72400b10",
+    "selection_overrides_sha256": "48b55af0cf2f87a248f0b9606d0ccd19c3db0c71a81a69c4050fbd84cbdd92c4"
+  },
+  "schema_version": 1
+}

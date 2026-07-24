@@ -41,8 +41,6 @@ export async function runPrivateCollectionGate() {
             ...isolatedApi,
             "python",
             "../../scripts/curation/validate_panda_curation.py",
-
-
           ]),
       },
       {
@@ -50,6 +48,18 @@ export async function runPrivateCollectionGate() {
         label: "Private collection media safety tests",
         dependsOn: ["curation-data"],
         run: () => runCommand("npm", ["run", "test:panda-media"]),
+      },
+      {
+        id: "media-library-contract",
+        label: "Dual media library contract tests",
+        dependsOn: ["curation-data", "media-pipeline"],
+        run: () => runCommand("npm", ["run", "test:media-library"]),
+      },
+      {
+        id: "media-library-data",
+        label: "Dual media library reproducibility",
+        dependsOn: ["media-library-contract"],
+        run: () => runCommand("npm", ["run", "check:media-library"]),
       },
       {
         id: "api-tests",
@@ -71,7 +81,12 @@ export async function runPrivateCollectionGate() {
       {
         id: "web-build",
         label: "Web production build",
-        dependsOn: ["web-typecheck", "api-tests", "media-pipeline"],
+        dependsOn: [
+          "web-typecheck",
+          "api-tests",
+          "media-pipeline",
+          "media-library-data",
+        ],
         run: () => runCommand("npm", ["run", "build:web"]),
       },
     ],
