@@ -40,6 +40,7 @@ test("Public Schema 1.2 binds one reviewed media identity across archive, API, s
     "derivatives",
     "height",
     "mime_type",
+    "presentation_role",
     "rights",
     "sha256",
     "source_url",

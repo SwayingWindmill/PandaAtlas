@@ -26,7 +26,7 @@
     "latest_snapshot_date", "layer", "legacy_slugs", "level", "license_state", "life_status", "locale",
     "localized_content", "locality", "max_age_days", "media", "media_release", "mime_type", "mother_id", "name",
     "name_en", "name_zh", "names", "notes", "panda_id", "pandas", "parent_id", "participants", "place_ids", "place_type", "places", "policy",
-    "precision", "primary", "projection_code_version", "properties", "province", "public_revision",
+    "precision", "presentation_role", "primary", "projection_code_version", "properties", "province", "public_revision",
     "public_schema_version", "publication_batch_id", "published_at", "publisher", "record_tier", "records",
     "release", "released_at", "residencies", "residency_type", "revision_summaries", "rights", "role", "search_terms", "sha256",
     "sex", "slug", "snapshot_date", "snapshots", "source_ids", "source_url", "sources", "stable_id", "start_date",

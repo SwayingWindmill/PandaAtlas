@@ -1,0 +1,4496 @@
+{
+  "media": [
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-a-bao-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-bao-bao-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+      "source_ids": []
+    },
+    {
+      "alt_en": "Bao Li in his habitat at Smithsonian's National Zoo",
+      "alt_zh": "宝力在史密森尼国家动物园的栖息地内",
+      "bytes": 166088,
+      "credit": "Melina Kolburn / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 35912,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "6a495a7d9d7d9442a90039e4330e78d4a72b17bdf7ea64667bb12e253bfd4464",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 166088,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "1cf700a6670abc2374f468da27a83655be6d8d44efd3f18bb15737d659314819",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-bao-li-ac4d18101cfe4209",
+      "mime_type": "image/webp",
+      "panda_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "1cf700a6670abc2374f468da27a83655be6d8d44efd3f18bb15737d659314819",
+      "source_ids": [
+        "src_commons_bao_li_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Bao_Li.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Bao Xin in the official 2021 newborn profile",
+      "alt_zh": "2021年新生幼仔档案中的宝新",
+      "bytes": 13586,
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 5264,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "713d834900166c53b6fea7189fe5420ad0ec05ef28057031a9a5c3a867cce3ed",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 13586,
+          "height": 533,
+          "kind": "width-800",
+          "mime_type": "image/webp",
+          "sha256": "3289de94d2e637357c2fdc955e23a7da1bdd9fc240cc13789c17568d5acb8d2f",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
+          "width": 800
+        }
+      ],
+      "height": 533,
+      "id": "media-bao-xin-d9b287dead5da1d6",
+      "mime_type": "image/webp",
+      "panda_id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+      "rights": "All rights reserved",
+      "sha256": "3289de94d2e637357c2fdc955e23a7da1bdd9fc240cc13789c17568d5acb8d2f",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh"
+      ],
+      "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
+      "width": 800
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-bei-bei-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-cheng-lan-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "6457a76c-827c-50f5-9306-075d80e8e1d0",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-da-mei-changsha-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "75e9524a-9baf-5454-af65-229fea00cd20",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-er-qiao-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-jin-xiao-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "13fce46c-feb1-5667-9aa3-290f5c296636",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-jing-liang-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "50afb182-8e05-5371-b341-253acb018792",
+      "source_ids": []
+    },
+    {
+      "alt_en": "Lei Lei and Xiao Xiao together in their habitat at Ueno Zoo",
+      "alt_zh": "蕾蕾与晓晓在上野动物园的栖息地内相伴",
+      "bytes": 161952,
+      "credit": "江戸村のとくぞう / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 31488,
+          "height": 390,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "55e84e692983374a629173cddfb0ca0927356e0b16b2b02b6ccb142e2b45b75c",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-lei-lei-0ab099655565d415-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 161952,
+          "height": 976,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "2fe959d611ea18e2804ab0c10708df11f6a04871d15e800761fe30f1151cb00a",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-lei-lei-0ab099655565d415-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 976,
+      "id": "media-lei-lei-0ab099655565d415",
+      "mime_type": "image/webp",
+      "panda_id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "2fe959d611ea18e2804ab0c10708df11f6a04871d15e800761fe30f1151cb00a",
+      "source_ids": [
+        "src_commons_lei_lei_xiao_xiao_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Lei_Lei_Xiao_Xiao_220610h.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-lei-lei-0ab099655565d415-w1200.webp",
+      "width": 1200
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-lun-hui-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "09ebb49d-7bbe-56d1-8059-f5008338eab7",
+      "source_ids": []
+    },
+    {
+      "alt_en": "Lun Lun sitting beside a wooden habitat structure at Zoo Atlanta",
+      "alt_zh": "伦伦坐在亚特兰大动物园的木质栖架旁",
+      "bytes": 130622,
+      "credit": "O01326 / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 34690,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "be926c7f103a290d67c611c26b68e7249e1a7521a9a4f9cee39852f21a88d91c",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 130622,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "a8e714b320935368572d87b1fb6bd7a754eabf906e4b537acf498ec13f8b63b1",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-lun-lun-a089c7f24bdfbc26",
+      "mime_type": "image/webp",
+      "panda_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "a8e714b320935368572d87b1fb6bd7a754eabf906e4b537acf498ec13f8b63b1",
+      "source_ids": [
+        "src_commons_lun_lun_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Lun_Lun_at_Zoo_Atlanta.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Mei Xiang in her habitat at Smithsonian's National Zoo",
+      "alt_zh": "美香在史密森尼国家动物园的栖息地内",
+      "bytes": 76854,
+      "credit": "O01326 / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 18818,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "819e17dc4b6a7151848c7fd5fab2563d2cb57ea39c8db91947dbdcc687d7c0de",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 76854,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "067ebe3e9b0de882bf5cee114eefbef6635917cfd0f2b480c7aa1384c998c99e",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-mei-xiang-bcb1f38935e569fa",
+      "mime_type": "image/webp",
+      "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+      "presentation_role": "primary",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "067ebe3e9b0de882bf5cee114eefbef6635917cfd0f2b480c7aa1384c998c99e",
+      "source_ids": [
+        "src_commons_mei_xiang_73ee1623"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mei_Xiang_at_Smithsonian%27s_National_Zoo.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+      "width": 1200
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-ni-ke-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "ca531a8b-63d2-5f16-9fbc-0e61e2e23297",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-ni-na-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "d2da42a3-7a0b-5384-aeb1-afaff1439894",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-pu-pu-shenyang-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "fd184343-de89-5e60-bb3b-0a5f780179d8",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-qi-fu-changsha-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "e8690164-c982-53c0-a837-377e649de435",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-qi-zhen-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+      "source_ids": []
+    },
+    {
+      "alt_en": "Probable Qing Bao eating bamboo in the snow at Smithsonian's National Zoo",
+      "alt_zh": "疑似青宝在史密森尼国家动物园的雪地中吃竹子",
+      "bytes": 169446,
+      "credit": "Mike Maguire / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 33342,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "62c35f22b5335e12bb03d31b860ba3e31ccce9ca4cd0251504502344042648ed",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 169446,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "bcc5138ce5499457b00f0cfe2732f49670a82b97f801d1421e46c368702cee06",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-qing-bao-2cc0071c570b363c",
+      "mime_type": "image/webp",
+      "panda_id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+      "rights": "CC BY 2.0",
+      "sha256": "bcc5138ce5499457b00f0cfe2732f49670a82b97f801d1421e46c368702cee06",
+      "source_ids": [
+        "src_commons_qing_bao_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Qing_Bao-5_-_54260941750.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "The 2017 Chengdu newborn cohort presentation; Qing Qing belongs to this cohort",
+      "alt_zh": "2017年成都基地新生幼仔集体亮相现场；青青属于该批次",
+      "bytes": 61812,
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 46836,
+          "height": 319,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "f8b8a73c5043287f3f94bfbeb5194c0aea359100e734cfecb2441545c438c11c",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 61812,
+          "height": 366,
+          "kind": "width-550",
+          "mime_type": "image/webp",
+          "sha256": "3859206f38f668f676680f85e359c7cfaaad20cb279f108c809822ad00805e65",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+          "width": 550
+        }
+      ],
+      "height": 366,
+      "id": "media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965",
+      "mime_type": "image/webp",
+      "panda_id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+      "rights": "All rights reserved",
+      "sha256": "3859206f38f668f676680f85e359c7cfaaad20cb279f108c809822ad00805e65",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh"
+      ],
+      "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+      "width": 550
+    },
+    {
+      "alt_en": "Ri Ri at Ueno Zoo",
+      "alt_zh": "力力在上野动物园",
+      "bytes": 180764,
+      "credit": "EleniXDD / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 49486,
+          "height": 360,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "2b38313c0a7b54725958328ab4b4c532be03dfe3e0caf86b136a577b15c81230",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-ri-ri-03e20f3f6a0e2db3-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 180764,
+          "height": 901,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "6c82d51b23005880d5121e1d310994dce18a1a28f495779e72f7a81b7ef7910d",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-ri-ri-03e20f3f6a0e2db3-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 901,
+      "id": "media-ri-ri-03e20f3f6a0e2db3",
+      "mime_type": "image/webp",
+      "panda_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "6c82d51b23005880d5121e1d310994dce18a1a28f495779e72f7a81b7ef7910d",
+      "source_ids": [
+        "src_commons_ri_ri_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ri_Ri.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-ri-ri-03e20f3f6a0e2db3-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Shin Shin eating bamboo at Ueno Zoo",
+      "alt_zh": "真真在上野动物园吃竹子",
+      "bytes": 282766,
+      "credit": "EleniXDD / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 60930,
+          "height": 360,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "d937360864bdae72e2fa093c5fa4ee244b9777e4b5b1b2543ca0b2931fe7561a",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 282766,
+          "height": 901,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 901,
+      "id": "media-shin-shin-6b36624de9829665",
+      "mime_type": "image/webp",
+      "panda_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
+      "source_ids": [
+        "src_commons_shin_shin_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Shin_Shin_03.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+      "width": 1200
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-tai-shan-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "96d00a39-7865-55db-b5c2-f339ef692258",
+      "source_ids": []
+    },
+    {
+      "display_mode": "link_to_source",
+      "id": "media-tian-tian-link-only",
+      "license_state": "source_link_only",
+      "panda_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+      "source_ids": [
+        "src_smithsonian_history"
+      ]
+    },
+    {
+      "alt_en": "Xi Lun sitting in her habitat at Zoo Atlanta",
+      "alt_zh": "喜伦在亚特兰大动物园的栖息地内坐着",
+      "bytes": 232944,
+      "credit": "O01326 / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 41100,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "512163b2e0abbdb809b70e244e1c08b9eee5d1dfc4a8f50284eb77f3d4fba134",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 232944,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "59646c0e1cca83a35fa76efface934feb490ccc5a58871e5dc518f6f2e7485f6",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-xi-lun-de9774371d2f2427",
+      "mime_type": "image/webp",
+      "panda_id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "59646c0e1cca83a35fa76efface934feb490ccc5a58871e5dc518f6f2e7485f6",
+      "source_ids": [
+        "src_commons_xi_lun_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 3)",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 3）",
+      "bytes": 153256,
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 35490,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "7eb2eb237e4ee6604f58b4ee63a09366b554906d171e5161376e57dcfdc2e040",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 153256,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "b7fa3fc8738608bec1e4992ee099bea458864e01cbac402d2a616e9748548d9d",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-xiao-qi-ji-34670f27407e384e",
+      "mime_type": "image/webp",
+      "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "presentation_role": "gallery",
+      "rights": "CC BY 2.0",
+      "sha256": "b7fa3fc8738608bec1e4992ee099bea458864e01cbac402d2a616e9748548d9d",
+      "source_ids": [
+        "src_commons_xiao_qi_ji_cdfdd7cc"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_3.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Xiao Qi Ji in his habitat at Smithsonian's National Zoo",
+      "alt_zh": "小奇迹在史密森尼国家动物园的栖息地内",
+      "bytes": 130924,
+      "credit": "O01326 / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 30568,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "e88ca9e02bab6bba6e089040e6968588a883dc7f474fdd1dbaf91b242529c941",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 130924,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "764ef77047bf3cd6475dbb735f38ddf1515ef09de43f1346feb303d499422b30",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-xiao-qi-ji-85ec96b328f90560",
+      "mime_type": "image/webp",
+      "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "presentation_role": "primary",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "764ef77047bf3cd6475dbb735f38ddf1515ef09de43f1346feb303d499422b30",
+      "source_ids": [
+        "src_commons_xiao_qi_ji_7c99cc1f"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Giant_Panda_Xiao_Qi_Ji_at_Smithsonian%27s_National_Zoo.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 1)",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 1）",
+      "bytes": 177014,
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 41908,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "e8f82d1d0a477e82c30e7fa813b26323faec5af431f26c0f5817bb2951c833b0",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 177014,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "fa52c8d621377ad8abc9c356ef5373ba8820d6b5cf0bb72045e325a1ea2d7d8b",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-xiao-qi-ji-b7275b67b18aabd1",
+      "mime_type": "image/webp",
+      "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "presentation_role": "gallery",
+      "rights": "CC BY 2.0",
+      "sha256": "fa52c8d621377ad8abc9c356ef5373ba8820d6b5cf0bb72045e325a1ea2d7d8b",
+      "source_ids": [
+        "src_commons_xiao_qi_ji_ba6b6fec"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_1.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 2)",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 2）",
+      "bytes": 192360,
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 39922,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "4f228f376f685e24a6ae27d0b39fde46f6c1f06366a8f2445e0c2ca8b231dbba",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 192360,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "f1b5c471d7ce3fdde6a16fe382d54bd20d74d14496a1131e6de893ac63af1801",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-xiao-qi-ji-c1a6a3b69b07b841",
+      "mime_type": "image/webp",
+      "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "presentation_role": "gallery",
+      "rights": "CC BY 2.0",
+      "sha256": "f1b5c471d7ce3fdde6a16fe382d54bd20d74d14496a1131e6de893ac63af1801",
+      "source_ids": [
+        "src_commons_xiao_qi_ji_5bf1a592"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_2.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother around an ice treat at Smithsonian's National Zoo",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲围绕冰食玩耍",
+      "bytes": 105276,
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 26142,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "3c52909abd0f28369da6ed20745cf775bd8c3905f7b5290bbfa79a0f0026236d",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 105276,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "328c6bf73e76883618051cead6faf3d76d8480701329db399855cd8c9e003bd5",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-xiao-qi-ji-efb017c7cc73e42b",
+      "mime_type": "image/webp",
+      "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "presentation_role": "gallery",
+      "rights": "CC BY 2.0",
+      "sha256": "328c6bf73e76883618051cead6faf3d76d8480701329db399855cd8c9e003bd5",
+      "source_ids": [
+        "src_commons_xiao_qi_ji_d905ec66"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_Mama_Panda_for_Ice_Treat_15.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "Xiao Xiao in his habitat at Ueno Zoo",
+      "alt_zh": "晓晓在上野动物园的栖息地内",
+      "bytes": 114184,
+      "credit": "江戸村のとくぞう / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 26032,
+          "height": 436,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "ceb36d0ecf06610f698262e9323c465fd485569c16f9c5cb76ed65593cadf3e6",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 114184,
+          "height": 1091,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 1091,
+      "id": "media-xiao-xiao-ae1f68080472412c",
+      "mime_type": "image/webp",
+      "panda_id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
+      "source_ids": [
+        "src_commons_xiao_xiao_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Xiao_Xiao_220518e.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+      "width": 1200
+    },
+    {
+      "alt_en": "The 2017 Chengdu newborn cohort presentation; Xiao Xin belongs to this cohort",
+      "alt_zh": "2017年成都基地新生幼仔集体亮相现场；小馨属于该批次",
+      "bytes": 40062,
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 31292,
+          "height": 319,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "6e1e5a60dccffe35dc4d93c6c4bcf14cbec7a0581cda9b07f01dc6fb20e628c2",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 40062,
+          "height": 366,
+          "kind": "width-550",
+          "mime_type": "image/webp",
+          "sha256": "8b7fe6ed854ca563489beecef3aec37a1f8d2478f6bf5d105047efc25f578fbd",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+          "width": 550
+        }
+      ],
+      "height": 366,
+      "id": "media-xiao-xin-chengdu-2017-d7629714a52880f0",
+      "mime_type": "image/webp",
+      "panda_id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+      "rights": "All rights reserved",
+      "sha256": "8b7fe6ed854ca563489beecef3aec37a1f8d2478f6bf5d105047efc25f578fbd",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh"
+      ],
+      "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+      "width": 550
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-xiao-yatou-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-ya-li-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "fcc89c7a-6046-5c2c-bcb4-bf1fb50182a1",
+      "source_ids": []
+    },
+    {
+      "alt_en": "Ya Lun sitting in her habitat at Zoo Atlanta",
+      "alt_zh": "雅伦在亚特兰大动物园的栖息地内坐着",
+      "bytes": 113818,
+      "credit": "O01326 / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 24312,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "76fff6de4f34f0ba9b309990e4a2c744bab40fea27d1d1a38bae70343a7f2c7c",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 113818,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-ya-lun-4006c2e608f8e671",
+      "mime_type": "image/webp",
+      "panda_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+      "source_ids": [
+        "src_commons_ya_lun_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+      "width": 1200
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-ya-song-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "0a60ed76-cee8-5c2d-ada7-8ec50b085471",
+      "source_ids": []
+    },
+    {
+      "alt_en": "Yang Yang resting in his habitat at Zoo Atlanta",
+      "alt_zh": "洋洋在亚特兰大动物园的栖息地内休息",
+      "bytes": 106314,
+      "credit": "O01326 / Wikimedia Commons",
+      "derivatives": [
+        {
+          "bytes": 23356,
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "29994d619b7d21af748b2ce87af3fc8839797923facda6c115febfa9e9c239fa",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 106314,
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "height": 800,
+      "id": "media-yang-yang-8e30a6c81892cbde",
+      "mime_type": "image/webp",
+      "panda_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+      "rights": "CC BY-SA 4.0",
+      "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+      "source_ids": [
+        "src_commons_yang_yang_photo"
+      ],
+      "source_url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+      "width": 1200
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-zhao-mei-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "51847c05-7342-5e4c-a5b5-c00d23f9a6be",
+      "source_ids": []
+    },
+    {
+      "alt_en": "Zhen Xi eating bamboo at the Chengdu Research Base",
+      "alt_zh": "珍喜在成都大熊猫繁育研究基地吃竹子",
+      "bytes": 137124,
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 42148,
+          "height": 270,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "41cf26b1248498a8202f66b817f62e693eb010e43afdc7417388a219c08d35f8",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w480.webp",
+          "width": 480
+        },
+        {
+          "bytes": 137124,
+          "height": 608,
+          "kind": "width-1080",
+          "mime_type": "image/webp",
+          "sha256": "6dfc787ae21e15954ee667f3e0e8ec589119a13f7d56ef60be06ee302878d622",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
+          "width": 1080
+        }
+      ],
+      "height": 608,
+      "id": "media-zhen-xi-00447d48441585a6",
+      "mime_type": "image/webp",
+      "panda_id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+      "rights": "All rights reserved",
+      "sha256": "6dfc787ae21e15954ee667f3e0e8ec589119a13f7d56ef60be06ee302878d622",
+      "source_ids": [
+        "src_chengdu_zhen_xi_visit_2024"
+      ],
+      "source_url": "https://www.panda.org.cn/cn/news/news/2024-04-02/8339.html",
+      "status": "available",
+      "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
+      "width": 1080
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-zhi-ma-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "939aed44-55a9-51e6-8f2e-c50866be3a6a",
+      "source_ids": []
+    },
+    {
+      "display_mode": "designed_empty_state",
+      "id": "media-zhi-shi-none",
+      "license_state": "no_licensed_media",
+      "panda_id": "907e93e2-d664-500f-b1b5-af06fd039172",
+      "source_ids": []
+    }
+  ],
+  "records": [
+    {
+      "aliases": [
+        {
+          "kind": "alternate_romanization",
+          "language": "en",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "Xian Nu"
+        },
+        {
+          "kind": "alternate_romanization",
+          "language": "en",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "Xin Xin"
+        }
+      ],
+      "canonical_slug": "shin-shin",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "2005 年出生于卧龙、2011 年抵达上野动物园的雌性大熊猫，是香香、晓晓和蕾蕾的母亲，2024 年返回雅安碧峰峡基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Female giant panda born in Wolong in 2005, mother of Xiang Xiang, Xiao Xiao, and Lei Lei, and returned from Ueno to Bifengxia Base in 2024.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "system": "tokyo_zoo_profile_key",
+          "value": "shin-shin"
+        }
+      ],
+      "id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "value": "shinshin"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Shin Shin eating bamboo at Ueno Zoo",
+          "alt_zh": "真真在上野动物园吃竹子",
+          "bytes": 282766,
+          "credit": "EleniXDD / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 60930,
+              "height": 360,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "d937360864bdae72e2fa093c5fa4ee244b9777e4b5b1b2543ca0b2931fe7561a",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 282766,
+              "height": 901,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 901,
+          "id": "media-shin-shin-6b36624de9829665",
+          "mime_type": "image/webp",
+          "panda_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "8b68b238d65f9b90a914db1b98e6e5e03f04d4042b65e3e6638b6f3174dddb29",
+          "source_ids": [
+            "src_commons_shin_shin_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Shin_Shin_03.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_shin_shin_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "真真"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "Shin Shin"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "lun-hui",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "轮辉，2021 年出生，收藏记录中的现居地为 Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Living Chengdu Panda Base male giant panda captured from GPG current and global living indexes; page 24 displays Wu Wu for the same href.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "09ebb49d-7bbe-56d1-8059-f5008338eab7",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6",
+            "src_gpg_meet_world_page_24"
+          ],
+          "value": "轮辉"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6",
+            "src_gpg_meet_world_page_24"
+          ],
+          "value": "Lun Hui / Wu Wu"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "ya-song",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "雅颂，2021 年出生，收藏记录中的现居地为 Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Living Chengdu Panda Base female giant panda captured from GPG current index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "0a60ed76-cee8-5c2d-ada7-8ec50b085471",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6"
+          ],
+          "value": "雅颂"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6"
+          ],
+          "value": "Ya Song"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "bao-xin",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "宝新是雄性大熊猫，2021年6月24日出生于成都大熊猫繁育研究基地，母亲为阿宝；2021年10月1日参加基地2021级新生幼仔线上亮相。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Bao Xin is a male giant panda born at the Chengdu Research Base on 2021-06-24 to mother A Bao. He joined the Base's online presentation of the 2021 newborn cohort on 2021-10-01.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
+      "external_identifiers": [],
+      "id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+      "legacy_slugs": [],
+      "life_status": "unknown",
+      "media": [
+        {
+          "alt_en": "Bao Xin in the official 2021 newborn profile",
+          "alt_zh": "2021年新生幼仔档案中的宝新",
+          "bytes": 13586,
+          "credit": "Chengdu Research Base of Giant Panda Breeding",
+          "derivatives": [
+            {
+              "bytes": 5264,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "713d834900166c53b6fea7189fe5420ad0ec05ef28057031a9a5c3a867cce3ed",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 13586,
+              "height": 533,
+              "kind": "width-800",
+              "mime_type": "image/webp",
+              "sha256": "3289de94d2e637357c2fdc955e23a7da1bdd9fc240cc13789c17568d5acb8d2f",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
+              "width": 800
+            }
+          ],
+          "height": 533,
+          "id": "media-bao-xin-d9b287dead5da1d6",
+          "mime_type": "image/webp",
+          "panda_id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+          "rights": "All rights reserved",
+          "sha256": "3289de94d2e637357c2fdc955e23a7da1bdd9fc240cc13789c17568d5acb8d2f",
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh"
+          ],
+          "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
+          "width": 800
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ],
+          "value": "宝新"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ],
+          "value": "Bao Xin"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "jin-xiao",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "金宵，2021 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Living giant panda captured from GPG global discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "13fce46c-feb1-5667-9aa3-290f5c296636",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_23"
+          ],
+          "value": "金宵"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_23"
+          ],
+          "value": "Jin Xiao"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "bei-bei",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "美香与添添之子，2015 年出生于史密森国家动物园，现居卧龙神树坪基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2015 and currently recorded at Wolong Shenshuping Base.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "system": "smithsonian_history_key",
+          "value": "bei-bei"
+        }
+      ],
+      "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "beibei"
+        }
+      ],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "贝贝"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Bei Bei"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Bèibèi"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、亲本、出生日期与现居基地的公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Public review of identity, parentage, birth date, and current facility."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "xiao-xiao",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "力力与真真之子，2021 年出生于上野动物园，与蕾蕾为双胞胎，2026 年返回雅安基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Son of Ri Ri and Shin Shin, born at Ueno Zoo in 2021, twin of Lei Lei, and returned to Ya'an Base in 2026.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "system": "tokyo_zoo_profile_key",
+          "value": "xiao-xiao"
+        }
+      ],
+      "id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "value": "xiaoxiao"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Xiao Xiao in his habitat at Ueno Zoo",
+          "alt_zh": "晓晓在上野动物园的栖息地内",
+          "bytes": 114184,
+          "credit": "江戸村のとくぞう / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 26032,
+              "height": 436,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "ceb36d0ecf06610f698262e9323c465fd485569c16f9c5cb76ed65593cadf3e6",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 114184,
+              "height": 1091,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 1091,
+          "id": "media-xiao-xiao-ae1f68080472412c",
+          "mime_type": "image/webp",
+          "panda_id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "bdc660eb0101f4f6913911905fb0d3c5b78f441abe5f3cff1c2292ecdc197bd5",
+          "source_ids": [
+            "src_commons_xiao_xiao_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Xiao_Xiao_220518e.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-xiao-xiao-ae1f68080472412c-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_xiao_xiao_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_twins_names_2021",
+            "src_ueno_xiaolei_return_2026"
+          ],
+          "value": "晓晓"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_twins_names_2021",
+            "src_ueno_xiaolei_return_2026"
+          ],
+          "value": "Xiao Xiao"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [
+        {
+          "kind": "historic_spelling",
+          "language": "en",
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Mei-Xiang"
+        }
+      ],
+      "canonical_slug": "mei-xiang",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "曾生活于史密森国家动物园的雌性大熊猫，是泰山、宝宝、贝贝和小奇迹的母亲。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Former Smithsonian female and mother of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "system": "smithsonian_history_key",
+          "value": "mei-xiang"
+        }
+      ],
+      "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "meixiang"
+        },
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "mei_xiang"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Mei Xiang in her habitat at Smithsonian's National Zoo",
+          "alt_zh": "美香在史密森尼国家动物园的栖息地内",
+          "bytes": 76854,
+          "credit": "O01326 / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 18818,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "819e17dc4b6a7151848c7fd5fab2563d2cb57ea39c8db91947dbdcc687d7c0de",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 76854,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "067ebe3e9b0de882bf5cee114eefbef6635917cfd0f2b480c7aa1384c998c99e",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-mei-xiang-bcb1f38935e569fa",
+          "mime_type": "image/webp",
+          "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+          "presentation_role": "primary",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "067ebe3e9b0de882bf5cee114eefbef6635917cfd0f2b480c7aa1384c998c99e",
+          "source_ids": [
+            "src_commons_mei_xiang_73ee1623"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Mei_Xiang_at_Smithsonian%27s_National_Zoo.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_mei_xiang_73ee1623"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "美香"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Mei Xiang"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Měixiāng"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生日期、居住记录、迁移事件与公开来源的首轮整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "First public review of identity, birth date, residencies, transfer events, and sources."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "xiao-xin-chengdu-2017",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "小馨是雌性大熊猫，2017年7月26日出生于成都大熊猫繁育研究基地，母亲为小丫头，初生体重115.4克；2017年9月参加基地新生幼仔集体亮相。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Xiao Xin is a female giant panda born at the Chengdu Research Base on 2017-07-26 to mother Xiao Yatou, with a recorded birth weight of 115.4 g. She joined the Base's 2017 newborn cohort presentation.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+      "external_identifiers": [],
+      "id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+      "legacy_slugs": [],
+      "life_status": "unknown",
+      "media": [
+        {
+          "alt_en": "The 2017 Chengdu newborn cohort presentation; Xiao Xin belongs to this cohort",
+          "alt_zh": "2017年成都基地新生幼仔集体亮相现场；小馨属于该批次",
+          "bytes": 40062,
+          "credit": "Chengdu Research Base of Giant Panda Breeding",
+          "derivatives": [
+            {
+              "bytes": 31292,
+              "height": 319,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "6e1e5a60dccffe35dc4d93c6c4bcf14cbec7a0581cda9b07f01dc6fb20e628c2",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 40062,
+              "height": 366,
+              "kind": "width-550",
+              "mime_type": "image/webp",
+              "sha256": "8b7fe6ed854ca563489beecef3aec37a1f8d2478f6bf5d105047efc25f578fbd",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+              "width": 550
+            }
+          ],
+          "height": 366,
+          "id": "media-xiao-xin-chengdu-2017-d7629714a52880f0",
+          "mime_type": "image/webp",
+          "panda_id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+          "rights": "All rights reserved",
+          "sha256": "8b7fe6ed854ca563489beecef3aec37a1f8d2478f6bf5d105047efc25f578fbd",
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+          "width": 550
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "小馨"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "Xiao Xin"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "er-qiao",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "成都基地官方新生幼仔档案确认二巧为青青的母亲。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "An official Chengdu newborn record identifies Er Qiao as the mother of Qing Qing.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+      "legacy_slugs": [],
+      "life_status": "unknown",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "二巧"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "Er Qiao"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Created an identity-first maternal relationship profile."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [
+        {
+          "kind": "historic_spelling",
+          "language": "en",
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Tian-Tian"
+        }
+      ],
+      "canonical_slug": "tian-tian",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "曾生活于史密森国家动物园的雄性大熊猫，是泰山、宝宝、贝贝和小奇迹的父亲。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Former Smithsonian male and father of Tai Shan, Bao Bao, Bei Bei, and Xiao Qi Ji.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "system": "smithsonian_history_key",
+          "value": "tian-tian"
+        }
+      ],
+      "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "tiantian"
+        },
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "tian_tian"
+        }
+      ],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "link_to_source",
+        "license_state": "source_link_only",
+        "source_ids": [
+          "src_smithsonian_history"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "添添"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Tian Tian"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Tiāntiān"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "bao-li",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "2021 年出生于四川，2024 年抵达史密森国家动物园，并于 2025 年 1 月公开亮相。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Born in Sichuan in 2021, arrived at the Smithsonian's National Zoo in 2024, and made his public debut in January 2025.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_giant_panda_page"
+          ],
+          "system": "smithsonian_profile_key",
+          "value": "bao-li"
+        }
+      ],
+      "id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq"
+          ],
+          "value": "baoli"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Bao Li in his habitat at Smithsonian's National Zoo",
+          "alt_zh": "宝力在史密森尼国家动物园的栖息地内",
+          "bytes": 166088,
+          "credit": "Melina Kolburn / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 35912,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "6a495a7d9d7d9442a90039e4330e78d4a72b17bdf7ea64667bb12e253bfd4464",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 166088,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "1cf700a6670abc2374f468da27a83655be6d8d44efd3f18bb15737d659314819",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-bao-li-ac4d18101cfe4209",
+          "mime_type": "image/webp",
+          "panda_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "1cf700a6670abc2374f468da27a83655be6d8d44efd3f18bb15737d659314819",
+          "source_ids": [
+            "src_commons_bao_li_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Bao_Li.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-bao-li-ac4d18101cfe4209-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_bao_li_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
+          ],
+          "value": "宝力"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
+          ],
+          "value": "Bao Li"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq"
+          ],
+          "value": "Bǎolì"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充出生地、抵达、公开亮相、现居场馆与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added birthplace, arrival, public debut, current habitat, and collection media."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "zhen-xi",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "珍喜是雌性大熊猫，2017年7月15日出生于成都大熊猫繁育研究基地，母亲为奇珍，初生体重168克；2017年9月参加新生幼仔集体亮相，2024年4月1日在星汉馆被基地官方记录到正在吃竹子。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Zhen Xi is a female giant panda born at the Chengdu Research Base on 2017-07-15 to mother Qi Zhen, with a recorded birth weight of 168 g. She joined the 2017 newborn cohort presentation and was officially observed eating bamboo at Xinghan Hall on 2024-04-01.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
+      "external_identifiers": [],
+      "id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Zhen Xi eating bamboo at the Chengdu Research Base",
+          "alt_zh": "珍喜在成都大熊猫繁育研究基地吃竹子",
+          "bytes": 137124,
+          "credit": "Chengdu Research Base of Giant Panda Breeding",
+          "derivatives": [
+            {
+              "bytes": 42148,
+              "height": 270,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "41cf26b1248498a8202f66b817f62e693eb010e43afdc7417388a219c08d35f8",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 137124,
+              "height": 608,
+              "kind": "width-1080",
+              "mime_type": "image/webp",
+              "sha256": "6dfc787ae21e15954ee667f3e0e8ec589119a13f7d56ef60be06ee302878d622",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
+              "width": 1080
+            }
+          ],
+          "height": 608,
+          "id": "media-zhen-xi-00447d48441585a6",
+          "mime_type": "image/webp",
+          "panda_id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+          "rights": "All rights reserved",
+          "sha256": "6dfc787ae21e15954ee667f3e0e8ec589119a13f7d56ef60be06ee302878d622",
+          "source_ids": [
+            "src_chengdu_zhen_xi_visit_2024"
+          ],
+          "source_url": "https://www.panda.org.cn/cn/news/news/2024-04-02/8339.html",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
+          "width": 1080
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_chengdu_zhen_xi_visit_2024"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
+          ],
+          "value": "珍喜"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
+          ],
+          "value": "Zhen Xi"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "lun-lun",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "曾生活于亚特兰大动物园的雌性大熊猫，是七只幼崽的母亲，2024 年返回成都基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Former Zoo Atlanta female, mother of seven cubs; returned to Chengdu in 2024.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_zooatlanta_lun_lun"
+          ],
+          "system": "zoo_atlanta_profile_key",
+          "value": "lun-lun"
+        }
+      ],
+      "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_zooatlanta_lun_lun"
+          ],
+          "value": "lunlun"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Lun Lun sitting beside a wooden habitat structure at Zoo Atlanta",
+          "alt_zh": "伦伦坐在亚特兰大动物园的木质栖架旁",
+          "bytes": 130622,
+          "credit": "O01326 / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 34690,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "be926c7f103a290d67c611c26b68e7249e1a7521a9a4f9cee39852f21a88d91c",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 130622,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "a8e714b320935368572d87b1fb6bd7a754eabf906e4b537acf498ec13f8b63b1",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-lun-lun-a089c7f24bdfbc26",
+          "mime_type": "image/webp",
+          "panda_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "a8e714b320935368572d87b1fb6bd7a754eabf906e4b537acf498ec13f8b63b1",
+          "source_ids": [
+            "src_commons_lun_lun_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Lun_Lun_at_Zoo_Atlanta.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-lun-lun-a089c7f24bdfbc26-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_lun_lun_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_lun_lun"
+          ],
+          "value": "伦伦"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_lun_lun"
+          ],
+          "value": "Lun Lun"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "jing-liang",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "晶亮，2017 年出生，收藏记录中的现居地为 Fuzhou Panda World, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Fuzhou Panda World giant panda captured from secondary discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "50afb182-8e05-5371-b341-253acb018792",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_fuzhou_profiles"
+          ],
+          "value": "晶亮"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_fuzhou_profiles"
+          ],
+          "value": "Jing Liang"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "zhao-mei",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "昭美，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Living giant panda captured from GPG global discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "51847c05-7342-5e4c-a5b5-c00d23f9a6be",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_9"
+          ],
+          "value": "昭美"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_9"
+          ],
+          "value": "Zhao Mei"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [
+        {
+          "kind": "alternate_romanization",
+          "language": "en",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "Bi Li"
+        },
+        {
+          "kind": "alternate_romanization",
+          "language": "en",
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "Li Li"
+        }
+      ],
+      "canonical_slug": "ri-ri",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "2005 年出生于卧龙、2011 年抵达上野动物园的雄性大熊猫，2024 年返回雅安碧峰峡基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Male giant panda born in Wolong in 2005, resident at Ueno Zoo from 2011, and returned to Bifengxia Base in 2024.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-ri-ri-03e20f3f6a0e2db3-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "system": "tokyo_zoo_profile_key",
+          "value": "ri-ri"
+        }
+      ],
+      "id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "value": "riri"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Ri Ri at Ueno Zoo",
+          "alt_zh": "力力在上野动物园",
+          "bytes": 180764,
+          "credit": "EleniXDD / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 49486,
+              "height": 360,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "2b38313c0a7b54725958328ab4b4c532be03dfe3e0caf86b136a577b15c81230",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-ri-ri-03e20f3f6a0e2db3-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 180764,
+              "height": 901,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "6c82d51b23005880d5121e1d310994dce18a1a28f495779e72f7a81b7ef7910d",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-ri-ri-03e20f3f6a0e2db3-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 901,
+          "id": "media-ri-ri-03e20f3f6a0e2db3",
+          "mime_type": "image/webp",
+          "panda_id": "57c0a1bd-cc44-5a08-ba48-f224e9956064",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "6c82d51b23005880d5121e1d310994dce18a1a28f495779e72f7a81b7ef7910d",
+          "source_ids": [
+            "src_commons_ri_ri_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Ri_Ri.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-ri-ri-03e20f3f6a0e2db3-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_ri_ri_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "力力"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_return_riri_shinshin"
+          ],
+          "value": "Ri Ri"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "cheng-lan",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "成兰，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Living Chengdu Panda Base male giant panda captured from GPG global living index page 18.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "6457a76c-827c-50f5-9306-075d80e8e1d0",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ],
+          "value": "成兰"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ],
+          "value": "Cheng Lan"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "xiao-yatou",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "成都基地官方新生幼仔档案确认小丫头为小馨的母亲。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "An official Chengdu newborn record identifies Xiao Yatou as the mother of Xiao Xin.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+      "legacy_slugs": [],
+      "life_status": "unknown",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "小丫头"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "Xiao Yatou"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Created an identity-first maternal relationship profile."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "da-mei-changsha",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "大美，2017 年出生，收藏记录中的现居地为 Changsha Ecological Zoo, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Changsha Ecological Zoo giant panda captured from secondary discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "75e9524a-9baf-5454-af65-229fea00cd20",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_changsha_profiles"
+          ],
+          "value": "大美"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_changsha_profiles"
+          ],
+          "value": "Da Mei"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "a-bao",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "成都基地官方新生幼仔档案确认阿宝为宝新的母亲。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "An official Chengdu newborn record identifies A Bao as the mother of Bao Xin.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+      "legacy_slugs": [],
+      "life_status": "unknown",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ],
+          "value": "阿宝"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ],
+          "value": "A Bao"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Created an identity-first maternal relationship profile."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "bao-bao",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "美香与添添之女，2013 年出生于史密森国家动物园，也是宝力的母亲。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Daughter of Mei Xiang and Tian Tian, born at the Smithsonian in 2013, and mother of Bao Li.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "system": "smithsonian_history_key",
+          "value": "bao-bao"
+        }
+      ],
+      "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "baobao-smithsonian"
+        }
+      ],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "宝宝"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Bao Bao"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Bǎobǎo"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、亲本、出生日期、子代关系与国家级现居记录的公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Public review of identity, parentage, birth date, offspring relationship, and country-level current residency."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "zhi-shi",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "芝士，2017 年出生，收藏记录中的现居地为 Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Sun Island Giant Panda Pavilion giant panda captured from secondary discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "907e93e2-d664-500f-b1b5-af06fd039172",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ],
+          "value": "芝士"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ],
+          "value": "Zhi Shi"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "xiao-qi-ji",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "美香与添添之子，2020 年出生于史密森国家动物园，并于 2023 年随父母返回中国。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2020 and returned to China with his parents in 2023.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "system": "smithsonian_history_key",
+          "value": "xiao-qi-ji"
+        }
+      ],
+      "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "xiaoqiji"
+        },
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "xiao_qi_ji"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Xiao Qi Ji in his habitat at Smithsonian's National Zoo",
+          "alt_zh": "小奇迹在史密森尼国家动物园的栖息地内",
+          "bytes": 130924,
+          "credit": "O01326 / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 30568,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "e88ca9e02bab6bba6e089040e6968588a883dc7f474fdd1dbaf91b242529c941",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 130924,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "764ef77047bf3cd6475dbb735f38ddf1515ef09de43f1346feb303d499422b30",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-xiao-qi-ji-85ec96b328f90560",
+          "mime_type": "image/webp",
+          "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+          "presentation_role": "primary",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "764ef77047bf3cd6475dbb735f38ddf1515ef09de43f1346feb303d499422b30",
+          "source_ids": [
+            "src_commons_xiao_qi_ji_7c99cc1f"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Giant_Panda_Xiao_Qi_Ji_at_Smithsonian%27s_National_Zoo.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+          "width": 1200
+        },
+        {
+          "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 3)",
+          "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 3）",
+          "bytes": 153256,
+          "credit": "Amaury Laporte / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 35490,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "7eb2eb237e4ee6604f58b4ee63a09366b554906d171e5161376e57dcfdc2e040",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 153256,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "b7fa3fc8738608bec1e4992ee099bea458864e01cbac402d2a616e9748548d9d",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-xiao-qi-ji-34670f27407e384e",
+          "mime_type": "image/webp",
+          "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+          "presentation_role": "gallery",
+          "rights": "CC BY 2.0",
+          "sha256": "b7fa3fc8738608bec1e4992ee099bea458864e01cbac402d2a616e9748548d9d",
+          "source_ids": [
+            "src_commons_xiao_qi_ji_cdfdd7cc"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_3.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w1200.webp",
+          "width": 1200
+        },
+        {
+          "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 1)",
+          "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 1）",
+          "bytes": 177014,
+          "credit": "Amaury Laporte / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 41908,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "e8f82d1d0a477e82c30e7fa813b26323faec5af431f26c0f5817bb2951c833b0",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 177014,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "fa52c8d621377ad8abc9c356ef5373ba8820d6b5cf0bb72045e325a1ea2d7d8b",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-xiao-qi-ji-b7275b67b18aabd1",
+          "mime_type": "image/webp",
+          "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+          "presentation_role": "gallery",
+          "rights": "CC BY 2.0",
+          "sha256": "fa52c8d621377ad8abc9c356ef5373ba8820d6b5cf0bb72045e325a1ea2d7d8b",
+          "source_ids": [
+            "src_commons_xiao_qi_ji_ba6b6fec"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_1.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w1200.webp",
+          "width": 1200
+        },
+        {
+          "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 2)",
+          "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 2）",
+          "bytes": 192360,
+          "credit": "Amaury Laporte / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 39922,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "4f228f376f685e24a6ae27d0b39fde46f6c1f06366a8f2445e0c2ca8b231dbba",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 192360,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "f1b5c471d7ce3fdde6a16fe382d54bd20d74d14496a1131e6de893ac63af1801",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-xiao-qi-ji-c1a6a3b69b07b841",
+          "mime_type": "image/webp",
+          "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+          "presentation_role": "gallery",
+          "rights": "CC BY 2.0",
+          "sha256": "f1b5c471d7ce3fdde6a16fe382d54bd20d74d14496a1131e6de893ac63af1801",
+          "source_ids": [
+            "src_commons_xiao_qi_ji_5bf1a592"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_2.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w1200.webp",
+          "width": 1200
+        },
+        {
+          "alt_en": "Xiao Qi Ji playing with his mother around an ice treat at Smithsonian's National Zoo",
+          "alt_zh": "小奇迹在史密森尼国家动物园与母亲围绕冰食玩耍",
+          "bytes": 105276,
+          "credit": "Amaury Laporte / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 26142,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "3c52909abd0f28369da6ed20745cf775bd8c3905f7b5290bbfa79a0f0026236d",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 105276,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "328c6bf73e76883618051cead6faf3d76d8480701329db399855cd8c9e003bd5",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-xiao-qi-ji-efb017c7cc73e42b",
+          "mime_type": "image/webp",
+          "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+          "presentation_role": "gallery",
+          "rights": "CC BY 2.0",
+          "sha256": "328c6bf73e76883618051cead6faf3d76d8480701329db399855cd8c9e003bd5",
+          "source_ids": [
+            "src_commons_xiao_qi_ji_d905ec66"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_Mama_Panda_for_Ice_Treat_15.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_xiao_qi_ji_5bf1a592",
+          "src_commons_xiao_qi_ji_7c99cc1f",
+          "src_commons_xiao_qi_ji_ba6b6fec",
+          "src_commons_xiao_qi_ji_cdfdd7cc",
+          "src_commons_xiao_qi_ji_d905ec66"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "小奇迹"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Xiao Qi Ji"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Xiǎoqíjì"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、亲本、出生日期、多人回国事件与现居基地的公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Public review of identity, parentage, birth date, shared return event, and current facility."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "zhi-ma",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "芝麻，2017 年出生，收藏记录中的现居地为 Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Sun Island Giant Panda Pavilion giant panda captured from secondary discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "939aed44-55a9-51e6-8f2e-c50866be3a6a",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ],
+          "value": "芝麻"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ],
+          "value": "Zhi Ma"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "tai-shan",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "美香与添添之子，2005 年出生于史密森国家动物园，现有公开证据仅确认其已返回中国。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Son of Mei Xiang and Tian Tian, born at the Smithsonian in 2005; current public evidence confirms only his return to China.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "system": "smithsonian_history_key",
+          "value": "tai-shan"
+        }
+      ],
+      "id": "96d00a39-7865-55db-b5c2-f339ef692258",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "taishan"
+        }
+      ],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "泰山"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Tai Shan"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_history"
+          ],
+          "value": "Tàishān"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、亲本、出生日期与国家级现居记录的公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Public review of identity, parentage, birth date, and country-level current residency."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "qi-zhen",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "成都基地官方新生幼仔档案确认奇珍为珍喜的母亲。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "An official Chengdu newborn record identifies Qi Zhen as the mother of Zhen Xi.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+      "legacy_slugs": [],
+      "life_status": "unknown",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
+          ],
+          "value": "奇珍"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
+          ],
+          "value": "Qi Zhen"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Created an identity-first maternal relationship profile."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "lei-lei",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "力力与真真之女，2021 年出生于上野动物园，与晓晓为双胞胎，2026 年返回雅安基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Daughter of Ri Ri and Shin Shin, born at Ueno Zoo in 2021, twin of Xiao Xiao, and returned to Ya'an Base in 2026.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-lei-lei-0ab099655565d415-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "system": "tokyo_zoo_profile_key",
+          "value": "lei-lei"
+        }
+      ],
+      "id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history"
+          ],
+          "value": "leilei"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Lei Lei and Xiao Xiao together in their habitat at Ueno Zoo",
+          "alt_zh": "蕾蕾与晓晓在上野动物园的栖息地内相伴",
+          "bytes": 161952,
+          "credit": "江戸村のとくぞう / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 31488,
+              "height": 390,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "55e84e692983374a629173cddfb0ca0927356e0b16b2b02b6ccb142e2b45b75c",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-lei-lei-0ab099655565d415-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 161952,
+              "height": 976,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "2fe959d611ea18e2804ab0c10708df11f6a04871d15e800761fe30f1151cb00a",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-lei-lei-0ab099655565d415-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 976,
+          "id": "media-lei-lei-0ab099655565d415",
+          "mime_type": "image/webp",
+          "panda_id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "2fe959d611ea18e2804ab0c10708df11f6a04871d15e800761fe30f1151cb00a",
+          "source_ids": [
+            "src_commons_lei_lei_xiao_xiao_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Ailuropoda_melanoleuca_Lei_Lei_Xiao_Xiao_220610h.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.2/media-lei-lei-0ab099655565d415-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_lei_lei_xiao_xiao_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_twins_names_2021",
+            "src_ueno_xiaolei_return_2026"
+          ],
+          "value": "蕾蕾"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_tokyo_zoo_ueno_panda_history",
+            "src_ueno_twins_names_2021",
+            "src_ueno_xiaolei_return_2026"
+          ],
+          "value": "Lei Lei"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "ni-ke",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "妮可，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Living Chengdu Panda Base male giant panda captured from GPG global living index page 18.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "ca531a8b-63d2-5f16-9fbc-0e61e2e23297",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ],
+          "value": "妮可"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ],
+          "value": "Ni Ke"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "xi-lun",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，与雅伦为双胞胎，2024 年返回成都基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Daughter of Lun Lun and Yang Yang, born at Zoo Atlanta in 2016, twin of Ya Lun, and returned to Chengdu in 2024.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ],
+          "system": "zoo_atlanta_profile_key",
+          "value": "xi-lun"
+        }
+      ],
+      "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ],
+          "value": "xilun"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Xi Lun sitting in her habitat at Zoo Atlanta",
+          "alt_zh": "喜伦在亚特兰大动物园的栖息地内坐着",
+          "bytes": 232944,
+          "credit": "O01326 / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 41100,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "512163b2e0abbdb809b70e244e1c08b9eee5d1dfc4a8f50284eb77f3d4fba134",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 232944,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "59646c0e1cca83a35fa76efface934feb490ccc5a58871e5dc518f6f2e7485f6",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-xi-lun-de9774371d2f2427",
+          "mime_type": "image/webp",
+          "panda_id": "d24087cd-70d6-5902-92dd-ecc95186937b",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "59646c0e1cca83a35fa76efface934feb490ccc5a58871e5dc518f6f2e7485f6",
+          "source_ids": [
+            "src_commons_xi_lun_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_xi_lun_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names"
+          ],
+          "value": "喜伦"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names"
+          ],
+          "value": "Xi Lun"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的公开审核。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "ni-na",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "妮娜，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Living Chengdu Panda Base female giant panda captured from GPG global living index page 18.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "d2da42a3-7a0b-5384-aeb1-afaff1439894",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ],
+          "value": "妮娜"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ],
+          "value": "Ni Na"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "qing-bao",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "2021 年出生于四川，2024 年抵达史密森国家动物园，并于 2025 年 1 月公开亮相。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Born in Sichuan in 2021, arrived at the Smithsonian's National Zoo in 2024, and made her public debut in January 2025.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_smithsonian_giant_panda_page"
+          ],
+          "system": "smithsonian_profile_key",
+          "value": "qing-bao"
+        }
+      ],
+      "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq"
+          ],
+          "value": "qingbao"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Probable Qing Bao eating bamboo in the snow at Smithsonian's National Zoo",
+          "alt_zh": "疑似青宝在史密森尼国家动物园的雪地中吃竹子",
+          "bytes": 169446,
+          "credit": "Mike Maguire / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 33342,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "62c35f22b5335e12bb03d31b860ba3e31ccce9ca4cd0251504502344042648ed",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 169446,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "bcc5138ce5499457b00f0cfe2732f49670a82b97f801d1421e46c368702cee06",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-qing-bao-2cc0071c570b363c",
+          "mime_type": "image/webp",
+          "panda_id": "d56dffc3-941c-5640-983d-4f4959c97e03",
+          "rights": "CC BY 2.0",
+          "sha256": "bcc5138ce5499457b00f0cfe2732f49670a82b97f801d1421e46c368702cee06",
+          "source_ids": [
+            "src_commons_qing_bao_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Qing_Bao-5_-_54260941750.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.23.1/media-qing-bao-2cc0071c570b363c-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_qing_bao_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
+          ],
+          "value": "青宝"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq",
+            "src_smithsonian_giant_panda_page",
+            "src_smithsonian_history"
+          ],
+          "value": "Qing Bao"
+        },
+        {
+          "kind": "pinyin",
+          "language": "pinyin",
+          "primary": true,
+          "source_ids": [
+            "src_smithsonian_giant_panda_faq"
+          ],
+          "value": "Qīngbǎo"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充出生地、抵达、公开亮相、现居场馆与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added birthplace, arrival, public debut, current habitat, and collection media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "yang-yang",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "曾生活于亚特兰大动物园的雄性大熊猫，是七只幼崽的父亲，2024 年返回成都基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Former Zoo Atlanta male, father of seven cubs; returned to Chengdu in 2024.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_zooatlanta_yang_yang"
+          ],
+          "system": "zoo_atlanta_profile_key",
+          "value": "yang-yang"
+        }
+      ],
+      "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_zooatlanta_yang_yang"
+          ],
+          "value": "yangyang"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Yang Yang resting in his habitat at Zoo Atlanta",
+          "alt_zh": "洋洋在亚特兰大动物园的栖息地内休息",
+          "bytes": 106314,
+          "credit": "O01326 / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 23356,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "29994d619b7d21af748b2ce87af3fc8839797923facda6c115febfa9e9c239fa",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 106314,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-yang-yang-8e30a6c81892cbde",
+          "mime_type": "image/webp",
+          "panda_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "27fc253e44cdc6b908e0d48b933de1bd0b078a4c511abcab1c681cc412148976",
+          "source_ids": [
+            "src_commons_yang_yang_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Yang_Yang_at_Zoo_Atlanta.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-yang-yang-8e30a6c81892cbde-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_yang_yang_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_yang_yang"
+          ],
+          "value": "洋洋"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_yang_yang"
+          ],
+          "value": "Yang Yang"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ],
+      "sex": "male"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "qi-fu-changsha",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "奇福，2008 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Former Changsha Ecological Zoo giant panda captured from secondary discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "e8690164-c982-53c0-a837-377e649de435",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_changsha_profiles"
+          ],
+          "value": "奇福"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_changsha_profiles"
+          ],
+          "value": "Qi Fu"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "ya-lun",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "伦伦与洋洋之女，2016 年出生于亚特兰大动物园，2024 年返回成都基地。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Daughter of Lun Lun and Yang Yang; born in Atlanta in 2016 and returned in 2024.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+      "external_identifiers": [
+        {
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ],
+          "system": "zoo_atlanta_profile_key",
+          "value": "ya-lun"
+        }
+      ],
+      "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+      "legacy_slugs": [
+        {
+          "source_ids": [
+            "src_zooatlanta_cubs_birth"
+          ],
+          "value": "yalun"
+        }
+      ],
+      "life_status": "alive",
+      "media": [
+        {
+          "alt_en": "Ya Lun sitting in her habitat at Zoo Atlanta",
+          "alt_zh": "雅伦在亚特兰大动物园的栖息地内坐着",
+          "bytes": 113818,
+          "credit": "O01326 / Wikimedia Commons",
+          "derivatives": [
+            {
+              "bytes": 24312,
+              "height": 320,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "76fff6de4f34f0ba9b309990e4a2c744bab40fea27d1d1a38bae70343a7f2c7c",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 113818,
+              "height": 800,
+              "kind": "width-1200",
+              "mime_type": "image/webp",
+              "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+              "width": 1200
+            }
+          ],
+          "height": 800,
+          "id": "media-ya-lun-4006c2e608f8e671",
+          "mime_type": "image/webp",
+          "panda_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
+          "rights": "CC BY-SA 4.0",
+          "sha256": "ed3da4dafc03ad635ca30302b4fad4aa5b0e00aca20b0fc5746d2946ec3a75ff",
+          "source_ids": [
+            "src_commons_ya_lun_photo"
+          ],
+          "source_url": "https://commons.wikimedia.org/wiki/File:Ya_Lun_at_Zoo_Atlanta.jpg",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.20.1/media-ya-lun-4006c2e608f8e671-w1200.webp",
+          "width": 1200
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_commons_ya_lun_photo"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names"
+          ],
+          "value": "雅伦"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_zooatlanta_arrival_china_2024",
+            "src_zooatlanta_cubs_birth",
+            "src_zooatlanta_twins_names"
+          ],
+          "value": "Ya Lun"
+        }
+      ],
+      "record_tier": "complete_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "完成身份、出生、居住、事件、亲缘与授权照片的首轮公开整理。"
+        },
+        {
+          "locale": "en",
+          "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "qing-qing-chengdu-2017-07-26",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "青青是雌性大熊猫，2017年7月26日出生于成都大熊猫繁育研究基地，母亲为二巧，初生体重144克；2017年9月参加基地新生幼仔集体亮相。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Qing Qing is a female giant panda born at the Chengdu Research Base on 2017-07-26 to mother Er Qiao, with a recorded birth weight of 144 g. She joined the Base's 2017 newborn cohort presentation.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+      "external_identifiers": [],
+      "id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+      "legacy_slugs": [],
+      "life_status": "unknown",
+      "media": [
+        {
+          "alt_en": "The 2017 Chengdu newborn cohort presentation; Qing Qing belongs to this cohort",
+          "alt_zh": "2017年成都基地新生幼仔集体亮相现场；青青属于该批次",
+          "bytes": 61812,
+          "credit": "Chengdu Research Base of Giant Panda Breeding",
+          "derivatives": [
+            {
+              "bytes": 46836,
+              "height": 319,
+              "kind": "width-480",
+              "mime_type": "image/webp",
+              "sha256": "f8b8a73c5043287f3f94bfbeb5194c0aea359100e734cfecb2441545c438c11c",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w480.webp",
+              "width": 480
+            },
+            {
+              "bytes": 61812,
+              "height": 366,
+              "kind": "width-550",
+              "mime_type": "image/webp",
+              "sha256": "3859206f38f668f676680f85e359c7cfaaad20cb279f108c809822ad00805e65",
+              "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+              "width": 550
+            }
+          ],
+          "height": 366,
+          "id": "media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965",
+          "mime_type": "image/webp",
+          "panda_id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+          "rights": "All rights reserved",
+          "sha256": "3859206f38f668f676680f85e359c7cfaaad20cb279f108c809822ad00805e65",
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+          "status": "available",
+          "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+          "width": 550
+        }
+      ],
+      "media_release": {
+        "display_mode": "gallery",
+        "license_state": "licensed",
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh"
+        ]
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "青青"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ],
+          "value": "Qing Qing"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "ya-li",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "雅莉，2009 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Former Guangzhou Zoo giant panda captured from secondary discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "fcc89c7a-6046-5c2c-bcb4-bf1fb50182a1",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_guangzhou_profiles"
+          ],
+          "value": "雅莉"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_guangzhou_profiles"
+          ],
+          "value": "Ya Li"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    },
+    {
+      "aliases": [],
+      "canonical_slug": "pu-pu-shenyang",
+      "content": [
+        {
+          "locale": "zh-CN",
+          "summary": "噗噗，2014 年出生，收藏记录中的现居地为 Shenyang Forest Zoo, Shenyang, Liaoning Province, China。",
+          "translation_status": "approved"
+        },
+        {
+          "locale": "en",
+          "summary": "Former CCRCGP Ya'an Base giant panda listed at Shenyang Forest Zoo in secondary discovery index.",
+          "translation_status": "approved"
+        }
+      ],
+      "cover_image_url": null,
+      "external_identifiers": [],
+      "id": "fd184343-de89-5e60-bb3b-0a5f780179d8",
+      "legacy_slugs": [],
+      "life_status": "alive",
+      "media": [],
+      "media_release": {
+        "display_mode": "designed_empty_state",
+        "license_state": "no_licensed_media",
+        "source_ids": []
+      },
+      "names": [
+        {
+          "kind": "official",
+          "language": "zh-Hans",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_yaan_base_previous_page_7"
+          ],
+          "value": "噗噗"
+        },
+        {
+          "kind": "official_romanization",
+          "language": "en",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_yaan_base_previous_page_7"
+          ],
+          "value": "Pu Pu"
+        }
+      ],
+      "record_tier": "identity_first_pass",
+      "revision_summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ],
+      "sex": "female"
+    }
+  ],
+  "release": {
+    "database_migration_version": "0007",
+    "dataset_release_version": "2026.07.24.3",
+    "projection_code_version": "smithsonian-commons-media-v1",
+    "public_schema_version": "1.2.0",
+    "publication_batch_id": "smithsonian-commons-media-2026-07-24",
+    "released_at": "2026-07-24T13:00:00Z"
+  }
+}

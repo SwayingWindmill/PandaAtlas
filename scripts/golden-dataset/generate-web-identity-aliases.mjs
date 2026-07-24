@@ -354,6 +354,9 @@ export function buildTrustedPandaDetails(dataset) {
         .map((media) => ({
           id: media.id,
           panda_id: media.public.panda_id ?? null,
+          ...(media.public.presentation_role
+            ? { presentation_role: media.public.presentation_role }
+            : {}),
           url: media.public.url ?? null,
           source_url: media.public.source_url ?? null,
           rights: media.public.rights ?? null,
@@ -370,7 +373,12 @@ export function buildTrustedPandaDetails(dataset) {
           source_ids: (media.public.source_ids ?? []).filter(
             (sourceId) => publishedSourceIds.has(sourceId),
           ),
-        }));
+        }))
+        .sort((left, right) =>
+          Number(left.status !== "available") - Number(right.status !== "available")
+          || Number(left.presentation_role !== "primary") - Number(right.presentation_role !== "primary")
+          || left.id.localeCompare(right.id)
+        );
       for (const sourceId of mediaAssets.flatMap((media) => media.source_ids)) {
         sourceIds.add(sourceId);
       }

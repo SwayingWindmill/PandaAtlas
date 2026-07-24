@@ -1,0 +1,266 @@
+{
+  "batch_version": "2026.07.24.3",
+  "record_count": 6,
+  "records": [
+    {
+      "alt_en": "Mei Xiang in her habitat at Smithsonian's National Zoo",
+      "alt_zh": "美香在史密森尼国家动物园的栖息地内",
+      "asset": "https://upload.wikimedia.org/wikipedia/commons/1/14/Mei_Xiang_at_Smithsonian%27s_National_Zoo.jpg",
+      "candidate_id": "commons-candidate-73ee162326e52f8d7f6bb4aa",
+      "credit": "O01326 / Wikimedia Commons",
+      "curator_role": "primary",
+      "derivatives": [
+        {
+          "bytes": 18818,
+          "filename": "media-mei-xiang-bcb1f38935e569fa-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "819e17dc4b6a7151848c7fd5fab2563d2cb57ea39c8db91947dbdcc687d7c0de",
+          "width": 480
+        },
+        {
+          "bytes": 76854,
+          "filename": "media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "067ebe3e9b0de882bf5cee114eefbef6635917cfd0f2b480c7aa1384c998c99e",
+          "width": 1200
+        }
+      ],
+      "identity_confidence": 0.95,
+      "media_id": "media-mei-xiang-bcb1f38935e569fa",
+      "original": {
+        "bytes": 16946734,
+        "height": 3648,
+        "mime_type": "image/jpeg",
+        "path": "originals/media-mei-xiang-bcb1f38935e569fa.jpg",
+        "sha256": "2b6dfcd1778368b042bdf2896380889df715dcb5885fd058276181a9862f8874",
+        "width": 5472
+      },
+      "panda_slug": "mei-xiang",
+      "rights": "CC BY-SA 4.0",
+      "rights_confidence": 0.95,
+      "source_id": "src_commons_mei_xiang_73ee1623",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mei_Xiang_at_Smithsonian%27s_National_Zoo.jpg"
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 2)",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 2）",
+      "asset": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_2.jpg",
+      "candidate_id": "commons-candidate-5bf1a592b3376ff690ec0f73",
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "curator_role": "gallery",
+      "derivatives": [
+        {
+          "bytes": 39922,
+          "filename": "media-xiao-qi-ji-c1a6a3b69b07b841-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "4f228f376f685e24a6ae27d0b39fde46f6c1f06366a8f2445e0c2ca8b231dbba",
+          "width": 480
+        },
+        {
+          "bytes": 192360,
+          "filename": "media-xiao-qi-ji-c1a6a3b69b07b841-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "f1b5c471d7ce3fdde6a16fe382d54bd20d74d14496a1131e6de893ac63af1801",
+          "width": 1200
+        }
+      ],
+      "identity_confidence": 0.85,
+      "media_id": "media-xiao-qi-ji-c1a6a3b69b07b841",
+      "original": {
+        "bytes": 9036827,
+        "height": 4000,
+        "mime_type": "image/jpeg",
+        "path": "originals/media-xiao-qi-ji-c1a6a3b69b07b841.jpg",
+        "sha256": "36148511f2577c258e3c4ebfef5613e6ef89088d1e8d4f9635253fa87b252fae",
+        "width": 6000
+      },
+      "panda_slug": "xiao-qi-ji",
+      "rights": "CC BY 2.0",
+      "rights_confidence": 0.95,
+      "source_id": "src_commons_xiao_qi_ji_5bf1a592",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_2.jpg"
+    },
+    {
+      "alt_en": "Xiao Qi Ji in his habitat at Smithsonian's National Zoo",
+      "alt_zh": "小奇迹在史密森尼国家动物园的栖息地内",
+      "asset": "https://upload.wikimedia.org/wikipedia/commons/7/72/Giant_Panda_Xiao_Qi_Ji_at_Smithsonian%27s_National_Zoo.jpg",
+      "candidate_id": "commons-candidate-7c99cc1fb00e3519f119e770",
+      "credit": "O01326 / Wikimedia Commons",
+      "curator_role": "primary",
+      "derivatives": [
+        {
+          "bytes": 30568,
+          "filename": "media-xiao-qi-ji-85ec96b328f90560-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "e88ca9e02bab6bba6e089040e6968588a883dc7f474fdd1dbaf91b242529c941",
+          "width": 480
+        },
+        {
+          "bytes": 130924,
+          "filename": "media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "764ef77047bf3cd6475dbb735f38ddf1515ef09de43f1346feb303d499422b30",
+          "width": 1200
+        }
+      ],
+      "identity_confidence": 0.95,
+      "media_id": "media-xiao-qi-ji-85ec96b328f90560",
+      "original": {
+        "bytes": 16518783,
+        "height": 3648,
+        "mime_type": "image/jpeg",
+        "path": "originals/media-xiao-qi-ji-85ec96b328f90560.jpg",
+        "sha256": "f2332c8f774add8a130e5eb60b236641f80c240fc527551725c1be73073693c1",
+        "width": 5472
+      },
+      "panda_slug": "xiao-qi-ji",
+      "rights": "CC BY-SA 4.0",
+      "rights_confidence": 0.95,
+      "source_id": "src_commons_xiao_qi_ji_7c99cc1f",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Giant_Panda_Xiao_Qi_Ji_at_Smithsonian%27s_National_Zoo.jpg"
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 1)",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 1）",
+      "asset": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_1.jpg",
+      "candidate_id": "commons-candidate-ba6b6fecf09aa90d296dd228",
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "curator_role": "gallery",
+      "derivatives": [
+        {
+          "bytes": 41908,
+          "filename": "media-xiao-qi-ji-b7275b67b18aabd1-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "e8f82d1d0a477e82c30e7fa813b26323faec5af431f26c0f5817bb2951c833b0",
+          "width": 480
+        },
+        {
+          "bytes": 177014,
+          "filename": "media-xiao-qi-ji-b7275b67b18aabd1-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "fa52c8d621377ad8abc9c356ef5373ba8820d6b5cf0bb72045e325a1ea2d7d8b",
+          "width": 1200
+        }
+      ],
+      "identity_confidence": 0.85,
+      "media_id": "media-xiao-qi-ji-b7275b67b18aabd1",
+      "original": {
+        "bytes": 8618294,
+        "height": 4000,
+        "mime_type": "image/jpeg",
+        "path": "originals/media-xiao-qi-ji-b7275b67b18aabd1.jpg",
+        "sha256": "15c42e21d67ba8d55b03eaccfe9182d1a5184a40e51580b80a93da57416ed478",
+        "width": 6000
+      },
+      "panda_slug": "xiao-qi-ji",
+      "rights": "CC BY 2.0",
+      "rights_confidence": 0.95,
+      "source_id": "src_commons_xiao_qi_ji_ba6b6fec",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_1.jpg"
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 3)",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 3）",
+      "asset": "https://upload.wikimedia.org/wikipedia/commons/1/11/Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_3.jpg",
+      "candidate_id": "commons-candidate-cdfdd7cc694698fb52fd70e0",
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "curator_role": "gallery",
+      "derivatives": [
+        {
+          "bytes": 35490,
+          "filename": "media-xiao-qi-ji-34670f27407e384e-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "7eb2eb237e4ee6604f58b4ee63a09366b554906d171e5161376e57dcfdc2e040",
+          "width": 480
+        },
+        {
+          "bytes": 153256,
+          "filename": "media-xiao-qi-ji-34670f27407e384e-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "b7fa3fc8738608bec1e4992ee099bea458864e01cbac402d2a616e9748548d9d",
+          "width": 1200
+        }
+      ],
+      "identity_confidence": 0.85,
+      "media_id": "media-xiao-qi-ji-34670f27407e384e",
+      "original": {
+        "bytes": 8313238,
+        "height": 4000,
+        "mime_type": "image/jpeg",
+        "path": "originals/media-xiao-qi-ji-34670f27407e384e.jpg",
+        "sha256": "a96887ccb2d17490b9059003fb313d9cf6809d6fc3b3a0069293f26686cdb6db",
+        "width": 6000
+      },
+      "panda_slug": "xiao-qi-ji",
+      "rights": "CC BY 2.0",
+      "rights_confidence": 0.95,
+      "source_id": "src_commons_xiao_qi_ji_cdfdd7cc",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_3.jpg"
+    },
+    {
+      "alt_en": "Xiao Qi Ji playing with his mother around an ice treat at Smithsonian's National Zoo",
+      "alt_zh": "小奇迹在史密森尼国家动物园与母亲围绕冰食玩耍",
+      "asset": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Panda_Cub_Xiao_Qi_Ji_Wrestling_Mama_Panda_for_Ice_Treat_15.jpg",
+      "candidate_id": "commons-candidate-d905ec669d6111bb4e9016fe",
+      "credit": "Amaury Laporte / Wikimedia Commons",
+      "curator_role": "gallery",
+      "derivatives": [
+        {
+          "bytes": 26142,
+          "filename": "media-xiao-qi-ji-efb017c7cc73e42b-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "3c52909abd0f28369da6ed20745cf775bd8c3905f7b5290bbfa79a0f0026236d",
+          "width": 480
+        },
+        {
+          "bytes": 105276,
+          "filename": "media-xiao-qi-ji-efb017c7cc73e42b-w1200.webp",
+          "height": 800,
+          "kind": "width-1200",
+          "mime_type": "image/webp",
+          "sha256": "328c6bf73e76883618051cead6faf3d76d8480701329db399855cd8c9e003bd5",
+          "width": 1200
+        }
+      ],
+      "identity_confidence": 0.85,
+      "media_id": "media-xiao-qi-ji-efb017c7cc73e42b",
+      "original": {
+        "bytes": 7702127,
+        "height": 4000,
+        "mime_type": "image/jpeg",
+        "path": "originals/media-xiao-qi-ji-efb017c7cc73e42b.jpg",
+        "sha256": "24c46d16c6cff8b1c636513a6404defdd33df60212f9ee7329d6567dfac4881b",
+        "width": 6000
+      },
+      "panda_slug": "xiao-qi-ji",
+      "rights": "CC BY 2.0",
+      "rights_confidence": 0.95,
+      "source_id": "src_commons_xiao_qi_ji_d905ec66",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_Mama_Panda_for_Ice_Treat_15.jpg"
+    }
+  ],
+  "reviewed_at": "2026-07-24",
+  "schema_version": 1
+}

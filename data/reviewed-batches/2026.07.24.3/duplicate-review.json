@@ -1,0 +1,215 @@
+{
+  "algorithm": "dhash-64-grayscale-lanczos",
+  "batch_version": "2026.07.24.3",
+  "candidate_count": 6,
+  "comparison_scope": "all six approved Commons originals; existing released originals unavailable in git",
+  "exact_duplicate_groups": [],
+  "existing_library_exact_check": "public derivative SHA-256 values are checked by the dual media library; original-byte perceptual comparison is not possible without archived originals",
+  "near_duplicate_distance_threshold": 6,
+  "near_duplicate_pairs": [],
+  "outcome": "passed",
+  "pairs": [
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-5bf1a592b3376ff690ec0f73",
+      "near_duplicate": false,
+      "perceptual_distance": 27,
+      "right_candidate_id": "commons-candidate-73ee162326e52f8d7f6bb4aa"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-5bf1a592b3376ff690ec0f73",
+      "near_duplicate": false,
+      "perceptual_distance": 28,
+      "right_candidate_id": "commons-candidate-7c99cc1fb00e3519f119e770"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-5bf1a592b3376ff690ec0f73",
+      "near_duplicate": false,
+      "perceptual_distance": 32,
+      "right_candidate_id": "commons-candidate-ba6b6fecf09aa90d296dd228"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-5bf1a592b3376ff690ec0f73",
+      "near_duplicate": false,
+      "perceptual_distance": 36,
+      "right_candidate_id": "commons-candidate-cdfdd7cc694698fb52fd70e0"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-5bf1a592b3376ff690ec0f73",
+      "near_duplicate": false,
+      "perceptual_distance": 32,
+      "right_candidate_id": "commons-candidate-d905ec669d6111bb4e9016fe"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-73ee162326e52f8d7f6bb4aa",
+      "near_duplicate": false,
+      "perceptual_distance": 27,
+      "right_candidate_id": "commons-candidate-7c99cc1fb00e3519f119e770"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-73ee162326e52f8d7f6bb4aa",
+      "near_duplicate": false,
+      "perceptual_distance": 33,
+      "right_candidate_id": "commons-candidate-ba6b6fecf09aa90d296dd228"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-73ee162326e52f8d7f6bb4aa",
+      "near_duplicate": false,
+      "perceptual_distance": 39,
+      "right_candidate_id": "commons-candidate-cdfdd7cc694698fb52fd70e0"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-73ee162326e52f8d7f6bb4aa",
+      "near_duplicate": false,
+      "perceptual_distance": 35,
+      "right_candidate_id": "commons-candidate-d905ec669d6111bb4e9016fe"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-7c99cc1fb00e3519f119e770",
+      "near_duplicate": false,
+      "perceptual_distance": 28,
+      "right_candidate_id": "commons-candidate-ba6b6fecf09aa90d296dd228"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-7c99cc1fb00e3519f119e770",
+      "near_duplicate": false,
+      "perceptual_distance": 32,
+      "right_candidate_id": "commons-candidate-cdfdd7cc694698fb52fd70e0"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-7c99cc1fb00e3519f119e770",
+      "near_duplicate": false,
+      "perceptual_distance": 30,
+      "right_candidate_id": "commons-candidate-d905ec669d6111bb4e9016fe"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-ba6b6fecf09aa90d296dd228",
+      "near_duplicate": false,
+      "perceptual_distance": 38,
+      "right_candidate_id": "commons-candidate-cdfdd7cc694698fb52fd70e0"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-ba6b6fecf09aa90d296dd228",
+      "near_duplicate": false,
+      "perceptual_distance": 38,
+      "right_candidate_id": "commons-candidate-d905ec669d6111bb4e9016fe"
+    },
+    {
+      "decision": "retain-distinct",
+      "exact_duplicate": false,
+      "left_candidate_id": "commons-candidate-cdfdd7cc694698fb52fd70e0",
+      "near_duplicate": false,
+      "perceptual_distance": 30,
+      "right_candidate_id": "commons-candidate-d905ec669d6111bb4e9016fe"
+    }
+  ],
+  "records": [
+    {
+      "bytes": 9036827,
+      "candidate_id": "commons-candidate-5bf1a592b3376ff690ec0f73",
+      "curator_role": "gallery",
+      "height": 4000,
+      "mime_type": "image/jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_2.jpg",
+      "panda_slug": "xiao-qi-ji",
+      "perceptual_hash": "0b0727091919fbf8",
+      "sha1": "c5b0c06924c2f1869963f49856189ff4e1a7bba5",
+      "sha256": "36148511f2577c258e3c4ebfef5613e6ef89088d1e8d4f9635253fa87b252fae",
+      "width": 6000
+    },
+    {
+      "bytes": 16946734,
+      "candidate_id": "commons-candidate-73ee162326e52f8d7f6bb4aa",
+      "curator_role": "primary",
+      "height": 3648,
+      "mime_type": "image/jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/14/Mei_Xiang_at_Smithsonian%27s_National_Zoo.jpg",
+      "panda_slug": "mei-xiang",
+      "perceptual_hash": "0fcbcd0d98303013",
+      "sha1": "93891d91768cf1c161a0ebced5922a7252058114",
+      "sha256": "2b6dfcd1778368b042bdf2896380889df715dcb5885fd058276181a9862f8874",
+      "width": 5472
+    },
+    {
+      "bytes": 16518783,
+      "candidate_id": "commons-candidate-7c99cc1fb00e3519f119e770",
+      "curator_role": "primary",
+      "height": 3648,
+      "mime_type": "image/jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/7/72/Giant_Panda_Xiao_Qi_Ji_at_Smithsonian%27s_National_Zoo.jpg",
+      "panda_slug": "xiao-qi-ji",
+      "perceptual_hash": "4d4d094c6c685d98",
+      "sha1": "e26b745e4b63c27b22322c1fd1fcec20adb0fc56",
+      "sha256": "f2332c8f774add8a130e5eb60b236641f80c240fc527551725c1be73073693c1",
+      "width": 5472
+    },
+    {
+      "bytes": 8618294,
+      "candidate_id": "commons-candidate-ba6b6fecf09aa90d296dd228",
+      "curator_role": "gallery",
+      "height": 4000,
+      "mime_type": "image/jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_1.jpg",
+      "panda_slug": "xiao-qi-ji",
+      "perceptual_hash": "834b93ce4efeff2f",
+      "sha1": "f7b7e4e636961c1094d99da03ff55be96e87ac54",
+      "sha256": "15c42e21d67ba8d55b03eaccfe9182d1a5184a40e51580b80a93da57416ed478",
+      "width": 6000
+    },
+    {
+      "bytes": 8313238,
+      "candidate_id": "commons-candidate-cdfdd7cc694698fb52fd70e0",
+      "curator_role": "gallery",
+      "height": 4000,
+      "mime_type": "image/jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/11/Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_3.jpg",
+      "panda_slug": "xiao-qi-ji",
+      "perceptual_hash": "1c2c34363666e4f4",
+      "sha1": "81c8b11aaa2b240a2b6ac165832f2652c242999b",
+      "sha256": "a96887ccb2d17490b9059003fb313d9cf6809d6fc3b3a0069293f26686cdb6db",
+      "width": 6000
+    },
+    {
+      "bytes": 7702127,
+      "candidate_id": "commons-candidate-d905ec669d6111bb4e9016fe",
+      "curator_role": "gallery",
+      "height": 4000,
+      "mime_type": "image/jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Panda_Cub_Xiao_Qi_Ji_Wrestling_Mama_Panda_for_Ice_Treat_15.jpg",
+      "panda_slug": "xiao-qi-ji",
+      "perceptual_hash": "76692f3573654bcb",
+      "sha1": "444f17175cafc07ac1c2c5e6a5c85d29724c810d",
+      "sha256": "24c46d16c6cff8b1c636513a6404defdd33df60212f9ee7329d6567dfac4881b",
+      "width": 6000
+    }
+  ],
+  "reviewed_at": "2026-07-24",
+  "schema_version": 1
+}

@@ -24,6 +24,11 @@ class MediaDerivative(BaseModel):
 class MediaAsset(BaseModel):
     id: str
     panda_id: str | None = None
+    presentation_role: str | None = Field(
+        default=None,
+        pattern="^(primary|gallery)$",
+        exclude_if=lambda value: value is None,
+    )
     url: str | None = None
     source_url: str | None = None
     rights: str | None = None

@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.24.3",
+  "files": {
+    "api.json": {
+      "bytes": 325887,
+      "sha256": "07c93193eee352d811588374d4a6956d36b231fe3b0a312d3e7301c13bd76d3b"
+    },
+    "d1.sql": {
+      "bytes": 466634,
+      "sha256": "05dc86ee9fff77ec4ce2d2f8c35c160c2e739ff5e1e8479db2c2731dffd982bf"
+    },
+    "pandas.csv": {
+      "bytes": 88190,
+      "sha256": "02dc995928bf323ff4a5c366e5baba6a2c3e13e2edfb5056730c4d7b052aae16"
+    },
+    "pandas.json": {
+      "bytes": 154543,
+      "sha256": "b02e25eb4ffba10062ec9fc06e9009842fe93ebdd2acdd6d3438a18fef6ec1a6"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "smithsonian-commons-media-v1",
+  "public_schema_version": "1.2.0",
+  "publication_batch_id": "smithsonian-commons-media-2026-07-24",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 38,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 43,
+    "facilities": 8,
+    "facts": 109,
+    "institutions": 5,
+    "media": 42,
+    "pandas": 38,
+    "parentage_assertions": 24,
+    "places": 7,
+    "residencies": 26,
+    "sources": 49
+  },
+  "released_at": "2026-07-24T13:00:00Z"
+}
