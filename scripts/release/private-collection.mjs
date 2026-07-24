@@ -80,6 +80,18 @@ export async function runPrivateCollectionGate() {
         run: () => runCommand("npm", ["run", "check:commons-media-discovery"]),
       },
       {
+        id: "smithsonian-commons-media-contract",
+        label: "Smithsonian Commons media batch tests",
+        dependsOn: ["commons-media-result-data", "media-library-data"],
+        run: () => runCommand("npm", ["run", "test:smithsonian-commons-media-batch"]),
+      },
+      {
+        id: "smithsonian-commons-media-data",
+        label: "Smithsonian Commons media batch reproducibility",
+        dependsOn: ["smithsonian-commons-media-contract"],
+        run: () => runCommand("npm", ["run", "check:smithsonian-commons-media-batch"]),
+      },
+      {
         id: "api-tests",
         label: "FastAPI regression tests",
         dependsOn: ["curation-data"],
@@ -105,6 +117,7 @@ export async function runPrivateCollectionGate() {
           "media-pipeline",
           "media-library-data",
           "commons-media-result-data",
+          "smithsonian-commons-media-data",
         ],
         run: () => runCommand("npm", ["run", "build:web"]),
       },

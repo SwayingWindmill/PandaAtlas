@@ -150,6 +150,7 @@ export interface PublicMediaDerivative {
 export interface PublicPandaMediaAsset {
   id: string;
   panda_id: string | null;
+  presentation_role?: "primary" | "gallery" | null;
   url: string | null;
   source_url: string | null;
   rights: string | null;

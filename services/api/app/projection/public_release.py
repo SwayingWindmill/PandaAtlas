@@ -99,6 +99,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "place_type",
     "policy",
     "precision",
+    "presentation_role",
     "primary",
     "province",
     "properties",
@@ -582,7 +583,11 @@ def _attach_public_media(
             continue
         media = sorted(
             media_by_panda.get(record["id"], []),
-            key=lambda item: (item["status"] != "available", item["id"]),
+            key=lambda item: (
+                item["status"] != "available",
+                item.get("presentation_role") != "primary",
+                item["id"],
+            ),
         )
         cover = next((item["url"] for item in media if item["status"] == "available"), None)
         derived_media_release = (

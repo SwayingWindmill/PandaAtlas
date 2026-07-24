@@ -1,4 +1,4 @@
-// Generated from reviewed Public Release 2026.07.24.2.
+// Generated from reviewed Public Release 2026.07.24.3.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
 import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
@@ -582,7 +582,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -800,7 +800,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1002,7 +1002,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1241,7 +1241,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1428,7 +1428,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1628,7 +1628,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1960,7 +1960,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1983,7 +1983,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "status": "alive",
     "birth_date": "1998-07-22",
     "current_location": "China",
-    "cover_image_url": null,
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
     "search_terms": [
       "mei-xiang",
       "美香",
@@ -2003,7 +2003,48 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "father_id": null,
     "mother_id": null,
     "habitats": [],
-    "media": [],
+    "media": [
+      {
+        "id": "media-mei-xiang-bcb1f38935e569fa",
+        "panda_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+        "presentation_role": "primary",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Mei_Xiang_at_Smithsonian%27s_National_Zoo.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "美香在史密森尼国家动物园的栖息地内",
+        "alt_en": "Mei Xiang in her habitat at Smithsonian's National Zoo",
+        "status": "available",
+        "sha256": "067ebe3e9b0de882bf5cee114eefbef6635917cfd0f2b480c7aa1384c998c99e",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 76854,
+        "derivatives": [
+          {
+            "bytes": 18818,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "819e17dc4b6a7151848c7fd5fab2563d2cb57ea39c8db91947dbdcc687d7c0de",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 76854,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "067ebe3e9b0de882bf5cee114eefbef6635917cfd0f2b480c7aa1384c998c99e",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-mei-xiang-bcb1f38935e569fa-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_mei_xiang_73ee1623"
+        ]
+      }
+    ],
     "identity": {
       "stable_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
       "canonical_slug": "mei-xiang",
@@ -2117,6 +2158,16 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     ],
     "sources": [
       {
+        "id": "src_commons_mei_xiang_73ee1623",
+        "publisher": "Wikimedia Commons",
+        "title": "Mei Xiang at Smithsonian's National Zoo",
+        "url": "https://commons.wikimedia.org/wiki/File:Mei_Xiang_at_Smithsonian%27s_National_Zoo.jpg",
+        "published_at": "2021-09-22",
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
         "id": "src_smithsonian_agreement_2020",
         "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
         "title": "Smithsonian extends giant panda agreement",
@@ -2229,12 +2280,14 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       }
     ],
     "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_mei_xiang_73ee1623"
+      ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2473,7 +2526,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2605,7 +2658,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2881,7 +2934,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": []
     }
@@ -3212,7 +3265,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3500,7 +3553,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3831,7 +3884,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4018,7 +4071,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4160,7 +4213,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4516,7 +4569,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4718,7 +4771,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4850,7 +4903,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5037,7 +5090,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5169,7 +5222,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5359,7 +5412,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5546,7 +5599,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5569,7 +5622,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "status": "alive",
     "birth_date": "2020-08-21",
     "current_location": "中国大熊猫保护研究中心卧龙神树坪基地",
-    "cover_image_url": null,
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
     "search_terms": [
       "xiao-qi-ji",
       "小奇迹",
@@ -5588,7 +5641,208 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "habitats": [],
-    "media": [],
+    "media": [
+      {
+        "id": "media-xiao-qi-ji-85ec96b328f90560",
+        "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+        "presentation_role": "primary",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Giant_Panda_Xiao_Qi_Ji_at_Smithsonian%27s_National_Zoo.jpg",
+        "rights": "CC BY-SA 4.0",
+        "credit": "O01326 / Wikimedia Commons",
+        "alt_zh": "小奇迹在史密森尼国家动物园的栖息地内",
+        "alt_en": "Xiao Qi Ji in his habitat at Smithsonian's National Zoo",
+        "status": "available",
+        "sha256": "764ef77047bf3cd6475dbb735f38ddf1515ef09de43f1346feb303d499422b30",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 130924,
+        "derivatives": [
+          {
+            "bytes": 30568,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "e88ca9e02bab6bba6e089040e6968588a883dc7f474fdd1dbaf91b242529c941",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 130924,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "764ef77047bf3cd6475dbb735f38ddf1515ef09de43f1346feb303d499422b30",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-85ec96b328f90560-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_xiao_qi_ji_7c99cc1f"
+        ]
+      },
+      {
+        "id": "media-xiao-qi-ji-34670f27407e384e",
+        "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+        "presentation_role": "gallery",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_3.jpg",
+        "rights": "CC BY 2.0",
+        "credit": "Amaury Laporte / Wikimedia Commons",
+        "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 3）",
+        "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 3)",
+        "status": "available",
+        "sha256": "b7fa3fc8738608bec1e4992ee099bea458864e01cbac402d2a616e9748548d9d",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 153256,
+        "derivatives": [
+          {
+            "bytes": 35490,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "7eb2eb237e4ee6604f58b4ee63a09366b554906d171e5161376e57dcfdc2e040",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 153256,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "b7fa3fc8738608bec1e4992ee099bea458864e01cbac402d2a616e9748548d9d",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-34670f27407e384e-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_xiao_qi_ji_cdfdd7cc"
+        ]
+      },
+      {
+        "id": "media-xiao-qi-ji-b7275b67b18aabd1",
+        "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+        "presentation_role": "gallery",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_1.jpg",
+        "rights": "CC BY 2.0",
+        "credit": "Amaury Laporte / Wikimedia Commons",
+        "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 1）",
+        "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 1)",
+        "status": "available",
+        "sha256": "fa52c8d621377ad8abc9c356ef5373ba8820d6b5cf0bb72045e325a1ea2d7d8b",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 177014,
+        "derivatives": [
+          {
+            "bytes": 41908,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "e8f82d1d0a477e82c30e7fa813b26323faec5af431f26c0f5817bb2951c833b0",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 177014,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "fa52c8d621377ad8abc9c356ef5373ba8820d6b5cf0bb72045e325a1ea2d7d8b",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-b7275b67b18aabd1-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_xiao_qi_ji_ba6b6fec"
+        ]
+      },
+      {
+        "id": "media-xiao-qi-ji-c1a6a3b69b07b841",
+        "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+        "presentation_role": "gallery",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_2.jpg",
+        "rights": "CC BY 2.0",
+        "credit": "Amaury Laporte / Wikimedia Commons",
+        "alt_zh": "小奇迹在史密森尼国家动物园与母亲玩耍（照片 2）",
+        "alt_en": "Xiao Qi Ji playing with his mother at Smithsonian's National Zoo (photograph 2)",
+        "status": "available",
+        "sha256": "f1b5c471d7ce3fdde6a16fe382d54bd20d74d14496a1131e6de893ac63af1801",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 192360,
+        "derivatives": [
+          {
+            "bytes": 39922,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "4f228f376f685e24a6ae27d0b39fde46f6c1f06366a8f2445e0c2ca8b231dbba",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 192360,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "f1b5c471d7ce3fdde6a16fe382d54bd20d74d14496a1131e6de893ac63af1801",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-c1a6a3b69b07b841-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_xiao_qi_ji_5bf1a592"
+        ]
+      },
+      {
+        "id": "media-xiao-qi-ji-efb017c7cc73e42b",
+        "panda_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
+        "presentation_role": "gallery",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w1200.webp",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_Mama_Panda_for_Ice_Treat_15.jpg",
+        "rights": "CC BY 2.0",
+        "credit": "Amaury Laporte / Wikimedia Commons",
+        "alt_zh": "小奇迹在史密森尼国家动物园与母亲围绕冰食玩耍",
+        "alt_en": "Xiao Qi Ji playing with his mother around an ice treat at Smithsonian's National Zoo",
+        "status": "available",
+        "sha256": "328c6bf73e76883618051cead6faf3d76d8480701329db399855cd8c9e003bd5",
+        "mime_type": "image/webp",
+        "width": 1200,
+        "height": 800,
+        "bytes": 105276,
+        "derivatives": [
+          {
+            "bytes": 26142,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "3c52909abd0f28369da6ed20745cf775bd8c3905f7b5290bbfa79a0f0026236d",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 105276,
+            "height": 800,
+            "kind": "width-1200",
+            "mime_type": "image/webp",
+            "sha256": "328c6bf73e76883618051cead6faf3d76d8480701329db399855cd8c9e003bd5",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.3/media-xiao-qi-ji-efb017c7cc73e42b-w1200.webp",
+            "width": 1200
+          }
+        ],
+        "source_ids": [
+          "src_commons_xiao_qi_ji_d905ec66"
+        ]
+      }
+    ],
     "identity": {
       "stable_id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
       "canonical_slug": "xiao-qi-ji",
@@ -5702,6 +5956,56 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "access_state": "accessible"
       },
       {
+        "id": "src_commons_xiao_qi_ji_5bf1a592",
+        "publisher": "Wikimedia Commons",
+        "title": "Panda Cub Xiao Qi Ji Wrestling with Mama Panda 2",
+        "url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_2.jpg",
+        "published_at": "2023-08-31",
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_commons_xiao_qi_ji_7c99cc1f",
+        "publisher": "Wikimedia Commons",
+        "title": "Giant Panda Xiao Qi Ji at Smithsonian's National Zoo",
+        "url": "https://commons.wikimedia.org/wiki/File:Giant_Panda_Xiao_Qi_Ji_at_Smithsonian%27s_National_Zoo.jpg",
+        "published_at": "2021-09-22",
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_commons_xiao_qi_ji_ba6b6fec",
+        "publisher": "Wikimedia Commons",
+        "title": "Panda Cub Xiao Qi Ji Wrestling with Mama Panda 1",
+        "url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_1.jpg",
+        "published_at": "2023-08-31",
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_commons_xiao_qi_ji_cdfdd7cc",
+        "publisher": "Wikimedia Commons",
+        "title": "Panda Cub Xiao Qi Ji Wrestling with Mama Panda 3",
+        "url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_with_Mama_Panda_3.jpg",
+        "published_at": "2023-08-31",
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_commons_xiao_qi_ji_d905ec66",
+        "publisher": "Wikimedia Commons",
+        "title": "Panda Cub Xiao Qi Ji Wrestling Mama Panda for Ice Treat 15",
+        "url": "https://commons.wikimedia.org/wiki/File:Panda_Cub_Xiao_Qi_Ji_Wrestling_Mama_Panda_for_Ice_Treat_15.jpg",
+        "published_at": "2023-08-31",
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
         "id": "src_smithsonian_agreement_2020",
         "publisher": "Smithsonian National Zoo and Conservation Biology Institute",
         "title": "Smithsonian extends giant panda agreement",
@@ -5800,12 +6104,18 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       }
     ],
     "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_commons_xiao_qi_ji_7c99cc1f",
+        "src_commons_xiao_qi_ji_cdfdd7cc",
+        "src_commons_xiao_qi_ji_ba6b6fec",
+        "src_commons_xiao_qi_ji_5bf1a592",
+        "src_commons_xiao_qi_ji_d905ec66"
+      ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5992,7 +6302,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6182,7 +6492,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6326,7 +6636,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6658,7 +6968,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6860,7 +7170,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -7202,7 +7512,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -7404,7 +7714,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -7744,7 +8054,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -8075,7 +8385,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -8232,7 +8542,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -8574,7 +8884,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -8813,7 +9123,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -8970,7 +9280,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -9157,7 +9467,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
+      "data_version": "2026.07.24.3",
       "public_schema_version": "1.2.0",
       "summaries": [
         {

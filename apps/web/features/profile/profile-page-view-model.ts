@@ -97,6 +97,7 @@ export interface TrustedProfileMediaDerivativeViewModel {
 
 export interface TrustedProfileMediaItemViewModel {
   id: string;
+  role: "primary" | "gallery";
   url: string | null;
   sourceUrl: string | null;
   rights: string | null;
@@ -393,8 +394,9 @@ function httpsUrl(value: string | null | undefined): string | null {
 }
 
 function buildMedia(panda: PandaDetail, locale: PublicLocale): TrustedProfileMediaViewModel {
-  const items = panda.media.map((item) => ({
+  const items = panda.media.map((item, index) => ({
     id: item.id,
+    role: item.presentation_role ?? (index === 0 ? "primary" : "gallery"),
     url: item.status === "available"
       ? httpsUrl(item.url) ?? httpsUrl(item.signed_url) ?? httpsUrl(item.storage_path)
       : null,

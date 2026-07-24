@@ -33,13 +33,13 @@ class DualMediaLibraryTests(unittest.TestCase):
         result = MODULE.build()
         summary = result.coverage["summary"]
         self.assertEqual(summary["panda_count"], 813)
-        self.assertEqual(summary["pandas_with_candidates"], 14)
-        self.assertEqual(summary["pandas_needing_discovery"], 799)
-        self.assertEqual(summary["private_collection_main_images"], 14)
-        self.assertEqual(summary["public_open_main_images"], 9)
+        self.assertEqual(summary["pandas_with_candidates"], 16)
+        self.assertEqual(summary["pandas_needing_discovery"], 797)
+        self.assertEqual(summary["private_collection_main_images"], 16)
+        self.assertEqual(summary["public_open_main_images"], 11)
         self.assertEqual(summary["restricted_candidates"], 4)
         self.assertEqual(summary["low_identity_candidates"], 3)
-        self.assertEqual(result.candidates["candidate_count"], 14)
+        self.assertEqual(result.candidates["candidate_count"], 20)
 
         private_slugs = {
             item["panda_slug"]
@@ -55,6 +55,28 @@ class DualMediaLibraryTests(unittest.TestCase):
         self.assertNotIn("bao-xin", public_slugs)
         self.assertIn("zhen-xi", private_slugs)
         self.assertNotIn("zhen-xi", public_slugs)
+
+    def test_reviewed_smithsonian_primary_and_gallery_selection_is_explicit(self) -> None:
+        result = MODULE.build()
+        for scope in ("private_collection", "public_open"):
+            selections = {
+                item["panda_slug"]: item
+                for item in result.selections["scopes"][scope]["selections"]
+            }
+            mei_xiang = selections["mei-xiang"]
+            self.assertEqual(
+                mei_xiang["main_candidate_id"],
+                "media-candidate-4fa4d413315ad2a0e8607262",
+            )
+            self.assertEqual(mei_xiang["selection_reason"], "administrator-override")
+
+            xiao_qi_ji = selections["xiao-qi-ji"]
+            self.assertEqual(
+                xiao_qi_ji["main_candidate_id"],
+                "media-candidate-1abd1ede7481e51fe2978903",
+            )
+            self.assertEqual(len(xiao_qi_ji["gallery_candidate_ids"]), 5)
+            self.assertEqual(xiao_qi_ji["selection_reason"], "administrator-override")
 
     def test_open_library_contains_only_open_high_confidence_candidates(self) -> None:
         result = MODULE.build()
@@ -72,6 +94,17 @@ class DualMediaLibraryTests(unittest.TestCase):
             self.assertTrue(
                 candidate["scope_eligibility"]["public_open"]["eligible"]
             )
+
+    def test_explicit_reviewed_identity_confidence_is_preserved(self) -> None:
+        confidence, basis = MODULE.classify_identity(
+            {
+                "notes": "candidate_id=example; identity_confidence=0.85; curator_role=gallery",
+                "alt_en": "Reviewed panda photograph",
+                "alt_zh": "已审核大熊猫照片",
+            }
+        )
+        self.assertEqual(confidence, 0.85)
+        self.assertEqual(basis, "explicit-reviewed-identity-confidence")
 
     def test_probable_and_cohort_candidates_remain_collection_only(self) -> None:
         result = MODULE.build()
@@ -198,7 +231,7 @@ class DualMediaLibraryTests(unittest.TestCase):
         self.assertEqual(first, second)
 
         with tempfile.TemporaryDirectory() as temporary:
-            output = Path(temporary) / "2026.07.24.2"
+            output = Path(temporary) / "2026.07.24.3"
             MODULE.install_atomically(output, first)
             for filename, payload in {
                 "candidates.json": first.candidates,

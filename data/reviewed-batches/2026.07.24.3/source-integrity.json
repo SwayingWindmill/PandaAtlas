@@ -1,0 +1,40 @@
+{
+  "base_version": "2026.07.24.2",
+  "batch_version": "2026.07.24.3",
+  "candidate_ids": [
+    "commons-candidate-5bf1a592b3376ff690ec0f73",
+    "commons-candidate-73ee162326e52f8d7f6bb4aa",
+    "commons-candidate-7c99cc1fb00e3519f119e770",
+    "commons-candidate-ba6b6fecf09aa90d296dd228",
+    "commons-candidate-cdfdd7cc694698fb52fd70e0",
+    "commons-candidate-d905ec669d6111bb4e9016fe"
+  ],
+  "discovery_manifest": {
+    "canonical_sha256": "cb57c94a91112e7bac185d139d5c5c1688b3bf1b3b61548736e0289c0cea1b95",
+    "path": "data/media-library/discovery/commons-first-public-five-results-manifest.json",
+    "sha256": "9b7cb0a2b2844ca2406596d5a15f7f9706d231996b70b79dfa42c4c3e72bcc2d"
+  },
+  "discovery_result": {
+    "canonical_sha256": "9fac3d30a8554c81914cccc4b2874cb7a74becc22e46dfed88e0f3b156a4efdc",
+    "path": "data/media-library/discovery/commons-first-public-five-results.json",
+    "sha256": "8b61b8675152acc966185f7de106b0294b4a3b46430ece2663a2e3df18dcb110"
+  },
+  "duplicate_review_canonical_sha256": "da6f0d202f13ecd4c16a391f855b087fc8fa0a5cbb0be6ca53b729a7b95bddae",
+  "gallery_candidate_ids": [
+    "commons-candidate-5bf1a592b3376ff690ec0f73",
+    "commons-candidate-ba6b6fecf09aa90d296dd228",
+    "commons-candidate-cdfdd7cc694698fb52fd70e0",
+    "commons-candidate-d905ec669d6111bb4e9016fe"
+  ],
+  "media_manifest_canonical_sha256": "95d0ba2f6602c317d0914f3551abd8653e55b033d1d28f150be1fa2bb502590f",
+  "primary_candidate_ids": [
+    "commons-candidate-73ee162326e52f8d7f6bb4aa",
+    "commons-candidate-7c99cc1fb00e3519f119e770"
+  ],
+  "processor_manifest_canonical_sha256": "1122223c6446f77de54fb2a85e007e1e9163d8d762f777fd027add0e6ad8b0b3",
+  "publication_write_targets": [],
+  "review_state": "approved-for-public-release-build",
+  "reviewed_at": "2026-07-24",
+  "schema_version": 1,
+  "source_canonical_sha256": "093d75f50a341238707b209efe4954891fdd1633cd7ea9a7370c27d21d02b038"
+}

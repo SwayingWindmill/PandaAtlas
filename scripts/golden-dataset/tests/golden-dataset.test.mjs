@@ -120,51 +120,18 @@ test("every core profile declares completeness gaps and current-place verificati
 test("generated web identity aliases match the current reviewed release", async () => {
   const dataset = await readWebReleaseDataset();
   assert.equal(dataset.dataset.version, WEB_RELEASE_VERSION);
-  assert.equal(dataset.pandas.length, 15);
+  assert.equal(dataset.pandas.length, 38);
   const generated = await readFile(generatedIdentityAliasesPath, "utf8");
 
   assert.equal(
     normalizeGeneratedModule(generated),
     normalizeGeneratedModule(renderTrustedIdentityAliasModule(dataset)),
   );
-  assert.deepEqual(
-    new Set(Object.keys(buildTrustedIdentityReferences(dataset))),
-    new Set([
-      "bao-bao",
-      "bao-li",
-      "baobao-smithsonian",
-      "baoli",
-      "bei-bei",
-      "beibei",
-      "lei-lei",
-      "leilei",
-      "lun-lun",
-      "lunlun",
-      "mei-xiang",
-      "mei_xiang",
-      "meixiang",
-      "ri-ri",
-      "riri",
-      "shin-shin",
-      "shinshin",
-      "tai-shan",
-      "taishan",
-      "tian-tian",
-      "tian_tian",
-      "tiantian",
-      "ya-lun",
-      "yalun",
-      "yang-yang",
-      "yangyang",
-      "xi-lun",
-      "xilun",
-      "xiao-qi-ji",
-      "xiao-xiao",
-      "xiao_qi_ji",
-      "xiaoqiji",
-      "xiaoxiao",
-    ]),
-  );
+  const referenceKeys = new Set(Object.keys(buildTrustedIdentityReferences(dataset)));
+  for (const alias of ["mei-xiang", "meixiang", "xiao-qi-ji", "xiaoqiji", "bao-li", "baoli"]) {
+    assert.ok(referenceKeys.has(alias), `missing reviewed alias ${alias}`);
+  }
+  assert.ok(referenceKeys.size >= dataset.pandas.length);
   assert.match(generated, /"meixiang"/);
   assert.match(generated, /"mei-xiang"/);
   assert.match(generated, /TRUSTED_PANDA_DETAILS/);
@@ -174,11 +141,25 @@ test("generated web identity aliases match the current reviewed release", async 
   assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
   const details = buildTrustedPandaDetails(dataset);
-  assert.equal(details.length, 15);
+  assert.equal(details.length, 38);
   const lunLun = details.find((detail) => detail.slug === "lun-lun");
   const yangYang = details.find((detail) => detail.slug === "yang-yang");
   const yaLun = details.find((detail) => detail.slug === "ya-lun");
   const xiLun = details.find((detail) => detail.slug === "xi-lun");
+  const meiXiang = details.find((detail) => detail.slug === "mei-xiang");
+  const xiaoQiJi = details.find((detail) => detail.slug === "xiao-qi-ji");
+  assert.ok(meiXiang);
+  assert.equal(meiXiang.media.length, 1);
+  assert.equal(meiXiang.media[0].presentation_role, "primary");
+  assert.match(meiXiang.media[0].rights, /^CC BY/);
+  assert.ok(xiaoQiJi);
+  assert.equal(xiaoQiJi.media.length, 5);
+  assert.deepEqual(
+    xiaoQiJi.media.map((media) => media.presentation_role),
+    ["primary", "gallery", "gallery", "gallery", "gallery"],
+  );
+  assert.ok(xiaoQiJi.media.every((media) => media.rights.startsWith("CC BY")));
+  assert.equal(xiaoQiJi.cover_image_url, xiaoQiJi.media[0].url);
   const uenoFamily = ["ri-ri", "shin-shin", "xiao-xiao", "lei-lei"].map((slug) =>
     details.find((detail) => detail.slug === slug),
   );

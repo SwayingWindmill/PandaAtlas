@@ -40,9 +40,9 @@
       }
     ],
     "source_registry": {
-      "bytes": 11145,
+      "bytes": 10858,
       "path": "data/acquisition-sources/registry.json",
-      "sha256": "c38562b5bd73a13067a4460f2172e085fba0a235d11058dec226b641dc3ab848"
+      "sha256": "df297b0d9583950805f156e96a91597e39b562b931722dbf77180bdcf8820c69"
     }
   },
   "operation": "wikimedia-commons-media-discovery-result-manifest",

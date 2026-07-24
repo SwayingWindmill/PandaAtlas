@@ -1,5 +1,30 @@
 {
   "schema_version": 1,
-  "reviewed_at": null,
-  "overrides": []
+  "reviewed_at": "2026-07-24",
+  "overrides": [
+    {
+      "action": "select",
+      "scope": "private_collection",
+      "candidate_id": "media-candidate-4fa4d413315ad2a0e8607262",
+      "reason": "Reviewed 0.95-confidence Mei Xiang primary portrait"
+    },
+    {
+      "action": "select",
+      "scope": "public_open",
+      "candidate_id": "media-candidate-4fa4d413315ad2a0e8607262",
+      "reason": "Reviewed 0.95-confidence Mei Xiang primary portrait"
+    },
+    {
+      "action": "select",
+      "scope": "private_collection",
+      "candidate_id": "media-candidate-1abd1ede7481e51fe2978903",
+      "reason": "Reviewed 0.95-confidence Xiao Qi Ji primary portrait; retain four 0.85 alternatives in gallery"
+    },
+    {
+      "action": "select",
+      "scope": "public_open",
+      "candidate_id": "media-candidate-1abd1ede7481e51fe2978903",
+      "reason": "Reviewed 0.95-confidence Xiao Qi Ji primary portrait; retain four 0.85 alternatives in gallery"
+    }
+  ]
 }

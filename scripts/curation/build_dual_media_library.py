@@ -5,6 +5,7 @@ import csv
 import hashlib
 import json
 import os
+import re
 import shutil
 import tempfile
 from dataclasses import dataclass
@@ -12,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_RELEASE = "2026.07.24.2"
+DEFAULT_RELEASE = "2026.07.24.3"
 DEFAULT_CURATION_DIR = REPO_ROOT / "data" / "curation" / "pandas"
 DEFAULT_OVERRIDES = REPO_ROOT / "data" / "media-library" / "selection-overrides.json"
 DEFAULT_OUTPUT_ROOT = REPO_ROOT / "data" / "media-library" / "releases"
@@ -85,6 +86,10 @@ def classify_rights(rights: str) -> tuple[str, float, str]:
 
 def classify_identity(row: dict[str, str]) -> tuple[float, str]:
     text = " ".join([row.get("notes", ""), row.get("alt_en", ""), row.get("alt_zh", "")]).lower()
+    explicit = re.search(r"identity_confidence\s*=\s*(0(?:\.\d+)?|1(?:\.0+)?)", text)
+    if explicit:
+        confidence = float(explicit.group(1))
+        return confidence, "explicit-reviewed-identity-confidence"
     if "probable" in text or "not fully confident" in text or "疑似" in text:
         return 0.65, "probable-individual-identification"
     if "cohort photograph only" in text or "属于该批次" in text:

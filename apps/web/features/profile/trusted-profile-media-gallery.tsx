@@ -25,6 +25,9 @@ const copy = {
     credit: "署名",
     rights: "使用权",
     source: "原始来源",
+    primary: "主图",
+    gallery: "画廊",
+    imageCount: (count: number) => `共 ${count} 张开放许可图片`,
   },
   en: {
     imageFailed: "Image failed to load",
@@ -36,6 +39,9 @@ const copy = {
     credit: "Credit",
     rights: "Rights",
     source: "Original source",
+    primary: "Primary image",
+    gallery: "Gallery image",
+    imageCount: (count: number) => `${count} open-license ${count === 1 ? "image" : "images"}`,
   },
 } as const;
 
@@ -109,7 +115,14 @@ function MediaItem({
     <article
       className="overflow-hidden rounded-2xl border border-[var(--pa-color-accent-border-09)] bg-[var(--surface)]"
       data-testid="media-item"
+      data-media-role={item.role}
     >
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--pa-color-accent-border-09)] px-5 py-3 text-xs font-semibold">
+        <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-[var(--accent-strong)]">
+          {item.role === "primary" ? t.primary : t.gallery}
+        </span>
+        <span className="text-[var(--muted)]">{item.rights}</span>
+      </div>
       {available ? (
         <img
           src={item.url!}
@@ -144,11 +157,19 @@ function MediaItem({
 }
 
 export function TrustedProfileMediaGallery({ locale, media }: TrustedProfileMediaGalleryProps) {
+  const t = copy[locale];
   return (
-    <div className="mt-8 grid gap-6 lg:grid-cols-2" data-testid="media-gallery">
-      {media.items.map((item) => (
-        <MediaItem key={item.id} item={item} locale={locale} />
-      ))}
+    <div className="mt-8" data-testid="media-gallery">
+      <p className="mb-5 text-sm font-semibold text-[var(--muted)]" data-testid="media-gallery-count">
+        {t.imageCount(media.items.length)}
+      </p>
+      <div className="grid gap-6 lg:grid-cols-2">
+        {media.items.map((item, index) => (
+          <div key={item.id} className={index === 0 ? "lg:col-span-2" : undefined}>
+            <MediaItem item={item} locale={locale} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

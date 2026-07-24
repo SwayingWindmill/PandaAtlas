@@ -1216,6 +1216,10 @@ components:
           type: string
         storage_path:
           type: string
+        presentation_role:
+          type: string
+          enum: [primary, gallery]
+          nullable: true
         title:
           type: string
           nullable: true
