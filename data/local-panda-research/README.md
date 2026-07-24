@@ -43,3 +43,9 @@ npm run test:local-panda-research
 ```
 
 The validator checks JSONL syntax, IDs, source references, timestamps, local-only publication status, and the controlled vocabularies used by the initial vault contract.
+
+## Collection log
+
+- `2026-07-24-initial-web-research.jsonl` — first cross-regional pass across current profiles, transfers, health, anecdotes and media leads.
+- `2026-07-24-overseas-official-profiles.jsonl` — official-source pass for Taipei, Ouwehands, Vienna, Copenhagen and Qatar, with detailed husbandry, enrichment, identity-correction and reproductive-behaviour records.
+
