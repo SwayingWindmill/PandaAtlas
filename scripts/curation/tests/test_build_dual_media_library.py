@@ -181,6 +181,17 @@ class DualMediaLibraryTests(unittest.TestCase):
         self.assertEqual(first[0]["main_candidate_id"], "media-candidate-a")
         self.assertEqual(first[0]["gallery_candidate_ids"], ["media-candidate-a"])
 
+    def test_text_input_hash_is_stable_across_lf_and_crlf(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            lf_path = Path(temporary) / "lf.json"
+            crlf_path = Path(temporary) / "crlf.json"
+            lf_path.write_bytes(b'{\n  "schema_version": 1\n}\n')
+            crlf_path.write_bytes(b'{\r\n  "schema_version": 1\r\n}\r\n')
+            self.assertEqual(
+                MODULE.sha256_normalized_text(lf_path),
+                MODULE.sha256_normalized_text(crlf_path),
+            )
+
     def test_build_and_generated_files_are_reproducible(self) -> None:
         first = MODULE.build()
         second = MODULE.build()
