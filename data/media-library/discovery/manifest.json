@@ -1,0 +1,21 @@
+{
+  "dataset_release_version": "2026.07.24.2",
+  "files": {
+    "commons-first-public-five.json": {
+      "bytes": 3512,
+      "sha256": "b0f52bcffed3cf6ef8560a58948516e387011c6e14a00ab92f1f8c22f2bfd9a0"
+    },
+    "commons-queue.json": {
+      "bytes": 607955,
+      "sha256": "af124acce021e3c1eced342523c690f96a9bbe035aa2f746c625acff157e21a9"
+    }
+  },
+  "generated_at": "2026-07-24T06:00:00Z",
+  "inputs": {
+    "curation_pandas_sha256": "fa613ba4380f223029be6663fefa2cde459a52f41ffd515ee5e4c2e09e444a3b",
+    "media_coverage_sha256": "a06afada8764a41012d1b97888893d401c169c27a694c57954b46ec2ffc1deb9",
+    "public_release_api_sha256": "2d5d9e6982c9f9e2f7d5a38863c5798b12fdd2aebd410bfe9c2df1cb1aa79125",
+    "public_release_manifest_sha256": "d2b3b6cc45ad5475e56df9d144bb6079fee01416201ebd3ea3fe8e4c72400b10"
+  },
+  "schema_version": 1
+}

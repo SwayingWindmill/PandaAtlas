@@ -48,6 +48,12 @@ def sha256_text(value: str) -> str:
     return sha256_bytes(value.encode("utf-8"))
 
 
+def sha256_normalized_text(path: Path) -> str:
+    text = path.read_text(encoding="utf-8-sig")
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    return sha256_text(normalized)
+
+
 def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -437,7 +443,7 @@ def build(
             "public_release_api_sha256": sha256_bytes((release_dir / "api.json").read_bytes()),
             "curation_media_sha256": sha256_bytes((curation_dir / "media.csv").read_bytes()),
             "curation_pandas_sha256": sha256_bytes((curation_dir / "pandas.csv").read_bytes()),
-            "selection_overrides_sha256": sha256_bytes(overrides_path.read_bytes()),
+            "selection_overrides_sha256": sha256_normalized_text(overrides_path),
         },
         "files": {
             filename: {"bytes": len(content.encode("utf-8")), "sha256": sha256_text(content)}

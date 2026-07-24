@@ -1,0 +1,59 @@
+{
+  "dataset_release_version": "2026.07.24.2",
+  "generated_at": "2026-07-24T06:00:00Z",
+  "inputs": {
+    "cohort": {
+      "bytes": 3512,
+      "path": "data/media-library/discovery/commons-first-public-five.json",
+      "sha256": "b0f52bcffed3cf6ef8560a58948516e387011c6e14a00ab92f1f8c22f2bfd9a0"
+    },
+    "fixtures": [
+      {
+        "bytes": 14844,
+        "panda_slug": "mei-xiang",
+        "path": "services/api/tests/acquisition/fixtures/commons-media-discovery/mei-xiang.json",
+        "sha256": "bf72e6562e387f31f46e94b0b8ed938a1115533d2b23148ec7370194b5b7a250"
+      },
+      {
+        "bytes": 13000,
+        "panda_slug": "tian-tian",
+        "path": "services/api/tests/acquisition/fixtures/commons-media-discovery/tian-tian.json",
+        "sha256": "165e5188d3867aa5f179b573462fdf9a61a2c715ff1be6f6780da7f577061218"
+      },
+      {
+        "bytes": 14071,
+        "panda_slug": "xiao-qi-ji",
+        "path": "services/api/tests/acquisition/fixtures/commons-media-discovery/xiao-qi-ji.json",
+        "sha256": "fac9d87f1c668df089b8728628334ada4e609fb045ba2f81f8648d3bc978859b"
+      },
+      {
+        "bytes": 11771,
+        "panda_slug": "bao-bao",
+        "path": "services/api/tests/acquisition/fixtures/commons-media-discovery/bao-bao.json",
+        "sha256": "1886dd49fb31173ffa740fb3585a694bff039773ffa55f06f36596503146e418"
+      },
+      {
+        "bytes": 13823,
+        "panda_slug": "bei-bei",
+        "path": "services/api/tests/acquisition/fixtures/commons-media-discovery/bei-bei.json",
+        "sha256": "4cbd32d99857db40b3b9b541ec66457d7c00a4187c121b3d2fe94bacb0acbef2"
+      }
+    ],
+    "source_registry": {
+      "bytes": 11145,
+      "path": "data/acquisition-sources/registry.json",
+      "sha256": "c38562b5bd73a13067a4460f2172e085fba0a235d11058dec226b641dc3ab848"
+    }
+  },
+  "operation": "wikimedia-commons-media-discovery-result-manifest",
+  "publication_write_targets": [],
+  "result": {
+    "bytes": 101668,
+    "candidate_count": 24,
+    "path": "data/media-library/discovery/commons-first-public-five-results.json",
+    "review_ready_candidate_count": 6,
+    "sha256": "8b61b8675152acc966185f7de106b0294b4a3b46430ece2663a2e3df18dcb110",
+    "task_count": 5
+  },
+  "schema_version": 1
+}

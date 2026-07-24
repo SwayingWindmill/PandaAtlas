@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "review_document": "docs/data-acquisition/source-review-2026-07-22.md",
-  "review_document_sha256": "fedd39e8eb28d82ad3c64af649873e6580cf2a201ba333dd0456958186238659",
+  "review_document_sha256": "6b2e4cee6985a5da4bcead033b4d83475210cb6b03f732aa41ad62b93b217d1a",
   "sources": [
     {
       "source_id": "wikimedia-commons-action-api",
@@ -15,7 +15,8 @@
         "/w/api.php"
       ],
       "allowed_adapter_ids": [
-        "wikimedia-commons-xi-lun"
+        "wikimedia-commons-xi-lun",
+        "wikimedia-commons-media-discovery"
       ],
       "capability": "public-http",
       "live_fetch": true,

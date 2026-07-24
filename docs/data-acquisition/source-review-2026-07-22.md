@@ -10,13 +10,17 @@ Decision: `approved`
 
 - API endpoint: `https://commons.wikimedia.org/w/api.php`
 - Allowed path: `/w/api.php`
-- Intended operation: exact-title `prop=imageinfo` lookup with a filtered `extmetadata` field list.
+- Approved operations:
+  - exact-title `prop=imageinfo` lookup with a filtered `extmetadata` field list;
+  - bounded `generator=search` discovery in namespace 6 (File) using an existing reviewed panda display name, with at most five results and no continuation requests.
+- Search queries must be generated from canonical curation names and may add only a reviewed institutional context already present in the public archive. Arbitrary free-text exploration, recursive category enumeration, similarity search, user enumeration, and sitemap-style discovery are outside the approval.
 - User-Agent: descriptive `PandaAtlasBot` identifier with a repository contact URL. Browser User-Agent impersonation is prohibited for this source.
 - Concurrency: one request at a time.
-- Rate: at most six requests per minute for this adapter.
+- Rate: at most six requests per minute across all Commons adapters.
 - On 429 or a throttling instruction: stop and apply backoff; do not distribute requests across identities.
+- Search results are discovery candidates only. Identity confidence and rights confidence must be assessed independently, and no search result may write curation or public storage directly.
 - Media reuse: determined from each file's own metadata. API availability does not imply that a file is reusable.
-- Original media bytes are not downloaded by the metadata adapter.
+- Original media bytes are not downloaded by either metadata adapter.
 
 Reviewed policy material:
 
