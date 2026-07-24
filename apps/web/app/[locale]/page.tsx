@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { EditorialHomePage } from "@/features/home/editorial-home-page";
-import { buildEditorialHomeViewModel } from "@/features/home/editorial-home-view-model";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { EditorialHomePage, buildEditorialHomeViewModel } from "@/features/home";
+import { loadPublishedAtlasDataset } from "@/features/public-content";
 import { parsePublicLocale } from "@/foundation/content/locales";
 
 interface LocalizedHomePageProps {

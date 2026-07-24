@@ -8,7 +8,7 @@ import type { MyPandasViewModel } from "@/features/my-pandas/my-pandas-view-mode
 import type {
   PublicAtlasDataset,
   PublicContentEnvelope,
-} from "@/features/public-content/public-release";
+} from "@/features/public-content";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 interface MyPandasPageProps {

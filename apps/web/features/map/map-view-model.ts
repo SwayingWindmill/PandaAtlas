@@ -1,4 +1,4 @@
-import type { PublicMapDataset } from "@/features/public-content/public-release";
+import type { PublicMapDataset } from "@/features/public-content";
 import type { PublicLocale } from "@/foundation/content/locales";
 import type {
   CompleteGeoJsonFeatureCollection,

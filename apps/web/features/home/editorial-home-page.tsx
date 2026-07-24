@@ -17,7 +17,7 @@ import type {
   PublicDelivery,
   PublicLocaleDelivery,
   PublicReleaseIdentity,
-} from "@/features/public-content/public-release";
+} from "@/features/public-content";
 import type { PublicLocale } from "@/foundation/content/locales";
 import type { EditorialHomeViewModel } from "./editorial-home-view-model";
 

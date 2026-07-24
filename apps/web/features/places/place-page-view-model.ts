@@ -2,7 +2,7 @@ import type { PublicEntityPageViewModel } from "@/components/patterns/public-ent
 import type {
   PublicContentEnvelope,
   PublicPlaceRecord,
-} from "@/features/public-content/public-release";
+} from "@/features/public-content";
 import type { PublicLocale } from "@/foundation/content/locales";
 import type { PandaDetail, PublicEntityName } from "@/lib/types";
 

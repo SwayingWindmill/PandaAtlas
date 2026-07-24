@@ -1,6 +1,6 @@
 import type { PublicLocale } from "@/foundation/content/locales";
 import { publicLanguageTag } from "@/foundation/content/locales";
-import type { PublicProfileRecord, PublicTranslationState } from "@/features/public-content/public-release";
+import type { PublicProfileRecord, PublicTranslationState } from "@/features/public-content";
 import type {
   PandaDetail,
   PandaLineageNode,

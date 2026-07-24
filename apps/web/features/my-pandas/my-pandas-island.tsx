@@ -13,7 +13,7 @@ import {
   subscribeToProfilePreferences,
   type ProfilePreferencesSnapshot,
   type StoredProfilePreferenceEntry,
-} from "@/features/preferences/profile-preferences";
+} from "@/features/preferences";
 import type {
   MyPandasCopy,
   MyPandasProfileSummary,

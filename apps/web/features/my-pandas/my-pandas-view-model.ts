@@ -1,4 +1,4 @@
-import type { PublicAtlasDataset } from "@/features/public-content/public-release";
+import type { PublicAtlasDataset } from "@/features/public-content";
 import type { PublicLocale } from "@/foundation/content/locales";
 import type { PandaDetail } from "@/lib/types";
 

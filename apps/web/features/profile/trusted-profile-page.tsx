@@ -2,11 +2,11 @@ import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { TrustedProfileFavorite } from "@/components/atlas/trusted-profile-favorite";
-import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
+import { ProfileVisitRecorder } from "@/features/preferences";
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
-import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
+import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content";
 import type {
   ProfileModuleState,
   TrustedProfileFactViewModel,

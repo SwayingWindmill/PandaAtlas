@@ -3,9 +3,9 @@ import { notFound, permanentRedirect } from "next/navigation";
 import {
   loadPublishedPandaProfile,
   resolvePublishedPandaReference,
-} from "@/features/public-content/public-release";
-import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
-import { TrustedProfilePage } from "@/features/profile/trusted-profile-page";
+} from "@/features/public-content";
+import { buildTrustedProfilePageViewModel, TrustedProfilePage } from "@/features/profile";
+
 import { parsePublicLocale } from "@/foundation/content/locales";
 import {
   localizedPublicDestination,

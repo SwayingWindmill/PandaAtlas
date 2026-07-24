@@ -1,11 +1,11 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { PublicEntityPage } from "@/components/patterns/public-entity-page";
-import { buildInstitutionPageViewModel } from "@/features/institutions/institution-page-view-model";
+import { buildInstitutionPageViewModel } from "@/features/institutions";
 import {
   loadPublishedInstitution,
   resolvePublishedInstitutionReference,
-} from "@/features/public-content/public-release";
+} from "@/features/public-content";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import {
   localizedPublicDestination,

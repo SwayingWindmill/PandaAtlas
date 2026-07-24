@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { MyPandasPage } from "@/features/my-pandas/my-pandas-page";
-import { buildMyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { MyPandasPage, buildMyPandasViewModel } from "@/features/my-pandas";
+import { loadPublishedAtlasDataset } from "@/features/public-content";
 import { parsePublicLocale } from "@/foundation/content/locales";
 
 interface LocalizedMyPandasPageProps {

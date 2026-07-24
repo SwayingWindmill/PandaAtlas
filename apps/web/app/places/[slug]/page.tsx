@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
-import { resolvePublishedPlaceReference } from "@/features/public-content/public-release";
+import { resolvePublishedPlaceReference } from "@/features/public-content";
 import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
 import {
   localizedPublicDestination,
