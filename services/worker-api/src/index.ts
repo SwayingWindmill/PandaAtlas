@@ -191,10 +191,19 @@ async function routeRequest(request: Request, env: Env): Promise<Response> {
   return errorResponse(404, "Not found");
 }
 
-const PUBLIC_MEDIA_KEY = /^releases\/\d{4}\.\d{2}\.\d{2}\.\d+\/media-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9a-f]{16}-w(?:480|1200)\.webp$/;
+const PUBLIC_MEDIA_KEY = /^releases\/\d{4}\.\d{2}\.\d{2}\.\d+\/media-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9a-f]{16}-w(?<width>\d{3,4})\.webp$/;
+
+function isPublicMediaKey(key: string): boolean {
+  const match = PUBLIC_MEDIA_KEY.exec(key);
+  if (!match?.groups?.width) {
+    return false;
+  }
+  const width = Number.parseInt(match.groups.width, 10);
+  return width >= 480 && width <= 1200;
+}
 
 async function servePublicMedia(env: Env, key: string, headOnly: boolean): Promise<Response> {
-  if (!PUBLIC_MEDIA_KEY.test(key)) {
+  if (!isPublicMediaKey(key)) {
     throw new HttpError(404, "Media not found");
   }
   if (!env.MEDIA_BUCKET) {
