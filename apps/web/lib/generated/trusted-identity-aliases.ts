@@ -1,4 +1,4 @@
-// Generated from reviewed Public Release 2026.07.23.1.
+// Generated from reviewed Public Release 2026.07.24.1.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
 import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
@@ -17,6 +17,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
     "id": "434e10e3-7ba0-5de7-a59e-d3984524c58c",
     "slug": "bao-li"
   },
+  "bao-xin": {
+    "id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+    "slug": "bao-xin"
+  },
   "baobao-smithsonian": {
     "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
     "slug": "bao-bao"
@@ -33,6 +37,22 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
     "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
     "slug": "bei-bei"
   },
+  "cheng-lan": {
+    "id": "6457a76c-827c-50f5-9306-075d80e8e1d0",
+    "slug": "cheng-lan"
+  },
+  "da-mei-changsha": {
+    "id": "75e9524a-9baf-5454-af65-229fea00cd20",
+    "slug": "da-mei-changsha"
+  },
+  "jin-xiao": {
+    "id": "13fce46c-feb1-5667-9aa3-290f5c296636",
+    "slug": "jin-xiao"
+  },
+  "jing-liang": {
+    "id": "50afb182-8e05-5371-b341-253acb018792",
+    "slug": "jing-liang"
+  },
   "lei-lei": {
     "id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a",
     "slug": "lei-lei"
@@ -40,6 +60,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "leilei": {
     "id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a",
     "slug": "lei-lei"
+  },
+  "lun-hui": {
+    "id": "09ebb49d-7bbe-56d1-8059-f5008338eab7",
+    "slug": "lun-hui"
   },
   "lun-lun": {
     "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
@@ -61,9 +85,29 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
     "id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
     "slug": "mei-xiang"
   },
+  "ni-ke": {
+    "id": "ca531a8b-63d2-5f16-9fbc-0e61e2e23297",
+    "slug": "ni-ke"
+  },
+  "ni-na": {
+    "id": "d2da42a3-7a0b-5384-aeb1-afaff1439894",
+    "slug": "ni-na"
+  },
+  "pu-pu-shenyang": {
+    "id": "fd184343-de89-5e60-bb3b-0a5f780179d8",
+    "slug": "pu-pu-shenyang"
+  },
+  "qi-fu-changsha": {
+    "id": "e8690164-c982-53c0-a837-377e649de435",
+    "slug": "qi-fu-changsha"
+  },
   "qing-bao": {
     "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
     "slug": "qing-bao"
+  },
+  "qing-qing-chengdu-2017-07-26": {
+    "id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+    "slug": "qing-qing-chengdu-2017-07-26"
   },
   "qingbao": {
     "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
@@ -121,6 +165,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
     "id": "275ad0df-c700-5991-a13a-0ca47c56eeba",
     "slug": "xiao-xiao"
   },
+  "xiao-xin-chengdu-2017": {
+    "id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+    "slug": "xiao-xin-chengdu-2017"
+  },
   "xiaoqiji": {
     "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
     "slug": "xiao-qi-ji"
@@ -133,9 +181,17 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
     "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
     "slug": "xi-lun"
   },
+  "ya-li": {
+    "id": "fcc89c7a-6046-5c2c-bcb4-bf1fb50182a1",
+    "slug": "ya-li"
+  },
   "ya-lun": {
     "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
     "slug": "ya-lun"
+  },
+  "ya-song": {
+    "id": "0a60ed76-cee8-5c2d-ada7-8ec50b085471",
+    "slug": "ya-song"
   },
   "yalun": {
     "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
@@ -148,6 +204,22 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "yangyang": {
     "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
     "slug": "yang-yang"
+  },
+  "zhao-mei": {
+    "id": "51847c05-7342-5e4c-a5b5-c00d23f9a6be",
+    "slug": "zhao-mei"
+  },
+  "zhen-xi": {
+    "id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+    "slug": "zhen-xi"
+  },
+  "zhi-ma": {
+    "id": "939aed44-55a9-51e6-8f2e-c50866be3a6a",
+    "slug": "zhi-ma"
+  },
+  "zhi-shi": {
+    "id": "907e93e2-d664-500f-b1b5-af06fd039172",
+    "slug": "zhi-shi"
   }
 };
 
@@ -494,7 +566,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -504,6 +576,775 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "09ebb49d-7bbe-56d1-8059-f5008338eab7",
+    "slug": "lun-hui",
+    "name_zh": "轮辉",
+    "name_en": "Lun Hui / Wu Wu",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2021-07-25",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "lun-hui",
+      "轮辉",
+      "Lun Hui / Wu Wu"
+    ],
+    "intro": "轮辉，2021 年出生，收藏记录中的现居地为 Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "09ebb49d-7bbe-56d1-8059-f5008338eab7",
+      "canonical_slug": "lun-hui",
+      "names": [
+        {
+          "value": "轮辉",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6",
+            "src_gpg_meet_world_page_24"
+          ]
+        },
+        {
+          "value": "Lun Hui / Wu Wu",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6",
+            "src_gpg_meet_world_page_24"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2021-07-25",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-lun-hui-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6",
+          "src_gpg_meet_world_page_24"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-lun-hui-birthplace"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6",
+          "src_gpg_meet_world_page_24"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-lun-hui-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6",
+          "src_gpg_meet_world_page_24"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-lun-hui-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6",
+          "src_gpg_meet_world_page_24"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021 Newborn Giant Panda Profiles",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_chengdu_base_current_page_6",
+        "publisher": "Giant Panda Global",
+        "title": "Chengdu Panda Base current giant pandas page 6",
+        "url": "https://www.giantpandaglobal.com/en/zoo/chengdu-research-base-of-giant-panda-breeding/?pagina=6&s=current",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_meet_world_page_24",
+        "publisher": "Giant Panda Global",
+        "title": "Meet the giant pandas around the world page 24",
+        "url": "https://www.giantpandaglobal.com/en/meet-the-giant-pandas-around-the-world/?pagina=24",
+        "published_at": null,
+        "last_verified_at": "2026-05-11",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_lun_hui_birth_20210725",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-07-25",
+        "event_date_precision": "day",
+        "participants": [
+          "09ebb49d-7bbe-56d1-8059-f5008338eab7"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "轮辉，2021 年出生，收藏记录中的现居地为 Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Living Chengdu Panda Base male giant panda captured from GPG current and global living indexes; page 24 displays Wu Wu for the same href."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "0a60ed76-cee8-5c2d-ada7-8ec50b085471",
+    "slug": "ya-song",
+    "name_zh": "雅颂",
+    "name_en": "Ya Song",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2021-07-31",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "ya-song",
+      "雅颂",
+      "Ya Song"
+    ],
+    "intro": "雅颂，2021 年出生，收藏记录中的现居地为 Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "0a60ed76-cee8-5c2d-ada7-8ec50b085471",
+      "canonical_slug": "ya-song",
+      "names": [
+        {
+          "value": "雅颂",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6"
+          ]
+        },
+        {
+          "value": "Ya Song",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_chengdu_base_current_page_6"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2021-07-31",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ya-song-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ya-song-birthplace"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ya-song-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ya-song-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021 Newborn Giant Panda Profiles",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_chengdu_base_current_page_6",
+        "publisher": "Giant Panda Global",
+        "title": "Chengdu Panda Base current giant pandas page 6",
+        "url": "https://www.giantpandaglobal.com/en/zoo/chengdu-research-base-of-giant-panda-breeding/?pagina=6&s=current",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_ya_song_birth_20210731",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-07-31",
+        "event_date_precision": "day",
+        "participants": [
+          "0a60ed76-cee8-5c2d-ada7-8ec50b085471"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "雅颂，2021 年出生，收藏记录中的现居地为 Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Living Chengdu Panda Base female giant panda captured from GPG current index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+    "slug": "bao-xin",
+    "name_zh": "宝新",
+    "name_en": "Bao Xin",
+    "gender": "male",
+    "status": "unknown",
+    "birth_date": "2021-06-24",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "bao-xin",
+      "宝新",
+      "Bao Xin"
+    ],
+    "intro": "宝新，2021 年出生。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+      "canonical_slug": "bao-xin",
+      "names": [
+        {
+          "value": "宝新",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ]
+        },
+        {
+          "value": "Bao Xin",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2021-06-24",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-bao-xin-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-bao-xin-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021 Newborn Giant Panda Profiles",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_bao_xin_birth_20210624",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-06-24",
+        "event_date_precision": "day",
+        "participants": [
+          "0f7f494a-ec00-5e43-92e0-d299fe858d95"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "宝新，2021 年出生。"
+      },
+      {
+        "locale": "en",
+        "summary": "Giant panda documented in an official Chengdu newborn cohort (2021-06-24)."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "13fce46c-feb1-5667-9aa3-290f5c296636",
+    "slug": "jin-xiao",
+    "name_zh": "金宵",
+    "name_en": "Jin Xiao",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2021-07-23",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "jin-xiao",
+      "金宵",
+      "Jin Xiao"
+    ],
+    "intro": "金宵，2021 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "13fce46c-feb1-5667-9aa3-290f5c296636",
+      "canonical_slug": "jin-xiao",
+      "names": [
+        {
+          "value": "金宵",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_23"
+          ]
+        },
+        {
+          "value": "Jin Xiao",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_23"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2021-07-23",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-jin-xiao-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_meet_world_page_23"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Panda Base, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-jin-xiao-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_meet_world_page_23"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-jin-xiao-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_meet_world_page_23"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021 Newborn Giant Panda Profiles",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_meet_world_page_23",
+        "publisher": "Giant Panda Global",
+        "title": "Meet the giant pandas around the world page 23",
+        "url": "https://www.giantpandaglobal.com/en/meet-the-giant-pandas-around-the-world/?pagina=23",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_jin_xiao_birth_20210723",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-07-23",
+        "event_date_precision": "day",
+        "participants": [
+          "13fce46c-feb1-5667-9aa3-290f5c296636"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "金宵，2021 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Living giant panda captured from GPG global discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -694,7 +1535,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1026,7 +1867,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1300,7 +2141,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1310,6 +2151,168 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "First public review of identity, birth date, residencies, transfer events, and sources."
+        }
+      ]
+    }
+  },
+  {
+    "id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+    "slug": "xiao-xin-chengdu-2017",
+    "name_zh": "小馨",
+    "name_en": "Xiao Xin",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": "2017-07-26",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "xiao-xin-chengdu-2017",
+      "小馨",
+      "Xiao Xin"
+    ],
+    "intro": "小馨，2017 年出生。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+      "canonical_slug": "xiao-xin-chengdu-2017",
+      "names": [
+        {
+          "value": "小馨",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        },
+        {
+          "value": "Xiao Xin",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-07-26",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-xiao-xin-chengdu-2017-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-xiao-xin-chengdu-2017-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_xiao_xin_chengdu_2017_birth_20170726",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-26",
+        "event_date_precision": "day",
+        "participants": [
+          "2a589b9f-1700-5b1e-8c2f-8203190da905"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "小馨，2017 年出生。"
+      },
+      {
+        "locale": "en",
+        "summary": "Giant panda documented in an official Chengdu newborn cohort (2017-07-26)."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -1576,7 +2579,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": []
     }
@@ -1907,7 +2910,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1917,6 +2920,168 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Added birthplace, arrival, public debut, current habitat, and collection media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+    "slug": "zhen-xi",
+    "name_zh": "珍喜",
+    "name_en": "Zhen Xi",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": "2017-07-15",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "zhen-xi",
+      "珍喜",
+      "Zhen Xi"
+    ],
+    "intro": "珍喜，2017 年出生。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+      "canonical_slug": "zhen-xi",
+      "names": [
+        {
+          "value": "珍喜",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        },
+        {
+          "value": "Zhen Xi",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-07-15",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhen-xi-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhen-xi-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_zhen_xi_birth_20170715",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-15",
+        "event_date_precision": "day",
+        "participants": [
+          "47714294-e602-5f67-9a58-b0f43b7c5be5"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "珍喜，2017 年出生。"
+      },
+      {
+        "locale": "en",
+        "summary": "Giant panda documented in an official Chengdu newborn cohort (2017-07-15)."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -2238,7 +3403,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2248,6 +3413,335 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "50afb182-8e05-5371-b341-253acb018792",
+    "slug": "jing-liang",
+    "name_zh": "晶亮",
+    "name_en": "Jing Liang",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-07-10",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "jing-liang",
+      "晶亮",
+      "Jing Liang"
+    ],
+    "intro": "晶亮，2017 年出生，收藏记录中的现居地为 Fuzhou Panda World, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "50afb182-8e05-5371-b341-253acb018792",
+      "canonical_slug": "jing-liang",
+      "names": [
+        {
+          "value": "晶亮",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_fuzhou_profiles"
+          ]
+        },
+        {
+          "value": "Jing Liang",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_fuzhou_profiles"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-07-10",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-jing-liang-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_fuzhou_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Fuzhou Panda World, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-jing-liang-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_fuzhou_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-jing-liang-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_fuzhou_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_fuzhou_profiles",
+        "publisher": "Giant Panda Global",
+        "title": "Fuzhou Panda World giant pandas",
+        "url": "https://www.giantpandaglobal.com/en/zoo/fuzhou-panda-world",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_jing_liang_birth_20170710",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-10",
+        "event_date_precision": "day",
+        "participants": [
+          "50afb182-8e05-5371-b341-253acb018792"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "晶亮，2017 年出生，收藏记录中的现居地为 Fuzhou Panda World, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Fuzhou Panda World giant panda captured from secondary discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "51847c05-7342-5e4c-a5b5-c00d23f9a6be",
+    "slug": "zhao-mei",
+    "name_zh": "昭美",
+    "name_en": "Zhao Mei",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "zhao-mei",
+      "昭美",
+      "Zhao Mei"
+    ],
+    "intro": "昭美，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "51847c05-7342-5e4c-a5b5-c00d23f9a6be",
+      "canonical_slug": "zhao-mei",
+      "names": [
+        {
+          "value": "昭美",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_9"
+          ]
+        },
+        {
+          "value": "Zhao Mei",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_meet_world_page_9"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Panda Base, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhao-mei-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_meet_world_page_9"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhao-mei-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_meet_world_page_9"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_meet_world_page_9",
+        "publisher": "Giant Panda Global",
+        "title": "Meet the giant pandas around the world page 9",
+        "url": "https://www.giantpandaglobal.com/en/meet-the-giant-pandas-around-the-world/?pagina=9",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "昭美，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Living giant panda captured from GPG global discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -2594,7 +4088,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2604,6 +4098,395 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "6457a76c-827c-50f5-9306-075d80e8e1d0",
+    "slug": "cheng-lan",
+    "name_zh": "成兰",
+    "name_en": "Cheng Lan",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-06-27",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "cheng-lan",
+      "成兰",
+      "Cheng Lan"
+    ],
+    "intro": "成兰，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "6457a76c-827c-50f5-9306-075d80e8e1d0",
+      "canonical_slug": "cheng-lan",
+      "names": [
+        {
+          "value": "成兰",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ]
+        },
+        {
+          "value": "Cheng Lan",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-06-27",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-cheng-lan-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-cheng-lan-birthplace"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Panda Base, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-cheng-lan-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-cheng-lan-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_meet_world_page_18",
+        "publisher": "Giant Panda Global",
+        "title": "Meet the giant pandas around the world page 18",
+        "url": "https://www.giantpandaglobal.com/en/meet-the-giant-pandas-around-the-world/?pagina=18",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_cheng_lan_birth_20170627",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-06-27",
+        "event_date_precision": "day",
+        "participants": [
+          "6457a76c-827c-50f5-9306-075d80e8e1d0"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "成兰，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Living Chengdu Panda Base male giant panda captured from GPG global living index page 18."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "75e9524a-9baf-5454-af65-229fea00cd20",
+    "slug": "da-mei-changsha",
+    "name_zh": "大美",
+    "name_en": "Da Mei",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2017-06-27",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "da-mei-changsha",
+      "大美",
+      "Da Mei"
+    ],
+    "intro": "大美，2017 年出生，收藏记录中的现居地为 Changsha Ecological Zoo, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "75e9524a-9baf-5454-af65-229fea00cd20",
+      "canonical_slug": "da-mei-changsha",
+      "names": [
+        {
+          "value": "大美",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_changsha_profiles"
+          ]
+        },
+        {
+          "value": "Da Mei",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_changsha_profiles"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-06-27",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-da-mei-changsha-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_changsha_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Changsha Ecological Zoo, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-da-mei-changsha-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_changsha_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-da-mei-changsha-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_changsha_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_changsha_profiles",
+        "publisher": "Giant Panda Global",
+        "title": "Changsha Ecological Zoo giant pandas",
+        "url": "https://www.giantpandaglobal.com/en/zoo/changsha-ecological-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_da_mei_changsha_birth_20170627",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-06-27",
+        "event_date_precision": "day",
+        "participants": [
+          "75e9524a-9baf-5454-af65-229fea00cd20"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "大美，2017 年出生，收藏记录中的现居地为 Changsha Ecological Zoo, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Changsha Ecological Zoo giant panda captured from secondary discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -2784,7 +4667,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2794,6 +4677,193 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Public review of identity, parentage, birth date, offspring relationship, and country-level current residency."
+        }
+      ]
+    }
+  },
+  {
+    "id": "907e93e2-d664-500f-b1b5-af06fd039172",
+    "slug": "zhi-shi",
+    "name_zh": "芝士",
+    "name_en": "Zhi Shi",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-04-24",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "zhi-shi",
+      "芝士",
+      "Zhi Shi"
+    ],
+    "intro": "芝士，2017 年出生，收藏记录中的现居地为 Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "907e93e2-d664-500f-b1b5-af06fd039172",
+      "canonical_slug": "zhi-shi",
+      "names": [
+        {
+          "value": "芝士",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ]
+        },
+        {
+          "value": "Zhi Shi",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-04-24",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhi-shi-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_sun_island_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhi-shi-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_sun_island_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhi-shi-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_sun_island_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_sun_island_profiles",
+        "publisher": "Giant Panda Global",
+        "title": "Sun Island Giant Panda Pavilion giant pandas",
+        "url": "https://www.giantpandaglobal.com/en/zoo/sun-island-giant-panda-pavilion",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_zhi_shi_birth_20170424",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-04-24",
+        "event_date_precision": "day",
+        "participants": [
+          "907e93e2-d664-500f-b1b5-af06fd039172"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "芝士，2017 年出生，收藏记录中的现居地为 Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Sun Island Giant Panda Pavilion giant panda captured from secondary discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -3043,7 +5113,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3053,6 +5123,193 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Public review of identity, parentage, birth date, shared return event, and current facility."
+        }
+      ]
+    }
+  },
+  {
+    "id": "939aed44-55a9-51e6-8f2e-c50866be3a6a",
+    "slug": "zhi-ma",
+    "name_zh": "芝麻",
+    "name_en": "Zhi Ma",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-04-24",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "zhi-ma",
+      "芝麻",
+      "Zhi Ma"
+    ],
+    "intro": "芝麻，2017 年出生，收藏记录中的现居地为 Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "939aed44-55a9-51e6-8f2e-c50866be3a6a",
+      "canonical_slug": "zhi-ma",
+      "names": [
+        {
+          "value": "芝麻",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ]
+        },
+        {
+          "value": "Zhi Ma",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_sun_island_profiles"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-04-24",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhi-ma-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_sun_island_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhi-ma-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_sun_island_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhi-ma-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_sun_island_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_sun_island_profiles",
+        "publisher": "Giant Panda Global",
+        "title": "Sun Island Giant Panda Pavilion giant pandas",
+        "url": "https://www.giantpandaglobal.com/en/zoo/sun-island-giant-panda-pavilion",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_zhi_ma_birth_20170424",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-04-24",
+        "event_date_precision": "day",
+        "participants": [
+          "939aed44-55a9-51e6-8f2e-c50866be3a6a"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "芝麻，2017 年出生，收藏记录中的现居地为 Sun Island Giant Panda Pavilion, Harbin, Heilongjiang Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Sun Island Giant Panda Pavilion giant panda captured from secondary discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -3233,7 +5490,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3565,7 +5822,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3575,6 +5832,208 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "ca531a8b-63d2-5f16-9fbc-0e61e2e23297",
+    "slug": "ni-ke",
+    "name_zh": "妮可",
+    "name_en": "Ni Ke",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-07-20",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "ni-ke",
+      "妮可",
+      "Ni Ke"
+    ],
+    "intro": "妮可，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "ca531a8b-63d2-5f16-9fbc-0e61e2e23297",
+      "canonical_slug": "ni-ke",
+      "names": [
+        {
+          "value": "妮可",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ]
+        },
+        {
+          "value": "Ni Ke",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-07-20",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-ke-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-ke-birthplace"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Panda Base, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-ke-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "male",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-ke-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_meet_world_page_18",
+        "publisher": "Giant Panda Global",
+        "title": "Meet the giant pandas around the world page 18",
+        "url": "https://www.giantpandaglobal.com/en/meet-the-giant-pandas-around-the-world/?pagina=18",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_ni_ke_birth_20170720",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-20",
+        "event_date_precision": "day",
+        "participants": [
+          "ca531a8b-63d2-5f16-9fbc-0e61e2e23297"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "妮可，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Living Chengdu Panda Base male giant panda captured from GPG global living index page 18."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -3907,7 +6366,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3917,6 +6376,208 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and licensed media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "d2da42a3-7a0b-5384-aeb1-afaff1439894",
+    "slug": "ni-na",
+    "name_zh": "妮娜",
+    "name_en": "Ni Na",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2017-07-20",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "ni-na",
+      "妮娜",
+      "Ni Na"
+    ],
+    "intro": "妮娜，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "d2da42a3-7a0b-5384-aeb1-afaff1439894",
+      "canonical_slug": "ni-na",
+      "names": [
+        {
+          "value": "妮娜",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ]
+        },
+        {
+          "value": "Ni Na",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_zh",
+            "src_gpg_meet_world_page_18"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-07-20",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-na-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-na-birthplace"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Panda Base, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-na-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ni-na-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh",
+          "src_gpg_meet_world_page_18"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_meet_world_page_18",
+        "publisher": "Giant Panda Global",
+        "title": "Meet the giant pandas around the world page 18",
+        "url": "https://www.giantpandaglobal.com/en/meet-the-giant-pandas-around-the-world/?pagina=18",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_ni_na_birth_20170720",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-20",
+        "event_date_precision": "day",
+        "participants": [
+          "d2da42a3-7a0b-5384-aeb1-afaff1439894"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "妮娜，2017 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Living Chengdu Panda Base female giant panda captured from GPG global living index page 18."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -4247,7 +6908,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4578,7 +7239,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4588,6 +7249,163 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "e8690164-c982-53c0-a837-377e649de435",
+    "slug": "qi-fu-changsha",
+    "name_zh": "奇福",
+    "name_en": "Qi Fu",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2008-07-26",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "qi-fu-changsha",
+      "奇福",
+      "Qi Fu"
+    ],
+    "intro": "奇福，2008 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "e8690164-c982-53c0-a837-377e649de435",
+      "canonical_slug": "qi-fu-changsha",
+      "names": [
+        {
+          "value": "奇福",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_changsha_profiles"
+          ]
+        },
+        {
+          "value": "Qi Fu",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_changsha_profiles"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2008-07-26",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-qi-fu-changsha-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_changsha_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Panda Base, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-qi-fu-changsha-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_changsha_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-qi-fu-changsha-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_changsha_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_changsha_profiles",
+        "publisher": "Giant Panda Global",
+        "title": "Changsha Ecological Zoo giant pandas",
+        "url": "https://www.giantpandaglobal.com/en/zoo/changsha-ecological-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "奇福，2008 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former Changsha Ecological Zoo giant panda captured from secondary discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -4920,7 +7738,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.23.1",
+      "data_version": "2026.07.24.1",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4930,6 +7748,512 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Reviewed identity, birth, residency, events, lineage, and media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+    "slug": "qing-qing-chengdu-2017-07-26",
+    "name_zh": "青青",
+    "name_en": "Qing Qing",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": "2017-07-26",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "qing-qing-chengdu-2017-07-26",
+      "青青",
+      "Qing Qing"
+    ],
+    "intro": "青青，2017 年出生。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+      "canonical_slug": "qing-qing-chengdu-2017-07-26",
+      "names": [
+        {
+          "value": "青青",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        },
+        {
+          "value": "Qing Qing",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2017-07-26",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-qing-qing-chengdu-2017-07-26-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-qing-qing-chengdu-2017-07-26-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_qing_qing_chengdu_2017_07_26_birth_20170726",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-26",
+        "event_date_precision": "day",
+        "participants": [
+          "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "青青，2017 年出生。"
+      },
+      {
+        "locale": "en",
+        "summary": "Giant panda documented in an official Chengdu newborn cohort (2017-07-26)."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "fcc89c7a-6046-5c2c-bcb4-bf1fb50182a1",
+    "slug": "ya-li",
+    "name_zh": "雅莉",
+    "name_en": "Ya Li",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2009-07-19",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "ya-li",
+      "雅莉",
+      "Ya Li"
+    ],
+    "intro": "雅莉，2009 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "fcc89c7a-6046-5c2c-bcb4-bf1fb50182a1",
+      "canonical_slug": "ya-li",
+      "names": [
+        {
+          "value": "雅莉",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_guangzhou_profiles"
+          ]
+        },
+        {
+          "value": "Ya Li",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_guangzhou_profiles"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2009-07-19",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ya-li-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_guangzhou_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Panda Base, Chengdu, Sichuan Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ya-li-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_guangzhou_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-ya-li-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_guangzhou_profiles"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_guangzhou_profiles",
+        "publisher": "Giant Panda Global",
+        "title": "Guangzhou Zoo giant pandas",
+        "url": "https://www.giantpandaglobal.com/en/zoo/guangzhou-zoo",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "雅莉，2009 年出生，收藏记录中的现居地为 Chengdu Panda Base, Chengdu, Sichuan Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former Guangzhou Zoo giant panda captured from secondary discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "fd184343-de89-5e60-bb3b-0a5f780179d8",
+    "slug": "pu-pu-shenyang",
+    "name_zh": "噗噗",
+    "name_en": "Pu Pu",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2014-08-10",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "pu-pu-shenyang",
+      "噗噗",
+      "Pu Pu"
+    ],
+    "intro": "噗噗，2014 年出生，收藏记录中的现居地为 Shenyang Forest Zoo, Shenyang, Liaoning Province, China。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "fd184343-de89-5e60-bb3b-0a5f780179d8",
+      "canonical_slug": "pu-pu-shenyang",
+      "names": [
+        {
+          "value": "噗噗",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_yaan_base_previous_page_7"
+          ]
+        },
+        {
+          "value": "Pu Pu",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_zh",
+            "src_gpg_yaan_base_previous_page_7"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "birth_date",
+        "value": "2014-08-10",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-pu-pu-shenyang-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_yaan_base_previous_page_7"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Shenyang Forest Zoo, Shenyang, Liaoning Province, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-pu-pu-shenyang-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_yaan_base_previous_page_7"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "sex",
+        "value": "female",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-pu-pu-shenyang-sex"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_yaan_base_previous_page_7"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021 Newborn Giant Panda Profiles",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_gpg_yaan_base_previous_page_7",
+        "publisher": "Giant Panda Global",
+        "title": "CCRCGP Ya'an Base previous giant pandas page 7",
+        "url": "https://www.giantpandaglobal.com/en/zoo/ccrcgp-yaan-base/?pagina=7&s=previous",
+        "published_at": null,
+        "last_verified_at": "2026-05-10",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_pu_pu_shenyang_birth_20210717",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-07-17",
+        "event_date_precision": "day",
+        "participants": [
+          "fd184343-de89-5e60-bb3b-0a5f780179d8"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "噗噗，2014 年出生，收藏记录中的现居地为 Shenyang Forest Zoo, Shenyang, Liaoning Province, China。"
+      },
+      {
+        "locale": "en",
+        "summary": "Former CCRCGP Ya'an Base giant panda listed at Shenyang Forest Zoo in secondary discovery index."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.1",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "由已审核收藏数据自动生成首轮档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Generated automatically from reviewed collection curation."
         }
       ]
     }
@@ -5994,6 +9318,90 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "09ebb49d-7bbe-56d1-8059-f5008338eab7",
+    "slug": "lun-hui",
+    "name_zh": "轮辉",
+    "name_en": "Lun Hui / Wu Wu",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2021-07-25",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "0a60ed76-cee8-5c2d-ada7-8ec50b085471",
+    "slug": "ya-song",
+    "name_zh": "雅颂",
+    "name_en": "Ya Song",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2021-07-31",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+    "slug": "bao-xin",
+    "name_zh": "宝新",
+    "name_en": "Bao Xin",
+    "gender": "male",
+    "status": "unknown",
+    "birth_date": "2021-06-24",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "13fce46c-feb1-5667-9aa3-290f5c296636",
+    "slug": "jin-xiao",
+    "name_zh": "金宵",
+    "name_en": "Jin Xiao",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2021-07-23",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
     "slug": "bei-bei",
     "name_zh": "贝贝",
@@ -6057,6 +9465,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+    "slug": "xiao-xin-chengdu-2017",
+    "name_zh": "小馨",
+    "name_en": "Xiao Xin",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": "2017-07-26",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "slug": "tian-tian",
     "name_zh": "添添",
@@ -6099,6 +9528,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+    "slug": "zhen-xi",
+    "name_zh": "珍喜",
+    "name_en": "Zhen Xi",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": "2017-07-15",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
     "slug": "lun-lun",
     "name_zh": "伦伦",
@@ -6117,6 +9567,48 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "father_id": null,
     "mother_id": null,
     "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "50afb182-8e05-5371-b341-253acb018792",
+    "slug": "jing-liang",
+    "name_zh": "晶亮",
+    "name_en": "Jing Liang",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-07-10",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "51847c05-7342-5e4c-a5b5-c00d23f9a6be",
+    "slug": "zhao-mei",
+    "name_zh": "昭美",
+    "name_en": "Zhao Mei",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
     "profile_available": true
   },
   {
@@ -6141,6 +9633,48 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "6457a76c-827c-50f5-9306-075d80e8e1d0",
+    "slug": "cheng-lan",
+    "name_zh": "成兰",
+    "name_en": "Cheng Lan",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-06-27",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "75e9524a-9baf-5454-af65-229fea00cd20",
+    "slug": "da-mei-changsha",
+    "name_zh": "大美",
+    "name_en": "Da Mei",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2017-06-27",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
     "slug": "bao-bao",
     "name_zh": "宝宝",
@@ -6162,6 +9696,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "907e93e2-d664-500f-b1b5-af06fd039172",
+    "slug": "zhi-shi",
+    "name_zh": "芝士",
+    "name_en": "Zhi Shi",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-04-24",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
     "slug": "xiao-qi-ji",
     "name_zh": "小奇迹",
@@ -6179,6 +9734,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     ],
     "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "939aed44-55a9-51e6-8f2e-c50866be3a6a",
+    "slug": "zhi-ma",
+    "name_zh": "芝麻",
+    "name_en": "Zhi Ma",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-04-24",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
     "record_tier": "identity_first_pass",
     "profile_available": true
   },
@@ -6225,6 +9801,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "ca531a8b-63d2-5f16-9fbc-0e61e2e23297",
+    "slug": "ni-ke",
+    "name_zh": "妮可",
+    "name_en": "Ni Ke",
+    "gender": "male",
+    "status": "alive",
+    "birth_date": "2017-07-20",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "d24087cd-70d6-5902-92dd-ecc95186937b",
     "slug": "xi-lun",
     "name_zh": "喜伦",
@@ -6243,6 +9840,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
     "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
     "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "d2da42a3-7a0b-5384-aeb1-afaff1439894",
+    "slug": "ni-na",
+    "name_zh": "妮娜",
+    "name_en": "Ni Na",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2017-07-20",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
     "profile_available": true
   },
   {
@@ -6288,6 +9906,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "e8690164-c982-53c0-a837-377e649de435",
+    "slug": "qi-fu-changsha",
+    "name_zh": "奇福",
+    "name_en": "Qi Fu",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2008-07-26",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
     "slug": "ya-lun",
     "name_zh": "雅伦",
@@ -6306,6 +9945,69 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "father_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
     "mother_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
     "record_tier": "complete_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+    "slug": "qing-qing-chengdu-2017-07-26",
+    "name_zh": "青青",
+    "name_en": "Qing Qing",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": "2017-07-26",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "fcc89c7a-6046-5c2c-bcb4-bf1fb50182a1",
+    "slug": "ya-li",
+    "name_zh": "雅莉",
+    "name_en": "Ya Li",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2009-07-19",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "fd184343-de89-5e60-bb3b-0a5f780179d8",
+    "slug": "pu-pu-shenyang",
+    "name_zh": "噗噗",
+    "name_en": "Pu Pu",
+    "gender": "female",
+    "status": "alive",
+    "birth_date": "2014-08-10",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
     "profile_available": true
   },
   {
