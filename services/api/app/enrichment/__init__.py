@@ -1,6 +1,10 @@
 """Bulk panda fact extraction and identity-enrichment boundaries."""
 
 from .bilingual_summary import build_bilingual_summary_batch
+from .chengdu_collection_application import (
+    ChengduCollectionApplicationResult,
+    apply_chengdu_collection_patches,
+)
 from .contracts import (
     SCHEMA_VERSION,
     IdentityCandidateBatch,
@@ -50,6 +54,7 @@ __all__ = [
     "BilingualNormalizedValue",
     "BilingualSummaryBatch",
     "BilingualSummarySentence",
+    "ChengduCollectionApplicationResult",
     "ExtractedFact",
     "ExtractedRelationship",
     "FactDerivationExtraction",
@@ -63,6 +68,7 @@ __all__ = [
     "SmithsonianCurationReviewItem",
     "SmithsonianCurationReviewPlan",
     "SmithsonianReviewRecommendation",
+    "apply_chengdu_collection_patches",
     "apply_smithsonian_current_pair_curation_patch_to_csv",
     "build_bilingual_summary_batch",
     "build_fact_enrichment_batch",

@@ -24,6 +24,28 @@ def test_reviewed_source_registry_enforces_current_access_decisions() -> None:
     assert commons.concurrency_per_host == 1
     assert commons.allowed_paths == ("/w/api.php",)
 
+    chengdu = registry.get("chengdu-panda-base-international-cooperation")
+    assert chengdu.access_status is AccessStatus.APPROVED
+    assert chengdu.live_fetch is True
+    assert chengdu.allowed_paths == (
+        "/cn/cooperate/international/",
+        "/en/cooperate/international/",
+        "/cn/culture/activities/2023-07-07/6594.html",
+        "/en/culture/activities/2023-09-19/8165.html",
+        "/cn/culture/activities/2023-07-07/6593.html",
+        "/en/culture/activities/2023-08-24/8081.html",
+        "/cn/culture/activities/2023-08-23/8079.html",
+        "/en/culture/activities/2023-08-24/8080.html",
+    )
+    assert chengdu.allowed_adapter_ids == (
+        "chengdu-international-cooperation",
+        "chengdu-newborns-2021",
+        "chengdu-denmark-handover-2019",
+        "chengdu-newborns-2017",
+    )
+    assert chengdu.max_requests_per_minute == 1
+    assert chengdu.concurrency_per_host == 1
+
     zoo_atlanta = registry.get("zoo-atlanta-public-pages")
     assert zoo_atlanta.access_status is AccessStatus.PERMISSION_REQUIRED
     assert zoo_atlanta.live_fetch is False
@@ -60,15 +82,11 @@ def test_registry_review_expiry_fails_closed() -> None:
             "invalid request rate",
         ),
         (
-            lambda raw: _source(raw, "wikimedia-commons-action-api").__setitem__(
-                "terms_url", None
-            ),
+            lambda raw: _source(raw, "wikimedia-commons-action-api").__setitem__("terms_url", None),
             "lacks terms or robots evidence",
         ),
         (
-            lambda raw: _source(raw, "zoo-atlanta-public-pages").__setitem__(
-                "live_fetch", True
-            ),
+            lambda raw: _source(raw, "zoo-atlanta-public-pages").__setitem__("live_fetch", True),
             "must not enable live fetch",
         ),
         (

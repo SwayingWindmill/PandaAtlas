@@ -25,6 +25,7 @@ from .contracts import (
     EvidenceSnapshot,
     FieldCandidate,
 )
+from .curl_transport import fetch_curl_response
 from .models import ResponseEnvelope
 from .reconciliation import reconcile_candidates
 from .source_registry import (
@@ -469,40 +470,93 @@ def _fetch_live_responses(
     if source.concurrency_per_host != 1:
         raise ValueError("generic runner requires reviewed per-host concurrency of one")
 
-    responses: dict[str, ResponseEnvelope] = {}
-    interval_seconds = 60 / source.max_requests_per_minute
+    if source.source_id == "chengdu-panda-base-international-cooperation":
+        return _fetch_live_responses_with_fetcher(
+            source,
+            requests,
+            fetch_response=lambda request, current_url: fetch_curl_response(
+                source,
+                request,
+                current_url,
+            ),
+            sleeper=sleeper,
+        )
+
     with httpx.Client(
         headers={"User-Agent": policy.user_agent, "Accept": policy.accept},
         timeout=policy.timeout_seconds,
         follow_redirects=False,
         cookies=None,
     ) as client:
-        for index, request in enumerate(requests):
-            if index:
-                sleeper(interval_seconds)
-            try:
-                responses[request.request_id] = _fetch_one(
-                    source,
-                    request,
-                    client=client,
-                    sleeper=sleeper,
-                )
-            except _ReviewedRequestStopped as error:
-                error.completed_responses.update(responses)
-                raise
-            except Exception as error:
-                raise _ReviewedBatchFailed(
-                    str(error),
-                    completed_responses=responses,
-                ) from error
+        return _fetch_live_responses_with_fetcher(
+            source,
+            requests,
+            fetch_response=lambda request, current_url: _httpx_response_envelope(
+                request,
+                current_url,
+                client,
+            ),
+            sleeper=sleeper,
+        )
+
+
+def _fetch_live_responses_with_fetcher(
+    source: ReviewedSource,
+    requests: Sequence[AdapterRequest],
+    *,
+    fetch_response: Callable[[AdapterRequest, str], ResponseEnvelope],
+    sleeper: Callable[[float], None],
+) -> dict[str, ResponseEnvelope]:
+    responses: dict[str, ResponseEnvelope] = {}
+    interval_seconds = _reviewed_request_interval_seconds(source)
+    for index, request in enumerate(requests):
+        if index:
+            sleeper(interval_seconds)
+        try:
+            responses[request.request_id] = _fetch_one(
+                source,
+                request,
+                fetch_response=fetch_response,
+                sleeper=sleeper,
+            )
+        except _ReviewedRequestStopped as error:
+            error.completed_responses.update(responses)
+            raise
+        except Exception as error:
+            raise _ReviewedBatchFailed(
+                str(error),
+                completed_responses=responses,
+            ) from error
     return responses
+
+
+def _reviewed_request_interval_seconds(source: ReviewedSource) -> float:
+    reviewed_interval = 60 / source.max_requests_per_minute
+    if source.source_id == "chengdu-panda-base-international-cooperation":
+        return max(reviewed_interval, 90.0)
+    return reviewed_interval
+
+
+def _httpx_response_envelope(
+    request: AdapterRequest,
+    current_url: str,
+    client: httpx.Client,
+) -> ResponseEnvelope:
+    response = client.request(request.method, current_url)
+    return ResponseEnvelope(
+        requested_url=request.url,
+        final_url=str(response.url),
+        status=response.status_code,
+        headers=dict(response.headers),
+        body=response.content,
+    )
 
 
 def _fetch_one(
     source: ReviewedSource,
     request: AdapterRequest,
     *,
-    client: httpx.Client,
+    fetch_response: Callable[[AdapterRequest, str], ResponseEnvelope],
     sleeper: Callable[[float], None],
 ) -> ResponseEnvelope:
     policy = source.request_policy
@@ -512,17 +566,10 @@ def _fetch_one(
         current_url = request.url
         redirects = 0
         while True:
-            response = client.request(request.method, current_url)
-            envelope = ResponseEnvelope(
-                requested_url=request.url,
-                final_url=str(response.url),
-                status=response.status_code,
-                headers=dict(response.headers),
-                body=response.content,
-            )
-            if response.status_code not in _REDIRECT_STATUSES:
+            envelope = fetch_response(request, current_url)
+            if envelope.status not in _REDIRECT_STATUSES:
                 break
-            location = response.headers.get("location")
+            location = _header(envelope.headers, "location")
             if policy.redirect_policy is RedirectPolicy.DENY:
                 raise _ReviewedRequestStopped(
                     "reviewed source returned a redirect but redirects are denied",

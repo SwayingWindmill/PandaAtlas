@@ -1,5 +1,21 @@
 """Curator decisions and provenance-preserving curation patch proposals."""
 
+from .batch_review import (
+    LOCAL_REVIEW_PLAN_ROOT,
+    BatchReviewGroup,
+    BatchReviewPlan,
+    ReviewLane,
+    build_batch_review_plan,
+    resolve_batch_review_plan_path,
+    review_lane_for_candidate,
+    write_batch_review_plan,
+)
+from .collection_policy import (
+    POLICY_ID,
+    CollectionDecisionPolicySummary,
+    build_collection_decision_log,
+    collection_policy_decision,
+)
 from .io import (
     ACQUISITION_BUNDLE_ROOT,
     DECISION_ROOT,
@@ -39,10 +55,15 @@ from .workflow import (
 __all__ = [
     "ACQUISITION_BUNDLE_ROOT",
     "DECISION_ROOT",
+    "LOCAL_REVIEW_PLAN_ROOT",
     "PATCH_ROOT",
+    "POLICY_ID",
     "DECISION_SCHEMA_VERSION",
     "PATCH_SCHEMA_VERSION",
     "SUMMARY_SCHEMA_VERSION",
+    "BatchReviewGroup",
+    "BatchReviewPlan",
+    "CollectionDecisionPolicySummary",
     "CurationPatchBundle",
     "CurationPatchProposal",
     "CuratorDecision",
@@ -52,18 +73,25 @@ __all__ = [
     "PandaReference",
     "PatchProvenance",
     "PatchSourceEvidence",
+    "ReviewLane",
     "ReviewSummary",
     "ReviewSummaryGroup",
+    "build_batch_review_plan",
+    "build_collection_decision_log",
+    "collection_policy_decision",
     "export_curation_patch",
     "load_acquisition_bundle",
     "load_decision_log",
     "record_decision",
     "render_summary_text",
     "resolve_acquisition_bundle_path",
+    "resolve_batch_review_plan_path",
+    "review_lane_for_candidate",
     "resolve_decision_path",
     "resolve_patch_path",
     "summarize_candidates",
     "validate_decision_log",
+    "write_batch_review_plan",
     "write_curation_patch",
     "write_decision_log",
 ]

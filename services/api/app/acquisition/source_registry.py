@@ -241,6 +241,7 @@ def validate_source_registry(registry: SourceRegistry, *, today: date) -> None:
 
     _validate_wikimedia_source(registry.get("wikimedia-commons-action-api"))
     _validate_smithsonian_source(registry.get("smithsonian-national-zoo-panda-pages"))
+    _validate_chengdu_source(registry.get("chengdu-panda-base-international-cooperation"))
     _validate_non_live_source(
         registry.get("zoo-atlanta-public-pages"),
         expected_status=AccessStatus.PERMISSION_REQUIRED,
@@ -272,7 +273,7 @@ def _validate_source(source: ReviewedSource, *, today: date) -> None:
             raise ValueError(f"approved source {source.source_id} needs host and path allowlists")
         if not source.allowed_adapter_ids:
             raise ValueError(f"approved source {source.source_id} needs an adapter allowlist")
-        if source.terms_url is None or source.robots_url is None:
+        if source.robots_url is None or (source.terms_url is None and not source.policy_urls):
             raise ValueError(f"approved source {source.source_id} lacks terms or robots evidence")
         if source.request_policy is None:
             raise ValueError(f"approved source {source.source_id} lacks a request policy")
@@ -294,6 +295,8 @@ def _validate_source(source: ReviewedSource, *, today: date) -> None:
 
 
 def _validate_wikimedia_source(source: ReviewedSource) -> None:
+    if source.terms_url is None:
+        raise ValueError(f"approved source {source.source_id} lacks terms or robots evidence")
     if source.access_status is not AccessStatus.APPROVED:
         raise ValueError("Wikimedia source approval drifted")
     if source.base_url != "https://commons.wikimedia.org/w/api.php":
@@ -376,6 +379,67 @@ def _validate_smithsonian_source(source: ReviewedSource) -> None:
         raise ValueError("Smithsonian retry policy drifted")
     if policy.retry_backoff_seconds != 60:
         raise ValueError("Smithsonian retry backoff drifted")
+
+
+def _validate_chengdu_source(source: ReviewedSource) -> None:
+    if source.access_status is not AccessStatus.APPROVED:
+        raise ValueError("Chengdu source approval drifted")
+    if source.base_url != "https://www.panda.org.cn/":
+        raise ValueError("Chengdu source base URL drifted")
+    if source.allowed_hosts != ("www.panda.org.cn",):
+        raise ValueError("Chengdu source host allowlist drifted")
+    if source.allowed_paths != (
+        "/cn/cooperate/international/",
+        "/en/cooperate/international/",
+        "/cn/culture/activities/2023-07-07/6594.html",
+        "/en/culture/activities/2023-09-19/8165.html",
+        "/cn/culture/activities/2023-07-07/6593.html",
+        "/en/culture/activities/2023-08-24/8081.html",
+        "/cn/culture/activities/2023-08-23/8079.html",
+        "/en/culture/activities/2023-08-24/8080.html",
+    ):
+        raise ValueError("Chengdu source path allowlist drifted")
+    if source.allowed_adapter_ids != (
+        "chengdu-international-cooperation",
+        "chengdu-newborns-2021",
+        "chengdu-denmark-handover-2019",
+        "chengdu-newborns-2017",
+    ):
+        raise ValueError("Chengdu adapter allowlist drifted")
+    if source.capability != "public-http":
+        raise ValueError("Chengdu source must use public-http")
+    if source.browser_impersonation:
+        raise ValueError("Chengdu requests must not impersonate a browser")
+    expected_rate = 1 if source.live_fetch else 0
+    expected_concurrency = 1 if source.live_fetch else 0
+    if (
+        source.max_requests_per_minute != expected_rate
+        or source.concurrency_per_host != expected_concurrency
+    ):
+        raise ValueError("Chengdu automated capacity drifted")
+    if source.media_reuse_policy != "facts-only-no-media-reuse":
+        raise ValueError("Chengdu source must prohibit media reuse")
+    if source.terms_url is not None:
+        raise ValueError("Chengdu source must not invent a terms URL")
+    if source.robots_url != "https://www.panda.org.cn/robots.txt":
+        raise ValueError("Chengdu source robots URL drifted")
+    if source.policy_urls != (
+        "https://www.panda.org.cn/cn/about/",
+        "https://www.panda.org.cn/cn/service/ontact/",
+    ):
+        raise ValueError("Chengdu policy evidence drifted")
+    policy = source.request_policy
+    assert policy is not None
+    if policy.accept != "text/html":
+        raise ValueError("Chengdu request Accept value drifted")
+    if policy.allow_query_string:
+        raise ValueError("Chengdu query-string policy drifted")
+    if policy.redirect_policy is not RedirectPolicy.SAME_HOST or policy.max_redirects != 1:
+        raise ValueError("Chengdu redirect policy drifted")
+    if policy.max_attempts != 2 or not policy.retry_server_errors:
+        raise ValueError("Chengdu retry policy drifted")
+    if policy.retry_backoff_seconds != 60:
+        raise ValueError("Chengdu retry backoff drifted")
 
 
 def _validate_non_live_source(
