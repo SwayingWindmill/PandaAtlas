@@ -46,8 +46,7 @@ class DualMediaLibraryTests(unittest.TestCase):
             for item in result.selections["scopes"]["private_collection"]["selections"]
         }
         public_slugs = {
-            item["panda_slug"]
-            for item in result.selections["scopes"]["public_open"]["selections"]
+            item["panda_slug"] for item in result.selections["scopes"]["public_open"]["selections"]
         }
         self.assertIn("qing-bao", private_slugs)
         self.assertNotIn("qing-bao", public_slugs)
@@ -80,9 +79,7 @@ class DualMediaLibraryTests(unittest.TestCase):
 
     def test_open_library_contains_only_open_high_confidence_candidates(self) -> None:
         result = MODULE.build()
-        candidates = {
-            item["candidate_id"]: item for item in result.candidates["candidates"]
-        }
+        candidates = {item["candidate_id"]: item for item in result.candidates["candidates"]}
         selections = result.selections["scopes"]["public_open"]["selections"]
         for selection in selections:
             candidate = candidates[selection["main_candidate_id"]]
@@ -91,9 +88,27 @@ class DualMediaLibraryTests(unittest.TestCase):
             self.assertGreaterEqual(candidate["identity_confidence"], 0.85)
             self.assertGreaterEqual(candidate["rights_confidence"], 0.90)
             self.assertFalse(candidate["withdrawn"])
-            self.assertTrue(
-                candidate["scope_eligibility"]["public_open"]["eligible"]
-            )
+            self.assertTrue(candidate["scope_eligibility"]["public_open"]["eligible"])
+
+    def test_private_collection_does_not_gate_or_score_by_rights(self) -> None:
+        base = {
+            "delivery": [{"url": "https://example.test/image.jpg"}],
+            "withdrawn": False,
+            "identity_confidence": 0.90,
+            "quality_score": 0.80,
+            "review_state": "collection_only",
+            "rights_confidence": 0.01,
+            "rights_state": "unknown",
+        }
+        allowed, reasons = MODULE.eligible(base, "private_collection")
+        self.assertTrue(allowed)
+        self.assertEqual(reasons, [])
+
+        open_rights = dict(base, rights_confidence=0.99, rights_state="open_license")
+        self.assertEqual(
+            MODULE.scope_score(base, "private_collection"),
+            MODULE.scope_score(open_rights, "private_collection"),
+        )
 
     def test_explicit_reviewed_identity_confidence_is_preserved(self) -> None:
         confidence, basis = MODULE.classify_identity(
@@ -108,15 +123,11 @@ class DualMediaLibraryTests(unittest.TestCase):
 
     def test_probable_and_cohort_candidates_remain_collection_only(self) -> None:
         result = MODULE.build()
-        candidates = {
-            item["panda_slug"]: item for item in result.candidates["candidates"]
-        }
+        candidates = {item["panda_slug"]: item for item in result.candidates["candidates"]}
         qing_bao = candidates["qing-bao"]
         self.assertEqual(qing_bao["rights_state"], "open_license")
         self.assertEqual(qing_bao["identity_confidence"], 0.65)
-        self.assertTrue(
-            qing_bao["scope_eligibility"]["private_collection"]["eligible"]
-        )
+        self.assertTrue(qing_bao["scope_eligibility"]["private_collection"]["eligible"])
         self.assertFalse(qing_bao["scope_eligibility"]["public_open"]["eligible"])
 
         for slug in (
@@ -126,19 +137,13 @@ class DualMediaLibraryTests(unittest.TestCase):
             candidate = candidates[slug]
             self.assertEqual(candidate["identity_confidence"], 0.55)
             self.assertEqual(candidate["rights_state"], "restricted")
-            self.assertTrue(
-                candidate["scope_eligibility"]["private_collection"]["eligible"]
-            )
-            self.assertFalse(
-                candidate["scope_eligibility"]["public_open"]["eligible"]
-            )
+            self.assertTrue(candidate["scope_eligibility"]["private_collection"]["eligible"])
+            self.assertFalse(candidate["scope_eligibility"]["public_open"]["eligible"])
 
     def test_override_cannot_force_restricted_candidate_into_open_library(self) -> None:
         initial = MODULE.build()
         candidate = next(
-            item
-            for item in initial.candidates["candidates"]
-            if item["panda_slug"] == "bao-xin"
+            item for item in initial.candidates["candidates"] if item["panda_slug"] == "bao-xin"
         )
         with tempfile.TemporaryDirectory() as temporary:
             overrides = Path(temporary) / "overrides.json"
@@ -161,9 +166,7 @@ class DualMediaLibraryTests(unittest.TestCase):
     def test_withdrawal_removes_candidate_from_both_libraries(self) -> None:
         initial = MODULE.build()
         candidate = next(
-            item
-            for item in initial.candidates["candidates"]
-            if item["panda_slug"] == "lun-lun"
+            item for item in initial.candidates["candidates"] if item["panda_slug"] == "lun-lun"
         )
         with tempfile.TemporaryDirectory() as temporary:
             overrides = Path(temporary) / "overrides.json"
@@ -189,8 +192,7 @@ class DualMediaLibraryTests(unittest.TestCase):
         self.assertEqual(withdrawn["withdrawal_reason"], "rights-review")
         for scope in ("private_collection", "public_open"):
             selected = {
-                item["panda_slug"]
-                for item in result.selections["scopes"][scope]["selections"]
+                item["panda_slug"] for item in result.selections["scopes"][scope]["selections"]
             }
             self.assertNotIn("lun-lun", selected)
 
@@ -200,16 +202,12 @@ class DualMediaLibraryTests(unittest.TestCase):
                 "candidate_id": candidate_id,
                 "panda_slug": "test-panda",
                 "duplicate_group_id": "delivery-sha256-same",
-                "scope_eligibility": {
-                    "private_collection": {"eligible": True, "score": score}
-                },
+                "scope_eligibility": {"private_collection": {"eligible": True, "score": score}},
             }
 
         candidates = [candidate("media-candidate-b", 0.80), candidate("media-candidate-a", 0.90)]
         first = MODULE.build_scope_selection(candidates, "private_collection", {})
-        second = MODULE.build_scope_selection(
-            list(reversed(candidates)), "private_collection", {}
-        )
+        second = MODULE.build_scope_selection(list(reversed(candidates)), "private_collection", {})
         self.assertEqual(first, second)
         self.assertEqual(first[0]["main_candidate_id"], "media-candidate-a")
         self.assertEqual(first[0]["gallery_candidate_ids"], ["media-candidate-a"])

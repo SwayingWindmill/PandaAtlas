@@ -147,9 +147,8 @@ def scope_score(candidate: dict[str, Any], scope: str) -> float:
             6,
         )
     return round(
-        0.50 * candidate["identity_confidence"]
-        + 0.15 * candidate["rights_confidence"]
-        + 0.30 * candidate["quality_score"]
+        0.60 * candidate["identity_confidence"]
+        + 0.35 * candidate["quality_score"]
         + 0.05 * recency,
         6,
     )
@@ -175,8 +174,7 @@ def eligible(candidate: dict[str, Any], scope: str) -> tuple[bool, list[str]]:
     else:
         if candidate["review_state"] not in COLLECTION_REVIEW_STATES:
             reasons.append("not-reviewed-for-collection")
-        if candidate["rights_state"] == "unknown":
-            reasons.append("rights-state-unknown")
+
     return not reasons, reasons
 
 
@@ -231,9 +229,7 @@ def build_candidates(
             "captured_at": None,
             "delivery": delivery,
             "primary_delivery_sha256": primary["sha256"] if primary else None,
-            "duplicate_group_id": (
-                f"delivery-sha256-{primary['sha256']}" if primary else None
-            ),
+            "duplicate_group_id": (f"delivery-sha256-{primary['sha256']}" if primary else None),
             "withdrawn": False,
             "withdrawal_reason": None,
             "alt_zh": row["alt_zh"],
@@ -282,8 +278,7 @@ def apply_withdrawals(
             if not allowed:
                 candidate_id_value = candidate["candidate_id"]
                 raise MediaLibraryError(
-                    f"Override cannot select ineligible candidate "
-                    f"{candidate_id_value} for {scope}"
+                    f"Override cannot select ineligible candidate {candidate_id_value} for {scope}"
                 )
             selections[(scope, candidate["panda_slug"])] = candidate["candidate_id"]
         else:
@@ -375,8 +370,7 @@ def build(
             },
             "public_open": {
                 "policy": (
-                    "approved identity plus open license, public domain, "
-                    "or explicit authorization"
+                    "approved identity plus open license, public domain, or explicit authorization"
                 ),
                 "selections": public_selection,
             },
@@ -396,16 +390,14 @@ def build(
                 "panda_slug": panda["slug"],
                 "candidate_count": len(values),
                 "private_collection_eligible_count": sum(
-                    item["scope_eligibility"]["private_collection"]["eligible"]
-                    for item in values
+                    item["scope_eligibility"]["private_collection"]["eligible"] for item in values
                 ),
                 "public_open_eligible_count": sum(
-                    item["scope_eligibility"]["public_open"]["eligible"]
-                    for item in values
+                    item["scope_eligibility"]["public_open"]["eligible"] for item in values
                 ),
-                "private_collection_main_candidate_id": private_by_panda.get(
-                    panda["slug"], {}
-                ).get("main_candidate_id"),
+                "private_collection_main_candidate_id": private_by_panda.get(panda["slug"], {}).get(
+                    "main_candidate_id"
+                ),
                 "public_open_main_candidate_id": public_by_panda.get(panda["slug"], {}).get(
                     "main_candidate_id"
                 ),
@@ -465,9 +457,7 @@ def build(
 
 def install_atomically(output_dir: Path, result: BuildResult) -> None:
     output_dir.parent.mkdir(parents=True, exist_ok=True)
-    temporary = Path(
-        tempfile.mkdtemp(prefix=f"{output_dir.name}-build-", dir=output_dir.parent)
-    )
+    temporary = Path(tempfile.mkdtemp(prefix=f"{output_dir.name}-build-", dir=output_dir.parent))
     try:
         payloads = {
             "candidates.json": result.candidates,
