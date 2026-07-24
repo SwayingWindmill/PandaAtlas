@@ -20,9 +20,14 @@ This is the image-first, local-only media layer for Panda Atlas.
 ## Commands
 
 ```bash
+npm run import:local-panda-media
 npm run check:local-panda-media
 npm run collect:local-panda-media
 npm run test:local-panda-media
 ```
 
-`check` validates candidate metadata without downloading. `collect` downloads or refreshes files and rewrites the deterministic inventory.
+`import` merges every candidate from the existing curated media release and Wikimedia discovery results into the local queue, without filtering by rights state. `check` validates candidate metadata without downloading. `collect` downloads missing files and rewrites the deterministic inventory.
+
+## Current snapshot
+
+As of 2026-07-25, the vault contains 39 candidates. Thirty-five image files are present locally (about 186 MB); four historic Chengdu Base asset URLs currently fail because the remote files return HTTP 404 or terminate TLS. These failures remain in the inventory as replacement leads rather than being removed.

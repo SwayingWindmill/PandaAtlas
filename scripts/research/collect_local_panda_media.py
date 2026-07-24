@@ -310,6 +310,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--execute", action="store_true", help="Download missing image files.")
     parser.add_argument("--refresh", action="store_true", help="Redownload existing image files.")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Return a non-zero exit code when any individual asset cannot be downloaded.",
+    )
     parser.add_argument("--candidates", type=Path, default=DEFAULT_CANDIDATES)
     parser.add_argument("--inventory", type=Path, default=DEFAULT_INVENTORY)
     parser.add_argument("--files-dir", type=Path, default=DEFAULT_FILES_DIR)
@@ -341,7 +346,7 @@ def main() -> int:
         f"Local panda media inventory: {len(entries)} candidates; {count_text}; "
         f"stored_bytes={total_bytes}. Rights metadata was recorded but not used as a gate."
     )
-    return 1 if counts.get("failed") else 0
+    return 1 if args.strict and counts.get("failed") else 0
 
 
 if __name__ == "__main__":
