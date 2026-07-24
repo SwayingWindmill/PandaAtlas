@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -240,6 +241,29 @@ def import_release_candidates(
     }
 
 
+def _contains_cjk(value: str) -> bool:
+    return any("\u3400" <= character <= "\u9fff" for character in value)
+
+
+def _alias_matches_text(alias: str, text: str) -> bool:
+    if _contains_cjk(alias):
+        return alias in text
+    pattern = rf"(?<![0-9a-z]){re.escape(alias)}(?![0-9a-z])"
+    return re.search(pattern, text) is not None
+
+
+def _has_giant_panda_signal(source: dict[str, Any]) -> bool:
+    text = " ".join(
+        [
+            str(source.get("file_title") or ""),
+            str(source.get("description") or ""),
+            " ".join(str(value) for value in source.get("categories") or []),
+        ]
+    ).casefold()
+    signals = ("giant panda", "ailuropoda melanoleuca", "大熊猫")
+    return any(signal in text for signal in signals)
+
+
 def resolve_commons_subjects(
     source: dict[str, Any],
     *,
@@ -253,12 +277,9 @@ def resolve_commons_subjects(
     text = " ".join(text_parts).casefold()
     matches: set[str] = set()
     for alias, slugs in alias_index.items():
-        if alias in text:
+        if _alias_matches_text(alias, text):
             matches.update(slugs)
 
-    target_slug = str(source.get("panda_slug") or "").strip()
-    if not matches and target_slug:
-        matches.add(target_slug)
     return sorted(matches)
 
 
@@ -282,6 +303,12 @@ def candidate_from_commons_discovery(
     source_confidence = source.get("identity_confidence")
     if not isinstance(source_confidence, (int, float)):
         source_confidence = 0.25
+    if not subjects and not _has_giant_panda_signal(source):
+        return None
+
+    target_slug = str(source.get("panda_slug") or "").strip()
+    if target_slug in subjects and float(source_confidence) >= 0.75:
+        subjects = [target_slug]
 
     if len(subjects) == 1:
         subject_id = subjects[0]
@@ -351,6 +378,21 @@ def import_commons_discovery_candidates(
         raise CandidateImportError(f"{discovery_path} has no candidates array")
 
     existing = load_jsonl(output_path)
+    source_candidate_ids = {
+        str(source.get("candidate_id"))
+        for source in source_candidates
+        if isinstance(source, dict) and isinstance(source.get("candidate_id"), str)
+    }
+    original_existing_count = len(existing)
+    existing = [
+        row
+        for row in existing
+        if not (
+            str(row.get("media_id") or "").startswith("local-media-commons-")
+            and row.get("original_discovery_candidate_id") in source_candidate_ids
+        )
+    ]
+    reconciled_candidates = original_existing_count - len(existing)
     existing_urls = {
         str(row.get("asset_url"))
         for row in existing
@@ -393,7 +435,8 @@ def import_commons_discovery_candidates(
     _write_candidates(output_path, combined)
     return {
         "source_candidates": len(source_candidates),
-        "existing_candidates": len(existing),
+        "existing_candidates": original_existing_count,
+        "reconciled_candidates": reconciled_candidates,
         "added_candidates": len(additions),
         "skipped_duplicates": skipped_duplicates,
         "skipped_non_images": skipped_non_images,
@@ -447,6 +490,7 @@ def main() -> int:
     if commons_summary is not None:
         message += (
             f"; commons_source={commons_summary['source_candidates']}, "
+            f"commons_reconciled={commons_summary['reconciled_candidates']}, "
             f"commons_added={commons_summary['added_candidates']}, "
             f"commons_duplicates={commons_summary['skipped_duplicates']}, "
             f"commons_non_images={commons_summary['skipped_non_images']}, "

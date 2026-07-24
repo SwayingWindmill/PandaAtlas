@@ -1,0 +1,32 @@
+{
+  "body_base64": "eyJiYXRjaGNvbXBsZXRlIjp0cnVlLCJxdWVyeSI6eyJwYWdlcyI6W3sicGFnZWlkIjo5OTk1NjE2MywibnMiOjYsInRpdGxlIjoiRmlsZTpJbnN0aXR1dGlvbmVzIHBoeXNpY2FlLiBleCBwcmFlY2xhcmlzc2ltb3J1bSwgY3VtIHZldGVydW0gdHVtIHJlY2VudGlvcnVtIHBoaWxvc29waG9ydW0gc2NyaXB0aXMgVC4yIChJQSBBRkQwMDg2YmlzKS5wZGYiLCJpbmRleCI6MSwiaW1hZ2VyZXBvc2l0b3J5IjoibG9jYWwiLCJpbWFnZWluZm8iOlt7InRpbWVzdGFtcCI6IjIwMjEtMDItMTZUMjM6MTE6NTRaIiwidXNlciI6IkbDpiIsInNpemUiOjE0OTE4NTA5LCJ3aWR0aCI6OTE4LCJoZWlnaHQiOjEyOTEsInBhZ2Vjb3VudCI6MjMzLCJ1cmwiOiJodHRwczovL3VwbG9hZC53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zLzMvM2IvSW5zdGl0dXRpb25lc19waHlzaWNhZS5fZXhfcHJhZWNsYXJpc3NpbW9ydW0lMkNfY3VtX3ZldGVydW1fdHVtX3JlY2VudGlvcnVtX3BoaWxvc29waG9ydW1fc2NyaXB0aXNfVC4yXyUyOElBX0FGRDAwODZiaXMlMjkucGRmIiwiZGVzY3JpcHRpb251cmwiOiJodHRwczovL2NvbW1vbnMud2lraW1lZGlhLm9yZy93aWtpL0ZpbGU6SW5zdGl0dXRpb25lc19waHlzaWNhZS5fZXhfcHJhZWNsYXJpc3NpbW9ydW0sX2N1bV92ZXRlcnVtX3R1bV9yZWNlbnRpb3J1bV9waGlsb3NvcGhvcnVtX3NjcmlwdGlzX1QuMl8oSUFfQUZEMDA4NmJpcykucGRmIiwiZGVzY3JpcHRpb25zaG9ydHVybCI6Imh0dHBzOi8vY29tbW9ucy53aWtpbWVkaWEub3JnL3cvaW5kZXgucGhwP2N1cmlkPTk5OTU2MTYzIiwic2hhMSI6ImNlMDRkMzEyZjcxY2U4NGFlZDA5YjgyMTAwOTY0NjRkNzdmMGIzYTEiLCJleHRtZXRhZGF0YSI6eyJDYXRlZ29yaWVzIjp7InZhbHVlIjoiUEQtb2xkLTEwMC1leHBpcmVkfFNjYW5zIGZyb20gdGhlIEludGVybmV0IEFyY2hpdmUvdW52ZXJpZmllZHxDQy1QRC1NYXJrfFNjYW5zIGZyb20gdGhlIEludGVybmV0IEFyY2hpdmV8Qm9va3MgdXBsb2FkZWQgYnkgRsOmfEJvb2tzIHdpdGhvdXQgV2lraWRhdGEgaXRlbXxPbGQgYm9va3MgaW4gSW50ZXJuZXQgQXJjaGl2ZSBhZGRpdGlvbmFsIGNvbGxlY3Rpb25zfFBELW9sZCBtaXNzaW5nIFNEQyBjb3B5cmlnaHQgc3RhdHVzfExhdGluLWxhbmd1YWdlIGJvb2tzIiwic291cmNlIjoiY29tbW9ucy1jYXRlZ29yaWVzIiwiaGlkZGVuIjoiIn0sIkFydGlzdCI6eyJ2YWx1ZSI6IjxkaXYgY2xhc3M9XCJmbiB2YWx1ZVwiPlxuPGRsPjxkZD5Nb3Jlbm8gQmFycXVlcml6bywgSnVhbiBBbnRvbmlvPC9kZD5cbjxkZD5Sb2Ryw61ndWV6IGRlIE1lZHJhbm8sIFZpY2VudGU8L2RkPjwvZGw+PC9kaXY+Iiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiSW1hZ2VEZXNjcmlwdGlvbiI6eyJ2YWx1ZSI6IjxkaXYgY2xhc3M9XCJkZXNjcmlwdGlvblwiPlxuPGRpdj5Nw6FzIGRldGFsbGVzPC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj5GZWNoYSBkZSBjcmVhY2nDs248L2Rpdj48ZGl2PjE3ODY/PC9kaXY+PGRpdj5Gb3JtYXRvPC9kaXY+PGRpdj4yIHYuIChJOiAyMzQgaC47IElJOiAyMTggaC4pwqA7IDIyIGNtPC9kaXY+PGRpdj5GdWVudGU8L2Rpdj48ZGl2PkNhdMOhbG9nbyBkZSBsYSBiaWJsaW90ZWNhPC9kaXY+PGRpdj5JZGVudGlmaWNhZG9yPC9kaXY+PGRpdj5PQ0xDwqA6IChPQ29MQyk5MjkzMTgxNzY8L2Rpdj48ZGl2Pjxicj48L2Rpdj48ZGl2PlNJR05BVFVSQTwvZGl2PjxkaXY+QSBGRC8wMDg2YmlzPC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj4mbHQ7YSBocmVmPVwiPGEgcmVsPVwibm9mb2xsb3dcIiBjbGFzcz1cImV4dGVybmFsIGZyZWVcIiBocmVmPVwiaHR0cHM6Ly9mYW1hLnVzLmVzL3Blcm1hbGluay8zNENCVUFfVVMvM2VuYzJnL2FsbWE5OTEwMTEwNDE5Nzk3MDQ5ODdcIj5odHRwczovL2ZhbWEudXMuZXMvcGVybWFsaW5rLzM0Q0JVQV9VUy8zZW5jMmcvYWxtYTk5MTAxMTA0MTk3OTcwNDk4NzwvYT5cIiByZWw9XCJub2ZvbGxvd1wiJmd0O0NhdMOhbG9nbyBGYW1hJmx0Oy9hJmd0OzwvZGl2PlxuPGJyPlN1YmplY3RzOiBGb25kbyBBbnRpZ3VvOyBMaWJyb3MgZGVsIFNpZ2xvIFhWSUlJOyBNYW51c2NyaXRvczwvZGl2PiIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIn0sIkNyZWRpdCI6eyJ2YWx1ZSI6IjxkbD48ZGQ+PGEgaHJlZj1cIi8vYXJjaGl2ZS5vcmcvZGV0YWlscy9BRkQwMDg2YmlzXCIgY2xhc3M9XCJleHRpd1wiIHRpdGxlPVwiaWFyY2hpdmU6QUZEMDA4NmJpc1wiPjxiZGkgY2xhc3M9XCJkZXNjcmlwdGlvbiBlblwiIGxhbmc9XCJlblwiIGRpcj1cImx0clwiPkludGVybmV0IEFyY2hpdmUgaWRlbnRpZmllcjwvYmRpPjogQUZEMDA4NmJpczwvYT48L2RkPlxuPGRkPjxhIHJlbD1cIm5vZm9sbG93XCIgY2xhc3M9XCJleHRlcm5hbCBmcmVlXCIgaHJlZj1cImh0dHBzOi8vYXJjaGl2ZS5vcmcvZG93bmxvYWQvQUZEMDA4NmJpcy9BRkQwMDg2YmlzLnBkZlwiPmh0dHBzOi8vYXJjaGl2ZS5vcmcvZG93bmxvYWQvQUZEMDA4NmJpcy9BRkQwMDg2YmlzLnBkZjwvYT48L2RkPjwvZGw+Iiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiTGljZW5zZVNob3J0TmFtZSI6eyJ2YWx1ZSI6IlB1YmxpYyBkb21haW4iLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSIsImhpZGRlbiI6IiJ9LCJVc2FnZVRlcm1zIjp7InZhbHVlIjoiUHVibGljIGRvbWFpbiIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIn0sIkF0dHJpYnV0aW9uUmVxdWlyZWQiOnsidmFsdWUiOiJmYWxzZSIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIiwiaGlkZGVuIjoiIn19LCJtaW1lIjoiYXBwbGljYXRpb24vcGRmIn1dfV19fQ==",
+  "final_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22A+Bao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "headers": {
+    "age": "0",
+    "cache-control": "private, must-revalidate, max-age=0",
+    "connection": "close",
+    "content-disposition": "inline; filename=api-result.json",
+    "content-length": "2845",
+    "content-security-policy": "default-src 'self'; script-src 'none'; object-src 'none'",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Fri, 24 Jul 2026 17:10:31 GMT",
+    "nel": "{ \"report_to\": \"wm_nel\", \"max_age\": 604800, \"failure_fraction\": 0.05, \"success_fraction\": 0.0}",
+    "report-to": "{ \"group\": \"wm_nel\", \"max_age\": 604800, \"endpoints\": [{ \"url\": \"https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0\" }] }",
+    "server": "mw-api-ext.codfw.main-568486bd8d-plk7c",
+    "server-timing": "cache;desc=\"pass\", host;desc=\"cp5018\",co_id;desc=\"1749748199\"",
+    "set-cookie": "WMF-Uniq=7NAkijRjFkDQUmnW2F3CeAOnAAAAAFvd5slQDh0a0-lT4a-ZExc9NsfxeJBl2kGQ;Domain=commons.wikimedia.org;Path=/;HttpOnly;secure;SameSite=None;Expires=Sat, 24 Jul 2027 00:00:00 GMT",
+    "strict-transport-security": "max-age=106384710; includeSubDomains; preload",
+    "vary": "Accept-Encoding,X-Subdomain,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization,User-Agent",
+    "x-analytics": "",
+    "x-cache": "cp5018 miss, cp5018 pass",
+    "x-cache-status": "pass",
+    "x-client-ip": "103.62.49.138",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-request-id": "ff1fb3fd-0026-43f3-9326-b1242148034d",
+    "x-search-id": "3yirztqgzvqhz53mqowc5kinr"
+  },
+  "requested_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22A+Bao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "schema_version": 1,
+  "status": 200
+}
