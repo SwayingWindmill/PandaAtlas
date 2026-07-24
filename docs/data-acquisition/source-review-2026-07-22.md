@@ -228,3 +228,52 @@ Reviewed material:
 - `https://www.tokyo-zoo.net/en/topics/news/ueno/355_28750_2024-09-29.html`
 
 Review expires: 2026-10-22, or earlier if Tokyo Zoological Park Society publishes a robots or automated-access policy.
+
+## Chengdu Panda Base bounded bilingual fact pages — bounded approval
+
+Reviewed: 2026-07-23
+
+Decision: `approved`
+
+The Chengdu Research Base of Giant Panda Breeding publishes matching Chinese and English international-cooperation pages, matching Chinese and English 2021 and 2017 newborn profile pages, and matching Chinese and English 2019 Denmark handover pages with a bounded set of named-panda facts. The reviewed pages state official Chinese and English names, aliases, pedigree numbers, exact or year-level birth facts, explicit sex and parent names, and dated breeding or transfer events. The pages are public, require no login, cookies, query parameters, browser execution, or form submission.
+
+The root `robots.txt` returned HTTP 404 during review. No site terms page or automated-access prohibition was located. The site footer asserts copyright ownership. Approval therefore applies only to deterministic factual reference candidates from the eight exact pages below. It does not authorize copying prose, images, layout, video, downloadable files, search results, pagination, site indexes, mini-program endpoints, or unrelated news pages.
+
+Approved source boundary:
+
+- source ID: `chengdu-panda-base-international-cooperation`;
+- adapter IDs: `chengdu-international-cooperation`, `chengdu-newborns-2021`, `chengdu-denmark-handover-2019`, and `chengdu-newborns-2017`;
+- exact paths: `/cn/cooperate/international/`, `/en/cooperate/international/`, `/cn/culture/activities/2023-07-07/6594.html`, `/en/culture/activities/2023-09-19/8165.html`, `/cn/culture/activities/2023-07-07/6593.html`, `/en/culture/activities/2023-08-24/8081.html`, `/cn/culture/activities/2023-08-23/8079.html`, and `/en/culture/activities/2023-08-24/8080.html`;
+- method: GET only;
+- query strings: prohibited;
+- authentication and cookies: prohibited;
+- browser impersonation: prohibited;
+- user agent: `PandaAtlasBot/0.1 (https://github.com/SwayingWindmill/PandaAtlas; official-source evidence)`;
+- rate: at most one request per minute, with a source-specific minimum interval of 90 seconds, sequentially;
+- redirects: at most one same-host redirect;
+- content use: field-level identity, relationship, and event evidence only;
+- media reuse: not approved from these pages;
+- transport compatibility: only this source may use the reviewed curl HTTP/2 transport with a fresh connection per request; the command is an argument list without a shell, redirects remain disabled, certificate verification remains enabled, and HTTP status, content length, body-size, content-type, and semantic checks remain required.
+
+Stop conditions:
+
+- HTTP 401, 403, 404, 407, 409, 429, or 451;
+- cross-host redirect, authentication request, consent wall, CAPTCHA, or challenge page;
+- a new robots or terms policy that disallows the reviewed paths or PandaAtlasBot;
+- missing bilingual headings, missing reviewed paragraphs, semantic disagreement between Chinese and English pages, non-HTML content, or body-size collapse.
+
+Reviewed material:
+
+- `https://www.panda.org.cn/cn/cooperate/international/`
+- `https://www.panda.org.cn/en/cooperate/international/`
+- `https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html`
+- `https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html`
+- `https://www.panda.org.cn/cn/culture/activities/2023-07-07/6593.html`
+- `https://www.panda.org.cn/en/culture/activities/2023-08-24/8081.html`
+- `https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html`
+- `https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html`
+- `https://www.panda.org.cn/robots.txt` (HTTP 404 on 2026-07-23)
+- `https://www.panda.org.cn/cn/about/`
+- `https://www.panda.org.cn/cn/service/ontact/`
+
+Review expires: 2026-10-23, or immediately if access behavior, policy signals, host, paths, or page semantics change.

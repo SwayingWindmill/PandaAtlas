@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from .chengdu_denmark import ADAPTER as CHENGDU_DENMARK_HANDOVER_2019_ADAPTER
+from .chengdu_international import ADAPTER as CHENGDU_INTERNATIONAL_COOPERATION_ADAPTER
+from .chengdu_newborns import ADAPTER as CHENGDU_NEWBORNS_2021_ADAPTER
+from .chengdu_newborns_2017 import ADAPTER as CHENGDU_NEWBORNS_2017_ADAPTER
 from .runner import AdapterRegistry
 from .smithsonian_pandas import ADAPTER as SMITHSONIAN_PANDA_PROFILES_ADAPTER
 from .wikimedia_commons import ADAPTER as WIKIMEDIA_COMMONS_XI_LUN_ADAPTER
@@ -8,6 +12,10 @@ DEFAULT_ADAPTER_REGISTRY = AdapterRegistry(
     adapters=(
         WIKIMEDIA_COMMONS_XI_LUN_ADAPTER,
         SMITHSONIAN_PANDA_PROFILES_ADAPTER,
+        CHENGDU_INTERNATIONAL_COOPERATION_ADAPTER,
+        CHENGDU_NEWBORNS_2021_ADAPTER,
+        CHENGDU_DENMARK_HANDOVER_2019_ADAPTER,
+        CHENGDU_NEWBORNS_2017_ADAPTER,
     )
 )
 

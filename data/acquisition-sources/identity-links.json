@@ -1,7 +1,199 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-07-22",
+  "reviewed_at": "2026-07-24",
   "source_keys": [
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:a-bao",
+      "canonical_slug": "a-bao",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly names A Bao as Bao Xin's mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:bao-xin",
+      "canonical_slug": "bao-xin",
+      "basis": "Created from accepted bilingual Chengdu newborn identity candidates with consistent official names, exact birth date, and sex."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:cheng-lan",
+      "canonical_slug": "cheng-lan",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify Cheng Lan by exact birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:da-mei-2017",
+      "canonical_slug": "da-mei-changsha",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify the 2017 Da Mei by exact birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:hua-zui-ba",
+      "canonical_slug": "hua-zui-ba",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:huan-huan",
+      "canonical_slug": "huan-huan",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:huan-huanzai-2017",
+      "canonical_slug": "yuan-meng",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify Huan Huanzai as Huan Huan's male cub born on 2017-08-04, matching Yuan Meng's exact birth facts."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:jiao-qing",
+      "canonical_slug": "jiao-qing",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:jin-xiao",
+      "canonical_slug": "jin-xiao",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly identifies Jin Xiao by name, birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:jing-liang",
+      "canonical_slug": "jing-liang",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify Jing Liang by exact birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:lun-hui",
+      "canonical_slug": "lun-hui",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly identifies Lun Hui by name, birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:lun-lun",
+      "canonical_slug": "lun-lun",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:mao-er",
+      "canonical_slug": "mao-sun",
+      "basis": "The reviewed bilingual Chengdu Denmark handover pages explicitly identify Mao Er as the panda whose nickname is Mao Sun (毛笋), matching the existing Mao Sun record by exact birth date and sex."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:mei-lan",
+      "canonical_slug": "mei-lan",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:mei-lun",
+      "canonical_slug": "mei-lun",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly names Mei Lun as Lun Hui's mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:mei-mei",
+      "canonical_slug": "meimei",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:meng-meng",
+      "canonical_slug": "meng-meng",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:ni-ke-2017",
+      "canonical_slug": "ni-ke",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify Ni Ke by exact birth date, mother, and the Nicole alias."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:ni-na",
+      "canonical_slug": "ni-na",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify Ni Na by exact birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:pu-pu",
+      "canonical_slug": "pu-pu-shenyang",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly identifies Pu Pu by name, birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:qi-fu",
+      "canonical_slug": "qi-fu-changsha",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly names Qi Fu as Pu Pu's mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:qing-qing-2017-07-26",
+      "canonical_slug": "qing-qing-chengdu-2017-07-26",
+      "basis": "Created from accepted bilingual Chengdu newborn identity candidates with consistent official names, exact birth date, and sex."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:xiao-xin-2017",
+      "canonical_slug": "xiao-xin-chengdu-2017",
+      "basis": "Created from accepted bilingual Chengdu newborn identity candidates with consistent official names, exact birth date, and sex."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:xing-er",
+      "canonical_slug": "xing-er",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:ya-li",
+      "canonical_slug": "ya-li",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly names Ya Li as Ya Song's mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:ya-song",
+      "canonical_slug": "ya-song",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly identifies Ya Song by name, birth date, sex, and mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:yuan-meng",
+      "canonical_slug": "yuan-meng",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:yuan-zai",
+      "canonical_slug": "yuan-zai",
+      "basis": "The reviewed bilingual Chengdu cooperation page explicitly names this panda in the corresponding institutional cohort."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:zhao-mei",
+      "canonical_slug": "zhao-mei",
+      "basis": "The reviewed bilingual Chengdu 2021 newborn page explicitly names Zhao Mei as Jin Xiao's mother."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:zhen-xi",
+      "canonical_slug": "zhen-xi",
+      "basis": "Created from accepted bilingual Chengdu newborn identity candidates with consistent official names, exact birth date, and sex."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:zhi-ma",
+      "canonical_slug": "zhi-ma",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify Zhi Ma by exact birth date, sex, mother, and the Sesame alias."
+    },
+    {
+      "source_id": "chengdu-panda-base-international-cooperation",
+      "source_key": "chengdu:zhi-shi",
+      "canonical_slug": "zhi-shi",
+      "basis": "The reviewed bilingual Chengdu 2017 newborn pages identify Zhi Shi by exact birth date, sex, mother, and the Cheese alias."
+    },
     {
       "source_id": "wikimedia-commons-action-api",
       "source_key": "xi-lun",
