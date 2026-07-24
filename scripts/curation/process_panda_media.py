@@ -96,13 +96,17 @@ def load_asset(
     curation_dir: Path,
     *,
     allow_network: bool,
+    referer: str | None = None,
     maximum_bytes: int = MAX_ASSET_BYTES,
 ) -> bytes:
     parsed = urlparse(asset)
     if parsed.scheme == "https":
         if not allow_network:
             raise MediaProcessingError("Remote assets are disabled; rerun with --allow-network")
-        request = Request(asset, headers={"User-Agent": USER_AGENT})
+        headers = {"User-Agent": USER_AGENT}
+        if referer:
+            headers["Referer"] = referer
+        request = Request(asset, headers=headers)
         try:
             with urlopen(request, timeout=30) as response:  # noqa: S310 - HTTPS is enforced.
                 final_url = urlparse(response.geturl())
@@ -210,7 +214,12 @@ def process_media_row(
     *,
     allow_network: bool,
 ) -> dict[str, Any]:
-    payload = load_asset(row["asset"], curation_dir, allow_network=allow_network)
+    payload = load_asset(
+        row["asset"],
+        curation_dir,
+        allow_network=allow_network,
+        referer=row["source_url"],
+    )
     original_sha256 = sha256_bytes(payload)
     decoded = decode_image(payload)
     media_id = media_id_for(row, original_sha256)

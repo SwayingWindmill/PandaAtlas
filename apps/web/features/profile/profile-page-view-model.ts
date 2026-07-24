@@ -48,7 +48,7 @@ export interface TrustedProfileTimelineItemViewModel {
   id: string;
   date: string;
   datePrecision: "day" | "month" | "year";
-  kind: "residency" | "transfer";
+  kind: "residency" | PandaDetail["events"][number]["event_type"];
   status: string;
   fromLabel: string | null;
   toLabel: string;
@@ -354,7 +354,7 @@ function buildTimeline(
       id: event.id,
       date: event.event_date,
       datePrecision: event.event_date_precision,
-      kind: "transfer" as const,
+      kind: event.event_type,
       status: event.event_status,
       fromLabel: facilityName(
         event.from_facility_id,

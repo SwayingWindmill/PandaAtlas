@@ -88,14 +88,14 @@ def test_collection_release_candidate_is_deterministic_and_preserves_base_semant
     assert summary["risk_tier_counts"] == {"high": 10, "medium": 18}
     assert summary["action_counts"] == {"add": 18, "preserve": 10}
     assert summary["event_changes"] == {
-        "added": 15,
+        "added": 20,
         "replaced": 0,
         "skipped_existing_semantic": 30,
         "skipped_missing_source": 0,
     }
     assert summary["residency_changes"] == {
         "added": 0,
-        "skipped_without_reviewed_start": 14,
+        "skipped_without_reviewed_start": 15,
     }
     assert set(first.report["added_profile_slugs"]) == NEW_PROFILE_SLUGS
 
@@ -128,7 +128,7 @@ def test_collection_release_candidate_is_deterministic_and_preserves_base_semant
         for decision in first.report["profile_decisions"]
         if "reviewed_current_residency_start" in decision["gaps"]
     ]
-    assert len(residency_gap_decisions) == 14
+    assert len(residency_gap_decisions) == 15
 
     event_semantics = [
         (participant, public["event_type"], public["event_date"])

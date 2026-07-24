@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.24.2",
+  "files": {
+    "api.json": {
+      "bytes": 314290,
+      "sha256": "2d5d9e6982c9f9e2f7d5a38863c5798b12fdd2aebd410bfe9c2df1cb1aa79125"
+    },
+    "d1.sql": {
+      "bytes": 438827,
+      "sha256": "88a6f573f06fddcb1e5ca2aced86cfb79eb7a350a1bc1fb4f0f23ef1bc0d75f7"
+    },
+    "pandas.csv": {
+      "bytes": 79257,
+      "sha256": "fd0e451d919cb69b60b15b0bc59462717934bff9f66f4a0b8dd1aac55bcd39e1"
+    },
+    "pandas.json": {
+      "bytes": 133200,
+      "sha256": "5e6a18d536a9bb86a1bd10d52e59e53b71586883aa5d318d42e6ef5a4ed263d5"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "chengdu-profile-depth-v1",
+  "public_schema_version": "1.2.0",
+  "publication_batch_id": "chengdu-profile-depth-2026-07-24",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 38,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 43,
+    "facilities": 8,
+    "facts": 109,
+    "institutions": 5,
+    "media": 38,
+    "pandas": 38,
+    "parentage_assertions": 24,
+    "places": 7,
+    "residencies": 26,
+    "sources": 43
+  },
+  "released_at": "2026-07-24T06:00:00Z"
+}

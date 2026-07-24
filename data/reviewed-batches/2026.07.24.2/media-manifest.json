@@ -1,0 +1,126 @@
+{
+  "batch_version": "2026.07.24.2",
+  "generated_at": "2026-07-24T06:00:00Z",
+  "records": [
+    {
+      "alt_en": "Bao Xin in the official 2021 newborn profile",
+      "alt_zh": "2021年新生幼仔档案中的宝新",
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 5264,
+          "filename": "media-bao-xin-d9b287dead5da1d6-w480.webp",
+          "height": 320,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "713d834900166c53b6fea7189fe5420ad0ec05ef28057031a9a5c3a867cce3ed",
+          "width": 480
+        },
+        {
+          "bytes": 13586,
+          "filename": "media-bao-xin-d9b287dead5da1d6-w800.webp",
+          "height": 533,
+          "kind": "width-800",
+          "mime_type": "image/webp",
+          "sha256": "3289de94d2e637357c2fdc955e23a7da1bdd9fc240cc13789c17568d5acb8d2f",
+          "width": 800
+        }
+      ],
+      "media_id": "media-bao-xin-d9b287dead5da1d6",
+      "panda_slug": "bao-xin",
+      "review_status": "collection_only",
+      "rights": "All rights reserved",
+      "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html"
+    },
+    {
+      "alt_en": "The 2017 Chengdu newborn cohort presentation; Qing Qing belongs to this cohort",
+      "alt_zh": "2017年成都基地新生幼仔集体亮相现场；青青属于该批次",
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 46836,
+          "filename": "media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w480.webp",
+          "height": 319,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "f8b8a73c5043287f3f94bfbeb5194c0aea359100e734cfecb2441545c438c11c",
+          "width": 480
+        },
+        {
+          "bytes": 61812,
+          "filename": "media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+          "height": 366,
+          "kind": "width-550",
+          "mime_type": "image/webp",
+          "sha256": "3859206f38f668f676680f85e359c7cfaaad20cb279f108c809822ad00805e65",
+          "width": 550
+        }
+      ],
+      "media_id": "media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965",
+      "panda_slug": "qing-qing-chengdu-2017-07-26",
+      "review_status": "collection_only",
+      "rights": "All rights reserved",
+      "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html"
+    },
+    {
+      "alt_en": "The 2017 Chengdu newborn cohort presentation; Xiao Xin belongs to this cohort",
+      "alt_zh": "2017年成都基地新生幼仔集体亮相现场；小馨属于该批次",
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 31292,
+          "filename": "media-xiao-xin-chengdu-2017-d7629714a52880f0-w480.webp",
+          "height": 319,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "6e1e5a60dccffe35dc4d93c6c4bcf14cbec7a0581cda9b07f01dc6fb20e628c2",
+          "width": 480
+        },
+        {
+          "bytes": 40062,
+          "filename": "media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+          "height": 366,
+          "kind": "width-550",
+          "mime_type": "image/webp",
+          "sha256": "8b7fe6ed854ca563489beecef3aec37a1f8d2478f6bf5d105047efc25f578fbd",
+          "width": 550
+        }
+      ],
+      "media_id": "media-xiao-xin-chengdu-2017-d7629714a52880f0",
+      "panda_slug": "xiao-xin-chengdu-2017",
+      "review_status": "collection_only",
+      "rights": "All rights reserved",
+      "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html"
+    },
+    {
+      "alt_en": "Zhen Xi eating bamboo at the Chengdu Research Base",
+      "alt_zh": "珍喜在成都大熊猫繁育研究基地吃竹子",
+      "credit": "Chengdu Research Base of Giant Panda Breeding",
+      "derivatives": [
+        {
+          "bytes": 42148,
+          "filename": "media-zhen-xi-00447d48441585a6-w480.webp",
+          "height": 270,
+          "kind": "width-480",
+          "mime_type": "image/webp",
+          "sha256": "41cf26b1248498a8202f66b817f62e693eb010e43afdc7417388a219c08d35f8",
+          "width": 480
+        },
+        {
+          "bytes": 137124,
+          "filename": "media-zhen-xi-00447d48441585a6-w1080.webp",
+          "height": 608,
+          "kind": "width-1080",
+          "mime_type": "image/webp",
+          "sha256": "6dfc787ae21e15954ee667f3e0e8ec589119a13f7d56ef60be06ee302878d622",
+          "width": 1080
+        }
+      ],
+      "media_id": "media-zhen-xi-00447d48441585a6",
+      "panda_slug": "zhen-xi",
+      "review_status": "collection_only",
+      "rights": "All rights reserved",
+      "source_url": "https://www.panda.org.cn/cn/news/news/2024-04-02/8339.html"
+    }
+  ]
+}
