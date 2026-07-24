@@ -95,6 +95,12 @@ class LocalPandaMediaCollectorTests(unittest.TestCase):
         with self.assertRaisesRegex(MODULE.LocalMediaError, "plain filename"):
             MODULE.validate_candidates([candidate(local_filename="../escape.jpg")])
 
+    def test_strict_failure_mode_is_opt_in(self) -> None:
+        parser = MODULE.build_parser()
+
+        self.assertFalse(parser.parse_args([]).strict)
+        self.assertTrue(parser.parse_args(["--strict"]).strict)
+
 
 if __name__ == "__main__":
     unittest.main()
