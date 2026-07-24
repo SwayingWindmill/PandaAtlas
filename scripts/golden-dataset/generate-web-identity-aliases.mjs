@@ -17,7 +17,7 @@ export const generatedIdentityAliasesPath = path.resolve(
   "trusted-identity-aliases.ts",
 );
 
-export const WEB_RELEASE_VERSION = "2026.07.23.1";
+export const WEB_RELEASE_VERSION = "2026.07.24.1";
 export const webReleaseDatasetPath = path.resolve(
   scriptDir,
   "..",
