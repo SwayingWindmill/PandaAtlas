@@ -125,6 +125,43 @@ class LocalPandaMediaCandidateImportTests(unittest.TestCase):
             ["mei-xiang"],
         )
 
+    def test_short_aliases_require_word_boundaries(self) -> None:
+        source = {
+            "file_title": "File:Sri Lankan Fresh Fruit.jpg",
+            "description": "Fresh fruit photography.",
+            "categories": [],
+        }
+        alias_index = {
+            "pan": {"pan-bronx"},
+            "po": {"po-madrid"},
+            "rio": {"rio-indonesia"},
+        }
+
+        self.assertEqual(
+            MODULE.resolve_commons_subjects(source, alias_index=alias_index),
+            [],
+        )
+
+    def test_irrelevant_image_without_panda_signal_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-fruit",
+            "original_url": "https://example.test/fruit.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:Sri Lankan Fresh Fruit.jpg",
+            "description": "Sri Lankan fresh fruit.",
+            "categories": [],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={},
+                alias_index={"pan": {"pan-bronx"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
     def test_commons_video_is_skipped(self) -> None:
         source = {
             "mime": "video/webm",

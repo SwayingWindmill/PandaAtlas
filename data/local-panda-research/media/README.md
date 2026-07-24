@@ -30,4 +30,6 @@ npm run test:local-panda-media
 
 ## Current snapshot
 
-As of 2026-07-25, the vault contains 39 candidates. Thirty-five image files are present locally (about 186 MB); four historic Chengdu Base asset URLs currently fail because the remote files return HTTP 404 or terminate TLS. These failures remain in the inventory as replacement leads rather than being removed.
+As of 2026-07-25, the vault contains 43 candidates. Thirty-nine image files are present locally (about 191 MB); four historic Chengdu Base asset URLs currently fail because the remote files return HTTP 404 or terminate TLS. These failures remain in the inventory as replacement leads rather than being removed.
+
+The full Commons queue contains 1,057 search tasks covering 799 pandas that still need image discovery. Local batches are intentionally bounded to eight tasks, preserve response fixtures, record failed task IDs, and skip already processed tasks in later batches. Search targets are treated only as leads: a file is attached to an individual only when its title, description, or categories contain a complete matching name. Short aliases use word boundaries so names such as `Pan`, `Po`, and `Rio` cannot match ordinary words such as `panda` or `photography`.
