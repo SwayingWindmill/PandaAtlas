@@ -288,6 +288,41 @@ function eventStatusLabel(status: string, locale: PublicProfileLocale): string {
   return status;
 }
 
+function eventKindLabel(
+  kind: TrustedProfilePageViewModel["timeline"]["items"][number]["kind"],
+  locale: PublicProfileLocale,
+): string {
+  const labels = {
+    zh: {
+      residency: "居住记录",
+      birth: "出生事件",
+      arrival: "抵达事件",
+      transfer: "迁移事件",
+      return: "返回事件",
+      naming: "命名事件",
+      public_debut: "公开亮相",
+      selection: "选定事件",
+      announcement: "公告事件",
+      observation: "观察记录",
+      death: "死亡记录",
+    },
+    en: {
+      residency: "Residency",
+      birth: "Birth",
+      arrival: "Arrival",
+      transfer: "Transfer",
+      return: "Return",
+      naming: "Naming",
+      public_debut: "Public debut",
+      selection: "Selection",
+      announcement: "Announcement",
+      observation: "Observation",
+      death: "Death",
+    },
+  } as const;
+  return labels[locale][kind];
+}
+
 function factValue(fact: TrustedProfileFactViewModel, profile: TrustedProfilePageViewModel, locale: PublicProfileLocale): string {
   const t = copy[locale];
   if (fact.field === "life_status") {
@@ -550,7 +585,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
                 <li key={item.id} className="grid gap-3 rounded-xl border border-[var(--pa-color-accent-border-09)] bg-[var(--card)] p-5 sm:grid-cols-[9rem_1fr]">
                   <div>
                     <time className="font-semibold" dateTime={item.date}>{dateLabel(item.date, locale, item.datePrecision)}</time>
-                    <p className="mt-1 text-xs text-[var(--accent)]">{item.kind === "residency" ? t.residency : t.transfer}</p>
+                    <p className="mt-1 text-xs text-[var(--accent)]">{eventKindLabel(item.kind, locale)}</p>
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-3">

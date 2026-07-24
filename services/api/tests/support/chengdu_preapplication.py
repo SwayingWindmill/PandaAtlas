@@ -27,6 +27,13 @@ _NEW_SOURCE_IDS = {
     "src_chengdu_newborns_2017_zh",
     "src_chengdu_newborns_2017_en",
 }
+_DEPTH_SOURCE_IDS = {"src_chengdu_zhen_xi_visit_2024"}
+_DEPTH_PARENT_NAME_SOURCE_BY_SLUG = {
+    "a-bao": (None, "src_chengdu_newborns_2021_en", "src_chengdu_newborns_2021_zh"),
+    "qi-zhen": ("", "src_chengdu_newborns_2017_en", "src_chengdu_newborns_2017_zh"),
+    "er-qiao": ("", "src_chengdu_newborns_2017_en", "src_chengdu_newborns_2017_zh"),
+    "xiao-yatou": ("", "src_chengdu_newborns_2017_en", "src_chengdu_newborns_2017_zh"),
+}
 _NEW_SOURCE_KEYS = {
     "chengdu:bao-xin",
     "chengdu:zhen-xi",
@@ -68,6 +75,14 @@ def prepare_chengdu_preapplication_targets(root: Path) -> tuple[Path, Path]:
         if source_id is not None:
             row["name_zh"] = ""
             row["primary_source_ids"] = _remove_ids(row["primary_source_ids"], {source_id})
+        parent_depth = _DEPTH_PARENT_NAME_SOURCE_BY_SLUG.get(slug)
+        if parent_depth is not None:
+            prior_name_zh, *depth_source_ids = parent_depth
+            if prior_name_zh is not None:
+                row["name_zh"] = prior_name_zh
+            row["primary_source_ids"] = _remove_ids(
+                row["primary_source_ids"], set(depth_source_ids)
+            )
         restored_pandas.append(row)
     _write_csv(curation_dir / "pandas.csv", panda_fields, restored_pandas)
 
@@ -75,15 +90,23 @@ def prepare_chengdu_preapplication_targets(root: Path) -> tuple[Path, Path]:
     restored_events = [
         row
         for row in event_rows
-        if not (
+        if row["panda_slug"] not in _NEW_SLUGS
+        and not (
             row["notes"].startswith("Accepted collection patch ")
             and set(_split_ids(row["source_ids"])) <= _NEW_SOURCE_IDS
         )
     ]
     _write_csv(curation_dir / "events.csv", event_fields, restored_events)
 
+    media_fields, media_rows = _read_csv(curation_dir / "media.csv")
+    restored_media = [row for row in media_rows if row["panda_slug"] not in _NEW_SLUGS]
+    _write_csv(curation_dir / "media.csv", media_fields, restored_media)
+
     source_fields, source_rows = _read_csv(curation_dir / "sources.csv")
-    restored_sources = [row for row in source_rows if row["source_id"] not in _NEW_SOURCE_IDS]
+    removed_source_ids = _NEW_SOURCE_IDS | _DEPTH_SOURCE_IDS
+    restored_sources = [
+        row for row in source_rows if row["source_id"] not in removed_source_ids
+    ]
     _write_csv(curation_dir / "sources.csv", source_fields, restored_sources)
 
     raw_links = json.loads(identity_links.read_text(encoding="utf-8"))

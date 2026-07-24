@@ -157,7 +157,10 @@ class PandaResidencySummary(CurrentPlaceSummary):
 class PandaDomainEventSummary(BaseModel):
     id: str
     event_type: str = Field(
-        pattern="^(birth|arrival|transfer|return|naming|public_debut|selection|announcement|death)$"
+        pattern=(
+            "^(birth|arrival|transfer|return|naming|public_debut|selection|"
+            "announcement|observation|death)$"
+        )
     )
     event_status: str = Field(pattern="^(announced|completed|cancelled|disputed)$")
     event_date: date

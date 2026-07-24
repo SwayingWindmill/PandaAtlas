@@ -1,4 +1,4 @@
-// Generated from reviewed Public Release 2026.07.24.1.
+// Generated from reviewed Public Release 2026.07.24.2.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
 import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
@@ -9,6 +9,10 @@ export interface TrustedPandaReference {
 }
 
 export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaReference>> = {
+  "a-bao": {
+    "id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+    "slug": "a-bao"
+  },
   "bao-bao": {
     "id": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
     "slug": "bao-bao"
@@ -44,6 +48,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "da-mei-changsha": {
     "id": "75e9524a-9baf-5454-af65-229fea00cd20",
     "slug": "da-mei-changsha"
+  },
+  "er-qiao": {
+    "id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+    "slug": "er-qiao"
   },
   "jin-xiao": {
     "id": "13fce46c-feb1-5667-9aa3-290f5c296636",
@@ -100,6 +108,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "qi-fu-changsha": {
     "id": "e8690164-c982-53c0-a837-377e649de435",
     "slug": "qi-fu-changsha"
+  },
+  "qi-zhen": {
+    "id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+    "slug": "qi-zhen"
   },
   "qing-bao": {
     "id": "d56dffc3-941c-5640-983d-4f4959c97e03",
@@ -168,6 +180,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "xiao-xin-chengdu-2017": {
     "id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
     "slug": "xiao-xin-chengdu-2017"
+  },
+  "xiao-yatou": {
+    "id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+    "slug": "xiao-yatou"
   },
   "xiaoqiji": {
     "id": "926abc78-1e79-55c6-b24a-d33b4e5f6443",
@@ -566,7 +582,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -784,7 +800,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -986,7 +1002,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1009,22 +1025,62 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "status": "unknown",
     "birth_date": "2021-06-24",
     "current_location": null,
-    "cover_image_url": null,
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
     "search_terms": [
       "bao-xin",
       "宝新",
       "Bao Xin"
     ],
-    "intro": "宝新，2021 年出生。",
-    "birthplace": null,
+    "intro": "宝新是雄性大熊猫，2021年6月24日出生于成都大熊猫繁育研究基地，母亲为阿宝；2021年10月1日参加基地2021级新生幼仔线上亮相。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
     "tags": [
       "trusted-identity",
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
+    "mother_id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
     "habitats": [],
-    "media": [],
+    "media": [
+      {
+        "id": "media-bao-xin-d9b287dead5da1d6",
+        "panda_id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
+        "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "rights": "All rights reserved",
+        "credit": "Chengdu Research Base of Giant Panda Breeding",
+        "alt_zh": "2021年新生幼仔档案中的宝新",
+        "alt_en": "Bao Xin in the official 2021 newborn profile",
+        "status": "available",
+        "sha256": "3289de94d2e637357c2fdc955e23a7da1bdd9fc240cc13789c17568d5acb8d2f",
+        "mime_type": "image/webp",
+        "width": 800,
+        "height": 533,
+        "bytes": 13586,
+        "derivatives": [
+          {
+            "bytes": 5264,
+            "height": 320,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "713d834900166c53b6fea7189fe5420ad0ec05ef28057031a9a5c3a867cce3ed",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 13586,
+            "height": 533,
+            "kind": "width-800",
+            "mime_type": "image/webp",
+            "sha256": "3289de94d2e637357c2fdc955e23a7da1bdd9fc240cc13789c17568d5acb8d2f",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-bao-xin-d9b287dead5da1d6-w800.webp",
+            "width": 800
+          }
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh"
+        ]
+      }
+    ],
     "identity": {
       "stable_id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
       "canonical_slug": "bao-xin",
@@ -1062,6 +1118,21 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "last_verified_at": "2026-07-24",
         "assertion_ids": [
           "fact-bao-xin-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-bao-xin-birthplace"
         ],
         "source_ids": [
           "src_chengdu_newborns_2021_en",
@@ -1118,12 +1189,32 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "event_date": "2021-06-24",
         "event_date_precision": "day",
         "participants": [
+          "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+          "771b6aef-2075-5d3e-8a82-7adc5822b99c"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "evt_bao_xin_online_debut_20211001",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2021-10-01",
+        "event_date_precision": "day",
+        "participants": [
           "0f7f494a-ec00-5e43-92e0-d299fe858d95"
         ],
         "from_facility_id": null,
         "from_coarse_location": null,
         "to_facility_id": null,
-        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
         "source_ids": [
           "src_chengdu_newborns_2021_en",
           "src_chengdu_newborns_2021_zh"
@@ -1135,29 +1226,31 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "localized_content": [
       {
         "locale": "zh-CN",
-        "summary": "宝新，2021 年出生。"
+        "summary": "宝新是雄性大熊猫，2021年6月24日出生于成都大熊猫繁育研究基地，母亲为阿宝；2021年10月1日参加基地2021级新生幼仔线上亮相。"
       },
       {
         "locale": "en",
-        "summary": "Giant panda documented in an official Chengdu newborn cohort (2021-06-24)."
+        "summary": "Bao Xin is a male giant panda born at the Chengdu Research Base on 2021-06-24 to mother A Bao. He joined the Base's online presentation of the 2021 newborn cohort on 2021-10-01."
       }
     ],
     "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh"
+      ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
-          "summary": "由已审核收藏数据自动生成首轮档案。"
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
         },
         {
           "locale": "en",
-          "summary": "Generated automatically from reviewed collection curation."
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
         }
       ]
     }
@@ -1335,7 +1428,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1535,7 +1628,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -1867,7 +1960,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2141,7 +2234,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2164,22 +2257,62 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "status": "unknown",
     "birth_date": "2017-07-26",
     "current_location": null,
-    "cover_image_url": null,
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
     "search_terms": [
       "xiao-xin-chengdu-2017",
       "小馨",
       "Xiao Xin"
     ],
-    "intro": "小馨，2017 年出生。",
-    "birthplace": null,
+    "intro": "小馨是雌性大熊猫，2017年7月26日出生于成都大熊猫繁育研究基地，母亲为小丫头，初生体重115.4克；2017年9月参加基地新生幼仔集体亮相。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
     "tags": [
       "trusted-identity",
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
+    "mother_id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
     "habitats": [],
-    "media": [],
+    "media": [
+      {
+        "id": "media-xiao-xin-chengdu-2017-d7629714a52880f0",
+        "panda_id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+        "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "rights": "All rights reserved",
+        "credit": "Chengdu Research Base of Giant Panda Breeding",
+        "alt_zh": "2017年成都基地新生幼仔集体亮相现场；小馨属于该批次",
+        "alt_en": "The 2017 Chengdu newborn cohort presentation; Xiao Xin belongs to this cohort",
+        "status": "available",
+        "sha256": "8b7fe6ed854ca563489beecef3aec37a1f8d2478f6bf5d105047efc25f578fbd",
+        "mime_type": "image/webp",
+        "width": 550,
+        "height": 366,
+        "bytes": 40062,
+        "derivatives": [
+          {
+            "bytes": 31292,
+            "height": 319,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "6e1e5a60dccffe35dc4d93c6c4bcf14cbec7a0581cda9b07f01dc6fb20e628c2",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 40062,
+            "height": 366,
+            "kind": "width-550",
+            "mime_type": "image/webp",
+            "sha256": "8b7fe6ed854ca563489beecef3aec37a1f8d2478f6bf5d105047efc25f578fbd",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-xiao-xin-chengdu-2017-d7629714a52880f0-w550.webp",
+            "width": 550
+          }
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh"
+        ]
+      }
+    ],
     "identity": {
       "stable_id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
       "canonical_slug": "xiao-xin-chengdu-2017",
@@ -2217,6 +2350,21 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "last_verified_at": "2026-07-24",
         "assertion_ids": [
           "fact-xiao-xin-chengdu-2017-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-xiao-xin-chengdu-2017-birthplace"
         ],
         "source_ids": [
           "src_chengdu_newborns_2017_en",
@@ -2273,12 +2421,32 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "event_date": "2017-07-26",
         "event_date_precision": "day",
         "participants": [
+          "2a589b9f-1700-5b1e-8c2f-8203190da905",
+          "70e56c3f-4290-55b9-abb5-79fe098f1a07"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "evt_xiao_xin_cohort_debut_20170927",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2017-09-27",
+        "event_date_precision": "day",
+        "participants": [
           "2a589b9f-1700-5b1e-8c2f-8203190da905"
         ],
         "from_facility_id": null,
         "from_coarse_location": null,
         "to_facility_id": null,
-        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
         "source_ids": [
           "src_chengdu_newborns_2017_en",
           "src_chengdu_newborns_2017_zh"
@@ -2290,11 +2458,145 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "localized_content": [
       {
         "locale": "zh-CN",
-        "summary": "小馨，2017 年出生。"
+        "summary": "小馨是雌性大熊猫，2017年7月26日出生于成都大熊猫繁育研究基地，母亲为小丫头，初生体重115.4克；2017年9月参加基地新生幼仔集体亮相。"
       },
       {
         "locale": "en",
-        "summary": "Giant panda documented in an official Chengdu newborn cohort (2017-07-26)."
+        "summary": "Xiao Xin is a female giant panda born at the Chengdu Research Base on 2017-07-26 to mother Xiao Yatou, with a recorded birth weight of 115.4 g. She joined the Base's 2017 newborn cohort presentation."
+      }
+    ],
+    "media_release": {
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh"
+      ]
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.2",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
+        },
+        {
+          "locale": "en",
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
+        }
+      ]
+    }
+  },
+  {
+    "id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+    "slug": "er-qiao",
+    "name_zh": "二巧",
+    "name_en": "Er Qiao",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "er-qiao",
+      "二巧",
+      "Er Qiao"
+    ],
+    "intro": "成都基地官方新生幼仔档案确认二巧为青青的母亲。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+      "canonical_slug": "er-qiao",
+      "names": [
+        {
+          "value": "二巧",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        },
+        {
+          "value": "Er Qiao",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_qing_qing_chengdu_2017_07_26_birth_20170726",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-26",
+        "event_date_precision": "day",
+        "participants": [
+          "35d085c8-d0b5-5779-99ba-c54166451f5b",
+          "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "成都基地官方新生幼仔档案确认二巧为青青的母亲。"
+      },
+      {
+        "locale": "en",
+        "summary": "An official Chengdu newborn record identifies Er Qiao as the mother of Qing Qing."
       }
     ],
     "media_release": {
@@ -2303,16 +2605,16 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
-          "summary": "由已审核收藏数据自动生成首轮档案。"
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
         },
         {
           "locale": "en",
-          "summary": "Generated automatically from reviewed collection curation."
+          "summary": "Created an identity-first maternal relationship profile."
         }
       ]
     }
@@ -2579,7 +2881,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": []
     }
@@ -2910,7 +3212,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -2930,25 +3232,65 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "name_zh": "珍喜",
     "name_en": "Zhen Xi",
     "gender": "female",
-    "status": "unknown",
+    "status": "alive",
     "birth_date": "2017-07-15",
     "current_location": null,
-    "cover_image_url": null,
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
     "search_terms": [
       "zhen-xi",
       "珍喜",
       "Zhen Xi"
     ],
-    "intro": "珍喜，2017 年出生。",
-    "birthplace": null,
+    "intro": "珍喜是雌性大熊猫，2017年7月15日出生于成都大熊猫繁育研究基地，母亲为奇珍，初生体重168克；2017年9月参加新生幼仔集体亮相，2024年4月1日在星汉馆被基地官方记录到正在吃竹子。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
     "tags": [
       "trusted-identity",
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
+    "mother_id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
     "habitats": [],
-    "media": [],
+    "media": [
+      {
+        "id": "media-zhen-xi-00447d48441585a6",
+        "panda_id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
+        "source_url": "https://www.panda.org.cn/cn/news/news/2024-04-02/8339.html",
+        "rights": "All rights reserved",
+        "credit": "Chengdu Research Base of Giant Panda Breeding",
+        "alt_zh": "珍喜在成都大熊猫繁育研究基地吃竹子",
+        "alt_en": "Zhen Xi eating bamboo at the Chengdu Research Base",
+        "status": "available",
+        "sha256": "6dfc787ae21e15954ee667f3e0e8ec589119a13f7d56ef60be06ee302878d622",
+        "mime_type": "image/webp",
+        "width": 1080,
+        "height": 608,
+        "bytes": 137124,
+        "derivatives": [
+          {
+            "bytes": 42148,
+            "height": 270,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "41cf26b1248498a8202f66b817f62e693eb010e43afdc7417388a219c08d35f8",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 137124,
+            "height": 608,
+            "kind": "width-1080",
+            "mime_type": "image/webp",
+            "sha256": "6dfc787ae21e15954ee667f3e0e8ec589119a13f7d56ef60be06ee302878d622",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
+            "width": 1080
+          }
+        ],
+        "source_ids": [
+          "src_chengdu_zhen_xi_visit_2024"
+        ]
+      }
+    ],
     "identity": {
       "stable_id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
       "canonical_slug": "zhen-xi",
@@ -2960,7 +3302,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
           "primary": true,
           "source_ids": [
             "src_chengdu_newborns_2017_en",
-            "src_chengdu_newborns_2017_zh"
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
           ]
         },
         {
@@ -2970,7 +3313,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
           "primary": true,
           "source_ids": [
             "src_chengdu_newborns_2017_en",
-            "src_chengdu_newborns_2017_zh"
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
           ]
         }
       ],
@@ -2989,7 +3333,40 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "source_ids": [
           "src_chengdu_newborns_2017_en",
-          "src_chengdu_newborns_2017_zh"
+          "src_chengdu_newborns_2017_zh",
+          "src_chengdu_zhen_xi_visit_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhen-xi-birthplace"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh",
+          "src_chengdu_zhen_xi_visit_2024"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "current_coarse_location",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-zhen-xi-current-coarse-location"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh",
+          "src_chengdu_zhen_xi_visit_2024"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -3004,7 +3381,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         ],
         "source_ids": [
           "src_chengdu_newborns_2017_en",
-          "src_chengdu_newborns_2017_zh"
+          "src_chengdu_newborns_2017_zh",
+          "src_chengdu_zhen_xi_visit_2024"
         ],
         "candidate_values": [],
         "superseded_values": []
@@ -3030,6 +3408,16 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "last_verified_at": "2026-07-24",
         "language": "zh-Hans",
         "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_zhen_xi_visit_2024",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "跨洋粉丝团来访，大熊猫再次“圈粉”！",
+        "url": "https://www.panda.org.cn/cn/news/news/2024-04-02/8339.html",
+        "published_at": "2024-04-02",
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
       }
     ],
     "current_place": null,
@@ -3042,46 +3430,86 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "event_date": "2017-07-15",
         "event_date_precision": "day",
         "participants": [
-          "47714294-e602-5f67-9a58-b0f43b7c5be5"
+          "47714294-e602-5f67-9a58-b0f43b7c5be5",
+          "b3885324-97e3-5c10-aedb-ae9588342d4d"
         ],
         "from_facility_id": null,
         "from_coarse_location": null,
         "to_facility_id": null,
-        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
         "source_ids": [
           "src_chengdu_newborns_2017_en",
           "src_chengdu_newborns_2017_zh"
         ],
         "changes_current_residency": false
+      },
+      {
+        "id": "evt_zhen_xi_cohort_debut_20170927",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2017-09-27",
+        "event_date_precision": "day",
+        "participants": [
+          "47714294-e602-5f67-9a58-b0f43b7c5be5"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "evt_zhen_xi_xinghan_observation_20240401",
+        "event_type": "observation",
+        "event_status": "completed",
+        "event_date": "2024-04-01",
+        "event_date_precision": "day",
+        "participants": [
+          "47714294-e602-5f67-9a58-b0f43b7c5be5"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Xinghan Hall, Chengdu Research Base of Giant Panda Breeding",
+        "source_ids": [
+          "src_chengdu_zhen_xi_visit_2024"
+        ],
+        "changes_current_residency": false
       }
     ],
-    "record_tier": "identity_first_pass",
+    "record_tier": "complete_first_pass",
     "localized_content": [
       {
         "locale": "zh-CN",
-        "summary": "珍喜，2017 年出生。"
+        "summary": "珍喜是雌性大熊猫，2017年7月15日出生于成都大熊猫繁育研究基地，母亲为奇珍，初生体重168克；2017年9月参加新生幼仔集体亮相，2024年4月1日在星汉馆被基地官方记录到正在吃竹子。"
       },
       {
         "locale": "en",
-        "summary": "Giant panda documented in an official Chengdu newborn cohort (2017-07-15)."
+        "summary": "Zhen Xi is a female giant panda born at the Chengdu Research Base on 2017-07-15 to mother Qi Zhen, with a recorded birth weight of 168 g. She joined the 2017 newborn cohort presentation and was officially observed eating bamboo at Xinghan Hall on 2024-04-01."
       }
     ],
     "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_chengdu_zhen_xi_visit_2024"
+      ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
-          "summary": "由已审核收藏数据自动生成首轮档案。"
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
         },
         {
           "locale": "en",
-          "summary": "Generated automatically from reviewed collection curation."
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
         }
       ]
     }
@@ -3403,7 +3831,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3590,7 +4018,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -3732,7 +4160,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4088,7 +4516,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4290,7 +4718,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4300,6 +4728,138 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+    "slug": "xiao-yatou",
+    "name_zh": "小丫头",
+    "name_en": "Xiao Yatou",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "xiao-yatou",
+      "小丫头",
+      "Xiao Yatou"
+    ],
+    "intro": "成都基地官方新生幼仔档案确认小丫头为小馨的母亲。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+      "canonical_slug": "xiao-yatou",
+      "names": [
+        {
+          "value": "小丫头",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        },
+        {
+          "value": "Xiao Yatou",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_xiao_xin_chengdu_2017_birth_20170726",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-26",
+        "event_date_precision": "day",
+        "participants": [
+          "2a589b9f-1700-5b1e-8c2f-8203190da905",
+          "70e56c3f-4290-55b9-abb5-79fe098f1a07"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "成都基地官方新生幼仔档案确认小丫头为小馨的母亲。"
+      },
+      {
+        "locale": "en",
+        "summary": "An official Chengdu newborn record identifies Xiao Yatou as the mother of Xiao Xin."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.2",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Created an identity-first maternal relationship profile."
         }
       ]
     }
@@ -4477,7 +5037,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4487,6 +5047,138 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Generated automatically from reviewed collection curation."
+        }
+      ]
+    }
+  },
+  {
+    "id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+    "slug": "a-bao",
+    "name_zh": "阿宝",
+    "name_en": "A Bao",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "a-bao",
+      "阿宝",
+      "A Bao"
+    ],
+    "intro": "成都基地官方新生幼仔档案确认阿宝为宝新的母亲。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+      "canonical_slug": "a-bao",
+      "names": [
+        {
+          "value": "阿宝",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ]
+        },
+        {
+          "value": "A Bao",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2021_en",
+            "src_chengdu_newborns_2021_zh"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2021_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021 Newborn Giant Panda Profiles",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2021_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2021年新生大熊猫幼仔档案",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_bao_xin_birth_20210624",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2021-06-24",
+        "event_date_precision": "day",
+        "participants": [
+          "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+          "771b6aef-2075-5d3e-8a82-7adc5822b99c"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2021_en",
+          "src_chengdu_newborns_2021_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "成都基地官方新生幼仔档案确认阿宝为宝新的母亲。"
+      },
+      {
+        "locale": "en",
+        "summary": "An official Chengdu newborn record identifies A Bao as the mother of Bao Xin."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.2",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Created an identity-first maternal relationship profile."
         }
       ]
     }
@@ -4667,7 +5359,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -4854,7 +5546,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5113,7 +5805,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5300,7 +5992,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5490,7 +6182,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -5500,6 +6192,150 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Public review of identity, parentage, birth date, and country-level current residency."
+        }
+      ]
+    }
+  },
+  {
+    "id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+    "slug": "qi-zhen",
+    "name_zh": "奇珍",
+    "name_en": "Qi Zhen",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "qi-zhen",
+      "奇珍",
+      "Qi Zhen"
+    ],
+    "intro": "成都基地官方新生幼仔档案确认奇珍为珍喜的母亲。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+      "canonical_slug": "qi-zhen",
+      "names": [
+        {
+          "value": "奇珍",
+          "language": "zh-Hans",
+          "kind": "official",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
+          ]
+        },
+        {
+          "value": "Qi Zhen",
+          "language": "en",
+          "kind": "official_romanization",
+          "primary": true,
+          "source_ids": [
+            "src_chengdu_newborns_2017_en",
+            "src_chengdu_newborns_2017_zh",
+            "src_chengdu_zhen_xi_visit_2024"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [],
+    "sources": [
+      {
+        "id": "src_chengdu_newborns_2017_en",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "Debut of 2017 Newborn Pandas",
+        "url": "https://www.panda.org.cn/en/culture/activities/2023-08-24/8080.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "en",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_newborns_2017_zh",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "2017新生大熊猫宝宝齐亮相",
+        "url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "published_at": null,
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      },
+      {
+        "id": "src_chengdu_zhen_xi_visit_2024",
+        "publisher": "Chengdu Research Base of Giant Panda Breeding",
+        "title": "跨洋粉丝团来访，大熊猫再次“圈粉”！",
+        "url": "https://www.panda.org.cn/cn/news/news/2024-04-02/8339.html",
+        "published_at": "2024-04-02",
+        "last_verified_at": "2026-07-24",
+        "language": "zh-Hans",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [
+      {
+        "id": "evt_zhen_xi_birth_20170715",
+        "event_type": "birth",
+        "event_status": "completed",
+        "event_date": "2017-07-15",
+        "event_date_precision": "day",
+        "participants": [
+          "47714294-e602-5f67-9a58-b0f43b7c5be5",
+          "b3885324-97e3-5c10-aedb-ae9588342d4d"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      }
+    ],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "成都基地官方新生幼仔档案确认奇珍为珍喜的母亲。"
+      },
+      {
+        "locale": "en",
+        "summary": "An official Chengdu newborn record identifies Qi Zhen as the mother of Zhen Xi."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.24.2",
+      "public_schema_version": "1.2.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "建立仅含官方母系身份依据的首轮关系档案。"
+        },
+        {
+          "locale": "en",
+          "summary": "Created an identity-first maternal relationship profile."
         }
       ]
     }
@@ -5822,7 +6658,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6024,7 +6860,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6366,7 +7202,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6568,7 +7404,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -6908,7 +7744,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -7239,7 +8075,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -7396,7 +8232,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -7738,7 +8574,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -7761,22 +8597,62 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "status": "unknown",
     "birth_date": "2017-07-26",
     "current_location": null,
-    "cover_image_url": null,
+    "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
     "search_terms": [
       "qing-qing-chengdu-2017-07-26",
       "青青",
       "Qing Qing"
     ],
-    "intro": "青青，2017 年出生。",
-    "birthplace": null,
+    "intro": "青青是雌性大熊猫，2017年7月26日出生于成都大熊猫繁育研究基地，母亲为二巧，初生体重144克；2017年9月参加基地新生幼仔集体亮相。",
+    "birthplace": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
     "tags": [
       "trusted-identity",
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
+    "mother_id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
     "habitats": [],
-    "media": [],
+    "media": [
+      {
+        "id": "media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965",
+        "panda_id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+        "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+        "source_url": "https://www.panda.org.cn/cn/culture/activities/2023-08-23/8079.html",
+        "rights": "All rights reserved",
+        "credit": "Chengdu Research Base of Giant Panda Breeding",
+        "alt_zh": "2017年成都基地新生幼仔集体亮相现场；青青属于该批次",
+        "alt_en": "The 2017 Chengdu newborn cohort presentation; Qing Qing belongs to this cohort",
+        "status": "available",
+        "sha256": "3859206f38f668f676680f85e359c7cfaaad20cb279f108c809822ad00805e65",
+        "mime_type": "image/webp",
+        "width": 550,
+        "height": 366,
+        "bytes": 61812,
+        "derivatives": [
+          {
+            "bytes": 46836,
+            "height": 319,
+            "kind": "width-480",
+            "mime_type": "image/webp",
+            "sha256": "f8b8a73c5043287f3f94bfbeb5194c0aea359100e734cfecb2441545c438c11c",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w480.webp",
+            "width": 480
+          },
+          {
+            "bytes": 61812,
+            "height": 366,
+            "kind": "width-550",
+            "mime_type": "image/webp",
+            "sha256": "3859206f38f668f676680f85e359c7cfaaad20cb279f108c809822ad00805e65",
+            "url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-qing-qing-chengdu-2017-07-26-d96df5e1cfc57965-w550.webp",
+            "width": 550
+          }
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_zh"
+        ]
+      }
+    ],
     "identity": {
       "stable_id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
       "canonical_slug": "qing-qing-chengdu-2017-07-26",
@@ -7814,6 +8690,21 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "last_verified_at": "2026-07-24",
         "assertion_ids": [
           "fact-qing-qing-chengdu-2017-07-26-birth-date"
+        ],
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      },
+      {
+        "field": "birthplace",
+        "value": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "assertion_ids": [
+          "fact-qing-qing-chengdu-2017-07-26-birthplace"
         ],
         "source_ids": [
           "src_chengdu_newborns_2017_en",
@@ -7870,12 +8761,32 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "event_date": "2017-07-26",
         "event_date_precision": "day",
         "participants": [
+          "35d085c8-d0b5-5779-99ba-c54166451f5b",
           "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8"
         ],
         "from_facility_id": null,
         "from_coarse_location": null,
         "to_facility_id": null,
-        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding",
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
+        "source_ids": [
+          "src_chengdu_newborns_2017_en",
+          "src_chengdu_newborns_2017_zh"
+        ],
+        "changes_current_residency": false
+      },
+      {
+        "id": "evt_qing_qing_cohort_debut_20170927",
+        "event_type": "public_debut",
+        "event_status": "completed",
+        "event_date": "2017-09-27",
+        "event_date_precision": "day",
+        "participants": [
+          "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8"
+        ],
+        "from_facility_id": null,
+        "from_coarse_location": null,
+        "to_facility_id": null,
+        "to_coarse_location": "Chengdu Research Base of Giant Panda Breeding, Chengdu, Sichuan, China",
         "source_ids": [
           "src_chengdu_newborns_2017_en",
           "src_chengdu_newborns_2017_zh"
@@ -7887,29 +8798,31 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "localized_content": [
       {
         "locale": "zh-CN",
-        "summary": "青青，2017 年出生。"
+        "summary": "青青是雌性大熊猫，2017年7月26日出生于成都大熊猫繁育研究基地，母亲为二巧，初生体重144克；2017年9月参加基地新生幼仔集体亮相。"
       },
       {
         "locale": "en",
-        "summary": "Giant panda documented in an official Chengdu newborn cohort (2017-07-26)."
+        "summary": "Qing Qing is a female giant panda born at the Chengdu Research Base on 2017-07-26 to mother Er Qiao, with a recorded birth weight of 144 g. She joined the Base's 2017 newborn cohort presentation."
       }
     ],
     "media_release": {
-      "license_state": "no_licensed_media",
-      "display_mode": "designed_empty_state",
-      "source_ids": []
+      "license_state": "licensed",
+      "display_mode": "gallery",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh"
+      ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
           "locale": "zh-CN",
-          "summary": "由已审核收藏数据自动生成首轮档案。"
+          "summary": "补充官方母系关系、出生细节、事件时间线与收藏图片。"
         },
         {
           "locale": "en",
-          "summary": "Generated automatically from reviewed collection curation."
+          "summary": "Added official maternal lineage, birth details, timeline events, and collection media."
         }
       ]
     }
@@ -8057,7 +8970,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -8244,7 +9157,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.1",
+      "data_version": "2026.07.24.2",
       "public_schema_version": "1.2.0",
       "summaries": [
         {
@@ -9130,6 +10043,17 @@ export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
     ]
   },
   {
+    "id": "parent-bao-xin-mother",
+    "child_id": "0f7f494a-ec00-5e43-92e0-d299fe858d95",
+    "parent_id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_chengdu_newborns_2021_en",
+      "src_chengdu_newborns_2021_zh"
+    ]
+  },
+  {
     "id": "parent-bei-bei-father",
     "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b",
     "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
@@ -9167,6 +10091,17 @@ export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
     "status": "confirmed",
     "source_ids": [
       "src_tokyo_zoo_ueno_panda_history"
+    ]
+  },
+  {
+    "id": "parent-qing-qing-chengdu-2017-07-26-mother",
+    "child_id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8",
+    "parent_id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_chengdu_newborns_2017_en",
+      "src_chengdu_newborns_2017_zh"
     ]
   },
   {
@@ -9272,6 +10207,17 @@ export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
     ]
   },
   {
+    "id": "parent-xiao-xin-chengdu-2017-mother",
+    "child_id": "2a589b9f-1700-5b1e-8c2f-8203190da905",
+    "parent_id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_chengdu_newborns_2017_en",
+      "src_chengdu_newborns_2017_zh"
+    ]
+  },
+  {
     "id": "parent-ya-lun-father",
     "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482",
     "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
@@ -9291,6 +10237,18 @@ export const TRUSTED_PARENTAGE_ASSERTIONS: PublicParentageAssertionSummary[] = [
     "source_ids": [
       "src_zooatlanta_cubs_birth",
       "src_zooatlanta_twins_names"
+    ]
+  },
+  {
+    "id": "parent-zhen-xi-mother",
+    "child_id": "47714294-e602-5f67-9a58-b0f43b7c5be5",
+    "parent_id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+    "role": "mother",
+    "status": "confirmed",
+    "source_ids": [
+      "src_chengdu_newborns_2017_en",
+      "src_chengdu_newborns_2017_zh",
+      "src_chengdu_zhen_xi_visit_2024"
     ]
   }
 ];
@@ -9376,7 +10334,7 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
+    "mother_id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
     "record_tier": "identity_first_pass",
     "profile_available": true
   },
@@ -9481,6 +10439,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": null,
+    "mother_id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+    "slug": "er-qiao",
+    "name_zh": "二巧",
+    "name_en": "Er Qiao",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
     "mother_id": null,
     "record_tier": "identity_first_pass",
     "profile_available": true
@@ -9533,7 +10512,7 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "name_zh": "珍喜",
     "name_en": "Zhen Xi",
     "gender": "female",
-    "status": "unknown",
+    "status": "alive",
     "birth_date": "2017-07-15",
     "current_location": null,
     "cover_image_url": null,
@@ -9544,8 +10523,8 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
-    "record_tier": "identity_first_pass",
+    "mother_id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+    "record_tier": "complete_first_pass",
     "profile_available": true
   },
   {
@@ -9654,6 +10633,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+    "slug": "xiao-yatou",
+    "name_zh": "小丫头",
+    "name_en": "Xiao Yatou",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "75e9524a-9baf-5454-af65-229fea00cd20",
     "slug": "da-mei-changsha",
     "name_zh": "大美",
@@ -9661,6 +10661,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "gender": "female",
     "status": "alive",
     "birth_date": "2017-06-27",
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+    "slug": "a-bao",
+    "name_zh": "阿宝",
+    "name_en": "A Bao",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
     "current_location": null,
     "cover_image_url": null,
     "search_terms": [],
@@ -9776,6 +10797,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     ],
     "father_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "mother_id": "2939c16f-1938-5629-928c-b36b1d5cd6ed",
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
+    "id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+    "slug": "qi-zhen",
+    "name_zh": "奇珍",
+    "name_en": "Qi Zhen",
+    "gender": "female",
+    "status": "unknown",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
     "record_tier": "identity_first_pass",
     "profile_available": true
   },
@@ -9964,7 +11006,7 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
       "golden-dataset"
     ],
     "father_id": null,
-    "mother_id": null,
+    "mother_id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
     "record_tier": "identity_first_pass",
     "profile_available": true
   },
@@ -10089,6 +11131,10 @@ export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
     "child_id": "434e10e3-7ba0-5de7-a59e-d3984524c58c"
   },
   {
+    "parent_id": "771b6aef-2075-5d3e-8a82-7adc5822b99c",
+    "child_id": "0f7f494a-ec00-5e43-92e0-d299fe858d95"
+  },
+  {
     "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "child_id": "1a05a5dc-1926-5355-9d81-c2a43189d50b"
   },
@@ -10103,6 +11149,10 @@ export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
   {
     "parent_id": "01878819-1eda-5d9c-96ab-bab66d3b0b09",
     "child_id": "c2eefef1-54f2-58ca-85cc-c2fd3d63653a"
+  },
+  {
+    "parent_id": "35d085c8-d0b5-5779-99ba-c54166451f5b",
+    "child_id": "fc74efcb-3a15-51e8-bf45-d9a294a8cbc8"
   },
   {
     "parent_id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
@@ -10137,11 +11187,19 @@ export const TRUSTED_LINEAGE_EDGES: PandaLineageEdge[] = [
     "child_id": "275ad0df-c700-5991-a13a-0ca47c56eeba"
   },
   {
+    "parent_id": "70e56c3f-4290-55b9-abb5-79fe098f1a07",
+    "child_id": "2a589b9f-1700-5b1e-8c2f-8203190da905"
+  },
+  {
     "parent_id": "db108e44-8893-54e1-8cb5-8c5238b75089",
     "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
   },
   {
     "parent_id": "4dcff88b-9fa1-5fba-aa79-1aacb82ae28f",
     "child_id": "fa8a0c14-b937-5de5-ae65-482cfd744482"
+  },
+  {
+    "parent_id": "b3885324-97e3-5c10-aedb-ae9588342d4d",
+    "child_id": "47714294-e602-5f67-9a58-b0f43b7c5be5"
   }
 ];
