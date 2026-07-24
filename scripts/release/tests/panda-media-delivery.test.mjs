@@ -82,6 +82,8 @@ test("Worker serves only immutable versioned WebP objects from the media bucket"
   ]);
 
   assert.match(worker, /const PUBLIC_MEDIA_KEY = \/\^releases\\\//);
+  assert.match(worker, /match\?\.groups\?\.width/);
+  assert.match(worker, /width >= 480 && width <= 1200/);
   assert.match(worker, /request\.method === "GET" \|\| request\.method === "HEAD"/);
   assert.match(worker, /env\.MEDIA_BUCKET\.get\(key\)/);
   assert.match(worker, /max-age=31536000, immutable/);
