@@ -5,7 +5,7 @@
   "started_at": "2026-07-24T00:00:00+08:00",
   "baseline": {
     "curated_panda_rows": 813,
-    "notes": "The existing curation layer remains available, but the research vault accepts broader and less normalized material."
+    "notes": "The existing curation layer remains available, but the research vault accepts broader and less normalized material. The second official-source pass added detailed overseas husbandry, health, enrichment and identity-correction records."
   },
   "collection_principles": [
     "Collect first, normalize later.",
