@@ -1,0 +1,48 @@
+{
+  "database_migration_version": "0007",
+  "dataset_release_version": "2026.07.24.1",
+  "files": {
+    "api.json": {
+      "bytes": 279895,
+      "sha256": "44021c1eef2df303fb21c22d1bbb0b236477067eb6db019bc1728bf9b3e2c58a"
+    },
+    "d1.sql": {
+      "bytes": 387986,
+      "sha256": "b9470196cf58084db571c456e82bf9464cc8511f0fcdeb0c6e27dd71b6c7a772"
+    },
+    "pandas.csv": {
+      "bytes": 66380,
+      "sha256": "a107f4ce21edbad191d1f4d741b8e8079362d2b76fae889d9433631dadd55078"
+    },
+    "pandas.json": {
+      "bytes": 110205,
+      "sha256": "c3f437cb4546e8611523082a676cf80b2c066844c099b580ff5d4551fa2f8103"
+    }
+  },
+  "licenses": {
+    "original_text": "CC-BY-4.0",
+    "structured_data": "ODC-By-1.0",
+    "third_party_media": "per-item"
+  },
+  "projection_code_version": "collection-release-v1",
+  "public_schema_version": "1.2.0",
+  "publication_batch_id": "collection-curation-2026-07-24",
+  "record_counts": {
+    "api_distribution": 4,
+    "api_habitats": 6,
+    "api_pandas": 34,
+    "api_snapshots": 3,
+    "api_stats": 1,
+    "events": 38,
+    "facilities": 8,
+    "facts": 104,
+    "institutions": 5,
+    "media": 34,
+    "pandas": 34,
+    "parentage_assertions": 20,
+    "places": 7,
+    "residencies": 26,
+    "sources": 42
+  },
+  "released_at": "2026-07-24T04:00:00Z"
+}
