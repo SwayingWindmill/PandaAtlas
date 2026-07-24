@@ -12,7 +12,7 @@
     "Keep every traceable conflicting assertion.",
     "Separate primary evidence from secondary discovery leads.",
     "Retain original-language names and values.",
-    "Store media metadata and rights leads, not unlicensed media bytes.",
+    "Collect local media bytes regardless of rights state while preserving source, credit and rights metadata; keep binaries out of Git.",
     "Keep all records local-only until a future publication decision."
   ],
   "subject_scopes": [

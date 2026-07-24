@@ -14,7 +14,7 @@
           "main_candidate_id": "media-candidate-f9b9752294ffa046df02ba6d",
           "panda_slug": "bao-li",
           "scores": {
-            "media-candidate-f9b9752294ffa046df02ba6d": 0.944
+            "media-candidate-f9b9752294ffa046df02ba6d": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -25,7 +25,7 @@
           "main_candidate_id": "media-candidate-fc17ac2f18784e1bdc175089",
           "panda_slug": "bao-xin",
           "scores": {
-            "media-candidate-fc17ac2f18784e1bdc175089": 0.87401
+            "media-candidate-fc17ac2f18784e1bdc175089": 0.858095
           },
           "selection_reason": "deterministic-score"
         },
@@ -36,7 +36,7 @@
           "main_candidate_id": "media-candidate-b698112b0e941cecd9e4cb8f",
           "panda_slug": "lei-lei",
           "scores": {
-            "media-candidate-b698112b0e941cecd9e4cb8f": 0.944
+            "media-candidate-b698112b0e941cecd9e4cb8f": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -47,7 +47,7 @@
           "main_candidate_id": "media-candidate-4e2f3957b77016e94af73972",
           "panda_slug": "lun-lun",
           "scores": {
-            "media-candidate-4e2f3957b77016e94af73972": 0.944
+            "media-candidate-4e2f3957b77016e94af73972": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -58,7 +58,7 @@
           "main_candidate_id": "media-candidate-4fa4d413315ad2a0e8607262",
           "panda_slug": "mei-xiang",
           "scores": {
-            "media-candidate-4fa4d413315ad2a0e8607262": 0.944
+            "media-candidate-4fa4d413315ad2a0e8607262": 0.93975
           },
           "selection_reason": "administrator-override"
         },
@@ -69,7 +69,7 @@
           "main_candidate_id": "media-candidate-0c3d2963ef578bb6b4fc5b2c",
           "panda_slug": "qing-bao",
           "scores": {
-            "media-candidate-0c3d2963ef578bb6b4fc5b2c": 0.767
+            "media-candidate-0c3d2963ef578bb6b4fc5b2c": 0.72825
           },
           "selection_reason": "deterministic-score"
         },
@@ -80,7 +80,7 @@
           "main_candidate_id": "media-candidate-953bd5123f182b8056c86081",
           "panda_slug": "qing-qing-chengdu-2017-07-26",
           "scores": {
-            "media-candidate-953bd5123f182b8056c86081": 0.59424
+            "media-candidate-953bd5123f182b8056c86081": 0.52503
           },
           "selection_reason": "deterministic-score"
         },
@@ -91,7 +91,7 @@
           "main_candidate_id": "media-candidate-78cb27ccc08c95afc8d9b8a5",
           "panda_slug": "ri-ri",
           "scores": {
-            "media-candidate-78cb27ccc08c95afc8d9b8a5": 0.944
+            "media-candidate-78cb27ccc08c95afc8d9b8a5": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -102,7 +102,7 @@
           "main_candidate_id": "media-candidate-b93e0ad0632a901f65e94b83",
           "panda_slug": "shin-shin",
           "scores": {
-            "media-candidate-b93e0ad0632a901f65e94b83": 0.944
+            "media-candidate-b93e0ad0632a901f65e94b83": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -113,7 +113,7 @@
           "main_candidate_id": "media-candidate-d3f6455c1f85e368b3dc786e",
           "panda_slug": "xi-lun",
           "scores": {
-            "media-candidate-d3f6455c1f85e368b3dc786e": 0.944
+            "media-candidate-d3f6455c1f85e368b3dc786e": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -128,11 +128,11 @@
           "main_candidate_id": "media-candidate-1abd1ede7481e51fe2978903",
           "panda_slug": "xiao-qi-ji",
           "scores": {
-            "media-candidate-0367648b0c007ebd46435d6e": 0.885,
-            "media-candidate-1abd1ede7481e51fe2978903": 0.944,
-            "media-candidate-6b1a4874d81e6ef1b3eb4277": 0.885,
-            "media-candidate-aa8be8e7e28eb95a6089d5ee": 0.885,
-            "media-candidate-fbaa597a4d7454df0e2ab3f9": 0.885
+            "media-candidate-0367648b0c007ebd46435d6e": 0.86925,
+            "media-candidate-1abd1ede7481e51fe2978903": 0.93975,
+            "media-candidate-6b1a4874d81e6ef1b3eb4277": 0.86925,
+            "media-candidate-aa8be8e7e28eb95a6089d5ee": 0.86925,
+            "media-candidate-fbaa597a4d7454df0e2ab3f9": 0.86925
           },
           "selection_reason": "administrator-override"
         },
@@ -143,7 +143,7 @@
           "main_candidate_id": "media-candidate-2b445e94b21ec7912f1acd1a",
           "panda_slug": "xiao-xiao",
           "scores": {
-            "media-candidate-2b445e94b21ec7912f1acd1a": 0.944
+            "media-candidate-2b445e94b21ec7912f1acd1a": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -154,7 +154,7 @@
           "main_candidate_id": "media-candidate-2cd0679de89d042e89a961bf",
           "panda_slug": "xiao-xin-chengdu-2017",
           "scores": {
-            "media-candidate-2cd0679de89d042e89a961bf": 0.59424
+            "media-candidate-2cd0679de89d042e89a961bf": 0.52503
           },
           "selection_reason": "deterministic-score"
         },
@@ -165,7 +165,7 @@
           "main_candidate_id": "media-candidate-98a996120267b240d4ec392f",
           "panda_slug": "ya-lun",
           "scores": {
-            "media-candidate-98a996120267b240d4ec392f": 0.944
+            "media-candidate-98a996120267b240d4ec392f": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -176,7 +176,7 @@
           "main_candidate_id": "media-candidate-b8efbdc25dcc3bdbaae3960a",
           "panda_slug": "yang-yang",
           "scores": {
-            "media-candidate-b8efbdc25dcc3bdbaae3960a": 0.944
+            "media-candidate-b8efbdc25dcc3bdbaae3960a": 0.93975
           },
           "selection_reason": "deterministic-score"
         },
@@ -187,7 +187,7 @@
           "main_candidate_id": "media-candidate-20a9caa824c9d10000a24570",
           "panda_slug": "zhen-xi",
           "scores": {
-            "media-candidate-20a9caa824c9d10000a24570": 0.923
+            "media-candidate-20a9caa824c9d10000a24570": 0.91525
           },
           "selection_reason": "deterministic-score"
         }

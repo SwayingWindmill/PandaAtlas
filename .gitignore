@@ -31,6 +31,7 @@ services/api/.venv-release/
 .media-work-*/
 .release-candidate*/
 data/curation/pandas/media-inbox/
+data/local-panda-research/media/files/
 *.egg-info/
 .coverage
 coverage.xml
