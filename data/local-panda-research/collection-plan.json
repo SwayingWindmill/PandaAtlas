@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "mode": "local_first_research",
+  "publication_enabled": false,
+  "started_at": "2026-07-24T00:00:00+08:00",
+  "baseline": {
+    "curated_panda_rows": 813,
+    "notes": "The existing curation layer remains available, but the research vault accepts broader and less normalized material."
+  },
+  "collection_principles": [
+    "Collect first, normalize later.",
+    "Keep every traceable conflicting assertion.",
+    "Separate primary evidence from secondary discovery leads.",
+    "Retain original-language names and values.",
+    "Store media metadata and rights leads, not unlicensed media bytes.",
+    "Keep all records local-only until a future publication decision."
+  ],
+  "subject_scopes": [
+    "individual_panda",
+    "panda_family_or_lineage",
+    "institution_or_base",
+    "historic_programme",
+    "wild_population_and_conservation",
+    "research_and_studbook",
+    "media_and_archive"
+  ],
+  "categories": [
+    "identity",
+    "alias",
+    "name_meaning",
+    "birth",
+    "death",
+    "sex",
+    "relationship",
+    "location",
+    "transfer",
+    "public_debut",
+    "health",
+    "veterinary_care",
+    "reproduction",
+    "growth_measurement",
+    "diet",
+    "personality",
+    "behaviour",
+    "preference",
+    "enrichment",
+    "husbandry_training",
+    "appearance",
+    "distinguishing_feature",
+    "vocalisation",
+    "anecdote",
+    "milestone",
+    "research",
+    "conservation",
+    "cultural_context",
+    "diplomacy",
+    "media_candidate",
+    "rights_lead",
+    "conflict",
+    "other"
+  ],
+  "regional_queues": [
+    {
+      "region": "China",
+      "priority": 1,
+      "targets": [
+        "China Conservation and Research Center for the Giant Panda and its Wolong, Dujiangyan, Ya'an and Mianyang bases",
+        "Chengdu Research Base of Giant Panda Breeding and Panda Valley",
+        "Qinling Giant Panda Research Center",
+        "Beijing Zoo and major domestic holding institutions",
+        "national and provincial forestry/government archives",
+        "studbook, research papers and historic rescue/release records"
+      ]
+    },
+    {
+      "region": "East and Southeast Asia",
+      "priority": 1,
+      "targets": [
+        "Ocean Park Hong Kong",
+        "Macao Giant Panda Pavilion",
+        "Taipei Zoo",
+        "Everland",
+        "Mandai River Wonders",
+        "Zoo Negara Malaysia",
+        "Taman Safari Indonesia",
+        "historic Ueno, Adventure World and Chiang Mai records"
+      ]
+    },
+    {
+      "region": "Europe",
+      "priority": 2,
+      "targets": [
+        "Zoo Berlin",
+        "Pairi Daiza",
+        "ZooParc de Beauval",
+        "Zoo Aquarium Madrid",
+        "Ouwehands Zoo",
+        "Copenhagen Zoo",
+        "Vienna Zoo",
+        "Moscow Zoo",
+        "historic Edinburgh and Ahtari programmes"
+      ]
+    },
+    {
+      "region": "Americas",
+      "priority": 2,
+      "targets": [
+        "Smithsonian National Zoo",
+        "San Diego Zoo",
+        "historic Zoo Atlanta and Memphis Zoo programmes",
+        "Toronto and Calgary archives",
+        "Chapultepec Zoo lineage and historic gift-panda records"
+      ]
+    },
+    {
+      "region": "Oceania and Middle East",
+      "priority": 2,
+      "targets": [
+        "Adelaide Zoo",
+        "Panda House Al Khor and Qatar official sources"
+      ]
+    }
+  ],
+  "next_collection_passes": [
+    "Reconcile all 813 existing rows against primary individual or studbook sources.",
+    "Extract anecdotes, temperament, preferences, appearance and husbandry notes from official profile and news archives.",
+    "Build a complete dated movement history for every panda with facility-level provenance.",
+    "Capture all births, deaths, pregnancies, health events, naming events and public debuts.",
+    "Expand media-candidate discovery while recording file-level rights and identity confidence.",
+    "Record unresolved identities and contradictory dates without forcing premature merges."
+  ]
+}
