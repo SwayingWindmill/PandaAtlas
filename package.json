@@ -60,6 +60,7 @@
     "check:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json",
     "gate:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json --require-pass",
     "classify:frontend-risk": "node scripts/release/classify-frontend-risk.mjs",
+    "build:collection-release": "uv run --isolated --directory services/api --frozen --extra dev python scripts/build_collection_release_candidate.py",
     "build:public-release": "uv run --project services/api python services/api/scripts/build_public_release.py",
     "release:d1:preflight": "node scripts/release/apply-public-release-d1.mjs",
     "release:d1:apply": "node scripts/release/apply-public-release-d1.mjs --execute",

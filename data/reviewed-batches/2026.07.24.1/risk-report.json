@@ -1,0 +1,533 @@
+{
+  "added_profile_slugs": [
+    "bao-xin",
+    "cheng-lan",
+    "da-mei-changsha",
+    "jin-xiao",
+    "jing-liang",
+    "lun-hui",
+    "ni-ke",
+    "ni-na",
+    "pu-pu-shenyang",
+    "qi-fu-changsha",
+    "qing-qing-chengdu-2017-07-26",
+    "xiao-xin-chengdu-2017",
+    "ya-li",
+    "ya-song",
+    "zhao-mei",
+    "zhen-xi",
+    "zhi-ma",
+    "zhi-shi"
+  ],
+  "added_source_ids": [
+    "src_chengdu_newborns_2017_en",
+    "src_chengdu_newborns_2017_zh",
+    "src_chengdu_newborns_2021_en",
+    "src_chengdu_newborns_2021_zh",
+    "src_gpg_changsha_profiles",
+    "src_gpg_chengdu_base_current_page_6",
+    "src_gpg_fuzhou_profiles",
+    "src_gpg_guangzhou_profiles",
+    "src_gpg_meet_world_page_18",
+    "src_gpg_meet_world_page_23",
+    "src_gpg_meet_world_page_24",
+    "src_gpg_meet_world_page_9",
+    "src_gpg_sun_island_profiles",
+    "src_gpg_yaan_base_previous_page_7"
+  ],
+  "base_dataset_version": "2026.07.23.1",
+  "input_sha256": {
+    "base_source": "5bf76948ff91b7070c980aa4c72560bf61626de38468a4870c46265d371fbfb5",
+    "events.csv": "0b4066235a52bdf33b8a69b634205c23910629218f154b29f048d9bd37468ad9",
+    "media.csv": "7f573952e355c8f4ecfd1ddadfc48821e87fd03726eac92408d148dbd9f9d3fa",
+    "pandas.csv": "2cc221b2174327a811ca717ccea5b9d78432b1f174bd5fe3c6e5cd8eb22b8279",
+    "sources.csv": "c03371a692beb9f3a4e0922efed8807bb406b459efe10e639ca1732e90b628bd"
+  },
+  "preserved_profile_slugs": [
+    "bao-li",
+    "lei-lei",
+    "lun-lun",
+    "qing-bao",
+    "ri-ri",
+    "shin-shin",
+    "xi-lun",
+    "xiao-xiao",
+    "ya-lun",
+    "yang-yang"
+  ],
+  "profile_decisions": [
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "bao-li",
+      "source_ids": [
+        "src_smithsonian_giant_panda_faq",
+        "src_smithsonian_giant_panda_page",
+        "src_smithsonian_history"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "current_location",
+        "known_life_status"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "bao-xin",
+      "source_ids": [
+        "src_chengdu_newborns_2021_en",
+        "src_chengdu_newborns_2021_zh"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "cheng-lan",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh",
+        "src_gpg_meet_world_page_18"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "da-mei-changsha",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh",
+        "src_gpg_changsha_profiles"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "jin-xiao",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh",
+        "src_gpg_meet_world_page_23"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "jing-liang",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh",
+        "src_gpg_fuzhou_profiles"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "lei-lei",
+      "source_ids": [
+        "src_tokyo_zoo_ueno_panda_history",
+        "src_ueno_twins_names_2021",
+        "src_ueno_xiaolei_return_2026"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "lun-hui",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh",
+        "src_gpg_chengdu_base_current_page_6",
+        "src_gpg_meet_world_page_24"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "lun-lun",
+      "source_ids": [
+        "src_zooatlanta_arrival_china_2024",
+        "src_zooatlanta_lun_lun"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "ni-ke",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh",
+        "src_gpg_meet_world_page_18"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "ni-na",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh",
+        "src_gpg_meet_world_page_18"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "pu-pu-shenyang",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh",
+        "src_gpg_yaan_base_previous_page_7"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "qi-fu-changsha",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh",
+        "src_gpg_changsha_profiles"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "qing-bao",
+      "source_ids": [
+        "src_smithsonian_giant_panda_faq",
+        "src_smithsonian_giant_panda_page",
+        "src_smithsonian_history"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "current_location",
+        "known_life_status"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "qing-qing-chengdu-2017-07-26",
+      "source_ids": [
+        "src_chengdu_newborns_2017_en",
+        "src_chengdu_newborns_2017_zh"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "ri-ri",
+      "source_ids": [
+        "src_gpg_yaan_base_previous_page_1",
+        "src_gpg_yaan_base_profiles",
+        "src_tokyo_zoo_ueno_panda_history",
+        "src_ueno_return_riri_shinshin"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "shin-shin",
+      "source_ids": [
+        "src_gpg_yaan_base_previous_page_1",
+        "src_gpg_yaan_base_profiles",
+        "src_tokyo_zoo_ueno_panda_history",
+        "src_ueno_return_riri_shinshin"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "xi-lun",
+      "source_ids": [
+        "src_zooatlanta_2016_public_debut",
+        "src_zooatlanta_arrival_china_2024",
+        "src_zooatlanta_cubs_birth",
+        "src_zooatlanta_lun_lun",
+        "src_zooatlanta_twins_names",
+        "src_zooatlanta_yang_yang"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "xiao-xiao",
+      "source_ids": [
+        "src_tokyo_zoo_ueno_panda_history",
+        "src_ueno_twins_names_2021",
+        "src_ueno_xiaolei_return_2026"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "current_location",
+        "known_life_status"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "xiao-xin-chengdu-2017",
+      "source_ids": [
+        "src_chengdu_newborns_2017_en",
+        "src_chengdu_newborns_2017_zh"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "ya-li",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh",
+        "src_gpg_guangzhou_profiles"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "ya-lun",
+      "source_ids": [
+        "src_zooatlanta_arrival_china_2024",
+        "src_zooatlanta_cubs_birth",
+        "src_zooatlanta_lun_lun",
+        "src_zooatlanta_twins_names",
+        "src_zooatlanta_yang_yang"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "ya-song",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh",
+        "src_gpg_chengdu_base_current_page_6"
+      ]
+    },
+    {
+      "action": "preserve",
+      "evidence_status": "verified",
+      "gaps": [],
+      "reasons": [],
+      "review_status": "approved",
+      "risk_tier": "high",
+      "slug": "yang-yang",
+      "source_ids": [
+        "src_zooatlanta_arrival_china_2024",
+        "src_zooatlanta_yang_yang"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "exact_birth_date",
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "zhao-mei",
+      "source_ids": [
+        "src_chengdu_newborns_2021_zh",
+        "src_gpg_meet_world_page_9"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "current_location",
+        "known_life_status"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "zhen-xi",
+      "source_ids": [
+        "src_chengdu_newborns_2017_en",
+        "src_chengdu_newborns_2017_zh"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "zhi-ma",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh",
+        "src_gpg_sun_island_profiles"
+      ]
+    },
+    {
+      "action": "add",
+      "evidence_status": "verified",
+      "gaps": [
+        "reviewed_current_residency_start"
+      ],
+      "reasons": [],
+      "review_status": "reviewed",
+      "risk_tier": "medium",
+      "slug": "zhi-shi",
+      "source_ids": [
+        "src_chengdu_newborns_2017_zh",
+        "src_gpg_sun_island_profiles"
+      ]
+    }
+  ],
+  "publication_batch_id": "collection-curation-2026-07-24",
+  "release_version": "2026.07.24.1",
+  "released_at": "2026-07-24T04:00:00Z",
+  "report_id": "collection-release-8e86feda1ad77ae07ee739a5a86e4ba39cc33d005d22d625d0e73038629932b0",
+  "schema_version": "panda-atlas-collection-release-candidate/v1",
+  "source_sha256": "e300acc2a50b1bfcdaa78f7d9527c91fb34a94b4776440df17160882946a0e0e",
+  "summary": {
+    "action_counts": {
+      "add": 18,
+      "preserve": 10
+    },
+    "added_profile_count": 18,
+    "added_source_count": 14,
+    "base_panda_count": 16,
+    "deferred_profile_count": 0,
+    "eligible_curation_panda_count": 28,
+    "event_changes": {
+      "added": 15,
+      "replaced": 0,
+      "skipped_existing_semantic": 30,
+      "skipped_missing_source": 0
+    },
+    "fact_changes": {
+      "added": 54,
+      "replaced": 0
+    },
+    "included_curation_panda_count": 28,
+    "media_changes": {
+      "added_empty_states": 18
+    },
+    "parentage_changes": {
+      "added": 0,
+      "replaced": 0
+    },
+    "preserved_profile_count": 10,
+    "residency_changes": {
+      "added": 0,
+      "skipped_without_reviewed_start": 14
+    },
+    "result_panda_count": 34,
+    "risk_tier_counts": {
+      "high": 10,
+      "medium": 18
+    }
+  },
+  "write_boundary": {
+    "d1_activation": false,
+    "deployment": false,
+    "public_release": "local-only-until-explicit-apply",
+    "r2_upload": false,
+    "reviewed_batch": "local-only-until-explicit-apply"
+  }
+}
