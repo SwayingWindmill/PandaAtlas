@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 222,
-  "pandas_with_media": 58,
+  "candidate_count": 226,
+  "pandas_with_media": 62,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -83,21 +83,6 @@
         "location": 2,
         "media_candidate": 3,
         "milestone": 3
-      },
-      "coverage_gap_score": -15
-    },
-    {
-      "subject_id": "jiao-qing",
-      "subject_label": "Jiao Qing",
-      "media_count": 1,
-      "record_count": 4,
-      "direct_record_count": 4,
-      "category_count": 4,
-      "categories": {
-        "birth": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "personality": 1
       },
       "coverage_gap_score": -15
     },
@@ -838,6 +823,31 @@
       "coverage_gap_score": -65
     },
     {
+      "subject_id": "jiao-qing",
+      "subject_label": "Jiao Qing",
+      "media_count": 2,
+      "record_count": 16,
+      "direct_record_count": 16,
+      "category_count": 14,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "growth_measurement": 1,
+        "location": 1,
+        "media_candidate": 2,
+        "milestone": 2,
+        "name_meaning": 1,
+        "origin": 1,
+        "personality": 1,
+        "public_debut": 1,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 1,
+        "vocalisation": 1
+      },
+      "coverage_gap_score": -66
+    },
+    {
       "subject_id": "fu-bao-vienna",
       "subject_label": "Fu Bao",
       "media_count": 2,
@@ -954,6 +964,30 @@
       "coverage_gap_score": -75
     },
     {
+      "subject_id": "meng-hao",
+      "subject_label": "Meng Hao",
+      "media_count": 1,
+      "record_count": 18,
+      "direct_record_count": 18,
+      "category_count": 13,
+      "categories": {
+        "alias": 1,
+        "appearance": 1,
+        "behaviour": 1,
+        "birth": 2,
+        "growth_measurement": 3,
+        "location": 1,
+        "maternal_care": 2,
+        "media_candidate": 1,
+        "milestone": 2,
+        "name_meaning": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1
+      },
+      "coverage_gap_score": -75
+    },
+    {
       "subject_id": "ding-ding",
       "subject_label": "Ding Ding",
       "media_count": 3,
@@ -978,6 +1012,30 @@
         "transfer": 1
       },
       "coverage_gap_score": -78
+    },
+    {
+      "subject_id": "meng-tian",
+      "subject_label": "Meng Tian",
+      "media_count": 1,
+      "record_count": 20,
+      "direct_record_count": 20,
+      "category_count": 13,
+      "categories": {
+        "alias": 1,
+        "appearance": 1,
+        "behaviour": 1,
+        "birth": 4,
+        "growth_measurement": 3,
+        "location": 1,
+        "maternal_care": 2,
+        "media_candidate": 1,
+        "milestone": 2,
+        "name_meaning": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1
+      },
+      "coverage_gap_score": -81
     },
     {
       "subject_id": "hua-mei",
@@ -1006,6 +1064,31 @@
       "coverage_gap_score": -82
     },
     {
+      "subject_id": "meng-xiang",
+      "subject_label": "Meng Xiang",
+      "media_count": 2,
+      "record_count": 23,
+      "direct_record_count": 23,
+      "category_count": 14,
+      "categories": {
+        "alias": 1,
+        "birth": 1,
+        "enrichment": 1,
+        "growth_measurement": 5,
+        "health": 1,
+        "location": 4,
+        "media_candidate": 2,
+        "milestone": 2,
+        "name_meaning": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -87
+    },
+    {
       "subject_id": "yuan-zai",
       "subject_label": "Yuan Zai",
       "media_count": 1,
@@ -1025,6 +1108,31 @@
         "reproduction": 2
       },
       "coverage_gap_score": -87
+    },
+    {
+      "subject_id": "meng-yuan",
+      "subject_label": "Meng Yuan",
+      "media_count": 2,
+      "record_count": 24,
+      "direct_record_count": 24,
+      "category_count": 14,
+      "categories": {
+        "alias": 1,
+        "birth": 1,
+        "enrichment": 1,
+        "growth_measurement": 5,
+        "location": 4,
+        "media_candidate": 2,
+        "milestone": 2,
+        "name_meaning": 1,
+        "personality": 2,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -90
     },
     {
       "subject_id": "ya-ya-memphis",
