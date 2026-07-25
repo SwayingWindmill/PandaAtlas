@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.forestry.gov.cn/c/www/zhzs/630726.jhtml",
+  "discovered_at": "2026-07-25T20:23:30.453048+00:00",
+  "image_count": 18,
+  "images": [
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/Inner_img/Zrzyb_wenz_kyy20180625_01.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "27",
+      "height": "27",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/Inner_img/yz.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "85",
+      "height": "40",
+      "evidence": [
+        "capatchImg"
+      ]
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/index/images/link.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105571080973645.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020210208512121297533.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105571287080107.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105571547827695.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105571874683820.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105572101925694.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105572339923208.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105572526368581.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105572669004827.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/wzdh/qtlj/201807/W020181105573579228815.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/index/images/footer_icon_01.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "icp"
+      ]
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/index/images/footer_icon_1.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/index/images/footer_icon_2.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/index/images/wza.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.forestry.gov.cn/r/cms/www/default/index/images/right_nav_icon_04.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

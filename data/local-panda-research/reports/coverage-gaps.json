@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 355,
-  "pandas_with_media": 87,
+  "candidate_count": 368,
+  "pandas_with_media": 88,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -385,25 +385,6 @@
         "sex": 1
       },
       "coverage_gap_score": -46
-    },
-    {
-      "subject_id": "tian-tian-edinburgh",
-      "subject_label": "Tian Tian",
-      "media_count": 1,
-      "record_count": 12,
-      "direct_record_count": 12,
-      "category_count": 8,
-      "categories": {
-        "behaviour": 1,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "reproduction": 3,
-        "research": 2,
-        "transfer": 2,
-        "veterinary_care": 1
-      },
-      "coverage_gap_score": -47
     },
     {
       "subject_id": "tian-bao",
@@ -1733,6 +1714,32 @@
       "coverage_gap_score": -87
     },
     {
+      "subject_id": "yang-guang",
+      "subject_label": "Yang Guang",
+      "media_count": 7,
+      "record_count": 31,
+      "direct_record_count": 31,
+      "category_count": 15,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "cultural_context": 1,
+        "enrichment": 1,
+        "health": 3,
+        "identity": 1,
+        "location": 2,
+        "media_candidate": 7,
+        "milestone": 4,
+        "name_meaning": 1,
+        "origin": 1,
+        "reproduction": 2,
+        "sex": 1,
+        "transfer": 3,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -88
+    },
+    {
       "subject_id": "an-an-hk-2019",
       "subject_label": "An An",
       "media_count": 2,
@@ -1858,6 +1865,32 @@
         "transfer": 2
       },
       "coverage_gap_score": -100
+    },
+    {
+      "subject_id": "tian-tian-edinburgh",
+      "subject_label": "Tian Tian",
+      "media_count": 7,
+      "record_count": 39,
+      "direct_record_count": 39,
+      "category_count": 15,
+      "categories": {
+        "behaviour": 4,
+        "birth": 2,
+        "health": 1,
+        "identity": 1,
+        "location": 3,
+        "media_candidate": 7,
+        "milestone": 2,
+        "name_meaning": 1,
+        "origin": 1,
+        "relationship": 1,
+        "reproduction": 7,
+        "research": 2,
+        "sex": 1,
+        "transfer": 4,
+        "veterinary_care": 2
+      },
+      "coverage_gap_score": -112
     },
     {
       "subject_id": "xiao-qi-ji",

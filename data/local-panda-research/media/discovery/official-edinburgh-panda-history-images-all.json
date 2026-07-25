@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.edinburghzoo.org.uk/animals/pandas",
+  "discovered_at": "2026-07-25T20:19:35.987436+00:00",
+  "image_count": 30,
+  "images": [
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Gentoo_penguin/gentoo penguin 1.jpg",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.edinburghzoo.org.uk/themes/ud/images/logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Edinburgh Zoo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_site_images/Visitors/visitor_running-child.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Child running towards camera with tongue out IMAGE: Robin Mair 2022",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Queensland_koala/queensland koalas 6.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Queensland koala sitting up on a nook in a branch with one hand holding itself and one in front Image: ALLIE MCGREGOR 2024",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_events/brainy_brunch.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "child and mother looking at painted plate edinburgh science festival brainy brunch",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_site_images/Visitors/summer_school_class 2.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Summer school class IMAGE: Robin Mair 2022",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_site_images/Visitors/visitor_giraffe_walkway.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Family walking holding hands on giraffe walkway IMAGE: Rachel Hein 2023",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/News/2023/August/giantpandanews.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-b"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/giant_pandas_arrive_at_edinburgh_zoo.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant pandas arrive at Edinburgh Zoo IMAGE RZSS 2011",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/giant_panda.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Yang Guang IMAGE RZSS",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-a"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/yang_guang.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Yang Guang IMAGE RZSS",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-c"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/19_09_19_pandaenclosureopening_02_kp.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Opening of the new giant panda enclosure IMAGE RZSS 2019",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/giant_panda_yang_guang.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Yang Guang eating bamboo IMAGE RZSS 2015",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-a"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/sunshine mczoo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Sunshine McZoo by Steven Brown IMAGE RZSS 2022",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-c"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/2023_01_yang guang_giant panda_ laurie campbell (28).jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Yang Guang in morning sun IMAGE Laurie Campbell 2023",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-d"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/22_06_30_gat_bamboozled_edinburgh zoo_am (11).jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giraffe About Town statue Bamboozled in front of Edinburgh Zoo IMAGE Amy Middleton 2022",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-a"
+      ]
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_animals/Giant_panda/23_12_keeper michael livingstone and vet stephanie mota.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Senior keeper Michael Livingstone and vet Stephanie Mota IMAGE RZSS 2023",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-c"
+      ]
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/meerkat2.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Meerkats",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "clip-c"
+      ]
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/rzss_logo_blue_transparent.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "RZSS footer logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/hwp logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_site_images/Logos/thistle1.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Edinburgh Zoo Thistle Award, Regional Winner 2025",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/gtbs-scotland-gold 1.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_site_images/Logos/biaza.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "biaza transparent logo and text",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_site_images/Logos/eaza.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "eaza transparent logo and text",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://images.rzss.org.uk/media/Edinburgh_Zoo/EZ_site_images/Logos/waza.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "waza transparent logo and text",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/iucn logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/01 ic_facebook.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "icon",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/ic_linkedin.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "icon",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/insta.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "icon",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://hml.union-dev2.net/media/youtube.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "icon",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

@@ -1,0 +1,1318 @@
+{
+  "sources": [
+    {
+      "source_id": "src-edinburgh-panda-history-2026-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "Giant pandas",
+      "url": "https://www.edinburghzoo.org.uk/animals/pandas",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official 2011-2023 timeline, surgery recovery, new habitat, award, cultural artwork and return escort."
+    },
+    {
+      "source_id": "src-edinburgh-breeding-faq-2021-deep-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "Giant panda update and FAQ",
+      "url": "https://www.edinburghzoo.org.uk/news/giant-panda-update-and-faq",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official 2021 artificial insemination, Hualong donor selection, seven-cycle research and pregnancy-diagnosis context."
+    },
+    {
+      "source_id": "src-edinburgh-tian-update-2021-deep-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "Tian Tian update and giant panda FAQ",
+      "url": "https://www.edinburghzoo.org.uk/news/tian-tian-update-and-giant-panda-faq",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official outcome and behaviour following the 2021 insemination."
+    },
+    {
+      "source_id": "src-edinburgh-extension-2021-deep-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "Giant panda stay at Edinburgh Zoo extended for two years",
+      "url": "https://www.edinburghzoo.org.uk/news/giant-panda-stay-edinburgh-zoo-extended-two-years",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official two-year extension and decision to end breeding attempts."
+    },
+    {
+      "source_id": "src-edinburgh-yang-new-home-2019-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "First pictures of giant panda Yang Guang in new home",
+      "url": "https://www.edinburghzoo.org.uk/news/first-pictures-giant-panda-yang-guang-new-home",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official Yang Guang habitat exploration and climbing behaviour."
+    },
+    {
+      "source_id": "src-edinburgh-new-habitat-2019-deep-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "Giant pandas' new home officially opened at Edinburgh Zoo",
+      "url": "https://www.edinburghzoo.org.uk/news/giant-pandas-new-home-officially-opened-edinburgh-zoo",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official quieter natural habitat and public opening."
+    },
+    {
+      "source_id": "src-edinburgh-yang-birthday-2023-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "Edinburgh children celebrate giant panda's final birthday in UK",
+      "url": "https://www.edinburghzoo.org.uk/news/edinburgh-children-celebrate-giant-pandas-final-birthday-uk",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official 20th birthday enrichment and name meaning."
+    },
+    {
+      "source_id": "src-edinburgh-departure-2023-deep-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Edinburgh Zoo / RZSS",
+      "title": "Edinburgh Zoo's giant pandas leave zoo and board flight to China",
+      "url": "https://www.edinburghzoo.org.uk/news/edinburgh-zoos-giant-pandas-leave-zoo-and-board-flight-china",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official completed departure and RZSS keeper/vet escort."
+    },
+    {
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant panda pair back to China from Britain",
+      "url": "https://english.news.cn/20231205/c22af635b33845978600acb83948dbfb/c.html",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Arrival time, Bifengxia quarantine, transport-crate training and flight bamboo."
+    },
+    {
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_type": "government_primary_report",
+      "publisher": "National Forestry and Grassland Administration",
+      "title": "中国国宝大熊猫在英国的百年小史",
+      "url": "https://www.forestry.gov.cn/c/www/zhzs/630726.jhtml",
+      "language": "zh",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official individual birth, studbook, prior residence, offspring and diplomacy history."
+    },
+    {
+      "source_id": "src-forestry-returned-pandas-health-2024-local",
+      "source_type": "government_primary_report",
+      "publisher": "National Forestry and Grassland Administration / CCRCGP",
+      "title": "9只旅外大熊猫返回熊猫中心 健康状况良好",
+      "url": "https://www.forestry.gov.cn/c/www/lcdt/541099.jhtml",
+      "language": "zh",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official January 2024 residence, health and adaptation status."
+    },
+    {
+      "source_id": "src-plos-panda-urinary-specific-gravity-2018-local",
+      "source_type": "peer_reviewed_primary_research",
+      "publisher": "PLOS ONE",
+      "title": "Urinary specific gravity as an alternative for the normalisation of endocrine metabolite concentrations in giant panda reproductive monitoring",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0201420",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Peer-reviewed study recording Tian Tian's studbook, birth date and five unsuccessful 2013-2017 breeding cycles."
+    },
+    {
+      "source_id": "src-china-daily-edinburgh-first-anniversary-2012-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "China Daily / Xinhua",
+      "title": "1st anniversary for Chinese giant pandas at Edinburgh Zoo",
+      "url": "https://www.chinadaily.com.cn/china/2012-12/05/content_15985972.htm",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "State-media report recording Tian Tian's 2009 twins, early Edinburgh research and public-diplomacy context."
+    },
+    {
+      "source_id": "src-china-embassy-edinburgh-arrival-2011-local",
+      "source_type": "government_primary_report",
+      "publisher": "Embassy of the People's Republic of China in the United Kingdom",
+      "title": "Giant Pandas Tian Tian and Yang Guang Arrive at Edinburgh Zoo",
+      "url": "https://gb.china-embassy.gov.cn/eng/EmbassyNews/2011/201112/t20111208_3388122.htm",
+      "language": "en",
+      "region": "United Kingdom and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official exact arrival date and airport welcome context."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-edinburgh-0001",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "sex",
+      "source_language": "zh",
+      "summary_zh": "甜甜为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0002",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "birth",
+      "predicate": "birth_date_reported_by_national_forestry_authority",
+      "value": "2003-08-23",
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "birth_date_reported_by_national_forestry_authority",
+      "source_language": "zh",
+      "summary_zh": "国家林草局资料记载甜甜出生于2003年8月23日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0003",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "birth",
+      "predicate": "birth_date_reported_in_peer_reviewed_research",
+      "value": "2003-08-24",
+      "source_id": "src-plos-panda-urinary-specific-gravity-2018-local",
+      "source_locator": "birth_date_reported_in_peer_reviewed_research",
+      "source_language": "en",
+      "summary_zh": "同行评议研究记载甜甜出生于2003年8月24日，与国家林草局资料相差一天。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0004",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Beijing Zoo",
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "birthplace",
+      "source_language": "zh",
+      "summary_zh": "甜甜出生于北京动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0005",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "identity",
+      "predicate": "studbook_number",
+      "value": 569,
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "studbook_number",
+      "source_language": "zh",
+      "summary_zh": "甜甜的国际谱系号为569。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "identity"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0006",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "Sweetie",
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "甜甜的名字意为“甜心”或“甜甜的”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0007",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "location",
+      "predicate": "pre_edinburgh_residences",
+      "value": [
+        "Hetaoping rewilding training base",
+        "Ya'an Bifengxia base"
+      ],
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "pre_edinburgh_residences",
+      "source_language": "zh",
+      "summary_zh": "赴英前，甜甜曾在核桃坪野化培训基地和雅安碧峰峡基地生活。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0008",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "relationship",
+      "predicate": "offspring_before_edinburgh",
+      "value": {
+        "mate": "Xi Meng",
+        "offspring": [
+          "Bo Si",
+          "Shen Wei"
+        ]
+      },
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "offspring_before_edinburgh",
+      "source_language": "zh",
+      "summary_zh": "甜甜赴英前曾与希梦繁育后代博斯和绅威。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0009",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "reproduction",
+      "predicate": "twin_birth_before_edinburgh",
+      "value": {
+        "year": 2009,
+        "offspring_count": 2
+      },
+      "source_id": "src-china-daily-edinburgh-first-anniversary-2012-local",
+      "source_locator": "twin_birth_before_edinburgh",
+      "source_language": "en",
+      "summary_zh": "新华社早期资料记载甜甜于2009年产下一对双胞胎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0010",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_edinburgh_exact_date",
+      "value": "2011-12-04",
+      "source_id": "src-china-embassy-edinburgh-arrival-2011-local",
+      "source_locator": "arrived_at_edinburgh_exact_date",
+      "source_language": "en",
+      "summary_zh": "甜甜于2011年12月4日抵达爱丁堡。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0011",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "reproduction",
+      "predicate": "edinburgh_artificial_insemination_processes_by_2021",
+      "value": 7,
+      "source_id": "src-edinburgh-breeding-faq-2021-deep-local",
+      "source_locator": "edinburgh_artificial_insemination_processes_by_2021",
+      "source_language": "en",
+      "summary_zh": "截至2021年，爱丁堡团队已为甜甜完成七次人工授精流程。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0012",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "reproduction",
+      "predicate": "unsuccessful_cycles_in_peer_reviewed_study",
+      "value": {
+        "count": 5,
+        "years": "2013-2017"
+      },
+      "source_id": "src-plos-panda-urinary-specific-gravity-2018-local",
+      "source_locator": "unsuccessful_cycles_in_peer_reviewed_study",
+      "source_language": "en",
+      "summary_zh": "同行评议研究纳入甜甜2013至2017年的五个未成功繁殖周期。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0013",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "reproduction",
+      "predicate": "no_cubs_born_in_uk",
+      "value": true,
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "no_cubs_born_in_uk",
+      "source_language": "en",
+      "summary_zh": "甜甜在英国生活期间没有产下幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0014",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "transfer",
+      "predicate": "arrived_back_in_china",
+      "value": {
+        "date": "2023-12-05",
+        "time": "06:50",
+        "airport": "Chengdu Shuangliu International Airport"
+      },
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "arrived_back_in_china",
+      "source_language": "en",
+      "summary_zh": "甜甜于2023年12月5日约6时50分抵达成都双流国际机场。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0015",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "veterinary_care",
+      "predicate": "post_return_quarantine",
+      "value": {
+        "facility": "Ya'an Bifengxia giant panda base",
+        "duration_days": 30
+      },
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "post_return_quarantine",
+      "source_language": "en",
+      "summary_zh": "甜甜返华后在雅安碧峰峡基地接受30天隔离检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0016",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "location",
+      "predicate": "residence_2024_01",
+      "value": "Ya'an Bifengxia base",
+      "source_id": "src-forestry-returned-pandas-health-2024-local",
+      "source_locator": "residence_2024_01",
+      "source_language": "zh",
+      "summary_zh": "截至2024年1月，甜甜居住在雅安基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0017",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian-edinburgh",
+        "label": "Tian Tian"
+      },
+      "category": "health",
+      "predicate": "post_return_health_and_adaptation_2024_01",
+      "value": {
+        "health": "good",
+        "adaptation": "adapted to life after return"
+      },
+      "source_id": "src-forestry-returned-pandas-health-2024-local",
+      "source_locator": "post_return_health_and_adaptation_2024_01",
+      "source_language": "zh",
+      "summary_zh": "截至2024年1月，甜甜健康状况良好，已适应返华后的生活。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-tian-edinburgh",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0018",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "sex",
+      "source_language": "zh",
+      "summary_zh": "阳光为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0019",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2003-08-14",
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "birth_date",
+      "source_language": "zh",
+      "summary_zh": "阳光出生于2003年8月14日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0020",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Hetaoping rewilding training base, CCRCGP",
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "birthplace",
+      "source_language": "zh",
+      "summary_zh": "阳光出生于中国大熊猫保护研究中心核桃坪野化培训基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0021",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "identity",
+      "predicate": "studbook_number",
+      "value": 564,
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "studbook_number",
+      "source_language": "zh",
+      "summary_zh": "阳光的国际谱系号为564。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "identity"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0022",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "Sunshine",
+      "source_id": "src-edinburgh-yang-birthday-2023-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "阳光的名字意为“阳光”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0023",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "location",
+      "predicate": "pre_edinburgh_short_term_residences",
+      "value": [
+        "Chimelong Safari Park",
+        "Handan Zoo",
+        "Qiqihar Longsha Park"
+      ],
+      "source_id": "src-forestry-uk-panda-history-2025-local",
+      "source_locator": "pre_edinburgh_short_term_residences",
+      "source_language": "zh",
+      "summary_zh": "赴英前，阳光曾在广州长隆、邯郸动物园和齐齐哈尔龙沙公园短期生活。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0024",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_edinburgh_exact_date",
+      "value": "2011-12-04",
+      "source_id": "src-china-embassy-edinburgh-arrival-2011-local",
+      "source_locator": "arrived_at_edinburgh_exact_date",
+      "source_language": "en",
+      "summary_zh": "阳光于2011年12月4日抵达爱丁堡。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0025",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "health",
+      "predicate": "recovered_after_bilateral_orchiectomy",
+      "value": {
+        "year": 2018,
+        "reason": "tumours",
+        "specialists": [
+          "British giant panda specialists",
+          "Chinese giant panda specialists"
+        ]
+      },
+      "source_id": "src-edinburgh-panda-history-2026-local",
+      "source_locator": "recovered_after_bilateral_orchiectomy",
+      "source_language": "en",
+      "summary_zh": "阳光在中英大熊猫专家会诊后接受双侧睾丸切除，并于2018年恢复。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0026",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "behaviour",
+      "predicate": "first_exploration_of_new_habitat",
+      "value": {
+        "date": "2019-07-10",
+        "actions": [
+          "looked around",
+          "climbed nearest tree",
+          "used climbing frame"
+        ]
+      },
+      "source_id": "src-edinburgh-yang-new-home-2019-local",
+      "source_locator": "first_exploration_of_new_habitat",
+      "source_language": "en",
+      "summary_zh": "阳光首次探索新馆时环顾环境、爬上最近的树并使用攀爬架。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0027",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "milestone",
+      "predicate": "panda_personality_of_the_year_gold",
+      "value": {
+        "award_year": 2019,
+        "announced_in_timeline_year": 2020
+      },
+      "source_id": "src-edinburgh-panda-history-2026-local",
+      "source_locator": "panda_personality_of_the_year_gold",
+      "source_language": "en",
+      "summary_zh": "阳光获得2019年度全球大熊猫奖“年度大熊猫个性”金奖。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0028",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "cultural_context",
+      "predicate": "inspired_sunshine_mczoo_artwork",
+      "value": {
+        "artist": "Steven Brown",
+        "year": 2021,
+        "purpose": "raise conservation funds"
+      },
+      "source_id": "src-edinburgh-panda-history-2026-local",
+      "source_locator": "inspired_sunshine_mczoo_artwork",
+      "source_language": "en",
+      "summary_zh": "苏格兰艺术家Steven Brown于2021年创作受阳光启发的《Sunshine McZoo》，用于筹集保护资金。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0029",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "milestone",
+      "predicate": "twentieth_birthday",
+      "value": "2023-08-14",
+      "source_id": "src-edinburgh-yang-birthday-2023-local",
+      "source_locator": "twentieth_birthday",
+      "source_language": "en",
+      "summary_zh": "阳光于2023年8月14日在爱丁堡度过20岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0030",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "enrichment",
+      "predicate": "twentieth_birthday_enrichment",
+      "value": {
+        "container": "decorated box",
+        "foods": [
+          "carrots",
+          "bamboo",
+          "apples"
+        ]
+      },
+      "source_id": "src-edinburgh-yang-birthday-2023-local",
+      "source_locator": "twentieth_birthday_enrichment",
+      "source_language": "en",
+      "summary_zh": "阳光20岁生日获得装有胡萝卜、竹子和苹果的装饰礼盒丰容。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0031",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "reproduction",
+      "predicate": "no_cubs_born_in_uk",
+      "value": true,
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "no_cubs_born_in_uk",
+      "source_language": "en",
+      "summary_zh": "阳光在英国生活期间没有繁育幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0032",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "transfer",
+      "predicate": "arrived_back_in_china",
+      "value": {
+        "date": "2023-12-05",
+        "time": "06:50",
+        "airport": "Chengdu Shuangliu International Airport"
+      },
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "arrived_back_in_china",
+      "source_language": "en",
+      "summary_zh": "阳光于2023年12月5日约6时50分抵达成都双流国际机场。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0033",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "veterinary_care",
+      "predicate": "post_return_quarantine",
+      "value": {
+        "facility": "Ya'an Bifengxia giant panda base",
+        "duration_days": 30
+      },
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "post_return_quarantine",
+      "source_language": "en",
+      "summary_zh": "阳光返华后在雅安碧峰峡基地接受30天隔离检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0034",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "location",
+      "predicate": "residence_2024_01",
+      "value": "Ya'an Bifengxia base",
+      "source_id": "src-forestry-returned-pandas-health-2024-local",
+      "source_locator": "residence_2024_01",
+      "source_language": "zh",
+      "summary_zh": "截至2024年1月，阳光居住在雅安基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0035",
+      "subject": {
+        "type": "panda",
+        "id": "yang-guang",
+        "label": "Yang Guang"
+      },
+      "category": "health",
+      "predicate": "post_return_health_and_adaptation_2024_01",
+      "value": {
+        "health": "good",
+        "adaptation": "adapted to life after return"
+      },
+      "source_id": "src-forestry-returned-pandas-health-2024-local",
+      "source_locator": "post_return_health_and_adaptation_2024_01",
+      "source_language": "zh",
+      "summary_zh": "截至2024年1月，阳光健康状况良好，已适应返华后的生活。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-guang",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0036",
+      "subject": {
+        "type": "research_programme",
+        "id": "edinburgh-panda-cooperation",
+        "label": "Edinburgh giant panda cooperation programme"
+      },
+      "category": "diplomacy",
+      "predicate": "agreement",
+      "value": {
+        "original_years": 10,
+        "arrival": "2011-12",
+        "extension_years": 2,
+        "extension_reason": "COVID-19 pandemic"
+      },
+      "source_id": "src-edinburgh-extension-2021-deep-local",
+      "source_locator": "agreement",
+      "source_language": "en",
+      "summary_zh": "中英合作原定十年，后因新冠疫情延长两年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "edinburgh-panda-cooperation",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0037",
+      "subject": {
+        "type": "research_programme",
+        "id": "edinburgh-panda-cooperation",
+        "label": "Edinburgh giant panda cooperation programme"
+      },
+      "category": "research",
+      "predicate": "research_fields",
+      "value": [
+        "fertility",
+        "husbandry",
+        "veterinary care",
+        "nutrition",
+        "male breeding behaviour"
+      ],
+      "source_id": "src-edinburgh-panda-history-2026-local",
+      "source_locator": "research_fields",
+      "source_language": "en",
+      "summary_zh": "爱丁堡项目涉及繁殖力、饲养管理、兽医护理、营养和雄性繁殖行为研究。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "edinburgh-panda-cooperation",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0038",
+      "subject": {
+        "type": "research_programme",
+        "id": "edinburgh-panda-cooperation",
+        "label": "Edinburgh giant panda cooperation programme"
+      },
+      "category": "research",
+      "predicate": "research_partner",
+      "value": "University of Edinburgh",
+      "source_id": "src-edinburgh-panda-history-2026-local",
+      "source_locator": "research_partner",
+      "source_language": "en",
+      "summary_zh": "项目与爱丁堡大学合作开展大熊猫研究。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "edinburgh-panda-cooperation",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0039",
+      "subject": {
+        "type": "research_programme",
+        "id": "edinburgh-panda-cooperation",
+        "label": "Edinburgh giant panda cooperation programme"
+      },
+      "category": "research",
+      "predicate": "cooperation_outputs",
+      "value": [
+        "technique exchange",
+        "scientific research",
+        "public engagement"
+      ],
+      "source_id": "src-edinburgh-extension-2021-deep-local",
+      "source_locator": "cooperation_outputs",
+      "source_language": "en",
+      "summary_zh": "中英合作产出包括技术交流、科学研究和公众教育。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "edinburgh-panda-cooperation",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0040",
+      "subject": {
+        "type": "research_programme",
+        "id": "edinburgh-panda-cooperation",
+        "label": "Edinburgh giant panda cooperation programme"
+      },
+      "category": "husbandry_training",
+      "predicate": "pre_departure_transport_preparation",
+      "value": [
+        "travel-crate acclimation",
+        "fresh bamboo prepared for flight"
+      ],
+      "source_id": "src-xinhua-edinburgh-return-2023-local",
+      "source_locator": "pre_departure_transport_preparation",
+      "source_language": "en",
+      "summary_zh": "返华前，两只大熊猫接受运输箱适应训练，园方并为飞行准备新鲜竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "edinburgh-panda-cooperation",
+        "husbandry_training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0041",
+      "subject": {
+        "type": "research_programme",
+        "id": "edinburgh-panda-cooperation",
+        "label": "Edinburgh giant panda cooperation programme"
+      },
+      "category": "diplomacy",
+      "predicate": "public_impact",
+      "value": {
+        "status": "UK's only giant pandas",
+        "impact": "connected millions of people with nature"
+      },
+      "source_id": "src-edinburgh-departure-2023-deep-local",
+      "source_locator": "public_impact",
+      "source_language": "en",
+      "summary_zh": "阳光和甜甜作为英国唯一的大熊猫，帮助数百万人建立与自然的联系。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "edinburgh-panda-cooperation",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-edinburgh-0042",
+      "subject": {
+        "type": "research_programme",
+        "id": "edinburgh-panda-cooperation",
+        "label": "Edinburgh giant panda cooperation programme"
+      },
+      "category": "transfer",
+      "predicate": "return_escort",
+      "value": {
+        "date": "2023-12-04",
+        "escorts": [
+          "RZSS keeper",
+          "RZSS veterinarian"
+        ]
+      },
+      "source_id": "src-edinburgh-departure-2023-deep-local",
+      "source_locator": "return_escort",
+      "source_language": "en",
+      "summary_zh": "返华时由RZSS护理员和兽医随行，帮助两只适应新家。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "edinburgh-panda-cooperation",
+        "transfer"
+      ]
+    }
+  ]
+}
