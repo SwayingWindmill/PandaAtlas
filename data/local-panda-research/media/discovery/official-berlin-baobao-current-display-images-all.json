@@ -1,0 +1,707 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.museumfuernaturkunde.berlin/en/plan-your-visit/exhibition/highlights-of-taxidermy/",
+  "discovered_at": "2026-07-25T17:52:59.669995+00:00",
+  "image_count": 63,
+  "images": [
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_d147e4bc1b.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:og:image:url"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "og:image:url"
+      ]
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_52b1e794b0.jpg",
+      "source_types": [
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/_assets/986264035bfba3f934314ae9f6426c2f/Frontend/logos/mfn-logo.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Museum für Naturkunde",
+      "title": "",
+      "width": "211",
+      "height": "110",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_7c01da9e0a.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_57d0e8380c.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_3c82db3d51.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_a130db83f4.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_8824c670bc.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Bilder/Programm/230826_mfn_322.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "6000",
+      "height": "4000",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_7077b69eaa.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_ef2944d866.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_0a14cffaf1.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_d30c885824.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_83723f984b.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Bilder/Forschung/Museum_fuer_Naturkunde_Berlin_19.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Zwei Mitarbeitende analysieren am Bildschirm ein 3D-Modell eines fossilen Schädels.",
+      "title": "",
+      "width": "5895",
+      "height": "3930",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_aa701bc292.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_39ced2a992.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_a0759192aa.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_d8d1b44d6d.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_a60eb83414.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Bilder/Das_Museum/Museums-Evolution/4451_Perspektive_Hof.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "3D-Rendering eines geplanten überdachten Innenhofs mit Dinosaurierskeletten.",
+      "title": "",
+      "width": "4000",
+      "height": "2831",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_d2a1f58e86.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_ccf231b94f.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_710ef659ae.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_4af0e611b9.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_05aba5c497.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_e4025c2e2f.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_e6875395b5.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/2/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_8_b23ee1ebcd.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Präparierter Eisbär liegt im Vordergrund; dahinter stehen weitere große Säugetiere wie Antilopen und ein fliegender Vogel in einem Ausstellungssaal.",
+      "title": "",
+      "width": "1000",
+      "height": "563",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/7/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_13bb9d2f55.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/7/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_bcb357bbe5.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/7/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_29aa9c4200.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/7/csm_Museum_f%C3%BCr_Naturkunde_Ausstellung_02.02.2026_c71d3d0f98.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Präparierter Gorilla sitzt in einer Glasvitrine im Museum; im Hintergrund weitere Vitrinen mit Skeletten und Tierpräparaten.",
+      "title": "",
+      "width": "733",
+      "height": "550",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/b/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_S.78BobbyPr%C3%A4p_ee47e09dcc.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/b/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_S.78BobbyPr%C3%A4p_e2db4f949c.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/b/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_S.78BobbyPr%C3%A4p_29097ec903.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/b/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_S.78BobbyPr%C3%A4p_eb08d4a9e9.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Historische Aufnahme: Zwei Präparatoren arbeiten an einem sitzenden Gorilla-Modell und formen Fell und Körper in einer Werkstatt.",
+      "title": "",
+      "width": "417",
+      "height": "550",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/8/csm_Sonderausstellung_ARA_1_41521776a1.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/8/csm_Sonderausstellung_ARA_1_24e35c9859.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/8/csm_Sonderausstellung_ARA_1_a25efa6068.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/8/csm_Sonderausstellung_ARA_1_3f0c01450f.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Präparierter Jaguar springt nach oben und greift mit ausgestreckter Pfote nach zwei fliegenden Grünflügelaras mit ausgebreiteten Flügeln.",
+      "title": "",
+      "width": "824",
+      "height": "550",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_TheMuseumsLab_2024_1_bfa65d1a33.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_TheMuseumsLab_2024_1_192df80787.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_TheMuseumsLab_2024_1_60369cff68.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_TheMuseumsLab_2024_1_806c597bd5.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Besuchende gehen durch einen Ausstellungsgang mit beleuchteten Vitrinen und betrachten Tierpräparate und Exponate.",
+      "title": "",
+      "width": "367",
+      "height": "550",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/5/csm_Ausstellung__22Highlights_der_Pr%C3%A4parationskunst_22_a9b140e0f5.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/5/csm_Ausstellung__22Highlights_der_Pr%C3%A4parationskunst_22_bc44578eeb.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/5/csm_Ausstellung__22Highlights_der_Pr%C3%A4parationskunst_22_ad867b9baf.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/5/csm_Ausstellung__22Highlights_der_Pr%C3%A4parationskunst_22_3b1fbdc19b.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Zwei präparierte Ozelots im Vergleich: links ein älteres, unnatürlich wirkendes Präparat mit gefletschten Zähnen, rechts ein anatomisch realistisch dargestelltes Tier mit natürlichem Blick.",
+      "title": "",
+      "width": "822",
+      "height": "550",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/6/4/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_Pr%C3%A4p.werkstatt_ZM_B_VI-391_19_2_d27d409f6c.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/6/4/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_Pr%C3%A4p.werkstatt_ZM_B_VI-391_19_2_9994cf5c2d.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/6/4/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_Pr%C3%A4p.werkstatt_ZM_B_VI-391_19_2_8905c3d060.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/6/4/csm_25_04_MfN_Sammlung_hist_Fotos_Pr%C3%A4paration_Pr%C3%A4p.werkstatt_ZM_B_VI-391_19_2_cfe88af5d1.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Historische Aufnahme einer Präparationswerkstatt im Museum mit mehreren Präparatoren und verschiedenen Tiermodellen auf Arbeitstischen und Podesten",
+      "title": "",
+      "width": "781",
+      "height": "550",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/1/csm_Museum_fuer_Naturkunde_Berlin__5__e8eba60f2c.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/1/csm_Museum_fuer_Naturkunde_Berlin__5__e9517ac266.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/1/csm_Museum_fuer_Naturkunde_Berlin__5__8458d187e7.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/1/csm_Museum_fuer_Naturkunde_Berlin__5__edbe143236.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Präparatorin arbeitet an einem Luchs und richtet mit einem Werkzeug die Augenpartie des Tieres aus.",
+      "title": "",
+      "width": "367",
+      "height": "550",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/system/icons/instagram.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Instagram",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Youtube.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "YouTube",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Tiktok.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "TikTok",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Linkedin.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "LinkedIn",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Bluesky.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "BlueSky",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/_assets/986264035bfba3f934314ae9f6426c2f/Frontend/logos/leibniz-logo.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Leibnitz Gemeinschaft",
+      "title": "",
+      "width": "171",
+      "height": "136",
+      "evidence": []
+    }
+  ]
+}

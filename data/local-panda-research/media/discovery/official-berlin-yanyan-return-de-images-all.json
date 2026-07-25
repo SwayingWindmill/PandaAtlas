@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.zoo-berlin.de/de/aktuelles/news/artikel/yan-yan-fliegt-zurueck-nach-hause",
+  "discovered_at": "2026-07-25T17:46:19.649299+00:00",
+  "image_count": 19,
+  "images": [
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/_processed_/3/4/csm_Panda_Yan_Yan__3_Foto-Carola-Radke_MfN_4b5f8cf9a6.jpg",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/typo3conf/ext/zoo_berlin_sitepackage/Resources/Public/Images/1x1.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "24",
+      "height": "24",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/zoo_wortmarke.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "28",
+      "height": "9",
+      "evidence": [
+        "header-cross-link__image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/aquarium/assets/aquarium_wortmarke.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "67",
+      "height": "10",
+      "evidence": [
+        "header-cross-link__image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/_processed_/3/4/csm_Panda_Yan_Yan__3_Foto-Carola-Radke_MfN_88122569fb.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Rückflug nach China: Yan Yan aus dem Zoo Berlin",
+      "title": "Yan Yan aus dem Zoo Berlin",
+      "width": "1500",
+      "height": "1096",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/_processed_/7/6/csm_Panda_Yan_Yan__Foto-Carola-Radke_MfN_89feab167c.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1500",
+      "height": "1049",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/_processed_/a/a/csm_Panda_Yan_Yan__2__Foto-Carola-Radke_MfN_60ffded206.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1500",
+      "height": "993",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/_processed_/5/f/csm_150723_YanYan_MfN-Zoo_79__Foto-Carola-Radke_MfN_867d0e9500.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1500",
+      "height": "1016",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/user_upload/old_news/Yan_Yan_Abtransport_Zoll_Zoo_Berlin_2015__5_.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/footer/logo-footer-aquarium.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "124",
+      "height": "100",
+      "evidence": [
+        "cross-link__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/footer/logo-footer-tierpark.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "124",
+      "height": "100",
+      "evidence": [
+        "cross-link__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/footer/logo-Species360.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "98",
+      "height": "55",
+      "evidence": [
+        "logo-slide-teaser__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/footer/logo-EAZA.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "67",
+      "height": "61",
+      "evidence": [
+        "logo-slide-teaser__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/footer/logo-VDZ.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "58",
+      "height": "60",
+      "evidence": [
+        "logo-slide-teaser__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/footer/logo-WAZA.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "62",
+      "height": "62",
+      "evidence": [
+        "logo-slide-teaser__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/footer/logo-IUCN.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "700",
+      "height": "373",
+      "evidence": [
+        "logo-slide-teaser__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/user_upload/UNDOER_WeSupportThe_GOLD_EN.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "303",
+      "height": "158",
+      "evidence": [
+        "logo-slide-teaser__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/toolbar/toolbar_plan.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "82",
+      "height": "94",
+      "evidence": [
+        "toolbar-mini__tile-image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoo-berlin.de/fileadmin/zoo-berlin/assets/toolbar/toolbar_faq.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "74",
+      "height": "95",
+      "evidence": [
+        "toolbar-mini__tile-image"
+      ]
+    }
+  ]
+}

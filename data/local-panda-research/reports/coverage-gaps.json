@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 237,
-  "pandas_with_media": 68,
+  "candidate_count": 239,
+  "pandas_with_media": 69,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -43,20 +43,6 @@
         "milestone": 1
       },
       "coverage_gap_score": -10
-    },
-    {
-      "subject_id": "bao-bao-berlin",
-      "subject_label": "Bao Bao",
-      "media_count": 2,
-      "record_count": 6,
-      "direct_record_count": 6,
-      "category_count": 3,
-      "categories": {
-        "location": 2,
-        "media_candidate": 2,
-        "sex": 2
-      },
-      "coverage_gap_score": -14
     },
     {
       "subject_id": "long-hui",
@@ -237,23 +223,6 @@
       "coverage_gap_score": -28
     },
     {
-      "subject_id": "chi-chi",
-      "subject_label": "Chi Chi",
-      "media_count": 2,
-      "record_count": 9,
-      "direct_record_count": 9,
-      "category_count": 6,
-      "categories": {
-        "anecdote": 1,
-        "conflict": 1,
-        "cultural_context": 2,
-        "media_candidate": 2,
-        "milestone": 2,
-        "transfer": 1
-      },
-      "coverage_gap_score": -29
-    },
-    {
       "subject_id": "de-de-madrid",
       "subject_label": "De De",
       "media_count": 1,
@@ -355,6 +324,23 @@
       "coverage_gap_score": -34
     },
     {
+      "subject_id": "chi-chi",
+      "subject_label": "Chi Chi",
+      "media_count": 2,
+      "record_count": 11,
+      "direct_record_count": 11,
+      "category_count": 6,
+      "categories": {
+        "anecdote": 1,
+        "conflict": 1,
+        "cultural_context": 3,
+        "media_candidate": 2,
+        "milestone": 2,
+        "transfer": 2
+      },
+      "coverage_gap_score": -35
+    },
+    {
       "subject_id": "tai-shan",
       "subject_label": "Tai Shan",
       "media_count": 5,
@@ -369,6 +355,26 @@
         "sex": 1
       },
       "coverage_gap_score": -36
+    },
+    {
+      "subject_id": "tjen-tjen-berlin",
+      "subject_label": "Tjen Tjen",
+      "media_count": 1,
+      "record_count": 9,
+      "direct_record_count": 9,
+      "category_count": 9,
+      "categories": {
+        "birth": 1,
+        "death": 1,
+        "diplomacy": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -40
     },
     {
       "subject_id": "da-mao",
@@ -1059,6 +1065,29 @@
         "relationship": 1,
         "reproduction": 1,
         "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -78
+    },
+    {
+      "subject_id": "bao-bao-berlin",
+      "subject_label": "Bao Bao",
+      "media_count": 3,
+      "record_count": 23,
+      "direct_record_count": 23,
+      "category_count": 12,
+      "categories": {
+        "birth": 1,
+        "cultural_context": 2,
+        "death": 2,
+        "diplomacy": 1,
+        "location": 3,
+        "media_candidate": 3,
+        "milestone": 3,
+        "name_meaning": 1,
+        "relationship": 2,
+        "reproduction": 1,
+        "sex": 3,
         "transfer": 1
       },
       "coverage_gap_score": -78

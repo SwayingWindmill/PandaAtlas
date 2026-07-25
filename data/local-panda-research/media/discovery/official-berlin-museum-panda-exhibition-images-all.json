@@ -1,0 +1,1906 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.museumfuernaturkunde.berlin/en/museum/media/press/panda",
+  "discovered_at": "2026-07-25T17:47:34.183918+00:00",
+  "image_count": 172,
+  "images": [
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_281d2139d7.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:og:image:url"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "og:image:url"
+      ]
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_28798fdf90.jpg",
+      "source_types": [
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/_assets/986264035bfba3f934314ae9f6426c2f/Frontend/logos/mfn-logo.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Museum für Naturkunde",
+      "title": "",
+      "width": "211",
+      "height": "110",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_7c01da9e0a.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_57d0e8380c.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_3c82db3d51.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_a130db83f4.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/6/csm_230826_mfn_322_8824c670bc.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Bilder/Programm/230826_mfn_322.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "6000",
+      "height": "4000",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_7077b69eaa.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_ef2944d866.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_0a14cffaf1.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_d30c885824.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Museum_fuer_Naturkunde_Berlin_19_83723f984b.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Bilder/Forschung/Museum_fuer_Naturkunde_Berlin_19.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Zwei Mitarbeitende analysieren am Bildschirm ein 3D-Modell eines fossilen Schädels.",
+      "title": "",
+      "width": "5895",
+      "height": "3930",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_aa701bc292.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_39ced2a992.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_a0759192aa.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_d8d1b44d6d.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/9/csm_4451_Perspektive_Hof_a60eb83414.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Bilder/Das_Museum/Museums-Evolution/4451_Perspektive_Hof.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "3D-Rendering eines geplanten überdachten Innenhofs mit Dinosaurierskeletten.",
+      "title": "",
+      "width": "4000",
+      "height": "2831",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_e87731a117.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_65ba14f55d.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_aafc2943f1.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_934c6096c3.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_2b22463447.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_29ee252d32.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_de1430ff89.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/e/csm_Beats___Bones_Podcast-Festival_6b6a8a8305.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1000",
+      "height": "563",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/c/csm_DSC_0871_c_c_f4fc161609.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/c/csm_DSC_0871_c_c_50e9d71c28.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/c/csm_DSC_0871_c_c_c6628d3e06.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/c/csm_DSC_0871_c_c_8ea99018fe.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/b/csm_Pardosa__1__efb77dc81e.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/b/csm_Pardosa__1__510d69d287.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/b/csm_Pardosa__1__8e182a2a04.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/b/csm_Pardosa__1__4d3f442951.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Wolfsspinne (Pardosa)",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/a/csm_Vogelbalg_mit_Etiketten_aus_Togo_Museum_f%C3%BCr_Naturkunde_Schurian_3bd3a5b98f.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/a/csm_Vogelbalg_mit_Etiketten_aus_Togo_Museum_f%C3%BCr_Naturkunde_Schurian_dd68b1db0c.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/a/csm_Vogelbalg_mit_Etiketten_aus_Togo_Museum_f%C3%BCr_Naturkunde_Schurian_1e7d57cb7f.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/a/csm_Vogelbalg_mit_Etiketten_aus_Togo_Museum_f%C3%BCr_Naturkunde_Schurian_d6fea6aea3.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Vogelbalg mit Etiketten (Eurystomus gularis), eingesandt von Ernst Baumann aus der deutschen Kolonie Togo",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/6/csm_Dimetrodon_histology_a72ffc8e77.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/6/csm_Dimetrodon_histology_a9d1ba3794.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/6/csm_Dimetrodon_histology_ccd8a241a5.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/f/6/csm_Dimetrodon_histology_bd7181c2e1.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/f/csm_6a0d9b5abebb6-c-Mark-Muecklisch_6373732435.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/f/csm_6a0d9b5abebb6-c-Mark-Muecklisch_72d30196af.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/f/csm_6a0d9b5abebb6-c-Mark-Muecklisch_4b8eace3e5.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/f/csm_6a0d9b5abebb6-c-Mark-Muecklisch_0d7fc60d30.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Blick in eine große Lagerhalle mit langen Reihen von meterlangen Bohrkern-Segmenten auf blauen Gestellen. Mehrere Personen arbeiten zwischen den Reihen und begutachten die zylindrischen Gesteinsproben. Im Hintergrund reichen Regale mit weiteren gelagerten Bohrkernen bis unter die Hallendecke.",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_Schwebgarnele_Hemimysis_anomala_%40_Alexis_Tinker-Tsavalas_3208e2fbca.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_Schwebgarnele_Hemimysis_anomala_%40_Alexis_Tinker-Tsavalas_f33b715dfa.jpeg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_Schwebgarnele_Hemimysis_anomala_%40_Alexis_Tinker-Tsavalas_92778ea8a8.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/9/8/csm_Schwebgarnele_Hemimysis_anomala_%40_Alexis_Tinker-Tsavalas_5d4402380e.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Schwebgarnele Hemimysis anomala",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm__17A4638%40Felix_von_Boehm_b2c146a1dd.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm__17A4638%40Felix_von_Boehm_0f6e61a3d2.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm__17A4638%40Felix_von_Boehm_eae8a7a9eb.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm__17A4638%40Felix_von_Boehm_ac402cb6cd.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "MuseumsMeileMitte",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_Humboldt_Research_Award_Russo_deutsch_e0c6f65161.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_Humboldt_Research_Award_Russo_deutsch_c5dde7a002.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_Humboldt_Research_Award_Russo_deutsch_a7045c0887.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_Humboldt_Research_Award_Russo_deutsch_694325cc55.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Preisträger Humboldt Research Award Danilo Russo",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/c/csm_GD230426_0086_%40_Marc_Beckmann_0842fb8ed2.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/c/csm_GD230426_0086_%40_Marc_Beckmann_737a7bc975.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/c/csm_GD230426_0086_%40_Marc_Beckmann_09a7d01616.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/c/csm_GD230426_0086_%40_Marc_Beckmann_b122c9e6fc.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Girl's Day 2026 mit vielen Mädchen im Sauriersaal des Museums für Naturkunde Berlin mit Bundesministerin Karin Prien (vorn) und Generaldirektor Johannes Vogel (hinten)",
+      "title": "Girls' Day 2026",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/3/csm_Rufendes_M%C3%A4nnchen_des_Pyjamafrosches_M-O_R%C3%B6del_2160db1c97.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/3/csm_Rufendes_M%C3%A4nnchen_des_Pyjamafrosches_M-O_R%C3%B6del_10eb4ca6b0.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/3/csm_Rufendes_M%C3%A4nnchen_des_Pyjamafrosches_M-O_R%C3%B6del_a4b8dc5994.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/3/csm_Rufendes_M%C3%A4nnchen_des_Pyjamafrosches_M-O_R%C3%B6del_dbf93289af.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Rufendes Männchen des Pyjamafrosches",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/2/csm_C._oligocaenica_1_52bc2052d8.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/2/csm_C._oligocaenica_1_e1f4ff8cef.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/2/csm_C._oligocaenica_1_d7a89ae270.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/2/csm_C._oligocaenica_1_49a260a9a4.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/3/csm_Agalychnis_spurrelli_Canande_21_03_22__10__5d91a64b54.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/3/csm_Agalychnis_spurrelli_Canande_21_03_22__10__7d6c5a5e64.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/3/csm_Agalychnis_spurrelli_Canande_21_03_22__10__5caff514c8.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/3/csm_Agalychnis_spurrelli_Canande_21_03_22__10__7c8065158b.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/d/d/csm_Bild_4_0be88ef9b4.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/d/d/csm_Bild_4_0091f8b8e6.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/d/d/csm_Bild_4_e5a0e4ee68.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/d/d/csm_Bild_4_4c63742164.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Heutiger Vertreter der Ortholasmatinae, Ortholasma rugosum.",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm_Nagy_et_al_1_07c44e964e.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm_Nagy_et_al_1_a1cf4ae0ca.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm_Nagy_et_al_1_cd76d8ce20.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/5/csm_Nagy_et_al_1_40c026bee1.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Schematische Zeichnung von Fledermäusen, die singend um Windkraftanlagen kreisen, mit eingezeichneten Flugbahnen und Schallabgabe im Bereich der Rotorzone.",
+      "title": "Schemazeichnung von um Windenergieanlagen kreisenden, singenden Fledermäusen",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_69b0214085437-Lorenzo_1_441e84b687.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_69b0214085437-Lorenzo_1_5f48eeae1f.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_69b0214085437-Lorenzo_1_42e06ee7ff.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/4/csm_69b0214085437-Lorenzo_1_529ae415b5.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/b/csm_IMG_5342___Kenneth_Angielczyk_5381da0f2b.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/b/csm_IMG_5342___Kenneth_Angielczyk_b6469590de.jpeg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/b/csm_IMG_5342___Kenneth_Angielczyk_5a2d1917cb.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/b/csm_IMG_5342___Kenneth_Angielczyk_6cc805c66e.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/0/csm_Myotis_daubentonii__credit_AnEcoEvo_Lab__Univ_Naples_Federico_II__b743c78c52.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/0/csm_Myotis_daubentonii__credit_AnEcoEvo_Lab__Univ_Naples_Federico_II__26924c6671.jpeg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/0/csm_Myotis_daubentonii__credit_AnEcoEvo_Lab__Univ_Naples_Federico_II__6ddd0022d4.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/0/csm_Myotis_daubentonii__credit_AnEcoEvo_Lab__Univ_Naples_Federico_II__64b8f2308e.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/e/csm_DSC_0655b_3_46f2ff0772.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/e/csm_DSC_0655b_3_8952303dda.jpeg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/e/csm_DSC_0655b_3_13c7b1e5f7.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/e/csm_DSC_0655b_3_921dca4901.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/3/csm_Etiketten_%40_picturae_72befe28bd.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/3/csm_Etiketten_%40_picturae_44b2884c6e.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/3/csm_Etiketten_%40_picturae_10f11da15d.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/e/3/csm_Etiketten_%40_picturae_03f6c60adf.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/7/csm___Bundesarchiv__Bild_183-57390-0001__CC-BY-SA_3.0__Foto_Horst_Siegert__2__00ce9c8fe4.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/7/csm___Bundesarchiv__Bild_183-57390-0001__CC-BY-SA_3.0__Foto_Horst_Siegert__2__9dbffacc28.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/7/csm___Bundesarchiv__Bild_183-57390-0001__CC-BY-SA_3.0__Foto_Horst_Siegert__2__ff8ddb5275.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/7/7/csm___Bundesarchiv__Bild_183-57390-0001__CC-BY-SA_3.0__Foto_Horst_Siegert__2__5e71a0dfdc.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Paleoart_Dimetrodon_Teutonis_%40_Sophie_Fernandez_ef09d8a173.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Paleoart_Dimetrodon_Teutonis_%40_Sophie_Fernandez_dc85217367.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Paleoart_Dimetrodon_Teutonis_%40_Sophie_Fernandez_0cd338708a.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/8/4/csm_Paleoart_Dimetrodon_Teutonis_%40_Sophie_Fernandez_2f88a27844.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/c/4/csm_230826_mfn_322_d9d5aeeeb8.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/c/4/csm_230826_mfn_322_171d6eeb7a.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/c/4/csm_230826_mfn_322_3fc7be5cfc.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/c/4/csm_230826_mfn_322_11f5ab6024.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/7/csm_Rosenk%C3%A4fer_Potosia-aeruginosa__MfN_d74fb03954.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/7/csm_Rosenk%C3%A4fer_Potosia-aeruginosa__MfN_4bf62ec84f.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/7/csm_Rosenk%C3%A4fer_Potosia-aeruginosa__MfN_7e1c7f9c18.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/7/csm_Rosenk%C3%A4fer_Potosia-aeruginosa__MfN_1d043ae213.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/d/csm_Wasserzukunft-Monochrom_Presse_mit-Schrift_ebd2983072.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/d/csm_Wasserzukunft-Monochrom_Presse_mit-Schrift_1b5ab05741.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/d/csm_Wasserzukunft-Monochrom_Presse_mit-Schrift_9c6f04645a.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/4/d/csm_Wasserzukunft-Monochrom_Presse_mit-Schrift_9c31d98af0.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/9/csm_Myotis_myotis__credit_Lisa_Printz__81aad57d18.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/9/csm_Myotis_myotis__credit_Lisa_Printz__7197bbb674.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/9/csm_Myotis_myotis__credit_Lisa_Printz__eac2dc6548.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/5/9/csm_Myotis_myotis__credit_Lisa_Printz__91cbb7ab89.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/1/csm_Museum_f%C3%BCr_Naturkunde_Winter_2026_%40_Marc_Jerusel_2b4ac17592.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/1/csm_Museum_f%C3%BCr_Naturkunde_Winter_2026_%40_Marc_Jerusel_124a8593aa.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/1/csm_Museum_f%C3%BCr_Naturkunde_Winter_2026_%40_Marc_Jerusel_aab874cd0c.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/1/csm_Museum_f%C3%BCr_Naturkunde_Winter_2026_%40_Marc_Jerusel_1f3fa3927f.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "512",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/4/csm_archaeopteryx__c__thomas_rosenthal_d6e6e74326.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/4/csm_archaeopteryx__c__thomas_rosenthal_1cc54eda1d.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/4/csm_archaeopteryx__c__thomas_rosenthal_85c95f72e6.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/2/4/csm_archaeopteryx__c__thomas_rosenthal_564665808a.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Urvogel Archaeopteryx lithographica",
+      "width": "467",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/4/csm_biodiversit%C3%A4tswand__c__thomas_rosenthal_e1ed0ef168.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/4/csm_biodiversit%C3%A4tswand__c__thomas_rosenthal_ff1c4bb08e.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/4/csm_biodiversit%C3%A4tswand__c__thomas_rosenthal_84f5d458b6.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/0/4/csm_biodiversit%C3%A4tswand__c__thomas_rosenthal_d19aacd3ff.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Biodiversitätswand",
+      "width": "1050",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/e/csm_Hauptportal_am_Abend__c__Carola_Radke__Museum_f%C3%BCr_Naturkunde_Berlin_6c915d8415.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/e/csm_Hauptportal_am_Abend__c__Carola_Radke__Museum_f%C3%BCr_Naturkunde_Berlin_86b0dc25d7.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/e/csm_Hauptportal_am_Abend__c__Carola_Radke__Museum_f%C3%BCr_Naturkunde_Berlin_7e8989f0c3.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/3/e/csm_Hauptportal_am_Abend__c__Carola_Radke__Museum_f%C3%BCr_Naturkunde_Berlin_9640c68203.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Hauptportal am Abend",
+      "width": "968",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/b/csm_Nasssammlung__c__Thomas_Rosenthal_308363850a.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/b/csm_Nasssammlung__c__Thomas_Rosenthal_d8c8fc8cdb.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/b/csm_Nasssammlung__c__Thomas_Rosenthal_6090628e91.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/b/b/csm_Nasssammlung__c__Thomas_Rosenthal_10748d7f62.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Nasssammlung",
+      "width": "1050",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/1/csm_sauriersaal__c__Thomas_rosenthal_b24a257de2.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/1/csm_sauriersaal__c__Thomas_rosenthal_1bf397dfe6.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/1/csm_sauriersaal__c__Thomas_rosenthal_f0ba6bd9ad.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/a/1/csm_sauriersaal__c__Thomas_rosenthal_b1755b4c2a.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "Sauriersaal",
+      "width": "1050",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/_processed_/1/2/csm_20260620_TSP_MfN12_TITEL_553fc4e868.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2501",
+      "height": "2502",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/download_gesch%C3%A4ftsbericht_preview.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62382.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62376.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62377.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62380.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62381.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62375.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62379.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62378.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62383.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62385.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Download/Publikationen_und_Downloads/Vorschaubilder/Frame_62374.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "340",
+      "height": "340",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/system/icons/instagram.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Instagram",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Youtube.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "YouTube",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Tiktok.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "TikTok",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Linkedin.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "LinkedIn",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/assets/Icons/Bluesky.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "BlueSky",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.museumfuernaturkunde.berlin/_assets/986264035bfba3f934314ae9f6426c2f/Frontend/logos/leibniz-logo.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Leibnitz Gemeinschaft",
+      "title": "",
+      "width": "171",
+      "height": "136",
+      "evidence": []
+    }
+  ]
+}
