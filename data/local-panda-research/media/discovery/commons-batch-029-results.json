@@ -1,0 +1,284 @@
+{
+  "candidate_count": 1,
+  "candidates": [
+    {
+      "adapter_id": "wikimedia-commons-media-discovery",
+      "artist": "Avda",
+      "attribution_required": true,
+      "bytes": 11085591,
+      "candidate_id": "commons-candidate-410d611fdeff48320928abde",
+      "captured_at_text": "2020-05-03 15:59:05",
+      "categories": [
+        "Self-published work",
+        "Ailuropoda melanoleuca in Zoologischer Garten Berlin"
+      ],
+      "credit": "Own work",
+      "description": "Jiao Qing in May 2020",
+      "description_url": "https://commons.wikimedia.org/wiki/File:Berlin_-_Jiao_Qing_-_2020.jpg",
+      "file_title": "File:Berlin - Jiao Qing - 2020.jpg",
+      "height": 2888,
+      "identity_basis": "canonical-name-in-title-and-description",
+      "identity_confidence": 0.95,
+      "license_short_name": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "mime": "image/jpeg",
+      "original_image_downloaded": false,
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Berlin_-_Jiao_Qing_-_2020.jpg",
+      "panda_name_en": "Jiao Qing",
+      "panda_name_zh": "娇庆",
+      "panda_slug": "jiao-qing",
+      "profile_image_eligible": true,
+      "query": "\"Jiao Qing\" giant panda",
+      "review_state": "candidate",
+      "rights_basis": "commons-open-license-metadata",
+      "rights_confidence": 0.95,
+      "rights_state": "open_license",
+      "search_rank": 1,
+      "sha1": "2035b55258d2f87ee7d2404658abb5204a5a6338",
+      "source_id": "wikimedia-commons-action-api",
+      "task_id": "commons-search-8749beb94d36686032da8085",
+      "uploaded_at": "2020-07-15T20:57:14Z",
+      "uploader": "Avda",
+      "usage_terms": "Creative Commons Attribution-Share Alike 3.0",
+      "width": 4332
+    }
+  ],
+  "cohort_id": "local-commons-batch-7052ba0b21e1bf1d",
+  "completed_task_count": 7,
+  "dataset_release_version": "2026.07.24.2",
+  "failed_task_count": 1,
+  "failures": [
+    {
+      "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>",
+      "panda_slug": "jia-xin-chengdu",
+      "query": "\"Jia Xin\" giant panda",
+      "task_id": "commons-search-568352309515f6997b795844"
+    }
+  ],
+  "generated_at": "2026-07-25T00:00:00+09:00",
+  "mode": "live-urllib",
+  "operation": "local-wikimedia-commons-media-discovery",
+  "outcome": "partial",
+  "publication_write_targets": [],
+  "schema_version": 1,
+  "task_count": 8,
+  "tasks": [
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Jia+Panpan%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Jia Panpan",
+        "name_zh": "加盼盼",
+        "panda_slug": "jia-panpan",
+        "query": "\"Jia Panpan\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-e1ff22169a74f5917c8da381"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Jia+Yuan%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Jia Yuan",
+        "name_zh": null,
+        "panda_slug": "jia-yuan-chengdu",
+        "query": "\"Jia Yuan\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-db35cc7dfb042849aaba673c"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Jia+Yueyue%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Jia Yueyue",
+        "name_zh": "加悦悦",
+        "panda_slug": "jia-yueyue",
+        "query": "\"Jia Yueyue\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-5492d9f61750d3c5094b6b8d"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Jian+Jian%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Jian Jian",
+        "name_zh": "健健",
+        "panda_slug": "jian-jian-macau",
+        "query": "\"Jian Jian\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-c62d138e94a9bc2695818617"
+      }
+    },
+    {
+      "candidate_count": 1,
+      "candidates": [
+        {
+          "adapter_id": "wikimedia-commons-media-discovery",
+          "artist": "Avda",
+          "attribution_required": true,
+          "bytes": 11085591,
+          "candidate_id": "commons-candidate-410d611fdeff48320928abde",
+          "captured_at_text": "2020-05-03 15:59:05",
+          "categories": [
+            "Self-published work",
+            "Ailuropoda melanoleuca in Zoologischer Garten Berlin"
+          ],
+          "credit": "Own work",
+          "description": "Jiao Qing in May 2020",
+          "description_url": "https://commons.wikimedia.org/wiki/File:Berlin_-_Jiao_Qing_-_2020.jpg",
+          "file_title": "File:Berlin - Jiao Qing - 2020.jpg",
+          "height": 2888,
+          "identity_basis": "canonical-name-in-title-and-description",
+          "identity_confidence": 0.95,
+          "license_short_name": "CC BY-SA 3.0",
+          "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+          "mime": "image/jpeg",
+          "original_image_downloaded": false,
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Berlin_-_Jiao_Qing_-_2020.jpg",
+          "panda_name_en": "Jiao Qing",
+          "panda_name_zh": "娇庆",
+          "panda_slug": "jiao-qing",
+          "profile_image_eligible": true,
+          "query": "\"Jiao Qing\" giant panda",
+          "review_state": "candidate",
+          "rights_basis": "commons-open-license-metadata",
+          "rights_confidence": 0.95,
+          "rights_state": "open_license",
+          "search_rank": 1,
+          "sha1": "2035b55258d2f87ee7d2404658abb5204a5a6338",
+          "source_id": "wikimedia-commons-action-api",
+          "task_id": "commons-search-8749beb94d36686032da8085",
+          "uploaded_at": "2020-07-15T20:57:14Z",
+          "uploader": "Avda",
+          "usage_terms": "Creative Commons Attribution-Share Alike 3.0",
+          "width": 4332
+        }
+      ],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Jiao+Qing%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "91ccb4de4d4fbc63b3df086d8caac89c080e7995a0db1d87b94a5fb2357643a8",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Jiao Qing",
+        "name_zh": "娇庆",
+        "panda_slug": "jiao-qing",
+        "query": "\"Jiao Qing\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-8749beb94d36686032da8085"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Jiao+Xiao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Jiao Xiao",
+        "name_zh": null,
+        "panda_slug": "jiao-xiao",
+        "query": "\"Jiao Xiao\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-b8eaac7db2052df911a7724c"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Jiao+Yi%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Jiao Yi",
+        "name_zh": "娇毅",
+        "panda_slug": "jiao-yi",
+        "query": "\"Jiao Yi\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-c704d67fc5693005e003a4f8"
+      }
+    }
+  ]
+}

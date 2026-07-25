@@ -1,0 +1,33 @@
+{
+  "body_base64": "eyJiYXRjaGNvbXBsZXRlIjp0cnVlLCJxdWVyeSI6eyJwYWdlcyI6W3sicGFnZWlkIjoxNDYzNDEwNTgsIm5zIjo2LCJ0aXRsZSI6IkZpbGU6UnVzc2lhJ3MgZmlyc3QgZ2lhbnQgcGFuZGEgY3ViIG1lZXRzIHB1YmxpYyBpbiBNb3Njb3cud2VibSIsImluZGV4IjoxLCJpbWFnZXJlcG9zaXRvcnkiOiJsb2NhbCIsImltYWdlaW5mbyI6W3sidGltZXN0YW1wIjoiMjAyNC0wMy0xM1QxMDo1NDowNloiLCJ1c2VyIjoiVGFyb25qYVNhdHN1bWEiLCJzaXplIjo2NTk0NTA0LCJ3aWR0aCI6MTkyMCwiaGVpZ2h0IjoxMDgwLCJkdXJhdGlvbiI6MzkuNTAxLCJ1cmwiOiJodHRwczovL3VwbG9hZC53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zLzgvODMvUnVzc2lhJTI3c19maXJzdF9naWFudF9wYW5kYV9jdWJfbWVldHNfcHVibGljX2luX01vc2Nvdy53ZWJtIiwiZGVzY3JpcHRpb251cmwiOiJodHRwczovL2NvbW1vbnMud2lraW1lZGlhLm9yZy93aWtpL0ZpbGU6UnVzc2lhJTI3c19maXJzdF9naWFudF9wYW5kYV9jdWJfbWVldHNfcHVibGljX2luX01vc2Nvdy53ZWJtIiwiZGVzY3JpcHRpb25zaG9ydHVybCI6Imh0dHBzOi8vY29tbW9ucy53aWtpbWVkaWEub3JnL3cvaW5kZXgucGhwP2N1cmlkPTE0NjM0MTA1OCIsInNoYTEiOiJkMWQ3YzdlZWE2MmY3ZDY1NmE3OTI0N2YyOGE0ZjE0Y2VhZTY2MGRmIiwiZXh0bWV0YWRhdGEiOnsiQ2F0ZWdvcmllcyI6eyJ2YWx1ZSI6Ik1lZGlhIGZyb20gWW91VHViZXxMaWNlbnNlIHJldmlldyBuZWVkZWQgKHZpZGVvKXxVcGxvYWRlZCB3aXRoIHZpZGVvMmNvbW1vbnN8VmlkZW9zIGZyb20gQ2hpbmEgTmV3cyBTZXJ2aWNlfE1hbW1hbHMgaW4gTW9zY293IFpvb3xBaWx1cm9wb2RhIG1lbGFub2xldWNhIGluIE1vc2NvdyBab28iLCJzb3VyY2UiOiJjb21tb25zLWNhdGVnb3JpZXMiLCJoaWRkZW4iOiIifSwiSW1hZ2VEZXNjcmlwdGlvbiI6eyJ2YWx1ZSI6IkthdHl1c2hhLCBSdXNzaWEncyBmaXJzdCBnaWFudCBwYW5kYSBjdWIgYm9ybiBhdCBNb3Njb3cgWm9vLCBtZXQgdGhlIHB1YmxpYyBmb3IgdGhlIGZpcnN0IHRpbWXCoG9uIEZyaWRheSBsb2NhbCB0aW1lLlxuPHA+S2F0eXVzaGEgaXMgbm93IG92ZXIgc2l4wqBtb250aHMgb2xkLCBhbmQgc3RheXPCoGluIGdvb2QgaGVhbHRoLsKgU2hlIHJlY2VudGx5IGhhZCBhIHJvdXRpbmUgY2hlY2stdXAgYW5kIHdlaWdoZWQgMTYuNcKga2lsb2dyYW1zIGFuZCB3YXMgMTAwwqBjZW50aW1ldGVycyBsb25nLiBUaGUgZ2lhbnQgcGFuZGEgY3ViIHdhcyBib3JuIG9uIEF1Z3VzdCAyNCwgMjAyMy5cbjwvcD5cbkthdHl1c2hhJ3MgZmF0aGVyIGFuZCBtb3RoZXIgYXJlIFJ1IFlpIGFuZCBEaW5nIERpbmcsIHdoaWNoIHdlcmUgc2VudCB0byBSdXNzaWEgaW4gMjAxOSBpbiBjb21tZW1vcmF0aW9uIG9mIHRoZcKgNzB0aCBhbm5pdmVyc2FyeSBvZiB0aGUgZXN0YWJsaXNobWVudCBvZiBkaXBsb21hdGljIHJlbGF0aW9ucyBiZXR3ZWVuIENoaW5hIGFuZCBSdXNzaWEuIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiRGF0ZVRpbWVPcmlnaW5hbCI6eyJ2YWx1ZSI6IjIwMjQtMDMtMDkiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9LCJDcmVkaXQiOnsidmFsdWUiOiI8YmRpIGxhbmc9XCJlblwiIGRpcj1cImx0clwiPjxhIGhyZWY9XCIvL2NvbW1vbnMud2lraW1lZGlhLm9yZy93aWtpL0NvbW1vbnM6WW91VHViZV9maWxlc1wiIHRpdGxlPVwiQ29tbW9uczpZb3VUdWJlIGZpbGVzXCI+WW91VHViZTwvYT46IDxhIHJlbD1cIm5vZm9sbG93XCIgY2xhc3M9XCJleHRlcm5hbCB0ZXh0XCIgaHJlZj1cImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9SF9kMTVSeXVOczRcIj48YmRpIGxhbmc9XCJcIj5SdXNzaWEncyBmaXJzdCBnaWFudCBwYW5kYSBjdWIgbWVldHMgcHVibGljIGluIE1vc2NvdzwvYmRpPjwvYT4g4oCTIFZpZXcvc2F2ZSBhcmNoaXZlZCB2ZXJzaW9ucyBvbiA8YSByZWw9XCJub2ZvbGxvd1wiIGNsYXNzPVwiZXh0ZXJuYWwgdGV4dFwiIGhyZWY9XCJodHRwczovL3dlYi5hcmNoaXZlLm9yZy93ZWIvKi9odHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PUhfZDE1Unl1TnM0XCI+YXJjaGl2ZS5vcmc8L2E+PC9iZGk+Iiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiQXJ0aXN0Ijp7InZhbHVlIjoiPGEgcmVsPVwibm9mb2xsb3dcIiBjbGFzcz1cImV4dGVybmFsIHRleHRcIiBocmVmPVwiaHR0cHM6Ly93d3cueW91dHViZS5jb20vQGNuc3ZpZGVvXCI+5Lit5Zu95paw6Ze756S+PC9hPiIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIn0sIkxpY2Vuc2VTaG9ydE5hbWUiOnsidmFsdWUiOiJDQyBCWSAzLjAiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSIsImhpZGRlbiI6IiJ9LCJVc2FnZVRlcm1zIjp7InZhbHVlIjoiQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiAzLjAiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9LCJBdHRyaWJ1dGlvblJlcXVpcmVkIjp7InZhbHVlIjoidHJ1ZSIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIiwiaGlkZGVuIjoiIn0sIkxpY2Vuc2VVcmwiOnsidmFsdWUiOiJodHRwczovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvMy4wIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifX0sIm1pbWUiOiJ2aWRlby93ZWJtIn1dfV19fQ==",
+  "final_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Katyusha%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "headers": {
+    "accept-ranges": "bytes",
+    "age": "2",
+    "cache-control": "private, must-revalidate, max-age=0",
+    "connection": "close",
+    "content-disposition": "inline; filename=api-result.json",
+    "content-length": "2680",
+    "content-security-policy": "default-src 'self'; script-src 'none'; object-src 'none'",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Sat, 25 Jul 2026 04:59:21 GMT",
+    "nel": "{ \"report_to\": \"wm_nel\", \"max_age\": 604800, \"failure_fraction\": 0.05, \"success_fraction\": 0.0}",
+    "report-to": "{ \"group\": \"wm_nel\", \"max_age\": 604800, \"endpoints\": [{ \"url\": \"https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0\" }] }",
+    "server": "mw-api-ext.codfw.main-568486bd8d-hlfhw",
+    "server-timing": "cache;desc=\"pass\", host;desc=\"cp5017\",co_id;desc=\"4194348249\"",
+    "set-cookie": "WMF-Uniq=ZW1b312aCaMOVTh8rEyuhQOoAAAAAFvdPctIezmeDxcgv9C1Q0EjECh0on1YJYww;Domain=commons.wikimedia.org;Path=/;HttpOnly;secure;SameSite=None;Expires=Sun, 25 Jul 2027 00:00:00 GMT",
+    "strict-transport-security": "max-age=106384710; includeSubDomains; preload",
+    "vary": "Accept-Encoding,X-Subdomain,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization,User-Agent",
+    "x-analytics": "",
+    "x-cache": "cp5017 miss, cp5017 pass",
+    "x-cache-status": "pass",
+    "x-client-ip": "67.159.48.146",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-request-id": "89f7627d-0718-4f4b-91b4-2351bd38d53d",
+    "x-search-id": "6280wpt2d3g1929npq7es1ag4"
+  },
+  "requested_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Katyusha%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "schema_version": 1,
+  "status": 200
+}

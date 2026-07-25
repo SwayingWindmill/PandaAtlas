@@ -1,0 +1,218 @@
+{
+  "candidate_count": 0,
+  "candidates": [],
+  "cohort_id": "local-commons-batch-f5385ede8257c71c",
+  "completed_task_count": 8,
+  "dataset_release_version": "2026.07.24.2",
+  "failed_task_count": 0,
+  "failures": [],
+  "generated_at": "2026-07-25T00:00:00+09:00",
+  "mode": "live-urllib",
+  "operation": "local-wikimedia-commons-media-discovery",
+  "outcome": "passed",
+  "publication_write_targets": [],
+  "schema_version": 1,
+  "task_count": 8,
+  "tasks": [
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Ryuhin+%2F+Long+Bang%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Ryuhin / Long Bang",
+        "name_zh": "隆浜",
+        "panda_slug": "ryuhin",
+        "query": "\"Ryuhin / Long Bang\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-98b59fe1496825c806bfe583"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Sai+Hin%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Sai Hin",
+        "name_zh": null,
+        "panda_slug": "sai-hin",
+        "query": "\"Sai Hin\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-d933bd5caa5470ba4b88dde6"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Saihin+%2F+Cai+Bang%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Saihin / Cai Bang",
+        "name_zh": "彩浜",
+        "panda_slug": "saihin",
+        "query": "\"Saihin / Cai Bang\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-964ee2353560c1c28499a1a3"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22San+Er%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "San Er",
+        "name_zh": null,
+        "panda_slug": "san-er",
+        "query": "\"San Er\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-ced55d4dc63bd33a360e8cab"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22San+Xing%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "San Xing",
+        "name_zh": null,
+        "panda_slug": "san-xing-beijing",
+        "query": "\"San Xing\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-760b1a54494c5a54deb238db"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Sanxing%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Sanxing",
+        "name_zh": "三星",
+        "panda_slug": "sanxing-dprk",
+        "query": "\"Sanxing\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-a2d4fbecb38909245afef762"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Satrio+Wiratama+%2F+Rio%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Satrio Wiratama / Rio",
+        "name_zh": "萨特里奥",
+        "panda_slug": "satrio-wiratama",
+        "query": "\"Satrio Wiratama / Rio\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-0c7bfdf5eda4aee7710ed44e"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Sen+Sen%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Sen Sen",
+        "name_zh": null,
+        "panda_slug": "sen-sen",
+        "query": "\"Sen Sen\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-a3cbf7f6bd6bf6dd6018566e"
+      }
+    }
+  ]
+}

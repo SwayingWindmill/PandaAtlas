@@ -72,6 +72,26 @@ class LocalPandaMediaCollectorTests(unittest.TestCase):
             self.assertEqual(entries[0]["mime_type"], "image/jpeg")
             self.assertEqual((files_dir / "example-panda.jpg").read_bytes(), jpeg)
 
+    def test_svg_is_recognized_and_downloaded(self) -> None:
+        svg = b'<?xml version="1.0"?>\n<!-- metadata -->\n<svg xmlns="http://www.w3.org/2000/svg"></svg>'
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            files_dir = root / "files"
+            entry = MODULE.inventory_entry(
+                candidate(
+                    asset_url="https://example.test/tree.svg",
+                    local_filename="panda-tree.svg",
+                ),
+                files_dir=files_dir,
+                execute=True,
+                refresh=False,
+                opener=lambda _url: io.BytesIO(svg),
+            )
+
+            self.assertEqual(entry["retrieval_status"], "downloaded")
+            self.assertEqual(entry["mime_type"], "image/svg+xml")
+            self.assertEqual((files_dir / "panda-tree.svg").read_bytes(), svg)
+
     def test_existing_file_is_hashed_without_network(self) -> None:
         jpeg = b"\xff\xd8\xff" + b"existing-image"
         with tempfile.TemporaryDirectory() as temporary:

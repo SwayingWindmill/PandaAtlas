@@ -1,0 +1,33 @@
+{
+  "body_base64": "eyJiYXRjaGNvbXBsZXRlIjp0cnVlLCJxdWVyeSI6eyJwYWdlcyI6W3sicGFnZWlkIjoxMDQ4NzU3NjksIm5zIjo2LCJ0aXRsZSI6IkZpbGU6TGlhbmcgbGlhbmcgSnVuIDIwMTUuanBnIiwiaW5kZXgiOjEsImltYWdlcmVwb3NpdG9yeSI6ImxvY2FsIiwiaW1hZ2VpbmZvIjpbeyJ0aW1lc3RhbXAiOiIyMDE1LTA4LTE5VDE0OjU0OjMzWiIsInVzZXIiOiJTbWltOTAiLCJzaXplIjoxMTMxOTc5LCJ3aWR0aCI6MzI2NCwiaGVpZ2h0IjoxODM2LCJ1cmwiOiJodHRwczovL3VwbG9hZC53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zLzEvMTgvTGlhbmdfbGlhbmdfSnVuXzIwMTUuanBnIiwiZGVzY3JpcHRpb251cmwiOiJodHRwczovL2NvbW1vbnMud2lraW1lZGlhLm9yZy93aWtpL0ZpbGU6TGlhbmdfbGlhbmdfSnVuXzIwMTUuanBnIiwiZGVzY3JpcHRpb25zaG9ydHVybCI6Imh0dHBzOi8vY29tbW9ucy53aWtpbWVkaWEub3JnL3cvaW5kZXgucGhwP2N1cmlkPTEwNDg3NTc2OSIsInNoYTEiOiJmYmY2ZTNhZjJkMjk4YmJkYmFlMzU5YThjMzhiNjJiOWIzNzMwZDdiIiwiZXh0bWV0YWRhdGEiOnsiQ2F0ZWdvcmllcyI6eyJ2YWx1ZSI6IlNlbGYtcHVibGlzaGVkIHdvcmt8QWlsdXJvcG9kYSBtZWxhbm9sZXVjYSBpbiBab28gTmVnYXJhIiwic291cmNlIjoiY29tbW9ucy1jYXRlZ29yaWVzIiwiaGlkZGVuIjoiIn0sIkltYWdlRGVzY3JpcHRpb24iOnsidmFsdWUiOiJQYW5kYSBHZXJnYXNpLiAoaW1laiBkaXRhbmdrYSBwYWRhIGJ1bGFuIEp1biAyMDE0LCBkaSBHUENDLCBab28gTmVnYXJhIE1hbGF5c2lhKSIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIn0sIkRhdGVUaW1lT3JpZ2luYWwiOnsidmFsdWUiOiIyMDE0LTA3Iiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiQ3JlZGl0Ijp7InZhbHVlIjoiPHNwYW4gY2xhc3M9XCJpbnQtb3duLXdvcmtcIiBsYW5nPVwiZW5cIj5Pd24gd29yazwvc3Bhbj4iLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9LCJBcnRpc3QiOnsidmFsdWUiOiI8YSBocmVmPVwiaHR0cHM6Ly9tcy53aWtpcGVkaWEub3JnL3dpa2kvVXNlcjpTbWltOTBcIiBjbGFzcz1cImV4dGl3XCIgdGl0bGU9XCJtczpVc2VyOlNtaW05MFwiPlNtaW05MDwvYT4iLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9LCJMaWNlbnNlU2hvcnROYW1lIjp7InZhbHVlIjoiQ0MgQlktU0EgMy4wIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UiLCJoaWRkZW4iOiIifSwiVXNhZ2VUZXJtcyI6eyJ2YWx1ZSI6IkNyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24tU2hhcmUgQWxpa2UgMy4wIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiQXR0cmlidXRpb25SZXF1aXJlZCI6eyJ2YWx1ZSI6InRydWUiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSIsImhpZGRlbiI6IiJ9LCJMaWNlbnNlVXJsIjp7InZhbHVlIjoiaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LXNhLzMuMCIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIn19LCJtaW1lIjoiaW1hZ2UvanBlZyJ9XX1dfX0=",
+  "final_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Liang+Liang%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "headers": {
+    "accept-ranges": "bytes",
+    "age": "2",
+    "cache-control": "private, must-revalidate, max-age=0",
+    "connection": "close",
+    "content-disposition": "inline; filename=api-result.json",
+    "content-length": "1553",
+    "content-security-policy": "default-src 'self'; script-src 'none'; object-src 'none'",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Sat, 25 Jul 2026 05:07:11 GMT",
+    "nel": "{ \"report_to\": \"wm_nel\", \"max_age\": 604800, \"failure_fraction\": 0.05, \"success_fraction\": 0.0}",
+    "report-to": "{ \"group\": \"wm_nel\", \"max_age\": 604800, \"endpoints\": [{ \"url\": \"https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0\" }] }",
+    "server": "mw-api-ext.codfw.main-568486bd8d-mklw5",
+    "server-timing": "cache;desc=\"pass\", host;desc=\"cp5017\",co_id;desc=\"1055899274\"",
+    "set-cookie": "WMF-Uniq=yZFTHVY2zMx4FD_E0AkglwOoAAAAAFvdmMrv2md57MuRyiivFYvgJi-Qn2nquPuM;Domain=commons.wikimedia.org;Path=/;HttpOnly;secure;SameSite=None;Expires=Sun, 25 Jul 2027 00:00:00 GMT",
+    "strict-transport-security": "max-age=106384710; includeSubDomains; preload",
+    "vary": "Accept-Encoding,X-Subdomain,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization,User-Agent",
+    "x-analytics": "",
+    "x-cache": "cp5017 miss, cp5017 pass",
+    "x-cache-status": "pass",
+    "x-client-ip": "67.159.48.146",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-request-id": "bcdc85b9-e805-46fa-9dcd-10431d06fe73",
+    "x-search-id": "7eilme23s6jz0ze9v4k98jdr4"
+  },
+  "requested_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Liang+Liang%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "schema_version": 1,
+  "status": 200
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.zoomadrid.com/blog/ya-podeis-seguir-en-directo-nuestra-panda-cam",
+  "discovered_at": "2026-07-25T11:59:23.828609+00:00",
+  "image_count": 1,
+  "images": [
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/blog/SAM_94161.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image",
+        "img:src"
+      ],
+      "alt": "Ya podéis seguir en directo nuestra Panda Cam",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image",
+        "img-fluid"
+      ]
+    }
+  ]
+}

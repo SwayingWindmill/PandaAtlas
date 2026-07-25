@@ -18,7 +18,7 @@ DEFAULT_INVENTORY = MEDIA_ROOT / "inventory.jsonl"
 DEFAULT_FILES_DIR = MEDIA_ROOT / "files"
 USER_AGENT = "PandaAtlasLocalResearch/0.1 (+https://github.com/SwayingWindmill/PandaAtlas)"
 MAX_IMAGE_BYTES = 100 * 1024 * 1024
-LOCAL_IMAGE_SUFFIXES = {".gif", ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp"}
+LOCAL_IMAGE_SUFFIXES = {".gif", ".jpg", ".jpeg", ".png", ".svg", ".tif", ".tiff", ".webp"}
 
 REQUIRED_FIELDS = {
     "media_id",
@@ -148,6 +148,12 @@ def sniff_mime_type(prefix: bytes) -> str | None:
         return "image/webp"
     if prefix.startswith(b"II*\x00") or prefix.startswith(b"MM\x00*"):
         return "image/tiff"
+
+    normalized = prefix.lstrip(b"\xef\xbb\xbf \t\r\n").lower()
+    svg_index = normalized.find(b"<svg")
+    html_index = normalized.find(b"<html")
+    if svg_index >= 0 and (html_index < 0 or svg_index < html_index):
+        return "image/svg+xml"
     return None
 
 
@@ -157,8 +163,8 @@ def hash_file(path: Path) -> DownloadResult:
     prefix = b""
     with path.open("rb") as handle:
         while chunk := handle.read(1024 * 1024):
-            if len(prefix) < 32:
-                prefix += chunk[: 32 - len(prefix)]
+            if len(prefix) < 4096:
+                prefix += chunk[: 4096 - len(prefix)]
             digest.update(chunk)
             byte_count += len(chunk)
     mime_type = sniff_mime_type(prefix)
@@ -204,8 +210,8 @@ def download_image(
                     raise LocalMediaError(
                         f"asset exceeds local safety limit of {max_bytes} bytes: {url}"
                     )
-                if len(prefix) < 32:
-                    prefix += chunk[: 32 - len(prefix)]
+                if len(prefix) < 4096:
+                    prefix += chunk[: 4096 - len(prefix)]
                 digest.update(chunk)
                 output.write(chunk)
 

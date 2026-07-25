@@ -1,0 +1,218 @@
+{
+  "candidate_count": 0,
+  "candidates": [],
+  "cohort_id": "local-commons-batch-c46497f2a31ebf71",
+  "completed_task_count": 8,
+  "dataset_release_version": "2026.07.24.2",
+  "failed_task_count": 0,
+  "failures": [],
+  "generated_at": "2026-07-25T00:00:00+09:00",
+  "mode": "live-urllib",
+  "operation": "local-wikimedia-commons-media-discovery",
+  "outcome": "passed",
+  "publication_write_targets": [],
+  "schema_version": 1,
+  "task_count": 8,
+  "tasks": [
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qian+Qian%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qian Qian",
+        "name_zh": "芊芊",
+        "panda_slug": "qian-qian",
+        "query": "\"Qian Qian\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-dd36836be08c26589fd69def"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qianran+%2F+Qian+Ran%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qianran / Qian Ran",
+        "name_zh": "芊然",
+        "panda_slug": "qian-ran",
+        "query": "\"Qianran / Qian Ran\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-0f1e82412fb08e04994048c6"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qianyi+%2F+Qian+Yi%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qianyi / Qian Yi",
+        "name_zh": "芊逸",
+        "panda_slug": "qian-yi",
+        "query": "\"Qianyi / Qian Yi\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-e2e33ef51ad9700e20ab7f07"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qianzhen%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qianzhen",
+        "name_zh": "芊真",
+        "panda_slug": "qian-zhen",
+        "query": "\"Qianzhen\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-7a8d8a54d5a3ff1ed4585a7c"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qiang+Qian%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qiang Qian",
+        "name_zh": null,
+        "panda_slug": "qiang-qian",
+        "query": "\"Qiang Qian\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-454b3fe51950eee34ef48d6b"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qiang+Sheng%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qiang Sheng",
+        "name_zh": null,
+        "panda_slug": "qiang-sheng",
+        "query": "\"Qiang Sheng\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-b7fea8de685b35643f89edeb"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qiao+Qiao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qiao Qiao",
+        "name_zh": null,
+        "panda_slug": "qiao-qiao",
+        "query": "\"Qiao Qiao\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-3b08a025d4127c786f0858b0"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Qin+Chuan%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Qin Chuan",
+        "name_zh": null,
+        "panda_slug": "qin-chuan",
+        "query": "\"Qin Chuan\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-73f521b0c3c883c4b022952a"
+      }
+    }
+  ]
+}
