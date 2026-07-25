@@ -1,0 +1,1098 @@
+{
+  "sources": [
+    {
+      "source_id": "src-cas-qinqin-lineage-2009-local",
+      "source_type": "institutional_primary_archive",
+      "publisher": "Chinese Academy of Sciences",
+      "title": "陕西佛坪发现世界上第五只棕色大熊猫",
+      "url": "https://www.cas.cn/gdlm/2019lm/xw/kjsm/gndt/200911/t20091109_2650693.shtml",
+      "language": "zh",
+      "region": "China / United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Chinese Academy of Sciences account of Dandan, Qin Qin, lineage continuation, lack of offspring and the reported 2006 death date."
+    },
+    {
+      "source_id": "src-cas-xian-qinqin-birth-2018-local",
+      "source_type": "institutional_primary_archive",
+      "publisher": "Chinese Academy of Sciences Xi'an Branch",
+      "title": "秦岭为何频现棕色大熊猫",
+      "url": "https://xab.cas.cn/kxpu/kxpj/201812/t20181221_5219113.html",
+      "language": "zh",
+      "region": "China / United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Chinese Academy of Sciences Xi'an Branch history of Dandan, Wanwan and Qin Qin; records an August 23 birth date and black-white coat."
+    },
+    {
+      "source_id": "src-cml-columbus-pandas-1992-8200-local",
+      "source_type": "archive_primary",
+      "publisher": "Columbus Metropolitan Library",
+      "title": "Giant pandas — Columbus Metropolitan Library record DL_B09_DC_074",
+      "url": "https://digital-collections.columbuslibrary.org/digital/collection/p16802coll19/id/8200/",
+      "language": "en",
+      "region": "China / United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Primary 1992 photograph catalog record stating that the People's Republic of China loaned Xing Xing and Qin Qin to the Columbus Zoo in summer 1992."
+    },
+    {
+      "source_id": "src-cml-columbus-pandas-1992-8008-local",
+      "source_type": "archive_primary",
+      "publisher": "Columbus Metropolitan Library",
+      "title": "Giant pandas — Columbus Metropolitan Library record DL_B09_DC_075",
+      "url": "https://digital-collections.columbuslibrary.org/digital/collection/p16802coll19/id/8008/",
+      "language": "en",
+      "region": "China / United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Second primary 1992 photograph catalog record for the Xing Xing and Qin Qin Columbus Zoo loan."
+    },
+    {
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_type": "news_secondary",
+      "publisher": "Huashang Daily via Sina News",
+      "title": "西安秦岭野生动物园大熊猫肺部淤血死亡",
+      "url": "https://news.sina.com.cn/c/p/2006-11-24/083811603842.shtml",
+      "language": "zh",
+      "region": "China / United States",
+      "authority": "secondary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Contemporary newspaper report with Qin Qin identity, studbook, keeper logs, husbandry and pathology claims. Retained as secondary until reconciled with holder or studbook records."
+    },
+    {
+      "source_id": "src-axios-columbus-pandas-2023-local",
+      "source_type": "news_secondary",
+      "publisher": "Axios Columbus",
+      "title": "A look back on when the Columbus Zoo had pandas on display in 1992",
+      "url": "https://www.axios.com/local/columbus/2023/11/16/columbus-zoo-ohio-china-panda",
+      "language": "en",
+      "region": "China / United States",
+      "authority": "secondary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Retrospective based on Columbus Zoo recollections; visitor, exhibit-duration, sex and conservation-fund claims retained as secondary leads."
+    },
+    {
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_type": "enthusiast_database",
+      "publisher": "Pandapia",
+      "title": "星星 / Xing Xing profile 534",
+      "url": "https://pandapia.com/Panda/view.html?id=NTM0",
+      "language": "zh",
+      "region": "China / United States",
+      "authority": "secondary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Community panda database profile with birth date, studbook, maternal line, transfers and death. All claims require primary studbook or Chengdu archive confirmation."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0001",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-cas-qinqin-lineage-2009-local",
+      "source_locator": "sex",
+      "source_language": "zh",
+      "summary_zh": "中科院资料称秦秦为丹丹所产的雄性后代。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0002",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "1989-08-23",
+      "source_id": "src-cas-xian-qinqin-birth-2018-local",
+      "source_locator": "birth_date",
+      "source_language": "zh",
+      "summary_zh": "中科院西安分院资料记秦秦出生于1989年8月23日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0003",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "dan-dan-xian",
+        "mother_label": "Dandan",
+        "father_id": "wan-wan-xian",
+        "father_label": "Wanwan"
+      },
+      "source_id": "src-cas-xian-qinqin-birth-2018-local",
+      "source_locator": "parents",
+      "source_language": "zh",
+      "summary_zh": "秦秦的母亲为丹丹，父亲为弯弯。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0004",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "appearance",
+      "predicate": "coat_colour",
+      "value": "black and white",
+      "source_id": "src-cas-xian-qinqin-birth-2018-local",
+      "source_locator": "coat_colour",
+      "source_language": "zh",
+      "summary_zh": "虽然母亲丹丹为棕白色，秦秦本身是正常黑白色大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0005",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "reproduction",
+      "predicate": "conceived_after_parent_pairing",
+      "value": {
+        "mother_id": "dan-dan-xian",
+        "father_id": "wan-wan-xian",
+        "year": 1989
+      },
+      "source_id": "src-cas-xian-qinqin-birth-2018-local",
+      "source_locator": "conceived_after_parent_pairing",
+      "source_language": "zh",
+      "summary_zh": "丹丹与弯弯配对后于1989年产下秦秦。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0006",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "relationship",
+      "predicate": "only_offspring_continuing_dandan_line",
+      "value": true,
+      "source_id": "src-cas-qinqin-lineage-2009-local",
+      "source_locator": "only_offspring_continuing_dandan_line",
+      "source_language": "zh",
+      "summary_zh": "中科院资料称秦秦是丹丹唯一延续的后代。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0007",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "reproduction",
+      "predicate": "known_offspring_count",
+      "value": 0,
+      "source_id": "src-cas-qinqin-lineage-2009-local",
+      "source_locator": "known_offspring_count",
+      "source_language": "zh",
+      "summary_zh": "中科院资料称秦秦没有留下后代。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0008",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "death",
+      "predicate": "death_date",
+      "value": "2006-11-23",
+      "source_id": "src-cas-qinqin-lineage-2009-local",
+      "source_locator": "death_date",
+      "source_language": "zh",
+      "summary_zh": "中科院2009年回顾资料记秦秦于2006年11月23日突然死亡。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0009",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "transfer",
+      "predicate": "loaned_to_columbus_zoo",
+      "value": {
+        "period": "summer 1992",
+        "companion_id": "xing-xing-chengdu-1989",
+        "lending_country": "People's Republic of China"
+      },
+      "source_id": "src-cml-columbus-pandas-1992-8200-local",
+      "source_locator": "loaned_to_columbus_zoo",
+      "source_language": "en",
+      "summary_zh": "哥伦布市立图书馆1992年照片档案明确记录秦秦与星星于当年夏季借展哥伦布动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0010",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "location",
+      "predicate": "documented_at_columbus_zoo_in_1992",
+      "value": true,
+      "source_id": "src-cml-columbus-pandas-1992-8008-local",
+      "source_locator": "documented_at_columbus_zoo_in_1992",
+      "source_language": "en",
+      "summary_zh": "第二份哥伦布市立图书馆原始照片档案再次确认秦秦在1992年哥伦布动物园借展。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0011",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "birth",
+      "predicate": "birth_date_reported_by_2006_press",
+      "value": "1989-08-31",
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "birth_date_reported_by_2006_press",
+      "source_language": "zh",
+      "summary_zh": "2006年同期报道记秦秦出生于1989年8月31日，与中科院8月23日记录冲突，待谱系档案复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "birth",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0012",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "former Xi'an Zoo",
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "birthplace",
+      "source_language": "zh",
+      "summary_zh": "同期报道记秦秦出生于原西安动物园，待场馆档案确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "origin",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0013",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "identity",
+      "predicate": "international_studbook_number",
+      "value": 350,
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "international_studbook_number",
+      "source_language": "zh",
+      "summary_zh": "同期报道给出秦秦国际谱系号350，需以正式谱系簿复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "identity",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0014",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "milestone",
+      "predicate": "reported_only_naturally_bred_captive_panda_in_shaanxi_at_time",
+      "value": true,
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "reported_only_naturally_bred_captive_panda_in_shaanxi_at_time",
+      "source_language": "zh",
+      "summary_zh": "2006年报道将秦秦描述为当时陕西人工圈养条件下自然繁殖成功的唯一大熊猫个体，需官方历史档案复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "milestone",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0015",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "death",
+      "predicate": "death_date_reported_by_2006_press",
+      "value": "2006-11-22",
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "death_date_reported_by_2006_press",
+      "source_language": "zh",
+      "summary_zh": "同期报道记秦秦于2006年11月22日上午被发现死亡，与中科院11月23日回顾日期冲突。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "death",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0016",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "health",
+      "predicate": "reported_postmortem_findings",
+      "value": [
+        "severe pulmonary congestion",
+        "pulmonary oedema"
+      ],
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "reported_postmortem_findings",
+      "source_language": "zh",
+      "summary_zh": "同期报道将肺部重度淤血和水肿列为主要死亡相关病理发现，待正式病理报告确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "health",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0017",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "behaviour",
+      "predicate": "reported_final_activity_log",
+      "value": [
+        {
+          "time": "2006-11-21T10:00",
+          "activity": "played with rubber tyre outdoors"
+        },
+        {
+          "time": "2006-11-21T18:00",
+          "activity": "ate carrot and nutritional steamed bread"
+        },
+        {
+          "time": "2006-11-22T00:30",
+          "activity": "ate thin bamboo"
+        },
+        {
+          "time": "2006-11-22T01:30",
+          "activity": "drank and defecated"
+        },
+        {
+          "time": "2006-11-22T03:30",
+          "activity": "rested with normal breathing"
+        }
+      ],
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "reported_final_activity_log",
+      "source_language": "zh",
+      "summary_zh": "同期报道转录了秦秦死亡前一日的活动、进食、饮水和休息记录，待原始饲养日志确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "behaviour",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0018",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "husbandry_training",
+      "predicate": "reported_round_the_clock_care",
+      "value": {
+        "dedicated_keepers": 3,
+        "coverage": "24 hours"
+      },
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "reported_round_the_clock_care",
+      "source_language": "zh",
+      "summary_zh": "同期报道称秦秦由三名专职饲养员全天照护，待园方档案确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "husbandry_training",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0019",
+      "subject": {
+        "type": "panda",
+        "id": "qin-qin-xian-1989",
+        "label": "Qin Qin"
+      },
+      "category": "transfer",
+      "predicate": "reported_never_left_xian",
+      "value": true,
+      "source_id": "src-sina-qinqin-obituary-2006-local",
+      "source_locator": "reported_never_left_xian",
+      "source_language": "zh",
+      "summary_zh": "2006年报道声称秦秦一生未离开西安，但哥伦布图书馆1992年原始借展档案与此冲突，故仅保留为待核实线索。",
+      "evidence_level": "secondary_lead",
+      "confidence": "low",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "qin-qin-xian-1989",
+        "transfer",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0020",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "transfer",
+      "predicate": "loaned_to_columbus_zoo",
+      "value": {
+        "period": "summer 1992",
+        "companion_id": "qin-qin-xian-1989",
+        "lending_country": "People's Republic of China"
+      },
+      "source_id": "src-cml-columbus-pandas-1992-8200-local",
+      "source_locator": "loaned_to_columbus_zoo",
+      "source_language": "en",
+      "summary_zh": "哥伦布市立图书馆原始照片档案确认星星与秦秦于1992年夏季借展哥伦布动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0021",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "location",
+      "predicate": "documented_at_columbus_zoo_in_1992",
+      "value": true,
+      "source_id": "src-cml-columbus-pandas-1992-8008-local",
+      "source_locator": "documented_at_columbus_zoo_in_1992",
+      "source_language": "en",
+      "summary_zh": "第二份原始照片档案再次确认星星在1992年哥伦布动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0022",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "relationship",
+      "predicate": "columbus_loan_companion",
+      "value": "qin-qin-xian-1989",
+      "source_id": "src-cml-columbus-pandas-1992-8200-local",
+      "source_locator": "columbus_loan_companion",
+      "source_language": "en",
+      "summary_zh": "星星在哥伦布借展期间的同行个体为秦秦。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0023",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_locator": "sex",
+      "source_language": "zh",
+      "summary_zh": "非一级熊猫数据库将星星记为雄性，需正式谱系记录复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "sex",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0024",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "1989-10-04",
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_locator": "birth_date",
+      "source_language": "zh",
+      "summary_zh": "非一级熊猫数据库记星星出生于1989年10月4日，需成都基地档案复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "birth",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0025",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Chengdu Research Base of Giant Panda Breeding",
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_locator": "birthplace",
+      "source_language": "zh",
+      "summary_zh": "非一级数据库记星星出生于成都大熊猫繁育研究基地，需官方档案复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "origin",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0026",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "identity",
+      "predicate": "international_studbook_number",
+      "value": 356,
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_locator": "international_studbook_number",
+      "source_language": "zh",
+      "summary_zh": "非一级数据库给出星星谱系号356，需正式谱系簿复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "identity",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0027",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "relationship",
+      "predicate": "mother",
+      "value": {
+        "mother_id": "qing-qing-chengdu",
+        "mother_label": "Qing Qing"
+      },
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_locator": "mother",
+      "source_language": "zh",
+      "summary_zh": "非一级数据库称星星母亲为庆庆，需成都基地谱系档案复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "relationship",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0028",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "transfer",
+      "predicate": "reported_return_to_chengdu_base",
+      "value": "1992-09-25",
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_locator": "reported_return_to_chengdu_base",
+      "source_language": "zh",
+      "summary_zh": "非一级数据库记星星于1992年9月25日返回成都基地，需官方转运档案复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "transfer",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0029",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-chengdu-1989",
+        "label": "Xing Xing"
+      },
+      "category": "death",
+      "predicate": "reported_death_month",
+      "value": "2000-12",
+      "source_id": "src-pandapia-xingxing-534-local",
+      "source_locator": "reported_death_month",
+      "source_language": "zh",
+      "summary_zh": "非一级数据库记星星于2000年12月在成都基地去世，需官方档案复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-chengdu-1989",
+        "death",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0030",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "transfer",
+      "predicate": "borrowed_pandas",
+      "value": [
+        "xing-xing-chengdu-1989",
+        "qin-qin-xian-1989"
+      ],
+      "source_id": "src-cml-columbus-pandas-1992-8200-local",
+      "source_locator": "borrowed_pandas",
+      "source_language": "en",
+      "summary_zh": "1992年哥伦布动物园借展个体为星星和秦秦。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0031",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "diplomacy",
+      "predicate": "lending_country",
+      "value": "People's Republic of China",
+      "source_id": "src-cml-columbus-pandas-1992-8008-local",
+      "source_locator": "lending_country",
+      "source_language": "en",
+      "summary_zh": "两只大熊猫由中华人民共和国借予哥伦布动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0032",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "milestone",
+      "predicate": "archive_photograph_count_in_batch",
+      "value": 2,
+      "source_id": "src-cml-columbus-pandas-1992-8200-local",
+      "source_locator": "archive_photograph_count_in_batch",
+      "source_language": "en",
+      "summary_zh": "哥伦布市立图书馆现有两张可核验的1992年借展原始照片。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0033",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "milestone",
+      "predicate": "reported_exhibit_duration",
+      "value": "nearly four months",
+      "source_id": "src-axios-columbus-pandas-2023-local",
+      "source_locator": "reported_exhibit_duration",
+      "source_language": "en",
+      "summary_zh": "Axios回顾称借展持续近四个月，待哥伦布动物园正式项目档案确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "milestone",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0034",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "milestone",
+      "predicate": "reported_visitor_count",
+      "value": "nearly 1000000",
+      "source_id": "src-axios-columbus-pandas-2023-local",
+      "source_locator": "reported_visitor_count",
+      "source_language": "en",
+      "summary_zh": "Axios回顾称两只熊猫吸引近100万人次，待园方统计档案确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "milestone",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0035",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "sex",
+      "predicate": "reported_pair_sex",
+      "value": {
+        "qin_qin": "male",
+        "xing_xing": "male"
+      },
+      "source_id": "src-axios-columbus-pandas-2023-local",
+      "source_locator": "reported_pair_sex",
+      "source_language": "en",
+      "summary_zh": "Axios回顾将秦秦和星星均描述为年轻雄性，需个体谱系记录复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "sex",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0036",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "location",
+      "predicate": "reported_exhibit_site",
+      "value": "site later used for the Columbus Zoo bonobo habitat",
+      "source_id": "src-axios-columbus-pandas-2023-local",
+      "source_locator": "reported_exhibit_site",
+      "source_language": "en",
+      "summary_zh": "Axios回顾称1992年熊猫展区后来成为倭黑猩猩展区，待园方历史平面档案确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "location",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0037",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "research",
+      "predicate": "reported_conservation_fund_legacy",
+      "value": "excess exhibit revenue established a conservation fund that continued supporting wildlife projects",
+      "source_id": "src-axios-columbus-pandas-2023-local",
+      "source_locator": "reported_conservation_fund_legacy",
+      "source_language": "en",
+      "summary_zh": "Axios回顾称借展结余用于建立持续支持野生动物项目的保护基金，待园方财务及项目档案确认。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "research",
+        "needs-primary-source"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-qinqin-xingxing-0038",
+      "subject": {
+        "type": "research_programme",
+        "id": "columbus-panda-loan-1992",
+        "label": "Columbus Zoo giant panda loan 1992"
+      },
+      "category": "cultural_context",
+      "predicate": "reported_civic_context",
+      "value": "Columbus quincentennial celebration",
+      "source_id": "src-axios-columbus-pandas-2023-local",
+      "source_locator": "reported_civic_context",
+      "source_language": "en",
+      "summary_zh": "Axios回顾将借展置于哥伦布市纪念哥伦布航行500周年的城市活动背景中，待官方项目文件复核。",
+      "evidence_level": "secondary_lead",
+      "confidence": "medium",
+      "review_status": "needs_primary_source",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "columbus-panda-loan-1992",
+        "cultural_context",
+        "needs-primary-source"
+      ]
+    }
+  ]
+}

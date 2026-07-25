@@ -1,34 +1,28 @@
 {
   "schema_version": 1,
-  "candidate_count": 475,
+  "candidate_count": 477,
   "pandas_with_media": 102,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
-      "subject_id": "qin-qin-xian-1989",
-      "subject_label": "Qin Qin",
-      "media_count": 2,
-      "record_count": 4,
-      "direct_record_count": 4,
-      "category_count": 2,
-      "categories": {
-        "location": 2,
-        "media_candidate": 2
-      },
-      "coverage_gap_score": -6
-    },
-    {
       "subject_id": "xing-xing-chengdu-1989",
       "subject_label": "Xing Xing",
       "media_count": 2,
-      "record_count": 4,
-      "direct_record_count": 4,
-      "category_count": 2,
+      "record_count": 14,
+      "direct_record_count": 7,
+      "category_count": 9,
       "categories": {
-        "location": 2,
-        "media_candidate": 2
+        "birth": 1,
+        "death": 1,
+        "identity": 1,
+        "location": 3,
+        "media_candidate": 2,
+        "origin": 1,
+        "relationship": 2,
+        "sex": 1,
+        "transfer": 2
       },
-      "coverage_gap_score": -6
+      "coverage_gap_score": -29
     },
     {
       "subject_id": "an-an",
@@ -615,6 +609,32 @@
         "transfer": 1
       },
       "coverage_gap_score": -57
+    },
+    {
+      "subject_id": "qin-qin-xian-1989",
+      "subject_label": "Qin Qin",
+      "media_count": 4,
+      "record_count": 25,
+      "direct_record_count": 16,
+      "category_count": 15,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 1,
+        "birth": 2,
+        "death": 2,
+        "health": 1,
+        "husbandry_training": 1,
+        "identity": 1,
+        "location": 3,
+        "media_candidate": 4,
+        "milestone": 1,
+        "origin": 1,
+        "relationship": 2,
+        "reproduction": 2,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -58
     },
     {
       "subject_id": "de-de-madrid",

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.cas.cn/gdlm/2019lm/xw/kjsm/gndt/200911/t20091109_2650693.shtml",
+  "discovered_at": "2026-07-25T23:08:46.594470+00:00",
+  "image_count": 4,
+  "images": [
+    {
+      "asset_url": "https://www.cas.cn/images/dtl.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "15",
+      "height": "297",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.cas.cn/images/dt2.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "970",
+      "height": "36",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.cas.cn/gdlm/2019lm/xw/kjsm/gndt/200911/W020091109494918751554.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.cas.cn/images/dtr.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "15",
+      "height": "302",
+      "evidence": []
+    }
+  ]
+}
