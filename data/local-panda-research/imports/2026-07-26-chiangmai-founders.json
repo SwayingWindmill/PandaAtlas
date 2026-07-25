@@ -1,0 +1,1381 @@
+{
+  "sources": [
+    {
+      "source_id": "src-chiangmai-linhui-habitat-2021-local",
+      "source_type": "institution_primary",
+      "publisher": "Chiang Mai Zoo",
+      "title": "Lin Hui's expanded panda habitat",
+      "url": "https://chiangmai.zoothailand.org/ewt_news.php?n_id=1120",
+      "language": "th",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official expanded-habitat, CCTV, veterinary monitoring and opening-hours account."
+    },
+    {
+      "source_id": "src-chiangmai-linhui-birthday-2022-local",
+      "source_type": "institution_primary",
+      "publisher": "Chiang Mai Zoo",
+      "title": "Lin Hui's 21st birthday",
+      "url": "https://chiangmai.zoothailand.org/ewt_news.php?n_id=1478",
+      "language": "th",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official birthday enrichment, favourite foods, parentage and personality-award account."
+    },
+    {
+      "source_id": "src-chiangmai-linhui-cause-2023-local",
+      "source_type": "institution_primary",
+      "publisher": "Chiang Mai Zoo",
+      "title": "Joint Chinese-Thai expert explanation of Lin Hui's cause of death",
+      "url": "https://chiangmai.zoothailand.org/ewt_news.php?n_id=1528",
+      "language": "th",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official second statement with joint autopsy, vascular tumour, atherosclerosis, embolism and husbandry-assessment findings."
+    },
+    {
+      "source_id": "src-xinhua-linhui-health-2023-local",
+      "source_type": "government_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "21-year-old panda dies in Thailand",
+      "url": "https://english.news.cn/20230419/04287faa316248ab9348b31ce9f6d229/c.html",
+      "language": "en",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "China Conservation and Research Center confirmation of recent kidney-function and blood-pressure findings."
+    },
+    {
+      "source_id": "src-xinhua-linhui-life-2022-local",
+      "source_type": "government_media_photo_report",
+      "publisher": "Xinhua",
+      "title": "Giant panda from China seen in Chiang Mai, Thailand",
+      "url": "https://english.news.cn/20221225/94c71554ad1b45a4b95428008784b2cb/c.html",
+      "language": "en",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Dated official photo captions documenting Lin Hui eating and resting in December 2022."
+    },
+    {
+      "source_id": "src-xinhua-linhui-memorial-2023-local",
+      "source_type": "government_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Death of giant panda mourned in Thai zoo",
+      "url": "https://english.news.cn/20230429/f45d80b07d4340ec8481a7b181b5f310/c.html",
+      "language": "en",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official memorial report summarising the two-decade cooperation in raising, breeding, disease control and public education."
+    },
+    {
+      "source_id": "src-fmprc-linhui-birthday-2020-local",
+      "source_type": "government_primary",
+      "publisher": "Ministry of Foreign Affairs of the People's Republic of China",
+      "title": "Chinese Consulate General and Chiang Mai Zoo celebrate Lin Hui's 19th birthday",
+      "url": "https://www.mfa.gov.cn/gjhdq_676201/gj_676203/yz_676205/1206_676932/1206x2_676952/202009/t20200928_9304540.shtml",
+      "language": "zh",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official birthday food, behaviour, husbandry and Chinese-expert consultation account."
+    },
+    {
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_type": "government_primary",
+      "publisher": "Ministry of Foreign Affairs of the People's Republic of China",
+      "title": "Chinese ambassador attends blessing ceremony for newborn panda in Chiang Mai",
+      "url": "https://www.fmprc.gov.cn/web/gjhdq_676201/gj_676203/yz_676205/1206_676932/1206x2_676952/200907/t20090707_9304188.shtml",
+      "language": "zh",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official early Lin Bing weight, eye opening, nursing and public celebration account."
+    },
+    {
+      "source_id": "src-fmprc-chiangmai-extension-2015-local",
+      "source_type": "government_primary",
+      "publisher": "Ministry of Foreign Affairs of the People's Republic of China",
+      "title": "Celebration of the Chiang Mai giant-panda stay extension agreement",
+      "url": "https://www.fmprc.gov.cn/web/gjhdq_676201/gj_676203/yz_676205/1206_676932/1206x2_676952/201506/t20150630_8000423.shtml",
+      "language": "zh",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official ten-year extension and China-Thailand friendship context."
+    },
+    {
+      "source_id": "src-consulate-chuang-memorial-2019-local",
+      "source_type": "government_primary",
+      "publisher": "Consulate General of the People's Republic of China in Chiang Mai",
+      "title": "Chiang Mai memorial for giant panda Chuang Chuang",
+      "url": "https://chiangmai.china-consulate.gov.cn/xwdt/201909/t20190918_5337728.htm",
+      "language": "zh",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official memorial account describing Chuang Chuang's lively appeal and friendship role."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0001",
+      "subject": {
+        "type": "panda",
+        "id": "chuang-chuang",
+        "label": "Chuang Chuang"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Wolong giant panda conservation and research centre, Sichuan, China",
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "birthplace",
+      "source_language": "en",
+      "summary_zh": "创创出生于四川卧龙大熊猫保护研究机构。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chuang-chuang",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0002",
+      "subject": {
+        "type": "panda",
+        "id": "chuang-chuang",
+        "label": "Chuang Chuang"
+      },
+      "category": "personality",
+      "predicate": "memorial_personality",
+      "value": [
+        "lively",
+        "lovable"
+      ],
+      "source_id": "src-consulate-chuang-memorial-2019-local",
+      "source_locator": "memorial_personality",
+      "source_language": "zh",
+      "summary_zh": "清迈悼念活动追忆创创活泼可爱，为泰国民众带来欢乐。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chuang-chuang",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0003",
+      "subject": {
+        "type": "panda",
+        "id": "chuang-chuang",
+        "label": "Chuang Chuang"
+      },
+      "category": "cultural_context",
+      "predicate": "public_joy_and_friendship_role",
+      "value": "brought happiness to Thai people and served as a China-Thailand friendship envoy",
+      "source_id": "src-consulate-chuang-memorial-2019-local",
+      "source_locator": "public_joy_and_friendship_role",
+      "source_language": "zh",
+      "summary_zh": "创创被清迈各界视为给泰国人民带来欢乐的中泰友好使者。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chuang-chuang",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0004",
+      "subject": {
+        "type": "panda",
+        "id": "chuang-chuang",
+        "label": "Chuang Chuang"
+      },
+      "category": "milestone",
+      "predicate": "memorial_event_date",
+      "value": "2019-09-18",
+      "source_id": "src-consulate-chuang-memorial-2019-local",
+      "source_locator": "memorial_event_date",
+      "source_language": "zh",
+      "summary_zh": "清迈社会各界于2019年9月18日为创创举行悼念活动。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chuang-chuang",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0005",
+      "subject": {
+        "type": "panda",
+        "id": "chuang-chuang",
+        "label": "Chuang Chuang"
+      },
+      "category": "transfer",
+      "predicate": "residency_extension_2015",
+      "value": {
+        "extension_years": 10,
+        "agreement_celebrated": "2015-06-27",
+        "companion_id": "lin-hui"
+      },
+      "source_id": "src-fmprc-chiangmai-extension-2015-local",
+      "source_locator": "residency_extension_2015",
+      "source_language": "zh",
+      "summary_zh": "2015年签订延期协议后，创创与林惠获准继续在清迈居住十年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chuang-chuang",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0006",
+      "subject": {
+        "type": "panda",
+        "id": "chuang-chuang",
+        "label": "Chuang Chuang"
+      },
+      "category": "research",
+      "predicate": "joint_death_investigation",
+      "value": [
+        "Chinese experts",
+        "Thai experts"
+      ],
+      "source_id": "src-chiangmai-chuangchuang-cause-2019",
+      "source_locator": "joint_death_investigation",
+      "source_language": "th",
+      "summary_zh": "创创死因由泰中专家联合尸检和诊断确认。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chuang-chuang",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0007",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "林惠为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0008",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Wolong giant panda conservation and research centre, Sichuan, China",
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "birthplace",
+      "source_language": "en",
+      "summary_zh": "林惠出生于四川卧龙大熊猫保护研究机构。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0009",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "father_label": "Pan Pan",
+        "father_studbook": 308,
+        "mother_label": "Tang Tang",
+        "mother_studbook": 446
+      },
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "parents",
+      "source_language": "en",
+      "summary_zh": "林惠的父亲为盼盼（谱系号308），母亲为唐唐（谱系号446）。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0010",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "name",
+      "predicate": "thai_and_lanna_names",
+      "value": {
+        "thai_name": "Taywee",
+        "lanna_name": "Kham-eaung"
+      },
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "thai_and_lanna_names",
+      "source_language": "en",
+      "summary_zh": "林惠在泰国使用泰文名Taywee和兰纳名Kham-eaung。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0011",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_chiang_mai_zoo",
+      "value": {
+        "date": "2003-10-12",
+        "companion_id": "chuang-chuang"
+      },
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "arrived_at_chiang_mai_zoo",
+      "source_language": "en",
+      "summary_zh": "林惠于2003年10月12日与创创一同抵达清迈动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0012",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "diplomacy",
+      "predicate": "goodwill_ambassador_role",
+      "value": {
+        "countries": [
+          "China",
+          "Thailand"
+        ],
+        "programme": "Project for Panda Research and Display in Thailand"
+      },
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "goodwill_ambassador_role",
+      "source_language": "en",
+      "summary_zh": "林惠作为中泰大熊猫科研合作项目的友好使者旅居清迈。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0013",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "lin-bing"
+      ],
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "offspring",
+      "source_language": "zh",
+      "summary_zh": "林惠是林冰的母亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0014",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "reproduction",
+      "predicate": "gave_birth_to_lin_bing",
+      "value": {
+        "date": "2009-05-27",
+        "offspring_id": "lin-bing",
+        "conception": "artificial insemination"
+      },
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "gave_birth_to_lin_bing",
+      "source_language": "zh",
+      "summary_zh": "林惠于2009年5月27日产下人工授精受孕的林冰。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0015",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "maternal_care",
+      "predicate": "early_nursing_of_lin_bing",
+      "value": "Lin Bing relied primarily on Lin Hui's milk during early infancy",
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "early_nursing_of_lin_bing",
+      "source_language": "zh",
+      "summary_zh": "林冰幼年早期主要依靠林惠母乳。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0016",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "transfer",
+      "predicate": "residency_extension_2015",
+      "value": {
+        "extension_years": 10,
+        "agreement_celebrated": "2015-06-27",
+        "companion_id": "chuang-chuang"
+      },
+      "source_id": "src-fmprc-chiangmai-extension-2015-local",
+      "source_locator": "residency_extension_2015",
+      "source_language": "zh",
+      "summary_zh": "2015年签订延期协议后，林惠与创创获准继续在清迈居住十年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0017",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "location",
+      "predicate": "expanded_habitat_features",
+      "value": [
+        "natural rock formations",
+        "wooden climbing structures",
+        "large grassy areas",
+        "foraging and resting space"
+      ],
+      "source_id": "src-chiangmai-linhui-habitat-2021-local",
+      "source_locator": "expanded_habitat_features",
+      "source_language": "th",
+      "summary_zh": "林惠扩建后的活动场包含天然岩石、木质攀爬结构和较大草地区域。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0018",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "health",
+      "predicate": "continuous_cctv_monitoring",
+      "value": {
+        "camera_count": ">30",
+        "coverage": "around the clock"
+      },
+      "source_id": "src-chiangmai-linhui-habitat-2021-local",
+      "source_locator": "continuous_cctv_monitoring",
+      "source_language": "th",
+      "summary_zh": "清迈动物园使用30多个监控摄像头全天观察林惠。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0019",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "veterinary_care",
+      "predicate": "daily_health_checks",
+      "value": true,
+      "source_id": "src-chiangmai-linhui-habitat-2021-local",
+      "source_locator": "daily_health_checks",
+      "source_language": "th",
+      "summary_zh": "林惠接受每日兽医健康检查和持续数据记录。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0020",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "public_debut",
+      "predicate": "expanded_habitat_viewing_hours",
+      "value": "09:00-17:00",
+      "source_id": "src-chiangmai-linhui-habitat-2021-local",
+      "source_locator": "expanded_habitat_viewing_hours",
+      "source_language": "th",
+      "summary_zh": "扩建展区开放时段为每日9时至17时。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0021",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "milestone",
+      "predicate": "nineteenth_birthday",
+      "value": "2020-09-28",
+      "source_id": "src-fmprc-linhui-birthday-2020-local",
+      "source_locator": "nineteenth_birthday",
+      "source_language": "zh",
+      "summary_zh": "林惠于2020年9月28日度过19岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0022",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "diet",
+      "predicate": "favourite_birthday_foods_2020",
+      "value": [
+        "apple",
+        "bamboo shoots",
+        "bamboo leaves"
+      ],
+      "source_id": "src-fmprc-linhui-birthday-2020-local",
+      "source_locator": "favourite_birthday_foods_2020",
+      "source_language": "zh",
+      "summary_zh": "19岁生日冰蛋糕使用苹果、竹笋和竹叶等林惠平时喜爱的食物装饰。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0023",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "behaviour",
+      "predicate": "birthday_response_2020",
+      "value": [
+        "walked down the rockery",
+        "ate the enrichment",
+        "walked around",
+        "looked toward the crowd"
+      ],
+      "source_id": "src-fmprc-linhui-birthday-2020-local",
+      "source_locator": "birthday_response_2020",
+      "source_language": "zh",
+      "summary_zh": "19岁生日时林惠走下假山享用食物，并在活动场走动、望向人群。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0024",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "milestone",
+      "predicate": "twenty_first_birthday",
+      "value": "2022-09-28",
+      "source_id": "src-chiangmai-linhui-birthday-2022-local",
+      "source_locator": "twenty_first_birthday",
+      "source_language": "th",
+      "summary_zh": "林惠于2022年9月28日度过21岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0025",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "enrichment",
+      "predicate": "twenty_first_birthday_enrichment",
+      "value": {
+        "ice_cake_tiers": 3,
+        "foods": [
+          "carrot",
+          "apple",
+          "leaves",
+          "bamboo shoots",
+          "panda bread"
+        ]
+      },
+      "source_id": "src-chiangmai-linhui-birthday-2022-local",
+      "source_locator": "twenty_first_birthday_enrichment",
+      "source_language": "th",
+      "summary_zh": "21岁生日活动提供三层冰蛋糕，包含胡萝卜、苹果、叶片、竹笋和熊猫面包。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0026",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "personality",
+      "predicate": "global_personality_award",
+      "value": {
+        "award": "bronze",
+        "category": "best panda personality",
+        "voting_scope": "global fans"
+      },
+      "source_id": "src-chiangmai-linhui-birthday-2022-local",
+      "source_locator": "global_personality_award",
+      "source_language": "th",
+      "summary_zh": "清迈动物园资料记录林惠曾获全球粉丝投票的大熊猫个性铜奖。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0027",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "behaviour",
+      "predicate": "documented_activity_2022",
+      "value": [
+        "taking food",
+        "resting"
+      ],
+      "source_id": "src-xinhua-linhui-life-2022-local",
+      "source_locator": "documented_activity_2022",
+      "source_language": "en",
+      "summary_zh": "新华社2022年12月照片记录林惠在清迈动物园进食和休息。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0028",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "health",
+      "predicate": "recent_health_findings_before_death",
+      "value": [
+        "abnormal kidney-function index",
+        "high blood pressure"
+      ],
+      "source_id": "src-xinhua-linhui-health-2023-local",
+      "source_locator": "recent_health_findings_before_death",
+      "source_language": "en",
+      "summary_zh": "林惠去世前近期体检记录有肾功能指标异常和高血压。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0029",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "veterinary_care",
+      "predicate": "acute_rescue_support",
+      "value": "China Conservation and Research Center experts guided treatment by video link",
+      "source_id": "src-xinhua-linhui-health-2023-local",
+      "source_locator": "acute_rescue_support",
+      "source_language": "en",
+      "summary_zh": "林惠突发昏迷后，中国大熊猫保护研究中心专家通过视频连线指导抢救。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0030",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "research",
+      "predicate": "joint_autopsy_samples",
+      "value": ">50 tissue samples",
+      "source_id": "src-chiangmai-linhui-cause-2023-local",
+      "source_locator": "joint_autopsy_samples",
+      "source_language": "th",
+      "summary_zh": "林惠死因联合调查采集了50多份组织样本。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0031",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "health",
+      "predicate": "nasal_vascular_tumour",
+      "value": {
+        "location": "nasal cavity",
+        "effect": "nosebleeds"
+      },
+      "source_id": "src-chiangmai-linhui-cause-2023-local",
+      "source_locator": "nasal_vascular_tumour",
+      "source_language": "th",
+      "summary_zh": "联合调查发现林惠鼻腔血管性肿瘤，可解释临终前鼻出血。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0032",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "death",
+      "predicate": "final_cause_of_death",
+      "value": {
+        "primary_process": "age-related arterial degeneration and hardening",
+        "mechanism": "vascular embolism in multiple organs",
+        "result": "organ failure"
+      },
+      "source_id": "src-chiangmai-linhui-cause-2023-local",
+      "source_locator": "final_cause_of_death",
+      "source_language": "th",
+      "summary_zh": "最终联合调查认定高龄相关动脉退化和硬化导致多器官血管栓塞并引发器官衰竭。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0033",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "health",
+      "predicate": "husbandry_assessment_after_death",
+      "value": [
+        "facility met requirements",
+        "medical care met requirements",
+        "hygiene met requirements",
+        "diet management met requirements"
+      ],
+      "source_id": "src-chiangmai-linhui-cause-2023-local",
+      "source_locator": "husbandry_assessment_after_death",
+      "source_language": "th",
+      "summary_zh": "联合专家组评估认为清迈的设施、医疗、卫生和饮食管理符合大熊猫饲养要求。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0034",
+      "subject": {
+        "type": "panda",
+        "id": "lin-hui",
+        "label": "Lin Hui"
+      },
+      "category": "cultural_context",
+      "predicate": "memorial_friendship_role",
+      "value": "goodwill ambassador and symbol of China-Thailand friendship",
+      "source_id": "src-xinhua-linhui-memorial-2023-local",
+      "source_locator": "memorial_friendship_role",
+      "source_language": "en",
+      "summary_zh": "林惠被清迈动物园和当地民众视为中泰友好使者。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-hui",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0035",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_2009_07_05_grams",
+      "value": 2070,
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "weight_2009_07_05_grams",
+      "source_language": "zh",
+      "summary_zh": "林冰在2009年7月5日前后体重达到2070克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-bing",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0036",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "growth_measurement",
+      "predicate": "left_eye_opening",
+      "value": "began opening by 2009-07-05",
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "left_eye_opening",
+      "source_language": "zh",
+      "summary_zh": "林冰约39日龄时已开始睁开左眼。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-bing",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0037",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "growth_measurement",
+      "predicate": "eye_opening_relative_timing",
+      "value": "about one week earlier than typical cubs",
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "eye_opening_relative_timing",
+      "source_language": "zh",
+      "summary_zh": "官方资料称林冰睁眼时间比普通幼崽约早一周。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-bing",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0038",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "diet",
+      "predicate": "early_infant_diet",
+      "value": "primarily maternal milk",
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "early_infant_diet",
+      "source_language": "zh",
+      "summary_zh": "林冰幼年早期主要依靠林惠母乳。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-bing",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0039",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "growth_measurement",
+      "predicate": "expected_teeth_and_bamboo_transition",
+      "value": "teeth expected at 3-4 months before eating bamboo",
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "expected_teeth_and_bamboo_transition",
+      "source_language": "zh",
+      "summary_zh": "当时预计林冰3至4个月龄长牙后才逐步尝试竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-bing",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0040",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "cultural_context",
+      "predicate": "birth_blessing_event_attendance",
+      "value": "nearly 10000 local residents and students",
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "birth_blessing_event_attendance",
+      "source_language": "zh",
+      "summary_zh": "清迈为林冰举行的出生祈福活动吸引近万名当地民众和学生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "lin-bing",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0041",
+      "subject": {
+        "type": "research_programme",
+        "id": "chiangmai-panda-cooperation-2003-2023",
+        "label": "Chiang Mai China-Thailand giant panda cooperation"
+      },
+      "category": "diplomacy",
+      "predicate": "programme_start",
+      "value": 2003,
+      "source_id": "src-chiangmai-panda-history-local",
+      "source_locator": "programme_start",
+      "source_language": "en",
+      "summary_zh": "泰国大熊猫研究与展示项目于2003年开始运行。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chiangmai-panda-cooperation-2003-2023",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0042",
+      "subject": {
+        "type": "research_programme",
+        "id": "chiangmai-panda-cooperation-2003-2023",
+        "label": "Chiang Mai China-Thailand giant panda cooperation"
+      },
+      "category": "diplomacy",
+      "predicate": "residency_extension",
+      "value": {
+        "year": 2015,
+        "extension_years": 10
+      },
+      "source_id": "src-fmprc-chiangmai-extension-2015-local",
+      "source_locator": "residency_extension",
+      "source_language": "zh",
+      "summary_zh": "中泰双方于2015年将创创和林惠的清迈居留延长十年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chiangmai-panda-cooperation-2003-2023",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0043",
+      "subject": {
+        "type": "research_programme",
+        "id": "chiangmai-panda-cooperation-2003-2023",
+        "label": "Chiang Mai China-Thailand giant panda cooperation"
+      },
+      "category": "reproduction",
+      "predicate": "major_breeding_outcome",
+      "value": {
+        "offspring_id": "lin-bing",
+        "birth_date": "2009-05-27",
+        "milestone": "first giant panda born in Thailand"
+      },
+      "source_id": "src-fmprc-linbing-prayer-2009-local",
+      "source_locator": "major_breeding_outcome",
+      "source_language": "zh",
+      "summary_zh": "项目的重要繁殖成果是2009年诞生泰国首只大熊猫林冰。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chiangmai-panda-cooperation-2003-2023",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0044",
+      "subject": {
+        "type": "research_programme",
+        "id": "chiangmai-panda-cooperation-2003-2023",
+        "label": "Chiang Mai China-Thailand giant panda cooperation"
+      },
+      "category": "research",
+      "predicate": "cooperation_areas",
+      "value": [
+        "raising",
+        "breeding",
+        "disease control",
+        "public knowledge dissemination"
+      ],
+      "source_id": "src-xinhua-linhui-memorial-2023-local",
+      "source_locator": "cooperation_areas",
+      "source_language": "en",
+      "summary_zh": "中泰合作覆盖饲养、繁殖、疾病控制和公众科普。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chiangmai-panda-cooperation-2003-2023",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0045",
+      "subject": {
+        "type": "research_programme",
+        "id": "chiangmai-panda-cooperation-2003-2023",
+        "label": "Chiang Mai China-Thailand giant panda cooperation"
+      },
+      "category": "research",
+      "predicate": "routine_chinese_expert_consultation",
+      "value": true,
+      "source_id": "src-fmprc-linhui-birthday-2020-local",
+      "source_locator": "routine_chinese_expert_consultation",
+      "source_language": "zh",
+      "summary_zh": "清迈动物园长期与中方专家交流林惠的饲养和健康管理。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chiangmai-panda-cooperation-2003-2023",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0046",
+      "subject": {
+        "type": "research_programme",
+        "id": "chiangmai-panda-cooperation-2003-2023",
+        "label": "Chiang Mai China-Thailand giant panda cooperation"
+      },
+      "category": "cultural_context",
+      "predicate": "friendship_symbol",
+      "value": "giant pandas linked public affection with China-Thailand friendship",
+      "source_id": "src-consulate-chuang-memorial-2019-local",
+      "source_locator": "friendship_symbol",
+      "source_language": "zh",
+      "summary_zh": "创创、林惠和林冰长期成为中泰民间友好和公共文化交流象征。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chiangmai-panda-cooperation-2003-2023",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-chiangmai-founders-0047",
+      "subject": {
+        "type": "research_programme",
+        "id": "chiangmai-panda-cooperation-2003-2023",
+        "label": "Chiang Mai China-Thailand giant panda cooperation"
+      },
+      "category": "research",
+      "predicate": "post_programme_summary_2023",
+      "value": "China and Thailand planned to summarize the previous two decades and discuss further cooperation",
+      "source_id": "src-xinhua-linhui-memorial-2023-local",
+      "source_locator": "post_programme_summary_2023",
+      "source_language": "en",
+      "summary_zh": "林惠离世后，中泰双方表示将总结二十年合作并讨论后续合作。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chiangmai-panda-cooperation-2003-2023",
+        "research"
+      ]
+    }
+  ]
+}

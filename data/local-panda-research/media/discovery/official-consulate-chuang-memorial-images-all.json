@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "page_url": "https://chiangmai.china-consulate.gov.cn/xwdt/201909/t20190918_5337728.htm",
+  "discovered_at": "2026-07-25T22:23:14.751185+00:00",
+  "image_count": 5,
+  "images": [
+    {
+      "asset_url": "https://chiangmai.china-consulate.gov.cn/images/top_new.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "991",
+      "height": "152",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://chiangmai.china-consulate.gov.cn/xwdt/201909/W020211021055470979303.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://chiangmai.china-consulate.gov.cn/xwdt/201909/W020211021055471032996.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://chiangmai.china-consulate.gov.cn/xwdt/201909/W020211021055471093208.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://chiangmai.china-consulate.gov.cn/xwdt/201909/W020211021055471142176.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

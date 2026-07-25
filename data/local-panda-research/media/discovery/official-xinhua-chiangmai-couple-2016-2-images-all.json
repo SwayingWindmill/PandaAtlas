@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "page_url": "https://en.people.cn/n3/2016/0913/c90000-9114662-2.html",
+  "discovered_at": "2026-07-25T22:26:39.978224+00:00",
+  "image_count": 22,
+  "images": [
+    {
+      "asset_url": "https://en.people.cn/img/FOREIGN/2015/03/212677/images/logo.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2015/0414/FOREIGN201504141507244204826189277.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Facebook",
+      "title": "",
+      "width": "39",
+      "height": "20",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2015/0414/FOREIGN201504141507322590406029541.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Twitter",
+      "title": "",
+      "width": "39",
+      "height": "20",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2015/0414/FOREIGN201504141507411639371362150.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "新浪微博",
+      "title": "",
+      "width": "39",
+      "height": "20",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2015/0630/FOREIGN201506300917511446401861612.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Instagram",
+      "title": "",
+      "width": "39",
+      "height": "20",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2015/0630/FOREIGN201506300935253054170867278.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "YouTube",
+      "title": "",
+      "width": "39",
+      "height": "20",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/img/FOREIGN/2015/03/212677/images/icon1.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0913/FOREIGN201609132101000229256455649.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "THAILAND-CHIANG MAI-ZOO-GIANT PANDA",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/img/2007english/Previous.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/img/2007english/Next.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/img/2013enpd/images/left.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "prev",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prev01"
+      ]
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0719/FOREIGN201607191500114313934065020.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Who Will Fit The Chinese Roles In Game Of Thrones?",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0719/FOREIGN201607191346122807838418859.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "China's Hubei Shennongjia added to World Heritage List",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0715/FOREIGN201607151448266964756236277.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Cute Dog At Fruit Stand Becomes Latest Internet Sensation",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0711/FOREIGN201607110846151337172474483.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Top 10 livable Chinese cities",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0707/FOREIGN201607071007186624007698957.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "The last primitive tribe in China",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0503/FOREIGN201605031534161246721469884.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "China's first intelligent security robot debuts in Chongqing",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0503/FOREIGN201605031532017769372793979.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "A Total of 3,552 Subscribers Vanish In Two Days; YouTube Closes All Doors to Users’ Inquiries",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0503/FOREIGN201605031529554297081619149.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Out of this world! Futuristic UFO-shaped yacht has its own garden and a stunning underwater viewing deck",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0503/FOREIGN201605031528207835453765764.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "An old tea house in Chengdu",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/NMediaFile/2016/0503/FOREIGN201605031526389712838018231.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Furious Customer Crushes All the Buns from Vendor Just Because He Was Given the Wrong Flavor",
+      "title": "",
+      "width": "180",
+      "height": "135",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://en.people.cn/img/2013enpd/images/right.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "next",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "next01"
+      ]
+    }
+  ]
+}
