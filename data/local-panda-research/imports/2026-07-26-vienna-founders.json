@@ -1,0 +1,1398 @@
+{
+  "sources": [
+    {
+      "source_id": "src-vienna-longhui-obituary-2016-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Panda-Männchen Long Hui verstorben",
+      "url": "https://www.zoovienna.at/de/news/panda-mannchen-long-hui-verstorben/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official illness timeline, emergency examination and death account."
+    },
+    {
+      "source_id": "src-vienna-longhui-pathology-2016-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Long Hui hatte Gallengangskarzinom",
+      "url": "https://www.zoovienna.at/de/news/long-hui-hatte-gallengangskarzinom/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Joint Austrian-Chinese pathology findings and metastatic disease."
+    },
+    {
+      "source_id": "src-vienna-panda-breeding-faq-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Fragen rund ums (Panda)-Kinderkriegen",
+      "url": "https://www.zoovienna.at/tiere-und-anlagen/fragen-rund-ums-pandakinderkriegen/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official relationship, maturity, breeding season and first mating facts."
+    },
+    {
+      "source_id": "src-vienna-longhui-birthday-2013-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Das Pandababy-Tagebuch: Panda-Papa feiert Geburtstag",
+      "url": "https://www.zoovienna.at/news/das-pandababy-tagebuch/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official Long Hui birthday food, origin, appearance distinction and daily-life observations."
+    },
+    {
+      "source_id": "src-vienna-twins-diary-2016-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Diary of the Panda Twins",
+      "url": "https://www.zoovienna.at/de/news/diary-panda-twins/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official Long Hui sixteenth-birthday routine and twin-family timeline."
+    },
+    {
+      "source_id": "src-vienna-panda-mating-2013-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Panda-Paarung erfreut Tiergarten",
+      "url": "https://www.zoovienna.at/news/panda-paarung-erfreut-tiergarten/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official natural mating, oestrus behaviour and pair compatibility account."
+    },
+    {
+      "source_id": "src-vienna-panda-cooperation-20years-2023-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "20 Jahre Panda-Kooperation",
+      "url": "https://www.zoovienna.at/de/news/20-jahre-panda-kooperation/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official 20-year cooperation retrospective and offspring transfers."
+    },
+    {
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Abschied von Schönbrunn",
+      "url": "https://www.zoovienna.at/de/news/abschied-von-schonbrunn/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official Yang Yang and Yuan Yuan departure, flight care and geriatric destination."
+    },
+    {
+      "source_id": "src-vienna-longhui-body-plan-2017-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Tiergarten Schönbrunn / Vienna Zoo",
+      "title": "Panda-Zwillinge sind halbes Jahr alt",
+      "url": "https://www.zoovienna.at/news/panda-zwillinge-sind-halbes-jahr-alt/",
+      "language": "de",
+      "region": "Austria",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official decision to prepare Long Hui's body and transfer it to China."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-vienna-founders-0001",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-vienna-panda-history-local",
+      "source_locator": "sex",
+      "source_language": "de",
+      "summary_zh": "龙徽为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0002",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2000-09-26",
+      "source_id": "src-vienna-panda-history-local",
+      "source_locator": "birth_date",
+      "source_language": "de",
+      "summary_zh": "龙徽出生于2000年9月26日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0003",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Wolong giant panda breeding and research station, China",
+      "source_id": "src-vienna-longhui-birthday-2013-local",
+      "source_locator": "birthplace",
+      "source_language": "de",
+      "summary_zh": "龙徽出生于中国卧龙大熊猫繁育研究站。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0004",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "dragon sign",
+      "source_id": "src-vienna-panda-history-local",
+      "source_locator": "name_meaning",
+      "source_language": "de",
+      "summary_zh": "龙徽的名字在维也纳官方资料中解释为“龙的标志”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0005",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "relationship",
+      "predicate": "raised_with_yang_yang",
+      "value": {
+        "companion_id": "yang-yang-vienna",
+        "related": false
+      },
+      "source_id": "src-vienna-panda-breeding-faq-local",
+      "source_locator": "raised_with_yang_yang",
+      "source_language": "de",
+      "summary_zh": "龙徽与阳阳从小一起长大，但两只没有血缘关系。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0006",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_vienna_zoo",
+      "value": {
+        "date": "2003-03-14",
+        "companion_id": "yang-yang-vienna",
+        "programme": "Austria-China giant panda research cooperation"
+      },
+      "source_id": "src-vienna-panda-cooperation-20years-2023-local",
+      "source_locator": "arrived_at_vienna_zoo",
+      "source_language": "de",
+      "summary_zh": "龙徽于2003年3月14日与阳阳抵达维也纳美泉宫动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0007",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "personality",
+      "predicate": "temperament",
+      "value": [
+        "very calm",
+        "not easily disturbed"
+      ],
+      "source_id": "src-vienna-panda-history-local",
+      "source_locator": "temperament",
+      "source_language": "de",
+      "summary_zh": "园方形容龙徽非常沉稳，不容易受到干扰。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0008",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "appearance",
+      "predicate": "shoulder_band_shape",
+      "value": "black shoulder band narrows to a thin strip in the middle",
+      "source_id": "src-vienna-longhui-birthday-2013-local",
+      "source_locator": "shoulder_band_shape",
+      "source_language": "de",
+      "summary_zh": "龙徽的黑色肩带在中间收窄成细条，可用于与阳阳区分。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0009",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "growth_measurement",
+      "predicate": "typical_adult_weight_kg",
+      "value": 120,
+      "source_id": "src-vienna-fubao-maternal-care-2013-local",
+      "source_locator": "typical_adult_weight_kg",
+      "source_language": "de",
+      "summary_zh": "维也纳官方资料记录龙徽成年体重通常约120千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0010",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "reproduction",
+      "predicate": "first_mating_with_yang_yang",
+      "value": {
+        "date": "late April 2006",
+        "mating_count_in_one_day": 4,
+        "partner_id": "yang-yang-vienna"
+      },
+      "source_id": "src-vienna-panda-breeding-faq-local",
+      "source_locator": "first_mating_with_yang_yang",
+      "source_language": "de",
+      "summary_zh": "龙徽与阳阳于2006年4月底首次交配，并在一天内交配四次。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0011",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "reproduction",
+      "predicate": "offspring",
+      "value": [
+        "fu-long",
+        "fu-hu",
+        "fu-bao-vienna",
+        "fu-feng",
+        "fu-ban"
+      ],
+      "source_id": "src-vienna-panda-cooperation-20years-2023-local",
+      "source_locator": "offspring",
+      "source_language": "de",
+      "summary_zh": "龙徽是福龙、福虎、福豹、福凤和福伴的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0012",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "milestone",
+      "predicate": "father_of_first_naturally_conceived_panda_cub_in_europe",
+      "value": {
+        "offspring_id": "fu-long",
+        "birth_date": "2007-08-23"
+      },
+      "source_id": "src-vienna-panda-cooperation-20years-2023-local",
+      "source_locator": "father_of_first_naturally_conceived_panda_cub_in_europe",
+      "source_language": "de",
+      "summary_zh": "龙徽是欧洲首只自然交配受孕大熊猫幼崽福龙的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0013",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "diet",
+      "predicate": "favourite_birthday_foods",
+      "value": [
+        "carrots",
+        "sweet potatoes"
+      ],
+      "source_id": "src-vienna-longhui-birthday-2013-local",
+      "source_locator": "favourite_birthday_foods",
+      "source_language": "de",
+      "summary_zh": "龙徽13岁生日获得胡萝卜和红薯蛋糕，园方称甜味蔬菜是大熊猫喜爱的食物。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0014",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "behaviour",
+      "predicate": "sixteenth_birthday_routine",
+      "value": [
+        "sleeping",
+        "short walks",
+        "climbing one or two trees",
+        "eating bamboo"
+      ],
+      "source_id": "src-vienna-twins-diary-2016-local",
+      "source_locator": "sixteenth_birthday_routine",
+      "source_language": "de",
+      "summary_zh": "龙徽16岁生日当天仍按平日节奏睡觉、短距离活动、爬树和吃竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0015",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "maternal_care",
+      "predicate": "no_role_in_cub_rearing",
+      "value": true,
+      "source_id": "src-vienna-twins-diary-2016-local",
+      "source_locator": "no_role_in_cub_rearing",
+      "source_language": "de",
+      "summary_zh": "作为雄性大熊猫，龙徽不参与幼崽育幼，因此与阳阳及双胞胎分开居住。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0016",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "reproduction",
+      "predicate": "pair_compatibility_outside_breeding_season",
+      "value": "the pair sometimes remained together and harmonised outside mating season",
+      "source_id": "src-vienna-panda-mating-2013-local",
+      "source_locator": "pair_compatibility_outside_breeding_season",
+      "source_language": "de",
+      "summary_zh": "维也纳园方记录龙徽与阳阳配合良好，在部分非繁殖期也能和谐相处。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0017",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "health",
+      "predicate": "illness_onset_2016",
+      "value": {
+        "from": "mid-November 2016",
+        "signs": [
+          "reduced appetite",
+          "lethargy",
+          "rapid physical decline"
+        ]
+      },
+      "source_id": "src-vienna-longhui-obituary-2016-local",
+      "source_locator": "illness_onset_2016",
+      "source_language": "de",
+      "summary_zh": "龙徽从2016年11月中旬起食量减少、精神低落并迅速消瘦。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0018",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "veterinary_care",
+      "predicate": "abdominal_tumour_ultrasound",
+      "value": {
+        "date": "2016-12-06",
+        "size_cm": 10
+      },
+      "source_id": "src-vienna-longhui-obituary-2016-local",
+      "source_locator": "abdominal_tumour_ultrasound",
+      "source_language": "de",
+      "summary_zh": "2016年12月6日超声发现龙徽腹腔内约10厘米肿瘤。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0019",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "veterinary_care",
+      "predicate": "emergency_ct_purpose",
+      "value": "assess whether surgical removal was possible",
+      "source_id": "src-vienna-longhui-obituary-2016-local",
+      "source_locator": "emergency_ct_purpose",
+      "source_language": "de",
+      "summary_zh": "园方与中国专家协商后安排紧急CT，以评估肿瘤能否手术切除。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0020",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "death",
+      "predicate": "death_datetime",
+      "value": "2016-12-09",
+      "source_id": "src-vienna-longhui-obituary-2016-local",
+      "source_locator": "death_datetime",
+      "source_language": "de",
+      "summary_zh": "龙徽于2016年12月9日在紧急检查麻醉过程中离世。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0021",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "death",
+      "predicate": "immediate_clinical_event",
+      "value": "cardiac arrest during anaesthesia",
+      "source_id": "src-vienna-longhui-obituary-2016-local",
+      "source_locator": "immediate_clinical_event",
+      "source_language": "de",
+      "summary_zh": "龙徽在麻醉过程中发生心脏骤停。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0022",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "health",
+      "predicate": "tumour_operability_and_lung_findings",
+      "value": {
+        "operable": false,
+        "lung_changes": "severe and consistent with metastases"
+      },
+      "source_id": "src-vienna-longhui-obituary-2016-local",
+      "source_locator": "tumour_operability_and_lung_findings",
+      "source_language": "de",
+      "summary_zh": "检查显示肿瘤无法手术，肺部已有严重的疑似转移改变。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0023",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "health",
+      "predicate": "pathological_diagnosis",
+      "value": "aggressive malignant cholangiocarcinoma",
+      "source_id": "src-vienna-longhui-pathology-2016-local",
+      "source_locator": "pathological_diagnosis",
+      "source_language": "de",
+      "summary_zh": "奥中联合病理检查确认龙徽患有高侵袭性恶性胆管癌。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0024",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "health",
+      "predicate": "metastatic_organs",
+      "value": [
+        "heart",
+        "lungs",
+        "kidneys",
+        "multiple other organs"
+      ],
+      "source_id": "src-vienna-longhui-pathology-2016-local",
+      "source_locator": "metastatic_organs",
+      "source_language": "de",
+      "summary_zh": "病理检查发现癌症已转移至心脏、肺、肾等多个器官。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0025",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "death",
+      "predicate": "pathological_cause_sequence",
+      "value": [
+        "metastatic cholangiocarcinoma",
+        "multi-organ failure",
+        "cardiac arrest under anaesthesia"
+      ],
+      "source_id": "src-vienna-longhui-pathology-2016-local",
+      "source_locator": "pathological_cause_sequence",
+      "source_language": "de",
+      "summary_zh": "病理结论认为转移性胆管癌导致多器官衰竭，并最终在麻醉中发生心脏骤停。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0026",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "research",
+      "predicate": "joint_pathology_team",
+      "value": [
+        "China Wildlife Conservation Association",
+        "CCRCGP veterinarian",
+        "China Agricultural University pathologist",
+        "FIWI Vienna"
+      ],
+      "source_id": "src-vienna-longhui-pathology-2016-local",
+      "source_locator": "joint_pathology_team",
+      "source_language": "de",
+      "summary_zh": "龙徽病理由中国大熊猫保护研究中心、中国农业大学及维也纳野生动物研究机构联合完成。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0027",
+      "subject": {
+        "type": "panda",
+        "id": "long-hui",
+        "label": "Long Hui"
+      },
+      "category": "cultural_context",
+      "predicate": "body_preservation_plan",
+      "value": {
+        "preparation": "taxidermic preparation",
+        "planned_transfer": "China in early summer 2018"
+      },
+      "source_id": "src-vienna-longhui-body-plan-2017-local",
+      "source_locator": "body_preservation_plan",
+      "source_language": "de",
+      "summary_zh": "按中方伙伴要求，龙徽遗体计划制作标本并于2018年初夏运回中国。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "long-hui",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0028",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "sunshine",
+      "source_id": "src-vienna-yangyang-20th-birthday-2020-local",
+      "source_locator": "name_meaning",
+      "source_language": "de",
+      "summary_zh": "阳阳的名字意为“阳光”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0029",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "personality",
+      "predicate": "temperament",
+      "value": [
+        "attentive",
+        "curious"
+      ],
+      "source_id": "src-vienna-panda-history-local",
+      "source_locator": "temperament",
+      "source_language": "de",
+      "summary_zh": "园方形容阳阳警觉、好奇，周围变化很难逃过她的注意。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0030",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "appearance",
+      "predicate": "facial_features",
+      "value": [
+        "narrow snout",
+        "round Mickey-Mouse-like ears"
+      ],
+      "source_id": "src-vienna-panda-history-local",
+      "source_locator": "facial_features",
+      "source_language": "de",
+      "summary_zh": "阳阳具有较窄的吻部和圆形的米老鼠式耳朵。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0031",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "appearance",
+      "predicate": "shoulder_band_shape",
+      "value": "black shoulder band remains evenly broad",
+      "source_id": "src-vienna-longhui-birthday-2013-local",
+      "source_locator": "shoulder_band_shape",
+      "source_language": "de",
+      "summary_zh": "阳阳的黑色肩带宽度较均匀，与龙徽中部收窄的肩带不同。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0032",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "reproduction",
+      "predicate": "first_mating_with_long_hui",
+      "value": {
+        "date": "late April 2006",
+        "mating_count_in_one_day": 4,
+        "partner_id": "long-hui"
+      },
+      "source_id": "src-vienna-panda-breeding-faq-local",
+      "source_locator": "first_mating_with_long_hui",
+      "source_language": "de",
+      "summary_zh": "阳阳与龙徽于2006年4月底首次交配，并在一天内交配四次。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0033",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "transfer",
+      "predicate": "left_vienna_for_china",
+      "value": {
+        "departure_from_zoo": "2024-09-13",
+        "flight_departure": "shortly after 19:00",
+        "companion_id": "yuan-yuan-vienna",
+        "destination_route": "Vienna to Chengdu"
+      },
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "left_vienna_for_china",
+      "source_language": "de",
+      "summary_zh": "阳阳于2024年9月13日晚与圆圆离开维也纳，乘货机前往成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0034",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "location",
+      "predicate": "post_return_care_destination",
+      "value": "Chinese station specialised in geriatric giant pandas",
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "post_return_care_destination",
+      "source_language": "de",
+      "summary_zh": "阳阳返华后前往专门照护老年大熊猫的基地安度晚年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0035",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "diet",
+      "predicate": "return_flight_provisions",
+      "value": [
+        "bamboo",
+        "sweet potatoes",
+        "carrots",
+        "panda bread",
+        "water"
+      ],
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "return_flight_provisions",
+      "source_language": "de",
+      "summary_zh": "阳阳返华航程准备了竹子、红薯、胡萝卜、熊猫面包和饮水。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0036",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "behaviour",
+      "predicate": "behaviour_during_return_flight",
+      "value": [
+        "eating",
+        "sleeping"
+      ],
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "behaviour_during_return_flight",
+      "source_language": "de",
+      "summary_zh": "护理员记录阳阳在约十小时航程中主要进食和睡觉。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0037",
+      "subject": {
+        "type": "panda",
+        "id": "yang-yang-vienna",
+        "label": "Yang Yang"
+      },
+      "category": "husbandry_training",
+      "predicate": "keeper_handover_after_return",
+      "value": "long-term Vienna keeper stayed almost two weeks in China for gradual care handover",
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "keeper_handover_after_return",
+      "source_language": "de",
+      "summary_zh": "阳阳的长期护理员返华后在中国停留近两周，逐步把护理工作交接给中方团队。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yang-yang-vienna",
+        "husbandry_training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0038",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "transfer",
+      "predicate": "left_vienna_for_china",
+      "value": {
+        "departure_from_zoo": "2024-09-13",
+        "companion_id": "yang-yang-vienna",
+        "destination_route": "Vienna to Chengdu"
+      },
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "left_vienna_for_china",
+      "source_language": "de",
+      "summary_zh": "圆圆于2024年9月13日与阳阳一同离开维也纳返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0039",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "location",
+      "predicate": "post_return_care_destination",
+      "value": "Chinese station specialised in geriatric giant pandas",
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "post_return_care_destination",
+      "source_language": "de",
+      "summary_zh": "圆圆返华后前往专门照护老年大熊猫的基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0040",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "behaviour",
+      "predicate": "behaviour_during_return_flight",
+      "value": [
+        "eating",
+        "sleeping"
+      ],
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "behaviour_during_return_flight",
+      "source_language": "de",
+      "summary_zh": "圆圆在约十小时返华航程中主要进食和睡觉。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0041",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "diplomacy",
+      "predicate": "programme_start",
+      "value": "2003-03-14",
+      "source_id": "src-vienna-panda-cooperation-20years-2023-local",
+      "source_locator": "programme_start",
+      "source_language": "de",
+      "summary_zh": "维也纳与中国野生动物保护协会的大熊猫科研合作于2003年3月14日随阳阳、龙徽抵达正式展开。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0042",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "reproduction",
+      "predicate": "natural_breeding_outcomes",
+      "value": {
+        "cub_count": 5,
+        "offspring_ids": [
+          "fu-long",
+          "fu-hu",
+          "fu-bao-vienna",
+          "fu-feng",
+          "fu-ban"
+        ]
+      },
+      "source_id": "src-vienna-panda-cooperation-20years-2023-local",
+      "source_locator": "natural_breeding_outcomes",
+      "source_language": "de",
+      "summary_zh": "阳阳与龙徽在维也纳通过自然交配繁育五只幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0043",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "transfer",
+      "predicate": "offspring_transfer_policy",
+      "value": "all five cubs moved to Chinese panda stations at about two years of age",
+      "source_id": "src-vienna-panda-cooperation-20years-2023-local",
+      "source_locator": "offspring_transfer_policy",
+      "source_language": "de",
+      "summary_zh": "五只维也纳出生幼崽均按合同在约两岁时迁往中国大熊猫基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0044",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "research",
+      "predicate": "twin_rearing_method",
+      "value": "24-hour nesting-box video analysis during the twins' first three months",
+      "source_id": "src-vienna-twin-rearing-research-local",
+      "source_locator": "twin_rearing_method",
+      "source_language": "en",
+      "summary_zh": "双胞胎研究使用产箱摄像系统，对出生后前三个月进行24小时行为分析。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0045",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "research",
+      "predicate": "twin_rearing_result",
+      "value": "Yang Yang gave each twin singleton-equivalent care by reducing her own rest",
+      "source_id": "src-vienna-twin-rearing-research-local",
+      "source_locator": "twin_rearing_result",
+      "source_language": "en",
+      "summary_zh": "研究发现阳阳通过减少自身休息，为每只双胞胎提供了相当于单胎的照护时间。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0046",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "research",
+      "predicate": "field_conservation_funding_allocation",
+      "value": {
+        "habitat_and_reserves_percent": 60,
+        "panda_station_research_and_maintenance_percent": 30,
+        "partner_administration_percent": 10
+      },
+      "source_id": "src-vienna-panda-conservation-project-local",
+      "source_locator": "field_conservation_funding_allocation",
+      "source_language": "en",
+      "summary_zh": "维也纳项目资金约60%用于野外保护区，30%用于熊猫基地科研维护，10%用于伙伴行政支出。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0047",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "diplomacy",
+      "predicate": "cooperation_extended_after_2024_return",
+      "value": 10,
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "cooperation_extended_after_2024_return",
+      "source_language": "de",
+      "summary_zh": "阳阳和圆圆返华时，维也纳与中方的合作再延长十年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-founders-0048",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-panda-cooperation-2003-2024",
+        "label": "Vienna-China giant panda cooperation 2003-2024"
+      },
+      "category": "cultural_context",
+      "predicate": "friendship_role",
+      "value": "giant pandas served as symbols of Chinese-Austrian friendship for more than twenty years",
+      "source_id": "src-vienna-panda-farewell-2024-local",
+      "source_locator": "friendship_role",
+      "source_language": "de",
+      "summary_zh": "大熊猫在维也纳二十余年间成为中奥友谊的重要象征。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-panda-cooperation-2003-2024",
+        "cultural_context"
+      ]
+    }
+  ]
+}

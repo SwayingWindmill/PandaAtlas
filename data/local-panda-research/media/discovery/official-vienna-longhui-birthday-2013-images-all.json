@@ -1,0 +1,708 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.zoovienna.at/news/das-pandababy-tagebuch/",
+  "discovered_at": "2026-07-25T21:42:44.630635+00:00",
+  "image_count": 54,
+  "images": [
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/tagebuch_17.01._animal_detail_935.jpg",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/species_protection_aquarium.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "header-species-protection-aquarium__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/tagebuch_17.01._animal_detail_801.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "ratio__content"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_halbesjahr2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/userphotos/friedrich-mader/2014-02/foto_1_sc_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/userphotos/friedrich-mader/2014-01/foto_191_mw_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/userphotos/andrea_haberfehlner/2014-01/foto_8_jl_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/0103_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/tagebuch_17.01._sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "239",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/userphotos/norbert-potensky/2014-01/foto_40_ta_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_fubaoausflug1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/userphotos/friedrich-mader/2014-01/foto_11_yy_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "239",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_wurfbox_2013-12-27_07-06-53.27_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/tagebuchspielen_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/fotobambus_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_wurfbox_2013-12-11_11-37-52.99n_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/pandanachwuchs_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_fu_bao1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/_dsc9756_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_fubao_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_pandafest1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/pa_fulong_besuch2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/fulong_standard.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "408",
+      "height": "272",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_vertrag4_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_vertrag2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_20131031_06_tgs_zupanc_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/panda_neugierdsnase_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_wurfbox_2013-10-21_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/cimg6699_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_hp2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/pa040039_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/klettern_0410_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/nebenihr_0210_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_wurfbox_2013-10-01_12-24-00.31_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/daumen_3009_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/20130926_083407_zoo_vienna_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/20130926_083440_zoo_vienna_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/augenoeffnen2509._sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/yangyangfrisst_2309_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_foto_makingof20.09._sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/pa_panda2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_wurfbox_2013-09-12_16-22-05_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_wurfbox_2013-09-04_14-53-35_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "239",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_wurfbox_02092013_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/long_hui_ball2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/monitor28082013_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/fellzeichnung_2608_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/fulong_fuhu_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "159",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/milchbauch_23082013_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/panda_innen_rechts_farbe_2013-08-14_12-25-06.24_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2013/1908_ertmalsallein_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pandaausschnitt_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/Tripadvisor_Travellers_choice_award_2024.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Tripadvisor",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "great-link-img--tripadvisor"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/2028_top_qualitaetssiege_4c.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Top Lehrbetrieb Wiener Qualitätssiegel",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "great-link-img--top-qualitaetssiegel"
+      ]
+    }
+  ]
+}

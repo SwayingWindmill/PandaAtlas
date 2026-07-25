@@ -1,0 +1,892 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.zoovienna.at/de/news/diary-panda-twins/",
+  "discovered_at": "2026-07-25T21:42:47.148249+00:00",
+  "image_count": 68,
+  "images": [
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/logo_fallback.png",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/species_protection_aquarium.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "header-species-protection-aquarium__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pandas_tgs_zupanc_211_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/15995169_10154314128613131_4414871565387460524_o_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/15799847_1621001138195656_5728166500300615727_o_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_pandazwillinge_zeigen_sich3_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_panda-weibchen_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/19.12_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_6.dez_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_2.dez2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "239",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/tagebuch_30.11._sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_namensgebung4_2016_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_namensgebung1_2006_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/panda_tagebuch_22.11._sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_18.nov_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/chinesischerbotschafter_barbarafeldmann_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pa_einladung_namensgebung_zwillinge_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/panda_saeugen2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "239",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_11.nov2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "239",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/tagebuch07.11_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pandas_tgs_zupanc_16_ausschnitt_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_pandazwillinge_namen2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/28.10_yangyang_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/baumhoehle_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/tagebuch20.10_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/img_0052_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_zwillinge_baumh%C3%B6hle_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/panda_18.10_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/animal_training_ws_2016_(c)_barbara_feldmann_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/tagebuch13.10_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pa_namenswahlfin1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/panda_7.10_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/panda_6.10_spinne_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_namenssuche1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/tagebuch_29.09_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_zwillinge2auge_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_zwillinge3auge_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/gro%C3%9Fer_panda_(c)_daniel_zupanc_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/tagebuch_23.09._sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/panda_tagebuch_22.09_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge21.09_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/img_4182_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_19._august_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_16._september3_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_15.september3_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_12._september_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge12.september_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/img_3271_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_4.september8_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/pa_pandazwillinge_geschlecht1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/pandazwillinge4.september_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/pandazwillinge_schulterband_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/pr-fotos/grosser_panda_(c)norbert_potensky_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/pandazwillinge_31._august_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/img_7975_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/foto_s%C3%A4ugen_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/pandazwillinge_schw%C3%A4nzchen_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/pandazwillinge_24._august1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/img_3858_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/pa_pandazwillinge_2_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/zwillinge_schnuller22.08_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge19.august_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge_18._august_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/panda_2016/tagebuch/pandazwillinge17.08_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_pandazwillinge1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "159",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/hotnews/pa_panda2016_1_sidebar.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "160",
+      "evidence": [
+        "img_left"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/Tripadvisor_Travellers_choice_award_2024.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Tripadvisor",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "great-link-img--tripadvisor"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/2028_top_qualitaetssiege_4c.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Top Lehrbetrieb Wiener Qualitätssiegel",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "great-link-img--top-qualitaetssiegel"
+      ]
+    }
+  ]
+}
