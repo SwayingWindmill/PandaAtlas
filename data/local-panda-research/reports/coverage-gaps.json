@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 248,
-  "pandas_with_media": 73,
+  "candidate_count": 253,
+  "pandas_with_media": 77,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -101,38 +101,6 @@
         "transfer": 1
       },
       "coverage_gap_score": -20
-    },
-    {
-      "subject_id": "le-bao",
-      "subject_label": "Le Bao",
-      "media_count": 1,
-      "record_count": 5,
-      "direct_record_count": 5,
-      "category_count": 5,
-      "categories": {
-        "alias": 1,
-        "behaviour": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "personality": 1
-      },
-      "coverage_gap_score": -20
-    },
-    {
-      "subject_id": "fu-bao",
-      "subject_label": "Fu Bao",
-      "media_count": 2,
-      "record_count": 7,
-      "direct_record_count": 7,
-      "category_count": 5,
-      "categories": {
-        "behaviour": 1,
-        "birth": 1,
-        "location": 1,
-        "media_candidate": 2,
-        "milestone": 2
-      },
-      "coverage_gap_score": -21
     },
     {
       "subject_id": "de-de-madrid",
@@ -492,6 +460,26 @@
       "coverage_gap_score": -49
     },
     {
+      "subject_id": "ai-bao",
+      "subject_label": "爱宝",
+      "media_count": 1,
+      "record_count": 12,
+      "direct_record_count": 12,
+      "category_count": 9,
+      "categories": {
+        "birth": 1,
+        "location": 2,
+        "maternal_care": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "relationship": 2,
+        "reproduction": 1,
+        "sex": 2,
+        "transfer": 1
+      },
+      "coverage_gap_score": -49
+    },
+    {
       "subject_id": "katyusha",
       "subject_label": "Katyusha",
       "media_count": 2,
@@ -553,6 +541,28 @@
         "transfer": 1
       },
       "coverage_gap_score": -53
+    },
+    {
+      "subject_id": "le-bao",
+      "subject_label": "Le Bao",
+      "media_count": 2,
+      "record_count": 14,
+      "direct_record_count": 14,
+      "category_count": 11,
+      "categories": {
+        "alias": 1,
+        "behaviour": 2,
+        "birth": 1,
+        "location": 2,
+        "media_candidate": 2,
+        "milestone": 1,
+        "personality": 1,
+        "relationship": 1,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -54
     },
     {
       "subject_id": "jia-jia-sg",
@@ -638,6 +648,28 @@
       "coverage_gap_score": -55
     },
     {
+      "subject_id": "hui-bao",
+      "subject_label": "辉宝",
+      "media_count": 1,
+      "record_count": 13,
+      "direct_record_count": 13,
+      "category_count": 11,
+      "categories": {
+        "birth": 1,
+        "cultural_context": 1,
+        "growth_measurement": 2,
+        "location": 2,
+        "maternal_care": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -56
+    },
+    {
       "subject_id": "da-di-beijing",
       "subject_label": "Da Di",
       "media_count": 1,
@@ -719,6 +751,29 @@
         "sex": 1,
         "transfer": 1,
         "veterinary_care": 1
+      },
+      "coverage_gap_score": -61
+    },
+    {
+      "subject_id": "rui-bao",
+      "subject_label": "Rui Bao",
+      "media_count": 1,
+      "record_count": 14,
+      "direct_record_count": 14,
+      "category_count": 12,
+      "categories": {
+        "alias": 1,
+        "birth": 1,
+        "cultural_context": 1,
+        "growth_measurement": 2,
+        "location": 2,
+        "maternal_care": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
       },
       "coverage_gap_score": -61
     },
@@ -1187,6 +1242,28 @@
       "coverage_gap_score": -78
     },
     {
+      "subject_id": "everland-cub-2026",
+      "subject_label": "Everland 2026 female cub",
+      "media_count": 2,
+      "record_count": 22,
+      "direct_record_count": 22,
+      "category_count": 11,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 1,
+        "birth": 2,
+        "growth_measurement": 3,
+        "health": 1,
+        "location": 2,
+        "media_candidate": 2,
+        "milestone": 4,
+        "public_debut": 1,
+        "relationship": 2,
+        "sex": 3
+      },
+      "coverage_gap_score": -78
+    },
+    {
       "subject_id": "meng-tian",
       "subject_label": "Meng Tian",
       "media_count": 1,
@@ -1307,6 +1384,30 @@
         "transfer": 2
       },
       "coverage_gap_score": -82
+    },
+    {
+      "subject_id": "fu-bao",
+      "subject_label": "Fu Bao",
+      "media_count": 3,
+      "record_count": 24,
+      "direct_record_count": 24,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 3,
+        "birth": 1,
+        "cultural_context": 1,
+        "growth_measurement": 4,
+        "location": 3,
+        "media_candidate": 3,
+        "milestone": 2,
+        "name_meaning": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -83
     },
     {
       "subject_id": "mei-xiang",
