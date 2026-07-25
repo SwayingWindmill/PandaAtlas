@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "page_url": "https://wgtl.yaan.gov.cn/xinwen/show/19774996-a86b-4221-ad7f-c79f2c3be136.html",
+  "discovered_at": "2026-07-25T17:22:31.739111+00:00",
+  "image_count": 4,
+  "images": [
+    {
+      "asset_url": "https://wgtl.yaan.gov.cn/images/logo_new.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "id-logo"
+      ]
+    },
+    {
+      "asset_url": "https://wgtl.yaan.gov.cn/images/ico07.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://wgtl.yaan.gov.cn/images/ico12.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "nm-fx no-print"
+      ]
+    },
+    {
+      "asset_url": "https://wgtl.yaan.gov.cn/images/weixin.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}
