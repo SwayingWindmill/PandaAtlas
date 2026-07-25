@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.news.gov.hk/eng/2024/12/20241207/20241207_230825_163.html",
+  "discovered_at": "2026-07-25T23:34:53.966750+00:00",
+  "image_count": 5,
+  "images": [
+    {
+      "asset_url": "https://www.news.gov.hk/eng/2024/12/20241207/20241207_230825_163/images/20241208004241437.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Close encounter",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "object-fit-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/common/images/newsArticleBanner/eng/20241208004101238.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Hong Kong Special Administrative Region of the People's Republic of China",
+      "title": "",
+      "width": "255",
+      "height": "191",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/images/icon/wac.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Web Accessibility Conformance",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/images/icon/logo_govhk.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "GovHK",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/images/icon/logo_hk.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Brand Hong Kong",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

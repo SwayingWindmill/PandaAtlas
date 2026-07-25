@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.chinadailyhk.com/hk/article/599666",
+  "discovered_at": "2026-07-25T23:38:30.660272+00:00",
+  "image_count": 15,
+  "images": [
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/65df3bc90b7bf4454b12e16db5632a89.png",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image",
+        "meta:twitter:image:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image",
+        "twitter:image:src"
+      ]
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/_nuxt/head-logo.lykloUeb.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "block aspect-ratio-170/25 w-360 cursor-pointer object-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/03/25/7f4a3279319daff9840327592c0b4444.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "inline-block max-h-100% max-w-100%"
+      ]
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/a10cb6fb56cd05dd97a958bf3c004e8e.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/84735939e4072cbd09e27ca7a2fd2a02.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/0048c1536c6e8e58858e89d3e2ef231b.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/2df07aa4778534be077f279a407bb06d.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/d19fb9e028f8daa2435c800baf4b5383.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/7b7f854fadc7ddd4e611bd7942df0d6c.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/0c47b03be896399f761e69606cdd7570.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/091188bd1a3f21faf5217ec7010a8ce9.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/602e1fb0cfed62b4fccdfc27a539c51c.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/aeba46400e12b713e4c7d1e6a9fc203e.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/upload/main/image/2024/12/08/ccc29e952c8659912b781eacf8c55179.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadailyhk.com/_nuxt/foot-logo.DI5V-6DJ.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "mx-auto block aspect-170/25 w-280 object-contain"
+      ]
+    }
+  ]
+}

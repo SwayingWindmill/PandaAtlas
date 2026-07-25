@@ -1,0 +1,827 @@
+{
+  "sources": [
+    {
+      "source_id": "src-hkgov-anan-keke-logistics-2024-local",
+      "source_type": "government_primary",
+      "publisher": "Hong Kong Transport and Logistics Bureau",
+      "title": "Giant Pandas’ Arrival Showcases Hong Kong’s World-Class Temperature-Controlled Logistics",
+      "url": "https://www.tlb.gov.hk/eng/blog/20241005.html",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Hong Kong Transport and Logistics Bureau account of personnel, crate temperature, Bluetooth monitoring and daily bamboo logistics."
+    },
+    {
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_type": "institution_primary",
+      "publisher": "Ocean Park Corporation",
+      "title": "Ocean Park Invites Visitors to Celebrate Giant Pandas An An and Ke Ke’s 7th Birthdays",
+      "url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/ocean-park-invites-visitors-to-celebrate-giant-pandas-an-an-and-ke-ke-7th-birthdays",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official seventh-birthday dates, birthday cakes, enrichment and visitor programme."
+    },
+    {
+      "source_id": "src-oceanpark-anan-keke-breeding-programme-local",
+      "source_type": "institution_primary",
+      "publisher": "Ocean Park Corporation",
+      "title": "Conservation Breeding",
+      "url": "https://corporate.oceanpark.com.hk/en/our-efforts-achievements/wildlife-conservation-and-animal-care/conservation-breeding",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Current Ocean Park description of breeding-season observation and gradual familiarisation for An An and Ke Ke."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0001",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2019-06-28",
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_locator": "birth_date",
+      "source_language": "en",
+      "summary_zh": "海洋公园七岁生日公告确认新安安出生于2019年6月28日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-hk-2019",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0002",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "milestone",
+      "predicate": "seventh_birthday",
+      "value": "2026-06-28",
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_locator": "seventh_birthday",
+      "source_language": "en",
+      "summary_zh": "新安安于2026年6月28日度过七岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-hk-2019",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0003",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "enrichment",
+      "predicate": "seventh_birthday_enrichment",
+      "value": [
+        "crafted icy birthday cake",
+        "special birthday enrichment"
+      ],
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_locator": "seventh_birthday_enrichment",
+      "source_language": "en",
+      "summary_zh": "七岁生日当天，护理团队为安安准备冰制生日蛋糕和专属丰容。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-hk-2019",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0004",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "transfer",
+      "predicate": "voluntary_travel_crate_training",
+      "value": {
+        "sedation_required": false,
+        "method": "voluntary entry after pre-flight familiarisation"
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "voluntary_travel_crate_training",
+      "source_language": "en",
+      "summary_zh": "赴港前安安通过运输箱适应训练自愿进入箱体，无需镇静。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-hk-2019",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0005",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "behaviour",
+      "predicate": "first_hong_kong_typhoon_response",
+      "value": "remained calm",
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "first_hong_kong_typhoon_response",
+      "source_language": "en",
+      "summary_zh": "安安在香港经历首次台风时保持平静。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-hk-2019",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0006",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "diet",
+      "predicate": "first_year_favourite_foods",
+      "value": [
+        "bamboo shoots",
+        "bamboo stalks",
+        "wowotou"
+      ],
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "first_year_favourite_foods",
+      "source_language": "en",
+      "summary_zh": "首周年资料记录安安偏爱竹笋、竹秆和窝窝头。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-hk-2019",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0007",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "health",
+      "predicate": "positive_reinforcement_healthcare_outcome",
+      "value": "voluntarily cooperates with blood draws and injections",
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "positive_reinforcement_healthcare_outcome",
+      "source_language": "en",
+      "summary_zh": "正向强化训练使安安能自愿配合抽血和注射。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-hk-2019",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0008",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2019-06-26",
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_locator": "birth_date",
+      "source_language": "en",
+      "summary_zh": "海洋公园七岁生日公告确认可可出生于2019年6月26日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0009",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "milestone",
+      "predicate": "seventh_birthday",
+      "value": "2026-06-26",
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_locator": "seventh_birthday",
+      "source_language": "en",
+      "summary_zh": "可可于2026年6月26日度过七岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0010",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "enrichment",
+      "predicate": "seventh_birthday_enrichment",
+      "value": [
+        "crafted icy birthday cake",
+        "special birthday enrichment"
+      ],
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_locator": "seventh_birthday_enrichment",
+      "source_language": "en",
+      "summary_zh": "七岁生日当天，护理团队为可可准备冰制生日蛋糕和专属丰容。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0011",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "transfer",
+      "predicate": "voluntary_travel_crate_training",
+      "value": {
+        "sedation_required": false,
+        "method": "voluntary entry after pre-flight familiarisation"
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "voluntary_travel_crate_training",
+      "source_language": "en",
+      "summary_zh": "赴港前可可通过运输箱适应训练自愿进入箱体，无需镇静。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0012",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "diet",
+      "predicate": "first_year_favourite_foods",
+      "value": [
+        "bamboo shoots",
+        "bamboo stalks",
+        "wowotou"
+      ],
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "first_year_favourite_foods",
+      "source_language": "en",
+      "summary_zh": "首周年资料记录可可偏爱竹笋、竹秆和窝窝头。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0013",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "reproduction",
+      "predicate": "breeding_season_behaviour_indicator",
+      "value": "tail rubbing and scent deposition are monitored as signs of estrus",
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "breeding_season_behaviour_indicator",
+      "source_language": "en",
+      "summary_zh": "护理团队在繁殖季观察可可是否摩擦尾部并留下气味标记，以判断发情变化。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0014",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "husbandry_training",
+      "predicate": "post_estrus_training_status_2025",
+      "value": "gradually resumed positive-reinforcement husbandry training after the estrous cycle",
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "post_estrus_training_status_2025",
+      "source_language": "en",
+      "summary_zh": "2025年资料记录可可在发情周期后逐步恢复正向强化训练。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "husbandry_training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0015",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "transfer",
+      "predicate": "pre_transfer_preparation_start",
+      "value": "2024-07",
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "pre_transfer_preparation_start",
+      "source_language": "en",
+      "summary_zh": "海洋公园团队从2024年7月中旬起轮流前往都江堰熟悉两只的性格、行为、护理程序和饮食偏好。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0016",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "transfer",
+      "predicate": "transport_support_team_size",
+      "value": 90,
+      "source_id": "src-hkgov-anan-keke-logistics-2024-local",
+      "source_locator": "transport_support_team_size",
+      "source_language": "en",
+      "summary_zh": "安安、可可赴港运输由跨机构约90人的专业团队协作保障。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0017",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "transfer",
+      "predicate": "inflight_accompanying_team",
+      "value": {
+        "sichuan_experts": 2,
+        "ocean_park_caregivers": 2
+      },
+      "source_id": "src-hkgov-anan-keke-logistics-2024-local",
+      "source_locator": "inflight_accompanying_team",
+      "source_language": "en",
+      "summary_zh": "飞行途中由两名四川专家和两名海洋公园护理员随行。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0018",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "transfer",
+      "predicate": "transport_crate_environment",
+      "value": {
+        "temperature_c_approx": 20,
+        "natural_light": true,
+        "ventilation": "good",
+        "bluetooth_monitoring": [
+          "temperature",
+          "humidity"
+        ]
+      },
+      "source_id": "src-hkgov-anan-keke-logistics-2024-local",
+      "source_locator": "transport_crate_environment",
+      "source_language": "en",
+      "summary_zh": "运输箱维持约20摄氏度，具自然采光和通风，并以蓝牙设备监测温湿度。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0019",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "diet",
+      "predicate": "daily_bamboo_logistics",
+      "value": {
+        "origin": "Conghua, Guangzhou",
+        "frequency": "daily",
+        "route": "direct point-to-point delivery to Ocean Park"
+      },
+      "source_id": "src-hkgov-anan-keke-logistics-2024-local",
+      "source_locator": "daily_bamboo_logistics",
+      "source_language": "en",
+      "summary_zh": "香港大熊猫所需竹叶主要来自广州从化，并每日点对点新鲜运抵海洋公园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0020",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "diet",
+      "predicate": "daily_meal_count",
+      "value": 4,
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "daily_meal_count",
+      "source_language": "en",
+      "summary_zh": "安安、可可每日进食四餐。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0021",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "diet",
+      "predicate": "daily_bamboo_variety_count",
+      "value": "5-6",
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "daily_bamboo_variety_count",
+      "source_language": "en",
+      "summary_zh": "护理团队每日为每只大熊猫提供五至六种竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0022",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "diet",
+      "predicate": "bamboo_storage_system",
+      "value": [
+        "temperature-controlled cabinet",
+        "sprinkler system"
+      ],
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "bamboo_storage_system",
+      "source_language": "en",
+      "summary_zh": "竹子储存柜采用温控和喷淋系统保持新鲜。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0023",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "diet",
+      "predicate": "wowotou_ingredients",
+      "value": [
+        "rice flour",
+        "soybean flour",
+        "cornmeal",
+        "eggs"
+      ],
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "wowotou_ingredients",
+      "source_language": "en",
+      "summary_zh": "窝窝头以米粉、黄豆粉、玉米粉和鸡蛋混合蒸制。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0024",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "enrichment",
+      "predicate": "foraging_enrichment_purpose",
+      "value": [
+        "intelligence",
+        "taste",
+        "smell",
+        "vision",
+        "mental health"
+      ],
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "foraging_enrichment_purpose",
+      "source_language": "en",
+      "summary_zh": "食物探索丰容调动智力以及味觉、嗅觉和视觉，有助心理健康。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0025",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "health",
+      "predicate": "quarantine_completed",
+      "value": "2024-10-25",
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "quarantine_completed",
+      "source_language": "en",
+      "summary_zh": "安安、可可于2024年10月25日完成抵港检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0026",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "behaviour",
+      "predicate": "pre_debut_visitor_acclimation",
+      "value": "small-scale visits by selected community, education and partner groups",
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "pre_debut_visitor_acclimation",
+      "source_language": "en",
+      "summary_zh": "正式亮相前，园方安排小规模参观，帮助两只适应访客存在。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0027",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "cultural_context",
+      "predicate": "combined_name_interpretation",
+      "value": "An plus Ke sounds like 'encore' and was interpreted as unending good fortune for Hong Kong",
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "combined_name_interpretation",
+      "source_language": "en",
+      "summary_zh": "安、可连读具有encore意象，官方解释为香港好运延续。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0028",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "location",
+      "predicate": "habitat_upgrade_period",
+      "value": {
+        "closed_from": "2025-10-13",
+        "closed_to": "2025-12-12",
+        "purpose": "more comfortable and enriching environment"
+      },
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "habitat_upgrade_period",
+      "source_language": "en",
+      "summary_zh": "首周年后，两只展区于2025年10月13日至12月12日进行升级，以提高舒适度和丰容水平。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0029",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "reproduction",
+      "predicate": "breeding_season_management_plan",
+      "value": "observe and assess both pandas and allow them to gradually become familiar with each other",
+      "source_id": "src-oceanpark-anan-keke-breeding-programme-local",
+      "source_locator": "breeding_season_management_plan",
+      "source_language": "en",
+      "summary_zh": "园方计划在繁殖季观察评估两只，并让它们逐步熟悉彼此。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-hongkong-anan-keke-0030",
+      "subject": {
+        "type": "research_programme",
+        "id": "hongkong-anan-keke-adaptation-2024-2026",
+        "label": "Hong Kong An An and Ke Ke adaptation programme"
+      },
+      "category": "milestone",
+      "predicate": "joint_seventh_birthday_celebration_period",
+      "value": {
+        "from": "2026-06-26",
+        "to": "2026-06-28"
+      },
+      "source_id": "src-oceanpark-anan-keke-birthday-2026-local",
+      "source_locator": "joint_seventh_birthday_celebration_period",
+      "source_language": "en",
+      "summary_zh": "海洋公园于2026年6月26日至28日举办安安、可可七岁生日活动。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hongkong-anan-keke-adaptation-2024-2026",
+        "milestone"
+      ]
+    }
+  ]
+}
