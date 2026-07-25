@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "candidate_count": 219,
+  "candidate_count": 222,
   "pandas_with_media": 58,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
@@ -45,20 +45,6 @@
       "coverage_gap_score": -10
     },
     {
-      "subject_id": "fu-bao-vienna",
-      "subject_label": "Fu Bao",
-      "media_count": 1,
-      "record_count": 4,
-      "direct_record_count": 4,
-      "category_count": 3,
-      "categories": {
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 2
-      },
-      "coverage_gap_score": -13
-    },
-    {
       "subject_id": "bao-bao-berlin",
       "subject_label": "Bao Bao",
       "media_count": 2,
@@ -69,20 +55,6 @@
         "location": 2,
         "media_candidate": 2,
         "sex": 2
-      },
-      "coverage_gap_score": -14
-    },
-    {
-      "subject_id": "fu-long",
-      "subject_label": "Fu Long",
-      "media_count": 2,
-      "record_count": 6,
-      "direct_record_count": 6,
-      "category_count": 3,
-      "categories": {
-        "location": 2,
-        "media_candidate": 2,
-        "milestone": 2
       },
       "coverage_gap_score": -14
     },
@@ -99,34 +71,6 @@
         "milestone": 2
       },
       "coverage_gap_score": -14
-    },
-    {
-      "subject_id": "fu-ban",
-      "subject_label": "福伴",
-      "media_count": 6,
-      "record_count": 13,
-      "direct_record_count": 13,
-      "category_count": 3,
-      "categories": {
-        "location": 2,
-        "media_candidate": 6,
-        "milestone": 5
-      },
-      "coverage_gap_score": -15
-    },
-    {
-      "subject_id": "fu-feng",
-      "subject_label": "福凤",
-      "media_count": 6,
-      "record_count": 13,
-      "direct_record_count": 13,
-      "category_count": 3,
-      "categories": {
-        "location": 2,
-        "media_candidate": 6,
-        "milestone": 5
-      },
-      "coverage_gap_score": -15
     },
     {
       "subject_id": "kai-kai-sg",
@@ -744,6 +688,27 @@
       "coverage_gap_score": -58
     },
     {
+      "subject_id": "fu-long",
+      "subject_label": "Fu Long",
+      "media_count": 3,
+      "record_count": 18,
+      "direct_record_count": 18,
+      "category_count": 10,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "location": 3,
+        "media_candidate": 3,
+        "milestone": 3,
+        "research": 3,
+        "sex": 1,
+        "transfer": 1,
+        "vocalisation": 1
+      },
+      "coverage_gap_score": -59
+    },
+    {
       "subject_id": "bao-li",
       "subject_label": "Bao Li",
       "media_count": 1,
@@ -826,6 +791,28 @@
       "coverage_gap_score": -63
     },
     {
+      "subject_id": "fu-feng",
+      "subject_label": "福凤",
+      "media_count": 7,
+      "record_count": 26,
+      "direct_record_count": 26,
+      "category_count": 11,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "growth_measurement": 1,
+        "location": 3,
+        "media_candidate": 7,
+        "milestone": 6,
+        "name_meaning": 1,
+        "personality": 2,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -65
+    },
+    {
       "subject_id": "wang-wang",
       "subject_label": "Wang Wang",
       "media_count": 4,
@@ -849,6 +836,28 @@
         "veterinary_care": 1
       },
       "coverage_gap_score": -65
+    },
+    {
+      "subject_id": "fu-bao-vienna",
+      "subject_label": "Fu Bao",
+      "media_count": 2,
+      "record_count": 18,
+      "direct_record_count": 18,
+      "category_count": 11,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "growth_measurement": 2,
+        "husbandry_training": 2,
+        "location": 3,
+        "media_candidate": 2,
+        "milestone": 3,
+        "name_meaning": 1,
+        "public_debut": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -66
     },
     {
       "subject_id": "le-le-memphis",
@@ -895,6 +904,30 @@
         "transfer": 1
       },
       "coverage_gap_score": -70
+    },
+    {
+      "subject_id": "fu-ban",
+      "subject_label": "福伴",
+      "media_count": 7,
+      "record_count": 27,
+      "direct_record_count": 27,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "cultural_context": 1,
+        "distinguishing_feature": 1,
+        "enrichment": 1,
+        "growth_measurement": 1,
+        "location": 3,
+        "media_candidate": 7,
+        "milestone": 6,
+        "name_meaning": 1,
+        "personality": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -72
     },
     {
       "subject_id": "le-le-hk",

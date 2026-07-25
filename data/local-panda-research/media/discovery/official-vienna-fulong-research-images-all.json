@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.zoovienna.at/forschung-und-lehre/lauschangriff-auf-fu-long/",
+  "discovered_at": "2026-07-25T14:39:05.576444+00:00",
+  "image_count": 5,
+  "images": [
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/artenschutz_forschung_lehre/forschung/pandalauschangriff_animal_detail_935.jpg",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/species_protection_aquarium.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "header-species-protection-aquarium__img"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/media/_versions_/artenschutz_forschung_lehre/forschung/pandalauschangriff_animal_detail_801.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "ratio__content"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/Tripadvisor_Travellers_choice_award_2024.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Tripadvisor",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "great-link-img--tripadvisor"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoovienna.at/static/img/2028_top_qualitaetssiege_4c.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Top Lehrbetrieb Wiener Qualitätssiegel",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "great-link-img--top-qualitaetssiegel"
+      ]
+    }
+  ]
+}
