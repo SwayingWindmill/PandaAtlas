@@ -1,0 +1,33 @@
+{
+  "body_base64": "eyJiYXRjaGNvbXBsZXRlIjp0cnVlLCJxdWVyeSI6eyJwYWdlcyI6W3sicGFnZWlkIjoxNjcyOTQxMjIsIm5zIjo2LCJ0aXRsZSI6IkZpbGU6RG9uZ2ppIENoaW1pbmcgVGVtcGxlLmpwZyIsImluZGV4IjoxLCJpbWFnZXJlcG9zaXRvcnkiOiJsb2NhbCIsImltYWdlaW5mbyI6W3sidGltZXN0YW1wIjoiMjAyNS0wNi0xMFQwODo0NjowN1oiLCJ1c2VyIjoiQm9hdHRvYWQiLCJzaXplIjoxMzMyNjYxLCJ3aWR0aCI6NDAzMiwiaGVpZ2h0IjozMDI0LCJ1cmwiOiJodHRwczovL3VwbG9hZC53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zLzAvMDAvRG9uZ2ppX0NoaW1pbmdfVGVtcGxlLmpwZyIsImRlc2NyaXB0aW9udXJsIjoiaHR0cHM6Ly9jb21tb25zLndpa2ltZWRpYS5vcmcvd2lraS9GaWxlOkRvbmdqaV9DaGltaW5nX1RlbXBsZS5qcGciLCJkZXNjcmlwdGlvbnNob3J0dXJsIjoiaHR0cHM6Ly9jb21tb25zLndpa2ltZWRpYS5vcmcvdy9pbmRleC5waHA/Y3VyaWQ9MTY3Mjk0MTIyIiwic2hhMSI6ImEzM2U5NDJlYzA2YTI5Y2E2MmNkYjYxZWVkNjI3ODAzMTA1ZGMxNDAiLCJleHRtZXRhZGF0YSI6eyJDYXRlZ29yaWVzIjp7InZhbHVlIjoiU2VsZi1wdWJsaXNoZWQgd29ya3xGaWxlcyB3aXRoIGNvb3JkaW5hdGVzIG1pc3NpbmcgU0RDIGxvY2F0aW9uIG9mIGNyZWF0aW9ufFBob3RvcyBieSBCb2F0dG9hZHxUYWtlbiB3aXRoIEdvb2dsZSBQaXhlbCA3fERvbmdqaSBDaGltaW5nIFRlbXBsZSIsInNvdXJjZSI6ImNvbW1vbnMtY2F0ZWdvcmllcyIsImhpZGRlbiI6IiJ9LCJJbWFnZURlc2NyaXB0aW9uIjp7InZhbHVlIjoi4oCL5Y+w54Gj5r6O5rmW57ij5pyb5a6J6YSJ5p2x5ZCJ5ba855qE546L54i65buf44CCIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiRGF0ZVRpbWVPcmlnaW5hbCI6eyJ2YWx1ZSI6IjIwMjEtMDUtMDQgMTc6NTE6MjkiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9LCJDcmVkaXQiOnsidmFsdWUiOiI8c3BhbiBjbGFzcz1cImludC1vd24td29ya1wiIGxhbmc9XCJlblwiPk93biB3b3JrPC9zcGFuPiIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIn0sIkFydGlzdCI6eyJ2YWx1ZSI6IjxhIGhyZWY9XCIvL2NvbW1vbnMud2lraW1lZGlhLm9yZy93aWtpL1VzZXI6Qm9hdHRvYWRcIiB0aXRsZT1cIlVzZXI6Qm9hdHRvYWRcIj7oiJ/pm4YgQm9hdHRvYWQ8L2E+Iiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiTGljZW5zZVNob3J0TmFtZSI6eyJ2YWx1ZSI6IkNDIEJZLVNBIDQuMCIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIiwiaGlkZGVuIjoiIn0sIlVzYWdlVGVybXMiOnsidmFsdWUiOiJDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uLVNoYXJlIEFsaWtlIDQuMCIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIn0sIkF0dHJpYnV0aW9uUmVxdWlyZWQiOnsidmFsdWUiOiJ0cnVlIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UiLCJoaWRkZW4iOiIifSwiTGljZW5zZVVybCI6eyJ2YWx1ZSI6Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS1zYS80LjAiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9fSwibWltZSI6ImltYWdlL2pwZWcifV19XX19",
+  "final_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Miao+Miao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "headers": {
+    "accept-ranges": "bytes",
+    "age": "2",
+    "cache-control": "private, must-revalidate, max-age=0",
+    "connection": "close",
+    "content-disposition": "inline; filename=api-result.json",
+    "content-length": "1620",
+    "content-security-policy": "default-src 'self'; script-src 'none'; object-src 'none'",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Sat, 25 Jul 2026 06:37:37 GMT",
+    "nel": "{ \"report_to\": \"wm_nel\", \"max_age\": 604800, \"failure_fraction\": 0.05, \"success_fraction\": 0.0}",
+    "report-to": "{ \"group\": \"wm_nel\", \"max_age\": 604800, \"endpoints\": [{ \"url\": \"https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0\" }] }",
+    "server": "mw-api-ext.codfw.main-568486bd8d-hf957",
+    "server-timing": "cache;desc=\"pass\", host;desc=\"cp5017\",co_id;desc=\"3871771371\"",
+    "set-cookie": "WMF-Uniq=jq2QiNtPFYA9N7P_YkSpBwOoAAAAAFvd6zyt7ZFWBNCr-eOeyQP7AeVHtDxcBbOd;Domain=commons.wikimedia.org;Path=/;HttpOnly;secure;SameSite=None;Expires=Sun, 25 Jul 2027 00:00:00 GMT",
+    "strict-transport-security": "max-age=106384710; includeSubDomains; preload",
+    "vary": "Accept-Encoding,X-Subdomain,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization,User-Agent",
+    "x-analytics": "",
+    "x-cache": "cp5017 miss, cp5017 pass",
+    "x-cache-status": "pass",
+    "x-client-ip": "67.159.48.146",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-request-id": "98345c48-8fb7-46c9-948b-96f4d9f7094f",
+    "x-search-id": "4t3eolmd2ss5u7o2ck837nb8u"
+  },
+  "requested_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Miao+Miao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "schema_version": 1,
+  "status": 200
+}

@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "page_url": "https://sandiegozoowildlifealliance.org/story-hub/2019/03/29/panda-cub-number-one",
+  "discovered_at": "2026-07-25T12:36:23.367324+00:00",
+  "image_count": 12,
+  "images": [
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/sites/default/files/2024-05/PLACEHOLDER-generic-landscape_image_1200x800.png",
+      "source_types": [
+        "link:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "image_src",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/themes/custom/park_stable/images/sdzwa-green.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/sites/default/files/styles/3_2_aspect_ratio_hero_crop/public/2024-05/PLACEHOLDER-generic-landscape_image_1200x800.png?itok=tVsBYpQS",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "green placeholder image",
+      "title": "",
+      "width": "1200",
+      "height": "800",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/sites/default/files/styles/3_2_aspect_ratio_thumbnail/public/2026-07/T16_0341_184.jpg?itok=49PZKRei",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Pacific pocket mouse in native habitats",
+      "title": "",
+      "width": "440",
+      "height": "293",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/sites/default/files/styles/3_2_aspect_ratio_thumbnail/public/2026-07/T2023_0356_024.jpg?itok=V7-OQ95J",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "young echidna puggle",
+      "title": "",
+      "width": "440",
+      "height": "293",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/sites/default/files/styles/3_2_aspect_ratio_thumbnail/public/2026-07/T19_0664_A3P6161.jpg?itok=aZW6ECa0",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Palm cockatoo in profile",
+      "title": "",
+      "width": "440",
+      "height": "293",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/themes/custom/park_stable/images/hash-line.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/themes/custom/park_stable/images/facebook.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/themes/custom/park_stable/images/x.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/themes/custom/park_stable/images/instagram.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/themes/custom/park_stable/images/tiktok.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://sandiegozoowildlifealliance.org/themes/custom/park_stable/images/youtube.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

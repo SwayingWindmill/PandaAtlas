@@ -27,7 +27,9 @@
   "categories": [
     "identity",
     "alias",
+    "name",
     "name_meaning",
+    "origin",
     "birth",
     "death",
     "sex",
@@ -42,6 +44,8 @@
     "diet",
     "personality",
     "behaviour",
+    "communication",
+    "maternal_care",
     "preference",
     "enrichment",
     "husbandry_training",

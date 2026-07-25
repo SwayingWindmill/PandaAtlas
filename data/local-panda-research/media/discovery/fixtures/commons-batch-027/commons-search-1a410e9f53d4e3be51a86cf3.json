@@ -1,0 +1,33 @@
+{
+  "body_base64": "eyJiYXRjaGNvbXBsZXRlIjp0cnVlLCJxdWVyeSI6eyJwYWdlcyI6W3sicGFnZWlkIjoxMTc0NTU4MjYsIm5zIjo2LCJ0aXRsZSI6IkZpbGU6RGljdGlvbm5haXJlIGfDqW7DqXJhbCBkZSBsYSBsYW5ndWUgZnJhbsOnYWlzZSBkZSBGcmFuw6dvaXMgUmF5bW9uZC1UMi0wNC1QLmRqdnUiLCJpbmRleCI6MSwiaW1hZ2VyZXBvc2l0b3J5IjoibG9jYWwiLCJpbWFnZWluZm8iOlt7InRpbWVzdGFtcCI6IjIwMjItMDQtMjhUMDM6MDI6MTFaIiwidXNlciI6IlBpYmV3aWtpIiwic2l6ZSI6NzE1NTEwOTcsIndpZHRoIjo0MjY3LCJoZWlnaHQiOjU3NTQsInBhZ2Vjb3VudCI6MTU5LCJ1cmwiOiJodHRwczovL3VwbG9hZC53aWtpbWVkaWEub3JnL3dpa2lwZWRpYS9jb21tb25zLzYvNjQvRGljdGlvbm5haXJlX2clQzMlQTluJUMzJUE5cmFsX2RlX2xhX2xhbmd1ZV9mcmFuJUMzJUE3YWlzZV9kZV9GcmFuJUMzJUE3b2lzX1JheW1vbmQtVDItMDQtUC5kanZ1IiwiZGVzY3JpcHRpb251cmwiOiJodHRwczovL2NvbW1vbnMud2lraW1lZGlhLm9yZy93aWtpL0ZpbGU6RGljdGlvbm5haXJlX2clQzMlQTluJUMzJUE5cmFsX2RlX2xhX2xhbmd1ZV9mcmFuJUMzJUE3YWlzZV9kZV9GcmFuJUMzJUE3b2lzX1JheW1vbmQtVDItMDQtUC5kanZ1IiwiZGVzY3JpcHRpb25zaG9ydHVybCI6Imh0dHBzOi8vY29tbW9ucy53aWtpbWVkaWEub3JnL3cvaW5kZXgucGhwP2N1cmlkPTExNzQ1NTgyNiIsInNoYTEiOiIzZTVkNDhkMTc0NGI4Mzg1ZDFlZjJlMTQ3NDhjMGMzYjBjNjJiYmI4IiwiZXh0bWV0YWRhdGEiOnsiQ2F0ZWdvcmllcyI6eyJ2YWx1ZSI6IkZyZW5jaCBkaWN0aW9uYXJpZXN8UEQgVVMgZXhwaXJlZHxGcmFuw6dvaXMgUmF5bW9uZCAobGV4aWNvZ3JhcGhlcikiLCJzb3VyY2UiOiJjb21tb25zLWNhdGVnb3JpZXMiLCJoaWRkZW4iOiIifSwiSW1hZ2VEZXNjcmlwdGlvbiI6eyJ2YWx1ZSI6IkRpY3Rpb25uYWlyZSBkZSBtb3RzIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiRGF0ZVRpbWVPcmlnaW5hbCI6eyJ2YWx1ZSI6IjE4MzItMDEtMDIiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9LCJDcmVkaXQiOnsidmFsdWUiOiJHYWxsaWNhIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiQXJ0aXN0Ijp7InZhbHVlIjoiRnJhbsOnb2lzIFJheW1vbmQiLCJzb3VyY2UiOiJjb21tb25zLWRlc2MtcGFnZSJ9LCJMaWNlbnNlU2hvcnROYW1lIjp7InZhbHVlIjoiUHVibGljIGRvbWFpbiIsInNvdXJjZSI6ImNvbW1vbnMtZGVzYy1wYWdlIiwiaGlkZGVuIjoiIn0sIlVzYWdlVGVybXMiOnsidmFsdWUiOiJQdWJsaWMgZG9tYWluIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UifSwiQXR0cmlidXRpb25SZXF1aXJlZCI6eyJ2YWx1ZSI6ImZhbHNlIiwic291cmNlIjoiY29tbW9ucy1kZXNjLXBhZ2UiLCJoaWRkZW4iOiIifX0sIm1pbWUiOiJpbWFnZS92bmQuZGp2dSJ9XX1dfX0=",
+  "final_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Ji+Fu%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "headers": {
+    "accept-ranges": "bytes",
+    "age": "0",
+    "cache-control": "private, must-revalidate, max-age=0",
+    "connection": "close",
+    "content-disposition": "inline; filename=api-result.json",
+    "content-length": "1463",
+    "content-security-policy": "default-src 'self'; script-src 'none'; object-src 'none'",
+    "content-type": "application/json; charset=utf-8",
+    "date": "Sat, 25 Jul 2026 04:37:54 GMT",
+    "nel": "{ \"report_to\": \"wm_nel\", \"max_age\": 604800, \"failure_fraction\": 0.05, \"success_fraction\": 0.0}",
+    "report-to": "{ \"group\": \"wm_nel\", \"max_age\": 604800, \"endpoints\": [{ \"url\": \"https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0\" }] }",
+    "server": "mw-api-ext.codfw.main-568486bd8d-nmqv7",
+    "server-timing": "cache;desc=\"pass\", host;desc=\"cp5017\",co_id;desc=\"4120703497\"",
+    "set-cookie": "WMF-Uniq=knYNHiDNnHEqwdAWJ31FOQOoAAAAAFvdaJwqeV1Vd5JHNN32wkPU-IVeKf_vytRO;Domain=commons.wikimedia.org;Path=/;HttpOnly;secure;SameSite=None;Expires=Sun, 25 Jul 2027 00:00:00 GMT",
+    "strict-transport-security": "max-age=106384710; includeSubDomains; preload",
+    "vary": "Accept-Encoding,X-Subdomain,Treat-as-Untrusted,X-Forwarded-Proto,Cookie,Authorization,User-Agent",
+    "x-analytics": "",
+    "x-cache": "cp5017 miss, cp5017 pass",
+    "x-cache-status": "pass",
+    "x-client-ip": "67.159.48.146",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "x-request-id": "3e0bdfed-7a4a-4e5e-872b-732e7c85aeac",
+    "x-search-id": "edenn96jg2m4lx7ps3jir6mcb"
+  },
+  "requested_url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Ji+Fu%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5",
+  "schema_version": 1,
+  "status": 200
+}

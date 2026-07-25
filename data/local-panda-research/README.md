@@ -21,7 +21,9 @@ Capture as much traceable giant-panda information as practical before deciding w
 - `sources.jsonl` — one source page or dataset per line.
 - `records/*.jsonl` — append-only research assertions and leads.
 - `collection-plan.json` — coverage goals and collection priorities.
-- `media/` — image candidates, generated local inventory, and ignored local image files.
+- `reports/coverage-gaps.json` — generated comparison of media holdings and structured fact coverage.
+- `imports/` — reviewed, reproducible local import batches.
+- `media/` — media candidates, generated local inventory, discovery evidence, and ignored local binaries.
 
 ## Record rules
 
@@ -36,20 +38,34 @@ Capture as much traceable giant-panda information as practical before deciding w
 9. Do not store sensitive wild-panda coordinates or current movement information.
 10. Automated collection must respect robots rules, terms, rate limits, authentication, and technical blocking.
 
-## Validation
+## Validation and collection
 
 ```bash
 npm run check:local-panda-research
 npm run test:local-panda-research
+npm run audit:local-panda-research
+npm run import:local-panda-research-batch -- --batch <batch.json> --output <records.jsonl>
 npm run check:local-panda-media
 npm run collect:local-panda-media
+npm run extract:local-panda-media-facts
 npm run test:local-panda-media
 ```
 
-The validator checks JSONL syntax, IDs, source references, timestamps, local-only publication status, and the controlled vocabularies used by the initial vault contract.
+The validator checks JSONL syntax, IDs, source references, timestamps, local-only publication status, evidence/review compatibility, and controlled vocabularies. The coverage audit compares structured facts with collected media, identifies pandas represented only by thin media metadata, and writes `reports/coverage-gaps.json` for the next official-source pass.
+
+## Current snapshot
+
+As of 2026-07-25, the vault contains **174 sources** and **1,084 structured records**: 1,071 direct-evidence records and thirteen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 56 individually identified pandas, with no collected individual lacking at least one structured fact record.
+
+The local media layer contains **213 candidates**, **206 downloaded files**, and **916,378,550 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
 - `2026-07-24-initial-web-research.jsonl` — first cross-regional pass across current profiles, transfers, health, anecdotes and media leads.
 - `2026-07-24-overseas-official-profiles.jsonl` — official-source pass for Taipei, Ouwehands, Vienna, Copenhagen and Qatar, with detailed husbandry, enrichment, identity-correction and reproductive-behaviour records.
+- `2026-07-25-official-followup.jsonl` and `2026-07-25-official-expanded.jsonl` — expanded overseas profiles, recent births, behaviour, husbandry and reproduction follow-up.
+- `2026-07-25-media-derived-facts.jsonl` — reproducible extraction of explicit identity, date, location, behaviour, research, cultural and historical facts from reviewed media candidates.
+- `2026-07-25-xiao-qi-ji-columbus.jsonl` — Xiao Qi Ji official development timeline plus 1992 Columbus Zoo historical-loan evidence.
+- Dedicated official-source batches cover Edinburgh Tian Tian and Yang Guang, Malaysia's panda programme, Beijing Da Di/Gu Gu/Fu Xing, London Chi Chi, Fuzhou Basi, Ocean Park An An/Jia Jia/Le Le, Chiang Mai Chuang Chuang and Lin Hui, Madrid Po and De De, Smithsonian Ling Ling, Memphis Le Le and Ya Ya, San Diego Hua Mei, and Adelaide Wang Wang.
 
+All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.

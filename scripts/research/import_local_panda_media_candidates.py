@@ -22,7 +22,7 @@ DEFAULT_COMMONS_DISCOVERY = (
 )
 PANDAS_CSV = REPO_ROOT / "data" / "curation" / "pandas" / "pandas.csv"
 
-IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".tif", ".tiff"}
+IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".tif", ".tiff", ".svg"}
 
 
 class CandidateImportError(RuntimeError):
@@ -162,6 +162,30 @@ def load_panda_relationships(path: Path = PANDAS_CSV) -> dict[str, set[str]]:
                 relationships[slug].add(relative)
                 relationships.setdefault(relative, set()).add(slug)
     return relationships
+
+
+def _first_year(*values: str) -> int | None:
+    for value in values:
+        match = re.search(r"(?<!\d)(18\d{2}|19\d{2}|20\d{2})(?!\d)", value)
+        if match:
+            return int(match.group(1))
+    return None
+
+
+def load_panda_life_ranges(path: Path = PANDAS_CSV) -> dict[str, tuple[int | None, int | None]]:
+    ranges: dict[str, tuple[int | None, int | None]] = {}
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        for row in csv.DictReader(handle):
+            slug = (row.get("slug") or "").strip()
+            if not slug:
+                continue
+            birth_year = _first_year(
+                row.get("birth_date") or "",
+                row.get("birth_date_text") or "",
+            )
+            death_year = _first_year(row.get("death_date") or "")
+            ranges[slug] = (birth_year, death_year)
+    return ranges
 
 
 def _suffix_from_url(asset_url: str) -> str:
@@ -309,7 +333,7 @@ def _contains_cjk(value: str) -> bool:
     return any("\u3400" <= character <= "\u9fff" for character in value)
 
 
-_AMBIGUOUS_COMMON_ALIASES = {"happy"}
+_AMBIGUOUS_COMMON_ALIASES = {"happy", "long long", "na na", "pan"}
 
 
 def _alias_matches_text(alias: str, text: str) -> bool:
@@ -320,6 +344,9 @@ def _alias_matches_text(alias: str, text: str) -> bool:
             rf"panda named {re.escape(alias)}(?![0-9a-z])",
             rf"(?<![0-9a-z]){re.escape(alias)} the panda(?![0-9a-z])",
             rf"named ['\"]?{re.escape(alias)}['\"]?(?![0-9a-z])",
+            rf"(?<![0-9a-z]){re.escape(alias)}\s*\(giant panda\)",
+            rf"(?<![0-9a-z]){re.escape(alias)} giant panda(?![0-9a-z])",
+            rf"giant panda ['\"]?{re.escape(alias)}['\"]?(?![0-9a-z])",
         )
         return any(re.search(pattern, text) is not None for pattern in explicit_patterns)
     pattern = rf"(?<![0-9a-z]){re.escape(alias)}(?![0-9a-z])"
@@ -347,6 +374,12 @@ def _has_fictional_or_merchandise_signal(source: dict[str, Any]) -> bool:
         ]
     ).casefold()
     signals = (
+        "red panda",
+        "ailurus fulgens",
+        "小熊猫",
+        "fiat panda",
+        "rallying automobiles",
+        " automobile",
         "kung fu panda",
         "功夫熊猫",
         "universal studios",
@@ -376,14 +409,114 @@ def _has_fictional_or_merchandise_signal(source: dict[str, Any]) -> bool:
         " stickers",
         " poster",
         " illustration",
-        " sculpture",
-        " statue",
-        " open-air museum",
+        " podcast",
+        "bloggercon",
+        " botanic garden",
+        "classification: plantae",
+        " poaceae",
+        "pogonatherum",
+        "bamboo grass",
         "贴纸",
         "海报",
         "插画",
     )
     return any(signal in text for signal in signals)
+
+
+def _related_media_topic(source: dict[str, Any]) -> tuple[str, str, str] | None:
+    text = _commons_identity_text(source)
+    if "crate" in text and "panda" in text and (
+        "transport" in text or "given by china" in text
+    ):
+        return (
+            "topic-1972-panda-transport-crates",
+            "1972 panda transport crates",
+            "historical_artifact",
+        )
+    signage_signals = (
+        "panda waiting time",
+        "time schedules",
+        "signs in",
+        "on signs",
+        "main gate",
+        " entry",
+        " entrance",
+    )
+    has_panda_context = "panda" in text or "ailuropoda melanoleuca" in text
+    costume_signals = (
+        "panda cosplay",
+        "giant panda cosplay",
+        "panda costume",
+        "panda mascot costume",
+    )
+    if any(signal in text for signal in costume_signals):
+        return (
+            "topic-panda-costumes",
+            "Panda costumes and cosplay",
+            "panda_costume",
+        )
+    research_diagram_signals = (
+        "phylogenetic tree",
+        "orthomam",
+        "comparative genomics",
+        "evolutionary genomics",
+    )
+    if has_panda_context and any(signal in text for signal in research_diagram_signals):
+        return (
+            "topic-panda-research-diagrams",
+            "Panda-related research diagrams",
+            "research_diagram",
+        )
+    if has_panda_context and any(signal in text for signal in signage_signals):
+        return (
+            "topic-panda-facility-signage",
+            "Panda facility signage",
+            "facility_signage",
+        )
+    memorial_signals = ("statue", "sculpture", "memorial", "塑像", "雕像", "雕塑")
+    primary_text = " ".join(
+        [str(source.get("file_title") or ""), str(source.get("description") or "")]
+    ).casefold()
+    has_memorial_panda_context = "panda" in primary_text or "熊猫" in primary_text
+    if has_memorial_panda_context and any(signal in text for signal in memorial_signals):
+        return (
+            "topic-panda-memorials",
+            "Panda statues and memorials",
+            "panda_memorial",
+        )
+    cultural_object_signals = (
+        "teddybear",
+        "teddy bear",
+        "handsewn",
+        "handmade",
+        "mohair",
+        "alpaca",
+        "stuffed toy",
+        "plush toy",
+    )
+    if has_panda_context and any(signal in text for signal in cultural_object_signals):
+        return (
+            "topic-panda-cultural-objects",
+            "Panda-themed cultural objects",
+            "cultural_object",
+        )
+    return None
+
+
+def _memorial_explicitly_represents_named_panda(source: dict[str, Any]) -> bool:
+    primary_text = " ".join(
+        [str(source.get("file_title") or ""), str(source.get("description") or "")]
+    ).casefold()
+    return any(
+        signal in primary_text
+        for signal in (
+            "statue of panda",
+            "statue of giant panda",
+            "memorial to panda",
+            "panda memorial",
+            "熊猫" if "塑像" in primary_text or "雕像" in primary_text else "\0",
+        )
+    )
 
 
 def _commons_identity_text(source: dict[str, Any]) -> str:
@@ -394,6 +527,21 @@ def _commons_identity_text(source: dict[str, Any]) -> str:
             " ".join(str(value) for value in source.get("categories") or []),
         ]
     ).casefold()
+
+
+def _explicit_media_subjects(source: dict[str, Any]) -> tuple[list[str], str | None]:
+    primary_text = " ".join(
+        [str(source.get("file_title") or ""), str(source.get("description") or "")]
+    ).casefold()
+    if re.search(r"(?<![0-9a-z])lun\s+and\s+lani(?![0-9a-z])", primary_text):
+        return ["lun-lun", "mei-lan"], "community-nickname-crosswalk"
+    if (
+        "xing xing and qin qin" in primary_text
+        and "columbus zoo" in primary_text
+        and "1992" in primary_text
+    ):
+        return ["qin-qin-xian-1989", "xing-xing-chengdu-1989"], "historic-loan-description-crosswalk"
+    return [], None
 
 
 def resolve_commons_subjects(
@@ -428,9 +576,30 @@ def disambiguate_commons_subjects(
     *,
     identity_hints: dict[str, set[str]],
     relationships: dict[str, set[str]] | None = None,
+    life_ranges: dict[str, tuple[int | None, int | None]] | None = None,
 ) -> list[str]:
     if len(subjects) < 2:
         return subjects
+
+    captured_year = _first_year(
+        str(source.get("file_title") or ""),
+        str(source.get("description") or ""),
+        str(source.get("captured_at_text") or ""),
+    )
+    if captured_year is not None:
+        possible = []
+        for slug in subjects:
+            birth_year, death_year = (life_ranges or {}).get(slug, (None, None))
+            if birth_year is not None and captured_year < birth_year:
+                continue
+            if death_year is not None and captured_year > death_year:
+                continue
+            possible.append(slug)
+        if possible:
+            subjects = possible
+        if len(subjects) < 2:
+            return subjects
+
     text = _commons_identity_text(source)
     scores = {
         slug: sum(1 for hint in identity_hints.get(slug, set()) if _alias_matches_text(hint, text))
@@ -459,6 +628,7 @@ def candidate_from_commons_discovery(
     alias_index: dict[str, set[str]],
     identity_hints: dict[str, set[str]] | None = None,
     relationships: dict[str, set[str]] | None = None,
+    life_ranges: dict[str, tuple[int | None, int | None]] | None = None,
     discovered_at: str,
 ) -> dict[str, Any] | None:
     mime = str(source.get("mime") or "")
@@ -469,38 +639,61 @@ def candidate_from_commons_discovery(
     candidate_id = str(source.get("candidate_id") or "").strip()
     if not asset_url.startswith("https://") or not source_page_url.startswith("https://"):
         return None
-    if _has_fictional_or_merchandise_signal(source):
+    related_topic = _related_media_topic(source)
+    if _has_fictional_or_merchandise_signal(source) and related_topic is None:
         return None
 
-    subjects = resolve_commons_subjects(source, alias_index=alias_index)
-    subjects = disambiguate_commons_subjects(
-        source,
-        subjects,
-        identity_hints=identity_hints or {},
-        relationships=relationships,
-    )
+    subjects, explicit_identity_basis = _explicit_media_subjects(source)
+    if not subjects:
+        subjects = resolve_commons_subjects(source, alias_index=alias_index)
+        subjects = disambiguate_commons_subjects(
+            source,
+            subjects,
+            identity_hints=identity_hints or {},
+            relationships=relationships,
+            life_ranges=None if related_topic and related_topic[2] == "panda_memorial" else life_ranges,
+        )
     source_confidence = source.get("identity_confidence")
     if not isinstance(source_confidence, (int, float)):
         source_confidence = 0.25
-    if not subjects and not _has_giant_panda_signal(source):
+    if explicit_identity_basis == "historic-loan-description-crosswalk":
+        source_confidence = max(float(source_confidence), 0.9)
+    elif explicit_identity_basis:
+        source_confidence = max(float(source_confidence), 0.65)
+    if not subjects and not _has_giant_panda_signal(source) and related_topic is None:
         return None
 
-    if len(subjects) == 1:
+    same_label_ambiguity = len(subjects) > 1 and len(
+        {labels.get(slug, slug).casefold() for slug in subjects}
+    ) == 1
+
+    if related_topic is not None:
+        subject_id, subject_label, media_kind = related_topic
+        identity_confidence = 0.95
+        collection_priority = 3
+    elif len(subjects) == 1:
         subject_id = subjects[0]
         subject_label = labels.get(subject_id, subject_id)
         identity_confidence = max(float(source_confidence), 0.5)
         collection_priority = 2
-    elif subjects:
+        media_kind = "individual_panda"
+    elif subjects and not same_label_ambiguity:
         group_digest = hashlib.sha256("|".join(subjects).encode("utf-8")).hexdigest()[:12]
         subject_id = f"group-{group_digest}"
         subject_label = " / ".join(labels.get(slug, slug) for slug in subjects)
-        identity_confidence = min(float(source_confidence), 0.75)
+        identity_confidence = (
+            float(source_confidence)
+            if explicit_identity_basis == "historic-loan-description-crosswalk"
+            else min(float(source_confidence), 0.75)
+        )
         collection_priority = 2
+        media_kind = "panda_group"
     else:
         subject_id = "unresolved-commons"
         subject_label = "Unresolved Wikimedia Commons panda candidate"
         identity_confidence = min(float(source_confidence), 0.25)
         collection_priority = 3
+        media_kind = "unresolved_panda"
 
     asset_digest = hashlib.sha256(asset_url.encode("utf-8")).hexdigest()[:20]
     artist = str(source.get("artist") or "").strip()
@@ -518,6 +711,7 @@ def candidate_from_commons_discovery(
         "media_id": f"local-media-commons-{asset_digest}",
         "subject_id": subject_id,
         "subject_label": subject_label,
+        "media_kind": media_kind,
         "source_page_url": source_page_url,
         "asset_url": asset_url,
         "credit": credit,
@@ -534,7 +728,13 @@ def candidate_from_commons_discovery(
             "Search-target identity was not trusted automatically; names were resolved from file title, description and categories. "
             "Rights metadata is retained but never gates local ingestion."
         ),
-        "related_subject_ids": subjects,
+        "related_subject_ids": subjects if media_kind in {"individual_panda", "panda_group"} else [],
+        "represented_subject_ids": (
+            subjects
+            if media_kind == "panda_memorial" and _memorial_explicitly_represents_named_panda(source)
+            else []
+        ),
+        "identity_basis": explicit_identity_basis or str(source.get("identity_basis") or "metadata-alias-resolution"),
         "discovery_query": str(source.get("query") or ""),
         "original_discovery_candidate_id": candidate_id,
     }
@@ -582,6 +782,7 @@ def import_commons_discovery_candidates(
     alias_index = load_panda_alias_index()
     identity_hints = load_panda_identity_hints()
     relationships = load_panda_relationships()
+    life_ranges = load_panda_life_ranges()
 
     additions: list[dict[str, Any]] = []
     skipped_duplicates = 0
@@ -595,6 +796,7 @@ def import_commons_discovery_candidates(
             alias_index=alias_index,
             identity_hints=identity_hints,
             relationships=relationships,
+            life_ranges=life_ranges,
             discovered_at=discovered_at,
         )
         if candidate is None:

@@ -1,0 +1,991 @@
+{
+  "schema_version": 1,
+  "candidate_count": 213,
+  "pandas_with_media": 56,
+  "pandas_with_media_and_no_records": 0,
+  "ranked_gaps": [
+    {
+      "subject_id": "qin-qin-xian-1989",
+      "subject_label": "Qin Qin",
+      "media_count": 2,
+      "record_count": 4,
+      "direct_record_count": 4,
+      "category_count": 2,
+      "categories": {
+        "location": 2,
+        "media_candidate": 2
+      },
+      "coverage_gap_score": -6
+    },
+    {
+      "subject_id": "xing-xing-chengdu-1989",
+      "subject_label": "Xing Xing",
+      "media_count": 2,
+      "record_count": 4,
+      "direct_record_count": 4,
+      "category_count": 2,
+      "categories": {
+        "location": 2,
+        "media_candidate": 2
+      },
+      "coverage_gap_score": -6
+    },
+    {
+      "subject_id": "ding-ding",
+      "subject_label": "Ding Ding",
+      "media_count": 1,
+      "record_count": 3,
+      "direct_record_count": 3,
+      "category_count": 3,
+      "categories": {
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1
+      },
+      "coverage_gap_score": -10
+    },
+    {
+      "subject_id": "yang-yang-vienna",
+      "subject_label": "阳阳",
+      "media_count": 1,
+      "record_count": 3,
+      "direct_record_count": 3,
+      "category_count": 3,
+      "categories": {
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1
+      },
+      "coverage_gap_score": -10
+    },
+    {
+      "subject_id": "yuan-zi",
+      "subject_label": "圆子",
+      "media_count": 1,
+      "record_count": 3,
+      "direct_record_count": 3,
+      "category_count": 3,
+      "categories": {
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1
+      },
+      "coverage_gap_score": -10
+    },
+    {
+      "subject_id": "fu-bao-vienna",
+      "subject_label": "Fu Bao",
+      "media_count": 1,
+      "record_count": 4,
+      "direct_record_count": 4,
+      "category_count": 3,
+      "categories": {
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 2
+      },
+      "coverage_gap_score": -13
+    },
+    {
+      "subject_id": "fu-ban",
+      "subject_label": "福伴",
+      "media_count": 5,
+      "record_count": 11,
+      "direct_record_count": 11,
+      "category_count": 3,
+      "categories": {
+        "location": 1,
+        "media_candidate": 5,
+        "milestone": 5
+      },
+      "coverage_gap_score": -14
+    },
+    {
+      "subject_id": "fu-feng",
+      "subject_label": "福凤",
+      "media_count": 5,
+      "record_count": 11,
+      "direct_record_count": 11,
+      "category_count": 3,
+      "categories": {
+        "location": 1,
+        "media_candidate": 5,
+        "milestone": 5
+      },
+      "coverage_gap_score": -14
+    },
+    {
+      "subject_id": "bao-bao-berlin",
+      "subject_label": "Bao Bao",
+      "media_count": 2,
+      "record_count": 6,
+      "direct_record_count": 6,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 2,
+        "sex": 2
+      },
+      "coverage_gap_score": -14
+    },
+    {
+      "subject_id": "fu-long",
+      "subject_label": "Fu Long",
+      "media_count": 2,
+      "record_count": 6,
+      "direct_record_count": 6,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 2,
+        "milestone": 2
+      },
+      "coverage_gap_score": -14
+    },
+    {
+      "subject_id": "lin-bing",
+      "subject_label": "Lin Bing",
+      "media_count": 2,
+      "record_count": 6,
+      "direct_record_count": 6,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 2,
+        "milestone": 2
+      },
+      "coverage_gap_score": -14
+    },
+    {
+      "subject_id": "kai-kai-sg",
+      "subject_label": "Kai Kai",
+      "media_count": 3,
+      "record_count": 8,
+      "direct_record_count": 8,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 3,
+        "milestone": 3
+      },
+      "coverage_gap_score": -15
+    },
+    {
+      "subject_id": "jiao-qing",
+      "subject_label": "Jiao Qing",
+      "media_count": 1,
+      "record_count": 4,
+      "direct_record_count": 4,
+      "category_count": 4,
+      "categories": {
+        "birth": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "personality": 1
+      },
+      "coverage_gap_score": -15
+    },
+    {
+      "subject_id": "jia-jia-sg",
+      "subject_label": "Jia Jia",
+      "media_count": 4,
+      "record_count": 10,
+      "direct_record_count": 10,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 4,
+        "milestone": 4
+      },
+      "coverage_gap_score": -16
+    },
+    {
+      "subject_id": "er-shun",
+      "subject_label": "Er Shun",
+      "media_count": 2,
+      "record_count": 6,
+      "direct_record_count": 6,
+      "category_count": 4,
+      "categories": {
+        "behaviour": 1,
+        "media_candidate": 2,
+        "milestone": 2,
+        "sex": 1
+      },
+      "coverage_gap_score": -16
+    },
+    {
+      "subject_id": "long-hui",
+      "subject_label": "Long Hui",
+      "media_count": 5,
+      "record_count": 12,
+      "direct_record_count": 12,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 5,
+        "milestone": 5
+      },
+      "coverage_gap_score": -17
+    },
+    {
+      "subject_id": "bao-bao",
+      "subject_label": "Bao Bao",
+      "media_count": 3,
+      "record_count": 9,
+      "direct_record_count": 9,
+      "category_count": 3,
+      "categories": {
+        "location": 3,
+        "media_candidate": 3,
+        "milestone": 3
+      },
+      "coverage_gap_score": -18
+    },
+    {
+      "subject_id": "bai-yun",
+      "subject_label": "白云",
+      "media_count": 2,
+      "record_count": 7,
+      "direct_record_count": 7,
+      "category_count": 4,
+      "categories": {
+        "behaviour": 1,
+        "location": 2,
+        "media_candidate": 2,
+        "milestone": 2
+      },
+      "coverage_gap_score": -19
+    },
+    {
+      "subject_id": "bei-bei",
+      "subject_label": "Bei Bei",
+      "media_count": 2,
+      "record_count": 7,
+      "direct_record_count": 7,
+      "category_count": 4,
+      "categories": {
+        "location": 2,
+        "media_candidate": 2,
+        "milestone": 2,
+        "sex": 1
+      },
+      "coverage_gap_score": -19
+    },
+    {
+      "subject_id": "lei-lei",
+      "subject_label": "蕾蕾",
+      "media_count": 5,
+      "record_count": 13,
+      "direct_record_count": 13,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 6,
+        "milestone": 5
+      },
+      "coverage_gap_score": -20
+    },
+    {
+      "subject_id": "xiao-xiao",
+      "subject_label": "晓晓",
+      "media_count": 5,
+      "record_count": 13,
+      "direct_record_count": 13,
+      "category_count": 3,
+      "categories": {
+        "location": 2,
+        "media_candidate": 6,
+        "milestone": 5
+      },
+      "coverage_gap_score": -20
+    },
+    {
+      "subject_id": "hao-hao",
+      "subject_label": "Hao Hao",
+      "media_count": 1,
+      "record_count": 5,
+      "direct_record_count": 5,
+      "category_count": 5,
+      "categories": {
+        "health": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "relationship": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -20
+    },
+    {
+      "subject_id": "le-bao",
+      "subject_label": "Le Bao",
+      "media_count": 1,
+      "record_count": 5,
+      "direct_record_count": 5,
+      "category_count": 5,
+      "categories": {
+        "alias": 1,
+        "behaviour": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "personality": 1
+      },
+      "coverage_gap_score": -20
+    },
+    {
+      "subject_id": "fu-bao",
+      "subject_label": "Fu Bao",
+      "media_count": 2,
+      "record_count": 7,
+      "direct_record_count": 7,
+      "category_count": 5,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "location": 1,
+        "media_candidate": 2,
+        "milestone": 2
+      },
+      "coverage_gap_score": -21
+    },
+    {
+      "subject_id": "gao-gao",
+      "subject_label": "Gao Gao",
+      "media_count": 5,
+      "record_count": 14,
+      "direct_record_count": 14,
+      "category_count": 4,
+      "categories": {
+        "behaviour": 2,
+        "location": 3,
+        "media_candidate": 5,
+        "milestone": 4
+      },
+      "coverage_gap_score": -25
+    },
+    {
+      "subject_id": "tian-tian",
+      "subject_label": "Tian Tian",
+      "media_count": 5,
+      "record_count": 15,
+      "direct_record_count": 15,
+      "category_count": 4,
+      "categories": {
+        "location": 4,
+        "media_candidate": 5,
+        "milestone": 2,
+        "sex": 4
+      },
+      "coverage_gap_score": -28
+    },
+    {
+      "subject_id": "mei-xiang",
+      "subject_label": "美香",
+      "media_count": 1,
+      "record_count": 9,
+      "direct_record_count": 9,
+      "category_count": 3,
+      "categories": {
+        "location": 3,
+        "media_candidate": 3,
+        "milestone": 3
+      },
+      "coverage_gap_score": -28
+    },
+    {
+      "subject_id": "chi-chi",
+      "subject_label": "Chi Chi",
+      "media_count": 2,
+      "record_count": 9,
+      "direct_record_count": 9,
+      "category_count": 6,
+      "categories": {
+        "anecdote": 1,
+        "conflict": 1,
+        "cultural_context": 2,
+        "media_candidate": 2,
+        "milestone": 2,
+        "transfer": 1
+      },
+      "coverage_gap_score": -29
+    },
+    {
+      "subject_id": "de-de-madrid",
+      "subject_label": "De De",
+      "media_count": 1,
+      "record_count": 7,
+      "direct_record_count": 7,
+      "category_count": 7,
+      "categories": {
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "name_meaning": 1,
+        "relationship": 1
+      },
+      "coverage_gap_score": -30
+    },
+    {
+      "subject_id": "lin-hui",
+      "subject_label": "Lin Hui",
+      "media_count": 1,
+      "record_count": 7,
+      "direct_record_count": 7,
+      "category_count": 7,
+      "categories": {
+        "birth": 1,
+        "death": 1,
+        "health": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "sex": 1
+      },
+      "coverage_gap_score": -30
+    },
+    {
+      "subject_id": "po-madrid",
+      "subject_label": "Po",
+      "media_count": 1,
+      "record_count": 7,
+      "direct_record_count": 7,
+      "category_count": 7,
+      "categories": {
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "name_meaning": 1,
+        "relationship": 1
+      },
+      "coverage_gap_score": -30
+    },
+    {
+      "subject_id": "an-an-ocean-park",
+      "subject_label": "安安",
+      "media_count": 1,
+      "record_count": 8,
+      "direct_record_count": 8,
+      "category_count": 6,
+      "categories": {
+        "death": 1,
+        "health": 2,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 2,
+        "transfer": 1
+      },
+      "coverage_gap_score": -31
+    },
+    {
+      "subject_id": "an-an",
+      "subject_label": "An An",
+      "media_count": 5,
+      "record_count": 17,
+      "direct_record_count": 17,
+      "category_count": 4,
+      "categories": {
+        "location": 2,
+        "media_candidate": 5,
+        "milestone": 5,
+        "sex": 5
+      },
+      "coverage_gap_score": -34
+    },
+    {
+      "subject_id": "huan-huan",
+      "subject_label": "Huan Huan",
+      "media_count": 5,
+      "record_count": 17,
+      "direct_record_count": 17,
+      "category_count": 4,
+      "categories": {
+        "location": 3,
+        "media_candidate": 5,
+        "milestone": 5,
+        "sex": 4
+      },
+      "coverage_gap_score": -34
+    },
+    {
+      "subject_id": "tai-shan",
+      "subject_label": "Tai Shan",
+      "media_count": 5,
+      "record_count": 17,
+      "direct_record_count": 17,
+      "category_count": 5,
+      "categories": {
+        "behaviour": 1,
+        "location": 4,
+        "media_candidate": 5,
+        "milestone": 6,
+        "sex": 1
+      },
+      "coverage_gap_score": -36
+    },
+    {
+      "subject_id": "liang-liang-my",
+      "subject_label": "Liang Liang",
+      "media_count": 1,
+      "record_count": 10,
+      "direct_record_count": 10,
+      "category_count": 9,
+      "categories": {
+        "alias": 1,
+        "birth": 1,
+        "husbandry_training": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "name_meaning": 1,
+        "relationship": 1,
+        "reproduction": 2,
+        "transfer": 1
+      },
+      "coverage_gap_score": -43
+    },
+    {
+      "subject_id": "mei-lan",
+      "subject_label": "Mei Lan",
+      "media_count": 6,
+      "record_count": 21,
+      "direct_record_count": 20,
+      "category_count": 8,
+      "categories": {
+        "alias": 1,
+        "birth": 1,
+        "location": 2,
+        "media_candidate": 6,
+        "milestone": 8,
+        "name": 1,
+        "reproduction": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -46
+    },
+    {
+      "subject_id": "fu-xing",
+      "subject_label": "Fu Xing",
+      "media_count": 2,
+      "record_count": 12,
+      "direct_record_count": 12,
+      "category_count": 10,
+      "categories": {
+        "alias": 1,
+        "appearance": 1,
+        "behaviour": 1,
+        "birth": 1,
+        "media_candidate": 2,
+        "milestone": 2,
+        "preference": 1,
+        "relationship": 1,
+        "transfer": 1,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -46
+    },
+    {
+      "subject_id": "jia-jia-ocean-park",
+      "subject_label": "佳佳",
+      "media_count": 1,
+      "record_count": 11,
+      "direct_record_count": 11,
+      "category_count": 9,
+      "categories": {
+        "death": 1,
+        "health": 2,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 2,
+        "origin": 1,
+        "personality": 1,
+        "reproduction": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -46
+    },
+    {
+      "subject_id": "tian-tian-edinburgh",
+      "subject_label": "Tian Tian",
+      "media_count": 1,
+      "record_count": 12,
+      "direct_record_count": 12,
+      "category_count": 8,
+      "categories": {
+        "behaviour": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "reproduction": 3,
+        "research": 2,
+        "transfer": 2,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -47
+    },
+    {
+      "subject_id": "gu-gu",
+      "subject_label": "Gu Gu",
+      "media_count": 2,
+      "record_count": 14,
+      "direct_record_count": 14,
+      "category_count": 10,
+      "categories": {
+        "alias": 1,
+        "birth": 1,
+        "death": 2,
+        "health": 2,
+        "identity": 1,
+        "media_candidate": 2,
+        "milestone": 2,
+        "personality": 1,
+        "transfer": 1,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -52
+    },
+    {
+      "subject_id": "ling-ling-smithsonian",
+      "subject_label": "Ling Ling",
+      "media_count": 4,
+      "record_count": 17,
+      "direct_record_count": 17,
+      "category_count": 11,
+      "categories": {
+        "birth": 4,
+        "death": 1,
+        "diplomacy": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "relationship": 1,
+        "reproduction": 4,
+        "research": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -53
+    },
+    {
+      "subject_id": "lun-lun",
+      "subject_label": "伦伦",
+      "media_count": 5,
+      "record_count": 20,
+      "direct_record_count": 20,
+      "category_count": 10,
+      "categories": {
+        "appearance": 1,
+        "birth": 1,
+        "location": 2,
+        "maternal_care": 1,
+        "media_candidate": 6,
+        "milestone": 5,
+        "preference": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -55
+    },
+    {
+      "subject_id": "mao-sun",
+      "subject_label": "Mao Sun",
+      "media_count": 5,
+      "record_count": 22,
+      "direct_record_count": 22,
+      "category_count": 7,
+      "categories": {
+        "birth": 1,
+        "location": 1,
+        "media_candidate": 5,
+        "milestone": 5,
+        "reproduction": 3,
+        "sex": 6,
+        "transfer": 1
+      },
+      "coverage_gap_score": -55
+    },
+    {
+      "subject_id": "da-di-beijing",
+      "subject_label": "Da Di",
+      "media_count": 1,
+      "record_count": 17,
+      "direct_record_count": 13,
+      "category_count": 12,
+      "categories": {
+        "birth": 1,
+        "death": 2,
+        "health": 2,
+        "identity": 1,
+        "location": 2,
+        "media_candidate": 1,
+        "milestone": 1,
+        "preference": 1,
+        "relationship": 2,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -58
+    },
+    {
+      "subject_id": "bao-li",
+      "subject_label": "Bao Li",
+      "media_count": 1,
+      "record_count": 17,
+      "direct_record_count": 17,
+      "category_count": 7,
+      "categories": {
+        "birth": 1,
+        "location": 4,
+        "media_candidate": 5,
+        "milestone": 4,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1
+      },
+      "coverage_gap_score": -60
+    },
+    {
+      "subject_id": "chuang-chuang",
+      "subject_label": "Chuang Chuang",
+      "media_count": 1,
+      "record_count": 14,
+      "direct_record_count": 14,
+      "category_count": 12,
+      "categories": {
+        "alias": 1,
+        "behaviour": 1,
+        "birth": 1,
+        "death": 2,
+        "diplomacy": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "relationship": 2,
+        "sex": 1,
+        "transfer": 1,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -61
+    },
+    {
+      "subject_id": "mei-sheng",
+      "subject_label": "Mei Sheng",
+      "media_count": 5,
+      "record_count": 23,
+      "direct_record_count": 23,
+      "category_count": 9,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "health": 1,
+        "location": 4,
+        "media_candidate": 5,
+        "milestone": 7,
+        "relationship": 2,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -62
+    },
+    {
+      "subject_id": "basi-sandiego",
+      "subject_label": "Basi",
+      "media_count": 4,
+      "record_count": 21,
+      "direct_record_count": 21,
+      "category_count": 10,
+      "categories": {
+        "birth": 1,
+        "cultural_context": 3,
+        "death": 1,
+        "diplomacy": 1,
+        "husbandry_training": 1,
+        "media_candidate": 4,
+        "milestone": 6,
+        "name_meaning": 1,
+        "origin": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -63
+    },
+    {
+      "subject_id": "wang-wang",
+      "subject_label": "Wang Wang",
+      "media_count": 4,
+      "record_count": 19,
+      "direct_record_count": 19,
+      "category_count": 14,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "diet": 1,
+        "enrichment": 1,
+        "husbandry_training": 1,
+        "location": 1,
+        "media_candidate": 4,
+        "milestone": 1,
+        "name_meaning": 1,
+        "origin": 1,
+        "preference": 1,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -65
+    },
+    {
+      "subject_id": "le-le-memphis",
+      "subject_label": "Le Le",
+      "media_count": 5,
+      "record_count": 23,
+      "direct_record_count": 23,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 1,
+        "death": 2,
+        "diet": 2,
+        "diplomacy": 2,
+        "enrichment": 1,
+        "location": 3,
+        "media_candidate": 3,
+        "milestone": 1,
+        "personality": 2,
+        "preference": 2,
+        "sex": 1,
+        "transfer": 1,
+        "veterinary_care": 2
+      },
+      "coverage_gap_score": -70
+    },
+    {
+      "subject_id": "le-le-hk",
+      "subject_label": "Le Le",
+      "media_count": 1,
+      "record_count": 18,
+      "direct_record_count": 18,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "growth_measurement": 2,
+        "husbandry_training": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 2,
+        "preference": 1,
+        "relationship": 2,
+        "reproduction": 3,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -75
+    },
+    {
+      "subject_id": "hua-mei",
+      "subject_label": "Hua Mei",
+      "media_count": 4,
+      "record_count": 24,
+      "direct_record_count": 24,
+      "category_count": 15,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 2,
+        "birth": 1,
+        "conflict": 1,
+        "location": 2,
+        "maternal_care": 2,
+        "media_candidate": 3,
+        "milestone": 2,
+        "name": 1,
+        "personality": 1,
+        "relationship": 1,
+        "reproduction": 4,
+        "sex": 1,
+        "transfer": 1,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -82
+    },
+    {
+      "subject_id": "yuan-zai",
+      "subject_label": "Yuan Zai",
+      "media_count": 1,
+      "record_count": 24,
+      "direct_record_count": 24,
+      "category_count": 10,
+      "categories": {
+        "appearance": 2,
+        "behaviour": 3,
+        "enrichment": 2,
+        "growth_measurement": 4,
+        "location": 1,
+        "maternal_care": 1,
+        "media_candidate": 1,
+        "milestone": 7,
+        "personality": 1,
+        "reproduction": 2
+      },
+      "coverage_gap_score": -87
+    },
+    {
+      "subject_id": "ya-ya-memphis",
+      "subject_label": "Ya Ya",
+      "media_count": 6,
+      "record_count": 32,
+      "direct_record_count": 32,
+      "category_count": 14,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 3,
+        "birth": 1,
+        "diet": 1,
+        "diplomacy": 1,
+        "health": 4,
+        "husbandry_training": 3,
+        "location": 4,
+        "media_candidate": 4,
+        "personality": 2,
+        "preference": 1,
+        "sex": 1,
+        "transfer": 3,
+        "veterinary_care": 3
+      },
+      "coverage_gap_score": -94
+    },
+    {
+      "subject_id": "xiao-qi-ji",
+      "subject_label": "Xiao Qi Ji",
+      "media_count": 26,
+      "record_count": 131,
+      "direct_record_count": 131,
+      "category_count": 19,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 13,
+        "birth": 1,
+        "diet": 1,
+        "enrichment": 5,
+        "growth_measurement": 5,
+        "health": 1,
+        "husbandry_training": 4,
+        "location": 8,
+        "media_candidate": 31,
+        "milestone": 49,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 3,
+        "preference": 2,
+        "public_debut": 1,
+        "sex": 2,
+        "transfer": 1,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -301
+    }
+  ]
+}
