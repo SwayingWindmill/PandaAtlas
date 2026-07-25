@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "page_url": "https://corporate.oceanpark.com.hk/sc/media-partnerships/press-release/ocean-park-celebrates-historic-debut-of-hong-kongs-homegrown-panda-cubs",
+  "discovered_at": "2026-07-25T21:21:52.706024+00:00",
+  "image_count": 1,
+  "images": [
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/po0ipplv/photo-1-key-photo.webp",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    }
+  ]
+}

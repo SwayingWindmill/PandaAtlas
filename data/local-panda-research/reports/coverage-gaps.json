@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 437,
-  "pandas_with_media": 98,
+  "candidate_count": 450,
+  "pandas_with_media": 101,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -61,23 +61,6 @@
         "sex": 1
       },
       "coverage_gap_score": -30
-    },
-    {
-      "subject_id": "an-an-ocean-park",
-      "subject_label": "安安",
-      "media_count": 1,
-      "record_count": 8,
-      "direct_record_count": 8,
-      "category_count": 6,
-      "categories": {
-        "death": 1,
-        "health": 2,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 2,
-        "transfer": 1
-      },
-      "coverage_gap_score": -31
     },
     {
       "subject_id": "an-an",
@@ -287,26 +270,6 @@
         "relationship": 1,
         "transfer": 1,
         "veterinary_care": 1
-      },
-      "coverage_gap_score": -46
-    },
-    {
-      "subject_id": "jia-jia-ocean-park",
-      "subject_label": "佳佳",
-      "media_count": 1,
-      "record_count": 11,
-      "direct_record_count": 11,
-      "category_count": 9,
-      "categories": {
-        "death": 1,
-        "health": 2,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 2,
-        "origin": 1,
-        "personality": 1,
-        "reproduction": 1,
-        "transfer": 1
       },
       "coverage_gap_score": -46
     },
@@ -645,6 +608,27 @@
         "transfer": 1
       },
       "coverage_gap_score": -56
+    },
+    {
+      "subject_id": "an-an-ocean-park",
+      "subject_label": "安安",
+      "media_count": 1,
+      "record_count": 14,
+      "direct_record_count": 14,
+      "category_count": 10,
+      "categories": {
+        "behaviour": 1,
+        "death": 1,
+        "health": 2,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 2,
+        "personality": 1,
+        "research": 3,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -57
     },
     {
       "subject_id": "de-de-madrid",
@@ -1021,6 +1005,29 @@
         "personality": 2,
         "preference": 1,
         "public_debut": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -64
+    },
+    {
+      "subject_id": "jia-jia-ocean-park",
+      "subject_label": "佳佳",
+      "media_count": 1,
+      "record_count": 15,
+      "direct_record_count": 15,
+      "category_count": 12,
+      "categories": {
+        "birth": 1,
+        "death": 1,
+        "health": 2,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 3,
+        "origin": 1,
+        "personality": 1,
+        "reproduction": 1,
+        "research": 1,
         "sex": 1,
         "transfer": 1
       },
@@ -1447,26 +1454,25 @@
       "coverage_gap_score": -75
     },
     {
-      "subject_id": "le-le-hk",
-      "subject_label": "Le Le",
-      "media_count": 1,
-      "record_count": 18,
-      "direct_record_count": 18,
-      "category_count": 13,
+      "subject_id": "ying-ying-hk",
+      "subject_label": "ying-ying-hk",
+      "media_count": 3,
+      "record_count": 22,
+      "direct_record_count": 22,
+      "category_count": 12,
       "categories": {
-        "behaviour": 1,
-        "birth": 1,
-        "distinguishing_feature": 1,
-        "growth_measurement": 2,
-        "husbandry_training": 1,
-        "location": 1,
-        "media_candidate": 1,
+        "appearance": 1,
+        "birth": 2,
+        "diet": 2,
+        "health": 1,
+        "location": 3,
+        "maternal_care": 1,
+        "media_candidate": 3,
         "milestone": 2,
-        "preference": 1,
-        "relationship": 2,
+        "relationship": 1,
         "reproduction": 3,
         "sex": 1,
-        "transfer": 1
+        "transfer": 2
       },
       "coverage_gap_score": -75
     },
@@ -1850,6 +1856,30 @@
       "coverage_gap_score": -83
     },
     {
+      "subject_id": "le-le-hk",
+      "subject_label": "Le Le",
+      "media_count": 1,
+      "record_count": 21,
+      "direct_record_count": 21,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "growth_measurement": 2,
+        "husbandry_training": 1,
+        "location": 1,
+        "media_candidate": 1,
+        "milestone": 3,
+        "preference": 1,
+        "relationship": 3,
+        "reproduction": 4,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -84
+    },
+    {
       "subject_id": "mei-xiang",
       "subject_label": "Mei Xiang",
       "media_count": 2,
@@ -2018,6 +2048,58 @@
         "veterinary_care": 3
       },
       "coverage_gap_score": -94
+    },
+    {
+      "subject_id": "de-de-hk-2024",
+      "subject_label": "de-de-hk-2024",
+      "media_count": 9,
+      "record_count": 37,
+      "direct_record_count": 37,
+      "category_count": 15,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 2,
+        "birth": 1,
+        "diet": 1,
+        "enrichment": 1,
+        "growth_measurement": 5,
+        "location": 9,
+        "media_candidate": 9,
+        "milestone": 2,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1
+      },
+      "coverage_gap_score": -96
+    },
+    {
+      "subject_id": "jia-jia-hk-2024",
+      "subject_label": "jia-jia-hk-2024",
+      "media_count": 9,
+      "record_count": 37,
+      "direct_record_count": 37,
+      "category_count": 15,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 2,
+        "birth": 1,
+        "diet": 1,
+        "enrichment": 1,
+        "growth_measurement": 5,
+        "location": 9,
+        "media_candidate": 9,
+        "milestone": 2,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1
+      },
+      "coverage_gap_score": -96
     },
     {
       "subject_id": "le-le-singapore",
