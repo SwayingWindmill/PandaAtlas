@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "page_url": "https://timeline.sdzwa.org/2012/2012-4/",
+  "discovered_at": "2026-07-25T18:21:08.810013+00:00",
+  "image_count": 2,
+  "images": [
+    {
+      "asset_url": "https://timeline.sdzwa.org/wp/wp-content/uploads/2015/09/T12_0777_115.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://timeline.sdzwa.org/wp/wp-content/uploads/2015/09/T12_0777_115-2160x1440.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2160",
+      "height": "1440",
+      "evidence": [
+        "animateWhenReady"
+      ]
+    }
+  ]
+}
