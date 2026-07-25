@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.tokyo-zoo.net/topic/topics_detail?inst=ueno&kind=news&link_num=28732",
+  "discovered_at": "2026-07-25T18:58:01.945948+00:00",
+  "image_count": 10,
+  "images": [
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common/img/meta/ogp-img.png",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common/img/logo/zoo-net.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "東京ズーネット＿ロゴ",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common-topics/img/clear.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1",
+      "height": "9",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/topic/img/top_event_title.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "催し物",
+      "title": "",
+      "width": "385",
+      "height": "27",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/topic/img/ueno_logo.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "158",
+      "height": "38",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common-topics/upfiles/28732_01.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "700px",
+      "height": "",
+      "evidence": [
+        "upImg"
+      ]
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common-topics/upfiles/28732_02.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "700px",
+      "height": "",
+      "evidence": [
+        "upImg"
+      ]
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common-topics/upfiles/28732_03.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "700px",
+      "height": "",
+      "evidence": [
+        "upImg"
+      ]
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common-topics/upfiles/28732_04.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "700px",
+      "height": "",
+      "evidence": [
+        "upImg"
+      ]
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common-topics/img/btn_top.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "ページトップへ",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

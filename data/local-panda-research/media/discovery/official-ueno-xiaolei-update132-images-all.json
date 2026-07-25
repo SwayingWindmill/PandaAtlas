@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.tokyo-zoo.net/en/ueno/news/4255/index.html",
+  "discovered_at": "2026-07-25T18:53:54.243568+00:00",
+  "image_count": 9,
+  "images": [
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common/img/meta/ogp/ogp_ueno.png",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common/img/logo/ueno.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Ueno Zoo logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/common/img/logo/zoo-net.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Tokyo Zoo Net logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/image/ueno/news/29503_01.jpg",
+      "source_types": [
+        "source:srcset",
+        "img:src"
+      ],
+      "alt": "Xiao Xiao (1,671 days old) (Photo taken on January 19, 2026)",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/image/ueno/news/29503_02.jpg",
+      "source_types": [
+        "source:srcset",
+        "img:src"
+      ],
+      "alt": "Xiao Xiao (1,671 days old) (Photo taken on January 19, 2026)",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/image/ueno/news/29503_03.jpg",
+      "source_types": [
+        "source:srcset",
+        "img:src"
+      ],
+      "alt": "Xiao Xiao (1,671 days old) (Photo taken on January 19, 2026)",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/image/ueno/news/29503_04.jpg",
+      "source_types": [
+        "source:srcset",
+        "img:src"
+      ],
+      "alt": "Lei Lei (1671 days old) (Photo taken: January 19, 2026)",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/image/ueno/news/29503_05.jpg",
+      "source_types": [
+        "source:srcset",
+        "img:src"
+      ],
+      "alt": "Lei Lei (1671 days old) (Photo taken: January 19, 2026)",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.tokyo-zoo.net/image/ueno/news/29503_06.jpg",
+      "source_types": [
+        "source:srcset",
+        "img:src"
+      ],
+      "alt": "Lei Lei (1671 days old) (Photo taken: January 19, 2026)",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

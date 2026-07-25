@@ -8,6 +8,7 @@ This is the image-first, local-only media layer for Panda Atlas.
 - Restricted, unknown, press-use, open-license, public-domain, and explicitly authorized images may all be collected into the local vault.
 - The collector does not reduce priority or reject a candidate because of its rights label.
 - Source page, asset URL, credit, observed rights statement, individual identity, capture date, and retrieval hash are preserved whenever available.
+- For an individually identified panda, collect as many distinct, identity-confirmed, nonduplicate images as the reviewed sources support, capped at 20 individual images per panda. Group, transport, artifact, and research media remain separately typed and do not substitute for individual portraits.
 - Local collection does not automatically make an image eligible for publication. Any future export or public release must make a separate decision.
 - Image binaries are stored under `files/` and are intentionally ignored by Git. Candidate and inventory metadata remain inspectable.
 
@@ -33,7 +34,7 @@ python3 scripts/research/discover_official_page_images.py --page-url <official-p
 
 ## Current snapshot
 
-As of 2026-07-26, the vault contains **253 candidates**. **246 media files** are present locally, totalling **926,583,490 bytes** (about 926.6 MB); seven URLs remain failed. Four are earlier historic remote-asset failures, and three are traceable San Diego Zoo Hua Mei image URLs whose retired host now presents a TLS certificate for a different hostname. TLS verification is not disabled, and the failed candidates remain as replacement leads rather than being removed.
+As of 2026-07-26, the vault contains **290 candidates**. **283 media files** are present locally, totalling **938,610,787 bytes** (about 938.6 MB); seven URLs remain failed. Four are earlier historic remote-asset failures, and three are traceable San Diego Zoo Hua Mei image URLs whose retired host now presents a TLS certificate for a different hostname. TLS verification is not disabled, and the failed candidates remain as replacement leads rather than being removed.
 
 The full Commons queue contains 1,057 search tasks covering 799 pandas that still need image discovery. Fifty-five bounded Commons batches have been recorded. Each contains at most eight tasks, preserves response fixtures, records failed task IDs, and skips previously processed task IDs and duplicate query text. As the Commons long tail became low-yield, collection expanded to official zoo pages, government archives, institutional press resources, library collections, and public-domain historical repositories.
 
