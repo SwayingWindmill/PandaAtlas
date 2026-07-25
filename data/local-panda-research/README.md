@@ -55,9 +55,9 @@ The validator checks JSONL syntax, IDs, source references, timestamps, local-onl
 
 ## Current snapshot
 
-As of 2026-07-26, the vault contains **350 sources** and **2,170 structured records**: 2,153 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 87 individually identified pandas, with no collected individual lacking at least one structured fact record.
+As of 2026-07-26, the vault contains **364 sources** and **2,234 structured records**: 2,217 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 88 individually identified pandas, with no collected individual lacking at least one structured fact record.
 
-The local media layer contains **355 candidates**, **348 downloaded files**, and **959,096,237 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
+The local media layer contains **368 candidates**, **361 downloaded files**, and **986,325,362 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
@@ -79,5 +79,6 @@ The local media layer contains **355 candidates**, **348 downloaded files**, and
 - `2026-07-26-ueno-family.jsonl` — official Ueno family records for Ri Ri, Shin Shin, Xiang Xiang, Xiao Xiao and Lei Lei, covering identity, parentage, naming, natural-breeding milestones, maternal care, health and hypertension management, growth, husbandry training, independence, quarantine, returns to China and early adaptation at Bifengxia and Ya'an.
 - `2026-07-26-pairidaiza-family.jsonl` — Pairi Daiza family records for Hao Hao, Xing Hui, Tian Bao, Bao Di and Bao Mei, plus the zoo's panda-reproduction research programme. The batch covers identity, arrival, names, parentage, artificial insemination, twin rotation care, development, birthday enrichment, keeper observations, completed offspring transfers, Hao Hao's specialist-care return and the continuing Belgian residence of Xing Hui.
 - `2026-07-26-beauval-family.jsonl` — ZooParc de Beauval family records for Yuan Zi, Huan Huan, Yuan Meng, Huanlili and Yuandudu, plus the 2021 twin-development timeline. The batch covers identity, parentage, names, personality, maternal and incubator care, growth, enrichment, Yuan Meng's Chengdu adaptation, the adult pair's completed 2025 return, Huan Huan's renal care and the twins' still-planned transfer after their fifth birthday.
+- `2026-07-26-edinburgh-family.jsonl` — Edinburgh records for Tian Tian, Yang Guang and the UK-China cooperation programme, covering identity, conflicting Tian Tian birth-date evidence, pre-UK life history, offspring, artificial-insemination research, Yang Guang's tumour surgery and habitat behaviour, birthday enrichment, cultural impact, completed return, Bifengxia quarantine and post-return health.
 
 All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.
