@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "page_url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/c.html",
+  "discovered_at": "2026-07-25T21:01:41.134400+00:00",
+  "image_count": 6,
+  "images": [
+    {
+      "asset_url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/zxcode_20250518e8d1d0f8d87c4d56a20d253b5d719f95.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/DPGiE3fUzU9QHUOk.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "1fdXmap2gPtxanDit8"
+      ]
+    },
+    {
+      "asset_url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/Ss6R19Kv6Woiuuz6.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "WRZf9ajCxVntw3CCV4"
+      ]
+    },
+    {
+      "asset_url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/F0whRw7nkg6XVmmr.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "qariO5fT1SZJLGwt3u"
+      ]
+    },
+    {
+      "asset_url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/coQ5RgoKu5rMWTNo.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "jPL23jjHpgYXSIlSxw"
+      ]
+    },
+    {
+      "asset_url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/UR9syLjoARQj2uZa.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "kwIX14DIpDENjhOum1"
+      ]
+    }
+  ]
+}

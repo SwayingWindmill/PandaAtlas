@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 397,
-  "pandas_with_media": 94,
+  "candidate_count": 437,
+  "pandas_with_media": 98,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -186,26 +186,6 @@
         "sex": 1,
         "transfer": 3,
         "veterinary_care": 1
-      },
-      "coverage_gap_score": -43
-    },
-    {
-      "subject_id": "liang-liang-my",
-      "subject_label": "Liang Liang",
-      "media_count": 1,
-      "record_count": 10,
-      "direct_record_count": 10,
-      "category_count": 9,
-      "categories": {
-        "alias": 1,
-        "birth": 1,
-        "husbandry_training": 1,
-        "location": 1,
-        "media_candidate": 1,
-        "name_meaning": 1,
-        "relationship": 1,
-        "reproduction": 2,
-        "transfer": 1
       },
       "coverage_gap_score": -43
     },
@@ -779,6 +759,28 @@
       "coverage_gap_score": -59
     },
     {
+      "subject_id": "nuan-nuan",
+      "subject_label": "Nuan Nuan",
+      "media_count": 1,
+      "record_count": 14,
+      "direct_record_count": 14,
+      "category_count": 11,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "location": 2,
+        "media_candidate": 1,
+        "milestone": 2,
+        "personality": 1,
+        "relationship": 1,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -59
+    },
+    {
       "subject_id": "bao-li",
       "subject_label": "Bao Li",
       "media_count": 1,
@@ -1330,6 +1332,30 @@
       "coverage_gap_score": -73
     },
     {
+      "subject_id": "yi-yi-malaysia",
+      "subject_label": "Yi Yi",
+      "media_count": 6,
+      "record_count": 26,
+      "direct_record_count": 26,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "growth_measurement": 2,
+        "location": 2,
+        "media_candidate": 6,
+        "milestone": 6,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -74
+    },
+    {
       "subject_id": "gao-gao",
       "subject_label": "Gao Gao",
       "media_count": 5,
@@ -1373,6 +1399,30 @@
         "veterinary_care": 1
       },
       "coverage_gap_score": -74
+    },
+    {
+      "subject_id": "xing-xing-my",
+      "subject_label": "Xing Xing",
+      "media_count": 7,
+      "record_count": 28,
+      "direct_record_count": 28,
+      "category_count": 13,
+      "categories": {
+        "alias": 1,
+        "behaviour": 1,
+        "birth": 1,
+        "enrichment": 1,
+        "location": 1,
+        "media_candidate": 7,
+        "milestone": 8,
+        "name_meaning": 1,
+        "origin": 1,
+        "relationship": 2,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -75
     },
     {
       "subject_id": "mei-sheng",
@@ -2020,6 +2070,32 @@
       "coverage_gap_score": -100
     },
     {
+      "subject_id": "liang-liang-my",
+      "subject_label": "Liang Liang",
+      "media_count": 13,
+      "record_count": 49,
+      "direct_record_count": 49,
+      "category_count": 15,
+      "categories": {
+        "alias": 1,
+        "behaviour": 6,
+        "birth": 1,
+        "enrichment": 1,
+        "husbandry_training": 1,
+        "location": 2,
+        "media_candidate": 13,
+        "milestone": 13,
+        "name_meaning": 1,
+        "origin": 1,
+        "relationship": 2,
+        "reproduction": 2,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 2
+      },
+      "coverage_gap_score": -112
+    },
+    {
       "subject_id": "tian-tian-edinburgh",
       "subject_label": "Tian Tian",
       "media_count": 7,
@@ -2044,6 +2120,32 @@
         "veterinary_care": 2
       },
       "coverage_gap_score": -112
+    },
+    {
+      "subject_id": "sheng-yi",
+      "subject_label": "Sheng Yi",
+      "media_count": 20,
+      "record_count": 65,
+      "direct_record_count": 65,
+      "category_count": 15,
+      "categories": {
+        "behaviour": 9,
+        "birth": 2,
+        "distinguishing_feature": 1,
+        "enrichment": 2,
+        "growth_measurement": 2,
+        "location": 1,
+        "media_candidate": 20,
+        "milestone": 20,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 2,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -125
     },
     {
       "subject_id": "xiao-qi-ji",
