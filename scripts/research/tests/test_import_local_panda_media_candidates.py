@@ -142,6 +142,51 @@ class LocalPandaMediaCandidateImportTests(unittest.TestCase):
             [],
         )
 
+    def test_title_and_description_names_override_category_group_names(self) -> None:
+        source = {
+            "file_title": "File:Ding Ding the panda.jpg",
+            "description": "Ding Ding the panda at Moscow Zoo.",
+            "categories": ["Ru Yi and Ding Ding"],
+        }
+
+        self.assertEqual(
+            MODULE.resolve_commons_subjects(
+                source,
+                alias_index={
+                    "ding ding": {"ding-ding"},
+                    "ru yi": {"ru-yi"},
+                },
+            ),
+            ["ding-ding"],
+        )
+
+    def test_common_word_alias_requires_explicit_name_context(self) -> None:
+        generic = {
+            "file_title": "File:A Happy Panda.jpg",
+            "description": "",
+            "categories": ["Ailuropoda melanoleuca"],
+        }
+        explicit = {
+            "file_title": "File:Happy the panda.jpg",
+            "description": "Happy the panda at the zoo.",
+            "categories": [],
+        }
+
+        self.assertEqual(
+            MODULE.resolve_commons_subjects(
+                generic,
+                alias_index={"happy": {"happy-st-louis"}},
+            ),
+            [],
+        )
+        self.assertEqual(
+            MODULE.resolve_commons_subjects(
+                explicit,
+                alias_index={"happy": {"happy-st-louis"}},
+            ),
+            ["happy-st-louis"],
+        )
+
     def test_irrelevant_image_without_panda_signal_is_skipped(self) -> None:
         source = {
             "mime": "image/jpeg",
@@ -158,6 +203,273 @@ class LocalPandaMediaCandidateImportTests(unittest.TestCase):
                 source,
                 labels={},
                 alias_index={"pan": {"pan-bronx"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_kung_fu_panda_merchandise_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-fictional-a-bao",
+            "original_url": "https://example.test/a-bao.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "北京环球影城阿宝纪念品.jpg",
+            "description": "北京环球影城功夫熊猫阿宝纪念品",
+            "categories": [],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={"a-bao": "A Bao"},
+                alias_index={"阿宝": {"a-bao"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_panda_habitat_entry_sign_is_skipped(self) -> None:
+        source = {
+            "mime": "image/png",
+            "candidate_id": "commons-candidate-entry-sign",
+            "original_url": "https://example.test/entry.png",
+            "description_url": "https://example.test/source",
+            "file_title": "File:HKOP ST Entry.png",
+            "description": "Hong Kong Jockey Club Sichuan Treasures",
+            "categories": ["Giant Panda Habitat, Ocean Park, Hong Kong"],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={},
+                alias_index={},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_location_hints_disambiguate_same_name_pandas(self) -> None:
+        source = {
+            "file_title": "File:Grosser Panda Bao Bao Berlin.jpg",
+            "description": "Bao Bao was a male giant panda living at Berlin Zoo.",
+            "categories": ["Bao Bao (panda)"],
+        }
+
+        subjects = MODULE.resolve_commons_subjects(
+            source,
+            alias_index={
+                "bao bao": {
+                    "bao-bao",
+                    "bao-bao-beijing-unknown",
+                    "bao-bao-berlin",
+                }
+            },
+        )
+        resolved = MODULE.disambiguate_commons_subjects(
+            source,
+            subjects,
+            identity_hints={
+                "bao-bao": {"smithsonian", "wolong"},
+                "bao-bao-beijing-unknown": {"beijing"},
+                "bao-bao-berlin": {"berlin"},
+            },
+        )
+
+        self.assertEqual(resolved, ["bao-bao-berlin"])
+
+    def test_location_hints_keep_multiple_named_group_members(self) -> None:
+        source = {
+            "file_title": "File:Madrid panda twins.jpg",
+            "description": "Giant panda twins Po and De De at Madrid Zoo Aquarium.",
+            "categories": [],
+        }
+
+        resolved = MODULE.disambiguate_commons_subjects(
+            source,
+            ["de-de", "de-de-chengdu-2010", "de-de-madrid", "po-madrid"],
+            identity_hints={
+                "de-de": {"hong", "kong", "ocean"},
+                "de-de-chengdu-2010": {"chengdu"},
+                "de-de-madrid": {"madrid", "aquarium"},
+                "po-madrid": {"madrid", "aquarium"},
+            },
+        )
+
+        self.assertEqual(resolved, ["de-de-madrid", "po-madrid"])
+
+    def test_relationships_disambiguate_parent_and_child_group(self) -> None:
+        source = {
+            "file_title": "File:Yang Yang und Fu Long.jpg",
+            "description": "Panda mother and cub.",
+            "categories": [],
+        }
+
+        resolved = MODULE.disambiguate_commons_subjects(
+            source,
+            ["fu-long", "yang-yang", "yang-yang-vienna", "yang-yang-yaan-2001"],
+            identity_hints={},
+            relationships={
+                "fu-long": {"yang-yang-vienna"},
+                "yang-yang-vienna": {"fu-long"},
+                "yang-yang": set(),
+                "yang-yang-yaan-2001": set(),
+            },
+        )
+
+        self.assertEqual(resolved, ["fu-long", "yang-yang-vienna"])
+
+    def test_search_target_does_not_override_location_evidence(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-berlin-bao-bao",
+            "original_url": "https://example.test/berlin-bao-bao.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:Bao Bao Berlin.jpg",
+            "description": "Bao Bao was a male giant panda living at Berlin Zoo.",
+            "categories": ["Bao Bao (panda)"],
+            "panda_slug": "bao-bao-beijing-unknown",
+            "identity_confidence": 0.95,
+        }
+
+        candidate = MODULE.candidate_from_commons_discovery(
+            source,
+            labels={"bao-bao-berlin": "Bao Bao"},
+            alias_index={
+                "bao bao": {
+                    "bao-bao",
+                    "bao-bao-beijing-unknown",
+                    "bao-bao-berlin",
+                }
+            },
+            identity_hints={
+                "bao-bao": {"smithsonian"},
+                "bao-bao-beijing-unknown": {"beijing"},
+                "bao-bao-berlin": {"berlin"},
+            },
+            discovered_at="2026-07-25",
+        )
+
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
+        self.assertEqual(candidate["subject_id"], "bao-bao-berlin")
+
+    def test_taxidermied_panda_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-taxidermied",
+            "original_url": "https://example.test/taxidermied.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:Bao Bao the panda taxidermied.jpg",
+            "description": "Bao Bao at the Natural History Museum Berlin.",
+            "categories": ["Bao Bao (panda)"],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={},
+                alias_index={"bao bao": {"bao-bao-berlin"}},
+                identity_hints={"bao-bao-berlin": {"berlin"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_named_panda_bone_exhibit_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-bone",
+            "original_url": "https://example.test/bone.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:Giant panda Left hand Bone.jpg",
+            "description": "Bone of the left forelimb of giant panda Fei Fei.",
+            "categories": ["Fei Fei (panda)"],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={"fei-fei-ueno": "Fei Fei"},
+                alias_index={"fei fei": {"fei-fei-ueno"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_named_specimen_image_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-specimen",
+            "original_url": "https://example.test/specimen.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:Giant panda Chu Chu Specimen.jpg",
+            "description": "Specimen of giant panda baby Chu Chu.",
+            "categories": ["Chu Chu (panda)"],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={"chu-chu-ueno": "Chu Chu"},
+                alias_index={"chu chu": {"chu-chu-ueno"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_natural_history_museum_specimen_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-museum-specimen",
+            "original_url": "https://example.test/museum.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:London Zoo giant panda Chi-Chi.jpg",
+            "description": "Natural History Museum, London, England, UK.",
+            "categories": ["Chi Chi (panda)"],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={"chi-chi": "Chi Chi"},
+                alias_index={"chi chi": {"chi-chi"}},
+                identity_hints={"chi-chi": {"london"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_panda_sculpture_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-sculpture",
+            "original_url": "https://example.test/sculpture.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:Hehe Xiexie Montreal.jpg",
+            "description": "Panda bears He He and Xie Xie in an open-air museum.",
+            "categories": ["Panda sculptures"],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={"he-he-hongshan": "He He"},
+                alias_index={"he he": {"he-he-hongshan"}},
+                discovered_at="2026-07-25",
+            )
+        )
+
+    def test_panda_sticker_image_is_skipped(self) -> None:
+        source = {
+            "mime": "image/jpeg",
+            "candidate_id": "commons-candidate-sticker",
+            "original_url": "https://example.test/sticker.jpg",
+            "description_url": "https://example.test/source",
+            "file_title": "File:Airplane panda stickers.jpg",
+            "description": "Aircraft with stickers depicting two giant pandas.",
+            "categories": [],
+        }
+
+        self.assertIsNone(
+            MODULE.candidate_from_commons_discovery(
+                source,
+                labels={},
+                alias_index={},
                 discovered_at="2026-07-25",
             )
         )

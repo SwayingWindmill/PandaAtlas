@@ -42,7 +42,7 @@
     "build:local-panda-media-batch": "python scripts/research/build_local_commons_media_batch.py",
     "discover:local-panda-media-batch": "uv run --isolated --directory services/api --frozen --extra crawler-poc python ../../scripts/research/run_local_commons_media_discovery.py --cohort ../../data/local-panda-research/media/discovery/commons-batch-001.json --fixture-dir ../../data/local-panda-research/media/discovery/fixtures/commons-batch-001 --output ../../data/local-panda-research/media/discovery/commons-batch-001-results.json",
     "import:local-panda-media": "python scripts/research/import_local_panda_media_candidates.py --include-commons-discovery",
-    "collect:local-panda-media": "python scripts/research/collect_local_panda_media.py --execute",
+    "collect:local-panda-media": "python scripts/research/collect_local_panda_media.py --execute --prune-orphans",
     "test:local-panda-media": "uv run --isolated --directory services/api --frozen --extra dev python -m unittest discover -s ../../scripts/research/tests -p \"test_*media*.py\"",
     "process:panda-media": "uv run --isolated --directory services/api --frozen --extra dev python ../../scripts/curation/process_panda_media.py",
     "test:panda-media": "uv run --isolated --directory services/api --frozen --extra dev python -m unittest discover -s ../../scripts/curation/tests -p \"test_process_panda_media.py\"",

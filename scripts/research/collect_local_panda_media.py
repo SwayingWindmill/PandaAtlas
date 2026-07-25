@@ -18,6 +18,7 @@ DEFAULT_INVENTORY = MEDIA_ROOT / "inventory.jsonl"
 DEFAULT_FILES_DIR = MEDIA_ROOT / "files"
 USER_AGENT = "PandaAtlasLocalResearch/0.1 (+https://github.com/SwayingWindmill/PandaAtlas)"
 MAX_IMAGE_BYTES = 100 * 1024 * 1024
+LOCAL_IMAGE_SUFFIXES = {".gif", ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp"}
 
 REQUIRED_FIELDS = {
     "media_id",
@@ -276,6 +277,22 @@ def write_inventory(path: Path, entries: list[dict[str, Any]]) -> None:
     path.write_text(payload, encoding="utf-8", newline="")
 
 
+def prune_orphan_files(files_dir: Path, candidates: list[dict[str, Any]]) -> int:
+    if not files_dir.exists():
+        return 0
+    allowed = {str(candidate["local_filename"]) for candidate in candidates}
+    removed = 0
+    for path in sorted(files_dir.iterdir()):
+        if (
+            path.is_file()
+            and path.name not in allowed
+            and path.suffix.casefold() in LOCAL_IMAGE_SUFFIXES
+        ):
+            path.unlink()
+            removed += 1
+    return removed
+
+
 def collect(
     *,
     candidates_path: Path = DEFAULT_CANDIDATES,
@@ -283,10 +300,13 @@ def collect(
     files_dir: Path = DEFAULT_FILES_DIR,
     execute: bool = False,
     refresh: bool = False,
+    prune_orphans: bool = False,
     opener: Callable[[str], BinaryIO] = _open_url,
 ) -> list[dict[str, Any]]:
     candidates = load_jsonl(candidates_path)
     validate_candidates(candidates)
+    if prune_orphans:
+        prune_orphan_files(files_dir, candidates)
     entries = [
         inventory_entry(
             candidate,
@@ -311,6 +331,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--execute", action="store_true", help="Download missing image files.")
     parser.add_argument("--refresh", action="store_true", help="Redownload existing image files.")
     parser.add_argument(
+        "--prune-orphans",
+        action="store_true",
+        help="Delete local image files that are no longer referenced by the candidate queue.",
+    )
+    parser.add_argument(
         "--strict",
         action="store_true",
         help="Return a non-zero exit code when any individual asset cannot be downloaded.",
@@ -330,6 +355,7 @@ def main() -> int:
             files_dir=args.files_dir,
             execute=args.execute,
             refresh=args.refresh,
+            prune_orphans=args.prune_orphans,
         )
     except LocalMediaError as error:
         print(f"Local panda media collection failed:\n{error}")

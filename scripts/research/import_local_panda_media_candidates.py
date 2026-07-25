@@ -100,6 +100,70 @@ def load_panda_alias_index(path: Path = PANDAS_CSV) -> dict[str, set[str]]:
     return aliases
 
 
+_IDENTITY_HINT_STOPWORDS = {
+    "base",
+    "breeding",
+    "center",
+    "centre",
+    "china",
+    "current",
+    "giant",
+    "panda",
+    "park",
+    "province",
+    "research",
+    "unknown",
+    "wildlife",
+    "zoo",
+}
+
+
+def _identity_hint_terms(value: str) -> set[str]:
+    terms = set(re.findall(r"[0-9a-z]+|[\u3400-\u9fff]{2,}", value.casefold()))
+    return {
+        term
+        for term in terms
+        if term not in _IDENTITY_HINT_STOPWORDS
+        and (len(term) >= 4 or _contains_cjk(term))
+    }
+
+
+def load_panda_identity_hints(path: Path = PANDAS_CSV) -> dict[str, set[str]]:
+    hints: dict[str, set[str]] = {}
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        for row in csv.DictReader(handle):
+            slug = (row.get("slug") or "").strip()
+            if not slug:
+                continue
+            values = [
+                row.get("birthplace") or "",
+                row.get("current_location") or "",
+                row.get("tags") or "",
+            ]
+            terms: set[str] = set()
+            for value in values:
+                terms.update(_identity_hint_terms(value))
+            hints[slug] = terms
+    return hints
+
+
+def load_panda_relationships(path: Path = PANDAS_CSV) -> dict[str, set[str]]:
+    relationships: dict[str, set[str]] = {}
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        for row in csv.DictReader(handle):
+            slug = (row.get("slug") or "").strip()
+            if not slug:
+                continue
+            relationships.setdefault(slug, set())
+            for field in ("father_slug", "mother_slug"):
+                relative = (row.get(field) or "").strip()
+                if not relative:
+                    continue
+                relationships[slug].add(relative)
+                relationships.setdefault(relative, set()).add(slug)
+    return relationships
+
+
 def _suffix_from_url(asset_url: str) -> str:
     suffix = Path(urlparse(asset_url).path).suffix.lower()
     if suffix in IMAGE_SUFFIXES:
@@ -245,9 +309,19 @@ def _contains_cjk(value: str) -> bool:
     return any("\u3400" <= character <= "\u9fff" for character in value)
 
 
+_AMBIGUOUS_COMMON_ALIASES = {"happy"}
+
+
 def _alias_matches_text(alias: str, text: str) -> bool:
     if _contains_cjk(alias):
         return alias in text
+    if alias in _AMBIGUOUS_COMMON_ALIASES:
+        explicit_patterns = (
+            rf"panda named {re.escape(alias)}(?![0-9a-z])",
+            rf"(?<![0-9a-z]){re.escape(alias)} the panda(?![0-9a-z])",
+            rf"named ['\"]?{re.escape(alias)}['\"]?(?![0-9a-z])",
+        )
+        return any(re.search(pattern, text) is not None for pattern in explicit_patterns)
     pattern = rf"(?<![0-9a-z]){re.escape(alias)}(?![0-9a-z])"
     return re.search(pattern, text) is not None
 
@@ -264,23 +338,118 @@ def _has_giant_panda_signal(source: dict[str, Any]) -> bool:
     return any(signal in text for signal in signals)
 
 
+def _has_fictional_or_merchandise_signal(source: dict[str, Any]) -> bool:
+    text = " ".join(
+        [
+            str(source.get("file_title") or ""),
+            str(source.get("description") or ""),
+            " ".join(str(value) for value in source.get("categories") or []),
+        ]
+    ).casefold()
+    signals = (
+        "kung fu panda",
+        "功夫熊猫",
+        "universal studios",
+        "universal beijing",
+        "环球影城",
+        "souvenir",
+        "纪念品",
+        " entry",
+        " entrance",
+        " logo",
+        " signage",
+        "入口",
+        "标识",
+        "招牌",
+        "taxidermied",
+        "taxidermy",
+        " specimen",
+        "bone of the",
+        "skeleton of",
+        "stuffed panda",
+        "natural history museum",
+        "naturkunde museum",
+        "ausgestopfter",
+        "剥制",
+        "标本",
+        " sticker",
+        " stickers",
+        " poster",
+        " illustration",
+        " sculpture",
+        " statue",
+        " open-air museum",
+        "贴纸",
+        "海报",
+        "插画",
+    )
+    return any(signal in text for signal in signals)
+
+
+def _commons_identity_text(source: dict[str, Any]) -> str:
+    return " ".join(
+        [
+            str(source.get("file_title") or ""),
+            str(source.get("description") or ""),
+            " ".join(str(value) for value in source.get("categories") or []),
+        ]
+    ).casefold()
+
+
 def resolve_commons_subjects(
     source: dict[str, Any],
     *,
     alias_index: dict[str, set[str]],
 ) -> list[str]:
-    text_parts = [
-        str(source.get("file_title") or ""),
-        str(source.get("description") or ""),
-        " ".join(str(value) for value in source.get("categories") or []),
-    ]
-    text = " ".join(text_parts).casefold()
-    matches: set[str] = set()
-    for alias, slugs in alias_index.items():
-        if _alias_matches_text(alias, text):
-            matches.update(slugs)
+    primary_text = " ".join(
+        [
+            str(source.get("file_title") or ""),
+            str(source.get("description") or ""),
+        ]
+    ).casefold()
+    category_text = " ".join(
+        str(value) for value in source.get("categories") or []
+    ).casefold()
 
-    return sorted(matches)
+    primary_matches: set[str] = set()
+    category_matches: set[str] = set()
+    for alias, slugs in alias_index.items():
+        if _alias_matches_text(alias, primary_text):
+            primary_matches.update(slugs)
+        elif _alias_matches_text(alias, category_text):
+            category_matches.update(slugs)
+
+    return sorted(primary_matches or category_matches)
+
+
+def disambiguate_commons_subjects(
+    source: dict[str, Any],
+    subjects: list[str],
+    *,
+    identity_hints: dict[str, set[str]],
+    relationships: dict[str, set[str]] | None = None,
+) -> list[str]:
+    if len(subjects) < 2:
+        return subjects
+    text = _commons_identity_text(source)
+    scores = {
+        slug: sum(1 for hint in identity_hints.get(slug, set()) if _alias_matches_text(hint, text))
+        for slug in subjects
+    }
+    best_score = max(scores.values(), default=0)
+    if best_score >= 1:
+        return [slug for slug in subjects if scores[slug] == best_score]
+
+    relationship_map = relationships or {}
+    subject_set = set(subjects)
+    relation_scores = {
+        slug: len(relationship_map.get(slug, set()) & subject_set)
+        for slug in subjects
+    }
+    best_relation_score = max(relation_scores.values(), default=0)
+    if best_relation_score >= 1:
+        return [slug for slug in subjects if relation_scores[slug] == best_relation_score]
+    return subjects
 
 
 def candidate_from_commons_discovery(
@@ -288,6 +457,8 @@ def candidate_from_commons_discovery(
     *,
     labels: dict[str, str],
     alias_index: dict[str, set[str]],
+    identity_hints: dict[str, set[str]] | None = None,
+    relationships: dict[str, set[str]] | None = None,
     discovered_at: str,
 ) -> dict[str, Any] | None:
     mime = str(source.get("mime") or "")
@@ -298,17 +469,21 @@ def candidate_from_commons_discovery(
     candidate_id = str(source.get("candidate_id") or "").strip()
     if not asset_url.startswith("https://") or not source_page_url.startswith("https://"):
         return None
+    if _has_fictional_or_merchandise_signal(source):
+        return None
 
     subjects = resolve_commons_subjects(source, alias_index=alias_index)
+    subjects = disambiguate_commons_subjects(
+        source,
+        subjects,
+        identity_hints=identity_hints or {},
+        relationships=relationships,
+    )
     source_confidence = source.get("identity_confidence")
     if not isinstance(source_confidence, (int, float)):
         source_confidence = 0.25
     if not subjects and not _has_giant_panda_signal(source):
         return None
-
-    target_slug = str(source.get("panda_slug") or "").strip()
-    if target_slug in subjects and float(source_confidence) >= 0.75:
-        subjects = [target_slug]
 
     if len(subjects) == 1:
         subject_id = subjects[0]
@@ -405,6 +580,8 @@ def import_commons_discovery_candidates(
     }
     labels = load_panda_labels()
     alias_index = load_panda_alias_index()
+    identity_hints = load_panda_identity_hints()
+    relationships = load_panda_relationships()
 
     additions: list[dict[str, Any]] = []
     skipped_duplicates = 0
@@ -416,6 +593,8 @@ def import_commons_discovery_candidates(
             source,
             labels=labels,
             alias_index=alias_index,
+            identity_hints=identity_hints,
+            relationships=relationships,
             discovered_at=discovered_at,
         )
         if candidate is None:

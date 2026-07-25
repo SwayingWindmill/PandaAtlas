@@ -1,0 +1,218 @@
+{
+  "candidate_count": 0,
+  "candidates": [],
+  "cohort_id": "local-commons-batch-c12f339b530dd94f",
+  "completed_task_count": 8,
+  "dataset_release_version": "2026.07.24.2",
+  "failed_task_count": 0,
+  "failures": [],
+  "generated_at": "2026-07-25T00:00:00+09:00",
+  "mode": "live-urllib",
+  "operation": "local-wikimedia-commons-media-discovery",
+  "outcome": "passed",
+  "publication_write_targets": [],
+  "schema_version": 1,
+  "task_count": 8,
+  "tasks": [
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bei+Chen%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bei Chen",
+        "name_zh": "北辰",
+        "panda_slug": "bei-chen",
+        "query": "\"Bei Chen\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-a486a4739ca6c09d216b8cf3"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bei+Chuan%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bei Chuan",
+        "name_zh": null,
+        "panda_slug": "bei-chuan",
+        "query": "\"Bei Chuan\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-e34ad5fbaae977986ac6f632"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bei+Xia%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bei Xia",
+        "name_zh": "北侠",
+        "panda_slug": "bei-xia",
+        "query": "\"Bei Xia\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-7411c5906f6bdc0c705f385c"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bei+Xiang+Guo%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bei Xiang Guo",
+        "name_zh": null,
+        "panda_slug": "bei-xiang-guo",
+        "query": "\"Bei Xiang Guo\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-ecd0ba15d5629d3bf07f0a9c"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bing+Bao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bing Bao",
+        "name_zh": null,
+        "panda_slug": "bing-bao",
+        "query": "\"Bing Bao\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-63908c106fa22928e8080cd5"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bing+Bing%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bing Bing",
+        "name_zh": null,
+        "panda_slug": "bing-bing-chengdu-1986",
+        "query": "\"Bing Bing\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-654dbeebd98da1dc336b4fbc"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bing+Cheng%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bing Cheng",
+        "name_zh": null,
+        "panda_slug": "bing-cheng-gengda",
+        "query": "\"Bing Cheng\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-dd1e1c77ee45004813a34c50"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Bing+Dian%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Bing Dian",
+        "name_zh": null,
+        "panda_slug": "bing-dian",
+        "query": "\"Bing Dian\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-4f3337e5420c050e80b5bb63"
+      }
+    }
+  ]
+}
