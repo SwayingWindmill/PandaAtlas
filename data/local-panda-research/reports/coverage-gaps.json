@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "candidate_count": 463,
+  "candidate_count": 475,
   "pandas_with_media": 102,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
@@ -29,24 +29,6 @@
         "media_candidate": 2
       },
       "coverage_gap_score": -6
-    },
-    {
-      "subject_id": "lin-hui",
-      "subject_label": "Lin Hui",
-      "media_count": 1,
-      "record_count": 7,
-      "direct_record_count": 7,
-      "category_count": 7,
-      "categories": {
-        "birth": 1,
-        "death": 1,
-        "health": 1,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "sex": 1
-      },
-      "coverage_gap_score": -30
     },
     {
       "subject_id": "an-an",
@@ -785,29 +767,6 @@
         "sex": 1
       },
       "coverage_gap_score": -60
-    },
-    {
-      "subject_id": "chuang-chuang",
-      "subject_label": "Chuang Chuang",
-      "media_count": 1,
-      "record_count": 14,
-      "direct_record_count": 14,
-      "category_count": 12,
-      "categories": {
-        "alias": 1,
-        "behaviour": 1,
-        "birth": 1,
-        "death": 2,
-        "diplomacy": 1,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "relationship": 2,
-        "sex": 1,
-        "transfer": 1,
-        "veterinary_care": 1
-      },
-      "coverage_gap_score": -61
     },
     {
       "subject_id": "rui-bao",
@@ -1883,6 +1842,33 @@
       "coverage_gap_score": -85
     },
     {
+      "subject_id": "chuang-chuang",
+      "subject_label": "Chuang Chuang",
+      "media_count": 4,
+      "record_count": 25,
+      "direct_record_count": 25,
+      "category_count": 16,
+      "categories": {
+        "alias": 1,
+        "behaviour": 1,
+        "birth": 1,
+        "cultural_context": 1,
+        "death": 2,
+        "diplomacy": 1,
+        "location": 2,
+        "media_candidate": 3,
+        "milestone": 4,
+        "origin": 1,
+        "personality": 1,
+        "relationship": 2,
+        "research": 1,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -87
+    },
+    {
       "subject_id": "meng-xiang",
       "subject_label": "Meng Xiang",
       "media_count": 2,
@@ -2110,30 +2096,6 @@
       "coverage_gap_score": -98
     },
     {
-      "subject_id": "lin-bing",
-      "subject_label": "Lin Bing",
-      "media_count": 2,
-      "record_count": 28,
-      "direct_record_count": 28,
-      "category_count": 13,
-      "categories": {
-        "birth": 2,
-        "cultural_context": 3,
-        "diplomacy": 2,
-        "identity": 1,
-        "location": 2,
-        "maternal_care": 1,
-        "media_candidate": 2,
-        "milestone": 4,
-        "name_meaning": 1,
-        "relationship": 2,
-        "reproduction": 5,
-        "sex": 1,
-        "transfer": 2
-      },
-      "coverage_gap_score": -100
-    },
-    {
       "subject_id": "liang-liang-my",
       "subject_label": "Liang Liang",
       "media_count": 13,
@@ -2214,6 +2176,32 @@
       "coverage_gap_score": -114
     },
     {
+      "subject_id": "lin-bing",
+      "subject_label": "Lin Bing",
+      "media_count": 3,
+      "record_count": 36,
+      "direct_record_count": 36,
+      "category_count": 15,
+      "categories": {
+        "birth": 2,
+        "cultural_context": 4,
+        "diet": 1,
+        "diplomacy": 2,
+        "growth_measurement": 4,
+        "identity": 1,
+        "location": 2,
+        "maternal_care": 1,
+        "media_candidate": 3,
+        "milestone": 5,
+        "name_meaning": 1,
+        "relationship": 2,
+        "reproduction": 5,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -123
+    },
+    {
       "subject_id": "sheng-yi",
       "subject_label": "Sheng Yi",
       "media_count": 20,
@@ -2270,6 +2258,39 @@
         "veterinary_care": 2
       },
       "coverage_gap_score": -134
+    },
+    {
+      "subject_id": "lin-hui",
+      "subject_label": "Lin Hui",
+      "media_count": 9,
+      "record_count": 52,
+      "direct_record_count": 52,
+      "category_count": 22,
+      "categories": {
+        "behaviour": 3,
+        "birth": 1,
+        "cultural_context": 1,
+        "death": 2,
+        "diet": 1,
+        "diplomacy": 1,
+        "enrichment": 1,
+        "health": 5,
+        "location": 4,
+        "maternal_care": 1,
+        "media_candidate": 8,
+        "milestone": 10,
+        "name": 1,
+        "origin": 1,
+        "personality": 1,
+        "public_debut": 1,
+        "relationship": 2,
+        "reproduction": 1,
+        "research": 1,
+        "sex": 2,
+        "transfer": 2,
+        "veterinary_care": 2
+      },
+      "coverage_gap_score": -155
     },
     {
       "subject_id": "xiao-qi-ji",
