@@ -281,7 +281,7 @@ export function StructuredLineagePage({
       />
       <main id="main-content" className="pa-public-main" data-testid="structured-lineage-page">
         <section className={`${publicShellClassName} pa-lineage-hero`}>
-          <p className="pa-eyebrow">PandaAtlas / Reviewed relationships</p>
+          <p className="pa-eyebrow">ZhiPanda / Family relationships</p>
           <h1>{t.title}</h1>
           <p className="pa-lede">{t.description}</p>
 

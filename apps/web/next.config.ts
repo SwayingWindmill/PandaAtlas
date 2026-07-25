@@ -7,21 +7,13 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   ...(productionSmokeDistDir ? { distDir: productionSmokeDistDir } : {}),
   transpilePackages: ["maplibre-gl"],
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "picsum.photos"
-      }
-    ]
-  },
   webpack(config, { isServer }) {
     config.module.rules.push({
       resourceQuery: /maplibre-worker/,
       type: "asset/resource",
       generator: {
-        filename: "static/map/[name].[contenthash][ext]"
-      }
+        filename: "static/map/[name].[contenthash][ext]",
+      },
     });
 
     if (!isServer && config.optimization?.splitChunks && typeof config.optimization.splitChunks !== "boolean") {
@@ -35,13 +27,13 @@ const nextConfig: NextConfig = {
           priority: 45,
           enforce: true,
           minSize: 0,
-          maxSize: 420_000
-        }
+          maxSize: 420_000,
+        },
       };
     }
 
     return config;
-  }
+  },
 };
 
 export default nextConfig;

@@ -223,7 +223,7 @@ export default async function LocalizedAtlasPage({ params, searchParams }: Local
       <GlobalNavigation locale={locale} active="atlas" alternatePath={atlasHref(alternateLocale, canonicalState)} />
       <main id="main-content" className="pa-public-main" data-testid="localized-atlas-page">
         <section className={`${publicShellClassName} pa-atlas-header`}>
-          <p className="pa-eyebrow">PandaAtlas / Public identities</p>
+          <p className="pa-eyebrow">{locale === "zh" ? "吱熊猫 / 熊猫资料" : "ZhiPanda / Panda profiles"}</p>
           <h1>{t.title}</h1>
           <p className="pa-lede">{t.description}</p>
 

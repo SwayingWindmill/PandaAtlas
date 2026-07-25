@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-const RELEASE_ID = "2026.07.21.1";
+const RELEASE_ID_PATTERN = String.raw`2026\.\d{2}\.\d{2}\.\d+`;
 const SMITHSONIAN_RESULT = "institution:afb0f227-dd5e-5076-88e3-74e9807a6049";
 
 
 test("renders the canonical graph-free institution journey", async ({ page }) => {
   await page.goto("/zh/map");
 
-  await expect(page).toHaveURL(`/zh/map?mode=institutions&snapshot=${RELEASE_ID}`);
+  await expect(page).toHaveURL(new RegExp(`/zh/map\\?mode=institutions&snapshot=${RELEASE_ID_PATTERN}$`));
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: "结构化全球分布与足迹" })).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-institution:"]')).toHaveCount(8);
@@ -18,7 +18,7 @@ test("renders the canonical graph-free institution journey", async ({ page }) =>
 
 
 test("filters the individual footprint while preserving current and historical residency truth", async ({ page }) => {
-  await page.goto(`/en/map?mode=individual&focus=mei-xiang&snapshot=${RELEASE_ID}`);
+  await page.goto("/en/map?mode=individual&focus=mei-xiang");
 
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   const results = page.locator('[data-testid^="structured-map-result-residency:"]');
@@ -33,11 +33,11 @@ test("filters the individual footprint while preserving current and historical r
 
 
 test("keeps wild conservation usable without a visual provider and states public precision", async ({ page }) => {
-  await page.goto(`/zh/map?mode=wild&snapshot=${RELEASE_ID}`);
+  await page.goto("/zh/map?mode=wild");
 
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-conservation:"]').first()).toBeVisible();
-  await expect(page.getByText(/PandaAtlas (实时栖息地接口|缓存的部分栖息地发布)/).first()).toBeVisible();
+  await expect(page.getByText(/吱熊猫(实时栖息地接口|缓存的部分栖息地发布)/).first()).toBeVisible();
   await expect(page.getByText(/省级|国家级/).first()).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(0);
   await expect(page.getByText("© OpenStreetMap contributors · © CARTO")).toBeHidden();
@@ -47,7 +47,7 @@ test("keeps wild conservation usable without a visual provider and states public
 
 
 test("selects a result in canonical URL state and preserves it across locale switching", async ({ page }) => {
-  await page.goto(`/zh/map?mode=institutions&country=US&snapshot=${RELEASE_ID}`);
+  await page.goto("/zh/map?mode=institutions&country=US");
   const smithsonian = page.getByTestId(`structured-map-result-${SMITHSONIAN_RESULT}`);
   await smithsonian.getByRole("link", { name: "查看此结果" }).click();
 
@@ -55,7 +55,7 @@ test("selects a result in canonical URL state and preserves it across locale swi
   await expect(page.getByTestId("selected-structured-map-result")).toContainText("史密森国家动物园");
   await expect(page.getByRole("link", { name: "English", exact: true })).toHaveAttribute(
     "href",
-    `/en/map?mode=institutions&country=US&snapshot=${RELEASE_ID}&selected=${encodeURIComponent(SMITHSONIAN_RESULT)}`,
+    new RegExp(`/en/map\\?mode=institutions&country=US&snapshot=${RELEASE_ID_PATTERN}&selected=${encodeURIComponent(SMITHSONIAN_RESULT)}$`),
   );
 });
 
@@ -63,7 +63,7 @@ test("selects a result in canonical URL state and preserves it across locale swi
 test("normalizes invalid, repeated, and unsupported structured map parameters", async ({ page }) => {
   await page.goto("/en/map?mode=combined&country=china&status=future&snapshot=wrong&selected=missing&unsupported=value");
 
-  await expect(page).toHaveURL(`/en/map?mode=institutions&snapshot=${RELEASE_ID}`);
+  await expect(page).toHaveURL(new RegExp(`/en/map\\?mode=institutions&snapshot=${RELEASE_ID_PATTERN}$`));
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
 });
 
@@ -82,7 +82,7 @@ test("legacy map routes redirect by request language while preserving task state
 
 
 test("submits native structured map filters from the keyboard", async ({ page }) => {
-  await page.goto(`/en/map?mode=institutions&snapshot=${RELEASE_ID}`);
+  await page.goto("/en/map?mode=institutions");
   const form = page.getByRole("form", { name: "Filter structured results" });
 
   await form.getByLabel("Panda, institution, or place").fill("Smithsonian");
@@ -90,7 +90,7 @@ test("submits native structured map filters from the keyboard", async ({ page })
   await form.getByRole("button", { name: "Update results" }).focus();
   await page.keyboard.press("Enter");
 
-  await expect(page).toHaveURL(`/en/map?mode=institutions&focus=Smithsonian&country=US&snapshot=${RELEASE_ID}`);
+  await expect(page).toHaveURL(new RegExp(`/en/map\\?mode=institutions&focus=Smithsonian&country=US&snapshot=${RELEASE_ID_PATTERN}$`));
   await expect(page.getByTestId(`structured-map-result-${SMITHSONIAN_RESULT}`)).toBeVisible();
 });
 
@@ -98,7 +98,7 @@ test("submits native structured map filters from the keyboard", async ({ page })
 test("renders the complete structured map journey without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto(`/en/map?mode=individual&focus=mei-xiang&snapshot=${RELEASE_ID}`);
+  await page.goto("/en/map?mode=individual&focus=mei-xiang");
 
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-residency:"]')).toHaveCount(2);

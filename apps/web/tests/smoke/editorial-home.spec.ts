@@ -1,10 +1,24 @@
 import { expect, test } from "@playwright/test";
+import { Buffer } from "node:buffer";
 
-test("renders the complete Chinese Editorial Home information architecture", async ({ page }) => {
+const ONE_PIXEL_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+  "base64",
+);
+
+test.beforeEach(async ({ page }) => {
+  await page.route("**/media/releases/**/*.webp", async (route) => {
+    await route.fulfill({ status: 200, contentType: "image/png", body: ONE_PIXEL_PNG });
+  });
+});
+
+test("renders the complete Chinese ZhiPanda Home information architecture", async ({ page }) => {
   await page.goto("/zh");
 
   await expect(page.getByTestId("editorial-home")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1, name: "从一只熊猫开始，查证身份、亲缘与迁移" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "认识你关注的每一只熊猫" })).toBeVisible();
+  await expect(page.getByTestId("home-hero-media-image")).toBeVisible();
+  await expect(page.getByTestId("home-hero-media")).toContainText("CC BY-SA 4.0");
   await expect(page.getByTestId("editorial-selections")).toContainText("编辑精选");
   await expect(page.getByTestId("relationship-place-exploration")).toContainText("关系与地点");
   await expect(page.getByTestId("recent-archive-revisions")).toContainText("最近档案修订");
@@ -37,7 +51,7 @@ test("links relationship and place exploration to existing canonical surfaces", 
   );
   await expect(exploration.getByRole("link", { name: "Open structured map" })).toHaveAttribute(
     "href",
-    "/en/map?mode=institutions&snapshot=2026.07.21.1",
+    /\/en\/map\?mode=institutions&snapshot=2026\.\d{2}\.\d{2}\.\d+$/,
   );
   await expect(exploration.getByRole("link", { name: "Smithsonian institution" })).toHaveAttribute(
     "href",
@@ -54,15 +68,15 @@ test("publishes only real localized revision summaries from the current release"
   const revisions = page.getByTestId("recent-archive-revisions");
 
   await expect(revisions.getByRole("listitem")).toHaveCount(4);
-  await expect(revisions).toContainText("Public release: 2026.07.21.1");
-  await expect(revisions).toContainText("Reviewed identity, birth, residency, events, lineage, and licensed media.");
+  await expect(revisions.getByText(/^Public release:/)).toHaveCount(4);
+  await expect(revisions.getByText(/^Last verified:/)).toHaveCount(4);
   await expect(revisions).not.toContainText("Tian Tian");
 });
 
-test("keeps canonical and alternate language metadata on the Editorial Home", async ({ page }) => {
+test("keeps canonical and alternate language metadata on the ZhiPanda Home", async ({ page }) => {
   await page.goto("/en");
 
-  await expect(page).toHaveTitle(/trusted bilingual living archive/i);
+  await expect(page).toHaveTitle(/ZhiPanda.*Discover the pandas you care about/i);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/en$/);
   await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute("href", /\/zh$/);
   await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute("href", /\/zh$/);
@@ -74,7 +88,7 @@ test("searches the localized Atlas without JavaScript", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/en");
 
-  const query = page.getByLabel("Panda name, alias, or public identifier");
+  const query = page.getByLabel("Panda name, alias, or pinyin");
   await query.fill("mei xiang");
   await query.press("Enter");
 
@@ -84,11 +98,11 @@ test("searches the localized Atlas without JavaScript", async ({ browser }) => {
   await context.close();
 });
 
-test("remains no-media-safe and reflows at 320 CSS pixels", async ({ page }) => {
+test("keeps the image-led Home usable at 320 CSS pixels", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto("/zh");
 
   await expect(page.getByTestId("editorial-home")).toBeVisible();
-  await expect(page.getByTestId("editorial-home").locator("img")).toHaveCount(0);
+  await expect(page.getByTestId("home-hero-media-image")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
 });

@@ -253,9 +253,9 @@ function buildWildResults(
     const province = feature.properties.province ?? null;
     const level = feature.properties.level ?? (locale === "zh" ? "级别未公开" : "Level not published");
     const sourceLabel = habitats.source === "api"
-      ? locale === "zh" ? "PandaAtlas 实时栖息地接口" : "Live PandaAtlas habitat API"
+      ? locale === "zh" ? "吱熊猫实时栖息地接口" : "Live ZhiPanda habitat API"
       : habitats.source === "cached-release"
-        ? locale === "zh" ? "PandaAtlas 缓存的部分栖息地发布" : "Cached partial PandaAtlas habitat release"
+        ? locale === "zh" ? "吱熊猫缓存的部分栖息地发布" : "Cached partial ZhiPanda habitat release"
         : locale === "zh" ? "栖息地数据当前不可用" : "Habitat data currently unavailable";
     return {
       id: `conservation:${id}`,

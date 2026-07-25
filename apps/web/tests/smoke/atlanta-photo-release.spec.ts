@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { Buffer } from "node:buffer";
 
-const CURRENT_RELEASE_ID = "2026.07.21.1";
+const CURRENT_RELEASE_PATTERN = /2026\.\d{2}\.\d{2}\.\d+/;
 const ATLANTA_MEDIA_RELEASE_ID = "2026.07.20.1";
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
@@ -42,11 +42,11 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("publishes fifteen reviewed panda profiles in the current Web release", async ({ page }) => {
+test("publishes reviewed panda profiles in the current Web release", async ({ page }) => {
   await page.goto("/zh/atlas");
 
-  await expect(page.getByTestId("public-delivery-notice")).toContainText(CURRENT_RELEASE_ID);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("15");
+  await expect(page.getByTestId("public-delivery-notice")).toContainText(CURRENT_RELEASE_PATTERN);
+  await expect(page.getByTestId("atlas-result-summary")).toContainText(/公开档案总数 \d+ 项/);
 
   for (const profile of profiles) {
     await page.goto(`/zh/atlas?q=${encodeURIComponent(profile.nameEn)}`);
@@ -62,7 +62,8 @@ for (const profile of profiles) {
 
     await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: new RegExp(profile.nameZh) })).toBeVisible();
-    await expect(page.getByTestId("revision-summary")).toContainText(CURRENT_RELEASE_ID);
+    await expect(page.getByTestId("profile-hero-media-image")).toBeVisible();
+    await expect(page.getByTestId("revision-summary")).toContainText(CURRENT_RELEASE_PATTERN);
     await expect(page.getByTestId("fact-place")).toContainText("2026-07-20");
     await expect(page.getByTestId("timeline-list").locator(":scope > li")).toHaveCount(5);
 

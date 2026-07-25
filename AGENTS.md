@@ -1,7 +1,7 @@
 ﻿# Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a monorepo for Panda Atlas (大熊猫图鉴与分布地图).
+This repository is the monorepo for ZhiPanda (吱熊猫), a modern panda information and exploration website.
 
 - `apps/web`: Next.js App Router frontend (Tailwind v4 + shadcn/ui style components).
 - `services/api`: FastAPI backend service (v1 REST endpoints, schema/service split).
@@ -52,7 +52,10 @@ Database/Supabase:
 - Naming: use kebab-case for docs/config files and numeric migration prefixes (`0002_*.sql`).
 
 ## UI & Product Conventions
-- Visual direction: natural-history + field-journal aesthetic (no generic dashboard look).
+- Canonical frontend policy: `docs/design/zhipanda-frontend-policy.md`.
+- Public brand: `吱熊猫` in Chinese and `ZhiPanda` in English.
+- Product direction: modern, image-led panda information for panda enthusiasts; no generic dashboard look.
+- Taste Skill and Impeccable rules are locally pinned by the canonical frontend policy and must not auto-update.
 - Do not default to Inter/Roboto/Arial.
 - Keep map and atlas pages mobile-safe and desktop-ready.
 - New UI work should preserve the existing palette/tone in `apps/web/app/globals.css` unless a deliberate redesign is requested.

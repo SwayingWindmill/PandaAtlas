@@ -2,15 +2,14 @@ import type { Route } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpenCheck,
   Building2,
   CheckCircle2,
   MapPinned,
   Network,
   Search,
-  ShieldCheck,
 } from "lucide-react";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import type {
   PublicCoverage,
@@ -48,7 +47,7 @@ export function EditorialHomePage({
       <main id="main-content" className="pa-public-main pa-editorial-home" data-testid="editorial-home">
         <section className={`${publicShellClassName} pa-home-hero`} aria-labelledby="home-title">
           <div className="pa-home-hero-copy">
-            <p className="pa-eyebrow"><ShieldCheck aria-hidden="true" />{view.hero.eyebrow}</p>
+            <p className="pa-eyebrow">{view.hero.eyebrow}</p>
             <h1 id="home-title">{view.hero.title}</h1>
             <p className="pa-lede">{view.hero.description}</p>
             <form
@@ -76,17 +75,27 @@ export function EditorialHomePage({
             </Link>
           </div>
 
-          <aside className="pa-home-release-panel" aria-label={view.hero.noMediaLabel}>
-            <div className="pa-home-release-mark" aria-hidden="true">
-              <BookOpenCheck />
-              <span>PANDA<br />ATLAS</span>
-            </div>
-            <div>
-              <strong>{view.hero.noMediaTitle}</strong>
-              <p>{view.hero.noMediaBody}</p>
-            </div>
-            <p className="pa-home-release-id">{view.hero.releaseLabel}</p>
-          </aside>
+          <div className="pa-home-hero-visual" aria-label={view.hero.noMediaLabel}>
+            <LicensedMediaFigure
+              locale={locale}
+              variant="home"
+              src={view.hero.media?.src ?? null}
+              srcSet={view.hero.media?.srcSet}
+              sizes="(min-width: 1024px) 48vw, 100vw"
+              width={view.hero.media?.width}
+              height={view.hero.media?.height}
+              alt={view.hero.media?.alt ?? view.hero.noMediaTitle}
+              credit={view.hero.media?.credit}
+              rights={view.hero.media?.rights}
+              sourceUrl={view.hero.media?.sourceUrl}
+              profileHref={view.hero.media?.profileHref}
+              profileLabel={view.hero.media?.profileLabel}
+              fallbackTitle={view.hero.noMediaTitle}
+              fallbackBody={view.hero.noMediaBody}
+              priority
+              testId="home-hero-media"
+            />
+          </div>
         </section>
 
         <section

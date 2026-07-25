@@ -43,6 +43,19 @@ export interface EditorialHomeMethodItem {
   body: string;
 }
 
+export interface EditorialHomeHeroMedia {
+  src: string;
+  srcSet: string | undefined;
+  width: number | null;
+  height: number | null;
+  alt: string;
+  credit: string | null;
+  rights: string | null;
+  sourceUrl: string | null;
+  profileHref: string;
+  profileLabel: string;
+}
+
 export interface EditorialHomeViewModel {
   hero: {
     eyebrow: string;
@@ -55,6 +68,7 @@ export interface EditorialHomeViewModel {
     searchButton: string;
     atlasLabel: string;
     atlasHref: string;
+    media: EditorialHomeHeroMedia | null;
     noMediaLabel: string;
     noMediaTitle: string;
     noMediaBody: string;
@@ -93,23 +107,23 @@ const editorialSelection = ["mei-xiang", "bao-li", "xiao-qi-ji"] as const;
 const copy = {
   zh: {
     hero: {
-      eyebrow: "PandaAtlas 可信公开档案",
-      title: "从一只熊猫开始，查证身份、亲缘与迁移",
-      description: "这是一个双语、持续修订的公开档案馆。搜索已审核身份，沿亲缘或地点继续探索，并查看每条档案如何被来源与版本支持。",
-      searchLabel: "搜索公开熊猫档案",
-      inputLabel: "熊猫名称、别名或公开标识",
+      eyebrow: "吱熊猫 ZhiPanda",
+      title: "认识你关注的每一只熊猫",
+      description: "从名字或一张照片开始，了解熊猫的基本资料、家庭关系、生活地点和最近更新。信息清楚易读，也保留可查阅的公开来源。",
+      searchLabel: "搜索熊猫",
+      inputLabel: "熊猫名字、别名或拼音",
       placeholder: "例如：美香、Mei Xiang、meixiang",
-      searchButton: "搜索档案",
-      atlasLabel: "浏览全部已发布档案",
-      noMediaLabel: "无媒体安全的档案入口",
-      noMediaTitle: "图片不是身份或事实证据",
-      noMediaBody: "当前首页只使用已审核文字、结构化关系、地点与来源。没有明确许可的媒体时，任务仍然完整可用。",
+      searchButton: "找熊猫",
+      atlasLabel: "浏览全部熊猫",
+      noMediaLabel: "首页熊猫主图",
+      noMediaTitle: "今天从一只熊猫开始",
+      noMediaBody: "当前发布没有可用于首页的授权图片。搜索、家庭关系、地点和来源仍然可以正常使用。",
       releaseLabel: "当前公开发布",
     },
     profiles: {
       eyebrow: "编辑精选",
-      title: "三个进入档案馆的起点",
-      description: "这些档案由编辑按可解释的研究任务选出，用于展示身份、亲缘、迁移和地点之间的不同路径。",
+      title: "从这些熊猫开始认识",
+      description: "从不同年龄、家庭和生活经历的熊猫出发，看看一份个体资料可以如何继续连接到家族与地点。",
       selectionDisclosure: "这是编辑选择，不是热度、访问量或受欢迎程度排名。",
     },
     selectionReasons: {
@@ -148,7 +162,7 @@ const copy = {
     method: {
       eyebrow: "档案方法",
       title: "先说明证据，再展示结论",
-      description: "PandaAtlas 不用生成式故事、来源不明图片或静默示例数据补齐档案。证据不足时，页面会明确显示未知、部分可用或不可用。",
+      description: "ZhiPanda 不用生成式故事、来源不明图片或静默示例数据补齐档案。证据不足时，页面会明确显示未知、部分可用或不可用。",
       items: [
         {
           title: "稳定身份与双语解析",
@@ -176,17 +190,17 @@ const copy = {
   },
   en: {
     hero: {
-      eyebrow: "PandaAtlas trusted public archive",
-      title: "Start with one panda. Verify identity, lineage, and movement.",
-      description: "A bilingual, continuously revised public archive. Search reviewed identities, continue through relationships or places, and see how each profile is supported by sources and releases.",
-      searchLabel: "Search public panda profiles",
-      inputLabel: "Panda name, alias, or public identifier",
+      eyebrow: "ZhiPanda",
+      title: "Discover the pandas you care about",
+      description: "Start with a name or a photo, then explore each panda's profile, family, places, and recent updates. The information stays approachable while public sources remain easy to inspect.",
+      searchLabel: "Search pandas",
+      inputLabel: "Panda name, alias, or pinyin",
       placeholder: "For example: Mei Xiang, 美香, meixiang",
-      searchButton: "Search profiles",
-      atlasLabel: "Browse every published profile",
-      noMediaLabel: "No-media-safe archive entry",
-      noMediaTitle: "Imagery is not identity or fact evidence",
-      noMediaBody: "The Home uses reviewed text, structured relationships, places, and sources. The research task remains complete when no clearly licensed media is available.",
+      searchButton: "Find a panda",
+      atlasLabel: "Browse all pandas",
+      noMediaLabel: "Homepage panda image",
+      noMediaTitle: "Start with one panda today",
+      noMediaBody: "This release has no licensed image available for the Home. Search, family relationships, places, and sources remain fully usable.",
       releaseLabel: "Current public release",
     },
     profiles: {
@@ -231,7 +245,7 @@ const copy = {
     method: {
       eyebrow: "Archive method",
       title: "Evidence before conclusions",
-      description: "PandaAtlas does not complete profiles with generated stories, unverified imagery, or silent demo data. When evidence is insufficient, the interface says unknown, partial, or unavailable.",
+      description: "ZhiPanda does not complete profiles with generated stories, unverified imagery, or silent demo data. When evidence is insufficient, the interface says unknown, partial, or unavailable.",
       items: [
         {
           title: "Stable identity and bilingual resolution",
@@ -328,6 +342,41 @@ function mediaLabel(panda: PandaDetail, locale: PublicLocale): string {
   return t.noMedia;
 }
 
+function httpsUrl(value: string | null | undefined): string | null {
+  if (!value || !URL.canParse(value)) return null;
+  return new URL(value).protocol === "https:" ? value : null;
+}
+
+function buildHeroMedia(panda: PandaDetail, locale: PublicLocale): EditorialHomeHeroMedia | null {
+  if (panda.media_release?.license_state !== "licensed") return null;
+  const item = panda.media.find((media) => media.status === "available");
+  const src = httpsUrl(item?.url) ?? httpsUrl(item?.signed_url);
+  if (!item || !src) return null;
+
+  const name = profileName(panda, locale);
+  const derivatives = item.derivatives
+    .flatMap((derivative) => {
+      const url = httpsUrl(derivative.url);
+      return url ? [`${url} ${derivative.width}w`] : [];
+    })
+    .join(", ");
+
+  return {
+    src,
+    srcSet: derivatives || undefined,
+    width: item.width,
+    height: item.height,
+    alt: locale === "zh"
+      ? item.alt_zh ?? item.alt_en ?? panda.name_zh
+      : item.alt_en ?? item.alt_zh ?? panda.name_en ?? panda.name_zh,
+    credit: item.credit ?? item.photographer ?? null,
+    rights: item.rights,
+    sourceUrl: httpsUrl(item.source_url),
+    profileHref: `/${locale}/atlas/${panda.slug}`,
+    profileLabel: locale === "zh" ? `认识${name.display}` : `Meet ${name.display}`,
+  };
+}
+
 export function buildEditorialHomeViewModel(
   envelope: PublicContentEnvelope<PublicAtlasDataset>,
   locale: PublicLocale,
@@ -335,6 +384,16 @@ export function buildEditorialHomeViewModel(
   const t = copy[locale];
   const pandasBySlug = new Map(envelope.data.pandas.map((panda) => [panda.slug, panda]));
   const facilitiesById = new Map(envelope.data.facilities.map((facility) => [facility.id, facility]));
+  const heroCandidates = [
+    ...editorialSelection.flatMap((slug) => {
+      const panda = pandasBySlug.get(slug);
+      return panda ? [panda] : [];
+    }),
+    ...envelope.data.pandas.filter((panda) => !editorialSelection.includes(panda.slug as typeof editorialSelection[number])),
+  ];
+  const heroMedia = heroCandidates
+    .map((panda) => buildHeroMedia(panda, locale))
+    .find((media): media is EditorialHomeHeroMedia => Boolean(media)) ?? null;
 
   const selectedProfiles = editorialSelection.flatMap((slug) => {
     const panda = pandasBySlug.get(slug);
@@ -387,6 +446,7 @@ export function buildEditorialHomeViewModel(
       ...t.hero,
       searchAction: `/${locale}/atlas`,
       atlasHref: `/${locale}/atlas`,
+      media: heroMedia,
       releaseLabel: `${t.hero.releaseLabel} · ${envelope.release.id} · Public Schema ${envelope.release.schemaVersion}`,
     },
     profiles: {

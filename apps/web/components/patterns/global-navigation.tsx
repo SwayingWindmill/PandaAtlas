@@ -1,6 +1,5 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Leaf, ShieldCheck } from "lucide-react";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { alternateLocale } from "@/foundation/content/locales";
 import { MobileNavigation } from "@/components/patterns/mobile-navigation";
@@ -13,14 +12,13 @@ interface GlobalNavigationProps {
 
 const copy = {
   zh: {
-    brand: "PandaAtlas",
-    description: "可信的大熊猫公开档案",
+    brand: "吱熊猫",
+    description: "熊猫信息与探索",
     home: "首页",
-    atlas: "熊猫档案",
+    atlas: "熊猫",
     lineage: "谱系",
     map: "地图",
     myPandas: "我的熊猫",
-    trust: "来源优先",
     nav: "主导航",
     mobileNav: "移动导航",
     open: "打开导航菜单",
@@ -28,14 +26,13 @@ const copy = {
     language: "English",
   },
   en: {
-    brand: "PandaAtlas",
-    description: "Trusted public giant panda archive",
+    brand: "ZhiPanda",
+    description: "Panda information and discovery",
     home: "Home",
-    atlas: "Panda profiles",
+    atlas: "Pandas",
     lineage: "Lineage",
     map: "Map",
     myPandas: "My Pandas",
-    trust: "Evidence first",
     nav: "Primary navigation",
     mobileNav: "Mobile navigation",
     open: "Open navigation menu",
@@ -60,7 +57,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
       <header className="pa-global-header">
         <div className={`${publicShellClassName} pa-global-header-inner`}>
           <Link href={`/${locale}` as Route} className="pa-brand" aria-label={`${t.brand} — ${t.description}`}>
-            <span className="pa-brand-mark" aria-hidden="true"><Leaf /></span>
+            <span className="pa-brand-mark" aria-hidden="true">{locale === "zh" ? "吱" : "Z"}</span>
             <span>
               <strong>{t.brand}</strong>
               <small>{t.description}</small>
@@ -76,7 +73,6 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
           </nav>
 
           <div className="pa-header-actions">
-            <span className="pa-trust-mark"><ShieldCheck aria-hidden="true" />{t.trust}</span>
             <Link href={languageHref as Route} hrefLang={languageHrefLang} className="pa-language-link">
               {t.language}
             </Link>
