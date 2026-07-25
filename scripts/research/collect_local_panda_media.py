@@ -178,7 +178,7 @@ def _open_url(url: str) -> BinaryIO:
         url,
         headers={
             "User-Agent": USER_AGENT,
-            "Accept": "image/avif,image/webp,image/png,image/jpeg,image/*;q=0.8,*/*;q=0.2",
+            "Accept": "image/webp,image/png,image/jpeg,image/*;q=0.8,*/*;q=0.2",
         },
         method="GET",
     )

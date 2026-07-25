@@ -1,0 +1,456 @@
+{
+  "schema_version": 1,
+  "page_url": "https://pairi-daiza.prezly.com/hao-hao-the-female-giant-panda-of-pairi-daiza-will-soon-return-to-china-to-receive-specialized-medical-care",
+  "discovered_at": "2026-07-25T19:26:59.016073+00:00",
+  "image_count": 34,
+  "images": [
+    {
+      "asset_url": "https://cdn.uc.assets.prezly.com/053ea34f-fbdc-4d66-b9f6-9d092fa734dc/-/crop/3996x4000/622,0/-/preview/-/scale_crop/128x128/center/-/format/auto/",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "Johan Vreys",
+      "title": "Johan Vreys",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "preload",
+        "image",
+        "prezly-slate-contact__avatar-image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.uc.assets.prezly.com/23a4c92e-c8b6-4b0c-a02d-9c3dc1e0c0d4/-/preview/600x600/",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/268b8dd0-0724-480e-9aba-f80fea1e9134/-/format/auto/-/stretch/off/-/progressive/yes/-/resize/640x/-/quality/smart/PDZ_Logo2026_Gold.png",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "169.73774230330673",
+      "evidence": [
+        "Logo_logo__SEwEG Logo_landscape__HDUO5 Logo_large__WDdAz"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/268b8dd0-0724-480e-9aba-f80fea1e9134/-/format/auto/-/stretch/off/-/progressive/yes/-/resize/256x/-/quality/smart/PDZ_Logo2026_Gold.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "169.73774230330673",
+      "evidence": [
+        "Logo_logo__SEwEG Logo_landscape__HDUO5 Logo_large__WDdAz"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/23a4c92e-c8b6-4b0c-a02d-9c3dc1e0c0d4/-/preview/-/format/auto/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/23a4c92e-c8b6-4b0c-a02d-9c3dc1e0c0d4/-/resize/1200/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/23a4c92e-c8b6-4b0c-a02d-9c3dc1e0c0d4/-/resize/2400/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/23a4c92e-c8b6-4b0c-a02d-9c3dc1e0c0d4/-/resize/800/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/23a4c92e-c8b6-4b0c-a02d-9c3dc1e0c0d4/-/resize/1600/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/23a4c92e-c8b6-4b0c-a02d-9c3dc1e0c0d4/-/resize/400/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/61d5470f-8321-440d-a65b-a8c4d4014f13/-/preview/500x500/-/preview/-/format/auto/MI4A7955%20HaoHao.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/61d5470f-8321-440d-a65b-a8c4d4014f13/-/preview/500x500/-/resize/1200/MI4A7955%20HaoHao.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/61d5470f-8321-440d-a65b-a8c4d4014f13/-/preview/500x500/-/resize/800/MI4A7955%20HaoHao.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/61d5470f-8321-440d-a65b-a8c4d4014f13/-/preview/500x500/-/resize/400/MI4A7955%20HaoHao.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/8fa89c80-a9eb-4634-963d-5b0ea290b9a6/-/preview/500x500/-/preview/-/format/auto/Baby%20P%20(Tian%20Bao)%202%20months.JPG",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/8fa89c80-a9eb-4634-963d-5b0ea290b9a6/-/preview/500x500/-/resize/1200/Baby%20P%20(Tian%20Bao)%202%20months.JPG",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/8fa89c80-a9eb-4634-963d-5b0ea290b9a6/-/preview/500x500/-/resize/800/Baby%20P%20(Tian%20Bao)%202%20months.JPG",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/8fa89c80-a9eb-4634-963d-5b0ea290b9a6/-/preview/500x500/-/resize/400/Baby%20P%20(Tian%20Bao)%202%20months.JPG",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/449c4d13-7dfa-41ea-a864-b2fdf6fa99f3/-/preview/500x500/-/preview/-/format/auto/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/449c4d13-7dfa-41ea-a864-b2fdf6fa99f3/-/preview/500x500/-/resize/1200/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/449c4d13-7dfa-41ea-a864-b2fdf6fa99f3/-/preview/500x500/-/resize/800/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/449c4d13-7dfa-41ea-a864-b2fdf6fa99f3/-/preview/500x500/-/resize/400/_DSC9149-Avec%20accentuation-Bruit.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/f27290d2-e0dd-429c-a361-d5a425bb12b0/-/preview/1000x500/-/preview/-/format/auto/_DSC0322.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/f27290d2-e0dd-429c-a361-d5a425bb12b0/-/preview/1000x500/-/resize/1200/_DSC0322.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/f27290d2-e0dd-429c-a361-d5a425bb12b0/-/preview/1000x500/-/resize/800/_DSC0322.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/f27290d2-e0dd-429c-a361-d5a425bb12b0/-/preview/1000x500/-/resize/400/_DSC0322.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/bde024ca-e288-4bd8-b3a3-f8b301325d2e/-/preview/500x500/-/preview/-/format/auto/MI4A0606.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/bde024ca-e288-4bd8-b3a3-f8b301325d2e/-/preview/500x500/-/resize/1200/MI4A0606.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/bde024ca-e288-4bd8-b3a3-f8b301325d2e/-/preview/500x500/-/resize/800/MI4A0606.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/bde024ca-e288-4bd8-b3a3-f8b301325d2e/-/preview/500x500/-/resize/400/MI4A0606.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/9b5ce123-7ade-4e17-a878-8ca0f4278f53/-/preview/500x500/-/preview/-/format/auto/MI4A0594.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/9b5ce123-7ade-4e17-a878-8ca0f4278f53/-/preview/500x500/-/resize/1200/MI4A0594.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/9b5ce123-7ade-4e17-a878-8ca0f4278f53/-/preview/500x500/-/resize/800/MI4A0594.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn.assets.prezly.com/9b5ce123-7ade-4e17-a878-8ca0f4278f53/-/preview/500x500/-/resize/400/MI4A0594.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "prezly-slate-media prezly-slate-gallery-image__media prezly-slate-media--image"
+      ]
+    }
+  ]
+}

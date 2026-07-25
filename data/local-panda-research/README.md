@@ -55,9 +55,9 @@ The validator checks JSONL syntax, IDs, source references, timestamps, local-onl
 
 ## Current snapshot
 
-As of 2026-07-26, the vault contains **327 sources** and **1,894 structured records**: 1,877 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 80 individually identified pandas, with no collected individual lacking at least one structured fact record.
+As of 2026-07-26, the vault contains **341 sources** and **2,005 structured records**: 1,988 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 84 individually identified pandas, with no collected individual lacking at least one structured fact record.
 
-The local media layer contains **290 candidates**, **283 downloaded files**, and **938,610,787 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
+The local media layer contains **313 candidates**, **306 downloaded files**, and **949,990,700 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
@@ -77,5 +77,6 @@ The local media layer contains **290 candidates**, **283 downloaded files**, and
 - `2026-07-25-san-diego-family.jsonl` — San Diego Zoo Wildlife Alliance family records for Bai Yun, Gao Gao, Mei Sheng, Su Lin, Zhen Zhen, Yun Zi and Xiao Liwu. The batch covers assisted and natural reproduction, maternal and geriatric care, individual personality, enrichment preferences, hearing and blood-pressure training, return to China, post-transfer locations and verified descendants.
 - `2026-07-26-everland-family.jsonl` — Everland Bao-family records for Ai Bao, Le Bao, Fu Bao, Rui Bao, Hui Bao and the unnamed 2026 female cub. The batch covers three successful natural-breeding litters, individual parentage, naming and romanization history, growth, twin rotation care, independence, Panda Second House residence, Fu Bao's return to Shenshuping, planned twin transfers and the latest unresolved naming status.
 - `2026-07-26-ueno-family.jsonl` — official Ueno family records for Ri Ri, Shin Shin, Xiang Xiang, Xiao Xiao and Lei Lei, covering identity, parentage, naming, natural-breeding milestones, maternal care, health and hypertension management, growth, husbandry training, independence, quarantine, returns to China and early adaptation at Bifengxia and Ya'an.
+- `2026-07-26-pairidaiza-family.jsonl` — Pairi Daiza family records for Hao Hao, Xing Hui, Tian Bao, Bao Di and Bao Mei, plus the zoo's panda-reproduction research programme. The batch covers identity, arrival, names, parentage, artificial insemination, twin rotation care, development, birthday enrichment, keeper observations, completed offspring transfers, Hao Hao's specialist-care return and the continuing Belgian residence of Xing Hui.
 
 All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.
