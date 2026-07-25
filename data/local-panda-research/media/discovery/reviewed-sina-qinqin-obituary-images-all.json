@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "page_url": "https://news.sina.com.cn/c/p/2006-11-24/083811603842.shtml",
+  "discovered_at": "2026-07-26T00:00:00+09:00",
+  "image_count": 4,
+  "images": [
+    {
+      "asset_url": "https://image2.sina.com.cn/dy/c/p/2006-11-24/U1043P1T1D11603842F21DT20061124111531.jpg",
+      "source_types": [
+        "reviewed-page-source"
+      ],
+      "alt": "大熊猫秦秦",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "Article heading and adjacent caption identify Qin Qin."
+      ]
+    },
+    {
+      "asset_url": "https://image2.sina.com.cn/dy/c/p/2006-11-24/U1831P1T1D11603842F23DT20061124094239.jpg",
+      "source_types": [
+        "reviewed-page-source"
+      ],
+      "alt": "秦秦曾是动物园里的明星",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "Article image-group caption identifies Qin Qin."
+      ]
+    },
+    {
+      "asset_url": "https://image2.sina.com.cn/dy/o/2006-11-24/ad878b386133dec5af58b95e723031ca.jpg",
+      "source_types": [
+        "reviewed-page-source"
+      ],
+      "alt": "大熊猫秦秦",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "Alternate-size article asset; excluded from media import as duplicate."
+      ]
+    },
+    {
+      "asset_url": "https://image2.sina.com.cn/dy/o/2006-11-24/ab9f0f502bff99da383e7a7b66db8c87.jpg",
+      "source_types": [
+        "reviewed-page-source"
+      ],
+      "alt": "秦秦曾是动物园里的明星",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "Alternate-size article asset; excluded from media import as duplicate."
+      ]
+    }
+  ]
+}
