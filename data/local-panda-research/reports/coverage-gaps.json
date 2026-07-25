@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 477,
-  "pandas_with_media": 102,
+  "candidate_count": 486,
+  "pandas_with_media": 101,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -23,21 +23,6 @@
         "transfer": 2
       },
       "coverage_gap_score": -29
-    },
-    {
-      "subject_id": "an-an",
-      "subject_label": "An An",
-      "media_count": 5,
-      "record_count": 17,
-      "direct_record_count": 17,
-      "category_count": 4,
-      "categories": {
-        "location": 2,
-        "media_candidate": 5,
-        "milestone": 5,
-        "sex": 5
-      },
-      "coverage_gap_score": -34
     },
     {
       "subject_id": "yuan-yuan-vienna",
@@ -590,27 +575,6 @@
       "coverage_gap_score": -56
     },
     {
-      "subject_id": "an-an-ocean-park",
-      "subject_label": "安安",
-      "media_count": 1,
-      "record_count": 14,
-      "direct_record_count": 14,
-      "category_count": 10,
-      "categories": {
-        "behaviour": 1,
-        "death": 1,
-        "health": 2,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 2,
-        "personality": 1,
-        "research": 3,
-        "sex": 1,
-        "transfer": 1
-      },
-      "coverage_gap_score": -57
-    },
-    {
       "subject_id": "qin-qin-xian-1989",
       "subject_label": "Qin Qin",
       "media_count": 4,
@@ -990,30 +954,6 @@
         "transfer": 2
       },
       "coverage_gap_score": -63
-    },
-    {
-      "subject_id": "ke-ke-hk-2019",
-      "subject_label": "Ke Ke",
-      "media_count": 2,
-      "record_count": 16,
-      "direct_record_count": 16,
-      "category_count": 13,
-      "categories": {
-        "behaviour": 1,
-        "cultural_context": 1,
-        "growth_measurement": 1,
-        "husbandry_training": 1,
-        "location": 1,
-        "media_candidate": 2,
-        "milestone": 2,
-        "name_meaning": 1,
-        "personality": 2,
-        "preference": 1,
-        "public_debut": 1,
-        "sex": 1,
-        "transfer": 1
-      },
-      "coverage_gap_score": -64
     },
     {
       "subject_id": "jia-jia-ocean-park",
@@ -1793,6 +1733,27 @@
       "coverage_gap_score": -82
     },
     {
+      "subject_id": "an-an-ocean-park",
+      "subject_label": "An An (historic Ocean Park panda)",
+      "media_count": 6,
+      "record_count": 31,
+      "direct_record_count": 31,
+      "category_count": 10,
+      "categories": {
+        "behaviour": 1,
+        "death": 1,
+        "health": 2,
+        "location": 3,
+        "media_candidate": 6,
+        "milestone": 7,
+        "personality": 1,
+        "research": 3,
+        "sex": 6,
+        "transfer": 1
+      },
+      "coverage_gap_score": -83
+    },
+    {
       "subject_id": "fu-bao",
       "subject_label": "Fu Bao",
       "media_count": 3,
@@ -1961,33 +1922,6 @@
       "coverage_gap_score": -88
     },
     {
-      "subject_id": "an-an-hk-2019",
-      "subject_label": "An An",
-      "media_count": 2,
-      "record_count": 22,
-      "direct_record_count": 22,
-      "category_count": 16,
-      "categories": {
-        "alias": 1,
-        "birth": 1,
-        "cultural_context": 2,
-        "growth_measurement": 1,
-        "husbandry_training": 3,
-        "location": 1,
-        "media_candidate": 2,
-        "milestone": 1,
-        "name_meaning": 1,
-        "personality": 2,
-        "preference": 1,
-        "public_debut": 1,
-        "relationship": 1,
-        "sex": 1,
-        "transfer": 2,
-        "veterinary_care": 1
-      },
-      "coverage_gap_score": -88
-    },
-    {
       "subject_id": "meng-yuan",
       "subject_label": "Meng Yuan",
       "media_count": 2,
@@ -2114,6 +2048,34 @@
         "veterinary_care": 1
       },
       "coverage_gap_score": -98
+    },
+    {
+      "subject_id": "ke-ke-hk-2019",
+      "subject_label": "Ke Ke",
+      "media_count": 8,
+      "record_count": 38,
+      "direct_record_count": 38,
+      "category_count": 17,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "cultural_context": 1,
+        "diet": 1,
+        "enrichment": 1,
+        "growth_measurement": 1,
+        "husbandry_training": 2,
+        "location": 3,
+        "media_candidate": 8,
+        "milestone": 9,
+        "name_meaning": 1,
+        "personality": 2,
+        "preference": 1,
+        "public_debut": 1,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -108
     },
     {
       "subject_id": "liang-liang-my",
@@ -2246,6 +2208,37 @@
         "transfer": 1
       },
       "coverage_gap_score": -125
+    },
+    {
+      "subject_id": "an-an-hk-2019",
+      "subject_label": "An An",
+      "media_count": 7,
+      "record_count": 42,
+      "direct_record_count": 42,
+      "category_count": 20,
+      "categories": {
+        "alias": 1,
+        "behaviour": 1,
+        "birth": 2,
+        "cultural_context": 2,
+        "diet": 1,
+        "enrichment": 1,
+        "growth_measurement": 1,
+        "health": 1,
+        "husbandry_training": 3,
+        "location": 4,
+        "media_candidate": 7,
+        "milestone": 7,
+        "name_meaning": 1,
+        "personality": 2,
+        "preference": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 3,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -131
     },
     {
       "subject_id": "long-hui",

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "page_url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/ocean-park-celebrates-an-an-ke-kes-first-year-in-hong-kong-and-national-day",
+  "discovered_at": "2026-07-25T23:34:54.809931+00:00",
+  "image_count": 1,
+  "images": [
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/m5wlrvhm/photo-1-key-photo.webp",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    }
+  ]
+}
