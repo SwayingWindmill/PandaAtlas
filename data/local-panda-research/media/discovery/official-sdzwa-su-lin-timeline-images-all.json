@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "page_url": "https://timeline.sdzwa.org/2005/2005-3/",
+  "discovered_at": "2026-07-25T18:20:27.540100+00:00",
+  "image_count": 3,
+  "images": [
+    {
+      "asset_url": "https://timeline.sdzwa.org/wp/wp-content/uploads/2015/09/T05-0892-005.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://timeline.sdzwa.org/wp/wp-content/uploads/2015/09/T05-0892-005-2165x1440.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2165",
+      "height": "1440",
+      "evidence": [
+        "animateWhenReady"
+      ]
+    },
+    {
+      "asset_url": "https://timeline.sdzwa.org/wp/wp-content/uploads/2015/09/T05-0981-017-1082x720.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1082",
+      "height": "720",
+      "evidence": [
+        "animateWhenReady"
+      ]
+    }
+  ]
+}

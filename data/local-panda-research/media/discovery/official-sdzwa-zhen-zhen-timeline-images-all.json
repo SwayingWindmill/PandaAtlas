@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "page_url": "https://timeline.sdzwa.org/2007/2007-2/",
+  "discovered_at": "2026-07-25T18:20:44.788632+00:00",
+  "image_count": 2,
+  "images": [
+    {
+      "asset_url": "https://timeline.sdzwa.org/wp/wp-content/uploads/2015/09/T07_0848_008.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://timeline.sdzwa.org/wp/wp-content/uploads/2015/09/T07_0848_008-2160x1440.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2160",
+      "height": "1440",
+      "evidence": [
+        "animateWhenReady"
+      ]
+    }
+  ]
+}
