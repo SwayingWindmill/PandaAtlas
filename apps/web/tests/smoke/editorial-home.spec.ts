@@ -19,11 +19,12 @@ test("renders the complete Chinese ZhiPanda Home information architecture", asyn
   await expect(page.getByRole("heading", { level: 1, name: "认识你关注的每一只熊猫" })).toBeVisible();
   await expect(page.getByTestId("home-hero-media-image")).toBeVisible();
   await expect(page.getByTestId("home-hero-media")).toContainText("CC BY-SA 4.0");
-  await expect(page.getByTestId("editorial-selections")).toContainText("编辑精选");
-  await expect(page.getByTestId("relationship-place-exploration")).toContainText("关系与地点");
-  await expect(page.getByTestId("recent-archive-revisions")).toContainText("最近档案修订");
-  await expect(page.getByTestId("archive-method")).toContainText("档案方法");
-  await expect(page.getByText("这是编辑选择，不是热度、访问量或受欢迎程度排名。")).toBeVisible();
+  await expect(page.getByTestId("editorial-selections")).toContainText("今天认识哪只熊猫？");
+  await expect(page.getByTestId("relationship-place-exploration")).toContainText("从美香到宝宝，再到宝力");
+  await expect(page.getByTestId("recent-archive-revisions")).toContainText("最近更新");
+  await expect(page.getByTestId("archive-method")).toContainText("资料原则");
+  await expect(page.getByText("精选用于帮助开始探索，不代表访问量或受欢迎程度排名。")).toBeVisible();
+  await expect(page.getByRole("link", { name: "美香", exact: true })).toHaveAttribute("href", /\/zh\/atlas\?q=/);
 });
 
 test("renders real editorial selections with canonical profile links", async ({ page }) => {
@@ -31,33 +32,35 @@ test("renders real editorial selections with canonical profile links", async ({ 
   const selections = page.getByTestId("editorial-selections");
 
   for (const [name, href] of [
-    ["Mei Xiang", "/en/atlas/mei-xiang"],
     ["Bao Li", "/en/atlas/bao-li"],
-    ["Xiao Qi Ji", "/en/atlas/xiao-qi-ji"],
+    ["Qing Bao", "/en/atlas/qing-bao"],
+    ["Lun Lun", "/en/atlas/lun-lun"],
+    ["Shin Shin", "/en/atlas/shin-shin"],
   ]) {
     await expect(selections.getByRole("link", { name, exact: true })).toHaveAttribute("href", href);
   }
-  await expect(selections.locator("article")).toHaveCount(3);
-  await expect(selections).toContainText("not rankings by popularity, traffic, or engagement");
+  await expect(selections.locator("article")).toHaveCount(4);
+  await expect(selections.locator("img")).toHaveCount(4);
+  await expect(selections).toContainText("not popularity or traffic rankings");
 });
 
 test("links relationship and place exploration to existing canonical surfaces", async ({ page }) => {
   await page.goto("/en");
   const exploration = page.getByTestId("relationship-place-exploration");
 
-  await expect(exploration.getByRole("link", { name: "Open structured lineage" })).toHaveAttribute(
+  await expect(exploration.getByRole("link", { name: "See the full family" })).toHaveAttribute(
     "href",
     "/en/lineage?focus=mei-xiang",
   );
-  await expect(exploration.getByRole("link", { name: "Open structured map" })).toHaveAttribute(
+  await expect(exploration.getByRole("link", { name: "Open the panda map" })).toHaveAttribute(
     "href",
     /\/en\/map\?mode=institutions&snapshot=2026\.\d{2}\.\d{2}\.\d+$/,
   );
-  await expect(exploration.getByRole("link", { name: "Smithsonian institution" })).toHaveAttribute(
+  await expect(exploration.getByRole("link", { name: "Smithsonian National Zoo" })).toHaveAttribute(
     "href",
     "/en/institutions/smithsonian-national-zoo",
   );
-  await expect(exploration.getByRole("link", { name: "Wolong Shenshuping place" })).toHaveAttribute(
+  await expect(exploration.getByRole("link", { name: "Wolong Shenshuping Base" })).toHaveAttribute(
     "href",
     "/en/places/wolong-shenshuping-base",
   );
@@ -68,8 +71,7 @@ test("publishes only real localized revision summaries from the current release"
   const revisions = page.getByTestId("recent-archive-revisions");
 
   await expect(revisions.getByRole("listitem")).toHaveCount(4);
-  await expect(revisions.getByText(/^Public release:/)).toHaveCount(4);
-  await expect(revisions.getByText(/^Last verified:/)).toHaveCount(4);
+    await expect(revisions.getByText(/^Last verified:/)).toHaveCount(4);
   await expect(revisions).not.toContainText("Tian Tian");
 });
 
@@ -88,7 +90,7 @@ test("searches the localized Atlas without JavaScript", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/en");
 
-  const query = page.getByLabel("Panda name, alias, or pinyin");
+  const query = page.getByLabel("Enter a panda name");
   await query.fill("mei xiang");
   await query.press("Enter");
 
