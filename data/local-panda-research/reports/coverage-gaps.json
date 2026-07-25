@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 368,
-  "pandas_with_media": 88,
+  "candidate_count": 397,
+  "pandas_with_media": 94,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -45,24 +45,6 @@
       "coverage_gap_score": -17
     },
     {
-      "subject_id": "de-de-madrid",
-      "subject_label": "De De",
-      "media_count": 1,
-      "record_count": 7,
-      "direct_record_count": 7,
-      "category_count": 7,
-      "categories": {
-        "birth": 1,
-        "distinguishing_feature": 1,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "name_meaning": 1,
-        "relationship": 1
-      },
-      "coverage_gap_score": -30
-    },
-    {
       "subject_id": "lin-hui",
       "subject_label": "Lin Hui",
       "media_count": 1,
@@ -77,24 +59,6 @@
         "media_candidate": 1,
         "milestone": 1,
         "sex": 1
-      },
-      "coverage_gap_score": -30
-    },
-    {
-      "subject_id": "po-madrid",
-      "subject_label": "Po",
-      "media_count": 1,
-      "record_count": 7,
-      "direct_record_count": 7,
-      "category_count": 7,
-      "categories": {
-        "birth": 1,
-        "distinguishing_feature": 1,
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "name_meaning": 1,
-        "relationship": 1
       },
       "coverage_gap_score": -30
     },
@@ -636,6 +600,28 @@
       "coverage_gap_score": -55
     },
     {
+      "subject_id": "bing-xing",
+      "subject_label": "Bing Xing",
+      "media_count": 3,
+      "record_count": 16,
+      "direct_record_count": 16,
+      "category_count": 11,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 1,
+        "birth": 1,
+        "health": 1,
+        "location": 2,
+        "media_candidate": 3,
+        "milestone": 2,
+        "origin": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -55
+    },
+    {
       "subject_id": "xiao-liwu",
       "subject_label": "Xiao Liwu",
       "media_count": 1,
@@ -681,6 +667,52 @@
       "coverage_gap_score": -56
     },
     {
+      "subject_id": "de-de-madrid",
+      "subject_label": "De De",
+      "media_count": 4,
+      "record_count": 18,
+      "direct_record_count": 18,
+      "category_count": 12,
+      "categories": {
+        "birth": 1,
+        "diet": 1,
+        "distinguishing_feature": 1,
+        "growth_measurement": 1,
+        "health": 1,
+        "location": 3,
+        "media_candidate": 4,
+        "milestone": 2,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -58
+    },
+    {
+      "subject_id": "po-madrid",
+      "subject_label": "Po",
+      "media_count": 4,
+      "record_count": 18,
+      "direct_record_count": 18,
+      "category_count": 12,
+      "categories": {
+        "birth": 1,
+        "diet": 1,
+        "distinguishing_feature": 1,
+        "growth_measurement": 1,
+        "health": 1,
+        "location": 3,
+        "media_candidate": 4,
+        "milestone": 2,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -58
+    },
+    {
       "subject_id": "da-di-beijing",
       "subject_label": "Da Di",
       "media_count": 1,
@@ -702,6 +734,28 @@
         "veterinary_care": 1
       },
       "coverage_gap_score": -58
+    },
+    {
+      "subject_id": "hua-zui-ba",
+      "subject_label": "Hua Zui Ba",
+      "media_count": 4,
+      "record_count": 19,
+      "direct_record_count": 19,
+      "category_count": 11,
+      "categories": {
+        "birth": 1,
+        "health": 1,
+        "location": 2,
+        "maternal_care": 2,
+        "media_candidate": 4,
+        "milestone": 2,
+        "origin": 1,
+        "relationship": 1,
+        "reproduction": 2,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -59
     },
     {
       "subject_id": "fu-long",
@@ -826,6 +880,54 @@
         "media_candidate": 7,
         "milestone": 8,
         "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -63
+    },
+    {
+      "subject_id": "jiu-jiu-madrid",
+      "subject_label": "jiu-jiu-madrid",
+      "media_count": 7,
+      "record_count": 24,
+      "direct_record_count": 24,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "growth_measurement": 1,
+        "health": 1,
+        "location": 2,
+        "media_candidate": 7,
+        "milestone": 4,
+        "name": 2,
+        "name_meaning": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -63
+    },
+    {
+      "subject_id": "you-you-madrid",
+      "subject_label": "友友",
+      "media_count": 7,
+      "record_count": 24,
+      "direct_record_count": 24,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "growth_measurement": 1,
+        "health": 1,
+        "location": 2,
+        "media_candidate": 7,
+        "milestone": 4,
+        "name": 2,
+        "name_meaning": 1,
+        "public_debut": 1,
         "relationship": 1,
         "sex": 1,
         "transfer": 1
@@ -1180,6 +1282,31 @@
       "coverage_gap_score": -72
     },
     {
+      "subject_id": "chulina",
+      "subject_label": "Chulina",
+      "media_count": 6,
+      "record_count": 25,
+      "direct_record_count": 25,
+      "category_count": 14,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "growth_measurement": 2,
+        "health": 1,
+        "location": 2,
+        "media_candidate": 6,
+        "milestone": 4,
+        "name": 2,
+        "name_meaning": 1,
+        "personality": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -73
+    },
+    {
       "subject_id": "bao-bao",
       "subject_label": "Bao Bao",
       "media_count": 4,
@@ -1449,6 +1576,32 @@
         "name_meaning": 1,
         "personality": 1,
         "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -79
+    },
+    {
+      "subject_id": "xing-bao",
+      "subject_label": "Xing Bao",
+      "media_count": 7,
+      "record_count": 28,
+      "direct_record_count": 28,
+      "category_count": 15,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "diet": 1,
+        "growth_measurement": 5,
+        "location": 1,
+        "media_candidate": 7,
+        "milestone": 3,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 1,
+        "public_debut": 1,
+        "relationship": 1,
+        "reproduction": 1,
         "sex": 1,
         "transfer": 1
       },
