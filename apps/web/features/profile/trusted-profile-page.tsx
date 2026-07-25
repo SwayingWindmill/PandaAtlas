@@ -6,6 +6,7 @@ import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recor
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
+import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
 import type {
   ProfileModuleState,
@@ -450,6 +451,11 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
   }
 
   const parents = profile.family.parents;
+  const primaryMedia = profile.media.items.find((item) => item.status === "available" && item.url)
+    ?? null;
+  const primarySrcSet = primaryMedia?.derivatives.length
+    ? primaryMedia.derivatives.map((derivative) => `${derivative.url} ${derivative.width}w`).join(", ")
+    : undefined;
   const mediaSources = profile.media.sourceIds.flatMap((sourceId) => {
     const source = profile.sources.find((item) => item.id === sourceId);
     return source ? [source] : [];
@@ -476,7 +482,26 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
         </section>
 
         <section id="overview" className={`${publicShellClassName} scroll-mt-36 py-8 lg:py-12`}>
-          <div data-testid="identity-first-card" className="grid gap-8 rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-6 shadow-[var(--pa-shadow-profile)] md:p-9 lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.75fr)]">
+          <div data-testid="identity-first-card" className="pa-profile-hero grid gap-8 border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 md:p-8 lg:grid-cols-[minmax(18rem,0.85fr)_minmax(0,1.15fr)]">
+            <div className="lg:row-span-2">
+              <LicensedMediaFigure
+                locale={locale}
+                variant="profile"
+                src={primaryMedia?.url ?? null}
+                srcSet={primarySrcSet}
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                width={primaryMedia?.width}
+                height={primaryMedia?.height}
+                alt={primaryMedia?.alt ?? t.noMedia}
+                credit={primaryMedia?.credit}
+                rights={primaryMedia?.rights}
+                sourceUrl={primaryMedia?.sourceUrl}
+                fallbackTitle={t.noMedia}
+                fallbackBody={t.noMediaBody}
+                priority
+                testId="profile-hero-media"
+              />
+            </div>
             <div>
               <div className="flex flex-wrap items-center gap-3 text-sm">
                 <Link href={profile.atlasHref as Route} className="font-semibold text-[var(--accent)] hover:underline">{t.back}</Link>
@@ -521,7 +546,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
               </dl>
             </div>
 
-            <aside className="flex flex-col justify-between gap-8 rounded-2xl bg-[var(--pa-color-accent-fill-07)] p-6">
+            <aside className="flex flex-col justify-between gap-8 border-t border-[var(--pa-color-accent-border-12)] pt-6 lg:col-start-2">
               <div>
                 <p className="text-sm font-semibold text-[var(--accent)]">{archiveLabel(profile, locale)}</p>
                 <dl className="mt-4 text-xs">

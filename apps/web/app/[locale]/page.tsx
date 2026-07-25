@@ -11,12 +11,12 @@ interface LocalizedHomePageProps {
 
 const metadataCopy = {
   zh: {
-    title: "可信、双语的大熊猫动态档案馆",
-    description: "搜索已审核大熊猫身份，从亲缘或地点继续探索，并查看最近修订、公开来源、地点精度与发布版本。",
+    title: "吱熊猫｜认识你关注的每一只熊猫",
+    description: "搜索熊猫名字，查看真实图片、基本资料、家庭关系、生活地点和最近更新。",
   },
   en: {
-    title: "A trusted bilingual living archive of giant pandas",
-    description: "Search reviewed panda identities, explore through relationships or places, and inspect recent revisions, public sources, location precision, and release identity.",
+    title: "ZhiPanda | Discover the pandas you care about",
+    description: "Search pandas and explore real images, profiles, family relationships, places, and recent updates.",
   },
 } as const;
 

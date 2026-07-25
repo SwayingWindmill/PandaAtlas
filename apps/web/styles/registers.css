@@ -48,9 +48,13 @@
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border-radius: 0.9rem;
+  border-radius: 0.78rem;
   background: var(--pa-color-accent);
   color: var(--pa-color-surface);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 850;
+  letter-spacing: -0.04em;
 }
 
 .pa-brand-mark svg {
@@ -83,7 +87,7 @@
 .pa-desktop-nav a,
 .pa-language-link {
   padding: 0.65rem 0.8rem;
-  border-radius: var(--pa-radius-sm);
+  border-radius: 0.35rem;
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 700;
@@ -92,8 +96,16 @@
 .pa-desktop-nav a[aria-current="page"],
 .pa-desktop-nav a:hover,
 .pa-language-link:hover {
-  background: var(--pa-color-accent-soft);
   color: var(--pa-color-accent-strong);
+}
+
+.pa-desktop-nav a[aria-current="page"] {
+  box-shadow: inset 0 -2px 0 var(--pa-color-accent);
+}
+
+.pa-desktop-nav a:hover,
+.pa-language-link:hover {
+  background: color-mix(in srgb, var(--pa-color-accent-soft) 58%, transparent);
 }
 
 .pa-header-actions {

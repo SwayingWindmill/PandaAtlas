@@ -1,0 +1,83 @@
+.pa-home-hero-copy,
+.pa-home-hero-visual {
+  min-width: 0;
+}
+
+.pa-home-hero-visual {
+  width: min(100%, 34rem);
+  justify-self: end;
+}
+
+.pa-home-hero-copy h1 {
+  max-width: 11ch;
+  font-size: clamp(2.65rem, 6vw, 4.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.pa-profile-hero {
+  border-radius: var(--pa-radius-xl);
+  box-shadow: var(--pa-shadow-profile);
+}
+
+.pa-profile-hero > div,
+.pa-profile-hero > aside {
+  min-width: 0;
+}
+
+.pa-profile-hero .pa-licensed-media-frame {
+  min-height: 32rem;
+}
+
+.pa-profile-hero dl > div {
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.pa-licensed-media-frame {
+  border-color: var(--line, var(--pa-color-line));
+  background: var(--card, var(--pa-color-surface));
+}
+
+.pa-licensed-media-fallback {
+  color: var(--fg, var(--pa-color-ink));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--pa-color-accent-soft) 52%, transparent), transparent 58%),
+    var(--card, var(--pa-color-surface));
+}
+
+.pa-licensed-media-fallback p,
+.pa-licensed-media-caption {
+  color: var(--muted, var(--pa-color-ink-muted));
+}
+
+.pa-licensed-media-fallback svg,
+.pa-licensed-media-profile-link,
+.pa-licensed-media-source {
+  color: var(--accent, var(--pa-color-accent));
+}
+
+.pa-licensed-media-caption p span {
+  color: var(--fg, var(--pa-color-ink));
+}
+
+@media (max-width: 64rem) {
+  .pa-home-hero-visual {
+    width: min(100%, 42rem);
+    justify-self: start;
+  }
+
+  .pa-profile-hero .pa-licensed-media-frame {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 38rem) {
+  .pa-home-hero-visual .pa-licensed-media-frame {
+    aspect-ratio: 4 / 3;
+  }
+
+  .pa-profile-hero {
+    border-radius: var(--pa-radius-lg);
+  }
+}

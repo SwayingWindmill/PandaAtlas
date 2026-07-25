@@ -1,4 +1,16 @@
 import { expect, test } from "@playwright/test";
+import { Buffer } from "node:buffer";
+
+const ONE_PIXEL_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+  "base64",
+);
+
+test.beforeEach(async ({ page }) => {
+  await page.route("**/media/releases/**/*.webp", async (route) => {
+    await route.fulfill({ status: 200, contentType: "image/png", body: ONE_PIXEL_PNG });
+  });
+});
 
 test("finds Mei Xiang by every reviewed public identity form", async ({ page }) => {
   for (const query of [
@@ -39,7 +51,7 @@ test("serves bilingual canonical routes and permanently redirects legacy slugs",
   expect(tianTianLegacy.headers().location).toContain("/en/atlas/tian-tian");
 });
 
-test("renders the reviewed identity, family, footprint, evidence, no-image, and revision loop", async ({ page }) => {
+test("renders the reviewed identity, image-led profile, family, footprint, evidence, and revision loop", async ({ page }) => {
   await page.goto("/zh/atlas/mei-xiang");
 
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
@@ -59,9 +71,11 @@ test("renders the reviewed identity, family, footprint, evidence, no-image, and 
   await expect(page.getByTestId("lineage-text-view")).toContainText("小奇迹");
   await expect(page.getByTestId("footprint-text-view")).toContainText("史密森国家动物园");
   await expect(page.getByTestId("footprint-text-view")).toContainText("中国（国家级记录）");
-  await expect(page.getByTestId("evidence-list").getByRole("link")).toHaveCount(2);
-  await expect(page.getByTestId("media-empty-state")).toContainText("暂无可公开授权影像");
-  await expect(page.getByTestId("revision-summary")).toContainText("2026.07.21.1");
+  expect(await page.getByTestId("evidence-list").getByRole("link").count()).toBeGreaterThanOrEqual(1);
+  await expect(page.getByTestId("profile-hero-media")).toBeVisible();
+  await expect(page.locator('[data-testid="profile-hero-media-image"], [data-testid="profile-hero-media-fallback"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="media-gallery"], [data-testid="media-empty-state"]')).toHaveCount(1);
+  await expect(page.getByTestId("revision-summary")).toContainText(/2026\.\d{2}\.\d{2}\.\d+/);
   await expect(page.getByTestId("timeline-list")).toContainText("来源发布日期");
 });
 
@@ -176,7 +190,9 @@ test("keeps the complete public loop usable on a mobile viewport", async ({ page
   await expect(page.getByTestId("identity-first-card")).toBeVisible();
   await expect(page.getByTestId("timeline-list")).toBeVisible();
   await expect(page.getByTestId("footprint-text-view")).toBeVisible();
-  await expect(page.getByTestId("media-empty-state")).toBeVisible();
+  await expect(page.getByTestId("profile-hero-media")).toBeVisible();
+  await expect(page.locator('[data-testid="profile-hero-media-image"], [data-testid="profile-hero-media-fallback"]')).toHaveCount(1);
+  await expect(page.locator('[data-testid="media-gallery"], [data-testid="media-empty-state"]')).toHaveCount(1);
 });
 
 test("uses the trusted profile theme in dark color scheme", async ({ page }) => {

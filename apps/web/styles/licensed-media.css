@@ -1,0 +1,115 @@
+.pa-licensed-media {
+  min-width: 0;
+  margin: 0;
+}
+
+.pa-licensed-media-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--pa-color-line);
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-surface-subtle);
+}
+
+.pa-licensed-media[data-variant="home"] .pa-licensed-media-frame {
+  aspect-ratio: 4 / 5;
+}
+
+.pa-licensed-media[data-variant="profile"] .pa-licensed-media-frame {
+  aspect-ratio: 4 / 5;
+}
+
+.pa-licensed-media-frame img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.pa-licensed-media-fallback {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 0.75rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--pa-color-accent-soft) 52%, transparent), transparent 58%),
+    var(--pa-color-surface-subtle);
+}
+
+.pa-licensed-media-fallback svg {
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--pa-color-accent);
+}
+
+.pa-licensed-media-fallback strong {
+  max-width: 22ch;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.15;
+}
+
+.pa-licensed-media-fallback p {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--pa-color-ink-muted);
+  line-height: 1.65;
+}
+
+.pa-licensed-media-caption {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0.15rem 0;
+  color: var(--pa-color-ink-muted);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.pa-licensed-media-caption p {
+  margin: 0.12rem 0 0;
+}
+
+.pa-licensed-media-caption p span {
+  margin-right: 0.4rem;
+  color: var(--pa-color-ink);
+  font-weight: 700;
+}
+
+.pa-licensed-media-profile-link,
+.pa-licensed-media-source {
+  color: var(--pa-color-accent);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.pa-licensed-media-profile-link {
+  display: inline-block;
+  margin-bottom: 0.2rem;
+  font-size: 0.82rem;
+}
+
+.pa-licensed-media-source {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pa-licensed-media-source svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.pa-licensed-media-profile-link:hover,
+.pa-licensed-media-source:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 38rem) {
+  .pa-licensed-media-caption {
+    display: grid;
+  }
+}

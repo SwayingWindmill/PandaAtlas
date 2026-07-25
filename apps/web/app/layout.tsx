@@ -4,10 +4,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "PandaAtlas",
-    template: "%s | PandaAtlas",
+    default: "吱熊猫 ZhiPanda",
+    template: "%s | ZhiPanda",
   },
-  description: "A bilingual, evidence-first public archive of giant panda identities and reviewed facts.",
+  description: "A modern panda information website for discovering individual pandas, families, places, and trusted sources.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
