@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 313,
-  "pandas_with_media": 84,
+  "candidate_count": 355,
+  "pandas_with_media": 87,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -29,20 +29,6 @@
         "media_candidate": 2
       },
       "coverage_gap_score": -6
-    },
-    {
-      "subject_id": "yuan-zi",
-      "subject_label": "圆子",
-      "media_count": 1,
-      "record_count": 3,
-      "direct_record_count": 3,
-      "category_count": 3,
-      "categories": {
-        "location": 1,
-        "media_candidate": 1,
-        "milestone": 1
-      },
-      "coverage_gap_score": -10
     },
     {
       "subject_id": "long-hui",
@@ -141,21 +127,6 @@
         "media_candidate": 5,
         "milestone": 5,
         "sex": 5
-      },
-      "coverage_gap_score": -34
-    },
-    {
-      "subject_id": "huan-huan",
-      "subject_label": "Huan Huan",
-      "media_count": 5,
-      "record_count": 17,
-      "direct_record_count": 17,
-      "category_count": 4,
-      "categories": {
-        "location": 3,
-        "media_candidate": 5,
-        "milestone": 5,
-        "sex": 4
       },
       "coverage_gap_score": -34
     },
@@ -514,6 +485,29 @@
         "sex": 1
       },
       "coverage_gap_score": -50
+    },
+    {
+      "subject_id": "yuan-zi",
+      "subject_label": "Yuan Zi",
+      "media_count": 9,
+      "record_count": 24,
+      "direct_record_count": 24,
+      "category_count": 12,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "location": 1,
+        "media_candidate": 9,
+        "milestone": 4,
+        "name_meaning": 1,
+        "origin": 1,
+        "personality": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -51
     },
     {
       "subject_id": "ri-ri",
@@ -1155,6 +1149,32 @@
       "coverage_gap_score": -71
     },
     {
+      "subject_id": "yuan-meng",
+      "subject_label": "Yuan Meng",
+      "media_count": 11,
+      "record_count": 32,
+      "direct_record_count": 32,
+      "category_count": 15,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "diet": 1,
+        "diplomacy": 1,
+        "enrichment": 1,
+        "location": 1,
+        "media_candidate": 11,
+        "milestone": 7,
+        "name_meaning": 1,
+        "personality": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 2,
+        "veterinary_care": 1,
+        "vocalisation": 1
+      },
+      "coverage_gap_score": -71
+    },
+    {
       "subject_id": "fu-ban",
       "subject_label": "福伴",
       "media_count": 7,
@@ -1410,6 +1430,50 @@
       "coverage_gap_score": -78
     },
     {
+      "subject_id": "huanlili",
+      "subject_label": "Huanlili",
+      "media_count": 15,
+      "record_count": 44,
+      "direct_record_count": 44,
+      "category_count": 11,
+      "categories": {
+        "birth": 1,
+        "growth_measurement": 2,
+        "location": 10,
+        "media_candidate": 15,
+        "milestone": 10,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -79
+    },
+    {
+      "subject_id": "yuandudu",
+      "subject_label": "Yuandudu",
+      "media_count": 15,
+      "record_count": 44,
+      "direct_record_count": 44,
+      "category_count": 11,
+      "categories": {
+        "birth": 1,
+        "growth_measurement": 2,
+        "location": 10,
+        "media_candidate": 15,
+        "milestone": 10,
+        "name": 1,
+        "name_meaning": 1,
+        "personality": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -79
+    },
+    {
       "subject_id": "lei-lei",
       "subject_label": "Lei Lei",
       "media_count": 17,
@@ -1428,6 +1492,30 @@
         "relationship": 1,
         "sex": 1,
         "transfer": 1
+      },
+      "coverage_gap_score": -81
+    },
+    {
+      "subject_id": "huan-huan",
+      "subject_label": "Huan Huan",
+      "media_count": 10,
+      "record_count": 35,
+      "direct_record_count": 35,
+      "category_count": 13,
+      "categories": {
+        "birth": 1,
+        "health": 1,
+        "location": 4,
+        "maternal_care": 1,
+        "media_candidate": 10,
+        "milestone": 6,
+        "name_meaning": 1,
+        "origin": 1,
+        "personality": 1,
+        "relationship": 1,
+        "sex": 5,
+        "transfer": 2,
+        "veterinary_care": 1
       },
       "coverage_gap_score": -81
     },

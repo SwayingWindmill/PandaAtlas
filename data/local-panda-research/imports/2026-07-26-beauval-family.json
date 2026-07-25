@@ -1,0 +1,1694 @@
+{
+  "sources": [
+    {
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_type": "institution_primary_profile",
+      "publisher": "ZooParc de Beauval",
+      "title": "TWO panda cubs were born on 2 August",
+      "url": "https://www.zoobeauval.com/en/giant-panda-twin-cubs-2021",
+      "language": "en",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official family profiles, twin birth parameters, growth timeline, parent biographies and individual behaviour."
+    },
+    {
+      "source_id": "src-beauval-panda-saga-local",
+      "source_type": "institution_primary_news",
+      "publisher": "ZooParc de Beauval",
+      "title": "Panda saga",
+      "url": "https://www.zoobeauval.com/en/zooparc/saga-des-pandas",
+      "language": "en",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official chronology of arrival, Yuan Meng's birth, twin naming and Yuan Meng's return."
+    },
+    {
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_type": "institution_primary_news",
+      "publisher": "ZooParc de Beauval",
+      "title": "C'est la saison des anniversaires chez les pandas",
+      "url": "https://actus.zoobeauval.com/anniversaires-pandas-beauval-ete-2025/",
+      "language": "fr",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official 2025 personality, weight, enrichment and post-transfer update for the family."
+    },
+    {
+      "source_id": "src-beauval-twins-fifth-birthday-2026-local",
+      "source_type": "institution_primary_news",
+      "publisher": "ZooParc de Beauval",
+      "title": "Yuandudu and Huanlili are celebrating their 5th anniversary with an XXL cake",
+      "url": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-are-celebrating-their-5th-anniversary-with-an-xxl-cake/",
+      "language": "en",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official July 2026 birthday and planned-transfer status for the twins."
+    },
+    {
+      "source_id": "src-beauval-parents-return-plan-2025-local",
+      "source_type": "institution_primary_news",
+      "publisher": "ZooParc de Beauval",
+      "title": "The first giant pandas to be housed at Beauval are soon to return to China",
+      "url": "https://actus.zoobeauval.com/en/the-first-giant-pandas-to-be-housed-at-beauval-huan-huan-and-yuan-zi-are-soon-to-return-to-china/",
+      "language": "en",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official health rationale and cooperation timeline for the adult pair's return."
+    },
+    {
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_type": "institution_primary_news",
+      "publisher": "ZooParc de Beauval",
+      "title": "Keep up to date with the departure of Huan Huan and Yuan Zi",
+      "url": "https://actus.zoobeauval.com/en/keep-up-to-date-with-all-the-latest-news-on-the-departure-of-the-pandas-huan-huan-and-yuan-zi/",
+      "language": "en",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official completed departure, quarantine and keeper-character account."
+    },
+    {
+      "source_id": "src-beauval-yuanmeng-departure-2023-local",
+      "source_type": "institution_primary_news",
+      "publisher": "ZooParc de Beauval",
+      "title": "Le départ de Yuan Meng : en images et en émotions",
+      "url": "https://actus.zoobeauval.com/depart-yuan-meng-en-images/",
+      "language": "fr",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official departure chronology from Beauval to Chengdu."
+    },
+    {
+      "source_id": "src-xinhua-yuanmeng-return-2023-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "First French-born giant panda returned to China",
+      "url": "https://english.news.cn/20230726/e97cfe920f394baa81279af1fd91225f/c.html",
+      "language": "en",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Xinhua arrival and quarantine record for Yuan Meng."
+    },
+    {
+      "source_id": "src-xinhua-yuanmeng-farewell-2023-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "First giant panda born in France heads to China, given warm farewell",
+      "url": "https://english.news.cn/20230726/a3731c96e05d46119010bc307db45224/c.html",
+      "language": "en",
+      "region": "France and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Xinhua transport, escort and cultural-context account."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-beauval-0001",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "圆仔为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0002",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2008-09-06",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "birth_date",
+      "source_language": "en",
+      "summary_zh": "圆仔出生于2008年9月6日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0003",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "origin",
+      "predicate": "origin",
+      "value": "Chengdu, China",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "origin",
+      "source_language": "en",
+      "summary_zh": "圆仔来自中国成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0004",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_beauval",
+      "value": "2012-01-15",
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_locator": "arrived_at_beauval",
+      "source_language": "en",
+      "summary_zh": "圆仔于2012年1月15日随欢欢抵达博瓦勒。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0005",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "son of the round-headed one",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "圆仔的名字意为“圆头者之子”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0006",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "yuan-meng",
+        "huanlili",
+        "yuandudu"
+      ],
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "offspring",
+      "source_language": "fr",
+      "summary_zh": "圆仔是圆梦、欢黎黎和圆嘟嘟的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0007",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "personality",
+      "predicate": "keeper_description",
+      "value": {
+        "traits": [
+          "determined",
+          "attentive",
+          "gentle",
+          "punctual",
+          "quiet strength"
+        ]
+      },
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_locator": "keeper_description",
+      "source_language": "en",
+      "summary_zh": "护理员形容圆仔坚定、专注、温和、守时，像一股安静的力量。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0008",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "behaviour",
+      "predicate": "typical_behaviour",
+      "value": [
+        "hearty appetite",
+        "long naps",
+        "sometimes rests high in a tree",
+        "poses in amusing positions"
+      ],
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "typical_behaviour",
+      "source_language": "en",
+      "summary_zh": "圆仔食欲旺盛，喜欢长时间午睡，有时在树上休息，也常摆出有趣姿势。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0009",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "veterinary_care",
+      "predicate": "pre_return_quarantine_started",
+      "value": "2025-10-26",
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_locator": "pre_return_quarantine_started",
+      "source_language": "en",
+      "summary_zh": "圆仔于2025年10月26日进入返华前检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0010",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-zi",
+        "label": "Yuan Zi"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_china",
+      "value": "2025-11-25",
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_locator": "returned_to_china",
+      "source_language": "en",
+      "summary_zh": "圆仔于2025年11月25日离开博瓦勒返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-zi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0011",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "欢欢为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0012",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2008-08-10",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "birth_date",
+      "source_language": "en",
+      "summary_zh": "欢欢出生于2008年8月10日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0013",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "origin",
+      "predicate": "origin",
+      "value": "Chengdu, China",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "origin",
+      "source_language": "en",
+      "summary_zh": "欢欢来自中国成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0014",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_beauval",
+      "value": "2012-01-15",
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_locator": "arrived_at_beauval",
+      "source_language": "en",
+      "summary_zh": "欢欢于2012年1月15日随圆仔抵达博瓦勒。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0015",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "welcome and great joy",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "欢欢的名字意为“欢迎与大喜悦”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0016",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "yuan-meng",
+        "huanlili",
+        "yuandudu"
+      ],
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "offspring",
+      "source_language": "fr",
+      "summary_zh": "欢欢是圆梦、欢黎黎和圆嘟嘟的母亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0017",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "maternal_care",
+      "predicate": "maternal_style",
+      "value": {
+        "attentive": true,
+        "care_until_independence_age_years": 2
+      },
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "maternal_style",
+      "source_language": "en",
+      "summary_zh": "欢欢是细心的母亲，会照顾幼崽直至约两岁独立。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0018",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "personality",
+      "predicate": "keeper_description",
+      "value": {
+        "traits": [
+          "peaceful",
+          "calm",
+          "strong-willed"
+        ],
+        "routine": "prefers slow mornings and calm time in her den"
+      },
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "keeper_description",
+      "source_language": "fr",
+      "summary_zh": "欢欢性格平静但有主见，早晨偏爱在内舍安静休息。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0019",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "health",
+      "predicate": "renal_insufficiency",
+      "value": {
+        "diagnosed": 2025,
+        "appetite_at_announcement": "good",
+        "behaviour_at_announcement": "normal",
+        "management": "joint French-Chinese consultation and medication"
+      },
+      "source_id": "src-beauval-parents-return-plan-2025-local",
+      "source_locator": "renal_insufficiency",
+      "source_language": "en",
+      "summary_zh": "2025年例行检查发现欢欢肾功能不全；公告时食欲良好、行为正常，并由中法专家会诊和药物管理。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0020",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "veterinary_care",
+      "predicate": "pre_return_quarantine_started",
+      "value": "2025-10-26",
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_locator": "pre_return_quarantine_started",
+      "source_language": "en",
+      "summary_zh": "欢欢于2025年10月26日进入返华前检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0021",
+      "subject": {
+        "type": "panda",
+        "id": "huan-huan",
+        "label": "Huan Huan"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_china",
+      "value": "2025-11-25",
+      "source_id": "src-beauval-parents-departure-2025-local",
+      "source_locator": "returned_to_china",
+      "source_language": "en",
+      "summary_zh": "欢欢于2025年11月25日离开博瓦勒返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huan-huan",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0022",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-xinhua-yuanmeng-return-2023-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "圆梦为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0023",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2017-08-04",
+      "source_id": "src-beauval-panda-saga-local",
+      "source_locator": "birth_date",
+      "source_language": "en",
+      "summary_zh": "圆梦于2017年8月4日在博瓦勒出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0024",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "huan-huan",
+        "father_id": "yuan-zi"
+      },
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "parents",
+      "source_language": "en",
+      "summary_zh": "圆梦的母亲是欢欢，父亲是圆仔。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0025",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "milestone",
+      "predicate": "first_giant_panda_born_in_france",
+      "value": true,
+      "source_id": "src-beauval-panda-saga-local",
+      "source_locator": "first_giant_panda_born_in_france",
+      "source_language": "en",
+      "summary_zh": "圆梦是法国出生的第一只大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0026",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "fulfilment of a dream or wish",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "圆梦的名字意为“梦想或愿望成真”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0027",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "personality",
+      "predicate": "juvenile_personality",
+      "value": [
+        "lively",
+        "playful",
+        "curious"
+      ],
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "juvenile_personality",
+      "source_language": "en",
+      "summary_zh": "圆梦幼年活泼、爱玩且好奇。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0028",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "enrichment",
+      "predicate": "preferred_equipment",
+      "value": [
+        "slide",
+        "perch",
+        "ladder"
+      ],
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "preferred_equipment",
+      "source_language": "en",
+      "summary_zh": "圆梦喜欢使用滑梯、栖架和梯子等设施。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0029",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "transfer",
+      "predicate": "left_beauval",
+      "value": "2023-07-25",
+      "source_id": "src-beauval-yuanmeng-departure-2023-local",
+      "source_locator": "left_beauval",
+      "source_language": "fr",
+      "summary_zh": "圆梦于2023年7月25日离开博瓦勒前往中国。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0030",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_chengdu",
+      "value": "2023-07-26",
+      "source_id": "src-xinhua-yuanmeng-return-2023-local",
+      "source_locator": "arrived_in_chengdu",
+      "source_language": "en",
+      "summary_zh": "圆梦于2023年7月26日抵达成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0031",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "veterinary_care",
+      "predicate": "post_arrival_quarantine_days",
+      "value": 30,
+      "source_id": "src-xinhua-yuanmeng-return-2023-local",
+      "source_locator": "post_arrival_quarantine_days",
+      "source_language": "en",
+      "summary_zh": "圆梦抵达成都后接受30天隔离检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0032",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "location",
+      "predicate": "residence_after_return",
+      "value": "Chengdu Research Base of Giant Panda Breeding",
+      "source_id": "src-xinhua-yuanmeng-return-2023-local",
+      "source_locator": "residence_after_return",
+      "source_language": "en",
+      "summary_zh": "圆梦返华后居住于成都大熊猫繁育研究基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0033",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "behaviour",
+      "predicate": "adaptation_in_chengdu_2025",
+      "value": {
+        "initially": "shy",
+        "current": [
+          "comfortable",
+          "curious",
+          "sociable",
+          "imitates neighbours",
+          "rolls",
+          "climbs trees",
+          "chases birds",
+          "uses pool in hot weather"
+        ]
+      },
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "adaptation_in_chengdu_2025",
+      "source_language": "fr",
+      "summary_zh": "圆梦初到成都时略显害羞，后来适应良好，表现好奇、合群，会模仿邻居、翻滚、爬树、追鸟和在炎热时泡水。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0034",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "vocalisation",
+      "predicate": "social_vocalisation",
+      "value": "small bleat-like sounds to communicate with neighbouring pandas",
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "social_vocalisation",
+      "source_language": "fr",
+      "summary_zh": "圆梦会用类似羊叫的小声音与邻近大熊猫交流。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "vocalisation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0035",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "diet",
+      "predicate": "diet_in_chengdu",
+      "value": [
+        "bamboo",
+        "apples",
+        "steamed panda bread"
+      ],
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "diet_in_chengdu",
+      "source_language": "fr",
+      "summary_zh": "圆梦在成都的食物包括竹子、苹果和蒸制熊猫窝头。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0036",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-meng",
+        "label": "Yuan Meng"
+      },
+      "category": "diplomacy",
+      "predicate": "farewell_context",
+      "value": {
+        "escort": [
+          "Beauval keeper",
+          "veterinarian"
+        ],
+        "airport_farewell_by": "Brigitte Macron"
+      },
+      "source_id": "src-xinhua-yuanmeng-farewell-2023-local",
+      "source_locator": "farewell_context",
+      "source_language": "en",
+      "summary_zh": "圆梦返华时由博瓦勒护理员和兽医陪同，法国第一夫人布丽吉特·马克龙在机场送行。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-meng",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0037",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "欢黎黎为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0038",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "birth",
+      "predicate": "birth_datetime",
+      "value": {
+        "date": "2021-08-02",
+        "time": "01:03",
+        "place": "ZooParc de Beauval"
+      },
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "birth_datetime",
+      "source_language": "en",
+      "summary_zh": "欢黎黎于2021年8月2日1时03分在博瓦勒出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0039",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weight_grams",
+      "value": 149,
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "birth_weight_grams",
+      "source_language": "en",
+      "summary_zh": "欢黎黎出生体重149克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0040",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "huan-huan",
+        "father_id": "yuan-zi",
+        "twin_id": "yuandudu"
+      },
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "parents_and_twin",
+      "source_language": "en",
+      "summary_zh": "欢黎黎的母亲是欢欢、父亲是圆仔，双胞胎姐妹是圆嘟嘟。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0041",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2021-11-18",
+      "source_id": "src-beauval-panda-saga-local",
+      "source_locator": "official_name_announced",
+      "source_language": "en",
+      "summary_zh": "欢黎黎的正式名字于2021年11月18日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0042",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "name_meaning",
+      "predicate": "name_context",
+      "value": "combines the parents' names, wishes healthy growth and symbolizes deep China-France ties",
+      "source_id": "src-beauval-panda-saga-local",
+      "source_locator": "name_context",
+      "source_language": "en",
+      "summary_zh": "欢黎黎的名字结合父母名字，寄托健康成长愿望并象征中法深厚联系。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0043",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "personality",
+      "predicate": "personality_2025",
+      "value": [
+        "lively",
+        "dynamic",
+        "resembles father Yuan Zi"
+      ],
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "personality_2025",
+      "source_language": "fr",
+      "summary_zh": "2025年官方资料形容欢黎黎活泼有活力，性格更像父亲圆仔。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0044",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_observed_2026_07_kg",
+      "value": 100.15,
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "weight_observed_2026_07_kg",
+      "source_language": "en",
+      "summary_zh": "2026年7月官方页面显示欢黎黎体重约100.15千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0045",
+      "subject": {
+        "type": "panda",
+        "id": "huanlili",
+        "label": "Huanlili"
+      },
+      "category": "transfer",
+      "predicate": "planned_return_to_china",
+      "value": {
+        "status": "planned",
+        "timing": "within months after 2026-08-02 fifth birthday"
+      },
+      "source_id": "src-beauval-twins-fifth-birthday-2026-local",
+      "source_locator": "planned_return_to_china",
+      "source_language": "en",
+      "summary_zh": "截至2026年7月，欢黎黎计划在五岁生日后的数月内返华，尚未写成已完成。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "huanlili",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0046",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "圆嘟嘟为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0047",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "birth",
+      "predicate": "birth_datetime",
+      "value": {
+        "date": "2021-08-02",
+        "time": "01:10",
+        "place": "ZooParc de Beauval"
+      },
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "birth_datetime",
+      "source_language": "en",
+      "summary_zh": "圆嘟嘟于2021年8月2日1时10分在博瓦勒出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0048",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weight_grams",
+      "value": 129,
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "birth_weight_grams",
+      "source_language": "en",
+      "summary_zh": "圆嘟嘟出生体重129克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0049",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "huan-huan",
+        "father_id": "yuan-zi",
+        "twin_id": "huanlili"
+      },
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "parents_and_twin",
+      "source_language": "en",
+      "summary_zh": "圆嘟嘟的母亲是欢欢、父亲是圆仔，双胞胎姐妹是欢黎黎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0050",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2021-11-18",
+      "source_id": "src-beauval-panda-saga-local",
+      "source_locator": "official_name_announced",
+      "source_language": "en",
+      "summary_zh": "圆嘟嘟的正式名字于2021年11月18日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0051",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "name_meaning",
+      "predicate": "name_context",
+      "value": "combines the parents' names, wishes healthy growth and symbolizes deep China-France ties",
+      "source_id": "src-beauval-panda-saga-local",
+      "source_locator": "name_context",
+      "source_language": "en",
+      "summary_zh": "圆嘟嘟的名字结合父母名字，寄托健康成长愿望并象征中法深厚联系。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0052",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "personality",
+      "predicate": "personality_2025",
+      "value": [
+        "calm",
+        "composed",
+        "resembles mother Huan Huan"
+      ],
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "personality_2025",
+      "source_language": "fr",
+      "summary_zh": "2025年官方资料形容圆嘟嘟冷静沉稳，性格更像母亲欢欢。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0053",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_observed_2026_07_kg",
+      "value": 102.9,
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "weight_observed_2026_07_kg",
+      "source_language": "en",
+      "summary_zh": "2026年7月官方页面显示圆嘟嘟体重约102.9千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0054",
+      "subject": {
+        "type": "panda",
+        "id": "yuandudu",
+        "label": "Yuandudu"
+      },
+      "category": "transfer",
+      "predicate": "planned_return_to_china",
+      "value": {
+        "status": "planned",
+        "timing": "within months after 2026-08-02 fifth birthday"
+      },
+      "source_id": "src-beauval-twins-fifth-birthday-2026-local",
+      "source_locator": "planned_return_to_china",
+      "source_language": "en",
+      "summary_zh": "截至2026年7月，圆嘟嘟计划在五岁生日后的数月内返华，尚未写成已完成。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuandudu",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0055",
+      "subject": {
+        "type": "panda_family",
+        "id": "beauval-twins-2021",
+        "label": "Beauval panda twins 2021"
+      },
+      "category": "milestone",
+      "predicate": "first_twin_giant_pandas_born_at_beauval",
+      "value": true,
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "first_twin_giant_pandas_born_at_beauval",
+      "source_language": "en",
+      "summary_zh": "欢黎黎和圆嘟嘟是博瓦勒出生的大熊猫双胞胎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "beauval-twins-2021",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0056",
+      "subject": {
+        "type": "panda_family",
+        "id": "beauval-twins-2021",
+        "label": "Beauval panda twins 2021"
+      },
+      "category": "growth_measurement",
+      "predicate": "development_at_one_week",
+      "value": "black-and-white markings becoming visible",
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "development_at_one_week",
+      "source_language": "en",
+      "summary_zh": "双胞胎一周龄时黑白斑纹已开始显现。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "beauval-twins-2021",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0057",
+      "subject": {
+        "type": "panda_family",
+        "id": "beauval-twins-2021",
+        "label": "Beauval panda twins 2021"
+      },
+      "category": "growth_measurement",
+      "predicate": "development_at_two_months",
+      "value": {
+        "eyes_open": true,
+        "weight_each_kg": ">3"
+      },
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "development_at_two_months",
+      "source_language": "en",
+      "summary_zh": "双胞胎两个月龄时已经睁眼，体重均超过3千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "beauval-twins-2021",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0058",
+      "subject": {
+        "type": "panda_family",
+        "id": "beauval-twins-2021",
+        "label": "Beauval panda twins 2021"
+      },
+      "category": "maternal_care",
+      "predicate": "early_care",
+      "value": [
+        "maternal nursing",
+        "incubator care",
+        "keeper and veterinary support"
+      ],
+      "source_id": "src-beauval-family-profile-2021-local",
+      "source_locator": "early_care",
+      "source_language": "en",
+      "summary_zh": "双胞胎早期接受欢欢哺育，并有保温箱、护理员和兽医辅助照护。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "beauval-twins-2021",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0059",
+      "subject": {
+        "type": "panda_family",
+        "id": "beauval-twins-2021",
+        "label": "Beauval panda twins 2021"
+      },
+      "category": "behaviour",
+      "predicate": "increasing_independence_2025",
+      "value": {
+        "spend_more_time_separately": true,
+        "still_eat_and_play_together": true
+      },
+      "source_id": "src-beauval-birthdays-2025-local",
+      "source_locator": "increasing_independence_2025",
+      "source_language": "fr",
+      "summary_zh": "到2025年，两只更多时间分开休息，但仍会一起吃竹子和玩耍。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "beauval-twins-2021",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-beauval-0060",
+      "subject": {
+        "type": "panda_family",
+        "id": "beauval-twins-2021",
+        "label": "Beauval panda twins 2021"
+      },
+      "category": "enrichment",
+      "predicate": "fifth_birthday_event",
+      "value": {
+        "date": "2026-08-02",
+        "special_enrichment": true,
+        "visitor_cake_portions": 180
+      },
+      "source_id": "src-beauval-twins-fifth-birthday-2026-local",
+      "source_locator": "fifth_birthday_event",
+      "source_language": "en",
+      "summary_zh": "博瓦勒计划在2026年8月2日为双胞胎五岁生日安排特别丰容和面向游客的180份蛋糕。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "beauval-twins-2021",
+        "enrichment"
+      ]
+    }
+  ]
+}

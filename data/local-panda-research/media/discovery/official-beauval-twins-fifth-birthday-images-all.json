@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "page_url": "https://actus.zoobeauval.com/en/yuandudu-and-huanlili-are-celebrating-their-5th-anniversary-with-an-xxl-cake/",
+  "discovered_at": "2026-07-25T19:57:59.622847+00:00",
+  "image_count": 12,
+  "images": [
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/COM_HeaderActu_PandaAnniversaire_800x530-755x500.jpg",
+      "source_types": [
+        "link:image",
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Preparations for the giant panda twins’ birthday – August 2026",
+      "title": "",
+      "width": "755",
+      "height": "500",
+      "evidence": [
+        "preload",
+        "image",
+        "c-page__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/COM_HeaderActu_PandaAnniversaire_800x530.jpg",
+      "source_types": [
+        "meta:og:image",
+        "img:srcset"
+      ],
+      "alt": "Preparations for the giant panda twins’ birthday – August 2026",
+      "title": "",
+      "width": "755",
+      "height": "500",
+      "evidence": [
+        "og:image",
+        "c-page__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/COM_HeaderActu_PandaAnniversaire_800x530-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Preparations for the giant panda twins’ birthday – August 2026",
+      "title": "",
+      "width": "755",
+      "height": "500",
+      "evidence": [
+        "c-page__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/naissance_zebre_2026-02-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Birth of a zebra calf at Beauval in June 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/naissance_zebre_2026-02-500x333.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of a zebra calf at Beauval in June 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/naissance_zebre_2026-02-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of a zebra calf at Beauval in June 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/colloque_uicn_072026-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "IUCN Symposium, July 2026 – Rodolphe Delord",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/colloque_uicn_072026-500x333.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "IUCN Symposium, July 2026 – Rodolphe Delord",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/colloque_uicn_072026-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "IUCN Symposium, July 2026 – Rodolphe Delord",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/jm_chimpanzes_2026-01-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "World Chimpanzee Day 2026 – N'saka and her mother",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/jm_chimpanzes_2026-01-500x333.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "World Chimpanzee Day 2026 – N'saka and her mother",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/jm_chimpanzes_2026-01-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "World Chimpanzee Day 2026 – N'saka and her mother",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    }
+  ]
+}

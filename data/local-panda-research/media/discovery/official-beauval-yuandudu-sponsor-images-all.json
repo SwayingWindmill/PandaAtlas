@@ -1,0 +1,975 @@
+{
+  "schema_version": 1,
+  "page_url": "https://parrainages.zoobeauval.com/parrainer-panda-yuandudu",
+  "discovered_at": "2026-07-25T20:03:24.041149+00:00",
+  "image_count": 73,
+  "images": [
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=1200&h=630&fit=crop-35-40&s=21cfec1080e467fe9f44d8ea99ade625",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=1200&h=600&fit=crop-35-40&s=a647729622e89163208fe97b9d1fa4a6",
+      "source_types": [
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=900&h=900&fit=crop-35-40&s=5a8551eaf45086317ea0f88c58ec80ae",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "900",
+      "height": "900",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=300&h=300&fit=crop-35-40&s=ff5ea11aa66b5fbbe17de077bdfe08af",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "900",
+      "height": "900",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=600&h=600&fit=crop-35-40&s=3fccab3f37dedb4f4fa7c6eb91431a28",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "900",
+      "height": "900",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=1200&h=1200&fit=crop-35-40&s=bd4e5146ddec9d0068b3a25888a32547",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "900",
+      "height": "900",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=1500&h=1500&fit=crop-35-40&s=f7a72663d4512e8eb7642696a5fce557",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "900",
+      "height": "900",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/c366c0f3-1af9-439a-ab67-e945a3a6c707/yuandudu-05.jpg?w=1800&h=1800&fit=crop-35-40&s=b8a1d3045800231a445c37b4a2200c9e",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "900",
+      "height": "900",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/animal/decorations-top-left-233a45ec9c370165000e33e51963008d.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "172",
+      "height": "260",
+      "evidence": [
+        "c-animal__decoration"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/iucn/iucn-vu-6c0f642dc4c6d9eb40cc422b4d4f4120.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "100",
+      "height": "100",
+      "evidence": [
+        "c-animal__sticker"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/animal/decoration-right-2059aabc4d6475ef30ae09b3774ffbbf.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "320",
+      "height": "328",
+      "evidence": [
+        "o-theater__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/330867b7-490f-4f01-9094-ee9d7bd81c41/yuandudu-04.jpg?w=800&h=520&fit=crop&s=ff60f4dd8154bdb6161bcf5b80c15c0b",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/330867b7-490f-4f01-9094-ee9d7bd81c41/yuandudu-04.jpg?w=400&h=260&fit=crop&s=0b5fd620a88937120cac9dac03961e55",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/330867b7-490f-4f01-9094-ee9d7bd81c41/yuandudu-04.jpg?w=1200&h=780&fit=crop&s=9340b6373bfb2051d6ec8eabf0b36152",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/330867b7-490f-4f01-9094-ee9d7bd81c41/yuandudu-04.jpg?w=1600&h=1040&fit=crop&s=70b436f82a96904469bd596a22437ca8",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/e9928bdd-d2cc-4b8e-87ab-567c543f075b/yuandudu-02.jpg?w=840&h=520&fit=crop&s=1ac34ffef31f010cf1b42b5129c534ed",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/e9928bdd-d2cc-4b8e-87ab-567c543f075b/yuandudu-02.jpg?w=420&h=260&fit=crop&s=7059e93e8d73c83b032b2b00e4c6c0ea",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/e9928bdd-d2cc-4b8e-87ab-567c543f075b/yuandudu-02.jpg?w=1260&h=780&fit=crop&s=bdc78fd833cd4d2e039228162ddb025b",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/e9928bdd-d2cc-4b8e-87ab-567c543f075b/yuandudu-02.jpg?w=1680&h=1040&fit=crop&s=6e8f9a294ae1f02faa84ee94e0963501",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Yuandudu",
+      "title": "",
+      "width": "800",
+      "height": "520",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/6268562c-1a9f-464d-a26b-5d62b5754a09/collier-gps-panda.jpg?w=340&h=258&fit=crop&s=dd8dd47a8ad548263562257ff1ccf547",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Collier GPS panda - Association Beauval Nature - ZooParc de Beauval",
+      "title": "",
+      "width": "340",
+      "height": "258",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/6268562c-1a9f-464d-a26b-5d62b5754a09/collier-gps-panda.jpg?w=680&h=516&fit=crop&s=06d5e42846e6d27894cbed80e2fbeb0e",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Collier GPS panda - Association Beauval Nature - ZooParc de Beauval",
+      "title": "",
+      "width": "340",
+      "height": "258",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/6a654d3e-1e57-485b-80dc-a701232470a7/reintroduction-condors.jpg?w=340&h=258&fit=crop&s=f07ebf5ae4a985e3f5fb20bbf33a2073",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Réintroduction condor des Andes - Association Beauval Nature",
+      "title": "",
+      "width": "340",
+      "height": "258",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/6a654d3e-1e57-485b-80dc-a701232470a7/reintroduction-condors.jpg?w=680&h=516&fit=crop&s=bb6fa0e1e0f7c58d83c4c8e14d8ce382",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Réintroduction condor des Andes - Association Beauval Nature",
+      "title": "",
+      "width": "340",
+      "height": "258",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/28380a4c-a574-4afb-b3dc-8059a41a974b/gardes-forestiers.jpg?w=340&h=258&fit=crop&s=e074911254768ebb2b02f91bf19e6e8c",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Gardes forestiers - Association Beauval Nature - ZooParc de Beauval",
+      "title": "",
+      "width": "340",
+      "height": "258",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/28380a4c-a574-4afb-b3dc-8059a41a974b/gardes-forestiers.jpg?w=680&h=516&fit=crop&s=a5387d98aab6711d98650eb1ddff09db",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Gardes forestiers - Association Beauval Nature - ZooParc de Beauval",
+      "title": "",
+      "width": "340",
+      "height": "258",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/ddb986c3-d7c5-40a3-9281-74b6b2cc1701/audrey-01.jpg?w=200&h=200&fit=crop&s=d62c0c185e4ff2c1e88383b9c1cdde42",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer panthère des neiges Audrey",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/ddb986c3-d7c5-40a3-9281-74b6b2cc1701/audrey-01.jpg?w=400&h=400&fit=crop&s=5e26b255c99f944fa67c2fad504c6746",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panthère des neiges Audrey",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/709e1de2-18a9-4626-a2b3-8f13fcef43f8/ines-01.jpg?w=200&h=200&fit=crop&s=dc5bf418fa9c5b1295e99a211650e9b9",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda roux Inès",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/709e1de2-18a9-4626-a2b3-8f13fcef43f8/ines-01.jpg?w=400&h=400&fit=crop&s=dcc6cf2abb681ad9956b204128ce4009",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda roux Inès",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/2083c55a-75d5-48ff-8926-a848377e6441/genoa-01.jpg?w=200&h=200&fit=crop&s=0b32a33b2630f62b378c1870098ad24f",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer koala Genoa",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/2083c55a-75d5-48ff-8926-a848377e6441/genoa-01.jpg?w=400&h=400&fit=crop&s=51d7f3d460a4c4446750a12199eb6982",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer koala Genoa",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/d4aad0ec-b8c2-4142-8b7f-b2f2fcef9022/asato-01.jpg?w=200&h=200&fit=crop&s=1ede70851e8cb3c3378a07c5e5565164",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer gorille Asato",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/d4aad0ec-b8c2-4142-8b7f-b2f2fcef9022/asato-01.jpg?w=400&h=400&fit=crop&s=bb846233ce47b1a0193e9e7eb39297da",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer gorille Asato",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/6fa1adcb-3698-473e-9b73-65d1590af34a/huanlili-05.jpg?w=200&h=200&fit=crop&s=c77d99a735bf9d7bb35d01f65ad4c00b",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Huanlili",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/6fa1adcb-3698-473e-9b73-65d1590af34a/huanlili-05.jpg?w=400&h=400&fit=crop&s=26b779c7d52e9b768179761ac396140f",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Parrainer panda Huanlili",
+      "title": "",
+      "width": "200",
+      "height": "200",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/5ad0abcc-1d4f-492e-b4aa-55edd7a01528/association-beauval-nature-02.jpg?w=1920&h=1080&fit=crop-39-50&s=82974642df86592dc86d33165004088f",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Réintroduction de condor des Andes - ZooParc de Beauval - Association Beauval Nature",
+      "title": "",
+      "width": "1920",
+      "height": "1080",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/5ad0abcc-1d4f-492e-b4aa-55edd7a01528/association-beauval-nature-02.jpg?w=480&h=270&fit=crop-39-50&s=48fb2bcf30fd24752f9ce47306cbb05a",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Réintroduction de condor des Andes - ZooParc de Beauval - Association Beauval Nature",
+      "title": "",
+      "width": "1920",
+      "height": "1080",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/5ad0abcc-1d4f-492e-b4aa-55edd7a01528/association-beauval-nature-02.jpg?w=960&h=540&fit=crop-39-50&s=15dc192ae525d72b2043d050bd35487d",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Réintroduction de condor des Andes - ZooParc de Beauval - Association Beauval Nature",
+      "title": "",
+      "width": "1920",
+      "height": "1080",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/5ad0abcc-1d4f-492e-b4aa-55edd7a01528/association-beauval-nature-02.jpg?w=1440&h=810&fit=crop-39-50&s=9e9b514a8182b135d57c2b0a49681891",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Réintroduction de condor des Andes - ZooParc de Beauval - Association Beauval Nature",
+      "title": "",
+      "width": "1920",
+      "height": "1080",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/5ad0abcc-1d4f-492e-b4aa-55edd7a01528/association-beauval-nature-02.jpg?w=2400&h=1350&fit=crop-39-50&s=aa03c790ace346506e90b61b104c2d44",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Réintroduction de condor des Andes - ZooParc de Beauval - Association Beauval Nature",
+      "title": "",
+      "width": "1920",
+      "height": "1080",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/logo-beauval-nature-2024-fb624b9fbe8c32b46a0cd50490c88a8e.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Logo Beauval Nature",
+      "title": "",
+      "width": "150",
+      "height": "150",
+      "evidence": [
+        "c-figure__image u-background-background c-figure__image--svg"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/panel/decoration-top-right-back-885d2efb8e1e84942bf2289e578ca830.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "220",
+      "height": "229",
+      "evidence": [
+        "o-pin__decoration o-pin__decoration--back"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/panel/decoration-bottom-left-back-94683abc57883613e74e85e91b0d515c.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "306",
+      "height": "317",
+      "evidence": [
+        "o-pin__decoration o-pin__decoration--back"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/panel/decoration-top-right-front-6473b748c39299fe759e38b0d1a86558.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "307",
+      "height": "225",
+      "evidence": [
+        "o-pin__decoration o-pin__decoration--front"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/panel/decoration-bottom-left-front-e5525fd2eb14bae13c30e9cf04e34692.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "240",
+      "height": "214",
+      "evidence": [
+        "o-pin__decoration o-pin__decoration--front"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/7a35b235-0acb-4f28-b728-f630fb6da6c6/koala-062023.jpg?w=260&h=260&fit=crop-47-50&s=f9fb43c7739c08b9323aa0f9e18c17cd",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/7a35b235-0acb-4f28-b728-f630fb6da6c6/koala-062023.jpg?w=520&h=520&fit=crop-47-50&s=bc1725e5271357f36cf8b1198f6f8f95",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/0b7eb091-ebb7-4671-abc7-8234871cb4b5/gypaete-062023.jpg?w=260&h=260&fit=crop&s=52f0787282959cea410de6eba4149053",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/0b7eb091-ebb7-4671-abc7-8234871cb4b5/gypaete-062023.jpg?w=520&h=520&fit=crop&s=99480fc7ac43adfaa0a5455a58c7af10",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/d28de76f-3e3b-4665-9eb8-44c3734e1cab/audrey-062023.jpg?w=260&h=260&fit=crop&s=842b31cac7d8acb03e14c7d70837035a",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/d28de76f-3e3b-4665-9eb8-44c3734e1cab/audrey-062023.jpg?w=520&h=520&fit=crop&s=9e417ddd7224ee2563ccfc949842e40a",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/ba69710e-e377-4a7a-92b6-b7346e5fc23a/varan-komodo-062023.jpg?w=260&h=260&fit=crop&s=3951efeee92c6fd689936ee4f7ac5eb7",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/ba69710e-e377-4a7a-92b6-b7346e5fc23a/varan-komodo-062023.jpg?w=520&h=520&fit=crop&s=e8181667acb3073e692ad8679ffd4255",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/50826ce3-99c9-468f-bd67-c6b062b1bd1e/coati-062023.jpg?w=260&h=260&fit=crop&s=05fa800379ad4fb5624e70a094661b7c",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/50826ce3-99c9-468f-bd67-c6b062b1bd1e/coati-062023.jpg?w=520&h=520&fit=crop&s=99d87b1fadda0988122e61a183709003",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/219eb47d-c61a-40ea-a2cd-735a3d1a4fc9/magot-062023.jpg?w=260&h=260&fit=crop-56-49&s=e1a5435dca846a3547dc4d4dcc70720d",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/219eb47d-c61a-40ea-a2cd-735a3d1a4fc9/magot-062023.jpg?w=520&h=520&fit=crop-56-49&s=a7c11111fb34ca7d0f0d37f82a7d8d39",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/ad05d28a-f2ad-4645-a7fc-ca79e89a299c/panda-roux-062023.jpg?w=260&h=260&fit=crop&s=a9f7e6208df653eeeb94d6a89619623d",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/ad05d28a-f2ad-4645-a7fc-ca79e89a299c/panda-roux-062023.jpg?w=520&h=520&fit=crop&s=da3af1c50d3016737e8d7dc136819430",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/70271e94-0180-432e-a67f-d9682f76b2bd/girafe-062023.jpg?w=260&h=260&fit=crop&s=d6c2403eceb81af84957245d9b0b9bc8",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/70271e94-0180-432e-a67f-d9682f76b2bd/girafe-062023.jpg?w=520&h=520&fit=crop&s=18cb7445489a83da26cd21c024009f00",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/125ee6a1-a200-4c5e-835c-5c47051950c3/elephant-062023.jpg?w=260&h=260&fit=crop-59-50&s=fcacebfebc475e9bee687cbe2db050e2",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/125ee6a1-a200-4c5e-835c-5c47051950c3/elephant-062023.jpg?w=520&h=520&fit=crop-59-50&s=c909c6f903de834688e02bd0c54ed50b",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/0ac2ec35-12e4-44c8-a1b7-95fc6c0509ee/panda-062023.jpg?w=260&h=260&fit=crop&s=aeb5a9e7f5c54be0ef94f17dd08f8d81",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/0ac2ec35-12e4-44c8-a1b7-95fc6c0509ee/panda-062023.jpg?w=520&h=520&fit=crop&s=d97be87388b29720f5e240ca54badaad",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/f750bb1e-5e59-4f95-8b2c-e7c2f4954d7b/kruger-062023.jpg?w=260&h=260&fit=crop&s=25f7cdc45ae88060a245b8d88c978c90",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/thumbnail/f750bb1e-5e59-4f95-8b2c-e7c2f4954d7b/kruger-062023.jpg?w=520&h=520&fit=crop&s=0c226313a53cf449b9d35605a8eac7cf",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "260",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/footer/leaves-190w-fd3bc42c7f4ac31b8674989cc267c7ca.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/footer/leaves-380w-f883d550423b974dc566872996466199.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/footer/leaves-760w-52a04eadcc8d8d21bf485fc47786d7f1.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/footer/leaves-380w-6371133cac1f7a9c25f257b7b7bc4b61.png",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "380",
+      "height": "444",
+      "evidence": [
+        "c-footer__leaves"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/footer/leaves-190w-c6aec9ae6a79d00618a3180f77ff5d87.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "380",
+      "height": "444",
+      "evidence": [
+        "c-footer__leaves"
+      ]
+    },
+    {
+      "asset_url": "https://parrainages.zoobeauval.com/assets/static/footer/leaves-760w-f6dd8f19af2addd746f62e5cd41b5d42.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "380",
+      "height": "444",
+      "evidence": [
+        "c-footer__leaves"
+      ]
+    }
+  ]
+}
