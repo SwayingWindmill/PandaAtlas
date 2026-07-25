@@ -1,0 +1,650 @@
+{
+  "schema_version": 1,
+  "page_url": "https://news.samsungcnt.com/en/features/resort/2020-07-everland-succeeds-natural-birth-giant-panda/",
+  "discovered_at": "2026-07-25T18:34:51.160127+00:00",
+  "image_count": 49,
+  "images": [
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/uploads/sites/3/2020/07/baby-panda-born-4-featured-image-588x470-1.jpg",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/logo-dark.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "logo-dark"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/logo-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "logo-light"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-search.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-lang.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-fb-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "페이스북으로 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-linkedin-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "링크드인으로 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-x-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "트위터로 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-mail-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "메일 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-printer-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "프린터",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-photo-1-1.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "511",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34389"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-photo-1-1-300x200.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "511",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34389"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-photo-3-1.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "513",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34390"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-photo-3-1-300x200.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "513",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34390"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-photo-2-1.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "539",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34391"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-photo-2-1-300x211.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "539",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34391"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-infographic-1-1.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "1381",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34392"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-infographic-1-1-167x300.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "1381",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34392"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-infographic-1-1-570x1024.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "1381",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34392"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2020/07/baby-panda-born-infographic-1-1-854x1536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "768",
+      "height": "1381",
+      "evidence": [
+        "attachment-medium_large size-medium_large wp-image-34392"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-500x260.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-1024x532.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-768x399.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival-500x262.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival-1024x536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival-768x402.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth-500x260.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth-1024x532.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth-768x399.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape-500x262.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape-1024x536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape-768x402.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours-500x260.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours-1024x532.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours-768x399.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach.png",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach-500x300.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach-1024x614.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach-768x461.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year-500x262.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year-1024x536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year-768x402.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-up-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

@@ -1,0 +1,935 @@
+{
+  "schema_version": 1,
+  "page_url": "https://news.samsungcnt.com/en/features/resort/2026-07-everland-invites-public-to-name-new-baby-panda-as-rui-bao-and-hui-bao-begin-nationwide-journey/",
+  "discovered_at": "2026-07-25T18:35:22.697434+00:00",
+  "image_count": 70,
+  "images": [
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey.jpg",
+      "source_types": [
+        "meta:og:image",
+        "img:srcset",
+        "img:src"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1024",
+      "height": "532",
+      "evidence": [
+        "og:image",
+        "wp-image-53570",
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/logo-dark.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "logo-dark"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/logo-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "logo-light"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-search.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-lang.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-fb-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "페이스북으로 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-linkedin-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "링크드인으로 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-x-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "트위터로 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-mail-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "메일 공유하기",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-printer-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "프린터",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "sharebtn_custom"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-1024x532.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1024",
+      "height": "532",
+      "evidence": [
+        "wp-image-53570",
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-500x260.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1024",
+      "height": "532",
+      "evidence": [
+        "wp-image-53570",
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-768x399.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Ai Bao holds her newborn baby panda beside an image of Rui Bao and Hui Bao travel companion dolls visiting Gochang Eupseong Fortress.",
+      "title": "",
+      "width": "1024",
+      "height": "532",
+      "evidence": [
+        "wp-image-53570",
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-1.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Everland’s baby giant panda sleeps curled up on white bedding with her head resting on a green cushion.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53571"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-1-500x320.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Everland’s baby giant panda sleeps curled up on white bedding with her head resting on a green cushion.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53571"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-1-768x492.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Everland’s baby giant panda sleeps curled up on white bedding with her head resting on a green cushion.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53571"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-2.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Everland’s baby giant panda lies on white bedding with her front paws extended and her head facing forward.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53572"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-2-500x320.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Everland’s baby giant panda lies on white bedding with her front paws extended and her head facing forward.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53572"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-2-768x492.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Everland’s baby giant panda lies on white bedding with her front paws extended and her head facing forward.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53572"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-3-819x1024.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Mother panda Ai Bao gently holds her tiny pink newborn cub in her mouth.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53573"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-3-400x500.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Mother panda Ai Bao gently holds her tiny pink newborn cub in her mouth.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53573"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-3-768x960.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Mother panda Ai Bao gently holds her tiny pink newborn cub in her mouth.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53573"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Mother panda Ai Bao gently holds her tiny pink newborn cub in her mouth.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53573"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-4-819x1024.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Everland’s one-month-old baby giant panda lies on white bedding beside a small green cushion, with her black eye, ear, and leg markings clearly visible.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53574"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-4-400x500.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Everland’s one-month-old baby giant panda lies on white bedding beside a small green cushion, with her black eye, ear, and leg markings clearly visible.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53574"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-4-768x960.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Everland’s one-month-old baby giant panda lies on white bedding beside a small green cushion, with her black eye, ear, and leg markings clearly visible.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53574"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-4.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Everland’s one-month-old baby giant panda lies on white bedding beside a small green cushion, with her black eye, ear, and leg markings clearly visible.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53574"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-5.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Representatives from Everland and the Korea Tourism Organization pose behind a conference table with the signed agreement, campaign items, and two panda mascots.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53575"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-5-500x320.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Representatives from Everland and the Korea Tourism Organization pose behind a conference table with the signed agreement, campaign items, and two panda mascots.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53575"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-5-768x492.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Representatives from Everland and the Korea Tourism Organization pose behind a conference table with the signed agreement, campaign items, and two panda mascots.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53575"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-6.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Gochang-themed panda merchandise is displayed with watermelon slices and drinks, including Rui-Hui travel companion dolls and large watermelon-shaped panda cushions.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53576"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-6-500x320.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Gochang-themed panda merchandise is displayed with watermelon slices and drinks, including Rui-Hui travel companion dolls and large watermelon-shaped panda cushions.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53576"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-6-768x492.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Gochang-themed panda merchandise is displayed with watermelon slices and drinks, including Rui-Hui travel companion dolls and large watermelon-shaped panda cushions.",
+      "title": "",
+      "width": "1000",
+      "height": "640",
+      "evidence": [
+        "wp-image-53576"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-7-819x1024.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Twin giant pandas Rui Bao and Hui Bao stand together behind a wooden structure at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53577"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-7-400x500.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Twin giant pandas Rui Bao and Hui Bao stand together behind a wooden structure at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53577"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-7-768x960.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Twin giant pandas Rui Bao and Hui Bao stand together behind a wooden structure at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53577"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-7.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Twin giant pandas Rui Bao and Hui Bao stand together behind a wooden structure at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53577"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-8-819x1024.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "One twin giant panda eats bamboo while the other rests closely behind her at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53578"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-8-400x500.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "One twin giant panda eats bamboo while the other rests closely behind her at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53578"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-8-768x960.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "One twin giant panda eats bamboo while the other rests closely behind her at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53578"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/Everland-Invites-Public-to-Name-New-Baby-Panda-as-Rui-Bao-and-Hui-Bao-Begin-Nationwide-Journey-8.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "One twin giant panda eats bamboo while the other rests closely behind her at Everland’s Panda World.",
+      "title": "",
+      "width": "819",
+      "height": "1024",
+      "evidence": [
+        "wp-image-53578"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival-500x262.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival-1024x536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Caribbean-Bay-Turns-Its-Signature-Wave-Pool-into-a-Summer-Music-Festival-768x402.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors enjoy the Water Music Pool Party at Caribbean Bay’s outdoor wave pool, featuring live performances, water cannons, and a large LED stage",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth-500x260.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth-1024x532.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Reveals-First-Photos-of-Baby-Panda-Three-Weeks-After-Birth-768x399.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A three-week-old baby giant panda rests on a soft white blanket, showing early black markings around its eyes, ears, shoulders, arms, and legs.",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape-500x262.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape-1024x536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everlands-Annual-Water-Festival-Turns-Summer-Heat-into-a-Cool-Day-to-Night-Escape-768x402.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Performers and visitors gather at Everland’s Shooting Water Fun Season 2 show, where water sprays over the crowd during an outdoor summer performance.",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Kicks-Off-June-with-Football-Taco-for-Its-Monthly-Whatever-Series.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Visitors pose with footballs at Everland’s Football Training Camp, part of the June Whatever Series theme “Football & Taco.”",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Kicks-Off-June-with-Football-Taco-for-Its-Monthly-Whatever-Series-500x262.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors pose with footballs at Everland’s Football Training Camp, part of the June Whatever Series theme “Football & Taco.”",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Kicks-Off-June-with-Football-Taco-for-Its-Monthly-Whatever-Series-1024x536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors pose with footballs at Everland’s Football Training Camp, part of the June Whatever Series theme “Football & Taco.”",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/06/1200px-Everland-Kicks-Off-June-with-Football-Taco-for-Its-Monthly-Whatever-Series-768x402.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Visitors pose with footballs at Everland’s Football Training Camp, part of the June Whatever Series theme “Football & Taco.”",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours-500x260.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours-1024x532.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CTs-UAE-HVDC-Project-Achieves-30-Million-Safe-Work-Hours-768x399.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "A large group of Samsung C&T employees and project partners pose outside the Project Lightning site office, raising their fists behind a banner reading, “Ground Breaking Ceremony — Start Safe. Work Safe. Finish Safe.”",
+      "title": "",
+      "width": "1200",
+      "height": "624",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach.png",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach-500x300.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach-1024x614.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Dressed-for-Summer-Samsung-CTs-SS26-Dress-Approach-768x461.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "8seconds, kuho plus, 'anggae', and Beanpole present distinct approaches to Summer 2026 dress styling, from playful layering and minimal silhouettes to classic warm-weather designs",
+      "title": "",
+      "width": "1200",
+      "height": "720",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year-500x262.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year-1024x536.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/upload/2.0/wp-content/uploads/sites/3/2026/07/1200px-Samsung-CT-Wins-Gold-at-2026-London-Design-Awards-for-Second-Consecutive-Year-768x402.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Raemian One Perla’s exterior design emphasizes geometric unity, refined material contrast, and a distinctive residential identity",
+      "title": "",
+      "width": "1200",
+      "height": "628",
+      "evidence": [
+        "attachment-post-thumbnail size-post-thumbnail wp-post-image"
+      ]
+    },
+    {
+      "asset_url": "https://news.samsungcnt.com/en/wp-content/themes/samsungcnt-newsroom/resources/images/icon/ic-up-light.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}
