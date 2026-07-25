@@ -1,0 +1,296 @@
+{
+  "candidate_count": 1,
+  "candidates": [
+    {
+      "adapter_id": "wikimedia-commons-media-discovery",
+      "artist": "Aguiar, Vicente de (O.C.) Lisboa : na impressao de Antonio Craesbeeck de Mello ...",
+      "attribution_required": false,
+      "bytes": 2609800,
+      "candidate_id": "commons-candidate-950172bbf4c13e112975ebd3",
+      "captured_at_text": "",
+      "categories": [
+        "PD-old-100-expired",
+        "Scans from the Internet Archive/unverified",
+        "CC-PD-Mark",
+        "Scans from the Internet Archive",
+        "Books uploaded by Fæ",
+        "Books without Wikidata item",
+        "Old books in Internet Archive additional collections",
+        "PD-old missing SDC copyright status"
+      ],
+      "credit": "Internet Archive identifier : A11305527 https://archive.org/download/A11305527/A11305527.pdf",
+      "description": "Más detalles Editor Lisboa : na impressao de Antonio Craesbeeck de Mello ... Fecha de creación , 1762 Formato [4], 28 p. ; 4ð Fuente Catálogo de la biblioteca Identificador OCLC : (OCoLC)928727307 Nota desc. física Sign.: []2, A-C4, D2 SIGNATURA A 113/055(27) https://fama.us.es/discovery/fulldisplay?docid=alma991008324779704987&context=L&vid=34CBUA_US:VU1&search_scope=all_data_not_idus&tab=all_data_not_idus%E2%8C%A9=es \" rel=\"nofollow\">Catálogo Fama Subjects: Fondo Antiguo; Libros del Siglo XVIII; Tomos de varios; Sermones. Oraciones Fúnebres. Etc.",
+      "description_url": "https://commons.wikimedia.org/wiki/File:Sermam_do_Apostolo_S._Andre_que_na_S._caza_da_Misericordia_desta_Cidade_de_Lisboa_(IA_A11305527).pdf",
+      "file_title": "File:Sermam do Apostolo S. Andre que na S. caza da Misericordia desta Cidade de Lisboa (IA A11305527).pdf",
+      "height": 783,
+      "identity_basis": "search-result-without-canonical-name-evidence",
+      "identity_confidence": 0.25,
+      "license_short_name": "Public domain",
+      "license_url": "",
+      "mime": "application/pdf",
+      "original_image_downloaded": false,
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Sermam_do_Apostolo_S._Andre_que_na_S._caza_da_Misericordia_desta_Cidade_de_Lisboa_%28IA_A11305527%29.pdf",
+      "panda_name_en": "Cao Cao",
+      "panda_name_zh": null,
+      "panda_slug": "cao-cao-mianyang",
+      "profile_image_eligible": false,
+      "query": "\"Cao Cao\" giant panda",
+      "review_state": "candidate",
+      "rights_basis": "commons-public-domain-metadata",
+      "rights_confidence": 0.95,
+      "rights_state": "public_domain",
+      "search_rank": 1,
+      "sha1": "8da7fff5f224433e810f20a4e5f1864adbd6afc6",
+      "source_id": "wikimedia-commons-action-api",
+      "task_id": "commons-search-a3143b94c57e0de553871955",
+      "uploaded_at": "2021-01-10T23:54:08Z",
+      "uploader": "Fæ",
+      "usage_terms": "Public domain",
+      "width": 550
+    }
+  ],
+  "cohort_id": "local-commons-batch-b74d8b5ad2bae2e4",
+  "completed_task_count": 7,
+  "dataset_release_version": "2026.07.24.2",
+  "failed_task_count": 1,
+  "failures": [
+    {
+      "error": "Remote end closed connection without response",
+      "panda_slug": "chao-tian-jiao",
+      "query": "\"Chao Tian Jiao\" giant panda",
+      "task_id": "commons-search-af1ca1facb9b911cf1177574"
+    }
+  ],
+  "generated_at": "2026-07-25T00:00:00+09:00",
+  "mode": "live-urllib",
+  "operation": "local-wikimedia-commons-media-discovery",
+  "outcome": "partial",
+  "publication_write_targets": [],
+  "schema_version": 1,
+  "task_count": 8,
+  "tasks": [
+    {
+      "candidate_count": 1,
+      "candidates": [
+        {
+          "adapter_id": "wikimedia-commons-media-discovery",
+          "artist": "Aguiar, Vicente de (O.C.) Lisboa : na impressao de Antonio Craesbeeck de Mello ...",
+          "attribution_required": false,
+          "bytes": 2609800,
+          "candidate_id": "commons-candidate-950172bbf4c13e112975ebd3",
+          "captured_at_text": "",
+          "categories": [
+            "PD-old-100-expired",
+            "Scans from the Internet Archive/unverified",
+            "CC-PD-Mark",
+            "Scans from the Internet Archive",
+            "Books uploaded by Fæ",
+            "Books without Wikidata item",
+            "Old books in Internet Archive additional collections",
+            "PD-old missing SDC copyright status"
+          ],
+          "credit": "Internet Archive identifier : A11305527 https://archive.org/download/A11305527/A11305527.pdf",
+          "description": "Más detalles Editor Lisboa : na impressao de Antonio Craesbeeck de Mello ... Fecha de creación , 1762 Formato [4], 28 p. ; 4ð Fuente Catálogo de la biblioteca Identificador OCLC : (OCoLC)928727307 Nota desc. física Sign.: []2, A-C4, D2 SIGNATURA A 113/055(27) https://fama.us.es/discovery/fulldisplay?docid=alma991008324779704987&context=L&vid=34CBUA_US:VU1&search_scope=all_data_not_idus&tab=all_data_not_idus%E2%8C%A9=es \" rel=\"nofollow\">Catálogo Fama Subjects: Fondo Antiguo; Libros del Siglo XVIII; Tomos de varios; Sermones. Oraciones Fúnebres. Etc.",
+          "description_url": "https://commons.wikimedia.org/wiki/File:Sermam_do_Apostolo_S._Andre_que_na_S._caza_da_Misericordia_desta_Cidade_de_Lisboa_(IA_A11305527).pdf",
+          "file_title": "File:Sermam do Apostolo S. Andre que na S. caza da Misericordia desta Cidade de Lisboa (IA A11305527).pdf",
+          "height": 783,
+          "identity_basis": "search-result-without-canonical-name-evidence",
+          "identity_confidence": 0.25,
+          "license_short_name": "Public domain",
+          "license_url": "",
+          "mime": "application/pdf",
+          "original_image_downloaded": false,
+          "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Sermam_do_Apostolo_S._Andre_que_na_S._caza_da_Misericordia_desta_Cidade_de_Lisboa_%28IA_A11305527%29.pdf",
+          "panda_name_en": "Cao Cao",
+          "panda_name_zh": null,
+          "panda_slug": "cao-cao-mianyang",
+          "profile_image_eligible": false,
+          "query": "\"Cao Cao\" giant panda",
+          "review_state": "candidate",
+          "rights_basis": "commons-public-domain-metadata",
+          "rights_confidence": 0.95,
+          "rights_state": "public_domain",
+          "search_rank": 1,
+          "sha1": "8da7fff5f224433e810f20a4e5f1864adbd6afc6",
+          "source_id": "wikimedia-commons-action-api",
+          "task_id": "commons-search-a3143b94c57e0de553871955",
+          "uploaded_at": "2021-01-10T23:54:08Z",
+          "uploader": "Fæ",
+          "usage_terms": "Public domain",
+          "width": 550
+        }
+      ],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Cao+Cao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "f43083debf477933a5e1986808aeb96eb30d2203755da2280a3a92f626da76df",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Cao Cao",
+        "name_zh": null,
+        "panda_slug": "cao-cao-mianyang",
+        "query": "\"Cao Cao\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-a3143b94c57e0de553871955"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Chang+Chang%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Chang Chang",
+        "name_zh": null,
+        "panda_slug": "chang-chang-beijing",
+        "query": "\"Chang Chang\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-067fee8dc38ddaa1264a27b1"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Chao+Chao%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Chao Chao",
+        "name_zh": "吵吵",
+        "panda_slug": "chao-chao-chengdu",
+        "query": "\"Chao Chao\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-94871402f8147c79b8a576fc"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Chen+Xing%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Chen Xing",
+        "name_zh": null,
+        "panda_slug": "chen-xing",
+        "query": "\"Chen Xing\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-6c3a35970c7931b63c8f5089"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Cheng+Cheng%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Cheng Cheng",
+        "name_zh": null,
+        "panda_slug": "cheng-cheng-adventure",
+        "query": "\"Cheng Cheng\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-1c5f6ea67dae929664cf5e18"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Cheng+Da%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Cheng Da",
+        "name_zh": null,
+        "panda_slug": "cheng-da",
+        "query": "\"Cheng Da\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-dc4e7a032331a06f03c85082"
+      }
+    },
+    {
+      "candidate_count": 0,
+      "candidates": [],
+      "continuation_available": false,
+      "operation": "wikimedia-commons-media-discovery",
+      "outcome": "passed",
+      "publication_write_targets": [],
+      "request": {
+        "browser_impersonation": false,
+        "continuation_requested": false,
+        "original_image_requested": false,
+        "url": "https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&generator=search&gsrsearch=%22Cheng+Dui%22+giant+panda&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=timestamp%7Cuser%7Curl%7Csize%7Csha1%7Cmime%7Cextmetadata&iiextmetadatafilter=ImageDescription%7CArtist%7CCredit%7CLicenseShortName%7CLicenseUrl%7CUsageTerms%7CAttributionRequired%7CDateTimeOriginal%7CCategories&iiextmetadatalanguage=en&maxlag=5"
+      },
+      "response_sha256": "4a165b1e1a667cd2588c1dd91ac1fcbad9590ae7c62e028d1372e7d72f012340",
+      "schema_version": 1,
+      "task": {
+        "max_results": 5,
+        "name_en": "Cheng Dui",
+        "name_zh": null,
+        "panda_slug": "cheng-dui",
+        "query": "\"Cheng Dui\" giant panda",
+        "query_locale": "en",
+        "task_id": "commons-search-f23378dbd55504e635067997"
+      }
+    }
+  ]
+}

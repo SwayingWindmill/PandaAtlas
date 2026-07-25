@@ -101,6 +101,23 @@ class LocalPandaMediaCollectorTests(unittest.TestCase):
         self.assertFalse(parser.parse_args([]).strict)
         self.assertTrue(parser.parse_args(["--strict"]).strict)
 
+    def test_prune_orphan_files_only_removes_unreferenced_images(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            files_dir = Path(temporary)
+            (files_dir / "keep.jpg").write_bytes(b"keep")
+            (files_dir / "remove.png").write_bytes(b"remove")
+            (files_dir / "notes.txt").write_text("keep", encoding="utf-8")
+
+            removed = MODULE.prune_orphan_files(
+                files_dir,
+                [{"local_filename": "keep.jpg"}],
+            )
+
+            self.assertEqual(removed, 1)
+            self.assertTrue((files_dir / "keep.jpg").exists())
+            self.assertFalse((files_dir / "remove.png").exists())
+            self.assertTrue((files_dir / "notes.txt").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

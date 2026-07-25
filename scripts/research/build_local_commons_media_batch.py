@@ -75,11 +75,30 @@ def processed_task_ids(discovery_dir: Path = DEFAULT_DISCOVERY_DIR) -> set[str]:
     return processed
 
 
+def processed_queries(discovery_dir: Path = DEFAULT_DISCOVERY_DIR) -> set[str]:
+    queries: set[str] = set()
+    if not discovery_dir.exists():
+        return queries
+    for path in sorted(discovery_dir.glob("commons-batch-*-results.json")):
+        payload = load_json(path)
+        for result in payload.get("tasks") or []:
+            if not isinstance(result, dict):
+                continue
+            task = result.get("task")
+            if isinstance(task, dict) and isinstance(task.get("query"), str):
+                queries.add(task["query"])
+        for failure in payload.get("failures") or []:
+            if isinstance(failure, dict) and isinstance(failure.get("query"), str):
+                queries.add(failure["query"])
+    return queries
+
+
 def select_tasks(
     queue: dict[str, Any],
     *,
     covered_subjects: set[str],
     processed_tasks: set[str],
+    processed_query_texts: set[str],
     task_limit: int,
 ) -> list[dict[str, Any]]:
     raw_tasks = queue.get("tasks")
@@ -90,6 +109,7 @@ def select_tasks(
 
     selected: list[dict[str, Any]] = []
     selected_slugs: set[str] = set()
+    selected_queries: set[str] = set()
     ordered = sorted(
         (task for task in raw_tasks if isinstance(task, dict)),
         key=lambda task: (
@@ -102,16 +122,21 @@ def select_tasks(
     for task in ordered:
         slug = str(task.get("panda_slug") or "").strip()
         task_id = str(task.get("task_id") or "").strip()
+        query = str(task.get("query") or "").strip()
         if (
             not slug
             or not task_id
+            or not query
             or task_id in processed_tasks
+            or query in processed_query_texts
+            or query in selected_queries
             or slug in covered_subjects
             or slug in selected_slugs
         ):
             continue
         selected.append(task)
         selected_slugs.add(slug)
+        selected_queries.add(query)
         if len(selected) >= task_limit:
             break
 
@@ -133,10 +158,12 @@ def build_batch(
     candidates = load_jsonl(candidates_path)
     covered = covered_subject_ids(candidates)
     processed = processed_task_ids(discovery_dir)
+    seen_queries = processed_queries(discovery_dir)
     tasks = select_tasks(
         queue,
         covered_subjects=covered,
         processed_tasks=processed,
+        processed_query_texts=seen_queries,
         task_limit=task_limit,
     )
     task_ids = "|".join(str(task.get("task_id") or "") for task in tasks)
