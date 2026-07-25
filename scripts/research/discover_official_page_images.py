@@ -130,7 +130,10 @@ class OfficialImageHTMLParser(HTMLParser):
 def parse_srcset(value: str) -> list[str]:
     urls: list[str] = []
     for item in value.split(","):
-        candidate = item.strip().split(maxsplit=1)[0].strip()
+        parts = item.strip().split(maxsplit=1)
+        if not parts:
+            continue
+        candidate = parts[0].strip()
         if candidate:
             urls.append(candidate)
     return urls

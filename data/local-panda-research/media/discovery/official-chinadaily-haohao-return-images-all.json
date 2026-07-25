@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "page_url": "https://global.chinadaily.com.cn/a/202512/04/WS693152ffa310d6866eb2cebe.html",
+  "discovered_at": "2026-07-25T19:28:12.616619+00:00",
+  "image_count": 27,
+  "images": [
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/logo_chinadaily.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2017/logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "chinadaily",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2017/cnbut.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/share/share.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Share to ...",
+      "title": "Share to ...",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "share-icon"
+      ]
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2017/logo.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/facebook.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "17px",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2024/twitter.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/linkedin.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2017/more_art.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2017/app.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "200",
+      "height": "26",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/timg.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "20px",
+      "height": "20px",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/weibo.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/weixin.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "weixinqrcode"
+      ]
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/share/weibo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/share/facebook.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/share/twitter.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/share/linkedin.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2020/share/mail.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://img2.chinadaily.com.cn/images/202512/04/693152ffa310d68600f38177.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "img-693152ffa310d68600f38177"
+      ]
+    },
+    {
+      "asset_url": "https://img2.chinadaily.com.cn/static/common/img/showmobilee.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2016/sub/a-1.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2016/sub/a-2.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2016/sub/a-3.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.chinadaily.com.cn/image_e/2024/a-5.jpg?ver=2",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://img2.chinadaily.com.cn/static/common/img/mEnglish.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://img2.chinadaily.com.cn/static/common/img/mChinese.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://img2.chinadaily.com.cn/static/common/img/showDesktop.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

@@ -1,0 +1,1789 @@
+{
+  "sources": [
+    {
+      "source_id": "src-pairidaiza-giant-panda-profile-2026-local",
+      "source_type": "institution_primary_profile",
+      "publisher": "Pairi Daiza",
+      "title": "Giant Panda",
+      "url": "https://www.pairidaiza.eu/en/worlds/the-middle-kingdom/giant-panda/",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Current official resident profile for Xing Hui and the Pairi Daiza giant-panda research programme."
+    },
+    {
+      "source_id": "src-pairidaiza-tianbao-eighth-birthday-2024-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Pairi Daiza",
+      "title": "Tian Bao celebrates his 8th birthday",
+      "url": "https://www.pairidaiza.eu/en/tian-bao-fete-son-8e-anniversaire/",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official eighth-birthday and planned-return profile for Tian Bao."
+    },
+    {
+      "source_id": "src-pairidaiza-panda-research-project-local",
+      "source_type": "institution_primary_research",
+      "publisher": "Pairi Daiza Foundation",
+      "title": "Project Giant Pandas",
+      "url": "https://www.pairidaiza.eu/en/together-for-the-animals/foundation-vision/fondation-projects/project-giant-pandas/",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official reproductive-metabolomics project summary and international programme context."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Chinese president corresponds with Belgian zookeeper over pandas and friendship",
+      "url": "https://english.news.cn/20230624/cd14c4394d564c0d96937de054a8e757/c.html",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Xinhua family chronology, names and name meanings."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-twins-naming-2019-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Two giant pandas born in Belgium given official names",
+      "url": "https://www.xinhuanet.com/english/2019-11/15/c_138555838.htm",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Naming ceremony, sex and 100-day milestone for Bao Di and Bao Mei."
+    },
+    {
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_type": "specialist_secondary_reportage",
+      "publisher": "Panda.fr",
+      "title": "Pairi Daiza official presentation of Bao Di and Bao Mei",
+      "url": "https://www.panda.fr/pairi-daiza-presentation-officielle-de-baby-boy-et-baby-girl-nommes-respectivement-bao-di-et-bao-mei.html",
+      "language": "fr",
+      "region": "Belgium",
+      "authority": "secondary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Detailed specialist account explicitly sourcing Pairi Daiza for birth weights, rotating care, 100-day weights, insemination and exact arrival/birth dates."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-twins-third-birthday-2022-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Giant panda twins celebrate third birthday in Belgium",
+      "url": "https://english.news.cn/europe/20220807/57f18fe3e7364150b85df8c04ae1545c/c.html",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Third-birthday behaviour, family and return-agreement context."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-twins-fourth-birthday-2023-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Belgian zoo celebrates birthday for giant panda twins",
+      "url": "https://english.news.cn/20230817/00b01b4a3b974f528bd54a93d5c09f09/c.html",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Fourth-birthday celebration, special food and move to a new enclosure."
+    },
+    {
+      "source_id": "src-xinhua-tianbao-eighth-birthday-2024-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Tian Bao is eight! Giant panda celebrates birthday at Belgian zoo",
+      "url": "https://english.news.cn/20240603/c7ea6716f2c043d2a60ec42f843b0dd6/c.html",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Eighth-birthday photographs and name meaning."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-farewell-2024-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Fans bid farewell to giant pandas in Belgian zoo",
+      "url": "https://english.news.cn/20241112/a6bade69a30d411696bee7c094e5716f/c.html",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Final public farewell and Bifengxia destination for Tian Bao, Bao Di and Bao Mei."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-return-2024-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Three giant pandas born in Belgium return to China",
+      "url": "https://english.news.cn/20241211/2144d580a36749738618538c9bbf60cf/c.html",
+      "language": "en",
+      "region": "Belgium and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Completed 10 December 2024 departure and conservation-breeding destination."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-keeper-feature-2024-local",
+      "source_type": "government_news_primary_feature",
+      "publisher": "Xinhua News Agency",
+      "title": "Ten years in Belgium — life of China's panda nanny abroad",
+      "url": "https://english.news.cn/20240920/c729f93deddc4789945481aaadaeb595/c.html",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Keeper recollections about Hao Hao's early caution and the family chronology."
+    },
+    {
+      "source_id": "src-chinadaily-haohao-return-2025-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "China Daily",
+      "title": "Panda Hao Hao returns to China from Belgium for treatment",
+      "url": "https://global.chinadaily.com.cn/a/202512/04/WS693152ffa310d6866eb2cebe.html",
+      "language": "en",
+      "region": "Belgium and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Completed medical return, Chengdu arrival, Shenshuping transfer, quarantine and care preparation."
+    },
+    {
+      "source_id": "src-xinhua-pairidaiza-twins-award-2020-local",
+      "source_type": "government_news_primary_reportage",
+      "publisher": "Xinhua News Agency",
+      "title": "Two giant pandas born in Belgium win Panda Cub of the Year Gold Award",
+      "url": "https://www.news.cn/english/europe/2020-01/04/c_138677266.htm",
+      "language": "en",
+      "region": "Belgium",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_and_press_media_local_only",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "2019 Giant Panda Global Awards result for Bao Di and Bao Mei."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-pairidaiza-0001",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0002",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2009-07-07",
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好出生于2009年7月7日。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0003",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "the kind one",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "“好好”的名字被译为“善良者”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0004",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_belgium",
+      "value": {
+        "date": "2014-02-23",
+        "destination": "Pairi Daiza"
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好于2014年2月23日抵达比利时天堂动物园。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "belgium",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0005",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "relationship",
+      "predicate": "breeding_partner",
+      "value": "xing-hui",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好的繁育配对为星徽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "xing-hui",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0006",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "tian-bao",
+        "bao-di",
+        "bao-mei"
+      ],
+      "source_id": "src-pairi-daiza-hao-hao-care-2025",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好的三只后代为天宝、宝弟和宝妹。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "offspring"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0007",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "reproduction",
+      "predicate": "artificial_insemination_2019",
+      "value": {
+        "date_range": "2019-04-08/2019-04-09",
+        "semen_source_id": "xing-hui",
+        "resulting_offspring_ids": [
+          "bao-di",
+          "bao-mei"
+        ]
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好在2019年4月8日至9日夜间使用星徽精液完成人工授精，随后产下宝弟和宝妹。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "artificial-insemination",
+        "twins"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0008",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "behaviour",
+      "predicate": "early_belgium_caution",
+      "value": "backed away while holding bamboo when a keeper entered",
+      "source_id": "src-xinhua-pairidaiza-keeper-feature-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "护理员回忆，好好初到比利时时较警惕，护理员进入后会叼着竹子后退。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "behaviour",
+        "adaptation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0009",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "maternal_care",
+      "predicate": "twin_rotation_care",
+      "value": {
+        "rotation_interval": "about 10 days at 100 days old",
+        "caregivers": [
+          "hao-hao",
+          "keepers"
+        ],
+        "offspring_ids": [
+          "bao-di",
+          "bao-mei"
+        ]
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "双胞胎约百日龄时，好好与护理团队轮流照料两只幼崽，约每10天交换一次。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "maternal-care",
+        "twin-rotation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0010",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "health",
+      "predicate": "moderate_ascites",
+      "value": {
+        "reported_since": "2025-03",
+        "status_at_announcement": "stable but requiring specialized care"
+      },
+      "source_id": "src-pairi-daiza-hao-hao-care-2025",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好自2025年3月起反复出现中度腹水，联合治疗后状态稳定但仍需专科照护。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "health",
+        "ascites"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0011",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_china_for_treatment",
+      "value": {
+        "date": "2025-12-04",
+        "arrival_airport": "Chengdu Tianfu International Airport",
+        "destination": "Wolong Shenshuping Base",
+        "accompanied_by": [
+          "Chinese experts",
+          "Belgian experts"
+        ]
+      },
+      "source_id": "src-chinadaily-haohao-return-2025-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好于2025年12月4日抵达成都，随后转运至卧龙神树坪基地接受持续治疗。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "return-to-china",
+        "medical-transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0012",
+      "subject": {
+        "type": "panda",
+        "id": "hao-hao",
+        "label": "Hao Hao"
+      },
+      "category": "veterinary_care",
+      "predicate": "post_return_quarantine_and_preparation",
+      "value": {
+        "quarantine_days": 30,
+        "preparations": [
+          "enclosure disinfection",
+          "fresh food",
+          "medication",
+          "dedicated keepers",
+          "dedicated veterinarians"
+        ]
+      },
+      "source_id": "src-chinadaily-haohao-return-2025-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "神树坪基地为好好安排30天检疫，并提前完成圈舍消毒、食物、药物及专门护理兽医团队准备。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hao-hao",
+        "quarantine",
+        "veterinary-care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0013",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-pairidaiza-giant-panda-profile-2026-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "星徽为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0014",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2009-07-22",
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "星徽出生于2009年7月22日。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0015",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "shining star",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "“星徽”的名字被译为“闪耀的星”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0016",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_belgium",
+      "value": {
+        "date": "2014-02-23",
+        "destination": "Pairi Daiza"
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "星徽于2014年2月23日抵达比利时天堂动物园。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "belgium",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0017",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "relationship",
+      "predicate": "breeding_partner",
+      "value": "hao-hao",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "星徽的繁育配对为好好。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "hao-hao",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0018",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "tian-bao",
+        "bao-di",
+        "bao-mei"
+      ],
+      "source_id": "src-pairi-daiza-hao-hao-care-2025",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "星徽是天宝、宝弟和宝妹的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "offspring"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0019",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "na-na",
+        "father_id": "lu-lu",
+        "twin_id": "xing-rui"
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "二级专业档案记录星徽的母亲为娜娜、父亲为芦芦，双胞胎兄弟为星睿。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "parents",
+        "twin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0020",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "location",
+      "predicate": "residence_2026",
+      "value": "Pairi Daiza",
+      "source_id": "src-pairidaiza-giant-panda-profile-2026-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "截至2026年，Pairi Daiza现行官方熊猫资料仍将星徽列为园内雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "pairi-daiza",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0021",
+      "subject": {
+        "type": "panda",
+        "id": "xing-hui",
+        "label": "Xing Hui"
+      },
+      "category": "milestone",
+      "predicate": "continued_in_belgium_after_hao_hao_medical_return",
+      "value": true,
+      "source_id": "src-chinadaily-haohao-return-2025-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "好好返华治疗后，星徽按合作安排继续留在比利时。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-hui",
+        "belgium",
+        "cooperation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0022",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "天宝为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0023",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2016-06-02",
+      "source_id": "src-xinhua-tianbao-eighth-birthday-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "天宝于2016年6月2日在Pairi Daiza出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "birth",
+        "belgium-born"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0024",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "hao-hao",
+        "father_id": "xing-hui"
+      },
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "天宝的母亲是好好，父亲是星徽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "parents"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0025",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "treasure of heaven",
+      "source_id": "src-xinhua-tianbao-eighth-birthday-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "“天宝”的名字意为“天空的珍宝”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0026",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "milestone",
+      "predicate": "first_giant_panda_born_in_belgium",
+      "value": true,
+      "source_id": "src-pairidaiza-tianbao-eighth-birthday-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "天宝是比利时出生的第一只大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "milestone",
+        "belgium"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0027",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "milestone",
+      "predicate": "separated_from_mother_to_own_enclosure",
+      "value": {
+        "date": "2018-01-18",
+        "enclosure_area_square_metres": 900
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "天宝于2018年1月18日与母亲分开，迁入约900平方米的独立圈舍。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "independence",
+        "enclosure"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0028",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "enrichment",
+      "predicate": "eighth_birthday_enrichment",
+      "value": [
+        "birthday cake with panda treats",
+        "guided conservation tours",
+        "video projections",
+        "giant birthday card"
+      ],
+      "source_id": "src-pairidaiza-tianbao-eighth-birthday-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "天宝八岁生日活动包括熊猫食材生日蛋糕、保护主题导览、视频放映和大型生日卡。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "birthday",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0029",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_china",
+      "value": {
+        "date": "2024-12-10",
+        "destination": "Bifengxia Base, Ya'an",
+        "travel_companions": [
+          "bao-di",
+          "bao-mei"
+        ]
+      },
+      "source_id": "src-xinhua-pairidaiza-return-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "天宝于2024年12月10日与宝弟、宝妹一同返华，目的地为雅安碧峰峡基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "return-to-china",
+        "bifengxia"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0030",
+      "subject": {
+        "type": "panda",
+        "id": "tian-bao",
+        "label": "Tian Bao"
+      },
+      "category": "milestone",
+      "predicate": "post_return_conservation_role",
+      "value": "participation in conservation and breeding projects",
+      "source_id": "src-xinhua-pairidaiza-return-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "返华后，天宝将参加大熊猫保护和繁育项目。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "tian-bao",
+        "conservation",
+        "breeding"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0031",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-xinhua-pairidaiza-twins-naming-2019-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0032",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2019-08-08",
+      "source_id": "src-xinhua-pairidaiza-twins-naming-2019-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟于2019年8月8日在Pairi Daiza出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "birth",
+        "belgium-born"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0033",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weight_grams",
+      "value": 160,
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟出生体重为160克。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "birth-weight"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0034",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "hao-hao",
+        "father_id": "xing-hui",
+        "twin_id": "bao-mei"
+      },
+      "source_id": "src-xinhua-pairidaiza-twins-third-birthday-2022-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟的母亲是好好、父亲是星徽，双胞胎手足为宝妹。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "parents",
+        "twin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0035",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "little brother of Tian Bao",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟的名字意为“天宝的弟弟”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0036",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "cultural_context",
+      "predicate": "public_naming_vote",
+      "value": {
+        "votes": "about 73,000",
+        "name_revealed": "2019-11-14",
+        "milestone": "100 days"
+      },
+      "source_id": "src-xinhua-pairidaiza-twins-naming-2019-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟的名字经约7.3万人参与的公众投票选出，并在百日庆典公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "naming-vote",
+        "100-days"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0037",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_100_days_kg",
+      "value": 5.5,
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "约百日龄时，宝弟体重约5.5千克。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "growth",
+        "100-days"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0038",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "maternal_care",
+      "predicate": "alternating_mother_keeper_care",
+      "value": {
+        "rotation_interval": "about 10 days",
+        "mother_id": "hao-hao"
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "百日龄前后，宝弟在好好直接照料和护理员辅助照料之间约每10天轮换。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "maternal-care",
+        "rotation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0039",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "milestone",
+      "predicate": "panda_cub_of_the_year_gold_2019",
+      "value": true,
+      "source_id": "src-xinhua-pairidaiza-twins-award-2020-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟与双胞胎手足共同获得2019年度“年度熊猫幼崽”金奖。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "award",
+        "2019"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0040",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "behaviour",
+      "predicate": "third_birthday_description",
+      "value": [
+        "strong",
+        "tall",
+        "playful",
+        "lively"
+      ],
+      "source_id": "src-xinhua-pairidaiza-twins-third-birthday-2022-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "三岁生日资料将宝弟描述为强壮高大、顽皮活泼。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "personality",
+        "third-birthday"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0041",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "milestone",
+      "predicate": "moved_to_new_enclosure_at_fourth_birthday",
+      "value": {
+        "date": "2023-08-16",
+        "celebration_food": "special birthday cakes"
+      },
+      "source_id": "src-xinhua-pairidaiza-twins-fourth-birthday-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟在四岁生日庆祝期间迁入新圈舍，并享用特别生日食物。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "new-enclosure",
+        "birthday"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0042",
+      "subject": {
+        "type": "panda",
+        "id": "bao-di",
+        "label": "Bao Di"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_china",
+      "value": {
+        "date": "2024-12-10",
+        "destination": "Bifengxia Base, Ya'an",
+        "travel_companions": [
+          "tian-bao",
+          "bao-mei"
+        ]
+      },
+      "source_id": "src-xinhua-pairidaiza-return-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝弟于2024年12月10日与天宝及双胞胎手足一同返华，前往雅安碧峰峡基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-di",
+        "return-to-china",
+        "bifengxia"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0043",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-xinhua-pairidaiza-twins-naming-2019-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0044",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2019-08-08",
+      "source_id": "src-xinhua-pairidaiza-twins-naming-2019-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹于2019年8月8日在Pairi Daiza出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "birth",
+        "belgium-born"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0045",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weight_grams",
+      "value": 150,
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹出生体重为150克。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "birth-weight"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0046",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "hao-hao",
+        "father_id": "xing-hui",
+        "twin_id": "bao-di"
+      },
+      "source_id": "src-xinhua-pairidaiza-twins-third-birthday-2022-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹的母亲是好好、父亲是星徽，双胞胎手足为宝弟。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "parents",
+        "twin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0047",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "little sister of Tian Bao",
+      "source_id": "src-xinhua-pairidaiza-family-history-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹的名字意为“天宝的妹妹”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0048",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "cultural_context",
+      "predicate": "public_naming_vote",
+      "value": {
+        "votes": "about 73,000",
+        "name_revealed": "2019-11-14",
+        "milestone": "100 days"
+      },
+      "source_id": "src-xinhua-pairidaiza-twins-naming-2019-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹的名字经约7.3万人参与的公众投票选出，并在百日庆典公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "naming-vote",
+        "100-days"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0049",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_100_days_kg",
+      "value": 5.5,
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "约百日龄时，宝妹体重约5.5千克。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "growth",
+        "100-days"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0050",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "maternal_care",
+      "predicate": "alternating_mother_keeper_care",
+      "value": {
+        "rotation_interval": "about 10 days",
+        "mother_id": "hao-hao"
+      },
+      "source_id": "src-pairidaiza-twins-detailed-2019-secondary",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "百日龄前后，宝妹在好好直接照料和护理员辅助照料之间约每10天轮换。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "maternal-care",
+        "rotation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0051",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "milestone",
+      "predicate": "panda_cub_of_the_year_gold_2019",
+      "value": true,
+      "source_id": "src-xinhua-pairidaiza-twins-award-2020-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹与双胞胎手足共同获得2019年度“年度熊猫幼崽”金奖。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "award",
+        "2019"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0052",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "behaviour",
+      "predicate": "third_birthday_description",
+      "value": [
+        "strong",
+        "tall",
+        "playful",
+        "lively"
+      ],
+      "source_id": "src-xinhua-pairidaiza-twins-third-birthday-2022-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "三岁生日资料将宝妹描述为强壮高大、顽皮活泼。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "personality",
+        "third-birthday"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0053",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "milestone",
+      "predicate": "moved_to_new_enclosure_at_fourth_birthday",
+      "value": {
+        "date": "2023-08-16",
+        "celebration_food": "special birthday cakes"
+      },
+      "source_id": "src-xinhua-pairidaiza-twins-fourth-birthday-2023-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹在四岁生日庆祝期间迁入新圈舍，并享用特别生日食物。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "new-enclosure",
+        "birthday"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0054",
+      "subject": {
+        "type": "panda",
+        "id": "bao-mei",
+        "label": "Bao Mei"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_china",
+      "value": {
+        "date": "2024-12-10",
+        "destination": "Bifengxia Base, Ya'an",
+        "travel_companions": [
+          "tian-bao",
+          "bao-di"
+        ]
+      },
+      "source_id": "src-xinhua-pairidaiza-return-2024-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "宝妹于2024年12月10日与天宝及双胞胎手足一同返华，前往雅安碧峰峡基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bao-mei",
+        "return-to-china",
+        "bifengxia"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0055",
+      "subject": {
+        "type": "research_programme",
+        "id": "pairidaiza-panda-reproduction-research",
+        "label": "Pairi Daiza panda reproduction research"
+      },
+      "category": "research",
+      "predicate": "project_period",
+      "value": {
+        "start": 2018,
+        "end": 2021
+      },
+      "source_id": "src-pairidaiza-panda-research-project-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "Pairi Daiza基金会支持的大熊猫繁殖代谢组学项目于2018年至2021年开展。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "pairi-daiza",
+        "research",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0056",
+      "subject": {
+        "type": "research_programme",
+        "id": "pairidaiza-panda-reproduction-research",
+        "label": "Pairi Daiza panda reproduction research"
+      },
+      "category": "research",
+      "predicate": "research_objectives",
+      "value": [
+        "develop pregnancy confirmation tests",
+        "identify embryo-diapause signals",
+        "predict fertile period",
+        "predict parturition"
+      ],
+      "source_id": "src-pairidaiza-panda-research-project-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "项目目标包括开发妊娠确认检测、寻找胚胎滞育信号，以及预测发情期和分娩时间。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "pairi-daiza",
+        "research",
+        "objectives"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0057",
+      "subject": {
+        "type": "research_programme",
+        "id": "pairidaiza-panda-reproduction-research",
+        "label": "Pairi Daiza panda reproduction research"
+      },
+      "category": "research",
+      "predicate": "daily_methods",
+      "value": [
+        "urine sampling",
+        "fecal sampling",
+        "hormone and biomarker measurements",
+        "behaviour observation",
+        "weight monitoring",
+        "digestion monitoring"
+      ],
+      "source_id": "src-pairidaiza-panda-research-project-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "日常研究方法包括采集尿液和粪便、测量激素及生物标志物、行为观察和体重与消化监测。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "pairi-daiza",
+        "research",
+        "methods"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-pairidaiza-0058",
+      "subject": {
+        "type": "research_programme",
+        "id": "pairidaiza-panda-reproduction-research",
+        "label": "Pairi Daiza panda reproduction research"
+      },
+      "category": "milestone",
+      "predicate": "international_programme_participation_since",
+      "value": 2014,
+      "source_id": "src-pairidaiza-panda-research-project-local",
+      "source_locator": "reviewed passage",
+      "source_language": "en",
+      "summary_zh": "Pairi Daiza及其基金会自2014年起参加中国建立的国际大熊猫保护繁育计划。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "pairi-daiza",
+        "international-cooperation",
+        "conservation"
+      ]
+    }
+  ]
+}

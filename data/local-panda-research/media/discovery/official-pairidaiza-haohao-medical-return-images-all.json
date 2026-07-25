@@ -1,0 +1,787 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.pairidaiza.eu/en/news/animals-conservation/hao-hao-the-female-giant-panda-of-pairi-daiza-will-soon-return-to-china-to-receive-specialized-medical-care/",
+  "discovered_at": "2026-07-25T19:22:08.501147+00:00",
+  "image_count": 60,
+  "images": [
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/tjPp0nLvgM7zeCrELckSBcK0xYk=/fit-in/1024x/filters:quality(92)/--/uploads/2024/04/sharing.png",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.pairidaiza.eu/assets/images/logo.avif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/55irAGucLO5w2FMmZTKB38S0z_4=/fit-in/1024x/filters:quality(92)/--/uploads/2023/12/app-store.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "80",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/LZlD8KH0rvBUf1BAFeBq53QcdSw=/fit-in/1024x/filters:quality(92)/--/uploads/2024/02/google-play.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "463",
+      "height": "143",
+      "evidence": [
+        "picture__image",
+        "foundation__picture"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/wezoBuWku1Q5xiAIZIyNS7KcM7Q=/fit-in/1024x/filters:quality(92)/--/uploads/2026/07/1080x1080_Dates_EN_VF.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1080",
+      "height": "1080",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://www.pairidaiza.eu/assets/logo-mini-0a9c6e5b.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/6n-aCSWy-6SSrE3KHbCk3q82Z_E=/fit-in/160x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/79eBZzlyvEHBqguQmGwLuOCp6Ng=/fit-in/240x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/eN0443YhP9mlKcf3X1D38m9COCU=/fit-in/320x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/82QKns53rp314ysVoQOd7nHwVu8=/fit-in/480x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/-GZqmg2qzU6ImdNjZfj30_p9Nn0=/fit-in/640x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/7gdTcEvsHViig3d1kOlfXhH8N8Y=/fit-in/960x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/StNEvKSYnPZxmUgGTXWWfSRce8A=/fit-in/1280x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/Ie6RbFtlP0leSA0l3vxBfUUJeqo=/fit-in/1440x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/TfJkDLt_1fF2OMMDWr2dyWW3KiY=/fit-in/1600x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/s4Km8QdKvfrKe30r7OKa627XDD8=/fit-in/1920x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/bQgH9kqXIkd5iPfN2ixMci00Ul4=/fit-in/2240x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/FYGxyrK3csMIEIHHlhOzxx7wXT4=/fit-in/2560x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/k4EtKCWrk5MFcJ_FscTyX2oqu2A=/fit-in/2880x/filters:quality(92)/--/uploads/2025/10/DSC9149-Avec-accentuation-Bruit.avif",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1120",
+      "height": "768",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/DBzm-TEfo1MKmW81_69MVj63w3k=/fit-in/160x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/SqpTkWQQXbgzx20xdjAJQ5vg-7k=/fit-in/240x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/pmXBVO2asvwapoEg43ccbxFIhJo=/fit-in/320x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/Ar4xw3Y9NdeGnJMDNfEidBm0yOs=/fit-in/480x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/0XXBPIq9ZMBQEAU7DiUIixaksKU=/fit-in/640x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/3QpQZDgyupwntR-Rnabydkg563Y=/fit-in/960x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/-JwiOfir9j58EynThZjihI1-BfU=/fit-in/1280x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/YlA_oTsnT7LGnJ29hgK3KlXp7GU=/fit-in/1440x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/hDpG4LGfABGxPrQr9vlilyBd1To=/fit-in/1600x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/HgstFxJbFSmly8bdJBw3h9ZrrjM=/fit-in/1920x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/F1hkNJgkp_mc8gHvgbLpcoibAPw=/fit-in/2240x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/zxxk5AfuruVJThiunE2WTgZHA4w=/fit-in/2560x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/Z7J5YI1FV07vCANI0r17FXaPwZc=/fit-in/2880x/filters:quality(92)/--/uploads/2026/07/DSC05021.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "2048",
+      "height": "1365",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://www.pairidaiza.eu/assets/quote-d75c7550.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Quote",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "card-news__content__copy-outer__quote"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/qDpeKsc96KmPON9csbCU07ONDBs=/fit-in/160x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/EHxEKmO9PtiUKv3iO4daYk5-5JI=/fit-in/240x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/683wv5Bendn3G2Im3C3H8_Y04W0=/fit-in/320x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/FY-7x-GLvYKQc-kjrukW5y66STM=/fit-in/480x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/ttm9-xEdEVRNPY6hHE0gFBMuJB4=/fit-in/640x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/lFnuT-AbaBbqd-5wBa-N9HB9yHg=/fit-in/960x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/mxlJSpHnsnWQoL-4xDKQr6e3JQA=/fit-in/1280x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/1zGg0AxoA_ZX3u3P4GenyP8k4XE=/fit-in/1440x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/kYrVNP2xOTuIBiBQTYPVwdd4Kek=/fit-in/1600x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/0KniCEG9rsXQszunOpF-o4nR4bI=/fit-in/1920x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/4xgldsmw8ra4SJ4z6cH3VG3LoJw=/fit-in/2240x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/vaneYQAhCGPpeHPPhpviy8ere8Q=/fit-in/2560x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/TOTLXpgU-X1Zoi7RbLu6hp7IwiI=/fit-in/2880x/filters:quality(92)/--/uploads/2026/07/7X1A1393.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "3650",
+      "height": "2576",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/32GvzHUtdEWba6rm4DG3BBQo0k4=/fit-in/160x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/TifjG4IIkMATXby3Ooe0ENtY22U=/fit-in/240x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/7ivo3CesU7xAoTvwdCApA7c32Kk=/fit-in/320x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/Am2IIaQbaC4ZXqHVs9V2ngTf9W0=/fit-in/480x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/NWw0nNkKN-0Y69CsRNizMJsqJHg=/fit-in/640x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/fAXFxFRQ363TBujraZW9SHASqeo=/fit-in/960x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/ifGcHCsO2EpNdW2lBgfnSy4mbrw=/fit-in/1280x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/mWz2X-ZgYC8rRTxkjPwZ9y6WPeY=/fit-in/1440x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/qt2pZE3AV76oIYmstGHSTmUIwgA=/fit-in/1600x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/UALeu0P-6yza02xtGPU8hh7LdY0=/fit-in/1920x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/eJbs4d-Ur6GVHvK2bBQXwIg3Uhc=/fit-in/2240x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/tMuU85ilCcDsDH1DuesV6kKVieM=/fit-in/2560x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/yR3aywPZCKvk9qOWUpmdW-7EJ_o=/fit-in/2880x/filters:quality(92)/--/uploads/2026/06/PAT_3147.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "5954",
+      "height": "3969",
+      "evidence": [
+        "picture__image"
+      ]
+    },
+    {
+      "asset_url": "https://cms.pairidaiza.eu/thumbor/S6g1Ul7OOu7bciTeZ5qL3re095Q=/fit-in/1024x/filters:quality(92)/--/uploads/2024/02/app-store.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "foundation__picture"
+      ]
+    }
+  ]
+}

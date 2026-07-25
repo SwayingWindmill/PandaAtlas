@@ -96,6 +96,12 @@ class DiscoverOfficialPageImagesTests(unittest.TestCase):
             ["a.jpg", "b.jpg", "c.jpg"],
         )
 
+    def test_parse_srcset_skips_empty_items(self) -> None:
+        self.assertEqual(
+            MODULE.parse_srcset(" , a.jpg 1x,, b.jpg 2x, "),
+            ["a.jpg", "b.jpg"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

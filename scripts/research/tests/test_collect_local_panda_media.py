@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[3]
 MODULE_PATH = ROOT / "scripts" / "research" / "collect_local_panda_media.py"
@@ -110,6 +111,17 @@ class LocalPandaMediaCollectorTests(unittest.TestCase):
 
             self.assertEqual(entry["retrieval_status"], "present")
             self.assertEqual(entry["bytes"], len(jpeg))
+
+    def test_open_url_only_advertises_supported_image_formats(self) -> None:
+        response = io.BytesIO(b"test")
+        with mock.patch.object(MODULE, "urlopen", return_value=response) as mocked_urlopen:
+            self.assertIs(MODULE._open_url("https://example.test/image"), response)
+
+        request = mocked_urlopen.call_args.args[0]
+        accept = request.get_header("Accept")
+        self.assertNotIn("image/avif", accept)
+        self.assertIn("image/webp", accept)
+        self.assertIn("image/jpeg", accept)
 
     def test_path_traversal_filename_is_rejected(self) -> None:
         with self.assertRaisesRegex(MODULE.LocalMediaError, "plain filename"):

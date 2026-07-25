@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 290,
-  "pandas_with_media": 80,
+  "candidate_count": 313,
+  "pandas_with_media": 84,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -57,22 +57,6 @@
         "milestone": 5
       },
       "coverage_gap_score": -17
-    },
-    {
-      "subject_id": "hao-hao",
-      "subject_label": "Hao Hao",
-      "media_count": 1,
-      "record_count": 5,
-      "direct_record_count": 5,
-      "category_count": 5,
-      "categories": {
-        "health": 1,
-        "media_candidate": 1,
-        "milestone": 1,
-        "relationship": 1,
-        "transfer": 1
-      },
-      "coverage_gap_score": -20
     },
     {
       "subject_id": "de-de-madrid",
@@ -210,6 +194,25 @@
         "sex": 1
       },
       "coverage_gap_score": -38
+    },
+    {
+      "subject_id": "xing-hui",
+      "subject_label": "Xing Hui",
+      "media_count": 3,
+      "record_count": 13,
+      "direct_record_count": 13,
+      "category_count": 8,
+      "categories": {
+        "birth": 1,
+        "location": 2,
+        "media_candidate": 3,
+        "milestone": 1,
+        "name_meaning": 1,
+        "relationship": 3,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -40
     },
     {
       "subject_id": "tjen-tjen-berlin",
@@ -430,6 +433,26 @@
         "veterinary_care": 1
       },
       "coverage_gap_score": -47
+    },
+    {
+      "subject_id": "tian-bao",
+      "subject_label": "Tian Bao",
+      "media_count": 7,
+      "record_count": 22,
+      "direct_record_count": 22,
+      "category_count": 9,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "enrichment": 1,
+        "media_candidate": 7,
+        "milestone": 8,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -49
     },
     {
       "subject_id": "ru-yi",
@@ -789,6 +812,73 @@
         "transfer": 1
       },
       "coverage_gap_score": -61
+    },
+    {
+      "subject_id": "bao-di",
+      "subject_label": "Bao Di",
+      "media_count": 8,
+      "record_count": 27,
+      "direct_record_count": 27,
+      "category_count": 11,
+      "categories": {
+        "behaviour": 3,
+        "birth": 1,
+        "cultural_context": 1,
+        "growth_measurement": 2,
+        "maternal_care": 1,
+        "media_candidate": 7,
+        "milestone": 8,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -63
+    },
+    {
+      "subject_id": "bao-mei",
+      "subject_label": "Bao Mei",
+      "media_count": 8,
+      "record_count": 27,
+      "direct_record_count": 27,
+      "category_count": 11,
+      "categories": {
+        "behaviour": 3,
+        "birth": 1,
+        "cultural_context": 1,
+        "growth_measurement": 2,
+        "maternal_care": 1,
+        "media_candidate": 7,
+        "milestone": 8,
+        "name_meaning": 1,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -63
+    },
+    {
+      "subject_id": "hao-hao",
+      "subject_label": "Hao Hao",
+      "media_count": 6,
+      "record_count": 23,
+      "direct_record_count": 23,
+      "category_count": 12,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "health": 2,
+        "maternal_care": 1,
+        "media_candidate": 6,
+        "milestone": 2,
+        "name_meaning": 1,
+        "relationship": 3,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 3,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -63
     },
     {
       "subject_id": "shin-shin",

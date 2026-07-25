@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.xinhuanet.com/english/2019-11/15/c_138555838_2.htm",
+  "discovered_at": "2026-07-25T19:30:16.863979+00:00",
+  "image_count": 1,
+  "images": [
+    {
+      "asset_url": "https://www.xinhuanet.com/english/2019-11/15/138555838_15737796536481n.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "BELGIUM-BRUGELETTE-PAIRI DAIZA-ZOO-PANDA TWINS-OFFICIAL NAME",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "{77F95FE5-8DBE-454B-AE47-A317980CEB1C}"
+      ]
+    }
+  ]
+}
