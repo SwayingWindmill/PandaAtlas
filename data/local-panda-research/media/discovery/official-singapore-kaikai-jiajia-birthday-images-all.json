@@ -1,0 +1,476 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.mandai.com/en/about-mandai/media-centre/Giant-Pandas-celebrate-double-digit-birthdays-with-bamboo-towers.html",
+  "discovered_at": "2026-07-25T15:43:08.167775+00:00",
+  "image_count": 36,
+  "images": [
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/care-for-planet/top-up-contribution/treating-rehabilitating-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Top-up for Conservation",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/spotlight-banner/spotlight-venues-for-hire-900x600-20250203.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Events at Crimson Restaurant",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/spotlight-banner/spotlight-for-schools-900x600-20250203.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Educational Resources",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/Logo-Mandai-EquaGreen.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Mandai Wildlife Reserve",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/logomark/SZ.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": [
+        "md-link-icon lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/logomark/BP.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": [
+        "md-link-icon lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/logomark/NS.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": [
+        "md-link-icon lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/logomark/RW.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": [
+        "md-link-icon lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/logomark/RFW.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": [
+        "md-link-icon lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/logomark/CC.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": [
+        "md-link-icon lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/logomark/EXPLORIA.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "32",
+      "height": "32",
+      "evidence": [
+        "md-link-icon lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/rainforest-wild-adventure/adventure-plus/split-rock-summit-climb-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Enter the newly expanded Rainforest Wild Adventure",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/parkhopper/destination-pass/6-attractions-destination-pass-1-day-en-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "6 Attractions Destination Pass (1-Day)",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/minecraft/minecraft-waitlist-what-on-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Minecraft Experience: Villager Rescue",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/exploria/masthead/exploria-spotlight-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Exploria",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/destination/shop/retail-collab/mandai-retail-collab-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Discover Mandai-exclusive Retail Collaborations",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/mandai-rainforest-resort/accommodation/mandai-treehouse-garden-view-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Banyan Tree Suite Lifestyle",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/membership/whats-on-tile/friends-of-mandai-41-900x600.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Be A Friend of Mandai",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "spotlight-image lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/etc/designs/wrs/clientlib-site/images/mandai/md-tick.svg",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "icon",
+      "title": "",
+      "width": "50",
+      "height": "50",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/wrs/press-room/2018/panda-birthday/Kai Kai.JPG",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/wrs/press-room/2018/panda-birthday/Jia Jia.JPG",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/wrs/press-room/2018/panda-birthday/Kai Kai - Cheeky Smile.JPG",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/wrs/press-room/2018/panda-birthday/Jia_Jia_2.JPG",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/care-for-planet/conservation-included/conservation-banner-1920x933.jpg",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "desktop lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/care-for-planet/conservation-included/conservation-banner-1200x2600.jpg",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "mobile lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/care-for-planet/conservation-included/conservation-included.svg",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "Conservation Included",
+      "title": "",
+      "width": "250",
+      "height": "107",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/awards/waza-logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "World Association of Zoos and Aquarium",
+      "title": "",
+      "width": "80",
+      "height": "80",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/awards/gstc-sapwhite-bg.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Global Sustainable Tourism Council (GSTC) - Destination",
+      "title": "",
+      "width": "80",
+      "height": "80",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/awards/vireo-white-bg.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Certified by Vireo",
+      "title": "",
+      "width": "80",
+      "height": "80",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/awards/singapore-tourism-award-2024.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Outstanding Attraction Experience, Singapore Tourism Awards 2024",
+      "title": "",
+      "width": "80",
+      "height": "80",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/misc/social-qr/tiktok.png",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/social/xiaohongshu-white.svg",
+      "source_types": [
+        "img:src",
+        "img:data-src"
+      ],
+      "alt": "小红书",
+      "title": "",
+      "width": "50",
+      "height": "50",
+      "evidence": [
+        "social-icon default lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/logo/social/xiaohongshu-green.svg",
+      "source_types": [
+        "img:src",
+        "img:data-src"
+      ],
+      "alt": "小红书",
+      "title": "",
+      "width": "50",
+      "height": "50",
+      "evidence": [
+        "social-icon hover lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/misc/social-qr/xiaohongshu-qr-code.jpg",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/misc/social-qr/wechat.jpg",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    },
+    {
+      "asset_url": "https://www.mandai.com/content/dam/mandai/misc/social-qr/douyin.png",
+      "source_types": [
+        "img:data-src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "lazyload"
+      ]
+    }
+  ]
+}

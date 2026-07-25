@@ -55,9 +55,9 @@ The validator checks JSONL syntax, IDs, source references, timestamps, local-onl
 
 ## Current snapshot
 
-As of 2026-07-25, the vault contains **226 sources** and **1,334 structured records**: 1,321 direct-evidence records and thirteen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 62 individually identified pandas, with no collected individual lacking at least one structured fact record.
+As of 2026-07-25, the vault contains **239 sources** and **1,375 structured records**: 1,362 direct-evidence records and thirteen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 63 individually identified pandas, with no collected individual lacking at least one structured fact record.
 
-The local media layer contains **226 candidates**, **219 downloaded files**, and **918,350,362 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
+The local media layer contains **230 candidates**, **223 downloaded files**, and **919,507,649 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
@@ -69,5 +69,6 @@ The local media layer contains **226 candidates**, **219 downloaded files**, and
 - Dedicated official-source batches cover Edinburgh Tian Tian and Yang Guang, Malaysia's panda programme, Beijing Da Di/Gu Gu/Fu Xing, London Chi Chi, Fuzhou Basi, Ocean Park An An/Jia Jia/Le Le, Chiang Mai Chuang Chuang and Lin Hui, Madrid Po and De De, Smithsonian Ling Ling, Memphis Le Le and Ya Ya, San Diego Hua Mei, Adelaide Wang Wang, Moscow Ding Ding/Ru Yi/Katyusha, Vienna Yang Yang, and Vienna-born offspring Fu Long, Fu Hu, Fu Bao, Fu Feng and Fu Ban.
 - `2026-07-25-vienna-offspring.jsonl` — individual-level Vienna offspring profiles covering birth and sex, naming, growth, identifying markings, behaviour, vocal-development research, husbandry training, enrichment, and transfers to China.
 - `2026-07-25-berlin-family.jsonl` — multigenerational Zoo Berlin family records for Meng Meng, Jiao Qing, the 2019 brothers Meng Xiang and Meng Yuan, and the 2024 sisters Meng Hao and Meng Tian, covering identity, parentage, reproduction, twin care, growth, behaviour, health, public debuts and transfer to Chengdu. Conflicting official birth-time reports for Meng Tian are preserved as separate sourced values.
+- `2026-07-25-singapore-family.jsonl` — official-source family records for Kai Kai, Jia Jia and Singapore-born Le Le, covering identity, temperament, enrichment, reproduction, maternal care, naming, growth, public debuts, husbandry training, independence, transfer to China and adaptation at the Dujiangyan base.
 
 All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.

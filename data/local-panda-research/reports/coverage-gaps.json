@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 226,
-  "pandas_with_media": 62,
+  "candidate_count": 230,
+  "pandas_with_media": 63,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -71,34 +71,6 @@
         "milestone": 2
       },
       "coverage_gap_score": -14
-    },
-    {
-      "subject_id": "kai-kai-sg",
-      "subject_label": "Kai Kai",
-      "media_count": 3,
-      "record_count": 8,
-      "direct_record_count": 8,
-      "category_count": 3,
-      "categories": {
-        "location": 2,
-        "media_candidate": 3,
-        "milestone": 3
-      },
-      "coverage_gap_score": -15
-    },
-    {
-      "subject_id": "jia-jia-sg",
-      "subject_label": "Jia Jia",
-      "media_count": 4,
-      "record_count": 10,
-      "direct_record_count": 10,
-      "category_count": 3,
-      "categories": {
-        "location": 2,
-        "media_candidate": 4,
-        "milestone": 4
-      },
-      "coverage_gap_score": -16
     },
     {
       "subject_id": "er-shun",
@@ -467,6 +439,26 @@
       "coverage_gap_score": -46
     },
     {
+      "subject_id": "kai-kai-sg",
+      "subject_label": "Kai Kai",
+      "media_count": 4,
+      "record_count": 16,
+      "direct_record_count": 16,
+      "category_count": 9,
+      "categories": {
+        "birth": 1,
+        "enrichment": 1,
+        "location": 3,
+        "media_candidate": 4,
+        "milestone": 3,
+        "name_meaning": 1,
+        "personality": 1,
+        "relationship": 1,
+        "reproduction": 1
+      },
+      "coverage_gap_score": -46
+    },
+    {
       "subject_id": "fu-xing",
       "subject_label": "Fu Xing",
       "media_count": 2,
@@ -609,6 +601,27 @@
         "transfer": 1
       },
       "coverage_gap_score": -53
+    },
+    {
+      "subject_id": "jia-jia-sg",
+      "subject_label": "Jia Jia",
+      "media_count": 5,
+      "record_count": 20,
+      "direct_record_count": 20,
+      "category_count": 10,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "health": 1,
+        "location": 3,
+        "maternal_care": 1,
+        "media_candidate": 5,
+        "milestone": 5,
+        "name_meaning": 1,
+        "personality": 1,
+        "relationship": 1
+      },
+      "coverage_gap_score": -55
     },
     {
       "subject_id": "lun-lun",
@@ -1158,6 +1171,32 @@
         "veterinary_care": 3
       },
       "coverage_gap_score": -94
+    },
+    {
+      "subject_id": "le-le-singapore",
+      "subject_label": "Le Le",
+      "media_count": 2,
+      "record_count": 26,
+      "direct_record_count": 26,
+      "category_count": 15,
+      "categories": {
+        "behaviour": 3,
+        "birth": 2,
+        "cultural_context": 1,
+        "growth_measurement": 2,
+        "husbandry_training": 1,
+        "location": 1,
+        "media_candidate": 3,
+        "milestone": 3,
+        "name_meaning": 1,
+        "personality": 1,
+        "public_debut": 2,
+        "relationship": 1,
+        "sex": 1,
+        "transfer": 3,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -98
     },
     {
       "subject_id": "xiao-qi-ji",
