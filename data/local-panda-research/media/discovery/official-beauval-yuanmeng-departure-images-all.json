@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "page_url": "https://actus.zoobeauval.com/depart-yuan-meng-en-images/",
+  "discovered_at": "2026-07-25T19:57:26.042327+00:00",
+  "image_count": 12,
+  "images": [
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2023/07/depart_yuan_meng_en_images-755x500.jpg",
+      "source_types": [
+        "link:image",
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Le départ de Yuan Meng : en images… et en émotions !",
+      "title": "",
+      "width": "755",
+      "height": "500",
+      "evidence": [
+        "preload",
+        "image",
+        "c-page__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2023/07/depart_yuan_meng_en_images.jpg",
+      "source_types": [
+        "meta:og:image",
+        "img:srcset"
+      ],
+      "alt": "Le départ de Yuan Meng : en images… et en émotions !",
+      "title": "",
+      "width": "755",
+      "height": "500",
+      "evidence": [
+        "og:image",
+        "c-page__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2023/07/depart_yuan_meng_en_images-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Le départ de Yuan Meng : en images… et en émotions !",
+      "title": "",
+      "width": "755",
+      "height": "500",
+      "evidence": [
+        "c-page__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/carnet_bord_beauval_TDF_2026-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Carnet de bord ZooParc de Beauval 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/carnet_bord_beauval_TDF_2026-500x333.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Carnet de bord ZooParc de Beauval 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/carnet_bord_beauval_TDF_2026-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Carnet de bord ZooParc de Beauval 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/naissance_zebre_2026-02-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Naissance bébé zèbre à Beauval juin 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/naissance_zebre_2026-02-500x333.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naissance bébé zèbre à Beauval juin 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/06/naissance_zebre_2026-02-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naissance bébé zèbre à Beauval juin 2026",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/jm_chimpanzes_2026-01-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Journée mondiale des chimpanzés 2026 - N'saka et sa mère",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/jm_chimpanzes_2026-01-500x333.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Journée mondiale des chimpanzés 2026 - N'saka et sa mère",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    },
+    {
+      "asset_url": "https://actus.zoobeauval.com/wp-content/uploads/2026/07/jm_chimpanzes_2026-01-400x266.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Journée mondiale des chimpanzés 2026 - N'saka et sa mère",
+      "title": "",
+      "width": "600",
+      "height": "400",
+      "evidence": [
+        "c-card__image"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2806 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.zoobeauval.com/en/zooparc/saga-des-pandas",
+  "discovered_at": "2026-07-25T20:02:16.947828+00:00",
+  "image_count": 213,
+  "images": [
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/J-3FrszNzfEgrLeGhrXZbBACBYc=/1200x630/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/bc7Y67oY27q1UYdI2toYgxMwtik=/334x246/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2026%2F06%2Fweb-actu-site-nouveautes2026-3340x2460-1-6a42444654cc7.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Golden snub-nosed monkeys - Animals - ZooParc de Beauval",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/CoxZZ-r-Sws2w30JzddlHFKmVnw=/668x492/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2026%2F06%2Fweb-actu-site-nouveautes2026-3340x2460-1-6a42444654cc7.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Golden snub-nosed monkeys - Animals - ZooParc de Beauval",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/5Z_rkkT637i-XoD1X5cXwKC11wE=/334x246/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2020%2F12%2Fap9i4140-5fc653b6d8bf7.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Birds show",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/7AqD6fk7TsJMcK7TJi6XFwf0-R0=/668x492/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2020%2F12%2Fap9i4140-5fc653b6d8bf7.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birds show",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/DsiTAH13RnyVbqjrKjjrzzK90XY=/334x246/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fpreparez-votre-visite-horaires-607817a97f963.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Meerkat",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/WvXD6DdGAwuQjIaiZQNrVEhRlwc=/668x492/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fpreparez-votre-visite-horaires-607817a97f963.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Meerkat",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/9kKxK_AWI778CYhI2ugvHk7_2so=/334x246/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2020%2F06%2Fprotection-des-animaux-mayombe-5ed7992ab9d83.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Gorilla reintroduction",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/iSk7xG-GulludGxWeXT62qn1PFo=/668x492/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2020%2F06%2Fprotection-des-animaux-mayombe-5ed7992ab9d83.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Gorilla reintroduction",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/LFroE0d_QH63tZHFKwlAFKQS88w=/334x246/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2026%2F07%2Fweb-bonplansejour-site-3340x2460-6a576496a317f.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Exotic hotels - ZooParc de Beauval",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/hI8u4YuD5KKe-MSMZRx7NcLoPT4=/668x492/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2026%2F07%2Fweb-bonplansejour-site-3340x2460-6a576496a317f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Exotic hotels - ZooParc de Beauval",
+      "title": "",
+      "width": "334",
+      "height": "246",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/a4g-twO2Np-LXasmnQnpxZIv6Uc=/235x242/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fapp-full.dacc5704.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Download the Beauval app!",
+      "title": "",
+      "width": "235",
+      "height": "242",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/GCfLS3SKXT4sFjB0AMuJ3j2vKfw=/470x484/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fapp-full%402x.76678baf.png",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Download the Beauval app!",
+      "title": "",
+      "width": "235",
+      "height": "242",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/90QH1Cs9igJmliUeIctAYzW_6Rw=/1600x950/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/yMiCw56Lf6cGeA0BdKGcVVXpXms=/375x223/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/dfiGhB0AwI5wCsWKduTA-pGgTMw=/540x321/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/aKSmzj3Y0n1Ice70G4BpBp0FkQM=/800x475/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/CjXWQEHY_FUdEvRFccfWTt-cKNc=/1000x594/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/VSmOOyjDXHfyo6t2kgXkgO5Z-KM=/1300x772/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/W3S-84gbJHm-B8gkYOtbpeg7vNg=/1400x831/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/3iNbzHUC9UybfVPxwlC9mq4zdE8=/1920x1140/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "1600",
+      "height": "950",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/rqNGYUXO-hYR6oWDfJk_G7_ewNk=/730x730/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "730",
+      "height": "730",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/rMHLUWzPiMeyxfVPNgABVOq9U90=/365x365/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "730",
+      "height": "730",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Gzmzu6YzwOhnvWpznO65cMOdb3Q=/1095x1095/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "730",
+      "height": "730",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/h256uHOX5UZ5pTPJlaRtMyVTpPA=/1460x1460/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-header-606dcfbed5911.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda - ZooParc de Beauval",
+      "title": "",
+      "width": "730",
+      "height": "730",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/j7UH0hvVIVFrArvijujQdMUjCLg=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-depart-chine-pandas-606eb001d12f3.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "title": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ahHhcoRTh8JLKupTjT5pc1fWSqQ=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-depart-chine-pandas-606eb001d12f3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "title": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/KYPVXcZ-lfadEBbMLpxPaCDy8Eo=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-depart-chine-pandas-606eb001d12f3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "title": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/KFljRUrJEq0mnDJJJt5_gOy3Ri0=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-depart-chine-pandas-606eb001d12f3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "title": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/CsQOZa5HWZ7Kloio6ElGxEX5LDE=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-depart-chine-pandas-606eb001d12f3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "title": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/PXUJCQh1MdTB-IsHKcgbBY645mA=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-depart-chine-pandas-606eb001d12f3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "title": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/A3dzmDi2a8gu93DUU_muPVJh7VU=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-depart-chine-pandas-606eb001d12f3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "title": "Departure of the pandas from China - Saga pandas du ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/2MbN0Ps2LOtN6HGDPv00gnvIke4=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-02-6936a4fc00ced.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/-hDr77Np963VYlQaRvPWu7OBRLE=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-02-6936a4fc00ced.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/HXTv3Of4S-FqBTyhz_0d50h8i34=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-02-6936a4fc00ced.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/VCVLJQsFcyAzgMDyPBGNa9Xs5Sk=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-02-6936a4fc00ced.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/zYeNQx71_rBbP7k84nCGX_Q9PWI=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-02-6936a4fc00ced.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/BzEtltEITTNNdmQEhzwtMtYnxRo=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-02-6936a4fc00ced.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/A5plxckaW9Ef0hQAYUBwVWbWlRk=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-02-6936a4fc00ced.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/WkMibOAGJI_QWyispDYQZO55-iY=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-01-6936a4fbd4e1f.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/mXqhnYAAMYuaI0F8gNqALJdRAB0=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-01-6936a4fbd4e1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/zJ90WFmPDXumL12HH1QL0MEznRo=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-01-6936a4fbd4e1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Olz7ihcluRyWrBQ-yjBMnnwhvqU=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-01-6936a4fbd4e1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/XKrsOaYJ6MkDNj3Wv4rsZNCAxSI=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-01-6936a4fbd4e1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/kU_sO-p2ULbJcypSEijRYO3c3tM=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-01-6936a4fbd4e1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/enxHYJhhSzzvCNDDCwy7T_VXudU=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-01-6936a4fbd4e1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ifDYOKjSPGPDSsZmCZ3FAEmHTCo=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-03-6936a4fc14054.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/equmTof0Obo88s0B0sir_GqgXJg=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-03-6936a4fc14054.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/SDKCOVzXUwVjnEHGChViQqte5UQ=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-03-6936a4fc14054.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/tSJychRSJSI7qO1zFwWcXb8sf3g=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-03-6936a4fc14054.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/7EdSNAaaWNouRsXj5GLF90-jxGg=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-03-6936a4fc14054.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/mWjMVRRE_vapMnPTcPbvzxdDD1Q=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-03-6936a4fc14054.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/R5CUSc6OKoSoxebgkDL7RvNhza8=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-03-6936a4fc14054.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/j26HXsnsN3Mf9X__BP69eeTzMkY=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-04-6936a4fc28cba.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/bS-l4i_7RAZTGx0KtnWx25wpKkc=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-04-6936a4fc28cba.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/5YoiG0-_H3SjqySYn8G0aPTUk0o=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-04-6936a4fc28cba.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/um-eFBUMwkaPFk3Kbsdaxo-iLNI=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-04-6936a4fc28cba.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/mQ9XBOBQgw80ZkvlxHaJ6zTGIhI=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-04-6936a4fc28cba.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/RS9DSnzdmvblxjC5KX_03oqsiNc=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-04-6936a4fc28cba.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/jrwvq-gQpUyOzhSfjAe2fHVZxkk=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2025%2F12%2Fdepart-hh-yz-04-6936a4fc28cba.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "title": "Départ Huan Huan et Yuan Zi - Pandas géants - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/MLa6NvhHWRf7111M5Gu317L0u80=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-descente-aeroport-606ec6865c8b3.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ysQ2KPugs9mcTs2uQ-9NcgoJSr0=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-descente-aeroport-606ec6865c8b3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Vgs8vMAk-b_hW54gRDDTwjIIXZA=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-descente-aeroport-606ec6865c8b3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/2BAKYsjDvYSsNYKDNAs3hiyyGuM=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-descente-aeroport-606ec6865c8b3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/VPXerAiOy2JWSQa7p1j_vMZgjSQ=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-descente-aeroport-606ec6865c8b3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/IPfvBZNPgFeICJm6hor6bayEi-M=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-descente-aeroport-606ec6865c8b3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/MZvmJek1_LehiZHkQSHQjl8yTb4=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-descente-aeroport-606ec6865c8b3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ZzX6kTBy_wrHfiM_fNH323ZWiKM=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-beauval-606ec6866aed3.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/JOVLZQ2SWG1FJRGt_CBY4EZW528=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-beauval-606ec6866aed3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/v-CqUmSXYeGLmQs8wH-11QgkqVw=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-beauval-606ec6866aed3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/TqzaP46BpK1SVF18flE1Pc4V4s0=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-beauval-606ec6866aed3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/VYCxPo1jB4MzCbZ0cKn2tAwRR50=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-beauval-606ec6866aed3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/7q8VIL2UPfBGBfVIa7uvmezUwJU=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-beauval-606ec6866aed3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Fui9vR31lrgC7yBV5gp0ugWodl0=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-beauval-606ec6866aed3.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at Beauval - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/DxQW8PNKqAIMsVezvhJF8prQToA=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-hauteurs-de-chine-606ec68688cc6.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/augbIicKtHRBg3x1wwZPMzTXiHs=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-hauteurs-de-chine-606ec68688cc6.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/3InV7bc5c3Q0NZ2LQ12s9TwRpJA=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-hauteurs-de-chine-606ec68688cc6.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/FfhVnfF_KpOMBHU1rIkbiT8Mnus=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-hauteurs-de-chine-606ec68688cc6.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Rv3LOmmO9WuzB2qEFOPSB6Ru_5w=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-hauteurs-de-chine-606ec68688cc6.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/q_i0sP5DDM96g4GD3Qaj7aEIhC0=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-hauteurs-de-chine-606ec68688cc6.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/3H9xkAlpdBW78vkiKoxoTbbd1xY=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-hauteurs-de-chine-606ec68688cc6.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the Heights of China - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/EcSDGtUDZVd1LwJ4dvNDBbCaQj8=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-aeroport-606ec6863d082.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/6703AFbyuj1aXnZO5aek3i1VMcQ=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-aeroport-606ec6863d082.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/jgGLAw5kWR3DEHf27eq6iCUI0Ys=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-aeroport-606ec6863d082.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Ji0748t38hxCSQvHAe_XTVrajZE=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-aeroport-606ec6863d082.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/SJuW3VZtPhiuu1eDniAtDvard7s=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-aeroport-606ec6863d082.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/48tdSIftyY9lnOPvnLFez71QYvA=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-aeroport-606ec6863d082.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Bf-Td9jgf1zQS6U423XyAhvM3Sw=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-arrivee-aeroport-606ec6863d082.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "title": "Arrival at the airport - Saga pandas ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/UGaL67KutA1znpSE1wOSWF0SXHo=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-4-606ed0d8e3371.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/3-Df7s0X12QazDdTSpv_MReIk0M=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-4-606ed0d8e3371.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/B-xFf3emGpR_wkb8IYmLiKJPjow=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-4-606ed0d8e3371.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ZpJUO9IlvScPZeDO9yQh_YiYj0k=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-4-606ed0d8e3371.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/V1wLs7bi9wb0ZnUTf9tbUSTzuY0=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-4-606ed0d8e3371.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/nHC9_zba4VCbmNNZ38DJUyOWWZU=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-4-606ed0d8e3371.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ztvec5icS_YfiWK0QvVtOYJ9Fj4=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-4-606ed0d8e3371.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/V1Vj9Pd8k0XyB6Yh2fwC7q3EeRk=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-2-606ed0d8ab2c2.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/aCT5WLiULnWHkJMbqLkpnBrShLk=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-2-606ed0d8ab2c2.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/A48dkSKxrATh5vmy6si4dnuGJuY=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-2-606ed0d8ab2c2.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ZkmlWgZqF9A6JUbYntJ7HwJsnzY=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-2-606ed0d8ab2c2.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ZYCr84QV-uJsp2nhOHa8mrKfLzE=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-2-606ed0d8ab2c2.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ZKOl5zM3THKV6dcOqK4n4CNwnbg=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-2-606ed0d8ab2c2.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/YElFJ2Z_4fh9UjNRBx678c2tpGg=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-2-606ed0d8ab2c2.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/-h2Df1SA_8S4znSL-C5GQeAFWRk=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-1-606ed0d89300c.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/wBg4BdZvE1YXoIDCL7ETv-JHoAk=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-1-606ed0d89300c.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/bZNAhFlnudJ8JIPxMer4Wx6DcTY=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-1-606ed0d89300c.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/QzGBgOzChq72Dyw6xKIwnmHa5oA=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-1-606ed0d89300c.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/tmJcb4qFZSc6URIwWn5BnD12EUQ=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-1-606ed0d89300c.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/mK9KbQbq5xOGyctDy74NtYke1fI=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-1-606ed0d89300c.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/OuR6sD97nevClVQ6BtYD0TAvRHU=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-1-606ed0d89300c.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/7wdy2xNw4XXvf43aIO1xg0NJKjA=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-3-606ed0d8ca081.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/UIJ92eSvHFrBDqy14STj_XYjxy0=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-3-606ed0d8ca081.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/1iXc1o0eXg_5RoaZ4ySsiwsQmN4=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-3-606ed0d8ca081.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/dZcJePTArJBOH3eUeoeIFiaUZHY=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-3-606ed0d8ca081.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/-8k2Z__mQfAbRuQgiIOQ2iRJrLA=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-3-606ed0d8ca081.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/JT7oh0IgSeZms5zpbWAhRH55KHk=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-3-606ed0d8ca081.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/RSKHkdVN5AbT0vj8mMDcVFeXXi8=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-3-606ed0d8ca081.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/gIHqRyfwLeGHK4zUIATwUY6CQrE=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-5-606ed0d90694d.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/l6f1375Pgr10pojeVYwez7YoGRM=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-5-606ed0d90694d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/p8cjmTGzHN87Sbb49zWpIVudcxc=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-5-606ed0d90694d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/TFzTseRPGv918oKt-tM2lqIHlLo=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-5-606ed0d90694d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/9QuPISo9_foQJVtDWQALtEdCRhg=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-5-606ed0d90694d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/wt-zAIShRi4afyn19Sf3QeMCSWg=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-5-606ed0d90694d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/lNiA3cXlzx-RtzSJ03YAVRN0rHI=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-ym-5-606ed0d90694d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "title": "Birth of Yuan Meng, the first giant panda in France - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/sKKNg2Yye2eTtRfooCg761AjGgw=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-4-606ecbcb9f7f8.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/cwhXa7zJ4pU-PP7nTmx_vouOCRU=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-4-606ecbcb9f7f8.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/nACntF1nwOhXAXAEtHfQWkbHYNQ=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-4-606ecbcb9f7f8.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/JyYP07oghYO4BbYkzShiX7Dj_X8=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-4-606ecbcb9f7f8.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/3r6CmDKzsoQXJwd0_reKKmfezWE=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-4-606ecbcb9f7f8.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/TTH6oAZKfJFoXNJPi56Pfzi0HP0=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-4-606ecbcb9f7f8.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/R6ASp3L0RvWrNw3dIFgmXkWU8X4=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-4-606ecbcb9f7f8.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Dk0GEbLCHAP_V1p2DcBja9MuQI0=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-1-606ecbcb377e0.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/QtqxkqO_qpTGn2QQgXe_3unHBXw=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-1-606ecbcb377e0.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ez_Uwo4sh-tJClQzeHhXqKcXBu8=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-1-606ecbcb377e0.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/DTLcVZXbxbBDC8CZWve0KBQPn0Q=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-1-606ecbcb377e0.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/93GZsdNdpjam7F71l-h74RsCyVo=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-1-606ecbcb377e0.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/cRRcoO3wyjwPho6fpAmDUCctPFM=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-1-606ecbcb377e0.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/dyWEHA6nbzDNA-zvQ0Pp2kl-O_A=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-1-606ecbcb377e0.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Yo3FFdVB2Zq-jeecqIKUUmEpdZc=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-3-606ecbcb7e16d.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/I4uTzYQ8pjb9XCsDsiCCw843n2U=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-3-606ecbcb7e16d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/4y9i2X9riXfX013_iRgORdplZ8k=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-3-606ecbcb7e16d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/N08EU1DcOLDZRSY3JmSUGmK0vJU=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-3-606ecbcb7e16d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/KFlv01OBqZUbzNIlw6IoSCtunsU=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-3-606ecbcb7e16d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/lE0401DABZt6F-Tmw-WatzMDB-U=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-3-606ecbcb7e16d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/M5M7vaotkmGG51KwFVJtwBpZgBI=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-3-606ecbcb7e16d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/SL7nVnVLm2BRohdPLE_nhvgOm1w=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-2-606ecbcb623f1.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/jnh2sk8kjOIbBiuLtrYEqigLYZ4=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-2-606ecbcb623f1.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/5AWfC3HX5jxS0SRVfjjUqIMSw2M=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-2-606ecbcb623f1.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/hipo2z4jlW4jXzP1wbbw93cpmr0=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-2-606ecbcb623f1.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/RlTkpTxQ1Z0mnNb4XACrVMVHoD4=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-2-606ecbcb623f1.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/ko1Me9D0MtvS2wlWJIzlQ7ZQiic=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-2-606ecbcb623f1.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/x2itaUn299l2aYvRR92O3SAWX7Q=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F04%2Fsaga-pandas-panda-2-606ecbcb623f1.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "title": "Giant panda, emblem of conservation - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/VVYPfI2sLUpXcXbgN7bs3JSHne0=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F08%2Fhuan-huan-cr-61138b436ce1f.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Newborn pandas twins - ZooParc de Beauval",
+      "title": "Newborn pandas twins - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/EqmFUAKcMmHPVWzfyht4sOZasZI=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F08%2Fhuan-huan-cr-61138b436ce1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Newborn pandas twins - ZooParc de Beauval",
+      "title": "Newborn pandas twins - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/gH71o0DCASSVzCXJIaVPJ6k9f2k=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F08%2Fhuan-huan-cr-61138b436ce1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Newborn pandas twins - ZooParc de Beauval",
+      "title": "Newborn pandas twins - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/uBVGdpRtEqEZ6B8jOfJniGlxj2Q=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F08%2Fhuan-huan-cr-61138b436ce1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Newborn pandas twins - ZooParc de Beauval",
+      "title": "Newborn pandas twins - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/2ZD2CwwZHJbHZiBmwUnQicj90Ts=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F08%2Fhuan-huan-cr-61138b436ce1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Newborn pandas twins - ZooParc de Beauval",
+      "title": "Newborn pandas twins - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/6EUM2g5DY-20TI7xVBidRznGgzM=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F08%2Fhuan-huan-cr-61138b436ce1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Newborn pandas twins - ZooParc de Beauval",
+      "title": "Newborn pandas twins - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/QvCg_8-XKtwW4w-qjBVHbqni5qY=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F08%2Fhuan-huan-cr-61138b436ce1f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Newborn pandas twins - ZooParc de Beauval",
+      "title": "Newborn pandas twins - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/9godDyd1C6HealQIiNdxqriZXYI=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-07-6197692540037.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/t_2i2t6lwbmU_azW48RLNcru4SI=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-07-6197692540037.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/97OWpdyFl3f_Djl_YHhnmOkaKe0=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-07-6197692540037.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Vdf457EzoENB-MrxyoHpZw7a4Bc=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-07-6197692540037.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/VWWKJpwnyEN5WT0MyOnfdD4zCCw=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-07-6197692540037.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/UQ3_F6l6eJepmgQ_HTa9UhJ3Ow0=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-07-6197692540037.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/gc8UpZpMYRxGSNdsb3zHxWO2tRk=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-07-6197692540037.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/nlFTCdtJjWHFJ4RlMdoOVizt8kY=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-03-619769257bb88.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/YX_ytJtj90cnr_7GBmJu81rev5w=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-03-619769257bb88.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/vF29aWLOcts_yFWRt5BfwrkXSmA=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-03-619769257bb88.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/tRG-UcjVw9yiDabSboRZ1KYkrI0=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-03-619769257bb88.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/5oh94gvYhh0OeSyQIbF3hveZWDQ=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-03-619769257bb88.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/q6M8PkvS4bWDmmgex_mc1NMavsc=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-03-619769257bb88.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/WYkAr0KaFyWjcx3MzMj9kQ-z0E4=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-03-619769257bb88.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/YGlz9ZDUSOvQ_L5RwJkPIHtRLTs=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-09-619769255e1fb.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/abfVy4mwqRLC_BNKtO0YsAD1DDU=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-09-619769255e1fb.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/n-BeLlsJGQxifLhCgzDr9_0dQG0=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-09-619769255e1fb.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/R7-yQPASVN4xDW6pvRahTb2xrkE=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-09-619769255e1fb.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/4pjKBwkOd2wlAlpI5Yc4m8f8iBM=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-09-619769255e1fb.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/68h7XfJMIaT6-bX7r2Iz6NLKJt0=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-09-619769255e1fb.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/F8NN6e3SOufOZi6r9RjMeUDd8YA=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2021%2F11%2Fcdn-09-619769255e1fb.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Naming Ceremony - ZooParc de Beauval",
+      "title": "Naming Ceremony - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/lmtJ6D1n0MFZbNh9D5B04FMsGxI=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-ym-6-64ca23933bc5d.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "title": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/aHWVxF4Rm-ys89uCNP6axMK52Ts=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-ym-6-64ca23933bc5d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "title": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/8cQ413x92f-_Fb9ZmymFFIRruuk=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-ym-6-64ca23933bc5d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "title": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/zKADe8N8ZAlkhjqKuUrQXCYMrKo=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-ym-6-64ca23933bc5d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "title": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/3OebUjDbAq_s1ypC5lI4UhehVpg=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-ym-6-64ca23933bc5d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "title": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/DhnG2XoskjEYhJoUBt9_I0Frjow=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-ym-6-64ca23933bc5d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "title": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/7wbFVpveoPTvH32J8vXtL-UgwUM=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-ym-6-64ca23933bc5d.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "title": "Departure of Yuan Meng - Giant panda - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/-sIKN7kK5l53LVJScJ-xElNbOw8=/800x600/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-2-ans-jumelles-64ca23936d72f.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "title": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/x8KxlykBpFVmZrQQYnieR2UdX80=/375x281/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-2-ans-jumelles-64ca23936d72f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "title": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/0XqKIPBN8U-ndIMJvDPW09J6j7I=/400x300/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-2-ans-jumelles-64ca23936d72f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "title": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Ix3YAyc4pdz3DMz05mW0LhdGfO8=/600x450/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-2-ans-jumelles-64ca23936d72f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "title": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/kdwC1OLXBRf9oQeTKVqwMGXydUQ=/1000x750/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-2-ans-jumelles-64ca23936d72f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "title": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/cCAf90bLcA4dqBVHSxltWkM_ppk=/1200x900/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-2-ans-jumelles-64ca23936d72f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "title": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/h8hSFTeibdJ70ZJDpX1lJ4OehMg=/1600x1200/https%3A%2F%2Fs3.eu-west-3.amazonaws.com%2Fimages.zoobeauval.com%2F2023%2F08%2Fsaga-pandas-2-ans-jumelles-64ca23936d72f.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "title": "Giant panda twins - Yuandudu and Huanlili - ZooParc de Beauval",
+      "width": "800",
+      "height": "600",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/sBcxwfZNRPxS4TBhSIey-HzVzko=/560x373/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2FCOM_HeaderActu_PandaAnniversaire_800x530-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Yuandudu and Huanlili are celebrating their 5th anniversary with an XXL cake!",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/z39N9c5JjnboqepGOK1XqHEQh5k=/180x120/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2FCOM_HeaderActu_PandaAnniversaire_800x530-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Yuandudu and Huanlili are celebrating their 5th anniversary with an XXL cake!",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/yAggn7lrhOxOupOHzLLzNusioXU=/250x167/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2FCOM_HeaderActu_PandaAnniversaire_800x530-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Yuandudu and Huanlili are celebrating their 5th anniversary with an XXL cake!",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/49e6L1TEjL5ejelvNYn8YeTNfjc=/360x240/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2FCOM_HeaderActu_PandaAnniversaire_800x530-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Yuandudu and Huanlili are celebrating their 5th anniversary with an XXL cake!",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/9086QjoApY2UM_9ebxhf0Q4jl2I=/560x373/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F06%2Fnaissance_zebre_2026-02-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Surprise birth of a Grevy’s zebra as visitors looked on",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/EHZUyMgA7pTx7IY7N_tsND5dJwM=/180x120/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F06%2Fnaissance_zebre_2026-02-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Surprise birth of a Grevy’s zebra as visitors looked on",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/xC5GmJYUdDZiuWELIxt81Vb3GgY=/250x167/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F06%2Fnaissance_zebre_2026-02-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Surprise birth of a Grevy’s zebra as visitors looked on",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/eAf9OkBRlmTH_5jXIF6XycoUHAc=/360x240/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F06%2Fnaissance_zebre_2026-02-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Surprise birth of a Grevy’s zebra as visitors looked on",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/oOAzJS95qFyDH21f-3CJTlhTxW0=/560x373/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2Fcolloque_uicn_072026-600x400.jpg",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Beauval is hosting the IUCN symposium on combating wildlife trafficking",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/3gYfB2Gkm6kFCXZDxObvminwEaE=/180x120/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2Fcolloque_uicn_072026-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Beauval is hosting the IUCN symposium on combating wildlife trafficking",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/PMMA3MDEg0ygu8StHTsdVpTSc_k=/250x167/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2Fcolloque_uicn_072026-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Beauval is hosting the IUCN symposium on combating wildlife trafficking",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/iCJaPPVibj47jZ-NV3TElvWQurI=/360x240/https%3A%2F%2Factus.zoobeauval.com%2Fwp-content%2Fuploads%2F2026%2F07%2Fcolloque_uicn_072026-600x400.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Beauval is hosting the IUCN symposium on combating wildlife trafficking",
+      "title": "",
+      "width": "560",
+      "height": "373",
+      "evidence": [
+        "c-figure__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/HKyplRrazYnJdOPj4DSX1w99hl0=/130x185/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.0e9e74bb.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/nXBdBNSA91jKyxri9V0njCMC4_0=/260x370/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.0e9e74bb.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/YsRxOvRSg7shOrI85gSWuxSAmzg=/390x555/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.0e9e74bb.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/eXVEbI80Gue2Mf2sow7uJKYepNE=/520x740/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.0e9e74bb.webp",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/Qe8j_zkGPrkjytxY3tj9hG7DYcM=/130x185/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.11eb9513.png",
+      "source_types": [
+        "source:srcset",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "370",
+      "evidence": [
+        "c-footer__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/_eJ2relgLmVqaiEjgONzdCWtSq8=/260x370/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.11eb9513.png",
+      "source_types": [
+        "source:srcset",
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "370",
+      "evidence": [
+        "c-footer__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/lf7rcchasKb8CNuggVdXWyCxWr4=/390x555/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.11eb9513.png",
+      "source_types": [
+        "source:srcset",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "370",
+      "evidence": [
+        "c-footer__image"
+      ]
+    },
+    {
+      "asset_url": "https://cdn-images.zoobeauval.com/MSoTnEh33d7ZgNumNG-uTAP6N0c=/520x740/https%3A%2F%2Fassets.zoobeauval.com%2Fbuild%2F2026%2F07%2Fstatic%2Fleaves%2Ffooter-leaves.11eb9513.png",
+      "source_types": [
+        "source:srcset",
+        "img:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "260",
+      "height": "370",
+      "evidence": [
+        "c-footer__image"
+      ]
+    }
+  ]
+}
