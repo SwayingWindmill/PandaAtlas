@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "page_url": "https://t.me/Moscowzoo_official/8215",
+  "discovered_at": "2026-07-25T13:35:34.199771+00:00",
+  "image_count": 1,
+  "images": [
+    {
+      "asset_url": "https://cdn4.telesco.pe/file/aR-gr0IBU8kPUaYytdCoPv8UejgwzAck3eoeFKwAYlqBxM590h7rmJR4ULScMw8N_yv_zs58TCIKlihf16LiievpxEEB8ztL3RG6p1Pgr-rHpjjxFkbA1p3jmqKyT5WMS05TELbMkNng1xoBPGCbaysf0htzifFyzJRqacKPANksXVMZBm9Ms4wfFz3TbYd2cCwHX9AqLohZpSbLYX0InwpjmiOXxbIXRr7U9d_oO-m5d7OBe-cygSfllZHmc6oaHyIEnvnAPEc3lUavQrQusWf8tbwKN4t_krWPc1M2YscN1PLfjdfWGrwpB6H4UsGf27hb6hcvALoPflSNHXQuoA",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    }
+  ]
+}
