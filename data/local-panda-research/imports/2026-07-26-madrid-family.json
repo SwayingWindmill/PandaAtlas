@@ -1,0 +1,2885 @@
+{
+  "sources": [
+    {
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "El Zoo de Madrid celebra en septiembre el Mes del Panda Gigante",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/zoo-de-madrid-celebra-en-septiembre-el-mes-del-panda-gigante-coincidiendo-con-el-primer-cumpleanos-de-los-gemelos-you-you-y-jiu-jiu",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official parent birth dates, arrival background, six offspring chronology and delayed-implantation context."
+    },
+    {
+      "source_id": "src-madrid-family-farewell-2024-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Despídete de los osos panda",
+      "url": "https://www.zoomadrid.com/despidete-pandas",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official family identities, roles and planned return to Chengdu."
+    },
+    {
+      "source_id": "src-madrid-family-travel-2024-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "El viaje de la familia panda, del Zoo de Madrid a Chengdu",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/el-viaje-de-la-familia-panda-del-zoo-de-madrid-a-chengdu-en-vuelo-directo-con-todas-las-comodidades",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official departure date, ages, direct-flight preparations and escort arrangements."
+    },
+    {
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant panda parents, cubs back in China from Spain",
+      "url": "https://english.news.cn/20240301/82ccf52708314ecca7405da5ce17b626/c.html",
+      "language": "en",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Xinhua arrival, health, quarantine and Chengdu-base destination."
+    },
+    {
+      "source_id": "src-madrid-bing-xing-award-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Nuestro panda Bing Xing, ganador en los premios Giant Panda Global",
+      "url": "https://www.zoomadrid.com/blog/bing-xing-ganador-giant-panda-awards-zoo-madrid",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official Bing Xing award and personality coverage."
+    },
+    {
+      "source_id": "src-madrid-hua-zui-ba-insemination-2019-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Un equipo técnico de expertos insemina a la hembra de oso panda gigante",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/equipo-expertos-insemina-oso-panda-zoo-aquarium-madrid",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official reproductive monitoring and international technical collaboration."
+    },
+    {
+      "source_id": "src-madrid-po-dede-birth-2010-deep-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Nacen dos crías de osos panda en el Zoo",
+      "url": "https://www.zoomadrid.com/blog/nacen-dos-crias-de-osos-panda-en-el-zoo",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official twin birth times, 135-day gestation, insemination date and participating institutions."
+    },
+    {
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Po y De De viajan a China",
+      "url": "https://www.zoomadrid.com/blog/po-y-dede-nuestras-crias-de-panda-viajan-a-china-ven-a-despedirlos",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official sex, age, weight, departure plan and conservation rationale."
+    },
+    {
+      "source_id": "src-madrid-po-dede-travel-diary-2013-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Diario de mi viaje a China con Po y De De",
+      "url": "https://www.zoomadrid.com/blog/diario-de-mi-viaje-a-china-con-po-y-de-de",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official transport route, diet and healthy arrival at Chengdu."
+    },
+    {
+      "source_id": "src-madrid-xing-bao-name-2013-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Xing Bao es el nombre elegido",
+      "url": "https://www.zoomadrid.com/blog/xing-bao-es-el-nombre-elegido-por-nuestros-internautas-para-la-cria-de-panda",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official sex, naming, vote share, three-month weight and development."
+    },
+    {
+      "source_id": "src-madrid-xing-bao-bamboo-2014-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Xing Bao y sus primeros bocados de bambú",
+      "url": "https://www.zoomadrid.com/blog/xing-bao-y-sus-primeros-bocados-de-bambu",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official birth measurements, six-month weight, bamboo introduction and climbing."
+    },
+    {
+      "source_id": "src-madrid-xing-bao-outdoor-2014-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Xing Bao da sus primeros pasos en la pradera exterior",
+      "url": "https://www.zoomadrid.com/blog/xing-bao-da-sus-primeros-pasos-en-la-pradera-exterior",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official seven-month personality, weight, health and first outdoor appearance."
+    },
+    {
+      "source_id": "src-madrid-xing-bao-return-2017-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "El oso panda Xing Bao emprende viaje a China",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/oso-panda-xing-bao-zoo-aquarium-madrid-viaje-china",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official parentage, departure and future breeding-programme role."
+    },
+    {
+      "source_id": "src-madrid-chulina-birth-2016-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Madrid celebra por primera vez el nacimiento de una hembra de oso panda",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/zoo-aquarium-de-madrid-celebra-por-primera-vez-el-nacimiento-de-una-hembra-de-oso",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official birth time, sex, maternal behaviour and reproductive context."
+    },
+    {
+      "source_id": "src-madrid-chulina-name-2017-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Zoo Aquarium de Madrid presenta a la primera hembra bautizada como Chulina",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/zoo-aquarium-de-madrid-presenta-a-la-primera-hembra-de-oso-panda-bautizada-como",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official naming date, vote share, name homage and in-situ habitat funding."
+    },
+    {
+      "source_id": "src-madrid-chulina-outdoor-2017-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "La Reina Sofía asiste a la aparición en pradera de Chulina",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/reina-sofia-pradera-panda-zoo-aquarium-de-madrid",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official birth weight, seven-month weight, personality, climbing and first outdoor outing."
+    },
+    {
+      "source_id": "src-madrid-twins-birth-2021-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Segundo parto gemelar de osos panda en Madrid",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/segundo-parto-gemelar-osos-panda-historia-zoo-aquarium-madrid",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official twin birth times, birth weights, maternal care and conservation context."
+    },
+    {
+      "source_id": "src-madrid-twins-vote-2021-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Se abre la votación de nombres para los gemelos panda",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/votacion-nombres-gemelos-panda-nacidos-zoo-aquarium-madrid",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official two-month development, alternating care and naming options."
+    },
+    {
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "El alcalde de Madrid y la Embajada china apadrinan los gemelos panda",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/alcalde-madrid-embajada-china-apadrinan-gemelos-panda-zoo-aquarium-madrid",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official names, meanings, votes, 100-day weights and artificial-insemination date."
+    },
+    {
+      "source_id": "src-madrid-twins-first-outdoor-2022-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "La Reina Sofía preside el 50 aniversario con la presentación de los gemelos",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/50-aniversario-presidido-sm-la-reina-dona-sofia",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official first outdoor appearance at six months."
+    },
+    {
+      "source_id": "src-madrid-twins-seven-months-2022-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Zoo Aquarium Madrid",
+      "title": "Semana Santa para conocer a los gemelos panda",
+      "url": "https://www.zoomadrid.com/sala-de-prensa/buscador-prensa/una-semana-santa-para-conocer-a-los-gemelos-panda-en-el-50-aniversario-del-zoo-de-madrid",
+      "language": "es",
+      "region": "Spain and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official seven-month weight, play, bamboo and maternal interaction."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-madrid-0001",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "冰星为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0002",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2000-09-01",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "birth_date",
+      "source_language": "es",
+      "summary_zh": "冰星出生于2000年9月1日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0003",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "origin",
+      "predicate": "origin",
+      "value": "Chengdu Research Base of Giant Panda Breeding",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "origin",
+      "source_language": "es",
+      "summary_zh": "冰星来自成都大熊猫繁育研究基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0004",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_madrid",
+      "value": "2007-09-08",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "arrived_at_madrid",
+      "source_language": "es",
+      "summary_zh": "冰星于2007年9月8日抵达马德里。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0005",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "po-madrid",
+        "de-de-madrid",
+        "xing-bao",
+        "chulina",
+        "you-you-madrid",
+        "jiu-jiu-madrid"
+      ],
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "offspring",
+      "source_language": "es",
+      "summary_zh": "冰星是波波、德德、星宝、楚琳、友友和玖玖的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0006",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "appearance",
+      "predicate": "shoulder_band",
+      "value": {
+        "upper_edge": "bordered",
+        "shape": "irregular",
+        "lower_edge": "slight point"
+      },
+      "source_id": "src-madrid-xing-bao-bamboo-2014-local",
+      "source_locator": "shoulder_band",
+      "source_language": "es",
+      "summary_zh": "冰星肩部黑色条带上缘清楚、形状不规则，下方带轻微尖角。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0007",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "milestone",
+      "predicate": "giant_panda_global_award",
+      "value": {
+        "category": "favorite panda outside China",
+        "placement": "first"
+      },
+      "source_id": "src-madrid-bing-xing-award-local",
+      "source_locator": "giant_panda_global_award",
+      "source_language": "es",
+      "summary_zh": "冰星获得Giant Panda Global Awards中国境外最受欢迎大熊猫第一名。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0008",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2024-02-29",
+      "source_id": "src-madrid-family-travel-2024-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "冰星于2024年2月29日离开马德里返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0009",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "location",
+      "predicate": "arrived_at_chengdu_base",
+      "value": "2024-03-01",
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "arrived_at_chengdu_base",
+      "source_language": "en",
+      "summary_zh": "冰星于2024年3月1日抵达成都基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0010",
+      "subject": {
+        "type": "panda",
+        "id": "bing-xing",
+        "label": "Bing Xing"
+      },
+      "category": "health",
+      "predicate": "health_on_arrival_2024",
+      "value": {
+        "condition": "good",
+        "quarantine": true
+      },
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "health_on_arrival_2024",
+      "source_language": "en",
+      "summary_zh": "冰星抵达成都时健康状况良好，并进入检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "bing-xing",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0011",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "花嘴巴为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0012",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2003-09-16",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "birth_date",
+      "source_language": "es",
+      "summary_zh": "花嘴巴出生于2003年9月16日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0013",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "origin",
+      "predicate": "origin",
+      "value": "Chengdu Research Base of Giant Panda Breeding",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "origin",
+      "source_language": "es",
+      "summary_zh": "花嘴巴来自成都大熊猫繁育研究基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0014",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_madrid",
+      "value": "2007-09-08",
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "arrived_at_madrid",
+      "source_language": "es",
+      "summary_zh": "花嘴巴于2007年9月8日抵达马德里。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0015",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "po-madrid",
+        "de-de-madrid",
+        "xing-bao",
+        "chulina",
+        "you-you-madrid",
+        "jiu-jiu-madrid"
+      ],
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "offspring",
+      "source_language": "es",
+      "summary_zh": "花嘴巴在马德里养育了六只幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0016",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "maternal_care",
+      "predicate": "keeper_role_description",
+      "value": "expert mother",
+      "source_id": "src-madrid-family-farewell-2024-local",
+      "source_locator": "keeper_role_description",
+      "source_language": "es",
+      "summary_zh": "马德里动物园称花嘴巴为经验丰富的母亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0017",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "reproduction",
+      "predicate": "artificial_insemination_2010",
+      "value": {
+        "date": "2010-04-25",
+        "semen_source": "bing-xing",
+        "gestation_days_to_twin_birth": 135
+      },
+      "source_id": "src-madrid-po-dede-birth-2010-deep-local",
+      "source_locator": "artificial_insemination_2010",
+      "source_language": "es",
+      "summary_zh": "花嘴巴于2010年4月25日使用冰星精液接受人工授精，135天后产下双胞胎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0018",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "reproduction",
+      "predicate": "artificial_insemination_2021",
+      "value": {
+        "date": "2021-04-12",
+        "team": [
+          "Madrid Zoo",
+          "INIA",
+          "Complutense University of Madrid"
+        ]
+      },
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "artificial_insemination_2021",
+      "source_language": "es",
+      "summary_zh": "花嘴巴于2021年4月12日接受人工授精，由马德里动物园、INIA和马德里康普顿斯大学团队合作完成。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0019",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "maternal_care",
+      "predicate": "immediate_care_of_chulina",
+      "value": [
+        "picked up cub",
+        "licked cub",
+        "held cub against body"
+      ],
+      "source_id": "src-madrid-chulina-birth-2016-local",
+      "source_locator": "immediate_care_of_chulina",
+      "source_language": "es",
+      "summary_zh": "楚琳出生后，花嘴巴立即抱起、舔舐并将幼崽护在怀中。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0020",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2024-02-29",
+      "source_id": "src-madrid-family-travel-2024-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "花嘴巴于2024年2月29日离开马德里返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0021",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "location",
+      "predicate": "arrived_at_chengdu_base",
+      "value": "2024-03-01",
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "arrived_at_chengdu_base",
+      "source_language": "en",
+      "summary_zh": "花嘴巴于2024年3月1日抵达成都基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0022",
+      "subject": {
+        "type": "panda",
+        "id": "hua-zui-ba",
+        "label": "Hua Zui Ba"
+      },
+      "category": "health",
+      "predicate": "health_on_arrival_2024",
+      "value": {
+        "condition": "good",
+        "quarantine": true
+      },
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "health_on_arrival_2024",
+      "source_language": "en",
+      "summary_zh": "花嘴巴抵达成都时健康状况良好，并进入检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "hua-zui-ba",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0023",
+      "subject": {
+        "type": "panda",
+        "id": "po-madrid",
+        "label": "Po"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "Po为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "po-madrid",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0024",
+      "subject": {
+        "type": "panda",
+        "id": "po-madrid",
+        "label": "Po"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_before_return_kg",
+      "value": 80,
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "weight_before_return_kg",
+      "source_language": "es",
+      "summary_zh": "Po返华前体重约80千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "po-madrid",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0025",
+      "subject": {
+        "type": "panda",
+        "id": "po-madrid",
+        "label": "Po"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2013-05-16",
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "Po于2013年5月16日离开马德里前往中国。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "po-madrid",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0026",
+      "subject": {
+        "type": "panda",
+        "id": "po-madrid",
+        "label": "Po"
+      },
+      "category": "location",
+      "predicate": "destination",
+      "value": "Chengdu Research Base of Giant Panda Breeding",
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "destination",
+      "source_language": "es",
+      "summary_zh": "Po返华目的地为成都大熊猫繁育研究基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "po-madrid",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0027",
+      "subject": {
+        "type": "panda",
+        "id": "po-madrid",
+        "label": "Po"
+      },
+      "category": "diet",
+      "predicate": "food_during_return_journey",
+      "value": [
+        "apple",
+        "mineral water",
+        "bamboo shoots"
+      ],
+      "source_id": "src-madrid-po-dede-travel-diary-2013-local",
+      "source_locator": "food_during_return_journey",
+      "source_language": "es",
+      "summary_zh": "Po返华旅途中进食苹果、饮用矿泉水并食用竹笋。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "po-madrid",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0028",
+      "subject": {
+        "type": "panda",
+        "id": "po-madrid",
+        "label": "Po"
+      },
+      "category": "health",
+      "predicate": "arrival_condition",
+      "value": "arrived in perfect health and ate fresh shoots with appetite",
+      "source_id": "src-madrid-po-dede-travel-diary-2013-local",
+      "source_locator": "arrival_condition",
+      "source_language": "es",
+      "summary_zh": "Po抵达成都时健康状况良好，并有食欲地进食新鲜竹笋。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "po-madrid",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0029",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-madrid",
+        "label": "De De"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "De De为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-madrid",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0030",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-madrid",
+        "label": "De De"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_before_return_kg",
+      "value": 80,
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "weight_before_return_kg",
+      "source_language": "es",
+      "summary_zh": "De De返华前体重约80千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-madrid",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0031",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-madrid",
+        "label": "De De"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2013-05-16",
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "De De于2013年5月16日离开马德里前往中国。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-madrid",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0032",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-madrid",
+        "label": "De De"
+      },
+      "category": "location",
+      "predicate": "destination",
+      "value": "Chengdu Research Base of Giant Panda Breeding",
+      "source_id": "src-madrid-po-dede-return-2013-deep-local",
+      "source_locator": "destination",
+      "source_language": "es",
+      "summary_zh": "De De返华目的地为成都大熊猫繁育研究基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-madrid",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0033",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-madrid",
+        "label": "De De"
+      },
+      "category": "diet",
+      "predicate": "food_during_return_journey",
+      "value": [
+        "apple",
+        "mineral water",
+        "bamboo shoots"
+      ],
+      "source_id": "src-madrid-po-dede-travel-diary-2013-local",
+      "source_locator": "food_during_return_journey",
+      "source_language": "es",
+      "summary_zh": "De De返华旅途中进食苹果、饮用矿泉水并食用竹笋。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-madrid",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0034",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-madrid",
+        "label": "De De"
+      },
+      "category": "health",
+      "predicate": "arrival_condition",
+      "value": "arrived in perfect health and ate fresh shoots with appetite",
+      "source_id": "src-madrid-po-dede-travel-diary-2013-local",
+      "source_locator": "arrival_condition",
+      "source_language": "es",
+      "summary_zh": "De De抵达成都时健康状况良好，并有食欲地进食新鲜竹笋。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-madrid",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0035",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-po-de-de-twins",
+        "label": "Madrid panda twins Po and De De"
+      },
+      "category": "birth",
+      "predicate": "birth_times",
+      "value": [
+        "2010-09-07T13:40",
+        "2010-09-07T15:13"
+      ],
+      "source_id": "src-madrid-po-dede-birth-2010-deep-local",
+      "source_locator": "birth_times",
+      "source_language": "es",
+      "summary_zh": "波波和德德分别于2010年9月7日13时40分和15时13分出生；官方页面未将具体时间与名字逐一对应。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-po-de-de-twins",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0036",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-po-de-de-twins",
+        "label": "Madrid panda twins Po and De De"
+      },
+      "category": "maternal_care",
+      "predicate": "early_rotation_care",
+      "value": {
+        "mother": "hua-zui-ba",
+        "incubator_support": true
+      },
+      "source_id": "src-madrid-po-dede-birth-2010-deep-local",
+      "source_locator": "early_rotation_care",
+      "source_language": "es",
+      "summary_zh": "双胞胎早期由花嘴巴哺育并配合保温箱轮换照护。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-po-de-de-twins",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0037",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-madrid-xing-bao-name-2013-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "星宝为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0038",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2013-08-30",
+      "source_id": "src-madrid-xing-bao-name-2013-local",
+      "source_locator": "birth_date",
+      "source_language": "es",
+      "summary_zh": "星宝出生于2013年8月30日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0039",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_measurements",
+      "value": {
+        "weight_grams": 210,
+        "length_cm": 15
+      },
+      "source_id": "src-madrid-xing-bao-bamboo-2014-local",
+      "source_locator": "birth_measurements",
+      "source_language": "es",
+      "summary_zh": "星宝出生体重210克、体长15厘米。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0040",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "hua-zui-ba",
+        "father_id": "bing-xing"
+      },
+      "source_id": "src-madrid-xing-bao-return-2017-local",
+      "source_locator": "parents",
+      "source_language": "es",
+      "summary_zh": "星宝的母亲是花嘴巴，父亲是冰星。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0041",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "star treasure; also interpreted as father's treasure",
+      "source_id": "src-madrid-xing-bao-name-2013-local",
+      "source_locator": "name_meaning",
+      "source_language": "es",
+      "summary_zh": "星宝意为“星之宝”，也可理解为与父亲冰星相关的“父亲的宝物”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0042",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "name",
+      "predicate": "popular_vote_share_percent",
+      "value": 39,
+      "source_id": "src-madrid-xing-bao-name-2013-local",
+      "source_locator": "popular_vote_share_percent",
+      "source_language": "es",
+      "summary_zh": "星宝在公众命名投票中获得39%的票数。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0043",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_three_months_kg",
+      "value": 6,
+      "source_id": "src-madrid-xing-bao-name-2013-local",
+      "source_locator": "weight_at_three_months_kg",
+      "source_language": "es",
+      "summary_zh": "星宝三个月龄时体重接近6千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0044",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "growth_measurement",
+      "predicate": "development_at_three_months",
+      "value": [
+        "strong hind legs",
+        "first incisors developing"
+      ],
+      "source_id": "src-madrid-xing-bao-name-2013-local",
+      "source_locator": "development_at_three_months",
+      "source_language": "es",
+      "summary_zh": "星宝三个月龄时后腿力量较强，第一批门齿开始发育。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0045",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_six_months_kg",
+      "value": 12,
+      "source_id": "src-madrid-xing-bao-bamboo-2014-local",
+      "source_locator": "weight_at_six_months_kg",
+      "source_language": "es",
+      "summary_zh": "星宝六个月龄时体重超过12千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0046",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "diet",
+      "predicate": "first_bamboo_at_six_months",
+      "value": true,
+      "source_id": "src-madrid-xing-bao-bamboo-2014-local",
+      "source_locator": "first_bamboo_at_six_months",
+      "source_language": "es",
+      "summary_zh": "星宝六个月龄时开始在母乳之外尝试竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0047",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "behaviour",
+      "predicate": "climbing_development",
+      "value": "could climb to the top of the indoor trunk by six months",
+      "source_id": "src-madrid-xing-bao-bamboo-2014-local",
+      "source_locator": "climbing_development",
+      "source_language": "es",
+      "summary_zh": "星宝六个月龄时已经能够爬到室内树干顶部。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0048",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "personality",
+      "predicate": "personality_at_seven_months",
+      "value": [
+        "restless",
+        "alert",
+        "exploratory"
+      ],
+      "source_id": "src-madrid-xing-bao-outdoor-2014-local",
+      "source_locator": "personality_at_seven_months",
+      "source_language": "es",
+      "summary_zh": "星宝七个月龄时活跃、机敏并喜欢探索。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0049",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_seven_months_kg",
+      "value": 15,
+      "source_id": "src-madrid-xing-bao-outdoor-2014-local",
+      "source_locator": "weight_at_seven_months_kg",
+      "source_language": "es",
+      "summary_zh": "星宝七个月龄时体重约15千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0050",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "public_debut",
+      "predicate": "first_outdoor_appearance",
+      "value": "2014-04-10",
+      "source_id": "src-madrid-xing-bao-outdoor-2014-local",
+      "source_locator": "first_outdoor_appearance",
+      "source_language": "es",
+      "summary_zh": "星宝于2014年4月10日首次进入户外草场。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0051",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2017-09-26",
+      "source_id": "src-madrid-xing-bao-return-2017-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "星宝于2017年9月26日离开马德里返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0052",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "location",
+      "predicate": "destination",
+      "value": "Chengdu Research Base of Giant Panda Breeding",
+      "source_id": "src-madrid-xing-bao-return-2017-local",
+      "source_locator": "destination",
+      "source_language": "es",
+      "summary_zh": "星宝返华目的地为成都大熊猫繁育研究基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0053",
+      "subject": {
+        "type": "panda",
+        "id": "xing-bao",
+        "label": "Xing Bao"
+      },
+      "category": "reproduction",
+      "predicate": "planned_role_after_return",
+      "value": "future breeding male",
+      "source_id": "src-madrid-xing-bao-return-2017-local",
+      "source_locator": "planned_role_after_return",
+      "source_language": "es",
+      "summary_zh": "星宝返华后被纳入国际繁育项目，作为未来雄性繁殖个体。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-bao",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0054",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-madrid-chulina-birth-2016-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "楚琳为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0055",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "birth",
+      "predicate": "birth_datetime",
+      "value": {
+        "date": "2016-08-30",
+        "time": "05:37"
+      },
+      "source_id": "src-madrid-chulina-birth-2016-local",
+      "source_locator": "birth_datetime",
+      "source_language": "es",
+      "summary_zh": "楚琳于2016年8月30日5时37分出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0056",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weight_grams",
+      "value": 180,
+      "source_id": "src-madrid-chulina-outdoor-2017-local",
+      "source_locator": "birth_weight_grams",
+      "source_language": "es",
+      "summary_zh": "楚琳出生体重180克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0057",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "hua-zui-ba",
+        "father_id": "bing-xing"
+      },
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "parents",
+      "source_language": "es",
+      "summary_zh": "楚琳的母亲是花嘴巴，父亲是冰星。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0058",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "milestone",
+      "predicate": "first_female_giant_panda_born_at_madrid_zoo",
+      "value": true,
+      "source_id": "src-madrid-chulina-birth-2016-local",
+      "source_locator": "first_female_giant_panda_born_at_madrid_zoo",
+      "source_language": "es",
+      "summary_zh": "楚琳是马德里动物园历史上首只出生的雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0059",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2017-01-12",
+      "source_id": "src-madrid-chulina-name-2017-local",
+      "source_locator": "official_name_announced",
+      "source_language": "es",
+      "summary_zh": "楚琳的正式名字于2017年1月12日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0060",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "name_meaning",
+      "predicate": "name_context",
+      "value": "female form paying tribute to Chu Lin",
+      "source_id": "src-madrid-chulina-name-2017-local",
+      "source_locator": "name_context",
+      "source_language": "es",
+      "summary_zh": "楚琳的名字是楚林的女性化形式，用于纪念1982年出生的楚林。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0061",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "name",
+      "predicate": "popular_vote_share_percent",
+      "value": 59.5,
+      "source_id": "src-madrid-chulina-name-2017-local",
+      "source_locator": "popular_vote_share_percent",
+      "source_language": "es",
+      "summary_zh": "楚琳在公众命名投票中获得59.5%的票数。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0062",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "personality",
+      "predicate": "personality_at_seven_months",
+      "value": [
+        "strong-willed",
+        "restless",
+        "playful",
+        "curious"
+      ],
+      "source_id": "src-madrid-chulina-outdoor-2017-local",
+      "source_locator": "personality_at_seven_months",
+      "source_language": "es",
+      "summary_zh": "楚琳七个月龄时表现出强烈、活跃、顽皮和好奇的性格。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0063",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "behaviour",
+      "predicate": "juvenile_climbing",
+      "value": "adventurous climber",
+      "source_id": "src-madrid-chulina-outdoor-2017-local",
+      "source_locator": "juvenile_climbing",
+      "source_language": "es",
+      "summary_zh": "楚琳幼年是一只大胆的攀爬者。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0064",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_seven_months_kg",
+      "value": 15,
+      "source_id": "src-madrid-chulina-outdoor-2017-local",
+      "source_locator": "weight_at_seven_months_kg",
+      "source_language": "es",
+      "summary_zh": "楚琳七个月龄时体重约15千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0065",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "public_debut",
+      "predicate": "first_outdoor_appearance",
+      "value": "2017-04-05",
+      "source_id": "src-madrid-chulina-outdoor-2017-local",
+      "source_locator": "first_outdoor_appearance",
+      "source_language": "es",
+      "summary_zh": "楚琳于2017年4月5日首次进入户外草场。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0066",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2024-02-29",
+      "source_id": "src-madrid-family-travel-2024-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "楚琳于2024年2月29日离开马德里返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0067",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "location",
+      "predicate": "arrived_at_chengdu_base",
+      "value": "2024-03-01",
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "arrived_at_chengdu_base",
+      "source_language": "en",
+      "summary_zh": "楚琳于2024年3月1日抵达成都基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0068",
+      "subject": {
+        "type": "panda",
+        "id": "chulina",
+        "label": "Chulina"
+      },
+      "category": "health",
+      "predicate": "health_on_arrival_2024",
+      "value": {
+        "condition": "good",
+        "quarantine": true
+      },
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "health_on_arrival_2024",
+      "source_language": "en",
+      "summary_zh": "楚琳抵达成都时健康状况良好，并进入检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chulina",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0069",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "You You为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0070",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2021-09-06",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "birth_date",
+      "source_language": "es",
+      "summary_zh": "You You出生于2021年9月6日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0071",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "hua-zui-ba",
+        "father_id": "bing-xing",
+        "twin_id": "jiu-jiu-madrid"
+      },
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "parents_and_twin",
+      "source_language": "es",
+      "summary_zh": "You You的母亲是花嘴巴、父亲是冰星，双胞胎兄弟为jiu-jiu-madrid。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0072",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2021-12-17",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "official_name_announced",
+      "source_language": "es",
+      "summary_zh": "You You的正式名字于2021年12月17日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0073",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "friendship; friendship with Spain",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "name_meaning",
+      "source_language": "es",
+      "summary_zh": "You You的名字象征中西友谊和长久祝福。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0074",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "name",
+      "predicate": "popular_vote_count",
+      "value": 1113,
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "popular_vote_count",
+      "source_language": "es",
+      "summary_zh": "You You在公众命名投票中获得1113票。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0075",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_100_days_kg",
+      "value": 6.6,
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "weight_at_100_days_kg",
+      "source_language": "es",
+      "summary_zh": "You You约100日龄时体重为6.6千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0076",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "public_debut",
+      "predicate": "first_outdoor_appearance",
+      "value": "2022-03-21",
+      "source_id": "src-madrid-twins-first-outdoor-2022-local",
+      "source_locator": "first_outdoor_appearance",
+      "source_language": "es",
+      "summary_zh": "You You于2022年3月21日首次进入户外草场。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0077",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2024-02-29",
+      "source_id": "src-madrid-family-travel-2024-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "You You于2024年2月29日离开马德里返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0078",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "location",
+      "predicate": "arrived_at_chengdu_base",
+      "value": "2024-03-01",
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "arrived_at_chengdu_base",
+      "source_language": "en",
+      "summary_zh": "You You于2024年3月1日抵达成都基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0079",
+      "subject": {
+        "type": "panda",
+        "id": "you-you-madrid",
+        "label": "You You"
+      },
+      "category": "health",
+      "predicate": "health_on_arrival_2024",
+      "value": {
+        "condition": "good",
+        "quarantine": true
+      },
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "health_on_arrival_2024",
+      "source_language": "en",
+      "summary_zh": "You You抵达成都时健康状况良好，并进入检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "you-you-madrid",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0080",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "sex",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0081",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2021-09-06",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "birth_date",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu出生于2021年9月6日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0082",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "hua-zui-ba",
+        "father_id": "bing-xing",
+        "twin_id": "you-you-madrid"
+      },
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "parents_and_twin",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu的母亲是花嘴巴、父亲是冰星，双胞胎兄弟为you-you-madrid。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0083",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2021-12-17",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "official_name_announced",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu的正式名字于2021年12月17日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0084",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "nine, forever and long-lasting Spain-China friendship",
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "name_meaning",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu的名字象征中西友谊和长久祝福。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0085",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "name",
+      "predicate": "popular_vote_count",
+      "value": 1012,
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "popular_vote_count",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu在公众命名投票中获得1012票。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0086",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_100_days_kg",
+      "value": 6.0,
+      "source_id": "src-madrid-twins-naming-2021-local",
+      "source_locator": "weight_at_100_days_kg",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu约100日龄时体重为6.0千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0087",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "public_debut",
+      "predicate": "first_outdoor_appearance",
+      "value": "2022-03-21",
+      "source_id": "src-madrid-twins-first-outdoor-2022-local",
+      "source_locator": "first_outdoor_appearance",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu于2022年3月21日首次进入户外草场。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0088",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "transfer",
+      "predicate": "left_madrid_for_china",
+      "value": "2024-02-29",
+      "source_id": "src-madrid-family-travel-2024-local",
+      "source_locator": "left_madrid_for_china",
+      "source_language": "es",
+      "summary_zh": "Jiu Jiu于2024年2月29日离开马德里返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0089",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "location",
+      "predicate": "arrived_at_chengdu_base",
+      "value": "2024-03-01",
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "arrived_at_chengdu_base",
+      "source_language": "en",
+      "summary_zh": "Jiu Jiu于2024年3月1日抵达成都基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0090",
+      "subject": {
+        "type": "panda",
+        "id": "jiu-jiu-madrid",
+        "label": "Jiu Jiu"
+      },
+      "category": "health",
+      "predicate": "health_on_arrival_2024",
+      "value": {
+        "condition": "good",
+        "quarantine": true
+      },
+      "source_id": "src-xinhua-madrid-family-arrival-2024-local",
+      "source_locator": "health_on_arrival_2024",
+      "source_language": "en",
+      "summary_zh": "Jiu Jiu抵达成都时健康状况良好，并进入检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jiu-jiu-madrid",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0091",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-twins-2021",
+        "label": "Madrid panda twins 2021"
+      },
+      "category": "birth",
+      "predicate": "birth_times",
+      "value": [
+        "2021-09-06T08:30",
+        "2021-09-06T12:00"
+      ],
+      "source_id": "src-madrid-twins-birth-2021-local",
+      "source_locator": "birth_times",
+      "source_language": "es",
+      "summary_zh": "2021年双胞胎分别于8时30分和约12时出生；官方页面未将时间与后来名字逐一对应。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-twins-2021",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0092",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-twins-2021",
+        "label": "Madrid panda twins 2021"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weights_grams",
+      "value": [
+        171.4,
+        137.4
+      ],
+      "source_id": "src-madrid-twins-birth-2021-local",
+      "source_locator": "birth_weights_grams",
+      "source_language": "es",
+      "summary_zh": "双胞胎出生体重分别为171.4克和137.4克；官方资料未明确对应后来名字。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-twins-2021",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0093",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-twins-2021",
+        "label": "Madrid panda twins 2021"
+      },
+      "category": "maternal_care",
+      "predicate": "rotation_care",
+      "value": {
+        "mother_id": "hua-zui-ba",
+        "incubator_rotation": true,
+        "Chinese_reproduction_technicians_present": true
+      },
+      "source_id": "src-madrid-twins-birth-2021-local",
+      "source_locator": "rotation_care",
+      "source_language": "es",
+      "summary_zh": "双胞胎早期采用花嘴巴哺乳与保温箱轮换，并有成都繁育基地技术人员协助。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-twins-2021",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0094",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-twins-2021",
+        "label": "Madrid panda twins 2021"
+      },
+      "category": "growth_measurement",
+      "predicate": "development_at_two_months",
+      "value": {
+        "weights_kg": [
+          3.1,
+          2.8
+        ],
+        "eyes_open": true,
+        "muzzle_fully_pigmented": true
+      },
+      "source_id": "src-madrid-twins-vote-2021-local",
+      "source_locator": "development_at_two_months",
+      "source_language": "es",
+      "summary_zh": "双胞胎两个月龄时体重约3.1和2.8千克，已经睁眼并形成完整面部色素。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-twins-2021",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0095",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-twins-2021",
+        "label": "Madrid panda twins 2021"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_seven_months_kg",
+      "value": ">16 each",
+      "source_id": "src-madrid-twins-seven-months-2022-local",
+      "source_locator": "weight_at_seven_months_kg",
+      "source_language": "es",
+      "summary_zh": "双胞胎七个月龄时体重均超过16千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-twins-2021",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0096",
+      "subject": {
+        "type": "panda_family",
+        "id": "madrid-twins-2021",
+        "label": "Madrid panda twins 2021"
+      },
+      "category": "behaviour",
+      "predicate": "seven_month_behaviour",
+      "value": [
+        "shared games",
+        "nibbled first bamboo leaves",
+        "tested mother's patience"
+      ],
+      "source_id": "src-madrid-twins-seven-months-2022-local",
+      "source_locator": "seven_month_behaviour",
+      "source_language": "es",
+      "summary_zh": "双胞胎七个月龄时会一起玩耍、啃食最初的竹叶，也常考验母亲的耐心。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-twins-2021",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0097",
+      "subject": {
+        "type": "research_programme",
+        "id": "madrid-panda-cooperation-2007",
+        "label": "Madrid giant panda cooperation programme 2007-2024"
+      },
+      "category": "diplomacy",
+      "predicate": "programme_started",
+      "value": {
+        "agreement_year": 2007,
+        "arrival_date": "2007-09-08",
+        "partners": [
+          "Zoo Aquarium Madrid",
+          "Chinese zoo and forestry authorities",
+          "Chengdu Research Base"
+        ]
+      },
+      "source_id": "src-madrid-family-birthdays-2022-local",
+      "source_locator": "programme_started",
+      "source_language": "es",
+      "summary_zh": "2007年合作项目促成冰星和花嘴巴抵达马德里。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-panda-cooperation-2007",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0098",
+      "subject": {
+        "type": "research_programme",
+        "id": "madrid-panda-cooperation-2007",
+        "label": "Madrid giant panda cooperation programme 2007-2024"
+      },
+      "category": "reproduction",
+      "predicate": "successful_offspring_count",
+      "value": 6,
+      "source_id": "src-madrid-family-farewell-2024-local",
+      "source_locator": "successful_offspring_count",
+      "source_language": "es",
+      "summary_zh": "该合作项目在马德里成功繁育六只幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-panda-cooperation-2007",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0099",
+      "subject": {
+        "type": "research_programme",
+        "id": "madrid-panda-cooperation-2007",
+        "label": "Madrid giant panda cooperation programme 2007-2024"
+      },
+      "category": "research",
+      "predicate": "artificial_insemination_partners",
+      "value": [
+        "Madrid Zoo",
+        "Chengdu Research Base",
+        "INIA",
+        "Complutense University of Madrid",
+        "MNCN-CSIC germplasm bank"
+      ],
+      "source_id": "src-madrid-po-dede-birth-2010-deep-local",
+      "source_locator": "artificial_insemination_partners",
+      "source_language": "es",
+      "summary_zh": "人工授精合作涉及马德里动物园、成都基地、INIA、马德里康普顿斯大学和MNCN-CSIC种质资源库。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-panda-cooperation-2007",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0100",
+      "subject": {
+        "type": "research_programme",
+        "id": "madrid-panda-cooperation-2007",
+        "label": "Madrid giant panda cooperation programme 2007-2024"
+      },
+      "category": "conservation",
+      "predicate": "in_situ_habitat_support",
+      "value": "annual funding for reforestation across more than 2.5 million hectares of protected panda forest",
+      "source_id": "src-madrid-chulina-name-2017-local",
+      "source_locator": "in_situ_habitat_support",
+      "source_language": "es",
+      "summary_zh": "项目通过基金会持续支持中国大熊猫栖息地造林，涉及超过250万公顷保护森林。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-panda-cooperation-2007",
+        "conservation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-madrid-0101",
+      "subject": {
+        "type": "research_programme",
+        "id": "madrid-panda-cooperation-2007",
+        "label": "Madrid giant panda cooperation programme 2007-2024"
+      },
+      "category": "husbandry_training",
+      "predicate": "return_transport_2024",
+      "value": {
+        "direct_flight": true,
+        "departure": "2024-02-29",
+        "Chinese_technicians_arrived_early": true,
+        "escorts": [
+          "Madrid keepers",
+          "Chengdu veterinarian and technicians"
+        ]
+      },
+      "source_id": "src-madrid-family-travel-2024-local",
+      "source_locator": "return_transport_2024",
+      "source_language": "es",
+      "summary_zh": "2024年五只返华采用直飞安排，中国技术人员提前到园熟悉个体，并与马德里护理团队共同护送。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "madrid-panda-cooperation-2007",
+        "husbandry_training"
+      ]
+    }
+  ]
+}

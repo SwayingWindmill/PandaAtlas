@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.zoomadrid.com/blog/xing-bao-es-el-nombre-elegido-por-nuestros-internautas-para-la-cria-de-panda",
+  "discovered_at": "2026-07-25T20:43:27.957816+00:00",
+  "image_count": 15,
+  "images": [
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/blog/XING-BAO.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image",
+        "img:src"
+      ],
+      "alt": "Xing Bao es el nombre elegido por nuestros internautas para la cría de panda",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image",
+        "img-fluid"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/Logo_Zoo%20Aquarium%20Madrid_v2.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Zoo Aquarium Madrid",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "cmp-image__image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/Logo_Zoo%20Aquarium%20Madrid.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Zoo Aquarium Madrid",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "cmp-image__image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/mxa/images/00-home-and-highlights/02---highlights/WEB_800x600_Bono%20Verano_Junio26.jpg.transform/rendition-xs/image.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "cmp-image__image"
+      ]
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/blog/IMG_0065.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/blog/IMG_0036.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/sponsor/new/WASA.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "WAZA - World Association of Zoos and Aquariums",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/sponsor/new/EAZA.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "EAZA - European Association of Zoos and Aquaria",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/AIZA.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "AIZA - Asociación Ibérica de Zoos y Acuarios",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/sponsor/new/fundacion_parques_reunidos.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Fundación Parques Reunidos",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/sponsor/logo_iucn_miembro.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "UICN - Unión Internacional para la Conservación de la Naturaleza",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/pam/logos/parques/warner_logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Parque Warner",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/zoo/images/logos/logoPAM.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Parque de Atracciones de Madrid",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/fau/images/logos/Logo_Faunia_Madrid.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Faunia",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.zoomadrid.com/content/dam/mul/images/logos/nuestros-parques/atl/atlantis-logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Atlantis Aquarium",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}
