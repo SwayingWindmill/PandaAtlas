@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.torontozoo.com/press/2017/!newsite.asp?pg=20171013",
+  "discovered_at": "2026-07-25T16:55:05.607741+00:00",
+  "image_count": 8,
+  "images": [
+    {
+      "asset_url": "https://www.torontozoo.com/press/2017/20171013ban.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/banstripes.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2017/20171013i.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2017/20171013i0.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2017/20171013i1.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2017/20171013i2.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2017/20171013i3.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2017/20171013i4.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

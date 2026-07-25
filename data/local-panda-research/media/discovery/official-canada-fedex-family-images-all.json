@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "page_url": "https://newsroom.fedex.com/newsroom/canada/canadas-favourite-panda-family-moves-out-west",
+  "discovered_at": "2026-07-25T17:10:42.406623+00:00",
+  "image_count": 5,
+  "images": [
+    {
+      "asset_url": "https://fedex-dims.brightspotgocdn.com/dims4/default/6aca431/2147483647/strip/true/crop/895x503+0+71/resize/1440x810!/quality/90/?url=https%3A%2F%2Ffedex-static.brightspotgocdn.com%2F38%2Fdd%2Fc44c60bac21e62174c54321f620b%2Fpanda-image-2.jpg",
+      "source_types": [
+        "meta:og:image",
+        "meta:og:image:url",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "og:image:url",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://fedex-dims.brightspotgocdn.com/dims4/default/da47129/2147483647/strip/true/crop/895x504+0+71/resize/1000x563!/format/webp/quality/90/?url=https%3A%2F%2Ffedex-static.brightspotgocdn.com%2F38%2Fdd%2Fc44c60bac21e62174c54321f620b%2Fpanda-image-2.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1000",
+      "height": "563",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://fedex-dims.brightspotgocdn.com/dims4/default/64d4d20/2147483647/strip/true/crop/895x504+0+71/resize/2000x1126!/format/webp/quality/90/?url=https%3A%2F%2Ffedex-static.brightspotgocdn.com%2F38%2Fdd%2Fc44c60bac21e62174c54321f620b%2Fpanda-image-2.jpg",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1000",
+      "height": "563",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://fedex-dims.brightspotgocdn.com/dims4/default/0fb91f0/2147483647/strip/true/crop/895x504+0+71/resize/1000x563!/quality/90/?url=https%3A%2F%2Ffedex-static.brightspotgocdn.com%2F38%2Fdd%2Fc44c60bac21e62174c54321f620b%2Fpanda-image-2.jpg",
+      "source_types": [
+        "source:srcset",
+        "img:src",
+        "img:data-src",
+        "img:srcset"
+      ],
+      "alt": "panda-image-2.jpg",
+      "title": "",
+      "width": "1000",
+      "height": "563",
+      "evidence": [
+        "Image"
+      ]
+    },
+    {
+      "asset_url": "https://fedex-dims.brightspotgocdn.com/dims4/default/f379a11/2147483647/strip/true/crop/895x504+0+71/resize/2000x1126!/quality/90/?url=https%3A%2F%2Ffedex-static.brightspotgocdn.com%2F38%2Fdd%2Fc44c60bac21e62174c54321f620b%2Fpanda-image-2.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "panda-image-2.jpg",
+      "title": "",
+      "width": "1000",
+      "height": "563",
+      "evidence": [
+        "Image"
+      ]
+    }
+  ]
+}

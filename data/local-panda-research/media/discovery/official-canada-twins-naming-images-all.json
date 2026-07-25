@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.torontozoo.com/press/!newsite-Releases.asp?pg=20160307",
+  "discovered_at": "2026-07-25T16:54:38.563423+00:00",
+  "image_count": 3,
+  "images": [
+    {
+      "asset_url": "https://www.torontozoo.com/press/20160307ban.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/20160307i.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/20160307i1.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

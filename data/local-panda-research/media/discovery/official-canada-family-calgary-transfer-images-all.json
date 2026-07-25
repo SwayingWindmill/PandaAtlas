@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.newswire.ca/news-releases/canadas-favourite-panda-family-moves-out-west-677814273.html",
+  "discovered_at": "2026-07-25T16:55:17.548757+00:00",
+  "image_count": 3,
+  "images": [
+    {
+      "asset_url": "https://www.newswire.ca/content/dam/prnewswire/homepage/LIGHT_PRNewswire_By-Cision_Stacked.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Return to PR Newswire homepage",
+      "title": "Return to PR Newswire homepage",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "img-responsive"
+      ]
+    },
+    {
+      "asset_url": "https://www.newswire.ca/content/dam/prnewswire/homepage/MONO_PRNewswire_By-Cision_Stacked.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Cision Canada",
+      "title": "Cision Canada",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "img-responsive"
+      ]
+    },
+    {
+      "asset_url": "https://rt.newswire.ca/rt.gif?NewsItemId=C6545&Transmission_Id=201803240210CANADANWCANADAPR_C6545&DateId=20180324",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

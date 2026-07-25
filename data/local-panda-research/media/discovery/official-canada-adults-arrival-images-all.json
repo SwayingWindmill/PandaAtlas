@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.torontozoo.com/press/!newsite-Releases.asp?pg=20130327",
+  "discovered_at": "2026-07-25T16:56:04.823225+00:00",
+  "image_count": 2,
+  "images": [
+    {
+      "asset_url": "https://www.torontozoo.com/press/weekly/2013/20130327ban.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/weekly/2013/20130327i.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}
