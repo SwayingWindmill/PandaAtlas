@@ -55,9 +55,9 @@ The validator checks JSONL syntax, IDs, source references, timestamps, local-onl
 
 ## Current snapshot
 
-As of 2026-07-25, the vault contains **174 sources** and **1,084 structured records**: 1,071 direct-evidence records and thirteen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 56 individually identified pandas, with no collected individual lacking at least one structured fact record.
+As of 2026-07-25, the vault contains **196 sources** and **1,157 structured records**: 1,144 direct-evidence records and thirteen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 58 individually identified pandas, with no collected individual lacking at least one structured fact record.
 
-The local media layer contains **213 candidates**, **206 downloaded files**, and **916,378,550 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
+The local media layer contains **219 candidates**, **212 downloaded files**, and **916,927,784 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
@@ -66,6 +66,6 @@ The local media layer contains **213 candidates**, **206 downloaded files**, and
 - `2026-07-25-official-followup.jsonl` and `2026-07-25-official-expanded.jsonl` — expanded overseas profiles, recent births, behaviour, husbandry and reproduction follow-up.
 - `2026-07-25-media-derived-facts.jsonl` — reproducible extraction of explicit identity, date, location, behaviour, research, cultural and historical facts from reviewed media candidates.
 - `2026-07-25-xiao-qi-ji-columbus.jsonl` — Xiao Qi Ji official development timeline plus 1992 Columbus Zoo historical-loan evidence.
-- Dedicated official-source batches cover Edinburgh Tian Tian and Yang Guang, Malaysia's panda programme, Beijing Da Di/Gu Gu/Fu Xing, London Chi Chi, Fuzhou Basi, Ocean Park An An/Jia Jia/Le Le, Chiang Mai Chuang Chuang and Lin Hui, Madrid Po and De De, Smithsonian Ling Ling, Memphis Le Le and Ya Ya, San Diego Hua Mei, and Adelaide Wang Wang.
+- Dedicated official-source batches cover Edinburgh Tian Tian and Yang Guang, Malaysia's panda programme, Beijing Da Di/Gu Gu/Fu Xing, London Chi Chi, Fuzhou Basi, Ocean Park An An/Jia Jia/Le Le, Chiang Mai Chuang Chuang and Lin Hui, Madrid Po and De De, Smithsonian Ling Ling, Memphis Le Le and Ya Ya, San Diego Hua Mei, Adelaide Wang Wang, Moscow Ding Ding/Ru Yi/Katyusha, and Vienna Yang Yang.
 
 All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.
