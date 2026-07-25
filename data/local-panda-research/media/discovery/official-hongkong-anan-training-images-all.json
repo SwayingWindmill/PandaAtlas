@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657.html",
+  "discovered_at": "2026-07-25T17:32:43.308326+00:00",
+  "image_count": 10,
+  "images": [
+    {
+      "asset_url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657/images/20241213172725484.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Desensitisation process",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "object-fit-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657/images/20241213172609742.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Meal preparation",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "object-fit-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657/images/20241213172612776.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Mental stimulation",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "object-fit-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657/images/20241213172615409.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Close monitoring",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "object-fit-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657/images/20241213172618763.jpeg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Vital expertise",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "object-fit-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657/images/20241213184755753.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Loving caregivers dote on pandas",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "object-fit-contain"
+      ]
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/common/images/newsArticleBanner/eng/20241213183418281.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "75th anniversary",
+      "title": "",
+      "width": "255",
+      "height": "191",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/images/icon/wac.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Web Accessibility Conformance",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/images/icon/logo_govhk.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "GovHK",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.gov.hk/web/images/icon/logo_hk.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Brand Hong Kong",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

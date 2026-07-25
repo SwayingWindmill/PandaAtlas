@@ -1,0 +1,1626 @@
+{
+  "sources": [
+    {
+      "source_id": "src-chiangmai-linbing-hormone-lab-local",
+      "source_type": "institution_primary_research",
+      "publisher": "Chiang Mai Zoo / Zoological Park Organization of Thailand",
+      "title": "Laboratory of Hormonal Analysis in Animals",
+      "url": "https://chiangmai.zoothailand.org/en/ewt_news.php?n_id=203",
+      "language": "th",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official zoo account of hormone monitoring and the successful artificial insemination that produced Lin Bing in 2009."
+    },
+    {
+      "source_id": "src-chiangmai-linhui-statement-2023-linbing-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Chiang Mai Zoo / Zoological Park Organization of Thailand",
+      "title": "Statement on giant panda Lin Hui",
+      "url": "https://chiangmai.zoothailand.org/ewt_news.php?n_id=1521",
+      "language": "th",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official retrospective confirming Lin Bing's sex, birth date, studbook number and parents."
+    },
+    {
+      "source_id": "src-chiangmai-linbing-return-2013-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Chiang Mai Zoo / Zoological Park Organization of Thailand",
+      "title": "ร่วมเดินทางส่งหลินปิงกลับจีนไปเลือกคู่",
+      "url": "https://chiangmai.zoothailand.org/ewt_news.php?n_id=268",
+      "language": "th",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official Chiang Mai Zoo return-trip announcement for Lin Bing's 28 September 2013 flight to China."
+    },
+    {
+      "source_id": "src-chiangmai-linbing-history-local",
+      "source_type": "institution_primary_profile",
+      "publisher": "Chiang Mai Zoo / Zoological Park Organization of Thailand",
+      "title": "History of Panda in Chiang Mai Zoo",
+      "url": "https://chiangmai.zoothailand.org/ch/ewt_news.php?n_id=207",
+      "language": "zh",
+      "region": "Thailand",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official zoo history covering Lin Bing's Thailand milestone, birthday activities and return obligation."
+    },
+    {
+      "source_id": "src-xinhua-linbing-naming-2009-local",
+      "source_type": "institutional_wire_report",
+      "publisher": "Xinhua via China.org.cn",
+      "title": "New-born giant panda in Thailand named Lin Bing",
+      "url": "https://www.china.org.cn/environment/news/2009-08/10/content_18310990.htm",
+      "language": "en",
+      "region": "Thailand",
+      "authority": "institutional",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Contemporary Xinhua report on Lin Bing's naming vote, name meaning, birth and artificial insemination."
+    },
+    {
+      "source_id": "src-fmprc-linbing-second-birthday-2011-local",
+      "source_type": "government_primary_news",
+      "publisher": "Ministry of Foreign Affairs of the People's Republic of China",
+      "title": "泰国清迈各界隆重庆祝熊猫‘林冰’二岁生日暨中方批准其在泰延期二年活动",
+      "url": "https://www.fmprc.gov.cn/gjhdq_676201/gj_676203/yz_676205/1206_676932/1206x2_676952/201106/t20110603_8000269.shtml",
+      "language": "zh",
+      "region": "Thailand",
+      "authority": "primary_government_portal",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Chinese consular account of Lin Bing's second birthday and approved two-year stay extension."
+    },
+    {
+      "source_id": "src-fmprc-linbing-award-2015-local",
+      "source_type": "government_primary_news",
+      "publisher": "Ministry of Foreign Affairs of the People's Republic of China",
+      "title": "驻清迈总领事巢小良出席清迈动物园庆新春活动",
+      "url": "https://www.fmprc.gov.cn/web/gjhdq_676201/gj_676203/yz_676205/1206_676932/1206x2_676952/201502/t20150223_8000360.shtml",
+      "language": "zh",
+      "region": "Thailand",
+      "authority": "primary_government_portal",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Chinese consular account confirming Lin Bing's silver award in a global returned-panda popularity vote."
+    },
+    {
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_type": "government_primary_news",
+      "publisher": "Ya'an Municipal Bureau of Culture, Radio, Television, Sports and Tourism",
+      "title": "在雅安谈恋爱 在卧龙产下仔 海归大熊猫‘林冰’产下龙凤胎熊猫宝宝",
+      "url": "https://wgtl.yaan.gov.cn/xinwen/show/19774996-a86b-4221-ad7f-c79f2c3be136.html",
+      "language": "zh",
+      "region": "China",
+      "authority": "primary_government_portal",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Government account citing the China Conservation and Research Center for the Giant Panda on Lin Bing's 2015 and 2017 litters."
+    },
+    {
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_type": "government_primary_profile",
+      "publisher": "Ya'an Municipal People's Government",
+      "title": "赠港大熊猫的雅安情缘",
+      "url": "https://www.yaan.gov.cn/mob/article.html?id=98c4c85f-0639-4e1b-9cde-be79fcf298da",
+      "language": "zh",
+      "region": "China",
+      "authority": "primary_government_portal",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official Ya'an lineage profile for the 2019-born An An, explicitly distinguishing him as Lin Bing and Wu Gang's son."
+    },
+    {
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Ocean Park Corporation",
+      "title": "New Wave of Panda Fever Sweeps Through Hong Kong as Two New Giant Pandas Arrive",
+      "url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/new-wave-of-panda-fever-sweeps-through-hong-kong-as-two-new-giant-pandas-arrive",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official Ocean Park arrival profile with transport chronology, weights, personalities, training and quarantine."
+    },
+    {
+      "source_id": "src-hkgov-anan-keke-arrival-2024-local",
+      "source_type": "government_primary_news",
+      "publisher": "Hong Kong Information Services Department",
+      "title": "Pandas warmly welcomed to HK",
+      "url": "https://www.news.gov.hk/eng/2024/09/20240926/20240926_120141_076.html",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary_government_portal",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Government arrival chronology and quarantine plan for An An and Ke Ke."
+    },
+    {
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Ocean Park Corporation",
+      "title": "An An and Ke Ke Make Their Public Debut at Ocean Park",
+      "url": "https://www.oceanpark.com.hk/kr/press-release/an-an-and-ke-ke-make-their-public-debut-at-ocean-park-daily-online-live-broadcast-at",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official public-debut and naming-competition results."
+    },
+    {
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_type": "government_primary_feature",
+      "publisher": "Hong Kong Information Services Department",
+      "title": "Loving caregivers dote on pandas",
+      "url": "https://www.news.gov.hk/eng/2024/12/20241213/20241213_152451_657.html",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary_government_portal",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Government feature on An An and Ke Ke husbandry training, diet, enrichment and health monitoring."
+    },
+    {
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Ocean Park Corporation",
+      "title": "Ocean Park Celebrates An An and Ke Ke's First Year in Hong Kong",
+      "url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/ocean-park-celebrates-an-an-ke-kes-first-year-in-hong-kong-and-national-day",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official first-year update on adaptation, diet, personalities and voluntary medical behaviours."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260725-linbing-0001",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-chiangmai-linhui-statement-2023-linbing-local",
+      "source_locator": "Lin Hui family profile",
+      "source_language": "th",
+      "summary_zh": "林冰为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0002",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2009-05-27",
+      "source_id": "src-chiangmai-linhui-statement-2023-linbing-local",
+      "source_locator": "offspring biography",
+      "source_language": "th",
+      "summary_zh": "林冰于2009年5月27日出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0003",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "birth",
+      "predicate": "birth_place",
+      "value": "Chiang Mai Zoo, Thailand",
+      "source_id": "src-xinhua-linbing-naming-2009-local",
+      "source_locator": "birth background",
+      "source_language": "en",
+      "summary_zh": "林冰出生于泰国清迈动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "chiang-mai"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0004",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "identity",
+      "predicate": "studbook_number",
+      "value": 740,
+      "source_id": "src-chiangmai-linhui-statement-2023-linbing-local",
+      "source_locator": "offspring biography",
+      "source_language": "th",
+      "summary_zh": "林冰的国际大熊猫谱系编号为740。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "studbook"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0005",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "lin-hui",
+        "father_id": "chuang-chuang"
+      },
+      "source_id": "src-chiangmai-linhui-statement-2023-linbing-local",
+      "source_locator": "Lin Hui offspring statement",
+      "source_language": "th",
+      "summary_zh": "林冰的母亲是林惠，父亲是创创。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "parents"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0006",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "milestone",
+      "predicate": "first_giant_panda_born_in_thailand",
+      "value": "2009-05-27",
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "biographical retrospective",
+      "source_language": "zh",
+      "summary_zh": "林冰是第一只在泰国出生的大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "thailand",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0007",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "reproduction",
+      "predicate": "conceived_by_artificial_insemination",
+      "value": {
+        "insemination_date": "2009-02-18",
+        "monitoring": "hormonal analysis"
+      },
+      "source_id": "src-chiangmai-linbing-hormone-lab-local",
+      "source_locator": "successful panda artificial insemination",
+      "source_language": "th",
+      "summary_zh": "清迈动物园通过激素分析监测繁殖周期并成功实施人工授精，林冰由此于2009年出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "artificial-insemination"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0008",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": {
+        "meaning_en": "forest of ice",
+        "wordplay": "Bing resembles the name of Chiang Mai's Ping River"
+      },
+      "source_id": "src-xinhua-linbing-naming-2009-local",
+      "source_locator": "name explanation",
+      "source_language": "en",
+      "summary_zh": "“林冰”可解释为“冰之森林”，其中“冰”的读音也与清迈平河相近。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0009",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "cultural_context",
+      "predicate": "public_naming_vote",
+      "value": {
+        "shortlisted_names": 4,
+        "postcard_votes_approx": 22000000,
+        "winning_votes": 13200000,
+        "winning_share_percent_approx": 60
+      },
+      "source_id": "src-xinhua-linbing-naming-2009-local",
+      "source_locator": "public vote result",
+      "source_language": "en",
+      "summary_zh": "林冰从四个候选名中胜出，命名活动收到约2200万张明信片选票，其中约1320万票投给“林冰”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "naming-vote"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0010",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "diplomacy",
+      "predicate": "stay_extended_in_thailand",
+      "value": {
+        "announcement_date": "2011-05-28",
+        "extension_years": 2
+      },
+      "source_id": "src-fmprc-linbing-second-birthday-2011-local",
+      "source_locator": "extension celebration",
+      "source_language": "zh",
+      "summary_zh": "2011年5月28日，中方正式宣布林冰在泰国的居留期限延长两年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "diplomacy",
+        "extension"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0011",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "milestone",
+      "predicate": "second_birthday_celebration",
+      "value": {
+        "date": "2011-05-27",
+        "cake_weight_kg": 100,
+        "cake_dimensions_m": "2 x 2"
+      },
+      "source_id": "src-fmprc-linbing-second-birthday-2011-local",
+      "source_locator": "birthday event",
+      "source_language": "zh",
+      "summary_zh": "林冰两岁生日时，清迈动物园准备了长宽各2米、重约100公斤的双层生日蛋糕。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "birthday"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0012",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "cultural_context",
+      "predicate": "monthly_fan_birthday_tradition",
+      "value": "fans celebrated on the 27th of each month",
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "Thailand popularity retrospective",
+      "source_language": "zh",
+      "summary_zh": "林冰在泰国期间，粉丝曾在每月27日为她庆祝生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "fans",
+        "cultural-context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0013",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_china",
+      "value": {
+        "date": "2013-09-28",
+        "route": "Chiang Mai-Chengdu",
+        "destination": "China Conservation and Research Center for the Giant Panda"
+      },
+      "source_id": "src-chiangmai-linbing-return-2013-local",
+      "source_locator": "special return trip",
+      "source_language": "th",
+      "summary_zh": "林冰于2013年9月28日乘清迈至成都的特别航班返回中国大熊猫保护研究中心。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "return-to-china"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0014",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "diplomacy",
+      "predicate": "return_delegation",
+      "value": {
+        "delegation_size": 276,
+        "destination_base": "Ya'an Bifengxia Base"
+      },
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "return retrospective",
+      "source_language": "zh",
+      "summary_zh": "林冰返华时由泰国276人组成的送行团全程护送，回到雅安碧峰峡基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "diplomacy",
+        "bifengxia"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0015",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "cultural_context",
+      "predicate": "returned_panda_popularity_award",
+      "value": {
+        "award": "silver",
+        "category": "most popular returned giant panda",
+        "year": 2015
+      },
+      "source_id": "src-fmprc-linbing-award-2015-local",
+      "source_locator": "award presentation",
+      "source_language": "zh",
+      "summary_zh": "2015年，林冰获得全球网络评选“最受欢迎回归大熊猫”银奖。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "award"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0016",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "reproduction",
+      "predicate": "first_litter_2015",
+      "value": {
+        "location": "Ya'an Bifengxia Base",
+        "offspring_count": 2,
+        "parity": "first birth"
+      },
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "previous litter retrospective",
+      "source_language": "zh",
+      "summary_zh": "林冰于2015年在雅安碧峰峡基地首次生产，产下一对双胞胎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "reproduction",
+        "2015-twins"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0017",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "reproduction",
+      "predicate": "natural_mating_2017",
+      "value": {
+        "partners": [
+          "yuan-yuan",
+          "wu-gang"
+        ],
+        "mating_location": "Ya'an Bifengxia Base"
+      },
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "2017 breeding chronology",
+      "source_language": "zh",
+      "summary_zh": "2017年春季，林冰在雅安碧峰峡基地先后与园园和武岗自然交配。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "reproduction",
+        "natural-mating"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0018",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "transfer",
+      "predicate": "moved_to_shenshuping_for_birth",
+      "value": {
+        "date": "2017-03-07",
+        "location": "Wolong Shenshuping Base"
+      },
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "pre-birth transfer",
+      "source_language": "zh",
+      "summary_zh": "完成配种后，林冰于2017年3月7日转到卧龙神树坪基地待产。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "shenshuping"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0019",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "reproduction",
+      "predicate": "second_litter_2017_first_cub",
+      "value": {
+        "date": "2017-07-08",
+        "time": "08:17",
+        "sex": "female",
+        "birth_weight_g": 170
+      },
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "first cub birth",
+      "source_language": "zh",
+      "summary_zh": "2017年7月8日8时17分，林冰产下第一只幼崽，为雌性，出生体重170克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "2017-twins",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0020",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "reproduction",
+      "predicate": "second_litter_2017_second_cub",
+      "value": {
+        "date": "2017-07-08",
+        "time": "15:08",
+        "sex": "male",
+        "birth_weight_g": 159
+      },
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "second cub birth",
+      "source_language": "zh",
+      "summary_zh": "2017年7月8日15时08分，林冰产下第二只幼崽，为雄性，出生体重159克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "2017-twins",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0021",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "maternal_care",
+      "predicate": "twin_rotation_care_2017",
+      "value": "cubs alternated between maternal care and nursery hand-rearing",
+      "source_id": "src-yaan-linbing-twins-2017-local",
+      "source_locator": "postpartum care",
+      "source_language": "zh",
+      "summary_zh": "2017年双胞胎出生后，团队让幼崽轮流由林冰带仔和人工育幼。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "maternal-care",
+        "twin-rotation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0022",
+      "subject": {
+        "type": "panda",
+        "id": "lin-bing",
+        "label": "Lin Bing"
+      },
+      "category": "relationship",
+      "predicate": "mother_of_an_an_hk_2019",
+      "value": {
+        "offspring_id": "an-an-hk-2019",
+        "father_id": "wu-gang"
+      },
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_locator": "An An parentage",
+      "source_language": "zh",
+      "summary_zh": "林冰是2019年出生的大熊猫安安的母亲，父亲为武岗。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "lin-bing",
+        "an-an-hk-2019",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0023",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_locator": "An An profile",
+      "source_language": "zh",
+      "summary_zh": "2019年出生、后来赴香港的安安为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0024",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "birth",
+      "predicate": "birth_month",
+      "value": "2019-06",
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_locator": "An An profile",
+      "source_language": "zh",
+      "summary_zh": "安安出生于2019年6月；官方页面未在该段提供具体日期。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0025",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "lin-bing",
+        "father_id": "wu-gang"
+      },
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_locator": "An An parentage",
+      "source_language": "zh",
+      "summary_zh": "安安的母亲是林冰，父亲是来自宝兴野外的大熊猫武岗。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "parents"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0026",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "alias",
+      "predicate": "former_name",
+      "value": "Lin An An",
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_locator": "An An naming history",
+      "source_language": "zh",
+      "summary_zh": "安安原名“林安安”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "alias"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0027",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "cultural_context",
+      "predicate": "yaan_city_mascot",
+      "value": {
+        "mascot_name": "An An",
+        "designation_date": "2019-10-29"
+      },
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_locator": "Ya'an mascot history",
+      "source_language": "zh",
+      "summary_zh": "2019年10月29日，安安作为雅安市城市吉祥物之一正式发布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "yaan",
+        "mascot"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0028",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "transfer",
+      "predicate": "selected_for_hong_kong",
+      "value": {
+        "year": 2024,
+        "destination": "Ocean Park Hong Kong",
+        "programme": "central government gift to Hong Kong SAR"
+      },
+      "source_id": "src-yaan-anan-lineage-2024-local",
+      "source_locator": "Hong Kong gift lineage profile",
+      "source_language": "zh",
+      "summary_zh": "2024年，安安被选为中央政府赠送香港特别行政区的新一对大熊猫之一。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "hong-kong",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0029",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_hong_kong",
+      "value": {
+        "date": "2024-09-26",
+        "left_dujiangyan": "03:05",
+        "airport_arrival": "11:05",
+        "ocean_park_arrival": "13:20"
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "journey chronology",
+      "source_language": "en",
+      "summary_zh": "安安于2024年9月26日从都江堰出发，11时05分抵达香港机场，13时20分抵达海洋公园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "hong-kong",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0030",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "growth_measurement",
+      "predicate": "arrival_weight",
+      "value": {
+        "date": "2024-09-26",
+        "weight_kg_over": 130
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "individual profile",
+      "source_language": "en",
+      "summary_zh": "安安抵港时体重超过130公斤。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "weight"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0031",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "personality",
+      "predicate": "arrival_temperament",
+      "value": [
+        "energetic",
+        "agile",
+        "adventurous",
+        "enjoys caretaker company"
+      ],
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "getting to know An An",
+      "source_language": "en",
+      "summary_zh": "海洋公园将安安描述为精力充沛、敏捷、富有冒险精神，并喜欢护理员陪伴。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0032",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "husbandry_training",
+      "predicate": "basic_training_mastery",
+      "value": [
+        "targeting",
+        "lying down"
+      ],
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "training profile",
+      "source_language": "en",
+      "summary_zh": "安安抵港前已快速掌握目标训练和躺下等基础护理训练。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0033",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "veterinary_care",
+      "predicate": "arrival_quarantine_and_acclimation",
+      "value": {
+        "minimum_quarantine_days": 30,
+        "acclimation_months": "1-2"
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "quarantine plan",
+      "source_language": "en",
+      "summary_zh": "抵港后，安安接受至少30天隔离检疫，并安排约一至两个月适应新环境。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "quarantine"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0034",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "public_debut",
+      "predicate": "first_public_viewing_hong_kong",
+      "value": {
+        "date": "2024-12-08",
+        "location": "Hong Kong Jockey Club Sichuan Treasures"
+      },
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "public debut",
+      "source_language": "en",
+      "summary_zh": "安安于2024年12月8日在香港赛马会四川奇珍馆首次正式与公众见面。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "public-debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0035",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "cultural_context",
+      "predicate": "hong_kong_naming_competition",
+      "value": {
+        "suggestions_over": 22600,
+        "result": "original name retained"
+      },
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "naming competition result",
+      "source_language": "en",
+      "summary_zh": "香港大熊猫征名活动收到超过22600项建议，评审决定保留“安安”原名。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "naming"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0036",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "name_meaning",
+      "predicate": "hong_kong_name_meaning",
+      "value": {
+        "character": "安",
+        "meaning": "peace and stability"
+      },
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "name explanation",
+      "source_language": "en",
+      "summary_zh": "“安”象征和平与安定，表达对香港稳定和平未来的期望。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "name-meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0037",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "husbandry_training",
+      "predicate": "medical_desensitisation_training",
+      "value": [
+        "fur trimmer vibration",
+        "disinfectant odour and application",
+        "syringe contact on arm",
+        "target-stick movement",
+        "lying down for temperature measurement"
+      ],
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "desensitisation process",
+      "source_language": "en",
+      "summary_zh": "安安接受剃毛器震动、消毒剂和针筒接触等医疗脱敏训练，并能通过目标棒移动及躺下测量体温。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "medical-training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0038",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "preference",
+      "predicate": "documented_food_preferences",
+      "value": [
+        "apples",
+        "carrots"
+      ],
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "nutritious diet",
+      "source_language": "en",
+      "summary_zh": "护理员记录安安偏爱苹果和胡萝卜。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "food-preference"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0039",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "personality",
+      "predicate": "first_year_temperament",
+      "value": [
+        "gentle giant",
+        "sensitive",
+        "tall",
+        "muscular",
+        "hearty appetite",
+        "perceptive to environmental change"
+      ],
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "first-year personality update",
+      "source_language": "en",
+      "summary_zh": "到港一周年时，安安被描述为高大强壮、食欲旺盛但内心敏感，会察觉环境中的细微变化。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0040",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-hk-2019",
+        "label": "An An"
+      },
+      "category": "husbandry_training",
+      "predicate": "voluntary_medical_behaviours_2025",
+      "value": [
+        "blood draws",
+        "injections"
+      ],
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "positive reinforcement update",
+      "source_language": "en",
+      "summary_zh": "到港一周年时，安安已能自愿配合采血和注射。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "an-an-hk-2019",
+        "medical-training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0041",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "individual profile",
+      "source_language": "en",
+      "summary_zh": "可可为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0042",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "milestone",
+      "predicate": "age_at_hong_kong_arrival",
+      "value": {
+        "date": "2024-09-26",
+        "age_years": 5
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "arrival overview",
+      "source_language": "en",
+      "summary_zh": "可可抵港时为5岁。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "age"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0043",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_hong_kong",
+      "value": {
+        "date": "2024-09-26",
+        "left_dujiangyan": "03:05",
+        "airport_arrival": "11:05",
+        "ocean_park_arrival": "13:20"
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "journey chronology",
+      "source_language": "en",
+      "summary_zh": "可可于2024年9月26日与安安一同从都江堰抵达香港海洋公园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "hong-kong",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0044",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "growth_measurement",
+      "predicate": "arrival_weight",
+      "value": {
+        "date": "2024-09-26",
+        "weight_kg_approx": 100
+      },
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "individual profile",
+      "source_language": "en",
+      "summary_zh": "可可抵港时体重约100公斤。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "weight"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0045",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "personality",
+      "predicate": "arrival_temperament",
+      "value": [
+        "calm",
+        "poised",
+        "independent",
+        "fun-loving"
+      ],
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "getting to know Ke Ke",
+      "source_language": "en",
+      "summary_zh": "海洋公园将可可描述为冷静从容、较独立，同时也有爱玩的一面。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0046",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "husbandry_training",
+      "predicate": "arrival_training_progress",
+      "value": "forming bonds with caretakers and learning husbandry training after two months of familiarisation",
+      "source_id": "src-oceanpark-anan-keke-arrival-2024-local",
+      "source_locator": "individual profile",
+      "source_language": "en",
+      "summary_zh": "经过约两个月熟悉，可可逐渐与护理员建立关系并学习护理训练。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0047",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "public_debut",
+      "predicate": "first_public_viewing_hong_kong",
+      "value": {
+        "date": "2024-12-08",
+        "location": "Hong Kong Jockey Club Sichuan Treasures"
+      },
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "public debut",
+      "source_language": "en",
+      "summary_zh": "可可于2024年12月8日在香港赛马会四川奇珍馆首次正式与公众见面。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "public-debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0048",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "cultural_context",
+      "predicate": "hong_kong_naming_competition",
+      "value": {
+        "suggestions_over": 22600,
+        "result": "original name retained"
+      },
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "naming competition result",
+      "source_language": "en",
+      "summary_zh": "香港大熊猫征名活动收到超过22600项建议，评审决定保留“可可”原名。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "naming"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0049",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "name_meaning",
+      "predicate": "hong_kong_name_meaning",
+      "value": {
+        "character": "可",
+        "meaning": "endless possibilities"
+      },
+      "source_id": "src-oceanpark-anan-keke-public-debut-2024-local",
+      "source_locator": "name explanation",
+      "source_language": "en",
+      "summary_zh": "“可”象征无限可能，寄望可可在香港拥有充满潜力的未来。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "name-meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0050",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "preference",
+      "predicate": "documented_food_preference",
+      "value": "wowotou",
+      "source_id": "src-hkgov-anan-keke-care-2024-local",
+      "source_locator": "nutritious diet",
+      "source_language": "en",
+      "summary_zh": "护理员记录窝窝头是可可偏爱的食物。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "food-preference"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0051",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "personality",
+      "predicate": "first_year_temperament",
+      "value": [
+        "night owl",
+        "strong independent streak",
+        "enjoys own space",
+        "approaches gate for back scratches"
+      ],
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "first-year personality update",
+      "source_language": "en",
+      "summary_zh": "到港一周年时，可可被描述为夜猫子、独立且喜欢自己的空间，但会主动到门边请护理员挠背。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-linbing-0052",
+      "subject": {
+        "type": "panda",
+        "id": "ke-ke-hk-2019",
+        "label": "Ke Ke"
+      },
+      "category": "behaviour",
+      "predicate": "first_year_adaptation",
+      "value": {
+        "status": "adapted well",
+        "first_typhoon_response": "calm"
+      },
+      "source_id": "src-oceanpark-anan-keke-anniversary-2025-local",
+      "source_locator": "first-year adaptation update",
+      "source_language": "en",
+      "summary_zh": "可可到港首年适应良好，并平静度过在香港经历的首次台风。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "ke-ke-hk-2019",
+        "adaptation"
+      ]
+    }
+  ]
+}
