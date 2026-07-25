@@ -11,10 +11,10 @@ export interface EditorialHomeProfile {
   name: string;
   alternateName: string | null;
   summary: string;
-  selectionReason: string;
+  birthLabel: string;
+  genderLabel: string;
   currentPlace: string;
-  recordState: string;
-  mediaState: string;
+  media: EditorialHomeHeroMedia | null;
   href: string;
 }
 
@@ -26,6 +26,7 @@ export interface EditorialHomeExploration {
   primaryLabel: string;
   primaryHref: string;
   secondaryLinks: Array<{ label: string; href: string }>;
+  familyPreview?: Array<{ name: string; alternateName: string | null; href: string }>;
 }
 
 export interface EditorialHomeRevision {
@@ -34,7 +35,6 @@ export interface EditorialHomeRevision {
   alternateName: string | null;
   summary: string;
   verifiedLabel: string;
-  releaseLabel: string;
   href: string;
 }
 
@@ -68,11 +68,11 @@ export interface EditorialHomeViewModel {
     searchButton: string;
     atlasLabel: string;
     atlasHref: string;
+    quickLinks: Array<{ label: string; href: string }>;
     media: EditorialHomeHeroMedia | null;
     noMediaLabel: string;
     noMediaTitle: string;
     noMediaBody: string;
-    releaseLabel: string;
   };
   profiles: {
     eyebrow: string;
@@ -102,173 +102,159 @@ export interface EditorialHomeViewModel {
   };
 }
 
-const editorialSelection = ["mei-xiang", "bao-li", "xiao-qi-ji"] as const;
+const editorialSelection = ["bao-li", "qing-bao", "lun-lun", "shin-shin"] as const;
+const quickSearchSelection = ["mei-xiang", "bao-li", "xiao-qi-ji"] as const;
+const familyPreviewSelection = ["mei-xiang", "bao-bao", "bao-li"] as const;
 
 const copy = {
   zh: {
     hero: {
       eyebrow: "吱熊猫 ZhiPanda",
       title: "认识你关注的每一只熊猫",
-      description: "从名字或一张照片开始，了解熊猫的基本资料、家庭关系、生活地点和最近更新。信息清楚易读，也保留可查阅的公开来源。",
+      description: "搜索名字，查看它的图片、家庭关系、生活地点与公开资料。",
       searchLabel: "搜索熊猫",
-      inputLabel: "熊猫名字、别名或拼音",
-      placeholder: "例如：美香、Mei Xiang、meixiang",
+      inputLabel: "输入熊猫名字",
+      placeholder: "例如：美香、花花、福宝",
       searchButton: "找熊猫",
       atlasLabel: "浏览全部熊猫",
       noMediaLabel: "首页熊猫主图",
       noMediaTitle: "今天从一只熊猫开始",
       noMediaBody: "当前发布没有可用于首页的授权图片。搜索、家庭关系、地点和来源仍然可以正常使用。",
-      releaseLabel: "当前公开发布",
     },
     profiles: {
-      eyebrow: "编辑精选",
-      title: "从这些熊猫开始认识",
-      description: "从不同年龄、家庭和生活经历的熊猫出发，看看一份个体资料可以如何继续连接到家族与地点。",
-      selectionDisclosure: "这是编辑选择，不是热度、访问量或受欢迎程度排名。",
-    },
-    selectionReasons: {
-      "mei-xiang": "适合查阅完整身份、长期驻留、迁移事件与多代亲缘。",
-      "bao-li": "适合从第三代身份进入当前机构、地点与母系亲缘。",
-      "xiao-qi-ji": "适合从出生记录、共同回国事件追踪到现居基地。",
+      eyebrow: "精选熊猫",
+      title: "今天认识哪只熊猫？",
+      description: "从四只有公开图片和清晰资料的熊猫开始，再沿家庭与地点继续探索。",
+      selectionDisclosure: "精选用于帮助开始探索，不代表访问量或受欢迎程度排名。",
     },
     explorations: {
-      eyebrow: "关系与地点",
-      title: "不必先知道名字，也能开始探索",
-      description: "从已审核亲缘关系或公开地点精度进入同一份版本化档案。",
+      eyebrow: "继续探索",
+      title: "从家庭和地点认识更多熊猫",
+      description: "一只熊猫的资料，会自然连接到它的家人和生活过的地方。",
       relationships: {
-        eyebrow: "从关系开始",
-        title: "沿美香家族查看父母、子女与代际",
-        body: "结构化谱系区分已确认、暂定和不可公开的关系，并保留每条亲本断言的来源。",
-        primaryLabel: "打开结构化谱系",
-        secondary: "查看宝力档案",
+        eyebrow: "看看它们的家庭",
+        title: "从美香到宝宝，再到宝力",
+        body: "沿三代母系关系继续查看父母、子女、兄弟姐妹与来源。",
+        primaryLabel: "查看完整家庭关系",
+        secondary: "认识宝力",
       },
       places: {
-        eyebrow: "从地点开始",
-        title: "从机构与场所查看当前及历史驻留",
-        body: "地图、机构和场所页面保持组织身份与物理地点分离，不从国家级或地区级记录推断精确坐标。",
-        primaryLabel: "打开结构化地图",
-        institution: "史密森国家动物园机构",
-        place: "卧龙神树坪基地场所",
+        eyebrow: "看看它们在哪里",
+        title: "从动物园与保护基地寻找熊猫",
+        body: "查看当前和历史驻留地点；公开记录精度不足时，不推测精确坐标。",
+        primaryLabel: "打开熊猫地图",
+        institution: "史密森国家动物园",
+        place: "卧龙神树坪基地",
       },
     },
     revisions: {
-      eyebrow: "最近档案修订",
-      title: "查看本次公开发布整理了什么",
-      description: "修订摘要直接来自已发布记录，并与最后核实日期和公开 Release 绑定。",
-      empty: "当前公开发布没有可展示的本地化修订摘要。",
+      eyebrow: "最近更新",
+      title: "刚刚补充的熊猫资料",
+      description: "直接查看每只熊猫新增或修订了什么。",
+      empty: "当前没有可展示的最近更新。",
       verified: "最后核实",
-      release: "公开发布",
     },
     method: {
-      eyebrow: "档案方法",
-      title: "先说明证据，再展示结论",
-      description: "ZhiPanda 不用生成式故事、来源不明图片或静默示例数据补齐档案。证据不足时，页面会明确显示未知、部分可用或不可用。",
+      eyebrow: "资料原则",
+      title: "清楚、可靠，也诚实面对未知",
+      description: "每条关键资料都保留来源；不确定关系会明确标记，没有授权图片时不会用其他熊猫替代。",
       items: [
         {
-          title: "稳定身份与双语解析",
-          body: "中文名、英文名、拼音、历史拼写与外部公开标识解析到同一个稳定身份；切换语言不会切换事实版本。",
+          title: "资料注明来源",
+          body: "关键事实可以继续查看公开来源与最后核实时间。",
         },
         {
-          title: "来源、精度与修订同时公开",
-          body: "关键结论保留来源、最后核实时间、地点精度、事实状态和公开版本，避免把不确定信息写成确定事实。",
+          title: "不确定关系明确标记",
+          body: "确认、暂定、争议与已取代状态不会混写成确定事实。",
         },
         {
-          title: "没有授权媒体也能完成任务",
-          body: "搜索、身份、亲缘、驻留、迁移、来源与修订不依赖英雄图片；无许可媒体使用设计化空状态。",
+          title: "不使用替代照片",
+          body: "没有该熊猫的授权图片时，页面会诚实显示无图状态。",
         },
       ],
     },
     labels: {
-      complete: "首轮完整档案",
-      partial: "部分公开档案",
-      noMedia: "无授权媒体",
-      sourceMedia: "仅来源链接",
-      licensedMedia: "已许可媒体",
       unknownPlace: "现居地点未公开",
       countryChina: "中国（国家级记录）",
+      male: "雄性",
+      female: "雌性",
+      unknownGender: "性别未公开",
+      unknownBirth: "出生日期未公开",
     },
   },
   en: {
     hero: {
       eyebrow: "ZhiPanda",
       title: "Discover the pandas you care about",
-      description: "Start with a name or a photo, then explore each panda's profile, family, places, and recent updates. The information stays approachable while public sources remain easy to inspect.",
+      description: "Search a name, then explore its images, family, places, and public profile.",
       searchLabel: "Search pandas",
-      inputLabel: "Panda name, alias, or pinyin",
-      placeholder: "For example: Mei Xiang, 美香, meixiang",
+      inputLabel: "Enter a panda name",
+      placeholder: "For example: Mei Xiang, Bao Li, Fu Bao",
       searchButton: "Find a panda",
       atlasLabel: "Browse all pandas",
       noMediaLabel: "Homepage panda image",
       noMediaTitle: "Start with one panda today",
       noMediaBody: "This release has no licensed image available for the Home. Search, family relationships, places, and sources remain fully usable.",
-      releaseLabel: "Current public release",
     },
     profiles: {
-      eyebrow: "Editorial selections",
-      title: "Three ways into the archive",
-      description: "Editors selected these profiles for distinct, explainable research tasks across identity, lineage, movement, and place.",
-      selectionDisclosure: "These are editorial selections, not rankings by popularity, traffic, or engagement.",
-    },
-    selectionReasons: {
-      "mei-xiang": "Review a complete identity, long-term residencies, transfer events, and multigenerational lineage.",
-      "bao-li": "Enter through a third-generation identity connected to a current institution, place, and maternal lineage.",
-      "xiao-qi-ji": "Trace a birth record and shared return event through to the current base.",
+      eyebrow: "Featured pandas",
+      title: "Which panda will you meet today?",
+      description: "Start with four pandas that have public images and clear profiles, then continue through family and place.",
+      selectionDisclosure: "These selections help people start exploring; they are not popularity or traffic rankings.",
     },
     explorations: {
-      eyebrow: "Relationships and places",
-      title: "Begin exploring without knowing a name",
-      description: "Enter the same versioned archive through reviewed relationships or public location precision.",
+      eyebrow: "Keep exploring",
+      title: "Discover more through family and place",
+      description: "One panda naturally connects to its relatives and the places where it has lived.",
       relationships: {
-        eyebrow: "Start with relationships",
-        title: "Follow Mei Xiang's family across parents, children, and generations",
-        body: "Structured lineage distinguishes confirmed, tentative, and unavailable relationships while retaining the source path for each parentage assertion.",
-        primaryLabel: "Open structured lineage",
-        secondary: "Open Bao Li's profile",
+        eyebrow: "Meet their family",
+        title: "From Mei Xiang to Bao Bao to Bao Li",
+        body: "Follow three maternal generations, then continue to parents, children, siblings, and sources.",
+        primaryLabel: "See the full family",
+        secondary: "Meet Bao Li",
       },
       places: {
-        eyebrow: "Start with places",
-        title: "Review current and historical residencies by institution and place",
-        body: "Map, institution, and place pages keep organization identity separate from physical place and never infer exact coordinates from country- or locality-level records.",
-        primaryLabel: "Open structured map",
-        institution: "Smithsonian institution",
-        place: "Wolong Shenshuping place",
+        eyebrow: "See where they live",
+        title: "Find pandas through zoos and conservation bases",
+        body: "Explore current and historical residencies without inferring precise coordinates from coarse public records.",
+        primaryLabel: "Open the panda map",
+        institution: "Smithsonian National Zoo",
+        place: "Wolong Shenshuping Base",
       },
     },
     revisions: {
-      eyebrow: "Recent archive revisions",
-      title: "See what this public release reviewed",
-      description: "Revision summaries come directly from published records and remain bound to their last verification date and public release.",
-      empty: "This public release contains no localized revision summaries to display.",
+      eyebrow: "Recent updates",
+      title: "Newly added panda information",
+      description: "See what was added or revised for each panda.",
+      empty: "There are no recent localized updates to show.",
       verified: "Last verified",
-      release: "Public release",
     },
     method: {
-      eyebrow: "Archive method",
-      title: "Evidence before conclusions",
-      description: "ZhiPanda does not complete profiles with generated stories, unverified imagery, or silent demo data. When evidence is insufficient, the interface says unknown, partial, or unavailable.",
+      eyebrow: "Information principles",
+      title: "Clear, reliable, and honest about uncertainty",
+      description: "Key information keeps its sources, uncertain relationships are labelled, and missing licensed images are never replaced with another panda.",
       items: [
         {
-          title: "Stable identity and bilingual resolution",
-          body: "Chinese names, English names, pinyin, historic spellings, and external public identifiers resolve to one stable identity. Changing language does not change the fact release.",
+          title: "Information includes sources",
+          body: "Key facts link to public sources and verification dates.",
         },
         {
-          title: "Sources, precision, and revisions together",
-          body: "Key conclusions retain sources, verification dates, location precision, fact status, and release identity so uncertainty is not presented as certainty.",
+          title: "Uncertainty is labelled",
+          body: "Confirmed, tentative, disputed, and superseded states remain distinct.",
         },
         {
-          title: "The task works without licensed media",
-          body: "Search, identity, lineage, residency, movement, sources, and revisions do not depend on hero imagery. Designed empty states replace unlicensed media.",
+          title: "No substitute photos",
+          body: "When no licensed image exists, the profile shows an honest no-image state.",
         },
       ],
     },
     labels: {
-      complete: "Complete first-pass profile",
-      partial: "Partial public profile",
-      noMedia: "No licensed media",
-      sourceMedia: "Source link only",
-      licensedMedia: "Licensed media",
       unknownPlace: "Current place not published",
       countryChina: "China (country-level record)",
+      male: "Male",
+      female: "Female",
+      unknownGender: "Sex not published",
+      unknownBirth: "Birth date not published",
     },
   },
 } as const;
@@ -313,6 +299,21 @@ function formatDate(value: string | null, locale: PublicLocale): string {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
+function birthLabel(panda: PandaDetail, locale: PublicLocale): string {
+  if (!panda.birth_date) return copy[locale].labels.unknownBirth;
+  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en", {
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${panda.birth_date}T00:00:00Z`));
+}
+
+function genderLabel(panda: PandaDetail, locale: PublicLocale): string {
+  const labels = copy[locale].labels;
+  if (panda.gender === "male") return labels.male;
+  if (panda.gender === "female") return labels.female;
+  return labels.unknownGender;
+}
+
 function facilityName(
   facility: PublicFacilitySummary | undefined,
   locale: PublicLocale,
@@ -333,13 +334,6 @@ function currentPlace(
   const coarse = panda.current_place?.coarse_location ?? panda.current_location;
   if (coarse === "China") return t.countryChina;
   return coarse ?? t.unknownPlace;
-}
-
-function mediaLabel(panda: PandaDetail, locale: PublicLocale): string {
-  const t = copy[locale].labels;
-  if (panda.media_release?.license_state === "licensed") return t.licensedMedia;
-  if (panda.media_release?.license_state === "source_link_only") return t.sourceMedia;
-  return t.noMedia;
 }
 
 function httpsUrl(value: string | null | undefined): string | null {
@@ -405,13 +399,37 @@ export function buildEditorialHomeViewModel(
       name: name.display,
       alternateName: name.alternate,
       summary: localizedText(panda.localized_content, locale) ?? panda.intro ?? name.display,
-      selectionReason: t.selectionReasons[slug],
+      birthLabel: birthLabel(panda, locale),
+      genderLabel: genderLabel(panda, locale),
       currentPlace: currentPlace(panda, facilitiesById, locale),
-      recordState: panda.record_tier === "complete_first_pass" ? t.labels.complete : t.labels.partial,
-      mediaState: mediaLabel(panda, locale),
+      media: buildHeroMedia(panda, locale),
       href: `/${locale}/atlas/${panda.slug}`,
     }];
   });
+
+  const quickLinks = quickSearchSelection.flatMap((slug) => {
+    const panda = pandasBySlug.get(slug);
+    if (!panda) return [];
+    const name = profileName(panda, locale);
+    return [{ label: name.display, href: `/${locale}/atlas?q=${encodeURIComponent(name.display)}` }];
+  });
+
+  const familyCandidates = familyPreviewSelection.flatMap((slug) => {
+    const panda = pandasBySlug.get(slug);
+    return panda ? [panda] : [];
+  });
+  const familyPreview = familyCandidates.length === 3
+    && familyCandidates[1].mother_id === familyCandidates[0].id
+    && familyCandidates[2].mother_id === familyCandidates[1].id
+    ? familyCandidates.map((panda) => {
+        const name = profileName(panda, locale);
+        return {
+          name: name.display,
+          alternateName: name.alternate,
+          href: `/${locale}/atlas/${panda.slug}`,
+        };
+      })
+    : [];
 
   const revisions = envelope.data.pandas
     .flatMap((panda) => {
@@ -428,7 +446,6 @@ export function buildEditorialHomeViewModel(
           alternateName: name.alternate,
           summary,
           verifiedLabel: `${t.revisions.verified}: ${formatDate(verifiedAt, locale)}`,
-          releaseLabel: `${t.revisions.release}: ${panda.public_revision.data_version}`,
           href: `/${locale}/atlas/${panda.slug}`,
         },
       }];
@@ -446,8 +463,8 @@ export function buildEditorialHomeViewModel(
       ...t.hero,
       searchAction: `/${locale}/atlas`,
       atlasHref: `/${locale}/atlas`,
+      quickLinks,
       media: heroMedia,
-      releaseLabel: `${t.hero.releaseLabel} · ${envelope.release.id} · Public Schema ${envelope.release.schemaVersion}`,
     },
     profiles: {
       ...t.profiles,
@@ -468,6 +485,7 @@ export function buildEditorialHomeViewModel(
           secondaryLinks: [
             { label: t.explorations.relationships.secondary, href: `/${locale}/atlas/bao-li` },
           ],
+          familyPreview: familyPreview.length ? familyPreview : undefined,
         },
         {
           id: "places",

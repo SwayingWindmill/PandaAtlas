@@ -3,7 +3,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   Building2,
-  CheckCircle2,
   MapPinned,
   Network,
   Search,
@@ -70,6 +69,11 @@ export function EditorialHomePage({
                 <button type="submit">{view.hero.searchButton}</button>
               </div>
             </form>
+            <div className="pa-home-quick-links" aria-label={locale === "zh" ? "快速搜索" : "Quick searches"}>
+              {view.hero.quickLinks.map((link) => (
+                <Link key={link.href} href={route(link.href)}>{link.label}</Link>
+              ))}
+            </div>
             <Link href={route(view.hero.atlasHref)} className="pa-text-link">
               {view.hero.atlasLabel}<ArrowRight aria-hidden="true" />
             </Link>
@@ -110,27 +114,38 @@ export function EditorialHomePage({
             </div>
             <p>{view.profiles.description}</p>
           </header>
-          <p className="pa-home-disclosure"><CheckCircle2 aria-hidden="true" />{view.profiles.selectionDisclosure}</p>
+          <p className="pa-home-disclosure">{view.profiles.selectionDisclosure}</p>
 
           <div className="pa-home-profile-stage">
-            {view.profiles.items.map((profile, index) => (
-              <article key={profile.id} className="pa-home-profile" data-featured={index === 0 ? "primary" : "supporting"}>
-                <div className="pa-home-profile-identity" aria-hidden="true">
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{profile.name.slice(0, 1)}</strong>
+            {view.profiles.items.map((profile) => (
+              <article key={profile.id} className="pa-home-profile">
+                <div className="pa-home-profile-media">
+                  <LicensedMediaFigure
+                    locale={locale}
+                    variant="card"
+                    src={profile.media?.src ?? null}
+                    srcSet={profile.media?.srcSet}
+                    sizes="(min-width: 1100px) 24vw, (min-width: 640px) 48vw, 100vw"
+                    width={profile.media?.width}
+                    height={profile.media?.height}
+                    alt={profile.media?.alt ?? profile.name}
+                    credit={profile.media?.credit}
+                    rights={profile.media?.rights}
+                    sourceUrl={profile.media?.sourceUrl}
+                    fallbackTitle={locale === "zh" ? "暂无授权图片" : "No licensed image"}
+                    fallbackBody={locale === "zh" ? "不会使用其他熊猫的照片替代。" : "Another panda is never used as a substitute."}
+                    testId={`featured-panda-${profile.slug}`}
+                  />
                 </div>
                 <div className="pa-home-profile-copy">
-                  <p className="pa-home-profile-state">{profile.recordState} · {profile.mediaState}</p>
+                  <p className="pa-home-profile-meta">{profile.birthLabel} · {profile.genderLabel}</p>
                   <h3><Link href={route(profile.href)}>{profile.name}</Link></h3>
                   {profile.alternateName ? <p className="pa-home-profile-alternate">{profile.alternateName}</p> : null}
-                  <p>{profile.summary}</p>
-                  <p className="pa-home-profile-reason">{profile.selectionReason}</p>
-                  <div className="pa-home-profile-footer">
-                    <span>{profile.currentPlace}</span>
-                    <Link href={route(profile.href)} aria-label={`${view.hero.atlasLabel}: ${profile.name}`}>
-                      <ArrowRight aria-hidden="true" />
-                    </Link>
-                  </div>
+                  <p className="pa-home-profile-place">{profile.currentPlace}</p>
+                  <p className="pa-home-profile-summary">{profile.summary}</p>
+                  <Link href={route(profile.href)} className="pa-home-profile-open" aria-label={`${view.hero.atlasLabel}: ${profile.name}`}>
+                    {locale === "zh" ? "认识它" : "Meet this panda"}<ArrowRight aria-hidden="true" />
+                  </Link>
                 </div>
               </article>
             ))}
@@ -160,6 +175,19 @@ export function EditorialHomePage({
                     <p className="pa-home-exploration-eyebrow">{item.eyebrow}</p>
                     <h3>{item.title}</h3>
                     <p>{item.body}</p>
+                    {item.familyPreview?.length ? (
+                      <div className="pa-home-family-preview" aria-label={locale === "zh" ? "美香家族三代预览" : "Three-generation Mei Xiang family preview"}>
+                        {item.familyPreview.map((member, index) => (
+                          <div key={member.href} className="pa-home-family-step">
+                            {index ? <span className="pa-home-family-connector" aria-hidden="true">→</span> : null}
+                            <Link href={route(member.href)}>
+                              <strong>{member.name}</strong>
+                              {member.alternateName ? <span>{member.alternateName}</span> : null}
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                     <Link href={route(item.primaryHref)} className="pa-home-primary-link">
                       {item.primaryLabel}<ArrowRight aria-hidden="true" />
                     </Link>
@@ -204,7 +232,6 @@ export function EditorialHomePage({
                     <p>{revision.summary}</p>
                     <div className="pa-home-revision-meta">
                       <span>{revision.verifiedLabel}</span>
-                      <span>{revision.releaseLabel}</span>
                     </div>
                   </article>
                 </li>
@@ -223,13 +250,16 @@ export function EditorialHomePage({
             <h2 id="home-method-title">{view.method.title}</h2>
             <p>{view.method.description}</p>
           </div>
-          <PublicDeliveryNotice
-            locale={locale}
-            release={release}
-            delivery={delivery}
-            coverage={coverage}
-            localeDelivery={localeDelivery}
-          />
+          <details className="pa-home-release-details">
+            <summary>{locale === "zh" ? "数据与版本信息" : "Data and release information"}</summary>
+            <PublicDeliveryNotice
+              locale={locale}
+              release={release}
+              delivery={delivery}
+              coverage={coverage}
+              localeDelivery={localeDelivery}
+            />
+          </details>
           <div className="pa-home-method-list">
             {view.method.items.map((item, index) => (
               <article key={item.title}>
