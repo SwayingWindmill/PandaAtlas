@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 450,
-  "pandas_with_media": 101,
+  "candidate_count": 463,
+  "pandas_with_media": 102,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -29,20 +29,6 @@
         "media_candidate": 2
       },
       "coverage_gap_score": -6
-    },
-    {
-      "subject_id": "long-hui",
-      "subject_label": "Long Hui",
-      "media_count": 5,
-      "record_count": 12,
-      "direct_record_count": 12,
-      "category_count": 3,
-      "categories": {
-        "location": 2,
-        "media_candidate": 5,
-        "milestone": 5
-      },
-      "coverage_gap_score": -17
     },
     {
       "subject_id": "lin-hui",
@@ -74,6 +60,24 @@
         "media_candidate": 5,
         "milestone": 5,
         "sex": 5
+      },
+      "coverage_gap_score": -34
+    },
+    {
+      "subject_id": "yuan-yuan-vienna",
+      "subject_label": "Yuan Yuan",
+      "media_count": 2,
+      "record_count": 10,
+      "direct_record_count": 10,
+      "category_count": 7,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "location": 1,
+        "media_candidate": 2,
+        "milestone": 2,
+        "personality": 1,
+        "transfer": 2
       },
       "coverage_gap_score": -34
     },
@@ -873,6 +877,28 @@
       "coverage_gap_score": -63
     },
     {
+      "subject_id": "fu-feng",
+      "subject_label": "福凤",
+      "media_count": 8,
+      "record_count": 27,
+      "direct_record_count": 27,
+      "category_count": 11,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "distinguishing_feature": 1,
+        "growth_measurement": 1,
+        "location": 3,
+        "media_candidate": 8,
+        "milestone": 6,
+        "name_meaning": 1,
+        "personality": 2,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -63
+    },
+    {
       "subject_id": "jiu-jiu-madrid",
       "subject_label": "jiu-jiu-madrid",
       "media_count": 7,
@@ -1034,28 +1060,6 @@
       "coverage_gap_score": -64
     },
     {
-      "subject_id": "fu-feng",
-      "subject_label": "福凤",
-      "media_count": 7,
-      "record_count": 26,
-      "direct_record_count": 26,
-      "category_count": 11,
-      "categories": {
-        "behaviour": 2,
-        "birth": 1,
-        "distinguishing_feature": 1,
-        "growth_measurement": 1,
-        "location": 3,
-        "media_candidate": 7,
-        "milestone": 6,
-        "name_meaning": 1,
-        "personality": 2,
-        "sex": 1,
-        "transfer": 1
-      },
-      "coverage_gap_score": -65
-    },
-    {
       "subject_id": "wang-wang",
       "subject_label": "Wang Wang",
       "media_count": 4,
@@ -1150,6 +1154,30 @@
       "coverage_gap_score": -67
     },
     {
+      "subject_id": "fu-ban",
+      "subject_label": "福伴",
+      "media_count": 8,
+      "record_count": 28,
+      "direct_record_count": 28,
+      "category_count": 13,
+      "categories": {
+        "behaviour": 2,
+        "birth": 1,
+        "cultural_context": 1,
+        "distinguishing_feature": 1,
+        "enrichment": 1,
+        "growth_measurement": 1,
+        "location": 3,
+        "media_candidate": 8,
+        "milestone": 6,
+        "name_meaning": 1,
+        "personality": 1,
+        "sex": 1,
+        "transfer": 1
+      },
+      "coverage_gap_score": -70
+    },
+    {
       "subject_id": "le-le-memphis",
       "subject_label": "Le Le",
       "media_count": 5,
@@ -1170,28 +1198,6 @@
         "sex": 1,
         "transfer": 1,
         "veterinary_care": 2
-      },
-      "coverage_gap_score": -70
-    },
-    {
-      "subject_id": "yang-yang-vienna",
-      "subject_label": "Yang Yang",
-      "media_count": 3,
-      "record_count": 21,
-      "direct_record_count": 21,
-      "category_count": 11,
-      "categories": {
-        "behaviour": 2,
-        "birth": 1,
-        "location": 3,
-        "maternal_care": 4,
-        "media_candidate": 3,
-        "milestone": 2,
-        "origin": 1,
-        "preference": 1,
-        "relationship": 2,
-        "sex": 1,
-        "transfer": 1
       },
       "coverage_gap_score": -70
     },
@@ -1265,30 +1271,6 @@
         "vocalisation": 1
       },
       "coverage_gap_score": -71
-    },
-    {
-      "subject_id": "fu-ban",
-      "subject_label": "福伴",
-      "media_count": 7,
-      "record_count": 27,
-      "direct_record_count": 27,
-      "category_count": 13,
-      "categories": {
-        "behaviour": 2,
-        "birth": 1,
-        "cultural_context": 1,
-        "distinguishing_feature": 1,
-        "enrichment": 1,
-        "growth_measurement": 1,
-        "location": 3,
-        "media_candidate": 7,
-        "milestone": 6,
-        "name_meaning": 1,
-        "personality": 1,
-        "sex": 1,
-        "transfer": 1
-      },
-      "coverage_gap_score": -72
     },
     {
       "subject_id": "chulina",
@@ -2204,6 +2186,34 @@
       "coverage_gap_score": -112
     },
     {
+      "subject_id": "yang-yang-vienna",
+      "subject_label": "Yang Yang",
+      "media_count": 11,
+      "record_count": 45,
+      "direct_record_count": 45,
+      "category_count": 17,
+      "categories": {
+        "appearance": 2,
+        "behaviour": 4,
+        "birth": 1,
+        "diet": 1,
+        "husbandry_training": 1,
+        "location": 4,
+        "maternal_care": 4,
+        "media_candidate": 11,
+        "milestone": 7,
+        "name_meaning": 1,
+        "origin": 1,
+        "personality": 1,
+        "preference": 1,
+        "relationship": 2,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -114
+    },
+    {
       "subject_id": "sheng-yi",
       "subject_label": "Sheng Yi",
       "media_count": 20,
@@ -2228,6 +2238,38 @@
         "transfer": 1
       },
       "coverage_gap_score": -125
+    },
+    {
+      "subject_id": "long-hui",
+      "subject_label": "Long Hui",
+      "media_count": 11,
+      "record_count": 49,
+      "direct_record_count": 49,
+      "category_count": 21,
+      "categories": {
+        "appearance": 1,
+        "behaviour": 1,
+        "birth": 1,
+        "cultural_context": 1,
+        "death": 3,
+        "diet": 1,
+        "growth_measurement": 1,
+        "health": 4,
+        "location": 2,
+        "maternal_care": 1,
+        "media_candidate": 11,
+        "milestone": 10,
+        "name_meaning": 1,
+        "origin": 1,
+        "personality": 1,
+        "relationship": 1,
+        "reproduction": 3,
+        "research": 1,
+        "sex": 1,
+        "transfer": 1,
+        "veterinary_care": 2
+      },
+      "coverage_gap_score": -134
     },
     {
       "subject_id": "xiao-qi-ji",
