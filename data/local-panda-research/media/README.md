@@ -34,7 +34,7 @@ python3 scripts/research/discover_official_page_images.py --page-url <official-p
 
 ## Current snapshot
 
-As of 2026-07-26, the vault contains **397 candidates**. **390 media files** are present locally, totalling **990,198,426 bytes** (about 990.2 MB); seven URLs remain failed. Four are earlier historic remote-asset failures, and three are traceable San Diego Zoo Hua Mei image URLs whose retired host now presents a TLS certificate for a different hostname. TLS verification is not disabled, and the failed candidates remain as replacement leads rather than being removed.
+As of 2026-07-26, the vault contains **437 candidates**. **430 media files** are present locally, totalling **1,021,682,111 bytes** (about 1.02 GB); seven URLs remain failed. Four are earlier historic remote-asset failures, and three are traceable San Diego Zoo Hua Mei image URLs whose retired host now presents a TLS certificate for a different hostname. TLS verification is not disabled, and the failed candidates remain as replacement leads rather than being removed.
 
 The full Commons queue contains 1,057 search tasks covering 799 pandas that still need image discovery. Fifty-five bounded Commons batches have been recorded. Each contains at most eight tasks, preserves response fixtures, records failed task IDs, and skips previously processed task IDs and duplicate query text. As the Commons long tail became low-yield, collection expanded to official zoo pages, government archives, institutional press resources, library collections, and public-domain historical repositories.
 

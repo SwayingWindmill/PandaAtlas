@@ -1,0 +1,1816 @@
+{
+  "sources": [
+    {
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Feature: Panda family's nanny daddy in Malaysia",
+      "url": "https://english.news.cn/20220903/ef64df9dcc16434b8f0f7473fd3a5144/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Individual appearance and personality, diet, dental care, keeper routines and Nuan Nuan's Nanjing residence."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant panda ambassadors mark 17th birthday in Malaysia",
+      "url": "https://english.news.cn/20230823/11dbad6021dd4b4fac74c4657fd3b7c5/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Adult birthdays, three-cub breeding outcome and birthday enrichment."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-cubs-return-2023-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "2 giant panda cubs born in Malaysia return to China",
+      "url": "https://english.news.cn/20230830/d36c58e56e85430e9e96505a585499b2/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Yi Yi and Sheng Yi names, ages, return, pandemic delay and Zoo Negara farewell statement."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "3rd locally born giant panda cub in Malaysia named Sheng Yi",
+      "url": "https://english.news.cn/20220525/ad7cc438cec24f76839ce2dc9ba9038e/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Sheng Yi naming, alternate birth date, weight, public debut and climbing behaviour."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-shengyi-birthday-2022-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant panda Sheng Yi is 1 year old",
+      "url": "https://english.news.cn/20220601/ab215d02ae0e4c5eb8ef78a7bed23a25/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "First-birthday enrichment and mother-cub interaction."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-shengyi-birthday-2023-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant panda Sheng Yi celebrates 2nd birthday in Malaysia",
+      "url": "https://english.news.cn/20230601/814b207966074d7ab93f57240f49c886/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Second-birthday food, gifts and behaviour."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-nuannuan-nanjing-2024-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant pandas attract visitors in Nanjing tourist resort",
+      "url": "https://english.news.cn/20241202/e35b4b1ccfb0409aa543c97cb1eafaad/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Nuan Nuan's documented Nanjing residence and December 2024 activity."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-parents-farewell-2025-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Malaysians bid tearful farewell to giant panda duo Xing Xing, Liang Liang",
+      "url": "https://english.news.cn/asiapacific/20250518/e8d1d0f8d87c4d56a20d253b5d719f95/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Completed adult-pair departure after 11 years and public-diplomacy impact."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-parents-bifengxia-2025-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Returned giant panda pair from Malaysia seen in Ya'an",
+      "url": "https://english.news.cn/20250519/bac30f37c0e84ca4a960b90981a59c1c/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Arrival at Bifengxia, domestic names, feeding and minimum quarantine period."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-care-2022-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant pandas prosper under tender care of Malaysian keepers",
+      "url": "https://english.news.cn/20220824/5092f6203e694cad84807e1dff22b573/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Bamboo selection, climate control, health checks, supplementary foods and daily care."
+    },
+    {
+      "source_id": "src-xinhua-malaysia-family-2023-local",
+      "source_type": "state_media_primary_report",
+      "publisher": "Xinhua",
+      "title": "Zoo star panda family attracts huge attention in Malaysia",
+      "url": "https://english.news.cn/20230312/601f1d2e06464416a47751be1c40da80/c.html",
+      "language": "en",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Family composition and identity-confirmed individual observations."
+    },
+    {
+      "source_id": "src-malaysia-nres-yi-yi-naming-2019",
+      "source_type": "government_primary",
+      "publisher": "Malaysia Ministry of Natural Resources and Environment",
+      "title": "Yi Yi named for friendship",
+      "url": "https://www.nres.gov.my/ms-my/pustakamedia/Lists/Papar-Berita.aspx?ID=++++910",
+      "language": "ms",
+      "region": "Malaysia and China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official Malaysian ministry announcement of Yi Yi's name and meaning."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0001",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-malaysia-nres-panda-renaming-2014",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "兴兴为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0002",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2006-08-23",
+      "source_id": "src-bernama-malaysia-programme-2024",
+      "source_locator": "birth_date",
+      "source_language": "en",
+      "summary_zh": "兴兴出生于2006年8月23日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0003",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Wolong Panda Centre, Sichuan",
+      "source_id": "src-bernama-malaysia-programme-2024",
+      "source_locator": "birthplace",
+      "source_language": "en",
+      "summary_zh": "兴兴出生于四川卧龙大熊猫中心。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0004",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "alias",
+      "predicate": "original_name",
+      "value": "Fu Wa",
+      "source_id": "src-malaysia-nres-panda-renaming-2014",
+      "source_locator": "original_name",
+      "source_language": "en",
+      "summary_zh": "兴兴在中国使用的原名为福娃（Fu Wa）。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "alias"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0005",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "name_meaning",
+      "predicate": "malaysian_name_meaning",
+      "value": "Prosperity",
+      "source_id": "src-malaysia-nres-panda-renaming-2014",
+      "source_locator": "malaysian_name_meaning",
+      "source_language": "en",
+      "summary_zh": "马来西亚官方说明兴兴的名字意为“繁荣”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0006",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_malaysia",
+      "value": {
+        "date": "2014-05-21",
+        "facility": "Zoo Negara",
+        "loan_term_years": 10
+      },
+      "source_id": "src-malaysia-nres-panda-renaming-2014",
+      "source_locator": "arrived_in_malaysia",
+      "source_language": "en",
+      "summary_zh": "兴兴于2014年5月21日抵达马来西亚国家动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0007",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "relationship",
+      "predicate": "breeding_partner",
+      "value": {
+        "partner_id": "liang-liang-my",
+        "partner_label": "Liang Liang"
+      },
+      "source_id": "src-bernama-malaysia-programme-2024",
+      "source_locator": "breeding_partner",
+      "source_language": "en",
+      "summary_zh": "兴兴在马来西亚的繁殖配对对象为靓靓。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0008",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "nuan-nuan",
+        "yi-yi-malaysia",
+        "sheng-yi"
+      ],
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "offspring",
+      "source_language": "en",
+      "summary_zh": "兴兴是暖暖、谊谊和升谊的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0009",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "milestone",
+      "predicate": "seventeenth_birthday",
+      "value": "2023-08-23",
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "seventeenth_birthday",
+      "source_language": "en",
+      "summary_zh": "兴兴于2023年8月23日在马来西亚度过17岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0010",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "enrichment",
+      "predicate": "seventeenth_birthday_treats",
+      "value": [
+        "bamboo",
+        "fruit",
+        "ice"
+      ],
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "seventeenth_birthday_treats",
+      "source_language": "en",
+      "summary_zh": "兴兴17岁生日获得竹子、水果和冰制生日丰容。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0011",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "transfer",
+      "predicate": "left_malaysia_for_china",
+      "value": "2025-05-18",
+      "source_id": "src-xinhua-malaysia-parents-farewell-2025-local",
+      "source_locator": "left_malaysia_for_china",
+      "source_language": "en",
+      "summary_zh": "兴兴于2025年5月18日结束11年旅居并离开马来西亚返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0012",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "location",
+      "predicate": "arrived_at_bifengxia",
+      "value": "2025-05-18",
+      "source_id": "src-xinhua-malaysia-parents-bifengxia-2025-local",
+      "source_locator": "arrived_at_bifengxia",
+      "source_language": "en",
+      "summary_zh": "兴兴返华后于2025年5月18日抵达雅安碧峰峡基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0013",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "veterinary_care",
+      "predicate": "post_return_quarantine_minimum_days",
+      "value": 30,
+      "source_id": "src-xinhua-malaysia-parents-bifengxia-2025-local",
+      "source_locator": "post_return_quarantine_minimum_days",
+      "source_language": "en",
+      "summary_zh": "兴兴抵达碧峰峡后进入至少30天隔离检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0014",
+      "subject": {
+        "type": "panda",
+        "id": "xing-xing-my",
+        "label": "Xing Xing"
+      },
+      "category": "behaviour",
+      "predicate": "feeding_after_return",
+      "value": "ate bamboo after arrival at Bifengxia",
+      "source_id": "src-xinhua-malaysia-parents-bifengxia-2025-local",
+      "source_locator": "feeding_after_return",
+      "source_language": "en",
+      "summary_zh": "兴兴抵达碧峰峡后可以正常进食竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "xing-xing-my",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0015",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-malaysia-nres-panda-renaming-2014",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "靓靓为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0016",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "origin",
+      "predicate": "birthplace",
+      "value": "Wolong Panda Centre, Sichuan",
+      "source_id": "src-bernama-malaysia-programme-2024",
+      "source_locator": "birthplace",
+      "source_language": "en",
+      "summary_zh": "靓靓出生于四川卧龙大熊猫中心。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "origin"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0017",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "nuan-nuan",
+        "yi-yi-malaysia",
+        "sheng-yi"
+      ],
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "offspring",
+      "source_language": "en",
+      "summary_zh": "靓靓是暖暖、谊谊和升谊的母亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0018",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "milestone",
+      "predicate": "seventeenth_birthday",
+      "value": "2023-08-23",
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "seventeenth_birthday",
+      "source_language": "en",
+      "summary_zh": "靓靓于2023年8月23日在马来西亚度过17岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0019",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "enrichment",
+      "predicate": "seventeenth_birthday_treats",
+      "value": [
+        "bamboo",
+        "fruit",
+        "ice"
+      ],
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "seventeenth_birthday_treats",
+      "source_language": "en",
+      "summary_zh": "靓靓17岁生日获得竹子、水果和冰制生日丰容。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0020",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "veterinary_care",
+      "predicate": "routine_dental_monitoring",
+      "value": true,
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "routine_dental_monitoring",
+      "source_language": "en",
+      "summary_zh": "护理员会检查靓靓牙齿，并通过轮换竹种和切细硬竹保护牙齿。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0021",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "transfer",
+      "predicate": "left_malaysia_for_china",
+      "value": "2025-05-18",
+      "source_id": "src-xinhua-malaysia-parents-farewell-2025-local",
+      "source_locator": "left_malaysia_for_china",
+      "source_language": "en",
+      "summary_zh": "靓靓于2025年5月18日结束11年旅居并离开马来西亚返华。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0022",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "location",
+      "predicate": "arrived_at_bifengxia",
+      "value": "2025-05-18",
+      "source_id": "src-xinhua-malaysia-parents-bifengxia-2025-local",
+      "source_locator": "arrived_at_bifengxia",
+      "source_language": "en",
+      "summary_zh": "靓靓返华后于2025年5月18日抵达雅安碧峰峡基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0023",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "veterinary_care",
+      "predicate": "post_return_quarantine_minimum_days",
+      "value": 30,
+      "source_id": "src-xinhua-malaysia-parents-bifengxia-2025-local",
+      "source_locator": "post_return_quarantine_minimum_days",
+      "source_language": "en",
+      "summary_zh": "靓靓抵达碧峰峡后进入至少30天隔离检疫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0024",
+      "subject": {
+        "type": "panda",
+        "id": "liang-liang-my",
+        "label": "Liang Liang"
+      },
+      "category": "behaviour",
+      "predicate": "feeding_after_return",
+      "value": "ate bamboo after arrival at Bifengxia",
+      "source_id": "src-xinhua-malaysia-parents-bifengxia-2025-local",
+      "source_locator": "feeding_after_return",
+      "source_language": "en",
+      "summary_zh": "靓靓抵达碧峰峡后可以正常进食竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "liang-liang-my",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0025",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-bernama-malaysia-cubs-return-2023-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "暖暖为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0026",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "liang-liang-my",
+        "father_id": "xing-xing-my"
+      },
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "parents",
+      "source_language": "en",
+      "summary_zh": "暖暖的母亲是靓靓，父亲是兴兴。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0027",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "milestone",
+      "predicate": "first_giant_panda_cub_born_in_malaysia",
+      "value": true,
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "first_giant_panda_cub_born_in_malaysia",
+      "source_language": "en",
+      "summary_zh": "暖暖是马来西亚出生的第一只大熊猫幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0028",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "reproduction",
+      "predicate": "born_within_months_of_parent_arrival",
+      "value": 15,
+      "source_id": "src-malaysia-kln-second-cub-2018",
+      "source_locator": "born_within_months_of_parent_arrival",
+      "source_language": "en",
+      "summary_zh": "暖暖在父母抵达马来西亚约15个月后出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0029",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "personality",
+      "predicate": "keeper_description",
+      "value": [
+        "quiet",
+        "gets along well with keepers"
+      ],
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "keeper_description",
+      "source_language": "en",
+      "summary_zh": "护理员形容暖暖安静，并且与护理员相处良好。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0030",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "distinguishing_feature",
+      "predicate": "nose_marking",
+      "value": "a line near the nose",
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "nose_marking",
+      "source_language": "en",
+      "summary_zh": "暖暖鼻子附近有一条可识别的线状特征。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "distinguishing_feature"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0031",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "location",
+      "predicate": "residence_reported_2022",
+      "value": "Nanjing, China",
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "residence_reported_2022",
+      "source_language": "en",
+      "summary_zh": "2022年新华社资料记录暖暖居住在中国南京。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0032",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "location",
+      "predicate": "observed_at_tangshan_nanjing_2024",
+      "value": "wildlife zoo in Tangshan tourist resort, Nanjing",
+      "source_id": "src-xinhua-malaysia-nuannuan-nanjing-2024-local",
+      "source_locator": "observed_at_tangshan_nanjing_2024",
+      "source_language": "en",
+      "summary_zh": "2024年12月暖暖在南京汤山旅游度假区一处野生动物园公开活动。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0033",
+      "subject": {
+        "type": "panda",
+        "id": "nuan-nuan",
+        "label": "Nuan Nuan"
+      },
+      "category": "behaviour",
+      "predicate": "observed_feeding_2024",
+      "value": "fed on bamboo in public",
+      "source_id": "src-xinhua-malaysia-nuannuan-nanjing-2024-local",
+      "source_locator": "observed_feeding_2024",
+      "source_language": "en",
+      "summary_zh": "2024年12月暖暖被记录在南京公开进食竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "nuan-nuan",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0034",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-bernama-malaysia-cubs-return-2023-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "谊谊为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0035",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "liang-liang-my",
+        "father_id": "xing-xing-my"
+      },
+      "source_id": "src-xinhua-malaysia-cubs-return-2023-local",
+      "source_locator": "parents",
+      "source_language": "en",
+      "summary_zh": "谊谊的母亲是靓靓，父亲是兴兴。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0036",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2019-08-01",
+      "source_id": "src-malaysia-nres-yi-yi-naming-2019",
+      "source_locator": "official_name_announced",
+      "source_language": "ms",
+      "summary_zh": "谊谊的正式名字于2019年8月1日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0037",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "friendship",
+      "source_id": "src-malaysia-nres-yi-yi-naming-2019",
+      "source_locator": "name_meaning",
+      "source_language": "ms",
+      "summary_zh": "谊谊的名字意为“友谊”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0038",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "personality",
+      "predicate": "keeper_description",
+      "value": [
+        "princess-like",
+        "sometimes acts cute"
+      ],
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "keeper_description",
+      "source_language": "en",
+      "summary_zh": "护理员形容谊谊像公主，有时会撒娇。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0039",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "distinguishing_feature",
+      "predicate": "face_shape",
+      "value": "round face resembling father Xing Xing",
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "face_shape",
+      "source_language": "en",
+      "summary_zh": "谊谊脸型较圆，像父亲兴兴。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "distinguishing_feature"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0040",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "behaviour",
+      "predicate": "observed_resting_2022",
+      "value": true,
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "observed_resting_2022",
+      "source_language": "en",
+      "summary_zh": "2022年8月谊谊被记录在马来西亚馆舍内休息。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0041",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "transfer",
+      "predicate": "scheduled_return_delayed_by_pandemic",
+      "value": {
+        "original_year": 2020,
+        "actual_date": "2023-08-29"
+      },
+      "source_id": "src-xinhua-malaysia-cubs-return-2023-local",
+      "source_locator": "scheduled_return_delayed_by_pandemic",
+      "source_language": "en",
+      "summary_zh": "谊谊原计划2020年返华，但因疫情延期至2023年8月29日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0042",
+      "subject": {
+        "type": "panda",
+        "id": "yi-yi-malaysia",
+        "label": "Yi Yi"
+      },
+      "category": "growth_measurement",
+      "predicate": "age_at_return_years",
+      "value": 5,
+      "source_id": "src-xinhua-malaysia-cubs-return-2023-local",
+      "source_locator": "age_at_return_years",
+      "source_language": "en",
+      "summary_zh": "谊谊返华时约5岁。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yi-yi-malaysia",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0043",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-bernama-malaysia-cubs-return-2023-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "升谊为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0044",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "liang-liang-my",
+        "father_id": "xing-xing-my"
+      },
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_locator": "parents",
+      "source_language": "en",
+      "summary_zh": "升谊的母亲是靓靓，父亲是兴兴。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0045",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "birth",
+      "predicate": "birth_date_reported_by_xinhua",
+      "value": "2021-05-31",
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_locator": "birth_date_reported_by_xinhua",
+      "source_language": "en",
+      "summary_zh": "新华社资料记载升谊出生于2021年5月31日，与马来西亚国家通讯社5月30日的记录相差一天。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0046",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2022-05-25",
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_locator": "official_name_announced",
+      "source_language": "en",
+      "summary_zh": "升谊的正式名字于2022年5月25日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0047",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "peace and friendship",
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "升谊的名字意为“和平与友谊”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0048",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "public_debut",
+      "predicate": "started_meeting_public",
+      "value": "2021-12",
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_locator": "started_meeting_public",
+      "source_language": "en",
+      "summary_zh": "升谊于2021年12月开始与公众见面。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0049",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_2022_05_kg",
+      "value": 27,
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_locator": "weight_2022_05_kg",
+      "source_language": "en",
+      "summary_zh": "2022年5月升谊体重约27千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0050",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "behaviour",
+      "predicate": "tree_climbing_interest",
+      "value": true,
+      "source_id": "src-xinhua-malaysia-shengyi-naming-2022-local",
+      "source_locator": "tree_climbing_interest",
+      "source_language": "en",
+      "summary_zh": "升谊幼年喜欢爬树。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0051",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "personality",
+      "predicate": "keeper_description",
+      "value": [
+        "lively",
+        "naughty"
+      ],
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "keeper_description",
+      "source_language": "en",
+      "summary_zh": "护理员形容升谊活泼、顽皮。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0052",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "distinguishing_feature",
+      "predicate": "face_shape",
+      "value": "long nose resembling mother Liang Liang",
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "face_shape",
+      "source_language": "en",
+      "summary_zh": "升谊鼻部较长，像母亲靓靓。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "distinguishing_feature"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0053",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "personality",
+      "predicate": "first_birthday_description",
+      "value": [
+        "energetic",
+        "adventurous",
+        "keen to explore"
+      ],
+      "source_id": "src-xinhua-malaysia-shengyi-birthday-2022-local",
+      "source_locator": "first_birthday_description",
+      "source_language": "en",
+      "summary_zh": "升谊一岁时被形容为精力旺盛、爱冒险且喜欢探索。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0054",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "enrichment",
+      "predicate": "first_birthday_enrichment",
+      "value": [
+        "fruit",
+        "panda cake",
+        "ice"
+      ],
+      "source_id": "src-xinhua-malaysia-shengyi-birthday-2022-local",
+      "source_locator": "first_birthday_enrichment",
+      "source_language": "en",
+      "summary_zh": "升谊一岁生日首次体验水果、熊猫蛋糕和冰块组成的丰容。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0055",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "enrichment",
+      "predicate": "second_birthday_enrichment",
+      "value": [
+        "fruit cake",
+        "decorative gifts",
+        "bamboo"
+      ],
+      "source_id": "src-xinhua-malaysia-shengyi-birthday-2023-local",
+      "source_locator": "second_birthday_enrichment",
+      "source_language": "en",
+      "summary_zh": "升谊两岁生日获得水果蛋糕、装饰礼物和竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0056",
+      "subject": {
+        "type": "panda",
+        "id": "sheng-yi",
+        "label": "Sheng Yi"
+      },
+      "category": "growth_measurement",
+      "predicate": "age_at_return_years",
+      "value": 2,
+      "source_id": "src-xinhua-malaysia-cubs-return-2023-local",
+      "source_locator": "age_at_return_years",
+      "source_language": "en",
+      "summary_zh": "升谊返华时约2岁。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "sheng-yi",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0057",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "diplomacy",
+      "predicate": "programme_context",
+      "value": {
+        "arrival": "2014-05-21",
+        "anniversary_marked": "40 years of Malaysia-China diplomatic relations",
+        "adult_stay_years": 11
+      },
+      "source_id": "src-xinhua-malaysia-parents-farewell-2025-local",
+      "source_locator": "programme_context",
+      "source_language": "en",
+      "summary_zh": "兴兴和靓靓的合作项目纪念中马建交40周年，两只最终在马来西亚生活11年。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0058",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "reproduction",
+      "predicate": "offspring_outcome",
+      "value": {
+        "count": 3,
+        "sex": "female",
+        "ids": [
+          "nuan-nuan",
+          "yi-yi-malaysia",
+          "sheng-yi"
+        ]
+      },
+      "source_id": "src-xinhua-malaysia-parent-birthday-2023-local",
+      "source_locator": "offspring_outcome",
+      "source_language": "en",
+      "summary_zh": "项目在马来西亚成功繁育三只雌性幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0059",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "diet",
+      "predicate": "daily_feeding_schedule",
+      "value": {
+        "meals_per_day": 6,
+        "staple": "fresh bamboo",
+        "supplements": [
+          "apples",
+          "pears",
+          "bamboo shoots",
+          "panda cakes"
+        ]
+      },
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "daily_feeding_schedule",
+      "source_language": "en",
+      "summary_zh": "护理团队每天为熊猫家庭准备六餐，以新鲜竹子为主，并补充苹果、梨、竹笋和熊猫蛋糕。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0060",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "diet",
+      "predicate": "panda_cake_ingredients",
+      "value": [
+        "eggs",
+        "soybeans",
+        "corn",
+        "rice",
+        "sugar",
+        "salt",
+        "calcium powder",
+        "corn oil"
+      ],
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "panda_cake_ingredients",
+      "source_language": "en",
+      "summary_zh": "马来西亚熊猫蛋糕由鸡蛋、大豆、玉米、大米、糖、盐、钙粉和玉米油制成。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0061",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "husbandry_training",
+      "predicate": "local_bamboo_selection",
+      "value": {
+        "samples_tested_in_china": 7,
+        "temperature_controlled": true
+      },
+      "source_id": "src-xinhua-malaysia-care-2022-local",
+      "source_locator": "local_bamboo_selection",
+      "source_language": "en",
+      "summary_zh": "项目在熊猫赴马前将七种本地竹子样品送往中国试吃，并控制馆舍温度以接近原生气候。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "husbandry_training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0062",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "veterinary_care",
+      "predicate": "routine_health_monitoring",
+      "value": [
+        "mood",
+        "appetite",
+        "teeth",
+        "blood"
+      ],
+      "source_id": "src-xinhua-malaysia-care-2022-local",
+      "source_locator": "routine_health_monitoring",
+      "source_language": "en",
+      "summary_zh": "护理团队日常监测熊猫情绪、食欲、牙齿和血液指标。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "veterinary_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0063",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "husbandry_training",
+      "predicate": "bamboo_harvesting_effort",
+      "value": "keepers travel to other states about three days per week to harvest bamboo",
+      "source_id": "src-xinhua-malaysia-caretaker-2022-local",
+      "source_locator": "bamboo_harvesting_effort",
+      "source_language": "en",
+      "summary_zh": "护理团队每周约三天前往其他州采收竹子。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "husbandry_training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-malaysia-deep-0064",
+      "subject": {
+        "type": "research_programme",
+        "id": "malaysia-panda-programme-2014-2025",
+        "label": "Malaysia giant panda cooperation 2014-2025"
+      },
+      "category": "diplomacy",
+      "predicate": "public_impact",
+      "value": "pandas served as goodwill ambassadors and connected Malaysian visitors with conservation",
+      "source_id": "src-xinhua-malaysia-parents-farewell-2025-local",
+      "source_locator": "public_impact",
+      "source_language": "en",
+      "summary_zh": "兴兴和靓靓作为友好使者，让大量马来西亚访客了解大熊猫保护。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "malaysia-panda-programme-2014-2025",
+        "diplomacy"
+      ]
+    }
+  ]
+}
