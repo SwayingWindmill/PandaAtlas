@@ -55,9 +55,9 @@ The validator checks JSONL syntax, IDs, source references, timestamps, local-onl
 
 ## Current snapshot
 
-As of 2026-07-25, the vault contains **276 sources** and **1,556 structured records**: 1,539 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 69 individually identified pandas, with no collected individual lacking at least one structured fact record.
+As of 2026-07-25, the vault contains **289 sources** and **1,627 structured records**: 1,610 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 69 individually identified pandas, with no collected individual lacking at least one structured fact record.
 
-The local media layer contains **239 candidates**, **232 downloaded files**, and **921,058,982 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
+The local media layer contains **244 candidates**, **237 downloaded files**, and **922,001,944 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
@@ -73,5 +73,6 @@ The local media layer contains **239 candidates**, **232 downloaded files**, and
 - `2026-07-25-canada-family.jsonl` — Toronto and Calgary programme records for Er Shun, Da Mao, Jia Panpan and Jia Yueyue, covering arrival and quarantine, artificial insemination, pseudopregnancy, fetal monitoring, twin birth and rotation care, sex confirmation, naming, growth, behaviour, physical identification, transfer within Canada and return-to-China leads. The 2015 official birth evidence retains paternity as unconfirmed rather than inferring it from semen use.
 - `2026-07-25-lin-bing-family.jsonl` — Lin Bing's Chiang Mai-to-China life history, naming and public-cultural context, return, 2015 and 2017 litters, maternal care, and the verified lineage of the 2019-born Hong Kong An An. The same batch separately profiles An An and Ke Ke's Hong Kong arrival, weights, temperament, training, diet, public debut and first-year adaptation without merging the new An An with Ocean Park's earlier namesake.
 - `2026-07-25-berlin-historic-pandas.jsonl` — Zoo Berlin and Museum für Naturkunde records for Happy, Tjen Tjen, Bao Bao and Yan Yan, plus Chi Chi's 1958 East Berlin stopover. The batch covers state-gift diplomacy, arrival and companionship, names, breeding attempts, deaths, longevity, specimen preparation, museum exhibition and Yan Yan's specimen return to China.
+- `2026-07-25-smithsonian-family.jsonl` — multigenerational Smithsonian family records for Mei Xiang, Tian Tian, Tai Shan, Bao Bao and Bei Bei, with targeted additions for Xiao Qi Ji. The batch covers identity, arrival, artificial insemination, pseudopregnancy, parentage, naming, weights, developmental milestones, travel-crate training, returns to China, adaptation and verified offspring born in China.
 
 All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.

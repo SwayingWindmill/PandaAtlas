@@ -1,0 +1,1134 @@
+{
+  "schema_version": 1,
+  "page_url": "https://nationalzoo.si.edu/news/giant-pandas-depart-smithsonians-national-zoo-and-conservation-biology-institute-for-china",
+  "discovered_at": "2026-07-25T18:00:57.398228+00:00",
+  "image_count": 100,
+  "images": [
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/large/public/animals/lowlandgorilla-004.jpg",
+      "source_types": [
+        "link:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "image_src",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/wide/public/newsroom/20230214-kaitlynadkins-004-xiao-qi-ji.jpg?itok=mYNVoWlX",
+      "source_types": [
+        "meta:og:image",
+        "img:src"
+      ],
+      "alt": "Giant panda Xiao Qi Ji eats bamboo in his outdoor habitat.",
+      "title": "",
+      "width": "1400",
+      "height": "700",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/themes/custom/tailwind_nzp/logo.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Home",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "max-h-full max-w-full"
+      ]
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2026-04/20260318-A023_C047_0310O7.0000024F.0000000-13RP-resized.jpg?itok=6bsD-qZI",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "This was Linh Mai's first time outdoors in the calf paddock.",
+      "title": "",
+      "width": "1300",
+      "height": "686",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2026-04/20260318-A023_C047_0310O7.0000024F.0000000-13RP-resized.jpg?h=4d7857f8&itok=Rvc4IYBF",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "This was Linh Mai's first time outdoors in the calf paddock.",
+      "title": "",
+      "width": "1300",
+      "height": "686",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2026-04/20260318-A023_C047_0310O7.0000024F.0000000-13RP-resized.jpg?itok=vq5DEBlG",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "This was Linh Mai's first time outdoors in the calf paddock.",
+      "title": "",
+      "width": "1300",
+      "height": "686",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2026-04/20260318-A023_C047_0310O7.0000024F.0000000-13RP-resized.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "This was Linh Mai's first time outdoors in the calf paddock.",
+      "title": "",
+      "width": "1300",
+      "height": "686",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/paragraphs/single_image/20201223-fp9a4264-002rp-red-panda-chris-anne.jpg?itok=18S-JmOh",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Red panda Chris-Anne eats bamboo in her outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/paragraphs/single_image/20201223-fp9a4264-002rp-red-panda-chris-anne.jpg?itok=ZVeF-lOT",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Red panda Chris-Anne eats bamboo in her outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/paragraphs/single_image/20201223-fp9a4264-002rp-red-panda-chris-anne.jpg?itok=sacabud5",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Red panda Chris-Anne eats bamboo in her outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/paragraphs/single_image/20201223-fp9a4264-002rp-red-panda-chris-anne.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Red panda Chris-Anne eats bamboo in her outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/wide/public/2024-11/baltimore-oreole-gift.png?h=5c35a453&itok=ZOsgzY9R",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "An image of a Baltimore Oriole opening a red and green gift box.",
+      "title": "",
+      "width": "1400",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/wide/public/2025-05/education_banner.jpg?h=8165685c&itok=f0iyFlQw",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "A scientist recording wildlife in a tree canopy",
+      "title": "",
+      "width": "1400",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/paragraphs/single_image/img_5466.jpg?itok=uFUgCF13",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Two conservation ecologists set up a camera trap at the American Prairie Reserve in Montana",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/paragraphs/single_image/img_5466.jpg?itok=2uY4Mvn2",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Two conservation ecologists set up a camera trap at the American Prairie Reserve in Montana",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/paragraphs/single_image/img_5466.jpg?itok=aXklNjd3",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Two conservation ecologists set up a camera trap at the American Prairie Reserve in Montana",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/paragraphs/single_image/img_5466.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Two conservation ecologists set up a camera trap at the American Prairie Reserve in Montana",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/dsc02658-skipbrown-panda-departure.jpg?itok=tYQdMoFX",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Mei Xiang departs the Zoo.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/dsc02658-skipbrown-panda-departure.jpg?h=6acbff97&itok=kc2nfUPB",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Mei Xiang departs the Zoo.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/dsc02658-skipbrown-panda-departure.jpg?itok=ztFI3OJC",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Mei Xiang departs the Zoo.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/dsc02658-skipbrown-panda-departure.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Mei Xiang departs the Zoo.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/dsc02759-skipbrown-panda-departure.jpg?itok=wJbFm7rb",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Tian Tian departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/dsc02759-skipbrown-panda-departure.jpg?h=6acbff97&itok=0z6TF36M",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Tian Tian departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/dsc02759-skipbrown-panda-departure.jpg?itok=tUxw11Vx",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Tian Tian departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/dsc02759-skipbrown-panda-departure.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Tian Tian departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/dsc02778-skipbrown-panda-departure.jpg?itok=g2N1BpJQ",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Xiao Qi Ji departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/dsc02778-skipbrown-panda-departure.jpg?h=6acbff97&itok=jvqA_kwy",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Xiao Qi Ji departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/dsc02778-skipbrown-panda-departure.jpg?itok=8Q4iUff0",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Xiao Qi Ji departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/dsc02778-skipbrown-panda-departure.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Xiao Qi Ji departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/dsc02683-skipbrown-panda-departure.jpg?itok=mUg6yyKo",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Brandie Smith, the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/dsc02683-skipbrown-panda-departure.jpg?h=6acbff97&itok=NDcPsfJq",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Brandie Smith, the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/dsc02683-skipbrown-panda-departure.jpg?itok=PeLz_paA",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Brandie Smith, the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/dsc02683-skipbrown-panda-departure.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Brandie Smith, the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/dsc02717-skipbrown-panda-departure.jpg?itok=7QXmaDGP",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/dsc02717-skipbrown-panda-departure.jpg?h=6acbff97&itok=78B7OFtb",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/dsc02717-skipbrown-panda-departure.jpg?itok=9eUXsJpQ",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/dsc02717-skipbrown-panda-departure.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/dsc02733-skipbrown-panda-departure.jpg?itok=Js-x2a5F",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, to say goodbye to the pandas.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/dsc02733-skipbrown-panda-departure.jpg?h=6acbff97&itok=372HPZf7",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, to say goodbye to the pandas.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/dsc02733-skipbrown-panda-departure.jpg?itok=Q6RaxXbb",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, to say goodbye to the pandas.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/dsc02733-skipbrown-panda-departure.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, to say goodbye to the pandas.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20231108-betsyherrelko-001-giant-panda-fedex-motorcade-truck.jpg?itok=HQQDoByv",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023. Giant pandas Mei Xiang, Tian Tian and Xiao Qi Ji depart the Smithsonian's National Zoo and Conservation Biology Institute.",
+      "title": "",
+      "width": "1300",
+      "height": "732",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20231108-betsyherrelko-001-giant-panda-fedex-motorcade-truck.jpg?h=4ffac15b&itok=BS_eYIw9",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023. Giant pandas Mei Xiang, Tian Tian and Xiao Qi Ji depart the Smithsonian's National Zoo and Conservation Biology Institute.",
+      "title": "",
+      "width": "1300",
+      "height": "732",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20231108-betsyherrelko-001-giant-panda-fedex-motorcade-truck.jpg?itok=MXqYCW1p",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023. Giant pandas Mei Xiang, Tian Tian and Xiao Qi Ji depart the Smithsonian's National Zoo and Conservation Biology Institute.",
+      "title": "",
+      "width": "1300",
+      "height": "732",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20231108-betsyherrelko-001-giant-panda-fedex-motorcade-truck.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Nov. 8, 2023. Giant pandas Mei Xiang, Tian Tian and Xiao Qi Ji depart the Smithsonian's National Zoo and Conservation Biology Institute.",
+      "title": "",
+      "width": "1300",
+      "height": "732",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20230722-817a8337-003rp.jpg?itok=EcC8cwzD",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Mei Xiang drapes her front paws over a log and looks towards the camera.",
+      "title": "",
+      "width": "1300",
+      "height": "867",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20230722-817a8337-003rp.jpg?h=6acbff97&itok=L57JqcBR",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Mei Xiang drapes her front paws over a log and looks towards the camera.",
+      "title": "",
+      "width": "1300",
+      "height": "867",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20230722-817a8337-003rp.jpg?itok=B6pjPt7q",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Mei Xiang drapes her front paws over a log and looks towards the camera.",
+      "title": "",
+      "width": "1300",
+      "height": "867",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20230722-817a8337-003rp.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Mei Xiang drapes her front paws over a log and looks towards the camera.",
+      "title": "",
+      "width": "1300",
+      "height": "867",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20230821-skipbrown-005-giant-panda-xiao-qi-ji.jpg?itok=LyUXRKvX",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji licks his fruitsicle cake.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20230821-skipbrown-005-giant-panda-xiao-qi-ji.jpg?h=6acbff97&itok=ha5byuFC",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji licks his fruitsicle cake.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20230821-skipbrown-005-giant-panda-xiao-qi-ji.jpg?itok=vsRPqlSX",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji licks his fruitsicle cake.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20230821-skipbrown-005-giant-panda-xiao-qi-ji.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji licks his fruitsicle cake.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20230911-036sb_0.jpeg?itok=tcX79yOQ",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda Tian Tian explores his outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20230911-036sb_0.jpeg?h=6acbff97&itok=RxnYc9B4",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Tian Tian explores his outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20230911-036sb_0.jpeg?itok=FZR6Iy_s",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Tian Tian explores his outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20230911-036sb_0.jpeg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Tian Tian explores his outdoor habitat.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20230923045sb.jpg?itok=BMGqvOhK",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji pictured with a cake for Panda Palooza celebration event.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20230923045sb.jpg?h=6acbff97&itok=DOJsvQkT",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji pictured with a cake for Panda Palooza celebration event.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20230923045sb.jpg?itok=kh0WJnO-",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji pictured with a cake for Panda Palooza celebration event.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20230923045sb.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Giant panda Xiao Qi Ji pictured with a cake for Panda Palooza celebration event.",
+      "title": "",
+      "width": "1300",
+      "height": "866",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20231108-img_7639-001rp.jpg?itok=51MD7KkE",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda Xiao Qi Ji eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "975",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20231108-img_7639-001rp.jpg?h=b8aae163&itok=nDQQ3Dtc",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda Xiao Qi Ji eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "975",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20231108-img_7639-001rp.jpg?itok=Pyx0aS92",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda Xiao Qi Ji eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "975",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20231108-img_7639-001rp.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda Xiao Qi Ji eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "975",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20231108-r1000725-001rp.jpg?itok=DFNcF3r9",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda adult female giant panda Mei Xiang eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20231108-r1000725-001rp.jpg?h=30a79e1f&itok=MluATMfe",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda adult female giant panda Mei Xiang eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20231108-r1000725-001rp.jpg?itok=pzDxQWwy",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda adult female giant panda Mei Xiang eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20231108-r1000725-001rp.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white giant panda adult female giant panda Mei Xiang eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20231108-r1000825-001rp.jpg?itok=GopkjvQJ",
+      "source_types": [
+        "img:src",
+        "img:srcset"
+      ],
+      "alt": "Black and white adult male giant panda Tian Tian eats a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20231108-r1000825-001rp.jpg?h=30a79e1f&itok=hICAcRoa",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white adult male giant panda Tian Tian eats a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20231108-r1000825-001rp.jpg?itok=Y5bJ8vR9",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white adult male giant panda Tian Tian eats a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20231108-r1000825-001rp.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Black and white adult male giant panda Tian Tian eats a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "1300",
+      "height": "865",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20231108-roshanpatel-fedex-plane-002.jpg?itok=Dx9gSMlR",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Assistant curator Laurie Thompson, keeper Mariel Lally and veterinarian James Steeil in the FedEx plane in front of giant pandas Tian Tian, Mei Xiang and Xiao Qi Ji.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20231108-roshanpatel-fedex-plane-002.jpg?h=b5f6a62e&itok=E89_3GLO",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Assistant curator Laurie Thompson, keeper Mariel Lally and veterinarian James Steeil in the FedEx plane in front of giant pandas Tian Tian, Mei Xiang and Xiao Qi Ji.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20231108-roshanpatel-fedex-plane-002.jpg?itok=MPBkR73d",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Assistant curator Laurie Thompson, keeper Mariel Lally and veterinarian James Steeil in the FedEx plane in front of giant pandas Tian Tian, Mei Xiang and Xiao Qi Ji.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20231108-roshanpatel-fedex-plane-002.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Assistant curator Laurie Thompson, keeper Mariel Lally and veterinarian James Steeil in the FedEx plane in front of giant pandas Tian Tian, Mei Xiang and Xiao Qi Ji.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_1300x1300/public/2023-11/20231108-roshanpatel-fedex-plane-003.jpg?itok=0PHbS60Y",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Keeper Mariel Lally checks up on the giant pandas on the FedEx flight from Dulles International Airport to Chengdu, China.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_325x325/public/2023-11/20231108-roshanpatel-fedex-plane-003.jpg?h=2e4af638&itok=Puw5T6C7",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Keeper Mariel Lally checks up on the giant pandas on the FedEx flight from Dulles International Airport to Chengdu, China.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/max_650x650/public/2023-11/20231108-roshanpatel-fedex-plane-003.jpg?itok=US2QxZXO",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Keeper Mariel Lally checks up on the giant pandas on the FedEx flight from Dulles International Airport to Chengdu, China.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/2023-11/20231108-roshanpatel-fedex-plane-003.jpg",
+      "source_types": [
+        "img:srcset"
+      ],
+      "alt": "Keeper Mariel Lally checks up on the giant pandas on the FedEx flight from Dulles International Airport to Chengdu, China.",
+      "title": "",
+      "width": "1280",
+      "height": "852",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/dsc02658-skipbrown-panda-departure.jpg?itok=Keh1vZyd",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Mei Xiang departs the Zoo.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/dsc02759-skipbrown-panda-departure.jpg?itok=dD1xLgLB",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Tian Tian departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/dsc02778-skipbrown-panda-departure.jpg?itok=mRye2GAl",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Nov. 8, 2023: Giant panda Xiao Qi Ji departs the Zoo. Photo credit: Skip Brown, Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/dsc02683-skipbrown-panda-departure.jpg?itok=wH4HIp1e",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Brandie Smith, the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/dsc02717-skipbrown-panda-departure.jpg?itok=9iPrgOuZ",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, FedEx and animal care staff to say goodbye.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/dsc02733-skipbrown-panda-departure.jpg?itok=6i9ordhi",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Nov. 8, 2023 Brandie Smith (left), the John and Adrienne Mars director of NZCBI, was joined by Minister Xu Xueyuan (right) from the Embassy of the People’s Republic of China, to say goodbye to the pandas.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20231108-betsyherrelko-001-giant-panda-fedex-motorcade-truck.jpg?itok=1HTEntXC",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Nov. 8, 2023. Giant pandas Mei Xiang, Tian Tian and Xiao Qi Ji depart the Smithsonian's National Zoo and Conservation Biology Institute.",
+      "title": "",
+      "width": "220",
+      "height": "124",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20230722-817a8337-003rp.jpg?itok=mkIZMZ37",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Mei Xiang drapes her front paws over a log and looks towards the camera.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20230821-skipbrown-005-giant-panda-xiao-qi-ji.jpg?itok=BVD2jB18",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Xiao Qi Ji licks his fruitsicle cake.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20230911-036sb_0.jpeg?itok=mmEGFJMb",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Tian Tian explores his outdoor habitat.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20230923045sb.jpg?itok=2nhq8spu",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Xiao Qi Ji pictured with a cake for Panda Palooza celebration event.",
+      "title": "",
+      "width": "220",
+      "height": "147",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20231108-img_7639-001rp.jpg?itok=QOfbhKwY",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Black and white giant panda Xiao Qi Ji eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "220",
+      "height": "165",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20231108-r1000725-001rp.jpg?itok=Yh0J8Qgv",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Black and white giant panda adult female giant panda Mei Xiang eating a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "220",
+      "height": "146",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20231108-r1000825-001rp.jpg?itok=ULBxVs2w",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Black and white adult male giant panda Tian Tian eats a frozen fruitsicle inside a white travel crate made of steel and plexiglass.",
+      "title": "",
+      "width": "220",
+      "height": "146",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20231108-roshanpatel-fedex-plane-002.jpg?itok=6geyRcp9",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Assistant curator Laurie Thompson, keeper Mariel Lally and veterinarian James Steeil in the FedEx plane in front of giant pandas Tian Tian, Mei Xiang and Xiao Qi Ji.",
+      "title": "",
+      "width": "220",
+      "height": "146",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/medium/public/2023-11/20231108-roshanpatel-fedex-plane-003.jpg?itok=jnZV87DF",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Keeper Mariel Lally checks up on the giant pandas on the FedEx flight from Dulles International Airport to Chengdu, China.",
+      "title": "",
+      "width": "220",
+      "height": "146",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/wide/public/2026-03/20260323-817A5964-002BK-teaser.jpg?h=0cd817c1&itok=G-kejC79",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Male giant panda Bao Li looks for female Qing Bao at the \"howdy\" mesh between their habitats. (Brett Kuxhausen/Smithsonian)",
+      "title": "",
+      "width": "1400",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/wide/public/2025-11/20251101-001KA-cropped.jpg?h=0cd817c1&itok=vraXUwpN",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Qing Bao climbs a tree in her outdoor habitat on Nov. 1, 2025. Credit: Kaitlyn Adkins/Smithsonian",
+      "title": "",
+      "width": "1400",
+      "height": "700",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://nationalzoo.si.edu/sites/default/files/styles/wide/public/2025-09/20250912-817A5540-07RP-teaser-giant-panda-qing-bao.jpg?h=c9a3a702&itok=jsTMowLQ",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Giant panda Qing Bao enjoys her \"4-ever sweet\" birthday cake at Smithsonian's National Zoo and Conservation Biology Institute. Credit: Roshan Patel/Smithsonian",
+      "title": "",
+      "width": "1400",
+      "height": "700",
+      "evidence": []
+    }
+  ]
+}

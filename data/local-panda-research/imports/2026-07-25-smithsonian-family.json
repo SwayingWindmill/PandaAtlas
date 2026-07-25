@@ -1,0 +1,1548 @@
+{
+  "sources": [
+    {
+      "source_id": "src-smithsonian-panda-history-family-local",
+      "source_type": "institution_primary_history",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "The History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute",
+      "url": "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official programme chronology covering arrival, breeding, births and transfers."
+    },
+    {
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_type": "institution_primary_profile",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Giant Panda Program Media Resources",
+      "url": "https://nationalzoo.si.edu/news/giant-panda-program-media-resources",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official identity, weight, current-location and offspring profiles for the former Smithsonian family."
+    },
+    {
+      "source_id": "src-smithsonian-panda-facts-50-local",
+      "source_type": "institution_primary_feature",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "50 Panda Facts to Celebrate 50 Years of Giant Pandas",
+      "url": "https://nationalzoo.si.edu/animals/news/50-panda-facts-celebrate-50-years-giant-pandas-smithsonians-national-zoo",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official retrospective on reproduction, pseudopregnancy and surviving cubs."
+    },
+    {
+      "source_id": "src-smithsonian-family-departure-2023-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Giant Pandas Depart Smithsonian's National Zoo and Conservation Biology Institute for China",
+      "url": "https://nationalzoo.si.edu/news/giant-pandas-depart-smithsonians-national-zoo-and-conservation-biology-institute-for-china",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official departure chronology for Mei Xiang, Tian Tian and Xiao Qi Ji."
+    },
+    {
+      "source_id": "src-smithsonian-family-where-now-local",
+      "source_type": "institution_primary_profile",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Celebrating 50 Years of Giant Pandas",
+      "url": "https://nationalzoo.si.edu/animals/celebrating-50-years-giant-pandas",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official family tree and current-status profiles for Tai Shan, Bao Bao and Bei Bei."
+    },
+    {
+      "source_id": "src-smithsonian-taishan-china-2010-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Giant Panda Tai Shan Arrives in China",
+      "url": "https://nationalzoo.si.edu/news/giant-panda-tai-shan-arrives-china",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official Tai Shan transfer and quarantine account."
+    },
+    {
+      "source_id": "src-smithsonian-baobao-name-2013-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Her Name Is Bao Bao!",
+      "url": "https://nationalzoo.si.edu/news/her-name-bao-bao",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official naming-vote, birth and public-debut announcement for Bao Bao."
+    },
+    {
+      "source_id": "src-smithsonian-baobao-departure-2017-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Giant Panda Bao Bao Departs Smithsonian's National Zoo for China",
+      "url": "https://nationalzoo.si.edu/news/giant-panda-bao-bao-departs-smithsonians-national-zoo-for-china",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official Bao Bao transfer, personality and travel-training account."
+    },
+    {
+      "source_id": "src-smithsonian-baobao-settling-2017-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Bao Bao is Settling into Her New Home",
+      "url": "https://nationalzoo.si.edu/animals/news/bao-bao-settling-her-new-home",
+      "language": "en",
+      "region": "China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official keeper account of Bao Bao's arrival and adaptation at Dujiangyan."
+    },
+    {
+      "source_id": "src-smithsonian-beibei-name-2015-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "His Name is Bei Bei!",
+      "url": "https://nationalzoo.si.edu/animals/news/his-name-bei-bei",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official Bei Bei naming announcement."
+    },
+    {
+      "source_id": "src-smithsonian-beibei-departure-2019-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Giant Panda Bei Bei Departs Smithsonian's National Zoo for China",
+      "url": "https://nationalzoo.si.edu/news/giant-panda-bei-bei-departs-smithsonians-national-zoo-for-china",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official Bei Bei departure, travel training and breeding-program account."
+    },
+    {
+      "source_id": "src-smithsonian-beibei-settling-2019-local",
+      "source_type": "institution_primary_news",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Bei Bei Has Settled in at Bifengxia and the Panda Team is Back!",
+      "url": "https://nationalzoo.si.edu/animals/news/bei-bei-has-settled-bifengxia-and-panda-team-back",
+      "language": "en",
+      "region": "China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official account of Bei Bei's arrival and adaptation at Bifengxia."
+    },
+    {
+      "source_id": "src-smithsonian-beibei-moments-2019-local",
+      "source_type": "institution_primary_feature",
+      "publisher": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "title": "Bei Bei's Most Memorable Moments at the Zoo",
+      "url": "https://nationalzoo.si.edu/animals/news/bei-beis-most-memorable-moments-zoo",
+      "language": "en",
+      "region": "United States",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-25T00:00:00+08:00",
+      "notes": "Official developmental retrospective including first steps."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0001",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Mei Xiang profile",
+      "source_language": "en",
+      "summary_zh": "美香为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0002",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "1998-07-22",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Mei Xiang profile",
+      "source_language": "en",
+      "summary_zh": "美香出生于1998年7月22日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0003",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "beautiful fragrance",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Mei Xiang profile",
+      "source_language": "en",
+      "summary_zh": "“美香”的名字意为“美丽的芬芳”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0004",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_smithsonian",
+      "value": "2000-12-06",
+      "source_id": "src-smithsonian-panda-history-family-local",
+      "source_locator": "2000 chronology",
+      "source_language": "en",
+      "summary_zh": "美香于2000年12月6日抵达史密森尼国家动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "smithsonian",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0005",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "relationship",
+      "predicate": "breeding_partner",
+      "value": "tian-tian",
+      "source_id": "src-smithsonian-panda-facts-50-local",
+      "source_locator": "reproduction facts",
+      "source_language": "en",
+      "summary_zh": "美香与添添组成史密森尼繁育配对。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "tian-tian",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0006",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "reproduction",
+      "predicate": "surviving_offspring",
+      "value": [
+        "tai-shan",
+        "bao-bao",
+        "bei-bei",
+        "xiao-qi-ji"
+      ],
+      "source_id": "src-smithsonian-panda-facts-50-local",
+      "source_locator": "surviving cubs fact",
+      "source_language": "en",
+      "summary_zh": "美香共有四只存活至成年的幼崽：泰山、宝宝、贝贝和小奇迹。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "offspring"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0007",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "reproduction",
+      "predicate": "all_surviving_cubs_conceived_by_artificial_insemination",
+      "value": true,
+      "source_id": "src-smithsonian-panda-facts-50-local",
+      "source_locator": "artificial insemination fact",
+      "source_language": "en",
+      "summary_zh": "美香和添添从未成功自然交配，四只存活幼崽均通过人工授精受孕。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "artificial-insemination"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0008",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "reproduction",
+      "predicate": "documented_pseudopregnancies_minimum",
+      "value": 6,
+      "source_id": "src-smithsonian-panda-facts-50-local",
+      "source_locator": "pseudopregnancy fact",
+      "source_language": "en",
+      "summary_zh": "史密森尼认为美香至少经历过六次假孕。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "pseudopregnancy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0009",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "milestone",
+      "predicate": "oldest_panda_to_give_birth_in_united_states",
+      "value": {
+        "age_years": 22,
+        "offspring_id": "xiao-qi-ji",
+        "date": "2020-08-21"
+      },
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Mei Xiang profile",
+      "source_language": "en",
+      "summary_zh": "美香22岁产下小奇迹，成为美国有记录以来产仔年龄最大的大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "longevity",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0010",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_march_2022",
+      "value": {
+        "date": "2022-03",
+        "weight_kg": 112
+      },
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Mei Xiang profile",
+      "source_language": "en",
+      "summary_zh": "2022年3月，美香体重112公斤。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "weight"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0011",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "transfer",
+      "predicate": "departed_smithsonian_for_china",
+      "value": {
+        "date": "2023-11-08",
+        "departure_time": "09:31",
+        "route": "Washington-Dulles-Anchorage-Chengdu"
+      },
+      "source_id": "src-smithsonian-family-departure-2023-local",
+      "source_locator": "departure chronology",
+      "source_language": "en",
+      "summary_zh": "美香于2023年11月8日9时31分离开史密森尼，经安克雷奇前往成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "return-to-china"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0012",
+      "subject": {
+        "type": "panda",
+        "id": "mei-xiang",
+        "label": "Mei Xiang"
+      },
+      "category": "location",
+      "predicate": "current_location_as_officially_reported",
+      "value": "Wolong Shenshuping Panda Base, Sichuan",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Mei Xiang profile",
+      "source_language": "en",
+      "summary_zh": "史密森尼官方资料将美香返华后的居住地列为卧龙神树坪基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "mei-xiang",
+        "shenshuping"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0013",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Tian Tian profile",
+      "source_language": "en",
+      "summary_zh": "添添为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0014",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "1997-08-27",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Tian Tian profile",
+      "source_language": "en",
+      "summary_zh": "添添出生于1997年8月27日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0015",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "more and more",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Tian Tian profile",
+      "source_language": "en",
+      "summary_zh": "“添添”的名字意为“越来越多”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0016",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "transfer",
+      "predicate": "arrived_at_smithsonian",
+      "value": "2000-12-06",
+      "source_id": "src-smithsonian-panda-history-family-local",
+      "source_locator": "2000 chronology",
+      "source_language": "en",
+      "summary_zh": "添添于2000年12月6日抵达史密森尼国家动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "smithsonian",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0017",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "relationship",
+      "predicate": "father_of",
+      "value": [
+        "tai-shan",
+        "bao-bao",
+        "bei-bei",
+        "xiao-qi-ji"
+      ],
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Tian Tian profile",
+      "source_language": "en",
+      "summary_zh": "添添是泰山、宝宝、贝贝和小奇迹的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "offspring"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0018",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "reproduction",
+      "predicate": "frozen_semen_supported_successful_births",
+      "value": {
+        "offspring_ids": [
+          "tai-shan",
+          "bao-bao",
+          "bei-bei",
+          "xiao-qi-ji"
+        ],
+        "natural_mating_success": false
+      },
+      "source_id": "src-smithsonian-panda-facts-50-local",
+      "source_locator": "artificial insemination facts",
+      "source_language": "en",
+      "summary_zh": "添添与美香未成功自然交配，其精液用于人工授精并产生四只存活幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0019",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_march_2022",
+      "value": {
+        "date": "2022-03",
+        "weight_kg": 123.6
+      },
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Tian Tian profile",
+      "source_language": "en",
+      "summary_zh": "2022年3月，添添体重123.6公斤。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "weight"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0020",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "transfer",
+      "predicate": "departed_smithsonian_for_china",
+      "value": {
+        "date": "2023-11-08",
+        "departure_time": "09:31",
+        "route": "Washington-Dulles-Anchorage-Chengdu"
+      },
+      "source_id": "src-smithsonian-family-departure-2023-local",
+      "source_locator": "departure chronology",
+      "source_language": "en",
+      "summary_zh": "添添于2023年11月8日9时31分离开史密森尼，经安克雷奇前往成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "return-to-china"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0021",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "husbandry_training",
+      "predicate": "travel_crate_acclimation_2023",
+      "value": "acclimated over several weeks before departure",
+      "source_id": "src-smithsonian-family-departure-2023-local",
+      "source_locator": "departure preparation",
+      "source_language": "en",
+      "summary_zh": "返华前数周，添添接受了专用运输箱适应训练。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "crate-training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0022",
+      "subject": {
+        "type": "panda",
+        "id": "tian-tian",
+        "label": "Tian Tian"
+      },
+      "category": "location",
+      "predicate": "current_location_as_officially_reported",
+      "value": "Wolong Shenshuping Panda Base, Sichuan",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Tian Tian profile",
+      "source_language": "en",
+      "summary_zh": "史密森尼官方资料将添添返华后的居住地列为卧龙神树坪基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tian-tian",
+        "shenshuping"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0023",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Tai Shan profile",
+      "source_language": "en",
+      "summary_zh": "泰山为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0024",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2005-07-09",
+      "source_id": "src-smithsonian-taishan-china-2010-local",
+      "source_locator": "biographical paragraph",
+      "source_language": "en",
+      "summary_zh": "泰山于2005年7月9日在史密森尼国家动物园出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0025",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "peaceful mountain",
+      "source_id": "src-smithsonian-family-where-now-local",
+      "source_locator": "Tai Shan profile",
+      "source_language": "en",
+      "summary_zh": "“泰山”的官方英文释义为“和平的山”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0026",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "mei-xiang",
+        "father_id": "tian-tian"
+      },
+      "source_id": "src-smithsonian-taishan-china-2010-local",
+      "source_locator": "biographical paragraph",
+      "source_language": "en",
+      "summary_zh": "泰山的母亲是美香，父亲是添添。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "parents"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0027",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "milestone",
+      "predicate": "first_surviving_cub_born_at_smithsonian",
+      "value": true,
+      "source_id": "src-smithsonian-taishan-china-2010-local",
+      "source_locator": "biographical paragraph",
+      "source_language": "en",
+      "summary_zh": "泰山是史密森尼国家动物园首只存活的大熊猫幼崽。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0028",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "transfer",
+      "predicate": "departed_for_china",
+      "value": {
+        "date": "2010-02-04",
+        "destination": "Bifengxia Base",
+        "arrival_date": "2010-02-05",
+        "arrival_weight_lb": 184
+      },
+      "source_id": "src-smithsonian-taishan-china-2010-local",
+      "source_locator": "flight and arrival chronology",
+      "source_language": "en",
+      "summary_zh": "泰山于2010年2月4日离开华盛顿，次日抵达成都并前往碧峰峡基地，运输时重184磅。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "return-to-china"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0029",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "husbandry_training",
+      "predicate": "travel_crate_training",
+      "value": "trained to enter and remain calmly in custom steel crate without sedation",
+      "source_id": "src-smithsonian-taishan-china-2010-local",
+      "source_locator": "transport preparation",
+      "source_language": "en",
+      "summary_zh": "泰山接受了进入并平静停留在定制钢制运输箱中的训练，旅途中未使用镇静剂。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "crate-training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0030",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "veterinary_care",
+      "predicate": "arrival_quarantine",
+      "value": {
+        "days": 30,
+        "location": "Bifengxia Base"
+      },
+      "source_id": "src-smithsonian-taishan-china-2010-local",
+      "source_locator": "arrival quarantine",
+      "source_language": "en",
+      "summary_zh": "泰山抵达碧峰峡后进入30天隔离期。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "quarantine"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0031",
+      "subject": {
+        "type": "panda",
+        "id": "tai-shan",
+        "label": "Tai Shan"
+      },
+      "category": "relationship",
+      "predicate": "sired_offspring",
+      "value": {
+        "offspring_count": 1,
+        "offspring_sex": "male",
+        "birth_date": "2020-08-19"
+      },
+      "source_id": "src-smithsonian-family-where-now-local",
+      "source_locator": "Tai Shan current-status profile",
+      "source_language": "en",
+      "summary_zh": "泰山已繁育一只雄性后代，该幼崽出生于2020年8月19日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "tai-shan",
+        "offspring"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0032",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Bao Bao profile",
+      "source_language": "en",
+      "summary_zh": "宝宝为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0033",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "birth",
+      "predicate": "birth_datetime",
+      "value": {
+        "date": "2013-08-23",
+        "time": "17:32"
+      },
+      "source_id": "src-smithsonian-baobao-departure-2017-local",
+      "source_locator": "biographical paragraph",
+      "source_language": "en",
+      "summary_zh": "宝宝于2013年8月23日17时32分在史密森尼国家动物园出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0034",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "mei-xiang",
+        "father_id": "tian-tian"
+      },
+      "source_id": "src-smithsonian-baobao-departure-2017-local",
+      "source_locator": "biographical paragraph",
+      "source_language": "en",
+      "summary_zh": "宝宝的母亲是美香，父亲是添添。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "parents"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0035",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "precious or treasure",
+      "source_id": "src-smithsonian-baobao-name-2013-local",
+      "source_locator": "name announcement",
+      "source_language": "en",
+      "summary_zh": "“宝宝”的名字意为“珍贵”或“宝物”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0036",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "cultural_context",
+      "predicate": "public_naming_vote",
+      "value": {
+        "votes": 123039,
+        "candidate_names": 5,
+        "ceremony_age_days": 100
+      },
+      "source_id": "src-smithsonian-baobao-name-2013-local",
+      "source_locator": "naming ceremony",
+      "source_language": "en",
+      "summary_zh": "宝宝的名字通过五个候选名的公众投票产生，共收到123039票，并在出生100天时公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "naming-vote"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0037",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "personality",
+      "predicate": "keeper_described_temperament",
+      "value": [
+        "independent",
+        "playful"
+      ],
+      "source_id": "src-smithsonian-baobao-departure-2017-local",
+      "source_locator": "director statement",
+      "source_language": "en",
+      "summary_zh": "史密森尼将宝宝描述为独立且爱玩。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0038",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "transfer",
+      "predicate": "departed_for_china",
+      "value": {
+        "date": "2017-02-21",
+        "departure_time": "10:35",
+        "destination": "Dujiangyan Panda Base"
+      },
+      "source_id": "src-smithsonian-baobao-departure-2017-local",
+      "source_locator": "departure chronology",
+      "source_language": "en",
+      "summary_zh": "宝宝于2017年2月21日10时35分离开史密森尼，前往都江堰基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "return-to-china"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0039",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "husbandry_training",
+      "predicate": "travel_crate_acclimation",
+      "value": "walked through crate daily and practiced short closed-door stays",
+      "source_id": "src-smithsonian-baobao-departure-2017-local",
+      "source_locator": "travel training",
+      "source_language": "en",
+      "summary_zh": "宝宝通过每日穿行运输箱及短时间关门停留逐步适应长途运输。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "crate-training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0040",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "behaviour",
+      "predicate": "initial_dujiangyan_adaptation",
+      "value": [
+        "entered new enclosure within one minute",
+        "explored immediately",
+        "appeared relaxed",
+        "accepted food from new keeper"
+      ],
+      "source_id": "src-smithsonian-baobao-settling-2017-local",
+      "source_locator": "keeper adaptation account",
+      "source_language": "en",
+      "summary_zh": "抵达都江堰后，宝宝在箱门开启一分钟内进入新圈舍，立即探索、状态放松，并接受新护理员投喂。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "adaptation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0041",
+      "subject": {
+        "type": "panda",
+        "id": "bao-bao",
+        "label": "Bao Bao"
+      },
+      "category": "relationship",
+      "predicate": "gave_birth_to_offspring",
+      "value": {
+        "offspring_count": 3,
+        "female_birth_date": "2020-07-29",
+        "twin_males_birth_date": "2021-08-04"
+      },
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Bao Bao profile",
+      "source_language": "en",
+      "summary_zh": "宝宝已产下三只幼崽：2020年7月29日出生的一只雌性，以及2021年8月4日出生的一对雄性双胞胎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bao-bao",
+        "offspring"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0042",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Bei Bei profile",
+      "source_language": "en",
+      "summary_zh": "贝贝为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0043",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2015-08-22",
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Bei Bei profile",
+      "source_language": "en",
+      "summary_zh": "贝贝于2015年8月22日在史密森尼国家动物园出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0044",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "mei-xiang",
+        "father_id": "tian-tian"
+      },
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "family profile",
+      "source_language": "en",
+      "summary_zh": "贝贝的母亲是美香，父亲是添添。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "parents"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0045",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": "precious, treasure",
+      "source_id": "src-smithsonian-beibei-name-2015-local",
+      "source_locator": "name announcement",
+      "source_language": "en",
+      "summary_zh": "“贝贝”的名字意为“珍贵、宝物”，与姐姐宝宝的名字相呼应。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0046",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "cultural_context",
+      "predicate": "name_selected_by_first_ladies",
+      "value": [
+        "Michelle Obama",
+        "Peng Liyuan"
+      ],
+      "source_id": "src-smithsonian-beibei-name-2015-local",
+      "source_locator": "naming ceremony",
+      "source_language": "en",
+      "summary_zh": "贝贝的名字由美国第一夫人米歇尔·奥巴马和中国国家主席夫人彭丽媛共同选定。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "diplomacy",
+        "naming"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0047",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "milestone",
+      "predicate": "first_steps",
+      "value": "2015-11-09",
+      "source_id": "src-smithsonian-beibei-moments-2019-local",
+      "source_locator": "first foods to first steps",
+      "source_language": "en",
+      "summary_zh": "贝贝于2015年11月9日迈出最初步伐。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "development"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0048",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "transfer",
+      "predicate": "departed_for_china",
+      "value": {
+        "date": "2019-11-19",
+        "departure_time": "09:30",
+        "destination": "Bifengxia Panda Base"
+      },
+      "source_id": "src-smithsonian-beibei-departure-2019-local",
+      "source_locator": "departure chronology",
+      "source_language": "en",
+      "summary_zh": "贝贝于2019年11月19日9时30分离开史密森尼，前往碧峰峡基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "return-to-china"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0049",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "husbandry_training",
+      "predicate": "travel_crate_acclimation",
+      "value": "entered the custom crate through daily training before departure",
+      "source_id": "src-smithsonian-beibei-departure-2019-local",
+      "source_locator": "departure preparation",
+      "source_language": "en",
+      "summary_zh": "贝贝通过日常训练适应定制运输箱，并在出发当天按护理员指令进入箱内。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "crate-training"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0050",
+      "subject": {
+        "type": "panda",
+        "id": "bei-bei",
+        "label": "Bei Bei"
+      },
+      "category": "behaviour",
+      "predicate": "initial_bifengxia_adaptation",
+      "value": {
+        "flight": "mostly ate and slept",
+        "status": "settling in",
+        "familiar_object": "red ball"
+      },
+      "source_id": "src-smithsonian-beibei-settling-2019-local",
+      "source_locator": "arrival update",
+      "source_language": "en",
+      "summary_zh": "贝贝在16小时飞行中主要进食和睡觉，抵达碧峰峡后适应良好，熟悉的红球也随行到达。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "bei-bei",
+        "adaptation"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0051",
+      "subject": {
+        "type": "panda",
+        "id": "xiao-qi-ji",
+        "label": "Xiao Qi Ji"
+      },
+      "category": "relationship",
+      "predicate": "parents",
+      "value": {
+        "mother_id": "mei-xiang",
+        "father_id": "tian-tian"
+      },
+      "source_id": "src-smithsonian-panda-media-resources-family-local",
+      "source_locator": "Xiao Qi Ji profile",
+      "source_language": "en",
+      "summary_zh": "小奇迹的母亲是美香，父亲是添添。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "xiao-qi-ji",
+        "parents"
+      ]
+    },
+    {
+      "record_id": "lpr-20260725-smithsonian-family-0052",
+      "subject": {
+        "type": "panda",
+        "id": "xiao-qi-ji",
+        "label": "Xiao Qi Ji"
+      },
+      "category": "husbandry_training",
+      "predicate": "travel_crate_acclimation_2023",
+      "value": "acclimated over several weeks before departure",
+      "source_id": "src-smithsonian-family-departure-2023-local",
+      "source_locator": "departure preparation",
+      "source_language": "en",
+      "summary_zh": "返华前数周，小奇迹接受了专用运输箱适应训练。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-25T00:00:00+08:00",
+      "tags": [
+        "xiao-qi-ji",
+        "crate-training"
+      ]
+    }
+  ]
+}
