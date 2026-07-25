@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "candidate_count": 230,
-  "pandas_with_media": 63,
+  "candidate_count": 234,
+  "pandas_with_media": 66,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
     {
@@ -71,21 +71,6 @@
         "milestone": 2
       },
       "coverage_gap_score": -14
-    },
-    {
-      "subject_id": "er-shun",
-      "subject_label": "Er Shun",
-      "media_count": 2,
-      "record_count": 6,
-      "direct_record_count": 6,
-      "category_count": 4,
-      "categories": {
-        "behaviour": 1,
-        "media_candidate": 2,
-        "milestone": 2,
-        "sex": 1
-      },
-      "coverage_gap_score": -16
     },
     {
       "subject_id": "long-hui",
@@ -398,6 +383,26 @@
         "sex": 1
       },
       "coverage_gap_score": -36
+    },
+    {
+      "subject_id": "da-mao",
+      "subject_label": "Da Mao",
+      "media_count": 1,
+      "record_count": 11,
+      "direct_record_count": 10,
+      "category_count": 9,
+      "categories": {
+        "behaviour": 1,
+        "distinguishing_feature": 1,
+        "media_candidate": 1,
+        "milestone": 1,
+        "name_meaning": 1,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 3,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -43
     },
     {
       "subject_id": "liang-liang-my",
@@ -953,6 +958,28 @@
       "coverage_gap_score": -72
     },
     {
+      "subject_id": "er-shun",
+      "subject_label": "Er Shun",
+      "media_count": 4,
+      "record_count": 25,
+      "direct_record_count": 24,
+      "category_count": 11,
+      "categories": {
+        "behaviour": 1,
+        "distinguishing_feature": 1,
+        "health": 1,
+        "maternal_care": 2,
+        "media_candidate": 4,
+        "milestone": 4,
+        "personality": 1,
+        "reproduction": 5,
+        "sex": 2,
+        "transfer": 3,
+        "veterinary_care": 1
+      },
+      "coverage_gap_score": -74
+    },
+    {
       "subject_id": "le-le-hk",
       "subject_label": "Le Le",
       "media_count": 1,
@@ -1073,6 +1100,56 @@
         "sex": 1,
         "transfer": 1,
         "veterinary_care": 1
+      },
+      "coverage_gap_score": -82
+    },
+    {
+      "subject_id": "jia-panpan",
+      "subject_label": "Jia Panpan",
+      "media_count": 3,
+      "record_count": 24,
+      "direct_record_count": 23,
+      "category_count": 14,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "cultural_context": 1,
+        "diet": 2,
+        "distinguishing_feature": 1,
+        "growth_measurement": 3,
+        "media_candidate": 3,
+        "milestone": 3,
+        "name_meaning": 1,
+        "personality": 2,
+        "public_debut": 1,
+        "relationship": 2,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -82
+    },
+    {
+      "subject_id": "jia-yueyue",
+      "subject_label": "Jia Yueyue",
+      "media_count": 3,
+      "record_count": 24,
+      "direct_record_count": 23,
+      "category_count": 14,
+      "categories": {
+        "behaviour": 1,
+        "birth": 1,
+        "cultural_context": 1,
+        "diet": 2,
+        "distinguishing_feature": 1,
+        "growth_measurement": 3,
+        "media_candidate": 3,
+        "milestone": 3,
+        "name_meaning": 1,
+        "personality": 2,
+        "public_debut": 1,
+        "relationship": 2,
+        "sex": 1,
+        "transfer": 2
       },
       "coverage_gap_score": -82
     },

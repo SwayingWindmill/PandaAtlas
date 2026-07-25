@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.newswire.ca/news-releases/calgary-now-on-baby-panda-watch-872669383.html",
+  "discovered_at": "2026-07-25T16:57:52.816790+00:00",
+  "image_count": 7,
+  "images": [
+    {
+      "asset_url": "https://mma.prnewswire.com/media/845940/Calgary_Zoo_Calgary_now_on_baby_panda_watch.mp4?p=medium",
+      "source_types": [
+        "meta:twitter:image",
+        "meta:og:image",
+        "img:src"
+      ],
+      "alt": "Baby Panda Watch - Er Shun Inseminated at the Calgary Zoo",
+      "title": "Baby Panda Watch - Er Shun Inseminated at the Calgary Zoo",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "twitter:image",
+        "og:image",
+        "img-responsive gallery-thumb"
+      ]
+    },
+    {
+      "asset_url": "https://mma.prnewswire.com/media/845937/Calgary_Zoo_Calgary_now_on_baby_panda_watch.jpg?p=facebook",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://mma.prnewswire.com/media/845938/Calgary_Zoo_Calgary_now_on_baby_panda_watch.jpg?p=facebook",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://mma.prnewswire.com/media/845939/Calgary_Zoo_Calgary_now_on_baby_panda_watch.jpg?p=facebook",
+      "source_types": [
+        "meta:og:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.newswire.ca/content/dam/prnewswire/homepage/LIGHT_PRNewswire_By-Cision_Stacked.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Return to PR Newswire homepage",
+      "title": "Return to PR Newswire homepage",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "img-responsive"
+      ]
+    },
+    {
+      "asset_url": "https://www.newswire.ca/content/dam/prnewswire/homepage/MONO_PRNewswire_By-Cision_Stacked.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Cision Canada",
+      "title": "Cision Canada",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "img-responsive"
+      ]
+    },
+    {
+      "asset_url": "https://rt.newswire.ca/rt.gif?NewsItemId=C1848&Transmission_Id=201904031100CANADANWCANADAPR_C1848&DateId=20190403",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

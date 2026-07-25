@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.torontozoo.com/press/2018/%21newsite.asp?pg=20180324",
+  "discovered_at": "2026-07-25T16:51:05.145828+00:00",
+  "image_count": 4,
+  "images": [
+    {
+      "asset_url": "https://www.torontozoo.com/press/2018/20180324ban.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2018/20180324i.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2018/20180319i1.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.torontozoo.com/press/2018/zebban.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

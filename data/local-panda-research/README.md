@@ -55,9 +55,9 @@ The validator checks JSONL syntax, IDs, source references, timestamps, local-onl
 
 ## Current snapshot
 
-As of 2026-07-25, the vault contains **239 sources** and **1,375 structured records**: 1,362 direct-evidence records and thirteen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 63 individually identified pandas, with no collected individual lacking at least one structured fact record.
+As of 2026-07-25, the vault contains **256 sources** and **1,453 structured records**: 1,436 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 66 individually identified pandas, with no collected individual lacking at least one structured fact record.
 
-The local media layer contains **230 candidates**, **223 downloaded files**, and **919,507,649 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
+The local media layer contains **234 candidates**, **227 downloaded files**, and **920,256,094 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
@@ -70,5 +70,6 @@ The local media layer contains **230 candidates**, **223 downloaded files**, and
 - `2026-07-25-vienna-offspring.jsonl` — individual-level Vienna offspring profiles covering birth and sex, naming, growth, identifying markings, behaviour, vocal-development research, husbandry training, enrichment, and transfers to China.
 - `2026-07-25-berlin-family.jsonl` — multigenerational Zoo Berlin family records for Meng Meng, Jiao Qing, the 2019 brothers Meng Xiang and Meng Yuan, and the 2024 sisters Meng Hao and Meng Tian, covering identity, parentage, reproduction, twin care, growth, behaviour, health, public debuts and transfer to Chengdu. Conflicting official birth-time reports for Meng Tian are preserved as separate sourced values.
 - `2026-07-25-singapore-family.jsonl` — official-source family records for Kai Kai, Jia Jia and Singapore-born Le Le, covering identity, temperament, enrichment, reproduction, maternal care, naming, growth, public debuts, husbandry training, independence, transfer to China and adaptation at the Dujiangyan base.
+- `2026-07-25-canada-family.jsonl` — Toronto and Calgary programme records for Er Shun, Da Mao, Jia Panpan and Jia Yueyue, covering arrival and quarantine, artificial insemination, pseudopregnancy, fetal monitoring, twin birth and rotation care, sex confirmation, naming, growth, behaviour, physical identification, transfer within Canada and return-to-China leads. The 2015 official birth evidence retains paternity as unconfirmed rather than inferring it from semen use.
 
 All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.
