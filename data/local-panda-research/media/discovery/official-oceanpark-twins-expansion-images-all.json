@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "page_url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/ocean-park-unlocks-a-new-level-of-panda-paradise-for-panda-cubs",
+  "discovered_at": "2026-07-25T21:21:53.341965+00:00",
+  "image_count": 1,
+  "images": [
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/at1byl52/photo-2-key-photo.webp",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1278 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.oceanpark.com.hk/en/a-day-at-the-park/events/pandastic-summer-birthday-celebration",
+  "discovered_at": "2026-07-25T21:21:56.802598+00:00",
+  "image_count": 95,
+  "images": [
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/13qibdpu/ww_icon.webp",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "Stylized logo of blue mountains, water, and an orange crescent.",
+      "title": "",
+      "width": "112",
+      "height": "112",
+      "evidence": [
+        "preload",
+        "image",
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/iafnat0b/opc_icon.webp",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "Blue seahorse logo with waves in a white circle",
+      "title": "",
+      "width": "112",
+      "height": "112",
+      "evidence": [
+        "preload",
+        "image",
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/rkwfxwh1/oceanpark_logo.webp",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "Ocean Park Hong Kong logo featuring a seal mascot splashing water and the Chinese text 香港海洋公園.",
+      "title": "",
+      "width": "308",
+      "height": "128",
+      "evidence": [
+        "preload",
+        "image",
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ttxdhwef/vector-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Decorative image",
+      "title": "",
+      "width": "12",
+      "height": "14",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/g0snhlfl/vector-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Decorative image",
+      "title": "",
+      "width": "14",
+      "height": "13",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/db2nqx3d/reward-program.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Decorative image",
+      "title": "",
+      "width": "14",
+      "height": "14",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/rpefjz0u/association-of-zoos-logo.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "ACCREDITED BY THE ASSOCIATION OF ZOOS & AQUARIUMS",
+      "title": "",
+      "width": "157",
+      "height": "64",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/geqlkqxd/1-master-logo-waza-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "World Association of Zoos and Aquariums (WAZA) logo, featuring a grey elephant and a blue fish, with text 'WAZA | United for Conservation'.",
+      "title": "",
+      "width": "146",
+      "height": "56",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/51vnd45k/ghs-cert-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Blue logo with white text \"GLOBAL HUMANE CERTIFIED ZOOS & AQUARIUMS\" and animal silhouettes.",
+      "title": "",
+      "width": "84",
+      "height": "64",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/h24h4f5q/group-1000005339.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Accredited by the ALLIANCE of Marine Mammal Parks & Aquariums logo",
+      "title": "",
+      "width": "165",
+      "height": "56",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/2seh5fql/accredited-attraction-logo.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Gold icon with \"Accredited Attraction\" and \"cr\" text",
+      "title": "",
+      "width": "68",
+      "height": "64",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ygdfi2ko/facebook.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "facebook.svg",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/i1ajhq1t/instagram.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "instagram.svg",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/vjud3y2o/weibo.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "weibo.svg",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/fywmuvqf/rednote.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "rednote.svg",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/srzfvizz/youtube.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "youtube.svg",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/f1tihwtx/tiktok.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "tiktok.svg",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/m5nef45v/tripadvisor.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "tripadvisor.svg",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/m1pnfkui/kid_3026re_s.webp",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    },
+    {
+      "asset_url": "https://www.oceanpark.com.hk/assets/img/sharing-icons/facebook.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Facebook",
+      "title": "",
+      "width": "22",
+      "height": "22",
+      "evidence": [
+        "ShareMenu-module-scss-module__4qofXq__shareMenuIcon"
+      ]
+    },
+    {
+      "asset_url": "https://www.oceanpark.com.hk/assets/img/sharing-icons/weibo.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Weibo",
+      "title": "",
+      "width": "22",
+      "height": "22",
+      "evidence": [
+        "ShareMenu-module-scss-module__4qofXq__shareMenuIcon"
+      ]
+    },
+    {
+      "asset_url": "https://www.oceanpark.com.hk/assets/img/sharing-icons/x.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "X",
+      "title": "",
+      "width": "22",
+      "height": "22",
+      "evidence": [
+        "ShareMenu-module-scss-module__4qofXq__shareMenuIcon"
+      ]
+    },
+    {
+      "asset_url": "https://www.oceanpark.com.hk/assets/img/sharing-icons/linkedin.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Linkedin",
+      "title": "",
+      "width": "22",
+      "height": "22",
+      "evidence": [
+        "ShareMenu-module-scss-module__4qofXq__shareMenuIcon"
+      ]
+    },
+    {
+      "asset_url": "https://www.oceanpark.com.hk/assets/img/sharing-icons/copy.svg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Copy to clipboard",
+      "title": "",
+      "width": "22",
+      "height": "22",
+      "evidence": [
+        "ShareMenu-module-scss-module__4qofXq__shareMenuIcon"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/xgjkgulf/op_26sumbanner260610_732x732enjpg.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Pandastic Summer Birthday Celebration banner with pandas in party hats, a cake with '22' candles, and confetti. Dates: 26/6 - 31/8/2026.",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage\n              \n              index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/vimesc3y/op-summer-panda-birthday-homepage-desktop-en.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Pandastic Summer Birthday Celebration banner with pandas in party hats, a cake with '22' candles, and confetti. Dates: 26/6 - 31/8/2026.",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/0v2j15zi/op-sum-photo-spots-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-photo-spots-2.webp",
+      "title": "",
+      "width": "1280",
+      "height": "720",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/yconaece/op-sum26-photo-spots-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum26-photo-spots-2.webp",
+      "title": "",
+      "width": "1276",
+      "height": "718",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/3l3nwris/op-sum-photo-spots-3.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-photo-spots-3.webp",
+      "title": "",
+      "width": "1271",
+      "height": "715",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/5krbulkm/op-sum-bun-tower.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-bun-tower.webp",
+      "title": "",
+      "width": "1278",
+      "height": "718",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/vtaerggz/op-sum-cute-cuddly-zone-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-cute-cuddly-zone-1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/3ytotu2a/op-sum-cute-cuddly-zone-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-cute-cuddly-zone-2.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/qktjqkqs/op-sum-cute-cuddly-zone-3.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-cute-cuddly-zone-3.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/bnodaegf/op-sum-happy-moment-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-happy-moment-1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/1uinpyg1/op-sum-happy-moment-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-happy-moment-2.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/l2fnksu2/op-sum-happy-moment-3.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-happy-moment-3.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/gcli3b5x/op-sum-splashy-bday-camp-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-splashy-bday-camp-1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage",
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage\n              \n              index-module-scss-module__izeZnG__imageWrapperBackgroundImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/wdzghu0p/op-sum-splashy-bday-camp-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-splashy-bday-camp-2.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/gjgdrvjv/op-sum-splashy-bday-camp-3.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-splashy-bday-camp-3.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/f3dc3542/op-sum-water-bomb-fun.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-water-bomb-fun.webp",
+      "title": "",
+      "width": "1268",
+      "height": "713",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage\n              \n              index-module-scss-module__izeZnG__imageWrapperBackgroundImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/a2sj3tzj/summer26-revised.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Performers in orange and pink outfits holding water guns, spraying water on a stage with \"SUMMER SPLASH\" and \"Ocean Park Hong Kong\" signs.",
+      "title": "",
+      "width": "1280",
+      "height": "720",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/xnwhqy1r/op-sum-gallery-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-gallery-1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/0empgfrj/op-sum-gallery-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-gallery-2.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/nw1ap5pw/op-sum26-full-fun-summertime.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum26-full-fun-summertime.webp",
+      "title": "",
+      "width": "1280",
+      "height": "720",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ttde2alh/pawsome-colour-chalker.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Pawsome Colour Chalker.webp",
+      "title": "",
+      "width": "1280",
+      "height": "720",
+      "evidence": [
+        "index-module-scss-module__izeZnG__mobileImage\n              index-module-scss-module__izeZnG__fadeImage",
+        "index-module-scss-module__izeZnG__desktopImage\n            index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/snzf3p1l/op-sum26-groving-band.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum26-groving-band.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/mbzho4cl/op-all-star-jam-bamboo-zone.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Man with pink boombox poses with five rock-and-roll themed Ocean Park mascots.",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/lz1hbw2b/op-panda-twin-cubs-100days-9.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Ocean Park mascots and performers pose in front of the Amazing Asian Animals exhibit.",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/e3whuxci/op-sum26-maxus-mifa-plus.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum26-maxus-mifa-plus.webp",
+      "title": "",
+      "width": "1272",
+      "height": "722",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/yevgieid/op-sum-panda-fan-zone.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-panda-fan-zone.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ovgk2b45/op-sum-pandastic-summer-birthday-spectacular.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-pandastic-summer-birthday-spectacular.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/yxzhdfvs/op-summer-2026-ak-bday-fan.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Two circular fans on grass. Yellow fan features two pandas with party hats, cake, 'Happy 7'. Orange fan shows Ocean Park logo.",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/h53fwgmf/op-summer-2026-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Two clay panda figurines in glass jars, one holding bamboo, nestled in green foliage.",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/3bpphuic/op-sum-photo-spots-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-sum-photo-spots-1.webp",
+      "title": "",
+      "width": "1279",
+      "height": "720",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/2m3dxo13/op-fffo-shark-new-thumb.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Three people in snorkeling gear hold a floating feeder in an aquarium with colorful fish.",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ievo4h3a/op-summer-2026-fnb-1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/e4qhxiiv/op-summer-2026-fnb-2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-2.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/4amkajpm/op-summer-2026-fnb-3.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-3.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/qzzp4ywt/op-summer-2026-fnb-4.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-4.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ynzcsbce/op-summer-2026-fnb-5.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-5.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/tdzp3qm2/op-summer-2026-fnb-6.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-6.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/uwihvsk1/op-summer-2026-fnb-7.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-7.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/myjpnsew/op-summer-2026-fnb-8.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-8.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/qkljrobi/op-summer-2026-fnb-9.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-9.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/tixl03fa/op-summer-2026-fnb-10.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-10.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/hpoflzrp/op-summer-2026-fnb-11.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-11.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ekkn4g4h/op-summer-2026-fnb-12.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-12.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/wnnjsgza/op-summer-2026-fnb-13.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-13.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/rmahpg1h/op-summer-2026-fnb-14.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-14.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/3etmdsnl/op-summer-2026-fnb-15.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-15.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/xxahufru/op-summer-2026-fnb-16.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-16.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/t1wdxgs0/op-summer-2026-fnb-17.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-17.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/mjwlidey/op-summer-2026-fnb-18.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-18.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/zfkhzu4d/op-summer-2026-fnb-19.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-fnb-19.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/qwtbg1m2/op-summer26-rtl-jul1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/lzjhszut/op-summer26-rtl-jul2.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul2.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/mvvbwnol/op-summer26-rtl-jul3.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul3.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/5g3nmd2z/op-summer26-rtl-jul4.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul4.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/tztgbqjx/op-summer26-rtl-jul5.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul5.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/apcaqgnt/op-summer26-rtl-jul6.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul6.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/bmahx04k/op-summer26-rtl-jul9.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul9.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/3l0flbpv/op-summer26-rtl-jul7.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul7.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/sj3d1min/op-summer26-rtl-jul8.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul8.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/hf1fb5gm/op-summer26-rtl-jul10.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul10.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/h1hbbwdc/op-summer26-rtl-jul11.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer26-rtl-jul11.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/cqfc0ydu/op-summer-2026-rtl-1_1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-1_1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/mzxnelnp/op-summer-2026-rtl-2_1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-2_1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/lithjw2x/op-summer-2026-rtl-3_1.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-3_1.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/zcwdm0ji/op-summer-2026-rtl-4.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-4.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/n1gjitzh/op-summer-2026-rtl-5.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-5.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/5j0agut5/op-summer-2026-rtl-6.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-6.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/xcmfwn0p/op-summer-2026-rtl-7.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-7.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/wmtl15kg/op-summer-2026-rtl-8.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-8.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/afenranj/op-summer-2026-rtl-9.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-9.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/nb5j5qgc/op-summer-2026-rtl-10.webp",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "op-summer-2026-rtl-10.webp",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "index-module-scss-module__izeZnG__fadeImage\n            \n            index-module-scss-module__izeZnG__imageWrapperBackgroundImage"
+      ]
+    }
+  ]
+}

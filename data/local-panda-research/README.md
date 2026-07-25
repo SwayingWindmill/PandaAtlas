@@ -55,9 +55,9 @@ The validator checks JSONL syntax, IDs, source references, timestamps, local-onl
 
 ## Current snapshot
 
-As of 2026-07-26, the vault contains **397 sources** and **2,581 structured records**: 2,564 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 98 individually identified pandas, with no collected individual lacking at least one structured fact record.
+As of 2026-07-26, the vault contains **406 sources** and **2,702 structured records**: 2,685 direct-evidence records and seventeen explicitly marked secondary leads requiring primary-source follow-up. The evidence layer is dominated by institutional, government, archival, and official-zoo material. Media coverage spans 101 individually identified pandas, with no collected individual lacking at least one structured fact record.
 
-The local media layer contains **437 candidates**, **430 downloaded files**, and **1,021,682,111 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
+The local media layer contains **450 candidates**, **443 downloaded files**, and **1,026,806,169 bytes** of binaries. Rights metadata is retained but does not gate local acquisition. Seven candidate URLs remain failed and are preserved as replacement leads.
 
 ## Collection log
 
@@ -82,5 +82,6 @@ The local media layer contains **437 candidates**, **430 downloaded files**, and
 - `2026-07-26-edinburgh-family.jsonl` — Edinburgh records for Tian Tian, Yang Guang and the UK-China cooperation programme, covering identity, conflicting Tian Tian birth-date evidence, pre-UK life history, offspring, artificial-insemination research, Yang Guang's tumour surgery and habitat behaviour, birthday enrichment, cultural impact, completed return, Bifengxia quarantine and post-return health.
 - `2026-07-26-madrid-family.jsonl` — Zoo Aquarium Madrid family records for Bing Xing, Hua Zui Ba, Po, De De, Xing Bao, Chulina, You You and Jiu Jiu, plus both twin-development timelines and the 2007–2024 cooperation programme. The batch covers identity, parentage, artificial insemination, naming, growth, individual appearance and personality, maternal and incubator rotation care, outdoor debuts, completed returns to Chengdu, transport preparation and in-situ habitat support. Twin birth times and weights that official sources do not map to later names remain at family level.
 - `2026-07-26-malaysia-family-deep.jsonl` — deepened Zoo Negara records for Xing Xing, Liang Liang, Nuan Nuan, Yi Yi and Sheng Yi, plus the 2014–2025 cooperation programme. The batch covers original and Malaysian names, parentage, personality and distinguishing features, natural-breeding outcomes, birthday enrichment, diet and dental care, completed cub and adult returns, Bifengxia quarantine, Nuan Nuan's Nanjing residence and the conflicting May 30/31 Sheng Yi birth-date reports.
+- `2026-07-26-oceanpark-family.jsonl` — Ocean Park records for historic Jia Jia and An An, Ying Ying, Le Le, and Hong Kong-born twins Jia Jia and De De. The batch covers longevity and geriatric-behaviour research, posthumous education use, the 2010–2024 breeding programme, Ying Ying's record-setting first birth, neonatal milk and formula care, identifying eye patches, public debut, naming, personality, expanded-habitat skills and first-birthday enrichment. Historic and current namesakes remain separate IDs.
 
 All records remain `publication_status=local_only`. Nothing in the collection log implies approval for website publication or media reuse.

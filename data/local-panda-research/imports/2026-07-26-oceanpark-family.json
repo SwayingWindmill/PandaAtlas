@@ -1,0 +1,1949 @@
+{
+  "sources": [
+    {
+      "source_id": "src-oceanpark-an-an-welfare-study-2024-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Ocean Park's latest study reveals the hidden relationship between environment and world's longest-living male giant panda",
+      "url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/ocean-parks-latest-study-reveals-the-hidden-relationship-between-environment-and-worlds-longest-living-male-giant-panda-under-human-care",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official summary of the 2019-2022 An An activity and habitat-use study."
+    },
+    {
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Conservation Breeding",
+      "url": "https://corporate.oceanpark.com.hk/en/our-efforts-achievements/wildlife-conservation-and-animal-care/conservation-breeding",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Current official history of the Ying Ying-Le Le breeding programme, Sichuan relocation and 2024 twins."
+    },
+    {
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Hong Kong's giant panda cub miracles: a two-month story",
+      "url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/hong-kong-s-giant-panda-cub-miracles-a-two-month-story-of-love-dedication-and-tiny-paws",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official birth weights, growth, eye opening, formula feeding and maternal recovery details."
+    },
+    {
+      "source_id": "src-oceanpark-twins-debut-2025-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Hong Kong's homegrown panda cubs make historic public debut",
+      "url": "https://corporate.oceanpark.com.hk/sc/media-partnerships/press-release/ocean-park-celebrates-historic-debut-of-hong-kongs-homegrown-panda-cubs",
+      "language": "zh",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official six-month debut and approximate weights."
+    },
+    {
+      "source_id": "src-oceanpark-twins-expanded-habitat-2025-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Ocean Park unlocks a new level of panda paradise for panda cubs",
+      "url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/ocean-park-unlocks-a-new-level-of-panda-paradise-for-panda-cubs",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official expanded habitat and locomotor-development account."
+    },
+    {
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Hong Kong celebrates as giant panda twin cubs officially named Jia Jia and De De",
+      "url": "https://corporate.oceanpark.com.hk/en/media-partnerships/press-release/hong-kong-celebrates-as-giant-panda-twin-cubs-at-ocean-park-officially-named-as-jia-jia-and-de-de",
+      "language": "en",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official names, meanings, vote volume, weights, diet and personality distinctions."
+    },
+    {
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_type": "institution_primary_profile",
+      "publisher": "Ocean Park Corporation",
+      "title": "Overview and latest happenings: giant pandas",
+      "url": "https://www.oceanpark.com.hk/jp/park-experience/giant-panda-overview-and-latest-happenings",
+      "language": "ja",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official profile table for sex, birth date/time and identifying eye features."
+    },
+    {
+      "source_id": "src-oceanpark-panda-birthdays-2025-deep-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Ocean Park marks Ying Ying and Le Le's 20th birthdays",
+      "url": "https://www.oceanpark.com.hk/sc/press-release/ocean-park-marks-giant-pandas-ying-ying-le-les-20th-birthdays-with-delicious",
+      "language": "zh",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official 20th birthday dates, food preferences, longevity and vitality assessment."
+    },
+    {
+      "source_id": "src-oceanpark-twins-first-birthday-2025-local",
+      "source_type": "institution_primary_press_release",
+      "publisher": "Ocean Park Corporation",
+      "title": "Ocean Park hosts grand first birthday gala for giant panda twins Jia Jia and De De",
+      "url": "https://www.oceanpark.com.hk/sc/press-release/ocean-park-hosts-grand-panda-tastic-first-birthday-gala-for-giant-panda-twins-jia-jia",
+      "language": "zh",
+      "region": "Hong Kong",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official first-birthday enrichment and observed curiosity."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-oceanpark-0001",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-ocean-park",
+        "label": "An An"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-oceanpark-an-an-obituary-2022",
+      "source_locator": "sex",
+      "source_language": "zh",
+      "summary_zh": "旧安安为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-ocean-park",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0002",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-ocean-park",
+        "label": "An An"
+      },
+      "category": "personality",
+      "predicate": "temperament",
+      "value": [
+        "clever",
+        "playful"
+      ],
+      "source_id": "src-oceanpark-an-an-obituary-2022",
+      "source_locator": "temperament",
+      "source_language": "zh",
+      "summary_zh": "海洋公园形容旧安安聪明且顽皮。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-ocean-park",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0003",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-ocean-park",
+        "label": "An An"
+      },
+      "category": "research",
+      "predicate": "behaviour_study_observation",
+      "value": {
+        "period": "2019-07 to 2022-01",
+        "observation_hours": 422.5,
+        "observation_days": 169
+      },
+      "source_id": "src-oceanpark-an-an-welfare-study-2024-local",
+      "source_locator": "behaviour_study_observation",
+      "source_language": "en",
+      "summary_zh": "研究团队在2019年7月至2022年1月间，对旧安安进行了422.5小时、169天的行为观察。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-ocean-park",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0004",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-ocean-park",
+        "label": "An An"
+      },
+      "category": "behaviour",
+      "predicate": "activity_share_in_geriatric_study",
+      "value": 0.35,
+      "source_id": "src-oceanpark-an-an-welfare-study-2024-local",
+      "source_locator": "activity_share_in_geriatric_study",
+      "source_language": "en",
+      "summary_zh": "尽管年迈，旧安安在研究观察时间内平均有35%处于活动状态。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-ocean-park",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0005",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-ocean-park",
+        "label": "An An"
+      },
+      "category": "research",
+      "predicate": "pathway_use_welfare_application",
+      "value": [
+        "exhibit design",
+        "novel item placement",
+        "age-tailored enrichment",
+        "individual care plans"
+      ],
+      "source_id": "src-oceanpark-an-an-welfare-study-2024-local",
+      "source_locator": "pathway_use_welfare_application",
+      "source_language": "en",
+      "summary_zh": "旧安安的路径使用研究被用于改善展区设计、丰容物摆放和老年个体护理计划。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-ocean-park",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0006",
+      "subject": {
+        "type": "panda",
+        "id": "an-an-ocean-park",
+        "label": "An An"
+      },
+      "category": "research",
+      "predicate": "posthumous_research_legacy",
+      "value": [
+        "biological samples",
+        "skeleton for veterinary education"
+      ],
+      "source_id": "src-oceanpark-an-an-research-legacy-2022",
+      "source_locator": "posthumous_research_legacy",
+      "source_language": "zh",
+      "summary_zh": "旧安安离世后，其生物样本和骨骼继续用于科研及兽医教育。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "an-an-ocean-park",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0007",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-ocean-park",
+        "label": "Jia Jia"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-oceanpark-jia-jia-obituary-2016",
+      "source_locator": "sex",
+      "source_language": "zh",
+      "summary_zh": "旧佳佳为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-ocean-park",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0008",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-ocean-park",
+        "label": "Jia Jia"
+      },
+      "category": "birth",
+      "predicate": "estimated_birth_year",
+      "value": 1978,
+      "source_id": "src-oceanpark-jia-jia-obituary-2016",
+      "source_locator": "estimated_birth_year",
+      "source_language": "zh",
+      "summary_zh": "海洋公园按佳佳2016年离世时38岁记录其约出生于1978年。",
+      "evidence_level": "direct",
+      "confidence": "medium",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-ocean-park",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0009",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-ocean-park",
+        "label": "Jia Jia"
+      },
+      "category": "milestone",
+      "predicate": "record_at_age_34",
+      "value": "world's oldest female giant panda under human care",
+      "source_id": "src-oceanpark-jia-jia-hero-mother-2012",
+      "source_locator": "record_at_age_34",
+      "source_language": "zh",
+      "summary_zh": "佳佳34岁时已成为全球最长寿的人类照顾下雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-ocean-park",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0010",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-ocean-park",
+        "label": "Jia Jia"
+      },
+      "category": "research",
+      "predicate": "posthumous_education_legacy",
+      "value": "skeleton used for veterinary science education",
+      "source_id": "src-oceanpark-an-an-welfare-study-2024-local",
+      "source_locator": "posthumous_education_legacy",
+      "source_language": "en",
+      "summary_zh": "佳佳的骨骼后来用于兽医科学教育。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-ocean-park",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0011",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "sex",
+      "source_language": "ja",
+      "summary_zh": "盈盈为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0012",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "birth",
+      "predicate": "birth_date",
+      "value": "2005-08-16",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "birth_date",
+      "source_language": "ja",
+      "summary_zh": "盈盈出生于2005年8月16日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0013",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "appearance",
+      "predicate": "facial_features",
+      "value": [
+        "round ears",
+        "eye patches shaped like the number eight"
+      ],
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "facial_features",
+      "source_language": "ja",
+      "summary_zh": "盈盈有圆耳朵，眼圈形状像数字“8”。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0014",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_hong_kong",
+      "value": {
+        "year": 2007,
+        "companion_id": "le-le-hk",
+        "status": "Central Government gift to HKSAR"
+      },
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "arrived_in_hong_kong",
+      "source_language": "en",
+      "summary_zh": "盈盈于2007年与乐乐一同抵达香港。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0015",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "reproduction",
+      "predicate": "breeding_programme_started",
+      "value": 2010,
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "breeding_programme_started",
+      "source_language": "en",
+      "summary_zh": "海洋公园从2010年开始推动盈盈与乐乐的繁殖计划。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0016",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "transfer",
+      "predicate": "temporary_sichuan_breeding_relocation",
+      "value": 2015,
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "temporary_sichuan_breeding_relocation",
+      "source_language": "en",
+      "summary_zh": "盈盈于2015年曾暂时返回四川，尝试与遗传上合适且有经验的雄性自然交配。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0017",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "reproduction",
+      "predicate": "first_successful_natural_mating_with_le_le",
+      "value": 2020,
+      "source_id": "src-oceanpark-lele-mating-2021-local",
+      "source_locator": "first_successful_natural_mating_with_le_le",
+      "source_language": "en",
+      "summary_zh": "盈盈与乐乐在多年尝试后于2020年首次成功自然交配。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0018",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "reproduction",
+      "predicate": "oestrus_behaviour_2021",
+      "value": [
+        "increased activity",
+        "more water play",
+        "reduced appetite",
+        "scent marking"
+      ],
+      "source_id": "src-oceanpark-lele-mating-2021-local",
+      "source_locator": "oestrus_behaviour_2021",
+      "source_language": "en",
+      "summary_zh": "2021年发情期，盈盈活动增加、更多嬉水、食欲下降并留下气味标记。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0019",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "relationship",
+      "predicate": "offspring",
+      "value": [
+        "jia-jia-hk-2024",
+        "de-de-hk-2024"
+      ],
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "offspring",
+      "source_language": "en",
+      "summary_zh": "盈盈是加加和得得的母亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0020",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "birth",
+      "predicate": "gave_birth_to_twins",
+      "value": {
+        "date": "2024-08-15",
+        "offspring_ids": [
+          "jia-jia-hk-2024",
+          "de-de-hk-2024"
+        ]
+      },
+      "source_id": "src-oceanpark-hk-twins-birth-2024-local",
+      "source_locator": "gave_birth_to_twins",
+      "source_language": "zh",
+      "summary_zh": "盈盈于2024年8月15日诞下香港首对大熊猫龙凤胎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0021",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "milestone",
+      "predicate": "oldest_first_time_giant_panda_mother",
+      "value": {
+        "age_years": 18,
+        "birthday_next_day": 19
+      },
+      "source_id": "src-oceanpark-hk-twins-birth-2024-local",
+      "source_locator": "oldest_first_time_giant_panda_mother",
+      "source_language": "zh",
+      "summary_zh": "盈盈在19岁生日头一天首次产子，成为有纪录以来最年长的初次产子大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0022",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "maternal_care",
+      "predicate": "postpartum_recovery",
+      "value": {
+        "initial_state": [
+          "extremely tired",
+          "little appetite"
+        ],
+        "later_food_intake_share": "70-80% of normal",
+        "monitoring": [
+          "temperature",
+          "weight"
+        ]
+      },
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "postpartum_recovery",
+      "source_language": "en",
+      "summary_zh": "盈盈产后初期极度疲倦、食欲较低，后来进食恢复至平日约70%至80%，团队持续监测体温和体重。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0023",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "diet",
+      "predicate": "postpartum_food_preferences",
+      "value": {
+        "does_not_like": "honey",
+        "hydration_support": "electrolyte water"
+      },
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "postpartum_food_preferences",
+      "source_language": "en",
+      "summary_zh": "盈盈不喜欢蜂蜜，产后团队以电解质水帮助其补充水分。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0024",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "milestone",
+      "predicate": "twentieth_birthday",
+      "value": "2025-08-16",
+      "source_id": "src-oceanpark-panda-birthdays-2025-deep-local",
+      "source_locator": "twentieth_birthday",
+      "source_language": "zh",
+      "summary_zh": "盈盈于2025年8月16日度过20岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0025",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "diet",
+      "predicate": "documented_favourite_foods",
+      "value": [
+        "sweet potato",
+        "carrot",
+        "apple",
+        "fresh bamboo leaves",
+        "bamboo shoots"
+      ],
+      "source_id": "src-oceanpark-panda-birthdays-2025-deep-local",
+      "source_locator": "documented_favourite_foods",
+      "source_language": "zh",
+      "summary_zh": "盈盈的生日食品包括紫薯、胡萝卜、苹果、新鲜竹叶和竹笋。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0026",
+      "subject": {
+        "type": "panda",
+        "id": "ying-ying-hk",
+        "label": "Ying Ying"
+      },
+      "category": "health",
+      "predicate": "twentieth_birthday_health_context",
+      "value": [
+        "long-lived",
+        "good vitality",
+        "supported by specialised husbandry and veterinary care"
+      ],
+      "source_id": "src-oceanpark-panda-birthdays-2025-deep-local",
+      "source_locator": "twentieth_birthday_health_context",
+      "source_language": "zh",
+      "summary_zh": "20岁时盈盈仍保持良好活力，园方将其归因于精细饲养和兽医护理。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "ying-ying-hk",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0027",
+      "subject": {
+        "type": "panda",
+        "id": "le-le-hk",
+        "label": "Le Le"
+      },
+      "category": "relationship",
+      "predicate": "offspring_ids",
+      "value": [
+        "jia-jia-hk-2024",
+        "de-de-hk-2024"
+      ],
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "offspring_ids",
+      "source_language": "en",
+      "summary_zh": "乐乐是加加和得得的父亲。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "le-le-hk",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0028",
+      "subject": {
+        "type": "panda",
+        "id": "le-le-hk",
+        "label": "Le Le"
+      },
+      "category": "reproduction",
+      "predicate": "breeding_programme_started",
+      "value": 2010,
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "breeding_programme_started",
+      "source_language": "en",
+      "summary_zh": "海洋公园从2010年开始推动乐乐与盈盈的繁殖计划。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "le-le-hk",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0029",
+      "subject": {
+        "type": "panda",
+        "id": "le-le-hk",
+        "label": "Le Le"
+      },
+      "category": "milestone",
+      "predicate": "twentieth_birthday",
+      "value": "2025-08-08",
+      "source_id": "src-oceanpark-panda-birthdays-2025-deep-local",
+      "source_locator": "twentieth_birthday",
+      "source_language": "zh",
+      "summary_zh": "乐乐于2025年8月8日度过20岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "le-le-hk",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0030",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "sex",
+      "source_language": "ja",
+      "summary_zh": "加加为雌性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0031",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "birth",
+      "predicate": "birth_datetime",
+      "value": "2024-08-15T02:05:00+08:00",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "birth_datetime",
+      "source_language": "ja",
+      "summary_zh": "加加于2024年8月15日2时05分出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0032",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weight_grams",
+      "value": 122,
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "birth_weight_grams",
+      "source_language": "en",
+      "summary_zh": "加加出生体重122克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0033",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "ying-ying-hk",
+        "father_id": "le-le-hk",
+        "twin_id": "de-de-hk-2024"
+      },
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "parents_and_twin",
+      "source_language": "en",
+      "summary_zh": "加加的母亲是盈盈、父亲是乐乐，双胞胎弟弟是得得。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0034",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "appearance",
+      "predicate": "eye_patch_shape",
+      "value": "phoenix-eye eyeliner shape",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "eye_patch_shape",
+      "source_language": "ja",
+      "summary_zh": "加加的眼圈像凤眼形眼线。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0035",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_two_months_kg",
+      "value": 2.7,
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "weight_at_two_months_kg",
+      "source_language": "en",
+      "summary_zh": "加加两个月龄时体重2.7千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0036",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "growth_measurement",
+      "predicate": "eyes_opened",
+      "value": "early October 2024",
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "eyes_opened",
+      "source_language": "en",
+      "summary_zh": "加加于2024年10月初睁眼。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0037",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "public_debut",
+      "predicate": "public_debut_date",
+      "value": "2025-02-16",
+      "source_id": "src-oceanpark-twins-debut-2025-local",
+      "source_locator": "public_debut_date",
+      "source_language": "zh",
+      "summary_zh": "加加于2025年2月16日与得得一同公开亮相。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0038",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_public_debut_kg",
+      "value": "about 12",
+      "source_id": "src-oceanpark-twins-debut-2025-local",
+      "source_locator": "weight_at_public_debut_kg",
+      "source_language": "zh",
+      "summary_zh": "加加约六个月公开亮相时体重约12千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0039",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2025-05-27",
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "official_name_announced",
+      "source_language": "en",
+      "summary_zh": "加加的正式名字于2025年5月27日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0040",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": [
+        "support",
+        "family",
+        "auspicious grace",
+        "prosperity and happiness"
+      ],
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "“加加”寓意支持，也谐音家庭与吉祥，寄托繁荣幸福。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0041",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "personality",
+      "predicate": "personality_at_nine_months",
+      "value": [
+        "independent explorer",
+        "likes climbing trees",
+        "likes exercise"
+      ],
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "personality_at_nine_months",
+      "source_language": "en",
+      "summary_zh": "加加约九个月时喜欢独自探索、爬树和运动。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0042",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_2025_05_kg",
+      "value": ">21",
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "weight_2025_05_kg",
+      "source_language": "en",
+      "summary_zh": "2025年5月加加体重超过21千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0043",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "diet",
+      "predicate": "bamboo_nibbling_before_weaning",
+      "value": {
+        "nibbled_leaves": true,
+        "still_relied_on_milk": true
+      },
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "bamboo_nibbling_before_weaning",
+      "source_language": "en",
+      "summary_zh": "加加开始模仿母亲啃竹叶，但当时仍主要依赖乳汁。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0044",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "behaviour",
+      "predicate": "expanded_habitat_skills",
+      "value": [
+        "running",
+        "rolling",
+        "climbing",
+        "sliding",
+        "play"
+      ],
+      "source_id": "src-oceanpark-twins-expanded-habitat-2025-local",
+      "source_locator": "expanded_habitat_skills",
+      "source_language": "en",
+      "summary_zh": "加加在扩展活动区练习奔跑、翻滚、攀爬、滑行和玩耍。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0045",
+      "subject": {
+        "type": "panda",
+        "id": "jia-jia-hk-2024",
+        "label": "Jia Jia"
+      },
+      "category": "enrichment",
+      "predicate": "first_birthday_ice_cake_response",
+      "value": "curious and actively explored the unfamiliar ice cake",
+      "source_id": "src-oceanpark-twins-first-birthday-2025-local",
+      "source_locator": "first_birthday_ice_cake_response",
+      "source_language": "zh",
+      "summary_zh": "加加一岁生日首次接触冰蛋糕时表现好奇并主动探索。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "jia-jia-hk-2024",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0046",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "sex",
+      "source_language": "ja",
+      "summary_zh": "得得为雄性大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0047",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "birth",
+      "predicate": "birth_datetime",
+      "value": "2024-08-15T03:27:00+08:00",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "birth_datetime",
+      "source_language": "ja",
+      "summary_zh": "得得于2024年8月15日3时27分出生。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0048",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "growth_measurement",
+      "predicate": "birth_weight_grams",
+      "value": 112,
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "birth_weight_grams",
+      "source_language": "en",
+      "summary_zh": "得得出生体重112克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0049",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "relationship",
+      "predicate": "parents_and_twin",
+      "value": {
+        "mother_id": "ying-ying-hk",
+        "father_id": "le-le-hk",
+        "twin_id": "jia-jia-hk-2024"
+      },
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "parents_and_twin",
+      "source_language": "en",
+      "summary_zh": "得得的母亲是盈盈、父亲是乐乐，双胞胎姐姐是加加。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0050",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "appearance",
+      "predicate": "eye_patch_shape",
+      "value": "rectangular",
+      "source_id": "src-oceanpark-current-panda-overview-2025-local",
+      "source_locator": "eye_patch_shape",
+      "source_language": "ja",
+      "summary_zh": "得得的眼圈较呈长方形。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "appearance"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0051",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_two_months_kg",
+      "value": 2.54,
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "weight_at_two_months_kg",
+      "source_language": "en",
+      "summary_zh": "得得两个月龄时体重2.54千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0052",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "growth_measurement",
+      "predicate": "eyes_opened",
+      "value": "early October 2024",
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "eyes_opened",
+      "source_language": "en",
+      "summary_zh": "得得于2024年10月初睁眼。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0053",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "public_debut",
+      "predicate": "public_debut_date",
+      "value": "2025-02-16",
+      "source_id": "src-oceanpark-twins-debut-2025-local",
+      "source_locator": "public_debut_date",
+      "source_language": "zh",
+      "summary_zh": "得得于2025年2月16日与加加一同公开亮相。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0054",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_at_public_debut_kg",
+      "value": "about 12",
+      "source_id": "src-oceanpark-twins-debut-2025-local",
+      "source_locator": "weight_at_public_debut_kg",
+      "source_language": "zh",
+      "summary_zh": "得得约六个月公开亮相时体重约12千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0055",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "name",
+      "predicate": "official_name_announced",
+      "value": "2025-05-27",
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "official_name_announced",
+      "source_language": "en",
+      "summary_zh": "得得的正式名字于2025年5月27日公布。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0056",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "name_meaning",
+      "predicate": "name_meaning",
+      "value": [
+        "success",
+        "virtue",
+        "Hong Kong succeeding in everything"
+      ],
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "name_meaning",
+      "source_language": "en",
+      "summary_zh": "“得得”寓意成功，并谐音品德，寄托香港事事有成。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "name_meaning"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0057",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "personality",
+      "predicate": "personality_at_nine_months",
+      "value": [
+        "outgoing",
+        "seeks caretakers",
+        "stays near Ying Ying",
+        "likes play"
+      ],
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "personality_at_nine_months",
+      "source_language": "en",
+      "summary_zh": "得得约九个月时较外向，喜欢靠近护理员和盈盈并主动寻求玩耍。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "personality"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0058",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "growth_measurement",
+      "predicate": "weight_2025_05_kg",
+      "value": ">21",
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "weight_2025_05_kg",
+      "source_language": "en",
+      "summary_zh": "2025年5月得得体重超过21千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "growth_measurement"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0059",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "diet",
+      "predicate": "bamboo_nibbling_before_weaning",
+      "value": {
+        "nibbled_leaves": true,
+        "still_relied_on_milk": true
+      },
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "bamboo_nibbling_before_weaning",
+      "source_language": "en",
+      "summary_zh": "得得开始模仿母亲啃竹叶，但当时仍主要依赖乳汁。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0060",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "behaviour",
+      "predicate": "expanded_habitat_skills",
+      "value": [
+        "running",
+        "rolling",
+        "climbing",
+        "sliding",
+        "play"
+      ],
+      "source_id": "src-oceanpark-twins-expanded-habitat-2025-local",
+      "source_locator": "expanded_habitat_skills",
+      "source_language": "en",
+      "summary_zh": "得得在扩展活动区练习奔跑、翻滚、攀爬、滑行和玩耍。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0061",
+      "subject": {
+        "type": "panda",
+        "id": "de-de-hk-2024",
+        "label": "De De"
+      },
+      "category": "enrichment",
+      "predicate": "first_birthday_ice_cake_response",
+      "value": "curious and actively explored the unfamiliar ice cake",
+      "source_id": "src-oceanpark-twins-first-birthday-2025-local",
+      "source_locator": "first_birthday_ice_cake_response",
+      "source_language": "zh",
+      "summary_zh": "得得一岁生日首次接触冰蛋糕时表现好奇并主动探索。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "de-de-hk-2024",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0062",
+      "subject": {
+        "type": "panda_family",
+        "id": "oceanpark-2024-panda-twins",
+        "label": "Ocean Park 2024 giant panda twins"
+      },
+      "category": "milestone",
+      "predicate": "first_hong_kong_born_giant_panda_twins",
+      "value": true,
+      "source_id": "src-oceanpark-hk-twins-birth-2024-local",
+      "source_locator": "first_hong_kong_born_giant_panda_twins",
+      "source_language": "zh",
+      "summary_zh": "加加和得得是香港首对本地出生的大熊猫双胞胎。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-2024-panda-twins",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0063",
+      "subject": {
+        "type": "panda_family",
+        "id": "oceanpark-2024-panda-twins",
+        "label": "Ocean Park 2024 giant panda twins"
+      },
+      "category": "maternal_care",
+      "predicate": "early_milk_progression",
+      "value": [
+        "mother's milk",
+        "frozen giant panda milk supplied through CCRCGP",
+        "formula after one week"
+      ],
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "early_milk_progression",
+      "source_language": "en",
+      "summary_zh": "双胞胎早期获得母乳和熊猫中心调配的冷冻熊猫奶，一周后过渡到配方奶。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-2024-panda-twins",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0064",
+      "subject": {
+        "type": "panda_family",
+        "id": "oceanpark-2024-panda-twins",
+        "label": "Ocean Park 2024 giant panda twins"
+      },
+      "category": "maternal_care",
+      "predicate": "formula_feeding_schedule",
+      "value": {
+        "meals_per_day": 3,
+        "hours_between_meals": 8,
+        "post_feeding_burping": true
+      },
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "formula_feeding_schedule",
+      "source_language": "en",
+      "summary_zh": "双胞胎配方奶每天三次、间隔八小时，喂奶后护理员会帮助排气。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-2024-panda-twins",
+        "maternal_care"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0065",
+      "subject": {
+        "type": "panda_family",
+        "id": "oceanpark-2024-panda-twins",
+        "label": "Ocean Park 2024 giant panda twins"
+      },
+      "category": "research",
+      "predicate": "second_cub_not_seen_on_ultrasound",
+      "value": true,
+      "source_id": "src-oceanpark-twins-two-month-2024-local",
+      "source_locator": "second_cub_not_seen_on_ultrasound",
+      "source_language": "en",
+      "summary_zh": "产前超声只发现一个胎儿，得得在加加出生约一小时后出现，成为意外惊喜。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-2024-panda-twins",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0066",
+      "subject": {
+        "type": "panda_family",
+        "id": "oceanpark-2024-panda-twins",
+        "label": "Ocean Park 2024 giant panda twins"
+      },
+      "category": "name",
+      "predicate": "naming_competition_entries",
+      "value": "nearly 36000",
+      "source_id": "src-oceanpark-twins-naming-2025-local",
+      "source_locator": "naming_competition_entries",
+      "source_language": "en",
+      "summary_zh": "双胞胎命名比赛收到近36,000份参赛建议。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-2024-panda-twins",
+        "name"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0067",
+      "subject": {
+        "type": "panda_family",
+        "id": "oceanpark-2024-panda-twins",
+        "label": "Ocean Park 2024 giant panda twins"
+      },
+      "category": "public_debut",
+      "predicate": "debut_age_months",
+      "value": 6,
+      "source_id": "src-oceanpark-twins-debut-2025-local",
+      "source_locator": "debut_age_months",
+      "source_language": "zh",
+      "summary_zh": "双胞胎约六个月龄时正式与公众见面。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-2024-panda-twins",
+        "public_debut"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0068",
+      "subject": {
+        "type": "research_programme",
+        "id": "oceanpark-giant-panda-breeding-programme",
+        "label": "Ocean Park giant panda breeding programme"
+      },
+      "category": "research",
+      "predicate": "programme_partners",
+      "value": [
+        "Ocean Park Corporation",
+        "China Conservation and Research Centre for the Giant Panda"
+      ],
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "programme_partners",
+      "source_language": "en",
+      "summary_zh": "海洋公园与中国大熊猫保护研究中心合作推进繁殖和育幼。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-giant-panda-breeding-programme",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0069",
+      "subject": {
+        "type": "research_programme",
+        "id": "oceanpark-giant-panda-breeding-programme",
+        "label": "Ocean Park giant panda breeding programme"
+      },
+      "category": "research",
+      "predicate": "breeding_monitoring",
+      "value": [
+        "physical changes",
+        "behaviour changes",
+        "hormone levels",
+        "natural mating opportunities"
+      ],
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "breeding_monitoring",
+      "source_language": "en",
+      "summary_zh": "繁殖季团队监测身体、行为和荷尔蒙变化，并安排自然交配机会。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-giant-panda-breeding-programme",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-oceanpark-0070",
+      "subject": {
+        "type": "research_programme",
+        "id": "oceanpark-giant-panda-breeding-programme",
+        "label": "Ocean Park giant panda breeding programme"
+      },
+      "category": "milestone",
+      "predicate": "successful_2024_outcome",
+      "value": [
+        "oldest first-time giant panda mother",
+        "first Hong Kong-born giant panda twins"
+      ],
+      "source_id": "src-oceanpark-conservation-breeding-2026-local",
+      "source_locator": "successful_2024_outcome",
+      "source_language": "en",
+      "summary_zh": "2024年项目同时创下最高龄初产母熊猫和香港首对本地出生双胞胎两项里程碑。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "oceanpark-giant-panda-breeding-programme",
+        "milestone"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "page_url": "https://corporate.oceanpark.com.hk/en/our-efforts-achievements/wildlife-conservation-and-animal-care/conservation-breeding",
+  "discovered_at": "2026-07-25T21:21:45.127867+00:00",
+  "image_count": 5,
+  "images": [
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/sxwh1pzu/giant-panda-1.webp",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "Panda eating bamboo while reclining on the ground with a pond in the background.",
+      "title": "",
+      "width": "920",
+      "height": "612",
+      "evidence": [
+        "preload",
+        "image"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/t2qezxyp/giant-panda-2.webp",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "Ocean Park staff in green uniform views a panda in its enclosure, behind a bamboo fence with a \"no flash\" sign.",
+      "title": "",
+      "width": "920",
+      "height": "614",
+      "evidence": [
+        "preload",
+        "image"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/zjblrj1u/giant-panda-3.webp",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "Giant panda licking its newborn cub at Ocean Park Hong Kong.",
+      "title": "",
+      "width": "920",
+      "height": "613",
+      "evidence": [
+        "preload",
+        "image"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/ivpohs31/giant-panda-4.webp",
+      "source_types": [
+        "link:image",
+        "img:src"
+      ],
+      "alt": "A panda sits outside a cage eating bamboo, while another panda looks out from inside the cage.",
+      "title": "",
+      "width": "920",
+      "height": "634",
+      "evidence": [
+        "preload",
+        "image"
+      ]
+    },
+    {
+      "asset_url": "https://api.oceanpark.com.hk/media/mayldcta/breeding-banner-og.webp",
+      "source_types": [
+        "meta:og:image",
+        "meta:twitter:image"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "og:image",
+        "twitter:image"
+      ]
+    }
+  ]
+}
