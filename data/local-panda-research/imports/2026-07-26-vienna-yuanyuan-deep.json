@@ -1,0 +1,820 @@
+{
+  "sources": [
+    {
+      "source_id": "src-vienna-yuanyuan-anticipated-2019-local",
+      "source_type": "institution_primary",
+      "publisher": "Tiergarten Schönbrunn",
+      "title": "Wir freuen uns auf Yuan Yuan!",
+      "url": "https://www.zoovienna.at/de/news/wir-freuen-uns-auf-yuan-yuan/",
+      "language": "de",
+      "region": "Austria / China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official pre-arrival profile covering Dujiangyan residence, prior fatherhood and selection for Yang Yang."
+    },
+    {
+      "source_id": "src-vienna-yuanyuan-arrival-2019-local",
+      "source_type": "institution_primary",
+      "publisher": "Tiergarten Schönbrunn",
+      "title": "Panda-Männchen Yuan Yuan ist da!",
+      "url": "https://www.zoovienna.at/de/news/panda-mannchen-yuan-yuan-ist-da/",
+      "language": "de",
+      "region": "Austria / China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official exact arrival, journey behaviour, keeper accompaniment, quarantine and scent-marking account."
+    },
+    {
+      "source_id": "src-vienna-yuanyuan-welcome-2019-local",
+      "source_type": "institution_primary",
+      "publisher": "Tiergarten Schönbrunn",
+      "title": "Willkommen Yuan Yuan",
+      "url": "https://www.zoovienna.at/de/news/willkommen-yuan-yuan/",
+      "language": "de",
+      "region": "Austria / China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official welcome profile covering keeper handover, sensory contact and conservation context."
+    },
+    {
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_type": "institution_primary",
+      "publisher": "Tiergarten Schönbrunn",
+      "title": "Panda-Männchen Yuan Yuan feiert 20. Geburtstag",
+      "url": "https://www.zoovienna.at/de/news/panda-mannchen-yuan-yuan-feiert-20-geburtstag/",
+      "language": "de",
+      "region": "Austria / China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Official twentieth-birthday profile covering weight, temperament, food preference and pair contact."
+    },
+    {
+      "source_id": "src-xinhua-vienna-pandas-return-2024-local",
+      "source_type": "state_news_primary_report",
+      "publisher": "Xinhua",
+      "title": "Giant pandas back to China from Austria",
+      "url": "https://english.news.cn/20240915/94218282ce2f44b58de1c473dc1c2c44/c.html",
+      "language": "en",
+      "region": "Austria / China",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Xinhua confirmation that Yang Yang and Yuan Yuan arrived in Chengdu after leaving Austria."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0001",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "male",
+      "source_id": "src-vienna-yuan-yuan-2019",
+      "source_locator": "sex",
+      "source_language": "de",
+      "summary_zh": "维也纳动物园官方交接资料确认圆圆为雄性。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0002",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "location",
+      "predicate": "pre_vienna_residence",
+      "value": "Dujiangyan panda station, China Conservation and Research Center for the Giant Panda",
+      "source_id": "src-vienna-yuanyuan-anticipated-2019-local",
+      "source_locator": "pre_vienna_residence",
+      "source_language": "de",
+      "summary_zh": "赴奥前，圆圆生活在中国大熊猫保护研究中心都江堰基地。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0003",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "reproduction",
+      "predicate": "prior_breeding_experience",
+      "value": "already a multiple father before selection for Vienna",
+      "source_id": "src-vienna-yuanyuan-anticipated-2019-local",
+      "source_locator": "prior_breeding_experience",
+      "source_language": "de",
+      "summary_zh": "美泉宫动物园称圆圆赴奥前已有多次繁殖经验；来源未列出具体后代，因此不建立推测谱系。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0004",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "relationship",
+      "predicate": "selection_compatibility_with_yang_yang",
+      "value": [
+        "similar age",
+        "compatible bloodline"
+      ],
+      "source_id": "src-vienna-yuanyuan-anticipated-2019-local",
+      "source_locator": "selection_compatibility_with_yang_yang",
+      "source_language": "de",
+      "summary_zh": "中方为阳阳选择圆圆时考虑了年龄和血缘匹配。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0005",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_vienna",
+      "value": "2019-04-16",
+      "source_id": "src-vienna-yuanyuan-arrival-2019-local",
+      "source_locator": "arrived_in_vienna",
+      "source_language": "de",
+      "summary_zh": "圆圆于2019年4月16日抵达维也纳。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0006",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "behaviour",
+      "predicate": "behaviour_during_vienna_flight",
+      "value": [
+        "ate bamboo shoots",
+        "slept",
+        "looked curiously out of the transport crate"
+      ],
+      "source_id": "src-vienna-yuanyuan-arrival-2019-local",
+      "source_locator": "behaviour_during_vienna_flight",
+      "source_language": "de",
+      "summary_zh": "赴维也纳途中，圆圆进食竹笋、睡觉，并多次好奇地向运输箱外观察。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0007",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "transfer",
+      "predicate": "familiar_keeper_accompaniment",
+      "value": {
+        "keeper": "Dong Li",
+        "reported_stay": "two weeks"
+      },
+      "source_id": "src-vienna-yuanyuan-arrival-2019-local",
+      "source_locator": "familiar_keeper_accompaniment",
+      "source_language": "de",
+      "summary_zh": "熟悉圆圆的饲养员董礼随行，并按抵达公告计划在维也纳停留两周帮助适应。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0008",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "behaviour",
+      "predicate": "keeper_description_at_arrival",
+      "value": "a relaxed bear",
+      "source_id": "src-vienna-yuanyuan-arrival-2019-local",
+      "source_locator": "keeper_description_at_arrival",
+      "source_language": "de",
+      "summary_zh": "熟悉圆圆的饲养员将其形容为一只沉稳放松的熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0009",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "behaviour",
+      "predicate": "scent_marking_after_arrival",
+      "value": "marked actively to signal the presence of a male in the panda house",
+      "source_id": "src-vienna-yuanyuan-arrival-2019-local",
+      "source_locator": "scent_marking_after_arrival",
+      "source_language": "de",
+      "summary_zh": "抵达后，圆圆积极留下气味标记，显示熊猫馆内已有雄性。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0010",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "transfer",
+      "predicate": "initial_quarantine_plan",
+      "value": {
+        "location": "indoor panda facility",
+        "planned_until": "late May 2019"
+      },
+      "source_id": "src-vienna-yuanyuan-arrival-2019-local",
+      "source_locator": "initial_quarantine_plan",
+      "source_language": "de",
+      "summary_zh": "圆圆抵达后在室内馆隔离适应，原计划持续至2019年5月底。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0011",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "milestone",
+      "predicate": "official_public_handover",
+      "value": "2019-05-20",
+      "source_id": "src-vienna-yuan-yuan-2019",
+      "source_locator": "official_public_handover",
+      "source_language": "de",
+      "summary_zh": "圆圆于2019年5月20日正式交接并开始与公众见面。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0012",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "location",
+      "predicate": "outdoor_enclosure_introduction",
+      "value": "introduced gradually after the 2019-05-20 handover",
+      "source_id": "src-vienna-yuan-yuan-2019",
+      "source_locator": "outdoor_enclosure_introduction",
+      "source_language": "de",
+      "summary_zh": "正式交接后，圆圆开始逐步熟悉室外活动场。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0013",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "diplomacy",
+      "predicate": "official_handover_role",
+      "value": "handed over during a ceremony by Li Zhanshu as a symbol of China-Austria connection",
+      "source_id": "src-vienna-yuan-yuan-2019",
+      "source_locator": "official_handover_role",
+      "source_language": "de",
+      "summary_zh": "圆圆在正式仪式中由李战书交接，园方将其视为中奥联系的象征。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0014",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "milestone",
+      "predicate": "twentieth_birthday",
+      "value": "2019-08-23",
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_locator": "twentieth_birthday",
+      "source_language": "de",
+      "summary_zh": "圆圆于2019年8月23日在维也纳度过20岁生日。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0015",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "health",
+      "predicate": "weight_at_twentieth_birthday_kg",
+      "value": 120,
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_locator": "weight_at_twentieth_birthday_kg",
+      "source_language": "de",
+      "summary_zh": "圆圆20岁生日时体重约120千克。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "health"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0016",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "diet",
+      "predicate": "preferred_food",
+      "value": "steamed panda bread",
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_locator": "preferred_food",
+      "source_language": "de",
+      "summary_zh": "护理员记录圆圆特别喜欢蒸制熊猫面包。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "diet"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0017",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "enrichment",
+      "predicate": "twentieth_birthday_foods",
+      "value": [
+        "bamboo shoots",
+        "corn stalks",
+        "panda bread shaped as a cake"
+      ],
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_locator": "twentieth_birthday_foods",
+      "source_language": "de",
+      "summary_zh": "20岁生日丰容包括竹笋、玉米秆和蛋糕形熊猫面包。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "enrichment"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0018",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "behaviour",
+      "predicate": "twentieth_birthday_food_choice",
+      "value": "sniffed the other treats briefly, then ate the panda-bread cake to the last crumb",
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_locator": "twentieth_birthday_food_choice",
+      "source_language": "de",
+      "summary_zh": "圆圆短暂闻过其他生日食物后，选择并吃完了熊猫面包蛋糕。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0019",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "behaviour",
+      "predicate": "birthday_temperament_description",
+      "value": [
+        "relaxed",
+        "food-motivated"
+      ],
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_locator": "birthday_temperament_description",
+      "source_language": "de",
+      "summary_zh": "护理员用沉稳且爱吃来概括圆圆的生日表现。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0020",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "relationship",
+      "predicate": "contact_with_yang_yang_outside_breeding_season",
+      "value": {
+        "housing": "separate enclosures",
+        "contact": [
+          "visual",
+          "olfactory",
+          "contact grille"
+        ]
+      },
+      "source_id": "src-vienna-yuanyuan-welcome-2019-local",
+      "source_locator": "contact_with_yang_yang_outside_breeding_season",
+      "source_language": "de",
+      "summary_zh": "非繁殖季圆圆与阳阳分居，但可通过视觉、气味和接触栅交流。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0021",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "behaviour",
+      "predicate": "contact_grille_response_to_yang_yang",
+      "value": "pressed close to the grille when Yang Yang passed",
+      "source_id": "src-vienna-yuanyuan-birthday-2019-local",
+      "source_locator": "contact_grille_response_to_yang_yang",
+      "source_language": "de",
+      "summary_zh": "阳阳经过时，圆圆会贴近接触栅。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0022",
+      "subject": {
+        "type": "panda",
+        "id": "yuan-yuan-vienna",
+        "label": "Yuan Yuan"
+      },
+      "category": "transfer",
+      "predicate": "arrived_in_chengdu_after_return",
+      "value": "2024-09-14",
+      "source_id": "src-xinhua-vienna-pandas-return-2024-local",
+      "source_locator": "arrived_in_chengdu_after_return",
+      "source_language": "en",
+      "summary_zh": "新华社确认圆圆与阳阳于2024年9月14日抵达成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "yuan-yuan-vienna",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0023",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-yuanyuan-pairing-2019-2024",
+        "label": "Vienna Yuan Yuan pairing and adaptation programme"
+      },
+      "category": "relationship",
+      "predicate": "intended_pair",
+      "value": {
+        "female_id": "yang-yang-vienna",
+        "male_id": "yuan-yuan-vienna"
+      },
+      "source_id": "src-vienna-yuan-yuan-2019",
+      "source_locator": "intended_pair",
+      "source_language": "de",
+      "summary_zh": "圆圆被选作龙徽离世后阳阳的新繁殖伙伴。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-yuanyuan-pairing-2019-2024",
+        "relationship"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0024",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-yuanyuan-pairing-2019-2024",
+        "label": "Vienna Yuan Yuan pairing and adaptation programme"
+      },
+      "category": "reproduction",
+      "predicate": "first_direct_introduction_opened",
+      "value": "2020-03-27",
+      "source_id": "src-vienna-panda-breeding-2020",
+      "source_locator": "first_direct_introduction_opened",
+      "source_language": "de",
+      "summary_zh": "2020年3月27日，园方首次打开阳阳与圆圆活动场之间的连接门。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-yuanyuan-pairing-2019-2024",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0025",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-yuanyuan-pairing-2019-2024",
+        "label": "Vienna Yuan Yuan pairing and adaptation programme"
+      },
+      "category": "behaviour",
+      "predicate": "initial_direct_encounter",
+      "value": "brief scuffle followed by separation",
+      "source_id": "src-vienna-panda-breeding-2020",
+      "source_locator": "initial_direct_encounter",
+      "source_language": "de",
+      "summary_zh": "首次直接接触出现短暂冲突，随后两只主动拉开距离。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-yuanyuan-pairing-2019-2024",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0026",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-yuanyuan-pairing-2019-2024",
+        "label": "Vienna Yuan Yuan pairing and adaptation programme"
+      },
+      "category": "behaviour",
+      "predicate": "communication_during_2020_introduction",
+      "value": [
+        "increasing scent-mark exchange",
+        "vocal communication",
+        "appeasement bleats",
+        "Yang Yang barking from platform",
+        "Yuan Yuan waiting below at a safe distance"
+      ],
+      "source_id": "src-vienna-panda-breeding-2020",
+      "source_locator": "communication_during_2020_introduction",
+      "source_language": "de",
+      "summary_zh": "此后数日，两只通过气味、叫声和安抚性声音持续交流；圆圆在阳阳发出叫声时保持安全距离。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-yuanyuan-pairing-2019-2024",
+        "behaviour"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0027",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-yuanyuan-pairing-2019-2024",
+        "label": "Vienna Yuan Yuan pairing and adaptation programme"
+      },
+      "category": "reproduction",
+      "predicate": "mating_outcome_2020",
+      "value": "no mating occurred",
+      "source_id": "src-vienna-panda-breeding-2020",
+      "source_locator": "mating_outcome_2020",
+      "source_language": "de",
+      "summary_zh": "2020年首次配对接触没有发生交配。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-yuanyuan-pairing-2019-2024",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0028",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-yuanyuan-pairing-2019-2024",
+        "label": "Vienna Yuan Yuan pairing and adaptation programme"
+      },
+      "category": "reproduction",
+      "predicate": "first_introduction_closed",
+      "value": "2020-04-02",
+      "source_id": "src-vienna-panda-breeding-2020",
+      "source_locator": "first_introduction_closed",
+      "source_language": "de",
+      "summary_zh": "2020年4月2日，两只活动场之间的连接门重新关闭。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-yuanyuan-pairing-2019-2024",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-vienna-yuanyuan-0029",
+      "subject": {
+        "type": "research_programme",
+        "id": "vienna-yuanyuan-pairing-2019-2024",
+        "label": "Vienna Yuan Yuan pairing and adaptation programme"
+      },
+      "category": "transfer",
+      "predicate": "completed_return_to_china",
+      "value": {
+        "left_vienna": "2024-09-13",
+        "arrived_chengdu": "2024-09-14",
+        "pandas": [
+          "yang-yang-vienna",
+          "yuan-yuan-vienna"
+        ]
+      },
+      "source_id": "src-xinhua-vienna-pandas-return-2024-local",
+      "source_locator": "completed_return_to_china",
+      "source_language": "en",
+      "summary_zh": "阳阳和圆圆于2024年9月13日离开维也纳，并于次日抵达成都。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "vienna-yuanyuan-pairing-2019-2024",
+        "transfer"
+      ]
+    }
+  ]
+}
