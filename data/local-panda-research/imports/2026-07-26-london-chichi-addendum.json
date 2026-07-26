@@ -1,0 +1,90 @@
+{
+  "sources": [
+    {
+      "source_id": "src-nhm-chichi-exhibit-file-1972-local",
+      "source_type": "archive_primary",
+      "publisher": "Natural History Museum, London",
+      "title": "SF153 Giant Panda exhibit Chi Chi",
+      "url": "https://www.nhm.ac.uk/CalmView/record/catalog/DF/ZOO/238/5/153/1",
+      "language": "en",
+      "region": "United Kingdom",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Natural History Museum archive file for the 1972 Chi Chi exhibition, including leaflet text, diagrams and display forms."
+    },
+    {
+      "source_id": "src-nhm-chichi-central-cafe-local",
+      "source_type": "institution_primary",
+      "publisher": "Natural History Museum, London",
+      "title": "10 weird and unusual objects in the Museum",
+      "url": "https://www.nhm.ac.uk/visit/weird-objects-in-the-museum.html",
+      "language": "en",
+      "region": "United Kingdom",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Natural History Museum visitor page identifying Chi Chi's present display location."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-london-chichi-addendum-0001",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "museum_exhibit_documentation",
+      "value": [
+        "giant-panda leaflet text",
+        "leaflet copy",
+        "exhibition notes",
+        "jaw and tooth diagrams",
+        "specimen/model/photo/diagram forms"
+      ],
+      "source_id": "src-nhm-chichi-exhibit-file-1972-local",
+      "source_locator": "museum_exhibit_documentation",
+      "source_language": "en",
+      "summary_zh": "自然历史博物馆1972年姬姬展览文件保存大熊猫说明文字、传单副本、展览笔记、颌骨与牙齿图，以及标本、模型、照片和图表登记表。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-addendum-0002",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "location",
+      "predicate": "current_museum_display_location",
+      "value": "Central Cafe, Natural History Museum, London",
+      "source_id": "src-nhm-chichi-central-cafe-local",
+      "source_locator": "current_museum_display_location",
+      "source_language": "en",
+      "summary_zh": "自然历史博物馆当前访客资料将姬姬标本位置列为中央咖啡厅。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "location"
+      ]
+    }
+  ]
+}
