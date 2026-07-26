@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "candidate_count": 491,
+  "candidate_count": 497,
   "pandas_with_media": 101,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
@@ -23,23 +23,6 @@
         "transfer": 2
       },
       "coverage_gap_score": -29
-    },
-    {
-      "subject_id": "chi-chi",
-      "subject_label": "Chi Chi",
-      "media_count": 2,
-      "record_count": 11,
-      "direct_record_count": 11,
-      "category_count": 6,
-      "categories": {
-        "anecdote": 1,
-        "conflict": 1,
-        "cultural_context": 3,
-        "media_candidate": 2,
-        "milestone": 2,
-        "transfer": 2
-      },
-      "coverage_gap_score": -35
     },
     {
       "subject_id": "yun-zi",
@@ -1615,6 +1598,30 @@
         "sex": 1
       },
       "coverage_gap_score": -81
+    },
+    {
+      "subject_id": "chi-chi",
+      "subject_label": "Chi Chi",
+      "media_count": 8,
+      "record_count": 32,
+      "direct_record_count": 32,
+      "category_count": 13,
+      "categories": {
+        "anecdote": 1,
+        "birth": 2,
+        "conflict": 1,
+        "cultural_context": 5,
+        "death": 3,
+        "diplomacy": 2,
+        "location": 1,
+        "media_candidate": 3,
+        "milestone": 3,
+        "other": 1,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 8
+      },
+      "coverage_gap_score": -82
     },
     {
       "subject_id": "tai-shan",

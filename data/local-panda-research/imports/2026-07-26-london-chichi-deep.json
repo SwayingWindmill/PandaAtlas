@@ -1,0 +1,1118 @@
+{
+  "sources": [
+    {
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_type": "archive_primary",
+      "publisher": "Zoological Society of London Archives",
+      "title": "Chi Chi the Giant Panda",
+      "url": "https://zsl-archive.maxarchiveservices.co.uk/index.php/chi-chi-the-giant-panda",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "ZSL authority record covering capture, Peking Zoo care, selection, European tour, London purchase and Moscow mating attempts."
+    },
+    {
+      "source_id": "src-zsl-animal-history-chichi-local",
+      "source_type": "archive_primary",
+      "publisher": "Zoological Society of London Archives",
+      "title": "Chi Chi the Giant Panda",
+      "url": "https://zsl.maxarchiveservices.co.uk/sub_animals/chi-chi-the-giant-panda/",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "ZSL archive feature describing Chi Chi as a star attraction and the first zoo star promoted through television."
+    },
+    {
+      "source_id": "src-zsl-chichi-archive-files-local",
+      "source_type": "archive_primary",
+      "publisher": "Zoological Society of London Archives",
+      "title": "Chi-Chi the panda and An-An breeding correspondence",
+      "url": "https://zsl-archive.maxarchiveservices.co.uk/index.php/informationobject/browse?levels=236&media=print&sf_culture=nl&showAdvanced=1&sort=startDate&sortDir=desc&subjects=58187&topLod=0&view=table",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "ZSL catalogue listing press files and 1968 correspondence concerning Chi-Chi and An-An breeding efforts."
+    },
+    {
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_type": "institution_primary",
+      "publisher": "Natural History Museum, London",
+      "title": "A new look for Chi-Chi the panda",
+      "url": "https://www.nhm.ac.uk/discover/news/2019/august/a-new-look-for-chi-chi-the-panda.html",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Natural History Museum account of death, donation, taxidermy, lack of offspring and 2019 specimen conservation."
+    },
+    {
+      "source_id": "src-nhm-chichi-taxidermy-archive-local",
+      "source_type": "archive_primary",
+      "publisher": "Natural History Museum Archives",
+      "title": "Zoology Specimen Photographs: Stages in the taxidermy preparation of Chi-Chi",
+      "url": "https://www.nhm.ac.uk/CalmView/Record.aspx?id=DF%2FPH%2F8%2F5%2F12&src=CalmView.Catalog",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "NHM archive collection of eleven photographs and negatives documenting Chi-Chi's 1972 taxidermy preparation."
+    },
+    {
+      "source_id": "src-zsl-chichi-film-reels-2025-local",
+      "source_type": "institution_primary",
+      "publisher": "Zoological Society of London",
+      "title": "ZSL seeks help unravelling secrets of mystery films",
+      "url": "https://www.zsl.org/news-and-events/news/zsl-seeks-help-unravelling-secrets-mystery-films",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "ZSL report that its historic film archive includes reels labelled as footage of Chi Chi."
+    },
+    {
+      "source_id": "src-britishpathe-chichi-moscow-1966-local",
+      "source_type": "archival_newsreel",
+      "publisher": "British Pathé",
+      "title": "Chi Chi The Panda In Moscow (1966)",
+      "url": "https://www.youtube.com/watch?v=tHZs1kSLlyQ",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "Verified British Pathe archival film description documenting Chi Chi's flight and arrival in Moscow to meet An An."
+    },
+    {
+      "source_id": "src-zsl-chichi-enclosure-archive-local",
+      "source_type": "archive_primary",
+      "publisher": "Zoological Society of London Archives",
+      "title": "New Lion Terraces scope note",
+      "url": "https://zsl-archive.maxarchiveservices.co.uk/index.php/new-lion-terraces-2?listLimit=10&sort=referenceCode&sortDir=asc",
+      "language": "en",
+      "region": "United Kingdom / China / Soviet Union",
+      "authority": "primary",
+      "access_mode": "manual_review",
+      "automated_collection": "public_html_reviewed",
+      "rights_status": "facts_only_no_media_reuse",
+      "retrieved_at": "2026-07-26T00:00:00+09:00",
+      "notes": "ZSL architecture archive noting that the former cattle sheds included Chi-Chi's giant panda enclosure from 1967."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "lpr-20260726-london-chichi-0001",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "sex",
+      "predicate": "sex",
+      "value": "female",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "sex",
+      "source_language": "en",
+      "summary_zh": "ZSL档案使用女性代词并确认姬姬为雌性。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "sex"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0002",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "birth",
+      "predicate": "wild_born",
+      "value": true,
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "wild_born",
+      "source_language": "en",
+      "summary_zh": "自然历史博物馆确认姬姬出生于野外。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0003",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "birth",
+      "predicate": "age_at_capture_estimate",
+      "value": "about six months",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "age_at_capture_estimate",
+      "source_language": "en",
+      "summary_zh": "姬姬于被捕获时估计约六个月大；不据此推导精确出生日期。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "birth"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0004",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "transfer",
+      "predicate": "captured_on",
+      "value": "1957-07-04",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "captured_on",
+      "source_language": "en",
+      "summary_zh": "ZSL档案记录姬姬于1957年7月4日被中国采集团队捕获。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0005",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "transfer",
+      "predicate": "transported_to_peking_zoo",
+      "value": {
+        "mode": "rail",
+        "destination": "Peking Zoo"
+      },
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "transported_to_peking_zoo",
+      "source_language": "en",
+      "summary_zh": "被捕获后，姬姬乘火车送往北京动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0006",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "other",
+      "predicate": "early_peking_zoo_care",
+      "value": "cared for continuously by a Chinese girl who stayed with her day and night",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "early_peking_zoo_care",
+      "source_language": "en",
+      "summary_zh": "ZSL档案称一名中国女孩在北京动物园日夜陪伴照护幼年姬姬。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "other"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0007",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "transfer",
+      "predicate": "selected_by_heini_demmer",
+      "value": {
+        "date": "1958-05-05",
+        "selection": "youngest of three giant pandas"
+      },
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "selected_by_heini_demmer",
+      "source_language": "en",
+      "summary_zh": "海尼·德默于1958年5月5日从三只大熊猫中选择了最年幼的姬姬。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0008",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "diplomacy",
+      "predicate": "planned_american_zoo_exchange_blocked",
+      "value": {
+        "reason": "United States embargo prevented an import licence for Chinese goods",
+        "result": "Chi Chi could not be imported to the United States"
+      },
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "planned_american_zoo_exchange_blocked",
+      "source_language": "en",
+      "summary_zh": "原拟将姬姬送往美国动物园的交换因美国对华贸易禁运及进口许可问题未能完成。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0009",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "transfer",
+      "predicate": "european_zoo_tour",
+      "value": true,
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "european_zoo_tour",
+      "source_language": "en",
+      "summary_zh": "美国进口受阻后，德默带姬姬巡游欧洲多家动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0010",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "transfer",
+      "predicate": "exact_london_zoo_arrival",
+      "value": "1958-09-05",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "exact_london_zoo_arrival",
+      "source_language": "en",
+      "summary_zh": "姬姬于1958年9月5日抵达伦敦动物园，最初计划停留三周。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0011",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "transfer",
+      "predicate": "initial_london_visit_plan",
+      "value": {
+        "duration_weeks": 3,
+        "status": "temporary visit"
+      },
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "initial_london_visit_plan",
+      "source_language": "en",
+      "summary_zh": "姬姬最初以三周临时访问身份进入伦敦动物园。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0012",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "diplomacy",
+      "predicate": "purchased_by_zsl",
+      "value": {
+        "date": "1958-09-26",
+        "time": "23:59",
+        "support": "Granada Television"
+      },
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "purchased_by_zsl",
+      "source_language": "en",
+      "summary_zh": "在Granada Television协助下，ZSL于1958年9月26日23时59分完成姬姬收购。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "diplomacy"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0013",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "cultural_context",
+      "predicate": "first_zoo_star_promoted_through_television",
+      "value": true,
+      "source_id": "src-zsl-animal-history-chichi-local",
+      "source_locator": "first_zoo_star_promoted_through_television",
+      "source_language": "en",
+      "summary_zh": "ZSL档案称姬姬是该园首只通过电视推广的动物明星。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0014",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "cultural_context",
+      "predicate": "star_attraction_status",
+      "value": [
+        "London Zoo star attraction",
+        "one of England's best-loved zoo animals"
+      ],
+      "source_id": "src-zsl-animal-history-chichi-local",
+      "source_locator": "star_attraction_status",
+      "source_language": "en",
+      "summary_zh": "姬姬成为伦敦动物园明星和英格兰最受喜爱的动物之一。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0015",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "location",
+      "predicate": "giant_panda_enclosure_from_1967",
+      "value": "former cattle sheds area at London Zoo",
+      "source_id": "src-zsl-chichi-enclosure-archive-local",
+      "source_locator": "giant_panda_enclosure_from_1967",
+      "source_language": "en",
+      "summary_zh": "ZSL建筑档案记录，自1967年起原牛棚区域包含姬姬的大熊猫展区。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "location"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0016",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "death",
+      "predicate": "death_year",
+      "value": 1972,
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "death_year",
+      "source_language": "en",
+      "summary_zh": "姬姬于1972年自然死亡；一级来源未在本批确认精确日期。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0017",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "death",
+      "predicate": "death_manner",
+      "value": "natural death",
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "death_manner",
+      "source_language": "en",
+      "summary_zh": "自然历史博物馆明确称姬姬自然死亡。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0018",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "death",
+      "predicate": "age_at_death_estimate",
+      "value": "about 15 years",
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "age_at_death_estimate",
+      "source_language": "en",
+      "summary_zh": "姬姬死亡时估计约15岁。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "death"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0019",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "reproduction",
+      "predicate": "lifetime_reproductive_outcome",
+      "value": {
+        "mated": false,
+        "offspring": 0
+      },
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "lifetime_reproductive_outcome",
+      "source_language": "en",
+      "summary_zh": "尽管动物园多次尝试，姬姬没有成功交配，也没有留下后代。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0020",
+      "subject": {
+        "type": "panda",
+        "id": "chi-chi",
+        "label": "Chi Chi"
+      },
+      "category": "milestone",
+      "predicate": "reported_captive_longevity_significance",
+      "value": "thought at the time to be the first giant panda to live so long in captivity",
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "reported_captive_longevity_significance",
+      "source_language": "en",
+      "summary_zh": "博物馆称姬姬当时被认为是首只在圈养环境中活到这一年龄的大熊猫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chi-chi",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0021",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "transfer",
+      "predicate": "chi_chi_departed_for_moscow",
+      "value": "1966-03",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "chi_chi_departed_for_moscow",
+      "source_language": "en",
+      "summary_zh": "姬姬于1966年3月应莫斯科动物园邀请赴苏联。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0022",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "transfer",
+      "predicate": "moscow_transport_aircraft",
+      "value": "specially converted BEA Vanguard",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "moscow_transport_aircraft",
+      "source_language": "en",
+      "summary_zh": "姬姬乘坐专门改装的英国欧洲航空Vanguard客机赴莫斯科。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0023",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "cultural_context",
+      "predicate": "archival_newsreel_documents_arrival",
+      "value": {
+        "film_id": "3195.18",
+        "contents": [
+          "transport crate",
+          "aircraft transfer",
+          "bamboo labelled for Chi Chi",
+          "An An awaiting at Moscow Zoo"
+        ]
+      },
+      "source_id": "src-britishpathe-chichi-moscow-1966-local",
+      "source_locator": "archival_newsreel_documents_arrival",
+      "source_language": "en",
+      "summary_zh": "British Pathé新闻片保留了运输箱、机场转运、专用竹子及莫斯科安安的影像。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0024",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "reproduction",
+      "predicate": "first_moscow_introduction_outcome",
+      "value": "unsuccessful",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "first_moscow_introduction_outcome",
+      "source_language": "en",
+      "summary_zh": "姬姬抵达后不久首次与安安见面，但没有成功配对。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0025",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "reproduction",
+      "predicate": "extended_moscow_stay",
+      "value": "remained until the autumn mating period",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "extended_moscow_stay",
+      "source_language": "en",
+      "summary_zh": "首次见面失败后，姬姬继续留在莫斯科等待秋季发情期。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0026",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "reproduction",
+      "predicate": "october_1966_attempt_outcome",
+      "value": "Chi Chi rejected An An's advances and the attempt was ended",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "october_1966_attempt_outcome",
+      "source_language": "en",
+      "summary_zh": "1966年10月再次合笼时，姬姬拒绝安安，配对尝试终止。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0027",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "transfer",
+      "predicate": "returned_to_london_after_moscow",
+      "value": true,
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "returned_to_london_after_moscow",
+      "source_language": "en",
+      "summary_zh": "1966年配对失败后，姬姬返回伦敦。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "transfer"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0028",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "reproduction",
+      "predicate": "london_request_for_anan_visit",
+      "value": "early 1967",
+      "source_id": "src-zsl-archive-chichi-authority-local",
+      "source_locator": "london_request_for_anan_visit",
+      "source_language": "en",
+      "summary_zh": "1967年初，伦敦动物园请求莫斯科动物园将安安送至摄政公园继续尝试。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "reproduction"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0029",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-anan-breeding-1966-1968",
+        "label": "Chi Chi and An An international breeding attempts"
+      },
+      "category": "research",
+      "predicate": "zsl_archival_files",
+      "value": {
+        "press_file_dates": "1958, 1966-1970",
+        "breeding_correspondence_year": 1968
+      },
+      "source_id": "src-zsl-chichi-archive-files-local",
+      "source_locator": "zsl_archival_files",
+      "source_language": "en",
+      "summary_zh": "ZSL保存1958及1966—1970年的姬姬新闻档案，并保存1968年有关姬姬与安安繁殖的通信。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-anan-breeding-1966-1968",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0030",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "donated_to_natural_history_museum",
+      "value": 1972,
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "donated_to_natural_history_museum",
+      "source_language": "en",
+      "summary_zh": "姬姬自然死亡后于1972年捐赠给伦敦自然历史博物馆。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0031",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "taxidermy_archive_extent",
+      "value": {
+        "year": 1972,
+        "items": 11,
+        "formats": [
+          "photograph prints",
+          "negatives"
+        ]
+      },
+      "source_id": "src-nhm-chichi-taxidermy-archive-local",
+      "source_locator": "taxidermy_archive_extent",
+      "source_language": "en",
+      "summary_zh": "博物馆档案保存11件记录姬姬剥制过程的照片和底片。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0032",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "milestone",
+      "predicate": "displayed_in_north_hall",
+      "value": "1972-12",
+      "source_id": "src-nhm-chichi-taxidermy-archive-local",
+      "source_locator": "displayed_in_north_hall",
+      "source_language": "en",
+      "summary_zh": "档案记录姬姬标本于1972年12月已在北厅展柜中展示。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0033",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "cultural_context",
+      "predicate": "museum_visitor_legacy",
+      "value": "viewed by millions of visitors since 1972",
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "museum_visitor_legacy",
+      "source_language": "en",
+      "summary_zh": "姬姬标本自1972年进入博物馆以来吸引了数百万访客。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "cultural_context"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0034",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "2019_quarantine_freezing",
+      "value": {
+        "duration_hours": 72,
+        "purpose": "prevent possible pest infestation"
+      },
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "2019_quarantine_freezing",
+      "source_language": "en",
+      "summary_zh": "2019年修复前，标本以木架支撑并包裹聚乙烯，在隔离冷冻库中放置72小时防虫。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0035",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "2019_dry_cleaning",
+      "value": [
+        "soft brushing",
+        "specialised vacuuming"
+      ],
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "2019_dry_cleaning",
+      "source_language": "en",
+      "summary_zh": "标本先以软刷和专业吸尘设备进行干式清洁。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0036",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "2019_wet_cleaning",
+      "value": {
+        "solvent": [
+          "ethanol",
+          "deionised water"
+        ],
+        "method": "small fur sections swabbed and dried sequentially"
+      },
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "2019_wet_cleaning",
+      "source_language": "en",
+      "summary_zh": "残余表面变色以乙醇和去离子水混合液分区擦拭处理。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0037",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "2019_display_case_upgrade",
+      "value": [
+        "new conservation-standard lighting",
+        "filled cracks and holes",
+        "environmental monitor installed"
+      ],
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "2019_display_case_upgrade",
+      "source_language": "en",
+      "summary_zh": "展柜同步升级照明、修补裂缝孔洞并安装环境监测器。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0038",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "milestone",
+      "predicate": "returned_to_display_after_conservation",
+      "value": 2019,
+      "source_id": "src-nhm-chichi-conservation-2019-local",
+      "source_locator": "returned_to_display_after_conservation",
+      "source_language": "en",
+      "summary_zh": "保护修复完成后，姬姬标本于2019年重新展出。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "milestone"
+      ]
+    },
+    {
+      "record_id": "lpr-20260726-london-chichi-0039",
+      "subject": {
+        "type": "research_programme",
+        "id": "chichi-nhm-specimen",
+        "label": "Chi Chi Natural History Museum specimen"
+      },
+      "category": "research",
+      "predicate": "zsl_archival_film_reels",
+      "value": "ZSL archive includes film reels labelled as Chi Chi footage",
+      "source_id": "src-zsl-chichi-film-reels-2025-local",
+      "source_locator": "zsl_archival_film_reels",
+      "source_language": "en",
+      "summary_zh": "ZSL在2025年整理的历史胶片中发现标有姬姬影像的胶片卷。",
+      "evidence_level": "direct",
+      "confidence": "high",
+      "review_status": "captured",
+      "publication_status": "local_only",
+      "collected_at": "2026-07-26T00:00:00+09:00",
+      "tags": [
+        "chichi-nhm-specimen",
+        "research"
+      ]
+    }
+  ]
+}

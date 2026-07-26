@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "page_url": "https://zsl-archive.maxarchiveservices.co.uk/index.php/chi-chi-the-giant-panda",
+  "discovered_at": "2026-07-26T00:18:53.405211+00:00",
+  "image_count": 4,
+  "images": [
+    {
+      "asset_url": "https://zsl-archive.maxarchiveservices.co.uk/plugins/arDominionB5Plugin/images/logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "AtoM logo",
+      "title": "",
+      "width": "",
+      "height": "35",
+      "evidence": [
+        "d-inline-block my-2 me-3"
+      ]
+    },
+    {
+      "asset_url": "https://zsl-archive.maxarchiveservices.co.uk/uploads/r/null/8/7/6/876aef5ab7887a0e4708cf6c99df1448c04f478b717a2ec256f3f592fa15cbeb/Chi_Chi_141.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Original Digital object not accessible",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "img-thumbnail"
+      ]
+    },
+    {
+      "asset_url": "https://zsl-archive.maxarchiveservices.co.uk/plugins/arDominionB5Plugin/images/logo_footer.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Clare College Logo",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://zsl-archive.maxarchiveservices.co.uk/plugins/arDominionB5Plugin/images/max_communications_branding.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Max Communications Branding",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "max_footer_logo"
+      ]
+    }
+  ]
+}

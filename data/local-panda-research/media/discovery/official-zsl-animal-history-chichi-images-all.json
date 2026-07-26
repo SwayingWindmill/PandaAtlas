@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "page_url": "https://zsl.maxarchiveservices.co.uk/sub_animals/chi-chi-the-giant-panda/",
+  "discovered_at": "2026-07-26T00:18:56.585861+00:00",
+  "image_count": 6,
+  "images": [
+    {
+      "asset_url": "https://zsl.maxarchiveservices.co.uk/wp-content/themes/zsl/assets/img/logo_footer.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://zsl.maxarchiveservices.co.uk/wp-content/uploads/2023/06/logo.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "Zoological Society of London Archive Site",
+      "title": "",
+      "width": "399",
+      "height": "201",
+      "evidence": [
+        "custom-logo"
+      ]
+    },
+    {
+      "asset_url": "https://zsl.maxarchiveservices.co.uk/wp-content/uploads/2022/02/chi_chi.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://zsl.maxarchiveservices.co.uk/wp-content/uploads/2020/11/max_communications_branding.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://zsl.maxarchiveservices.co.uk/wp-content/uploads/2023/06/logo_footer_arch.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "logo-footer"
+      ]
+    },
+    {
+      "asset_url": "https://zsl.maxarchiveservices.co.uk/wp-content/uploads/2023/06/logo_footer-1.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "logo-footer"
+      ]
+    }
+  ]
+}

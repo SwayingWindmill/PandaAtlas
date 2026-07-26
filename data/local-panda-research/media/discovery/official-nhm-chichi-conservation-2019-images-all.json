@@ -1,0 +1,547 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.nhm.ac.uk/discover/news/2019/august/a-new-look-for-chi-chi-the-panda.html",
+  "discovered_at": "2026-07-26T00:19:07.706778+00:00",
+  "image_count": 47,
+  "images": [
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/visit/the-gardens/fern-promo-tile-1840-1380.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "w-full block origin-center transform scale-100 transition-transform duration-300 ease-out group-hover:scale-105"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/jurassic-oceans-content/monsters-in-jurassic-oceans-tile-promo-1200-900-shutterstock©Bilardo.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "w-full block origin-center transform scale-100 transition-transform duration-300 ease-out group-hover:scale-105"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/our-science/research/themes/research-themes-promo-tile-2000-1500.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": [
+        "w-full block origin-center transform scale-100 transition-transform duration-300 ease-out group-hover:scale-105"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.480.480.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.620.620.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.768.768.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.960.960.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.1024.1024.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.1160.1160.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.1280.1280.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg.thumb.1920.1920.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-full-width.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "A conservator cleans Chi-Chi the panda's fur with a white sponge",
+      "title": "",
+      "width": "1160",
+      "height": "600",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.480.480.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.620.620.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.768.768.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.960.960.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.1024.1024.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.1160.1160.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.1280.1280.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg.thumb.1920.1920.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-taxidermy-two-column.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "753",
+      "height": "734",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.480.480.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.620.620.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.768.768.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.960.960.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.1024.1024.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.1160.1160.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.1280.1280.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg.thumb.1920.1920.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-04.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "753",
+      "height": "600",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.480.480.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.620.620.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.768.768.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.960.960.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.1024.1024.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.1160.1160.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.1280.1280.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg.thumb.1920.1920.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/chi-chi-the-panda/Chi-chi-two-column-03.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "753",
+      "height": "600",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/taxidermy-birds-hintze-hall/pheasant-taxidermy-full-width.jpg.thumb.480.480.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/taxidermy-birds-hintze-hall/pheasant-taxidermy-full-width.jpg.thumb.620.620.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/taxidermy-birds-hintze-hall/pheasant-taxidermy-full-width.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1160",
+      "height": "600",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/marengo/marengo-head-full-width.jpg.thumb.480.480.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/marengo/marengo-head-full-width.jpg.thumb.620.620.png",
+      "source_types": [
+        "source:srcset"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.nhm.ac.uk/content/dam/nhm-www/discover/marengo/marengo-head-full-width.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1160",
+      "height": "600",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    },
+    {
+      "asset_url": "https://img.youtube.com/vi/G6XLaaFGwJs/mqdefault.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    },
+    {
+      "asset_url": "https://img.youtube.com/vi/hF24tH2JttQ/mqdefault.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "0",
+      "height": "0",
+      "evidence": [
+        "Image_image__dENwr undefined"
+      ]
+    }
+  ]
+}
