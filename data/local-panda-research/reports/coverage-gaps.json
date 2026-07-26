@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "candidate_count": 486,
+  "candidate_count": 491,
   "pandas_with_media": 101,
   "pandas_with_media_and_no_records": 0,
   "ranked_gaps": [
@@ -23,24 +23,6 @@
         "transfer": 2
       },
       "coverage_gap_score": -29
-    },
-    {
-      "subject_id": "yuan-yuan-vienna",
-      "subject_label": "Yuan Yuan",
-      "media_count": 2,
-      "record_count": 10,
-      "direct_record_count": 10,
-      "category_count": 7,
-      "categories": {
-        "behaviour": 1,
-        "birth": 1,
-        "location": 1,
-        "media_candidate": 2,
-        "milestone": 2,
-        "personality": 1,
-        "transfer": 2
-      },
-      "coverage_gap_score": -34
     },
     {
       "subject_id": "chi-chi",
@@ -2104,6 +2086,34 @@
       "coverage_gap_score": -112
     },
     {
+      "subject_id": "yang-yang-vienna",
+      "subject_label": "Yang Yang",
+      "media_count": 12,
+      "record_count": 46,
+      "direct_record_count": 46,
+      "category_count": 17,
+      "categories": {
+        "appearance": 2,
+        "behaviour": 4,
+        "birth": 1,
+        "diet": 1,
+        "husbandry_training": 1,
+        "location": 4,
+        "maternal_care": 4,
+        "media_candidate": 12,
+        "milestone": 7,
+        "name_meaning": 1,
+        "origin": 1,
+        "personality": 1,
+        "preference": 1,
+        "relationship": 2,
+        "reproduction": 1,
+        "sex": 1,
+        "transfer": 2
+      },
+      "coverage_gap_score": -112
+    },
+    {
       "subject_id": "tian-tian-edinburgh",
       "subject_label": "Tian Tian",
       "media_count": 7,
@@ -2130,32 +2140,29 @@
       "coverage_gap_score": -112
     },
     {
-      "subject_id": "yang-yang-vienna",
-      "subject_label": "Yang Yang",
-      "media_count": 11,
-      "record_count": 45,
-      "direct_record_count": 45,
-      "category_count": 17,
+      "subject_id": "yuan-yuan-vienna",
+      "subject_label": "Yuan Yuan",
+      "media_count": 7,
+      "record_count": 42,
+      "direct_record_count": 42,
+      "category_count": 14,
       "categories": {
-        "appearance": 2,
-        "behaviour": 4,
+        "behaviour": 7,
         "birth": 1,
         "diet": 1,
-        "husbandry_training": 1,
+        "diplomacy": 1,
+        "enrichment": 1,
+        "health": 1,
         "location": 4,
-        "maternal_care": 4,
-        "media_candidate": 11,
-        "milestone": 7,
-        "name_meaning": 1,
-        "origin": 1,
+        "media_candidate": 7,
+        "milestone": 8,
         "personality": 1,
-        "preference": 1,
         "relationship": 2,
         "reproduction": 1,
         "sex": 1,
-        "transfer": 2
+        "transfer": 6
       },
-      "coverage_gap_score": -114
+      "coverage_gap_score": -119
     },
     {
       "subject_id": "lin-bing",

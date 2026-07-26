@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "page_url": "https://www.news.cn/20240629/9201cda0240f4903a488fc960f163426/c.html",
+  "discovered_at": "2026-07-26T00:03:16.928213+00:00",
+  "image_count": 7,
+  "images": [
+    {
+      "asset_url": "https://www.news.cn/detail2020/images/ewm.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "94",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.cn/20240629/9201cda0240f4903a488fc960f163426/zxcode_202406299201cda0240f4903a488fc960f163426.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.cn/politics/newpage2020/images/qrcode-app.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.cn/images/syicon/space.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "24",
+      "height": "24",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.cn/20240628/90711e3523cd4419b71ab59589db6a73/990f57152d01498e8104f8575f66cfe8.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.cn/20240630/340812e4129c4cd6b4cd067edc92fdec/52b7124ddaf745bb88cff1d688fefdf9.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://www.news.cn/20240630/3ba9aae5d8d641ddba94a1af9880a9dc/6e867c46c0fc406ba4a190448a303ace.gif",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}

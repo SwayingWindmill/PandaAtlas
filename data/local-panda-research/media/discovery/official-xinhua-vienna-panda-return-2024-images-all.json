@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "page_url": "https://english.news.cn/20240915/94218282ce2f44b58de1c473dc1c2c44/c.html",
+  "discovered_at": "2026-07-26T00:03:18.888240+00:00",
+  "image_count": 15,
+  "images": [
+    {
+      "asset_url": "https://english.news.cn/20240915/94218282ce2f44b58de1c473dc1c2c44/zxcode_2024091594218282ce2f44b58de1c473dc1c2c44.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240915/94218282ce2f44b58de1c473dc1c2c44/2024091594218282ce2f44b58de1c473dc1c2c44_48fb402bdd8148a0a24f44cb6493801c.JPG",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240915/94218282ce2f44b58de1c473dc1c2c44/2024091594218282ce2f44b58de1c473dc1c2c44_7284a4316b044dc6a3c729f56df2c79b.JPG",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240914/b61a23145d0c4e44b7006e4994127683/2468a683c92e48df92f10ea2f3c9ce5b.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "480",
+      "height": "270",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240913/bd4927103a9b4cc9a3aa41c807aec9fa/de0eaef7b2ad4b35b17682055a0b33aa.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "480",
+      "height": "270",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240912/eb582769c4c9458ca54d1aaae93f1a0c/486645d415bb4eb39b3df76c9c3cbc48.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "1000",
+      "height": "563",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240912/358d17bc8f394f428e82033949df5290/f8c31d4a5b3a421989339a391628d8d2.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "310",
+      "height": "174",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240908/f8788fc2e21645f8a734d895902d971c/d226c9204f2148188231c088370aa3d7.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "310",
+      "height": "174",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240908/c9bc69fb47404f849d48327c89aabbe5/8953a70e58144432a3f1cf30c09ea985.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "310",
+      "height": "174",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240914/45b0e90d629e4c78afdc25807f96ed04/2024091445b0e90d629e4c78afdc25807f96ed04_d0424e463bb94615bf637e96933397f9.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "310",
+      "height": "174",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240914/bdc3b6cc84474e80a324c3851145f743/20240914bdc3b6cc84474e80a324c3851145f743_1079cd442fbc4da8ab411cbe0bf8b90b.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "310",
+      "height": "174",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/20240914/4c409bef37274809ab5eb1bc3a725913/202409144c409bef37274809ab5eb1bc3a725913_5d42bf82a23f45b5ac9291a66c918cf9.jpg",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "310",
+      "height": "174",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/2021newxl/images/20210928_rightShareFb_v1.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/2021newxl/images/20210928_rightShareTw_v1.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    },
+    {
+      "asset_url": "https://english.news.cn/2021newxl/images/20210928_rightShareYb_v1.png",
+      "source_types": [
+        "img:src"
+      ],
+      "alt": "",
+      "title": "",
+      "width": "",
+      "height": "",
+      "evidence": []
+    }
+  ]
+}
