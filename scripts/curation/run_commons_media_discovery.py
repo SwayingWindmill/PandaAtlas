@@ -66,8 +66,13 @@ def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
+def normalized_text_bytes(path: Path) -> bytes:
+    text = path.read_text(encoding="utf-8-sig")
+    return text.replace("\r\n", "\n").replace("\r", "\n").encode("utf-8")
+
+
 def file_descriptor(path: Path) -> dict[str, Any]:
-    payload = path.read_bytes()
+    payload = normalized_text_bytes(path)
     try:
         display_path = path.resolve().relative_to(REPO_ROOT).as_posix()
     except ValueError:

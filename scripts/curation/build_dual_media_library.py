@@ -437,12 +437,12 @@ def build(
         "dataset_release_version": release_version,
         "generated_at": released_at,
         "inputs": {
-            "public_release_manifest_sha256": sha256_bytes(
-                (release_dir / "manifest.json").read_bytes()
+            "public_release_manifest_sha256": sha256_normalized_text(
+                release_dir / "manifest.json"
             ),
-            "public_release_api_sha256": sha256_bytes((release_dir / "api.json").read_bytes()),
-            "curation_media_sha256": sha256_bytes((curation_dir / "media.csv").read_bytes()),
-            "curation_pandas_sha256": sha256_bytes((curation_dir / "pandas.csv").read_bytes()),
+            "public_release_api_sha256": sha256_normalized_text(release_dir / "api.json"),
+            "curation_media_sha256": sha256_normalized_text(curation_dir / "media.csv"),
+            "curation_pandas_sha256": sha256_normalized_text(curation_dir / "pandas.csv"),
             "selection_overrides_sha256": sha256_normalized_text(overrides_path),
         },
         "files": {

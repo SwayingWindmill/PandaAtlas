@@ -54,6 +54,12 @@ def sha256_text(value: str) -> str:
     return sha256_bytes(value.encode("utf-8"))
 
 
+def sha256_normalized_text(path: Path) -> str:
+    text = path.read_text(encoding="utf-8-sig")
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    return sha256_text(normalized)
+
+
 def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -205,11 +211,11 @@ def build(
         "dataset_release_version": release_version,
         "generated_at": release_manifest["released_at"],
         "inputs": {
-            "media_coverage_sha256": sha256_bytes((library_dir / "coverage.json").read_bytes()),
-            "curation_pandas_sha256": sha256_bytes((curation_dir / "pandas.csv").read_bytes()),
-            "public_release_api_sha256": sha256_bytes((release_dir / "api.json").read_bytes()),
-            "public_release_manifest_sha256": sha256_bytes(
-                (release_dir / "manifest.json").read_bytes()
+            "media_coverage_sha256": sha256_normalized_text(library_dir / "coverage.json"),
+            "curation_pandas_sha256": sha256_normalized_text(curation_dir / "pandas.csv"),
+            "public_release_api_sha256": sha256_normalized_text(release_dir / "api.json"),
+            "public_release_manifest_sha256": sha256_normalized_text(
+                release_dir / "manifest.json"
             ),
         },
         "files": {
