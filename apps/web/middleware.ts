@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { TRUSTED_PANDA_REFERENCES } from "@/lib/generated/trusted-identity-aliases";
 import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
+import { refreshSupabaseSession } from "@/lib/supabase/middleware";
 
 function decodePathSegment(value: string): string | null {
   try {
@@ -53,7 +54,7 @@ function redirectToLocalizedPublicRoute(request: NextRequest): NextResponse | nu
   return null;
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const redirect = redirectToLocalizedPublicRoute(request);
   if (redirect) return redirect;
 
@@ -63,11 +64,13 @@ export function middleware(request: NextRequest) {
 
   requestHeaders.set("x-panda-page-language", language);
 
-  return NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   });
+
+  return refreshSupabaseSession(request, response);
 }
 
 export const config = {

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -10,14 +11,16 @@ from app.acquisition import backfill as backfill_module
 from app.acquisition import bundles as bundle_io
 from app.acquisition.adapters import DEFAULT_ADAPTER_REGISTRY
 from app.acquisition.backfill import (
+    InputSnapshot,
     build_breadth_first_report,
     load_target_assessments,
-    load_work_queue,
     write_backfill_report,
 )
 from app.acquisition.chengdu_international import ADAPTER_ID, SOURCE_ID
 from app.acquisition.contracts import AcquisitionMode
+from app.acquisition.contracts.v1 import canonical_json_bytes
 from app.acquisition.runner import AdapterRunRequest, run_adapter
+from app.acquisition.work_queue import build_acquisition_work_queue
 
 
 class IncrementingClock:
@@ -28,6 +31,16 @@ class IncrementingClock:
         value = self.current
         self.current += timedelta(seconds=1)
         return value
+
+
+def _generated_work_queue() -> tuple[dict[str, object], InputSnapshot]:
+    payload = build_acquisition_work_queue().to_dict()
+    raw_bytes = canonical_json_bytes(payload)
+    return payload, InputSnapshot(
+        path="generated:data/curation/pandas",
+        bytes=len(raw_bytes),
+        sha256=sha256(raw_bytes).hexdigest(),
+    )
 
 
 def _chengdu_fixture_bundle(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
@@ -48,7 +61,7 @@ def test_breadth_first_report_disposes_current_inventory_and_linked_identity(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    queue, queue_snapshot = load_work_queue()
+    queue, queue_snapshot = _generated_work_queue()
     assessments, assessment_snapshot = load_target_assessments()
     bundle = _chengdu_fixture_bundle(tmp_path, monkeypatch)
 
@@ -99,7 +112,7 @@ def test_breadth_first_report_is_reproducible_and_output_is_confined(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    queue, queue_snapshot = load_work_queue()
+    queue, queue_snapshot = _generated_work_queue()
     assessments, assessment_snapshot = load_target_assessments()
     bundle = _chengdu_fixture_bundle(tmp_path, monkeypatch)
     generated_at = datetime(2026, 7, 23, 15, 30, tzinfo=UTC)
@@ -134,7 +147,7 @@ def test_breadth_first_report_fails_when_queue_coverage_drifts(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    queue, _ = load_work_queue()
+    queue, _ = _generated_work_queue()
     assessments, _ = load_target_assessments()
     bundle = _chengdu_fixture_bundle(tmp_path, monkeypatch)
     drifted = deepcopy(queue)

@@ -1,4 +1,4 @@
-﻿from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,7 +32,7 @@ app = FastAPI(
 async def attach_public_release(request: Request, call_next):
     path = request.url.path
     is_public_api = path.startswith("/api/v1/") and not path.startswith(
-        "/api/v1/admin/"
+        ("/api/v1/admin/", "/api/v1/identity/")
     )
     metadata = None
     if is_public_api:
