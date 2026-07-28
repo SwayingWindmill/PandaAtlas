@@ -22,7 +22,7 @@ DEFAULT_DATABASE_URL = "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 DEFAULT_API_URL = "http://127.0.0.1:54321"
 MINIMUM_PGMQ_VERSION = (1, 5, 1)
 MAXIMUM_PGMQ_VERSION = (2, 0, 0)
-FORBIDDEN_API_SCHEMAS = {"integration", "pgmq", "pgmq_public", "storage"}
+FORBIDDEN_API_SCHEMAS = {"identity", "integration", "pgmq", "pgmq_public", "storage"}
 HIGH_CONFIDENCE_SECRET_PATTERNS = {
     "supabase-secret-key": re.compile(r"sb_secret_[A-Za-z0-9_-]{12,}"),
     "jwt": re.compile(r"eyJ[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}"),
@@ -159,7 +159,7 @@ def _assert_private_role_boundaries(cursor: psycopg.Cursor[Any]) -> dict[str, bo
         exists = bool(cursor.fetchone()[0])
         if not exists:
             raise FoundationCheckError(f"Expected Supabase role is missing: {role_name}")
-        for schema_name in ("integration", "pgmq"):
+        for schema_name in ("identity", "integration", "pgmq"):
             cursor.execute(
                 "select has_schema_privilege(%s, %s, 'usage')",
                 (role_name, schema_name),
@@ -295,6 +295,60 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
             if bucket is None or bool(bucket[0]) or int(bucket[1]) != 52_428_800:
                 raise FoundationCheckError("Private Storage bucket is missing or publicly exposed")
 
+            for relation in (
+                "identity.accounts",
+                "identity.role_assignments",
+                "identity.role_assignment_revocations",
+                "identity.authorization_audit_events",
+            ):
+                cursor.execute("select to_regclass(%s)::text", (relation,))
+                if cursor.fetchone()[0] != relation:
+                    raise FoundationCheckError(f"Identity relation is missing: {relation}")
+
+            cursor.execute(
+                """
+                select role_capability.capability_key
+                from identity.role_capabilities role_capability
+                where role_capability.role_key = 'administrator'
+                order by role_capability.capability_key
+                """
+            )
+            administrator_capabilities = [str(row[0]) for row in cursor.fetchall()]
+            expected_administrator_capabilities = [
+                "account.session.read",
+                "admin.shell.access",
+                "identity.account.manage",
+                "identity.role.manage",
+            ]
+            if administrator_capabilities != expected_administrator_capabilities:
+                raise FoundationCheckError(
+                    "Administrator capability boundary changed unexpectedly"
+                )
+
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'identity'
+                  and relation.relname = any(%s)
+                  and trigger.tgname like 'trg_%%_append_only'
+                  and not trigger.tgisinternal
+                """,
+                (
+                    [
+                        "role_assignments",
+                        "role_assignment_revocations",
+                        "account_state_events",
+                        "authorization_audit_events",
+                    ],
+                ),
+            )
+            append_only_trigger_count = int(cursor.fetchone()[0])
+            if append_only_trigger_count != 4:
+                raise FoundationCheckError("Identity append-only triggers are incomplete")
+
             cursor.execute("select count(*) from public.pandas")
             panda_count = int(cursor.fetchone()[0])
             if panda_count < 1:
@@ -330,6 +384,8 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
         "applied_migrations": applied_versions,
         "panda_seed_count": panda_count,
         "integration_queue_persistence": str(queue_persistence[0]),
+        "administrator_capabilities": administrator_capabilities,
+        "identity_append_only_trigger_count": append_only_trigger_count,
         "private_role_schema_usage": private_role_privileges,
         "queue_smoke": queue_evidence,
         "rolled_back_message_id": rollback_probe_id,

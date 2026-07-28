@@ -10,6 +10,15 @@ services:
       DB_USE_MOCK_FALLBACK: ${DB_USE_MOCK_FALLBACK:-false}
       ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:?Set ADMIN_API_TOKEN in the local environment}
       CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-http://localhost:3000}
+      IDENTITY_AUTH_ENABLED: ${IDENTITY_AUTH_ENABLED:-false}
+      ADMIN_SHELL_ENABLED: ${ADMIN_SHELL_ENABLED:-false}
+      SUPABASE_URL: ${SUPABASE_URL:-http://host.docker.internal:54321}
+      SUPABASE_JWT_ISSUER: ${SUPABASE_JWT_ISSUER:-http://127.0.0.1:54321/auth/v1}
+      SUPABASE_JWKS_URL: ${SUPABASE_JWKS_URL:-http://host.docker.internal:54321/auth/v1/.well-known/jwks.json}
+      SUPABASE_JWT_AUDIENCE: ${SUPABASE_JWT_AUDIENCE:-authenticated}
+      SUPABASE_JWT_ALGORITHMS: ${SUPABASE_JWT_ALGORITHMS:-ES256,RS256}
+      IDENTITY_RECENT_AUTH_SECONDS: ${IDENTITY_RECENT_AUTH_SECONDS:-900}
+      IDENTITY_BOOTSTRAP_ADMIN_EMAILS: ${IDENTITY_BOOTSTRAP_ADMIN_EMAILS:-}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:

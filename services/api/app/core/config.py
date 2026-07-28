@@ -17,6 +17,35 @@ class Settings(BaseSettings):
     )
     database_url: str | None = Field(default=None, alias="DATABASE_URL")
     db_use_mock_fallback: bool | None = Field(default=None, alias="DB_USE_MOCK_FALLBACK")
+    identity_auth_enabled: bool = Field(default=False, alias="IDENTITY_AUTH_ENABLED")
+    admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")
+    supabase_url: str | None = Field(default=None, alias="SUPABASE_URL")
+    supabase_jwt_issuer_override: str | None = Field(
+        default=None,
+        alias="SUPABASE_JWT_ISSUER",
+    )
+    supabase_jwks_url_override: str | None = Field(
+        default=None,
+        alias="SUPABASE_JWKS_URL",
+    )
+    supabase_jwt_audience: str = Field(
+        default="authenticated",
+        alias="SUPABASE_JWT_AUDIENCE",
+    )
+    supabase_jwt_algorithms_csv: str = Field(
+        default="ES256,RS256",
+        alias="SUPABASE_JWT_ALGORITHMS",
+    )
+    identity_recent_auth_seconds: int = Field(
+        default=900,
+        ge=60,
+        le=3600,
+        alias="IDENTITY_RECENT_AUTH_SECONDS",
+    )
+    identity_bootstrap_admin_emails_csv: str = Field(
+        default="",
+        alias="IDENTITY_BOOTSTRAP_ADMIN_EMAILS",
+    )
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
@@ -41,6 +70,37 @@ class Settings(BaseSettings):
         if len(set(actor_tokens.values())) != len(actor_tokens):
             raise ValueError("Workflow actor bearer tokens must be unique")
         return actor_tokens
+
+    def supabase_jwt_issuer(self) -> str:
+        if self.supabase_jwt_issuer_override:
+            return self.supabase_jwt_issuer_override.rstrip("/")
+        if not self.supabase_url:
+            raise ValueError("SUPABASE_URL or SUPABASE_JWT_ISSUER is required")
+        return f"{self.supabase_url.rstrip('/')}/auth/v1"
+
+    def supabase_jwks_url(self) -> str:
+        if self.supabase_jwks_url_override:
+            return self.supabase_jwks_url_override
+        return f"{self.supabase_jwt_issuer()}/.well-known/jwks.json"
+
+    def supabase_jwt_algorithms(self) -> tuple[str, ...]:
+        algorithms = tuple(
+            algorithm.strip()
+            for algorithm in self.supabase_jwt_algorithms_csv.split(",")
+            if algorithm.strip()
+        )
+        if not algorithms:
+            raise ValueError("SUPABASE_JWT_ALGORITHMS must not be empty")
+        if any(algorithm.startswith("HS") for algorithm in algorithms):
+            raise ValueError("SUPABASE_JWT_ALGORITHMS must use asymmetric algorithms")
+        return algorithms
+
+    def identity_bootstrap_admin_emails(self) -> frozenset[str]:
+        return frozenset(
+            email.strip().lower()
+            for email in self.identity_bootstrap_admin_emails_csv.split(",")
+            if email.strip()
+        )
 
 
 settings = Settings()
