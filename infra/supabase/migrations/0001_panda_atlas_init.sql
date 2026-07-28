@@ -1,4 +1,4 @@
-﻿-- Panda Atlas initial schema draft for Supabase Postgres + PostGIS
+-- Panda Atlas initial schema draft for Supabase Postgres + PostGIS
 -- File: 0001_panda_atlas_init.sql
 
 begin;

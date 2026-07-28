@@ -1,5 +1,3 @@
-﻿version: "3.9"
-
 services:
   api:
     build:
@@ -8,28 +6,16 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-development}
       APP_PORT: ${APP_PORT:-8000}
-      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@postgres:5432/panda_atlas}
-      DB_USE_MOCK_FALLBACK: ${DB_USE_MOCK_FALLBACK:-true}
-      # Local development convenience default only. Replace outside development.
-      ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:-dev-admin-token}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://postgres:postgres@host.docker.internal:54322/postgres}
+      DB_USE_MOCK_FALLBACK: ${DB_USE_MOCK_FALLBACK:-false}
+      ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:?Set ADMIN_API_TOKEN in the local environment}
       CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-http://localhost:3000}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8000:8000"
     volumes:
       - ./services/api/app:/app/app
-    depends_on:
-      - postgres
 
-  postgres:
-    image: postgis/postgis:16-3.4
-    environment:
-      POSTGRES_DB: panda_atlas
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - panda_atlas_pg_data:/var/lib/postgresql/data
-
-volumes:
-  panda_atlas_pg_data:
+# PostgreSQL, PostGIS, Auth, and private Storage are provided by the pinned
+# Supabase CLI stack. Start it with `npm run infra:start` before this service.

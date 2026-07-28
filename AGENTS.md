@@ -20,7 +20,7 @@ When adding new features, keep changes grouped by boundary: UI in `apps/web`, AP
 - Backend tooling: `uv` for environment/dependency management, `pytest` for tests, `ruff` for linting.
 - Data layer: Supabase Postgres with PostGIS; SQL migrations live in `infra/supabase/migrations`.
 - API contract: OpenAPI YAML in `services/api/openapi/panda-atlas-v1.yaml` is the frontend/backend source of truth.
-- Local integration: Docker Compose runs the API plus `postgis/postgis:16-3.4`.
+- Local integration: the pinned Supabase CLI stack provides Auth, private Storage, PostgreSQL/PostGIS, and PGMQ; Docker Compose runs only FastAPI.
 
 ## Build, Test, and Development Commands
 From repository root:
@@ -36,13 +36,13 @@ Backend (`services/api`):
 - Run tests: `uv run pytest -q`
 - Quick syntax check: `uv run python -m compileall app`
 
-Container:
+Local platform:
 
-- Start API + Postgres for local integration: `docker compose up --build`
-
-Database/Supabase:
-
-- Apply local migrations after Supabase CLI setup: `supabase db reset`
+- Install pinned tooling: `npm ci`
+- Start Supabase Auth, private Storage, PostgreSQL/PostGIS, and PGMQ: `npm run infra:start`
+- Reset migrations and seeds: `npm run infra:reset`
+- Run the machine-readable foundation preflight: `npm run infra:preflight`
+- Start FastAPI separately after providing its required local admin credential: `docker compose up --build`
 
 ## Coding Style & Naming Conventions
 - Python: type hints required for public functions; keep endpoint handlers thin and place business logic in `app/services`.
@@ -130,7 +130,7 @@ Panda Atlas is a brownfield full-stack monorepo for a giant panda encyclopedia a
 - The repo root is an `npm` workspace monorepo declared in `package.json`.
 - The web runtime is Next.js App Router in `apps/web`, with both server-rendered route files and client-side interactive shells.
 - The API runtime is FastAPI in `services/api/app/main.py`, started with Uvicorn through `uv run uvicorn app.main:app --reload`.
-- Local integration uses `docker-compose.yml` to run the API container and a `postgis/postgis:16-3.4` database.
+- Local integration uses the pinned Supabase CLI stack for Auth, private Storage, PostgreSQL/PostGIS, and PGMQ; `docker-compose.yml` runs only the API container.
 - The backend has a first-class degraded runtime mode: `services/api/app/db/session.py` disables DB access when SQLAlchemy or `DATABASE_URL` is missing, and the service layer can fall back to mock data.
 ## Frameworks
 - Frontend framework: Next.js 15 with React 19 in `apps/web/package.json`.
@@ -156,7 +156,7 @@ Panda Atlas is a brownfield full-stack monorepo for a giant panda encyclopedia a
 ## Platform Requirements
 - `npm@10.9.0` is pinned at the repo root in `package.json`.
 - Python `>=3.11` is required by `services/api/pyproject.toml`.
-- Docker Compose is needed for the documented local API + PostGIS flow in `docker-compose.yml`.
+- Docker is required by the pinned Supabase CLI stack and by the separate FastAPI container in `docker-compose.yml`.
 - A Postgres/PostGIS-compatible database is required for non-fallback backend behavior.
 - Supabase-specific SQL features are used in `infra/supabase/migrations/0001_panda_atlas_init.sql`, including `auth.users`, `auth.uid()`, `pgcrypto`, and `postgis`.
 - The checked-out workspace also contains local build/runtime artifacts such as `apps/web/.next/` and `services/api/.venv/`, but those are intended to stay uncommitted.
