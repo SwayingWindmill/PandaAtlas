@@ -60,7 +60,8 @@
     "apps/web/features/preferences/profile-preferences.ts"
   ],
   "raw_design_value_source_allowlist": [
-    "apps/web/features/map/visualization/map-layer-model.ts"
+    "apps/web/features/map/visualization/map-layer-model.ts",
+    "apps/web/styles/admin-theme.ts"
   ],
   "style_entry": "apps/web/app/globals.css",
   "design_system_style": "apps/web/styles/tokens.css",

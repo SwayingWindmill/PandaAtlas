@@ -22,7 +22,14 @@ DEFAULT_DATABASE_URL = "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
 DEFAULT_API_URL = "http://127.0.0.1:54321"
 MINIMUM_PGMQ_VERSION = (1, 5, 1)
 MAXIMUM_PGMQ_VERSION = (2, 0, 0)
-FORBIDDEN_API_SCHEMAS = {"identity", "integration", "pgmq", "pgmq_public", "storage"}
+FORBIDDEN_API_SCHEMAS = {
+    "engagement",
+    "identity",
+    "integration",
+    "pgmq",
+    "pgmq_public",
+    "storage",
+}
 HIGH_CONFIDENCE_SECRET_PATTERNS = {
     "supabase-secret-key": re.compile(r"sb_secret_[A-Za-z0-9_-]{12,}"),
     "jwt": re.compile(r"eyJ[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}"),
@@ -159,7 +166,7 @@ def _assert_private_role_boundaries(cursor: psycopg.Cursor[Any]) -> dict[str, bo
         exists = bool(cursor.fetchone()[0])
         if not exists:
             raise FoundationCheckError(f"Expected Supabase role is missing: {role_name}")
-        for schema_name in ("identity", "integration", "pgmq"):
+        for schema_name in ("engagement", "identity", "integration", "pgmq"):
             cursor.execute(
                 "select has_schema_privilege(%s, %s, 'usage')",
                 (role_name, schema_name),
@@ -305,6 +312,55 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 if cursor.fetchone()[0] != relation:
                     raise FoundationCheckError(f"Identity relation is missing: {relation}")
 
+            for relation in (
+                "engagement.pending_follow_intents",
+                "engagement.follows",
+                "engagement.follow_events",
+                "engagement.notification_preferences",
+                "engagement.notification_preference_events",
+                "engagement.passport_contribution_events",
+                "engagement.passport_entries",
+                "engagement.last_viewed_profiles",
+                "engagement.audit_events",
+            ):
+                cursor.execute("select to_regclass(%s)::text", (relation,))
+                if cursor.fetchone()[0] != relation:
+                    raise FoundationCheckError(f"Engagement relation is missing: {relation}")
+
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'engagement'
+                  and relation.relname = any(%s)
+                  and trigger.tgname like 'trg_%%_append_only'
+                  and not trigger.tgisinternal
+                """,
+                (["follow_events", "notification_preference_events", "audit_events"],),
+            )
+            engagement_append_only_trigger_count = int(cursor.fetchone()[0])
+            if engagement_append_only_trigger_count != 3:
+                raise FoundationCheckError("Engagement append-only triggers are incomplete")
+
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'engagement'
+                  and relation.relname = 'passport_contribution_events'
+                  and trigger.tgname = 'trg_passport_contribution_events_immutable_updates'
+                  and not trigger.tgisinternal
+                """
+            )
+            if int(cursor.fetchone()[0]) != 1:
+                raise FoundationCheckError(
+                    "Passport contribution update-protection trigger is missing"
+                )
+
             cursor.execute(
                 """
                 select role_capability.capability_key
@@ -321,9 +377,7 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 "identity.role.manage",
             ]
             if administrator_capabilities != expected_administrator_capabilities:
-                raise FoundationCheckError(
-                    "Administrator capability boundary changed unexpectedly"
-                )
+                raise FoundationCheckError("Administrator capability boundary changed unexpectedly")
 
             cursor.execute(
                 """
@@ -386,6 +440,7 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
         "integration_queue_persistence": str(queue_persistence[0]),
         "administrator_capabilities": administrator_capabilities,
         "identity_append_only_trigger_count": append_only_trigger_count,
+        "engagement_append_only_trigger_count": engagement_append_only_trigger_count,
         "private_role_schema_usage": private_role_privileges,
         "queue_smoke": queue_evidence,
         "rolled_back_message_id": rollback_probe_id,

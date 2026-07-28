@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Database, ShieldCheck } from "lucide-react";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
-import { MyPandasIsland } from "@/features/my-pandas/my-pandas-island";
+import { MyPandasPassportIsland } from "@/features/my-pandas/my-pandas-passport-island";
 import type { MyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import type {
   PublicAtlasDataset,
@@ -83,7 +83,7 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
               <Link href={`/${locale}/atlas` as Route}>{copy.browseAtlas}<ArrowRight aria-hidden="true" /></Link>
             </section>
           </noscript>
-          <MyPandasIsland locale={locale} profiles={view.profiles} copy={copy} />
+          <MyPandasPassportIsland locale={locale} profiles={view.profiles} copy={copy} />
         </div>
       </main>
     </>
