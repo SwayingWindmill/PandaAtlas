@@ -63,7 +63,16 @@ export async function middleware(request: NextRequest) {
   const language = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "zh-CN";
   requestHeaders.set("x-panda-page-language", language);
   const response = NextResponse.next({ request: { headers: requestHeaders } });
-  return refreshSupabaseSession(request, response);
+  const refreshedResponse = await refreshSupabaseSession(request, response);
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    refreshedResponse.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, private, max-age=0, must-revalidate",
+    );
+    refreshedResponse.headers.set("Pragma", "no-cache");
+    refreshedResponse.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
+  }
+  return refreshedResponse;
 }
 
 export const config = {
