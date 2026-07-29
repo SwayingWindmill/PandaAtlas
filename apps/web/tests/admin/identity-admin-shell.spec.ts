@@ -48,7 +48,9 @@ test("bounded React-admin shell exposes only effective capabilities", async ({ p
     });
   });
 
-  await page.goto("/admin", { waitUntil: "domcontentloaded", timeout: 60_000 });
+  const response = await page.goto("/admin", { waitUntil: "domcontentloaded", timeout: 60_000 });
+  expect(response?.headers()["cache-control"]).toContain("no-store");
+  expect(response?.headers()["x-robots-tag"]).toContain("noindex");
   await expect(page.getByRole("heading", { level: 1, name: "工作人员控制台" })).toBeVisible({
     timeout: 60_000,
   });
