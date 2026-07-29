@@ -24,20 +24,12 @@ env:
 
 jobs:
   release-gate:
-    name: Map-close gate (${{ matrix.platform }})
+    name: Authoritative map-close gate
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' &&
       contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: linux
-            os: ubuntu-latest
-          - platform: windows
-            os: windows-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Check out clean repository
         uses: actions/checkout@v7.0.0
@@ -70,15 +62,9 @@ jobs:
       - name: Install workspace dependencies from lockfile
         run: npm ci
 
-      - name: Install browser matrix and Linux runtime dependencies
-        if: runner.os == 'Linux'
+      - name: Install browser matrix and runtime dependencies
         working-directory: apps/web
         run: npx playwright install --with-deps chromium firefox webkit
-
-      - name: Install browser matrix on Windows
-        if: runner.os == 'Windows'
-        working-directory: apps/web
-        run: npx playwright install chromium firefox webkit
 
       - name: Run authoritative map-close release gate
         env:
@@ -93,13 +79,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: release-gate-${{ matrix.platform }}
+          name: release-gate-map-close
           path: .release-gate/
           if-no-files-found: error
           include-hidden-files: true
 
   supabase-foundation:
-    name: Supabase reset and identity recovery (linux)
+    name: Supabase reset and identity recovery
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' &&
@@ -159,13 +145,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: supabase-foundation-linux
+          name: supabase-foundation
           path: .release-gate/
           if-no-files-found: error
           include-hidden-files: true
 
   release-gate-extended:
-    name: Extended gate (linux)
+    name: Extended gate
     if: github.event_name == 'workflow_dispatch' && inputs.run_extended
     needs: release-gate
     runs-on: ubuntu-latest
@@ -201,7 +187,7 @@ jobs:
       - name: Install workspace dependencies from lockfile
         run: npm ci
 
-      - name: Install browser matrix and Linux runtime dependencies
+      - name: Install browser matrix and runtime dependencies
         working-directory: apps/web
         run: npx playwright install --with-deps chromium firefox webkit
 
@@ -218,7 +204,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: release-gate-extended-linux
+          name: release-gate-extended
           path: .release-gate/
           if-no-files-found: error
           include-hidden-files: true

@@ -69,19 +69,20 @@ test("crawler PoC commands use the locked optional dependency boundary", async (
   assert.match(apiProject, /scrapling\[fetchers\]==0\.4\.8/);
 });
 
-test("crawler PoC CI requires real controlled browser and offline source evidence", async () => {
+test("crawler PoC CI uses one controlled runner and requires browser and offline source evidence", async () => {
   const workflow = await readFile(workflowPath, "utf8");
 
   for (const requiredText of [
-    "os: ubuntu-latest",
-    "os: windows-latest",
+    "name: Controlled crawler PoC",
+    "runs-on: ubuntu-latest",
+    "name: crawler-poc",
     'PYTHON_VERSION: "3.12"',
     'UV_VERSION: "0.11.7"',
     "data/acquisition-sources/**",
     "services/api/scripts/run_source_adapter.py",
     "uv sync --frozen --extra dev --extra crawler-poc",
     "uv run playwright install --with-deps chromium",
-    "uv run playwright install chromium",
+    "Check out clean repository",
     "uv run scrapling install",
     "uv run pytest -q tests/acquisition",
     "uv run ruff check app/acquisition tests/acquisition scripts/run_crawler_poc.py scripts/run_source_adapter.py",
@@ -93,6 +94,9 @@ test("crawler PoC CI requires real controlled browser and offline source evidenc
   ]) {
     assert.match(workflow, escaped(requiredText));
   }
+
+  assert.doesNotMatch(workflow, /windows-latest/);
+  assert.doesNotMatch(workflow, /matrix\.platform/);
 });
 
 test("crawler policy enables identity consistency but fails closed on blocking", async () => {

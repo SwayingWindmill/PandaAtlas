@@ -26,7 +26,7 @@ DATABASE_URL=postgresql+psycopg://postgres:postgres@127.0.0.1:54322/postgres \
 npm run infra:stop
 ```
 
-The GitHub `Supabase reset and identity recovery (linux)` job runs the same start, reset, preflight, real-database test, recovery drill, and stop sequence on a clean checkout.
+The GitHub `Supabase reset and identity recovery` job runs the same start, reset, preflight, real-database test, recovery drill, and stop sequence on a clean checkout.
 
 ## Evidence
 
@@ -39,7 +39,7 @@ The gate writes reviewable evidence under `.release-gate/`:
 - `map-close-manifest.json`: commit-bound SHA-256 inventory of JSON evidence.
 - `map-close-manifest.sha256`: digest for the manifest itself.
 
-CI uploads the evidence separately for Linux, Windows, and the fresh Supabase foundation job.
+CI uploads separate evidence artifacts for the authoritative map-close gate, the fresh Supabase foundation job, and an explicitly dispatched extended gate.
 
 ## Security invariants
 
