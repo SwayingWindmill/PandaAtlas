@@ -16,7 +16,7 @@ async function doesNotExist(relativePath) {
 
 test("localized trusted profile is owned by features/profile without legacy generation or API fallback", async () => {
   const route = await readFile(
-    path.join(ROOT, "apps/web/app/[locale]/atlas/[slug]/page.tsx"),
+    path.join(ROOT, "apps/web/app/[locale]/pandas/[slug]/page.tsx"),
     "utf8",
   );
   const profilePage = await readFile(

@@ -22,7 +22,7 @@ const requiredPolicyMarkers = [
 const publicBrandFiles = [
   "app/layout.tsx",
   "app/[locale]/page.tsx",
-  "app/[locale]/atlas/page.tsx",
+  "app/[locale]/pandas/page.tsx",
   "components/patterns/global-navigation.tsx",
   "features/home/editorial-home-page.tsx",
   "features/home/editorial-home-view-model.ts",

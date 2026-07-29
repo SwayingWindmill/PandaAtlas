@@ -218,7 +218,7 @@ function RelationCard({
 
       <footer>
         {relation.related.profileAvailable ? (
-          <Link href={`/${locale}/atlas/${relation.related.slug}` as Route}>{t.profile}<ArrowRight aria-hidden="true" /></Link>
+          <Link href={`/${locale}/pandas/${relation.related.slug}` as Route}>{t.profile}<ArrowRight aria-hidden="true" /></Link>
         ) : <span>{t.profileUnavailable}</span>}
         <Link
           href={lineageHref(locale, relationState(state, relation.id)) as Route}
@@ -324,7 +324,7 @@ export function StructuredLineagePage({
               <code>{view.focus.id}</code>
             </div>
             {view.focus.profileAvailable ? (
-              <Link href={`/${locale}/atlas/${view.focus.slug}` as Route}>{t.focusProfile}<ArrowRight aria-hidden="true" /></Link>
+              <Link href={`/${locale}/pandas/${view.focus.slug}` as Route}>{t.focusProfile}<ArrowRight aria-hidden="true" /></Link>
             ) : null}
           </section>
 

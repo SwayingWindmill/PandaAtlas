@@ -1,27 +1,27 @@
 import { expect, test } from "@playwright/test";
 
 test("searches the localized Atlas and opens the canonical trusted profile", async ({ page }) => {
-  await page.goto("/zh/atlas?q=%E7%BE%8E%E9%A6%99");
+  await page.goto("/zh/pandas?q=%E7%BE%8E%E9%A6%99");
 
   await expect(page.getByTestId("localized-atlas-page")).toBeVisible();
   const profileLink = page.getByRole("link", { name: /美香.*Mei Xiang/ });
-  await expect(profileLink).toHaveAttribute("href", "/zh/atlas/mei-xiang");
+  await expect(profileLink).toHaveAttribute("href", "/zh/pandas/mei-xiang");
 
   await profileLink.click();
-  await expect(page).toHaveURL(/\/zh\/atlas\/mei-xiang$/);
+  await expect(page).toHaveURL(/\/zh\/pandas\/mei-xiang$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.21.1");
 });
 
 test("publishes the Ueno family in Atlas search and canonical profiles", async ({ page }) => {
-  await page.goto("/en/atlas?q=Ri%20Ri");
+  await page.goto("/en/pandas?q=Ri%20Ri");
 
   await expect(page.getByTestId("atlas-result-summary")).toContainText("1 matches across 15 published profiles");
   const profileLink = page.getByRole("link", { name: /Ri Ri/ });
-  await expect(profileLink).toHaveAttribute("href", "/en/atlas/ri-ri");
+  await expect(profileLink).toHaveAttribute("href", "/en/pandas/ri-ri");
   await profileLink.click();
 
-  await expect(page).toHaveURL(/\/en\/atlas\/ri-ri$/);
+  await expect(page).toHaveURL(/\/en\/pandas\/ri-ri$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByTestId("revision-summary")).toContainText("2026.07.21.1");
 });

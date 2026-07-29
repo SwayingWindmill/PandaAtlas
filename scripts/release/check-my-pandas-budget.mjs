@@ -23,7 +23,7 @@ if (!existsSync(manifestPath)) {
 }
 
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-const routeEntries = ["/layout", "/[locale]/layout", "/[locale]/my-pandas/page"];
+const routeEntries = ["/layout", "/[locale]/layout", "/[locale]/me/passport/page"];
 const missingEntries = routeEntries.filter((entry) => !manifest.pages?.[entry]);
 if (missingEntries.length) {
   console.error(`[my-pandas-budget] missing route entries: ${missingEntries.join(", ")}`);
@@ -46,7 +46,7 @@ const measurements = files.map((file) => {
 });
 
 const htmlMeasurements = ["en", "zh"].flatMap((locale) => {
-  const file = path.join("server", "app", locale, "my-pandas.html");
+  const file = path.join("server", "app", locale, "me", "passport.html");
   const absolutePath = path.join(nextRoot, file);
   if (!existsSync(absolutePath)) return [];
   const bytes = readFileSync(absolutePath);

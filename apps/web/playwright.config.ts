@@ -43,11 +43,13 @@ export default defineConfig({
     command: productionServer
       ? `npm run start -- --hostname 127.0.0.1 --port ${port}`
       : `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
-    url: `${baseURL}/atlas`,
+    url: `${baseURL}/pandas`,
     reuseExistingServer,
     env: {
       ...process.env,
       NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:65535",
+      NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:65534",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
       NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
       ...(productionServer ? { PANDA_NEXT_DIST_DIR: productionDistDir } : {}),
     },

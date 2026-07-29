@@ -1,22 +1,18 @@
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
 
-const root = fileURLToPath(new URL("../../../", import.meta.url));
-const source = (relativePath) => readFile(path.join(root, relativePath), "utf8");
+const root = new URL("../../../", import.meta.url);
+const source = (relativePath) => readFile(new URL(relativePath, root), "utf8");
 
-async function sourceFiles(directory) {
-  const entries = await readdir(path.join(root, directory), { withFileTypes: true });
+async function sourceFiles(relativeDirectory) {
+  const directory = new URL(relativeDirectory.endsWith("/") ? relativeDirectory : `${relativeDirectory}/`, root);
+  const entries = await readdir(directory, { withFileTypes: true });
   const nested = await Promise.all(entries.map(async (entry) => {
-    const relative = path.join(directory, entry.name);
+    const relative = `${relativeDirectory}/${entry.name}`;
     if (entry.isDirectory()) {
-      const ignored =
-        entry.name === ".next" ||
-        entry.name.startsWith(".next-") ||
-        entry.name === ".open-next" ||
-        entry.name === "node_modules";
+      const ignored = [".next", ".open-next", "node_modules", "test-results"].includes(entry.name);
       return ignored ? [] : sourceFiles(relative);
     }
     return /\.(?:ts|tsx|js|jsx)$/.test(entry.name) ? [relative] : [];
@@ -24,9 +20,9 @@ async function sourceFiles(directory) {
   return nested.flat();
 }
 
-test("My Pandas keeps public facts server-owned, Passport account-private, and recent history browser-local", async () => {
+test("Panda Passport keeps public facts server-owned and recent history browser-local", async () => {
   const [route, page, island, viewModel, preferences, engagementConfig] = await Promise.all([
-    source("apps/web/app/[locale]/my-pandas/page.tsx"),
+    source("apps/web/app/[locale]/me/passport/page.tsx"),
     source("apps/web/features/my-pandas/my-pandas-page.tsx"),
     source("apps/web/features/my-pandas/my-pandas-passport-island.tsx"),
     source("apps/web/features/my-pandas/my-pandas-view-model.ts"),
@@ -36,6 +32,8 @@ test("My Pandas keeps public facts server-owned, Passport account-private, and r
 
   assert.match(route, /loadPublishedAtlasDataset\(locale\)/);
   assert.match(route, /buildMyPandasViewModel\(envelope\.data, locale\)/);
+  assert.match(route, /canonical: `\/\$\{locale\}\/me\/passport`/);
+  assert.match(route, /robots: \{ index: false, follow: true \}/);
   assert.match(page, /<MyPandasPassportIsland/);
   assert.doesNotMatch(page, /["']use client["']/);
   assert.match(island, /^["']use client["']/);
@@ -43,9 +41,13 @@ test("My Pandas keeps public facts server-owned, Passport account-private, and r
   assert.doesNotMatch(island, /loadPublishedAtlasDataset|NEXT_PUBLIC_API_BASE_URL|supabase/i);
   assert.doesNotMatch(viewModel, /localStorage|sessionStorage|useEffect|fetch\(/);
   assert.match(preferences, /version: STORAGE_VERSION/);
-  assert.match(preferences, /saved: \[\]/);
   assert.match(preferences, /recent: recent\.slice/);
+  assert.match(preferences, /removeItem\(LEGACY_SAVED_PREFERENCE_STORAGE_KEY\)/);
   assert.match(preferences, /removeItem\(LEGACY_SAVED_PROFILES_STORAGE_KEY\)/);
+  assert.doesNotMatch(
+    preferences,
+    /toggleSavedProfile|removeSavedProfile|clearSavedProfiles|MAX_SAVED_PROFILES|saved:/,
+  );
   assert.doesNotMatch(preferences, /name_zh|name_en|current_place|public_revision|source_ids/);
   assert.match(engagementConfig, /NEXT_PUBLIC_ENGAGEMENT_ENABLED/);
 });
@@ -69,9 +71,11 @@ test("Engagement server routes pin trusted origins and preserve caller idempoten
   assert.match(rebuildRoute, /headers\.get\("Idempotency-Key"\)/);
   assert.doesNotMatch(rebuildRoute, /passport-rebuild-\$\{crypto\.randomUUID/);
   assert.match(login, /consentIdempotencyKey\.current \?\?=/);
+  assert.match(login, /SAFE_APP_PATH/);
+  assert.doesNotMatch(login, /Magic Link|signInWithOtp\(/i);
 });
 
-test("My Pandas centralizes application localStorage access in the preferences module", async () => {
+test("Panda Passport centralizes application localStorage access in the recent-history module", async () => {
   const files = await sourceFiles("apps/web");
   const offenders = [];
   for (const file of files) {
@@ -85,35 +89,38 @@ test("My Pandas centralizes application localStorage access in the preferences m
   assert.deepEqual(offenders, []);
 });
 
-test("My Pandas exposes private Passport, legacy-save separation, canonical links, and no-JS fallback", async () => {
-  const [page, island, viewModel, preferences, route, legacyRoute] = await Promise.all([
+test("Panda Passport exposes private state, canonical links, legacy cleanup, and no-JS fallback", async () => {
+  const [page, island, viewModel, preferences, canonicalRoute, localizedAlias, unlocalizedAlias] = await Promise.all([
     source("apps/web/features/my-pandas/my-pandas-page.tsx"),
     source("apps/web/features/my-pandas/my-pandas-passport-island.tsx"),
     source("apps/web/features/my-pandas/my-pandas-view-model.ts"),
     source("apps/web/features/preferences/profile-preferences.ts"),
+    source("apps/web/app/[locale]/me/passport/page.tsx"),
     source("apps/web/app/[locale]/my-pandas/page.tsx"),
     source("apps/web/app/my-pandas/page.tsx"),
   ]);
 
   assert.match(page, /<noscript>/);
   assert.match(page, /data-testid="my-pandas-page"/);
+  assert.match(page, /alternatePath={`\/\$\{alternateLocale\}\/me\/passport`}/);
   assert.match(island, /data-testid="passport-section"/);
   assert.match(island, /data-testid="recent-pandas-section"/);
-  assert.match(island, /clearRecentProfiles/);
+  assert.match(island, /clearRecentProfiles\(\)/);
   assert.match(island, /relationship_state: "active" \| "inactive" \| null/);
   assert.match(island, /contribution_count/);
   assert.match(island, /unavailableTitle/);
-  assert.match(viewModel, /href: `\/\$\{locale\}\/atlas\/\$\{panda\.slug\}`/);
+  assert.match(viewModel, /href: `\/\$\{locale\}\/pandas\/\$\{panda\.slug\}`/);
   assert.match(viewModel, /private Panda Passport/i);
   assert.match(viewModel, /never converted into Follow, Passport, or email consent/i);
-  assert.match(preferences, /toggleSavedProfile[\s\S]*return false/);
+  assert.doesNotMatch(viewModel, /savedTitle|clearSaved|savedAt|feedbackSaved|toggleSaved/i);
+  assert.doesNotMatch(preferences, /toggleSavedProfile|removeSavedProfile|clearSavedProfiles/);
   assert.doesNotMatch(viewModel, /recommendation_score|popularity_rank|followers_count|sharing_count|behavior_profile/i);
-  assert.match(route, /robots: \{ index: false, follow: true \}/);
-  assert.match(route, /"x-default": "\/zh\/my-pandas"/);
-  assert.match(legacyRoute, /permanentRedirect\(localizedPublicDestination\(locale, ["']\/my-pandas["']\)/);
+  assert.match(canonicalRoute, /"x-default": "\/zh\/me\/passport"/);
+  assert.match(localizedAlias, /permanentRedirect\(`\/\$\{locale\}\/me\/passport`/);
+  assert.match(unlocalizedAlias, /localizedPublicDestination\(locale, "\/me\/passport"\)/);
 });
 
-test("My Pandas performance budget is reproducible and part of the default gate", async () => {
+test("Panda Passport performance budget follows the canonical route and remains in the default gate", async () => {
   const [budget, packageJson, defaultGate] = await Promise.all([
     source("scripts/release/check-my-pandas-budget.mjs"),
     source("package.json"),
@@ -122,7 +129,7 @@ test("My Pandas performance budget is reproducible and part of the default gate"
 
   assert.match(budget, /const firstLoadLimitBytes = 140 \* 1024/);
   assert.match(budget, /const transferLimitBytes = 500 \* 1024/);
-  assert.match(budget, /\["\/layout", "\/\[locale\]\/layout", "\/\[locale\]\/my-pandas\/page"\]/);
+  assert.match(budget, /\["\/layout", "\/\[locale\]\/layout", "\/\[locale\]\/me\/passport\/page"\]/);
   assert.match(packageJson, /"check:my-pandas-budget"/);
   assert.match(defaultGate, /id: "my-pandas-budget"/);
   assert.match(defaultGate, /dependsOn: \["web-build"\]/);

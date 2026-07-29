@@ -1,8 +1,9 @@
 export const PROFILE_PREFERENCES_STORAGE_KEY = "panda-atlas:profile-preferences";
+export const LEGACY_SAVED_PREFERENCE_STORAGE_KEY = "panda-atlas:profile-preferences.saved";
 export const LEGACY_SAVED_PROFILES_STORAGE_KEY = "panda-atlas:saved-profiles";
 export const PROFILE_PREFERENCES_CHANGE_EVENT = "panda-atlas:profile-preferences-change";
 
-const STORAGE_VERSION = 1;
+const STORAGE_VERSION = 2;
 export const MAX_RECENT_PROFILES = 12;
 
 export interface StoredProfilePreferenceEntry {
@@ -11,7 +12,6 @@ export interface StoredProfilePreferenceEntry {
 }
 
 export interface ProfilePreferencesSnapshot {
-  saved: StoredProfilePreferenceEntry[];
   recent: StoredProfilePreferenceEntry[];
 }
 
@@ -21,12 +21,11 @@ export interface ProfilePreferenceReference {
 }
 
 interface StoredProfilePreferences {
-  version: 1;
-  saved: [];
+  version: 2;
   recent: StoredProfilePreferenceEntry[];
 }
 
-const EMPTY_SNAPSHOT: ProfilePreferencesSnapshot = Object.freeze({ saved: [], recent: [] });
+const EMPTY_SNAPSHOT: ProfilePreferencesSnapshot = Object.freeze({ recent: [] });
 
 function canUseStorage(): boolean {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -38,10 +37,7 @@ function normalizeTimestamp(value: unknown): string | null {
   return Number.isFinite(parsed) ? new Date(parsed).toISOString() : null;
 }
 
-function normalizeReference(
-  value: string,
-  references: readonly ProfilePreferenceReference[],
-): string | null {
+function normalizeReference(value: string, references: readonly ProfilePreferenceReference[]): string | null {
   const normalized = value.trim();
   if (!normalized) return null;
   const match = references.find((reference) => (
@@ -75,19 +71,24 @@ function normalizeRecent(
   return entries;
 }
 
+function cleanupLegacySavedData(): void {
+  if (!canUseStorage()) return;
+  window.localStorage.removeItem(LEGACY_SAVED_PREFERENCE_STORAGE_KEY);
+  window.localStorage.removeItem(LEGACY_SAVED_PROFILES_STORAGE_KEY);
+}
+
 function writeRecent(recent: StoredProfilePreferenceEntry[]): void {
   if (!canUseStorage()) return;
   const payload: StoredProfilePreferences = {
     version: STORAGE_VERSION,
-    saved: [],
     recent: recent.slice(0, MAX_RECENT_PROFILES),
   };
   try {
     window.localStorage.setItem(PROFILE_PREFERENCES_STORAGE_KEY, JSON.stringify(payload));
-    window.localStorage.removeItem(LEGACY_SAVED_PROFILES_STORAGE_KEY);
+    cleanupLegacySavedData();
     window.dispatchEvent(new Event(PROFILE_PREFERENCES_CHANGE_EVENT));
   } catch {
-    // Browser privacy settings or quota failures leave the public archive usable.
+    // Browser privacy settings or quota failures leave public Panda discovery usable.
   }
 }
 
@@ -99,15 +100,15 @@ export function readProfilePreferences(
   try {
     const parsed = JSON.parse(
       window.localStorage.getItem(PROFILE_PREFERENCES_STORAGE_KEY) ?? "null",
-    ) as Partial<StoredProfilePreferences> | null;
-    if (parsed?.version === STORAGE_VERSION) {
+    ) as { version?: unknown; recent?: unknown } | null;
+    if (parsed?.version === STORAGE_VERSION || parsed?.version === 1) {
       recent = normalizeRecent(parsed.recent, references);
     }
   } catch {
     recent = [];
   }
   writeRecent(recent);
-  return { saved: [], recent };
+  return { recent };
 }
 
 export function subscribeToProfilePreferences(onChange: () => void): () => void {
@@ -118,32 +119,6 @@ export function subscribeToProfilePreferences(onChange: () => void): () => void 
     window.removeEventListener("storage", onChange);
     window.removeEventListener(PROFILE_PREFERENCES_CHANGE_EVENT, onChange);
   };
-}
-
-/** @deprecated Saved Panda was removed; use authenticated Follow. */
-export function toggleSavedProfile(
-  _id: string,
-  references: readonly ProfilePreferenceReference[] = [],
-  _now = new Date(),
-): false {
-  void _now;
-  readProfilePreferences(references);
-  return false;
-}
-
-/** @deprecated Saved Panda was removed; use authenticated Follow. */
-export function removeSavedProfile(
-  _id: string,
-  references: readonly ProfilePreferenceReference[] = [],
-): void {
-  readProfilePreferences(references);
-}
-
-/** @deprecated Saved Panda was removed; use authenticated Follow. */
-export function clearSavedProfiles(
-  references: readonly ProfilePreferenceReference[] = [],
-): void {
-  readProfilePreferences(references);
 }
 
 export function recordRecentProfile(
@@ -167,9 +142,6 @@ export function removeRecentProfile(
   writeRecent(snapshot.recent.filter((entry) => entry.id !== id));
 }
 
-export function clearRecentProfiles(
-  references: readonly ProfilePreferenceReference[] = [],
-): void {
-  void references;
+export function clearRecentProfiles(): void {
   writeRecent([]);
 }

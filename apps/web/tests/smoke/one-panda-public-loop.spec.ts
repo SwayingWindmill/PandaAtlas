@@ -21,11 +21,11 @@ test("finds Mei Xiang by every reviewed public identity form", async ({ page }) 
     "meixiang",
     "smithsonian_history_key:mei-xiang",
   ]) {
-    await page.goto(`/zh/atlas?q=${encodeURIComponent(query)}`);
+    await page.goto(`/zh/pandas?q=${encodeURIComponent(query)}`);
     await expect(page.getByTestId("atlas-result-summary"), query).toContainText("共匹配 1 项");
     await expect(page.getByRole("link", { name: /美香.*Mei Xiang/ }), query).toHaveAttribute(
       "href",
-      "/zh/atlas/mei-xiang",
+      "/zh/pandas/mei-xiang",
     );
   }
 });
@@ -33,26 +33,26 @@ test("finds Mei Xiang by every reviewed public identity form", async ({ page }) 
 test("serves bilingual canonical routes and permanently redirects legacy slugs", async ({ request }) => {
   const legacy = await request.get("/atlas/meixiang", { maxRedirects: 0 });
   expect(legacy.status()).toBe(308);
-  expect(legacy.headers().location).toContain("/zh/atlas/mei-xiang");
+  expect(legacy.headers().location).toContain("/zh/pandas/mei-xiang");
 
-  const englishLegacy = await request.get("/en/atlas/meixiang", { maxRedirects: 0 });
+  const englishLegacy = await request.get("/en/pandas/meixiang", { maxRedirects: 0 });
   expect(englishLegacy.status()).toBe(308);
-  expect(englishLegacy.headers().location).toContain("/en/atlas/mei-xiang");
+  expect(englishLegacy.headers().location).toContain("/en/pandas/mei-xiang");
 
-  for (const path of ["/zh/atlas/mei-xiang", "/en/atlas/mei-xiang"]) {
+  for (const path of ["/zh/pandas/mei-xiang", "/en/pandas/mei-xiang"]) {
     const response = await request.get(path);
     expect(response.status(), path).toBe(200);
     expect(await response.text()).toContain("Mei Xiang");
   }
 
-  expect((await request.get("/en/atlas/tian-tian")).status()).toBe(200);
-  const tianTianLegacy = await request.get("/en/atlas/tiantian", { maxRedirects: 0 });
+  expect((await request.get("/en/pandas/tian-tian")).status()).toBe(200);
+  const tianTianLegacy = await request.get("/en/pandas/tiantian", { maxRedirects: 0 });
   expect(tianTianLegacy.status()).toBe(308);
-  expect(tianTianLegacy.headers().location).toContain("/en/atlas/tian-tian");
+  expect(tianTianLegacy.headers().location).toContain("/en/pandas/tian-tian");
 });
 
 test("renders the reviewed identity, image-led profile, family, footprint, evidence, and revision loop", async ({ page }) => {
-  await page.goto("/zh/atlas/mei-xiang");
+  await page.goto("/zh/pandas/mei-xiang");
 
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: /美香/ })).toBeVisible();
@@ -80,42 +80,63 @@ test("renders the reviewed identity, image-led profile, family, footprint, evide
 });
 
 test("renders partial, tentative, facility, source-link-only, and revision states truthfully", async ({ page }) => {
-  await page.goto("/zh/atlas/bei-bei");
+  await page.goto("/zh/pandas/bei-bei");
   await expect(page.getByTestId("fact-place")).toContainText("中国大熊猫保护研究中心卧龙神树坪基地");
   await expect(page.getByText("当前时间线是已发布子集，不代表完整生平。")).toBeVisible();
 
-  await page.goto("/zh/atlas/bao-li");
+  await page.goto("/zh/pandas/bao-li");
   const parentRelations = page.getByTestId("parent-relations");
   await expect(parentRelations).toContainText("An An");
   await expect(parentRelations).toContainText("暂定关系");
   await expect(parentRelations).toContainText("仅有关系依赖记录，暂无完整档案");
   await expect(parentRelations.getByRole("link", { name: "An An" })).toHaveCount(0);
 
-  await page.goto("/zh/atlas/tian-tian");
+  await page.goto("/zh/pandas/tian-tian");
   await expect(page.getByTestId("media-source-link-state")).toContainText("仅提供来源媒体链接");
   await expect(page.getByTestId("media-source-link-state").getByRole("link")).toHaveCount(1);
   await expect(page.getByTestId("revision-summary")).toContainText("版本标识可用，但当前语言的修订摘要尚未发布");
   await expect(page.getByTestId("evidence-list")).toContainText("可访问");
 });
 
-test("keeps favorites local-only and keyboard operable", async ({ page }) => {
-  await page.goto("/zh/atlas/mei-xiang");
+test("keeps account Follow keyboard operable without creating local saved state", async ({ page }) => {
+  await page.route("**/api/identity/session", async (route) => {
+    await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
+  });
+  await page.route("**/api/engagement/follow-intents", async (route) => {
+    if (route.request().method() !== "POST") {
+      await route.fallback();
+      return;
+    }
+    const body = route.request().postDataJSON() as Record<string, unknown>;
+    await route.fulfill({
+      status: 201,
+      contentType: "application/json",
+      body: JSON.stringify({
+        intent_id: "11111111-1111-1111-1111-111111111111",
+        panda_id: body.panda_id,
+        locale: body.locale,
+        safe_return_path: body.return_path,
+        status: "pending",
+        expires_at: "2026-07-29T10:00:00Z",
+      }),
+    });
+  });
+  await page.goto("/zh/pandas/mei-xiang");
 
-  const favorite = page.getByRole("button", { name: "收藏美香" });
-  await expect(favorite).toBeEnabled();
-  await favorite.focus();
+  const follow = page.getByRole("button", { name: "关注美香" });
+  await expect(follow).toBeEnabled();
+  await follow.focus();
   await page.keyboard.press("Enter");
-  await expect(favorite).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText(/仅保存在此浏览器/)).toBeVisible();
-  await expect.poll(() => page.evaluate(() => {
-    const raw = localStorage.getItem("panda-atlas:profile-preferences");
-    const parsed = raw ? JSON.parse(raw) as { saved?: Array<{ id?: string }> } : null;
-    return parsed?.saved?.[0]?.id ?? null;
-  })).toMatch(/[0-9a-f-]{36}/);
+  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fzh%2Fpandas%2Fmei-xiang$/);
+  const savedState = await page.evaluate(() => localStorage.getItem("panda-atlas:saved-profiles"));
+  expect(savedState).toBeNull();
 });
 
 test("exposes the full reading loop to keyboard focus and sequential section navigation", async ({ page, browserName }) => {
-  await page.goto("/zh/atlas/mei-xiang");
+  await page.route("**/api/identity/session", async (route) => {
+    await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
+  });
+  await page.goto("/zh/pandas/mei-xiang");
   const sectionNavigation = page.getByRole("navigation", { name: "档案章节" });
   const storyLink = sectionNavigation.getByRole("link", { name: "档案摘要" });
   const timelineLink = sectionNavigation.getByRole("link", { name: "时间线" });
@@ -132,10 +153,10 @@ test("exposes the full reading loop to keyboard focus and sequential section nav
   await expect(page).toHaveURL(/#timeline$/);
 
   const readingLoopTargets = [
-    page.locator('a[href="/en/atlas/mei-xiang"]:visible').first(),
-    page.locator('a[href="/zh/atlas/tai-shan"]:visible').first(),
+    page.locator('a[href="/en/pandas/mei-xiang"]:visible').first(),
+    page.locator('a[href="/zh/pandas/tai-shan"]:visible').first(),
     page.locator('main a[href^="http"]:visible').first(),
-    page.getByRole("button", { name: "收藏美香" }),
+    page.getByRole("button", { name: "关注美香" }),
   ];
 
   for (const target of readingLoopTargets) {
@@ -149,7 +170,7 @@ test("exposes the full reading loop to keyboard focus and sequential section nav
 test("keeps the server-rendered profile readable without JavaScript", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto("/zh/atlas/mei-xiang");
+  await page.goto("/zh/pandas/mei-xiang");
 
   await expect(page.getByRole("heading", { level: 1, name: /美香/ })).toBeVisible();
   await expect(page.getByTestId("timeline-list")).toBeVisible();
@@ -172,7 +193,7 @@ test("reflows at the effective CSS viewport produced by 200-percent browser zoom
     deviceScaleFactor: 1,
     mobile: false,
   });
-  await page.goto("/zh/atlas/mei-xiang");
+  await page.goto("/zh/pandas/mei-xiang");
 
   expect(await page.evaluate(() => screen.width / innerWidth)).toBe(2);
   const hasHorizontalOverflow = await page.evaluate(
@@ -184,7 +205,7 @@ test("reflows at the effective CSS viewport produced by 200-percent browser zoom
 
 test("keeps the complete public loop usable on a mobile viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/zh/atlas/mei-xiang");
+  await page.goto("/zh/pandas/mei-xiang");
 
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await expect(page.getByTestId("identity-first-card")).toBeVisible();
@@ -197,7 +218,7 @@ test("keeps the complete public loop usable on a mobile viewport", async ({ page
 
 test("uses the trusted profile theme in dark color scheme", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
-  await page.goto("/en/atlas/mei-xiang");
+  await page.goto("/en/pandas/mei-xiang");
 
   const colors = await page.getByTestId("identity-first-card").evaluate((element) => {
     const style = getComputedStyle(element);

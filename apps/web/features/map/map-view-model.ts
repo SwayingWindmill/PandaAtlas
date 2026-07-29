@@ -227,7 +227,7 @@ function buildIndividualResults(
         sourceIds: [...new Set(residency.source_ids)],
         sources,
         sourceLabel: locale === "zh" ? "已审核个体驻留记录" : "Reviewed individual residency record",
-        profileHref: `/${locale}/atlas/${panda.slug}`,
+        profileHref: `/${locale}/pandas/${panda.slug}`,
         entityHref: placeEntity ? `/${locale}/places/${placeEntity.canonical_slug}` : null,
         visualizationKey: facility?.id ?? null,
         searchText: normalized([

@@ -7,5 +7,5 @@ import { localizedPublicDestination } from "@/foundation/routing/public-redirect
 export default async function LegacyMyPandasPage() {
   const requestHeaders = await headers();
   const locale = resolvePreferredPublicLocale(requestHeaders.get("accept-language"));
-  permanentRedirect(localizedPublicDestination(locale, "/my-pandas") as Route);
+  permanentRedirect(localizedPublicDestination(locale, "/me/passport") as Route);
 }

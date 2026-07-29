@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-import { TrustedProfileFavorite } from "@/components/atlas/trusted-profile-favorite";
+import { PandaFollowControl } from "@/components/pandas/panda-follow-control";
 import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
@@ -565,7 +565,7 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
                   ))}
                 </ul>
               </div>
-              <TrustedProfileFavorite
+              <PandaFollowControl
                 stableId={profile.stableId}
                 slug={profile.canonicalSlug}
                 name={profile.displayName}

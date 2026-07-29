@@ -59,7 +59,7 @@ export function atlasQueryString(state: AtlasQueryState): string {
 
 export function atlasHref(locale: "zh" | "en", state: AtlasQueryState): string {
   const query = atlasQueryString(state);
-  return `/${locale}/atlas${query ? `?${query}` : ""}`;
+  return `/${locale}/pandas${query ? `?${query}` : ""}`;
 }
 
 export function parseAtlasQuery(

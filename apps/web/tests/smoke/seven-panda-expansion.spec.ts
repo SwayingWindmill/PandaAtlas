@@ -22,26 +22,26 @@ test("serves bilingual canonical profiles and legacy redirects for all seven pan
     expect(nameZh, `${slug} Chinese name`).toBeTruthy();
     expect(nameEn, `${slug} English name`).toBeTruthy();
     for (const locale of ["zh", "en"] as const) {
-      const canonical = await request.get(`/${locale}/atlas/${slug}`);
+      const canonical = await request.get(`/${locale}/pandas/${slug}`);
       expect(canonical.status(), `${locale}/${slug}`).toBe(200);
       const html = await canonical.text();
       expect(html).toContain(nameZh!);
       expect(html).toContain(nameEn!);
 
-      const legacy = await request.get(`/${locale}/atlas/${legacySlug!}`, { maxRedirects: 0 });
+      const legacy = await request.get(`/${locale}/pandas/${legacySlug!}`, { maxRedirects: 0 });
       expect(legacy.status(), `${locale}/${legacySlug}`).toBe(308);
-      expect(legacy.headers().location).toContain(`/${locale}/atlas/${slug}`);
+      expect(legacy.headers().location).toContain(`/${locale}/pandas/${slug}`);
     }
   }
 });
 
 test("completes the Xiao Qi Ji family-to-evidence golden journey", async ({ page }) => {
-  await page.goto(`/zh/atlas?q=${encodeURIComponent("小奇迹")}`);
+  await page.goto(`/zh/pandas?q=${encodeURIComponent("小奇迹")}`);
   await page.getByRole("link", { name: /小奇迹.*Xiao Qi Ji/ }).click();
 
-  await expect(page).toHaveURL(/\/zh\/atlas\/xiao-qi-ji$/);
+  await expect(page).toHaveURL(/\/zh\/pandas\/xiao-qi-ji$/);
   await page.getByTestId("fact-parents").getByRole("link", { name: "美香" }).click();
-  await expect(page).toHaveURL(/\/zh\/atlas\/mei-xiang$/);
+  await expect(page).toHaveURL(/\/zh\/pandas\/mei-xiang$/);
 
   await expect(page.getByTestId("timeline-list")).toContainText("已完成");
   await expect(page.getByTestId("footprint-text-view")).toContainText("中国（国家级记录）");
@@ -55,12 +55,12 @@ test("completes the Xiao Qi Ji family-to-evidence golden journey", async ({ page
     return parsed?.saved?.[0]?.id ?? null;
   })).toMatch(/[0-9a-f-]{36}/);
   await page.getByRole("link", { name: "English" }).click();
-  await expect(page).toHaveURL(/\/en\/atlas\/mei-xiang$/);
+  await expect(page).toHaveURL(/\/en\/pandas\/mei-xiang$/);
   await expect(page.getByRole("heading", { level: 1, name: "Mei Xiang" })).toBeVisible();
 });
 
 test("renders reviewed source-link media without importing unlicensed imagery", async ({ page }) => {
-  await page.goto("/en/atlas/tian-tian");
+  await page.goto("/en/pandas/tian-tian");
 
   await expect(page.getByTestId("fact-birth")).toContainText("Source");
   await expect(page.getByTestId("fact-sex")).toContainText("Source");
@@ -71,7 +71,7 @@ test("renders reviewed source-link media without importing unlicensed imagery", 
 });
 
 test("keeps Bao Li third-generation relationship paths inside the trusted release", async ({ page }) => {
-  await page.goto("/en/atlas/bao-li");
+  await page.goto("/en/pandas/bao-li");
 
   const parents = page.getByTestId("parent-relations");
   await expect(parents.getByRole("link", { name: "Bao Bao" })).toBeVisible();

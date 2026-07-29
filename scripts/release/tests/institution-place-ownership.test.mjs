@@ -47,7 +47,7 @@ test("Slice 8 canonical pages do not publish unsupported compatibility facilitie
   const [dataset, entitySmoke, atlasPage, mapModel, profileModel] = await Promise.all([
     source("contracts/golden-dataset/mei-xiang-family.v1.json"),
     source("apps/web/tests/smoke/localized-entities.spec.ts"),
-    source("apps/web/app/[locale]/atlas/page.tsx"),
+    source("apps/web/app/[locale]/pandas/page.tsx"),
     source("apps/web/features/map/map-view-model.ts"),
     source("apps/web/features/profile/profile-page-view-model.ts"),
   ]);

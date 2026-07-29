@@ -24,29 +24,29 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("publishes Xi Lun as the fifteenth trusted Atlas profile", async ({ page }) => {
-  await page.goto("/zh/atlas?q=Xi%20Lun");
+  await page.goto("/zh/pandas?q=Xi%20Lun");
 
   await expect(page.getByTestId("public-delivery-notice")).toContainText(RELEASE_ID);
   await expect(page.getByTestId("atlas-result-summary")).toContainText("共匹配 1 项");
   await expect(page.getByRole("link", { name: /喜伦/ })).toHaveAttribute(
     "href",
-    "/zh/atlas/xi-lun",
+    "/zh/pandas/xi-lun",
   );
 
-  await page.goto("/en/atlas");
+  await page.goto("/en/pandas");
   await expect(page.getByTestId("atlas-result-summary")).toContainText("15");
 });
 
 test("renders Xi Lun bilingual profile, reviewed media, current residency, and three events", async ({ page }) => {
   for (const profile of [
     {
-      path: "/zh/atlas/xi-lun",
+      path: "/zh/pandas/xi-lun",
       heading: /喜伦/,
       alt: "喜伦在亚特兰大动物园的栖息地内坐着",
       place: "成都大熊猫繁育研究基地",
     },
     {
-      path: "/en/atlas/xi-lun",
+      path: "/en/pandas/xi-lun",
       heading: /Xi Lun/,
       alt: "Xi Lun sitting in her habitat at Zoo Atlanta",
       place: "Chengdu Research Base of Giant Panda Breeding",
@@ -73,15 +73,15 @@ test("renders Xi Lun bilingual profile, reviewed media, current residency, and t
 });
 
 test("renders Xi Lun parentage and structured lineage from reviewed assertions", async ({ page }) => {
-  await page.goto("/zh/atlas/xi-lun");
+  await page.goto("/zh/pandas/xi-lun");
   const parents = page.getByTestId("parent-relations");
   await expect(parents.getByRole("link", { name: "伦伦", exact: true })).toHaveAttribute(
     "href",
-    "/zh/atlas/lun-lun",
+    "/zh/pandas/lun-lun",
   );
   await expect(parents.getByRole("link", { name: "洋洋", exact: true })).toHaveAttribute(
     "href",
-    "/zh/atlas/yang-yang",
+    "/zh/pandas/yang-yang",
   );
 
   await page.goto("/en/lineage?focus=xi-lun&ancestors=1");
@@ -101,7 +101,7 @@ test("shows Xi Lun current and historical footprints in the structured map", asy
   await expect(results.filter({ hasText: "Historical" })).toHaveCount(1);
   await expect(page.getByRole("link", { name: "Open trusted profile" }).first()).toHaveAttribute(
     "href",
-    "/en/atlas/xi-lun",
+    "/en/pandas/xi-lun",
   );
 });
 
@@ -111,7 +111,7 @@ test("keeps Xi Lun profile keyboard-operable at 320 px", async ({ page }) => {
     localStorage.removeItem("panda-atlas:profile-preferences");
   });
   await page.setViewportSize({ width: 320, height: 800 });
-  await page.goto("/en/atlas/xi-lun");
+  await page.goto("/en/pandas/xi-lun");
 
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   const favorite = page.getByRole("button", { name: /^Save / });
@@ -128,7 +128,7 @@ test("renders Xi Lun profile and lineage without JavaScript", async ({ browser }
   const page = await context.newPage();
   await mockXiLunMedia(page);
 
-  await page.goto("/en/atlas/xi-lun");
+  await page.goto("/en/pandas/xi-lun");
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByRole("img", { name: "Xi Lun sitting in her habitat at Zoo Atlanta" })).toBeVisible();
 

@@ -252,7 +252,7 @@ function relationViewModel(
     relation,
     status,
     sourceIds,
-    href: profileAvailable ? `/${locale}/atlas/${node.slug}` : null,
+    href: profileAvailable ? `/${locale}/pandas/${node.slug}` : null,
     profileAvailable,
   };
 }
@@ -579,7 +579,7 @@ export function buildTrustedProfilePageViewModel(
           publicSchemaVersion: null,
           summary: null,
         },
-    atlasHref: `/${locale}/atlas`,
-    alternateLanguageHref: `/${otherLocale}/atlas/${panda.identity.canonical_slug}`,
+    atlasHref: `/${locale}/pandas`,
+    alternateLanguageHref: `/${otherLocale}/pandas/${panda.identity.canonical_slug}`,
   };
 }

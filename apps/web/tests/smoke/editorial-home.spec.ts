@@ -24,7 +24,7 @@ test("renders the complete Chinese ZhiPanda Home information architecture", asyn
   await expect(page.getByTestId("recent-archive-revisions")).toContainText("最近更新");
   await expect(page.getByTestId("archive-method")).toContainText("资料原则");
   await expect(page.getByText("精选用于帮助开始探索，不代表访问量或受欢迎程度排名。")).toBeVisible();
-  await expect(page.getByRole("link", { name: "美香", exact: true })).toHaveAttribute("href", /\/zh\/atlas\?q=/);
+  await expect(page.getByRole("link", { name: "美香", exact: true })).toHaveAttribute("href", /\/zh\/pandas\?q=/);
 });
 
 test("renders real editorial selections with canonical profile links", async ({ page }) => {
@@ -32,10 +32,10 @@ test("renders real editorial selections with canonical profile links", async ({ 
   const selections = page.getByTestId("editorial-selections");
 
   for (const [name, href] of [
-    ["Bao Li", "/en/atlas/bao-li"],
-    ["Qing Bao", "/en/atlas/qing-bao"],
-    ["Lun Lun", "/en/atlas/lun-lun"],
-    ["Shin Shin", "/en/atlas/shin-shin"],
+    ["Bao Li", "/en/pandas/bao-li"],
+    ["Qing Bao", "/en/pandas/qing-bao"],
+    ["Lun Lun", "/en/pandas/lun-lun"],
+    ["Shin Shin", "/en/pandas/shin-shin"],
   ]) {
     await expect(selections.getByRole("link", { name, exact: true })).toHaveAttribute("href", href);
   }
@@ -94,9 +94,9 @@ test("searches the localized Atlas without JavaScript", async ({ browser }) => {
   await query.fill("mei xiang");
   await query.press("Enter");
 
-  await expect(page).toHaveURL(/\/en\/atlas\?q=mei(\+|%20)xiang$/);
+  await expect(page).toHaveURL(/\/en\/pandas\?q=mei(\+|%20)xiang$/);
   await expect(page.getByTestId("localized-atlas-page")).toBeVisible();
-  await expect(page.getByRole("link", { name: /Mei Xiang/ })).toHaveAttribute("href", "/en/atlas/mei-xiang");
+  await expect(page.getByRole("link", { name: /Mei Xiang/ })).toHaveAttribute("href", "/en/pandas/mei-xiang");
   await context.close();
 });
 

@@ -106,6 +106,21 @@ The source event ID is the idempotency boundary. Replaying the same account/Pand
 
 Passport rebuild deletes the projection and reconstructs it from current Follow rows plus all retained private contribution projection events. Contribution-only entries have no relationship state or Follow timestamps.
 
+## Canonical web routes and aliases
+
+The public Panda route family is:
+
+- `/{locale}/pandas`
+- `/{locale}/pandas/{canonical_slug}`
+
+These are the only Panda collection/profile routes that return `200`. `/{locale}/atlas`, `/{locale}/atlas/{reference}`, unlocalized `/atlas` and `/pandas`, reviewed historical Panda aliases, `/{locale}/my-pandas`, and `/my-pandas` return one permanent `308` directly to the final canonical destination while preserving safe query state. Internal navigation, language alternates, canonical metadata, staged withdrawal verification, and `sitemap.xml` emit only `/pandas` URLs.
+
+The private account surface is `/{locale}/me/passport`. It is `noindex`, omitted from the sitemap, and linked only from authenticated Follow/Passport journeys. Legacy My Pandas URLs permanently redirect to it.
+
+Pending Follow never trusts a browser return path. FastAPI resolves the supplied Panda reference to the current stable ID and canonical slug, then stores `/{locale}/pandas/{canonical_slug}` as the only completion destination. The login page separately allowlists administrator, canonical Panda, Passport, and feed paths; external origins, protocol-relative paths, backslashes, and arbitrary public routes fail closed.
+
+Disabling `NEXT_PUBLIC_ENGAGEMENT_ENABLED` removes Follow and Passport entry points without restoring Saved Panda. Disabling `ENGAGEMENT_ENABLED` remains the authoritative API stop. Route aliases and canonical public Panda reads remain available during an Engagement rollback.
+
 ## HTTP commands and reads
 
 Anonymous Pending Intent surfaces:
