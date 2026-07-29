@@ -1600,6 +1600,179 @@ components:
                 - type: 'null'
         publication_checks:
           $ref: '#/components/schemas/PublicationChecks'
+        activities:
+          type: array
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/ArchiveActivityDescriptor'
+
+    ArchiveActivityDescriptor:
+      type: object
+      additionalProperties: false
+      required:
+        - source_id
+        - activity_type
+        - targets
+        - occurred_at
+        - localization_key
+        - localization_version
+        - localized_snapshots
+      properties:
+        source_id:
+          type: string
+          pattern: '^[a-z0-9][a-z0-9:._-]{2,254}$'
+        action:
+          type: string
+          enum: [publish, snapshot_update, correction, retraction]
+          default: publish
+        activity_type:
+          type: string
+          enum:
+            - panda.birth
+            - panda.death
+            - panda.named
+            - panda.relocated
+            - panda.birthday
+            - panda.health_major
+            - archive.profile_corrected
+            - editorial.announcement
+        targets:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/ActivityTarget'
+        importance:
+          type: string
+          enum: [ordinary, important, critical]
+          nullable: true
+        importance_override_reason:
+          type: string
+          nullable: true
+        visibility:
+          type: string
+          enum: [public, unlisted]
+          default: public
+        sitewide:
+          type: boolean
+          default: false
+        notification_eligible:
+          type: boolean
+          default: true
+        occurred_at:
+          type: string
+          format: date-time
+        occurred_precision:
+          type: string
+          enum: [exact, day, month, year, range, unknown]
+          default: exact
+        occurred_end_at:
+          type: string
+          format: date-time
+          nullable: true
+        localization_key:
+          type: string
+          pattern: '^[a-z][a-z0-9_.-]{2,127}$'
+        localization_version:
+          type: integer
+          minimum: 1
+        localized_snapshots:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/LocalizedActivitySnapshot'
+        media:
+          anyOf:
+            - $ref: '#/components/schemas/ActivityMediaReference'
+            - type: 'null'
+        provenance:
+          $ref: '#/components/schemas/ActivityProvenance'
+        pin:
+          anyOf:
+            - $ref: '#/components/schemas/ActivityPin'
+            - type: 'null'
+        retraction_reason:
+          type: string
+          nullable: true
+
+    ActivityTarget:
+      type: object
+      additionalProperties: false
+      required: [target_type, target_id]
+      properties:
+        target_type:
+          type: string
+          enum: [panda, institution]
+        target_id:
+          type: string
+          minLength: 1
+          maxLength: 200
+
+    LocalizedActivitySnapshot:
+      type: object
+      additionalProperties: false
+      required: [locale, title, summary]
+      properties:
+        locale:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        fallback_from_locale:
+          type: string
+          nullable: true
+
+    ActivityMediaReference:
+      type: object
+      additionalProperties: false
+      required: [asset_id, variant, alt_text]
+      properties:
+        asset_id:
+          type: string
+          format: uuid
+        variant:
+          type: string
+        alt_text:
+          type: string
+
+    ActivityProvenance:
+      type: object
+      additionalProperties: false
+      properties:
+        release_id:
+          type: string
+          format: uuid
+          nullable: true
+        data_version:
+          type: string
+          nullable: true
+        public_schema_version:
+          type: string
+          nullable: true
+        projection_code_version:
+          type: string
+          nullable: true
+        public_reference_ids:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+
+    ActivityPin:
+      type: object
+      additionalProperties: false
+      required: [starts_at, ends_at, reason]
+      properties:
+        starts_at:
+          type: string
+          format: date-time
+        ends_at:
+          type: string
+          format: date-time
+        reason:
+          type: string
 
     PublicationChecks:
       type: object

@@ -166,7 +166,7 @@ def _assert_private_role_boundaries(cursor: psycopg.Cursor[Any]) -> dict[str, bo
         exists = bool(cursor.fetchone()[0])
         if not exists:
             raise FoundationCheckError(f"Expected Supabase role is missing: {role_name}")
-        for schema_name in ("engagement", "identity", "integration", "pgmq"):
+        for schema_name in ("activity", "engagement", "identity", "integration", "pgmq"):
             cursor.execute(
                 "select has_schema_privilege(%s, %s, 'usage')",
                 (role_name, schema_name),
@@ -350,6 +350,23 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 from pg_trigger trigger
                 join pg_class relation on relation.oid = trigger.tgrelid
                 join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'activity'
+                  and relation.relname = any(%s)
+                  and trigger.tgname like 'trg_%%_append_only'
+                  and not trigger.tgisinternal
+                """,
+                (["projection_failures", "editorial_announcements", "audit_events"],),
+            )
+            activity_append_only_trigger_count = int(cursor.fetchone()[0])
+            if activity_append_only_trigger_count != 3:
+                raise FoundationCheckError("Activity append-only triggers are incomplete")
+
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
                 where namespace.nspname = 'engagement'
                   and relation.relname = 'passport_contribution_events'
                   and trigger.tgname = 'trg_passport_contribution_events_immutable_updates'
@@ -411,6 +428,12 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 "public.change_sets",
                 "public.public_release_pointer",
                 "public.public_api_release_withdrawals",
+                "activity.items",
+                "activity.targets",
+                "activity.projection_receipts",
+                "activity.projection_failures",
+                "activity.editorial_announcements",
+                "activity.audit_events",
             ):
                 cursor.execute(f"select count(*) from {relation}")
                 cursor.fetchone()
@@ -441,6 +464,7 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
         "administrator_capabilities": administrator_capabilities,
         "identity_append_only_trigger_count": append_only_trigger_count,
         "engagement_append_only_trigger_count": engagement_append_only_trigger_count,
+        "activity_append_only_trigger_count": activity_append_only_trigger_count,
         "private_role_schema_usage": private_role_privileges,
         "queue_smoke": queue_evidence,
         "rolled_back_message_id": rollback_probe_id,

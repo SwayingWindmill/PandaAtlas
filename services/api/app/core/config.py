@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     identity_auth_enabled: bool = Field(default=False, alias="IDENTITY_AUTH_ENABLED")
     admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")
     engagement_enabled: bool = Field(default=False, alias="ENGAGEMENT_ENABLED")
+    activity_enabled: bool = Field(default=False, alias="ACTIVITY_ENABLED")
     pending_follow_ttl_seconds: int = Field(
         default=3600,
         ge=60,
