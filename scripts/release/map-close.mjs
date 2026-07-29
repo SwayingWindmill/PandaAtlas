@@ -14,6 +14,19 @@ import {
   uvRunPrefix,
 } from "./default.mjs";
 
+const mapCloseWebEnvironment = {
+  NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:65535",
+  NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:65534",
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
+  NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
+};
+
+function prepareMapCloseWebEnvironment() {
+  for (const [name, value] of Object.entries(mapCloseWebEnvironment)) {
+    if (!process.env[name]) process.env[name] = value;
+  }
+}
+
 function resolvePlaywrightEnv() {
   const env = {
     PLAYWRIGHT_WEB_SERVER_MODE: "production",
@@ -39,6 +52,7 @@ function resolvePlaywrightEnv() {
 }
 
 export async function runMapCloseGate() {
+  prepareMapCloseWebEnvironment();
   await runDefaultReleaseGate();
   const playwrightEnv = resolvePlaywrightEnv();
 
