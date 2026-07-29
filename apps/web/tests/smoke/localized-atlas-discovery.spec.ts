@@ -31,7 +31,7 @@ test("normalizes unsupported and invalid URL state instead of silently retaining
   await page.goto("/en/pandas?status=invalid&page=0&unsupported=value");
 
   await expect(page).toHaveURL(/\/en\/pandas$/);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("15 published profiles");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("38 published profiles");
 });
 
 test("preserves compatible discovery state across the locale switch", async ({ page }) => {
@@ -61,7 +61,7 @@ test("renders searchable results without JavaScript", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/en/pandas?q=mei+xiang");
 
-  await expect(page.getByTestId("localized-atlas-page")).toBeVisible();
+  await expect(page.getByTestId("localized-pandas-page")).toBeVisible();
   await expect(page.getByRole("link", { name: /Mei Xiang/ })).toHaveAttribute("href", "/en/pandas/mei-xiang");
   await context.close();
 });
