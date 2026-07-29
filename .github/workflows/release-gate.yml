@@ -24,7 +24,7 @@ env:
 
 jobs:
   release-gate:
-    name: Default gate (${{ matrix.platform }})
+    name: Map-close gate (${{ matrix.platform }})
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' &&
@@ -80,11 +80,11 @@ jobs:
         working-directory: apps/web
         run: npx playwright install chromium firefox webkit
 
-      - name: Run default release gate
+      - name: Run authoritative map-close release gate
         env:
           PLAYWRIGHT_BROWSER_MATRIX: "1"
           RELEASE_GATE_USE_SYSTEM_EDGE: "0"
-        run: npm run release:default
+        run: npm run release:map-close
 
       - name: Verify gate did not modify tracked files
         run: git diff --exit-code
@@ -98,6 +98,72 @@ jobs:
           if-no-files-found: error
           include-hidden-files: true
 
+  supabase-foundation:
+    name: Supabase reset and identity recovery (linux)
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
+    needs: release-gate
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:54322/postgres
+      REAL_DB_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:54322/postgres
+      RUN_REAL_DB_TESTS: "1"
+    steps:
+      - name: Check out clean repository
+        uses: actions/checkout@v7.0.0
+        with:
+          clean: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Set up Python
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pinned npm and uv
+        run: |
+          npm install --global npm@${{ env.NPM_VERSION }}
+          python -m pip install uv==${{ env.UV_VERSION }}
+
+      - name: Install workspace dependencies from lockfile
+        run: npm ci
+
+      - name: Start pinned Supabase foundation
+        run: npm run infra:start
+
+      - name: Reset migrations and seed data
+        run: npm run infra:reset
+
+      - name: Verify PostGIS, PGMQ, storage, and migration foundation
+        run: npm run infra:preflight
+
+      - name: Run real PostgreSQL engagement tests
+        working-directory: services/api
+        run: uv run --isolated --frozen --extra dev pytest -q tests/integration/test_engagement_real_db.py
+
+      - name: Run identity deletion, retry, and restore drill
+        run: npm run drill:identity-engagement-recovery
+
+      - name: Stop Supabase foundation
+        if: always()
+        run: npm run infra:stop
+
+      - name: Upload foundation evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: supabase-foundation-linux
+          path: .release-gate/
+          if-no-files-found: error
+          include-hidden-files: true
+
   release-gate-extended:
     name: Extended gate (linux)
     if: github.event_name == 'workflow_dispatch' && inputs.run_extended
@@ -107,6 +173,7 @@ jobs:
       RUN_REAL_DB_TESTS: "1"
       RUN_ADMIN_IMPORT_SMOKE: "1"
       RUN_POSTGRES_ATTACHMENT_RECOVERY: "1"
+      RUN_IDENTITY_ENGAGEMENT_RECOVERY: "1"
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ADMIN_API_TOKEN: ${{ secrets.ADMIN_API_TOKEN }}
     steps:
