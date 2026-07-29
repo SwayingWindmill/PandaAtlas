@@ -18,7 +18,7 @@ test("Slice 9 Editorial Home is server-owned and sourced from the versioned publ
   assert.doesNotMatch(page, /searchPublishedPandas\(""/);
   assert.doesNotMatch(component, /["']use client["']/);
   assert.doesNotMatch(viewModel, /fetch\(|useEffect|localStorage|sessionStorage/);
-  assert.match(viewModel, /const editorialSelection = \["mei-xiang", "bao-li", "xiao-qi-ji"\]/);
+  assert.match(viewModel, /const editorialSelection = \["bao-li", "qing-bao", "lun-lun", "shin-shin"\]/);
   assert.match(viewModel, /panda\.public_revision\?\.summaries/);
   assert.match(viewModel, /if \(!summary \|\| !panda\.public_revision\) return \[\]/);
 });
@@ -39,7 +39,7 @@ test("Slice 9 exposes the five-section IA without unsupported homepage metrics",
 
   assert.match(component, /role="search"/);
   assert.match(component, /method="get"/);
-  assert.match(viewModel, /editorial selections, not rankings/i);
+  assert.match(viewModel, /not popularity or traffic rankings/i);
   assert.doesNotMatch(viewModel, /totalPublished|views_count|followers_count|growth_rate|social_proof/);
   assert.doesNotMatch(component, /<img|next\/image/);
 });

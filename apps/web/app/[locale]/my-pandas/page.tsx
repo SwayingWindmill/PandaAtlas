@@ -11,12 +11,12 @@ interface LocalizedMyPandasPageProps {
 
 const metadataCopy = {
   zh: {
-    title: "我的熊猫 | 本地收藏与最近浏览",
-    description: "查看只保存在当前浏览器中的熊猫收藏与最近浏览；不含账户、云同步、推荐或公开排名。",
+    title: "我的熊猫 | 私有护照与最近浏览",
+    description: "查看账号私有的熊猫护照与当前浏览器最近记录；不提供公开用户主页或排名。",
   },
   en: {
-    title: "My Pandas | Local saved and recent profiles",
-    description: "Review panda profiles saved or recently viewed only in this browser, without accounts, cloud sync, recommendations, or public rankings.",
+    title: "My Pandas | Private Passport and recent profiles",
+    description: "Review your private Panda Passport and profiles recently viewed in this browser, without a public user profile or ranking.",
   },
 } as const;
 

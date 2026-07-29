@@ -48,6 +48,7 @@ export default defineConfig({
     env: {
       ...process.env,
       NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:65535",
+      NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
       ...(productionServer ? { PANDA_NEXT_DIST_DIR: productionDistDir } : {}),
     },
   },

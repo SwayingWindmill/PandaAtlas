@@ -19,6 +19,13 @@ class Settings(BaseSettings):
     db_use_mock_fallback: bool | None = Field(default=None, alias="DB_USE_MOCK_FALLBACK")
     identity_auth_enabled: bool = Field(default=False, alias="IDENTITY_AUTH_ENABLED")
     admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")
+    engagement_enabled: bool = Field(default=False, alias="ENGAGEMENT_ENABLED")
+    pending_follow_ttl_seconds: int = Field(
+        default=3600,
+        ge=60,
+        le=3600,
+        alias="PENDING_FOLLOW_TTL_SECONDS",
+    )
     supabase_url: str | None = Field(default=None, alias="SUPABASE_URL")
     supabase_jwt_issuer_override: str | None = Field(
         default=None,
