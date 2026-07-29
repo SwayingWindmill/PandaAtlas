@@ -63,6 +63,7 @@
     "check:route-performance-budgets": "node scripts/release/check-route-performance-budgets.mjs",
     "drill:release-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
     "drill:postgres-attachment-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_postgres_attachment_recovery_drill.py",
+    "drill:identity-engagement-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_identity_engagement_recovery_drill.py",
     "test:release-gate": "node --test scripts/release/tests/*.test.mjs",
     "check:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json",
     "gate:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json --require-pass",
@@ -97,8 +98,9 @@
     "infra:reset": "npx --yes supabase@2.110.0 db reset --workdir infra",
     "infra:status": "npx --yes supabase@2.110.0 status --workdir infra",
     "infra:preflight": "uv run --isolated --directory services/api --frozen --extra dev python scripts/check_zhipanda_foundation.py",
-    "release:default": "node scripts/release/private-collection.mjs",
+    "release:default": "node scripts/release/default.mjs",
     "release:private": "node scripts/release/private-collection.mjs",
+    "release:map-close": "node scripts/release/map-close.mjs",
     "release:extended": "node scripts/release/extended.mjs"
   },
   "devDependencies": {
