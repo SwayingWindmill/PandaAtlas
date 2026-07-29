@@ -292,7 +292,8 @@ def main() -> int:
         print(report["error"], file=sys.stderr)
     else:
         print(
-            "Identity/engagement recovery drill passed: deletion replayed once and outer transaction restored."
+            "Identity/engagement recovery drill passed: deletion replayed once "
+            "and outer transaction restored."
         )
     return exit_code
 

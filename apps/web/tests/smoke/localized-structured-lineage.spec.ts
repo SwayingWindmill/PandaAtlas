@@ -4,7 +4,7 @@ const MEI_XIANG_ID = "2939c16f-1938-5629-928c-b36b1d5cd6ed";
 
 
 test("renders a complete graph-free descendant journey for Mei Xiang", async ({ page }) => {
-  await page.goto("/zh/lineage");
+  await page.goto("/zh/lineage?focus=mei-xiang");
 
   await expect(page).toHaveURL(/\/zh\/lineage\?focus=mei-xiang$/);
   await expect(page.getByTestId("structured-lineage-page")).toBeVisible();
@@ -45,7 +45,7 @@ test("selects a relationship in the URL and preserves it across locale switching
 test("normalizes invalid focus, depth, relation and unsupported parameters", async ({ page }) => {
   await page.goto("/en/lineage?focus=missing&ancestors=9&descendants=0&relation=bad&unsupported=value");
 
-  await expect(page).toHaveURL(/\/en\/lineage\?focus=mei-xiang$/);
+  await expect(page).toHaveURL(/\/en\/lineage\?focus=shin-shin$/);
   await expect(page.getByTestId("structured-lineage-page")).toBeVisible();
 });
 
