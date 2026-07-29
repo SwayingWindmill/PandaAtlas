@@ -1,14 +1,22 @@
 import json
 from datetime import UTC, datetime
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import HTTPException
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError, IntegrityError
 from sqlalchemy.orm import Session
 
+from app.activity.models import (
+    ActivityAction,
+    ActivityConflictError,
+    ActivitySourceEvent,
+    ArchiveActivityDescriptor,
+)
+from app.activity.validation import validate_public_activity_dependencies
 from app.domain.publication_workflow import ChangeSet, EntityRevision, WorkflowConflict
+from app.integration.events import AggregateReference, IntegrationEventEnvelope
 from app.schemas.publication import (
     ChangeSetCreate,
     ChangeSetRead,
@@ -204,6 +212,146 @@ def _insert_audit(
             "metadata": json.dumps(metadata or {}),
         },
     )
+
+
+def _activity_descriptors_for_batch(
+    session: Session,
+    batch_id: UUID,
+) -> list[ArchiveActivityDescriptor]:
+    rows = session.execute(
+        text(
+            """
+            select revision.revision_number, revision.payload
+            from public.publication_batch_change_sets batch_link
+            join public.change_set_revisions change_link
+              on change_link.change_set_id = batch_link.change_set_id
+            join public.entity_revisions revision on revision.id = change_link.revision_id
+            where batch_link.batch_id = :batch_id
+            order by revision.revision_number, revision.created_at, revision.id
+            """
+        ),
+        {"batch_id": batch_id},
+    ).mappings().all()
+    descriptors_by_source: dict[str, ArchiveActivityDescriptor] = {}
+    for row in rows:
+        payload = _json_object(row["payload"])
+        raw_descriptors = payload.get("activities", [])
+        if not isinstance(raw_descriptors, list):
+            raise HTTPException(status_code=409, detail="Archive Activity descriptors are invalid")
+        for raw_descriptor in raw_descriptors:
+            descriptor = ArchiveActivityDescriptor.model_validate(raw_descriptor)
+            if descriptor.source_id in descriptors_by_source:
+                raise HTTPException(
+                    status_code=409,
+                    detail="Publication batch contains duplicate Activity source IDs",
+                )
+            descriptors_by_source[descriptor.source_id] = descriptor
+    descriptors = list(descriptors_by_source.values())
+    try:
+        validate_public_activity_dependencies(session, descriptors)
+    except ActivityConflictError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return descriptors
+
+
+def _next_activity_source_version(session: Session, source_id: str) -> int:
+    return int(
+        session.execute(
+            text(
+                """
+                select coalesce(max(aggregate_version), 0) + 1
+                from integration.outbox_events
+                where source_context = 'archive'
+                  and aggregate_type = 'activity_source'
+                  and aggregate_id = :source_id
+                """
+            ),
+            {"source_id": source_id},
+        ).scalar_one()
+    )
+
+
+def _insert_outbox_envelope(session: Session, envelope: IntegrationEventEnvelope) -> None:
+    record = envelope.to_outbox_record()
+    session.execute(
+        text(
+            """
+            insert into integration.outbox_events (
+              event_id, schema_version, event_type, event_version, source_context,
+              aggregate_type, aggregate_id, aggregate_version, idempotency_key,
+              correlation_id, causation_id, occurred_at, payload
+            ) values (
+              :event_id, :schema_version, :event_type, :event_version, :source_context,
+              :aggregate_type, :aggregate_id, :aggregate_version, :idempotency_key,
+              :correlation_id, :causation_id, :occurred_at, cast(:payload as jsonb)
+            )
+            """
+        ),
+        {**record, "payload": json.dumps(record["payload"])},
+    )
+
+
+def _emit_archive_activity_events(
+    session: Session,
+    batch: dict[str, Any],
+    descriptors: list[ArchiveActivityDescriptor],
+) -> None:
+    event_types = {
+        ActivityAction.PUBLISH: "archive.activity.published",
+        ActivityAction.SNAPSHOT_UPDATE: "archive.activity.snapshot_updated",
+        ActivityAction.CORRECTION: "archive.activity.corrected",
+        ActivityAction.RETRACTION: "archive.activity.retracted",
+    }
+    for descriptor in descriptors:
+        action = descriptor.action
+        source_version = _next_activity_source_version(session, descriptor.source_id)
+        event_id = uuid4()
+        provenance = descriptor.provenance.model_dump(mode="json")
+        provenance.update(
+            {
+                "release_id": str(batch["id"]),
+                "data_version": batch["data_version"],
+                "public_schema_version": batch["public_schema_version"],
+                "projection_code_version": batch["projection_code_version"],
+            }
+        )
+        event = ActivitySourceEvent.model_validate(
+            {
+                **descriptor.model_dump(
+                    mode="json",
+                    exclude={"source_id", "action", "retraction_reason", "provenance"},
+                ),
+                "event_id": event_id,
+                "source_type": "archive.release",
+                "source_id": descriptor.source_id,
+                "source_version": source_version,
+                "action": action,
+                "published_at": batch["published_at"],
+                "retraction_reason": descriptor.retraction_reason,
+                "correlation_id": batch["correlation_id"],
+                "causation_id": batch["id"],
+                "is_backfill": False,
+                "provenance": provenance,
+            }
+        )
+        envelope = IntegrationEventEnvelope(
+            event_id=event_id,
+            event_type=event_types[action],
+            source_context="archive",
+            aggregate=AggregateReference(
+                type="activity_source",
+                id=descriptor.source_id,
+                version=source_version,
+            ),
+            idempotency_key=(
+                f"activity:{batch['id']}:{descriptor.source_id}:{source_version}:{action.value}"
+            ),
+            correlation_id=batch["correlation_id"],
+            causation_id=batch["id"],
+            occurred_at=batch["published_at"],
+            payload=event.model_dump(mode="json"),
+        )
+        _insert_outbox_envelope(session, envelope)
 
 
 def create_change_set(
@@ -622,6 +770,7 @@ def publish_batch(
     batch_id: UUID,
     actor_id: UUID,
 ) -> PublicationBatchRead:
+    activity_descriptors = _activity_descriptors_for_batch(session, batch_id)
     try:
         row = session.execute(
             text("select * from public.publish_publication_batch(:batch_id, :actor_id)"),
@@ -644,6 +793,7 @@ def publish_batch(
             {"batch_id": batch_id},
         ).scalars()
     )
+    _emit_archive_activity_events(session, dict(row), activity_descriptors)
     return _batch_from_row(dict(row), change_set_ids)
 
 

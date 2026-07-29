@@ -18,9 +18,17 @@ Owns the reviewed, versioned, public-safe representation consumed by APIs, Worke
 
 Architecture decision: [`docs/architecture/adr-0001-single-source-api-boundary.md`](docs/architecture/adr-0001-single-source-api-boundary.md)
 
+## Public Activity
+
+Owns the rebuildable public-safe ActivityItem projection, source-event consumption receipts, stable Panda/institution targets, correction and retraction presentation state, editorial announcements, and the integration events consumed by Feed and Notification Orchestration. It does not own Archive facts, Follows, Feed eligibility, notification preferences, submissions, review state, or private evidence.
+
+Architecture: [`docs/architecture/public-activity-projection.md`](docs/architecture/public-activity-projection.md)
+
 ## Relationships
 
 - Curation Intake proposes evidence and candidate records to the Trusted Archive.
 - The Trusted Archive decides which conclusions and dependencies are publishable.
 - Public Projection derives only from published Trusted Archive state.
-- The golden dataset is the shared acceptance fixture spanning all three contexts; it is not a replacement for production data.
+- Public Activity consumes explicit public-safe events from published Archive Releases or authorized editorial commands; projection failure never rolls back Archive publication.
+- Feed and Notification Orchestration consume Public Activity events but retain ownership of Follow eligibility, account state, preferences, channels, and delivery.
+- The golden dataset is the shared acceptance fixture spanning the archive and projection contexts; it is not a replacement for production data.

@@ -64,6 +64,8 @@
     "drill:release-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
     "drill:postgres-attachment-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_postgres_attachment_recovery_drill.py",
     "drill:identity-engagement-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_identity_engagement_recovery_drill.py",
+    "activity:project": "uv run --directory services/api --frozen --extra dev python scripts/run_activity_projector.py",
+    "activity:rebuild": "uv run --directory services/api --frozen --extra dev python scripts/run_activity_projector.py --rebuild",
     "test:release-gate": "node --test scripts/release/tests/*.test.mjs",
     "check:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json",
     "gate:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json --require-pass",

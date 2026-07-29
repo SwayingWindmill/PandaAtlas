@@ -834,7 +834,7 @@ def _get_panda_by_id_from_db(panda_id: UUID) -> PandaDetail:
     ]
     media = [
         MediaAsset(
-            id=m["id"],
+            id=str(m["id"]),
             storage_bucket=m["storage_bucket"],
             storage_path=m["storage_path"],
             title=m["title"],

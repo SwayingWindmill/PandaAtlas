@@ -4,6 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
 
+from app.activity.models import ArchiveActivityDescriptor
 from app.schemas.map import (
     DistributionGeoJsonFeature,
     DistributionSnapshot,
@@ -128,6 +129,7 @@ class PublicationChecks(BaseModel):
 class EntityRevisionPayload(BaseModel):
     public_record: dict[str, Any] = Field(min_length=1)
     publication_checks: PublicationChecks
+    activities: list[ArchiveActivityDescriptor] = Field(default_factory=list, max_length=20)
 
 
 class EntityRevisionRead(EntityRevisionCreate):
