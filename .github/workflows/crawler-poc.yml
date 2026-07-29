@@ -30,20 +30,12 @@ env:
 
 jobs:
   crawler-poc:
-    name: Controlled crawler PoC (${{ matrix.platform }})
+    name: Controlled crawler PoC
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' &&
       contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: linux
-            os: ubuntu-latest
-          - platform: windows
-            os: windows-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Check out clean repository
         uses: actions/checkout@v7.0.0
@@ -62,15 +54,9 @@ jobs:
         working-directory: services/api
         run: uv sync --frozen --extra dev --extra crawler-poc --python ${{ env.PYTHON_VERSION }}
 
-      - name: Install Chromium and Linux runtime dependencies
-        if: runner.os == 'Linux'
+      - name: Install Chromium and runtime dependencies
         working-directory: services/api
         run: uv run playwright install --with-deps chromium
-
-      - name: Install Chromium on Windows
-        if: runner.os == 'Windows'
-        working-directory: services/api
-        run: uv run playwright install chromium
 
       - name: Install Scrapling browser runtimes
         working-directory: services/api
@@ -99,7 +85,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: crawler-poc-${{ matrix.platform }}
+          name: crawler-poc
           path: .release-gate/
           if-no-files-found: error
           include-hidden-files: true

@@ -2,13 +2,14 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import { EnvironmentBlockedError, ReleaseGateError, runReleaseGate } from "./gate-core.mjs";
+import { runMapCloseGate } from "./map-close.mjs";
+import { sealMapCloseEvidence } from "./map-close-evidence.mjs";
 import {
   apiBaseUrl,
   apiDir,
   apiReleaseEnv,
   releaseReportDir,
   runCommand,
-  runDefaultReleaseGate,
   runEnvironmentCheck,
   startApiServer,
   stopProcess,
@@ -60,9 +61,7 @@ async function runAdminImportSmoke(uv) {
     try {
       await stopProcess(apiProcess);
     } catch (stopError) {
-      if (!primaryError) {
-        throw stopError;
-      }
+      if (!primaryError) throw stopError;
       console.error(`Failed to stop extended API process: ${String(stopError)}`);
     }
   }
@@ -73,10 +72,11 @@ export async function runExtendedReleaseGate() {
   const runRealDbTests = envFlag("RUN_REAL_DB_TESTS");
   const runAdminImport = envFlag("RUN_ADMIN_IMPORT_SMOKE");
   const runPostgresAttachmentRecovery = envFlag("RUN_POSTGRES_ATTACHMENT_RECOVERY");
+  const runIdentityEngagementRecovery = envFlag("RUN_IDENTITY_ENGAGEMENT_RECOVERY");
 
-  await runDefaultReleaseGate();
+  await runMapCloseGate();
 
-  return runReleaseGate({
+  const report = await runReleaseGate({
     gate: "extended",
     reportDir: releaseReportDir,
     steps: [
@@ -90,11 +90,23 @@ export async function runExtendedReleaseGate() {
           runEnvironmentCheck(
             uv,
             [...uvRunPrefix, "python", "scripts/run_postgres_attachment_recovery_drill.py"],
-            {
-              cwd: apiDir,
-              env: apiReleaseEnv,
-            },
+            { cwd: apiDir, env: apiReleaseEnv },
           ),
+      },
+      {
+        id: "identity-engagement-recovery",
+        label: "Identity and engagement deletion, retry, and restore drill",
+        skipReason: runIdentityEngagementRecovery
+          ? undefined
+          : "RUN_IDENTITY_ENGAGEMENT_RECOVERY is not enabled",
+        run: () => {
+          requireEnvironment("DATABASE_URL", "RUN_IDENTITY_ENGAGEMENT_RECOVERY");
+          return runEnvironmentCheck(
+            uv,
+            [...uvRunPrefix, "python", "scripts/run_identity_engagement_recovery_drill.py"],
+            { cwd: apiDir, env: apiReleaseEnv },
+          );
+        },
       },
       {
         id: "real-db-tests",
@@ -104,11 +116,14 @@ export async function runExtendedReleaseGate() {
           requireEnvironment("DATABASE_URL", "RUN_REAL_DB_TESTS");
           return runCommand(
             uv,
-            [...uvRunPrefix, "pytest", "-q", "tests/integration/test_real_db_chain.py"],
-            {
-              cwd: apiDir,
-              env: apiReleaseEnv,
-            },
+            [
+              ...uvRunPrefix,
+              "pytest",
+              "-q",
+              "tests/integration/test_real_db_chain.py",
+              "tests/integration/test_engagement_real_db.py",
+            ],
+            { cwd: apiDir, env: apiReleaseEnv },
           );
         },
       },
@@ -120,6 +135,9 @@ export async function runExtendedReleaseGate() {
       },
     ],
   });
+
+  await sealMapCloseEvidence({ reportDir: releaseReportDir });
+  return report;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

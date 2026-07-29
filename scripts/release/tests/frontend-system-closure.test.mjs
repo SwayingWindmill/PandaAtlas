@@ -62,7 +62,7 @@ test("Slice 11 architecture, browser matrix, and canonical budgets are release g
   assert.match(browserRuntimeCheck, /RELEASE_GATE_USE_SYSTEM_EDGE/);
   assert.match(browserRuntimeCheck, /"msedge"/);
   assert.match(releaseWorkflow, /playwright install --with-deps chromium firefox webkit/);
-  assert.match(releaseWorkflow, /playwright install chromium firefox webkit/);
+  assert.doesNotMatch(releaseWorkflow, /windows-latest/);
   assert.equal((releaseWorkflow.match(/PLAYWRIGHT_BROWSER_MATRIX: "1"/g) ?? []).length, 2);
   for (const browser of ["chromium", "firefox", "webkit"]) {
     assert.match(playwrightConfig, new RegExp(`name: ["']${browser}["']`));

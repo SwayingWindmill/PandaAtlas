@@ -18,18 +18,19 @@ const webWithdrawnWranglerPath = new URL("../../../apps/web/wrangler.staging.wit
 const packageLockPath = new URL("../../../package-lock.json", import.meta.url);
 const rootPackagePath = new URL("../../../package.json", import.meta.url);
 
-test("CI declares reproducible Linux and Windows default gates", async () => {
+test("CI declares one reproducible authoritative default gate", async () => {
   const workflow = await readFile(workflowPath, "utf8");
 
   for (const requiredText of [
-    "os: ubuntu-latest",
-    "os: windows-latest",
+    "name: Authoritative map-close gate",
+    "runs-on: ubuntu-latest",
+    "name: Supabase reset and identity recovery",
     'NPM_VERSION: "10.9.0"',
     'PYTHON_VERSION: "3.12"',
     'UV_VERSION: "0.11.7"',
     "run: npm ci",
     "npx playwright install --with-deps chromium",
-    "npx playwright install chromium",
+    "name: release-gate-map-close",
     "uses: actions/checkout@v7.0.0",
     "uses: actions/setup-node@v6.4.0",
     "uses: actions/setup-python@v6.3.0",
@@ -40,6 +41,9 @@ test("CI declares reproducible Linux and Windows default gates", async () => {
   ]) {
     assert.match(workflow, new RegExp(requiredText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+
+  assert.doesNotMatch(workflow, /windows-latest/);
+  assert.doesNotMatch(workflow, /matrix\.platform/);
 });
 
 test("default gate includes golden dataset validation", async () => {

@@ -71,7 +71,7 @@ test("publishes only real localized revision summaries from the current release"
   const revisions = page.getByTestId("recent-archive-revisions");
 
   await expect(revisions.getByRole("listitem")).toHaveCount(4);
-    await expect(revisions.getByText(/^Last verified:/)).toHaveCount(4);
+  await expect(revisions.getByText(/^Last verified:/)).toHaveCount(4);
   await expect(revisions).not.toContainText("Tian Tian");
 });
 
@@ -95,7 +95,7 @@ test("searches the localized Atlas without JavaScript", async ({ browser }) => {
   await query.press("Enter");
 
   await expect(page).toHaveURL(/\/en\/pandas\?q=mei(\+|%20)xiang$/);
-  await expect(page.getByTestId("localized-atlas-page")).toBeVisible();
+  await expect(page.getByTestId("localized-pandas-page")).toBeVisible();
   await expect(page.getByRole("link", { name: /Mei Xiang/ })).toHaveAttribute("href", "/en/pandas/mei-xiang");
   await context.close();
 });

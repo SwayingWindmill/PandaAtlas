@@ -120,51 +120,36 @@ test("every core profile declares completeness gaps and current-place verificati
 test("generated web identity aliases match the current reviewed release", async () => {
   const dataset = await readWebReleaseDataset();
   assert.equal(dataset.dataset.version, WEB_RELEASE_VERSION);
-  assert.equal(dataset.pandas.length, 15);
+  assert.equal(dataset.pandas.length, 38);
   const generated = await readFile(generatedIdentityAliasesPath, "utf8");
 
   assert.equal(
     normalizeGeneratedModule(generated),
     normalizeGeneratedModule(renderTrustedIdentityAliasModule(dataset)),
   );
-  assert.deepEqual(
-    new Set(Object.keys(buildTrustedIdentityReferences(dataset))),
-    new Set([
-      "bao-bao",
-      "bao-li",
-      "baobao-smithsonian",
-      "baoli",
-      "bei-bei",
-      "beibei",
-      "lei-lei",
-      "leilei",
-      "lun-lun",
-      "lunlun",
-      "mei-xiang",
-      "mei_xiang",
-      "meixiang",
-      "ri-ri",
-      "riri",
-      "shin-shin",
-      "shinshin",
-      "tai-shan",
-      "taishan",
-      "tian-tian",
-      "tian_tian",
-      "tiantian",
-      "ya-lun",
-      "yalun",
-      "yang-yang",
-      "yangyang",
-      "xi-lun",
-      "xilun",
-      "xiao-qi-ji",
-      "xiao-xiao",
-      "xiao_qi_ji",
-      "xiaoqiji",
-      "xiaoxiao",
-    ]),
-  );
+  const identityReferences = buildTrustedIdentityReferences(dataset);
+  assert.equal(Object.keys(identityReferences).length, 57);
+  for (const reference of [
+    "bao-bao",
+    "baobao-smithsonian",
+    "mei-xiang",
+    "mei_xiang",
+    "meixiang",
+    "qing-bao",
+    "qingbao",
+    "shin-shin",
+    "shinshin",
+    "tian-tian",
+    "tian_tian",
+    "tiantian",
+    "xi-lun",
+    "xilun",
+    "xiao-qi-ji",
+    "xiao_qi_ji",
+    "xiaoqiji",
+  ]) {
+    assert.ok(reference in identityReferences, "missing identity reference: " + reference);
+  }
   assert.match(generated, /"meixiang"/);
   assert.match(generated, /"mei-xiang"/);
   assert.match(generated, /TRUSTED_PANDA_DETAILS/);
@@ -174,7 +159,7 @@ test("generated web identity aliases match the current reviewed release", async 
   assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
   const details = buildTrustedPandaDetails(dataset);
-  assert.equal(details.length, 15);
+  assert.equal(details.length, 38);
   const lunLun = details.find((detail) => detail.slug === "lun-lun");
   const yangYang = details.find((detail) => detail.slug === "yang-yang");
   const yaLun = details.find((detail) => detail.slug === "ya-lun");

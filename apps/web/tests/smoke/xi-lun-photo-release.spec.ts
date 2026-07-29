@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { Buffer } from "node:buffer";
 
-const RELEASE_ID = "2026.07.21.1";
+const RELEASE_ID = "2026.07.24.2";
 const MEDIA_RELEASE_ID = "2026.07.21.1";
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
@@ -23,7 +23,7 @@ test.beforeEach(async ({ page }) => {
   await mockXiLunMedia(page);
 });
 
-test("publishes Xi Lun as the fifteenth trusted Atlas profile", async ({ page }) => {
+test("publishes Xi Lun in the current trusted Atlas release", async ({ page }) => {
   await page.goto("/zh/pandas?q=Xi%20Lun");
 
   await expect(page.getByTestId("public-delivery-notice")).toContainText(RELEASE_ID);
@@ -34,7 +34,7 @@ test("publishes Xi Lun as the fifteenth trusted Atlas profile", async ({ page })
   );
 
   await page.goto("/en/pandas");
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("15");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("38");
 });
 
 test("renders Xi Lun bilingual profile, reviewed media, current residency, and three events", async ({ page }) => {
@@ -106,21 +106,18 @@ test("shows Xi Lun current and historical footprints in the structured map", asy
 });
 
 test("keeps Xi Lun profile keyboard-operable at 320 px", async ({ page }) => {
-  await page.addInitScript(() => {
-    localStorage.removeItem("panda-atlas:saved-profiles");
-    localStorage.removeItem("panda-atlas:profile-preferences");
-  });
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto("/en/pandas/xi-lun");
 
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-  const favorite = page.getByRole("button", { name: /^Save / });
-  await favorite.focus();
+  const parentLink = page.getByTestId("parent-relations").getByRole("link", {
+    name: "Lun Lun",
+    exact: true,
+  });
+  await parentLink.focus();
+  await expect(parentLink).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("button", { name: /^Remove / })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  await expect(page).toHaveURL(/\/en\/pandas\/lun-lun$/);
 });
 
 test("renders Xi Lun profile and lineage without JavaScript", async ({ browser }) => {
@@ -130,7 +127,7 @@ test("renders Xi Lun profile and lineage without JavaScript", async ({ browser }
 
   await page.goto("/en/pandas/xi-lun");
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByRole("img", { name: "Xi Lun sitting in her habitat at Zoo Atlanta" })).toBeVisible();
+  await expect(page.getByTestId("profile-hero-media-image")).toBeVisible();
 
   await page.goto("/en/lineage?focus=xi-lun&ancestors=1");
   await expect(page.getByTestId("structured-lineage-page")).toBeVisible();

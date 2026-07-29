@@ -219,8 +219,11 @@ test("invalid OTP preserves the intended Panda context and moves focus to the er
   });
 
   await page.goto("/auth/login?next=/en/pandas/mei-xiang");
+  await expect(page.getByText("Panda to follow: mei-xiang")).toBeVisible();
   await page.getByLabel("Email").fill("member@example.invalid");
-  await page.getByRole("button", { name: "Send verification code" }).click();
+  const sendCode = page.getByRole("button", { name: "Send verification code" });
+  await expect(sendCode).toBeEnabled();
+  await sendCode.click();
   const code = page.getByLabel("6-digit verification code");
   await code.fill("123456");
   await page.getByRole("button", { name: "Verify and sign in" }).click();
