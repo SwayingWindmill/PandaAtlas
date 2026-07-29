@@ -52,7 +52,7 @@ export function buildInstitutionPageViewModel(
     return {
       id: panda.id,
       name: pandaName(panda, locale),
-      href: `/${locale}/atlas/${panda.slug}`,
+      href: `/${locale}/pandas/${panda.slug}`,
       detail: `${current ? (locale === "zh" ? "当前" : "Current") : (locale === "zh" ? "历史" : "Historical")} · ${detail}`,
     };
   };

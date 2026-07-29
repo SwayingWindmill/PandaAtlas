@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
+const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:pandas\/[a-z0-9-]+|me\/passport|feed))$/;
+
 function safeNextPath(value: string | null): string {
   const fallback = "/admin";
   const base = "https://panda-atlas.invalid";
@@ -17,16 +19,23 @@ function safeNextPath(value: string | null): string {
     || value.startsWith("//")
     || value.includes("\\")
     || !URL.canParse(value, base)
-  ) {
-    return fallback;
-  }
+  ) return fallback;
   const destination = new URL(value, base);
   if (destination.origin !== base) return fallback;
-  return `${destination.pathname}${destination.search}${destination.hash}`;
+  const path = destination.pathname;
+  if (!SAFE_APP_PATH.test(path)) return fallback;
+  return path;
+}
+
+function withFollowOutcome(path: string, outcome: string): string {
+  const url = new URL(path, "https://panda-atlas.invalid");
+  url.searchParams.set("follow", outcome);
+  return `${url.pathname}${url.search}`;
 }
 
 interface PendingFollowContext {
   panda_id: string;
+  locale: "zh" | "en";
   safe_return_path: string;
   status: string;
   outcome?: string | null;
@@ -39,6 +48,73 @@ interface FollowCompletion {
 }
 
 type Phase = "email" | "otp" | "consent";
+type MessageKind = "status" | "error";
+
+const copy = {
+  zh: {
+    account: "吱熊猫账号",
+    heading: "使用邮箱验证码登录",
+    pendingSupport: "验证码登录成功后才会完成关注。邮件继续入口不会自动登录。",
+    accountSupport: "登录后，FastAPI 会重新检查账号状态和数据库权限。",
+    pandaContext: (slug: string) => `待关注熊猫：${slug}`,
+    expiredSession: "登录状态已过期。重新验证后会继续关注。",
+    email: "邮箱",
+    send: "发送验证码",
+    sending: "正在发送…",
+    sendSafe: "如果该邮箱可用，我们已发送验证码。",
+    sendFailed: "验证码发送失败，请稍后重试。",
+    cancel: "取消登录并返回熊猫档案",
+    otp: "6 位验证码",
+    verify: "验证并登录",
+    verifying: "正在验证…",
+    changeEmail: "更换邮箱",
+    invalidOtp: "验证码不正确，请检查后重试。",
+    completionFailed: "关注暂时无法完成，请返回档案后重试。",
+    consentTitle: "需要重大动态邮件提醒吗？",
+    consentBody: "关注不会自动订阅邮件。站内关注和熊猫护照会保留。",
+    consentEnable: "开启重大动态邮件",
+    consentEnabling: "正在开启…",
+    consentSkip: "暂不开启邮件，返回熊猫档案",
+    consentFailed: "邮件提醒暂时无法开启。关注关系和站内状态不受影响。",
+    followed: "已关注。关注状态已写入你的熊猫护照。",
+  },
+  en: {
+    account: "ZhiPanda account",
+    heading: "Sign in with an email code",
+    pendingSupport: "The Follow completes only after code verification. The email continuation link does not sign you in.",
+    accountSupport: "After sign-in, FastAPI rechecks account state and database capabilities.",
+    pandaContext: (slug: string) => `Panda to follow: ${slug}`,
+    expiredSession: "Your session expired. Verify again to continue the Follow request.",
+    email: "Email",
+    send: "Send verification code",
+    sending: "Sending…",
+    sendSafe: "If that email can be used, a verification code has been sent.",
+    sendFailed: "The verification code could not be sent. Try again later.",
+    cancel: "Cancel sign-in and return to the panda profile",
+    otp: "6-digit verification code",
+    verify: "Verify and sign in",
+    verifying: "Verifying…",
+    changeEmail: "Use another email",
+    invalidOtp: "That verification code is not correct. Check it and try again.",
+    completionFailed: "The Follow could not be completed. Return to the profile and try again.",
+    consentTitle: "Receive major-activity email updates?",
+    consentBody: "Following does not subscribe you to email. Account Follow and Panda Passport state remain available.",
+    consentEnable: "Enable major-activity email",
+    consentEnabling: "Enabling…",
+    consentSkip: "Not now; return to the panda profile",
+    consentFailed: "Email updates could not be enabled. Your Follow and account state are unchanged.",
+    followed: "Follow completed. The relationship is now in your Panda Passport.",
+  },
+} as const;
+
+function localeFromPath(path: string): "zh" | "en" {
+  return path.startsWith("/en/") ? "en" : "zh";
+}
+
+function pandaSlug(path: string): string | null {
+  const match = path.match(/^\/(?:zh|en)\/pandas\/([a-z0-9-]+)$/);
+  return match?.[1] ?? null;
+}
 
 export function EmailOtpLogin() {
   const searchParams = useSearchParams();
@@ -47,22 +123,41 @@ export function EmailOtpLogin() {
   const [otp, setOtp] = useState("");
   const [phase, setPhase] = useState<Phase>("email");
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(() => (
+    searchParams.get("reason") === "session-expired" ? copy[localeFromPath(destination)].expiredSession : null
+  ));
+  const [messageKind, setMessageKind] = useState<MessageKind>("status");
   const [pending, setPending] = useState<PendingFollowContext | null>(null);
   const [returnPath, setReturnPath] = useState(destination);
   const consentIdempotencyKey = useRef<string | null>(null);
+  const otpInputRef = useRef<HTMLInputElement | null>(null);
+  const messageRef = useRef<HTMLParagraphElement | null>(null);
+  const locale = pending?.locale ?? localeFromPath(returnPath);
+  const t = copy[locale];
+
+  useEffect(() => {
+    if (phase === "otp") otpInputRef.current?.focus();
+  }, [phase]);
+
+  useEffect(() => {
+    if (messageKind === "error" && message) messageRef.current?.focus();
+  }, [message, messageKind]);
 
   useEffect(() => {
     let cancelled = false;
     async function restorePendingFollow() {
       const fragment = new URLSearchParams(window.location.hash.slice(1)).get("continue");
       if (fragment) {
-        await fetch("/api/engagement/follow-intents/continue", {
+        const continuation = await fetch("/api/engagement/follow-intents/continue", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ continuation_handle: fragment }),
         });
         history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+        if (!continuation.ok && !cancelled) {
+          setMessage(copy[localeFromPath(destination)].completionFailed);
+          setMessageKind("error");
+        }
       }
       const response = await fetch("/api/engagement/follow-intents", { cache: "no-store" });
       if (!cancelled && response.ok) {
@@ -75,7 +170,7 @@ export function EmailOtpLogin() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [destination]);
 
   async function requestOtp(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -88,11 +183,13 @@ export function EmailOtpLogin() {
     });
     setBusy(false);
     if (!response.ok) {
-      setMessage("验证码发送失败，请稍后重试。");
+      setMessage(t.sendFailed);
+      setMessageKind("error");
       return;
     }
     setPhase("otp");
-    setMessage("如果该邮箱可用，我们已发送验证码。");
+    setMessage(t.sendSafe);
+    setMessageKind("status");
   }
 
   async function verifyOtp(event: FormEvent<HTMLFormElement>) {
@@ -106,7 +203,9 @@ export function EmailOtpLogin() {
     });
     if (result.error || !result.data.session) {
       setBusy(false);
-      setMessage("验证码不正确，请检查后重试。");
+      setMessage(t.invalidOtp);
+      setMessageKind("error");
+      setOtp("");
       return;
     }
 
@@ -120,72 +219,79 @@ export function EmailOtpLogin() {
     });
     setBusy(false);
     if (completionResponse.status === 401) {
-      setMessage("登录状态已过期。重新验证后会继续关注。");
+      setPhase("email");
+      setMessage(t.expiredSession);
+      setMessageKind("error");
       return;
     }
     if (!completionResponse.ok) {
-      setMessage("关注暂时无法完成，请返回档案后重试。");
+      setMessage(t.completionFailed);
+      setMessageKind("error");
       return;
     }
     const completion = await completionResponse.json() as FollowCompletion;
-    setReturnPath(safeNextPath(completion.safe_return_path));
+    const canonicalReturn = safeNextPath(completion.safe_return_path);
+    setReturnPath(canonicalReturn);
     if (completion.outcome === "intent_expired" || completion.status === "expired") {
-      setMessage("登录成功，但关注请求已过期。请再次点击关注。");
+      window.location.replace(withFollowOutcome(canonicalReturn, "intent-expired"));
       return;
     }
     if (completion.outcome === "already_followed") {
-      setMessage("你已经关注这只熊猫，无需重复操作。");
-    } else {
-      setMessage("已关注。今后重要动态会出现在你的关注动态和护照中。");
+      window.location.replace(withFollowOutcome(canonicalReturn, "already-followed"));
+      return;
     }
+    setMessage(t.followed);
+    setMessageKind("status");
     setPhase("consent");
   }
 
   async function enableMajorActivityEmail() {
     setBusy(true);
     consentIdempotencyKey.current ??= `preference-${crypto.randomUUID()}`;
-    const response = await fetch(
-      "/api/engagement/preferences/major_activity/email",
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          enabled: true,
-          idempotency_key: consentIdempotencyKey.current,
-        }),
-      },
-    );
+    const response = await fetch("/api/engagement/preferences/major_activity/email", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        enabled: true,
+        idempotency_key: consentIdempotencyKey.current,
+      }),
+    });
     setBusy(false);
     if (!response.ok) {
-      setMessage("邮件提醒暂时无法开启。关注关系和站内通知不受影响。");
+      setMessage(t.consentFailed);
+      setMessageKind("error");
       return;
     }
-    window.location.replace(returnPath);
+    window.location.replace(withFollowOutcome(returnPath, "followed"));
   }
 
   async function cancelAuthentication() {
     setBusy(true);
     await fetch("/api/engagement/follow-intents/cancel", { method: "POST" });
     setBusy(false);
-    setPending(null);
-    setMessage("已取消登录，这只熊猫没有被关注。");
+    window.location.replace(withFollowOutcome(returnPath, "cancelled"));
   }
 
+  const contextSlug = pandaSlug(returnPath);
+
   return (
-    <section className="mx-auto grid min-h-[70vh] max-w-md place-content-center px-4 py-12">
+    <section className="mx-auto grid min-h-[70vh] max-w-md place-content-center overflow-x-hidden px-4 py-12">
       <div className="rounded-2xl border border-stone-300 bg-white p-6 shadow-sm">
-        <p className="text-sm font-semibold tracking-wide text-stone-700">PandaAtlas 账号</p>
-        <h1 className="mt-2 text-2xl font-bold text-stone-950">使用邮箱验证码登录</h1>
+        <p className="text-sm font-semibold tracking-wide text-stone-700">{t.account}</p>
+        <h1 className="mt-2 text-2xl font-bold text-stone-950">{t.heading}</h1>
         <p className="mt-3 text-sm leading-6 text-stone-700">
-          {pending
-            ? "验证码登录成功后才会完成关注。邮件继续入口不会自动登录。"
-            : "登录后，FastAPI 会重新检查账号状态和数据库权限。"}
+          {pending ? t.pendingSupport : t.accountSupport}
         </p>
+        {contextSlug ? (
+          <p className="mt-3 rounded-lg bg-stone-100 px-3 py-2 text-sm font-semibold text-stone-900">
+            {t.pandaContext(contextSlug)}
+          </p>
+        ) : null}
 
         {phase === "email" ? (
           <form className="mt-6 grid gap-4" onSubmit={requestOtp}>
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              邮箱
+              {t.email}
               <Input
                 type="email"
                 autoComplete="email"
@@ -196,26 +302,27 @@ export function EmailOtpLogin() {
                 className="min-h-12 text-base"
               />
             </label>
-            <Button className="min-h-12" disabled={busy || !email.trim()} type="submit">
-              {busy ? "正在发送…" : "发送验证码"}
+            <Button className="min-h-12 w-full" disabled={busy || !email.trim()} type="submit">
+              {busy ? t.sending : t.send}
             </Button>
             {pending ? (
               <Button
-                className="min-h-12"
+                className="min-h-12 w-full"
                 type="button"
                 variant="outline"
                 disabled={busy}
                 onClick={() => void cancelAuthentication()}
               >
-                取消登录
+                {t.cancel}
               </Button>
             ) : null}
           </form>
         ) : phase === "otp" ? (
           <form className="mt-6 grid gap-4" onSubmit={verifyOtp}>
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              6 位验证码
+              {t.otp}
               <Input
+                ref={otpInputRef}
                 type="text"
                 autoComplete="one-time-code"
                 inputMode="numeric"
@@ -227,11 +334,11 @@ export function EmailOtpLogin() {
                 className="min-h-12 text-base tracking-[0.3em]"
               />
             </label>
-            <Button className="min-h-12" disabled={busy || otp.length !== 6} type="submit">
-              {busy ? "正在验证…" : "验证并登录"}
+            <Button className="min-h-12 w-full" disabled={busy || otp.length !== 6} type="submit">
+              {busy ? t.verifying : t.verify}
             </Button>
             <Button
-              className="min-h-12"
+              className="min-h-12 w-full"
               type="button"
               variant="outline"
               disabled={busy}
@@ -241,39 +348,34 @@ export function EmailOtpLogin() {
                 setMessage(null);
               }}
             >
-              更换邮箱
+              {t.changeEmail}
             </Button>
           </form>
         ) : (
           <div className="mt-6 grid gap-4">
-            <h2 className="text-xl font-bold text-stone-950">需要重大动态邮件提醒吗？</h2>
-            <p className="text-sm leading-6 text-stone-700">
-              关注不会自动订阅邮件。站内通知仍会保留。
-            </p>
-            <Button
-              className="min-h-12"
-              type="button"
-              disabled={busy}
-              onClick={() => void enableMajorActivityEmail()}
-            >
-              {busy ? "正在开启…" : "开启重大动态邮件"}
+            <h2 className="text-xl font-bold text-stone-950">{t.consentTitle}</h2>
+            <p className="text-sm leading-6 text-stone-700">{t.consentBody}</p>
+            <Button className="min-h-12 w-full" type="button" disabled={busy} onClick={() => void enableMajorActivityEmail()}>
+              {busy ? t.consentEnabling : t.consentEnable}
             </Button>
             <Button
-              className="min-h-12"
+              className="min-h-12 w-full"
               type="button"
               variant="outline"
               disabled={busy}
-              onClick={() => window.location.replace(returnPath)}
+              onClick={() => window.location.replace(withFollowOutcome(returnPath, "followed"))}
             >
-              暂不，查看关注动态
+              {t.consentSkip}
             </Button>
           </div>
         )}
 
         {message ? (
           <p
+            ref={messageRef}
             className="mt-4 rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-800"
-            role="status"
+            role={messageKind === "error" ? "alert" : "status"}
+            tabIndex={-1}
           >
             {message}
           </p>
@@ -283,4 +385,4 @@ export function EmailOtpLogin() {
   );
 }
 
-export { safeNextPath };
+export { safeNextPath, withFollowOutcome };

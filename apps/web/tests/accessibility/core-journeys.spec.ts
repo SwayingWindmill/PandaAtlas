@@ -26,12 +26,12 @@ async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentN
 const coreJourneys = [
   { name: "Chinese Editorial Home", path: "/zh" },
   { name: "English Editorial Home", path: "/en" },
-  { name: "Chinese My Pandas", path: "/zh/my-pandas" },
-  { name: "English My Pandas", path: "/en/my-pandas" },
-  { name: "Chinese Atlas discovery", path: "/zh/atlas?status=alive&sort=name" },
-  { name: "English Atlas discovery", path: "/en/atlas?status=alive&sort=name" },
-  { name: "Chinese trusted profile", path: "/zh/atlas/mei-xiang" },
-  { name: "English trusted profile", path: "/en/atlas/mei-xiang" },
+  { name: "Chinese My Pandas", path: "/zh/me/passport" },
+  { name: "English My Pandas", path: "/en/me/passport" },
+  { name: "Chinese Atlas discovery", path: "/zh/pandas?status=alive&sort=name" },
+  { name: "English Atlas discovery", path: "/en/pandas?status=alive&sort=name" },
+  { name: "Chinese trusted profile", path: "/zh/pandas/mei-xiang" },
+  { name: "English trusted profile", path: "/en/pandas/mei-xiang" },
   { name: "Chinese structured map journey", path: "/zh/map?mode=institutions&snapshot=2026.07.21.1" },
   { name: "English structured map journey", path: "/en/map?mode=wild&snapshot=2026.07.21.1" },
   { name: "Chinese institution entity", path: "/zh/institutions/smithsonian-national-zoo" },
@@ -70,8 +70,8 @@ for (const journey of coreJourneys) {
 
 test("bilingual profile content declares its language", async ({ page }) => {
   for (const { path, language } of [
-    { path: "/zh/atlas/mei-xiang", language: "zh-CN" },
-    { path: "/en/atlas/mei-xiang", language: "en" },
+    { path: "/zh/pandas/mei-xiang", language: "zh-CN" },
+    { path: "/en/pandas/mei-xiang", language: "en" },
   ]) {
     await page.goto(path);
     await expect(page.locator("html")).toHaveAttribute("lang", language);
@@ -80,26 +80,59 @@ test("bilingual profile content declares its language", async ({ page }) => {
 });
 
 for (const { locale, path, buttonName, pressedButtonName } of [
-  { locale: "zh", path: "/zh/atlas/mei-xiang", buttonName: /^收藏/, pressedButtonName: /^取消收藏/ },
-  { locale: "en", path: "/en/atlas/mei-xiang", buttonName: /^Save /, pressedButtonName: /^Remove / },
+  { locale: "zh", path: "/zh/pandas/mei-xiang", buttonName: /^关注/, pressedButtonName: /^取消关注/ },
+  { locale: "en", path: "/en/pandas/mei-xiang", buttonName: /^Follow /, pressedButtonName: /^Unfollow / },
 ]) {
-  test(`${locale} profile action is keyboard operable and remains accessible`, async ({ page }, testInfo) => {
-    await page.addInitScript(() => {
-      localStorage.removeItem("panda-atlas:saved-profiles");
-      localStorage.removeItem("panda-atlas:profile-preferences");
+  test(`${locale} profile Follow is keyboard operable and remains accessible`, async ({ page }, testInfo) => {
+    await page.route("**/api/identity/session", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          account_id: "11111111-1111-1111-1111-111111111111",
+          email: "member@example.invalid",
+          state: "active",
+          roles: ["member"],
+          capabilities: ["account.session.read"],
+          recent_auth: true,
+          authenticated_at: "2026-07-29T00:00:00Z",
+          authentication_method: "otp",
+          assurance_level: "aal1",
+          expires_at: "2026-07-29T01:00:00Z",
+        }),
+      });
+    });
+    await page.route("**/api/engagement/follows/**", async (route) => {
+      if (route.request().method() === "GET") {
+        await route.fulfill({ status: 404, contentType: "application/json", body: '{"detail":"Not found"}' });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          follow_id: "33333333-3333-3333-3333-333333333333",
+          panda_id: "stable-panda-mei-xiang",
+          state: "active",
+          first_followed_at: "2026-07-29T00:00:00Z",
+          followed_at: "2026-07-29T00:00:00Z",
+          unfollowed_at: null,
+          version: 1,
+        }),
+      });
     });
     await page.goto(path);
-    const favorite = page.getByRole("button", { name: buttonName });
-    await expect(favorite).toBeEnabled();
-    await favorite.focus();
+    const follow = page.getByRole("button", { name: buttonName });
+    await expect(follow).toBeEnabled();
+    await follow.focus();
     await page.keyboard.press("Enter");
     await expect(page.getByRole("button", { name: pressedButtonName })).toHaveAttribute("aria-pressed", "true");
-    await scanForWcagViolations(page, testInfo, `axe-keyboard-favorite-${locale}`);
+    await scanForWcagViolations(page, testInfo, `axe-keyboard-follow-${locale}`);
   });
 }
 
 test("bilingual profiles tolerate a simulated 200-percent text-only resize", async ({ page }) => {
-  for (const path of ["/zh/atlas/mei-xiang", "/en/atlas/mei-xiang"]) {
+  for (const path of ["/zh/pandas/mei-xiang", "/en/pandas/mei-xiang"]) {
     await page.goto(path);
     await page.locator("body").evaluate((body) => {
       const elements = [body, ...body.querySelectorAll<HTMLElement>("*")];
@@ -175,10 +208,10 @@ test("reduced-motion removes nonessential animation from core journeys", async (
   for (const path of [
     "/zh",
     "/en",
-    "/zh/atlas?status=alive&sort=name",
-    "/en/atlas?status=alive&sort=name",
-    "/zh/atlas/mei-xiang",
-    "/en/atlas/mei-xiang",
+    "/zh/pandas?status=alive&sort=name",
+    "/en/pandas?status=alive&sort=name",
+    "/zh/pandas/mei-xiang",
+    "/en/pandas/mei-xiang",
     "/zh/map?mode=institutions&snapshot=2026.07.21.1",
     "/en/map?mode=wild&snapshot=2026.07.21.1",
     "/zh/lineage?focus=mei-xiang",
@@ -187,19 +220,33 @@ test("reduced-motion removes nonessential animation from core journeys", async (
     await page.goto(path);
     const movingElements = await page.locator("*").evaluateAll((elements) =>
       elements
+        .filter((element) => {
+          const root = element.getRootNode();
+          return !(root instanceof ShadowRoot && root.host.tagName.toLowerCase() === "nextjs-portal");
+        })
         .map((element) => {
           const style = getComputedStyle(element);
           return {
+            selector: `${element.tagName.toLowerCase()}${element.id ? `#${element.id}` : ""}${element.classList.length ? `.${Array.from(element.classList).join(".")}` : ""}`,
+            animationName: style.animationName,
             animationDuration: style.animationDuration,
             animationIterationCount: style.animationIterationCount,
+            transitionProperty: style.transitionProperty,
             transitionDuration: style.transitionDuration,
           };
         })
-        .filter(({ animationDuration, animationIterationCount, transitionDuration }) => {
-          const durations = `${animationDuration},${transitionDuration}`
+        .filter(({ animationName, animationDuration, animationIterationCount, transitionProperty, transitionDuration }) => {
+          const animationDurations = animationDuration
             .split(",")
             .map((value) => Number.parseFloat(value) || 0);
-          return Math.max(...durations) > 0.01 || animationIterationCount === "infinite";
+          const transitionDurations = transitionDuration
+            .split(",")
+            .map((value) => Number.parseFloat(value) || 0);
+          const hasAnimation = animationName !== "none"
+            && (Math.max(...animationDurations) > 0.01 || animationIterationCount === "infinite");
+          const hasTransition = transitionProperty !== "none"
+            && Math.max(...transitionDurations) > 0.01;
+          return hasAnimation || hasTransition;
         }),
     );
 

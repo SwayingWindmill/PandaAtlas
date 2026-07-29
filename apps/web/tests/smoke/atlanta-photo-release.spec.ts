@@ -43,22 +43,22 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("publishes reviewed panda profiles in the current Web release", async ({ page }) => {
-  await page.goto("/zh/atlas");
+  await page.goto("/zh/pandas");
 
   await expect(page.getByTestId("public-delivery-notice")).toContainText(CURRENT_RELEASE_PATTERN);
   await expect(page.getByTestId("atlas-result-summary")).toContainText(/公开档案总数 \d+ 项/);
 
   for (const profile of profiles) {
-    await page.goto(`/zh/atlas?q=${encodeURIComponent(profile.nameEn)}`);
+    await page.goto(`/zh/pandas?q=${encodeURIComponent(profile.nameEn)}`);
     await expect(page.getByTestId("atlas-result-summary")).toContainText("共匹配 1 项");
     await expect(page.getByRole("link", { name: new RegExp(profile.nameZh) }))
-      .toHaveAttribute("href", `/zh/atlas/${profile.slug}`);
+      .toHaveAttribute("href", `/zh/pandas/${profile.slug}`);
   }
 });
 
 for (const profile of profiles) {
   test(`${profile.nameEn} exposes one reviewed licensed photo and complete release metadata`, async ({ page }) => {
-    await page.goto(`/zh/atlas/${profile.slug}`);
+    await page.goto(`/zh/pandas/${profile.slug}`);
 
     await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: new RegExp(profile.nameZh) })).toBeVisible();
@@ -82,17 +82,17 @@ for (const profile of profiles) {
 }
 
 test("Ya Lun parentage is rendered from reviewed assertions", async ({ page }) => {
-  await page.goto("/zh/atlas/ya-lun");
+  await page.goto("/zh/pandas/ya-lun");
 
   const parents = page.getByTestId("parent-relations");
   await expect(parents).toContainText("伦伦");
   await expect(parents).toContainText("洋洋");
   await expect(parents.getByRole("link", { name: "伦伦", exact: true })).toHaveAttribute(
     "href",
-    "/zh/atlas/lun-lun",
+    "/zh/pandas/lun-lun",
   );
   await expect(parents.getByRole("link", { name: "洋洋", exact: true })).toHaveAttribute(
     "href",
-    "/zh/atlas/yang-yang",
+    "/zh/pandas/yang-yang",
   );
 });

@@ -12,8 +12,8 @@ export default function PublicNotFoundState() {
           This only describes the current publication scope; it does not claim that the panda does not exist.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Link href={"/zh/atlas" as Route}>返回中文档案搜索</Link>
-          <Link href={"/en/atlas" as Route}>Open English profile search</Link>
+          <Link href={"/zh/pandas" as Route}>返回中文档案搜索</Link>
+          <Link href={"/en/pandas" as Route}>Open English profile search</Link>
         </div>
       </section>
     </main>

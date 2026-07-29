@@ -18,7 +18,7 @@ test("renders a canonical institution as an organization distinct from its place
     "href",
     `/en/places/${PLACE_SLUG}`,
   );
-  await expect(page.getByRole("link", { name: "Bao Li" })).toHaveAttribute("href", "/en/atlas/bao-li");
+  await expect(page.getByRole("link", { name: "Bao Li" })).toHaveAttribute("href", "/en/pandas/bao-li");
   await expect(page.getByText("History of Giant Pandas at the Smithsonian's National Zoo and Conservation Biology Institute")).toBeVisible();
 });
 
@@ -74,7 +74,7 @@ test("does not publish a canonical page for an unsupported compatibility facilit
 
 
 test("Atlas, Map, and profile expose ordinary canonical entity links", async ({ page }) => {
-  await page.goto("/en/atlas?q=Smithsonian");
+  await page.goto("/en/pandas?q=Smithsonian");
   await expect(page.getByTestId("atlas-entity-results")).toBeVisible();
   await expect(page.getByRole("link", { name: /Smithsonian's National Zoo/ }).first()).toHaveAttribute(
     "href",
@@ -88,7 +88,7 @@ test("Atlas, Map, and profile expose ordinary canonical entity links", async ({ 
     `/en/institutions/${INSTITUTION_SLUG}`,
   );
 
-  await page.goto("/en/atlas/bao-li#footprint");
+  await page.goto("/en/pandas/bao-li#footprint");
   await expect(page.getByTestId("footprint-text-view").getByRole("link", { name: "Open place entity" })).toHaveAttribute(
     "href",
     `/en/places/${PLACE_SLUG}`,

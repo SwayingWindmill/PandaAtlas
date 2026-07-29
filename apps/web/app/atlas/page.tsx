@@ -14,5 +14,5 @@ interface LegacyAtlasPageProps {
 export default async function LegacyAtlasPage({ searchParams }: LegacyAtlasPageProps) {
   const [requestHeaders, query] = await Promise.all([headers(), searchParams]);
   const locale = resolvePreferredPublicLocale(requestHeaders.get("accept-language"));
-  permanentRedirect(localizedPublicDestination(locale, "/atlas", query) as Route);
+  permanentRedirect(localizedPublicDestination(locale, "/pandas", query) as Route);
 }

@@ -116,6 +116,9 @@ def test_pending_follow_consent_passport_and_deletion(real_db_url: str) -> None:
             correlation_id=correlation_id,
         )
         assert pending.status is PendingFollowStatus.PENDING
+        assert pending.panda_id == panda_id
+        assert pending.safe_return_path.startswith("/zh/pandas/")
+        assert "/atlas/" not in pending.safe_return_path
         assert len(pending.handle) >= 40
         assert len(pending.continuation_handle) >= 40
 

@@ -366,7 +366,7 @@ function buildHeroMedia(panda: PandaDetail, locale: PublicLocale): EditorialHome
     credit: item.credit ?? item.photographer ?? null,
     rights: item.rights,
     sourceUrl: httpsUrl(item.source_url),
-    profileHref: `/${locale}/atlas/${panda.slug}`,
+    profileHref: `/${locale}/pandas/${panda.slug}`,
     profileLabel: locale === "zh" ? `认识${name.display}` : `Meet ${name.display}`,
   };
 }
@@ -403,7 +403,7 @@ export function buildEditorialHomeViewModel(
       genderLabel: genderLabel(panda, locale),
       currentPlace: currentPlace(panda, facilitiesById, locale),
       media: buildHeroMedia(panda, locale),
-      href: `/${locale}/atlas/${panda.slug}`,
+      href: `/${locale}/pandas/${panda.slug}`,
     }];
   });
 
@@ -411,7 +411,7 @@ export function buildEditorialHomeViewModel(
     const panda = pandasBySlug.get(slug);
     if (!panda) return [];
     const name = profileName(panda, locale);
-    return [{ label: name.display, href: `/${locale}/atlas?q=${encodeURIComponent(name.display)}` }];
+    return [{ label: name.display, href: `/${locale}/pandas?q=${encodeURIComponent(name.display)}` }];
   });
 
   const familyCandidates = familyPreviewSelection.flatMap((slug) => {
@@ -426,7 +426,7 @@ export function buildEditorialHomeViewModel(
         return {
           name: name.display,
           alternateName: name.alternate,
-          href: `/${locale}/atlas/${panda.slug}`,
+          href: `/${locale}/pandas/${panda.slug}`,
         };
       })
     : [];
@@ -446,7 +446,7 @@ export function buildEditorialHomeViewModel(
           alternateName: name.alternate,
           summary,
           verifiedLabel: `${t.revisions.verified}: ${formatDate(verifiedAt, locale)}`,
-          href: `/${locale}/atlas/${panda.slug}`,
+          href: `/${locale}/pandas/${panda.slug}`,
         },
       }];
     })
@@ -461,8 +461,8 @@ export function buildEditorialHomeViewModel(
   return {
     hero: {
       ...t.hero,
-      searchAction: `/${locale}/atlas`,
-      atlasHref: `/${locale}/atlas`,
+      searchAction: `/${locale}/pandas`,
+      atlasHref: `/${locale}/pandas`,
       quickLinks,
       media: heroMedia,
     },
@@ -483,7 +483,7 @@ export function buildEditorialHomeViewModel(
           primaryLabel: t.explorations.relationships.primaryLabel,
           primaryHref: `/${locale}/lineage?focus=mei-xiang`,
           secondaryLinks: [
-            { label: t.explorations.relationships.secondary, href: `/${locale}/atlas/bao-li` },
+            { label: t.explorations.relationships.secondary, href: `/${locale}/pandas/bao-li` },
           ],
           familyPreview: familyPreview.length ? familyPreview : undefined,
         },

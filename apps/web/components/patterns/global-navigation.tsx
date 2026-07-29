@@ -66,10 +66,10 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
 
           <nav className="pa-desktop-nav" aria-label={t.nav}>
             <Link href={`/${locale}` as Route} aria-current={active === "home" ? "page" : undefined}>{t.home}</Link>
-            <Link href={`/${locale}/atlas` as Route} aria-current={active === "atlas" || active === "profile" ? "page" : undefined}>{t.atlas}</Link>
+            <Link href={`/${locale}/pandas` as Route} aria-current={active === "atlas" || active === "profile" ? "page" : undefined}>{t.atlas}</Link>
             <Link href={`/${locale}/lineage` as Route} aria-current={active === "lineage" ? "page" : undefined}>{t.lineage}</Link>
             <Link href={`/${locale}/map` as Route} aria-current={active === "map" ? "page" : undefined}>{t.map}</Link>
-            <Link href={`/${locale}/my-pandas` as Route} aria-current={active === "my-pandas" ? "page" : undefined}>{t.myPandas}</Link>
+            <Link href={`/${locale}/me/passport` as Route} aria-current={active === "my-pandas" ? "page" : undefined}>{t.myPandas}</Link>
           </nav>
 
           <div className="pa-header-actions">

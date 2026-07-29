@@ -27,7 +27,7 @@ test("filters the individual footprint while preserving current and historical r
   await expect(results.filter({ hasText: "Historical" })).toHaveCount(1);
   await expect(page.getByRole("link", { name: "Open trusted profile" }).first()).toHaveAttribute(
     "href",
-    "/en/atlas/mei-xiang",
+    "/en/pandas/mei-xiang",
   );
 });
 

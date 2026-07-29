@@ -8,8 +8,8 @@ import {
 
 test("accepts valid public paths without changing their semantics", () => {
   for (const url of [
-    "https://example.test/zh/atlas/mei-xiang",
-    "https://example.test/zh/atlas/%E7%BE%8E%E9%A6%99",
+    "https://example.test/zh/pandas/mei-xiang",
+    "https://example.test/zh/pandas/%E7%BE%8E%E9%A6%99",
     "https://example.test/atlas/a%2Fb",
     "https://example.test/atlas?q=%E7%BE%8E%E9%A6%99",
   ]) {

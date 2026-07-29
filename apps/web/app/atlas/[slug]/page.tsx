@@ -20,6 +20,6 @@ export default async function LegacyPandaPage({ params, searchParams }: LegacyPa
 
   const locale = resolvePreferredPublicLocale(requestHeaders.get("accept-language"));
   permanentRedirect(
-    localizedPublicDestination(locale, `/atlas/${reference.slug}`, query) as Route,
+    localizedPublicDestination(locale, `/pandas/${reference.slug}`, query) as Route,
   );
 }

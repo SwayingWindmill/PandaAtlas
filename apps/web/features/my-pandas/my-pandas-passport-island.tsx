@@ -104,8 +104,8 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
             <p className="my-pandas-count">
               {locale === "zh" ? "私有账号记录" : "Private account records"}
             </p>
-            <h2 id="passport-title">{copy.savedTitle}</h2>
-            <p>{copy.savedDescription}</p>
+            <h2 id="passport-title">{copy.passportTitle}</h2>
+            <p>{copy.passportDescription}</p>
           </div>
         </div>
 
@@ -124,7 +124,7 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
           <div className="my-pandas-empty">
             <LogIn aria-hidden="true" />
             <p>{locale === "zh" ? "登录后可查看跨设备同步的关注关系。" : "Sign in to view synced follows."}</p>
-            <Link href={`/auth/login?next=/${locale}/my-pandas` as Route}>
+            <Link href={`/auth/login?next=/${locale}/me/passport` as Route}>
               {locale === "zh" ? "使用邮箱验证码登录" : "Sign in with email OTP"}
               <ArrowRight aria-hidden="true" />
             </Link>
@@ -144,8 +144,8 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
                 ? "你的熊猫护照还没有关注或贡献记录。"
                 : "Your Panda Passport has no follow or contribution records yet."}
             </p>
-            <Link href={`/${locale}/atlas` as Route}>
-              {copy.browseAtlas}
+            <Link href={`/${locale}/pandas` as Route}>
+              {copy.browsePandas}
               <ArrowRight aria-hidden="true" />
             </Link>
           </div>
@@ -205,7 +205,7 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
             type="button"
             className="my-pandas-clear-action"
             disabled={!recent.length}
-            onClick={() => clearRecentProfiles(references)}
+            onClick={() => clearRecentProfiles()}
           >
             <Trash2 aria-hidden="true" />
             {copy.clearRecent}

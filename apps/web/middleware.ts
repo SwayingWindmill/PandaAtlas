@@ -11,65 +11,58 @@ function decodePathSegment(value: string): string | null {
   }
 }
 
-function redirectToLocalizedPublicRoute(request: NextRequest): NextResponse | null {
+function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   const { pathname } = request.nextUrl;
-  const locale = resolvePreferredPublicLocale(request.headers.get("accept-language"));
-
-  if (pathname === "/") {
+  const preferredLocale = resolvePreferredPublicLocale(request.headers.get("accept-language"));
+  const redirect = (destinationPath: string) => {
     const destination = request.nextUrl.clone();
-    destination.pathname = `/${locale}`;
+    destination.pathname = destinationPath;
     return NextResponse.redirect(destination, 308);
+  };
+
+  if (pathname === "/") return redirect(`/${preferredLocale}`);
+  if (pathname === "/pandas" || pathname === "/atlas") return redirect(`/${preferredLocale}/pandas`);
+  if (pathname === "/me/passport" || pathname === "/my-pandas") {
+    return redirect(`/${preferredLocale}/me/passport`);
   }
 
-  if (pathname === "/atlas") {
-    const destination = request.nextUrl.clone();
-    destination.pathname = `/${locale}/atlas`;
-    return NextResponse.redirect(destination, 308);
-  }
+  const localizedCollection = pathname.match(/^\/(zh|en)\/atlas$/);
+  if (localizedCollection) return redirect(`/${localizedCollection[1]}/pandas`);
 
-  const legacyProfileMatch = pathname.match(/^\/atlas\/([^/]+)$/);
-  if (legacyProfileMatch) {
-    const decodedSlug = decodePathSegment(legacyProfileMatch[1]);
+  const localizedPassportAlias = pathname.match(/^\/(zh|en)\/my-pandas$/);
+  if (localizedPassportAlias) return redirect(`/${localizedPassportAlias[1]}/me/passport`);
+
+  const unlocalizedProfile = pathname.match(/^\/(?:atlas|pandas)\/([^/]+)$/);
+  if (unlocalizedProfile) {
+    const decodedSlug = decodePathSegment(unlocalizedProfile[1]);
     if (!decodedSlug) return null;
     const reference = TRUSTED_PANDA_REFERENCES[decodedSlug];
     if (!reference) return null;
-    const destination = request.nextUrl.clone();
-    destination.pathname = `/${locale}/atlas/${reference.slug}`;
-    return NextResponse.redirect(destination, 308);
+    return redirect(`/${preferredLocale}/pandas/${reference.slug}`);
   }
 
-  const localizedProfileMatch = pathname.match(/^\/(zh|en)\/atlas\/([^/]+)$/);
-  if (localizedProfileMatch) {
-    const [, routeLocale, rawSlug] = localizedProfileMatch;
+  const localizedProfile = pathname.match(/^\/(zh|en)\/(atlas|pandas)\/([^/]+)$/);
+  if (localizedProfile) {
+    const [, locale, family, rawSlug] = localizedProfile;
     const decodedSlug = decodePathSegment(rawSlug);
     if (!decodedSlug) return null;
     const reference = TRUSTED_PANDA_REFERENCES[decodedSlug];
-    if (reference && reference.slug !== decodedSlug) {
-      const destination = request.nextUrl.clone();
-      destination.pathname = `/${routeLocale}/atlas/${reference.slug}`;
-      return NextResponse.redirect(destination, 308);
+    if (!reference) return null;
+    if (family === "atlas" || reference.slug !== decodedSlug) {
+      return redirect(`/${locale}/pandas/${reference.slug}`);
     }
   }
-
   return null;
 }
 
 export async function middleware(request: NextRequest) {
-  const redirect = redirectToLocalizedPublicRoute(request);
+  const redirect = redirectToCanonicalRoute(request);
   if (redirect) return redirect;
-
   const requestHeaders = new Headers(request.headers);
   const pathname = request.nextUrl.pathname;
   const language = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "zh-CN";
-
   requestHeaders.set("x-panda-page-language", language);
-
-  const response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
-
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
   return refreshSupabaseSession(request, response);
 }
 

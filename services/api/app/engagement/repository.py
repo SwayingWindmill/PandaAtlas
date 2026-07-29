@@ -38,7 +38,9 @@ class EngagementRepository:
         request_id: UUID,
         correlation_id: UUID,
     ) -> PendingFollowHandle:
-        self._require_panda(panda_id)
+        panda = self._resolve_panda(panda_id)
+        panda_id = str(panda["id"])
+        safe_return_path = f"/{locale}/pandas/{panda['slug']}"
         continuation_handle = new_opaque_handle()
         if existing_handle:
             row = (
@@ -1136,20 +1138,28 @@ class EngagementRepository:
         if state != "deleting":
             raise EngagementAccountUnavailableError("Account deletion is not active")
 
-    def _require_panda(self, panda_id: str) -> None:
-        exists = self.session.execute(
-            text(
-                """
-                select exists(
-                  select 1 from public.pandas
-                  where id::text = :panda_id or slug = :panda_id
-                )
-                """
-            ),
-            {"panda_id": panda_id},
-        ).scalar_one()
-        if not exists:
+    def _resolve_panda(self, panda_id: str) -> Any:
+        row = (
+            self.session.execute(
+                text(
+                    """
+                    select id::text as id, slug
+                    from public.pandas
+                    where id::text = :panda_id or slug = :panda_id
+                    limit 1
+                    """
+                ),
+                {"panda_id": panda_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
+        if row is None:
             raise EngagementNotFoundError("Panda was not found")
+        return row
+
+    def _require_panda(self, panda_id: str) -> None:
+        self._resolve_panda(panda_id)
 
     def _delete_count(self, table_name: str, account_id: UUID) -> int:
         result = self.session.execute(

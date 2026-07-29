@@ -26,7 +26,7 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
       <GlobalNavigation
         locale={locale}
         active="my-pandas"
-        alternatePath={`/${alternateLocale}/my-pandas`}
+        alternatePath={`/${alternateLocale}/me/passport`}
       />
       <main id="main-content" className="my-pandas-page" data-testid="my-pandas-page">
         <section className={`${publicShellClassName} my-pandas-delivery`}>
@@ -45,8 +45,8 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
               <p className="my-pandas-eyebrow">{copy.eyebrow}</p>
               <h1>{copy.title}</h1>
               <p className="my-pandas-hero-description">{copy.description}</p>
-              <Link href={`/${locale}/atlas` as Route} className="my-pandas-hero-link">
-                {copy.browseAtlas}
+              <Link href={`/${locale}/pandas` as Route} className="my-pandas-hero-link">
+                {copy.browsePandas}
                 <ArrowRight aria-hidden="true" />
               </Link>
             </div>
@@ -80,7 +80,7 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
             <section className="my-pandas-noscript" aria-labelledby="my-pandas-noscript-title">
               <h2 id="my-pandas-noscript-title">{copy.noJsTitle}</h2>
               <p>{copy.noJsBody}</p>
-              <Link href={`/${locale}/atlas` as Route}>{copy.browseAtlas}<ArrowRight aria-hidden="true" /></Link>
+              <Link href={`/${locale}/pandas` as Route}>{copy.browsePandas}<ArrowRight aria-hidden="true" /></Link>
             </section>
           </noscript>
           <MyPandasPassportIsland locale={locale} profiles={view.profiles} copy={copy} />

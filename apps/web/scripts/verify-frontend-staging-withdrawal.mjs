@@ -41,7 +41,7 @@ async function navigate(page, url) {
 }
 
 async function verifyLocalizedTarget(page, baseUrl, locale, mode) {
-  const url = `${baseUrl}/${locale}/atlas/${TARGET_SLUG}`;
+  const url = `${baseUrl}/${locale}/pandas/${TARGET_SLUG}`;
   const result = await navigate(page, url);
   if (mode === "baseline") {
     requireCondition(result.status === 200, `${locale} Ri Ri baseline expected 200; got ${result.status}.`);
@@ -63,7 +63,7 @@ async function verifyLocalizedTarget(page, baseUrl, locale, mode) {
 }
 
 async function verifyLegacyTarget(page, baseUrl, mode) {
-  const result = await navigate(page, `${baseUrl}/atlas/${TARGET_SLUG}`);
+  const result = await navigate(page, `${baseUrl}/pandas/${TARGET_SLUG}`);
   const expectedStatus = mode === "baseline" ? 200 : 404;
   requireCondition(
     result.status === expectedStatus,
@@ -73,11 +73,11 @@ async function verifyLegacyTarget(page, baseUrl, mode) {
     mode === "baseline" ? result.body.includes(TARGET_MEDIA_ID) : !result.body.includes(TARGET_MEDIA_ID),
     "Legacy Ri Ri entry media state drifted.",
   );
-  return { status: result.status, url: `${baseUrl}/atlas/${TARGET_SLUG}` };
+  return { status: result.status, url: `${baseUrl}/pandas/${TARGET_SLUG}` };
 }
 
 async function verifyUnrelated(page, baseUrl, locale) {
-  const url = `${baseUrl}/${locale}/atlas/${UNRELATED_SLUG}`;
+  const url = `${baseUrl}/${locale}/pandas/${UNRELATED_SLUG}`;
   const result = await navigate(page, url);
   requireCondition(result.status === 200, `${locale} Shin Shin expected 200; got ${result.status}.`);
   requireCondition(result.body.includes("media-shin-shin-6b36624de9829665"), `${locale} Shin Shin lost reviewed media.`);
@@ -97,14 +97,14 @@ async function verifyDiscovery(page, baseUrl, mode) {
   const routes = [
     "/zh",
     "/en",
-    "/zh/atlas",
-    "/en/atlas",
+    "/zh/pandas",
+    "/en/pandas",
     "/zh/lineage",
     "/en/lineage",
     "/zh/map",
     "/en/map",
-    "/zh/my-pandas",
-    "/en/my-pandas",
+    "/zh/me/passport",
+    "/en/me/passport",
   ];
   const evidence = [];
   for (const route of routes) {
@@ -121,7 +121,7 @@ async function verifyDiscovery(page, baseUrl, mode) {
 
 async function verifyKeyboardAndViewport(page, baseUrl) {
   await page.setViewportSize({ width: 320, height: 720 });
-  const result = await navigate(page, `${baseUrl}/zh/atlas/${UNRELATED_SLUG}`);
+  const result = await navigate(page, `${baseUrl}/zh/pandas/${UNRELATED_SLUG}`);
   requireCondition(result.status === 200, "320 px Shin Shin page did not return 200.");
   const dimensions = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
@@ -141,8 +141,8 @@ async function verifyNoJavaScript(browser, baseUrl, mode) {
   const context = await browser.newContext({ javaScriptEnabled: false });
   try {
     const page = await context.newPage();
-    const target = await navigate(page, `${baseUrl}/en/atlas/${TARGET_SLUG}`);
-    const unrelated = await navigate(page, `${baseUrl}/en/atlas/${UNRELATED_SLUG}`);
+    const target = await navigate(page, `${baseUrl}/en/pandas/${TARGET_SLUG}`);
+    const unrelated = await navigate(page, `${baseUrl}/en/pandas/${UNRELATED_SLUG}`);
     requireCondition(target.status === (mode === "baseline" ? 200 : 404), "No-JavaScript Ri Ri status drifted.");
     requireCondition(unrelated.status === 200, "No-JavaScript Shin Shin status drifted.");
     requireCondition(!target.body.includes("__next_error__") || target.status === 404, "No-JavaScript page exposed a framework failure.");
