@@ -71,7 +71,7 @@ export function PersonalizedFeedPage({
         alternatePath={`/${alternate}/me/feed`}
       />
       <main id="main-content" className="mx-auto w-full max-w-5xl px-4 pb-20 pt-10 md:px-8 md:pt-16">
-        <section className="rounded-[2rem] border border-[var(--pa-color-accent-border-10)] bg-[var(--pa-color-accent-fill-04)] p-6 md:p-10">
+        <section className="rounded-3xl border border-[var(--pa-color-accent-border-10)] bg-[var(--pa-color-accent-fill-04)] p-6 md:p-10">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
             <LockKeyhole aria-hidden="true" className="size-4" />
             <span>{t.privacyLabel}</span>
