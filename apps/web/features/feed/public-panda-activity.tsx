@@ -41,7 +41,7 @@ export function PublicPandaActivity({
       </p>
       <div className="mt-6">
         {unavailable ? (
-          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-amber-950" role="status">
+          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-amber-950" role="note">
             <p className="font-semibold">
               {locale === "zh" ? "公开动态暂时不可用" : "Public Activity is temporarily unavailable"}
             </p>

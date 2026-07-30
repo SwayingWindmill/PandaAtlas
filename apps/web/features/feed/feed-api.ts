@@ -37,13 +37,13 @@ export async function loadPersonalizedFeed(
       cache: "no-store",
     });
   } catch {
-    return { state: "unavailable" };
+    return { state: "unavailable", source: "api" };
   }
 
   if (response.status === 401) return { state: "unauthenticated" };
   if (response.status === 403) return { state: "blocked" };
   if (response.status === 404) return { state: "disabled" };
-  if (!response.ok) return { state: "unavailable" };
+  if (!response.ok) return { state: "unavailable", source: "api" };
   return { state: "ready", page: await response.json() as FeedPageData };
 }
 
@@ -60,12 +60,12 @@ export async function loadPublicPandaActivity(
       { next: { revalidate: 60 } },
     );
     if (response.status === 404) return { state: "disabled" };
-    if (!response.ok) return { state: "unavailable" };
+    if (!response.ok) return { state: "unavailable", source: "api" };
     return {
       state: "ready",
       page: await response.json() as ActivityPageData,
     };
   } catch {
-    return { state: "unavailable" };
+    return { state: "unavailable", source: "api" };
   }
 }

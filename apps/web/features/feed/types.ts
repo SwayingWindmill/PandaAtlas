@@ -99,9 +99,9 @@ export type FeedLoadResult =
   | { state: "unauthenticated" }
   | { state: "blocked" }
   | { state: "disabled" }
-  | { state: "unavailable" };
+  | { state: "unavailable"; source: "api" };
 
 export type PublicActivityLoadResult =
   | { state: "ready"; page: ActivityPageData }
   | { state: "disabled" }
-  | { state: "unavailable" };
+  | { state: "unavailable"; source: "api" };

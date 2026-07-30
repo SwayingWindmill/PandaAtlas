@@ -77,6 +77,35 @@ Local platform:
 - The map-closing ticket is blocked by every implementation child ticket. The map cannot close until the closing ticket passes its complete acceptance matrix.
 - A maintainer must explicitly override this policy when earlier verification is required; agents must not reintroduce per-ticket gates by assumption.
 
+## Verification and Release-Gate Policy
+
+### Three verification levels
+
+1. **Tight feedback loop** — while implementing, run the narrowest relevant test file, linter, typecheck, or contract check. Keep this loop under 90 seconds where practical.
+2. **Development acceptance** — for ordinary non-map work, run `npm run verify:dev` after the implementation is stable. By default it inspects staged, unstaged, and untracked files and runs only affected fast scopes. Use `--base <branch-or-commit>` only for whole-branch verification. Target five minutes or less.
+3. **Release certification** — `release:default`, `release:map-close`, `release:extended`, browser matrices, real-database drills, recovery drills, and deployment commands are final-candidate evidence, not implementation feedback.
+
+### Mandatory agent behavior
+
+- The map-scoped rules above take precedence for ordinary child tickets: use only their bounded sanity checks and defer development acceptance to the map-closing ticket unless a maintainer explicitly requests otherwise.
+- For ordinary non-map work, run `npm run verify:dev` once before declaring implementation complete. Use `npm run verify:dev -- --list` to inspect selected scopes without executing them.
+- Use explicit scopes when automatic comparison is unavailable: `--scope web`, `--scope api`, `--scope worker`, `--scope curation`, `--scope data`, or `--scope release`. Multiple flags may be combined.
+- Use `npm run verify:dev -- --all` only for genuinely cross-cutting changes or when changed-path classification cannot be trusted. It is not release certification.
+- Keep feature pull requests in draft during active implementation. Do not add or retain `delivery:map-close` until implementation, targeted checks, development acceptance, review, and evidence preparation are complete.
+- A full release gate should run at most once for a candidate commit. After a failure, reproduce and fix the failing step with a targeted command; rerun the full gate only after that targeted signal passes.
+- Documentation-only, agent-policy-only, and evidence-metadata-only corrections do not justify browser matrices, recovery drills, or full release certification unless they change executable release behavior or invalidate bound evidence.
+- Run full browser smoke or automated accessibility during development only for browser-visible behavior, routing, keyboard interaction, accessibility semantics, Playwright configuration, or browser-runtime infrastructure. Start with the smallest relevant spec.
+- Never shorten feedback time by weakening authorization, privacy, trust, provenance, idempotency, rollback, recovery, or irreversible-side-effect protections. Move expensive checks to final certification; do not delete their safety guarantees.
+
+### Development scope mapping
+
+- `web`: `apps/web/**` — lint and typecheck; targeted Playwright specs only when browser behavior changed.
+- `api`: `services/api/**` and database infrastructure — Ruff and pytest without release or recovery drills.
+- `worker`: `services/worker-api/**` — typecheck without D1 rollback or HTTP runtime smoke.
+- `curation`: reviewed collection and media-processing code or data — bounded curation and media checks.
+- `data`: golden-dataset contracts and generators — contract, dataset, and generated-alias consistency checks.
+- `release`: release scripts, workflow definitions, hard-gate policies, and evidence infrastructure — development-gate contract tests only.
+
 ## Commit & Pull Request Guidelines
 Use Conventional Commits, for example:
 

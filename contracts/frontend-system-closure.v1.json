@@ -37,6 +37,7 @@
     "apps/web/lib/panda-atlas.ts"
   ],
   "allowed_cross_feature_targets": [
+    "feed",
     "preferences",
     "public-content"
   ],
@@ -53,6 +54,12 @@
         "source: \"api\" | \"cached-release\"",
         "source: \"api\"",
         "source: \"cached-release\""
+      ]
+    },
+    {
+      "path": "apps/web/features/feed/feed-api.ts",
+      "required_markers": [
+        "source: \"api\""
       ]
     }
   ],
