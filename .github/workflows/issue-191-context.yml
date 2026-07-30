@@ -1,0 +1,23 @@
+name: Issue 191 Context
+
+on:
+  push:
+    branches:
+      - issue-191
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - name: Inspect publication and identity context
+        run: |
+          echo '=== migrations ==='
+          ls -1 infra/supabase/migrations
+          echo '=== publication schema ==='
+          grep -RInE "create table .*publication_batches|create table .*public_release|create table .*change_sets|publish_publication_batch|public_release_pointer|outbox_events" infra/supabase/migrations services/api/app | head -300
+          echo '=== identity roles and capabilities ==='
+          grep -RInE "archive\.batch|archive\.change_set|role_key|senior|editor|publisher" infra/supabase/migrations services/api/app docs | head -400
