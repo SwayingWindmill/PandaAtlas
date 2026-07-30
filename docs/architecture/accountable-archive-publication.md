@@ -1,6 +1,6 @@
 # Accountable Archive Publication
 
-Issue #191 installs the single-accountable-approver command boundary without rewriting historical four-eyes evidence.
+Issue #191 installs the single-accountable-approver command boundary without rewriting historical four-eyes evidence. The canonical Panda Atlas OpenAPI registers the domain contract through external Path Item references.
 
 ## Ownership
 
