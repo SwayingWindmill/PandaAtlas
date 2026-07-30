@@ -40,10 +40,10 @@ test("keeps the structured journey usable across optional visual runtime outcome
 
   if (await island.isVisible()) {
     await expect(island).toHaveAttribute("data-provider-status", /ready|degraded|offline|recovering/);
-    await expect(page.getByRole("region", { name: "Interactive map visualization enhancement" })).toBeVisible();
-    await expect(page.getByLabel("Non-drag selection")).toBeVisible();
+    await expect(page.getByRole("region", { name: "Interactive panda map" })).toBeVisible();
+    await expect(page.getByLabel("Choose without dragging the map")).toBeVisible();
   } else {
-    await expect(failure).toContainText("The optional map visualization is unavailable");
+    await expect(failure).toContainText("The live map cannot be opened right now");
   }
   await expect(page.getByTestId(`structured-map-result-${SMITHSONIAN_RESULT}`)).toBeVisible();
 });
@@ -90,7 +90,7 @@ test("keeps list focus and the same map instance while synchronizing canonical s
 
   await expect(page).toHaveURL(new RegExp(`selected=${encodeURIComponent(SMITHSONIAN_RESULT)}`));
   await expect(page.getByTestId("selected-structured-map-result")).toContainText("Smithsonian");
-  await expect(page.getByTestId("map-visualization-island")).toContainText("Map selection synchronized");
+  await expect(page.getByTestId("map-visualization-island")).toContainText("Map is showing");
   await expect(canvas).toHaveAttribute("data-instance-proof", "preserved");
   await expect(selectLink).toBeFocused();
 });
@@ -100,9 +100,9 @@ test("offers a keyboard non-drag selection path with stable result IDs", async (
   await page.goto(`/en/map?mode=institutions&snapshot=${RELEASE_ID}`);
   await activateMap(page);
 
-  const selector = page.getByLabel("Non-drag selection");
+  const selector = page.getByLabel("Choose without dragging the map");
   await selector.selectOption(SMITHSONIAN_RESULT);
-  const synchronize = page.getByRole("button", { name: "Select and synchronize details" });
+  const synchronize = page.getByRole("button", { name: "View map details" });
   await synchronize.focus();
   await page.keyboard.press("Enter");
 
@@ -129,7 +129,7 @@ test("preserves filters and selection through offline and network recovery", asy
     /Network restored|Map provider connected|Some map resources are unavailable/,
   );
   await expect(page).toHaveURL(expectedUrl);
-  await expect(page.getByLabel("Country scope")).toHaveValue("US");
+  await expect(page.getByLabel("Country or region")).toHaveValue("US");
 });
 
 test("degrades provider failure without replacing the structured journey", async ({ page }) => {
@@ -139,7 +139,7 @@ test("degrades provider failure without replacing the structured journey", async
 
   await expect(page.getByTestId("map-visualization-island")).toHaveAttribute("data-provider-status", /degraded|offline/);
   await expect(page.getByTestId(`structured-map-result-${SMITHSONIAN_RESULT}`)).toBeVisible();
-  await expect(page.getByText("A map canvas is not required to complete this task.")).toBeVisible();
+  await expect(page.getByText("If the live map is unavailable, the explore list, location precision, sources, and ordinary links remain usable.")).toBeVisible();
 });
 
 test("serializes viewport state and stays within the local query scheduling budget", async ({ page }) => {
@@ -164,7 +164,7 @@ test("uses the reduced-motion camera path and reflows in portrait and short land
   await activateMap(page);
 
   await expect(page.getByTestId("map-visualization-island")).toHaveAttribute("data-reduced-motion", "true");
-  await expect(page.getByLabel("Non-drag selection")).toBeVisible();
+  await expect(page.getByLabel("Choose without dragging the map")).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   await page.setViewportSize({ width: 667, height: 375 });

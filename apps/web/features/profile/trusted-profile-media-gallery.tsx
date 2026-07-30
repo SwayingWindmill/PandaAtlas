@@ -17,7 +17,7 @@ interface TrustedProfileMediaGalleryProps {
 const copy = {
   zh: {
     imageFailed: "影像加载失败",
-    imageFailedBody: "可信文字档案仍然可用。页面不会替换为其他熊猫或通用图片。",
+    imageFailedBody: "熊猫文字资料仍然可用。页面不会替换为其他熊猫或通用图片。",
     withdrawn: "影像已撤回",
     withdrawnBody: "这张影像仍保留来源与许可记录，但不再公开显示图片。",
     unavailable: "影像不可用",
@@ -28,7 +28,7 @@ const copy = {
   },
   en: {
     imageFailed: "Image failed to load",
-    imageFailedBody: "The trusted text profile remains available. No other panda or generic image is substituted.",
+    imageFailedBody: "The panda text profile remains available. No other panda or generic image is substituted.",
     withdrawn: "Image withdrawn",
     withdrawnBody: "The source and rights record remains visible, but the image is no longer displayed.",
     unavailable: "Image unavailable",

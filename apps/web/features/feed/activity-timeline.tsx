@@ -25,13 +25,13 @@ export function ActivityTimeline({
     return (
       <section className="rounded-3xl border border-dashed border-[var(--pa-color-accent-border-14)] bg-[var(--pa-color-accent-fill-04)] p-8 text-center">
         <h2 className="text-xl font-semibold text-[var(--fg)]">
-          {emptyTitle ?? (locale === "zh" ? "暂无公开动态" : "No public Activity yet")}
+          {emptyTitle ?? (locale === "zh" ? "还没有公开动态" : "No public panda updates yet")}
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">
           {emptyBody ?? (
             locale === "zh"
-              ? "经过审核的档案动态发布后会显示在这里。"
-              : "Reviewed Archive Activity will appear here after publication."
+              ? "经过审核的熊猫动态发布后会显示在这里。"
+              : "Reviewed panda updates will appear here after publication."
           )}
         </p>
       </section>

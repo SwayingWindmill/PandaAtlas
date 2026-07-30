@@ -8,7 +8,7 @@ export const claimKindOptions: Array<{ value: ClaimKind; zh: string; en: string 
   { value: "residency_transfer", zh: "居住地与转移", en: "Residency and transfer" },
   { value: "institution", zh: "机构信息", en: "Institution information" },
   { value: "source", zh: "来源补充", en: "Source information" },
-  { value: "other", zh: "其他结构化信息", en: "Other structured information" },
+  { value: "other", zh: "其他熊猫信息", en: "Other panda information" },
 ];
 
 const statusCopy: Record<ContributorStatus, { zh: string; en: string }> = {
@@ -19,7 +19,7 @@ const statusCopy: Record<ContributorStatus, { zh: string; en: string }> = {
   out_of_scope: { zh: "不在受理范围", en: "Out of scope" },
   not_accepted: { zh: "未采纳", en: "Not accepted" },
   accepted: { zh: "已接受", en: "Accepted" },
-  incorporation_in_progress: { zh: "正在纳入档案", en: "Incorporation in progress" },
+  incorporation_in_progress: { zh: "正在加入公开资料", en: "Being added to public information" },
   incorporated_full: { zh: "已全部纳入", en: "Fully incorporated" },
   incorporated_partial: { zh: "已部分纳入", en: "Partially incorporated" },
   withdrawn: { zh: "已撤回", en: "Withdrawn" },

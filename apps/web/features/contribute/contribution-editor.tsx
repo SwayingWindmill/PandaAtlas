@@ -73,7 +73,7 @@ function fieldExamples(kind: ClaimKind, locale: Locale): { path: string; value: 
     },
     institution: { path: "institution.name", zh: "填写机构信息", en: "Enter institution information" },
     source: { path: "sources.additional", zh: "说明新增来源", en: "Describe the additional source" },
-    other: { path: "other", zh: "填写结构化值", en: "Enter a structured value" },
+    other: { path: "other", zh: "填写要补充的信息", en: "Enter the information to add" },
   };
   return { path: examples[kind].path, value: examples[kind][locale] };
 }
@@ -398,31 +398,31 @@ export function ContributionEditor({ locale, submissionId }: ContributionEditorP
     return (
       <section className="contribution-panel" aria-labelledby="new-contribution-heading">
         <div className="contribution-panel__heading">
-          <p className="eyebrow">{t("结构化贡献", "Structured contribution")}</p>
-          <h1 id="new-contribution-heading">{t("提交更正或有来源的新信息", "Submit a correction or sourced information")}</h1>
-          <p>{t("仅接受现有稳定熊猫目标。草稿可以不完整，正式提交会进行严格验证。", "Existing stable panda targets only. Drafts may be incomplete; formal submission is validated strictly.")}</p>
+          <p className="eyebrow">{t("分享熊猫资料", "Share panda information")}</p>
+          <h1 id="new-contribution-heading">{t("提交纠错或有来源的新信息", "Submit a correction or sourced information")}</h1>
+          <p>{t("目前可以为已经收录的熊猫提交资料。草稿可以先不完整，正式提交前需要补齐内容与来源。", "You can currently contribute to pandas already included in ZhiPanda. Drafts may start incomplete; content and sources are required before submission.")}</p>
         </div>
         <div className="contribution-form-grid">
           <label>
-            <span>{t("贡献类型", "Contribution type")}</span>
+            <span>{t("你想补充什么", "What would you like to add?")}</span>
             <select value={submissionType} onChange={(event) => setSubmissionType(event.target.value as SubmissionType)}>
               <option value="correction">{t("更正现有信息", "Correct existing information")}</option>
               <option value="sourced_information">{t("补充有来源的信息", "Add sourced information")}</option>
             </select>
           </label>
           <label>
-            <span>{t("稳定熊猫 ID", "Stable panda ID")}</span>
+            <span>{t("熊猫标识", "Panda identifier")}</span>
             <input value={targetId} onChange={(event) => setTargetId(event.target.value)} required inputMode="text" />
           </label>
           <label>
-            <span>{t("你看到的公开版本", "Public version you saw")}</span>
+            <span>{t("你查看的资料版本", "Information version you viewed")}</span>
             <input value={publicVersion} onChange={(event) => setPublicVersion(event.target.value)} required placeholder="2026.07.30" />
           </label>
         </div>
         {error ? <p className="contribution-message contribution-message--error" role="alert">{error}</p> : null}
         <div className="contribution-actions">
           <button type="button" onClick={handleCreateDraft} disabled={busy || !targetId.trim() || !publicVersion.trim()}>
-            {busy ? t("正在创建…", "Creating…") : t("创建私有草稿", "Create private draft")}
+            {busy ? t("正在创建…", "Creating…") : t("先保存为私有草稿", "Save as a private draft")}
           </button>
           <Link href={`/${locale}/me/submissions`}>{t("查看我的提交", "View my submissions")}</Link>
         </div>
@@ -463,25 +463,25 @@ export function ContributionEditor({ locale, submissionId }: ContributionEditorP
       {editable ? (
         <>
           <fieldset className="contribution-fieldset">
-            <legend>{t("结构化断言", "Structured assertions")}</legend>
+            <legend>{t("要更正或补充的内容", "Information to correct or add")}</legend>
             {assertions.map((assertion, index) => {
               const examples = fieldExamples(assertion.kind, locale);
               return (
                 <article className="contribution-claim" key={assertion.assertion_key}>
                   <div className="contribution-claim__heading">
-                    <strong>{t(`断言 ${index + 1}`, `Assertion ${index + 1}`)}</strong>
+                    <strong>{t(`内容 ${index + 1}`, `Item ${index + 1}`)}</strong>
                     {assertions.length > 1 ? <button type="button" className="button-link" onClick={() => { setAssertions((current) => current.filter((_, itemIndex) => itemIndex !== index)); markDirty(); }}>{t("移除", "Remove")}</button> : null}
                   </div>
                   <div className="contribution-form-grid">
                     <label><span>{t("类别", "Category")}</span><select value={assertion.kind} onChange={(event) => updateAssertion(index, { kind: event.target.value as ClaimKind })}>{claimKindOptions.map((option) => <option key={option.value} value={option.value}>{option[locale]}</option>)}</select></label>
                     <label><span>{t("字段路径", "Field path")}</span><input value={assertion.field_path} onChange={(event) => updateAssertion(index, { field_path: event.target.value })} placeholder={examples.path} /></label>
                     <label className="contribution-form-grid__wide"><span>{t("建议值", "Proposed value")}</span><input value={assertion.proposed_value} onChange={(event) => updateAssertion(index, { proposed_value: event.target.value })} placeholder={examples.value} /></label>
-                    <label className="contribution-form-grid__wide"><span>{t("来源如何支持该断言", "How the evidence supports this assertion")}</span><textarea value={assertion.explanation} onChange={(event) => updateAssertion(index, { explanation: event.target.value })} rows={4} /></label>
+                    <label className="contribution-form-grid__wide"><span>{t("来源如何支持这条信息", "How the source supports this information")}</span><textarea value={assertion.explanation} onChange={(event) => updateAssertion(index, { explanation: event.target.value })} rows={4} /></label>
                   </div>
                 </article>
               );
             })}
-            <button type="button" className="button-secondary" onClick={() => { setAssertions((current) => [...current, newAssertion()]); markDirty(); }}>{t("添加断言", "Add assertion")}</button>
+            <button type="button" className="button-secondary" onClick={() => { setAssertions((current) => [...current, newAssertion()]); markDirty(); }}>{t("再添加一条内容", "Add another item")}</button>
           </fieldset>
 
           <fieldset className="contribution-fieldset">
@@ -505,7 +505,7 @@ export function ContributionEditor({ locale, submissionId }: ContributionEditorP
 
           <label className="contribution-context"><span>{t("补充说明（草稿可为空）", "Additional context (optional in draft)")}</span><textarea rows={5} value={additionalContext} onChange={(event) => { setAdditionalContext(event.target.value); markDirty(); }} /></label>
 
-          <label className="contribution-confirm"><input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} /><span>{t("我确认这些断言和来源准确表达了我要提交的内容。", "I confirm these assertions and sources accurately represent my contribution.")}</span></label>
+          <label className="contribution-confirm"><input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} /><span>{t("我确认以上内容和来源准确表达了我要提交的信息。", "I confirm the information and sources above accurately represent my contribution.")}</span></label>
 
           {error ? <p className="contribution-message contribution-message--error" role="alert">{error}</p> : null}
           {confirmation ? <p className="contribution-message contribution-message--success" role="status">{confirmation}</p> : null}
@@ -518,7 +518,7 @@ export function ContributionEditor({ locale, submissionId }: ContributionEditorP
       ) : null}
 
       <section className="contribution-history" aria-labelledby="status-history-heading">
-        <h2 id="status-history-heading">{t("状态记录", "Status history")}</h2>
+        <h2 id="status-history-heading">{t("处理记录", "Review history")}</h2>
         <ol className="contribution-timeline">
           {submission.status_history.map((event) => (
             <li key={event.status_event_id}>
@@ -541,7 +541,7 @@ export function ContributionEditor({ locale, submissionId }: ContributionEditorP
       </section>
 
       <section className="contribution-history" aria-labelledby="revision-history-heading">
-        <h2 id="revision-history-heading">{t("不可变修订", "Immutable revisions")}</h2>
+        <h2 id="revision-history-heading">{t("提交版本记录", "Submission version history")}</h2>
         {submission.revisions.length ? (
           <div className="contribution-revisions">
             {submission.revisions.map((revision) => (

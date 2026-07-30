@@ -46,11 +46,11 @@ test("publishes reviewed panda profiles in the current Web release", async ({ pa
   await page.goto("/zh/pandas");
 
   await expect(page.getByTestId("public-delivery-notice")).toContainText(CURRENT_RELEASE_PATTERN);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText(/公开档案总数 \d+ 项/);
+  await expect(page.getByTestId("atlas-result-summary")).toContainText(/当前收录 \d+ 只熊猫/);
 
   for (const profile of profiles) {
     await page.goto(`/zh/pandas?q=${encodeURIComponent(profile.nameEn)}`);
-    await expect(page.getByTestId("atlas-result-summary")).toContainText("共匹配 1 项");
+    await expect(page.getByTestId("atlas-result-summary")).toContainText("共找到 1 只");
     await expect(page.getByRole("link", { name: new RegExp(profile.nameZh) }))
       .toHaveAttribute("href", `/zh/pandas/${profile.slug}`);
   }

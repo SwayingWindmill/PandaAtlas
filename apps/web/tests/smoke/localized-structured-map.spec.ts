@@ -9,11 +9,11 @@ test("renders the canonical graph-free institution journey", async ({ page }) =>
 
   await expect(page).toHaveURL(new RegExp(`/zh/map\\?mode=institutions&snapshot=${RELEASE_ID_PATTERN}$`));
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1, name: "结构化全球分布与足迹" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "看看大熊猫生活在哪里" })).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-institution:"]')).toHaveCount(8);
   await expect(page.getByRole("heading", { level: 3, name: "上野动物园" })).toBeVisible();
-  await expect(page.getByText("地图画布不是完成任务的前提")).toBeVisible();
-  await expect(page.getByText("结构化页面未加载地图服务")).toBeVisible();
+  await expect(page.getByText("真实地图暂时不可用时，探索列表、地点精度、来源和普通链接仍可继续使用。")).toBeVisible();
+  await expect(page.getByText("真实地图尚未加载")).toBeVisible();
 });
 
 
@@ -25,7 +25,7 @@ test("filters the individual footprint while preserving current and historical r
   await expect(results).toHaveCount(2);
   await expect(results.filter({ hasText: "Current" })).toHaveCount(1);
   await expect(results.filter({ hasText: "Historical" })).toHaveCount(1);
-  await expect(page.getByRole("link", { name: "Open trusted profile" }).first()).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "View panda profile" }).first()).toHaveAttribute(
     "href",
     "/en/pandas/mei-xiang",
   );
@@ -37,11 +37,11 @@ test("keeps wild conservation usable without a visual provider and states public
 
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-conservation:"]').first()).toBeVisible();
-  await expect(page.getByText(/吱熊猫(实时栖息地接口|缓存的部分栖息地发布)/).first()).toBeVisible();
+  await expect(page.getByText(/吱熊猫(当前野生家园数据|最近可用的部分野生家园数据)/).first()).toBeVisible();
   await expect(page.getByText(/省级|国家级/).first()).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(0);
   await expect(page.getByText("© OpenStreetMap contributors · © CARTO")).toBeHidden();
-  await page.getByText("地图 Provider 契约").click();
+  await page.getByText("地图与数据说明").click();
   await expect(page.getByText("© OpenStreetMap contributors · © CARTO")).toBeVisible();
 });
 
@@ -83,11 +83,11 @@ test("legacy map routes redirect by request language while preserving task state
 
 test("submits native structured map filters from the keyboard", async ({ page }) => {
   await page.goto("/en/map?mode=institutions");
-  const form = page.getByRole("form", { name: "Filter structured results" });
+  const form = page.getByRole("form", { name: "Find pandas and places on the map" });
 
-  await form.getByLabel("Panda, institution, or place").fill("Smithsonian");
-  await form.getByLabel("Country scope").selectOption("US");
-  await form.getByRole("button", { name: "Update results" }).focus();
+  await form.getByLabel("Panda, zoo, base, or region").fill("Smithsonian");
+  await form.getByLabel("Country or region").selectOption("US");
+  await form.getByRole("button", { name: "Show results" }).focus();
   await page.keyboard.press("Enter");
 
   await expect(page).toHaveURL(new RegExp(`/en/map\\?mode=institutions&focus=Smithsonian&country=US&snapshot=${RELEASE_ID_PATTERN}$`));
@@ -102,6 +102,6 @@ test("renders the complete structured map journey without JavaScript", async ({ 
 
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-residency:"]')).toHaveCount(2);
-  await expect(page.getByRole("link", { name: "Open trusted profile" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "View panda profile" }).first()).toBeVisible();
   await context.close();
 });

@@ -65,12 +65,12 @@ export function SubmissionDashboard({ locale }: SubmissionDashboardProps) {
     <section className="contribution-panel" aria-labelledby="submission-dashboard-heading">
       <header className="contribution-panel__heading">
         <div>
-          <p className="eyebrow">{t("账户贡献", "Account contributions")}</p>
+          <p className="eyebrow">{t("分享熊猫资料", "Share panda information")}</p>
           <h1 id="submission-dashboard-heading">{t("我的提交", "My submissions")}</h1>
-          <p>{t("这里仅显示你自己的私有草稿、修订和用户可见状态。", "Only your private drafts, revisions, and contributor-visible statuses appear here.")}</p>
+          <p>{t("这里仅显示你自己的私有草稿、提交版本和处理状态。", "Only your private drafts, submitted versions, and review status appear here.")}</p>
         </div>
         <Link className="button-primary" href={`/${locale}/contribute`}>
-          {t("新建贡献", "New contribution")}
+          {t("提交新资料", "Share new information")}
         </Link>
       </header>
 
@@ -94,7 +94,7 @@ export function SubmissionDashboard({ locale }: SubmissionDashboardProps) {
       {!loading && !requiresLogin && items.length === 0 ? (
         <div className="contribution-empty">
           <h2>{t("还没有提交", "No submissions yet")}</h2>
-          <p>{t("从现有熊猫档案开始一条结构化更正或来源补充。", "Start a structured correction or sourced update for an existing panda record.")}</p>
+          <p>{t("从一只已经收录的熊猫开始，提交纠错或补充有来源的信息。", "Start with a panda already included in ZhiPanda, then submit a correction or sourced update.")}</p>
         </div>
       ) : null}
 
@@ -105,7 +105,7 @@ export function SubmissionDashboard({ locale }: SubmissionDashboardProps) {
               <span className={`contribution-status contribution-status--${item.contributor_status}`}>
                 {statusLabel(item.contributor_status, locale)}
               </span>
-              <h2>{item.submission_type === "correction" ? t("档案更正", "Record correction") : t("有来源的新信息", "Sourced information")}</h2>
+              <h2>{item.submission_type === "correction" ? t("资料纠错", "Information correction") : t("有来源的新信息", "Sourced information")}</h2>
               <p className="contribution-list-item__target">{item.target_id}</p>
               {item.user_visible_reason ? <p>{item.user_visible_reason}</p> : null}
             </div>
