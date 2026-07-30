@@ -74,6 +74,13 @@ class Settings(BaseSettings):
     auth_smtp_username: str | None = Field(default=None, alias="AUTH_SMTP_USERNAME")
     auth_smtp_password: str | None = Field(default=None, alias="AUTH_SMTP_PASSWORD")
     community_intake_enabled: bool = Field(default=False, alias="COMMUNITY_INTAKE_ENABLED")
+    review_moderation_enabled: bool = Field(default=False, alias="REVIEW_MODERATION_ENABLED")
+    review_first_response_business_days: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+        alias="REVIEW_FIRST_RESPONSE_BUSINESS_DAYS",
+    )
     community_intake_storage_signing_key: str = Field(
         default="local-community-intake-storage-signing-key-change-me",
         min_length=32,

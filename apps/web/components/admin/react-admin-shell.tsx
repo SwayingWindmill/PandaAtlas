@@ -8,9 +8,10 @@ import {
   type DataProvider,
   useLogout,
 } from "react-admin";
-import { Route } from "react-router-dom";
+import { Link, Route } from "react-router-dom";
 
 import { adminSessionFailureDestination } from "@/components/admin/admin-session-navigation";
+import { ReviewCaseWorkbench } from "@/components/admin/review-case-workbench";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { adminTheme } from "@/styles/admin-theme";
@@ -208,6 +209,23 @@ function CapabilityDashboard() {
               ))}
             </ul>
           </section>
+
+          {session.capabilities.includes("review.case.read") ? (
+            <section className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2" aria-labelledby="review-workbench-heading">
+              <h2 id="review-workbench-heading" className="text-xl font-bold text-stone-950">
+                Review &amp; Moderation
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                使用领域专用命令处理 ReviewCase、来源验证、补充请求、追加决定和 Curation 推荐。通用 React-admin CRUD 仍保持禁用。
+              </p>
+              <Link
+                to="/reviews"
+                className="mt-4 inline-flex min-h-11 items-center rounded-md bg-stone-950 px-4 py-2 text-sm font-semibold text-white"
+              >
+                打开贡献审核工作台
+              </Link>
+            </section>
+          ) : null}
         </div>
       ) : null}
     </main>
@@ -226,6 +244,7 @@ export function ReactAdminShell() {
     >
       <CustomRoutes>
         <Route path="/" element={<CapabilityDashboard />} />
+        <Route path="/reviews" element={<ReviewCaseWorkbench />} />
       </CustomRoutes>
     </Admin>
   );
