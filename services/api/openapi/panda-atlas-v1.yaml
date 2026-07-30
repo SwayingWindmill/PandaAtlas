@@ -23,6 +23,7 @@ tags:
   - name: stats
   - name: admin
   - name: feed
+  - name: notification
 
 paths:
   /health:
@@ -792,6 +793,142 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeedMetricsSnapshot'
+        '401': { description: Administrator authentication is required }
+
+
+  /api/v1/me/inbox:
+    get:
+      tags: [notification]
+      summary: Read the authenticated account's native Inbox
+      operationId: getNativeInbox
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+        - name: cursor
+          in: query
+          description: Opaque account-bound signed cursor
+          schema: { type: string, minLength: 8, maxLength: 2048 }
+      responses:
+        '200':
+          description: Chronological Inbox with unread count and explicit retraction tombstones
+          headers:
+            Cache-Control:
+              schema: { type: string, const: "private, no-store" }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxPage'
+        '400': { description: Cursor is invalid or belongs to another account }
+        '401': { description: Authentication is required }
+        '403': { description: Account state blocks Inbox access }
+        '503': { description: Notification database is unavailable }
+
+  /api/v1/me/inbox/unread-count:
+    get:
+      tags: [notification]
+      summary: Read the authenticated account's Inbox unread count
+      operationId: getNativeInboxUnreadCount
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Current unread count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxUnreadCount'
+        '401': { description: Authentication is required }
+        '403': { description: Account state blocks Inbox access }
+
+  /api/v1/me/inbox/{inbox_item_id}/read:
+    post:
+      tags: [notification]
+      summary: Idempotently mark one Inbox item read
+      operationId: markNativeInboxItemRead
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: inbox_item_id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InboxMarkCommand'
+      responses:
+        '200':
+          description: Updated Inbox item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItem'
+        '404': { description: Inbox item was not found }
+        '409': { description: Idempotency conflict }
+
+  /api/v1/me/inbox/read-all:
+    post:
+      tags: [notification]
+      summary: Idempotently mark all current Inbox items read
+      operationId: markAllNativeInboxRead
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InboxMarkCommand'
+      responses:
+        '200':
+          description: Updated unread count
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxUnreadCount'
+        '409': { description: Idempotency conflict }
+
+  /api/v1/me/inbox/digests:
+    post:
+      tags: [notification]
+      summary: Build and queue an immutable daily or weekly Digest snapshot
+      operationId: queueNotificationDigest
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DigestQueueCommand'
+      responses:
+        '200':
+          description: Immutable queued Digest batch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DigestBatch'
+        '409': { description: Invalid period or idempotency conflict }
+
+  /api/v1/notification/metrics:
+    get:
+      tags: [notification]
+      summary: Read Notification orchestration operational metrics
+      operationId: getNotificationMetrics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Intent, suppression, unread, latency, retraction, and consistency metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationMetricsSnapshot'
         '401': { description: Administrator authentication is required }
 
 components:
@@ -2348,3 +2485,108 @@ components:
         failed_page_load_count: { type: integer, minimum: 0 }
         maximum_query_latency_ms: { type: number, minimum: 0 }
         maximum_projection_lag_seconds: { type: number, minimum: 0 }
+
+
+    NotificationCategory:
+      type: string
+      enum: [birthday, major_activity, submission_status, incorporation, correction_retraction, security_role]
+
+    NotificationChannel:
+      type: string
+      enum: [station, email, web_push]
+
+    DigestFrequency:
+      type: string
+      enum: [daily, weekly]
+
+    DigestState:
+      type: string
+      enum: [building, queued, delivered, failed, retracted]
+
+    InboxMarkCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key]
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+
+    InboxItem:
+      type: object
+      additionalProperties: false
+      required: [inbox_item_id, intent_id, category, body, body_version, created_at, expires_at, seen_at, read_at, retracted_at, retraction_reason]
+      properties:
+        inbox_item_id: { type: string, format: uuid }
+        intent_id: { type: string, format: uuid }
+        category:
+          $ref: '#/components/schemas/NotificationCategory'
+        body: { type: object, additionalProperties: true }
+        body_version: { type: integer, minimum: 1 }
+        created_at: { type: string, format: date-time }
+        expires_at: { type: string, format: date-time }
+        seen_at: { type: string, format: date-time, nullable: true }
+        read_at: { type: string, format: date-time, nullable: true }
+        retracted_at: { type: string, format: date-time, nullable: true }
+        retraction_reason: { type: string, nullable: true }
+
+    InboxPage:
+      type: object
+      additionalProperties: false
+      required: [items, next_cursor, unread_count]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InboxItem'
+        next_cursor: { type: string, nullable: true }
+        unread_count: { type: integer, minimum: 0 }
+
+    InboxUnreadCount:
+      type: object
+      additionalProperties: false
+      required: [unread_count]
+      properties:
+        unread_count: { type: integer, minimum: 0 }
+
+    DigestQueueCommand:
+      type: object
+      additionalProperties: false
+      required: [frequency, period_start, period_end, locale, idempotency_key]
+      properties:
+        frequency:
+          $ref: '#/components/schemas/DigestFrequency'
+        period_start: { type: string, format: date-time }
+        period_end: { type: string, format: date-time }
+        locale: { type: string, enum: [zh-CN, en] }
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+
+    DigestBatch:
+      type: object
+      additionalProperties: false
+      required: [batch_id, account_id, frequency, state, content, content_version, period_start, period_end, queued_at, created_at]
+      properties:
+        batch_id: { type: string, format: uuid }
+        account_id: { type: string, format: uuid }
+        frequency:
+          $ref: '#/components/schemas/DigestFrequency'
+        state:
+          $ref: '#/components/schemas/DigestState'
+        content: { type: object, additionalProperties: true }
+        content_version: { type: integer, minimum: 1 }
+        period_start: { type: string, format: date-time }
+        period_end: { type: string, format: date-time }
+        queued_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    NotificationMetricsSnapshot:
+      type: object
+      additionalProperties: false
+      required: [intent_created_count, suppression_counts, unread_count, maximum_intent_latency_seconds, retraction_count, state_inconsistency_count]
+      properties:
+        intent_created_count: { type: integer, minimum: 0 }
+        suppression_counts:
+          type: object
+          additionalProperties: { type: integer, minimum: 0 }
+        unread_count: { type: integer, minimum: 0 }
+        maximum_intent_latency_seconds: { type: number, minimum: 0 }
+        retraction_count: { type: integer, minimum: 0 }
+        state_inconsistency_count: { type: integer, minimum: 0 }

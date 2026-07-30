@@ -825,6 +825,7 @@ class EngagementRepository:
             ).rowcount
             or 0
         )
+        notification_counts = self._delete_notification_private_data(identity.account_id)
         counts = {
             "passport_entries_deleted": self._delete_count("passport_entries", identity.account_id),
             "preferences_deleted": self._delete_count(
@@ -838,6 +839,7 @@ class EngagementRepository:
                 "passport_contribution_events", identity.account_id
             ),
             "follows_deleted": self._delete_count("follows", identity.account_id),
+            **notification_counts,
         }
         self._audit(
             event_type="engagement.private_data.deleted",
@@ -1170,6 +1172,90 @@ class EngagementRepository:
 
     def _require_panda(self, panda_id: str) -> None:
         self._resolve_panda(panda_id)
+
+    def _delete_notification_private_data(self, account_id: UUID) -> dict[str, int]:
+        digest_items = int(
+            self.session.execute(
+                text(
+                    """
+                    delete from notification.digest_items
+                    where batch_id in (
+                      select batch_id from notification.digest_batches
+                      where account_id = :account_id
+                    )
+                    """
+                ),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        delivery_attempts = int(
+            self.session.execute(
+                text(
+                    """
+                    delete from notification.delivery_attempts
+                    where intent_id in (
+                      select intent_id from notification.intents
+                      where account_id = :account_id
+                    )
+                    """
+                ),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        inbox_items = int(
+            self.session.execute(
+                text("delete from notification.inbox_items where account_id = :account_id"),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        intent_channels = int(
+            self.session.execute(
+                text(
+                    """
+                    delete from notification.intent_channels
+                    where intent_id in (
+                      select intent_id from notification.intents
+                      where account_id = :account_id
+                    )
+                    """
+                ),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        digest_batches = int(
+            self.session.execute(
+                text("delete from notification.digest_batches where account_id = :account_id"),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        intents = int(
+            self.session.execute(
+                text("delete from notification.intents where account_id = :account_id"),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        preferences = int(
+            self.session.execute(
+                text("delete from notification.preferences where account_id = :account_id"),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        return {
+            "notification_digest_items_deleted": digest_items,
+            "notification_delivery_attempts_deleted": delivery_attempts,
+            "notification_inbox_items_deleted": inbox_items,
+            "notification_intent_channels_deleted": intent_channels,
+            "notification_digest_batches_deleted": digest_batches,
+            "notification_intents_deleted": intents,
+            "notification_preferences_deleted": preferences,
+        }
 
     def _delete_count(self, table_name: str, account_id: UUID) -> int:
         result = self.session.execute(

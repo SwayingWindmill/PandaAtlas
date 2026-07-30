@@ -28,9 +28,10 @@ def test_static_foundation_configuration_is_pinned_and_private() -> None:
     assert "feed" not in evidence["api_schemas"]
     assert "identity" not in evidence["api_schemas"]
     assert "integration" not in evidence["api_schemas"]
+    assert "notification" not in evidence["api_schemas"]
     assert "pgmq" not in evidence["api_schemas"]
     assert "storage" not in evidence["api_schemas"]
-    assert evidence["migration_versions"][-1] == "0013"
+    assert evidence["migration_versions"][-1] == "0014"
 
 
 def test_version_and_database_url_helpers_are_deterministic() -> None:
@@ -53,6 +54,7 @@ def test_version_and_database_url_helpers_are_deterministic() -> None:
         "0011",
         "0012",
         "0013",
+        "0014",
     ]
 
 

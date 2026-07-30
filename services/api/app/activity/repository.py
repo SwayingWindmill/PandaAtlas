@@ -887,6 +887,7 @@ class ActivityRepository:
                 "published_at": event.published_at.isoformat(),
                 "is_backfill": event.is_backfill,
                 "outcome": outcome.value,
+                "retraction_reason": event.retraction_reason,
             },
         )
         self._insert_outbox(envelope)

@@ -166,7 +166,15 @@ def _assert_private_role_boundaries(cursor: psycopg.Cursor[Any]) -> dict[str, bo
         exists = bool(cursor.fetchone()[0])
         if not exists:
             raise FoundationCheckError(f"Expected Supabase role is missing: {role_name}")
-        for schema_name in ("activity", "engagement", "feed", "identity", "integration", "pgmq"):
+        for schema_name in (
+            "activity",
+            "engagement",
+            "feed",
+            "identity",
+            "integration",
+            "notification",
+            "pgmq",
+        ):
             cursor.execute(
                 "select has_schema_privilege(%s, %s, 'usage')",
                 (role_name, schema_name),
@@ -365,6 +373,49 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
             if feed_append_only_trigger_count != 1:
                 raise FoundationCheckError("Feed append-only trigger is incomplete")
 
+            for relation in (
+                "notification.preferences",
+                "notification.preference_events",
+                "notification.source_receipts",
+                "notification.intents",
+                "notification.intent_channels",
+                "notification.inbox_items",
+                "notification.inbox_state_events",
+                "notification.delivery_attempts",
+                "notification.digest_batches",
+                "notification.digest_items",
+                "notification.audit_events",
+            ):
+                cursor.execute("select to_regclass(%s)::text", (relation,))
+                if cursor.fetchone()[0] != relation:
+                    raise FoundationCheckError(f"Notification relation is missing: {relation}")
+
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'notification'
+                  and trigger.tgname = any(%s)
+                  and not trigger.tgisinternal
+                """,
+                (
+                    [
+                        "trg_preference_events_append_only",
+                        "trg_source_receipts_append_only",
+                        "trg_inbox_state_events_append_only",
+                        "trg_audit_events_append_only",
+                        "trg_digest_batches_immutable",
+                        "trg_delivery_attempts_immutable",
+                        "trg_digest_items_immutable",
+                    ],
+                ),
+            )
+            notification_immutability_trigger_count = int(cursor.fetchone()[0])
+            if notification_immutability_trigger_count != 7:
+                raise FoundationCheckError("Notification immutability triggers are incomplete")
+
             cursor.execute(
                 """
                 select count(*)
@@ -486,6 +537,7 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
         "identity_append_only_trigger_count": append_only_trigger_count,
         "engagement_append_only_trigger_count": engagement_append_only_trigger_count,
         "feed_append_only_trigger_count": feed_append_only_trigger_count,
+        "notification_immutability_trigger_count": notification_immutability_trigger_count,
         "activity_append_only_trigger_count": activity_append_only_trigger_count,
         "private_role_schema_usage": private_role_privileges,
         "queue_smoke": queue_evidence,

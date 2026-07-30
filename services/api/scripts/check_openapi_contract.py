@@ -28,6 +28,12 @@ REQUIRED_ROUTE_METHODS: tuple[tuple[str, str], ...] = (
     ("/api/v1/admin/import-jobs", "post"),
     ("/api/v1/admin/import-jobs/{job_id}", "get"),
     ("/api/v1/admin/import-jobs/{job_id}/run", "post"),
+    ("/api/v1/me/inbox", "get"),
+    ("/api/v1/me/inbox/unread-count", "get"),
+    ("/api/v1/me/inbox/{inbox_item_id}/read", "post"),
+    ("/api/v1/me/inbox/read-all", "post"),
+    ("/api/v1/me/inbox/digests", "post"),
+    ("/api/v1/notification/metrics", "get"),
 )
 
 REQUIRED_PARAMETERS: tuple[tuple[str, str, str], ...] = (

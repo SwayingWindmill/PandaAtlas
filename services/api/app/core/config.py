@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     engagement_enabled: bool = Field(default=False, alias="ENGAGEMENT_ENABLED")
     activity_enabled: bool = Field(default=False, alias="ACTIVITY_ENABLED")
     feed_enabled: bool = Field(default=False, alias="FEED_ENABLED")
+    notification_enabled: bool = Field(default=False, alias="NOTIFICATION_ENABLED")
+    notification_cursor_signing_key: str = Field(
+        default="local-notification-cursor-signing-key-change-me",
+        min_length=32,
+        alias="NOTIFICATION_CURSOR_SIGNING_KEY",
+    )
     feed_cursor_signing_key: str = Field(
         default="local-feed-cursor-signing-key-change-me",
         min_length=32,
@@ -75,6 +81,15 @@ class Settings(BaseSettings):
         ):
             raise ValueError(
                 "FEED_CURSOR_SIGNING_KEY must be configured outside local environments"
+            )
+        if (
+            self.notification_enabled
+            and env not in {"development", "dev", "local", "test"}
+            and self.notification_cursor_signing_key
+            == "local-notification-cursor-signing-key-change-me"
+        ):
+            raise ValueError(
+                "NOTIFICATION_CURSOR_SIGNING_KEY must be configured outside local environments"
             )
         return self
 

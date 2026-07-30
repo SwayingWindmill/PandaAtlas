@@ -30,6 +30,12 @@ Owns account-scoped Activity eligibility derived from current Follow state, sign
 
 Architecture: [`docs/architecture/personalized-feed-queries.md`](docs/architecture/personalized-feed-queries.md)
 
+## Notification Orchestration
+
+Owns source-event Notification Intents, audience and preference snapshots, native Inbox/read state, channel decisions, delivery attempts, immutable Digest batches, correction/retraction propagation, and notification metrics. It does not own Activity content, Follow commands, account state, submission decisions, or email/web-push transport.
+
+Architecture: [`docs/architecture/notification-orchestration.md`](docs/architecture/notification-orchestration.md)
+
 ## Relationships
 
 - Curation Intake proposes evidence and candidate records to the Trusted Archive.
