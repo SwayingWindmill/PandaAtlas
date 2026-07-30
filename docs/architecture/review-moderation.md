@@ -28,6 +28,10 @@ An `accepted` decision requires:
 
 Decisions distinguish `accepted`, `not_accepted`, `duplicate`, `out_of_scope`, and `abuse`. Internal reasons remain in Review & Moderation. Contributor-visible projections contain only the safe explanation and per-assertion dispositions. A later recommendation copies only the selected assertion keys into append-only Curation recommendation records; it does not create a Change Set or publish Archive facts.
 
+## Contracts
+
+`services/api/openapi/review-moderation-v1.yaml` owns the bounded reviewer command shapes. The canonical `panda-atlas-v1.yaml` contract registers each Review & Moderation operation through explicit Path Item references so release tooling and downstream clients discover the routes without duplicating their schemas.
+
 ## SLA, audit, and rollback
 
 `review_moderation.review_case_queue` exposes queue age and overdue state. `review_moderation.sla_alerts` is the stable alert source for the three-business-day first-response objective. Intake, triage, assignment, requests, verification, decisions, recommendations, reopen, and denials write audit evidence. Information-request internal notes are stored separately and never copied into contributor status.
