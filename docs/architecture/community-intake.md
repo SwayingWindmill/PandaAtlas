@@ -1,6 +1,6 @@
 # Community Intake persistence and private evidence
 
-Issue: #187. Parent map: #174.
+Issues: #187 and #188. Parent map: #174.
 
 ## Ownership
 
@@ -46,8 +46,12 @@ Account deletion requires Identity state `deleting`. Community Intake attachment
 
 Feature switch: `COMMUNITY_INTAKE_ENABLED=false` stops all HTTP commands while retaining schema, objects, audit, and Outbox facts. `community-intake:retention` runs expiry, scanner retry, and orphan cleanup. Scanner implementations conform to the `MalwareScanner` protocol and must not log bytes or object paths.
 
-Application rollback disables the feature flag; it does not drop migration `0016`, delete the private bucket, or rewrite revisions. Storage/scanner unavailability is fail-closed: evidence remains quarantined and inaccessible.
+Application rollback disables the feature flags; it does not drop migrations `0016` or `0017`, delete the private bucket, rewrite revisions, or erase contributor status history. Storage/scanner unavailability is fail-closed: evidence remains quarantined and inaccessible.
 
 ## Metrics
 
-The admin metrics endpoint reads PostgreSQL for draft/submitted counts, attachment counts by scan state, oldest quarantine age, and granted/denied sensitive reads. Foundation preflight verifies all owned relations, nine protection triggers, three capabilities, the private bucket policy, and browser-role denial.
+The admin metrics endpoint reads PostgreSQL for draft/submitted counts, attachment counts by scan state, oldest quarantine age, and granted/denied sensitive reads. Foundation preflight verifies all owned relations, twelve protection triggers, four Community Intake capabilities, the private bucket policy, unchanged Administrator capabilities, and browser-role denial.
+
+## Contributor journey extension
+
+Migration `0017` and issue #188 add the contributor command surface, append-only contributor-visible status history, per-assertion outcomes, account-scoped journey analytics, localized private Web pages, ETag concurrency, and persistent status Inbox notifications. See [`contributor-submission-journey.md`](contributor-submission-journey.md).

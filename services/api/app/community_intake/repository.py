@@ -36,6 +36,7 @@ from app.community_intake.storage import (
     OpaqueStorageReferenceSigner,
     PrivateAttachmentStorage,
     StorageReferenceError,
+    SupabasePrivateAttachmentStorage,
     hash_reference_jti,
 )
 from app.identity.models import AccountState, RequestIdentity
@@ -325,7 +326,8 @@ class CommunityIntakeRepository:
             text(
                 """
                 update community_intake.submissions
-                set state = 'submitted',
+                set state = 'submitted', contributor_status = 'submitted',
+                    contributor_status_updated_at = now(),
                     draft_content = cast(:draft_content as jsonb),
                     public_version_seen = :public_version_seen,
                     version = :version,
@@ -344,9 +346,7 @@ class CommunityIntakeRepository:
             },
         )
         event_type = (
-            "community.submission.submitted"
-            if first_submission
-            else "community.submission.revised"
+            "community.submission.submitted" if first_submission else "community.submission.revised"
         )
         self._audit(
             event_type=event_type,
@@ -422,7 +422,8 @@ class CommunityIntakeRepository:
             text(
                 """
                 update community_intake.submissions
-                set state = 'withdrawn', withdrawn_at = now(),
+                set state = 'withdrawn', contributor_status = 'withdrawn',
+                    withdrawn_at = now(), contributor_status_updated_at = now(),
                     version = :version, updated_at = now()
                 where submission_id = :submission_id
                 """
@@ -487,23 +488,28 @@ class CommunityIntakeRepository:
             self.session.rollback()
             raise CommunityIntakeConflictError("submission version does not match")
         next_version = int(row["version"]) + 1
-        closed = self.session.execute(
-            text(
-                """
+        closed = (
+            self.session.execute(
+                text(
+                    """
                 update community_intake.submissions
-                set state = 'closed', closed_at = now(),
+                set state = 'closed', contributor_status = 'not_accepted',
+                    closed_at = now(), contributor_status_updated_at = now(),
                     retention_due_at = now() + (:retention_days * interval '1 day'),
                     draft_content = '{}'::jsonb, version = :version, updated_at = now()
                 where submission_id = :submission_id
                 returning retention_due_at
                 """
-            ),
-            {
-                "submission_id": submission_id,
-                "retention_days": command.retention_days,
-                "version": next_version,
-            },
-        ).mappings().one()
+                ),
+                {
+                    "submission_id": submission_id,
+                    "retention_days": command.retention_days,
+                    "version": next_version,
+                },
+            )
+            .mappings()
+            .one()
+        )
         retention_due_at = closed["retention_due_at"]
         self._audit(
             event_type="community.submission.closed_unincorporated",
@@ -582,30 +588,29 @@ class CommunityIntakeRepository:
         }:
             self.session.rollback()
             raise CommunityIntakeConflictError("submission does not accept attachments")
-        current = self.session.execute(
-            text(
-                """
+        current = (
+            self.session.execute(
+                text(
+                    """
                 select count(*) as attachment_count, coalesce(sum(byte_size), 0) as byte_size
                 from community_intake.attachments
                 where submission_id = :submission_id and state <> 'deleted'
                 """
-            ),
-            {"submission_id": submission_id},
-        ).mappings().one()
+                ),
+                {"submission_id": submission_id},
+            )
+            .mappings()
+            .one()
+        )
         if int(current["attachment_count"]) >= 5:
             self.session.rollback()
-            raise CommunityIntakeConflictError(
-                "a submission may contain at most five attachments"
-            )
+            raise CommunityIntakeConflictError("a submission may contain at most five attachments")
         if int(current["byte_size"]) + command.byte_size > 30 * 1024 * 1024:
             self.session.rollback()
-            raise CommunityIntakeConflictError(
-                "submission attachments may total at most 30 MiB"
-            )
+            raise CommunityIntakeConflictError("submission attachments may total at most 30 MiB")
         attachment_id = uuid4()
         object_key = (
-            f"subjects/{actor_hash[:24]}/submissions/{submission_id}/"
-            f"attachments/{attachment_id}"
+            f"subjects/{actor_hash[:24]}/submissions/{submission_id}/attachments/{attachment_id}"
         )
         self.session.execute(
             text(
@@ -894,9 +899,7 @@ class CommunityIntakeRepository:
                 correlation_id=correlation_id,
             )
             self.session.commit()
-            raise CommunityIntakeForbiddenError(
-                "private evidence is unavailable for this request"
-            )
+            raise CommunityIntakeForbiddenError("private evidence is unavailable for this request")
         reference, jti = self.storage.create_download_reference(
             attachment_id=str(attachment_id),
             preview=command.preview,
@@ -921,9 +924,10 @@ class CommunityIntakeRepository:
     ) -> SubmissionView:
         row = self._owned_submission(identity.account_id, submission_id, for_update=False)
         revisions = self._revisions(submission_id)
-        attachments = self.session.execute(
-            text(
-                """
+        attachments = (
+            self.session.execute(
+                text(
+                    """
                 select attachment_id, submission_id, bound_revision_number,
                        original_filename, media_type, byte_size, state::text,
                        upload_completed_at, scan_attempts, last_scan_code,
@@ -932,9 +936,12 @@ class CommunityIntakeRepository:
                 where submission_id = :submission_id and state <> 'deleted'
                 order by created_at, attachment_id
                 """
-            ),
-            {"submission_id": submission_id},
-        ).mappings().all()
+                ),
+                {"submission_id": submission_id},
+            )
+            .mappings()
+            .all()
+        )
         return SubmissionView.model_validate(
             {
                 **dict(row),
@@ -950,17 +957,22 @@ class CommunityIntakeRepository:
         correlation_id: UUID,
         max_scan_attempts: int = 3,
     ) -> RetentionResult:
-        expired = self.session.execute(
-            text(
-                """
+        expired = (
+            self.session.execute(
+                text(
+                    """
                 update community_intake.submissions
-                set state = 'expired', draft_content = '{}'::jsonb,
+                set state = 'expired', contributor_status = 'expired',
+                    contributor_status_updated_at = now(), draft_content = '{}'::jsonb,
                     version = version + 1, updated_at = now()
                 where state = 'draft' and expires_at <= now()
                 returning submission_id, contributor_subject_hash
                 """
+                )
             )
-        ).mappings().all()
+            .mappings()
+            .all()
+        )
         for row in expired:
             submission_id = UUID(str(row["submission_id"]))
             deleted_attachments = self._mark_submission_attachments_deleted(submission_id)
@@ -979,9 +991,10 @@ class CommunityIntakeRepository:
                 details={},
                 correlation_id=correlation_id,
             )
-        closed_due = self.session.execute(
-            text(
-                """
+        closed_due = (
+            self.session.execute(
+                text(
+                    """
                 update community_intake.submissions
                 set retention_completed_at = now(), updated_at = now()
                 where state = 'closed'
@@ -989,8 +1002,11 @@ class CommunityIntakeRepository:
                   and retention_completed_at is null
                 returning submission_id, contributor_subject_hash
                 """
+                )
             )
-        ).mappings().all()
+            .mappings()
+            .all()
+        )
         for row in closed_due:
             submission_id = UUID(str(row["submission_id"]))
             deleted_attachments = self._mark_submission_attachments_deleted(submission_id)
@@ -1009,9 +1025,10 @@ class CommunityIntakeRepository:
                 details={"attachment_count": len(deleted_attachments)},
                 correlation_id=correlation_id,
             )
-        orphans = self.session.execute(
-            text(
-                """
+        orphans = (
+            self.session.execute(
+                text(
+                    """
                 update community_intake.attachments attachment
                 set state = 'deleted', body_deleted_at = now(),
                     original_filename = '[deleted]', updated_at = now()
@@ -1023,8 +1040,11 @@ class CommunityIntakeRepository:
                 returning attachment.attachment_id, attachment.submission_id,
                           submission.contributor_subject_hash
                 """
+                )
             )
-        ).mappings().all()
+            .mappings()
+            .all()
+        )
         for row in orphans:
             self._emit_attachment_deletion_requested(
                 attachment_id=UUID(str(row["attachment_id"])),
@@ -1040,9 +1060,10 @@ class CommunityIntakeRepository:
                 details={"attachment_id": str(row["attachment_id"])},
                 correlation_id=correlation_id,
             )
-        retried = self.session.execute(
-            text(
-                """
+        retried = (
+            self.session.execute(
+                text(
+                    """
                 update community_intake.attachments
                 set state = 'quarantined', updated_at = now()
                 where state = 'scan_failed'
@@ -1050,9 +1071,12 @@ class CommunityIntakeRepository:
                   and last_scanned_at <= now() - interval '15 minutes'
                 returning attachment_id, submission_id, scan_attempts
                 """
-            ),
-            {"max_scan_attempts": max_scan_attempts},
-        ).mappings().all()
+                ),
+                {"max_scan_attempts": max_scan_attempts},
+            )
+            .mappings()
+            .all()
+        )
         for row in retried:
             attachment_id = UUID(str(row["attachment_id"]))
             submission_id = UUID(str(row["submission_id"]))
@@ -1062,8 +1086,7 @@ class CommunityIntakeRepository:
                 aggregate_id=str(attachment_id),
                 aggregate_version=int(row["scan_attempts"]) + 1,
                 idempotency_key=(
-                    f"attachment-scan-retry:{attachment_id}:"
-                    f"{int(row['scan_attempts']) + 1}"
+                    f"attachment-scan-retry:{attachment_id}:{int(row['scan_attempts']) + 1}"
                 ),
                 correlation_id=correlation_id,
                 payload={
@@ -1097,19 +1120,24 @@ class CommunityIntakeRepository:
         return result
 
     def metrics(self) -> CommunityIntakeMetrics:
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select
                   count(*) filter (where state = 'draft') as draft_count,
                   count(*) filter (where state = 'submitted') as submitted_count
                 from community_intake.submissions
                 """
+                )
             )
-        ).mappings().one()
-        attachments = self.session.execute(
-            text(
-                """
+            .mappings()
+            .one()
+        )
+        attachments = (
+            self.session.execute(
+                text(
+                    """
                 select
                   count(*) filter (where state = 'quarantined') as quarantined_count,
                   count(*) filter (where state = 'scan_failed') as scan_failed_count,
@@ -1120,18 +1148,25 @@ class CommunityIntakeRepository:
                     as oldest_quarantined_age_seconds
                 from community_intake.attachments
                 """
+                )
             )
-        ).mappings().one()
-        reads = self.session.execute(
-            text(
-                """
+            .mappings()
+            .one()
+        )
+        reads = (
+            self.session.execute(
+                text(
+                    """
                 select
                   count(*) filter (where outcome = 'granted') as granted,
                   count(*) filter (where outcome = 'denied') as denied
                 from community_intake.sensitive_read_events
                 """
+                )
             )
-        ).mappings().one()
+            .mappings()
+            .one()
+        )
         return CommunityIntakeMetrics(
             draft_count=int(row["draft_count"]),
             submitted_count=int(row["submitted_count"]),
@@ -1139,9 +1174,7 @@ class CommunityIntakeRepository:
             scan_failed_count=int(attachments["scan_failed_count"]),
             infected_count=int(attachments["infected_count"]),
             clean_count=int(attachments["clean_count"]),
-            oldest_quarantined_age_seconds=float(
-                attachments["oldest_quarantined_age_seconds"]
-            ),
+            oldest_quarantined_age_seconds=float(attachments["oldest_quarantined_age_seconds"]),
             sensitive_reads_granted=int(reads["granted"]),
             sensitive_reads_denied=int(reads["denied"]),
         )
@@ -1166,9 +1199,10 @@ class CommunityIntakeRepository:
         for_update: bool,
     ) -> Any:
         suffix = " for update" if for_update else ""
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select submission_id, submission_type::text, target_type::text,
                        target_id, public_version_seen, state::text, draft_content,
                        version, latest_revision_number, expires_at, submitted_at,
@@ -1177,35 +1211,40 @@ class CommunityIntakeRepository:
                 from community_intake.submissions
                 where submission_id = :submission_id and account_id = :account_id
                 """
-                + suffix
-            ),
-            {"submission_id": submission_id, "account_id": account_id},
-        ).mappings().one_or_none()
+                    + suffix
+                ),
+                {"submission_id": submission_id, "account_id": account_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if row is None:
             raise CommunityIntakeNotFoundError("submission was not found")
         return row
 
     def _submission_row(self, submission_id: UUID, *, for_update: bool) -> Any:
         suffix = " for update" if for_update else ""
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select submission_id, contributor_subject_hash, state::text, version,
                        latest_revision_number, retention_due_at, retention_completed_at
                 from community_intake.submissions
                 where submission_id = :submission_id
                 """
-                + suffix
-            ),
-            {"submission_id": submission_id},
-        ).mappings().one_or_none()
+                    + suffix
+                ),
+                {"submission_id": submission_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if row is None:
             raise CommunityIntakeNotFoundError("submission was not found")
         return row
 
-    def _closed_retention_view(
-        self, submission_id: UUID
-    ) -> ClosedSubmissionRetentionView:
+    def _closed_retention_view(self, submission_id: UUID) -> ClosedSubmissionRetentionView:
         row = self._submission_row(submission_id, for_update=False)
         if row["state"] != SubmissionState.CLOSED.value or row["retention_due_at"] is None:
             raise CommunityIntakeConflictError("submission is not closed for retention")
@@ -1220,9 +1259,10 @@ class CommunityIntakeRepository:
 
     def _attachment_row(self, attachment_id: UUID, *, for_update: bool) -> Any:
         suffix = " for update" if for_update else ""
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select attachment.attachment_id, attachment.submission_id,
                        attachment.bound_revision_number, attachment.storage_bucket,
                        attachment.storage_object_key, attachment.object_version,
@@ -1238,10 +1278,13 @@ class CommunityIntakeRepository:
                   on submission.submission_id = attachment.submission_id
                 where attachment.attachment_id = :attachment_id
                 """
-                + suffix
-            ),
-            {"attachment_id": attachment_id},
-        ).mappings().one_or_none()
+                    + suffix
+                ),
+                {"attachment_id": attachment_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if row is None:
             raise CommunityIntakeNotFoundError("attachment was not found")
         return row
@@ -1279,30 +1322,38 @@ class CommunityIntakeRepository:
         )
 
     def _revisions(self, submission_id: UUID) -> list[SubmissionRevisionView]:
-        revision_rows = self.session.execute(
-            text(
-                """
+        revision_rows = (
+            self.session.execute(
+                text(
+                    """
                 select revision_number, content, content_sha256,
                        public_version_seen, submitted_at
                 from community_intake.submission_revisions
                 where submission_id = :submission_id
                 order by revision_number
                 """
-            ),
-            {"submission_id": submission_id},
-        ).mappings().all()
-        source_rows = self.session.execute(
-            text(
-                """
+                ),
+                {"submission_id": submission_id},
+            )
+            .mappings()
+            .all()
+        )
+        source_rows = (
+            self.session.execute(
+                text(
+                    """
                 select source_id, revision_number, source_kind::text,
                        title, locator, publisher, published_on, created_at
                 from community_intake.submitted_sources
                 where submission_id = :submission_id
                 order by revision_number, created_at, source_id
                 """
-            ),
-            {"submission_id": submission_id},
-        ).mappings().all()
+                ),
+                {"submission_id": submission_id},
+            )
+            .mappings()
+            .all()
+        )
         by_revision: dict[int, list[SubmittedSourceView]] = {}
         for source in source_rows:
             revision_number = int(source["revision_number"])
@@ -1352,18 +1403,22 @@ class CommunityIntakeRepository:
         )
 
     def _mark_submission_attachments_deleted(self, submission_id: UUID) -> list[UUID]:
-        rows = self.session.execute(
-            text(
-                """
+        rows = (
+            self.session.execute(
+                text(
+                    """
                 update community_intake.attachments
                 set state = 'deleted', body_deleted_at = coalesce(body_deleted_at, now()),
                     original_filename = '[deleted]', updated_at = now()
                 where submission_id = :submission_id and state <> 'deleted'
                 returning attachment_id
                 """
-            ),
-            {"submission_id": submission_id},
-        ).scalars().all()
+                ),
+                {"submission_id": submission_id},
+            )
+            .scalars()
+            .all()
+        )
         return [UUID(str(attachment_id)) for attachment_id in rows]
 
     def _emit_attachment_deletion_requested(
@@ -1412,17 +1467,21 @@ class CommunityIntakeRepository:
         expected_submission_id: UUID | None = None,
         expected_target_id: str | None = None,
     ) -> Any | None:
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select event_type, submission_id, target_id, details
                 from community_intake.audit_events
                 where actor_subject_hash = :actor_hash
                   and idempotency_key = :idempotency_key
                 """
-            ),
-            {"actor_hash": actor_hash, "idempotency_key": idempotency_key},
-        ).mappings().one_or_none()
+                ),
+                {"actor_hash": actor_hash, "idempotency_key": idempotency_key},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if row is None:
             return None
         details = _json_value(row["details"])
@@ -1433,10 +1492,7 @@ class CommunityIntakeRepository:
                 expected_submission_id is not None
                 and row["submission_id"] != expected_submission_id
             )
-            or (
-                expected_target_id is not None
-                and row["target_id"] != expected_target_id
-            )
+            or (expected_target_id is not None and row["target_id"] != expected_target_id)
         ):
             self.session.rollback()
             raise CommunityIntakeConflictError(
@@ -1637,9 +1693,10 @@ def anonymize_community_intake_account(
             "Community Intake data can be anonymized only while account is deleting"
         )
     subject_hash = _subject_hash(account_id)
-    attachments = session.execute(
-        text(
-            """
+    attachments = (
+        session.execute(
+            text(
+                """
             with target as (
               select attachment.attachment_id, attachment.submission_id,
                      attachment.state::text as prior_state
@@ -1656,9 +1713,12 @@ def anonymize_community_intake_account(
             returning attachment.attachment_id, attachment.submission_id,
                       target.prior_state
             """
-        ),
-        {"account_id": account_id},
-    ).mappings().all()
+            ),
+            {"account_id": account_id},
+        )
+        .mappings()
+        .all()
+    )
     attachment_count = len(attachments)
     for attachment in attachments:
         if attachment["prior_state"] == AttachmentState.DELETED.value:
@@ -1679,18 +1739,22 @@ def anonymize_community_intake_account(
                 "reason_code": "account_deleting",
             },
         )
-    submissions = session.execute(
-        text(
-            """
+    submissions = (
+        session.execute(
+            text(
+                """
             update community_intake.submissions
             set account_id = null, draft_content = '{}'::jsonb,
                 anonymized_at = now(), updated_at = now()
             where account_id = :account_id
             returning submission_id
             """
-        ),
-        {"account_id": account_id},
-    ).scalars().all()
+            ),
+            {"account_id": account_id},
+        )
+        .scalars()
+        .all()
+    )
     for submission_id in submissions:
         session.execute(
             text(
@@ -1743,7 +1807,20 @@ def _json_value(value: Any) -> Any:
     return value
 
 
-def default_storage(signing_key: str, ttl_seconds: int) -> OpaqueStorageReferenceSigner:
+def default_storage(
+    signing_key: str,
+    ttl_seconds: int,
+    *,
+    supabase_url: str | None = None,
+    service_role_key: str | None = None,
+) -> PrivateAttachmentStorage:
+    if supabase_url and service_role_key:
+        return SupabasePrivateAttachmentStorage(
+            signing_key=signing_key,
+            ttl_seconds=ttl_seconds,
+            supabase_url=supabase_url,
+            service_role_key=service_role_key,
+        )
     return OpaqueStorageReferenceSigner(
         signing_key=signing_key,
         ttl_seconds=ttl_seconds,

@@ -75,6 +75,28 @@ def test_activity_policy_maps_approved_categories() -> None:
     assert correction.category is NotificationCategory.CORRECTION_RETRACTION
 
 
+def test_contributor_status_policy_separates_review_and_incorporation_updates() -> None:
+    review = NotificationPolicy.classify(
+        _event(
+            "community.submission.contributor_status_changed",
+            {"account_id": str(uuid4()), "status": "action_required"},
+        )
+    )
+    incorporation = NotificationPolicy.classify(
+        _event(
+            "community.submission.contributor_status_changed",
+            {"account_id": str(uuid4()), "status": "incorporated_partial"},
+        )
+    )
+
+    assert review is not None
+    assert review.category is NotificationCategory.SUBMISSION_STATUS
+    assert review.default_channels == (NotificationChannel.STATION,)
+    assert incorporation is not None
+    assert incorporation.category is NotificationCategory.INCORPORATION
+    assert incorporation.default_channels == (NotificationChannel.STATION,)
+
+
 def test_policy_separates_optional_email_from_mandatory_security() -> None:
     activity = NotificationPolicy.classify(
         _event(
