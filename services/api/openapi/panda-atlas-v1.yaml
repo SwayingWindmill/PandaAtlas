@@ -915,6 +915,42 @@ paths:
                 $ref: '#/components/schemas/DigestBatch'
         '409': { description: Invalid period or idempotency conflict }
 
+  /api/v1/webhooks/resend:
+    post:
+      tags: [notification]
+      summary: Receive one signed Resend delivery webhook
+      operationId: receiveResendNotificationWebhook
+      parameters:
+        - name: svix-id
+          in: header
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 500 }
+        - name: svix-timestamp
+          in: header
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 32 }
+        - name: svix-signature
+          in: header
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 4096 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, additionalProperties: true }
+      responses:
+        '202':
+          description: Signed webhook was deduplicated and queued for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationWebhookReceipt'
+        '400': { description: Signature, timestamp, or provider payload is invalid }
+        '409': { description: Provider event ID was reused with a conflicting payload }
+        '413': { description: Provider payload exceeds the bounded webhook size }
+        '404': { description: Resend transport is not enabled }
+        '503': { description: Notification database is unavailable }
+
   /api/v1/notification/metrics:
     get:
       tags: [notification]
@@ -2577,10 +2613,18 @@ components:
         queued_at: { type: string, format: date-time, nullable: true }
         created_at: { type: string, format: date-time }
 
+    NotificationWebhookReceipt:
+      type: object
+      additionalProperties: false
+      required: [status, provider_event_id]
+      properties:
+        status: { type: string, enum: [queued, duplicate] }
+        provider_event_id: { type: string, minLength: 1, maxLength: 500 }
+
     NotificationMetricsSnapshot:
       type: object
       additionalProperties: false
-      required: [intent_created_count, suppression_counts, unread_count, maximum_intent_latency_seconds, retraction_count, state_inconsistency_count]
+      required: [intent_created_count, suppression_counts, unread_count, maximum_intent_latency_seconds, retraction_count, state_inconsistency_count, queue_depths, oldest_queue_message_age_seconds, retry_count, dead_letter_count, maximum_provider_latency_seconds, provider_error_count, bounce_count, complaint_count, webhook_verification_failure_count, alerts]
       properties:
         intent_created_count: { type: integer, minimum: 0 }
         suppression_counts:
@@ -2590,3 +2634,19 @@ components:
         maximum_intent_latency_seconds: { type: number, minimum: 0 }
         retraction_count: { type: integer, minimum: 0 }
         state_inconsistency_count: { type: integer, minimum: 0 }
+        queue_depths:
+          type: object
+          additionalProperties: { type: integer, minimum: 0 }
+        oldest_queue_message_age_seconds:
+          type: object
+          additionalProperties: { type: number, minimum: 0 }
+        retry_count: { type: integer, minimum: 0 }
+        dead_letter_count: { type: integer, minimum: 0 }
+        maximum_provider_latency_seconds: { type: number, minimum: 0 }
+        provider_error_count: { type: integer, minimum: 0 }
+        bounce_count: { type: integer, minimum: 0 }
+        complaint_count: { type: integer, minimum: 0 }
+        webhook_verification_failure_count: { type: integer, minimum: 0 }
+        alerts:
+          type: array
+          items: { type: string }

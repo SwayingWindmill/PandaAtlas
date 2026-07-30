@@ -23,6 +23,52 @@ class Settings(BaseSettings):
     activity_enabled: bool = Field(default=False, alias="ACTIVITY_ENABLED")
     feed_enabled: bool = Field(default=False, alias="FEED_ENABLED")
     notification_enabled: bool = Field(default=False, alias="NOTIFICATION_ENABLED")
+    notification_email_enabled: bool = Field(
+        default=False,
+        alias="NOTIFICATION_EMAIL_ENABLED",
+    )
+    notification_transport: str = Field(default="resend", alias="NOTIFICATION_TRANSPORT")
+    notification_public_base_url: str = Field(
+        default="http://localhost:3000",
+        alias="NOTIFICATION_PUBLIC_BASE_URL",
+    )
+    notification_worker_visibility_timeout_seconds: int = Field(
+        default=120,
+        ge=30,
+        le=1800,
+        alias="NOTIFICATION_WORKER_VISIBILITY_TIMEOUT_SECONDS",
+    )
+    notification_worker_max_attempts: int = Field(
+        default=5,
+        ge=1,
+        le=20,
+        alias="NOTIFICATION_WORKER_MAX_ATTEMPTS",
+    )
+    notification_worker_base_backoff_seconds: int = Field(
+        default=30,
+        ge=1,
+        le=3600,
+        alias="NOTIFICATION_WORKER_BASE_BACKOFF_SECONDS",
+    )
+    notification_queue_alert_depth: int = Field(
+        default=100,
+        ge=1,
+        alias="NOTIFICATION_QUEUE_ALERT_DEPTH",
+    )
+    notification_queue_alert_age_seconds: int = Field(
+        default=300,
+        ge=1,
+        alias="NOTIFICATION_QUEUE_ALERT_AGE_SECONDS",
+    )
+    resend_api_url: str = Field(
+        default="https://api.resend.com/emails",
+        alias="RESEND_API_URL",
+    )
+    resend_api_key: str | None = Field(default=None, alias="RESEND_API_KEY")
+    resend_from_email: str | None = Field(default=None, alias="RESEND_FROM_EMAIL")
+    resend_webhook_secret: str | None = Field(default=None, alias="RESEND_WEBHOOK_SECRET")
+    auth_smtp_username: str | None = Field(default=None, alias="AUTH_SMTP_USERNAME")
+    auth_smtp_password: str | None = Field(default=None, alias="AUTH_SMTP_PASSWORD")
     notification_cursor_signing_key: str = Field(
         default="local-notification-cursor-signing-key-change-me",
         min_length=32,
@@ -91,6 +137,33 @@ class Settings(BaseSettings):
             raise ValueError(
                 "NOTIFICATION_CURSOR_SIGNING_KEY must be configured outside local environments"
             )
+        transport = self.notification_transport.lower().strip()
+        if transport != "resend":
+            raise ValueError("NOTIFICATION_TRANSPORT must be resend")
+        self.notification_transport = transport
+        if self.notification_email_enabled and not self.notification_enabled:
+            raise ValueError("NOTIFICATION_EMAIL_ENABLED requires NOTIFICATION_ENABLED")
+        if self.notification_email_enabled:
+            if not self.resend_api_key or not self.resend_from_email:
+                raise ValueError(
+                    "Resend email delivery requires RESEND_API_KEY and RESEND_FROM_EMAIL"
+                )
+            if not self.resend_webhook_secret:
+                raise ValueError(
+                    "Resend email delivery requires RESEND_WEBHOOK_SECRET for signed callbacks"
+                )
+        if (
+            self.resend_api_key
+            and self.resend_webhook_secret
+            and self.resend_api_key == self.resend_webhook_secret
+        ):
+            raise ValueError("Resend API and webhook credentials must differ")
+        if (
+            self.resend_api_key
+            and self.auth_smtp_password
+            and self.resend_api_key == self.auth_smtp_password
+        ):
+            raise ValueError("Resend API and Supabase Auth SMTP credentials must differ")
         return self
 
     def cors_origins(self) -> Sequence[str]:

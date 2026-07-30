@@ -1,0 +1,6 @@
+$title
+
+$summary
+
+Open your ZhiPanda Inbox: $inbox_url
+Category: $category

@@ -50,18 +50,22 @@ class NotificationRepository:
         self.cursor_signing_key = cursor_signing_key
 
     def project_outbox_event(self, event_id: UUID) -> dict[str, object]:
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select event_id, schema_version, event_type, event_version, source_context,
                        aggregate_type, aggregate_id, aggregate_version, idempotency_key,
                        correlation_id, causation_id, occurred_at, payload
                 from integration.outbox_events
                 where event_id = :event_id
                 """
-            ),
-            {"event_id": event_id},
-        ).mappings().one_or_none()
+                ),
+                {"event_id": event_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if row is None:
             raise NotificationNotFoundError("source event was not found")
         event = IntegrationEventEnvelope.model_validate(
@@ -91,16 +95,20 @@ class NotificationRepository:
             text("select pg_advisory_xact_lock(hashtextextended(:key, 0))"),
             {"key": f"notification-source-event:{event.event_id}"},
         )
-        receipt = self.session.execute(
-            text(
-                """
+        receipt = (
+            self.session.execute(
+                text(
+                    """
                 select event_type, payload_hash, outcome, intent_count, suppression_reason
                 from notification.source_receipts
                 where source_event_id = :event_id
                 """
-            ),
-            {"event_id": event.event_id},
-        ).mappings().one_or_none()
+                ),
+                {"event_id": event.event_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if receipt is not None:
             if receipt["payload_hash"] != payload_hash or receipt["event_type"] != event.event_type:
                 raise NotificationConflictError("source event id was reused with different content")
@@ -188,17 +196,21 @@ class NotificationRepository:
         if category is NotificationCategory.SECURITY_ROLE and not command.enabled:
             raise NotificationConflictError("mandatory security notifications cannot be disabled")
         subject_hash = _subject_hash(identity.account_id)
-        replay = self.session.execute(
-            text(
-                """
+        replay = (
+            self.session.execute(
+                text(
+                    """
                 select category::text, channel::text, enabled
                 from notification.preference_events
                 where account_subject_hash = :subject_hash
                   and idempotency_key = :idempotency_key
                 """
-            ),
-            {"subject_hash": subject_hash, "idempotency_key": command.idempotency_key},
-        ).mappings().one_or_none()
+                ),
+                {"subject_hash": subject_hash, "idempotency_key": command.idempotency_key},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if replay is not None:
             if (
                 replay["category"] != category.value
@@ -309,9 +321,10 @@ class NotificationRepository:
                 account_id=identity.account_id,
                 signing_key=self.cursor_signing_key,
             )
-        rows = self.session.execute(
-            text(
-                """
+        rows = (
+            self.session.execute(
+                text(
+                    """
                 select inbox_item_id, intent_id, category::text,
                        case
                          when body_expires_at <= now() then jsonb_build_object(
@@ -333,14 +346,17 @@ class NotificationRepository:
                 order by created_at desc, inbox_item_id desc
                 limit :limit
                 """
-            ),
-            {
-                "account_id": identity.account_id,
-                "cursor_created_at": created_at,
-                "cursor_item_id": inbox_item_id,
-                "limit": max(1, min(page_size, 100)) + 1,
-            },
-        ).mappings().all()
+                ),
+                {
+                    "account_id": identity.account_id,
+                    "cursor_created_at": created_at,
+                    "cursor_item_id": inbox_item_id,
+                    "limit": max(1, min(page_size, 100)) + 1,
+                },
+            )
+            .mappings()
+            .all()
+        )
         visible = rows[: max(1, min(page_size, 100))]
         items = [self._inbox_item(row) for row in visible]
         next_cursor = None
@@ -455,21 +471,28 @@ class NotificationRepository:
         self._require_active(identity)
         if command.period_end <= command.period_start:
             raise NotificationConflictError("digest period_end must be after period_start")
-        replay = self.session.execute(
-            text(
-                """
+        replay = (
+            self.session.execute(
+                text(
+                    """
                 select * from notification.digest_batches
                 where account_id = :account_id and idempotency_key = :idempotency_key
                 """
-            ),
-            {
-                "account_id": identity.account_id,
-                "idempotency_key": command.idempotency_key,
-            },
-        ).mappings().one_or_none()
+                ),
+                {
+                    "account_id": identity.account_id,
+                    "idempotency_key": command.idempotency_key,
+                },
+            )
+            .mappings()
+            .one_or_none()
+        )
         if replay is not None:
             expected = (
-                replay["frequency"], replay["period_start"], replay["period_end"], replay["locale"]
+                replay["frequency"],
+                replay["period_start"],
+                replay["period_end"],
+                replay["locale"],
             )
             supplied = (
                 command.frequency.value,
@@ -481,9 +504,10 @@ class NotificationRepository:
                 raise NotificationConflictError("idempotency key was reused for another Digest")
             return self._digest(replay)
 
-        intents = self.session.execute(
-            text(
-                """
+        intents = (
+            self.session.execute(
+                text(
+                    """
                 select i.intent_id, i.category::text, i.content_snapshot, i.created_at
                 from notification.intents i
                 join notification.intent_channels c on c.intent_id = i.intent_id
@@ -497,13 +521,16 @@ class NotificationRepository:
                   and i.created_at < :period_end
                 order by i.created_at, i.intent_id
                 """
-            ),
-            {
-                "account_id": identity.account_id,
-                "period_start": command.period_start,
-                "period_end": command.period_end,
-            },
-        ).mappings().all()
+                ),
+                {
+                    "account_id": identity.account_id,
+                    "period_start": command.period_start,
+                    "period_end": command.period_end,
+                },
+            )
+            .mappings()
+            .all()
+        )
         batch_id = uuid4()
         content = {
             "locale": command.locale,
@@ -517,9 +544,10 @@ class NotificationRepository:
                 for row in intents
             ],
         }
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 insert into notification.digest_batches (
                   batch_id, account_id, frequency, state, locale, period_start, period_end,
                   content, content_version, idempotency_key, correlation_id, queued_at
@@ -529,19 +557,22 @@ class NotificationRepository:
                   :idempotency_key, :correlation_id, now()
                 ) returning *
                 """
-            ),
-            {
-                "batch_id": batch_id,
-                "account_id": identity.account_id,
-                "frequency": command.frequency.value,
-                "locale": command.locale,
-                "period_start": command.period_start,
-                "period_end": command.period_end,
-                "content": json.dumps(content),
-                "idempotency_key": command.idempotency_key,
-                "correlation_id": correlation_id,
-            },
-        ).mappings().one()
+                ),
+                {
+                    "batch_id": batch_id,
+                    "account_id": identity.account_id,
+                    "frequency": command.frequency.value,
+                    "locale": command.locale,
+                    "period_start": command.period_start,
+                    "period_end": command.period_end,
+                    "content": json.dumps(content),
+                    "idempotency_key": command.idempotency_key,
+                    "correlation_id": correlation_id,
+                },
+            )
+            .mappings()
+            .one()
+        )
         for ordinal, intent in enumerate(intents, start=1):
             self.session.execute(
                 text(
@@ -605,9 +636,10 @@ class NotificationRepository:
             text("select pg_advisory_xact_lock(hashtextextended(:key, 0))"),
             {"key": f"notification-delivery:{intent_id}:{channel.value}"},
         )
-        replay = self.session.execute(
-            text(
-                """
+        replay = (
+            self.session.execute(
+                text(
+                    """
                 select attempt_id, intent_id, channel::text, attempt_number, state::text,
                        provider, provider_message_id, failure_code, failure_detail,
                        attempted_at, correlation_id
@@ -616,13 +648,16 @@ class NotificationRepository:
                   and channel = :channel
                   and idempotency_key = :idempotency_key
                 """
-            ),
-            {
-                "intent_id": intent_id,
-                "channel": channel.value,
-                "idempotency_key": command.idempotency_key,
-            },
-        ).mappings().one_or_none()
+                ),
+                {
+                    "intent_id": intent_id,
+                    "channel": channel.value,
+                    "idempotency_key": command.idempotency_key,
+                },
+            )
+            .mappings()
+            .one_or_none()
+        )
         if replay is not None:
             expected = (
                 replay["state"],
@@ -647,9 +682,10 @@ class NotificationRepository:
             self.session.commit()
             return result
 
-        channel_state = self.session.execute(
-            text(
-                """
+        channel_state = (
+            self.session.execute(
+                text(
+                    """
                 select i.state::text as intent_state, c.enabled,
                        c.delivery_state::text as delivery_state
                 from notification.intents i
@@ -657,9 +693,12 @@ class NotificationRepository:
                 where i.intent_id = :intent_id and c.channel = :channel
                 for update of i, c
                 """
-            ),
-            {"intent_id": intent_id, "channel": channel.value},
-        ).mappings().one_or_none()
+                ),
+                {"intent_id": intent_id, "channel": channel.value},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if channel_state is None:
             self.session.rollback()
             raise NotificationNotFoundError("Notification Intent channel was not found")
@@ -669,10 +708,7 @@ class NotificationRepository:
         ):
             self.session.rollback()
             raise NotificationConflictError("retracted Notification cannot be delivered")
-        if (
-            not bool(channel_state["enabled"])
-            or channel_state["delivery_state"] == "suppressed"
-        ):
+        if not bool(channel_state["enabled"]) or channel_state["delivery_state"] == "suppressed":
             self.session.rollback()
             raise NotificationConflictError("suppressed Notification channel cannot be delivered")
         if channel_state["delivery_state"] == "delivered":
@@ -691,9 +727,10 @@ class NotificationRepository:
                 {"intent_id": intent_id, "channel": channel.value},
             ).scalar_one()
         )
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 insert into notification.delivery_attempts (
                   intent_id, channel, attempt_number, idempotency_key, state,
                   provider, provider_message_id, failure_code, failure_detail,
@@ -707,20 +744,23 @@ class NotificationRepository:
                           provider, provider_message_id, failure_code, failure_detail,
                           attempted_at, correlation_id
                 """
-            ),
-            {
-                "intent_id": intent_id,
-                "channel": channel.value,
-                "attempt_number": attempt_number,
-                "idempotency_key": command.idempotency_key,
-                "state": command.state.value,
-                "provider": command.provider,
-                "provider_message_id": command.provider_message_id,
-                "failure_code": command.failure_code,
-                "failure_detail": command.failure_detail,
-                "correlation_id": correlation_id,
-            },
-        ).mappings().one()
+                ),
+                {
+                    "intent_id": intent_id,
+                    "channel": channel.value,
+                    "attempt_number": attempt_number,
+                    "idempotency_key": command.idempotency_key,
+                    "state": command.state.value,
+                    "provider": command.provider,
+                    "provider_message_id": command.provider_message_id,
+                    "failure_code": command.failure_code,
+                    "failure_detail": command.failure_detail,
+                    "correlation_id": correlation_id,
+                },
+            )
+            .mappings()
+            .one()
+        )
         delivered = command.state.value == "delivered"
         self.session.execute(
             text(
@@ -785,10 +825,16 @@ class NotificationRepository:
         self.session.commit()
         return count
 
-    def metrics(self) -> NotificationMetricsSnapshot:
-        counts = self.session.execute(
-            text(
-                """
+    def metrics(
+        self,
+        *,
+        queue_alert_depth: int = 100,
+        queue_alert_age_seconds: int = 300,
+    ) -> NotificationMetricsSnapshot:
+        counts = (
+            self.session.execute(
+                text(
+                    """
                 select
                   (select count(*) from notification.intents) as intent_created_count,
                   (
@@ -855,11 +901,15 @@ class NotificationRepository:
                       ))
                   ) as state_inconsistency_count
                 """
+                )
             )
-        ).mappings().one()
-        suppression_rows = self.session.execute(
-            text(
-                """
+            .mappings()
+            .one()
+        )
+        suppression_rows = (
+            self.session.execute(
+                text(
+                    """
                 select reason, sum(reason_count)::bigint as reason_count
                 from (
                   select suppression_reason as reason, count(*)::bigint as reason_count
@@ -875,20 +925,27 @@ class NotificationRepository:
                 group by reason
                 order by reason
                 """
+                )
             )
-        ).mappings().all()
+            .mappings()
+            .all()
+        )
+        from app.notification.delivery import NotificationDeliveryRepository
+
+        transport = NotificationDeliveryRepository(self.session).transport_metrics(
+            queue_alert_depth=queue_alert_depth,
+            queue_alert_age_seconds=queue_alert_age_seconds,
+        )
         return NotificationMetricsSnapshot(
             intent_created_count=int(counts["intent_created_count"]),
             suppression_counts={
-                str(row["reason"]): int(row["reason_count"])
-                for row in suppression_rows
+                str(row["reason"]): int(row["reason_count"]) for row in suppression_rows
             },
             unread_count=int(counts["unread_count"]),
-            maximum_intent_latency_seconds=float(
-                counts["maximum_intent_latency_seconds"]
-            ),
+            maximum_intent_latency_seconds=float(counts["maximum_intent_latency_seconds"]),
             retraction_count=int(counts["retraction_count"]),
             state_inconsistency_count=int(counts["state_inconsistency_count"]),
+            **transport,
         )
 
     def _audience(
@@ -900,19 +957,24 @@ class NotificationRepository:
         if event.event_type.startswith("activity.item."):
             panda_ids = [str(value) for value in event.payload.get("target_panda_ids", [])]
             if bool(event.payload.get("sitewide", False)):
-                rows = self.session.execute(
-                    text(
-                        """
+                rows = (
+                    self.session.execute(
+                        text(
+                            """
                         select account_id, state::text from identity.accounts
                         where state = 'active'
                         order by account_id
                         """
+                        )
                     )
-                ).mappings().all()
+                    .mappings()
+                    .all()
+                )
             elif panda_ids:
-                rows = self.session.execute(
-                    text(
-                        """
+                rows = (
+                    self.session.execute(
+                        text(
+                            """
                         select distinct a.account_id, a.state::text
                         from engagement.follows f
                         join identity.accounts a on a.account_id = f.account_id
@@ -921,9 +983,12 @@ class NotificationRepository:
                           and f.panda_id = any(:panda_ids)
                         order by a.account_id
                         """
-                    ),
-                    {"panda_ids": panda_ids},
-                ).mappings().all()
+                        ),
+                        {"panda_ids": panda_ids},
+                    )
+                    .mappings()
+                    .all()
+                )
             else:
                 return []
             return [dict(row) for row in rows]
@@ -932,15 +997,19 @@ class NotificationRepository:
         if account_id is None:
             return []
         allowed_states = ["active", "suspended"] if mandatory else ["active"]
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select account_id, state::text from identity.accounts
                 where account_id = :account_id and state::text = any(:states)
                 """
-            ),
-            {"account_id": UUID(str(account_id)), "states": allowed_states},
-        ).mappings().one_or_none()
+                ),
+                {"account_id": UUID(str(account_id)), "states": allowed_states},
+            )
+            .mappings()
+            .one_or_none()
+        )
         return [] if row is None else [dict(row)]
 
     def _create_intent(
@@ -962,9 +1031,10 @@ class NotificationRepository:
             account_id=account_id,
         )
         preferences = self._preference_snapshot(account_id)
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 insert into notification.intents (
                   logical_key, source_event_id, source_event_type, source_context,
                   source_id, source_version, account_id, category, mandatory,
@@ -977,25 +1047,28 @@ class NotificationRepository:
                 ) on conflict (logical_key) do nothing
                 returning intent_id, created_at
                 """
-            ),
-            {
-                "logical_key": logical_key,
-                "source_event_id": event.event_id,
-                "source_event_type": event.event_type,
-                "source_context": event.source_context,
-                "source_id": source_id,
-                "source_version": event.aggregate.version,
-                "account_id": account_id,
-                "category": category.value,
-                "mandatory": mandatory,
-                "audience_snapshot": json.dumps(
-                    {"account_state": account["state"], "account_id": str(account_id)}
                 ),
-                "preference_snapshot": json.dumps(preferences),
-                "content_snapshot": json.dumps(content),
-                "correlation_id": event.correlation_id,
-            },
-        ).mappings().one_or_none()
+                {
+                    "logical_key": logical_key,
+                    "source_event_id": event.event_id,
+                    "source_event_type": event.event_type,
+                    "source_context": event.source_context,
+                    "source_id": source_id,
+                    "source_version": event.aggregate.version,
+                    "account_id": account_id,
+                    "category": category.value,
+                    "mandatory": mandatory,
+                    "audience_snapshot": json.dumps(
+                        {"account_state": account["state"], "account_id": str(account_id)}
+                    ),
+                    "preference_snapshot": json.dumps(preferences),
+                    "content_snapshot": json.dumps(content),
+                    "correlation_id": event.correlation_id,
+                },
+            )
+            .mappings()
+            .one_or_none()
+        )
         if row is None:
             return False
         intent_id = UUID(str(row["intent_id"]))
@@ -1103,18 +1176,22 @@ class NotificationRepository:
         reason: str,
         correlation_id: UUID,
     ) -> int:
-        rows = self.session.execute(
-            text(
-                """
+        rows = (
+            self.session.execute(
+                text(
+                    """
                 update notification.intents
                 set state = 'retracted', retracted_at = now(), retraction_reason = :reason
                 where source_context = :source_context and source_id = :source_id
                   and state = 'active'
                 returning intent_id, account_id
                 """
-            ),
-            {"source_context": source_context, "source_id": source_id, "reason": reason},
-        ).mappings().all()
+                ),
+                {"source_context": source_context, "source_id": source_id, "reason": reason},
+            )
+            .mappings()
+            .all()
+        )
         for row in rows:
             intent_id = row["intent_id"]
             self.session.execute(
@@ -1179,15 +1256,19 @@ class NotificationRepository:
         correction_activity_id: str,
         correlation_id: UUID,
     ) -> int:
-        originals = self.session.execute(
-            text(
-                """
+        originals = (
+            self.session.execute(
+                text(
+                    """
                 select activity_id from activity.items
                 where correction_activity_id = :correction_activity_id
                 """
-            ),
-            {"correction_activity_id": UUID(correction_activity_id)},
-        ).scalars().all()
+                ),
+                {"correction_activity_id": UUID(correction_activity_id)},
+            )
+            .scalars()
+            .all()
+        )
         total = 0
         for original in originals:
             count = self._retract_source(
@@ -1203,17 +1284,21 @@ class NotificationRepository:
     def _content_snapshot(self, event: IntegrationEventEnvelope) -> dict[str, object]:
         if event.event_type.startswith("activity.item."):
             activity_id = UUID(str(event.payload["activity_id"]))
-            row = self.session.execute(
-                text(
-                    """
+            row = (
+                self.session.execute(
+                    text(
+                        """
                     select activity_id, activity_type, importance, occurred_at, published_at,
                            localized_snapshots, media, provenance, retraction_state,
                            retracted_at, retraction_reason
                     from activity.items where activity_id = :activity_id
                     """
-                ),
-                {"activity_id": activity_id},
-            ).mappings().one_or_none()
+                    ),
+                    {"activity_id": activity_id},
+                )
+                .mappings()
+                .one_or_none()
+            )
             if row is not None:
                 return {
                     "activity_id": str(row["activity_id"]),
@@ -1243,22 +1328,24 @@ class NotificationRepository:
         return {
             "event_type": event.event_type,
             "occurred_at": event.occurred_at.isoformat(),
-            "payload": {
-                key: value for key, value in event.payload.items() if key in allowed_keys
-            },
+            "payload": {key: value for key, value in event.payload.items() if key in allowed_keys},
         }
 
     def _preference_snapshot(self, account_id: UUID) -> dict[str, dict[str, object]]:
-        rows = self.session.execute(
-            text(
-                """
+        rows = (
+            self.session.execute(
+                text(
+                    """
                 select channel::text, enabled, version
                 from notification.preferences
                 where account_id = :account_id
                 """
-            ),
-            {"account_id": account_id},
-        ).mappings().all()
+                ),
+                {"account_id": account_id},
+            )
+            .mappings()
+            .all()
+        )
         return {
             str(row["channel"]): {"enabled": bool(row["enabled"]), "version": int(row["version"])}
             for row in rows
@@ -1308,22 +1395,27 @@ class NotificationRepository:
         category: NotificationCategory,
         channel: NotificationChannel,
     ) -> NotificationPreferenceState:
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select account_id, category::text, channel::text, enabled, version, updated_at
                 from notification.preferences
                 where account_id = :account_id and category = :category and channel = :channel
                 """
-            ),
-            {"account_id": account_id, "category": category.value, "channel": channel.value},
-        ).mappings().one()
+                ),
+                {"account_id": account_id, "category": category.value, "channel": channel.value},
+            )
+            .mappings()
+            .one()
+        )
         return NotificationPreferenceState.model_validate(dict(row))
 
     def _get_inbox_item(self, account_id: UUID, inbox_item_id: UUID) -> InboxItem:
-        row = self.session.execute(
-            text(
-                """
+        row = (
+            self.session.execute(
+                text(
+                    """
                 select inbox_item_id, intent_id, category::text,
                        case
                          when body_expires_at <= now() then jsonb_build_object(
@@ -1336,9 +1428,12 @@ class NotificationRepository:
                 from notification.inbox_items
                 where account_id = :account_id and inbox_item_id = :inbox_item_id
                 """
-            ),
-            {"account_id": account_id, "inbox_item_id": inbox_item_id},
-        ).mappings().one_or_none()
+                ),
+                {"account_id": account_id, "inbox_item_id": inbox_item_id},
+            )
+            .mappings()
+            .one_or_none()
+        )
         if row is None:
             raise NotificationNotFoundError("Inbox item was not found")
         return self._inbox_item(row)
@@ -1374,16 +1469,20 @@ class NotificationRepository:
         )
 
     def _state_replay(self, account_id: UUID, idempotency_key: str) -> Any:
-        return self.session.execute(
-            text(
-                """
+        return (
+            self.session.execute(
+                text(
+                    """
                 select action, inbox_item_id from notification.inbox_state_events
                 where account_subject_hash = :subject_hash
                   and idempotency_key = :idempotency_key
                 """
-            ),
-            {"subject_hash": _subject_hash(account_id), "idempotency_key": idempotency_key},
-        ).mappings().one_or_none()
+                ),
+                {"subject_hash": _subject_hash(account_id), "idempotency_key": idempotency_key},
+            )
+            .mappings()
+            .one_or_none()
+        )
 
     def _record_state_event(
         self,
@@ -1580,9 +1679,7 @@ def _delivery_key(
     channel: NotificationChannel,
     idempotency_key: str,
 ) -> str:
-    digest = hashlib.sha256(
-        f"{intent_id}:{channel.value}:{idempotency_key}".encode()
-    ).hexdigest()
+    digest = hashlib.sha256(f"{intent_id}:{channel.value}:{idempotency_key}".encode()).hexdigest()
     return f"notification-delivery:{digest}"
 
 

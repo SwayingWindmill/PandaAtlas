@@ -1,0 +1,6 @@
+$title
+
+$summary
+
+打开吱熊猫站内信：$inbox_url
+分类：$category

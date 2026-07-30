@@ -302,6 +302,31 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
             if queue_persistence is None or queue_persistence[0] != "p":
                 raise FoundationCheckError("integration_events must use a logged PostgreSQL table")
 
+            for queue_name in (
+                "notification_deliveries",
+                "notification_deliveries_dlq",
+                "notification_webhooks",
+                "notification_webhooks_dlq",
+            ):
+                relation = f"pgmq.q_{queue_name}"
+                cursor.execute("select to_regclass(%s)::text", (relation,))
+                if cursor.fetchone()[0] != relation:
+                    raise FoundationCheckError(
+                        f"Logged Notification queue is missing: {queue_name}"
+                    )
+                cursor.execute(
+                    """
+                    select c.relpersistence
+                    from pg_class c
+                    join pg_namespace n on n.oid = c.relnamespace
+                    where n.nspname = 'pgmq' and c.relname = %s
+                    """,
+                    (f"q_{queue_name}",),
+                )
+                persistence = cursor.fetchone()
+                if persistence is None or persistence[0] != "p":
+                    raise FoundationCheckError(f"Notification queue must be logged: {queue_name}")
+
             cursor.execute(
                 "select public, file_size_limit from storage.buckets where id = %s",
                 ("panda-atlas-private",),
@@ -385,6 +410,12 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 "notification.digest_batches",
                 "notification.digest_items",
                 "notification.audit_events",
+                "notification.transport_outbox_receipts",
+                "notification.delivery_jobs",
+                "notification.transport_attempts",
+                "notification.provider_webhook_events",
+                "notification.email_suppressions",
+                "notification.worker_events",
             ):
                 cursor.execute("select to_regclass(%s)::text", (relation,))
                 if cursor.fetchone()[0] != relation:
@@ -409,11 +440,14 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                         "trg_digest_batches_immutable",
                         "trg_delivery_attempts_immutable",
                         "trg_digest_items_immutable",
+                        "trg_transport_outbox_receipts_append_only",
+                        "trg_worker_events_append_only",
+                        "trg_transport_attempts_immutable",
                     ],
                 ),
             )
             notification_immutability_trigger_count = int(cursor.fetchone()[0])
-            if notification_immutability_trigger_count != 7:
+            if notification_immutability_trigger_count != 10:
                 raise FoundationCheckError("Notification immutability triggers are incomplete")
 
             cursor.execute(
