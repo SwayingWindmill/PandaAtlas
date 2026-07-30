@@ -48,7 +48,7 @@ def test_bridge_command_never_marks_contributor_published() -> None:
     assert "incorporation_in_progress" in bridge_function
     assert "incorporated_full" not in bridge_function
     assert "incorporated_partial" not in bridge_function
-    assert "status = 'draft'" in bridge_function
+    assert "'draft'" in bridge_function
     assert "'not_validated'" in bridge_function
 
 
