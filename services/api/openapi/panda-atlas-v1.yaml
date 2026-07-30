@@ -22,6 +22,7 @@ tags:
   - name: map
   - name: stats
   - name: admin
+  - name: admin-accountable-publication
   - name: admin-review
   - name: feed
   - name: notification
@@ -1703,6 +1704,15 @@ paths:
 
   /api/v1/admin/review-metrics:
     $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-metrics'
+
+  /api/v1/admin/archive/change-sets/{change_set_id}/validate:
+    $ref: './accountable-publication-v1.yaml#/paths/~1api~1v1~1admin~1archive~1change-sets~1{change_set_id}~1validate'
+
+  /api/v1/admin/archive/change-sets/{change_set_id}/publish:
+    $ref: './accountable-publication-v1.yaml#/paths/~1api~1v1~1admin~1archive~1change-sets~1{change_set_id}~1publish'
+
+  /api/v1/admin/archive/publication-metrics:
+    $ref: './accountable-publication-v1.yaml#/paths/~1api~1v1~1admin~1archive~1publication-metrics'
 
 components:
   securitySchemes:
