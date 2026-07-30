@@ -1,0 +1,2831 @@
+{
+  "contract_version": "1.0.0",
+  "decision_issue": 217,
+  "parent_map_issue": 215,
+  "public_brand": {
+    "zh": "吱熊猫",
+    "en": "ZhiPanda"
+  },
+  "legacy_terms": [
+    "PandaAtlas",
+    "Panda Atlas",
+    "panda-atlas",
+    "panda_atlas",
+    "PANDA_ATLAS",
+    "pandaatlas",
+    "panda atlas"
+  ],
+  "public_legacy_brand_terms": [
+    "PandaAtlas",
+    "Panda Atlas",
+    "panda atlas"
+  ],
+  "tone": {
+    "required": [
+      "warm",
+      "lively",
+      "curious",
+      "concise",
+      "non-childish",
+      "evidence-honest"
+    ],
+    "prohibited_public_behaviors": [
+      "unsupported-personality",
+      "invented-story",
+      "invented-count-or-location",
+      "hidden-uncertainty",
+      "unreviewed-media-substitution",
+      "archive-console-as-primary-register"
+    ]
+  },
+  "controlled_terms": {
+    "product_brand": {
+      "zh": "吱熊猫",
+      "en": "ZhiPanda"
+    },
+    "panda_profile": {
+      "zh": "熊猫资料",
+      "en": "Panda profile"
+    },
+    "panda_family": {
+      "zh": "熊猫家族",
+      "en": "Panda family"
+    },
+    "journey": {
+      "zh": "生活足迹",
+      "en": "Life journey"
+    },
+    "place": {
+      "zh": "生活过的地方",
+      "en": "Places lived"
+    },
+    "institution": {
+      "zh": "熊猫机构",
+      "en": "Panda institution"
+    },
+    "follow": {
+      "zh": "关注",
+      "en": "Follow"
+    },
+    "activity": {
+      "zh": "熊猫动态",
+      "en": "Panda updates"
+    },
+    "source": {
+      "zh": "资料来源",
+      "en": "Sources"
+    },
+    "verification": {
+      "zh": "最近核实",
+      "en": "Last checked"
+    },
+    "partial_data": {
+      "zh": "部分资料可用",
+      "en": "Some information available"
+    },
+    "unavailable_data": {
+      "zh": "暂无可用资料",
+      "en": "Information unavailable"
+    },
+    "correction": {
+      "zh": "提交纠错",
+      "en": "Submit a correction"
+    }
+  },
+  "classification_values": {
+    "category": [
+      "public-visible",
+      "technical-compatible",
+      "historical",
+      "undecided"
+    ],
+    "user_visibility": [
+      "public",
+      "staff",
+      "internal",
+      "historical-record"
+    ],
+    "expected_action": [
+      "migrate-in-218",
+      "migrate-in-219",
+      "retain-compatibility",
+      "retain-historical"
+    ]
+  },
+  "scan": {
+    "excluded_directories": [
+      ".git",
+      ".worktrees",
+      ".ai-bridge",
+      ".planning",
+      "node_modules",
+      ".next",
+      ".open-next",
+      ".venv",
+      "__pycache__",
+      ".pytest_cache",
+      ".ruff_cache",
+      "test-results",
+      ".release-gate"
+    ],
+    "excluded_paths": [
+      ".git",
+      ".brand-scan.json",
+      "contracts/zhipanda-brand-migration.v1.json",
+      "scripts/brand/check-zhipanda-brand.mjs"
+    ],
+    "public_source_roots": [
+      "apps/web/app/",
+      "apps/web/components/patterns/",
+      "apps/web/features/",
+      "services/api/app/notification/templates/"
+    ],
+    "public_source_exclusions": []
+  },
+  "inventory": [
+    {
+      "path": "AGENTS.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "Panda Atlas": 2,
+        "panda-atlas": 8,
+        "panda_atlas": 2
+      }
+    },
+    {
+      "path": "CONTEXT-MAP.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 2,
+        "panda-atlas": 1,
+        "panda_atlas": 3
+      }
+    },
+    {
+      "path": "apps/web/components/admin/react-admin-shell.tsx",
+      "category": "public-visible",
+      "user_visibility": "staff",
+      "migration_owner": "#218 shared shell and communications",
+      "expected_action": "migrate-in-218",
+      "rationale": "The administration shell exposes the retired product name to staff users and must adopt ZhiPanda.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "apps/web/features/auth/email-otp-login.tsx",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "apps/web/features/map/visualization/map-layer-model.ts",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 11
+      }
+    },
+    {
+      "path": "apps/web/features/map/visualization/map-provider-adapter.ts",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "apps/web/features/preferences/profile-preferences.ts",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "apps/web/features/public-content/frontend-withdrawal.ts",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PANDA_ATLAS": 1
+      }
+    },
+    {
+      "path": "apps/web/lib/server/pending-follow-cookie.ts",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "apps/web/scripts/check-frontend-design-policy.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "#217 brand governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "The active brand policy or enforcement code must name the retired brand in order to define and detect it.",
+      "matches": {
+        "PandaAtlas": 2
+      }
+    },
+    {
+      "path": "apps/web/scripts/verify-frontend-staging-withdrawal.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "apps/web/tests/smoke/my-pandas.spec.ts",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "apps/web/tests/smoke/one-panda-public-loop.spec.ts",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "apps/web/wrangler.jsonc",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "apps/web/wrangler.staging.jsonc",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "apps/web/wrangler.staging.withdrawn.jsonc",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1,
+        "PANDA_ATLAS": 1
+      }
+    },
+    {
+      "path": "contracts/acquisition-bundle.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/curation-patch.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/curator-decisions.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/frontend-release-evidence.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "contracts/frontend-system-closure.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/golden-dataset/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "contracts/integration-event.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-bilingual-summary-fixtures/v1/confirmed-birth.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "contracts/panda-bilingual-summary-fixtures/v1/disputed-birth.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "contracts/panda-bilingual-summary-fixtures/v1/tentative-birth.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "contracts/panda-bilingual-summary.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 6
+      }
+    },
+    {
+      "path": "contracts/panda-discovery-intake-fixtures/v1/completed.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-discovery-intake-fixtures/v1/incremental.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-discovery-intake-fixtures/v1/stopped.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-discovery-intake.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "contracts/panda-expansion.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-fact-enrichment-fixtures/v1/conflict.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-fact-enrichment-fixtures/v1/correction.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-fact-enrichment-fixtures/v1/direct-and-review.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-fact-enrichment-fixtures/v1/inferred.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-fact-enrichment-fixtures/v1/tentative-relationship.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-fact-enrichment.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "contracts/panda-identity-extraction-fixtures/v1/group-observation.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-identity-extraction-fixtures/v1/multilingual.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-identity-extraction-fixtures/v1/unresolved-name-only.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-identity-extraction.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/alias.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/changed-name.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/exact.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/merge.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/same-name-different-panda.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/split.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/translated-name.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution-fixtures/v1/unresolved-name-only.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/panda-identity-resolution.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/conflict.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/correction.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/direct-evidence.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/inferred-value.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/missing-media.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/tentative-lineage.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/unresolved-identity.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge-fixtures/v1/withdrawal.valid.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/panda-knowledge.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/public-api-v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "contract governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/acquisition-sources/registry.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "curation and acquisition",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 7
+      }
+    },
+    {
+      "path": "data/curation/pandas/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "curation and acquisition",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "data/frontend-evidence/issue-40.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/frontend-evidence/issue-45.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/frontend-evidence/issue-47.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/frontend-evidence/issue-49.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/frontend-evidence/issue-57.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "data/frontend-evidence/public-beta-2026.07.18.1.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 3,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.20.1/README.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.20.1/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.20.2/README.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.20.2/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.21.1/README.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.21.1/processor-manifest.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.21.1/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.23.1/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.24.1/risk-report.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.24.1/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.24.2/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/agents/domain.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/agents/issue-tracker.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/architecture/adr-0001-single-source-api-boundary.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "docs/architecture/frontend-system-boundary-and-token-component-architecture.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 19
+      }
+    },
+    {
+      "path": "docs/data-acquisition/acquisition-candidate-contract-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/acquisition-work-queue-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/bilingual-panda-summary-generation-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/bulk-panda-enrichment-identity-intake-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/bulk-panda-fact-enrichment-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "docs/data-acquisition/bulk-panda-identity-resolution-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/chengdu-international-first-batch-2026-07-23.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 2,
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/commons-media-discovery-2026-07-24.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/crawler-poc.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 4
+      }
+    },
+    {
+      "path": "docs/data-acquisition/curator-decisions-and-curation-patches-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "docs/data-acquisition/identity-reconciliation-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/immutable-collection-release-first-slice-2026-07-24.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/official-source-expansion-plan-2026-07-22.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/open-multilingual-source-discovery-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/panda-knowledge-publication-contract-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/smithsonian-current-pair-curation-review-2026-07-23.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/smithsonian-current-pair-live-replay-2026-07-23.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/smithsonian-first-cohort-2026-07-22.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 2
+      }
+    },
+    {
+      "path": "docs/data-acquisition/smithsonian-panda-profiles-adapter.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 2,
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "docs/data-acquisition/source-adapter-runner-v1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "docs/data-acquisition/source-review-2026-07-21.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "docs/data-acquisition/source-review-2026-07-22.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 13
+      }
+    },
+    {
+      "path": "docs/design/content-data-honesty-media-and-ui-state-rules.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 24
+      }
+    },
+    {
+      "path": "docs/design/core-public-journeys-and-information-architecture.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 14,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/design/cross-surface-design-language-direction.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 17
+      }
+    },
+    {
+      "path": "docs/design/frontend-design-principles-and-standards.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 16,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/design/zhipanda-frontend-policy.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "#217 brand governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "The active brand policy or enforcement code must name the retired brand in order to define and detect it.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/design/zhipanda-public-brand-and-copy-contract.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "#217 brand governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "The active brand policy or enforcement code must name the retired brand in order to define and detect it.",
+      "matches": {
+        "PandaAtlas": 3,
+        "Panda Atlas": 3,
+        "panda atlas": 1
+      }
+    },
+    {
+      "path": "docs/implementation/local-supabase-foundation.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/implementation/phased-frontend-system-handoff.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 7
+      }
+    },
+    {
+      "path": "docs/monorepo-structure.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 3,
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "docs/product/panda-atlas-public-beta-prd.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 10
+      }
+    },
+    {
+      "path": "docs/release/api-staging-withdrawal.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 5
+      }
+    },
+    {
+      "path": "docs/release/beta-hard-gate-evidence-inventory.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 12,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "docs/release/frontend-quality-gates-and-visual-verification.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 10
+      }
+    },
+    {
+      "path": "docs/release/frontend-staging-withdrawal.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/release/postgres-attachment-recovery.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/release/private-collection-mode.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/release/recovery-drill.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/release/release-gate.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "docs/release/staging-accessibility-axe-2026-07-15.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 12
+      }
+    },
+    {
+      "path": "docs/release/staging-accessibility-evidence-2026-07-15.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 3
+      }
+    },
+    {
+      "path": "docs/release/versioned-public-projection.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "docs/release/wcag-2.2-aa-evidence-baseline.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "Panda Atlas": 2
+      }
+    },
+    {
+      "path": "docs/release/wcag-2.2-aa-human-acceptance-checklist.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/releases/production-public-release.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "docs/research/frontend-system-audit-2026-07-15.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 9,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "findings.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "infra/cloudflare/d1/migrations/0001_initial.sql",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "infra/cloudflare/d1/schema.sql",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "data platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "infra/cloudflare/d1/seed.sql",
+      "category": "public-visible",
+      "user_visibility": "public",
+      "migration_owner": "#219 public feature copy",
+      "expected_action": "migrate-in-219",
+      "rationale": "The public projection seed can expose legacy editorial/source copy in browser journeys.",
+      "matches": {
+        "Panda Atlas": 12,
+        "panda-atlas": 6
+      }
+    },
+    {
+      "path": "infra/supabase/config.toml",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "data platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "infra/supabase/migrations/0001_panda_atlas_init.sql",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "infra/supabase/migrations/0009_integration_event_foundation.sql",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "infra/supabase/migrations/0014_notification_orchestration.sql",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "infra/supabase/seed/0001_demo_seed.sql",
+      "category": "public-visible",
+      "user_visibility": "public",
+      "migration_owner": "#219 public feature copy",
+      "expected_action": "migrate-in-219",
+      "rationale": "The demo public-data seed contains user-visible legacy product wording.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "infra/supabase/seed/0002_atlas_catalog_seed.sql",
+      "category": "public-visible",
+      "user_visibility": "public",
+      "migration_owner": "#219 public feature copy",
+      "expected_action": "migrate-in-219",
+      "rationale": "The catalog public-data seed can expose legacy editorial/source copy in browser journeys.",
+      "matches": {
+        "Panda Atlas": 12,
+        "panda-atlas": 6
+      }
+    },
+    {
+      "path": "package-lock.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "package.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "progress.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "Panda Atlas": 2,
+        "panda-atlas": 6
+      }
+    },
+    {
+      "path": "scripts/curation/apply_chengdu_profile_depth.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_atlanta_photo_batch.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_chengdu_profile_depth_batch.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_smithsonian_current_pair_batch.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_ueno_family_photo_batch.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_xi_lun_photo_batch.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/process_panda_media.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 2
+      }
+    },
+    {
+      "path": "scripts/curation/upload_atlanta_photo_media.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "scripts/curation/upload_ueno_family_photo_media.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "scripts/curation/validate_panda_curation.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/api-staging-withdrawal.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "scripts/release/apply-d1-migrations.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier retained until a separate compatibility migration is approved.",
+      "matches": {
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/apply-public-release-d1.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier retained until a separate compatibility migration is approved.",
+      "matches": {
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/check-beta-hard-gates.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "scripts/release/frontend-staging-withdrawal.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 5,
+        "PANDA_ATLAS": 2
+      }
+    },
+    {
+      "path": "scripts/release/production-public-release.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 2,
+        "pandaatlas": 4
+      }
+    },
+    {
+      "path": "scripts/release/run-api-staging-withdrawal.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3,
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "scripts/release/run-frontend-staging-withdrawal.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "PANDA_ATLAS": 2
+      }
+    },
+    {
+      "path": "scripts/release/tests/api-staging-withdrawal.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 6
+      }
+    },
+    {
+      "path": "scripts/release/tests/crawler-poc-config.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/d1-migration-runner.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This test preserves an active technical identifier used by release tooling.",
+      "matches": {
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/d1-public-release.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 5,
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/frontend-staging-withdrawal.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 10,
+        "PANDA_ATLAS": 3
+      }
+    },
+    {
+      "path": "scripts/release/tests/release-config.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 6,
+        "PANDA_ATLAS": 2
+      }
+    },
+    {
+      "path": "scripts/release/tests/structured-map-ownership.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release and curation tooling",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 2,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 2,
+        "panda_atlas": 3
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/__init__.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/backfill.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/contracts/v1.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/curation/batch_review.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/curation/collection_policy.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active versioned policy identifier retained until a separate compatibility migration is approved.",
+      "matches": {
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/curation/models.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 3
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/curl_transport.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an internal temporary-directory prefix retained until a separate compatibility migration is approved.",
+      "matches": {
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/discovery/contracts.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/discovery/runner.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/lab.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/reconciliation.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/runner.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/source_registry.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/wikimedia_commons.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 5
+      }
+    },
+    {
+      "path": "services/api/app/acquisition/work_queue.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/api/v1/release_responses.py",
+      "category": "technical-compatible",
+      "user_visibility": "public",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "services/api/app/data/golden_dataset.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PANDA_ATLAS": 1
+      }
+    },
+    {
+      "path": "services/api/app/enrichment/chengdu_collection_application.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/enrichment/contracts.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/enrichment/fact_contracts.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/enrichment/smithsonian_curation.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/enrichment/smithsonian_curation_application.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/enrichment/summary_contracts.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/identity_resolution/contracts.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/knowledge/__init__.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/knowledge/contracts/v1.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/main.py",
+      "category": "technical-compatible",
+      "user_visibility": "public",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3,
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/notification/transport.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "services/api/app/projection/collection_release.py",
+      "category": "public-visible",
+      "user_visibility": "public",
+      "migration_owner": "#218 shared metadata identity",
+      "expected_action": "migrate-in-218",
+      "rationale": "New public release metadata is still generated with the retired product name.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/app/services/release_service.py",
+      "category": "technical-compatible",
+      "user_visibility": "public",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "services/api/openapi/panda-atlas-v1.yaml",
+      "category": "technical-compatible",
+      "user_visibility": "public",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 9,
+        "Panda Atlas": 2,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/pyproject.toml",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/bootstrap_local_db.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/build_public_release.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/check_openapi_contract.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/check_smithsonian_current_pair_enrichment.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/check_zhipanda_foundation.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/review_smithsonian_current_pair_release_inputs.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/run_postgres_attachment_recovery_drill.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3,
+        "panda-atlas": 5
+      }
+    },
+    {
+      "path": "services/api/scripts/run_release_recovery_drill.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/acquisition/fixtures/chengdu-denmark-handover-2019.manifest.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/acquisition/fixtures/chengdu-international-cooperation.manifest.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/acquisition/fixtures/chengdu-newborns-2017.manifest.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/acquisition/fixtures/chengdu-newborns-2021.manifest.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/acquisition/fixtures/smithsonian-panda-pages.manifest.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/acquisition/test_wikimedia_commons_adapter.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/api/test_endpoints.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1,
+        "pandaatlas": 3
+      }
+    },
+    {
+      "path": "services/api/tests/api/test_public_release_metadata.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "services/api/tests/enrichment/test_bilingual_summary.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/enrichment/test_fact_enrichment.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/enrichment/test_identity_intake.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/enrichment/test_smithsonian_current_pair_cohort.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/identity/test_identity_endpoint_boundary.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This test asserts an active lowercase compatibility header identifier.",
+      "matches": {
+        "pandaatlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/notification/test_delivery_transport.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/scripts/test_check_openapi_contract.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/scripts/test_check_zhipanda_foundation.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "services/api/uv.lock",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/worker-api/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 2,
+        "panda-atlas": 5
+      }
+    },
+    {
+      "path": "services/worker-api/package.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "services/worker-api/scripts/smoke_test_worker.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/worker-api/src/http.ts",
+      "category": "technical-compatible",
+      "user_visibility": "public",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "services/worker-api/src/index.ts",
+      "category": "technical-compatible",
+      "user_visibility": "public",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "services/worker-api/src/repositories/releases.ts",
+      "category": "technical-compatible",
+      "user_visibility": "public",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 3
+      }
+    },
+    {
+      "path": "services/worker-api/wrangler.jsonc",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "services/worker-api/wrangler.staging.jsonc",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 4
+      }
+    },
+    {
+      "path": "task_plan.md",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
+      "matches": {
+        "Panda Atlas": 2,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "contracts/archive-governance-migration.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "archive governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "The migration inventory refers to the existing versioned OpenAPI compatibility path and does not expose the retired public product brand.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    }
+  ]
+}

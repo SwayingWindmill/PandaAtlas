@@ -55,6 +55,7 @@
     "test:xi-lun-photo-batch": "python -m unittest discover -s scripts/curation/tests -p \"test_*xi_lun_photo*.py\"",
     "check:xi-lun-photo-release": "node scripts/release/check-beta-hard-gates.mjs --dataset data/reviewed-batches/2026.07.21.1/source.json --report .release-gate/xi-lun-photo-hard-gates.json",
     "check:public-api-boundary": "node scripts/check-public-api-boundary.mjs",
+    "check:zhipanda-brand": "node scripts/brand/check-zhipanda-brand.mjs",
     "check:beta-hard-gates": "node scripts/release/check-beta-hard-gates.mjs",
     "check:map-visualization-budget": "node scripts/release/check-map-visualization-budget.mjs",
     "check:editorial-home-budget": "node scripts/release/check-editorial-home-budget.mjs",
