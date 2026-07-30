@@ -30,7 +30,10 @@ from app.identity.models import RequestIdentity
 @contextmanager
 def _bridge_session() -> Iterator[Session]:
     if not settings.community_curation_bridge_enabled:
-        raise HTTPException(status_code=404, detail={"code": "community_curation_bridge_disabled"})
+        raise HTTPException(
+            status_code=404,
+            detail={"code": "community_curation_bridge_disabled"},
+        )
     if not has_database():
         raise HTTPException(status_code=503, detail={"code": "authoritative_database_unavailable"})
     with session_scope() as session:
@@ -74,7 +77,9 @@ def _bridge_read_from_row(row: object) -> AssertionBridgeRead:
         target_id=row["target_id"],
         base_archive_version=row["base_archive_version"],
         risk_level=row["risk_level"],
-        selected_assertion_keys=[str(value) for value in _json_list(row["selected_assertion_keys"])],
+        selected_assertion_keys=[
+            str(value) for value in _json_list(row["selected_assertion_keys"])
+        ],
         not_recommended_assertion_keys=[
             str(value) for value in _json_list(row["not_recommended_assertion_keys"])
         ],
@@ -124,11 +129,20 @@ def _sql_conflict(error: Exception) -> HTTPException:
         sqlstate = getattr(getattr(error, "orig", None), "sqlstate", None)
         message = str(getattr(error, "orig", error))
         if sqlstate in {"40001", "23505"}:
-            return HTTPException(status_code=409, detail={"code": "bridge_conflict", "message": message})
+            return HTTPException(
+                status_code=409,
+                detail={"code": "bridge_conflict", "message": message},
+            )
         if sqlstate == "42501":
-            return HTTPException(status_code=403, detail={"code": "bridge_forbidden", "message": message})
+            return HTTPException(
+                status_code=403,
+                detail={"code": "bridge_forbidden", "message": message},
+            )
         if sqlstate in {"23514", "P0002"}:
-            return HTTPException(status_code=409, detail={"code": "bridge_policy_conflict", "message": message})
+            return HTTPException(
+                status_code=409,
+                detail={"code": "bridge_policy_conflict", "message": message},
+            )
     return HTTPException(status_code=500, detail={"code": "community_curation_bridge_failed"})
 
 
