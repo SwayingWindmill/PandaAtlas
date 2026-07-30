@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     db_use_mock_fallback: bool | None = Field(default=None, alias="DB_USE_MOCK_FALLBACK")
     identity_auth_enabled: bool = Field(default=False, alias="IDENTITY_AUTH_ENABLED")
     admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")
+    archive_single_accountable_approver_enabled: bool = Field(
+        default=False,
+        alias="ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED",
+    )
     engagement_enabled: bool = Field(default=False, alias="ENGAGEMENT_ENABLED")
     activity_enabled: bool = Field(default=False, alias="ACTIVITY_ENABLED")
     feed_enabled: bool = Field(default=False, alias="FEED_ENABLED")

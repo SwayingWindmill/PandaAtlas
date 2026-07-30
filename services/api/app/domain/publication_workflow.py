@@ -1,11 +1,26 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from datetime import date
+from datetime import date, datetime
 from typing import Any, Literal
 from uuid import UUID, uuid4
 
-ChangeSetStatus = Literal["draft", "submitted", "approved", "rejected"]
+ChangeSetStatus = Literal[
+    "draft",
+    "submitted",
+    "approved",
+    "rejected",
+    "validation_failed",
+    "ready",
+    "publishing",
+    "published",
+    "publish_failed",
+    "superseded",
+    "rolled_back",
+    "withdrawn",
+]
+GovernanceMode = Literal["four-eyes-v1", "single-accountable-approver-v1"]
+ValidationState = Literal["not_validated", "legacy_approved", "validation_failed", "ready"]
 ReviewDecision = Literal["approved", "rejected"]
 PreviewCategory = Literal[
     "unresolved_reference",
@@ -77,6 +92,13 @@ class ChangeSet:
     status: ChangeSetStatus = "draft"
     reviewed_by: UUID | None = None
     review_reason: str | None = None
+    governance_mode: GovernanceMode = "four-eyes-v1"
+    validation_state: ValidationState = "not_validated"
+    validated_by: UUID | None = None
+    validated_at: datetime | None = None
+    validation_reason: str | None = None
+    base_archive_version: str | None = None
+    governance_version: int = 1
 
     @classmethod
     def create(

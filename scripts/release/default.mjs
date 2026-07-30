@@ -278,6 +278,11 @@ export async function runDefaultReleaseGate() {
         run: () => runCommand(npm, ["run", "test:release-gate"]),
       },
       {
+        id: "archive-governance-migration",
+        label: "Archive governance migration inventory",
+        run: () => runCommand(npm, ["run", "check:archive-governance-migration"]),
+      },
+      {
         id: "frontend-system-closure",
         label: "Frontend system closure architecture",
         run: () => runCommand(npm, ["run", "check:frontend-system-closure"]),

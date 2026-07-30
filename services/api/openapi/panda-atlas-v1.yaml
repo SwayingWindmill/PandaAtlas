@@ -454,7 +454,7 @@ paths:
   /api/v1/admin/change-sets:
     post:
       tags: [admin-publication]
-      summary: Create a draft change set with immutable entity revisions
+      summary: Create a legacy four-eyes draft change set with immutable entity revisions
       operationId: createChangeSet
       security:
         - BearerAuth: []
@@ -483,7 +483,7 @@ paths:
   /api/v1/admin/change-sets/{change_set_id}/submit:
     post:
       tags: [admin-publication]
-      summary: Submit a draft change set for independent review
+      summary: Submit a legacy draft change set for independent review
       operationId: submitChangeSet
       security:
         - BearerAuth: []
@@ -505,7 +505,7 @@ paths:
   /api/v1/admin/change-sets/{change_set_id}/reviews:
     post:
       tags: [admin-publication]
-      summary: Approve or reject a submitted change set
+      summary: Record a legacy independent review decision
       operationId: reviewChangeSet
       security:
         - BearerAuth: []
@@ -528,7 +528,7 @@ paths:
         '404':
           description: Change set not found
         '409':
-          description: Self-review or invalid review transition denied
+          description: Self-review, invalid transition, or archive governance migration required
 
   /api/v1/admin/publication-batches:
     post:
@@ -4188,7 +4188,8 @@ components:
 
     ChangeSet:
       type: object
-      required: [id, title, reason, status, created_by, revisions]
+      required:
+        [id, title, reason, status, created_by, revisions, governance_mode, validation_state, governance_version, requires_explicit_revalidation, legacy_publication_eligible]
       properties:
         id:
           type: string
@@ -4199,7 +4200,7 @@ components:
           type: string
         status:
           type: string
-          enum: [draft, submitted, approved, rejected]
+          enum: [draft, submitted, approved, rejected, validation_failed, ready, publishing, published, publish_failed, superseded, rolled_back, withdrawn]
         created_by:
           type: string
           format: uuid
@@ -4210,6 +4211,33 @@ components:
         review_reason:
           type: string
           nullable: true
+        governance_mode:
+          type: string
+          enum: [four-eyes-v1, single-accountable-approver-v1]
+        validation_state:
+          type: string
+          enum: [not_validated, legacy_approved, validation_failed, ready]
+        validated_by:
+          type: string
+          format: uuid
+          nullable: true
+        validated_at:
+          type: string
+          format: date-time
+          nullable: true
+        validation_reason:
+          type: string
+          nullable: true
+        base_archive_version:
+          type: string
+          nullable: true
+        governance_version:
+          type: integer
+          minimum: 1
+        requires_explicit_revalidation:
+          type: boolean
+        legacy_publication_eligible:
+          type: boolean
         revisions:
           type: array
           items:

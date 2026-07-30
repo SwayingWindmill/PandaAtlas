@@ -42,7 +42,10 @@ def _change_set_from_db(session: Session, change_set_id: UUID) -> ChangeSet:
     row = session.execute(
         text(
             """
-            select id, title, reason, status, created_by, reviewed_by, review_reason
+            select
+              id, title, reason, status, created_by, reviewed_by, review_reason,
+              governance_mode, validation_state, validated_by, validated_at,
+              validation_reason, base_archive_version, governance_version
             from public.change_sets
             where id = :change_set_id
             """
@@ -91,6 +94,13 @@ def _change_set_from_db(session: Session, change_set_id: UUID) -> ChangeSet:
         created_by=row["created_by"],
         reviewed_by=row["reviewed_by"],
         review_reason=row["review_reason"],
+        governance_mode=row["governance_mode"],
+        validation_state=row["validation_state"],
+        validated_by=row["validated_by"],
+        validated_at=row["validated_at"],
+        validation_reason=row["validation_reason"],
+        base_archive_version=row["base_archive_version"],
+        governance_version=row["governance_version"],
         revisions=revisions,
     )
 
@@ -104,6 +114,20 @@ def _change_set_read(change_set: ChangeSet) -> ChangeSetRead:
         created_by=change_set.created_by,
         reviewed_by=change_set.reviewed_by,
         review_reason=change_set.review_reason,
+        governance_mode=change_set.governance_mode,
+        validation_state=change_set.validation_state,
+        validated_by=change_set.validated_by,
+        validated_at=change_set.validated_at,
+        validation_reason=change_set.validation_reason,
+        base_archive_version=change_set.base_archive_version,
+        governance_version=change_set.governance_version,
+        requires_explicit_revalidation=(
+            change_set.governance_mode == "four-eyes-v1"
+            and change_set.status in {"submitted", "approved"}
+        ),
+        legacy_publication_eligible=(
+            change_set.governance_mode == "four-eyes-v1" and change_set.status == "approved"
+        ),
         revisions=[
             EntityRevisionRead(
                 id=revision.id,

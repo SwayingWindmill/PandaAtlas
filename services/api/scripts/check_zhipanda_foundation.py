@@ -536,6 +536,45 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
             if len(community_intake_capabilities) != 4:
                 raise FoundationCheckError("Community Intake capabilities are incomplete")
 
+            for relation in (
+                "public.archive_governance_revalidations",
+                "public.archive_governance_migration_runs",
+            ):
+                cursor.execute("select to_regclass(%s) is not null", (relation,))
+                if not bool(cursor.fetchone()[0]):
+                    raise FoundationCheckError(
+                        f"Archive governance evidence relation is missing: {relation}"
+                    )
+            cursor.execute(
+                "select to_regclass('public.change_set_governance_compatibility')::text"
+            )
+            if cursor.fetchone()[0] != "change_set_governance_compatibility":
+                raise FoundationCheckError("Archive governance compatibility view is missing")
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'public'
+                  and relation.relname = any(%s)
+                  and trigger.tgname = any(%s)
+                  and not trigger.tgisinternal
+                """,
+                (
+                    ["archive_governance_revalidations", "archive_governance_migration_runs"],
+                    [
+                        "trg_archive_governance_revalidations_append_only",
+                        "trg_archive_governance_migration_runs_append_only",
+                    ],
+                ),
+            )
+            archive_governance_append_only_trigger_count = int(cursor.fetchone()[0])
+            if archive_governance_append_only_trigger_count != 2:
+                raise FoundationCheckError(
+                    "Archive governance evidence append-only triggers are incomplete"
+                )
+
             cursor.execute(
                 """
                 select count(*)
@@ -665,6 +704,9 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
             "file_size_limit": int(community_bucket[1]),
             "allowed_mime_types": sorted(community_bucket[2] or []),
         },
+        "archive_governance_append_only_trigger_count": (
+            archive_governance_append_only_trigger_count
+        ),
         "activity_append_only_trigger_count": activity_append_only_trigger_count,
         "private_role_schema_usage": private_role_privileges,
         "queue_smoke": queue_evidence,

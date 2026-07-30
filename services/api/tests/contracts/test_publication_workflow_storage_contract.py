@@ -7,6 +7,7 @@ MIGRATION = (
     / "migrations"
     / "0005_four_eyes_publication_workflow.sql"
 )
+COMPATIBILITY_MIGRATION = MIGRATION.with_name("0018_single_accountable_approver_compatibility.sql")
 
 
 def test_postgres_models_immutable_reviewed_publication_workflow() -> None:
@@ -55,3 +56,20 @@ def test_publication_batch_pins_projection_and_database_versions() -> None:
 
     assert "database_migration_version" in sql
     assert "projection_code_version" in sql
+
+
+def test_single_accountable_approver_compatibility_is_additive_and_fail_closed() -> None:
+    sql = COMPATIBILITY_MIGRATION.read_text(encoding="utf-8").lower()
+
+    assert "governance_mode" in sql
+    assert "validation_state" in sql
+    assert "legacy_approved" in sql
+    assert "change_set_governance_compatibility" in sql
+    assert "archive_governance_revalidations" in sql
+    assert "archive_governance_migration_runs" in sql
+    assert "requires_explicit_revalidation" in sql
+    assert "release_count_before" in sql
+    assert "release_count_after" in sql
+    assert "legacy review command is disabled for this governance mode" in sql
+    assert "set status = 'ready'" not in sql
+    assert "update public.public_release_pointer" not in sql

@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "issue": 190,
+  "source_policy": "four-eyes-v1",
+  "target_policy": "single-accountable-approver-v1",
+  "feature_flag": "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED",
+  "required_categories": [
+    "schema",
+    "trigger",
+    "api",
+    "capability",
+    "command",
+    "contract",
+    "test",
+    "ui",
+    "metric",
+    "runbook",
+    "adr",
+    "fixture",
+    "script"
+  ],
+  "high_signal_markers": [
+    "change_set_reviews",
+    "ChangeSetReview",
+    "review_change_set",
+    "archive.review",
+    "four-eyes",
+    "independently reviewed",
+    "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED",
+    "/change-sets/{change_set_id}/reviews",
+    "Only approved change sets can enter a publication batch",
+    "Only independently reviewed change sets can enter a publication batch"
+  ],
+  "scan_roots": [
+    "infra/supabase/migrations",
+    "services/api/app",
+    "services/api/openapi",
+    "services/api/tests",
+    "apps/web/tests/admin",
+    "docs/architecture",
+    "scripts/release"
+  ],
+  "entries": [
+    {
+      "path": "infra/supabase/migrations/0005_four_eyes_publication_workflow.sql",
+      "categories": ["schema", "trigger"],
+      "disposition": "retain_historical_and_wrap",
+      "markers": ["change_set_reviews", "apply_change_set_review", "Only approved change sets can enter a publication batch"]
+    },
+    {
+      "path": "infra/supabase/migrations/0010_identity_accounts_roles_and_capabilities.sql",
+      "categories": ["capability", "schema"],
+      "disposition": "retain_legacy_capability_until_191",
+      "markers": ["archive.review", "Review submitted Archive Change Sets"]
+    },
+    {
+      "path": "infra/supabase/migrations/0018_single_accountable_approver_compatibility.sql",
+      "categories": ["schema", "trigger", "metric"],
+      "disposition": "new_compatibility_layer",
+      "markers": ["single-accountable-approver-v1", "legacy_approved", "archive_governance_migration_runs"]
+    },
+    {
+      "path": ".env.example",
+      "categories": ["contract", "runbook"],
+      "disposition": "default_cutover_flag_off",
+      "markers": ["ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false"]
+    },
+    {
+      "path": "services/api/app/core/config.py",
+      "categories": ["contract"],
+      "disposition": "define_fail_closed_feature_flag",
+      "markers": ["ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED", "archive_single_accountable_approver_enabled"]
+    },
+    {
+      "path": "services/api/app/domain/publication_workflow.py",
+      "categories": ["contract", "command"],
+      "disposition": "expand_states_keep_legacy_methods",
+      "markers": ["ReviewDecision", "Approval requires an independent reviewer", "single-accountable-approver-v1"]
+    },
+    {
+      "path": "services/api/app/schemas/publication.py",
+      "categories": ["contract"],
+      "disposition": "add_compatibility_read_fields",
+      "markers": ["ChangeSetReview", "GovernanceMode", "requires_explicit_revalidation"]
+    },
+    {
+      "path": "services/api/app/services/publication_repository.py",
+      "categories": ["command", "contract"],
+      "disposition": "retain_legacy_write_add_compatibility_reads",
+      "markers": ["review_change_set", "Only independently reviewed change sets can enter a publication batch", "legacy_publication_eligible"]
+    },
+    {
+      "path": "services/api/app/services/publication_service.py",
+      "categories": ["command"],
+      "disposition": "feature_flag_fail_closed",
+      "markers": ["review_change_set", "archive_governance_migration_required", "publication_batch.publish"]
+    },
+    {
+      "path": "services/api/app/api/v1/admin_publications.py",
+      "categories": ["api", "capability"],
+      "disposition": "retain_endpoint_with_explicit_cutover_error",
+      "markers": ["ChangeSetReview", "archive.review", "/change-sets/{change_set_id}/reviews"]
+    },
+    {
+      "path": "services/api/openapi/panda-atlas-v1.yaml",
+      "categories": ["api", "contract"],
+      "disposition": "document_legacy_and_compatibility_fields",
+      "markers": ["/api/v1/admin/change-sets/{change_set_id}/reviews", "ReviewChangeSetRequest", "governance_mode"]
+    },
+    {
+      "path": "services/api/tests/api/test_publication_workflow.py",
+      "categories": ["test", "api"],
+      "disposition": "verify_feature_flag_migration_error",
+      "markers": ["archive_governance_migration_required", "single-accountable-approver cutover"]
+    },
+    {
+      "path": "services/api/tests/contracts/test_publication_workflow_storage_contract.py",
+      "categories": ["test"],
+      "disposition": "extend_for_0018",
+      "markers": ["change_set_reviews", "0005_four_eyes_publication_workflow.sql"]
+    },
+    {
+      "path": "services/api/tests/integration/test_publication_workflow_real_db.py",
+      "categories": ["test", "fixture"],
+      "disposition": "retain_legacy_fixture_add_compatibility_assertions",
+      "markers": ["ChangeSetReview", "Independent review complete", "four-eyes"]
+    },
+    {
+      "path": "services/api/tests/integration/test_activity_projection_real_db.py",
+      "categories": ["test", "fixture"],
+      "disposition": "retain_legacy_published_activity_fixture",
+      "markers": ["ChangeSetReview", "Independent Activity review complete"]
+    },
+    {
+      "path": "services/api/tests/integration/test_real_db_chain.py",
+      "categories": ["test", "fixture"],
+      "disposition": "retain_historical_chain_fixture",
+      "markers": ["four-eyes", "Exercise the authoritative four-eyes workflow"]
+    },
+    {
+      "path": "services/api/tests/contracts/test_identity_capability_storage_contract.py",
+      "categories": ["test", "capability"],
+      "disposition": "retain_legacy_capability_assertion",
+      "markers": ["archive.review"]
+    },
+    {
+      "path": "services/api/tests/identity/test_capability_security.py",
+      "categories": ["test", "capability"],
+      "disposition": "retain_fail_closed_capability_tests",
+      "markers": ["archive.review"]
+    },
+    {
+      "path": "services/api/scripts/check_zhipanda_foundation.py",
+      "categories": ["metric", "script"],
+      "disposition": "verify_compatibility_relations_and_append_only_triggers",
+      "markers": ["archive_governance_append_only_trigger_count", "Archive governance compatibility view is missing"]
+    },
+    {
+      "path": "services/api/tests/scripts/test_check_zhipanda_foundation.py",
+      "categories": ["test", "metric"],
+      "disposition": "pin_0018_foundation_migration",
+      "markers": ["0018", "migration_versions"]
+    },
+    {
+      "path": "apps/web/tests/admin/identity-admin-shell.spec.ts",
+      "categories": ["test", "ui"],
+      "disposition": "record_no_archive_workbench_exposure",
+      "markers": ["archive.review"]
+    },
+    {
+      "path": "docs/architecture/adr-0002-single-accountable-archive-approver.md",
+      "categories": ["adr", "metric", "runbook", "ui", "fixture"],
+      "disposition": "superseding_decision_and_migration_matrix",
+      "markers": ["Single accountable Archive approver governance", "Cutover invariants and evidence", "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false"]
+    },
+    {
+      "path": "scripts/release/default.mjs",
+      "categories": ["script", "runbook"],
+      "disposition": "enforce_inventory_in_default_release_gate",
+      "markers": ["archive-governance-migration", "check:archive-governance-migration"]
+    },
+    {
+      "path": "scripts/release/check-archive-governance-migration.mjs",
+      "categories": ["script"],
+      "disposition": "enforce_exhaustive_inventory",
+      "markers": ["archive-governance-migration.v1.json", "unclassified approval-governance path"]
+    },
+    {
+      "path": "scripts/release/tests/archive-governance-migration.test.mjs",
+      "categories": ["test", "script"],
+      "disposition": "verify_inventory_and_fail_closed_behavior",
+      "markers": ["archive governance migration inventory", "unclassified approval-governance path"]
+    }
+  ]
+}
