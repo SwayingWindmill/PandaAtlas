@@ -228,9 +228,13 @@ class Settings(BaseSettings):
         if not isinstance(raw, dict):
             raise ValueError("WORKFLOW_ACTOR_TOKENS_JSON must be an object")
         tokens: dict[UUID, str] = {}
+        seen: set[str] = set()
         for key, value in raw.items():
             if not isinstance(value, str) or not value:
                 raise ValueError("Workflow actor tokens must be non-empty strings")
+            if value in seen:
+                raise ValueError("WORKFLOW_ACTOR_TOKENS_JSON is invalid")
+            seen.add(value)
             tokens[UUID(str(key))] = value
         return tokens
 
