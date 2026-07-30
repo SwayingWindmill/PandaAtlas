@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    admin_accountable_publications,
     admin_imports,
     admin_publications,
     admin_review_content,
@@ -28,6 +29,10 @@ api_router.include_router(notification.router, tags=["notification"])
 api_router.include_router(community_intake.router, tags=["community-intake"])
 api_router.include_router(identity.admin_router, tags=["admin-identity"])
 api_router.include_router(admin_imports.router, tags=["admin"])
+api_router.include_router(
+    admin_accountable_publications.router,
+    tags=["admin-accountable-publication"],
+)
 api_router.include_router(admin_publications.router, tags=["admin-publication"])
 api_router.include_router(admin_reviews.router, tags=["admin-review"])
 api_router.include_router(admin_review_content.router, tags=["admin-review"])
