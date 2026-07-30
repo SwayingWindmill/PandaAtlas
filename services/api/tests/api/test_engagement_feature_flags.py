@@ -70,6 +70,16 @@ def test_feed_flag_rolls_back_before_authentication_or_database_access(
 
 
 
+def test_notification_flag_rolls_back_before_authentication_or_database_access(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(settings, "notification_enabled", False)
+    with TestClient(app) as client:
+        response = client.get("/api/v1/me/inbox")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Not found"}
+
+
 def test_admin_shell_flag_revokes_shell_without_revoking_identity(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

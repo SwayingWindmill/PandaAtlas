@@ -29,6 +29,8 @@ export const apiReleaseEnv = {
   UV_LINK_MODE: process.env.UV_LINK_MODE ?? "copy",
   FEED_ENABLED: "true",
   FEED_CURSOR_SIGNING_KEY: "release-gate-feed-cursor-signing-key",
+  NOTIFICATION_ENABLED: "true",
+  NOTIFICATION_CURSOR_SIGNING_KEY: "release-gate-notification-cursor-signing-key",
 };
 
 export class CommandExecutionError extends Error {

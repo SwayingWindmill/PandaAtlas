@@ -17,6 +17,18 @@ from app.engagement.models import (
 from app.engagement.repository import EngagementRepository
 from app.identity.models import AccountState, RequestIdentity
 from app.identity.security import ActiveIdentity, get_request_identity, resolve_correlation_id
+from app.notification.models import (
+    NotificationCategory,
+    NotificationPreferenceCommand,
+)
+from app.notification.models import (
+    NotificationChannel as OrchestrationChannel,
+)
+from app.notification.repository import (
+    NotificationAccountUnavailableError,
+    NotificationConflictError,
+    NotificationRepository,
+)
 from app.schemas.engagement import (
     EngagementDataDelete,
     EngagementDataDeleteRead,
@@ -280,7 +292,7 @@ def get_follow(
     response_model=NotificationPreferenceRead,
 )
 def set_notification_preference(
-    category: str,
+    category: NotificationCategory,
     channel: NotificationChannel,
     payload: NotificationPreferenceChange,
     identity: ActiveIdentity,
@@ -290,18 +302,34 @@ def set_notification_preference(
         with session_scope() as session:
             if session is None:
                 raise HTTPException(status_code=503, detail="Engagement database is unavailable")
-            row = EngagementRepository(session).set_notification_preference(
-                identity=identity,
+            result = NotificationRepository(
+                session,
+                cursor_signing_key=settings.notification_cursor_signing_key,
+            ).set_preference(
+                identity,
                 category=category,
-                channel=channel.value,
-                enabled=payload.enabled,
-                idempotency_key=payload.idempotency_key,
+                channel=OrchestrationChannel(channel.value),
+                command=NotificationPreferenceCommand(
+                    enabled=payload.enabled,
+                    idempotency_key=payload.idempotency_key,
+                ),
                 correlation_id=correlation_id,
             )
-            return NotificationPreferenceRead.model_validate(row)
+            return NotificationPreferenceRead.model_validate(result.model_dump())
     except HTTPException:
         raise
-    except (EngagementAccountUnavailableError, EngagementConflictError, SQLAlchemyError) as error:
+    except (
+        EngagementAccountUnavailableError,
+        EngagementConflictError,
+        NotificationAccountUnavailableError,
+        NotificationConflictError,
+        ValueError,
+        SQLAlchemyError,
+    ) as error:
+        if isinstance(error, (NotificationConflictError, ValueError)):
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(error)) from error
+        if isinstance(error, NotificationAccountUnavailableError):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(error)) from error
         raise _handle_error(error) from error
 
 
