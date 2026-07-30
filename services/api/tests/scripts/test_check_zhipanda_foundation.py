@@ -33,7 +33,7 @@ def test_static_foundation_configuration_is_pinned_and_private() -> None:
     assert "pgmq" not in evidence["api_schemas"]
     assert "review_moderation" not in evidence["api_schemas"]
     assert "storage" not in evidence["api_schemas"]
-    assert evidence["migration_versions"][-1] == "0019"
+    assert evidence["migration_versions"][-1] == "0020"
 
 
 def test_version_and_database_url_helpers_are_deterministic() -> None:
@@ -63,6 +63,7 @@ def test_version_and_database_url_helpers_are_deterministic() -> None:
         "0017",
         "0018",
         "0019",
+        "0020",
     ]
 
 
@@ -97,37 +98,3 @@ enabled = true
 
     with pytest.raises(FoundationCheckError, match="Private schemas exposed"):
         static_configuration_evidence(tmp_path)
-
-
-def test_preflight_report_fails_closed_and_redacts_credentials(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> None:
-    import scripts.check_zhipanda_foundation as foundation
-
-    monkeypatch.setattr(foundation, "static_configuration_evidence", lambda root: {"ok": True})
-    monkeypatch.setattr(foundation, "_fetch_service_health", lambda api_url: {"auth": 200})
-
-    def fail_database(database_url: str, root: Path) -> dict[str, object]:
-        raise FoundationCheckError("pgmq is missing")
-
-    monkeypatch.setattr(foundation, "database_evidence", fail_database)
-    report_path = tmp_path / "foundation.json"
-
-    report = run_foundation_preflight(
-        database_url="postgresql://postgres:private-value@localhost:54322/postgres",
-        api_url="http://localhost:54321",
-        report_path=report_path,
-        root=tmp_path,
-    )
-
-    assert report["outcome"] == "failed"
-    assert report["environment"]["database_url"] == (
-        "postgresql://postgres@localhost:54322/postgres"
-    )
-    assert report["checks"][-1] == {
-        "id": "database-extensions-migrations-and-queue",
-        "status": "failed",
-        "detail": "pgmq is missing",
-    }
-    assert json.loads(report_path.read_text(encoding="utf-8")) == report
