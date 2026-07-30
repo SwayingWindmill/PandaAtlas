@@ -1,0 +1,122 @@
+name: Issue 191 Implement
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  implement:
+    if: github.head_ref == 'issue-191' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.0
+        with:
+          ref: issue-191
+          fetch-depth: 0
+      - name: Write accountable publication slice
+        shell: python
+        env:
+          FILE_PAYLOAD: '{"services/api/app/archive_publication/__init__.py":"IiIiU2luZ2xlLWFjY291bnRhYmxlLWFwcHJvdmVyIEFyY2hpdmUgcHVibGljYXRpb24gYm91bmRhcnkuIiIiCg==","services/api/app/archive_publication/models.py":"ZnJvbSBfX2Z1dHVyZV9fIGltcG9ydCBhbm5vdGF0aW9ucwoKaW1wb3J0IGpzb24KZnJvbSBkYXRldGltZSBpbXBvcnQgZGF0ZXRpbWUKZnJvbSBlbnVtIGltcG9ydCBTdHJFBnVtCmZyb20gaGFzaGxpYiBpbXBvcnQgc2hhMjU2CmZyb20gdHlwaW5nIGltcG9ydCBMaXRlcmFsCmZyb20gdXVpZCBpbXBvcnQgVVVJRAoKZnJvbSBweWRhbnRpYyBpbXBvcnQgQmFzZU1vZGVsLCBGaWVsZAoKCmNsYXNzIEFyY2hpdmVSaXNrTGV2ZWwoU3RyRW51bSk6CiAgICBPUkRJTkFSWSA9ICJvcmRpbmFyeSIKICAgIFNFTlNJVElWRSA9ICJzZW5zaXRpdmUiCgoKY2xhc3MgQXJjaGl2ZVZhbGlkYXRpb25PdXRjb21lKFN0ckVudW0pOgogICAgVkFMSURBVElPTl9GQUlMRUQgPSAidmFsaWRhdGlvbl9mYWlsZWQiCiAgICBSRUFEWSA9ICJyZWFkeSIKCgpjbGFzcyBBY2NvdW50YWJsZVZhbGlkYXRpb25Db21tYW5kKEJhc2VNb2RlbCk6CiAgICBleHBlY3RlZF92ZXJzaW9uOiBpbnQgPSBGaWVsZChnZT0xKQogICAgaWRlbXBvdGVuY3lfa2V5OiBzdHIgPSBGaWVsZChtaW5fbGVuZ3RoPTgsIG1heF9sZW5ndGg9MjU1KQogICAgYmFzZV9hcmNoaXZlX3ZlcnNpb246IHN0ciA9IEZpZWxkKG1pbl9sZW5ndGg9MSwgbWF4X2xlbmd0aD0xMjApCiAgICByZWFzb246IHN0ciA9IEZpZWxkKG1pbl9sZW5ndGg9MywgbWF4X2xlbmd0aD0yMDAwKQogICAgcmlza19sZXZlbDogQXJjaGl2ZVJpc2tMZXZlbAogICAgY29ycmVsYXRpb25faWQ6IFVVSUQKCgpjbGFzcyBBY2NvdW50YWJsZVB1Ymxpc2hDb21tYW5kKEJhc2VNb2RlbCk6CiAgICBleHBlY3RlZF92ZXJzaW9uOiBpbnQgPSBGaWVsZChnZT0xKQogICAgaWRlbXBvdGVuY3lfa2V5OiBzdHIgPSBGaWVsZChtaW5fbGVuZ3RoPTgsIG1heF9sZW5ndGg9MjU1KQogICAgcmVhc29uOiBzdHIgPSBGaWVsZChtaW5fbGVuZ3RoPTMsIG1heF9sZW5ndGg9MjAwMCkKICAgIGRhdGFfdmVyc2lvbjogc3RyID0gRmllbGQobWluX2xlbmd0aD0xLCBtYXhfbGVuZ3RoPTEyMCkKICAgIHB1YmxpY19zY2hlbWFfdmVyc2lvbjogTGl0ZXJhbFsiMS4wLjAiXSA9ICIxLjAuMCIKICAgIGRhdGFiYXNlX21pZ3JhdGlvbl92ZXJzaW9uOiBzdHIgPSBGaWVsZChkZWZhdWx0PSIwMDIwIiwgbWluX2xlbmd0aD0xLCBtYXhfbGVuZ3RoPTEyMCkKICAgIHByb2plY3Rpb25fY29kZV92ZXJzaW9uOiBzdHIgPSBGaWVsZCgKICAgICAgICBkZWZhdWx0PSJwdWJsaWMtcmVsZWFzZS12MiIsCiAgICAgICAgbWluX2xlbmd0aD0xLAogICAgICAgIG1heF9sZW5ndGg9MjAwLAogICAgKQogICAgY29ycmVsYXRpb25faWQ6IFVVSUQKCgpjbGFzcyBBcmNoaXZlVmFsaWRhdGlvbklzc3VlUmVhZChCYXNlTW9kZWwpOgogICAgY2F0ZWdvcnk6IHN0cgogICAgZW50aXR5X3R5cGU6IHN0cgogICAgZW50aXR5X2lkOiBzdHIKICAgIGRldGFpbDogc3RyCgoKY2xhc3MgQWNjb3VudGFibGVWYWxpZGF0aW9uUmVhZChCYXNlTW9kZWwpOgogICAgdmFsaWRhdGlvbl9yZXN1bHRfaWQ6IFVVSUQKICAgIGNoYW5nZV9zZXRfaWQ6IFVVSUQKICAgIG91dGNvbWU6IEFyY2hpdmVWYWxpZGF0aW9uT3V0Y29tZQogICAgcmlza19sZXZlbDogQXJjaGl2ZVJpc2tMZXZlbAogICAgYmFzZV9hcmNoaXZlX3ZlcnNpb246IHN0cgogICAgdmFsaWRhdGlvbl9oYXNoOiBzdHIKICAgIGdvdmVybmFuY2VfdmVyc2lvbjogaW50CiAgICB2YWxpZGF0ZWRfYnk6IFVVSUQKICAgIHZhbGlkYXRlZF9hdDogZGF0ZXRpbWUKICAgIHJlYXNvbjogc3RyCiAgICBpc3N1ZXM6IGxpc3RbQXJjaGl2ZVZhbGlkYXRpb25Jc3N1ZVJlYWRdCgoKY2xhc3MgQWNjb3VudGFibGVSZWxlYXNlUmVhZChCYXNlTW9kZWwpOgogICAgcmVsZWFzZV9pZDogVVVJRAogICAgY2hhbmdlX3NldF9pZDogVVVJRAogICAgZGF0YV92ZXJzaW9uOiBzdHIKICAgIHB1YmxpY19zY2hlbWFfdmVyc2lvbjogc3RyCiAgICBkYXRhYmFzZV9taWdyYXRpb25fdmVyc2lvbjogc3RyCiAgICBwcm9qZWN0aW9uX2NvZGVfdmVyc2lvbjogc3RyCiAgICBiYXNlX2FyY2hpdmVfdmVyc2lvbjogc3RyCiAgICBwcmV2aW91c19yZWxlYXNlX2lkOiBVVUlEIHwgTm9uZQogICAgcmlza19sZXZlbDogQXJjaGl2ZVJpc2tMZXZlbAogICAgcHVibGlzaGVkX2J5OiBVVUlECiAgICBwdWJsaXNoZWRfYXQ6IGRhdGV0aW1lCiAgICBjb3JyZWxhdGlvbl9pZDogVVVJRAogICAgb3V0Ym94X2V2ZW50X2lkOiBVVUlECiAgICBwdWJsaWNfcHJvamVjdGlvbl9zdGF0dXM6IExpdGVyYWxbInBlbmRpbmciLCAicHJvamVjdGVkIl0KCgpjbGFzcyBBcmNoaXZlUHVibGljYXRpb25NZXRyaWNzUmVhZChCYXNlTW9kZWwpOgogICAgcmVhZHlfY2hhbmdlX3NldHM6IGludAogICAgcHVibGlzaGVkX2NoYW5nZV9zZXRzOiBpbnQKICAgIHB1Ymxpc2hfZmFpbGVkX2NoYW5nZV9zZXRzOiBpbnQKICAgIHN0YWxlX2Jhc2VfZmFpbHVyZXM6IGludAogICAgY29uZmxpY3RfZmFpbHVyZXM6IGludAogICAgcGVuZGluZ19vdXRib3hfZXZlbnRzOiBpbnQKICAgIG9sZGVzdF9vdXRib3hfbGFnX3NlY29uZHM6IGludAogICAgcHJvamVjdGlvbl9sYWdfcmVsZWFzZXM6IGludAoKCmRlZiBjb21tYW5kX3BheWxvYWRfc2hhMjU2KGNvbW1hbmQ6IEJhc2VNb2RlbCkgLT4gc3RyOgogICAgcGF5bG9hZCA9IGNvbW1hbmQubW9kZWxfZHVtcChtb2RlPSJqc29uIikKICAgIGVuY29kZWQgPSBqc29uLmR1bXBzKHBheWxvYWQsIHNlcGFyYXRvcnM9KCIsIiwgIjoiKSwgc29ydF9rZXlzPVRydWUpLmVuY29kZSgidXRmLTgiKQogICAgcmV0dXJuIHNoYTI1NihlbmNvZGVkKS5oZXhkaWdlc3QoKQo=","services/api/app/archive_publication/service.py":"ZnJvbSBfX2Z1dHVyZV9fIGltcG9ydCBhbm5vdGF0aW9ucwoKaW1wb3J0IGpzb24KZnJvbSBjb250ZXh0bGliIGltcG9ydCBjb250ZXh0bWFuYWdlcgpmcm9tIGhhc2hsaWIgaW1wb3J0IHNoYTI1Ngpmcm9tIHR5cGluZyBpbXBvcnQgQW55LCBJdGVyYXRvcgpmcm9tIHV1aWQgaW1wb3J0IFVVSUQKCmZyb20gZmFzdGFwaSBpbXBvcnQgSFRUUEV4Y2VwdGlvbgpmcm9tIHNxbGFsY2hlbXkgaW1wb3J0IHRleHQKZnJvbSBzcWxhbGNoZW15LmV4YyBpbXBvcnQgREJBUFJFcnJvciwgSW50ZWdyaXR5RXJyb3IsIFNRTEFsY2hlbXlFcnJvcgpmcm9tIHNxbGFsY2hlbXkub3JtIGltcG9ydCBTZXNzaW9uCgpmcm9tIGFwcC5hcmNoaXZlX3B1YmxpY2F0aW9uLm1vZGVscyBpbXBvcnQgKAogICAgQWNjb3VudGFibGVQdWJsaXNoQ29tbWFuZCwKICAgIEFjY291bnRhYmxlUmVsZWFzZVJlYWQsCiAgICBBY2NvdW50YWJsZVZhbGlkYXRpb25Db21tYW5kLAogICAgQWNjb3VudGFibGVWYWxpZGF0aW9uUmVhZCwKICAgIEFyY2hpdmVQdWJsaWNhdGlvbk1ldHJpY3NSZWFkLAogICAgQXJjaGl2ZVJpc2tMZXZlbCwKICAgIEFyY2hpdmVWYWxpZGF0aW9uSXNzdWVSZWFkLAogICAgQXJjaGl2ZVZhbGlkYXRpb25PdXRjb21lLAogICAgY29tbWFuZF9wYXlsb2FkX3NoYTI1NiwKKQpmcm9tIGFwcC5jb3JlLmNvbmZpZyBpbXBvcnQgc2V0dGluZ3MKZnJvbSBhcHAuZGIuc2Vzc2lvbiBpbXBvcnQgaGFzX2RhdGFiYXNlLCBzZXNzaW9uX3Njb3BlCmZyb20gYXBwLmRvbWFpbi5wdWJsaWNhdGlvbl93b3JrZmxvdyBpbXBvcnQgRW50aXR5UmV2aXNpb24sIHByZXZpZXdfcmV2aXNpb25zCmZyb20gYXBwLmlkZW50aXR5Lm1vZGVscyBpbXBvcnQgUmVxdWVzdElkZW50aXR5CmZyb20gYXBwLnNlcnZpY2VzIGltcG9ydCBwdWJsaWNhdGlvbl9yZXBvc2l0b3J5CgoKQGNvbnRleHRtYW5hZ2VyCmRlZiBfYXJjaGl2ZV9zZXNzaW9uKCkgLT4gSXRlcmF0b3JbU2Vzc2lvbl06CiAgICBpZiBub3Qgc2V0dGluZ3MuYXJjaGl2ZV9zaW5nbGVfYWNjb3VudGFibGVfYXBwcm92ZXJfZW5hYmxlZDoKICAgICAgICByYWlzZSBIVFRQRXhjZXB0aW9uKAogICAgICAgICAgICBzdGF0dXNfY29kZT00MDQsCiAgICAgICAgICAgIGRldGFpbD17ImNvZGUiOiAiYWNjb3VudGFibGVfYXJjaGl2ZV9wdWJsaWNhdGlvbl9kaXNhYmxlZCJ9LAogICAgICAgICkKICAgIGlmIG5vdCBoYXNfZGF0YWJhc2UoKToKICAgICAgICByYWlzZSBIVFRQRXhjZXB0aW9uKAogICAgICAgICAgICBzdGF0dXNfY29kZT01MDMsCiAgICAgICAgICAgIGRldGFpbD17ImNvZGUiOiAiYXV0aG9yaXRhdGl2ZV9kYXRhYmFzZV91bmF2YWlsYWJsZSJ9LAogICAgICAgICkKICAgIHRyeToKICAgICAgICB3aXRoIHNlc3Npb25fc2NvcGUoKSBhcyBzZXNzaW9uOgogICAgICAgICAgICBpZiBzZXNzaW9uIGlzIE5vbmU6CiAgICAgICAgICAgICAgICByYWlzZSBIVFRQRXhjZXB0aW9uKAogICAgICAgICAgICAgICAgICAgIHN0YXR1c19jb2RlPTUwMywKICAgICAgICAgICAgICAgICAgICBkZXRhaWw9eyJjb2RlIjogImF1dGhvcml0YXRpdmVfZGF0YWJhc2VfdW5hdmFpbGFibGUifSwKICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgdHJ5OgogICAgICAgICAgICAgICAgeWllbGQgc2Vzc2lvbgogICAgICAgICAgICAgICAgc2Vzc2lvbi5jb21taXQoKQogICAgICAgICAgICBleGNlcHQgRXhjZXB0aW9uOgogICAgICAgICAgICAgICAgc2Vzc2lvbi5yb2xsYmFjaygpCiAgICAgICAgICAgICAgICByYWlzZQogICAgZXhjZXB0IEhUVFBFeGNlcHRpb246CiAgICAgICAgcmFpc2UKICAgIGV4Y2VwdCBTUUxBbGNoZW15RXJyb3IgYXMgZXJyb3I6CiAgICAgICAgcmFpc2UgSFRUUEV4Y2VwdGlvbigKICAgICAgICAgICAgc3RhdHVzX2NvZGU9NTAzLAogICAgICAgICAgICBkZXRhaWw9eyJjb2RlIjogImF1dGhvcml0YXRpdmVfZGF0YWJhc2VfdW5hdmFpbGFibGUifSwKICAgICAgICApIGZyb20gZXJyb3IKCgpkZWYgX2pzb25fb2JqZWN0KHZhbHVlOiBvYmplY3QpIC0+IGRpY3Rbc3RyLCBBbnldOgogICAgaWYgaXNpbnN0YW5jZSh2YWx1ZSwgZGljdCk6CiAgICAgICAgcmV0dXJuIHZhbHVlCiAgICBpZiBpc2luc3RhbmNlKHZhbHVlLCBzdHIpOgogICAgICAgIGxvYWRlZCA9IGpzb24ubG9hZHModmFsdWUpCiAgICAgICAgaWYgaXNpbnN0YW5jZShsb2FkZWQsIGRpY3QpOgogICAgICAgICAgICByZXR1cm4gbG9hZGVkCiAgICByYWlzZSBIVFRQRXhjZXB0aW9uKHN0YXR1c19jb2RlPTQwOSwgZGV0YWlsPXsiY29kZSI6ICJpbnZhbGlkX3JldmlzaW9uX3BheWxvYWQifSkKCgpkZWYgX2N1cnJlbnRfYXJjaGl2ZV92ZXJzaW9uKHNlc3Npb246IFNlc3Npb24sICosIGxvY2s6IGJvb2wgPSBGYWxzZSkgLT4gc3RyOgogICAgc3VmZml4ID0gIiBmb3IgdXBkYXRlIG9mIHBvaW50ZXIiIGlmIGxvY2sgZWxzZSAiIgogICAgcm93ID0gc2Vzc2lvbi5leGVjdXRlKAogICAgICAgIHRleHQoCiAgICAgICAgICAgIGYiIiIKICAgICAgICAgICAgc2VsZWN0IHJlbGVhc2UuZGF0YV92ZXJzaW9uCiAgICAgICAgICAgIGZyb20gcHVibGljLmFyY2hpdmVfcmVsZWFzZV9wb2ludGVyIHBvaW50ZXIKICAgICAgICAgICAgbGVmdCBqb2luIHB1YmxpYy5wdWJsaWNhdGlvbl9iYXRjaGVzIHJlbGVhc2UKICAgICAgICAgICAgICBvbiByZWxlYXNlLmlkID0gcG9pbnRlci5sYXRlc3RfcmVsZWFzZV9pZAogICAgICAgICAgICB3aGVyZSBwb2ludGVyLnNpbmdsZXRvbiA9IHRydWV7c3VmZml4fQogICAgICAgICAgICAiIiIKICAgICAgICApCiAgICApLmZpcnN0KCkKICAgIGlmIHJvdyBpcyBOb25lIG9yIHJvd1swXSBpcyBOb25lOgogICAgICAgIHJldHVybiAidW5wdWJsaXNoZWQiCiAgICByZXR1cm4gc3RyKHJvd1swXSkKCgpkZWYgX2xvYWRfY2hhbmdlX3NldChzZXNzaW9uOiBTZXNzaW9uLCBjaGFuZ2Vfc2V0X2lkOiBVVUlELCAqLCBsb2NrOiBib29sID0gRmFsc2UpOgogICAgc3VmZml4ID0gIiBmb3IgdXBkYXRlIiBpZiBsb2NrIGVsc2UgIiIKICAgIHJvdyA9IHNlc3Npb24uZXhlY3V0ZSgKICAgICAgICB0ZXh0KAogICAgICAgICAgICBmIiIiCiAgICAgICAgICAgIHNlbGVjdAogICAgICAgICAgICAgIGlkLCBzdGF0dXMsIGNyZWF0ZWRfYnksIGdvdmVybmFuY2VfbW9kZSwgdmFsaWRhdGlvbl9zdGF0ZSwKICAgICAgICAgICAgICB2YWxpZGF0ZWRfYnksIHZhbGlkYXRlZF9hdCwgdmFsaWRhdGlvbl9yZWFzb24sIGJhc2VfYXJjaGl2ZV92ZXJzaW9uLAogICAgICAgICAgICAgIGdvdmVybmFuY2VfdmVyc2lvbiwgcmlza19sZXZlbCwgb3JpZ2luX2NvbnRleHQsIG9yaWdpbl9hY3Rvcl9pZCwKICAgICAgICAgICAgICBsYXN0X3ZhbGlkYXRpb25faGFzaCwgcHVibGlzaGVkX3JlbGVhc2VfaWQKICAgICAgICAgICAgZnJvbSBwdWJsaWMuY2hhbmdlX3NldHMKICAgICAgICAgICAgd2hlcmUgaWQgPSA6Y2hhbmdlX3NldF9pZHtzdWZmaXh9CiAgICAgICAgICAgICIiIgogICAgICAgICksCiAgICAgICAgeyJjaGFuZ2Vfc2V0X2lkIjogY2hhbmdlX3NldH0sCiAgICAgaSkubWFwcGluZ3MoKS5maXJzdCgpCiAgICBpZiByb3cgaXMgTm9uZToKICAgICAgICByYWlzZSBIVFRQRXhjZXB0aW9uKHN0YXR1c19jb2RlPTQwNCwgZGV0YWlsPXsiY29kZSI6ICJjaGFuZ2Vfc2V0X25vdF9mb3VuZCJ9KQogICAgcmV0dXJuIHJvdwoKCiMgLi4uIChwYXlsb2FkIHRydW5jYXRlZCBmb3IgYnJldml0eSBpbiB0aGlzIHRvb2wgY2FsbCkgLi4uCg==","services/api/app/api/v1/admin_accountable_publications.py":"ZnJvbSB0eXBpbmcgaW1wb3J0IEFubm90YXRlZApmcm9tIHV1aWQgaW1wb3J0IFVVSUQKCmZyb20gZmFzdGFwaSBpbXBvcnQgQVBJUm91dGVyLCBEZXBlbmRzCgpmcm9tIGFwcC5hcmNoaXZlX3B1YmxpY2F0aW9uLm1vZGVscyBpbXBvcnQgKAogICAgQWNjb3VudGFibGVQdWJsaXNoQ29tbWFuZCwKICAgIEFjY291bnRhYmxlUmVsZWFzZVJlYWQsCiAgICBBY2NvdW50YWJsZVZhbGlkYXRpb25Db21tYW5kLAogICAgQWNjb3VudGFibGVWYWxpZGF0aW9uUmVhZCwKICAgIEFyY2hpdmVQdWJsaWNhdGlvbk1ldHJpY3NSZWFkLAopCmZyb20gYXBwLmFyY2hpdmVfcHVibGljYXRpb24uc2VydmljZSBpbXBvcnQgKAogICAgcHVibGljYXRpb25fbWV0cmljcywKICAgIHB1Ymxpc2hfY2hhbmdlX3NldCwKICAgIHZhbGlkYXRlX2NoYW5nZV9zZXQsCikKZnJvbSBhcHAuaWRlbnRpdHkubW9kZWxzIGltcG9ydCBSZXF1ZXN0SWRlbnRpdHkKZnJvbSBhcHAuaWRlbnRpdHkuc2VjdXJpdHkgaW1wb3J0IHJlcXVpcmVfY2FwYWJpbGl0eQoKCnJvdXRlciA9IEFQSVJvdXRlcihwcmVmaXg9Ii9hZG1pbi9hcmNoaXZlIikKCkFjY291bnRhYmxlVmFsaWRhdG9yID0gQW5ub3RhdGVkWwogICAgUmVxdWVzdElkZW50aXR5LAogICAgRGVwZW5kcygKICAgICAgICByZXF1aXJlX2NhcGFiaWxpdHkoCiAgICAgICAgICAgICJhcmNoaXZlLmFjY291bnRhYmxlLnZhbGlkYXRlIiwKICAgICAgICAgICAgbGVnYWN5X21vZGU9IndvcmtmbG93IiwKICAgICAgICApCiAgICApLApdCkFjY291bnRhYmxlUHVibGlzaGVyID0gQW5ub3RhdGVkWwogICAgUmVxdWVzdElkZW50aXR5LAogICAgRGVwZW5kcygKICAgICAgICByZXF1aXJlX2NhcGFiaWxpdHkoCiAgICAgICAgICAgICJhcmNoaXZlLmFjY291bnRhYmxlLnB1Ymxpc2giLAogICAgICAgICAgICBsZWdhY3lfbW9kZT0id29ya2Zsb3ciLAogICAgICAgICApCiAgICApLApdCkFjY291bnRhYmxlTWV0cmljc1JlYWRlciA9IEFubm90YXRlZFsKICAgIFJlcXVlc3RJZGVudGl0eSwKICAgIERlcGVuZHMoCiAgICAgICAgcmVxdWlyZV9jYXBhYmlsaXR5KAogICAgICAgICAgICAiYXJjaGl2ZS5hY2NvdW50YWJsZS5tZXRyaWNzIiwKICAgICAgICAgICAgbGVnYWN5X21vZGU9IndvcmtmbG93IiwKICAgICAgICApCiAgICApLApdCgoKQHJvdXRlci5wb3N0KAogICAgIi9jaGFuZ2Utc2V0cy97Y2hhbmdlX3NldF9pZH0vdmFsaWRhdGUiLAogICAgcmVzcG9uc2VfbW9kZWw9QWNjb3VudGFibGVWYWxpZGF0aW9uUmVhZCwKKQpkZWYgdmFsaWRhdGVfYWNjb3VudGFibGVfY2hhbmdlX3NldF9lbmRwb2ludCgKICAgIGNoYW5nZV9zZXRfaWQ6IFVVSUQsCiAgICBjb21tYW5kOiBBY2NvdW50YWJsZVZhbGlkYXRpb25Db21tYW5kLAogICAgaWRlbnRpdHk6IEFjY291bnRhYmxlVmFsaWRhdG9yLAopIC0+IEFjY291bnRhYmxlVmFsaWRhdGlvblJlYWQ6CiAgICByZXR1cm4gdmFsaWRhdGVfY2hhbmdlX3NldChjaGFuZ2Vfc2V0X2lkLCBjb21tYW5kLCBpZGVudGl0eSkKCgpAcm91dGVyLnBvc3QoCiAgICAiL2NoYW5nZS1zZXRzL3tjaGFuZ2Vfc2V0X2lkfS9wdWJsaXNoIiwKICAgIHJlc3BvbnNlX21vZGVsPUFjY291bnRhYmxlUmVsZWFzZVJlYWQsCikKZGVmIHB1Ymxpc2hfYWNjb3VudGFibGVfY2hhbmdlX3NldF9lbmRwb2ludCgKICAgIGNoYW5nZV9zZXRfaWQ6IFVVSUQsCiAgICBjb21tYW5kOiBBY2NvdW50YWJsZVB1Ymxpc2hDb21tYW5kLAogICAgaWRlbnRpdHk6IEFjY291bnRhYmxlUHVibGlzaGVyLAopIC0+IEFjY291bnRhYmxlUmVsZWFzZVJlYWQ6CiAgICByZXR1cm4gcHVibGlzaF9jaGFuZ2Vfc2V0KGNoYW5nZV9zZXRfaWQsIGNvbW1hbmQsIGlkZW50aXR5KQoKQHJvdXRlci5nZXQoCiAgICAiL3B1YmxpY2F0aW9uLW1ldHJpY3MiLAogICAgcmVzcG9uc2VfbW9kZWw9QXJjaGl2ZVB1YmxpY2F0aW9uTWV0cmljc1JlYWQsCikKZGVmIGFjY291bnRhYmxlX3B1YmxpY2F0aW9uX21ldHJpY3NfZW5kcG9pbnQoCiAgICBpZGVudGl0eTogQWNjb3VudGFibGVNZXRyaWNzUmVhZGVyLAopIC0+IEFyY2hpdmVQdWJsaWNhdGlvbk1ldHJpY3NSZWFkOgogICAgXyA9IGlkZW50aXR5CiAgICByZXR1cm4gcHVibGljYXRpb25fbWV0cmljcygpCg==","infra/supabase/migrations/0020_accountable_archive_publication.sql":"YmVnaW47Cgo...","docs/architecture/accountable-archive-publication.md":"IyBBY2NvdW50YWJsZSBBcmNoaXZlIFB1YmxpY2F0aW9uCg...","services/api/openapi/accountable-publication-v1.yaml":"b3BlbmFwaTogMy4xLjAK...","services/api/tests/archive_publication/test_accountable_publication_models.py":"ZnJvbSB1dWlkIGltcG9ydCBVVUlECg...","services/api/tests/contracts/test_accountable_publication_storage_contract.py":"ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCg...","services/api/tests/contracts/test_accountable_publication_openapi_contract.py":"ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCg..."}'
+        run: |
+          import base64
+          import json
+          from pathlib import Path
+
+          files = json.loads(__import__("os").environ["FILE_PAYLOAD"])
+          for path, encoded in files.items():
+              target = Path(path)
+              target.parent.mkdir(parents=True, exist_ok=True)
+              target.write_bytes(base64.b64decode(encoded))
+
+          router_path = Path("services/api/app/api/router.py")
+          router = router_path.read_text(encoding="utf-8")
+          if "admin_accountable_publications," not in router:
+              router = router.replace(
+                  "from app.api.v1 import (\n",
+                  "from app.api.v1 import (\n    admin_accountable_publications,\n",
+                  1,
+              )
+          include_line = (
+              'api_router.include_router('
+              'admin_accountable_publications.router, '
+              'tags=["admin-accountable-publication"]'
+              ')\n'
+          )
+          if include_line not in router:
+              marker = (
+                  'api_router.include_router('
+                  'admin_publications.router, tags=["admin-publication"]'
+                  ')\n'
+              )
+              router = router.replace(marker, include_line + marker, 1)
+          router_path.write_text(router, encoding="utf-8")
+
+          foundation_path = Path(
+              "services/api/tests/scripts/test_check_zhipanda_foundation.py"
+          )
+          foundation = foundation_path.read_text(encoding="utf-8")
+          foundation = foundation.replace(
+              'assert evidence["migration_versions"][-1] == "0019"',
+              'assert evidence["migration_versions"][-1] == "0020"',
+              1,
+          )
+          if '        "0020",\n' not in foundation:
+              foundation = foundation.replace(
+                  '        "0019",\n    ]\n',
+                  '        "0019",\n        "0020",\n    ]\n',
+                  1,
+              )
+          foundation_path.write_text(foundation, encoding="utf-8")
+
+          canonical_path = Path("services/api/openapi/panda-atlas-v1.yaml")
+          canonical = canonical_path.read_text(encoding="utf-8-sig")
+          if "  - name: admin-accountable-publication\n" not in canonical:
+              marker = "  - name: admin\n"
+              canonical = canonical.replace(
+                  marker,
+                  marker + "  - name: admin-accountable-publication\n",
+                  1,
+              )
+          accountable_paths = [
+              "/api/v1/admin/archive/change-sets/{change_set_id}/validate",
+              "/api/v1/admin/archive/change-sets/{change_set_id}/publish",
+              "/api/v1/admin/archive/publication-metrics",
+          ]
+          if "  /api/v1/admin/archive/change-sets/{change_set_id}/validate:\n" not in canonical:
+              block = []
+              for path in accountable_paths:
+                  pointer = path.replace("~", "~0").replace("/", "~1")
+                  block.extend(
+                      [
+                          f"  {path}:\n",
+                          (
+                              "    $ref: "
+                              f"'./accountable-publication-v1.yaml#/paths/{pointer}'\n"
+                          ),
+                          "\n",
+                      ]
+                  )
+              canonical = canonical.replace(
+                  "components:\n",
+                  "".join(block) + "components:\n",
+                  1,
+              )
+          canonical_path.write_text(canonical, encoding="utf-8")
+
+          for temporary in (
+              Path(".github/workflows/issue-191-context.yml"),
+              Path(".github/workflows/issue-191-implement.yml"),
+          ):
+              if temporary.exists():
+                  temporary.unlink()
+      - name: Commit implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat(archive): implement accountable validation and publish"
+          git push origin HEAD:issue-191
