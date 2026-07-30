@@ -4,6 +4,7 @@
 - **生效日期：** 2026-07-25
 - **适用范围：** `apps/web` 的公开页面、共享组件、视觉样式、文案与前端测试
 - **取代：** 本文件在品牌定位和视觉方向上取代 `frontend-design-principles-and-standards.md` 中的“PandaAtlas / 自然史档案馆”定义
+- **品牌与文案合同：** `zhipanda-public-brand-and-copy-contract.md` 定义公开命名边界、双语语气和旧品牌引用清单
 
 ## 1. 项目定义
 
