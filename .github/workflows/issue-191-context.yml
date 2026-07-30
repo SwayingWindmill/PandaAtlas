@@ -1,4 +1,4 @@
-name: Issue 191 Context
+name: Issue 191 Canonical OpenAPI
 
 on:
   pull_request:
@@ -6,18 +6,59 @@ on:
       - master
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  inspect:
+  register:
+    if: github.head_ref == 'issue-191' && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.0
-      - name: Inspect publication and identity context
+        with:
+          ref: issue-191
+      - name: Register accountable publication paths
+        shell: python
         run: |
-          echo '=== migrations ==='
-          ls -1 infra/supabase/migrations
-          echo '=== publication schema ==='
-          grep -RInE "create table .*publication_batches|create table .*public_release|create table .*change_sets|publish_publication_batch|public_release_pointer|outbox_events" infra/supabase/migrations services/api/app | head -300
-          echo '=== identity roles and capabilities ==='
-          grep -RInE "archive\.batch|archive\.change_set|role_key|senior|editor|publisher" infra/supabase/migrations services/api/app docs | head -400
+          from pathlib import Path
+
+          contract = Path("services/api/openapi/panda-atlas-v1.yaml")
+          text = contract.read_text(encoding="utf-8-sig")
+
+          if "  - name: admin-accountable-publication\n" not in text:
+              marker = "  - name: admin\n"
+              if marker not in text:
+                  raise SystemExit("admin tag marker missing")
+              text = text.replace(
+                  marker,
+                  marker + "  - name: admin-accountable-publication\n",
+                  1,
+              )
+
+          paths = [
+              "/api/v1/admin/archive/change-sets/{change_set_id}/validate",
+              "/api/v1/admin/archive/change-sets/{change_set_id}/publish",
+              "/api/v1/admin/archive/publication-metrics",
+          ]
+          if "  /api/v1/admin/archive/change-sets/{change_set_id}/validate:\n" not in text:
+              block = []
+              for path in paths:
+                  pointer = path.replace("~", "~0").replace("/", "~1")
+                  block.extend([
+                      f"  {path}:\n",
+                      f"    $ref: './accountable-publication-v1.yaml#/paths/{pointer}'\n",
+                      "\n",
+                  ])
+              marker = "components:\n"
+              if marker not in text:
+                  raise SystemExit("components marker missing")
+              text = text.replace(marker, "".join(block) + marker, 1)
+
+          contract.write_text(text, encoding="utf-8")
+      - name: Commit canonical registration and remove workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/issue-191-context.yml
+          git add services/api/openapi/panda-atlas-v1.yaml
+          git commit -m "docs(archive): register accountable publication routes"
+          git push origin HEAD:issue-191
