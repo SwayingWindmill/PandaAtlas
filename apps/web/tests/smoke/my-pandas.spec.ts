@@ -23,8 +23,10 @@ test("serves canonical bilingual Passport routes", async ({ page, request }) => 
   await expect(page.getByRole("heading", { level: 2, name: "护照与最近浏览使用不同存储边界" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "熊猫护照" })).toBeVisible();
   await expect(page.getByRole("link", { name: "使用邮箱验证码登录" })).toHaveAttribute("href", "/auth/login?next=/zh/me/passport");
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/zh\/me\/passport$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.zhipanda.com/zh/me/passport");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.locator('meta[property="og:title"]')).toHaveCount(0);
+  await expect(page.locator('meta[name="application-name"]')).toHaveAttribute("content", "吱熊猫 ZhiPanda");
 });
 
 test("deletes legacy anonymous saves without converting them", async ({ page }) => {

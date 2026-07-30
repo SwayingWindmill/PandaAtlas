@@ -4,6 +4,7 @@ import { EditorialHomePage } from "@/features/home/editorial-home-page";
 import { buildEditorialHomeViewModel } from "@/features/home/editorial-home-view-model";
 import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
 interface LocalizedHomePageProps {
   params: Promise<{ locale: string }>;
@@ -25,14 +26,7 @@ export async function generateMetadata({ params }: LocalizedHomePageProps): Prom
   const locale = parsePublicLocale(rawLocale);
   if (!locale) return {};
   const t = metadataCopy[locale];
-  return {
-    title: t.title,
-    description: t.description,
-    alternates: {
-      canonical: `/${locale}`,
-      languages: { "zh-CN": "/zh", en: "/en", "x-default": "/zh" },
-    },
-  };
+  return buildPublicMetadata({ locale, title: t.title, description: t.description });
 }
 
 export default async function LocalizedHomePage({ params }: LocalizedHomePageProps) {

@@ -137,11 +137,11 @@ def _intent_copy(
 def _copy(locale: str, key: str) -> str:
     values: dict[str, dict[str, str]] = {
         "zh-CN": {
-            "generic_title": "吱熊猫通知",
+            "generic_title": "吱熊猫有新动态",
             "generic_summary": "你的吱熊猫账号有一项新动态。",
             "empty_digest": "此周期没有新的邮件动态。",
-            "daily_digest_title": "吱熊猫每日摘要",
-            "weekly_digest_title": "吱熊猫每周摘要",
+            "daily_digest_title": "吱熊猫每日熊猫动态",
+            "weekly_digest_title": "吱熊猫每周熊猫动态",
             "category_birthday": "熊猫生日动态",
             "category_major_activity": "熊猫重要动态",
             "category_submission_status": "投稿状态更新",
@@ -150,13 +150,13 @@ def _copy(locale: str, key: str) -> str:
             "category_security_role": "账号安全或权限更新",
         },
         "en": {
-            "generic_title": "ZhiPanda notification",
+            "generic_title": "New ZhiPanda update",
             "generic_summary": "There is a new update for your ZhiPanda account.",
             "empty_digest": "There are no new email updates for this period.",
-            "daily_digest_title": "ZhiPanda daily digest",
-            "weekly_digest_title": "ZhiPanda weekly digest",
+            "daily_digest_title": "Your daily ZhiPanda panda updates",
+            "weekly_digest_title": "Your weekly ZhiPanda panda updates",
             "category_birthday": "Panda birthday update",
-            "category_major_activity": "Major panda Activity",
+            "category_major_activity": "Important panda update",
             "category_submission_status": "Submission status update",
             "category_incorporation": "Contribution incorporation update",
             "category_correction_retraction": "Correction or retraction notice",

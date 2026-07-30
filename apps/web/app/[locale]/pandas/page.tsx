@@ -9,6 +9,7 @@ import { atlasHref, parseAtlasQuery, type AtlasQueryState } from "@/features/atl
 import { buildAtlasSearchViewModel } from "@/features/atlas/atlas-search";
 import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
 interface LocalizedPandasPageProps {
   params: Promise<{ locale: string }>;
@@ -17,8 +18,8 @@ interface LocalizedPandasPageProps {
 
 const copy = {
   zh: {
-    title: "熊猫档案检索",
-    description: "在版本化公开档案中按名称、状态、性别、现居机构和档案完整度查找个体。结果只包含已有可信档案目的地的熊猫。",
+    title: "熊猫图鉴 | 吱熊猫",
+    description: "按名字、状态、性别和生活地点寻找大熊猫，继续探索它们的资料、家族和生活足迹。",
     searchLabel: "搜索与筛选公开档案",
     inputLabel: "熊猫名称或公开标识",
     placeholder: "例如：美香、Mei Xiang、meixiang",
@@ -66,7 +67,7 @@ const copy = {
     noEntityConflation: "机构和物理场所是独立实体，结果不会把两者合并。",
   },
   en: {
-    title: "Panda profile discovery",
+    title: "Panda guide | ZhiPanda",
     description: "Find individuals in the versioned public archive by name, life status, sex, current facility, and profile completeness. Results include only pandas with a trusted profile destination.",
     searchLabel: "Search and filter public profiles",
     inputLabel: "Panda name or public identifier",
@@ -159,14 +160,7 @@ export async function generateMetadata({ params }: LocalizedPandasPageProps): Pr
   const locale = parsePublicLocale(rawLocale);
   if (!locale) return {};
   const t = copy[locale];
-  return {
-    title: t.title,
-    description: t.description,
-    alternates: {
-      canonical: `/${locale}/pandas`,
-      languages: { "zh-CN": "/zh/pandas", en: "/en/pandas", "x-default": "/zh/pandas" },
-    },
-  };
+  return buildPublicMetadata({ locale, title: t.title, description: t.description, path: "/pandas" });
 }
 
 export default async function LocalizedPandasPage({ params, searchParams }: LocalizedPandasPageProps) {

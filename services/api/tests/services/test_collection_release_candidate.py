@@ -76,6 +76,7 @@ def test_collection_release_candidate_is_deterministic_and_preserves_base_semant
     assert first.source_json() == second.source_json()
     assert first.report_json() == second.report_json()
     assert first.report["report_id"] == second.report["report_id"]
+    assert first.source_state["dataset"]["title"] == "ZhiPanda collection release 2026.07.24.1"
 
     summary = first.report["summary"]
     assert summary["base_panda_count"] == 16

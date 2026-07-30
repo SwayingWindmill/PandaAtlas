@@ -4,4 +4,4 @@ This digest contains $item_count updates.
 
 $items_text
 
-Open your ZhiPanda Inbox: $inbox_url
+Open your ZhiPanda inbox: $inbox_url

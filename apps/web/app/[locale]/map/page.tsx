@@ -10,6 +10,7 @@ import {
   type PublicCoverage,
 } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
 interface LocalizedMapPageProps {
   params: Promise<{ locale: string }>;
@@ -18,12 +19,12 @@ interface LocalizedMapPageProps {
 
 const metadataCopy = {
   zh: {
-    title: "结构化全球分布与足迹",
-    description: "不依赖地图画布，查阅大熊猫机构、个体驻留、野生保护范围、公开精度、来源和快照。",
+    title: "熊猫地图 | 吱熊猫",
+    description: "探索大熊猫生活过的机构与地点，以及公开的野生家园范围和资料来源。",
   },
   en: {
-    title: "Structured global distribution and footprints",
-    description: "Explore panda institutions, individual residencies, wild conservation coverage, public precision, sources, and snapshots without a map canvas.",
+    title: "Panda map | ZhiPanda",
+    description: "Explore institutions and places where giant pandas have lived, plus published wild habitat coverage and sources.",
   },
 } as const;
 
@@ -32,18 +33,7 @@ export async function generateMetadata({ params }: LocalizedMapPageProps): Promi
   const locale = parsePublicLocale(rawLocale);
   if (!locale) return {};
   const t = metadataCopy[locale];
-  return {
-    title: t.title,
-    description: t.description,
-    alternates: {
-      canonical: `/${locale}/map`,
-      languages: {
-        "zh-CN": "/zh/map",
-        en: "/en/map",
-        "x-default": "/zh/map",
-      },
-    },
-  };
+  return buildPublicMetadata({ locale, title: t.title, description: t.description, path: "/map" });
 }
 
 export default async function LocalizedMapPage({ params, searchParams }: LocalizedMapPageProps) {

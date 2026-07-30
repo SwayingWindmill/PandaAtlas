@@ -83,7 +83,7 @@ test("restores visible Follow outcomes on the canonical profile", async ({ page 
     ["followed", "You now follow Mei Xiang"],
     ["already-followed", "You already follow Mei Xiang"],
     ["cancelled", "Sign-in was cancelled"],
-    ["intent-expired", "Follow request expired"],
+    ["intent-expired", "request expired"],
     ["auth-failed", "Verification did not complete"],
     ["session-expired", "Your session expired"],
   ] as const;
@@ -140,12 +140,12 @@ test("signed-in Follow updates immediately and asks for email consent separately
   await expect(follow).toBeEnabled();
   await follow.click();
   await expect(page.getByRole("button", { name: "Unfollow Mei Xiang" })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("heading", { name: "Receive major-activity email updates?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Receive important panda updates by email?" })).toBeVisible();
   expect(followWrites).toBe(1);
   expect(preferenceWrites).toBe(0);
 
-  await page.getByRole("button", { name: "Enable major-activity email" }).click();
-  await expect(page.getByRole("status")).toContainText("Major-activity email is enabled");
+  await page.getByRole("button", { name: "Enable important update emails" }).click();
+  await expect(page.getByRole("status")).toContainText("Important update emails are enabled");
   expect(preferenceWrites).toBe(1);
   await expect(page.getByRole("link", { name: "Open Panda Passport" })).toHaveAttribute("href", "/en/me/passport");
 });
@@ -201,6 +201,8 @@ test("cross-device continuation clears the fragment and still requires OTP", asy
   await expect(page).toHaveURL(/\/auth\/login\?next=\/en\/pandas\/mei-xiang$/);
   expect(continuation).toEqual({ continuation_handle: "cross-device-handle-1234567890" });
   await expect(page.getByText("Panda to follow: mei-xiang")).toBeVisible();
+  await expect(page.getByText("ZhiPanda account")).toBeVisible();
+  await expect(page.getByText(/FastAPI/)).toHaveCount(0);
   await expect(page.getByLabel("Email")).toBeVisible();
   await expect(page.getByRole("button", { name: "Send verification code" })).toBeVisible();
 });

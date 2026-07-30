@@ -7,6 +7,7 @@ import {
   resolvePublishedPlaceReference,
 } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
@@ -23,18 +24,14 @@ export async function generateMetadata({ params }: PlacePageProps): Promise<Meta
   const envelope = locale ? loadPublishedPlace(slug, locale) : null;
   if (!locale || !envelope) return {};
   const entity = buildPlacePageViewModel(envelope, locale);
-  return {
-    title: locale === "zh" ? `${entity.displayName} | 场所实体` : `${entity.displayName} | Place entity`,
+  return buildPublicMetadata({
+    locale,
+    title: locale === "zh"
+      ? `${entity.displayName} | 熊猫生活地点 | 吱熊猫`
+      : `${entity.displayName} | Panda place | ZhiPanda`,
     description: entity.summary,
-    alternates: {
-      canonical: `/${locale}/places/${entity.canonicalSlug}`,
-      languages: {
-        "zh-CN": `/zh/places/${entity.canonicalSlug}`,
-        en: `/en/places/${entity.canonicalSlug}`,
-        "x-default": `/zh/places/${entity.canonicalSlug}`,
-      },
-    },
-  };
+    path: `/places/${entity.canonicalSlug}`,
+  });
 }
 
 export default async function PlacePage({ params, searchParams }: PlacePageProps) {

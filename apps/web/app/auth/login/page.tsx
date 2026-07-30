@@ -4,8 +4,10 @@ import { Suspense } from "react";
 import { EmailOtpLogin } from "@/features/auth";
 
 export const metadata: Metadata = {
-  title: "邮箱验证码登录",
-  robots: { index: false, follow: false },
+  title: { absolute: "登录吱熊猫 | ZhiPanda sign-in" },
+  description: "使用邮箱验证码安全登录吱熊猫，继续关注熊猫并查看私有动态。",
+  applicationName: "吱熊猫 ZhiPanda",
+  robots: { index: false, follow: false, nocache: true, noarchive: true },
   referrer: "no-referrer",
 };
 

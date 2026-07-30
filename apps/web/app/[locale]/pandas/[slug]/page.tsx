@@ -9,6 +9,7 @@ import {
 import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
 import { TrustedProfilePage } from "@/features/profile/trusted-profile-page";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
@@ -27,21 +28,18 @@ export async function generateMetadata({ params }: LocalizedPandaPageProps): Pro
 
   const profile = buildTrustedProfilePageViewModel(envelope.data, locale);
   const title = locale === "zh"
-    ? `${profile.displayName} | 大熊猫可信档案`
-    : `${profile.displayName} | Trusted giant panda profile`;
+    ? `${profile.displayName} | 大熊猫资料 | 吱熊猫`
+    : `${profile.displayName} | Giant panda profile | ZhiPanda`;
 
-  return {
+  return buildPublicMetadata({
+    locale,
     title,
-    description: profile.summary ?? undefined,
-    alternates: {
-      canonical: `/${locale}/pandas/${profile.canonicalSlug}`,
-      languages: {
-        "zh-CN": `/zh/pandas/${profile.canonicalSlug}`,
-        en: `/en/pandas/${profile.canonicalSlug}`,
-        "x-default": `/zh/pandas/${profile.canonicalSlug}`,
-      },
-    },
-  };
+    description: profile.summary ?? (locale === "zh" ? "查看这只大熊猫的资料、家族和生活足迹。" : "Explore this giant panda's profile, family, and life journey."),
+    path: `/pandas/${profile.canonicalSlug}`,
+    image: envelope.data.panda.cover_image_url
+      ? { url: envelope.data.panda.cover_image_url, alt: profile.displayName }
+      : null,
+  });
 }
 
 export default async function LocalizedPandaPage({ params, searchParams }: LocalizedPandaPageProps) {
