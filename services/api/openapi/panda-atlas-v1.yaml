@@ -22,6 +22,7 @@ tags:
   - name: map
   - name: stats
   - name: admin
+  - name: admin-review
   - name: feed
   - name: notification
 
@@ -1666,6 +1667,42 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/CommunityIntakeMetrics' }
         '401': { description: Administrator authentication is required }
+
+  /api/v1/admin/review-cases:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases'
+
+  /api/v1/admin/review-cases/intake/{submission_id}:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1intake~1{submission_id}'
+
+  /api/v1/admin/review-cases/{review_case_id}:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}'
+
+  /api/v1/admin/review-cases/{review_case_id}/active-revision:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1active-revision'
+
+  /api/v1/admin/review-cases/{review_case_id}/triage:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1triage'
+
+  /api/v1/admin/review-cases/{review_case_id}/claim:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1claim'
+
+  /api/v1/admin/review-cases/{review_case_id}/request-information:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1request-information'
+
+  /api/v1/admin/review-cases/{review_case_id}/sources/{source_id}/verify:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1sources~1{source_id}~1verify'
+
+  /api/v1/admin/review-cases/{review_case_id}/decide:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1decide'
+
+  /api/v1/admin/review-cases/{review_case_id}/recommend:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1recommend'
+
+  /api/v1/admin/review-cases/{review_case_id}/reopen:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases~1{review_case_id}~1reopen'
+
+  /api/v1/admin/review-metrics:
+    $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-metrics'
 
 components:
   securitySchemes:

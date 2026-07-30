@@ -1,0 +1,363 @@
+openapi: 3.1.0
+info:
+  title: PandaAtlas Review & Moderation API
+  version: 1.0.0
+  description: >-
+    Private reviewer contract. FastAPI and PostgreSQL remain the only authoritative
+    business write path; browser clients never write Review & Moderation tables.
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/admin/review-cases:
+    get:
+      operationId: listReviewCases
+      parameters:
+        - in: query
+          name: queue
+          schema:
+            $ref: '#/components/schemas/ReviewQueue'
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        '200':
+          description: Bounded reviewer queue.
+        '401':
+          description: Authentication required.
+        '403':
+          description: review.case.read required.
+        '404':
+          description: Review & Moderation disabled.
+  /api/v1/admin/review-cases/intake/{submission_id}:
+    post:
+      operationId: intakeReviewSubmission
+      parameters:
+        - $ref: '#/components/parameters/SubmissionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntakeReviewCaseCommand'
+      responses:
+        '201':
+          description: ReviewCase created or idempotently replayed.
+        '403':
+          description: Capability or self-review conflict.
+        '409':
+          description: Submission is not formally reviewable.
+  /api/v1/admin/review-cases/{review_case_id}:
+    get:
+      operationId: getReviewCase
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      responses:
+        '200':
+          description: ReviewCase detail with private review state and clean-access metadata.
+        '404':
+          description: ReviewCase not visible.
+  /api/v1/admin/review-cases/{review_case_id}/active-revision:
+    get:
+      operationId: getActiveReviewRevision
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      responses:
+        '200':
+          description: Active immutable SubmissionRevision content.
+        '404':
+          description: ReviewCase not visible.
+  /api/v1/admin/review-cases/{review_case_id}/triage:
+    post:
+      operationId: triageReviewCase
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      requestBody:
+        $ref: '#/components/requestBodies/TriageReviewCase'
+      responses:
+        '200':
+          description: ReviewCase triaged.
+        '403':
+          description: Capability or self-review conflict.
+        '409':
+          description: Version or state conflict.
+  /api/v1/admin/review-cases/{review_case_id}/claim:
+    post:
+      operationId: claimReviewCase
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      requestBody:
+        $ref: '#/components/requestBodies/ClaimReviewCase'
+      responses:
+        '200':
+          description: Primary assignment claimed or idempotently replayed.
+        '403':
+          description: Capability or self-review conflict.
+        '409':
+          description: Version, state, or assignment conflict.
+  /api/v1/admin/review-cases/{review_case_id}/request-information:
+    post:
+      operationId: requestReviewInformation
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestInformationCommand'
+      responses:
+        '200':
+          description: Append-only request recorded and safe contributor status projected.
+        '409':
+          description: Version, state, or assignment conflict.
+  /api/v1/admin/review-cases/{review_case_id}/sources/{source_id}/verify:
+    post:
+      operationId: verifyReviewSource
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+        - $ref: '#/components/parameters/SourceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifySourceCommand'
+      responses:
+        '200':
+          description: Append-only source verification recorded.
+        '404':
+          description: Source is not part of the active revision.
+        '409':
+          description: Version, state, or assignment conflict.
+  /api/v1/admin/review-cases/{review_case_id}/decide:
+    post:
+      operationId: decideReviewCase
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecideReviewCaseCommand'
+      responses:
+        '200':
+          description: Append-only decision recorded.
+        '403':
+          description: Capability or self-review conflict.
+        '409':
+          description: Version, evidence readiness, or selected assertion conflict.
+  /api/v1/admin/review-cases/{review_case_id}/recommend:
+    post:
+      operationId: recommendReviewAssertions
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendAssertionsCommand'
+      responses:
+        '200':
+          description: Selected accepted assertions recommended for Curation.
+        '409':
+          description: Accepted decision, version, state, or assignment conflict.
+  /api/v1/admin/review-cases/{review_case_id}/reopen:
+    post:
+      operationId: reopenReviewCase
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReopenReviewCaseCommand'
+      responses:
+        '201':
+          description: New ReviewCase linked to the closed record.
+        '409':
+          description: Only closed ReviewCases may be reopened.
+  /api/v1/admin/review-metrics:
+    get:
+      operationId: getReviewMetrics
+      responses:
+        '200':
+          description: Queue counts, oldest age, and SLA overdue count.
+        '403':
+          description: review.case.metrics required.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    SubmissionId:
+      in: path
+      name: submission_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ReviewCaseId:
+      in: path
+      name: review_case_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SourceId:
+      in: path
+      name: source_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBodies:
+    TriageReviewCase:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TriageReviewCaseCommand'
+    ClaimReviewCase:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VersionedCommand'
+  schemas:
+    ReviewQueue:
+      type: string
+      enum: [all, new, triage, assigned, waiting, decision_ready, incorporation_recommended, closed, sla_overdue]
+    CommandBase:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          minLength: 8
+          maxLength: 255
+    VersionedCommand:
+      allOf:
+        - $ref: '#/components/schemas/CommandBase'
+        - type: object
+          required: [expected_version]
+          properties:
+            expected_version:
+              type: integer
+              minimum: 1
+    IntakeReviewCaseCommand:
+      allOf:
+        - $ref: '#/components/schemas/CommandBase'
+        - type: object
+          properties:
+            active_revision_number:
+              type: [integer, 'null']
+              minimum: 1
+    TriageReviewCaseCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          properties:
+            risk_level:
+              type: string
+              enum: [normal, elevated, high]
+            active_revision_number:
+              type: [integer, 'null']
+              minimum: 1
+            duplicate_of_review_case_id:
+              type: [string, 'null']
+              format: uuid
+            internal_note:
+              type: [string, 'null']
+              maxLength: 4000
+    RequestInformationCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          required: [requested_fields, user_visible_message]
+          properties:
+            requested_fields:
+              type: array
+              minItems: 1
+              maxItems: 25
+              items:
+                type: string
+            user_visible_message:
+              type: string
+              minLength: 10
+              maxLength: 2000
+            internal_note:
+              type: [string, 'null']
+              maxLength: 4000
+    VerifySourceCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          required: [outcome, reason]
+          properties:
+            outcome:
+              type: string
+              enum: [verified, rejected]
+            normalized_locator:
+              type: [string, 'null']
+              maxLength: 2000
+            canonical_source_id:
+              type: [string, 'null']
+              maxLength: 255
+            reason:
+              type: string
+              minLength: 3
+              maxLength: 2000
+    DecideReviewCaseCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          required: [outcome, user_visible_explanation]
+          properties:
+            outcome:
+              type: string
+              enum: [accepted, not_accepted, duplicate, out_of_scope, abuse]
+            user_visible_explanation:
+              type: string
+              minLength: 10
+              maxLength: 2000
+            internal_reason:
+              type: [string, 'null']
+              maxLength: 4000
+            selected_assertion_keys:
+              type: array
+              maxItems: 25
+              items:
+                type: string
+            duplicate_of_review_case_id:
+              type: [string, 'null']
+              format: uuid
+    RecommendAssertionsCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          required: [reason]
+          properties:
+            reason:
+              type: string
+              minLength: 3
+              maxLength: 2000
+    ReopenReviewCaseCommand:
+      allOf:
+        - $ref: '#/components/schemas/CommandBase'
+        - type: object
+          required: [reason]
+          properties:
+            reason:
+              type: string
+              minLength: 3
+              maxLength: 2000
