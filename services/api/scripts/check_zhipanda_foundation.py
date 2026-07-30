@@ -461,12 +461,13 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 "community_intake.sensitive_read_events",
                 "community_intake.retention_events",
                 "community_intake.audit_events",
+                "community_intake.contributor_status_events",
+                "community_intake.contributor_assertion_results",
+                "community_intake.contributor_journey_events",
             ):
                 cursor.execute("select to_regclass(%s)::text", (relation,))
                 if cursor.fetchone()[0] != relation:
-                    raise FoundationCheckError(
-                        f"Community Intake relation is missing: {relation}"
-                    )
+                    raise FoundationCheckError(f"Community Intake relation is missing: {relation}")
 
             cursor.execute(
                 """
@@ -489,14 +490,15 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                         "trg_community_attachment_limits",
                         "trg_community_attachment_transition",
                         "trg_community_submission_transition",
+                        "trg_contributor_status_events_append_only",
+                        "trg_contributor_assertion_results_append_only",
+                        "trg_contributor_journey_events_append_only",
                     ],
                 ),
             )
             community_intake_protection_trigger_count = int(cursor.fetchone()[0])
-            if community_intake_protection_trigger_count != 9:
-                raise FoundationCheckError(
-                    "Community Intake protection triggers are incomplete"
-                )
+            if community_intake_protection_trigger_count != 12:
+                raise FoundationCheckError("Community Intake protection triggers are incomplete")
 
             cursor.execute(
                 """
@@ -505,9 +507,7 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 """
             )
             community_bucket = cursor.fetchone()
-            expected_mime_types = {
-                "application/pdf", "image/jpeg", "image/png", "image/webp"
-            }
+            expected_mime_types = {"application/pdf", "image/jpeg", "image/png", "image/webp"}
             if (
                 community_bucket is None
                 or bool(community_bucket[0])
@@ -523,17 +523,18 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
                 select capability_key from identity.capabilities
                 where capability_key = any(%s) order by capability_key
                 """,
-                ([
-                    "community_intake.evidence.read",
-                    "community_intake.retention.manage",
-                    "community_intake.scan.record",
-                ],),
+                (
+                    [
+                        "community_intake.evidence.read",
+                        "community_intake.retention.manage",
+                        "community_intake.scan.record",
+                        "community_intake.status.project",
+                    ],
+                ),
             )
             community_intake_capabilities = [str(row[0]) for row in cursor.fetchall()]
-            if len(community_intake_capabilities) != 3:
-                raise FoundationCheckError(
-                    "Community Intake capabilities are incomplete"
-                )
+            if len(community_intake_capabilities) != 4:
+                raise FoundationCheckError("Community Intake capabilities are incomplete")
 
             cursor.execute(
                 """
@@ -657,9 +658,7 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
         "engagement_append_only_trigger_count": engagement_append_only_trigger_count,
         "feed_append_only_trigger_count": feed_append_only_trigger_count,
         "notification_immutability_trigger_count": notification_immutability_trigger_count,
-        "community_intake_protection_trigger_count": (
-            community_intake_protection_trigger_count
-        ),
+        "community_intake_protection_trigger_count": (community_intake_protection_trigger_count),
         "community_intake_capabilities": community_intake_capabilities,
         "community_intake_storage_bucket": {
             "public": bool(community_bucket[0]),

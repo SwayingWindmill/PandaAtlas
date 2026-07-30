@@ -1324,6 +1324,8 @@ class NotificationRepository:
             "public_reason_code",
             "public_message_key",
             "public_message_version",
+            "notification_link",
+            "active_revision_number",
         }
         return {
             "event_type": event.event_type,

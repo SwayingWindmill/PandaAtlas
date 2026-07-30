@@ -8,11 +8,17 @@ from datetime import UTC, datetime, timedelta
 from typing import Protocol
 from uuid import uuid4
 
+import httpx
+
 from app.community_intake.models import SignedStorageReference
 
 
 class StorageReferenceError(ValueError):
     """Raised when an opaque Storage reference is invalid or expired."""
+
+
+class StorageWriteError(RuntimeError):
+    """Raised when private Storage cannot persist an attachment body."""
 
 
 class PrivateAttachmentStorage(Protocol):
@@ -39,6 +45,15 @@ class PrivateAttachmentStorage(Protocol):
         attachment_id: str,
         preview: bool,
     ) -> tuple[SignedStorageReference, str]: ...
+
+    def upload_content(
+        self,
+        *,
+        bucket: str,
+        object_key: str,
+        content: bytes,
+        media_type: str,
+    ) -> str: ...
 
 
 class OpaqueStorageReferenceSigner:
@@ -85,6 +100,16 @@ class OpaqueStorageReferenceSigner:
             raise StorageReferenceError(
                 "Storage reference does not match the attachment reservation"
             )
+
+    def upload_content(
+        self,
+        *,
+        bucket: str,
+        object_key: str,
+        content: bytes,
+        media_type: str,
+    ) -> str:
+        raise StorageWriteError("private evidence Storage writer is not configured")
 
     def create_download_reference(
         self,
@@ -139,6 +164,48 @@ class OpaqueStorageReferenceSigner:
         signature = hmac.new(self._key, payload_bytes, hashlib.sha256).digest()
         token = f"{_urlsafe_encode(payload_bytes)}.{_urlsafe_encode(signature)}"
         return SignedStorageReference(reference=token, expires_at=expires_at), jti
+
+
+class SupabasePrivateAttachmentStorage(OpaqueStorageReferenceSigner):
+    """Writes private evidence through the backend without returning object paths."""
+
+    def __init__(
+        self,
+        *,
+        signing_key: str,
+        ttl_seconds: int,
+        supabase_url: str,
+        service_role_key: str,
+    ) -> None:
+        super().__init__(signing_key=signing_key, ttl_seconds=ttl_seconds)
+        self._supabase_url = supabase_url.rstrip("/")
+        self._service_role_key = service_role_key
+
+    def upload_content(
+        self,
+        *,
+        bucket: str,
+        object_key: str,
+        content: bytes,
+        media_type: str,
+    ) -> str:
+        try:
+            response = httpx.post(
+                f"{self._supabase_url}/storage/v1/object/{bucket}/{object_key}",
+                headers={
+                    "Authorization": f"Bearer {self._service_role_key}",
+                    "apikey": self._service_role_key,
+                    "Content-Type": media_type,
+                    "x-upsert": "false",
+                },
+                content=content,
+                timeout=30.0,
+            )
+        except httpx.HTTPError as error:
+            raise StorageWriteError("private evidence Storage is unavailable") from error
+        if response.status_code not in {200, 201}:
+            raise StorageWriteError("private evidence Storage rejected the upload")
+        return response.headers.get("etag", "").strip('"') or hashlib.sha256(content).hexdigest()
 
 
 def hash_reference_jti(jti: str) -> str:

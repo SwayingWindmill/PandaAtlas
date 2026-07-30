@@ -79,6 +79,14 @@ class NotificationPolicy:
             "contribution.submission_status.changed",
         }
     )
+    _CONTRIBUTOR_STATUS_TYPE = "community.submission.contributor_status_changed"
+    _INCORPORATION_STATUSES = frozenset(
+        {
+            "incorporation_in_progress",
+            "incorporated_full",
+            "incorporated_partial",
+        }
+    )
     _INCORPORATION_TYPES = frozenset(
         {
             "contribution.incorporated",
@@ -99,6 +107,18 @@ class NotificationPolicy:
                     NotificationChannel.STATION,
                     NotificationChannel.EMAIL,
                 ),
+            )
+        if event.event_type == cls._CONTRIBUTOR_STATUS_TYPE:
+            status = str(event.payload.get("status", ""))
+            category = (
+                NotificationCategory.INCORPORATION
+                if status in cls._INCORPORATION_STATUSES
+                else NotificationCategory.SUBMISSION_STATUS
+            )
+            return NotificationClassification(
+                category=category,
+                mandatory=False,
+                default_channels=(NotificationChannel.STATION,),
             )
         if event.event_type in cls._SUBMISSION_TYPES:
             return NotificationClassification(
