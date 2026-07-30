@@ -32,4 +32,6 @@ The created Change Set is `single-accountable-approver-v1`, `not_validated`, `dr
 
 `GET /api/v1/admin/community-curation/bridge-metrics` exposes accepted decisions, bridged decisions, release-observed bridges, projected bridges, failed projection bridges, stuck bridges, and broken release links.
 
+A pinned local Supabase clean reset and Foundation preflight has applied migrations `0001` through `0021`. Browser, staging, broad recovery, projection-consumer, and immutable-history certification remain deferred to #196.
+
 The bridge does not perform Curation validation, publication, correction, rollback, or immutable-history certification. Those remain owned by #191, #194, #195, and #196.
