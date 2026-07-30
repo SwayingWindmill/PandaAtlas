@@ -1,0 +1,241 @@
+name: Issue 190 Safe Rebase
+
+on:
+  push:
+    branches:
+      - issue-190
+
+permissions:
+  contents: write
+
+jobs:
+  rebase:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.0
+        with:
+          ref: issue-190
+          fetch-depth: 0
+      - name: Merge current master and resolve audited overlaps
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin master
+          git merge --no-commit --no-ff origin/master || true
+
+          mapfile -t conflicts < <(git diff --name-only --diff-filter=U | sort)
+          expected=(
+            .env.example
+            services/api/app/core/config.py
+            services/api/openapi/panda-atlas-v1.yaml
+            services/api/scripts/check_zhipanda_foundation.py
+            services/api/tests/scripts/test_check_zhipanda_foundation.py
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          if [[ "${conflicts[*]}" != "${expected_sorted[*]}" ]]; then
+            printf 'Unexpected conflict set:\n%s\n' "${conflicts[*]}"
+            exit 1
+          fi
+
+          git checkout --theirs -- "${expected[@]}"
+
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(text: str, old: str, new: str, label: str) -> str:
+              if old not in text:
+                  raise SystemExit(f"missing merge marker: {label}")
+              return text.replace(old, new, 1)
+
+          env_path = Path('.env.example')
+          env_text = env_path.read_text(encoding='utf-8-sig')
+          if 'ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=' not in env_text:
+              env_text = replace_once(
+                  env_text,
+                  'CORS_ALLOW_ORIGINS=http://localhost:3000\n',
+                  'CORS_ALLOW_ORIGINS=http://localhost:3000\nARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false\n',
+                  'archive feature flag',
+              )
+          env_path.write_text(env_text, encoding='utf-8')
+
+          config_path = Path('services/api/app/core/config.py')
+          config_text = config_path.read_text(encoding='utf-8')
+          if 'archive_single_accountable_approver_enabled' not in config_text:
+              config_text = replace_once(
+                  config_text,
+                  '    admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")\n',
+                  '    admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")\n'
+                  '    archive_single_accountable_approver_enabled: bool = Field(\n'
+                  '        default=False,\n'
+                  '        alias="ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED",\n'
+                  '    )\n',
+                  'archive setting',
+              )
+          config_path.write_text(config_text, encoding='utf-8')
+
+          openapi_path = Path('services/api/openapi/panda-atlas-v1.yaml')
+          openapi = openapi_path.read_text(encoding='utf-8-sig')
+          replacements = [
+              (
+                  '      summary: Create a draft change set with immutable entity revisions\n',
+                  '      summary: Create a legacy four-eyes draft change set with immutable entity revisions\n',
+                  'create summary',
+              ),
+              (
+                  '      summary: Submit a draft change set for independent review\n',
+                  '      summary: Submit a legacy draft change set for independent review\n',
+                  'submit summary',
+              ),
+              (
+                  '      summary: Approve or reject a submitted change set\n',
+                  '      summary: Record a legacy independent review decision\n',
+                  'review summary',
+              ),
+              (
+                  '          description: Self-review or invalid review transition denied\n',
+                  '          description: Self-review, invalid transition, or archive governance migration required\n',
+                  'review conflict description',
+              ),
+              (
+                  '      required: [id, title, reason, status, created_by, revisions]\n',
+                  '      required:\n'
+                  '        [id, title, reason, status, created_by, revisions, governance_mode, validation_state, governance_version, requires_explicit_revalidation, legacy_publication_eligible]\n',
+                  'change set required fields',
+              ),
+              (
+                  '          enum: [draft, submitted, approved, rejected]\n',
+                  '          enum: [draft, submitted, approved, rejected, validation_failed, ready, publishing, published, publish_failed, superseded, rolled_back, withdrawn]\n',
+                  'change set states',
+              ),
+          ]
+          for old, new, label in replacements:
+              if new not in openapi:
+                  openapi = replace_once(openapi, old, new, label)
+          governance_properties = '''        governance_mode:
+          type: string
+          enum: [four-eyes-v1, single-accountable-approver-v1]
+        validation_state:
+          type: string
+          enum: [not_validated, legacy_approved, validation_failed, ready]
+        validated_by:
+          type: string
+          format: uuid
+          nullable: true
+        validated_at:
+          type: string
+          format: date-time
+          nullable: true
+        validation_reason:
+          type: string
+          nullable: true
+        base_archive_version:
+          type: string
+          nullable: true
+        governance_version:
+          type: integer
+          minimum: 1
+        requires_explicit_revalidation:
+          type: boolean
+        legacy_publication_eligible:
+          type: boolean
+'''
+          if '        governance_mode:\n' not in openapi:
+              openapi = replace_once(
+                  openapi,
+                  '        review_reason:\n          type: string\n          nullable: true\n',
+                  '        review_reason:\n          type: string\n          nullable: true\n' + governance_properties,
+                  'governance properties',
+              )
+          openapi_path.write_text(openapi, encoding='utf-8')
+
+          foundation_path = Path('services/api/scripts/check_zhipanda_foundation.py')
+          foundation = foundation_path.read_text(encoding='utf-8')
+          archive_checks = '''            for relation in (
+                "public.archive_governance_revalidations",
+                "public.archive_governance_migration_runs",
+            ):
+                cursor.execute("select to_regclass(%s) is not null", (relation,))
+                if not bool(cursor.fetchone()[0]):
+                    raise FoundationCheckError(
+                        f"Archive governance evidence relation is missing: {relation}"
+                    )
+            cursor.execute(
+                "select to_regclass('public.change_set_governance_compatibility')::text"
+            )
+            if cursor.fetchone()[0] != "change_set_governance_compatibility":
+                raise FoundationCheckError("Archive governance compatibility view is missing")
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'public'
+                  and relation.relname = any(%s)
+                  and trigger.tgname = any(%s)
+                  and not trigger.tgisinternal
+                """,
+                (
+                    ["archive_governance_revalidations", "archive_governance_migration_runs"],
+                    [
+                        "trg_archive_governance_revalidations_append_only",
+                        "trg_archive_governance_migration_runs_append_only",
+                    ],
+                ),
+            )
+            archive_governance_append_only_trigger_count = int(cursor.fetchone()[0])
+            if archive_governance_append_only_trigger_count != 2:
+                raise FoundationCheckError(
+                    "Archive governance evidence append-only triggers are incomplete"
+                )
+
+'''
+          if 'archive_governance_append_only_trigger_count = int' not in foundation:
+              marker = '''            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'activity'
+'''
+              foundation = replace_once(foundation, marker, archive_checks + marker, 'archive foundation checks')
+          if '"archive_governance_append_only_trigger_count": (' not in foundation:
+              foundation = replace_once(
+                  foundation,
+                  '        "activity_append_only_trigger_count": activity_append_only_trigger_count,\n',
+                  '        "archive_governance_append_only_trigger_count": (\n'
+                  '            archive_governance_append_only_trigger_count\n'
+                  '        ),\n'
+                  '        "activity_append_only_trigger_count": activity_append_only_trigger_count,\n',
+                  'archive foundation evidence',
+              )
+          foundation_path.write_text(foundation, encoding='utf-8')
+
+          test_path = Path('services/api/tests/scripts/test_check_zhipanda_foundation.py')
+          test_text = test_path.read_text(encoding='utf-8')
+          test_text = test_text.replace(
+              'assert evidence["migration_versions"][-1] == "0017"',
+              'assert evidence["migration_versions"][-1] == "0018"',
+              1,
+          )
+          if '        "0018",\n' not in test_text:
+              test_text = replace_once(
+                  test_text,
+                  '        "0017",\n    ]\n',
+                  '        "0017",\n        "0018",\n    ]\n',
+                  'migration 0018 test list',
+              )
+          test_path.write_text(test_text, encoding='utf-8')
+          PY
+
+          git add -A
+          if git diff --name-only --diff-filter=U | grep -q .; then
+            git diff --name-only --diff-filter=U
+            exit 1
+          fi
+          git commit -m "chore(archive): rebase compatibility on contributor journey"
+          git push origin HEAD:issue-190
