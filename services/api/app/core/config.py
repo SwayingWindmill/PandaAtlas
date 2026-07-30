@@ -69,6 +69,24 @@ class Settings(BaseSettings):
     resend_webhook_secret: str | None = Field(default=None, alias="RESEND_WEBHOOK_SECRET")
     auth_smtp_username: str | None = Field(default=None, alias="AUTH_SMTP_USERNAME")
     auth_smtp_password: str | None = Field(default=None, alias="AUTH_SMTP_PASSWORD")
+    community_intake_enabled: bool = Field(default=False, alias="COMMUNITY_INTAKE_ENABLED")
+    community_intake_storage_signing_key: str = Field(
+        default="local-community-intake-storage-signing-key-change-me",
+        min_length=32,
+        alias="COMMUNITY_INTAKE_STORAGE_SIGNING_KEY",
+    )
+    community_intake_storage_reference_ttl_seconds: int = Field(
+        default=300,
+        ge=30,
+        le=900,
+        alias="COMMUNITY_INTAKE_STORAGE_REFERENCE_TTL_SECONDS",
+    )
+    community_intake_max_scan_attempts: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+        alias="COMMUNITY_INTAKE_MAX_SCAN_ATTEMPTS",
+    )
     notification_cursor_signing_key: str = Field(
         default="local-notification-cursor-signing-key-change-me",
         min_length=32,
@@ -164,6 +182,15 @@ class Settings(BaseSettings):
             and self.resend_api_key == self.auth_smtp_password
         ):
             raise ValueError("Resend API and Supabase Auth SMTP credentials must differ")
+        if (
+            self.community_intake_enabled
+            and env not in {"development", "dev", "local", "test"}
+            and self.community_intake_storage_signing_key
+            == "local-community-intake-storage-signing-key-change-me"
+        ):
+            raise ValueError(
+                "COMMUNITY_INTAKE_STORAGE_SIGNING_KEY must be configured outside local environments"
+            )
         return self
 
     def cors_origins(self) -> Sequence[str]:

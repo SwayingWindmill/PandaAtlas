@@ -24,6 +24,7 @@ def test_static_foundation_configuration_is_pinned_and_private() -> None:
     assert evidence["postgres_major"] == 17
     assert evidence["supabase_cli"] == "2.110.0"
     assert "activity" not in evidence["api_schemas"]
+    assert "community_intake" not in evidence["api_schemas"]
     assert "engagement" not in evidence["api_schemas"]
     assert "feed" not in evidence["api_schemas"]
     assert "identity" not in evidence["api_schemas"]
@@ -31,7 +32,7 @@ def test_static_foundation_configuration_is_pinned_and_private() -> None:
     assert "notification" not in evidence["api_schemas"]
     assert "pgmq" not in evidence["api_schemas"]
     assert "storage" not in evidence["api_schemas"]
-    assert evidence["migration_versions"][-1] == "0015"
+    assert evidence["migration_versions"][-1] == "0016"
 
 
 def test_version_and_database_url_helpers_are_deterministic() -> None:
@@ -57,6 +58,7 @@ def test_version_and_database_url_helpers_are_deterministic() -> None:
         "0013",
         "0014",
         "0015",
+        "0016",
     ]
 
 

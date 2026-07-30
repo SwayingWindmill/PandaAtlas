@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.community_intake.repository import anonymize_community_intake_account
 from app.engagement.handles import hash_opaque_handle, new_opaque_handle
 from app.engagement.models import (
     EngagementAccountUnavailableError,
@@ -825,6 +826,12 @@ class EngagementRepository:
             ).rowcount
             or 0
         )
+        community_counts = anonymize_community_intake_account(
+            self.session,
+            identity.account_id,
+            reason=reason,
+            correlation_id=correlation_id,
+        )
         notification_counts = self._delete_notification_private_data(identity.account_id)
         counts = {
             "passport_entries_deleted": self._delete_count("passport_entries", identity.account_id),
@@ -839,6 +846,7 @@ class EngagementRepository:
                 "passport_contribution_events", identity.account_id
             ),
             "follows_deleted": self._delete_count("follows", identity.account_id),
+            **community_counts,
             **notification_counts,
         }
         self._audit(

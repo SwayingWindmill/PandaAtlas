@@ -967,6 +967,219 @@ paths:
                 $ref: '#/components/schemas/NotificationMetricsSnapshot'
         '401': { description: Administrator authentication is required }
 
+
+  /api/v1/me/submissions:
+    post:
+      tags: [community-intake]
+      summary: Create an authenticated structured contribution draft
+      operationId: createCommunitySubmissionDraft
+      security: [{ BearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateCommunityDraftCommand' }
+      responses:
+        '201':
+          description: Private draft created idempotently
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunitySubmission' }
+        '404': { description: Stable Panda target was not found }
+        '409': { description: Idempotency conflict }
+
+  /api/v1/me/submissions/{submission_id}:
+    get:
+      tags: [community-intake]
+      summary: Read one private submission owned by the authenticated account
+      operationId: getCommunitySubmission
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: submission_id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Private submission with immutable revisions and evidence metadata
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunitySubmission' }
+        '404': { description: Submission is not visible to the account }
+
+  /api/v1/me/submissions/{submission_id}/draft:
+    patch:
+      tags: [community-intake]
+      summary: Optimistically update an incomplete draft
+      operationId: updateCommunitySubmissionDraft
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: submission_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateCommunityDraftCommand' }
+      responses:
+        '200':
+          description: Updated draft
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunitySubmission' }
+        '409': { description: State, version, or idempotency conflict }
+
+  /api/v1/me/submissions/{submission_id}/revisions:
+    post:
+      tags: [community-intake]
+      summary: Append an immutable formal SubmissionRevision
+      operationId: submitCommunityRevision
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: submission_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SubmitCommunityRevisionCommand' }
+      responses:
+        '200':
+          description: Submission with the appended immutable revision
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunitySubmission' }
+        '409': { description: State, evidence, version, or idempotency conflict }
+
+  /api/v1/me/submissions/{submission_id}/withdraw:
+    post:
+      tags: [community-intake]
+      summary: Withdraw a draft or submitted contribution without deleting revisions
+      operationId: withdrawCommunitySubmission
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: submission_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WithdrawCommunitySubmissionCommand' }
+      responses:
+        '200':
+          description: Withdrawn submission
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunitySubmission' }
+        '409': { description: State, version, or idempotency conflict }
+
+  /api/v1/me/submissions/{submission_id}/attachments/uploads:
+    post:
+      tags: [community-intake]
+      summary: Reserve a quarantined private evidence upload
+      operationId: prepareCommunityAttachmentUpload
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: submission_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PrepareCommunityAttachmentCommand' }
+      responses:
+        '201':
+          description: Attachment metadata and opaque short-lived upload reference
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunityAttachmentReservation' }
+        '409': { description: Attachment count, total size, state, or idempotency conflict }
+
+  /api/v1/me/attachments/{attachment_id}/complete:
+    post:
+      tags: [community-intake]
+      summary: Confirm completion of a private quarantined upload
+      operationId: completeCommunityAttachmentUpload
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: attachment_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CompleteCommunityAttachmentCommand' }
+      responses:
+        '200':
+          description: Quarantined attachment metadata
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunityAttachment' }
+        '404': { description: Attachment is not visible to the account }
+        '409': { description: Upload or idempotency conflict }
+
+  /api/v1/community-intake/attachments/{attachment_id}/scan:
+    post:
+      tags: [community-intake]
+      summary: Record an authorized malware scan result
+      operationId: recordCommunityAttachmentScan
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: attachment_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommunityAttachmentScanCommand' }
+      responses:
+        '200':
+          description: Attachment state after the immutable scan event
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunityAttachment' }
+        '403': { description: Scanner capability is required }
+        '409': { description: Scan state or idempotency conflict }
+
+  /api/v1/community-intake/attachments/{attachment_id}/access:
+    post:
+      tags: [community-intake]
+      summary: Audit and issue a short-lived opaque reference to clean evidence
+      operationId: createCommunityAttachmentAccess
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: attachment_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CommunityAttachmentAccessCommand' }
+      responses:
+        '200':
+          description: Opaque reference that contains no bucket or object path
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SignedStorageReference' }
+        '403': { description: Evidence is not clean or capability is missing }
+        '404': { description: Attachment was not found }
+
+  /api/v1/community-intake/retention/run:
+    post:
+      tags: [community-intake]
+      summary: Expire drafts, retry failed scans, and clean orphan upload reservations
+      operationId: runCommunityIntakeRetention
+      responses:
+        '200':
+          description: Retention operation counts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunityRetentionResult' }
+        '401': { description: Administrator authentication is required }
+
+  /api/v1/community-intake/metrics:
+    get:
+      tags: [community-intake]
+      summary: Read durable Community Intake and evidence safety metrics
+      operationId: getCommunityIntakeMetrics
+      responses:
+        '200':
+          description: Draft, scan, quarantine, and sensitive-read metrics
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommunityIntakeMetrics' }
+        '401': { description: Administrator authentication is required }
+
 components:
   securitySchemes:
     BearerAuth:
@@ -999,6 +1212,240 @@ components:
         format: uuid
 
   schemas:
+    CommunitySubmissionState:
+      type: string
+      enum: [draft, submitted, withdrawn, expired, closed]
+
+    CommunityAttachmentState:
+      type: string
+      enum: [quarantined, clean, infected, scan_failed, deleted]
+
+    CreateCommunityDraftCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, submission_type, target_id, public_version_seen]
+      properties:
+        idempotency_key: { type: string, minLength: 1, maxLength: 255 }
+        submission_type: { type: string, enum: [correction, sourced_information] }
+        target_type: { type: string, enum: [panda], default: panda }
+        target_id: { type: string, format: uuid }
+        public_version_seen: { type: string, minLength: 1, maxLength: 255 }
+        draft_content: { type: object, additionalProperties: true, default: {} }
+
+    UpdateCommunityDraftCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, expected_version, draft_content]
+      properties:
+        idempotency_key: { type: string, minLength: 1, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        draft_content: { type: object, additionalProperties: true }
+        public_version_seen: { type: string, minLength: 1, maxLength: 255 }
+
+    CommunitySubmittedSource:
+      type: object
+      additionalProperties: false
+      required: [source_kind, title, locator]
+      properties:
+        source_kind: { type: string, enum: [url, publication, document, other] }
+        title: { type: string, minLength: 1, maxLength: 500 }
+        locator: { type: string, minLength: 1, maxLength: 2000 }
+        publisher: { type: string, maxLength: 500 }
+        published_on: { type: string, format: date }
+
+    SubmitCommunityRevisionCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, expected_version, content, public_version_seen]
+      properties:
+        idempotency_key: { type: string, minLength: 1, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        content: { type: object, minProperties: 1, additionalProperties: true }
+        public_version_seen: { type: string, minLength: 1, maxLength: 255 }
+        sources:
+          type: array
+          maxItems: 25
+          items: { $ref: '#/components/schemas/CommunitySubmittedSource' }
+
+    WithdrawCommunitySubmissionCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, expected_version, reason]
+      properties:
+        idempotency_key: { type: string, minLength: 1, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        reason: { type: string, minLength: 3, maxLength: 1000 }
+
+    PrepareCommunityAttachmentCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, original_filename, media_type, byte_size]
+      properties:
+        idempotency_key: { type: string, minLength: 1, maxLength: 255 }
+        original_filename: { type: string, minLength: 1, maxLength: 255 }
+        media_type:
+          type: string
+          enum: [application/pdf, image/jpeg, image/png, image/webp]
+        byte_size: { type: integer, minimum: 1, maximum: 10485760 }
+
+    CompleteCommunityAttachmentCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, upload_reference, object_version, content_sha256]
+      properties:
+        idempotency_key: { type: string, minLength: 1, maxLength: 255 }
+        upload_reference:
+          type: string
+          minLength: 32
+          maxLength: 4096
+          description: Opaque reservation reference returned by the upload preparation command.
+        object_version: { type: string, minLength: 1, maxLength: 255 }
+        content_sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+
+    CommunityAttachmentScanCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, outcome, scanner_name, result_code]
+      properties:
+        idempotency_key: { type: string, minLength: 1, maxLength: 255 }
+        outcome: { type: string, enum: [clean, infected, scan_failed] }
+        scanner_name: { type: string, minLength: 1, maxLength: 255 }
+        scanner_version: { type: string, maxLength: 255 }
+        result_code: { type: string, minLength: 1, maxLength: 255 }
+        metadata_stripped: { type: boolean, default: false }
+        preview_object_key:
+          type: string
+          description: Server-only scanner output; never returned in Attachment views.
+
+    CommunityAttachmentAccessCommand:
+      type: object
+      additionalProperties: false
+      required: [purpose]
+      properties:
+        purpose: { type: string, minLength: 3, maxLength: 500 }
+        preview: { type: boolean, default: false }
+
+    SignedStorageReference:
+      type: object
+      additionalProperties: false
+      required: [reference, expires_at]
+      properties:
+        reference:
+          type: string
+          description: Opaque signed reference; contains no Storage bucket or object path.
+        expires_at: { type: string, format: date-time }
+
+    CommunityAttachment:
+      type: object
+      additionalProperties: false
+      required:
+        - attachment_id
+        - submission_id
+        - original_filename
+        - media_type
+        - byte_size
+        - state
+        - scan_attempts
+        - metadata_stripped
+        - created_at
+      properties:
+        attachment_id: { type: string, format: uuid }
+        submission_id: { type: string, format: uuid }
+        bound_revision_number: { type: integer, minimum: 1, nullable: true }
+        original_filename: { type: string }
+        media_type: { type: string }
+        byte_size: { type: integer }
+        state: { $ref: '#/components/schemas/CommunityAttachmentState' }
+        upload_completed_at: { type: string, format: date-time, nullable: true }
+        scan_attempts: { type: integer, minimum: 0 }
+        last_scan_code: { type: string, nullable: true }
+        last_scanned_at: { type: string, format: date-time, nullable: true }
+        metadata_stripped: { type: boolean }
+        created_at: { type: string, format: date-time }
+
+    CommunityAttachmentReservation:
+      type: object
+      additionalProperties: false
+      required: [attachment, upload_reference]
+      properties:
+        attachment: { $ref: '#/components/schemas/CommunityAttachment' }
+        upload_reference: { $ref: '#/components/schemas/SignedStorageReference' }
+
+    CommunitySubmission:
+      type: object
+      additionalProperties: false
+      required:
+        - submission_id
+        - submission_type
+        - target_type
+        - target_id
+        - public_version_seen
+        - state
+        - draft_content
+        - version
+        - latest_revision_number
+        - expires_at
+        - created_at
+        - updated_at
+        - revisions
+        - attachments
+      properties:
+        submission_id: { type: string, format: uuid }
+        submission_type: { type: string, enum: [correction, sourced_information] }
+        target_type: { type: string, enum: [panda] }
+        target_id: { type: string, format: uuid }
+        public_version_seen: { type: string }
+        state: { $ref: '#/components/schemas/CommunitySubmissionState' }
+        draft_content: { type: object, additionalProperties: true }
+        version: { type: integer, minimum: 1 }
+        latest_revision_number: { type: integer, minimum: 0 }
+        expires_at: { type: string, format: date-time }
+        submitted_at: { type: string, format: date-time, nullable: true }
+        withdrawn_at: { type: string, format: date-time, nullable: true }
+        closed_at: { type: string, format: date-time, nullable: true }
+        retention_due_at: { type: string, format: date-time, nullable: true }
+        retention_completed_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        revisions: { type: array, items: { type: object, additionalProperties: true } }
+        attachments:
+          type: array
+          items: { $ref: '#/components/schemas/CommunityAttachment' }
+
+    CommunityRetentionResult:
+      type: object
+      additionalProperties: false
+      required: [expired_drafts, closed_submissions_processed, orphan_attachments, scan_retries]
+      properties:
+        expired_drafts: { type: integer, minimum: 0 }
+        closed_submissions_processed: { type: integer, minimum: 0 }
+        orphan_attachments: { type: integer, minimum: 0 }
+        scan_retries: { type: integer, minimum: 0 }
+
+    CommunityIntakeMetrics:
+      type: object
+      additionalProperties: false
+      required:
+        - draft_count
+        - submitted_count
+        - quarantined_count
+        - scan_failed_count
+        - infected_count
+        - clean_count
+        - oldest_quarantined_age_seconds
+        - sensitive_reads_granted
+        - sensitive_reads_denied
+      properties:
+        draft_count: { type: integer, minimum: 0 }
+        submitted_count: { type: integer, minimum: 0 }
+        quarantined_count: { type: integer, minimum: 0 }
+        scan_failed_count: { type: integer, minimum: 0 }
+        infected_count: { type: integer, minimum: 0 }
+        clean_count: { type: integer, minimum: 0 }
+        oldest_quarantined_age_seconds: { type: number, minimum: 0 }
+        sensitive_reads_granted: { type: integer, minimum: 0 }
+        sensitive_reads_denied: { type: integer, minimum: 0 }
+
     PandaStatus:
       type: string
       enum: [alive, deceased, unknown]

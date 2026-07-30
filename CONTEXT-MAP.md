@@ -36,6 +36,12 @@ Owns source-event Notification Intents, audience and preference snapshots, nativ
 
 Architecture: [`docs/architecture/notification-orchestration.md`](docs/architecture/notification-orchestration.md)
 
+## Community Intake
+
+Owns authenticated structured contribution drafts, immutable SubmissionRevisions, contributor SubmittedSource records, private evidence metadata, quarantine and malware-scan state, sensitive-read audit, and contribution retention/anonymization facts. It does not own Trusted Archive Sources, ReviewCase decisions, Change Sets, publication, or public media rights.
+
+Architecture: [`docs/architecture/community-intake.md`](docs/architecture/community-intake.md)
+
 ## Relationships
 
 - Curation Intake proposes evidence and candidate records to the Trusted Archive.
@@ -44,4 +50,5 @@ Architecture: [`docs/architecture/notification-orchestration.md`](docs/architect
 - Public Activity consumes explicit public-safe events from published Archive Releases or authorized editorial commands; projection failure never rolls back Archive publication.
 - Personalized Feed reads Public Activity and current Follow state, but never mutates either source while serving a query.
 - Notification Orchestration consumes Public Activity events and retains ownership of preferences, channels, and delivery.
+- Community Intake accepts authenticated structured contributions and private evidence; later Review & Moderation and Curation contexts consume only explicit accepted outputs.
 - The golden dataset is the shared acceptance fixture spanning the archive and projection contexts; it is not a replacement for production data.

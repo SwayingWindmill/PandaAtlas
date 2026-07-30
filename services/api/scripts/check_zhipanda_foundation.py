@@ -23,6 +23,7 @@ DEFAULT_API_URL = "http://127.0.0.1:54321"
 MINIMUM_PGMQ_VERSION = (1, 5, 1)
 MAXIMUM_PGMQ_VERSION = (2, 0, 0)
 FORBIDDEN_API_SCHEMAS = {
+    "community_intake",
     "engagement",
     "identity",
     "integration",
@@ -168,6 +169,7 @@ def _assert_private_role_boundaries(cursor: psycopg.Cursor[Any]) -> dict[str, bo
             raise FoundationCheckError(f"Expected Supabase role is missing: {role_name}")
         for schema_name in (
             "activity",
+            "community_intake",
             "engagement",
             "feed",
             "identity",
@@ -450,6 +452,89 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
             if notification_immutability_trigger_count != 10:
                 raise FoundationCheckError("Notification immutability triggers are incomplete")
 
+            for relation in (
+                "community_intake.submissions",
+                "community_intake.submission_revisions",
+                "community_intake.submitted_sources",
+                "community_intake.attachments",
+                "community_intake.attachment_scan_events",
+                "community_intake.sensitive_read_events",
+                "community_intake.retention_events",
+                "community_intake.audit_events",
+            ):
+                cursor.execute("select to_regclass(%s)::text", (relation,))
+                if cursor.fetchone()[0] != relation:
+                    raise FoundationCheckError(
+                        f"Community Intake relation is missing: {relation}"
+                    )
+
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'community_intake'
+                  and trigger.tgname = any(%s)
+                  and not trigger.tgisinternal
+                """,
+                (
+                    [
+                        "trg_submission_revisions_append_only",
+                        "trg_submitted_sources_append_only",
+                        "trg_attachment_scan_events_append_only",
+                        "trg_sensitive_read_events_append_only",
+                        "trg_retention_events_append_only",
+                        "trg_audit_events_append_only",
+                        "trg_community_attachment_limits",
+                        "trg_community_attachment_transition",
+                        "trg_community_submission_transition",
+                    ],
+                ),
+            )
+            community_intake_protection_trigger_count = int(cursor.fetchone()[0])
+            if community_intake_protection_trigger_count != 9:
+                raise FoundationCheckError(
+                    "Community Intake protection triggers are incomplete"
+                )
+
+            cursor.execute(
+                """
+                select public, file_size_limit, allowed_mime_types
+                from storage.buckets where id = 'community-intake-private'
+                """
+            )
+            community_bucket = cursor.fetchone()
+            expected_mime_types = {
+                "application/pdf", "image/jpeg", "image/png", "image/webp"
+            }
+            if (
+                community_bucket is None
+                or bool(community_bucket[0])
+                or int(community_bucket[1]) != 10485760
+                or set(community_bucket[2] or []) != expected_mime_types
+            ):
+                raise FoundationCheckError(
+                    "Community Intake private Storage bucket is misconfigured"
+                )
+
+            cursor.execute(
+                """
+                select capability_key from identity.capabilities
+                where capability_key = any(%s) order by capability_key
+                """,
+                ([
+                    "community_intake.evidence.read",
+                    "community_intake.retention.manage",
+                    "community_intake.scan.record",
+                ],),
+            )
+            community_intake_capabilities = [str(row[0]) for row in cursor.fetchall()]
+            if len(community_intake_capabilities) != 3:
+                raise FoundationCheckError(
+                    "Community Intake capabilities are incomplete"
+                )
+
             cursor.execute(
                 """
                 select count(*)
@@ -572,6 +657,15 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
         "engagement_append_only_trigger_count": engagement_append_only_trigger_count,
         "feed_append_only_trigger_count": feed_append_only_trigger_count,
         "notification_immutability_trigger_count": notification_immutability_trigger_count,
+        "community_intake_protection_trigger_count": (
+            community_intake_protection_trigger_count
+        ),
+        "community_intake_capabilities": community_intake_capabilities,
+        "community_intake_storage_bucket": {
+            "public": bool(community_bucket[0]),
+            "file_size_limit": int(community_bucket[1]),
+            "allowed_mime_types": sorted(community_bucket[2] or []),
+        },
         "activity_append_only_trigger_count": activity_append_only_trigger_count,
         "private_role_schema_usage": private_role_privileges,
         "queue_smoke": queue_evidence,
