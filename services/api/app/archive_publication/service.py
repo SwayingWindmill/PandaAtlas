@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterator
 from contextlib import contextmanager
 from hashlib import sha256
-from collections.abc import Iterator
 from typing import Any
 from uuid import UUID
 
