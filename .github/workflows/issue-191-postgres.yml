@@ -1,0 +1,47 @@
+name: Issue 191 PostgreSQL Verification
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    if: github.head_ref == 'issue-191' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.0
+        with:
+          ref: issue-191
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v6.3.0
+        with:
+          python-version: '3.12'
+      - name: Install pinned toolchain
+        run: |
+          npm install --global npm@10.9.0
+          python -m pip install uv==0.11.7
+          npm ci
+      - name: Start and reset pinned Supabase foundation
+        run: |
+          npm run infra:start
+          npm run infra:reset
+      - name: Run Foundation preflight through migration 0020
+        run: npm run infra:preflight
+      - name: Stop foundation
+        if: always()
+        run: npm run infra:stop
+      - name: Remove one-time workflow
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/issue-191-postgres.yml
+          git commit -m "test(archive): verify accountable publication migration"
+          git push origin HEAD:issue-191
