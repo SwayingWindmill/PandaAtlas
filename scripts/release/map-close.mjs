@@ -20,6 +20,7 @@ const mapCloseWebEnvironment = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
   NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
   NEXT_PUBLIC_FEED_ENABLED: "true",
+  NEXT_PUBLIC_NOTIFICATION_ENABLED: "true",
 };
 
 function prepareMapCloseWebEnvironment() {
@@ -61,6 +62,11 @@ export async function runMapCloseGate() {
     gate: "map-close",
     reportDir: releaseReportDir,
     steps: [
+      {
+        id: "notification-center-budget",
+        label: "Private notification center performance budget",
+        run: () => runCommand("npm", ["run", "check:notification-center-budget"]),
+      },
       {
         id: "supabase-foundation-contracts",
         label: "Supabase/PostGIS/PGMQ foundation contracts",
@@ -114,6 +120,24 @@ export async function runMapCloseGate() {
               "web",
               "--",
               "tests/smoke/follow-through-login.spec.ts",
+            ],
+            { env: playwrightEnv },
+          ),
+      },
+      {
+        id: "published-return-loop-browser",
+        label: "Published Activity, private Inbox, preference, and mobile browser journey",
+        dependsOn: ["secure-web-boundary", "identity-engagement-contracts"],
+        run: () =>
+          runCommand(
+            "npm",
+            [
+              "run",
+              "smoke",
+              "-w",
+              "web",
+              "--",
+              "tests/smoke/published-return-loop.spec.ts",
             ],
             { env: playwrightEnv },
           ),

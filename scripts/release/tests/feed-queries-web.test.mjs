@@ -32,7 +32,7 @@ test("private Feed is server-owned, noindex, no-store, and explicitly marked vie
   assert.match(button, /fetch\("\/api\/feed\/last-viewed"/);
   assert.match(button, /feed-view-\$\{crypto\.randomUUID\(\)\}/);
   assert.match(proxy, /\/api\/v1\/me\/feed\/last-viewed/);
-  assert.match(login, /passport\|feed\|submissions/);
+  assert.match(login, /me\\\/\(\?:passport\|feed\|inbox\)/);
 });
 
 test("public Panda Activity is server rendered with explicit correction and retraction states", async () => {

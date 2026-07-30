@@ -351,6 +351,10 @@ def test_notification_intent_inbox_digest_and_retraction_lifecycle(real_db_url: 
             correlation_id=uuid4(),
         )
         assert email_preference.enabled is True
+        listed_preferences = repository.list_preferences(identity)
+        assert [(row.category, row.channel, row.enabled) for row in listed_preferences] == [
+            (NotificationCategory.MAJOR_ACTIVITY, NotificationChannel.EMAIL, True)
+        ]
 
         second_activity = _insert_activity(
             session,
