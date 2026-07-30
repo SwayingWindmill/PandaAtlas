@@ -51,10 +51,12 @@ def test_feed_cursor_is_deterministic_account_bound_and_tamper_evident() -> None
             signing_key=signing_key,
         )
 
-    replacement = "A" if first[-1] != "A" else "B"
+    encoded_payload, encoded_signature = first.split(".", 1)
+    replacement = "A" if encoded_signature[0] != "A" else "B"
+    tampered = f"{encoded_payload}.{replacement}{encoded_signature[1:]}"
     with pytest.raises(FeedCursorError, match="invalid"):
         decode_feed_cursor(
-            first[:-1] + replacement,
+            tampered,
             expected_scope=f"account:{account_id}",
             signing_key=signing_key,
         )

@@ -23,6 +23,7 @@ tags:
   - name: stats
   - name: admin
   - name: admin-accountable-publication
+  - name: admin-community-curation
   - name: admin-review
   - name: feed
   - name: notification
@@ -1713,6 +1714,21 @@ paths:
 
   /api/v1/admin/archive/publication-metrics:
     $ref: './accountable-publication-v1.yaml#/paths/~1api~1v1~1admin~1archive~1publication-metrics'
+
+  /api/v1/admin/community-curation/review-cases/{review_case_id}/bridge:
+    $ref: './community-curation-v1.yaml#/paths/~1api~1v1~1admin~1community-curation~1review-cases~1{review_case_id}~1bridge'
+
+  /api/v1/admin/community-curation/bridges/{bridge_id}:
+    $ref: './community-curation-v1.yaml#/paths/~1api~1v1~1admin~1community-curation~1bridges~1{bridge_id}'
+
+  /api/v1/admin/community-curation/releases/{release_id}/observed:
+    $ref: './community-curation-v1.yaml#/paths/~1api~1v1~1admin~1community-curation~1releases~1{release_id}~1observed'
+
+  /api/v1/admin/community-curation/bridges/{bridge_id}/releases/{release_id}/projection-result:
+    $ref: './community-curation-v1.yaml#/paths/~1api~1v1~1admin~1community-curation~1bridges~1{bridge_id}~1releases~1{release_id}~1projection-result'
+
+  /api/v1/admin/community-curation/bridge-metrics:
+    $ref: './community-curation-v1.yaml#/paths/~1api~1v1~1admin~1community-curation~1bridge-metrics'
 
 components:
   securitySchemes:

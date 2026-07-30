@@ -1,0 +1,383 @@
+openapi: 3.1.0
+info:
+  title: Panda Atlas Community Curation Bridge API
+  version: 1.0.0
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/admin/community-curation/review-cases/{review_case_id}/bridge:
+    post:
+      tags: [admin-community-curation]
+      summary: Create a Curation Change Set from selected accepted assertions
+      operationId: createCommunityCurationBridge
+      parameters:
+        - $ref: '#/components/parameters/ReviewCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunityBridgeCommand'
+      responses:
+        '201':
+          description: Bridge created or idempotently replayed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssertionBridgeRead'
+        '403':
+          description: Actor is not the assigned reviewer or has no capability.
+        '409':
+          description: ReviewCase state, version, decision, or assertion conflict.
+  /api/v1/admin/community-curation/bridges/{bridge_id}:
+    get:
+      tags: [admin-community-curation]
+      summary: Read bridge provenance and incorporation state
+      operationId: getCommunityCurationBridge
+      parameters:
+        - $ref: '#/components/parameters/BridgeId'
+      responses:
+        '200':
+          description: Bridge state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssertionBridgeRead'
+        '404':
+          description: Bridge not found or feature disabled.
+  /api/v1/admin/community-curation/releases/{release_id}/observed:
+    post:
+      tags: [admin-community-curation]
+      summary: Consume an Archive Release event for a bridged Change Set
+      operationId: recordCommunityCurationRelease
+      parameters:
+        - $ref: '#/components/parameters/ReleaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordReleaseCommand'
+      responses:
+        '200':
+          description: Release observation recorded or idempotently replayed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseObservationRead'
+        '409':
+          description: Release does not match a community bridge.
+  /api/v1/admin/community-curation/bridges/{bridge_id}/releases/{release_id}/projection-result:
+    post:
+      tags: [admin-community-curation]
+      summary: Consume a Public Projection incorporation result
+      operationId: recordCommunityCurationProjection
+      parameters:
+        - $ref: '#/components/parameters/BridgeId'
+        - $ref: '#/components/parameters/ReleaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordProjectionCommand'
+      responses:
+        '200':
+          description: Projection result recorded; projected events update contributor status and notification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectionResultRead'
+        '409':
+          description: Projection result is stale, malformed, or missing release observation.
+  /api/v1/admin/community-curation/bridge-metrics:
+    get:
+      tags: [admin-community-curation]
+      summary: Read chain-integrity metrics
+      operationId: getCommunityCurationBridgeMetrics
+      responses:
+        '200':
+          description: Chain integrity metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityCurationMetricsRead'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    ReviewCaseId:
+      name: review_case_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    BridgeId:
+      name: bridge_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ReleaseId:
+      name: release_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    BridgeRiskLevel:
+      type: string
+      enum: [ordinary, sensitive]
+    BridgeStatus:
+      type: string
+      enum: [created, release_seen, projected, projection_failed]
+    ProjectionOutcome:
+      type: string
+      enum: [projected, failed]
+    CommunityBridgeCommand:
+      type: object
+      additionalProperties: false
+      required:
+        - expected_version
+        - idempotency_key
+        - reason
+        - base_archive_version
+        - risk_level
+        - correlation_id
+      properties:
+        expected_version:
+          type: integer
+          minimum: 1
+        idempotency_key:
+          type: string
+          minLength: 8
+          maxLength: 255
+        reason:
+          type: string
+          minLength: 3
+          maxLength: 2000
+        base_archive_version:
+          type: string
+          minLength: 1
+          maxLength: 255
+        risk_level:
+          $ref: '#/components/schemas/BridgeRiskLevel'
+        correlation_id:
+          type: string
+          format: uuid
+    RecordReleaseCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, correlation_id]
+      properties:
+        idempotency_key:
+          type: string
+          minLength: 8
+          maxLength: 255
+        correlation_id:
+          type: string
+          format: uuid
+    RecordProjectionCommand:
+      type: object
+      additionalProperties: false
+      required:
+        - idempotency_key
+        - projection_event_id
+        - outcome
+        - incorporated_assertion_keys
+        - correlation_id
+      properties:
+        idempotency_key:
+          type: string
+          minLength: 8
+          maxLength: 255
+        projection_event_id:
+          type: string
+          format: uuid
+        outcome:
+          $ref: '#/components/schemas/ProjectionOutcome'
+        public_version:
+          type: string
+          minLength: 1
+          maxLength: 255
+        incorporated_assertion_keys:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            minLength: 1
+            maxLength: 128
+        user_visible_message:
+          type: string
+          minLength: 3
+          maxLength: 2000
+        correlation_id:
+          type: string
+          format: uuid
+    AssertionBridgeRead:
+      type: object
+      required:
+        - bridge_id
+        - review_case_id
+        - submission_id
+        - revision_number
+        - decision_id
+        - change_set_id
+        - target_type
+        - target_id
+        - base_archive_version
+        - risk_level
+        - selected_assertion_keys
+        - not_recommended_assertion_keys
+        - source_ids
+        - attachment_ids
+        - actor_account_id
+        - actor_role_snapshot
+        - status
+        - change_set_status
+        - governance_mode
+        - validation_state
+        - stuck
+        - created_at
+        - updated_at
+      properties:
+        bridge_id:
+          type: string
+          format: uuid
+        review_case_id:
+          type: string
+          format: uuid
+        submission_id:
+          type: string
+          format: uuid
+        revision_number:
+          type: integer
+        decision_id:
+          type: string
+          format: uuid
+        change_set_id:
+          type: string
+          format: uuid
+        contributor_account_id:
+          type: string
+          format: uuid
+        target_type:
+          type: string
+        target_id:
+          type: string
+        base_archive_version:
+          type: string
+        risk_level:
+          $ref: '#/components/schemas/BridgeRiskLevel'
+        selected_assertion_keys:
+          type: array
+          items: { type: string }
+        not_recommended_assertion_keys:
+          type: array
+          items: { type: string }
+        source_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        attachment_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        actor_account_id:
+          type: string
+          format: uuid
+        actor_role_snapshot:
+          type: array
+          items: { type: string }
+        status:
+          $ref: '#/components/schemas/BridgeStatus'
+        change_set_status:
+          type: string
+        governance_mode:
+          type: string
+        validation_state:
+          type: string
+        published_release_id:
+          type: string
+          format: uuid
+        observed_release_id:
+          type: string
+          format: uuid
+        observed_data_version:
+          type: string
+        projection_result_id:
+          type: string
+          format: uuid
+        projection_outcome:
+          $ref: '#/components/schemas/ProjectionOutcome'
+        public_version:
+          type: string
+        notification_intent_id:
+          type: string
+          format: uuid
+        stuck:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ReleaseObservationRead:
+      type: object
+      required: [bridge_id, change_set_id, release_id]
+      properties:
+        bridge_id:
+          type: string
+          format: uuid
+        change_set_id:
+          type: string
+          format: uuid
+        release_id:
+          type: string
+          format: uuid
+    ProjectionResultRead:
+      type: object
+      required: [projection_result_id]
+      properties:
+        projection_result_id:
+          type: string
+          format: uuid
+        contributor_status:
+          type: string
+          enum: [incorporated_full, incorporated_partial]
+        notification_intent_id:
+          type: string
+          format: uuid
+    CommunityCurationMetricsRead:
+      type: object
+      required:
+        - accepted_decisions
+        - bridged_decisions
+        - release_observed_bridges
+        - projected_bridges
+        - projection_failed_bridges
+        - stuck_bridges
+        - broken_release_links
+      properties:
+        accepted_decisions:
+          type: integer
+        bridged_decisions:
+          type: integer
+        release_observed_bridges:
+          type: integer
+        projected_bridges:
+          type: integer
+        projection_failed_bridges:
+          type: integer
+        stuck_bridges:
+          type: integer
+        broken_release_links:
+          type: integer
