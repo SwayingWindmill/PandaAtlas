@@ -34,6 +34,17 @@ REQUIRED_ROUTE_METHODS: tuple[tuple[str, str], ...] = (
     ("/api/v1/me/inbox/read-all", "post"),
     ("/api/v1/me/inbox/digests", "post"),
     ("/api/v1/notification/metrics", "get"),
+    ("/api/v1/me/submissions", "post"),
+    ("/api/v1/me/submissions/{submission_id}", "get"),
+    ("/api/v1/me/submissions/{submission_id}/draft", "patch"),
+    ("/api/v1/me/submissions/{submission_id}/revisions", "post"),
+    ("/api/v1/me/submissions/{submission_id}/withdraw", "post"),
+    ("/api/v1/me/submissions/{submission_id}/attachments/uploads", "post"),
+    ("/api/v1/me/attachments/{attachment_id}/complete", "post"),
+    ("/api/v1/community-intake/attachments/{attachment_id}/scan", "post"),
+    ("/api/v1/community-intake/attachments/{attachment_id}/access", "post"),
+    ("/api/v1/community-intake/retention/run", "post"),
+    ("/api/v1/community-intake/metrics", "get"),
 )
 
 REQUIRED_PARAMETERS: tuple[tuple[str, str, str], ...] = (
