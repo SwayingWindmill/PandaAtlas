@@ -293,16 +293,20 @@ class ActivityRepository:
             },
         ).mappings().all()
         visible_rows = rows[:bounded_page_size]
-        targets_by_activity = self._targets_for_rows(visible_rows)
-        items = [
-            self._item_from_row(row, targets_by_activity.get(UUID(str(row["activity_id"])), []))
-            for row in visible_rows
-        ]
+        items = self.hydrate_rows(visible_rows)
         next_cursor = None
         if len(rows) > bounded_page_size and items:
             last = items[-1]
             next_cursor = encode_activity_cursor(last.published_at, last.activity_id)
         return ActivityPage(items=items, next_cursor=next_cursor)
+
+    def hydrate_rows(self, rows: list[Any]) -> list[ActivityItem]:
+        """Map Activity database rows into the public-safe contract."""
+        targets_by_activity = self._targets_for_rows(rows)
+        return [
+            self._item_from_row(row, targets_by_activity.get(UUID(str(row["activity_id"])), []))
+            for row in rows
+        ]
 
     def metrics(self) -> ActivityProjectionMetrics:
         row = self.session.execute(

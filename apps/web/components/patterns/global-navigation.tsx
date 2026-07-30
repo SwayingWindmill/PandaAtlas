@@ -3,10 +3,11 @@ import Link from "next/link";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { alternateLocale } from "@/foundation/content/locales";
 import { MobileNavigation } from "@/components/patterns/mobile-navigation";
+import { isFeedUiEnabled } from "@/features/feed/config";
 
 interface GlobalNavigationProps {
   locale: PublicLocale;
-  active: "home" | "atlas" | "profile" | "lineage" | "map" | "my-pandas";
+  active: "home" | "atlas" | "profile" | "lineage" | "map" | "my-pandas" | "feed";
   alternatePath?: string;
 }
 
@@ -19,6 +20,7 @@ const copy = {
     lineage: "谱系",
     map: "地图",
     myPandas: "我的熊猫",
+    feed: "关注动态",
     nav: "主导航",
     mobileNav: "移动导航",
     open: "打开导航菜单",
@@ -33,6 +35,7 @@ const copy = {
     lineage: "Lineage",
     map: "Map",
     myPandas: "My Pandas",
+    feed: "Follow Activity",
     nav: "Primary navigation",
     mobileNav: "Mobile navigation",
     open: "Open navigation menu",
@@ -48,6 +51,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
   const otherLocale = alternateLocale(locale);
   const languageHref = alternatePath ?? `/${otherLocale}`;
   const languageHrefLang = otherLocale === "zh" ? "zh-CN" : "en";
+  const feedEnabled = isFeedUiEnabled();
 
   return (
     <>
@@ -69,6 +73,14 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
             <Link href={`/${locale}/pandas` as Route} aria-current={active === "atlas" || active === "profile" ? "page" : undefined}>{t.atlas}</Link>
             <Link href={`/${locale}/lineage` as Route} aria-current={active === "lineage" ? "page" : undefined}>{t.lineage}</Link>
             <Link href={`/${locale}/map` as Route} aria-current={active === "map" ? "page" : undefined}>{t.map}</Link>
+            {feedEnabled ? (
+              <Link
+                href={`/${locale}/me/feed` as Route}
+                aria-current={active === "feed" ? "page" : undefined}
+              >
+                {t.feed}
+              </Link>
+            ) : null}
             <Link href={`/${locale}/me/passport` as Route} aria-current={active === "my-pandas" ? "page" : undefined}>{t.myPandas}</Link>
           </nav>
 
@@ -80,6 +92,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
               locale={locale}
               languageHref={languageHref}
               languageHrefLang={languageHrefLang}
+              feedEnabled={feedEnabled}
               labels={{
                 open: t.open,
                 close: t.close,
@@ -89,6 +102,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
                 lineage: t.lineage,
                 map: t.map,
                 myPandas: t.myPandas,
+                feed: t.feed,
                 language: t.language,
               }}
             />

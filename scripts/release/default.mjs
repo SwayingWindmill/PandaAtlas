@@ -27,6 +27,8 @@ export const apiReleaseEnv = {
   UV_PROJECT_ENVIRONMENT: path.join(apiDir, ".venv-release"),
   UV_PYTHON: "3.12",
   UV_LINK_MODE: process.env.UV_LINK_MODE ?? "copy",
+  FEED_ENABLED: "true",
+  FEED_CURSOR_SIGNING_KEY: "release-gate-feed-cursor-signing-key",
 };
 
 export class CommandExecutionError extends Error {

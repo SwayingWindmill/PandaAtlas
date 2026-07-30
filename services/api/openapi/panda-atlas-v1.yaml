@@ -22,6 +22,7 @@ tags:
   - name: map
   - name: stats
   - name: admin
+  - name: feed
 
 paths:
   /health:
@@ -688,6 +689,110 @@ paths:
           description: Current release was withdrawn
         '503':
           description: Release artifact is unavailable or mismatched
+
+
+  /api/v1/me/feed:
+    get:
+      tags: [feed]
+      summary: Read the authenticated account's chronological Feed
+      operationId: getPersonalizedFeed
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+        - name: cursor
+          in: query
+          description: Opaque account-bound signed cursor. Offset pagination is not supported.
+          schema: { type: string, minLength: 8, maxLength: 2048 }
+      responses:
+        '200':
+          description: Current Follow-derived Feed, current pins, and explicit tombstones
+          headers:
+            Cache-Control:
+              schema: { type: string, const: "private, no-store" }
+            X-Feed-Projection-Lag:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedPage'
+        '400': { description: Cursor is invalid or belongs to another account }
+        '401': { description: Authentication is required }
+        '403': { description: Account state blocks Feed access }
+        '503': { description: Feed database or projection is unavailable }
+
+  /api/v1/me/feed/last-viewed:
+    post:
+      tags: [feed]
+      summary: Explicitly mark the authenticated Feed viewed through a timestamp
+      operationId: markFeedLastViewed
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedLastViewedCommand'
+      responses:
+        '200':
+          description: Idempotent account-scoped last-viewed state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedLastViewedState'
+        '401': { description: Authentication is required }
+        '403': { description: Account state blocks Feed commands }
+        '409': { description: Idempotency conflict or invalid future timestamp }
+        '503': { description: Feed command database is unavailable }
+
+  /api/v1/pandas/{panda_id}/activity:
+    get:
+      tags: [feed, pandas]
+      summary: Read public Activity for one stable Panda identity
+      operationId: getPublicPandaActivity
+      parameters:
+        - name: panda_id
+          in: path
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 255 }
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 50, default: 10 }
+        - name: cursor
+          in: query
+          description: Opaque target-bound signed cursor
+          schema: { type: string, minLength: 8, maxLength: 2048 }
+      responses:
+        '200':
+          description: Chronological public-safe Activity including explicit retraction tombstones
+          headers:
+            Cache-Control:
+              schema: { type: string, example: "public, max-age=60, stale-while-revalidate=300" }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityPage'
+        '400': { description: Cursor is invalid or belongs to another Panda target }
+        '503': { description: Activity database is unavailable }
+
+  /api/v1/feed/metrics:
+    get:
+      tags: [feed]
+      summary: Read process-local Feed operational metrics
+      operationId: getFeedMetrics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Query latency, cursor error, empty Feed, and projection lag metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedMetricsSnapshot'
+        '401': { description: Administrator authentication is required }
 
 components:
   securitySchemes:
@@ -2098,3 +2203,148 @@ components:
           type: string
           example: Panda not found
 
+
+    ActivityItem:
+      type: object
+      additionalProperties: false
+      required:
+        - activity_id
+        - source_type
+        - source_id
+        - source_version
+        - source_event_id
+        - activity_type
+        - targets
+        - occurred_at
+        - published_at
+        - updated_at
+        - localization_key
+        - localization_version
+        - localized_snapshots
+        - retraction_state
+      properties:
+        activity_id: { type: string, format: uuid }
+        source_type: { type: string }
+        source_id: { type: string }
+        source_version: { type: integer, minimum: 1 }
+        source_event_id: { type: string, format: uuid }
+        activity_type:
+          type: string
+          enum: [panda.birth, panda.death, panda.named, panda.relocated, panda.birthday, panda.health_major, archive.profile_corrected, editorial.announcement]
+        targets:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/ActivityTarget'
+        importance:
+          type: string
+          enum: [ordinary, important, critical]
+          nullable: true
+        importance_override_reason: { type: string, nullable: true }
+        visibility: { type: string, enum: [public, unlisted] }
+        sitewide: { type: boolean, default: false }
+        notification_eligible: { type: boolean, default: true }
+        occurred_at: { type: string, format: date-time }
+        occurred_precision: { type: string, enum: [exact, day, month, year, range, unknown] }
+        occurred_end_at: { type: string, format: date-time, nullable: true }
+        published_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        localization_key: { type: string }
+        localization_version: { type: integer, minimum: 1 }
+        localized_snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalizedActivitySnapshot'
+        media:
+          allOf:
+            - $ref: '#/components/schemas/ActivityMediaReference'
+          nullable: true
+        provenance:
+          $ref: '#/components/schemas/ActivityProvenance'
+        pin:
+          allOf:
+            - $ref: '#/components/schemas/ActivityPin'
+          nullable: true
+        retraction_state: { type: string, enum: [active, corrected, retracted] }
+        retracted_at: { type: string, format: date-time, nullable: true }
+        retraction_reason: { type: string, nullable: true }
+        correction_activity_id: { type: string, format: uuid, nullable: true }
+        is_backfill: { type: boolean, default: false }
+
+    ActivityPage:
+      type: object
+      additionalProperties: false
+      required: [items, next_cursor]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityItem'
+        next_cursor: { type: string, nullable: true }
+
+    FeedAttribution:
+      type: string
+      enum: [followed, history, pinned]
+
+    FeedItem:
+      type: object
+      additionalProperties: false
+      required: [activity, attribution]
+      properties:
+        activity:
+          $ref: '#/components/schemas/ActivityItem'
+        attribution:
+          $ref: '#/components/schemas/FeedAttribution'
+        followed_panda_ids:
+          type: array
+          items: { type: string }
+        is_pinned: { type: boolean, default: false }
+        is_new: { type: boolean, default: false }
+        deleted_target_ids:
+          type: array
+          items: { type: string }
+
+    FeedPage:
+      type: object
+      additionalProperties: false
+      required: [items, next_cursor, last_viewed_at]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedItem'
+        next_cursor: { type: string, nullable: true }
+        last_viewed_at: { type: string, format: date-time, nullable: true }
+        projection_stale: { type: boolean, default: false }
+        projection_lag_seconds: { type: number, minimum: 0, default: 0 }
+
+    FeedLastViewedCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, viewed_through_at]
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        viewed_through_at: { type: string, format: date-time }
+
+    FeedLastViewedState:
+      type: object
+      additionalProperties: false
+      required: [account_id, last_viewed_at, version, updated_at]
+      properties:
+        account_id: { type: string, format: uuid }
+        last_viewed_at: { type: string, format: date-time }
+        version: { type: integer, minimum: 1 }
+        updated_at: { type: string, format: date-time }
+
+    FeedMetricsSnapshot:
+      type: object
+      additionalProperties: false
+      required: [query_count, cursor_error_count, empty_feed_count, failed_page_load_count, maximum_query_latency_ms, maximum_projection_lag_seconds]
+      properties:
+        query_count: { type: integer, minimum: 0 }
+        cursor_error_count: { type: integer, minimum: 0 }
+        empty_feed_count: { type: integer, minimum: 0 }
+        failed_page_load_count: { type: integer, minimum: 0 }
+        maximum_query_latency_ms: { type: number, minimum: 0 }
+        maximum_projection_lag_seconds: { type: number, minimum: 0 }

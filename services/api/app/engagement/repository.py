@@ -818,12 +818,22 @@ class EngagementRepository:
             ),
             {"account_id": identity.account_id},
         )
+        feed_last_viewed_deleted = int(
+            self.session.execute(
+                text("delete from feed.account_state where account_id = :account_id"),
+                {"account_id": identity.account_id},
+            ).rowcount
+            or 0
+        )
         counts = {
             "passport_entries_deleted": self._delete_count("passport_entries", identity.account_id),
             "preferences_deleted": self._delete_count(
                 "notification_preferences", identity.account_id
             ),
-            "last_viewed_deleted": self._delete_count("last_viewed_profiles", identity.account_id),
+            "last_viewed_deleted": (
+                self._delete_count("last_viewed_profiles", identity.account_id)
+                + feed_last_viewed_deleted
+            ),
             "contribution_events_deleted": self._delete_count(
                 "passport_contribution_events", identity.account_id
             ),

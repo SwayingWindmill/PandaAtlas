@@ -204,6 +204,15 @@ def test_pending_follow_consent_passport_and_deletion(real_db_url: str) -> None:
         assert rebuilt_by_panda[contribution_panda_id]["contribution_count"] == 1
 
         session.execute(
+            text(
+                """
+                insert into feed.account_state (account_id, last_viewed_at)
+                values (:account_id, now())
+                """
+            ),
+            {"account_id": account_id},
+        )
+        session.execute(
             text("update identity.accounts set state = 'deleting' where account_id = :account_id"),
             {"account_id": account_id},
         )
@@ -219,7 +228,16 @@ def test_pending_follow_consent_passport_and_deletion(real_db_url: str) -> None:
         assert deleted["preferences_deleted"] == 1
         assert deleted["passport_entries_deleted"] == 2
         assert deleted["contribution_events_deleted"] == 1
+        assert deleted["last_viewed_deleted"] == 1
 
+    assert (
+        _scalar(
+            real_db_url,
+            "select count(*) from feed.account_state where account_id = %s",
+            (account_id,),
+        )
+        == 0
+    )
     assert (
         _scalar(
             real_db_url,

@@ -56,6 +56,20 @@ def test_engagement_flag_rolls_back_before_database_access(
     assert response.json() == {"detail": "Not found"}
 
 
+def test_feed_flag_rolls_back_before_authentication_or_database_access(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(settings, "feed_enabled", False)
+    with TestClient(app) as client:
+        private_response = client.get("/api/v1/me/feed")
+        public_response = client.get("/api/v1/pandas/panda-001/activity")
+    assert private_response.status_code == 404
+    assert private_response.json() == {"detail": "Not found"}
+    assert public_response.status_code == 404
+    assert public_response.json() == {"detail": "Not found"}
+
+
+
 def test_admin_shell_flag_revokes_shell_without_revoking_identity(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
