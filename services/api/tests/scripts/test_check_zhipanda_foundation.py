@@ -10,7 +10,6 @@ from scripts.check_zhipanda_foundation import (
     expected_migration_versions,
     parse_version,
     redact_database_url,
-    run_foundation_preflight,
     static_configuration_evidence,
 )
 

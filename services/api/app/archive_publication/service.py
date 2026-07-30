@@ -3,7 +3,8 @@ from __future__ import annotations
 import json
 from contextlib import contextmanager
 from hashlib import sha256
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 from uuid import UUID
 
 from fastapi import HTTPException
@@ -216,7 +217,10 @@ def _validation_read(session: Session, validation_result_id: UUID) -> Accountabl
         validated_by=row["validated_by"],
         validated_at=row["created_at"],
         reason=str(row["reason"]),
-        issues=[ArchiveValidationIssueRead.model_validate(item) for item in _json_array(row["issues"])],
+        issues=[
+            ArchiveValidationIssueRead.model_validate(item)
+            for item in _json_array(row["issues"])
+        ],
     )
 
 

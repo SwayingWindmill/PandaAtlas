@@ -17,7 +17,9 @@ def test_accountable_publication_separates_archive_and_public_heads() -> None:
 
     assert "create table if not exists public.archive_release_pointer" in sql
     assert "update public.archive_release_pointer" in sql
-    function_body = sql.split("create or replace function public.publish_accountable_change_set", 1)[1]
+    function_body = sql.split(
+        "create or replace function public.publish_accountable_change_set", 1
+    )[1]
     function_body = function_body.split("revoke all on function", 1)[0]
     assert "update public.public_release_pointer" not in function_body
     assert "archive.release.published" in function_body
@@ -26,7 +28,9 @@ def test_accountable_publication_separates_archive_and_public_heads() -> None:
 
 def test_publish_transaction_preserves_idempotency_and_conflict_order() -> None:
     sql = MIGRATION.read_text(encoding="utf-8").lower()
-    function_body = sql.split("create or replace function public.publish_accountable_change_set", 1)[1]
+    function_body = sql.split(
+        "create or replace function public.publish_accountable_change_set", 1
+    )[1]
     function_body = function_body.split("revoke all on function", 1)[0]
 
     assert function_body.index("from public.archive_command_receipts") < function_body.index(
@@ -35,7 +39,10 @@ def test_publish_transaction_preserves_idempotency_and_conflict_order() -> None:
     assert "change set version conflict" in function_body
     assert "change set base archive version is stale" in function_body
     assert "contributor cannot publish contribution-derived work" in function_body
-    assert "sensitive publication requires senior capability and recent authentication" in function_body
+    assert (
+        "sensitive publication requires senior capability and recent authentication"
+        in function_body
+    )
 
 
 def test_release_validation_audit_and_command_evidence_are_append_only() -> None:
