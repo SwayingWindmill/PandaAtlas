@@ -166,7 +166,7 @@ def _assert_private_role_boundaries(cursor: psycopg.Cursor[Any]) -> dict[str, bo
         exists = bool(cursor.fetchone()[0])
         if not exists:
             raise FoundationCheckError(f"Expected Supabase role is missing: {role_name}")
-        for schema_name in ("activity", "engagement", "identity", "integration", "pgmq"):
+        for schema_name in ("activity", "engagement", "feed", "identity", "integration", "pgmq"):
             cursor.execute(
                 "select has_schema_privilege(%s, %s, 'usage')",
                 (role_name, schema_name),
@@ -344,6 +344,27 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
             if engagement_append_only_trigger_count != 3:
                 raise FoundationCheckError("Engagement append-only triggers are incomplete")
 
+            for relation in ("feed.account_state", "feed.last_viewed_events"):
+                cursor.execute("select to_regclass(%s)::text", (relation,))
+                if cursor.fetchone()[0] != relation:
+                    raise FoundationCheckError(f"Feed relation is missing: {relation}")
+
+            cursor.execute(
+                """
+                select count(*)
+                from pg_trigger trigger
+                join pg_class relation on relation.oid = trigger.tgrelid
+                join pg_namespace namespace on namespace.oid = relation.relnamespace
+                where namespace.nspname = 'feed'
+                  and relation.relname = 'last_viewed_events'
+                  and trigger.tgname = 'trg_feed_last_viewed_events_append_only'
+                  and not trigger.tgisinternal
+                """
+            )
+            feed_append_only_trigger_count = int(cursor.fetchone()[0])
+            if feed_append_only_trigger_count != 1:
+                raise FoundationCheckError("Feed append-only trigger is incomplete")
+
             cursor.execute(
                 """
                 select count(*)
@@ -464,6 +485,7 @@ def database_evidence(database_url: str, root: Path = REPO_ROOT) -> dict[str, An
         "administrator_capabilities": administrator_capabilities,
         "identity_append_only_trigger_count": append_only_trigger_count,
         "engagement_append_only_trigger_count": engagement_append_only_trigger_count,
+        "feed_append_only_trigger_count": feed_append_only_trigger_count,
         "activity_append_only_trigger_count": activity_append_only_trigger_count,
         "private_role_schema_usage": private_role_privileges,
         "queue_smoke": queue_evidence,

@@ -21,6 +21,12 @@ class Settings(BaseSettings):
     admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")
     engagement_enabled: bool = Field(default=False, alias="ENGAGEMENT_ENABLED")
     activity_enabled: bool = Field(default=False, alias="ACTIVITY_ENABLED")
+    feed_enabled: bool = Field(default=False, alias="FEED_ENABLED")
+    feed_cursor_signing_key: str = Field(
+        default="local-feed-cursor-signing-key-change-me",
+        min_length=32,
+        alias="FEED_CURSOR_SIGNING_KEY",
+    )
     pending_follow_ttl_seconds: int = Field(
         default=3600,
         ge=60,
@@ -59,9 +65,17 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def apply_runtime_defaults(self) -> "Settings":
+        env = self.app_env.lower().strip()
         if self.db_use_mock_fallback is None:
-            env = self.app_env.lower().strip()
             self.db_use_mock_fallback = env in {"development", "dev", "local", "test"}
+        if (
+            self.feed_enabled
+            and env not in {"development", "dev", "local", "test"}
+            and self.feed_cursor_signing_key == "local-feed-cursor-signing-key-change-me"
+        ):
+            raise ValueError(
+                "FEED_CURSOR_SIGNING_KEY must be configured outside local environments"
+            )
         return self
 
     def cors_origins(self) -> Sequence[str]:

@@ -1,6 +1,8 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
+import { loadPublicPandaActivity } from "@/features/feed/feed-api";
 import {
+  loadPublishedAtlasDataset,
   loadPublishedPandaProfile,
   resolvePublishedPandaReference,
 } from "@/features/public-content/public-release";
@@ -59,6 +61,21 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
   if (!envelope) notFound();
 
   const profile = buildTrustedProfilePageViewModel(envelope.data, locale);
+  const rawActivityCursor = query.activity_cursor;
+  const activityCursor = Array.isArray(rawActivityCursor)
+    ? rawActivityCursor[0]
+    : rawActivityCursor;
+  const activityResult = await loadPublicPandaActivity(profile.stableId, activityCursor);
+  const atlas = loadPublishedAtlasDataset(locale);
 
-  return <TrustedProfilePage locale={locale} profile={profile} envelope={envelope} />;
+  return (
+    <TrustedProfilePage
+      locale={locale}
+      profile={profile}
+      envelope={envelope}
+      activity={activityResult.state === "ready" ? activityResult.page : undefined}
+      activityUnavailable={activityResult.state === "unavailable"}
+      activityPandas={atlas.data.pandas}
+    />
+  );
 }

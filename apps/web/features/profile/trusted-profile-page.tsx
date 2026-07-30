@@ -2,12 +2,15 @@ import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { PandaFollowControl } from "@/components/pandas/panda-follow-control";
+import { PublicPandaActivity } from "@/features/feed/public-panda-activity";
+import type { ActivityPageData } from "@/features/feed/types";
 import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
+import type { PandaDetail } from "@/lib/types";
 import type {
   ProfileModuleState,
   TrustedProfileFactViewModel,
@@ -21,6 +24,9 @@ interface TrustedProfilePageProps {
   locale: PublicProfileLocale;
   profile: TrustedProfilePageViewModel;
   envelope: PublicContentEnvelope<PublicProfileRecord>;
+  activity?: ActivityPageData;
+  activityUnavailable?: boolean;
+  activityPandas?: PandaDetail[];
 }
 
 const copy = {
@@ -439,7 +445,14 @@ function RelationList({
   );
 }
 
-export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfilePageProps) {
+export function TrustedProfilePage({
+  locale,
+  profile,
+  envelope,
+  activity,
+  activityUnavailable = false,
+  activityPandas = [],
+}: TrustedProfilePageProps) {
   const t = copy[locale];
   const factByField = new Map(profile.facts.map((item) => [item.field, item]));
   const lifeStatusFact = factByField.get("life_status");
@@ -632,6 +645,18 @@ export function TrustedProfilePage({ locale, profile, envelope }: TrustedProfile
             </ol>
           ) : <p className="mt-6 text-sm text-[var(--muted)]" data-testid="timeline-empty-state">{t.noTimeline}</p>}
         </section>
+
+        {activity || activityUnavailable ? (
+          <div className={`${publicShellClassName} pb-14`}>
+            <PublicPandaActivity
+              locale={locale}
+              panda={envelope.data.panda}
+              pandas={activityPandas.length ? activityPandas : [envelope.data.panda]}
+              activity={activity}
+              unavailable={activityUnavailable}
+            />
+          </div>
+        ) : null}
 
         <section id="family" className="scroll-mt-36 bg-[var(--card)] py-14">
           <div className={publicShellClassName}>

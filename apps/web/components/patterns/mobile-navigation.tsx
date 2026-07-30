@@ -8,6 +8,7 @@ import type { PublicLocale } from "@/foundation/content/locales";
 
 interface MobileNavigationProps {
   locale: PublicLocale;
+  feedEnabled: boolean;
   languageHref: string;
   languageHrefLang: "zh-CN" | "en";
   labels: {
@@ -19,12 +20,14 @@ interface MobileNavigationProps {
     lineage: string;
     map: string;
     myPandas: string;
+    feed: string;
     language: string;
   };
 }
 
 export function MobileNavigation({
   locale,
+  feedEnabled,
   languageHref,
   languageHrefLang,
   labels,
@@ -62,6 +65,11 @@ export function MobileNavigation({
           <Link href={`/${locale}/pandas`} onClick={() => setOpen(false)}>{labels.atlas}</Link>
           <Link href={`/${locale}/lineage` as Route} onClick={() => setOpen(false)}>{labels.lineage}</Link>
           <Link href={`/${locale}/map` as Route} onClick={() => setOpen(false)}>{labels.map}</Link>
+          {feedEnabled ? (
+            <Link href={`/${locale}/me/feed` as Route} onClick={() => setOpen(false)}>
+              {labels.feed}
+            </Link>
+          ) : null}
           <Link href={`/${locale}/me/passport` as Route} onClick={() => setOpen(false)}>{labels.myPandas}</Link>
           <Link href={languageHref as Route} hrefLang={languageHrefLang} onClick={() => setOpen(false)}>
             {labels.language}
