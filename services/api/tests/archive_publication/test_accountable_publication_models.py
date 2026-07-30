@@ -10,7 +10,6 @@ from app.archive_publication.models import (
     command_payload_sha256,
 )
 
-CHANGE_SET_ID = UUID("11111111-1111-4111-8111-111111111111")
 CORRELATION_ID = UUID("22222222-2222-4222-8222-222222222222")
 
 
@@ -42,6 +41,10 @@ def test_publish_command_pins_release_contract_defaults() -> None:
     assert command.public_schema_version == "1.0.0"
     assert command.database_migration_version == "0020"
     assert command.projection_code_version == "public-release-v2"
+
+
+def test_risk_classification_is_explicit() -> None:
+    assert [risk.value for risk in ArchiveRiskLevel] == ["ordinary", "sensitive"]
 
 
 def test_commands_reject_short_idempotency_keys() -> None:
