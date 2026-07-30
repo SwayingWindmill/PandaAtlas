@@ -269,6 +269,23 @@ class NotificationMetricsSnapshot(BaseModel):
     maximum_intent_latency_seconds: float
     retraction_count: int
     state_inconsistency_count: int
+    queue_depths: dict[str, int] = Field(default_factory=dict)
+    oldest_queue_message_age_seconds: dict[str, float] = Field(default_factory=dict)
+    retry_count: int = 0
+    dead_letter_count: int = 0
+    maximum_provider_latency_seconds: float = 0
+    provider_error_count: int = 0
+    bounce_count: int = 0
+    complaint_count: int = 0
+    webhook_verification_failure_count: int = 0
+    alerts: list[str] = Field(default_factory=list)
+
+
+class NotificationWebhookReceipt(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    status: str = Field(pattern=r"^(queued|duplicate)$")
+    provider_event_id: str = Field(min_length=1, max_length=500)
 
 
 class InboxCursorError(ValueError):
@@ -317,9 +334,7 @@ def decode_inbox_cursor(
         )
         if not hmac.compare_digest(expected_signature, supplied_signature):
             raise InboxCursorError("invalid Inbox cursor")
-        payload = json.loads(
-            base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4)).decode()
-        )
+        payload = json.loads(base64.urlsafe_b64decode(encoded + "=" * (-len(encoded) % 4)).decode())
         if payload.get("version") != 1 or payload.get("account_id") != str(account_id):
             raise InboxCursorError("Inbox cursor scope does not match")
         created_at = datetime.fromisoformat(payload["created_at"])

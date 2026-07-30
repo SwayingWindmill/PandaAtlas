@@ -31,15 +31,16 @@ def test_static_foundation_configuration_is_pinned_and_private() -> None:
     assert "notification" not in evidence["api_schemas"]
     assert "pgmq" not in evidence["api_schemas"]
     assert "storage" not in evidence["api_schemas"]
-    assert evidence["migration_versions"][-1] == "0014"
+    assert evidence["migration_versions"][-1] == "0015"
 
 
 def test_version_and_database_url_helpers_are_deterministic() -> None:
     assert parse_version("1.5.1") == (1, 5, 1)
     assert parse_version("17.6 (Supabase)") == (17, 6)
-    assert redact_database_url(
-        "postgresql+psycopg://postgres:private-value@127.0.0.1:54322/postgres"
-    ) == "postgresql://postgres@127.0.0.1:54322/postgres"
+    assert (
+        redact_database_url("postgresql+psycopg://postgres:private-value@127.0.0.1:54322/postgres")
+        == "postgresql://postgres@127.0.0.1:54322/postgres"
+    )
     assert expected_migration_versions(REPO_ROOT) == [
         "0001",
         "0002",
@@ -55,6 +56,7 @@ def test_version_and_database_url_helpers_are_deterministic() -> None:
         "0012",
         "0013",
         "0014",
+        "0015",
     ]
 
 

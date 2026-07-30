@@ -1174,6 +1174,35 @@ class EngagementRepository:
         self._resolve_panda(panda_id)
 
     def _delete_notification_private_data(self, account_id: UUID) -> dict[str, int]:
+        transport_attempts = int(
+            self.session.execute(
+                text(
+                    """
+                    delete from notification.transport_attempts
+                    where delivery_id in (
+                      select delivery_id from notification.delivery_jobs
+                      where account_id = :account_id
+                    )
+                    """
+                ),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        delivery_jobs = int(
+            self.session.execute(
+                text("delete from notification.delivery_jobs where account_id = :account_id"),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
+        email_suppressions = int(
+            self.session.execute(
+                text("delete from notification.email_suppressions where account_id = :account_id"),
+                {"account_id": account_id},
+            ).rowcount
+            or 0
+        )
         digest_items = int(
             self.session.execute(
                 text(
@@ -1248,6 +1277,9 @@ class EngagementRepository:
             or 0
         )
         return {
+            "notification_transport_attempts_deleted": transport_attempts,
+            "notification_delivery_jobs_deleted": delivery_jobs,
+            "notification_email_suppressions_deleted": email_suppressions,
             "notification_digest_items_deleted": digest_items,
             "notification_delivery_attempts_deleted": delivery_attempts,
             "notification_inbox_items_deleted": inbox_items,

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, Response, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -11,6 +11,10 @@ from app.core.config import settings
 from app.core.security import require_admin_token
 from app.db.session import session_scope
 from app.identity.security import ActiveIdentity, resolve_correlation_id
+from app.notification.delivery import (
+    NotificationDeliveryRepository,
+    NotificationWebhookConflictError,
+)
 from app.notification.models import (
     DigestBatch,
     DigestQueueCommand,
@@ -20,6 +24,7 @@ from app.notification.models import (
     InboxPage,
     InboxUnreadCount,
     NotificationMetricsSnapshot,
+    NotificationWebhookReceipt,
 )
 from app.notification.repository import (
     NotificationAccountUnavailableError,
@@ -27,6 +32,7 @@ from app.notification.repository import (
     NotificationNotFoundError,
     NotificationRepository,
 )
+from app.notification.transport import verify_resend_webhook
 
 
 def require_notification_enabled() -> None:
@@ -35,6 +41,7 @@ def require_notification_enabled() -> None:
 
 
 router = APIRouter(dependencies=[Depends(require_notification_enabled)])
+_MAX_RESEND_WEBHOOK_BYTES = 64 * 1024
 CorrelationId = Annotated[UUID, Depends(resolve_correlation_id)]
 
 
@@ -205,10 +212,89 @@ def get_notification_metrics(response: Response) -> NotificationMetricsSnapshot:
                     status_code=503,
                     detail="Notification database is unavailable",
                 )
-            result = _repository(session).metrics()
+            result = _repository(session).metrics(
+                queue_alert_depth=settings.notification_queue_alert_depth,
+                queue_alert_age_seconds=settings.notification_queue_alert_age_seconds,
+            )
         response.headers["Cache-Control"] = "private, no-store"
         return result
     except HTTPException:
         raise
+    except SQLAlchemyError as error:
+        raise _handle_error(error) from error
+
+
+@router.post(
+    "/webhooks/resend",
+    response_model=NotificationWebhookReceipt,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def receive_resend_webhook(
+    request: Request,
+    correlation_id: CorrelationId,
+    svix_id: Annotated[str, Header(alias="svix-id", min_length=1, max_length=500)],
+    svix_timestamp: Annotated[str, Header(alias="svix-timestamp", min_length=1, max_length=32)],
+    svix_signature: Annotated[
+        str,
+        Header(alias="svix-signature", min_length=1, max_length=4096),
+    ],
+) -> NotificationWebhookReceipt:
+    if (
+        not settings.notification_email_enabled
+        or settings.notification_transport != "resend"
+        or not settings.resend_webhook_secret
+    ):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    body = await request.body()
+    if len(body) > _MAX_RESEND_WEBHOOK_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+            detail="Webhook payload is too large",
+        )
+    try:
+        verify_resend_webhook(
+            body=body,
+            message_id=svix_id,
+            timestamp=svix_timestamp,
+            signature_header=svix_signature,
+            secret=settings.resend_webhook_secret,
+        )
+    except ValueError as error:
+        try:
+            with session_scope() as session:
+                if session is not None:
+                    NotificationDeliveryRepository(session).record_webhook_verification_failure(
+                        provider_event_id=svix_id,
+                        reason=str(error),
+                        correlation_id=correlation_id,
+                    )
+        except SQLAlchemyError:
+            pass
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid webhook signature",
+        ) from error
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Notification database is unavailable")
+            result = NotificationDeliveryRepository(session).receive_resend_webhook(
+                body=body,
+                provider_event_id=svix_id,
+                correlation_id=correlation_id,
+            )
+        return NotificationWebhookReceipt(status=result, provider_event_id=svix_id)
+    except HTTPException:
+        raise
+    except NotificationWebhookConflictError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Provider event ID conflict",
+        ) from error
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid webhook payload",
+        ) from error
     except SQLAlchemyError as error:
         raise _handle_error(error) from error
