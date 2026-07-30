@@ -444,10 +444,6 @@ select
   change_set.validation_reason,
   change_set.base_archive_version,
   change_set.governance_version,
-  change_set.risk_level,
-  change_set.origin_context,
-  change_set.origin_actor_id,
-  change_set.published_release_id,
   case
     when change_set.status = 'approved' then 'legacy_approved'
     when change_set.status = 'published' then 'published'
@@ -463,6 +459,10 @@ select
     change_set.governance_mode = 'four-eyes-v1'
     and change_set.status = 'approved'
   ) as legacy_publication_eligible,
+  change_set.risk_level,
+  change_set.origin_context,
+  change_set.origin_actor_id,
+  change_set.published_release_id,
   (
     change_set.governance_mode = 'single-accountable-approver-v1'
     and change_set.status = 'ready'
