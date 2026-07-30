@@ -23,6 +23,23 @@ from app.schemas.publication import (
 from app.services import publication_repository
 
 
+def _require_legacy_archive_mutation(command: str) -> None:
+    if not settings.archive_single_accountable_approver_enabled:
+        return
+    raise HTTPException(
+        status_code=409,
+        detail={
+            "code": "archive_governance_migration_required",
+            "message": (
+                "Legacy four-eyes mutation commands are disabled after the "
+                "single-accountable-approver cutover"
+            ),
+            "command": command,
+            "target_policy": "single-accountable-approver-v1",
+        },
+    )
+
+
 @contextmanager
 def _workflow_session() -> Iterator[Session]:
     if not has_database():
@@ -71,6 +88,7 @@ def _preview(session: Session, batch_id: UUID) -> PublicationPreviewRead:
 
 
 def create_change_set(payload: ChangeSetCreate, actor_id: UUID) -> ChangeSetRead:
+    _require_legacy_archive_mutation("change_set.create")
     with _workflow_session() as session:
         result = publication_repository.create_change_set(session, payload, actor_id)
         session.commit()
@@ -78,6 +96,7 @@ def create_change_set(payload: ChangeSetCreate, actor_id: UUID) -> ChangeSetRead
 
 
 def submit_change_set(change_set_id: UUID, actor_id: UUID) -> ChangeSetRead:
+    _require_legacy_archive_mutation("change_set.submit")
     with _workflow_session() as session:
         result = publication_repository.submit_change_set(session, change_set_id, actor_id)
         session.commit()
@@ -89,6 +108,7 @@ def review_change_set(
     payload: ChangeSetReview,
     actor_id: UUID,
 ) -> ChangeSetRead:
+    _require_legacy_archive_mutation("change_set.review")
     with _workflow_session() as session:
         result = publication_repository.review_change_set(
             session,
@@ -104,6 +124,7 @@ def create_publication_batch(
     payload: PublicationBatchCreate,
     actor_id: UUID,
 ) -> PublicationBatchRead:
+    _require_legacy_archive_mutation("publication_batch.create")
     with _workflow_session() as session:
         result = publication_repository.create_publication_batch(session, payload, actor_id)
         session.commit()
@@ -116,6 +137,7 @@ def preview_publication_batch(batch_id: UUID) -> PublicationPreviewRead:
 
 
 def publish_batch(batch_id: UUID, actor_id: UUID) -> PublicationBatchRead:
+    _require_legacy_archive_mutation("publication_batch.publish")
     with _workflow_session() as session:
         publication_repository.lock_batch_for_publication(session, batch_id)
         publication_repository.lock_release_pointer(session)

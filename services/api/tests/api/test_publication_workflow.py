@@ -72,6 +72,35 @@ def test_workflow_write_requires_authoritative_database(monkeypatch) -> None:
     assert response.json()["detail"] == "Authoritative database unavailable"
 
 
+def test_single_accountable_approver_flag_fails_closed_before_legacy_write(monkeypatch) -> None:
+    monkeypatch.setattr(
+        settings,
+        "workflow_actor_tokens_json",
+        json.dumps({EDITOR_ID: "editor-secret"}),
+    )
+    monkeypatch.setattr(settings, "archive_single_accountable_approver_enabled", True)
+
+    response = client.post(
+        "/api/v1/admin/change-sets",
+        headers={
+            "Authorization": "Bearer editor-secret",
+            "X-Actor-Id": EDITOR_ID,
+        },
+        json=_payload(),
+    )
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == {
+        "code": "archive_governance_migration_required",
+        "message": (
+            "Legacy four-eyes mutation commands are disabled after the "
+            "single-accountable-approver cutover"
+        ),
+        "command": "change_set.create",
+        "target_policy": "single-accountable-approver-v1",
+    }
+
+
 def test_duplicate_actor_tokens_are_rejected(monkeypatch) -> None:
     monkeypatch.setattr(
         settings,

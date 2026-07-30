@@ -60,6 +60,7 @@
     "check:editorial-home-budget": "node scripts/release/check-editorial-home-budget.mjs",
     "check:my-pandas-budget": "node scripts/release/check-my-pandas-budget.mjs",
     "check:frontend-system-closure": "node scripts/release/check-frontend-system-closure.mjs",
+    "check:archive-governance-migration": "node scripts/release/check-archive-governance-migration.mjs",
     "check:route-performance-budgets": "node scripts/release/check-route-performance-budgets.mjs",
     "drill:release-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
     "drill:postgres-attachment-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_postgres_attachment_recovery_drill.py",

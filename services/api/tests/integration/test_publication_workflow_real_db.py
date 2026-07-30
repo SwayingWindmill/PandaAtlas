@@ -4,9 +4,10 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi import HTTPException
+from sqlalchemy import text
 
 from app.core.config import settings
-from app.db.session import configure_database
+from app.db.session import configure_database, session_scope
 from app.schemas.publication import (
     ChangeSetCreate,
     ChangeSetReview,
@@ -92,6 +93,12 @@ def _approve(panda_id: str, public_record: dict[str, object], suffix: str) -> UU
         REVIEWER_ID,
     )
     assert approved.status == "approved"
+    assert approved.governance_mode == "four-eyes-v1"
+    assert approved.validation_state == "legacy_approved"
+    assert approved.validated_by == REVIEWER_ID
+    assert approved.validation_reason == "Independent review complete"
+    assert approved.requires_explicit_revalidation is True
+    assert approved.legacy_publication_eligible is True
     return change_set.id
 
 
@@ -107,6 +114,30 @@ def _publish(change_set_id: UUID, version: str):
         PUBLISHER_ID,
     )
     return publish_batch(batch.id, PUBLISHER_ID)
+
+
+def test_governance_compatibility_starts_without_synthetic_revalidation(real_db: None) -> None:
+    _ = real_db
+    with session_scope() as session:
+        assert session is not None
+        assert (
+            session.execute(
+                text("select count(*) from public.archive_governance_revalidations")
+            ).scalar_one()
+            == 0
+        )
+        assert (
+            session.execute(
+                text("select count(*) from public.archive_governance_migration_runs")
+            ).scalar_one()
+            == 0
+        )
+        assert (
+            session.execute(
+                text("select to_regclass('public.change_set_governance_compatibility')::text")
+            ).scalar_one()
+            == "change_set_governance_compatibility"
+        )
 
 
 def test_real_publication_lifecycle_changes_visible_public_record(real_db: None) -> None:
@@ -138,6 +169,11 @@ def test_real_publication_lifecycle_changes_visible_public_record(real_db: None)
         REVIEWER_ID,
     )
     assert rejected_result.status == "rejected"
+    assert rejected_result.governance_mode == "four-eyes-v1"
+    assert rejected_result.validation_state == "validation_failed"
+    assert rejected_result.validated_by == REVIEWER_ID
+    assert rejected_result.requires_explicit_revalidation is False
+    assert rejected_result.legacy_publication_eligible is False
 
     first = create_change_set(
         _change_set_payload(
