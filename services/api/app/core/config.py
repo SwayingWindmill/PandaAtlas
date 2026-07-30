@@ -104,6 +104,7 @@ class Settings(BaseSettings):
         alias="PENDING_FOLLOW_TTL_SECONDS",
     )
     supabase_url: str | None = Field(default=None, alias="SUPABASE_URL")
+    supabase_service_role_key: str | None = Field(default=None, alias="SUPABASE_SERVICE_ROLE_KEY")
     supabase_jwt_issuer_override: str | None = Field(
         default=None,
         alias="SUPABASE_JWT_ISSUER",
@@ -190,6 +191,14 @@ class Settings(BaseSettings):
         ):
             raise ValueError(
                 "COMMUNITY_INTAKE_STORAGE_SIGNING_KEY must be configured outside local environments"
+            )
+        if (
+            self.community_intake_enabled
+            and env not in {"development", "dev", "local", "test"}
+            and (not self.supabase_url or not self.supabase_service_role_key)
+        ):
+            raise ValueError(
+                "Community Intake upload requires backend Supabase Storage credentials"
             )
         return self
 

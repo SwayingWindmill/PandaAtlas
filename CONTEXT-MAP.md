@@ -38,9 +38,9 @@ Architecture: [`docs/architecture/notification-orchestration.md`](docs/architect
 
 ## Community Intake
 
-Owns authenticated structured contribution drafts, immutable SubmissionRevisions, contributor SubmittedSource records, private evidence metadata, quarantine and malware-scan state, sensitive-read audit, and contribution retention/anonymization facts. It does not own Trusted Archive Sources, ReviewCase decisions, Change Sets, publication, or public media rights.
+Owns authenticated structured contribution drafts, immutable SubmissionRevisions, contributor SubmittedSource records, private evidence metadata, quarantine and malware-scan state, contributor-visible status history and per-assertion outcomes, sensitive-read audit, account-scoped journey analytics, and contribution retention/anonymization facts. It does not own Trusted Archive Sources, ReviewCase decisions, Change Sets, publication, or public media rights.
 
-Architecture: [`docs/architecture/community-intake.md`](docs/architecture/community-intake.md)
+Architecture: [`docs/architecture/community-intake.md`](docs/architecture/community-intake.md) and [`docs/architecture/contributor-submission-journey.md`](docs/architecture/contributor-submission-journey.md)
 
 ## Relationships
 
@@ -49,6 +49,6 @@ Architecture: [`docs/architecture/community-intake.md`](docs/architecture/commun
 - Public Projection derives only from published Trusted Archive state.
 - Public Activity consumes explicit public-safe events from published Archive Releases or authorized editorial commands; projection failure never rolls back Archive publication.
 - Personalized Feed reads Public Activity and current Follow state, but never mutates either source while serving a query.
-- Notification Orchestration consumes Public Activity events and retains ownership of preferences, channels, and delivery.
+- Notification Orchestration consumes Public Activity events and contributor-visible Community Intake status events, while retaining ownership of preferences, channels, Inbox state, and delivery.
 - Community Intake accepts authenticated structured contributions and private evidence; later Review & Moderation and Curation contexts consume only explicit accepted outputs.
 - The golden dataset is the shared acceptance fixture spanning the archive and projection contexts; it is not a replacement for production data.

@@ -970,39 +970,114 @@ paths:
 
   /api/v1/me/submissions:
     post:
-      tags: [community-intake]
+      tags:
+      - community-intake
       summary: Create an authenticated structured contribution draft
       operationId: createCommunitySubmissionDraft
-      security: [{ BearerAuth: [] }]
+      security:
+      - BearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/CreateCommunityDraftCommand' }
+            schema:
+              $ref: '#/components/schemas/CreateCommunityDraftCommand'
       responses:
         '201':
           description: Private draft created idempotently
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/CommunitySubmission' }
-        '404': { description: Stable Panda target was not found }
-        '409': { description: Idempotency conflict }
+              schema:
+                $ref: '#/components/schemas/CommunitySubmission'
+        '404':
+          description: Stable Panda target was not found
+        '409':
+          description: Idempotency conflict
+    get:
+      tags:
+      - community-intake
+      summary: List Contributor Submissions
+      operationId: list_contributor_submissions_api_v1_me_submissions_get
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 50
+          minimum: 1
+          default: 20
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            maxLength: 2048
+          - type: 'null'
+          title: Cursor
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorSubmissionPage'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 
   /api/v1/me/submissions/{submission_id}:
     get:
-      tags: [community-intake]
-      summary: Read one private submission owned by the authenticated account
-      operationId: getCommunitySubmission
-      security: [{ BearerAuth: [] }]
+      tags:
+      - community-intake
+      summary: Get Submission
+      operationId: get_submission_api_v1_me_submissions__submission_id__get
+      security:
+      - BearerAuth: []
       parameters:
-        - { name: submission_id, in: path, required: true, schema: { type: string, format: uuid } }
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Submission Id
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
       responses:
         '200':
-          description: Private submission with immutable revisions and evidence metadata
+          description: Successful Response
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/CommunitySubmission' }
-        '404': { description: Submission is not visible to the account }
+              schema:
+                $ref: '#/components/schemas/ContributorSubmissionView'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 
   /api/v1/me/submissions/{submission_id}/draft:
     patch:
@@ -1153,6 +1228,418 @@ paths:
               schema: { $ref: '#/components/schemas/SignedStorageReference' }
         '403': { description: Evidence is not clean or capability is missing }
         '404': { description: Attachment was not found }
+
+  /api/v1/me/submissions/drafts:
+    post:
+      tags:
+      - community-intake
+      summary: Create Contributor Draft
+      operationId: create_contributor_draft_api_v1_me_submissions_drafts_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContributorCreateDraftCommand'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorCommandResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/me/contribution-analytics:
+    get:
+      tags:
+      - community-intake
+      summary: Get Contributor Analytics
+      operationId: get_contributor_analytics_api_v1_me_contribution_analytics_get
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorSubmissionAnalytics'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/me/submissions/{submission_id}/commands/save-draft:
+    post:
+      tags:
+      - community-intake
+      summary: Save Contributor Draft
+      operationId: save_contributor_draft_api_v1_me_submissions__submission_id__commands_save_draft_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Submission Id
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+          title: If-Match
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContributorUpdateDraftCommand'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorCommandResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/me/submissions/{submission_id}/commands/submit:
+    post:
+      tags:
+      - community-intake
+      summary: Submit Contributor Submission
+      operationId: submit_contributor_submission_api_v1_me_submissions__submission_id__commands_submit_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Submission Id
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+          title: If-Match
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContributorSubmitCommand'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorCommandResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/me/submissions/{submission_id}/commands/respond-information-request:
+    post:
+      tags:
+      - community-intake
+      summary: Respond To Information Request
+      operationId: respond_to_information_request_api_v1_me_submissions__submission_id__commands_respond_information_request_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Submission Id
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+          title: If-Match
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RespondInformationRequestCommand'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorCommandResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/me/submissions/{submission_id}/commands/withdraw:
+    post:
+      tags:
+      - community-intake
+      summary: Withdraw Contributor Submission
+      operationId: withdraw_contributor_submission_api_v1_me_submissions__submission_id__commands_withdraw_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Submission Id
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+          title: If-Match
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContributorWithdrawCommand'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorCommandResult'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/me/submissions/{submission_id}/commands/prepare-attachment:
+    post:
+      tags:
+      - community-intake
+      summary: Prepare Contributor Attachment
+      operationId: prepare_contributor_attachment_api_v1_me_submissions__submission_id__commands_prepare_attachment_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Submission Id
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+          title: If-Match
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrepareAttachmentUploadCommand'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentUploadReservation'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/me/attachments/{attachment_id}/content:
+    post:
+      tags:
+      - community-intake
+      summary: Upload Contributor Attachment
+      operationId: upload_contributor_attachment_api_v1_me_attachments__attachment_id__content_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: attachment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Attachment Id
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+          title: If-Match
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_contributor_attachment_api_v1_me_attachments__attachment_id__content_post'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentView'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+
+  /api/v1/community-intake/submissions/{submission_id}/contributor-status:
+    post:
+      tags:
+      - community-intake
+      summary: Project Contributor Status
+      operationId: project_contributor_status_api_v1_community_intake_submissions__submission_id__contributor_status_post
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Submission Id
+      - name: X-Correlation-Id
+        in: header
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: X-Correlation-Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectContributorStatusCommand'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContributorSubmissionView'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 
   /api/v1/community-intake/retention/run:
     post:
@@ -1445,6 +1932,1110 @@ components:
         oldest_quarantined_age_seconds: { type: number, minimum: 0 }
         sensitive_reads_granted: { type: integer, minimum: 0 }
         sensitive_reads_denied: { type: integer, minimum: 0 }
+
+    AssertionDisposition:
+      type: string
+      enum:
+      - pending
+      - selected
+      - not_selected
+      - incorporated
+      - not_incorporated
+      - superseded
+      title: AssertionDisposition
+    AssertionResultInput:
+      properties:
+        assertion_key:
+          type: string
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$
+          title: Assertion Key
+        disposition:
+          $ref: '#/components/schemas/AssertionDisposition'
+        explanation:
+          anyOf:
+          - type: string
+            maxLength: 2000
+            minLength: 3
+          - type: 'null'
+          title: Explanation
+        public_reference_id:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Public Reference Id
+      additionalProperties: false
+      type: object
+      required:
+      - assertion_key
+      - disposition
+      title: AssertionResultInput
+    AssertionResultView:
+      properties:
+        assertion_key:
+          type: string
+          title: Assertion Key
+        revision_number:
+          type: integer
+          title: Revision Number
+        disposition:
+          $ref: '#/components/schemas/AssertionDisposition'
+        explanation:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Explanation
+        public_reference_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Public Reference Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      additionalProperties: false
+      type: object
+      required:
+      - assertion_key
+      - revision_number
+      - disposition
+      - explanation
+      - public_reference_id
+      - created_at
+      title: AssertionResultView
+    AttachmentState:
+      type: string
+      enum:
+      - quarantined
+      - clean
+      - infected
+      - scan_failed
+      - deleted
+      title: AttachmentState
+    AttachmentUploadReservation:
+      properties:
+        attachment:
+          $ref: '#/components/schemas/AttachmentView'
+        upload_reference:
+          $ref: '#/components/schemas/SignedStorageReference'
+      additionalProperties: false
+      type: object
+      required:
+      - attachment
+      - upload_reference
+      title: AttachmentUploadReservation
+    AttachmentView:
+      properties:
+        attachment_id:
+          type: string
+          format: uuid
+          title: Attachment Id
+        submission_id:
+          type: string
+          format: uuid
+          title: Submission Id
+        bound_revision_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Bound Revision Number
+        original_filename:
+          type: string
+          title: Original Filename
+        media_type:
+          type: string
+          title: Media Type
+        byte_size:
+          type: integer
+          title: Byte Size
+        state:
+          $ref: '#/components/schemas/AttachmentState'
+        upload_completed_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Upload Completed At
+        scan_attempts:
+          type: integer
+          title: Scan Attempts
+        last_scan_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Scan Code
+        last_scanned_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Scanned At
+        metadata_stripped:
+          type: boolean
+          title: Metadata Stripped
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      additionalProperties: false
+      type: object
+      required:
+      - attachment_id
+      - submission_id
+      - bound_revision_number
+      - original_filename
+      - media_type
+      - byte_size
+      - state
+      - upload_completed_at
+      - scan_attempts
+      - last_scan_code
+      - last_scanned_at
+      - metadata_stripped
+      - created_at
+      title: AttachmentView
+    Body_upload_contributor_attachment_api_v1_me_attachments__attachment_id__content_post:
+      properties:
+        file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: File
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 8
+          title: Idempotency Key
+        upload_reference:
+          type: string
+          maxLength: 4096
+          minLength: 32
+          title: Upload Reference
+      type: object
+      required:
+      - file
+      - idempotency_key
+      - upload_reference
+      title: Body_upload_contributor_attachment_api_v1_me_attachments__attachment_id__content_post
+    ContributorCommandResult:
+      properties:
+        submission:
+          $ref: '#/components/schemas/ContributorSubmissionView'
+        inline_confirmation:
+          type: boolean
+          title: Inline Confirmation
+          default: false
+        notification_created:
+          type: boolean
+          title: Notification Created
+          default: false
+      additionalProperties: false
+      type: object
+      required:
+      - submission
+      title: ContributorCommandResult
+    ContributorCreateDraftCommand:
+      properties:
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 8
+          title: Idempotency Key
+        submission_type:
+          $ref: '#/components/schemas/SubmissionType'
+        target_type:
+          $ref: '#/components/schemas/SubmissionTargetType'
+          default: panda
+        target_id:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Target Id
+        public_version_seen:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Public Version Seen
+        locale:
+          type: string
+          enum:
+          - zh
+          - en
+          title: Locale
+        draft_content:
+          additionalProperties: true
+          type: object
+          title: Draft Content
+      additionalProperties: false
+      type: object
+      required:
+      - idempotency_key
+      - submission_type
+      - target_id
+      - public_version_seen
+      - locale
+      title: ContributorCreateDraftCommand
+    ContributorStatus:
+      type: string
+      enum:
+      - draft
+      - submitted
+      - action_required
+      - duplicate
+      - out_of_scope
+      - not_accepted
+      - accepted
+      - incorporation_in_progress
+      - incorporated_full
+      - incorporated_partial
+      - withdrawn
+      - expired
+      - target_merged
+      - target_unpublished
+      title: ContributorStatus
+    ContributorStatusEventView:
+      properties:
+        status_event_id:
+          type: string
+          format: uuid
+          title: Status Event Id
+        status:
+          $ref: '#/components/schemas/ContributorStatus'
+        active_revision_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Active Revision Number
+        user_visible_reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Visible Reason
+        action_required_fields:
+          items:
+            type: string
+          type: array
+          title: Action Required Fields
+        target_redirect_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Target Redirect Id
+        occurred_at:
+          type: string
+          format: date-time
+          title: Occurred At
+      additionalProperties: false
+      type: object
+      required:
+      - status_event_id
+      - status
+      - active_revision_number
+      - user_visible_reason
+      - action_required_fields
+      - target_redirect_id
+      - occurred_at
+      title: ContributorStatusEventView
+    ContributorSubmissionAnalytics:
+      properties:
+        total:
+          type: integer
+          title: Total
+        open_count:
+          type: integer
+          title: Open Count
+        action_required_count:
+          type: integer
+          title: Action Required Count
+        by_status:
+          additionalProperties:
+            type: integer
+          propertyNames:
+            $ref: '#/components/schemas/ContributorStatus'
+          type: object
+          title: By Status
+        latest_activity_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Latest Activity At
+      additionalProperties: false
+      type: object
+      required:
+      - total
+      - open_count
+      - action_required_count
+      - by_status
+      - latest_activity_at
+      title: ContributorSubmissionAnalytics
+    ContributorSubmissionPage:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ContributorSubmissionSummary'
+          type: array
+          title: Items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      additionalProperties: false
+      type: object
+      required:
+      - items
+      title: ContributorSubmissionPage
+    ContributorSubmissionSummary:
+      properties:
+        submission_id:
+          type: string
+          format: uuid
+          title: Submission Id
+        submission_type:
+          $ref: '#/components/schemas/SubmissionType'
+        target_type:
+          $ref: '#/components/schemas/SubmissionTargetType'
+        target_id:
+          type: string
+          title: Target Id
+        public_version_seen:
+          type: string
+          title: Public Version Seen
+        state:
+          $ref: '#/components/schemas/SubmissionState'
+        contributor_status:
+          $ref: '#/components/schemas/ContributorStatus'
+        version:
+          type: integer
+          title: Version
+        latest_revision_number:
+          type: integer
+          title: Latest Revision Number
+        user_visible_reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Visible Reason
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      additionalProperties: false
+      type: object
+      required:
+      - submission_id
+      - submission_type
+      - target_type
+      - target_id
+      - public_version_seen
+      - state
+      - contributor_status
+      - version
+      - latest_revision_number
+      - user_visible_reason
+      - created_at
+      - updated_at
+      title: ContributorSubmissionSummary
+    ContributorSubmissionView:
+      properties:
+        submission_id:
+          type: string
+          format: uuid
+          title: Submission Id
+        submission_type:
+          $ref: '#/components/schemas/SubmissionType'
+        target_type:
+          $ref: '#/components/schemas/SubmissionTargetType'
+        target_id:
+          type: string
+          title: Target Id
+        public_version_seen:
+          type: string
+          title: Public Version Seen
+        state:
+          $ref: '#/components/schemas/SubmissionState'
+        contributor_status:
+          $ref: '#/components/schemas/ContributorStatus'
+        version:
+          type: integer
+          title: Version
+        latest_revision_number:
+          type: integer
+          title: Latest Revision Number
+        user_visible_reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User Visible Reason
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+        draft_content:
+          additionalProperties: true
+          type: object
+          title: Draft Content
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        submitted_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Submitted At
+        withdrawn_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Withdrawn At
+        closed_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Closed At
+        revisions:
+          items:
+            $ref: '#/components/schemas/SubmissionRevisionView'
+          type: array
+          title: Revisions
+        attachments:
+          items:
+            $ref: '#/components/schemas/AttachmentView'
+          type: array
+          title: Attachments
+        status_history:
+          items:
+            $ref: '#/components/schemas/ContributorStatusEventView'
+          type: array
+          title: Status History
+        assertion_results:
+          items:
+            $ref: '#/components/schemas/AssertionResultView'
+          type: array
+          title: Assertion Results
+      additionalProperties: false
+      type: object
+      required:
+      - submission_id
+      - submission_type
+      - target_type
+      - target_id
+      - public_version_seen
+      - state
+      - contributor_status
+      - version
+      - latest_revision_number
+      - user_visible_reason
+      - created_at
+      - updated_at
+      - draft_content
+      - expires_at
+      - submitted_at
+      - withdrawn_at
+      - closed_at
+      title: ContributorSubmissionView
+    ContributorSubmitCommand:
+      properties:
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 8
+          title: Idempotency Key
+        expected_version:
+          type: integer
+          minimum: 1.0
+          title: Expected Version
+        locale:
+          type: string
+          enum:
+          - zh
+          - en
+          title: Locale
+        public_version_seen:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Public Version Seen
+        assertions:
+          items:
+            $ref: '#/components/schemas/StructuredAssertionInput'
+          type: array
+          maxItems: 25
+          minItems: 1
+          title: Assertions
+        sources:
+          items:
+            $ref: '#/components/schemas/SubmittedSourceInput'
+          type: array
+          maxItems: 25
+          title: Sources
+        additional_context:
+          anyOf:
+          - type: string
+            maxLength: 4000
+          - type: 'null'
+          title: Additional Context
+        confirmation:
+          type: boolean
+          const: true
+          title: Confirmation
+      additionalProperties: false
+      type: object
+      required:
+      - idempotency_key
+      - expected_version
+      - locale
+      - public_version_seen
+      - assertions
+      - confirmation
+      title: ContributorSubmitCommand
+    ContributorUpdateDraftCommand:
+      properties:
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 8
+          title: Idempotency Key
+        expected_version:
+          type: integer
+          minimum: 1.0
+          title: Expected Version
+        locale:
+          type: string
+          enum:
+          - zh
+          - en
+          title: Locale
+        public_version_seen:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Public Version Seen
+        assertions:
+          items:
+            $ref: '#/components/schemas/DraftStructuredAssertionInput'
+          type: array
+          maxItems: 25
+          title: Assertions
+        sources:
+          items:
+            $ref: '#/components/schemas/DraftSubmittedSourceInput'
+          type: array
+          maxItems: 25
+          title: Sources
+        additional_context:
+          anyOf:
+          - type: string
+            maxLength: 4000
+          - type: 'null'
+          title: Additional Context
+      additionalProperties: false
+      type: object
+      required:
+      - idempotency_key
+      - expected_version
+      - locale
+      - public_version_seen
+      title: ContributorUpdateDraftCommand
+    ContributorWithdrawCommand:
+      properties:
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 8
+          title: Idempotency Key
+        expected_version:
+          type: integer
+          minimum: 1.0
+          title: Expected Version
+        locale:
+          type: string
+          enum:
+          - zh
+          - en
+          title: Locale
+        reason:
+          type: string
+          maxLength: 1000
+          minLength: 3
+          title: Reason
+      additionalProperties: false
+      type: object
+      required:
+      - idempotency_key
+      - expected_version
+      - locale
+      - reason
+      title: ContributorWithdrawCommand
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PrepareAttachmentUploadCommand:
+      properties:
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Idempotency Key
+        original_filename:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Original Filename
+        media_type:
+          type: string
+          title: Media Type
+        byte_size:
+          type: integer
+          maximum: 10485760.0
+          exclusiveMinimum: 0.0
+          title: Byte Size
+      additionalProperties: false
+      type: object
+      required:
+      - idempotency_key
+      - original_filename
+      - media_type
+      - byte_size
+      title: PrepareAttachmentUploadCommand
+    ProjectContributorStatusCommand:
+      properties:
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 8
+          title: Idempotency Key
+        expected_version:
+          type: integer
+          minimum: 1.0
+          title: Expected Version
+        status:
+          $ref: '#/components/schemas/ContributorStatus'
+        active_revision_number:
+          anyOf:
+          - type: integer
+            minimum: 1.0
+          - type: 'null'
+          title: Active Revision Number
+        user_visible_reason:
+          anyOf:
+          - type: string
+            maxLength: 2000
+            minLength: 3
+          - type: 'null'
+          title: User Visible Reason
+        action_required_fields:
+          items:
+            type: string
+          type: array
+          maxItems: 25
+          title: Action Required Fields
+        assertion_results:
+          items:
+            $ref: '#/components/schemas/AssertionResultInput'
+          type: array
+          maxItems: 25
+          title: Assertion Results
+        target_redirect_id:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Target Redirect Id
+        source_context:
+          type: string
+          enum:
+          - review
+          - curation
+          - projection
+          - target_lifecycle
+          title: Source Context
+        source_event_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Source Event Id
+      additionalProperties: false
+      type: object
+      required:
+      - idempotency_key
+      - expected_version
+      - status
+      - source_context
+      title: ProjectContributorStatusCommand
+    RespondInformationRequestCommand:
+      properties:
+        idempotency_key:
+          type: string
+          maxLength: 255
+          minLength: 8
+          title: Idempotency Key
+        expected_version:
+          type: integer
+          minimum: 1.0
+          title: Expected Version
+        locale:
+          type: string
+          enum:
+          - zh
+          - en
+          title: Locale
+        public_version_seen:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Public Version Seen
+        assertions:
+          items:
+            $ref: '#/components/schemas/StructuredAssertionInput'
+          type: array
+          maxItems: 25
+          minItems: 1
+          title: Assertions
+        sources:
+          items:
+            $ref: '#/components/schemas/SubmittedSourceInput'
+          type: array
+          maxItems: 25
+          title: Sources
+        additional_context:
+          anyOf:
+          - type: string
+            maxLength: 4000
+          - type: 'null'
+          title: Additional Context
+        confirmation:
+          type: boolean
+          const: true
+          title: Confirmation
+        request_status_event_id:
+          type: string
+          format: uuid
+          title: Request Status Event Id
+      additionalProperties: false
+      type: object
+      required:
+      - idempotency_key
+      - expected_version
+      - locale
+      - public_version_seen
+      - assertions
+      - confirmation
+      - request_status_event_id
+      title: RespondInformationRequestCommand
+    SourceKind:
+      type: string
+      enum:
+      - url
+      - publication
+      - document
+      - other
+      title: SourceKind
+    DraftSubmittedSourceInput:
+      properties:
+        source_kind:
+          $ref: '#/components/schemas/SourceKind'
+        title:
+          type: string
+          maxLength: 500
+          title: Title
+          default: ''
+        locator:
+          type: string
+          maxLength: 2000
+          title: Locator
+          default: ''
+        publisher:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Publisher
+        published_on:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Published On
+      additionalProperties: false
+      type: object
+      required:
+      - source_kind
+      title: DraftSubmittedSourceInput
+    DraftStructuredAssertionInput:
+      properties:
+        assertion_key:
+          type: string
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$
+          title: Assertion Key
+        kind:
+          $ref: '#/components/schemas/StructuredClaimKind'
+        field_path:
+          type: string
+          maxLength: 255
+          title: Field Path
+          default: ''
+        proposed_value:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Proposed Value
+        explanation:
+          type: string
+          maxLength: 2000
+          title: Explanation
+          default: ''
+        source_locators:
+          items:
+            type: string
+          type: array
+          maxItems: 25
+          title: Source Locators
+        attachment_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          maxItems: 5
+          title: Attachment Ids
+      additionalProperties: false
+      type: object
+      required:
+      - assertion_key
+      - kind
+      title: DraftStructuredAssertionInput
+    StructuredAssertionInput:
+      properties:
+        assertion_key:
+          type: string
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$
+          title: Assertion Key
+        kind:
+          $ref: '#/components/schemas/StructuredClaimKind'
+        field_path:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Field Path
+        proposed_value:
+          title: Proposed Value
+        explanation:
+          type: string
+          maxLength: 2000
+          minLength: 10
+          title: Explanation
+        source_locators:
+          items:
+            type: string
+          type: array
+          maxItems: 25
+          title: Source Locators
+        attachment_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          maxItems: 5
+          title: Attachment Ids
+      additionalProperties: false
+      type: object
+      required:
+      - assertion_key
+      - kind
+      - field_path
+      - proposed_value
+      - explanation
+      title: StructuredAssertionInput
+    StructuredClaimKind:
+      type: string
+      enum:
+      - identity_name
+      - vital_event
+      - health
+      - relationship
+      - residency_transfer
+      - institution
+      - source
+      - other
+      title: StructuredClaimKind
+    SubmissionRevisionView:
+      properties:
+        revision_number:
+          type: integer
+          title: Revision Number
+        content:
+          additionalProperties: true
+          type: object
+          title: Content
+        content_sha256:
+          type: string
+          title: Content Sha256
+        public_version_seen:
+          type: string
+          title: Public Version Seen
+        submitted_at:
+          type: string
+          format: date-time
+          title: Submitted At
+        sources:
+          items:
+            $ref: '#/components/schemas/SubmittedSourceView'
+          type: array
+          title: Sources
+      additionalProperties: false
+      type: object
+      required:
+      - revision_number
+      - content
+      - content_sha256
+      - public_version_seen
+      - submitted_at
+      title: SubmissionRevisionView
+    SubmissionState:
+      type: string
+      enum:
+      - draft
+      - submitted
+      - withdrawn
+      - expired
+      - closed
+      title: SubmissionState
+    SubmissionTargetType:
+      type: string
+      enum:
+      - panda
+      title: SubmissionTargetType
+    SubmissionType:
+      type: string
+      enum:
+      - correction
+      - sourced_information
+      title: SubmissionType
+    SubmittedSourceInput:
+      properties:
+        source_kind:
+          $ref: '#/components/schemas/SourceKind'
+        title:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Title
+        locator:
+          type: string
+          maxLength: 2000
+          minLength: 1
+          title: Locator
+        publisher:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Publisher
+        published_on:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Published On
+      additionalProperties: false
+      type: object
+      required:
+      - source_kind
+      - title
+      - locator
+      title: SubmittedSourceInput
+    SubmittedSourceView:
+      properties:
+        source_id:
+          type: string
+          format: uuid
+          title: Source Id
+        revision_number:
+          type: integer
+          title: Revision Number
+        source_kind:
+          $ref: '#/components/schemas/SourceKind'
+        title:
+          type: string
+          title: Title
+        locator:
+          type: string
+          title: Locator
+        publisher:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Publisher
+        published_on:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Published On
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      additionalProperties: false
+      type: object
+      required:
+      - source_id
+      - revision_number
+      - source_kind
+      - title
+      - locator
+      - publisher
+      - published_on
+      - created_at
+      title: SubmittedSourceView
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
 
     PandaStatus:
       type: string

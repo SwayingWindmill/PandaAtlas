@@ -69,7 +69,6 @@ def test_feed_flag_rolls_back_before_authentication_or_database_access(
     assert public_response.json() == {"detail": "Not found"}
 
 
-
 def test_notification_flag_rolls_back_before_authentication_or_database_access(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -85,9 +84,12 @@ def test_community_intake_flag_rolls_back_before_authentication_or_database_acce
 ) -> None:
     monkeypatch.setattr(settings, "community_intake_enabled", False)
     with TestClient(app) as client:
-        response = client.post("/api/v1/me/submissions", json={})
-    assert response.status_code == 404
-    assert response.json() == {"detail": "Not found"}
+        legacy_response = client.post("/api/v1/me/submissions", json={})
+        journey_response = client.get("/api/v1/me/submissions")
+    assert legacy_response.status_code == 404
+    assert legacy_response.json() == {"detail": "Not found"}
+    assert journey_response.status_code == 404
+    assert journey_response.json() == {"detail": "Not found"}
 
 
 def test_admin_shell_flag_revokes_shell_without_revoking_identity(
