@@ -46,3 +46,7 @@ Any failure rolls back the Release. Audit or Outbox insertion failure therefore 
 `GET /api/v1/admin/archive/publication-metrics` exposes ready, published, publish-failed, stale-base, conflict, pending-Outbox, oldest-Outbox-lag, and projection-lag counts.
 
 `ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false` hides the new commands and leaves historical data untouched. Migration `0020` is additive and forward-fix only. Correction, rollback, merge/split, and emergency takedown remain owned by #194; workbench and cutover tooling remain owned by #195; broad migration and recovery certification remains owned by #196.
+
+## Verification boundary
+
+A pinned local Supabase clean reset and Foundation preflight successfully applied migrations `0001` through `0020`. The broad browser, staging, recovery, projection-consumer, and immutable-history acceptance package remains deferred to #196.
