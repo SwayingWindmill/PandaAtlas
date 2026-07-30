@@ -135,10 +135,10 @@ function CapabilityDashboard() {
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-700">PandaAtlas Administration</p>
+          <p className="text-sm font-semibold text-stone-700">ZhiPanda Administration</p>
           <h1 className="mt-1 text-3xl font-bold text-stone-950">工作人员控制台</h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
-            此壳层只展示 FastAPI 在本次请求中重新计算的权限。浏览器不能直接写入业务表，后续操作必须使用领域专用命令。
+            这里显示 ZhiPanda 为当前工作人员账号核对后的权限。浏览器不能直接写入业务数据，所有操作仍需通过对应的工作人员工具完成。
           </p>
         </div>
         <Button variant="outline" className="min-h-11" onClick={() => void logout()}>

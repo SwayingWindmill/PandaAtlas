@@ -2,5 +2,5 @@ $title
 
 $summary
 
-Open your ZhiPanda Inbox: $inbox_url
-Category: $category
+Open your ZhiPanda inbox: $inbox_url
+Update type: $category

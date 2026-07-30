@@ -6,6 +6,7 @@ import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
 import { ContributionEditor } from "@/features/contribute/contribution-editor";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -16,17 +17,19 @@ interface SubmissionDetailPageProps {
 }
 
 export async function generateMetadata({ params }: SubmissionDetailPageProps): Promise<Metadata> {
-  const { locale: rawLocale } = await params;
+  const { locale: rawLocale, submissionId } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) return {};
-  return {
-    title: locale === "zh" ? "提交详情" : "Submission details",
-    description:
-      locale === "zh"
-        ? "查看私有提交的状态、修订和证据扫描状态。"
-        : "Review private submission status, revisions, and evidence scan states.",
-    robots: { index: false, follow: false, nocache: true },
-  };
+  return buildPublicMetadata({
+    locale,
+    title: locale === "zh" ? "提交详情 | 吱熊猫" : "Submission details | ZhiPanda",
+    description: locale === "zh"
+      ? "查看私有提交的状态、修订和证据扫描状态。"
+      : "Review private submission status, revisions, and evidence scan states.",
+    path: `/me/submissions/${submissionId}`,
+    privatePage: true,
+    noFollow: true,
+  });
 }
 
 export default async function SubmissionDetailPage({ params }: SubmissionDetailPageProps) {

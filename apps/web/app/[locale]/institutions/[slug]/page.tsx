@@ -7,6 +7,7 @@ import {
   resolvePublishedInstitutionReference,
 } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import {
   localizedPublicDestination,
   type PublicSearchParams,
@@ -23,18 +24,14 @@ export async function generateMetadata({ params }: InstitutionPageProps): Promis
   const envelope = locale ? loadPublishedInstitution(slug, locale) : null;
   if (!locale || !envelope) return {};
   const entity = buildInstitutionPageViewModel(envelope, locale);
-  return {
-    title: locale === "zh" ? `${entity.displayName} | 机构实体` : `${entity.displayName} | Institution entity`,
+  return buildPublicMetadata({
+    locale,
+    title: locale === "zh"
+      ? `${entity.displayName} | 熊猫机构 | 吱熊猫`
+      : `${entity.displayName} | Panda institution | ZhiPanda`,
     description: entity.summary,
-    alternates: {
-      canonical: `/${locale}/institutions/${entity.canonicalSlug}`,
-      languages: {
-        "zh-CN": `/zh/institutions/${entity.canonicalSlug}`,
-        en: `/en/institutions/${entity.canonicalSlug}`,
-        "x-default": `/zh/institutions/${entity.canonicalSlug}`,
-      },
-    },
-  };
+    path: `/institutions/${entity.canonicalSlug}`,
+  });
 }
 
 export default async function InstitutionPage({ params, searchParams }: InstitutionPageProps) {

@@ -249,7 +249,7 @@ def build_collection_release_candidate(
         **source["dataset"],
         "version": release_version,
         "base_dataset_version": base_version,
-        "title": f"PandaAtlas collection release {release_version}",
+        "title": f"ZhiPanda collection release {release_version}",
         "core_panda_count": len(source["pandas"]),
         "expansion_panda_ids": sorted(
             {

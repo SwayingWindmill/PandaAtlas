@@ -94,8 +94,9 @@ def test_bilingual_templates_render_html_and_text_from_source_files() -> None:
     assert "已发布 &amp; 已审核" in chinese.html
     assert "美香 <更新>" in chinese.text
     assert "https://zhipanda.example/zh/me/inbox" in chinese.text
-    assert english.subject == "ZhiPanda weekly digest"
+    assert english.subject == "Your weekly ZhiPanda panda updates"
     assert "Accepted" in english.html
+    assert "Open your ZhiPanda inbox" in english.text
     assert "https://zhipanda.example/en/me/inbox" in english.text
 
 

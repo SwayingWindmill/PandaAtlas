@@ -4,4 +4,4 @@ $title
 
 $items_text
 
-打开吱熊猫站内信：$inbox_url
+打开吱熊猫站内消息：$inbox_url

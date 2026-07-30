@@ -6,6 +6,7 @@ import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
 import { SubmissionDashboard } from "@/features/contribute/submission-dashboard";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -19,22 +20,16 @@ export async function generateMetadata({ params }: SubmissionPageProps): Promise
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) return {};
-  return {
-    title: locale === "zh" ? "我的提交" : "My submissions",
-    description:
-      locale === "zh"
-        ? "查看当前账户的私有贡献草稿、修订和状态。"
-        : "Review private contribution drafts, revisions, and statuses for the current account.",
-    robots: { index: false, follow: false, nocache: true },
-    alternates: {
-      canonical: `/${locale}/me/submissions`,
-      languages: {
-        "zh-CN": "/zh/me/submissions",
-        en: "/en/me/submissions",
-        "x-default": "/zh/me/submissions",
-      },
-    },
-  };
+  return buildPublicMetadata({
+    locale,
+    title: locale === "zh" ? "我的提交 | 吱熊猫" : "My submissions | ZhiPanda",
+    description: locale === "zh"
+      ? "查看当前账号的私有贡献草稿、修订和审核状态。"
+      : "Review private contribution drafts, revisions, and review status for your ZhiPanda account.",
+    path: "/me/submissions",
+    privatePage: true,
+    noFollow: true,
+  });
 }
 
 export default async function SubmissionPage({ params }: SubmissionPageProps) {

@@ -13,6 +13,7 @@ import {
 import { StructuredLineagePage } from "@/features/lineage/structured-lineage-page";
 import { buildStructuredLineageViewModel } from "@/features/lineage/lineage-view-model";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
 interface LocalizedLineagePageProps {
   params: Promise<{ locale: string }>;
@@ -21,12 +22,12 @@ interface LocalizedLineagePageProps {
 
 const metadataCopy = {
   zh: {
-    title: "结构化熊猫谱系",
-    description: "从已审核亲本断言查证熊猫的父母、子女、兄弟姐妹、代际、状态和来源。",
+    title: "熊猫家族 | 吱熊猫",
+    description: "探索大熊猫的父母、子女、兄弟姐妹和家族关系，并查看每段关系的资料来源。",
   },
   en: {
-    title: "Structured panda lineage",
-    description: "Verify panda parents, children, siblings, generations, status, and sources from reviewed parentage assertions.",
+    title: "Panda families | ZhiPanda",
+    description: "Explore giant panda parents, children, siblings, and family connections, with sources for every published relationship.",
   },
 } as const;
 
@@ -35,18 +36,7 @@ export async function generateMetadata({ params }: LocalizedLineagePageProps): P
   const locale = parsePublicLocale(rawLocale);
   if (!locale) return {};
   const t = metadataCopy[locale];
-  return {
-    title: t.title,
-    description: t.description,
-    alternates: {
-      canonical: `/${locale}/lineage`,
-      languages: {
-        "zh-CN": "/zh/lineage",
-        en: "/en/lineage",
-        "x-default": "/zh/lineage",
-      },
-    },
-  };
+  return buildPublicMetadata({ locale, title: t.title, description: t.description, path: "/lineage" });
 }
 
 export default async function LocalizedLineagePage({

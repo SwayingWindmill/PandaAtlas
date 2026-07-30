@@ -182,17 +182,6 @@
       }
     },
     {
-      "path": "apps/web/components/admin/react-admin-shell.tsx",
-      "category": "public-visible",
-      "user_visibility": "staff",
-      "migration_owner": "#218 shared shell and communications",
-      "expected_action": "migrate-in-218",
-      "rationale": "The administration shell exposes the retired product name to staff users and must adopt ZhiPanda.",
-      "matches": {
-        "PandaAtlas": 1
-      }
-    },
-    {
       "path": "apps/web/features/auth/email-otp-login.tsx",
       "category": "technical-compatible",
       "user_visibility": "internal",
@@ -346,6 +335,17 @@
       "matches": {
         "Panda Atlas": 1,
         "panda-atlas": 2
+      }
+    },
+    {
+      "path": "contracts/archive-governance-migration.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "archive governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "The migration inventory refers to the existing versioned OpenAPI compatibility path and does not expose the retired public product brand.",
+      "matches": {
+        "panda-atlas": 1
       }
     },
     {
@@ -2395,7 +2395,6 @@
       "expected_action": "migrate-in-218",
       "rationale": "New public release metadata is still generated with the retired product name.",
       "matches": {
-        "PandaAtlas": 1,
         "panda-atlas": 1
       }
     },
@@ -2817,14 +2816,25 @@
       }
     },
     {
-      "path": "contracts/archive-governance-migration.v1.json",
+      "path": "docs/architecture/review-moderation.md",
       "category": "technical-compatible",
       "user_visibility": "internal",
-      "migration_owner": "archive governance",
+      "migration_owner": "review and moderation",
       "expected_action": "retain-compatibility",
-      "rationale": "The migration inventory refers to the existing versioned OpenAPI compatibility path and does not expose the retired public product brand.",
+      "rationale": "The architecture document refers to the existing versioned OpenAPI compatibility path and does not expose the retired public product brand.",
       "matches": {
         "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/openapi/review-moderation-v1.yaml",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "review and moderation",
+      "expected_action": "retain-compatibility",
+      "rationale": "The bounded OpenAPI contract retains an existing technical schema identifier until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
       }
     }
   ]

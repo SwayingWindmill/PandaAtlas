@@ -16,6 +16,8 @@ test("renders the complete Chinese ZhiPanda Home information architecture", asyn
   await page.goto("/zh");
 
   await expect(page.getByTestId("editorial-home")).toBeVisible();
+  await expect(page.getByTestId("public-delivery-notice")).toContainText("正在显示最近可用的熊猫资料");
+  await expect(page.getByTestId("public-delivery-notice")).not.toContainText("公共结构");
   await expect(page.getByRole("heading", { level: 1, name: "认识你关注的每一只熊猫" })).toBeVisible();
   await expect(page.getByTestId("home-hero-media-image")).toBeVisible();
   await expect(page.getByTestId("home-hero-media")).toContainText("CC BY-SA 4.0");
@@ -79,7 +81,11 @@ test("keeps canonical and alternate language metadata on the ZhiPanda Home", asy
   await page.goto("/en");
 
   await expect(page).toHaveTitle(/ZhiPanda.*Discover the pandas you care about/i);
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/en$/);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.zhipanda.com/en");
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "ZhiPanda");
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", "https://www.zhipanda.com/en");
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", "ZhiPanda | Discover the pandas you care about");
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute("content", "summary");
   await expect(page.locator('link[rel="alternate"][hreflang="zh-CN"]')).toHaveAttribute("href", /\/zh$/);
   await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute("href", /\/zh$/);
   await expect(page.getByRole("link", { name: "中文", exact: true })).toHaveAttribute("href", "/zh");

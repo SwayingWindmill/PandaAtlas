@@ -7,6 +7,7 @@ import { loadPersonalizedFeed } from "@/features/feed/feed-api";
 import { PersonalizedFeedPage } from "@/features/feed/personalized-feed-page";
 import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
+import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -19,12 +20,12 @@ interface LocalizedFeedPageProps {
 
 const metadataCopy = {
   zh: {
-    title: "我的关注动态 | 私有熊猫 Feed",
-    description: "查看当前账号关注熊猫的时间顺序动态；页面不建立公开用户主页或排名。",
+    title: "我的熊猫动态 | 吱熊猫",
+    description: "按发布时间查看你关注的大熊猫动态。此页面仅对当前账号可见，不会建立公开主页或排名。",
   },
   en: {
-    title: "My Follow Activity | Private panda Feed",
-    description: "Read chronological Activity for pandas followed by the current account, without a public user profile or ranking.",
+    title: "My panda updates | ZhiPanda",
+    description: "See published updates from the pandas you follow. This page is private to your account and never creates a public profile or ranking.",
   },
 } as const;
 
@@ -33,19 +34,14 @@ export async function generateMetadata({ params }: LocalizedFeedPageProps): Prom
   const locale = parsePublicLocale(rawLocale);
   if (!locale) return {};
   const t = metadataCopy[locale];
-  return {
+  return buildPublicMetadata({
+    locale,
     title: t.title,
     description: t.description,
-    robots: { index: false, follow: false, nocache: true },
-    alternates: {
-      canonical: `/${locale}/me/feed`,
-      languages: {
-        "zh-CN": "/zh/me/feed",
-        en: "/en/me/feed",
-        "x-default": "/zh/me/feed",
-      },
-    },
-  };
+    path: "/me/feed",
+    privatePage: true,
+    noFollow: true,
+  });
 }
 
 export default async function LocalizedFeedPage({
