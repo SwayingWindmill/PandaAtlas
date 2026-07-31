@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>状态实验室 | 熊猫时光原型</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="calendar.html" aria-label="吱熊猫首页">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>吱熊猫 ZhiPanda</span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="../panda-profile-v2/rich.html">熊猫档案</a>
+        <a href="states.html" aria-current="page">熊猫时光</a>
+        <a href="calendar.html">日历</a>
+        <a href="timeline.html">时间线</a>
+      </nav>
+    </div>
+  </header>
+
+  <aside class="release-note" aria-label="原型数据说明">
+    <strong>状态设计夹具</strong> · 本页的计划、取消、争议、取代、约略和未知日期事件均为虚构结构示例，不代表任何真实熊猫或机构。
+  </aside>
+
+  <main id="main-content">
+    <section class="date-stage" aria-labelledby="page-title">
+      <div class="date-lockup" style="background:var(--plum-pale)">
+        <div>
+          <p class="date-kicker" style="color:var(--plum)">State laboratory · 状态实验室</p>
+          <div class="date-number" aria-hidden="true" style="font-size:clamp(6rem,12vw,10rem)">9</div>
+          <p class="date-month">种关键状态</p>
+          <p class="date-meta">计划、取消、争议、取代、约略、未知、无结果、部分覆盖、交付错误</p>
+        </div>
+        <div class="date-controls"><a class="action action--primary" href="#state-grid">查看状态</a><a class="action" href="calendar.html">返回真实数据日历</a></div>
+      </div>
+
+      <div class="stage-copy">
+        <p class="date-kicker">Panda Almanac · Hardening</p>
+        <h1 id="page-title">熊猫时光：状态实验室</h1>
+        <p class="lead">好看的成功状态不是完整设计。未来计划、取消、争议、旧结论和交付失败必须在同一视觉语言中保持清楚、诚实并可恢复。</p>
+        <p>所有虚构记录都带有夹具标记，并展示生产契约需要支持的字段。</p>
+      </div>
+
+      <aside class="stage-rail" aria-label="状态实验室摘要">
+        <div class="stage-stat"><span class="stage-stat__label">真实熊猫事实</span><p class="stage-stat__value">0 条</p><p class="stage-stat__note">本页不发布任何新事实</p></div>
+        <div class="stage-stat"><span class="stage-stat__label">结构夹具</span><p class="stage-stat__value">6 条</p><p class="stage-stat__note">验证事件与日期状态</p></div>
+        <div class="stage-stat"><span class="stage-stat__label">页面状态</span><p class="stage-stat__value">3 个</p><p class="stage-stat__note">部分覆盖、无结果、交付错误</p></div>
+      </aside>
+    </section>
+
+    <nav class="query-bar" aria-label="时光视图">
+      <div class="query-bar__inner">
+        <div class="view-switch">
+          <a href="calendar.html">日历</a>
+          <a href="timeline.html">时间线</a>
+          <a href="states.html" aria-current="page">状态实验室</a>
+        </div>
+        <p class="query-summary"><strong>设计夹具</strong> · 不进入公开数据或事件计数</p>
+      </div>
+    </nav>
+
+    <section class="section" id="state-grid" aria-labelledby="states-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">01 · Event states</p><h2 class="section-title" id="states-title">事件状态不是一个颜色标签</h2></div>
+        <p class="section-intro">发生状态、公告日期、结论状态和时间关系是四个不同维度。界面必须把它们分别写清楚。</p>
+      </div>
+
+      <div class="state-grid">
+        <article class="state-panel state-panel--planned">
+          <p class="state-panel__fixture">DESIGN FIXTURE · NOT PUBLISHED</p>
+          <span class="status status--planned">已公告 · 计划中</span>
+          <h3>计划于 2027 年 4 月迁移</h3>
+          <p>公告已经发布，但迁移尚未完成。页面不能把计划目的地写成当前居住地点。</p>
+          <ul class="state-meta">
+            <li><strong>计划日期：</strong>2027 年 4 月 · 月级精度</li>
+            <li><strong>公告日期：</strong>2026 年 7 月 20 日</li>
+            <li><strong>发生状态：</strong>planned</li>
+            <li><strong>结论状态：</strong>confirmed announcement</li>
+            <li><strong>居住影响：</strong>尚未改变</li>
+          </ul>
+        </article>
+
+        <article class="state-panel state-panel--cancelled">
+          <p class="state-panel__fixture">DESIGN FIXTURE · NOT PUBLISHED</p>
+          <span class="status status--cancelled">已取消</span>
+          <h3>原计划未发生</h3>
+          <p>保留历史公告和取消记录，但目的地不会进入足迹或当前地点。</p>
+          <ul class="state-meta">
+            <li><strong>原计划日期：</strong>2026 年 10 月</li>
+            <li><strong>取消日期：</strong>2026 年 9 月 12 日</li>
+            <li><strong>发生状态：</strong>cancelled</li>
+            <li><strong>居住影响：</strong>不改变</li>
+            <li><strong>来源：</strong>计划来源与取消来源分别记录</li>
+          </ul>
+        </article>
+
+        <article class="state-panel state-panel--disputed">
+          <p class="state-panel__fixture">DESIGN FIXTURE · NOT PUBLISHED</p>
+          <span class="status status--disputed">日期有争议</span>
+          <h3>两个公开来源给出不同日期</h3>
+          <p>默认时间线可以使用明确的争议分组或范围，但不能在日历中任选一个日期。</p>
+          <ul class="state-meta">
+            <li><strong>候选日期 A：</strong>1982 年 7 月</li>
+            <li><strong>候选日期 B：</strong>1983 年</li>
+            <li><strong>结论状态：</strong>disputed</li>
+            <li><strong>周年资格：</strong>不生成精确生日提示</li>
+            <li><strong>机器日期：</strong>不输出虚假精确值</li>
+          </ul>
+        </article>
+
+        <article class="state-panel state-panel--superseded">
+          <p class="state-panel__fixture">DESIGN FIXTURE · NOT PUBLISHED</p>
+          <span class="status status--superseded">已取代</span>
+          <h3>旧迁移记录被新的审核结论替换</h3>
+          <p>旧记录不进入默认结果，但在事件历史和修订区保留，并链接到替代记录。</p>
+          <ul class="state-meta">
+            <li><strong>旧事件 ID：</strong>fixture-event-old-transfer</li>
+            <li><strong>替代事件 ID：</strong>fixture-event-reviewed-transfer</li>
+            <li><strong>结论状态：</strong>superseded</li>
+            <li><strong>默认查询：</strong>排除旧记录</li>
+            <li><strong>修订查询：</strong>可检查完整链路</li>
+          </ul>
+        </article>
+
+        <article class="state-panel">
+          <p class="state-panel__fixture">DESIGN FIXTURE · NOT PUBLISHED</p>
+          <span class="status">日期约略</span>
+          <h3>约 1982 年发生的历史事件</h3>
+          <p>可以进入长期时间线的约略时期，但不能落入某个具体月份或日期格。</p>
+          <ul class="state-meta">
+            <li><strong>显示：</strong>约 1982 年</li>
+            <li><strong>精度：</strong>approximate_year</li>
+            <li><strong>排序：</strong>使用公开排序边界</li>
+            <li><strong>机器标记：</strong>不输出 1982-01-01</li>
+          </ul>
+        </article>
+
+        <article class="state-panel">
+          <p class="state-panel__fixture">DESIGN FIXTURE · NOT PUBLISHED</p>
+          <span class="status">日期未确定</span>
+          <h3>事件存在，但发生日期尚未确认</h3>
+          <p>记录进入“日期未确定”分组，不被强行排进时间线末日或日历第一天。</p>
+          <ul class="state-meta">
+            <li><strong>显示：</strong>日期未确定</li>
+            <li><strong>精度：</strong>unknown</li>
+            <li><strong>日历：</strong>不显示</li>
+            <li><strong>列表：</strong>可通过日期精度筛选查看</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="coverage-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">02 · Coverage</p><h2 class="section-title section-title--sm" id="coverage-title">没有公开记录，不等于确认没有发生</h2></div>
+        <p class="section-intro">时间密度和空年份必须带着公开覆盖范围解释，尤其是在当前只有 43 个唯一事件的阶段。</p>
+      </div>
+      <div class="coverage-band"><strong>部分覆盖示例：</strong>当前发布集中在若干机构、熊猫和事件类型。1999—2015 年没有匹配结果时，只能说“当前版本没有已发布匹配记录”，不能说“这段时期没有事件”。</div>
+      <div class="trust-summary">
+        <div class="trust-stat"><strong>partial</strong><span>覆盖状态</span></div>
+        <div class="trust-stat"><strong>43</strong><span>当前唯一事件</span></div>
+        <div class="trust-stat"><strong>10</strong><span>当前事件类型代码</span></div>
+        <div class="trust-stat"><strong>1.2.0</strong><span>当前公开结构</span></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="no-results-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">03 · No results</p><h2 class="section-title section-title--sm" id="no-results-title">筛选无结果时，不自动放宽条件</h2></div>
+        <p class="section-intro">保留用户请求和 URL，明确显示哪些筛选正在生效，并提供修改或清除操作。</p>
+      </div>
+      <div class="no-results">
+        <h3>没有符合这些条件的已发布事件</h3>
+        <p>当前查询：2025—2026、亚特兰大动物园、事件类型“死亡”、仅已确认。当前公开版本存在其他事件，但没有这一组合的匹配记录。</p>
+        <ul class="active-filters" aria-label="无结果查询筛选" style="justify-content:center">
+          <li class="active-filter">时期：2025—2026</li>
+          <li class="active-filter">机构：亚特兰大动物园</li>
+          <li class="active-filter">类型：死亡</li>
+        </ul>
+        <div class="no-results__actions"><a class="action action--primary" href="timeline.html">修改筛选</a><a class="action" href="calendar.html">清除全部筛选</a></div>
+      </div>
+    </section>
+
+    <section class="section section--paper" aria-labelledby="error-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">04 · Delivery error</p><h2 class="section-title section-title--sm" id="error-title">交付失败与无结果，是完全不同的状态</h2></div>
+        <p class="section-intro">错误状态保留原查询、最近成功版本和重试入口，不回退到本地研究、设计夹具或过期的浏览器数组。</p>
+      </div>
+      <article class="state-panel state-panel--error state-panel--wide">
+        <p class="state-panel__fixture">DELIVERY STATE FIXTURE</p>
+        <span class="status status--error">当前不可用</span>
+        <h3>无法载入这一时期的公开事件</h3>
+        <p>这不是“0 个事件”。系统未能完成当前查询，因此不会显示空时间线，也不会用旧夹具替代。</p>
+        <ul class="state-meta">
+          <li><strong>保留查询：</strong>view=timeline&amp;from=1997-01-01&amp;to=2024-12-31</li>
+          <li><strong>最近成功版本：</strong>2026.07.24.2</li>
+          <li><strong>交付状态：</strong>unavailable</li>
+          <li><strong>恢复：</strong>重试当前查询，或查看最近成功版本的明确缓存状态</li>
+        </ul>
+        <p><a class="action action--primary" href="states.html?retry=1">重试当前查询</a></p>
+      </article>
+    </section>
+
+    <section class="section" aria-labelledby="contract-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">05 · Contract summary</p><h2 class="section-title section-title--sm" id="contract-title">每种状态都对应明确的数据字段</h2></div>
+        <p class="section-intro">颜色和图形只辅助识别，生产实现必须通过文字、语义和证据字段表达完整状态。</p>
+      </div>
+      <div class="evidence-stack">
+        <details class="evidence" open><summary>状态轴</summary><div class="evidence-body"><dl><dt>发生状态</dt><dd>planned, completed, cancelled, unknown</dd><dt>公告</dt><dd>announcementDate 独立存在</dd><dt>结论状态</dt><dd>confirmed, provisional, disputed, superseded</dd><dt>时间关系</dt><dd>future, today, past, historical</dd></dl></div></details>
+        <details class="evidence"><summary>日期轴</summary><div class="evidence-body"><dl><dt>精确</dt><dd>day, month, year</dd><dt>约略</dt><dd>approximate_day, approximate_month, approximate_year</dd><dt>范围</dt><dd>start/end plus boundary precision</dd><dt>未知</dt><dd>unknown; no fake machine date</dd></dl></div></details>
+        <details class="evidence"><summary>夹具隔离</summary><div class="evidence-body"><dl><dt>路径</dt><dd>docs/prototypes/panda-moments/states.html</dd><dt>生产响应</dt><dd>不得包含 fixture-* ID 或本页文本</dd><dt>公共发布</dt><dd>只有经过 Archive 审核、权利确认、Release 和投影的记录</dd></dl></div></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner"><span>熊猫时光 · State laboratory</span><span>全部事件状态为设计夹具 · 不用于生产</span></div>
+  </footer>
+</body>
+</html>
