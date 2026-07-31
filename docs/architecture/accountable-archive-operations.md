@@ -15,7 +15,7 @@ Issue #194 extends the single-accountable-approver publication model from ordina
 
 ## Release semantics
 
-`public.execute_accountable_archive_operation` creates a complete immutable Release:
+Migration `0022_accountable_archive_operations.sql` adds the operation ledger and `public.execute_accountable_archive_operation`. The command creates a complete immutable Release:
 
 - rollback copies the target Release snapshot and records `rollback_target_id`;
 - correction, retraction, merge/split, and emergency takedown inherit the current Archive snapshot and add an operation overlay;
@@ -40,9 +40,17 @@ The command requires a structured impact preview covering:
 
 The effect payload carries the selected identity mapping and alias redirects. The operation ledger preserves this preview for workbench review and the final #196 migration/recovery gate.
 
-## Correction and notification events
+## Correction, Activity, and notification events
 
-Targeted correction, retraction, and emergency takedown operation events are marked notification-eligible in the Outbox payload. Activity and Notification projectors remain responsible for producing public-safe `activity.item.corrected` or `activity.item.retracted` results and deduplicated station/email intents after Public Projection.
+Migration `0023_archive_operation_activity_events.sql` binds correction and retraction to the existing Activity pipeline without creating duplicate notification inputs.
+
+- A correction command must carry an `ArchiveActivityDescriptor` with action `correction`.
+- A retraction command must carry a descriptor with action `retraction` and a public-safe retraction reason.
+- Inserting the operation record emits exactly one `archive.activity.corrected` or `archive.activity.retracted` source event in the same database transaction.
+- The existing Activity projector consumes that source event, updates Activity state, and emits exactly one downstream `activity.item.corrected` or `activity.item.retracted` event.
+- Notification Orchestration consumes only the downstream Activity event. The generic `archive.operation.*` event is not itself a notification input.
+
+The descriptor, source event ID, source version, action, Release provenance, operation causation, and append-only link record make replay and rebuild deterministic.
 
 ## Emergency follow-up
 
@@ -53,5 +61,5 @@ Targeted correction, retraction, and emergency takedown operation events are mar
 ## Rollback switches
 
 - `ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false` stops all new accountable publication and operation commands.
-- Disabling operation commands does not delete Releases, operation evidence, audit records, or Outbox events.
-- Application rollback must keep migration `0022` readable and must not move either Release pointer backward outside an explicit new rollback Release.
+- Disabling operation commands does not delete Releases, operation evidence, audit records, Activity source events, or Outbox events.
+- Application rollback must keep migrations `0022` and `0023` readable and must not move either Release pointer backward outside an explicit new rollback Release.
