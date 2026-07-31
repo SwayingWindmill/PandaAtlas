@@ -20,7 +20,9 @@ test("contributor pages are private, localized, feature-flagged, and server auth
     assert.match(route, /export const dynamic = "force-dynamic"/);
     assert.match(route, /export const revalidate = 0/);
     assert.match(route, /await connection\(\)/);
-    assert.match(route, /robots: \{ index: false, follow: false, nocache: true \}/);
+    assert.match(route, /buildPublicMetadata\(/);
+    assert.match(route, /privatePage: true/);
+    assert.match(route, /noFollow: true/);
     assert.match(route, /getVerifiedSupabaseAccessToken\(\)/);
     assert.match(route, /redirect\(/);
     assert.doesNotMatch(route, /["']use client["']/);

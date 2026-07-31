@@ -26,12 +26,14 @@ test("canonical Panda and Passport pages own the only product 200 routes", async
 
   assert.match(collection, /data-testid="localized-pandas-page"/);
   assert.match(collection, /action={`\/\$\{locale\}\/pandas`}/);
-  assert.match(collection, /canonical: `\/\$\{locale\}\/pandas`/);
+  assert.match(collection, /buildPublicMetadata\(/);
+  assert.match(collection, /path: "\/pandas"/);
   assert.match(profile, /<TrustedProfilePage/);
   assert.match(profile, /localizedPublicDestination\(locale, `\/pandas\/\$\{reference\.slug\}`/);
   assert.match(passport, /<MyPandasPage/);
-  assert.match(passport, /canonical: `\/\$\{locale\}\/me\/passport`/);
-  assert.match(passport, /robots: \{ index: false, follow: true \}/);
+  assert.match(passport, /buildPublicMetadata\(/);
+  assert.match(passport, /path: "\/me\/passport"/);
+  assert.match(passport, /privatePage: true/);
 
   for (const alias of [atlasAlias, profileAlias, passportAlias]) {
     assert.match(alias, /permanentRedirect\(/);

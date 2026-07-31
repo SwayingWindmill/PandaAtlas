@@ -190,6 +190,18 @@
       "categories": ["test", "script"],
       "disposition": "verify_inventory_and_fail_closed_behavior",
       "markers": ["archive governance migration inventory", "unclassified approval-governance path"]
+    },
+    {
+      "path": "docs/architecture/accountable-archive-publication.md",
+      "categories": ["adr", "runbook", "contract"],
+      "disposition": "document_accountable_publication_boundary",
+      "markers": ["Accountable Archive Publication", "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false", "additive and forward-fix only"]
+    },
+    {
+      "path": "infra/supabase/migrations/0020_accountable_archive_publication.sql",
+      "categories": ["schema", "trigger", "metric"],
+      "disposition": "install_accountable_publication_transaction",
+      "markers": ["single-accountable-approver-v1", "archive.release.published", "archive_release_pointer"]
     }
   ]
 }

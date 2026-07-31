@@ -2376,11 +2376,11 @@
     },
     {
       "path": "services/api/app/projection/collection_release.py",
-      "category": "public-visible",
+      "category": "technical-compatible",
       "user_visibility": "public",
-      "migration_owner": "#218 shared metadata identity",
-      "expected_action": "migrate-in-218",
-      "rationale": "New public release metadata is still generated with the retired product name.",
+      "migration_owner": "collection release schema compatibility",
+      "expected_action": "retain-compatibility",
+      "rationale": "The remaining lower-case identifier is the versioned collection-release schema URI; public release titles and user-facing metadata use ZhiPanda.",
       "matches": {
         "panda-atlas": 1
       }
@@ -2833,6 +2833,30 @@
       "rationale": "The bounded internal OpenAPI contract retains an existing technical title until a separate compatibility migration is approved; it is not rendered on a public ZhiPanda surface.",
       "matches": {
         "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "data/frontend-evidence/issue-220.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "#220 brand closure evidence",
+      "expected_action": "retain-compatibility",
+      "rationale": "The immutable release evidence names retained repository and Staging worker identifiers only to prove the compatibility boundary; it is not public product copy.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/check-zhipanda-brand-closure.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "#220 brand closure gate",
+      "expected_action": "retain-compatibility",
+      "rationale": "The release gate asserts that approved repository, worker, schema and operational identifiers remain compatible while public branding stays ZhiPanda.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 3
       }
     }
   ]

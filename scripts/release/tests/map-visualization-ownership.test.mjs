@@ -42,7 +42,7 @@ test("Slice 7 remains an optional client island owned by the structured map", as
   assert.match(island, /router\.(?:push|replace)/);
   assert.match(island, /role=["']region["']/);
   assert.match(island, /pa-map-visualization-attribution/);
-  assert.match(island, /Non-drag selection|非拖拽选择/);
+  assert.match(island, /Choose without dragging the map|不用拖动地图也能选择/);
 
   assert.match(visualModel, /visualizationKey/);
   assert.match(visualModel, /country precision|国家级精度/);

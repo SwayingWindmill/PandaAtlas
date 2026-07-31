@@ -72,7 +72,7 @@ def test_staging_drill_rejects_reused_credentials_before_provider_request(tmp_pa
         {
             "RUN_NOTIFICATION_STAGING": "1",
             "RESEND_API_KEY": shared,
-            "RESEND_FROM_EMAIL": "PandaAtlas <updates@example.invalid>",
+            "RESEND_FROM_EMAIL": "ZhiPanda <updates@example.invalid>",
             "RESEND_WEBHOOK_SECRET": shared,
             "AUTH_SMTP_HOST": "smtp.example.invalid",
             "AUTH_SMTP_PORT": "587",

@@ -61,6 +61,27 @@
       "required_markers": [
         "source: \"api\""
       ]
+    },
+    {
+      "path": "apps/web/features/contribute/api.ts",
+      "required_markers": [
+        "stable fallback for proxy failures",
+        "Contribution request failed"
+      ]
+    },
+    {
+      "path": "apps/web/features/contribute/contribution-editor.tsx",
+      "required_markers": [
+        "Could not load submission",
+        "Save failed"
+      ]
+    },
+    {
+      "path": "apps/web/features/contribute/submission-dashboard.tsx",
+      "required_markers": [
+        "Could not load submissions",
+        "Could not load more"
+      ]
     }
   ],
   "silent_fallback_source_allowlist": [

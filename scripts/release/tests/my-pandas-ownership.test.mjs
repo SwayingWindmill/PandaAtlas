@@ -32,8 +32,9 @@ test("Panda Passport keeps public facts server-owned and recent history browser-
 
   assert.match(route, /loadPublishedAtlasDataset\(locale\)/);
   assert.match(route, /buildMyPandasViewModel\(envelope\.data, locale\)/);
-  assert.match(route, /canonical: `\/\$\{locale\}\/me\/passport`/);
-  assert.match(route, /robots: \{ index: false, follow: true \}/);
+  assert.match(route, /buildPublicMetadata\(/);
+  assert.match(route, /path: "\/me\/passport"/);
+  assert.match(route, /privatePage: true/);
   assert.match(page, /<MyPandasPassportIsland/);
   assert.doesNotMatch(page, /["']use client["']/);
   assert.match(island, /^["']use client["']/);
@@ -115,7 +116,9 @@ test("Panda Passport exposes private state, canonical links, legacy cleanup, and
   assert.doesNotMatch(viewModel, /savedTitle|clearSaved|savedAt|feedbackSaved|toggleSaved/i);
   assert.doesNotMatch(preferences, /toggleSavedProfile|removeSavedProfile|clearSavedProfiles/);
   assert.doesNotMatch(viewModel, /recommendation_score|popularity_rank|followers_count|sharing_count|behavior_profile/i);
-  assert.match(canonicalRoute, /"x-default": "\/zh\/me\/passport"/);
+  assert.match(canonicalRoute, /buildPublicMetadata\(/);
+  assert.match(canonicalRoute, /path: "\/me\/passport"/);
+  assert.match(canonicalRoute, /privatePage: true/);
   assert.match(localizedAlias, /permanentRedirect\(`\/\$\{locale\}\/me\/passport`/);
   assert.match(unlocalizedAlias, /localizedPublicDestination\(locale, "\/me\/passport"\)/);
 });

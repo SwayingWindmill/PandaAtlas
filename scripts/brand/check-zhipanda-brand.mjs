@@ -34,7 +34,7 @@ async function repositoryPaths(contract) {
       const relativePath = normalizePath(path.join(relativeDirectory, entry.name));
       const absolutePath = path.join(absoluteDirectory, entry.name);
       if (entry.isDirectory()) {
-        if (ignoredDirectories.has(entry.name)) continue;
+        if (ignoredDirectories.has(entry.name) || entry.name.endsWith(".egg-info")) continue;
         await walk(absolutePath, relativePath);
       } else if (entry.isFile()) {
         files.push(relativePath);

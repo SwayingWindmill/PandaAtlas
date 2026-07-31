@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "issue": 220,
+  "parent_issue": 215,
+  "outcome": "PASS",
+  "public_brand": {
+    "zh": "吱熊猫",
+    "en": "ZhiPanda",
+    "audience": "giant panda enthusiasts"
+  },
+  "artifact": {
+    "commit": "522815302d590a89e2bb021bd64f1b16b66f13d1",
+    "staging_url": "https://panda-atlas-web-staging.hao1012812011.workers.dev",
+    "staging_worker_version": "c6443194-fafd-4950-afd5-bae92c46c0d2",
+    "staging_deployment_id": "8560fba0-d6ce-4a0e-8c60-7573b4af5c4d",
+    "build_checksum": "sha256:ce10be69938f45c21dcfaeb59b43c78fbef0864d6249e3167f9531d9ccb2d26a",
+    "build_files": 1509,
+    "browser_report_checksum": "sha256:88aeba62b50d1111cad964e69acf2ca1960150a9c337c2525e7de60663e59df4"
+  },
+  "inventory": {
+    "status": "PASS",
+    "classified_files": 241,
+    "unclassified_files": 0,
+    "public_migration_debt": 0,
+    "categories": {
+      "technical-compatible": 202,
+      "historical": 39,
+      "public-visible": 0
+    },
+    "detail": "Every retained legacy reference is explicitly classified as technical compatibility or historical evidence. No public migration action remains."
+  },
+  "public_surface_groups": {
+    "shell_navigation_metadata_sharing": "PASS",
+    "authentication_account_follow_feed_inbox": "PASS",
+    "email_identity": "PASS",
+    "homepage_discovery_profiles": "PASS",
+    "lineage_institutions_places_map": "PASS",
+    "activity_sources_contribution": "PASS",
+    "structured_public_release_metadata": "PASS"
+  },
+  "compatibility": {
+    "status": "PASS",
+    "preserved": [
+      {
+        "path": "package.json",
+        "reason": "repository package identity"
+      },
+      {
+        "path": "services/worker-api/wrangler.jsonc",
+        "reason": "deployed Worker and D1 resource identity"
+      },
+      {
+        "path": "scripts/release/run-frontend-staging-withdrawal.mjs",
+        "reason": "operational crawler and drill identity"
+      },
+      {
+        "path": "services/api/app/projection/collection_release.py",
+        "reason": "versioned collection-release schema URI"
+      },
+      {
+        "path": "task_plan.md",
+        "reason": "immutable historical decision record"
+      }
+    ]
+  },
+  "staging": {
+    "status": "PASS",
+    "verified_at": "2026-07-31T04:37:16.102Z",
+    "checks": {
+      "zh_routes": "PASS",
+      "en_routes": "PASS",
+      "legacy_redirect_route": "PASS",
+      "no_javascript": "PASS",
+      "keyboard_focus": "PASS",
+      "viewport_320_css_px": "PASS",
+      "production_api_binding": "PASS"
+    },
+    "routes": [
+      "/zh",
+      "/en",
+      "/zh/pandas",
+      "/en/pandas",
+      "/zh/lineage",
+      "/en/lineage",
+      "/zh/map",
+      "/en/map",
+      "/zh/me/passport",
+      "/en/me/passport"
+    ]
+  },
+  "verification": {
+    "status": "PASS",
+    "browser": [
+      "Focused public journeys 13/13 PASS",
+      "Lineage and map journeys 15/15 PASS",
+      "Critical public journeys 4/4 PASS",
+      "Map visualization 7 PASS with 1 expected engine skip"
+    ],
+    "accessibility": [
+      "Automated WCAG A/AA journey matrix 40/40 PASS",
+      "Keyboard operation PASS",
+      "Simulated 200-percent text resize PASS",
+      "Bilingual language declaration PASS"
+    ],
+    "static_and_content": [
+      "Web typecheck PASS",
+      "Web lint, design policy, architecture and public-copy contract PASS",
+      "Production build PASS",
+      "Cloudflare D1 Worker smoke PASS",
+      "No unsupported story, personality, count, location, media, source or verification claim introduced"
+    ],
+    "metadata_and_identity": [
+      "Absolute canonical and bilingual alternates verified",
+      "Open Graph and Twitter ZhiPanda identity verified",
+      "Private account routes retain noindex and noarchive",
+      "Email subjects, HTML and text templates use ZhiPanda",
+      "Public collection release titles use ZhiPanda"
+    ]
+  },
+  "human_review": {
+    "status": "PASS",
+    "date": "2026-07-31",
+    "reviewer_role": "project owner direction plus release review",
+    "detail": "The project owner explicitly corrected the public brand to ZhiPanda, identified panda enthusiasts as the primary audience, requested a livelier and more enjoyable public register, and approved completing the brand/public-experience migration before detailed redesign. The final source and Staging evidence were reviewed against that direction without claiming a page redesign or new mascot assets.",
+    "evidence": [
+      "Product-owner brand and audience correction recorded in the project conversation",
+      "Product-owner approval to perform the ZhiPanda brand and public-experience migration first",
+      "Final bilingual source review found no public PandaAtlas product-name debt",
+      "Staging route and content-state review matched the approved warm, lively, concise and evidence-honest register"
+    ]
+  },
+  "release_decision": {
+    "status": "GO",
+    "detail": "The ZhiPanda public-brand migration is complete. Public surfaces consistently use ZhiPanda, retained legacy identifiers are explicitly bounded compatibility or history, and the migration may close without implying completion of the later visual redesign."
+  }
+}
