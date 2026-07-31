@@ -90,11 +90,7 @@ def test_workbench_views_cover_required_operational_queues() -> None:
         "emergency_followup",
     ):
         assert queue in sql
-    for operation in (
-        "targeted_correction",
-        "retraction",
-        "rollback",
-        "merge",
-        "split",
-    ):
-        assert operation in sql
+    assert "else operation.operation_type" in sql
+    assert "from public.archive_operation_records operation" in sql
+    assert "operation.operation_id" in sql
+    assert "operation.release_id" in sql
