@@ -5,18 +5,11 @@ import { alternateLocale } from "@/foundation/content/locales";
 import { MobileNavigation } from "@/components/patterns/mobile-navigation";
 import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
 import { isFeedUiEnabled } from "@/features/feed/config";
+import { isNotificationCenterEnabled } from "@/features/notification-center/config";
 
 interface GlobalNavigationProps {
   locale: PublicLocale;
-  active:
-    | "home"
-    | "atlas"
-    | "profile"
-    | "lineage"
-    | "map"
-    | "my-pandas"
-    | "feed"
-    | "contribute";
+  active: "home" | "atlas" | "profile" | "lineage" | "map" | "my-pandas" | "feed" | "inbox";
   alternatePath?: string;
 }
 
@@ -29,8 +22,8 @@ const copy = {
     lineage: "谱系",
     map: "地图",
     myPandas: "我的熊猫",
-    feed: "熊猫动态",
-    contribute: "贡献",
+    feed: "关注动态",
+    inbox: "通知",
     nav: "主导航",
     mobileNav: "移动导航",
     open: "打开导航菜单",
@@ -45,8 +38,8 @@ const copy = {
     lineage: "Lineage",
     map: "Map",
     myPandas: "My Pandas",
-    feed: "Panda updates",
-    contribute: "Contribute",
+    feed: "Follow Activity",
+    inbox: "Notifications",
     nav: "Primary navigation",
     mobileNav: "Mobile navigation",
     open: "Open navigation menu",
@@ -63,7 +56,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
   const languageHref = alternatePath ?? `/${otherLocale}`;
   const languageHrefLang = otherLocale === "zh" ? "zh-CN" : "en";
   const feedEnabled = isFeedUiEnabled();
-  const contributeEnabled = isCommunityIntakeUiEnabled();
+  const notificationCenterEnabled = isNotificationCenterEnabled();
 
   return (
     <>
@@ -101,6 +94,14 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
                 {t.feed}
               </Link>
             ) : null}
+            {notificationCenterEnabled ? (
+              <Link
+                href={`/${locale}/me/inbox` as Route}
+                aria-current={active === "inbox" ? "page" : undefined}
+              >
+                {t.inbox}
+              </Link>
+            ) : null}
             <Link href={`/${locale}/me/passport` as Route} aria-current={active === "my-pandas" ? "page" : undefined}>{t.myPandas}</Link>
           </nav>
 
@@ -113,7 +114,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
               languageHref={languageHref}
               languageHrefLang={languageHrefLang}
               feedEnabled={feedEnabled}
-              contributeEnabled={contributeEnabled}
+              notificationCenterEnabled={notificationCenterEnabled}
               labels={{
                 open: t.open,
                 close: t.close,
@@ -124,7 +125,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
                 map: t.map,
                 myPandas: t.myPandas,
                 feed: t.feed,
-                contribute: t.contribute,
+                inbox: t.inbox,
                 language: t.language,
               }}
             />

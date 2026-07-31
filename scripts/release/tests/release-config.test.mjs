@@ -24,7 +24,8 @@ test("CI declares one reproducible authoritative default gate", async () => {
   for (const requiredText of [
     "name: Authoritative map-close gate",
     "runs-on: ubuntu-latest",
-    "name: Supabase reset and identity recovery",
+    "name: Supabase reset and published-return recovery",
+    "name: Windows map-close compatibility",
     'NPM_VERSION: "10.9.0"',
     'PYTHON_VERSION: "3.12"',
     'UV_VERSION: "0.11.7"',
@@ -42,7 +43,9 @@ test("CI declares one reproducible authoritative default gate", async () => {
     assert.match(workflow, new RegExp(requiredText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 
-  assert.doesNotMatch(workflow, /windows-latest/);
+  assert.match(workflow, /runs-on: windows-latest/);
+  assert.match(workflow, /run: npm run release:map-close:windows/);
+  assert.equal((workflow.match(/run: npm run release:map-close$/gm) ?? []).length, 1);
   assert.doesNotMatch(workflow, /matrix\.platform/);
 });
 

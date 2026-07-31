@@ -287,6 +287,28 @@ def get_follow(
         raise _handle_error(error) from error
 
 
+@router.get(
+    "/me/notification-preferences",
+    response_model=list[NotificationPreferenceRead],
+)
+def list_notification_preferences(identity: ActiveIdentity) -> list[NotificationPreferenceRead]:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            rows = NotificationRepository(
+                session,
+                cursor_signing_key=settings.notification_cursor_signing_key,
+            ).list_preferences(identity)
+            return [NotificationPreferenceRead.model_validate(row.model_dump()) for row in rows]
+    except HTTPException:
+        raise
+    except (NotificationAccountUnavailableError, SQLAlchemyError) as error:
+        if isinstance(error, NotificationAccountUnavailableError):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(error)) from error
+        raise _handle_error(error) from error
+
+
 @router.put(
     "/me/notification-preferences/{category}/{channel}",
     response_model=NotificationPreferenceRead,

@@ -799,6 +799,62 @@ paths:
         '401': { description: Administrator authentication is required }
 
 
+  /api/v1/me/notification-preferences:
+    get:
+      tags: [notification]
+      summary: List explicit notification preferences for the authenticated account
+      operationId: listNotificationPreferences
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Explicit account preferences; omitted optional categories use product defaults
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationPreferenceRead'
+        '401': { description: Authentication is required }
+        '403': { description: Account state blocks preference access }
+        '503': { description: Notification database is unavailable }
+
+  /api/v1/me/notification-preferences/{category}/{channel}:
+    put:
+      tags: [notification]
+      summary: Idempotently set one notification channel preference
+      operationId: setNotificationPreference
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NotificationCategory'
+        - name: channel
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/NotificationChannel'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferenceChange'
+      responses:
+        '200':
+          description: Current preference state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreferenceRead'
+        '401': { description: Authentication is required }
+        '403': { description: Account state blocks preference access }
+        '409': { description: Mandatory category or idempotency conflict }
+        '503': { description: Notification database is unavailable }
+
   /api/v1/me/inbox:
     get:
       tags: [notification]
@@ -4667,6 +4723,28 @@ components:
     DigestState:
       type: string
       enum: [building, queued, delivered, failed, retracted]
+
+    NotificationPreferenceChange:
+      type: object
+      additionalProperties: false
+      required: [enabled, idempotency_key]
+      properties:
+        enabled: { type: boolean }
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+
+    NotificationPreferenceRead:
+      type: object
+      additionalProperties: false
+      required: [account_id, category, channel, enabled, version, updated_at]
+      properties:
+        account_id: { type: string, format: uuid }
+        category:
+          $ref: '#/components/schemas/NotificationCategory'
+        channel:
+          $ref: '#/components/schemas/NotificationChannel'
+        enabled: { type: boolean }
+        version: { type: integer, minimum: 1 }
+        updated_at: { type: string, format: date-time }
 
     InboxMarkCommand:
       type: object

@@ -51,6 +51,8 @@ export default defineConfig({
       NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:65534",
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
       NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
+      NEXT_PUBLIC_FEED_ENABLED: "true",
+      NEXT_PUBLIC_NOTIFICATION_ENABLED: "true",
       ...(productionServer ? { PANDA_NEXT_DIST_DIR: productionDistDir } : {}),
     },
   },

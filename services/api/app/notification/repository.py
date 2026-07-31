@@ -183,6 +183,28 @@ class NotificationRepository:
         self.session.commit()
         return result
 
+    def list_preferences(
+        self,
+        identity: RequestIdentity,
+    ) -> list[NotificationPreferenceState]:
+        self._require_active(identity)
+        rows = (
+            self.session.execute(
+                text(
+                    """
+                    select account_id, category::text, channel::text, enabled, version, updated_at
+                    from notification.preferences
+                    where account_id = :account_id
+                    order by category, channel
+                    """
+                ),
+                {"account_id": identity.account_id},
+            )
+            .mappings()
+            .all()
+        )
+        return [NotificationPreferenceState.model_validate(dict(row)) for row in rows]
+
     def set_preference(
         self,
         identity: RequestIdentity,
