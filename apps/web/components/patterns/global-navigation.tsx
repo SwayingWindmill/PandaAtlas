@@ -9,7 +9,16 @@ import { isNotificationCenterEnabled } from "@/features/notification-center/conf
 
 interface GlobalNavigationProps {
   locale: PublicLocale;
-  active: "home" | "atlas" | "profile" | "lineage" | "map" | "my-pandas" | "feed" | "inbox";
+  active:
+    | "home"
+    | "atlas"
+    | "profile"
+    | "lineage"
+    | "map"
+    | "my-pandas"
+    | "feed"
+    | "contribute"
+    | "inbox";
   alternatePath?: string;
 }
 
@@ -22,6 +31,7 @@ const copy = {
     lineage: "谱系",
     map: "地图",
     myPandas: "我的熊猫",
+    contribute: "贡献资料",
     feed: "关注动态",
     inbox: "通知",
     nav: "主导航",
@@ -38,6 +48,7 @@ const copy = {
     lineage: "Lineage",
     map: "Map",
     myPandas: "My Pandas",
+    contribute: "Contribute",
     feed: "Follow Activity",
     inbox: "Notifications",
     nav: "Primary navigation",
@@ -55,6 +66,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
   const otherLocale = alternateLocale(locale);
   const languageHref = alternatePath ?? `/${otherLocale}`;
   const languageHrefLang = otherLocale === "zh" ? "zh-CN" : "en";
+  const contributeEnabled = isCommunityIntakeUiEnabled();
   const feedEnabled = isFeedUiEnabled();
   const notificationCenterEnabled = isNotificationCenterEnabled();
 
@@ -113,6 +125,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
               locale={locale}
               languageHref={languageHref}
               languageHrefLang={languageHrefLang}
+              contributeEnabled={contributeEnabled}
               feedEnabled={feedEnabled}
               notificationCenterEnabled={notificationCenterEnabled}
               labels={{
@@ -124,6 +137,7 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
                 lineage: t.lineage,
                 map: t.map,
                 myPandas: t.myPandas,
+                contribute: t.contribute,
                 feed: t.feed,
                 inbox: t.inbox,
                 language: t.language,
