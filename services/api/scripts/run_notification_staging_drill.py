@@ -131,9 +131,9 @@ def main() -> int:
 
     delivery_id = uuid4()
     rendered = RenderedEmail(
-        subject="PandaAtlas notification staging verification",
-        html="<p>PandaAtlas notification staging verification.</p>",
-        text="PandaAtlas notification staging verification.",
+        subject="ZhiPanda notification staging verification",
+        html="<p>ZhiPanda notification staging verification.</p>",
+        text="ZhiPanda notification staging verification.",
         template_key="staging-verification",
         template_version=1,
         locale="en",

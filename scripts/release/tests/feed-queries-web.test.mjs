@@ -18,7 +18,9 @@ test("private Feed is server-owned, noindex, no-store, and explicitly marked vie
   assert.match(route, /export const dynamic = "force-dynamic"/);
   assert.match(route, /export const revalidate = 0/);
   assert.match(route, /await connection\(\)/);
-  assert.match(route, /robots: \{ index: false, follow: false, nocache: true \}/);
+  assert.match(route, /buildPublicMetadata\(/);
+  assert.match(route, /privatePage: true/);
+  assert.match(route, /noFollow: true/);
   assert.match(route, /getVerifiedSupabaseAccessToken\(\)/);
   assert.match(route, /loadPersonalizedFeed\(accessToken, cursor\)/);
   assert.match(route, /redirect\(`\/auth\/login\?next=/);
@@ -27,12 +29,13 @@ test("private Feed is server-owned, noindex, no-store, and explicitly marked vie
   assert.match(api, /PRIVATE_FASTAPI_BASE_URL/);
   assert.match(api, /PUBLIC_FASTAPI_BASE_URL/);
   assert.match(api, /Authorization: `Bearer \$\{accessToken\}`/);
-  assert.match(page, /opening the page never writes viewed state automatically/i);
+  assert.match(page, /opening this page does not mark updates as viewed/i);
   assert.match(button, /^["']use client["']/);
   assert.match(button, /fetch\("\/api\/feed\/last-viewed"/);
   assert.match(button, /feed-view-\$\{crypto\.randomUUID\(\)\}/);
   assert.match(proxy, /\/api\/v1\/me\/feed\/last-viewed/);
-  assert.match(login, /me\\\/\(\?:passport\|feed\|inbox\)/);
+  assert.match(login, /\|contribute\|me\\\//);
+  assert.match(login, /passport\|feed\|inbox\|submissions/);
 });
 
 test("public Panda Activity is server rendered with explicit correction and retraction states", async () => {

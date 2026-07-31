@@ -70,7 +70,7 @@ const copy = {
       correction_retraction: "更正与撤回",
       security_role: "安全与角色",
     },
-    fallbackTitle: "PandaAtlas 通知",
+    fallbackTitle: "吱熊猫通知",
     fallbackSummary: "打开通知中心查看最新状态。",
   },
   en: {
@@ -113,7 +113,7 @@ const copy = {
       correction_retraction: "Corrections and retractions",
       security_role: "Security and roles",
     },
-    fallbackTitle: "PandaAtlas notification",
+    fallbackTitle: "ZhiPanda notification",
     fallbackSummary: "Open the notification center for the latest state.",
   },
 } as const;

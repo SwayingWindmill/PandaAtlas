@@ -21,7 +21,7 @@ test("private notification center is noindex, feature-flagged, and session-first
   assert.match(page, /fetch\("\/api\/identity\/session"/);
   assert.ok(page.indexOf('/api/identity/session') < page.indexOf('/api/notification/inbox'));
   assert.match(page, /status === 401/);
-  assert.match(login, /me\\\/\(\?:passport\|feed\|inbox\)/);
+  assert.match(login, /passport\|feed\|inbox\|submissions/);
 });
 
 test("Inbox proxy, read state, and preferences stay behind the trusted FastAPI boundary", async () => {

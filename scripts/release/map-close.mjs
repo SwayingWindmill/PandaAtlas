@@ -74,6 +74,11 @@ export async function runMapCloseGate() {
         run: () => runCommand("npm", ["run", "check:notification-center-budget"]),
       },
       {
+        id: "zhipanda-brand-closure",
+        label: "ZhiPanda public-brand and compatibility closure",
+        run: () => runCommand("node", ["scripts/release/check-zhipanda-brand-closure.mjs"]),
+      },
+      {
         id: "supabase-foundation-contracts",
         label: "Supabase/PostGIS/PGMQ foundation contracts",
         dependsOn: ["structured-contribution-evidence"],

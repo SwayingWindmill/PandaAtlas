@@ -16,6 +16,10 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.equal(rootPackage.scripts["release:private"], "node scripts/release/private-collection.mjs");
   assert.equal(rootPackage.scripts["release:map-close"], "node scripts/release/map-close.mjs");
   assert.equal(
+    rootPackage.scripts["check:zhipanda-brand-closure"],
+    "node scripts/release/check-zhipanda-brand-closure.mjs",
+  );
+  assert.equal(
     rootPackage.scripts["drill:identity-engagement-recovery"],
     "uv run --directory services/api --frozen --extra dev python scripts/run_identity_engagement_recovery_drill.py",
   );
@@ -40,7 +44,9 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(mapClose, /NEXT_PUBLIC_FEED_ENABLED/);
   assert.match(mapClose, /NEXT_PUBLIC_NOTIFICATION_ENABLED/);
   assert.match(mapClose, /structured-contribution-evidence/);
-  assert.match(mapClose, /validate-structured-contribution-evidence\.mjs/);
+  assert.match(mapClose, /validate-structured-contribution-evidence.mjs/);
+  assert.match(mapClose, /zhipanda-brand-closure/);
+  assert.match(mapClose, /check-zhipanda-brand-closure.mjs/);
   assert.match(mapClose, /identity-engagement-contracts/);
   assert.match(mapClose, /secure-web-boundary/);
   assert.match(mapClose, /follow-through-login-browser/);

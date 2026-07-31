@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:pandas\/[a-z0-9-]+|me\/(?:passport|feed|inbox)))$/;
+const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:pandas\/[a-z0-9-]+|contribute|me\/(?:passport|feed|inbox|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?)))$/;
 
 function safeNextPath(value: string | null): string {
   const fallback = "/admin";
