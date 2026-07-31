@@ -11,44 +11,50 @@ from scripts.build_archive_governance_openapi import (
     write_archive_governance_openapi,
 )
 
-REQUIRED_OPERATIONS = {
-    ("/api/v1/admin/archive/change-sets/{change_set_id}/validate", "post"),
-    ("/api/v1/admin/archive/change-sets/{change_set_id}/publish", "post"),
-    ("/api/v1/admin/archive/publication-metrics", "get"),
-    ("/api/v1/admin/archive/operations/rollback", "post"),
-    ("/api/v1/admin/archive/operations/corrections", "post"),
-    ("/api/v1/admin/archive/operations/merge-split", "post"),
-    ("/api/v1/admin/archive/operations/emergency-takedowns", "post"),
+REQUIRED_ROUTES = {
+    "/api/v1/admin/archive/change-sets/{change_set_id}/validate",
+    "/api/v1/admin/archive/change-sets/{change_set_id}/publish",
+    "/api/v1/admin/archive/publication-metrics",
+    "/api/v1/admin/archive/operations/rollback",
+    "/api/v1/admin/archive/operations/corrections",
+    "/api/v1/admin/archive/operations/merge-split",
+    "/api/v1/admin/archive/operations/emergency-takedowns",
     (
         "/api/v1/admin/archive/operations/emergency-takedowns/"
-        "{operation_id}/followup",
-        "post",
+        "{operation_id}/followup"
     ),
-    ("/api/v1/admin/archive/operations/metrics", "get"),
-    ("/api/v1/admin/archive/workbench", "get"),
-    ("/api/v1/admin/archive/workbench/metrics", "get"),
-    ("/api/v1/admin/archive/workbench/items/{item_id}", "get"),
-    ("/api/v1/admin/archive/workbench/cutover", "get"),
-    ("/api/v1/admin/archive/workbench/cutover", "post"),
-    ("/api/v1/admin/archive/workbench/rehearsal-snapshot", "get"),
+    "/api/v1/admin/archive/operations/metrics",
+    "/api/v1/admin/archive/workbench",
+    "/api/v1/admin/archive/workbench/metrics",
+    "/api/v1/admin/archive/workbench/items/{item_id}",
+    "/api/v1/admin/archive/workbench/cutover",
+    "/api/v1/admin/archive/workbench/rehearsal-snapshot",
 }
 
 
-def test_archive_governance_canonical_contract_merges_all_bounded_routes() -> None:
+def test_archive_governance_canonical_contract_registers_all_bounded_routes() -> None:
     document = build_archive_governance_openapi()
 
     assert document["openapi"] == "3.1.0"
-    for route, method in REQUIRED_OPERATIONS:
-        assert method in document["paths"][route]
-    assert "ArchiveWorkbenchDetailRead" in document["components"]["schemas"]
-    assert document["components"]["securitySchemes"]["BearerAuth"] == {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
+    assert REQUIRED_ROUTES.issubset(document["paths"])
+    assert document["paths"]["/api/v1/admin/archive/change-sets/{change_set_id}/publish"] == {
+        "$ref": (
+            "./accountable-publication-v1.yaml#/paths/"
+            "~1api~1v1~1admin~1archive~1change-sets~1{change_set_id}~1publish"
+        )
+    }
+    assert document["paths"]["/api/v1/admin/archive/operations/rollback"] == {
+        "$ref": (
+            "./accountable-archive-operations-v1.yaml#/paths/"
+            "~1api~1v1~1admin~1archive~1operations~1rollback"
+        )
+    }
+    assert document["paths"]["/api/v1/admin/archive/workbench"] == {
+        "$ref": "./archive-workbench-v1.yaml#/paths/~1api~1v1~1admin~1archive~1workbench"
     }
 
 
-def test_archive_governance_canonical_contract_writes_tamper_evident_artifact(
+def test_archive_governance_canonical_contract_writes_portable_hashed_bundle(
     tmp_path: Path,
 ) -> None:
     output = tmp_path / "panda-atlas-v1-integrated.yaml"
@@ -58,6 +64,14 @@ def test_archive_governance_canonical_contract_writes_tamper_evident_artifact(
     assert result["status"] == "PASS"
     assert result["sha256"] == hashlib.sha256(encoded).hexdigest()
     assert result["path_count"] > 0
+    assert {
+        "accountable-publication-v1.yaml",
+        "accountable-archive-operations-v1.yaml",
+        "archive-workbench-v1.yaml",
+    }.issubset(set(result["bundled_sources"]))
+    for source in result["bundled_sources"]:
+        assert (tmp_path / source).is_file()
+    assert (tmp_path / "panda-atlas-v1.manifest.json").is_file()
     assert yaml.safe_load(encoded)["paths"]["/api/v1/admin/archive/workbench"]
     assert output.with_suffix(".yaml.sha256").read_text(encoding="utf-8") == (
         f"{result['sha256']}  {output.name}\n"
