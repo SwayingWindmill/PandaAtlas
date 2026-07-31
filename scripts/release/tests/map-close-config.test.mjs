@@ -52,6 +52,10 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(mapClose, /tests\/archive_publication/);
   assert.match(mapClose, /tests\/archive_operations/);
   assert.match(mapClose, /tests\/archive_workbench/);
+  assert.match(mapClose, /test_archive_governance_canonical_openapi\.py/);
+  assert.match(mapClose, /archive-governance-openapi/);
+  assert.match(mapClose, /build_archive_governance_openapi\.py/);
+  assert.match(mapClose, /panda-atlas-v1-integrated\.yaml/);
   assert.match(mapClose, /archive-governance-web-contracts/);
   assert.match(mapClose, /archive-governance-evidence\.test\.mjs/);
   assert.match(mapClose, /archive-workbench\.test\.mjs/);
