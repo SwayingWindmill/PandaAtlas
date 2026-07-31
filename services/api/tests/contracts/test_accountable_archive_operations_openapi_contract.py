@@ -1,49 +1,78 @@
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[4]
-BOUNDED_OPENAPI = (
-    REPO_ROOT
-    / "services"
-    / "api"
+import yaml
+
+from app.main import app
+
+CONTRACT_PATH = (
+    Path(__file__).resolve().parents[2]
     / "openapi"
     / "accountable-archive-operations-v1.yaml"
 )
-ROUTER = REPO_ROOT / "services" / "api" / "app" / "api" / "router.py"
-ENDPOINTS = (
-    REPO_ROOT
-    / "services"
-    / "api"
-    / "app"
-    / "api"
-    / "v1"
-    / "admin_archive_operations.py"
-)
+
+REQUIRED_OPERATIONS = {
+    ("/api/v1/admin/archive/operations/rollback", "post"),
+    ("/api/v1/admin/archive/operations/corrections", "post"),
+    ("/api/v1/admin/archive/operations/merge-split", "post"),
+    ("/api/v1/admin/archive/operations/emergency-takedowns", "post"),
+    (
+        "/api/v1/admin/archive/operations/emergency-takedowns/{operation_id}/followup",
+        "post",
+    ),
+    ("/api/v1/admin/archive/operations/metrics", "get"),
+}
 
 
-def test_accountable_archive_operation_paths_are_explicit() -> None:
-    contract = BOUNDED_OPENAPI.read_text(encoding="utf-8")
+def test_accountable_archive_operation_openapi_matches_fastapi_routes() -> None:
+    contract = yaml.safe_load(CONTRACT_PATH.read_text(encoding="utf-8"))
+    generated = app.openapi()
 
-    for path in (
-        "/admin/archive/operations/rollback:",
-        "/admin/archive/operations/corrections:",
-        "/admin/archive/operations/merge-split:",
-        "/admin/archive/operations/emergency-takedowns:",
-        "/admin/archive/operations/emergency-takedowns/{operation_id}/followup:",
-        "/admin/archive/operations/metrics:",
+    assert contract["openapi"] == "3.1.0"
+    assert contract["components"]["securitySchemes"]["BearerAuth"]["scheme"] == "bearer"
+    for path, method in REQUIRED_OPERATIONS:
+        assert method in contract["paths"][path]
+        assert method in generated["paths"][path]
+
+
+def test_archive_operation_contract_freezes_release_and_activity_boundaries() -> None:
+    contract = yaml.safe_load(CONTRACT_PATH.read_text(encoding="utf-8"))
+    schemas = contract["components"]["schemas"]
+
+    base = schemas["ArchiveOperationCommandBase"]
+    assert base["properties"]["database_migration_version"]["default"] == "0023"
+    for field in (
+        "expected_archive_release_id",
+        "idempotency_key",
+        "reason",
+        "data_version",
+        "risk_level",
+        "correlation_id",
     ):
-        assert path in contract
-    assert "bearerAuth" in contract
-    assert "database_migration_version: {type: string, default: '0022'}" in contract
-    assert "public_projection_status" in contract
-    assert "pending, projected" in contract
+        assert field in base["required"]
+
+    correction = schemas["ArchiveCorrectionCommand"]["allOf"][1]
+    assert "activity_descriptor" in correction["required"]
+    descriptor = schemas["ArchiveActivityDescriptor"]
+    assert descriptor["properties"]["action"]["enum"] == ["correction", "retraction"]
+    assert "notification_eligible" in descriptor["required"]
+
+    operation = schemas["ArchiveOperationRead"]
+    assert operation["properties"]["public_projection_status"]["enum"] == [
+        "pending",
+        "projected",
+    ]
+    assert "outbox_event_id" in operation["required"]
 
 
-def test_router_registers_bounded_operation_endpoints() -> None:
-    router = ROUTER.read_text(encoding="utf-8")
-    endpoints = ENDPOINTS.read_text(encoding="utf-8")
+def test_router_registers_operation_capabilities_and_path_guard() -> None:
+    endpoints = (
+        Path(__file__).resolve().parents[2]
+        / "app"
+        / "api"
+        / "v1"
+        / "admin_archive_operations.py"
+    ).read_text(encoding="utf-8")
 
-    assert "admin_archive_operations" in router
-    assert "admin_archive_operations.router" in router
     for capability in (
         "archive.accountable.rollback",
         "archive.accountable.correct",
