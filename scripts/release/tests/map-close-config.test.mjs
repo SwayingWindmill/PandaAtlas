@@ -43,6 +43,23 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(mapClose, /NEXT_PUBLIC_ENGAGEMENT_ENABLED/);
   assert.match(mapClose, /NEXT_PUBLIC_FEED_ENABLED/);
   assert.match(mapClose, /NEXT_PUBLIC_NOTIFICATION_ENABLED/);
+
+  assert.match(mapClose, /archive-governance-evidence/);
+  assert.match(mapClose, /validate-archive-governance-evidence\.mjs/);
+  assert.match(mapClose, /archive-governance-inventory/);
+  assert.match(mapClose, /check:archive-governance-migration/);
+  assert.match(mapClose, /archive-governance-contracts/);
+  assert.match(mapClose, /tests\/archive_publication/);
+  assert.match(mapClose, /tests\/archive_operations/);
+  assert.match(mapClose, /tests\/archive_workbench/);
+  assert.match(mapClose, /archive-governance-web-contracts/);
+  assert.match(mapClose, /archive-governance-evidence\.test\.mjs/);
+  assert.match(mapClose, /archive-workbench\.test\.mjs/);
+  assert.match(
+    mapClose,
+    /dependsOn: \["archive-governance-evidence", "archive-governance-inventory"\]/,
+  );
+
   assert.match(mapClose, /structured-contribution-evidence/);
   assert.match(mapClose, /validate-structured-contribution-evidence.mjs/);
   assert.match(mapClose, /zhipanda-brand-closure/);
