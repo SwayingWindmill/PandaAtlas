@@ -161,7 +161,9 @@ function compareInventory(contract, scan, failures) {
   for (const reference of scan.references) {
     const inventory = inventoryByPath.get(reference.path);
     if (!inventory) {
-      failures.push(`Unclassified legacy reference: ${reference.path}`);
+      failures.push(
+        `Unclassified legacy reference: ${reference.path} ${JSON.stringify(reference.matches)}`,
+      );
       continue;
     }
     if (!sameMatches(reference.matches, inventory.matches, contract.legacy_terms)) {
@@ -188,7 +190,9 @@ if (refreshInventory) {
   const unclassified = scan.references.filter((reference) => !existingByPath.has(reference.path));
   if (unclassified.length > 0) {
     console.error("Inventory refresh refused new unclassified files:");
-    for (const reference of unclassified) console.error(`- ${reference.path}`);
+    for (const reference of unclassified) {
+      console.error(`- ${reference.path} ${JSON.stringify(reference.matches)}`);
+    }
     process.exit(1);
   }
   contract.inventory = scan.references.map((reference) => ({
