@@ -7,6 +7,7 @@ import test from "node:test";
 import "./archive-governance-evidence.test.mjs";
 import "./archive-workbench.test.mjs";
 import "./map-close-config.test.mjs";
+import "./published-return-evidence.test.mjs";
 import {
   EnvironmentBlockedError,
   ReleaseGateError,
