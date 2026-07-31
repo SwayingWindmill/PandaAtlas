@@ -33,13 +33,15 @@ ArchiveCutoverManager = Annotated[
     RequestIdentity,
     Depends(require_capability("archive.cutover.manage", legacy_mode="workflow")),
 ]
+ArchiveWorkbenchQueueQuery = Annotated[ArchiveWorkbenchQueue, Query()]
+ArchiveWorkbenchLimitQuery = Annotated[int, Query(ge=1, le=200)]
 
 
 @router.get("", response_model=ArchiveWorkbenchListRead)
 def list_archive_workbench_endpoint(
     identity: ArchiveWorkbenchReader,
-    queue: ArchiveWorkbenchQueue = Query(default=ArchiveWorkbenchQueue.ALL),
-    limit: int = Query(default=100, ge=1, le=200),
+    queue: ArchiveWorkbenchQueueQuery = ArchiveWorkbenchQueue.ALL,
+    limit: ArchiveWorkbenchLimitQuery = 100,
 ) -> ArchiveWorkbenchListRead:
     _ = identity
     return list_workbench_items(queue, limit=limit)
