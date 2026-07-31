@@ -11,6 +11,8 @@ import {
 import { Link, Route } from "react-router-dom";
 
 import { adminSessionFailureDestination } from "@/components/admin/admin-session-navigation";
+import { ArchiveAdvancedOperations } from "@/components/admin/archive-advanced-operations";
+import { ArchiveWorkbench } from "@/components/admin/archive-workbench";
 import { ReviewCaseWorkbench } from "@/components/admin/review-case-workbench";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
@@ -131,6 +133,10 @@ function CapabilityDashboard() {
     };
   }, []);
 
+  const canUseSeniorArchiveOperations =
+    session?.capabilities.includes("archive.sensitive.merge_split") ||
+    session?.capabilities.includes("archive.sensitive.takedown");
+
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -147,7 +153,10 @@ function CapabilityDashboard() {
       </div>
 
       {error ? (
-        <p className="mt-6 rounded-lg border border-red-800 bg-red-50 p-4 text-sm text-red-950" role="alert">
+        <p
+          className="mt-6 rounded-lg border border-red-800 bg-red-50 p-4 text-sm text-red-950"
+          role="alert"
+        >
           {error}
         </p>
       ) : null}
@@ -160,7 +169,10 @@ function CapabilityDashboard() {
 
       {session ? (
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <section className="rounded-xl border border-stone-300 bg-white p-5" aria-labelledby="account-heading">
+          <section
+            className="rounded-xl border border-stone-300 bg-white p-5"
+            aria-labelledby="account-heading"
+          >
             <h2 id="account-heading" className="text-xl font-bold text-stone-950">
               当前账号
             </h2>
@@ -175,43 +187,92 @@ function CapabilityDashboard() {
               </div>
               <div>
                 <dt className="font-semibold text-stone-700">最近认证</dt>
-                <dd className="mt-1 text-stone-950">{session.recent_auth ? "15 分钟内" : "需要重新认证"}</dd>
+                <dd className="mt-1 text-stone-950">
+                  {session.recent_auth ? "15 分钟内" : "需要重新认证"}
+                </dd>
               </div>
               <div>
                 <dt className="font-semibold text-stone-700">认证方式</dt>
-                <dd className="mt-1 text-stone-950">{session.authentication_method ?? "未记录"}</dd>
+                <dd className="mt-1 text-stone-950">
+                  {session.authentication_method ?? "未记录"}
+                </dd>
               </div>
             </dl>
           </section>
 
-          <section className="rounded-xl border border-stone-300 bg-white p-5" aria-labelledby="roles-heading">
+          <section
+            className="rounded-xl border border-stone-300 bg-white p-5"
+            aria-labelledby="roles-heading"
+          >
             <h2 id="roles-heading" className="text-xl font-bold text-stone-950">
               显式角色
             </h2>
             <ul className="mt-4 grid gap-2 text-sm text-stone-950">
               {session.roles.map((role) => (
-                <li key={role} className="rounded-md border border-stone-300 bg-stone-50 px-3 py-2">
+                <li
+                  key={role}
+                  className="rounded-md border border-stone-300 bg-stone-50 px-3 py-2"
+                >
                   {role}
                 </li>
               ))}
             </ul>
           </section>
 
-          <section className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2" aria-labelledby="capabilities-heading">
+          <section
+            className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
+            aria-labelledby="capabilities-heading"
+          >
             <h2 id="capabilities-heading" className="text-xl font-bold text-stone-950">
               当前 Capability
             </h2>
             <ul className="mt-4 grid gap-2 text-sm text-stone-950 sm:grid-cols-2">
               {session.capabilities.map((capability) => (
-                <li key={capability} className="rounded-md border border-stone-300 bg-stone-50 px-3 py-2 font-mono">
+                <li
+                  key={capability}
+                  className="rounded-md border border-stone-300 bg-stone-50 px-3 py-2 font-mono"
+                >
                   {capability}
                 </li>
               ))}
             </ul>
           </section>
 
+          {session.capabilities.includes("archive.workbench.read") ? (
+            <section
+              className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
+              aria-labelledby="archive-workbench-heading"
+            >
+              <h2 id="archive-workbench-heading" className="text-xl font-bold text-stone-950">
+                Trusted Archive
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                检查完整 Diff、来源、验证、媒体权利、公开影响、投影滞后与紧急跟进，并通过显式 FastAPI 命令验证、发布、修正、回滚或控制 cutover。
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  to="/archive"
+                  className="inline-flex min-h-11 items-center rounded-md bg-stone-950 px-4 py-2 text-sm font-semibold text-white"
+                >
+                  打开 Archive 工作台
+                </Link>
+                {canUseSeniorArchiveOperations ? (
+                  <Link
+                    to="/archive/operations"
+                    className="inline-flex min-h-11 items-center rounded-md border border-stone-400 bg-white px-4 py-2 text-sm font-semibold text-stone-950"
+                  >
+                    打开高级操作工作台
+                  </Link>
+                ) : null}
+              </div>
+            </section>
+          ) : null}
+
           {session.capabilities.includes("review.case.read") ? (
-            <section className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2" aria-labelledby="review-workbench-heading">
+            <section
+              className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
+              aria-labelledby="review-workbench-heading"
+            >
               <h2 id="review-workbench-heading" className="text-xl font-bold text-stone-950">
                 Review &amp; Moderation
               </h2>
@@ -244,6 +305,8 @@ export function ReactAdminShell() {
     >
       <CustomRoutes>
         <Route path="/" element={<CapabilityDashboard />} />
+        <Route path="/archive" element={<ArchiveWorkbench />} />
+        <Route path="/archive/operations" element={<ArchiveAdvancedOperations />} />
         <Route path="/reviews" element={<ReviewCaseWorkbench />} />
       </CustomRoutes>
     </Admin>

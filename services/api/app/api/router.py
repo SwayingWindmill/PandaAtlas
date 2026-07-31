@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from app.api.v1 import (
     admin_accountable_publications,
     admin_archive_operations,
+    admin_archive_workbench,
     admin_community_curation,
     admin_imports,
     admin_publications,
@@ -38,6 +39,10 @@ api_router.include_router(
 api_router.include_router(
     admin_archive_operations.router,
     tags=["admin-archive-operations"],
+)
+api_router.include_router(
+    admin_archive_workbench.router,
+    tags=["admin-archive-workbench"],
 )
 api_router.include_router(
     admin_community_curation.router,
