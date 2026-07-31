@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: PandaAtlas Accountable Archive Operations API
+  title: ZhiPanda Accountable Archive Operations API
   version: 1.0.0
   description: >-
     Bounded command contract for immutable Archive rollback, targeted correction,
