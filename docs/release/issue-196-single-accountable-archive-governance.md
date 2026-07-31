@@ -37,17 +37,31 @@ The validator fails closed when a required category is missing, a blocker remain
 7. Cutover hold blocks new publication independently of application deployment and never deletes new data or moves a Release pointer backward.
 8. Emergency takedown only reduces public exposure and records a formal follow-up Change Set deadline.
 9. Browser tools remain bounded React-admin routes with generic CRUD disabled, private no-cache/noindex responses, and server-side authorization.
-10. Map #175 closes only after all required Linux, Windows, Supabase, browser, accessibility, recovery, staging, and immutable evidence steps pass or are explicitly recorded as environment-blocked by the authoritative policy.
+10. The canonical API bundle registers accountable publication, Archive operations, and workbench routes from their bounded contracts, validates them against FastAPI, copies every referenced contract, and seals the integrated YAML with SHA-256.
+11. Map #175 closes only after all required Linux, Windows, Supabase, browser, accessibility, recovery, staging, and immutable evidence steps pass or are explicitly recorded as environment-blocked by the authoritative policy.
 
 ## Expected immutable artifacts
 
+### Authoritative map-close
+
 - `.release-gate/default.json`
 - `.release-gate/map-close.json`
+- `.release-gate/admin-bundle-budget.json`
+- `.release-gate/panda-atlas-v1-integrated.yaml`
+- `.release-gate/panda-atlas-v1-integrated.yaml.sha256`
+- `.release-gate/panda-atlas-v1.manifest.json`
+- copied bounded OpenAPI YAML files referenced by the integrated contract
 - `.release-gate/map-close-manifest.json`
 - `.release-gate/map-close-manifest.sha256`
-- `.release-gate/archive-governance-rehearsal.json`
 
-The manifest SHA-256 is the final tamper-evident reference. Artifact paths and the final commit SHA must be recorded in #196 before #175 is closed.
+### Supabase and recovery foundation
+
+- `.release-gate/archive-governance-real-db.xml`
+- `.release-gate/archive-governance-rehearsal.json`
+- `.release-gate/published-return-foundation-manifest.json`
+- `.release-gate/published-return-foundation-manifest.sha256`
+
+The manifest SHA-256 files are the final tamper-evident references. Artifact paths and the final commit SHA must be recorded in #196 before #175 is closed.
 
 ## Rollback switches
 
