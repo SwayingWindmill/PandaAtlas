@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "issue": 193,
+  "map_issue": 174,
+  "title": "Structured contribution and review-to-archive map-close evidence",
+  "owned_by": "delivery:map-close",
+  "closure_rule": "Every required category must have covered scenarios and at least one automated gate command or immutable artifact location before #174 can close.",
+  "blockers": [
+    { "issue": 186, "status": "closed" },
+    { "issue": 187, "status": "closed" },
+    { "issue": 188, "status": "closed" },
+    { "issue": 189, "status": "closed" },
+    { "issue": 192, "status": "closed" }
+  ],
+  "artifact_locations": [
+    ".release-gate/default.json",
+    ".release-gate/map-close.json",
+    ".release-gate/map-close-manifest.json",
+    ".release-gate/map-close-manifest.sha256",
+    "docs/release/issue-193-structured-contribution-review-to-archive.md"
+  ],
+  "rollback_switches": [
+    "COMMUNITY_INTAKE_ENABLED=false",
+    "REVIEW_MODERATION_ENABLED=false",
+    "COMMUNITY_CURATION_BRIDGE_ENABLED=false",
+    "NOTIFICATION_ENABLED=false",
+    "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false"
+  ],
+  "categories": [
+    {
+      "id": "draft-validation-submit-revisions",
+      "required_by_issue_193": "Draft, validation, formal Submit, immutable revisions, duplicate, request-information, not-accepted, accepted, withdrawal, and target-change scenarios.",
+      "scenarios": [
+        {
+          "id": "draft-validation-submit-revisions",
+          "status": "covered",
+          "acceptance": "Contributor draft, validation, submit, immutable revision, duplicate, reviewer outcome, withdrawal, and target-change states remain explicit and do not create Archive publication facts.",
+          "evidence_refs": [
+            "services/api/tests/community_intake/test_community_intake_contracts.py",
+            "services/api/tests/integration/test_contributor_journey_real_db.py"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/community_intake tests/integration/test_contributor_journey_real_db.py"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "private-upload-attachment-security",
+      "required_by_issue_193": "Private upload limits, quarantine, malware, failed scan, signed access, EXIF stripping, access audit, rights boundary, retention, deletion, and recovery.",
+      "scenarios": [
+        {
+          "id": "private-upload-attachment-security",
+          "status": "covered",
+          "acceptance": "Attachment storage remains private, bounded, auditable, recoverable, and separate from public Archive state until release projection.",
+          "evidence_refs": [
+            "infra/supabase/migrations/0018_community_intake.sql",
+            "scripts/run_postgres_attachment_recovery_drill.py"
+          ],
+          "gate_commands": [
+            "npm run drill:postgres-attachment-recovery"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reviewer-workflow",
+      "required_by_issue_193": "Reviewer capability, self-review denial, assignment concurrency, SLA, source normalization, internal-note privacy, and append-only decision tests.",
+      "scenarios": [
+        {
+          "id": "reviewer-workflow",
+          "status": "covered",
+          "acceptance": "ReviewCase assignment, capability, self-review denial, SLA queues, normalized evidence, note privacy, and append-only decisions are verified before bridge creation.",
+          "evidence_refs": [
+            "services/api/tests/review_moderation/test_review_case_models.py",
+            "services/api/tests/contracts/test_review_case_storage_contract.py"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/review_moderation tests/contracts/test_review_case_storage_contract.py"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "curation-release-projection",
+      "required_by_issue_193": "Full and partial Change Set provenance, self-publication denial, Release pending state, Public Projection-driven incorporation, correction/retraction, and broken-chain alerting.",
+      "scenarios": [
+        {
+          "id": "curation-release-projection",
+          "status": "covered",
+          "acceptance": "Accepted assertions bridge to Curation Change Sets without becoming Archive approval; Release observation and Public Projection are the incorporation boundary.",
+          "evidence_refs": [
+            "services/api/tests/contracts/test_community_curation_storage_contract.py",
+            "docs/architecture/community-curation-bridge.md"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/contracts/test_community_curation_storage_contract.py"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "notifications-email",
+      "required_by_issue_193": "Notification and email behavior using #173 without duplicate Submit or incorporation messages.",
+      "scenarios": [
+        {
+          "id": "notifications-email",
+          "status": "covered",
+          "acceptance": "Submit and incorporation notification intents are idempotent, Inbox-visible, and email delivery remains behind #173 transport and rollback policy.",
+          "evidence_refs": [
+            "services/api/tests/integration/test_notification_real_db.py",
+            "docs/release/published-return-map-close.md"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/integration/test_notification_real_db.py"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "browser-mobile-wcag",
+      "required_by_issue_193": "Browser/mobile/WCAG, API contract, privacy, security, performance, database/attachment restore, feature-flag rollback, and immutable Release Gate evidence.",
+      "scenarios": [
+        {
+          "id": "browser-mobile-wcag",
+          "status": "covered",
+          "acceptance": "Contributor, reviewer, admin, feed, and inbox browser paths remain keyboard-accessible, mobile-safe, and covered by the map-close gate.",
+          "evidence_refs": [
+            "scripts/release/map-close.mjs",
+            "apps/web/tests/smoke/published-return-loop.spec.ts"
+          ],
+          "gate_commands": [
+            "npm run release:map-close"
+          ],
+          "artifact_locations": [
+            ".release-gate/map-close.json",
+            ".release-gate/map-close-manifest.json"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations-privacy-recovery",
+      "required_by_issue_193": "Database/attachment restore, feature-flag rollback, staging evidence, immutable hashes, and rollback/recovery drills.",
+      "scenarios": [
+        {
+          "id": "operations-privacy-recovery",
+          "status": "covered",
+          "acceptance": "Recovery drills, rollback switches, staging evidence, and immutable release-gate manifests are recorded before #174 closes.",
+          "evidence_refs": [
+            "scripts/release/map-close-evidence.mjs",
+            "scripts/run_identity_engagement_recovery_drill.py"
+          ],
+          "gate_commands": [
+            "npm run drill:identity-engagement-recovery",
+            "npm run release:map-close"
+          ],
+          "artifact_locations": [
+            ".release-gate/map-close-manifest.json",
+            ".release-gate/map-close-manifest.sha256"
+          ]
+        }
+      ]
+    }
+  ]
+}
