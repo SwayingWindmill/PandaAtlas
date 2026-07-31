@@ -22,12 +22,14 @@ def test_operations_are_append_only_and_release_backed() -> None:
     assert "release_id uuid not null unique" in sql
     assert "archive_operation_command_receipts" in sql
     assert "archive_emergency_followup_completions" in sql
+    assert "reject_archive_operation_evidence_mutation" in sql
     for relation in (
         "archive_operation_records",
         "archive_operation_command_receipts",
         "archive_emergency_followup_completions",
     ):
-        assert f"trg_{relation}_append_only" in sql
+        assert f"'{relation}'" in sql
+    assert "append_only before update or delete" in sql
 
 
 def test_operation_replay_precedes_release_version_lock() -> None:
