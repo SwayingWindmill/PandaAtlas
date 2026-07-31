@@ -119,7 +119,8 @@ declare
   previous_state text;
   previous_version integer;
 begin
-  -- Idempotent replay is resolved before the version lock.
+  -- Idempotent replay is resolved before the version lock and reconstructs
+  -- the original result rather than leaking a later cutover state.
   select * into replay
   from public.archive_cutover_command_receipts receipt
   where receipt.actor_account_id = requested_actor_id
@@ -131,9 +132,14 @@ begin
       raise exception 'Idempotency key was reused with a different cutover command'
         using errcode = '23505';
     end if;
-    select * into control
-    from public.archive_publication_cutover_control item
-    where item.singleton = true;
+    select
+      true,
+      replay.requested_state,
+      replay.resulting_version,
+      replay.reason,
+      replay.actor_account_id,
+      replay.created_at
+    into control;
     return control;
   end if;
 
@@ -242,10 +248,13 @@ select
   coalesce(release.published_at, release.created_at)
 from public.publication_batches release
 join public.archive_release_evidence evidence on evidence.release_id = release.id
+cross join public.archive_release_pointer archive_pointer
 cross join public.public_release_pointer public_pointer
-where public_pointer.singleton = true
+where archive_pointer.singleton = true
+  and public_pointer.singleton = true
+  and release.id = archive_pointer.latest_release_id
   and release.status = 'published'
-  and public_pointer.active_batch_id is distinct from release.id
+  and public_pointer.active_batch_id is distinct from archive_pointer.latest_release_id
 union all
 select
   'operation'::text,
