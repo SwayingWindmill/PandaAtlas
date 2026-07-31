@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>历史档案示例 | 熊猫档案 V2 原型</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#overview" aria-label="吱熊猫首页">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>吱熊猫 ZhiPanda</span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="#overview" aria-current="page">熊猫档案</a>
+        <a href="#timeline">熊猫时光</a>
+        <a href="#family">家族</a>
+        <a href="#sources">来源</a>
+      </nav>
+    </div>
+  </header>
+
+  <aside class="release-banner" aria-label="原型数据说明"><strong>完整设计夹具</strong> · 本页面中的熊猫身份、日期、关系、地点和来源均为虚构结构示例，只用于验证历史或已故档案状态，不代表任何真实熊猫。</aside>
+
+  <main id="main-content">
+    <section class="profile-hero" id="overview" aria-labelledby="profile-title">
+      <div class="hero-media" role="img" aria-label="历史媒体存在，但当前公开权利受限">
+        <div class="restricted-media">
+          <div class="restricted-media__seal">
+            <span><strong>历史影像受限</strong>Historic media restricted<br>设计夹具</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+        <div class="hero-context">
+          <a href="#">返回寻找熊猫</a>
+          <span aria-hidden="true">/</span>
+          <span>历史档案设计夹具</span>
+        </div>
+        <p class="eyebrow">Panda Profile · Historic state</p>
+        <h1 class="profile-name profile-name--long" id="profile-title">历史档案示例</h1>
+        <p class="alternate-name" lang="en">Historic profile fixture · Not a real panda</p>
+        <p class="hero-summary">这个原型验证已故个体的最终状态、约略日期、历史来源、受限媒体和有争议家族关系。正式页面不会把“当前地点”用于已故熊猫。</p>
+        <div class="hero-actions" aria-label="档案主要操作">
+          <a class="action action--primary" href="#timeline">阅读生命记录</a>
+          <a class="action" href="#family">查看关系争议</a>
+          <a class="action" href="#sources">核对修订</a>
+        </div>
+      </div>
+
+      <aside class="current-rail current-rail--historic" aria-label="最终已知状态">
+        <div>
+          <span class="status-chip status-chip--historic">已死亡</span>
+          <p class="current-rail__label">最终经核实地点</p>
+          <p class="current-rail__value">历史机构记录</p>
+        </div>
+        <div>
+          <p class="current-rail__label">资料时间范围</p>
+          <p class="current-rail__value">约 1982 至 2001</p>
+          <p class="current-rail__meta">出生年份为约略值，死亡年份为年级精度</p>
+        </div>
+      </aside>
+    </section>
+
+    <dl class="fact-baseline" aria-label="历史档案示例的核心资料">
+      <div class="fact">
+        <dt>出生</dt>
+        <dd>约 1982 年</dd>
+        <dd class="fact-note">约略 · 年级精度 · 设计夹具</dd>
+      </div>
+      <div class="fact">
+        <dt>死亡</dt>
+        <dd>2001 年</dd>
+        <dd class="fact-note">年级精度 · 设计夹具</dd>
+      </div>
+      <div class="fact">
+        <dt>性别</dt>
+        <dd>暂无一致结论</dd>
+        <dd class="fact-note">候选值在来源区展开</dd>
+      </div>
+      <div class="fact">
+        <dt>稳定身份</dt>
+        <dd>fixture-historic-01</dd>
+        <dd class="fact-note">仅供原型测试，不可进入公开数据</dd>
+      </div>
+    </dl>
+
+    <nav class="chapter-nav" aria-label="熊猫档案章节">
+      <div class="chapter-nav__inner">
+        <a href="#story">历史简介</a>
+        <a href="#timeline">生命记录</a>
+        <a href="#family">家族争议</a>
+        <a href="#footprint">最终足迹</a>
+        <a href="#media">受限媒体</a>
+        <a href="#sources">来源与修订</a>
+      </div>
+      <details class="mobile-contents">
+        <summary>目录 · 历史简介</summary>
+        <nav aria-label="移动端熊猫档案章节">
+          <a href="#story">历史简介</a>
+          <a href="#timeline">生命记录</a>
+          <a href="#family">家族争议</a>
+          <a href="#footprint">最终足迹</a>
+          <a href="#media">受限媒体</a>
+          <a href="#sources">来源与修订</a>
+        </nav>
+      </details>
+    </nav>
+
+    <section class="section" id="story" aria-labelledby="story-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">01 · Historic reading</p>
+          <h2 class="section-title" id="story-title">历史档案先说明证据边界，再讲述生命</h2>
+        </div>
+        <p class="section-intro">本段文字全部是设计夹具。它只验证过去时态、约略日期和历史语境的阅读节奏。</p>
+      </div>
+      <div class="reading-column">
+        <p>现存记录只能把这只示例熊猫的出生时间定位在约 1982 年。不同历史资料使用了不一致的性别和亲本描述，因此档案不选择一个没有足够证据的“干净答案”。</p>
+        <p>2001 年是目前可公开呈现的死亡年份。页面使用“最终经核实地点”和“最后一条公开记录”，而不是“当前地点”或“现在生活在”。</p>
+      </div>
+      <p class="annotation">DESIGN FIXTURE · NOT PUBLISHED · 所有内容均为虚构状态示例。</p>
+    </section>
+
+    <section class="section section--paper" id="timeline" aria-labelledby="timeline-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">02 · Historic moments</p>
+          <h2 class="section-title" id="timeline-title">不完整的时间线，也能诚实地阅读</h2>
+        </div>
+        <p class="section-intro">约略日期使用文字表达，不伪造精确的 `datetime`。资料缺口本身可以成为公开覆盖说明。</p>
+      </div>
+
+      <ol class="timeline">
+        <li class="timeline-item">
+          <div class="timeline-year" aria-hidden="true">约 1982</div>
+          <div class="timeline-copy">
+            <span class="timeline-date">出生 · 日期约略 · 设计夹具</span>
+            <h3>出生记录只保留到年份范围</h3>
+            <p>原型不把约略年份编码成某个虚假的具体日期。</p>
+            <a class="evidence-link" href="#conflict-birth">查看日期候选范围</a>
+          </div>
+        </li>
+        <li class="timeline-item">
+          <div class="timeline-year" aria-hidden="true">1994</div>
+          <div class="timeline-copy">
+            <time class="timeline-date" datetime="1994">年级精度 · 机构记录 · 设计夹具</time>
+            <h3>出现一条可定位到机构的历史记录</h3>
+            <p>具体场所名称在夹具中省略，用来验证来源受限或地点只公开到机构级的状态。</p>
+          </div>
+        </li>
+        <li class="timeline-item">
+          <div class="timeline-year" aria-hidden="true">2001</div>
+          <div class="timeline-copy">
+            <time class="timeline-date" datetime="2001">死亡 · 年级精度 · 设计夹具</time>
+            <h3>最后一条公开生命记录</h3>
+            <p>死因未公开，因此页面不显示空的死因字段，也不进行推测。</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section" id="family" aria-labelledby="family-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">03 · Disputed relationship</p>
+          <h2 class="section-title" id="family-title">关系争议跟随关系本身出现</h2>
+        </div>
+        <p class="section-intro">谱系页负责完整路径。档案在个体视角中清楚显示候选关系、状态和来源数量。</p>
+      </div>
+
+      <div class="pathways">
+        <article class="pathway" style="background: var(--plum-pale);">
+          <p class="pathway-label">Family fixture</p>
+          <h3>亲本结论仍有争议</h3>
+          <ul class="relationships">
+            <li><span><strong>候选母亲 A</strong></span><small>有争议 · 2 个来源</small></li>
+            <li><span><strong>候选母亲 B</strong></span><small>有争议 · 1 个来源</small></li>
+            <li><span><strong>旧结论 C</strong></span><small>已取代 · 保留在修订记录</small></li>
+          </ul>
+          <p><a class="action" href="#conflict-family">展开候选值和断言标识</a></p>
+        </article>
+
+        <article class="pathway pathway--place" id="footprint">
+          <p class="pathway-label">Final known place</p>
+          <h3>只展示最终经核实地点</h3>
+          <ul class="journey-stops">
+            <li><span><strong>历史机构记录</strong><br>1994 至 2001</span><small>机构级精度 · 设计夹具</small></li>
+          </ul>
+          <p>没有足够精度时，不显示地图预览，也不推测坐标。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section--paper" id="media" aria-labelledby="media-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">04 · Restricted media</p>
+          <h2 class="section-title" id="media-title">知道影像存在，不等于可以展示</h2>
+        </div>
+        <p class="section-intro">受限状态可以公开原因类别、来源记录和复核时间，但不能暴露未授权文件、私有链接或内部审核备注。</p>
+      </div>
+      <div class="fixture-band" style="border-color: var(--plum); background: var(--plum-pale);">
+        <p class="fixture-band__label" style="color: var(--plum);">MEDIA STATE · RESTRICTED · DESIGN FIXTURE</p>
+        <h3>历史影像权利尚不允许公开展示</h3>
+        <p>页面不抓取外部缩略图，不用现代熊猫照片替代，也不把受限状态误写成加载错误。复核日期和公开原因类别进入来源与修订区。</p>
+      </div>
+    </section>
+
+    <section class="section" id="sources" aria-labelledby="sources-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">05 · Trust center</p>
+          <h2 class="section-title section-title--smaller" id="sources-title">历史记录需要更清楚的冲突和修订线索</h2>
+        </div>
+        <p class="section-intro">以下标识和来源全部是原型夹具，验证公开数据契约所需字段。</p>
+      </div>
+
+      <div class="trust-summary">
+        <div class="trust-stat"><strong>3</strong><span>夹具来源</span></div>
+        <div class="trust-stat"><strong>2</strong><span>争议结论</span></div>
+        <div class="trust-stat"><strong>1</strong><span>已取代结论</span></div>
+        <div class="trust-stat"><strong>受限</strong><span>历史媒体状态</span></div>
+      </div>
+
+      <div class="evidence-stack">
+        <details class="evidence" id="conflict-birth" open>
+          <summary>出生年份候选范围</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>当前公开显示</dt><dd>约 1982 年</dd>
+              <dt>候选值</dt><dd>1981, 1982, 1983</dd>
+              <dt>精度</dt><dd>approximate year range</dd>
+              <dt>说明</dt><dd>设计夹具，用于验证候选值和约略精度</dd>
+            </dl>
+          </div>
+        </details>
+        <details class="evidence" id="conflict-family">
+          <summary>亲本断言与旧结论</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>断言 A</dt><dd>fixture-assertion-a · disputed · source-fixture-1, source-fixture-2</dd>
+              <dt>断言 B</dt><dd>fixture-assertion-b · disputed · source-fixture-3</dd>
+              <dt>旧断言 C</dt><dd>fixture-assertion-c · superseded</dd>
+              <dt>前端规则</dt><dd>不根据 legacy father_id 或 mother_id 覆盖断言状态</dd>
+            </dl>
+          </div>
+        </details>
+        <details class="evidence">
+          <summary>受限媒体记录</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>媒体标识</dt><dd>fixture-media-historic-01</dd>
+              <dt>公开状态</dt><dd>restricted</dd>
+              <dt>原因类别</dt><dd>rights_review_required</dd>
+              <dt>不公开内容</dt><dd>文件 URL、私有权利文件、内部审核备注</dd>
+            </dl>
+          </div>
+        </details>
+        <details class="evidence" id="revisions">
+          <summary>修订历史</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>设计夹具版本</dt><dd>fixture-profile-v2-historic-01</dd>
+              <dt>最近修订</dt><dd>将“当前地点”改为“最终经核实地点”</dd>
+              <dt>已取代内容</dt><dd>旧亲本结论 C</dd>
+              <dt>生产限制</dt><dd>夹具数据不得进入公共 Release 或生成别名</dd>
+            </dl>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>熊猫档案 V2 · Historic/deceased fixture</span>
+      <span>全部数据为设计夹具 · 不用于生产</span>
+    </div>
+  </footer>
+</body>
+</html>

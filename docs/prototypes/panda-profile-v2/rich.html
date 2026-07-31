@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>喜伦 | 熊猫档案 V2 原型</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#overview" aria-label="吱熊猫首页">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>吱熊猫 ZhiPanda</span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="#overview" aria-current="page">熊猫档案</a>
+        <a href="#timeline">熊猫时光</a>
+        <a href="#family">家族故事</a>
+        <a href="#sources">来源</a>
+      </nav>
+    </div>
+  </header>
+
+  <aside class="release-banner" aria-label="原型数据说明"><strong>设计原型</strong> · 身份、事件、居住、家族和媒体来自公开版本 2026.07.24.2。标记为设计夹具的区域不代表已发布事实。</aside>
+
+  <main id="main-content">
+    <section class="profile-hero" id="overview" aria-labelledby="profile-title">
+      <figure class="hero-media">
+        <img
+          src="https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp"
+          srcset="https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w480.webp 480w, https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp 1200w"
+          sizes="(max-width: 767px) calc(100vw - 32px), 42vw"
+          width="1200"
+          height="800"
+          alt="喜伦在亚特兰大动物园的栖息地内坐着">
+        <figcaption class="media-caption">
+          <strong>喜伦在亚特兰大动物园</strong>
+          O01326 / Wikimedia Commons · CC BY-SA 4.0
+        </figcaption>
+      </figure>
+
+      <div class="hero-copy">
+        <div class="hero-context">
+          <a href="#">返回寻找熊猫</a>
+          <span aria-hidden="true">/</span>
+          <span>资料较完整</span>
+        </div>
+        <p class="eyebrow">Panda Profile · 熊猫档案</p>
+        <h1 class="profile-name" id="profile-title">喜伦</h1>
+        <p class="alternate-name" lang="en">Xi Lun · Xǐ Lún</p>
+        <p class="hero-summary">2016 年出生于亚特兰大的大熊猫。公开记录目前串联起出生、首次公开亮相，以及 2024 年前往成都的生活旅程。</p>
+        <p class="annotation">原型编辑说明：这段导语仅用于验证版式，由现有公开事件整理而成，不是已发布的正式熊猫简介。</p>
+        <div class="hero-actions" aria-label="档案主要操作">
+          <a class="action action--primary" href="#family">查看家族</a>
+          <a class="action" href="#timeline">看她的时光</a>
+          <a class="action" href="#footprint">沿着足迹走</a>
+        </div>
+      </div>
+
+      <aside class="current-rail" aria-label="当前状态">
+        <div>
+          <span class="status-chip">存活</span>
+          <p class="current-rail__label">当前经核实地点</p>
+          <p class="current-rail__value">成都大熊猫繁育研究基地</p>
+        </div>
+        <div>
+          <p class="current-rail__label">最后核实</p>
+          <p class="current-rail__value">2026.07.20</p>
+          <p class="current-rail__meta">地点按公开机构级精度呈现</p>
+        </div>
+      </aside>
+    </section>
+
+    <dl class="fact-baseline" aria-label="喜伦的核心资料">
+      <div class="fact">
+        <dt>出生</dt>
+        <dd><time datetime="2016-09-03">2016 年 9 月 3 日</time></dd>
+        <dd class="fact-note">日级精度 · 已确认</dd>
+      </div>
+      <div class="fact">
+        <dt>性别</dt>
+        <dd>暂无已审核记录</dd>
+        <dd class="fact-note">不根据名字或来源图片推断</dd>
+      </div>
+      <div class="fact">
+        <dt>父母</dt>
+        <dd><a href="#family">伦伦 · 洋洋</a></dd>
+        <dd class="fact-note">关系状态见家族章节</dd>
+      </div>
+      <div class="fact">
+        <dt>稳定身份</dt>
+        <dd>d24087cd…</dd>
+        <dd class="fact-note">完整标识在来源与修订中</dd>
+      </div>
+    </dl>
+
+    <nav class="chapter-nav" aria-label="熊猫档案章节">
+      <div class="chapter-nav__inner">
+        <a href="#story">认识喜伦</a>
+        <a href="#timeline">生命时光</a>
+        <a href="#family">家族</a>
+        <a href="#footprint">生活足迹</a>
+        <a href="#daily-life">日常与照护</a>
+        <a href="#media">影像</a>
+        <a href="#sources">来源与修订</a>
+      </div>
+      <details class="mobile-contents">
+        <summary>目录 · 认识喜伦</summary>
+        <nav aria-label="移动端熊猫档案章节">
+          <a href="#story">认识喜伦</a>
+          <a href="#timeline">生命时光</a>
+          <a href="#family">家族</a>
+          <a href="#footprint">生活足迹</a>
+          <a href="#daily-life">日常与照护</a>
+          <a href="#media">影像</a>
+          <a href="#sources">来源与修订</a>
+        </nav>
+      </details>
+    </nav>
+
+    <section class="section" id="story" aria-labelledby="story-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">01 · Story</p>
+          <h2 class="section-title" id="story-title">从亚特兰大，到成都</h2>
+        </div>
+        <p class="section-intro">档案的导语只概括已经发布的记录。正式产品没有经审核文本时，会省略本章节，不生成占位故事。</p>
+      </div>
+      <div class="reading-column">
+        <p>喜伦于 2016 年 9 月 3 日在亚特兰大动物园出生。公开事件记录显示，她在同年 12 月首次公开亮相。</p>
+        <p>2024 年 10 月，喜伦与其他大熊猫一同从亚特兰大前往中国。当前公开居住记录将成都大熊猫繁育研究基地标记为她的经核实地点。</p>
+      </div>
+      <p class="annotation">原型编辑说明：以上文本是从已发布事件和居住记录整理的版式夹具。正式发布仍需双语编辑审核和事实级来源绑定。</p>
+    </section>
+
+    <section class="section section--paper" id="timeline" aria-labelledby="timeline-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">02 · Moments</p>
+          <h2 class="section-title" id="timeline-title">生命中的三个时刻</h2>
+        </div>
+        <p class="section-intro">个人档案只保留有意义的短序列。完整时间浏览进入熊猫时光，并自动带上喜伦筛选条件。</p>
+      </div>
+
+      <ol class="timeline">
+        <li class="timeline-item">
+          <div class="timeline-year" aria-hidden="true">2016</div>
+          <div class="timeline-copy">
+            <time class="timeline-date" datetime="2016-09-03">9 月 3 日 · 出生 · 已完成</time>
+            <h3>在亚特兰大出生</h3>
+            <p>事件地点为亚特兰大动物园。日期按日级精度发布。</p>
+            <a class="evidence-link" href="#source-birth">2 个公开来源</a>
+          </div>
+        </li>
+        <li class="timeline-item">
+          <div class="timeline-year" aria-hidden="true">2016</div>
+          <div class="timeline-copy">
+            <time class="timeline-date" datetime="2016-12-27">12 月 27 日 · 公开亮相 · 已完成</time>
+            <h3>第一次与公众见面</h3>
+            <p>公开事件保留实际发生日期，不与新闻发布日期混合。</p>
+            <a class="evidence-link" href="#source-debut">查看事件来源</a>
+          </div>
+        </li>
+        <li class="timeline-item">
+          <div class="timeline-year" aria-hidden="true">2024</div>
+          <div class="timeline-copy">
+            <time class="timeline-date" datetime="2024-10-12">10 月 12 日 · 迁移 · 已完成</time>
+            <h3>从亚特兰大启程前往成都</h3>
+            <p>该事件改变当前居住记录。地点跳转使用已发布机构和场所，不推测更精确坐标。</p>
+            <a class="evidence-link" href="#source-transfer">查看迁移来源</a>
+          </div>
+        </li>
+      </ol>
+
+      <a class="action" href="#">在熊猫时光中查看喜伦的全部事件</a>
+    </section>
+
+    <section class="section" id="family" aria-labelledby="family-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">03 · Family and places</p>
+          <h2 class="section-title" id="family-title">家族与生活足迹，是两条继续探索的路</h2>
+        </div>
+        <p class="section-intro">档案只提供个体视角的摘要。谱系负责关系路径，地图和场所页负责空间深读。</p>
+      </div>
+
+      <div class="pathways">
+        <article class="pathway">
+          <p class="pathway-label">Family pathway</p>
+          <h3>从父母开始认识她的家族</h3>
+          <p>关系状态与来源直接跟随每一位亲属。完整结构进入谱系页。</p>
+          <ul class="relationships">
+            <li><span><strong>母亲</strong> · <a href="#">伦伦 Lun Lun</a></span><small>已确认 · 关系来源可查</small></li>
+            <li><span><strong>父亲</strong> · <a href="#">洋洋 Yang Yang</a></span><small>已确认 · 关系来源可查</small></li>
+          </ul>
+          <p><a class="action action--primary" href="#">打开喜伦的谱系</a></p>
+        </article>
+
+        <article class="pathway pathway--place" id="footprint">
+          <p class="pathway-label">Place pathway</p>
+          <h3>两座城市构成当前公开足迹</h3>
+          <ul class="journey-stops">
+            <li><span><strong>亚特兰大</strong><br>2016.09.03 至 2024.10.12</span><small>亚特兰大动物园</small></li>
+            <li><span><strong>成都</strong><br>自 2024.10.13</span><small>当前经核实机构</small></li>
+          </ul>
+          <p><a class="action" href="#">在地图中查看场所</a></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section--paper" id="daily-life" aria-labelledby="daily-life-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">04 · Future capacity</p>
+          <h2 class="section-title" id="daily-life-title">日常、成长与照护，不应该变成一排事实卡</h2>
+        </div>
+        <p class="section-intro">这一章节只验证未来公开数据的呈现方式。当前公开版本没有可用于本章节的喜伦事实。</p>
+      </div>
+
+      <div class="fixture-band">
+        <p class="fixture-band__label">DESIGN FIXTURE · NOT PUBLISHED · 不代表喜伦事实</p>
+        <h3>主题章节由审核后的原子事实和编辑导语组成</h3>
+        <p>正式页面可以在这里组合行为观察、偏好、环境丰容、成长测量或照护记录，但每一条内容仍需保留日期、精度、状态、单位和来源。没有审核数据时，整个章节消失，不显示空卡片。</p>
+        <details class="evidence">
+          <summary>查看夹具所需的证据结构</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>事实标识</dt><dd>stable fact ID</dd>
+              <dt>类别</dt><dd>controlled public category</dd>
+              <dt>观察日期</dt><dd>date plus precision</dd>
+              <dt>结论状态</dt><dd>confirmed, provisional, disputed, or superseded</dd>
+              <dt>来源</dt><dd>one or more public source IDs</dd>
+            </dl>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section" id="media" aria-labelledby="media-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">05 · Media</p>
+          <h2 class="section-title" id="media-title">影像是生命记录，也是有边界的授权内容</h2>
+        </div>
+        <p class="section-intro">图片、替代文本、署名、权利、来源 URL 和发布版本保持为同一个公开媒体记录。</p>
+      </div>
+
+      <div class="media-sequence">
+        <figure class="media-frame">
+          <img
+            src="https://api.zhipanda.com/media/releases/2026.07.21.1/media-xi-lun-de9774371d2f2427-w1200.webp"
+            width="1200"
+            height="800"
+            loading="lazy"
+            alt="喜伦在亚特兰大动物园的栖息地内坐着">
+        </figure>
+        <aside class="media-note">
+          <h3>这张图片为什么可以展示</h3>
+          <p>媒体已经进入公开发布流程，并提供本站托管的响应式衍生版本。</p>
+          <ul>
+            <li>署名：O01326 / Wikimedia Commons</li>
+            <li>许可：CC BY-SA 4.0</li>
+            <li>状态：available</li>
+            <li>公开版本：2026.07.21.1</li>
+          </ul>
+          <p><a href="https://commons.wikimedia.org/wiki/File:Xi_Lun_at_Zoo_Atlanta.jpg">打开原始来源页面</a></p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section--paper" id="sources" aria-labelledby="sources-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">06 · Trust center</p>
+          <h2 class="section-title section-title--smaller" id="sources-title">来源、冲突与修订，在需要确认时展开</h2>
+        </div>
+        <p class="section-intro">默认视图提供信任摘要。完整来源和版本记录仍是服务端渲染内容。</p>
+      </div>
+
+      <div class="trust-summary">
+        <div class="trust-stat"><strong>4</strong><span>档案公开来源</span></div>
+        <div class="trust-stat"><strong>2026.07.20</strong><span>最后核实地点</span></div>
+        <div class="trust-stat"><strong>1.2.0</strong><span>公开数据结构</span></div>
+        <div class="trust-stat"><strong>0</strong><span>本原型展示的争议结论</span></div>
+      </div>
+
+      <div class="evidence-stack">
+        <details class="evidence" id="source-birth">
+          <summary>出生与命名来源</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>来源标识</dt><dd>src_zooatlanta_cubs_birth, src_zooatlanta_twins_names</dd>
+              <dt>支持内容</dt><dd>出生日期、出生机构和命名相关事件</dd>
+              <dt>访问状态</dt><dd>以公开来源记录为准</dd>
+            </dl>
+          </div>
+        </details>
+        <details class="evidence" id="source-debut">
+          <summary>首次公开亮相来源</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>来源标识</dt><dd>src_zooatlanta_2016_public_debut</dd>
+              <dt>事件日期</dt><dd>2016-12-27</dd>
+              <dt>事件状态</dt><dd>completed</dd>
+            </dl>
+          </div>
+        </details>
+        <details class="evidence" id="source-transfer">
+          <summary>迁移与成都居住来源</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>来源标识</dt><dd>src_zooatlanta_arrival_china_2024</dd>
+              <dt>迁移日期</dt><dd>2024-10-12</dd>
+              <dt>当前居住开始</dt><dd>2024-10-13</dd>
+              <dt>地点精度</dt><dd>公开机构和场所级，不推测具体馆舍或坐标</dd>
+            </dl>
+          </div>
+        </details>
+        <details class="evidence" id="revisions">
+          <summary>资料版本与稳定身份</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>稳定身份</dt><dd>d24087cd-70d6-5902-92dd-ecc95186937b</dd>
+              <dt>资料版本</dt><dd>2026.07.24.2</dd>
+              <dt>公开数据结构</dt><dd>1.2.0</dd>
+              <dt>媒体版本</dt><dd>2026.07.21.1</dd>
+            </dl>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>熊猫档案 V2 · Rich profile prototype</span>
+      <span>不用于生产 · Verification deferred to #234</span>
+    </div>
+  </footer>
+</body>
+</html>

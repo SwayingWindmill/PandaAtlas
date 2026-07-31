@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>轮辉 | 熊猫档案 V2 稀疏状态原型</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#overview" aria-label="吱熊猫首页">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>吱熊猫 ZhiPanda</span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="#overview" aria-current="page">熊猫档案</a>
+        <a href="#timeline">熊猫时光</a>
+        <a href="#sources">来源</a>
+      </nav>
+    </div>
+  </header>
+
+  <aside class="release-banner" aria-label="原型数据说明"><strong>稀疏资料原型</strong> · 轮辉的身份、出生事件和来源来自公开版本 2026.07.24.2。页面不会生成缺失的简介、家族、地点或图片。</aside>
+
+  <main id="main-content">
+    <section class="profile-hero" id="overview" aria-labelledby="profile-title">
+      <div class="hero-media" role="img" aria-label="当前没有轮辉的可公开授权影像">
+        <div class="no-media">
+          <div class="no-media__copy">
+            <strong>暂无可公开授权影像</strong>
+            <p>页面不会使用来源不明、其他熊猫或未经许可的图片替代。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+        <div class="hero-context">
+          <a href="#">返回寻找熊猫</a>
+          <span aria-hidden="true">/</span>
+          <span>基础资料</span>
+        </div>
+        <p class="eyebrow">Panda Profile · 熊猫档案</p>
+        <h1 class="profile-name" id="profile-title">轮辉</h1>
+        <p class="alternate-name" lang="en">Lun Hui / Wu Wu</p>
+        <p class="hero-summary">当前公开档案可以确认轮辉的身份、出生日期、性别和出生事件。其他生平资料仍在审核与整理范围之外。</p>
+        <div class="hero-actions" aria-label="档案主要操作">
+          <a class="action action--primary" href="#timeline">查看已发布时光</a>
+          <a class="action" href="#sources">核对来源</a>
+          <a class="action" href="#">关注轮辉</a>
+        </div>
+      </div>
+
+      <aside class="current-rail" aria-label="当前状态">
+        <div>
+          <span class="status-chip">存活</span>
+          <p class="current-rail__label">当前地点</p>
+          <p class="current-rail__value">暂无已审核记录</p>
+        </div>
+        <div>
+          <p class="current-rail__label">资料层级</p>
+          <p class="current-rail__value">Identity first pass</p>
+          <p class="current-rail__meta">缺失地点不会从出生事件自动推导</p>
+        </div>
+      </aside>
+    </section>
+
+    <dl class="fact-baseline" aria-label="轮辉的核心资料">
+      <div class="fact">
+        <dt>出生</dt>
+        <dd><time datetime="2021-07-25">2021 年 7 月 25 日</time></dd>
+        <dd class="fact-note">日级精度 · 已确认</dd>
+      </div>
+      <div class="fact">
+        <dt>性别</dt>
+        <dd>雄性</dd>
+        <dd class="fact-note">公开身份记录</dd>
+      </div>
+      <div class="fact">
+        <dt>父母</dt>
+        <dd>暂无已发布关系</dd>
+        <dd class="fact-note">不从名字或其他页面推断</dd>
+      </div>
+      <div class="fact">
+        <dt>稳定身份</dt>
+        <dd>09ebb49d…</dd>
+        <dd class="fact-note">完整标识在来源与修订中</dd>
+      </div>
+    </dl>
+
+    <nav class="chapter-nav" aria-label="熊猫档案章节">
+      <div class="chapter-nav__inner">
+        <a href="#timeline">生命时光</a>
+        <a href="#media">影像状态</a>
+        <a href="#sources">来源与修订</a>
+      </div>
+      <details class="mobile-contents">
+        <summary>目录 · 已发布资料</summary>
+        <nav aria-label="移动端熊猫档案章节">
+          <a href="#timeline">生命时光</a>
+          <a href="#media">影像状态</a>
+          <a href="#sources">来源与修订</a>
+        </nav>
+      </details>
+    </nav>
+
+    <section class="section" id="timeline" aria-labelledby="timeline-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">01 · Published moment</p>
+          <h2 class="section-title" id="timeline-title">目前只有一个已发布时刻</h2>
+        </div>
+        <p class="section-intro">稀疏档案不补齐虚构章节，也不把一个事件包装成完整生平。</p>
+      </div>
+
+      <ol class="timeline">
+        <li class="timeline-item">
+          <div class="timeline-year" aria-hidden="true">2021</div>
+          <div class="timeline-copy">
+            <time class="timeline-date" datetime="2021-07-25">7 月 25 日 · 出生 · 已完成</time>
+            <h3>在成都大熊猫繁育研究基地出生</h3>
+            <p>出生事件由中英文公开来源支持。该事件地点不自动成为当前地点。</p>
+            <a class="evidence-link" href="#source-birth">查看 2 个出生来源</a>
+          </div>
+        </li>
+      </ol>
+
+      <div class="sparse-callout">
+        <h2>资料少，不等于页面坏了</h2>
+        <p>正式页面只显示已经有意义的模块。轮辉当前没有公开简介、家族关系、居住记录或托管媒体，因此这些章节不进入目录。</p>
+        <p><a class="action" href="#">帮助补充公开来源</a></p>
+      </div>
+    </section>
+
+    <section class="section section--paper" id="media" aria-labelledby="media-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">02 · Media state</p>
+          <h2 class="section-title" id="media-title">无图状态仍然是完整设计</h2>
+        </div>
+        <p class="section-intro">这里展示的是明确的许可状态，不是加载失败。若未来只有来源链接，页面会显示来源链接而不复制图片。</p>
+      </div>
+      <div class="fixture-band" style="border-color: var(--bamboo); background: var(--bamboo-pale);">
+        <p class="fixture-band__label" style="color: var(--bamboo-dark);">PUBLIC MEDIA STATE · NO LICENSED MEDIA</p>
+        <h3>暂无可公开授权影像</h3>
+        <p>轮辉的公开记录当前不包含本站可托管的媒体。身份舞台改用排版和结构化状态，而不是空白图片框或替代熊猫照片。</p>
+      </div>
+    </section>
+
+    <section class="section" id="sources" aria-labelledby="sources-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">03 · Trust center</p>
+          <h2 class="section-title section-title--smaller" id="sources-title">少量资料，也必须有清晰来源</h2>
+        </div>
+        <p class="section-intro">来源、访问状态、最后核实时间和版本信息不会因为页面稀疏而隐藏。</p>
+      </div>
+
+      <div class="trust-summary">
+        <div class="trust-stat"><strong>4</strong><span>公开来源</span></div>
+        <div class="trust-stat"><strong>2</strong><span>出生事件直接来源</span></div>
+        <div class="trust-stat"><strong>1.2.0</strong><span>公开数据结构</span></div>
+        <div class="trust-stat"><strong>0</strong><span>托管媒体</span></div>
+      </div>
+
+      <div class="evidence-stack">
+        <details class="evidence" id="source-birth" open>
+          <summary>出生事件来源</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>中文来源</dt><dd><a href="https://www.panda.org.cn/cn/culture/activities/2023-07-07/6594.html">2021 年新生大熊猫幼仔档案</a></dd>
+              <dt>英文来源</dt><dd><a href="https://www.panda.org.cn/en/culture/activities/2023-09-19/8165.html">2021 Newborn Giant Panda Profiles</a></dd>
+              <dt>最后核实</dt><dd>2026-07-24</dd>
+              <dt>访问状态</dt><dd>accessible</dd>
+            </dl>
+          </div>
+        </details>
+        <details class="evidence" id="revisions">
+          <summary>资料版本与稳定身份</summary>
+          <div class="evidence-body">
+            <dl>
+              <dt>稳定身份</dt><dd>09ebb49d-7bbe-56d1-8059-f5008338eab7</dd>
+              <dt>资料版本</dt><dd>2026.07.24.2</dd>
+              <dt>公开数据结构</dt><dd>1.2.0</dd>
+              <dt>资料层级</dt><dd>identity_first_pass</dd>
+            </dl>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>熊猫档案 V2 · Sparse profile prototype</span>
+      <span>不用于生产 · Verification deferred to #234</span>
+    </div>
+  </footer>
+</body>
+</html>
