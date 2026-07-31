@@ -11,6 +11,7 @@ import {
 import { Link, Route } from "react-router-dom";
 
 import { adminSessionFailureDestination } from "@/components/admin/admin-session-navigation";
+import { ArchiveWorkbench } from "@/components/admin/archive-workbench";
 import { ReviewCaseWorkbench } from "@/components/admin/review-case-workbench";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
@@ -210,6 +211,23 @@ function CapabilityDashboard() {
             </ul>
           </section>
 
+          {session.capabilities.includes("archive.workbench.read") ? (
+            <section className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2" aria-labelledby="archive-workbench-heading">
+              <h2 id="archive-workbench-heading" className="text-xl font-bold text-stone-950">
+                Trusted Archive
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                检查完整 Diff、来源、验证、媒体权利、公开影响、投影滞后与紧急跟进，并通过显式 FastAPI 命令验证、发布、修正、回滚或控制 cutover。
+              </p>
+              <Link
+                to="/archive"
+                className="mt-4 inline-flex min-h-11 items-center rounded-md bg-stone-950 px-4 py-2 text-sm font-semibold text-white"
+              >
+                打开 Archive 工作台
+              </Link>
+            </section>
+          ) : null}
+
           {session.capabilities.includes("review.case.read") ? (
             <section className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2" aria-labelledby="review-workbench-heading">
               <h2 id="review-workbench-heading" className="text-xl font-bold text-stone-950">
@@ -244,6 +262,7 @@ export function ReactAdminShell() {
     >
       <CustomRoutes>
         <Route path="/" element={<CapabilityDashboard />} />
+        <Route path="/archive" element={<ArchiveWorkbench />} />
         <Route path="/reviews" element={<ReviewCaseWorkbench />} />
       </CustomRoutes>
     </Admin>
