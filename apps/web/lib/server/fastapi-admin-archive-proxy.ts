@@ -20,6 +20,27 @@ function privateHeaders(response: Response): Headers {
   return headers;
 }
 
+function normalizeArchiveCommandBody(pathSegments: string[], rawBody: string): string {
+  if (pathSegments.join("/") !== "operations/corrections" || !rawBody) {
+    return rawBody;
+  }
+  try {
+    const payload = JSON.parse(rawBody) as {
+      activity_descriptor?: { activity_type?: unknown };
+    };
+    const activityType = payload.activity_descriptor?.activity_type;
+    if (
+      activityType === "archive.profile.corrected" ||
+      activityType === "archive.profile.retracted"
+    ) {
+      payload.activity_descriptor!.activity_type = "archive.profile_corrected";
+    }
+    return JSON.stringify(payload);
+  } catch {
+    return rawBody;
+  }
+}
+
 export async function proxyAdminArchiveRequest(
   request: NextRequest,
   pathSegments: string[],
@@ -48,7 +69,8 @@ export async function proxyAdminArchiveRequest(
   });
   let body: string | undefined;
   if (request.method !== "GET" && request.method !== "HEAD") {
-    body = await request.text();
+    const rawBody = await request.text();
+    body = normalizeArchiveCommandBody(pathSegments, rawBody);
     if (body) {
       headers.set("Content-Type", request.headers.get("content-type") ?? "application/json");
     }
