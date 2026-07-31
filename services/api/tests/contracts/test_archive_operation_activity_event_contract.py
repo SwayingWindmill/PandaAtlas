@@ -25,13 +25,16 @@ def test_correction_and_retraction_emit_activity_source_events() -> None:
 
 def test_activity_event_is_transactional_and_notification_safe() -> None:
     sql = MIGRATION.read_text(encoding="utf-8").lower()
+    outbox_insert = sql.split("insert into integration.outbox_events", 1)[1].split(
+        "insert into public.archive_operation_activity_events", 1
+    )[0]
 
     assert "after insert on public.archive_operation_records" in sql
     assert "archive-operation-activity:" in sql
     assert "source_version" in sql
-    assert "notification" not in sql.split(
-        "insert into integration.outbox_events", 1
-    )[1].split("insert into public.archive_operation_activity_events", 1)[0]
+    assert "archive.activity.corrected" in outbox_insert
+    assert "archive.activity.retracted" in outbox_insert
+    assert "'notification." not in outbox_insert
     assert "activity.item.corrected/retracted" in sql
 
 
