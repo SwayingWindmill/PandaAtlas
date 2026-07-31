@@ -63,14 +63,61 @@ export async function runMapCloseGate() {
     reportDir: releaseReportDir,
     steps: [
       {
+        id: "archive-governance-evidence",
+        label: "Issue #196 single-accountable Archive governance evidence package",
+        run: () => runCommand("node", ["scripts/release/validate-archive-governance-evidence.mjs"]),
+      },
+      {
+        id: "archive-governance-inventory",
+        label: "Exhaustive four-eyes inventory and superseding ADR contract",
+        dependsOn: ["archive-governance-evidence"],
+        run: () => runCommand("npm", ["run", "check:archive-governance-migration"]),
+      },
+      {
+        id: "archive-governance-contracts",
+        label: "Accountable publication, Archive operation, and workbench contracts",
+        dependsOn: ["archive-governance-evidence", "archive-governance-inventory"],
+        run: () =>
+          runCommand(
+            "uv",
+            [
+              ...uvRunPrefix,
+              "pytest",
+              "-q",
+              "tests/archive_publication",
+              "tests/archive_operations",
+              "tests/archive_workbench",
+              "tests/contracts/test_accountable_publication_storage_contract.py",
+              "tests/contracts/test_accountable_publication_openapi_contract.py",
+              "tests/contracts/test_accountable_archive_operations_openapi_contract.py",
+              "tests/contracts/test_archive_workbench_storage_contract.py",
+              "tests/contracts/test_archive_workbench_openapi_contract.py",
+            ],
+            { cwd: apiDir, env: apiReleaseEnv },
+          ),
+      },
+      {
+        id: "archive-governance-web-contracts",
+        label: "Bounded Archive workbench, cutover, and evidence source contracts",
+        dependsOn: ["archive-governance-evidence"],
+        run: () =>
+          runCommand("node", [
+            "--test",
+            "scripts/release/tests/archive-governance-evidence.test.mjs",
+            "scripts/release/tests/archive-governance-migration.test.mjs",
+            "scripts/release/tests/archive-workbench.test.mjs",
+          ]),
+      },
+      {
         id: "structured-contribution-evidence",
         label: "Issue #193 structured contribution evidence package",
+        dependsOn: ["archive-governance-evidence"],
         run: () => runCommand("node", ["scripts/release/validate-structured-contribution-evidence.mjs"]),
       },
       {
         id: "notification-center-budget",
         label: "Private notification center performance budget",
-        dependsOn: ["structured-contribution-evidence"],
+        dependsOn: ["structured-contribution-evidence", "archive-governance-evidence"],
         run: () => runCommand("npm", ["run", "check:notification-center-budget"]),
       },
       {
@@ -81,7 +128,7 @@ export async function runMapCloseGate() {
       {
         id: "supabase-foundation-contracts",
         label: "Supabase/PostGIS/PGMQ foundation contracts",
-        dependsOn: ["structured-contribution-evidence"],
+        dependsOn: ["structured-contribution-evidence", "archive-governance-evidence"],
         run: () =>
           runCommand(
             "uv",
@@ -99,7 +146,7 @@ export async function runMapCloseGate() {
       {
         id: "identity-engagement-contracts",
         label: "Identity, capability, Follow, consent, and Passport contracts",
-        dependsOn: ["structured-contribution-evidence"],
+        dependsOn: ["structured-contribution-evidence", "archive-governance-evidence"],
         run: () =>
           runCommand(
             "uv",
@@ -117,7 +164,7 @@ export async function runMapCloseGate() {
       {
         id: "secure-web-boundary",
         label: "Public/admin bundle, browser-write, and legacy Saved boundary",
-        dependsOn: ["structured-contribution-evidence"],
+        dependsOn: ["structured-contribution-evidence", "archive-governance-evidence"],
         run: () => runCommand("node", ["scripts/release/check-secure-engagement-boundary.mjs"]),
       },
       {
@@ -141,7 +188,7 @@ export async function runMapCloseGate() {
       {
         id: "published-return-loop-browser",
         label: "Published Activity, private Inbox, preference, and mobile browser journey",
-        dependsOn: ["secure-web-boundary", "identity-engagement-contracts"],
+        dependsOn: ["secure-web-boundary", "identity-engagement-contracts", "archive-governance-contracts"],
         run: () =>
           runCommand(
             "npm",
@@ -159,7 +206,7 @@ export async function runMapCloseGate() {
       {
         id: "admin-shell-browser",
         label: "Bounded React-admin shell, headers, keyboard, and WCAG",
-        dependsOn: ["secure-web-boundary"],
+        dependsOn: ["secure-web-boundary", "archive-governance-web-contracts"],
         run: () =>
           runCommand("npm", ["run", "test:admin-shell", "-w", "web"], {
             env: playwrightEnv,
