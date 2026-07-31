@@ -55,6 +55,9 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(mapClose, /archive-governance-web-contracts/);
   assert.match(mapClose, /archive-governance-evidence\.test\.mjs/);
   assert.match(mapClose, /archive-workbench\.test\.mjs/);
+  assert.match(mapClose, /admin-bundle-budget/);
+  assert.match(mapClose, /check-admin-bundle-budget\.mjs/);
+  assert.match(mapClose, /mobile, keyboard, and WCAG/);
   assert.match(
     mapClose,
     /dependsOn: \["archive-governance-evidence", "archive-governance-inventory"\]/,
