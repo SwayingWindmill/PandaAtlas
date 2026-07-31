@@ -1349,6 +1349,8 @@ class NotificationRepository:
             "notification_link",
             "active_revision_number",
         }
+        if event.event_type == "community.submission.contributor_status_changed":
+            allowed_keys.discard("account_id")
         return {
             "event_type": event.event_type,
             "occurred_at": event.occurred_at.isoformat(),
