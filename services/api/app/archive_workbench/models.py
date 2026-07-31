@@ -96,8 +96,6 @@ class ArchiveWorkbenchDetailRead(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     item: ArchiveWorkbenchItemRead
-    current_archive_release_id: UUID | None
-    current_public_release_id: UUID | None
     current_archive_version: str
     current_public_version: str
     change_set_id: UUID | None
