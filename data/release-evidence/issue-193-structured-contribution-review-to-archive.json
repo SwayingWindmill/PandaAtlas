@@ -54,8 +54,8 @@
           "status": "covered",
           "acceptance": "Attachment storage remains private, bounded, auditable, recoverable, and separate from public Archive state until release projection.",
           "evidence_refs": [
-            "infra/supabase/migrations/0018_community_intake.sql",
-            "scripts/run_postgres_attachment_recovery_drill.py"
+            "infra/supabase/migrations/0016_community_intake_persistence.sql",
+            "services/api/scripts/run_postgres_attachment_recovery_drill.py"
           ],
           "gate_commands": [
             "npm run drill:postgres-attachment-recovery"
@@ -149,7 +149,7 @@
           "acceptance": "Recovery drills, rollback switches, staging evidence, and immutable release-gate manifests are recorded before #174 closes.",
           "evidence_refs": [
             "scripts/release/map-close-evidence.mjs",
-            "scripts/run_identity_engagement_recovery_drill.py"
+            "services/api/scripts/run_identity_engagement_recovery_drill.py"
           ],
           "gate_commands": [
             "npm run drill:identity-engagement-recovery",
