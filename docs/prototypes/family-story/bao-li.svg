@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="宝力 Bao Li 授权影像原型占位">
+<rect width="1200" height="900" fill="#e9e5d8"/>
+<circle cx="600" cy="420" r="235" fill="#fffaf0" stroke="#17332a" stroke-width="18"/>
+<ellipse cx="455" cy="335" rx="92" ry="118" fill="#17332a"/>
+<ellipse cx="745" cy="335" rx="92" ry="118" fill="#17332a"/>
+<ellipse cx="600" cy="515" rx="125" ry="92" fill="#17332a"/>
+<circle cx="510" cy="420" r="25" fill="#fffaf0"/>
+<circle cx="690" cy="420" r="25" fill="#fffaf0"/>
+<rect x="120" y="730" width="960" height="92" rx="46" fill="#176f50"/>
+<text x="600" y="785" text-anchor="middle" font-size="48" font-family="sans-serif" font-weight="700" fill="#fffaf0">宝力 Bao Li</text>
+<text x="600" y="855" text-anchor="middle" font-size="28" font-family="sans-serif" fill="#51675e">授权发布媒体的版式占位</text>
+</svg>
