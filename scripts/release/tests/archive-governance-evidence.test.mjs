@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+import { validateArchiveGovernanceInventory } from "../check-archive-governance-migration.mjs";
 import {
   ArchiveGovernanceEvidenceError,
   requiredIssue196Blockers,
@@ -29,6 +30,15 @@ test("issue 196 evidence matrix covers every required Archive governance categor
   assert.equal(summary.blocker_count, requiredIssue196Blockers.length);
   assert.ok(summary.rollback_switch_count >= 6);
   assert.ok(summary.artifact_count >= 5);
+});
+
+test("issue 196 final inventory has no unclassified four-eyes governance path", () => {
+  const summary = validateArchiveGovernanceInventory();
+
+  assert.equal(summary.status, "PASS");
+  assert.equal(summary.issue, 190);
+  assert.ok(summary.inventory_entries >= 27);
+  assert.ok(summary.detected_paths.length > 0);
 });
 
 test("issue 196 evidence validator fails closed for incomplete scenarios", async () => {
