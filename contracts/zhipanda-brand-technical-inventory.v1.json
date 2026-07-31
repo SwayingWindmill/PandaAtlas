@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "inventory": [
+    {
+      "path": "data/release-evidence/issue-196-single-accountable-archive-governance.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "#196 Archive governance map close",
+      "expected_action": "retain-compatibility",
+      "rationale": "Immutable evidence paths retain the repository and canonical contract filename as technical identifiers; this content is not public product copy.",
+      "matches": {
+        "panda-atlas": 8
+      }
+    },
+    {
+      "path": "docs/release/issue-196-single-accountable-archive-governance.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "#196 Archive governance map close",
+      "expected_action": "retain-compatibility",
+      "rationale": "The operator evidence document records canonical artifact filenames and repository paths, not user-facing brand copy.",
+      "matches": {
+        "panda-atlas": 3
+      }
+    },
+    {
+      "path": "scripts/release/map-close.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The release gate emits the canonical OpenAPI artifact under its compatibility filename.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/map-close-config.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The configuration contract pins the canonical OpenAPI artifact filename used by release automation.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/map-close-evidence.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The evidence test verifies canonical compatibility artifact names and their checksum records.",
+      "matches": {
+        "panda-atlas": 5
+      }
+    },
+    {
+      "path": "services/api/openapi/panda-atlas-v1.manifest.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The manifest names the established canonical OpenAPI contract file retained for API compatibility.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/scripts/build_archive_governance_openapi.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The assembler reads and writes canonical API compatibility filenames; it does not expose public product copy.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    },
+    {
+      "path": "services/api/tests/contracts/test_archive_governance_canonical_openapi.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The contract test pins canonical API compatibility filenames and their portable bundle behavior.",
+      "matches": {
+        "panda-atlas": 2
+      }
+    }
+  ]
+}
