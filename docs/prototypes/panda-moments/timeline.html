@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1997—2024 亚特兰大家族 | 熊猫时光原型</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="calendar.html" aria-label="吱熊猫首页">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>吱熊猫 ZhiPanda</span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="../panda-profile-v2/rich.html">熊猫档案</a>
+        <a href="timeline.html" aria-current="page">熊猫时光</a>
+        <a href="calendar.html">日历</a>
+        <a href="#trust">来源</a>
+      </nav>
+    </div>
+  </header>
+
+  <aside class="release-note" aria-label="原型数据说明">
+    <strong>公开数据原型</strong> · 八个唯一事件来自公开版本 2026.07.24.2。共享事件只显示一次；同日相关但 ID 不同的事件只做明确分组，不自动合并。
+  </aside>
+
+  <main id="main-content">
+    <section class="date-stage" aria-labelledby="page-title">
+      <div class="date-lockup">
+        <div>
+          <p class="date-kicker">Selected period · 选中时期</p>
+          <div class="date-number" aria-hidden="true" style="font-size:clamp(5rem,10vw,9rem)">27</div>
+          <p class="date-month">年 · 1997—2024</p>
+          <p class="date-meta">从伦伦、洋洋的出生记录，到四只熊猫离开亚特兰大</p>
+        </div>
+        <div class="date-controls">
+          <a class="action" href="timeline.html?from=1990-01-01&amp;to=1996-12-31">更早时期</a>
+          <a class="action action--time" href="timeline.html?from=1997-01-01&amp;to=2024-12-31">当前时期</a>
+          <a class="action" href="timeline.html?from=2025-01-01&amp;to=2026-12-31">之后</a>
+        </div>
+      </div>
+
+      <div class="stage-copy">
+        <p class="date-kicker">Panda Almanac · Timeline</p>
+        <h1 id="page-title">熊猫时光：亚特兰大家族</h1>
+        <p class="lead">时间线把分散在四只熊猫档案中的十二条引用还原成八个唯一事件，并按六个日期分组阅读，保留参与者、地点变化、来源发布日期和最后核实时间。</p>
+        <p>本原型使用“家族参与者 + 亚特兰大机构脉络”组合筛选。同日同来源的独立事件只做分组，不自动合并，也不根据共同参与推断未发布家族关系。</p>
+      </div>
+
+      <aside class="stage-rail" aria-label="当前查询摘要">
+        <div class="stage-stat"><span class="stage-stat__label">唯一事件</span><p class="stage-stat__value">8 个</p><p class="stage-stat__note">按稳定事件 ID 去重</p></div>
+        <div class="stage-stat"><span class="stage-stat__label">日期分组</span><p class="stage-stat__value">6 组</p><p class="stage-stat__note">分组不改变事件身份</p></div>
+        <div class="stage-stat"><span class="stage-stat__label">旧数组引用</span><p class="stage-stat__value">12 条</p><p class="stage-stat__note">不作为结果数量</p></div>
+      </aside>
+    </section>
+
+    <nav class="query-bar" aria-label="时光视图">
+      <div class="query-bar__inner">
+        <div class="view-switch">
+          <a href="calendar.html?month=2024-10">日历</a>
+          <a href="timeline.html?from=1997-01-01&amp;to=2024-12-31" aria-current="page">时间线</a>
+          <a href="timeline.html?view=list&amp;from=1997-01-01&amp;to=2024-12-31">列表</a>
+        </div>
+        <p class="query-summary"><strong>1997—2024</strong> · 8 个唯一事件 · 6 个日期分组 · 升序</p>
+      </div>
+    </nav>
+
+    <section class="filter-field" aria-labelledby="filter-title">
+      <h2 id="filter-title" class="section-kicker">筛选当前时期</h2>
+      <form class="filter-form" action="timeline.html" method="get">
+        <div class="field"><label for="from">开始日期</label><input id="from" name="from" type="date" value="1997-01-01"></div>
+        <div class="field"><label for="to">结束日期</label><input id="to" name="to" type="date" value="2024-12-31"></div>
+        <div class="field"><label for="institution">机构脉络</label><select id="institution" name="institution"><option value="institution-zoo-atlanta" selected>亚特兰大动物园</option><option value="">全部机构</option></select></div>
+        <div class="field"><label for="event-type">事件类型</label><select id="event-type" name="event_type"><option value="" selected>全部类型</option><option value="birth">出生</option><option value="arrival">抵达</option><option value="transfer">迁移</option></select></div>
+        <div class="field"><label for="sort">排序</label><select id="sort" name="sort"><option value="asc" selected>从早到晚</option><option value="desc">从晚到早</option></select></div>
+        <div class="filter-actions"><button class="action action--primary" type="submit">应用</button><a class="action" href="timeline.html">清除</a></div>
+      </form>
+      <details class="mobile-filter">
+        <summary>筛选 · 当前：亚特兰大家族，1997—2024</summary>
+        <form class="filter-form" action="timeline.html" method="get">
+          <div class="field"><label for="m-from">开始日期</label><input id="m-from" name="from" type="date" value="1997-01-01"></div>
+          <div class="field"><label for="m-to">结束日期</label><input id="m-to" name="to" type="date" value="2024-12-31"></div>
+          <div class="field"><label for="m-type">事件类型</label><select id="m-type" name="event_type"><option value="">全部类型</option><option value="transfer">迁移</option></select></div>
+          <div class="filter-actions"><button class="action action--primary" type="submit">应用筛选</button><a class="action" href="timeline.html">清除</a></div>
+        </form>
+      </details>
+      <ul class="active-filters" aria-label="当前筛选">
+        <li class="active-filter">参与者：伦伦、洋洋、喜伦、雅伦 <a href="timeline.html?institution=institution-zoo-atlanta" aria-label="移除参与者筛选">×</a></li>
+        <li class="active-filter">机构脉络：亚特兰大动物园 <a href="timeline.html?from=1997-01-01&amp;to=2024-12-31" aria-label="移除机构筛选">×</a></li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="timeline-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">01 · Long timeline</p>
+          <h2 class="section-title" id="timeline-title">八个事件，按六个日期分组阅读</h2>
+        </div>
+        <p class="section-intro">共享事件 ID 只出现一次；同日相关但 ID 不同的记录保留为独立事件。参与者数量与熊猫档案中的事件引用数量不会放大结果计数。</p>
+      </div>
+
+      <div class="time-ribbon" aria-label="1997 到 2024 年事件密度概览">
+        <div class="time-ribbon__years" aria-hidden="true">
+          <span class="year-bar year-bar--active" style="--bar:82px">1997 · 2</span>
+          <span class="year-bar" style="--bar:48px">1999 · 1</span>
+          <span class="year-bar" style="--bar:8px">2005</span>
+          <span class="year-bar" style="--bar:8px">2010</span>
+          <span class="year-bar year-bar--active" style="--bar:110px">2016 · 4</span>
+          <span class="year-bar" style="--bar:8px">2020</span>
+          <span class="year-bar" style="--bar:8px">2023</span>
+          <span class="year-bar year-bar--active" style="--bar:48px">2024 · 1</span>
+        </div>
+        <p class="time-ribbon__summary">结构化摘要：1997 年 2 个出生事件；1999 年 1 个双参与者抵达事件；2016 年 2 个同日出生事件和 2 个同日公开亮相事件，分别放入两个日期分组；2024 年 1 个四参与者迁移事件。其他年份没有当前已发布匹配记录，不代表确认没有发生事件。</p>
+      </div>
+
+      <ol class="timeline">
+        <li class="moment" id="event-lun-lun-birth">
+          <div class="moment__year" aria-hidden="true">1997</div>
+          <article>
+            <div class="moment__meta"><time datetime="1997-08-25">8 月 25 日</time><span class="moment__type">出生</span><span class="status">已完成 · 已确认</span></div>
+            <h3>伦伦的出生记录</h3>
+            <p class="moment__summary">一个参与者、一个稳定事件 ID。当前公开来源没有提供来源发布日期，因此页面保持“未提供”，不复制事件日期。</p>
+            <ul class="participants" aria-label="参与者"><li><a href="../panda-profile-v2/rich.html">伦伦 Lun Lun</a></li></ul>
+            <div class="moment__links"><a href="#source-lun-lun">1 个公开来源</a><a href="../panda-profile-v2/rich.html">查看熊猫档案</a></div>
+          </article>
+        </li>
+
+        <li class="moment" id="event-yang-yang-birth">
+          <div class="moment__year" aria-hidden="true">1997</div>
+          <article>
+            <div class="moment__meta"><time datetime="1997-09-09">9 月 9 日</time><span class="moment__type">出生</span><span class="status">已完成 · 已确认</span></div>
+            <h3>洋洋的出生记录</h3>
+            <p class="moment__summary">该事件与伦伦的出生事件同年，但拥有不同事件 ID、日期与来源。</p>
+            <ul class="participants" aria-label="参与者"><li><a href="../panda-profile-v2/rich.html">洋洋 Yang Yang</a></li></ul>
+            <div class="moment__links"><a href="#source-yang-yang">1 个公开来源</a><a href="../panda-profile-v2/rich.html">查看熊猫档案</a></div>
+          </article>
+        </li>
+
+        <li class="moment" id="event-atlanta-arrival">
+          <div class="moment__year" aria-hidden="true">1999</div>
+          <article>
+            <div class="moment__meta"><time datetime="1999-11-05">11 月 5 日</time><span class="moment__type">抵达</span><span class="status">已完成 · 已确认</span></div>
+            <h3>伦伦与洋洋抵达亚特兰大</h3>
+            <p class="moment__summary">这是一个双参与者事件，在两个熊猫档案中各有引用，但时间线只显示一次。</p>
+            <ul class="participants" aria-label="参与者"><li><a href="../panda-profile-v2/rich.html">伦伦 Lun Lun</a></li><li><a href="../panda-profile-v2/rich.html">洋洋 Yang Yang</a></li></ul>
+            <div class="movement"><div class="movement__place"><strong>来源地点未在事件中公开</strong><small>不推测出发机构</small></div><span class="movement__arrow" aria-hidden="true">→</span><div class="movement__place"><strong>亚特兰大动物园</strong><small>公开设施引用</small></div></div>
+            <div class="moment__links"><a href="#source-arrival">2 个公开来源</a><a href="timeline.html?institution=institution-zoo-atlanta">查看机构时光</a></div>
+          </article>
+        </li>
+
+        <li class="moment" id="cluster-twins-birth">
+          <div class="moment__year" aria-hidden="true">2016</div>
+          <article>
+            <div class="moment__meta"><time datetime="2016-09-03">9 月 3 日</time><span class="moment__type">出生 · 日期分组</span><span class="status">2 个独立事件</span></div>
+            <h3>喜伦与雅伦同日出生</h3>
+            <p class="moment__summary">当前公开版本为两只熊猫保留两个独立事件 ID。页面可以按日期分组阅读，但不能把它们改写成一个双参与者事件。</p>
+            <ol class="event-records" aria-label="本日期分组中的出生事件">
+              <li><strong>喜伦出生</strong><span>event-xi-lun-birth · 1 位参与者 · 2 个来源</span></li>
+              <li><strong>雅伦出生</strong><span>event-ya-lun-birth · 1 位参与者 · 2 个来源</span></li>
+            </ol>
+            <ul class="participants" aria-label="日期分组涉及的熊猫"><li><a href="../panda-profile-v2/rich.html">喜伦 Xi Lun</a></li><li><a href="../panda-profile-v2/rich.html">雅伦 Ya Lun</a></li></ul>
+            <div class="moment__links"><a href="#source-twins-birth">查看 2 个事件 ID 与来源</a><a href="../panda-profile-v2/rich.html">查看喜伦档案</a><a href="timeline.html?family=atlanta-family-story">家族故事入口</a></div>
+          </article>
+        </li>
+
+        <li class="moment" id="cluster-public-debut">
+          <div class="moment__year" aria-hidden="true">2016</div>
+          <article>
+            <div class="moment__meta"><time datetime="2016-12-27">12 月 27 日</time><span class="moment__type">公开亮相 · 日期分组</span><span class="status">2 个独立事件</span></div>
+            <h3>喜伦与雅伦同日首次公开亮相</h3>
+            <p class="moment__summary">当前公开版本保留两个独立公开亮相事件 ID。两个事件发生于 12 月 27 日，来源发布于 12 月 29 日；日期分组不能改变事件数量或把新闻发布日期当作发生日期。</p>
+            <ol class="event-records" aria-label="本日期分组中的公开亮相事件">
+              <li><strong>喜伦公开亮相</strong><span>event-xi-lun-public-debut · 1 位参与者 · 1 个来源</span></li>
+              <li><strong>雅伦公开亮相</strong><span>event-ya-lun-public-debut · 1 位参与者 · 1 个来源</span></li>
+            </ol>
+            <ul class="participants" aria-label="日期分组涉及的熊猫"><li><a href="../panda-profile-v2/rich.html">喜伦 Xi Lun</a></li><li><a href="../panda-profile-v2/rich.html">雅伦 Ya Lun</a></li></ul>
+            <div class="moment__links"><a href="#source-debut">查看 2 个事件 ID 与来源</a><a href="calendar.html?date=2016-12-27">打开该日</a></div>
+          </article>
+        </li>
+
+        <li class="moment" id="event-atlanta-return-2024">
+          <div class="moment__year" aria-hidden="true">2024</div>
+          <article>
+            <div class="moment__meta"><time datetime="2024-10-12">10 月 12 日</time><span class="moment__type">迁移</span><span class="status">已完成 · 已确认</span></div>
+            <h3>四只熊猫从亚特兰大前往成都</h3>
+            <p class="moment__summary">伦伦、洋洋、喜伦和雅伦共享同一个迁移事件 ID。旧档案数组包含四条引用，但熊猫时光展示一个事件和四个参与者。</p>
+            <ul class="participants" aria-label="参与者"><li><a href="../panda-profile-v2/rich.html">伦伦</a></li><li><a href="../panda-profile-v2/rich.html">洋洋</a></li><li><a href="../panda-profile-v2/rich.html">喜伦</a></li><li><a href="../panda-profile-v2/rich.html">雅伦</a></li></ul>
+            <div class="movement"><div class="movement__place"><strong>亚特兰大动物园</strong><small>from facility</small></div><span class="movement__arrow" aria-hidden="true">→</span><div class="movement__place"><strong>成都大熊猫繁育研究基地</strong><small>to facility · 改变当前居住记录</small></div></div>
+            <div class="moment__links"><a href="#source-transfer">1 个公开来源</a><a href="calendar.html?date=2024-10-12">打开该日</a><a href="timeline.html?place=place-chengdu-research-base">查看成都地点时光</a></div>
+          </article>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section section--paper" id="trust" aria-labelledby="trust-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">02 · Evidence and release</p><h2 class="section-title section-title--sm" id="trust-title">发生日期、来源发布日期和核实日期分别保留</h2></div>
+        <p class="section-intro">当前事件来源中有些没有发布日期。缺失值保持为空，不用事件日期或最后核实日期替代。</p>
+      </div>
+      <div class="trust-summary">
+        <div class="trust-stat"><strong>8</strong><span>唯一事件</span></div>
+        <div class="trust-stat"><strong>12</strong><span>熊猫档案事件引用</span></div>
+        <div class="trust-stat"><strong>6</strong><span>日期分组</span></div>
+        <div class="trust-stat"><strong>2026.07.24.2</strong><span>公开资料版本</span></div>
+      </div>
+      <div class="evidence-stack">
+        <details class="evidence" id="source-lun-lun"><summary>伦伦出生来源</summary><div class="evidence-body"><dl><dt>来源 ID</dt><dd>src_zooatlanta_lun_lun</dd><dt>事件日期</dt><dd>1997-08-25</dd><dt>来源发布日期</dt><dd>未提供</dd><dt>最后核实</dt><dd>2026-05-09</dd></dl></div></details>
+        <details class="evidence" id="source-yang-yang"><summary>洋洋出生来源</summary><div class="evidence-body"><dl><dt>来源 ID</dt><dd>src_zooatlanta_yang_yang</dd><dt>事件日期</dt><dd>1997-09-09</dd><dt>来源发布日期</dt><dd>未提供</dd><dt>最后核实</dt><dd>2026-05-09</dd></dl></div></details>
+        <details class="evidence" id="source-arrival"><summary>1999 年双参与者抵达事件</summary><div class="evidence-body"><dl><dt>事件 ID</dt><dd>event-zoo-atlanta-pair-arrival-1999</dd><dt>参与者</dt><dd>伦伦、洋洋</dd><dt>来源</dt><dd>src_zooatlanta_lun_lun, src_zooatlanta_yang_yang</dd><dt>旧引用数量</dt><dd>2</dd><dt>唯一事件数量</dt><dd>1</dd></dl></div></details>
+        <details class="evidence" id="source-twins-birth"><summary>2016 年 9 月 3 日出生事件分组</summary><div class="evidence-body"><dl><dt>事件 ID 1</dt><dd>event-xi-lun-birth · 参与者：喜伦</dd><dt>事件 ID 2</dt><dd>event-ya-lun-birth · 参与者：雅伦</dd><dt>事件日期</dt><dd>2016-09-03 · 两个事件均为日级精度</dd><dt>来源 ID</dt><dd>src_zooatlanta_cubs_birth, src_zooatlanta_twins_names</dd><dt>来源发布日期</dt><dd>2016-09-03；2017-04-03</dd><dt>分组规则</dt><dd>原型日期分组；当前公开数据没有事件组 ID，事件保持独立</dd></dl></div></details>
+        <details class="evidence" id="source-debut"><summary>2016 年 12 月 27 日公开亮相事件分组</summary><div class="evidence-body"><dl><dt>事件 ID 1</dt><dd>event-xi-lun-public-debut · 参与者：喜伦</dd><dt>事件 ID 2</dt><dd>event-ya-lun-public-debut · 参与者：雅伦</dd><dt>事件日期</dt><dd>2016-12-27 · 两个事件均为日级精度</dd><dt>来源发布日期</dt><dd>2016-12-29</dd><dt>来源 ID</dt><dd>src_zooatlanta_2016_public_debut</dd><dt>分组规则</dt><dd>原型日期分组；不把两个事件合并为一个事件</dd></dl></div></details>
+        <details class="evidence" id="source-transfer" open><summary>2024 年四参与者迁移事件</summary><div class="evidence-body"><dl><dt>事件 ID</dt><dd>event-zoo-atlanta-return-2024</dd><dt>事件日期</dt><dd>2024-10-12</dd><dt>来源发布日期</dt><dd>2024-10-13</dd><dt>最后核实</dt><dd>2026-07-20</dd><dt>参与者</dt><dd>伦伦、喜伦、洋洋、雅伦</dd><dt>旧引用数量</dt><dd>4</dd><dt>唯一事件数量</dt><dd>1</dd></dl></div></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner"><span>熊猫时光 · Timeline prototype</span><span>不用于生产 · Verification deferred to #234</span></div>
+  </footer>
+</body>
+</html>

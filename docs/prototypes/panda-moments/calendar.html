@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2026 年 7 月 | 熊猫时光原型</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="calendar.html" aria-label="吱熊猫首页">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>吱熊猫 ZhiPanda</span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="../panda-profile-v2/rich.html">熊猫档案</a>
+        <a href="calendar.html" aria-current="page">熊猫时光</a>
+        <a href="timeline.html">时间线</a>
+        <a href="#trust">来源</a>
+      </nav>
+    </div>
+  </header>
+
+  <aside class="release-note" aria-label="原型数据说明">
+    <strong>公开数据原型</strong> · 出生日期来自公开版本 2026.07.24.2。2026 年生日均为派生周年提示，不是新的来源事件。
+  </aside>
+
+  <main id="main-content">
+    <section class="date-stage" aria-labelledby="page-title">
+      <div class="date-lockup">
+        <div>
+          <p class="date-kicker">Today in Panda Time · 今天</p>
+          <div class="date-number" aria-hidden="true">31</div>
+          <p class="date-month">2026 年 7 月</p>
+          <p class="date-meta">星期五 · 选中日期</p>
+        </div>
+        <div class="date-controls" aria-label="日期导航">
+          <a class="action" href="calendar.html?date=2026-07-30">前一天</a>
+          <a class="action action--time" href="calendar.html?date=2026-07-31">今天</a>
+          <a class="action" href="calendar.html?date=2026-08-01">后一天</a>
+        </div>
+      </div>
+
+      <div class="stage-copy">
+        <p class="date-kicker">Panda Almanac · 熊猫年鉴</p>
+        <h1 id="page-title">熊猫时光</h1>
+        <p class="lead">从某一天出发，查看已经审核的出生、命名、公开亮相、迁移与观察，也可以浏览从出生事件派生出的生日周年提示。</p>
+        <p>日历回答“哪一天”；时间线回答“一个时期发生了什么”；列表提供完整结构化查询。</p>
+      </div>
+
+      <aside class="stage-rail" aria-label="当前查询摘要">
+        <div class="stage-stat">
+          <span class="stage-stat__label">选中日期</span>
+          <p class="stage-stat__value">1 条周年提示</p>
+          <p class="stage-stat__note">派生自 1 个已确认出生事件</p>
+        </div>
+        <div class="stage-stat">
+          <span class="stage-stat__label">本月</span>
+          <p class="stage-stat__value">14 只熊猫</p>
+          <p class="stage-stat__note">11 个唯一出生事件派生，不计入事件总数</p>
+        </div>
+        <div class="stage-stat">
+          <span class="stage-stat__label">公开事件库</span>
+          <p class="stage-stat__value">43 个</p>
+          <p class="stage-stat__note">已按稳定事件 ID 去重</p>
+        </div>
+      </aside>
+    </section>
+
+    <nav class="query-bar" aria-label="时光视图">
+      <div class="query-bar__inner">
+        <div class="view-switch">
+          <a href="calendar.html?month=2026-07" aria-current="page">日历</a>
+          <a href="timeline.html?from=1997-01-01&amp;to=2024-12-31">时间线</a>
+          <a href="calendar.html?view=list&amp;month=2026-07">列表</a>
+        </div>
+        <p class="query-summary"><strong>2026 年 7 月</strong> · 仅周年提示 · 日期精度：日</p>
+      </div>
+    </nav>
+
+    <section class="filter-field" aria-labelledby="filter-title">
+      <h2 id="filter-title" class="section-kicker">筛选当前时光</h2>
+      <form class="filter-form" action="calendar.html" method="get">
+        <div class="field">
+          <label for="month">月份</label>
+          <input id="month" name="month" type="month" value="2026-07">
+        </div>
+        <div class="field">
+          <label for="event-type">事件类型</label>
+          <select id="event-type" name="event_type">
+            <option value="">全部类型</option>
+            <option value="birth" selected>出生 / 生日</option>
+            <option value="transfer">迁移</option>
+            <option value="public_debut">公开亮相</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="panda">熊猫</label>
+          <select id="panda" name="panda">
+            <option value="" selected>全部熊猫</option>
+            <option value="ya-song">雅颂</option>
+            <option value="lun-hui">轮辉</option>
+            <option value="shin-shin">真真</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="institution">机构</label>
+          <select id="institution" name="institution">
+            <option value="" selected>全部机构</option>
+            <option value="institution-chengdu-research-base">成都基地</option>
+            <option value="institution-ueno-zoo">上野动物园</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="occurrence-kind">内容</label>
+          <select id="occurrence-kind" name="occurrence_kind">
+            <option value="all">事件与周年</option>
+            <option value="event">仅来源事件</option>
+            <option value="anniversary" selected>仅周年提示</option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button class="action action--primary" type="submit">应用</button>
+          <a class="action" href="calendar.html?month=2026-07">清除</a>
+        </div>
+      </form>
+      <details class="filter-more">
+        <summary>更多筛选：家族、地点、地区、状态和日期精度</summary>
+        <div class="filter-more__grid">
+          <div class="field"><label for="family">家族故事</label><select id="family" name="family"><option>全部家族</option></select></div>
+          <div class="field"><label for="place">地点</label><select id="place" name="place"><option>全部地点</option></select></div>
+          <div class="field"><label for="state">结论状态</label><select id="state" name="conclusion_state"><option>已确认</option><option>有争议</option></select></div>
+          <div class="field"><label for="precision">日期精度</label><select id="precision" name="precision"><option>全部精度</option><option>日</option><option>月</option><option>年</option></select></div>
+        </div>
+      </details>
+      <details class="mobile-filter">
+        <summary>筛选 · 当前：出生、仅周年提示</summary>
+        <form class="filter-form" action="calendar.html" method="get">
+          <div class="field"><label for="mobile-month">月份</label><input id="mobile-month" name="month" type="month" value="2026-07"></div>
+          <div class="field"><label for="mobile-kind">内容</label><select id="mobile-kind" name="occurrence_kind"><option value="anniversary">仅周年提示</option><option value="all">事件与周年</option></select></div>
+          <div class="field"><label for="mobile-panda">熊猫</label><select id="mobile-panda" name="panda"><option value="">全部熊猫</option><option value="ya-song">雅颂</option></select></div>
+          <div class="filter-actions"><button class="action action--primary" type="submit">应用筛选</button><a class="action" href="calendar.html?month=2026-07">清除</a></div>
+        </form>
+      </details>
+      <ul class="active-filters" aria-label="当前筛选">
+        <li class="active-filter">类型：出生 / 生日 <a href="calendar.html?month=2026-07&amp;occurrence_kind=anniversary" aria-label="移除事件类型筛选">×</a></li>
+        <li class="active-filter">内容：仅周年提示 <a href="calendar.html?month=2026-07&amp;event_type=birth" aria-label="移除内容筛选">×</a></li>
+      </ul>
+    </section>
+
+    <section class="section" id="month-view" aria-labelledby="month-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">01 · Calendar</p>
+          <h2 class="section-title" id="month-title">七月的熊猫生日</h2>
+        </div>
+        <p class="section-intro">本月没有新增来源事件。以下 14 条生日均由 11 个已确认出生事件派生，事件总数仍为 43。</p>
+      </div>
+
+      <div class="month-header">
+        <h3 class="month-title">2026 年 7 月</h3>
+        <nav class="month-nav" aria-label="月份导航">
+          <a class="action" href="calendar.html?month=2026-06">2026 年 6 月</a>
+          <a class="action" href="calendar.html?month=2026-08">2026 年 8 月</a>
+        </nav>
+      </div>
+
+      <div class="calendar-layout">
+        <div class="calendar-field" aria-label="2026 年 7 月事件日历">
+          <ol class="weekdays" aria-hidden="true">
+            <li>星期日</li><li>星期一</li><li>星期二</li><li>星期三</li><li>星期四</li><li>星期五</li><li>星期六</li>
+          </ol>
+          <ol class="calendar-days">
+            <li class="calendar-day calendar-day--outside"><span class="calendar-day__number">28</span></li>
+            <li class="calendar-day calendar-day--outside"><span class="calendar-day__number">29</span></li>
+            <li class="calendar-day calendar-day--outside"><span class="calendar-day__number">30</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">1</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">2</span></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-03">3</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>真真 21 岁</strong>周年提示</li></ul></li>
+            <li class="calendar-day"><span class="calendar-day__number">4</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">5</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">6</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">7</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">8</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">9</span></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-10">10</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>晶亮 9 岁</strong>周年提示</li></ul></li>
+            <li class="calendar-day"><span class="calendar-day__number">11</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">12</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">13</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">14</span></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-15">15</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>珍喜、奇珍 9 岁</strong>2 条周年提示</li></ul></li>
+            <li class="calendar-day"><span class="calendar-day__number">16</span></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-17">17</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>噗噗 5 岁</strong>周年提示</li></ul></li>
+            <li class="calendar-day"><span class="calendar-day__number">18</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">19</span></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-20">20</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>妮可、妮娜 9 岁</strong>2 条周年提示</li></ul></li>
+            <li class="calendar-day"><span class="calendar-day__number">21</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">22</span></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-23">23</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>金宵 5 岁</strong>周年提示</li></ul></li>
+            <li class="calendar-day"><span class="calendar-day__number">24</span></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-25">25</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>轮辉 5 岁</strong>周年提示</li></ul></li>
+            <li class="calendar-day calendar-day--eventful"><a class="calendar-day__number" href="calendar.html?date=2026-07-26">26</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>4 只熊猫 9 岁</strong>2 个出生事件</li></ul><p class="calendar-day__more">小馨、小丫头、二巧、青青</p></li>
+            <li class="calendar-day"><span class="calendar-day__number">27</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">28</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">29</span></li>
+            <li class="calendar-day"><span class="calendar-day__number">30</span></li>
+            <li class="calendar-day calendar-day--eventful calendar-day--selected"><a class="calendar-day__number" href="#selected-day" aria-current="date">31</a><ul class="calendar-day__items"><li class="calendar-day__item calendar-day__item--anniversary"><strong>雅颂 5 岁</strong>周年提示</li></ul></li>
+            <li class="calendar-day calendar-day--outside"><span class="calendar-day__number">1</span></li>
+          </ol>
+
+          <ol class="mobile-month-list" aria-label="2026 年 7 月有周年提示的日期">
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-03">7 月 3 日</a><ul class="mobile-month-day__items"><li>真真 21 岁 · 周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-10">7 月 10 日</a><ul class="mobile-month-day__items"><li>晶亮 9 岁 · 周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-15">7 月 15 日</a><ul class="mobile-month-day__items"><li>珍喜、奇珍 9 岁 · 2 条周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-17">7 月 17 日</a><ul class="mobile-month-day__items"><li>噗噗 5 岁 · 周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-20">7 月 20 日</a><ul class="mobile-month-day__items"><li>妮可、妮娜 9 岁 · 2 条周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-23">7 月 23 日</a><ul class="mobile-month-day__items"><li>金宵 5 岁 · 周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-25">7 月 25 日</a><ul class="mobile-month-day__items"><li>轮辉 5 岁 · 周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="calendar.html?date=2026-07-26">7 月 26 日</a><ul class="mobile-month-day__items"><li>小馨、小丫头、二巧、青青 9 岁 · 4 条周年提示</li></ul></li>
+            <li class="mobile-month-day"><a class="mobile-month-day__date" href="#selected-day" aria-current="date">7 月 31 日</a><ul class="mobile-month-day__items"><li>雅颂 5 岁 · 周年提示</li></ul></li>
+          </ol>
+        </div>
+
+        <aside class="day-rail" id="selected-day" aria-labelledby="selected-day-title">
+          <p class="day-rail__date">2026 年 7 月 31 日 · 星期五</p>
+          <p class="derived-label">派生周年提示</p>
+          <h3 id="selected-day-title">雅颂 5 岁</h3>
+          <p>这条提示由雅颂的已确认出生事件派生。它不是 2026 年新增的来源事件，也不改变公开事件总数。</p>
+          <ul class="day-facts">
+            <li><strong>原始事件</strong><small>2021 年 7 月 31 日 · 出生 · 已完成</small></li>
+            <li><strong>地点</strong><small>成都大熊猫繁育研究基地</small></li>
+            <li><strong>日期精度</strong><small>日级 · 可计算精确周年年龄</small></li>
+            <li><strong>公开来源</strong><small>2 个来源 · 发布日期均未提供 · 最后核实 2026-07-24</small></li>
+          </ul>
+          <p><a class="action action--primary" href="../panda-profile-v2/sparse.html">打开雅颂的熊猫档案</a></p>
+          <details class="evidence">
+            <summary>查看周年推导与来源标识</summary>
+            <div class="evidence-body">
+              <dl>
+                <dt>派生键</dt><dd>anniversary:evt_ya_song_birth_20210731:2026</dd>
+                <dt>原始事件 ID</dt><dd>evt_ya_song_birth_20210731</dd>
+                <dt>推导规则</dt><dd>confirmed day-precision birth anniversary v1</dd>
+                <dt>来源 ID</dt><dd>src_chengdu_newborns_2021_en, src_chengdu_newborns_2021_zh</dd>
+                <dt>事件计数</dt><dd>周年提示不增加 43 个唯一事件总数</dd>
+              </dl>
+            </div>
+          </details>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section--paper" id="month-list" aria-labelledby="month-list-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">02 · Structured list</p>
+          <h2 class="section-title section-title--sm" id="month-list-title">本月的事件日期，按天完整列出</h2>
+        </div>
+        <p class="section-intro">这是日历的结构化等价视图，也是无 JavaScript、键盘和屏幕阅读器的完整查询路径。</p>
+      </div>
+      <ol class="eventful-list">
+        <li class="eventful-row"><div class="eventful-row__date">7 月 3 日</div><div><h3>真真 21 岁周年提示</h3><p>派生自 2005-07-03 出生事件 · 2 个来源</p></div><a class="action" href="calendar.html?date=2026-07-03">查看</a></li>
+        <li class="eventful-row"><div class="eventful-row__date">7 月 15 日</div><div><h3>珍喜、奇珍 9 岁周年提示</h3><p>同一个双参与者出生事件派生出 2 条个体周年提示</p></div><a class="action" href="calendar.html?date=2026-07-15">查看</a></li>
+        <li class="eventful-row"><div class="eventful-row__date">7 月 26 日</div><div><h3>4 只熊猫的 9 岁周年提示</h3><p>来自 2 个唯一出生事件：小馨与小丫头；二巧与青青</p></div><a class="action" href="calendar.html?date=2026-07-26">查看</a></li>
+        <li class="eventful-row"><div class="eventful-row__date">7 月 31 日</div><div><h3>雅颂 5 岁周年提示</h3><p>当前选中 · 派生自 2021-07-31 出生事件</p></div><a class="action action--time" href="#selected-day">已选中</a></li>
+      </ol>
+    </section>
+
+    <section class="section" id="trust" aria-labelledby="trust-title">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">03 · Release and derivation</p>
+          <h2 class="section-title section-title--sm" id="trust-title">事件和周年，使用不同的计数与证据</h2>
+        </div>
+        <p class="section-intro">周年提示只引用原始出生事件，不创造独立来源、事件状态或修订历史。</p>
+      </div>
+      <div class="trust-summary">
+        <div class="trust-stat"><strong>43</strong><span>唯一公开事件</span></div>
+        <div class="trust-stat"><strong>60</strong><span>旧熊猫数组事件引用，不作为结果数</span></div>
+        <div class="trust-stat"><strong>14</strong><span>2026 年 7 月个体周年提示</span></div>
+        <div class="trust-stat"><strong>2026.07.24.2</strong><span>公开资料版本</span></div>
+      </div>
+      <div class="evidence-stack">
+        <details class="evidence" open>
+          <summary>周年提示资格规则</summary>
+          <div class="evidence-body"><dl><dt>可以生成</dt><dd>已确认、日级精度、未被取代的出生事件</dd><dt>不能生成精确日期</dt><dd>月级、年级、约略、未知或有争议日期</dd><dt>年龄</dt><dd>只有原始出生年份精确且结论有效时计算</dd><dt>计数</dt><dd>单独统计周年提示，永不加入事件总数</dd></dl></div>
+        </details>
+        <details class="evidence">
+          <summary>公开版本与覆盖范围</summary>
+          <div class="evidence-body"><dl><dt>资料版本</dt><dd>2026.07.24.2</dd><dt>公开结构</dt><dd>1.2.0</dd><dt>事件范围</dt><dd>当前已发布子集，不代表全球大熊猫完整历史</dd><dt>本月状态</dt><dd>无新增来源事件；包含派生周年提示</dd></dl></div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>熊猫时光 · Calendar prototype</span>
+      <span>不用于生产 · Verification deferred to #234</span>
+    </div>
+  </footer>
+</body>
+</html>
