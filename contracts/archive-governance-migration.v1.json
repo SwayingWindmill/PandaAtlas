@@ -202,6 +202,30 @@
       "categories": ["schema", "trigger", "metric"],
       "disposition": "install_accountable_publication_transaction",
       "markers": ["single-accountable-approver-v1", "archive.release.published", "archive_release_pointer"]
+    },
+    {
+      "path": "docs/architecture/accountable-archive-operations.md",
+      "categories": ["adr", "runbook", "contract"],
+      "disposition": "document_immutable_operations_and_followup_boundary",
+      "markers": ["Accountable Archive Operations", "single-accountable-approver publication model", "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false"]
+    },
+    {
+      "path": "services/api/app/archive_workbench/service.py",
+      "categories": ["command", "metric", "contract"],
+      "disposition": "provide_bounded_cutover_and_rehearsal_read_models",
+      "markers": ["archive_single_accountable_approver_enabled", "public.archive_workbench_queue"]
+    },
+    {
+      "path": "scripts/release/map-close.mjs",
+      "categories": ["script", "runbook"],
+      "disposition": "enforce_final_archive_governance_evidence_dependencies",
+      "markers": ["archive-governance-evidence", "Exhaustive four-eyes inventory", "validate-archive-governance-evidence.mjs"]
+    },
+    {
+      "path": "scripts/release/tests/archive-governance-evidence.test.mjs",
+      "categories": ["test", "script"],
+      "disposition": "verify_final_inventory_and_map_close_evidence",
+      "markers": ["validateArchiveGovernanceInventory", "four-eyes governance path"]
     }
   ]
 }
