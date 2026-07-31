@@ -92,6 +92,24 @@ export async function runMapCloseGate() {
               "tests/contracts/test_accountable_archive_operations_openapi_contract.py",
               "tests/contracts/test_archive_workbench_storage_contract.py",
               "tests/contracts/test_archive_workbench_openapi_contract.py",
+              "tests/contracts/test_archive_governance_canonical_openapi.py",
+            ],
+            { cwd: apiDir, env: apiReleaseEnv },
+          ),
+      },
+      {
+        id: "archive-governance-openapi",
+        label: "Integrated canonical Archive governance OpenAPI and SHA-256",
+        dependsOn: ["archive-governance-contracts", "archive-governance-inventory"],
+        run: () =>
+          runCommand(
+            "uv",
+            [
+              ...uvRunPrefix,
+              "python",
+              "scripts/build_archive_governance_openapi.py",
+              "--output",
+              "../../.release-gate/panda-atlas-v1-integrated.yaml",
             ],
             { cwd: apiDir, env: apiReleaseEnv },
           ),
@@ -216,6 +234,7 @@ export async function runMapCloseGate() {
           "secure-web-boundary",
           "archive-governance-web-contracts",
           "admin-bundle-budget",
+          "archive-governance-openapi",
         ],
         run: () =>
           runCommand("npm", ["run", "test:admin-shell", "-w", "web"], {
