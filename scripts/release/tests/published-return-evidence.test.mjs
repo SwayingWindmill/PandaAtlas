@@ -15,6 +15,7 @@ test("published-return foundation manifest hashes every required passing artifac
     "engagement-real-db.xml",
     "feed-real-db.xml",
     "notification-real-db.xml",
+    "archive-governance-real-db.xml",
   ]) {
     await writeFile(path.join(reportDir, name), junit, "utf8");
   }
@@ -28,17 +29,36 @@ test("published-return foundation manifest hashes every required passing artifac
     '{"outcome":"environment-blocked"}\n',
     "utf8",
   );
+  await writeFile(
+    path.join(reportDir, "archive-governance-rehearsal.json"),
+    '{"go":true,"canonical_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}\n',
+    "utf8",
+  );
 
   const manifest = await sealPublishedReturnEvidence({
     reportDir,
     commitSha: "044b804d5c39bd87d8a48cdd069e8b4062e095a7",
     generatedAt: "2026-07-30T07:30:00.000Z",
     platform: "test",
+    generateArchiveRealDb: false,
+    generateArchiveRehearsal: false,
   });
 
   assert.equal(manifest.map_issue, 173);
   assert.equal(manifest.closing_issue, 186);
-  assert.equal(manifest.artifacts.length, 6);
+  assert.equal(manifest.integrated_map_issue, 175);
+  assert.equal(manifest.integrated_closing_issue, 196);
+  assert.equal(manifest.artifacts.length, 8);
+  assert.ok(
+    manifest.artifacts.some(
+      (artifact) => artifact.path === "archive-governance-real-db.xml",
+    ),
+  );
+  assert.ok(
+    manifest.artifacts.some(
+      (artifact) => artifact.path === "archive-governance-rehearsal.json",
+    ),
+  );
   assert.ok(manifest.artifacts.every((artifact) => /^[a-f0-9]{64}$/.test(artifact.sha256)));
   const persisted = JSON.parse(
     await readFile(path.join(reportDir, "published-return-foundation-manifest.json"), "utf8"),
