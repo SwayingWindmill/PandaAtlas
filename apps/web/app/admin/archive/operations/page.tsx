@@ -1,6 +1,4 @@
-import { notFound } from "next/navigation";
-
-import { AdminShellLoader } from "@/components/admin/admin-shell-loader";
+import { notFound, redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -13,5 +11,5 @@ export default function AdminArchiveOperationsPage() {
     notFound();
   }
 
-  return <AdminShellLoader />;
+  redirect("/admin#/archive/operations");
 }
