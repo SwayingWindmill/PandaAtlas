@@ -1,4 +1,4 @@
--- Demo seed data for Panda Atlas
+-- Demo seed data for ZhiPanda
 -- Safe to run repeatedly (idempotent upserts)
 
 begin;

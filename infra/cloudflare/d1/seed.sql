@@ -1,4 +1,4 @@
--- Panda Atlas Cloudflare D1 seed.
+-- ZhiPanda Cloudflare D1 seed.
 -- Mirrors the public-read baseline from infra/supabase/seed/0002_atlas_catalog_seed.sql
 -- using GeoJSON text plus bbox columns instead of PostGIS geometries.
 
@@ -224,12 +224,12 @@ on conflict(id) do update set
 insert into media_assets (
   id, storage_bucket, storage_path, title, photographer, copyright_text, license, metadata_json
 ) values
-  ('c9b7df0b-9f6e-4c82-bf3d-fdbf34d0c101', 'public-media', 'https://images.panda-atlas.example/he-hua-cover.jpg', 'He Hua portrait', 'Panda Atlas Editorial', 'Panda Atlas', 'editorial-reference', '{"surface":"profile"}'),
-  ('76586a07-768f-4a39-beca-60cebb4ff7d9', 'public-media', 'https://images.panda-atlas.example/meng-lan-cover.jpg', 'Meng Lan portrait', 'Panda Atlas Editorial', 'Panda Atlas', 'editorial-reference', '{"surface":"profile"}'),
-  ('16d5d7c3-a31d-4725-9dda-7b1ec71f5370', 'public-media', 'https://images.panda-atlas.example/bi-li-cover.jpg', 'Bi Li archive cover', 'Panda Atlas Archive', 'Panda Atlas', 'editorial-reference', '{"surface":"archive"}'),
-  ('b2ad45f7-5e8d-4890-b207-5f3e7f850cc1', 'public-media', 'https://images.panda-atlas.example/fu-bao-cover.jpg', 'Fu Bao portrait', 'Panda Atlas Editorial', 'Panda Atlas', 'editorial-reference', '{"surface":"profile"}'),
-  ('9f6ee5ad-e362-40d5-9cf7-62366bce0b02', 'public-media', 'https://images.panda-atlas.example/yun-chuan-cover.jpg', 'Yun Chuan portrait', 'Panda Atlas Editorial', 'editorial-reference', 'editorial-reference', '{"surface":"profile"}'),
-  ('f5018283-f999-4b67-a502-c4cdb2a5dfc6', 'public-media', 'https://images.panda-atlas.example/jin-hu-cover.jpg', 'Jin Hu portrait', 'Panda Atlas Editorial', 'Panda Atlas', 'editorial-reference', '{"surface":"profile"}')
+  ('c9b7df0b-9f6e-4c82-bf3d-fdbf34d0c101', 'public-media', 'https://images.zhipanda.example/he-hua-cover.jpg', 'He Hua portrait', 'ZhiPanda Editorial', 'ZhiPanda', 'editorial-reference', '{"surface":"profile"}'),
+  ('76586a07-768f-4a39-beca-60cebb4ff7d9', 'public-media', 'https://images.zhipanda.example/meng-lan-cover.jpg', 'Meng Lan portrait', 'ZhiPanda Editorial', 'ZhiPanda', 'editorial-reference', '{"surface":"profile"}'),
+  ('16d5d7c3-a31d-4725-9dda-7b1ec71f5370', 'public-media', 'https://images.zhipanda.example/bi-li-cover.jpg', 'Bi Li archive cover', 'ZhiPanda Editorial', 'ZhiPanda', 'editorial-reference', '{"surface":"archive"}'),
+  ('b2ad45f7-5e8d-4890-b207-5f3e7f850cc1', 'public-media', 'https://images.zhipanda.example/fu-bao-cover.jpg', 'Fu Bao portrait', 'ZhiPanda Editorial', 'ZhiPanda', 'editorial-reference', '{"surface":"profile"}'),
+  ('9f6ee5ad-e362-40d5-9cf7-62366bce0b02', 'public-media', 'https://images.zhipanda.example/yun-chuan-cover.jpg', 'Yun Chuan portrait', 'ZhiPanda Editorial', 'editorial-reference', 'editorial-reference', '{"surface":"profile"}'),
+  ('f5018283-f999-4b67-a502-c4cdb2a5dfc6', 'public-media', 'https://images.zhipanda.example/jin-hu-cover.jpg', 'Jin Hu portrait', 'ZhiPanda Editorial', 'ZhiPanda', 'editorial-reference', '{"surface":"profile"}')
 on conflict(id) do update set
   storage_bucket = excluded.storage_bucket,
   storage_path = excluded.storage_path,

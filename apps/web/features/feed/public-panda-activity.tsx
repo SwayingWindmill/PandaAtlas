@@ -29,26 +29,26 @@ export function PublicPandaActivity({
       data-testid="public-panda-activity"
     >
       <p className="text-sm font-semibold text-[var(--accent)]">
-        {locale === "zh" ? "公开动态" : "Public Activity"}
+        {locale === "zh" ? "熊猫动态" : "Panda updates"}
       </p>
       <h2 id="panda-activity-heading" className="mt-2 text-2xl font-semibold text-[var(--fg)] md:text-3xl">
         {locale === "zh" ? `${name} 的时间线` : `${name}'s timeline`}
       </h2>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
         {locale === "zh"
-          ? "仅显示来自已发布档案或授权编辑公告的公开安全动态，按发布时间排列。更正和撤回会明确标注。"
-          : "Only public-safe Activity from published Archive releases or authorized editorial announcements is shown, ordered by publication time with explicit corrections and retractions."}
+          ? "这里只显示已经审核并适合公开的熊猫动态，按发布时间排列。更正和撤回会明确标注。"
+          : "Only reviewed, public-safe panda updates are shown here, ordered by publication time with clear corrections and retractions."}
       </p>
       <div className="mt-6">
         {unavailable ? (
           <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-amber-950" role="note">
             <p className="font-semibold">
-              {locale === "zh" ? "公开动态暂时不可用" : "Public Activity is temporarily unavailable"}
+              {locale === "zh" ? "熊猫动态暂时不可用" : "Panda updates are temporarily unavailable"}
             </p>
             <p className="mt-2 text-sm leading-7">
               {locale === "zh"
-                ? "档案主体仍然可用；Activity 投影恢复后，这里会重新显示经过审核的动态。"
-                : "The Archive profile remains available. Reviewed Activity will return when the projection service recovers."}
+                ? "熊猫资料仍然可以浏览；动态恢复后，经过审核的更新会重新显示在这里。"
+                : "The panda profile remains available. Reviewed updates will return here when the update service recovers."}
             </p>
           </div>
         ) : (
@@ -57,11 +57,11 @@ export function PublicPandaActivity({
               locale={locale}
               pandas={pandas}
               activities={activity?.items ?? []}
-              emptyTitle={locale === "zh" ? "暂无公开动态" : "No public Activity yet"}
+              emptyTitle={locale === "zh" ? "还没有公开动态" : "No public panda updates yet"}
               emptyBody={
                 locale === "zh"
-                  ? "档案发布经过审核的新动态后会显示在这里。"
-                  : "Reviewed Activity will appear here after Archive publication."
+                  ? "这只熊猫有新的经审核动态后，会显示在这里。"
+                  : "New reviewed updates for this panda will appear here."
               }
             />
             {activity?.next_cursor ? (
@@ -70,7 +70,7 @@ export function PublicPandaActivity({
                 rel="next"
                 className="mx-auto mt-6 flex w-fit rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)]"
               >
-                {locale === "zh" ? "查看更早动态" : "View earlier Activity"}
+                {locale === "zh" ? "查看更早动态" : "View earlier updates"}
               </Link>
             ) : null}
           </div>

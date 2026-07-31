@@ -144,11 +144,11 @@ function buildInstitutionResults(
     const associatedNames = [...new Set(linkedResidencies.map(({ panda }) => localizedPandaName(panda, locale)))];
     const statusDetail = locale === "zh"
       ? currentPandas.length
-        ? `${currentPandas.length} 只已审核个体现居于此`
-        : `${linkedResidencies.length} 条已审核历史驻留`
+        ? `${currentPandas.length} 只熊猫现在生活在这里`
+        : `${linkedResidencies.length} 条熊猫历史居住记录`
       : currentPandas.length
-        ? `${currentPandas.length} reviewed current resident${currentPandas.length === 1 ? "" : "s"}`
-        : `${linkedResidencies.length} reviewed historical residenc${linkedResidencies.length === 1 ? "y" : "ies"}`;
+        ? `${currentPandas.length} panda${currentPandas.length === 1 ? "" : "s"} living here now`
+        : `${linkedResidencies.length} historical panda residenc${linkedResidencies.length === 1 ? "y" : "ies"}`;
     return {
       id: `institution:${facility.id}`,
       mode: "institutions",
@@ -156,14 +156,14 @@ function buildInstitutionResults(
       title: name,
       subtitle: associatedNames.length
         ? associatedNames.join(locale === "zh" ? "、" : ", ")
-        : locale === "zh" ? "暂无已发布个体关联" : "No published panda association",
+        : locale === "zh" ? "暂无已发布熊猫记录" : "No published panda records",
       countryCode: publishedPlace?.country_code ?? facility.country_code ?? "UN",
       countryLabel: countryLabel(publishedPlace?.country_code ?? facility.country_code ?? "UN", locale),
       placeLabel: locality,
       precision: publishedPlace?.precision ?? (facility.locality ? "locality" : "country"),
       status,
       statusDetail,
-      dateRange: locale === "zh" ? "按当前公开发布版本" : "As of the current public release",
+      dateRange: locale === "zh" ? "截至当前公开资料版本" : "As of the current public information version",
       lastVerified: maxDate([
         institution?.last_verified_at,
         publishedPlace?.last_verified_at,
@@ -171,7 +171,7 @@ function buildInstitutionResults(
       ]),
       sourceIds: [...new Set(sourceIds)],
       sources,
-      sourceLabel: locale === "zh" ? "已审核机构、场所与驻留记录" : "Reviewed institution, place, and residency records",
+      sourceLabel: locale === "zh" ? "机构、地点与熊猫居住记录" : "Institution, place, and panda residency records",
       profileHref: null,
       entityHref: institution ? `/${locale}/institutions/${institution.canonical_slug}` : null,
       visualizationKey: facility.id,
@@ -226,7 +226,7 @@ function buildIndividualResults(
         lastVerified: residency.last_verified_at,
         sourceIds: [...new Set(residency.source_ids)],
         sources,
-        sourceLabel: locale === "zh" ? "已审核个体驻留记录" : "Reviewed individual residency record",
+        sourceLabel: locale === "zh" ? "熊猫居住记录" : "Panda residency record",
         profileHref: `/${locale}/pandas/${panda.slug}`,
         entityHref: placeEntity ? `/${locale}/places/${placeEntity.canonical_slug}` : null,
         visualizationKey: facility?.id ?? null,
@@ -253,9 +253,9 @@ function buildWildResults(
     const province = feature.properties.province ?? null;
     const level = feature.properties.level ?? (locale === "zh" ? "级别未公开" : "Level not published");
     const sourceLabel = habitats.source === "api"
-      ? locale === "zh" ? "吱熊猫实时栖息地接口" : "Live ZhiPanda habitat API"
+      ? locale === "zh" ? "吱熊猫当前野生家园数据" : "Current ZhiPanda wild-home data"
       : habitats.source === "cached-release"
-        ? locale === "zh" ? "吱熊猫缓存的部分栖息地发布" : "Cached partial ZhiPanda habitat release"
+        ? locale === "zh" ? "吱熊猫最近可用的部分野生家园数据" : "Latest available partial ZhiPanda wild-home data"
         : locale === "zh" ? "栖息地数据当前不可用" : "Habitat data currently unavailable";
     return {
       id: `conservation:${id}`,

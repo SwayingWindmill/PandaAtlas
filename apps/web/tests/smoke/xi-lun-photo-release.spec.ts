@@ -27,7 +27,7 @@ test("publishes Xi Lun in the current trusted Atlas release", async ({ page }) =
   await page.goto("/zh/pandas?q=Xi%20Lun");
 
   await expect(page.getByTestId("public-delivery-notice")).toContainText(RELEASE_ID);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("共匹配 1 项");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("共找到 1 只");
   await expect(page.getByRole("link", { name: /喜伦/ })).toHaveAttribute(
     "href",
     "/zh/pandas/xi-lun",
@@ -99,7 +99,7 @@ test("shows Xi Lun current and historical footprints in the structured map", asy
   await expect(results).toHaveCount(2);
   await expect(results.filter({ hasText: "Current" })).toHaveCount(1);
   await expect(results.filter({ hasText: "Historical" })).toHaveCount(1);
-  await expect(page.getByRole("link", { name: "Open trusted profile" }).first()).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "View panda profile" }).first()).toHaveAttribute(
     "href",
     "/en/pandas/xi-lun",
   );

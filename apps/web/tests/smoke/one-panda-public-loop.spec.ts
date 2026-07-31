@@ -22,7 +22,7 @@ test("finds Mei Xiang by every reviewed public identity form", async ({ page }) 
     "smithsonian_history_key:mei-xiang",
   ]) {
     await page.goto(`/zh/pandas?q=${encodeURIComponent(query)}`);
-    await expect(page.getByTestId("atlas-result-summary"), query).toContainText("共匹配 1 项");
+    await expect(page.getByTestId("atlas-result-summary"), query).toContainText("共找到 1 只");
     await expect(page.getByRole("link", { name: /美香.*Mei Xiang/ }), query).toHaveAttribute(
       "href",
       "/zh/pandas/mei-xiang",
@@ -56,8 +56,8 @@ test("renders the reviewed identity, image-led profile, family, footprint, evide
 
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: /美香/ })).toBeVisible();
-  await expect(page.getByText("稳定身份")).toBeVisible();
-  await expect(page.getByText("完整档案").first()).toBeVisible();
+  await expect(page.getByText("身份记录")).toBeVisible();
+  await expect(page.getByText("资料较完整").first()).toBeVisible();
   await expect(page.getByText("最后核实：2026-05-09").first()).toBeVisible();
   await expect(page.getByTestId("fact-life-status")).toContainText("存活");
   await expect(page.getByTestId("fact-life-status")).toContainText("分类值");
@@ -88,7 +88,7 @@ test("renders partial, tentative, facility, source-link-only, and revision state
   const parentRelations = page.getByTestId("parent-relations");
   await expect(parentRelations).toContainText("An An");
   await expect(parentRelations).toContainText("暂定关系");
-  await expect(parentRelations).toContainText("仅有关系依赖记录，暂无完整档案");
+  await expect(parentRelations).toContainText("目前只有家族关系记录，暂无完整熊猫资料");
   await expect(parentRelations.getByRole("link", { name: "An An" })).toHaveCount(0);
 
   await page.goto("/zh/pandas/tian-tian");
@@ -137,8 +137,8 @@ test("exposes the full reading loop to keyboard focus and sequential section nav
     await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
   });
   await page.goto("/zh/pandas/mei-xiang");
-  const sectionNavigation = page.getByRole("navigation", { name: "档案章节" });
-  const storyLink = sectionNavigation.getByRole("link", { name: "档案摘要" });
+  const sectionNavigation = page.getByRole("navigation", { name: "熊猫资料章节" });
+  const storyLink = sectionNavigation.getByRole("link", { name: "熊猫简介" });
   const timelineLink = sectionNavigation.getByRole("link", { name: "时间线" });
 
   await storyLink.focus();

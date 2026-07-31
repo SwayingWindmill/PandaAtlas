@@ -9,11 +9,11 @@ test("renders a canonical institution as an organization distinct from its place
   await page.goto(`/en/institutions/${INSTITUTION_SLUG}`);
 
   await expect(page.getByTestId("institution-entity-page")).toBeVisible();
-  await expect(page).toHaveTitle(/Smithsonian's National Zoo \| Institution entity/);
+  await expect(page).toHaveTitle(/Smithsonian's National Zoo \| Panda institution \| ZhiPanda/);
   await expect(page.getByRole("heading", { level: 1, name: "Smithsonian's National Zoo" })).toBeVisible();
-  await expect(page.getByText("This is an organization record.")).toBeVisible();
+  await expect(page.getByText("This is an institution profile.")).toBeVisible();
   await expect(page.getByText(RELEASE_ID).first()).toBeVisible();
-  await expect(page.getByText("Public Schema 1.2.0")).toBeVisible();
+  await expect(page.getByText(/Information version: 2026\.07\.24\.2/)).toBeVisible();
   await expect(page.getByRole("link", { name: "Smithsonian's National Zoo, Washington, D.C." })).toHaveAttribute(
     "href",
     `/en/places/${PLACE_SLUG}`,
@@ -28,13 +28,13 @@ test("renders a canonical place with explicit locality precision and institution
 
   await expect(page.getByTestId("place-entity-page")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: "史密森国家动物园（华盛顿特区园区）" })).toBeVisible();
-  await expect(page.getByText("这是物理场所记录。")).toBeVisible();
+  await expect(page.getByText("这是物理地点资料。")).toBeVisible();
   await expect(page.getByText("locality", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "史密森国家动物园", exact: true })).toHaveAttribute(
     "href",
     `/zh/institutions/${INSTITUTION_SLUG}`,
   );
-  await expect(page.getByRole("link", { name: "在结构化地图中查看" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "在熊猫地图中查看" })).toHaveAttribute(
     "href",
     `/zh/map?mode=institutions&focus=${encodeURIComponent("史密森国家动物园（华盛顿特区园区）")}&snapshot=${RELEASE_ID}`,
   );
@@ -83,13 +83,13 @@ test("Atlas, Map, and profile expose ordinary canonical entity links", async ({ 
 
   await page.goto(`/en/map?mode=institutions&country=US&snapshot=${RELEASE_ID}`);
   const result = page.getByTestId("structured-map-result-institution:afb0f227-dd5e-5076-88e3-74e9807a6049");
-  await expect(result.getByRole("link", { name: "Open institution or place entity" })).toHaveAttribute(
+  await expect(result.getByRole("link", { name: "Explore this institution or place" })).toHaveAttribute(
     "href",
     `/en/institutions/${INSTITUTION_SLUG}`,
   );
 
   await page.goto("/en/pandas/bao-li#footprint");
-  await expect(page.getByTestId("footprint-text-view").getByRole("link", { name: "Open place entity" })).toHaveAttribute(
+  await expect(page.getByTestId("footprint-text-view").getByRole("link", { name: "View this place" })).toHaveAttribute(
     "href",
     `/en/places/${PLACE_SLUG}`,
   );

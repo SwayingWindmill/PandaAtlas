@@ -187,10 +187,10 @@ test("bilingual Editorial Home tolerates a simulated 200-percent text-only resiz
 test("structured map filters remain keyboard operable and accessible", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/en/map?mode=institutions&snapshot=2026.07.24.2");
-  const form = page.getByRole("form", { name: "Filter structured results" });
-  await form.getByLabel("Panda, institution, or place").fill("Smithsonian");
-  await form.getByLabel("Country scope").selectOption("US");
-  await form.getByRole("button", { name: "Update results" }).focus();
+  const form = page.getByRole("form", { name: "Find pandas and places on the map" });
+  await form.getByLabel("Panda, zoo, base, or region").fill("Smithsonian");
+  await form.getByLabel("Country or region").selectOption("US");
+  await form.getByRole("button", { name: "Show results" }).focus();
   await Promise.all([
     page.waitForURL(
       (url) => url.searchParams.get("focus") === "Smithsonian" && url.searchParams.get("country") === "US",
@@ -280,11 +280,11 @@ test("activated map visualization remains keyboard-equivalent and accessible", a
       /ready|degraded|offline|recovering/,
       { timeout: 15_000 },
     );
-    await expect(page.getByRole("region", { name: "Interactive map visualization enhancement" })).toBeVisible();
-    await expect(page.getByLabel("Non-drag selection")).toBeVisible();
+    await expect(page.getByRole("region", { name: "Interactive panda map" })).toBeVisible();
+    await expect(page.getByLabel("Choose without dragging the map")).toBeVisible();
     await expect(page.locator(".pa-map-visualization-attribution").getByRole("link")).toHaveCount(2);
   } else {
-    await expect(failure).toContainText("The optional map visualization is unavailable");
+    await expect(failure).toContainText("The live map cannot be opened right now");
     await expect(page.getByRole("heading", { level: 3, name: "Smithsonian's National Zoo" })).toBeVisible();
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);

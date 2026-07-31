@@ -18,7 +18,7 @@
         "predeploy:cf:staging": "npm run guard:public-admin-proxy && npm run guard:admin-runtime",
         "deploy:cf:staging": "opennextjs-cloudflare build && wrangler deploy --config wrangler.staging.jsonc",
         "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-        "check:design-policy": "node ../../scripts/brand/check-zhipanda-brand.mjs && node scripts/check-frontend-design-policy.mjs",
+        "check:design-policy": "node ../../scripts/brand/check-zhipanda-brand.mjs && node scripts/check-frontend-design-policy.mjs && node scripts/check-public-panda-fan-copy.mjs",
         "check:architecture": "npm run guard:admin-runtime",
         "lint": "npm run check:design-policy && npm run check:architecture && eslint .",
         "typecheck": "tsc --noEmit",

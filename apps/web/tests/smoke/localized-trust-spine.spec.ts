@@ -9,9 +9,9 @@ test("completes the localized search-to-profile trust spine", async ({ page }) =
   await search.getByRole("button", { name: "找熊猫" }).click();
 
   await expect(page).toHaveURL(/\/zh\/pandas\?q=%E7%BE%8E%E9%A6%99$/);
-  await expect(page.getByRole("heading", { level: 1, name: "熊猫档案检索" })).toBeVisible();
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("共匹配 1 项");
-  await expect(page.getByTestId("public-delivery-notice")).toContainText("缓存的可信发布版本");
+  await expect(page.getByRole("heading", { level: 1, name: "熊猫图鉴 | 吱熊猫" })).toBeVisible();
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("共找到 1 只");
+  await expect(page.getByTestId("public-delivery-notice")).toContainText("正在显示最近可用的熊猫资料");
 
   const result = page.getByRole("link", { name: /美香.*Mei Xiang/ });
   await expect(result).toHaveAttribute("href", "/zh/pandas/mei-xiang");
@@ -28,8 +28,8 @@ test("completes the localized search-to-profile trust spine", async ({ page }) =
 test("uses the same reviewed identity release in English", async ({ page }) => {
   await page.goto("/en/pandas?q=Mei%20Xiang");
 
-  await expect(page.getByRole("heading", { level: 1, name: "Panda profile discovery" })).toBeVisible();
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 matches");
+  await expect(page.getByRole("heading", { level: 1, name: "Panda guide | ZhiPanda" })).toBeVisible();
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found");
   await expect(page.getByRole("link", { name: /Mei Xiang.*美香/ })).toHaveAttribute(
     "href",
     "/en/pandas/mei-xiang",
@@ -79,7 +79,7 @@ test("never renders the generated legacy profile as a rollback", async ({ reques
 test("marks identity-first profiles as partial rather than complete", async ({ page }) => {
   await page.goto("/zh/pandas/tai-shan");
 
-  await expect(page.getByTestId("public-delivery-notice")).toContainText("当前任务范围部分可用");
+  await expect(page.getByTestId("public-delivery-notice")).toContainText("本页部分资料可用");
   await expect(page.getByText("基础资料").first()).toBeVisible();
   await expect(page.getByTestId("fact-life-status")).toBeVisible();
 });

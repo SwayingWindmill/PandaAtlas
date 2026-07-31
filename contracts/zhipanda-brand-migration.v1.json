@@ -1077,6 +1077,17 @@
       }
     },
     {
+      "path": "docs/architecture/accountable-archive-publication.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "publication governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "The internal architecture contract retains an existing publication-governance identifier and is not rendered on a public ZhiPanda surface.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
       "path": "docs/architecture/adr-0001-single-source-api-boundary.md",
       "category": "technical-compatible",
       "user_visibility": "internal",
@@ -1096,6 +1107,17 @@
       "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
       "matches": {
         "PandaAtlas": 19
+      }
+    },
+    {
+      "path": "docs/architecture/review-moderation.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "review and moderation",
+      "expected_action": "retain-compatibility",
+      "rationale": "The architecture document refers to the existing versioned OpenAPI compatibility path and does not expose the retired public product brand.",
+      "matches": {
+        "panda-atlas": 1
       }
     },
     {
@@ -1666,18 +1688,6 @@
       }
     },
     {
-      "path": "infra/cloudflare/d1/seed.sql",
-      "category": "public-visible",
-      "user_visibility": "public",
-      "migration_owner": "#219 public feature copy",
-      "expected_action": "migrate-in-219",
-      "rationale": "The public projection seed can expose legacy editorial/source copy in browser journeys.",
-      "matches": {
-        "Panda Atlas": 12,
-        "panda-atlas": 6
-      }
-    },
-    {
       "path": "infra/supabase/config.toml",
       "category": "technical-compatible",
       "user_visibility": "internal",
@@ -1721,29 +1731,6 @@
       "rationale": "This file is immutable evidence, an accepted historical decision, a dated record, or a forward-only migration and must not be rewritten for branding.",
       "matches": {
         "PandaAtlas": 1
-      }
-    },
-    {
-      "path": "infra/supabase/seed/0001_demo_seed.sql",
-      "category": "public-visible",
-      "user_visibility": "public",
-      "migration_owner": "#219 public feature copy",
-      "expected_action": "migrate-in-219",
-      "rationale": "The demo public-data seed contains user-visible legacy product wording.",
-      "matches": {
-        "Panda Atlas": 1
-      }
-    },
-    {
-      "path": "infra/supabase/seed/0002_atlas_catalog_seed.sql",
-      "category": "public-visible",
-      "user_visibility": "public",
-      "migration_owner": "#219 public feature copy",
-      "expected_action": "migrate-in-219",
-      "rationale": "The catalog public-data seed can expose legacy editorial/source copy in browser journeys.",
-      "matches": {
-        "Panda Atlas": 12,
-        "panda-atlas": 6
       }
     },
     {
@@ -2410,6 +2397,17 @@
       }
     },
     {
+      "path": "services/api/openapi/accountable-publication-v1.yaml",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "publication governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "The bounded OpenAPI contract retains an existing technical title until a separate compatibility migration is approved.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
       "path": "services/api/openapi/panda-atlas-v1.yaml",
       "category": "technical-compatible",
       "user_visibility": "public",
@@ -2420,6 +2418,17 @@
         "PandaAtlas": 9,
         "Panda Atlas": 2,
         "panda-atlas": 1
+      }
+    },
+    {
+      "path": "services/api/openapi/review-moderation-v1.yaml",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "review and moderation",
+      "expected_action": "retain-compatibility",
+      "rationale": "The bounded OpenAPI contract retains an existing technical schema identifier until a separate compatibility migration is approved.",
+      "matches": {
+        "PandaAtlas": 1
       }
     },
     {
@@ -2816,25 +2825,14 @@
       }
     },
     {
-      "path": "docs/architecture/review-moderation.md",
+      "path": "services/api/openapi/community-curation-v1.yaml",
       "category": "technical-compatible",
       "user_visibility": "internal",
-      "migration_owner": "review and moderation",
+      "migration_owner": "community curation API",
       "expected_action": "retain-compatibility",
-      "rationale": "The architecture document refers to the existing versioned OpenAPI compatibility path and does not expose the retired public product brand.",
+      "rationale": "The bounded internal OpenAPI contract retains an existing technical title until a separate compatibility migration is approved; it is not rendered on a public ZhiPanda surface.",
       "matches": {
-        "panda-atlas": 1
-      }
-    },
-    {
-      "path": "services/api/openapi/review-moderation-v1.yaml",
-      "category": "technical-compatible",
-      "user_visibility": "internal",
-      "migration_owner": "review and moderation",
-      "expected_action": "retain-compatibility",
-      "rationale": "The bounded OpenAPI contract retains an existing technical schema identifier until a separate compatibility migration is approved.",
-      "matches": {
-        "PandaAtlas": 1
+        "Panda Atlas": 1
       }
     }
   ]
