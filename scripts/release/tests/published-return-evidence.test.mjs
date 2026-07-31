@@ -15,6 +15,7 @@ test("published-return foundation manifest hashes every required passing artifac
     "engagement-real-db.xml",
     "feed-real-db.xml",
     "notification-real-db.xml",
+    "archive-governance-real-db.xml",
   ]) {
     await writeFile(path.join(reportDir, name), junit, "utf8");
   }
@@ -39,6 +40,7 @@ test("published-return foundation manifest hashes every required passing artifac
     commitSha: "044b804d5c39bd87d8a48cdd069e8b4062e095a7",
     generatedAt: "2026-07-30T07:30:00.000Z",
     platform: "test",
+    generateArchiveRealDb: false,
     generateArchiveRehearsal: false,
   });
 
@@ -46,7 +48,12 @@ test("published-return foundation manifest hashes every required passing artifac
   assert.equal(manifest.closing_issue, 186);
   assert.equal(manifest.integrated_map_issue, 175);
   assert.equal(manifest.integrated_closing_issue, 196);
-  assert.equal(manifest.artifacts.length, 7);
+  assert.equal(manifest.artifacts.length, 8);
+  assert.ok(
+    manifest.artifacts.some(
+      (artifact) => artifact.path === "archive-governance-real-db.xml",
+    ),
+  );
   assert.ok(
     manifest.artifacts.some(
       (artifact) => artifact.path === "archive-governance-rehearsal.json",
