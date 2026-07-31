@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.api.v1 import (
     admin_accountable_publications,
+    admin_archive_operations,
     admin_community_curation,
     admin_imports,
     admin_publications,
@@ -33,6 +34,10 @@ api_router.include_router(admin_imports.router, tags=["admin"])
 api_router.include_router(
     admin_accountable_publications.router,
     tags=["admin-accountable-publication"],
+)
+api_router.include_router(
+    admin_archive_operations.router,
+    tags=["admin-archive-operations"],
 )
 api_router.include_router(
     admin_community_curation.router,
