@@ -1,19 +1,18 @@
 openapi: 3.1.0
 info:
   title: ZhiPanda Accountable Archive Operations API
-  version: 1.0.0
+  version: 1.0.0-draft
   description: >-
     Bounded command contract for immutable Archive rollback, targeted correction,
     retraction, merge/split, and emergency takedown Releases.
-servers:
-  - url: /api/v1
-security:
-  - bearerAuth: []
 paths:
-  /admin/archive/operations/rollback:
+  /api/v1/admin/archive/operations/rollback:
     post:
+      tags: [admin-archive-operations]
       operationId: rollbackArchiveRelease
       summary: Create a new immutable rollback Release
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -27,14 +26,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArchiveOperationRead'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-  /admin/archive/operations/corrections:
+        '403': { description: Required capability or recent authentication is missing }
+        '404': { description: Feature or target Release is unavailable }
+        '409': { description: Idempotency, Archive version, or operation conflict }
+        '503': { description: Authoritative database unavailable }
+
+  /api/v1/admin/archive/operations/corrections:
     post:
+      tags: [admin-archive-operations]
       operationId: correctOrRetractArchiveSubject
       summary: Create a targeted correction or retraction Release
+      description: >-
+        The command includes a validated Activity descriptor. The Archive transaction
+        emits archive.activity.corrected or archive.activity.retracted; notifications
+        are produced only after the Activity projector emits its downstream event.
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -43,19 +50,23 @@ paths:
               $ref: '#/components/schemas/ArchiveCorrectionCommand'
       responses:
         '200':
-          description: Correction or retraction Release created.
+          description: Correction or retraction Release and Activity source event created.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArchiveOperationRead'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-  /admin/archive/operations/merge-split:
+        '403': { description: Required capability or recent authentication is missing }
+        '404': { description: Feature or subject is unavailable }
+        '409': { description: Idempotency, Archive version, Activity, or operation conflict }
+        '503': { description: Authoritative database unavailable }
+
+  /api/v1/admin/archive/operations/merge-split:
     post:
+      tags: [admin-archive-operations]
       operationId: mergeOrSplitArchiveEntities
       summary: Create an audited Senior-only merge or split Release
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -64,19 +75,23 @@ paths:
               $ref: '#/components/schemas/ArchiveMergeSplitCommand'
       responses:
         '200':
-          description: Merge or split Release created.
+          description: Merge or split Release created with preserved impact evidence.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArchiveOperationRead'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-  /admin/archive/operations/emergency-takedowns:
+        '403': { description: Senior capability or recent authentication is missing }
+        '404': { description: Feature or identity is unavailable }
+        '409': { description: Idempotency, Archive version, identity, or operation conflict }
+        '503': { description: Authoritative database unavailable }
+
+  /api/v1/admin/archive/operations/emergency-takedowns:
     post:
+      tags: [admin-archive-operations]
       operationId: emergencyArchiveTakedown
       summary: Reduce urgent public risk through an audited Senior-only Release
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -90,21 +105,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArchiveOperationRead'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-  /admin/archive/operations/emergency-takedowns/{operation_id}/followup:
+        '403': { description: Senior takedown capability or recent authentication is missing }
+        '404': { description: Feature or subject is unavailable }
+        '409': { description: Command does not exclusively reduce public exposure }
+        '503': { description: Authoritative database unavailable }
+
+  /api/v1/admin/archive/operations/emergency-takedowns/{operation_id}/followup:
     post:
+      tags: [admin-archive-operations]
       operationId: completeEmergencyArchiveTakedownFollowup
       summary: Link the formal accountable Change Set that resolves a takedown
+      security:
+        - BearerAuth: []
       parameters:
         - in: path
           name: operation_id
           required: true
-          schema:
-            type: string
-            format: uuid
+          schema: { type: string, format: uuid }
       requestBody:
         required: true
         content:
@@ -113,19 +130,23 @@ paths:
               $ref: '#/components/schemas/EmergencyFollowupCommand'
       responses:
         '200':
-          description: Follow-up Change Set recorded.
+          description: Follow-up Change Set recorded as append-only evidence.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmergencyFollowupRead'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-  /admin/archive/operations/metrics:
+        '403': { description: Senior takedown capability or recent authentication is missing }
+        '404': { description: Emergency operation or Change Set is unavailable }
+        '409': { description: Path, idempotency, or formal Change Set conflict }
+        '503': { description: Authoritative database unavailable }
+
+  /api/v1/admin/archive/operations/metrics:
     get:
+      tags: [admin-archive-operations]
       operationId: getArchiveOperationMetrics
       summary: Read operation, projection-lag, and emergency follow-up metrics
+      security:
+        - BearerAuth: []
       responses:
         '200':
           description: Current accountable Archive operation metrics.
@@ -133,23 +154,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArchiveOperationMetricsRead'
-        '403':
-          $ref: '#/components/responses/Forbidden'
+        '403': { description: Metrics capability is unavailable }
+        '404': { description: Feature is disabled }
+        '503': { description: Authoritative database unavailable }
+
 components:
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  responses:
-    Forbidden:
-      description: Required capability or recent authentication is missing.
-    Conflict:
-      description: Idempotency, Archive version, policy, or operation conflict.
   schemas:
     ArchiveRiskLevel:
       type: string
       enum: [ordinary, sensitive]
+
     ArchiveOperationType:
       type: string
       enum:
@@ -159,40 +178,122 @@ components:
         - merge
         - split
         - emergency_takedown
+
     ArchiveEntityRef:
       type: object
       additionalProperties: false
       required: [entity_type, entity_id]
       properties:
-        entity_type:
-          type: string
-          minLength: 1
-          maxLength: 120
-        entity_id:
-          type: string
-          minLength: 1
-          maxLength: 255
+        entity_type: { type: string, minLength: 1, maxLength: 120 }
+        entity_id: { type: string, minLength: 1, maxLength: 255 }
+
     ArchiveImpactPreview:
       type: object
       additionalProperties: false
       properties:
-        follow_count: {type: integer, minimum: 0, default: 0}
-        activity_count: {type: integer, minimum: 0, default: 0}
-        slug_alias_count: {type: integer, minimum: 0, default: 0}
-        relationship_count: {type: integer, minimum: 0, default: 0}
-        residency_count: {type: integer, minimum: 0, default: 0}
-        media_count: {type: integer, minimum: 0, default: 0}
-        source_count: {type: integer, minimum: 0, default: 0}
+        follow_count: { type: integer, minimum: 0, default: 0 }
+        activity_count: { type: integer, minimum: 0, default: 0 }
+        slug_alias_count: { type: integer, minimum: 0, default: 0 }
+        relationship_count: { type: integer, minimum: 0, default: 0 }
+        residency_count: { type: integer, minimum: 0, default: 0 }
+        media_count: { type: integer, minimum: 0, default: 0 }
+        source_count: { type: integer, minimum: 0, default: 0 }
         public_urls:
           type: array
           maxItems: 200
-          items: {type: string}
+          items: { type: string }
         warnings:
           type: array
           maxItems: 200
-          items: {type: string}
-    ArchiveCommandBase:
+          items: { type: string }
+
+    ActivityTarget:
       type: object
+      additionalProperties: false
+      required: [target_type, target_id]
+      properties:
+        target_type: { type: string, enum: [panda, institution] }
+        target_id: { type: string, minLength: 1, maxLength: 200 }
+
+    LocalizedActivitySnapshot:
+      type: object
+      additionalProperties: false
+      required: [locale, title, summary]
+      properties:
+        locale: { type: string, minLength: 2, maxLength: 20 }
+        title: { type: string, minLength: 1, maxLength: 240 }
+        summary: { type: string, minLength: 1, maxLength: 2000 }
+        fallback_from_locale:
+          anyOf:
+            - { type: string, minLength: 2, maxLength: 20 }
+            - { type: 'null' }
+
+    ArchiveActivityDescriptor:
+      type: object
+      additionalProperties: false
+      required:
+        - source_id
+        - action
+        - activity_type
+        - targets
+        - notification_eligible
+        - occurred_at
+        - localization_key
+        - localization_version
+        - localized_snapshots
+      properties:
+        source_id: { type: string, minLength: 3, maxLength: 255 }
+        action: { type: string, enum: [correction, retraction] }
+        activity_type: { type: string }
+        targets:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items: { $ref: '#/components/schemas/ActivityTarget' }
+        importance:
+          anyOf:
+            - { type: string, enum: [ordinary, important, critical] }
+            - { type: 'null' }
+        importance_override_reason:
+          anyOf:
+            - { type: string, minLength: 1, maxLength: 1000 }
+            - { type: 'null' }
+        visibility: { type: string, enum: [public, unlisted], default: public }
+        sitewide: { type: boolean, default: false }
+        notification_eligible: { type: boolean, default: true }
+        occurred_at: { type: string, format: date-time }
+        occurred_precision:
+          type: string
+          enum: [exact, day, month, year, range, unknown]
+          default: exact
+        occurred_end_at:
+          anyOf:
+            - { type: string, format: date-time }
+            - { type: 'null' }
+        localization_key: { type: string, minLength: 3, maxLength: 128 }
+        localization_version: { type: integer, minimum: 1 }
+        localized_snapshots:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items: { $ref: '#/components/schemas/LocalizedActivitySnapshot' }
+        media:
+          anyOf:
+            - { type: object }
+            - { type: 'null' }
+        provenance: { type: object, default: {} }
+        pin:
+          anyOf:
+            - { type: object }
+            - { type: 'null' }
+        retraction_reason:
+          anyOf:
+            - { type: string, minLength: 1, maxLength: 2000 }
+            - { type: 'null' }
+
+    ArchiveOperationCommandBase:
+      type: object
+      additionalProperties: false
       required:
         - expected_archive_release_id
         - idempotency_key
@@ -201,39 +302,49 @@ components:
         - risk_level
         - correlation_id
       properties:
-        expected_archive_release_id: {type: string, format: uuid}
-        idempotency_key: {type: string, minLength: 8, maxLength: 255}
-        reason: {type: string, minLength: 3, maxLength: 2000}
-        data_version: {type: string, minLength: 1, maxLength: 120}
-        risk_level: {$ref: '#/components/schemas/ArchiveRiskLevel'}
-        correlation_id: {type: string, format: uuid}
-        public_schema_version: {type: string, const: 1.0.0, default: 1.0.0}
-        database_migration_version: {type: string, default: '0022'}
-        projection_code_version: {type: string, default: public-release-v2}
+        expected_archive_release_id: { type: string, format: uuid }
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        reason: { type: string, minLength: 3, maxLength: 2000 }
+        data_version: { type: string, minLength: 1, maxLength: 120 }
+        risk_level: { $ref: '#/components/schemas/ArchiveRiskLevel' }
+        correlation_id: { type: string, format: uuid }
+        public_schema_version: { type: string, const: 1.0.0, default: 1.0.0 }
+        database_migration_version: { type: string, default: '0023' }
+        projection_code_version: { type: string, default: public-release-v2 }
+
     ArchiveRollbackCommand:
       allOf:
-        - $ref: '#/components/schemas/ArchiveCommandBase'
+        - { $ref: '#/components/schemas/ArchiveOperationCommandBase' }
         - type: object
           required: [target_release_id]
           properties:
-            target_release_id: {type: string, format: uuid}
-            complex_rollback: {type: boolean, default: false}
+            target_release_id: { type: string, format: uuid }
+            complex_rollback: { type: boolean, default: false }
+
     ArchiveCorrectionCommand:
       allOf:
-        - $ref: '#/components/schemas/ArchiveCommandBase'
+        - { $ref: '#/components/schemas/ArchiveOperationCommandBase' }
         - type: object
-          required: [operation_type, subject, effect_payload, impact_preview]
+          required:
+            - operation_type
+            - subject
+            - effect_payload
+            - impact_preview
+            - activity_descriptor
           properties:
             operation_type:
               type: string
               enum: [targeted_correction, retraction]
-            subject: {$ref: '#/components/schemas/ArchiveEntityRef'}
-            effect_payload: {type: object, minProperties: 1}
-            impact_preview: {$ref: '#/components/schemas/ArchiveImpactPreview'}
-            notification_eligible: {type: boolean, default: true}
+            subject: { $ref: '#/components/schemas/ArchiveEntityRef' }
+            effect_payload: { type: object, minProperties: 1 }
+            impact_preview: { $ref: '#/components/schemas/ArchiveImpactPreview' }
+            activity_descriptor:
+              $ref: '#/components/schemas/ArchiveActivityDescriptor'
+            notification_eligible: { type: boolean, default: true }
+
     ArchiveMergeSplitCommand:
       allOf:
-        - $ref: '#/components/schemas/ArchiveCommandBase'
+        - { $ref: '#/components/schemas/ArchiveOperationCommandBase' }
         - type: object
           required:
             - operation_type
@@ -242,33 +353,35 @@ components:
             - effect_payload
             - impact_preview
           properties:
-            operation_type: {type: string, enum: [merge, split]}
+            operation_type: { type: string, enum: [merge, split] }
             source_entities:
               type: array
               minItems: 1
               maxItems: 50
-              items: {$ref: '#/components/schemas/ArchiveEntityRef'}
+              items: { $ref: '#/components/schemas/ArchiveEntityRef' }
             destination_entities:
               type: array
               minItems: 1
               maxItems: 50
-              items: {$ref: '#/components/schemas/ArchiveEntityRef'}
+              items: { $ref: '#/components/schemas/ArchiveEntityRef' }
             alias_redirects:
               type: object
-              additionalProperties: {type: string}
-            effect_payload: {type: object, minProperties: 1}
-            impact_preview: {$ref: '#/components/schemas/ArchiveImpactPreview'}
+              additionalProperties: { type: string }
+            effect_payload: { type: object, minProperties: 1 }
+            impact_preview: { $ref: '#/components/schemas/ArchiveImpactPreview' }
+
     ArchiveEmergencyTakedownCommand:
       allOf:
-        - $ref: '#/components/schemas/ArchiveCommandBase'
+        - { $ref: '#/components/schemas/ArchiveOperationCommandBase' }
         - type: object
           required: [subject, public_scope, effect_payload, impact_preview]
           properties:
-            subject: {$ref: '#/components/schemas/ArchiveEntityRef'}
-            public_scope: {type: string, minLength: 1, maxLength: 500}
-            effect_payload: {type: object, minProperties: 1}
-            impact_preview: {$ref: '#/components/schemas/ArchiveImpactPreview'}
-            reduction_only: {type: boolean, const: true, default: true}
+            subject: { $ref: '#/components/schemas/ArchiveEntityRef' }
+            public_scope: { type: string, minLength: 1, maxLength: 500 }
+            effect_payload: { type: object, minProperties: 1 }
+            impact_preview: { $ref: '#/components/schemas/ArchiveImpactPreview' }
+            reduction_only: { type: boolean, const: true, default: true }
+
     EmergencyFollowupCommand:
       type: object
       additionalProperties: false
@@ -279,11 +392,12 @@ components:
         - reason
         - correlation_id
       properties:
-        expected_operation_id: {type: string, format: uuid}
-        followup_change_set_id: {type: string, format: uuid}
-        idempotency_key: {type: string, minLength: 8, maxLength: 255}
-        reason: {type: string, minLength: 3, maxLength: 2000}
-        correlation_id: {type: string, format: uuid}
+        expected_operation_id: { type: string, format: uuid }
+        followup_change_set_id: { type: string, format: uuid }
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        reason: { type: string, minLength: 3, maxLength: 2000 }
+        correlation_id: { type: string, format: uuid }
+
     ArchiveOperationRead:
       type: object
       required:
@@ -302,30 +416,37 @@ components:
         - public_projection_status
         - created_at
       properties:
-        operation_id: {type: string, format: uuid}
-        release_id: {type: string, format: uuid}
-        operation_type: {$ref: '#/components/schemas/ArchiveOperationType'}
-        target_release_id: {type: [string, 'null'], format: uuid}
+        operation_id: { type: string, format: uuid }
+        release_id: { type: string, format: uuid }
+        operation_type: { $ref: '#/components/schemas/ArchiveOperationType' }
+        target_release_id:
+          anyOf:
+            - { type: string, format: uuid }
+            - { type: 'null' }
         subject:
           anyOf:
-            - $ref: '#/components/schemas/ArchiveEntityRef'
-            - type: 'null'
+            - { $ref: '#/components/schemas/ArchiveEntityRef' }
+            - { type: 'null' }
         source_entities:
           type: array
-          items: {$ref: '#/components/schemas/ArchiveEntityRef'}
+          items: { $ref: '#/components/schemas/ArchiveEntityRef' }
         destination_entities:
           type: array
-          items: {$ref: '#/components/schemas/ArchiveEntityRef'}
-        risk_level: {$ref: '#/components/schemas/ArchiveRiskLevel'}
-        effect_payload: {type: object}
-        impact_preview: {$ref: '#/components/schemas/ArchiveImpactPreview'}
-        actor_account_id: {type: string, format: uuid}
-        reason: {type: string}
-        correlation_id: {type: string, format: uuid}
-        outbox_event_id: {type: string, format: uuid}
-        public_projection_status: {type: string, enum: [pending, projected]}
-        followup_due_at: {type: [string, 'null'], format: date-time}
-        created_at: {type: string, format: date-time}
+          items: { $ref: '#/components/schemas/ArchiveEntityRef' }
+        risk_level: { $ref: '#/components/schemas/ArchiveRiskLevel' }
+        effect_payload: { type: object }
+        impact_preview: { $ref: '#/components/schemas/ArchiveImpactPreview' }
+        actor_account_id: { type: string, format: uuid }
+        reason: { type: string }
+        correlation_id: { type: string, format: uuid }
+        outbox_event_id: { type: string, format: uuid }
+        public_projection_status: { type: string, enum: [pending, projected] }
+        followup_due_at:
+          anyOf:
+            - { type: string, format: date-time }
+            - { type: 'null' }
+        created_at: { type: string, format: date-time }
+
     EmergencyFollowupRead:
       type: object
       required:
@@ -335,11 +456,12 @@ components:
         - completed_at
         - correlation_id
       properties:
-        operation_id: {type: string, format: uuid}
-        followup_change_set_id: {type: string, format: uuid}
-        completed_by: {type: string, format: uuid}
-        completed_at: {type: string, format: date-time}
-        correlation_id: {type: string, format: uuid}
+        operation_id: { type: string, format: uuid }
+        followup_change_set_id: { type: string, format: uuid }
+        completed_by: { type: string, format: uuid }
+        completed_at: { type: string, format: date-time }
+        correlation_id: { type: string, format: uuid }
+
     ArchiveOperationMetricsRead:
       type: object
       required:
@@ -352,11 +474,11 @@ components:
         - pending_projection_count
         - overdue_emergency_followup_count
       properties:
-        rollback_count: {type: integer, minimum: 0}
-        targeted_correction_count: {type: integer, minimum: 0}
-        retraction_count: {type: integer, minimum: 0}
-        merge_count: {type: integer, minimum: 0}
-        split_count: {type: integer, minimum: 0}
-        emergency_takedown_count: {type: integer, minimum: 0}
-        pending_projection_count: {type: integer, minimum: 0}
-        overdue_emergency_followup_count: {type: integer, minimum: 0}
+        rollback_count: { type: integer, minimum: 0 }
+        targeted_correction_count: { type: integer, minimum: 0 }
+        retraction_count: { type: integer, minimum: 0 }
+        merge_count: { type: integer, minimum: 0 }
+        split_count: { type: integer, minimum: 0 }
+        emergency_takedown_count: { type: integer, minimum: 0 }
+        pending_projection_count: { type: integer, minimum: 0 }
+        overdue_emergency_followup_count: { type: integer, minimum: 0 }
