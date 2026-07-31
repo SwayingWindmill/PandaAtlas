@@ -30,9 +30,11 @@ export default defineConfig({
   webServer: {
     command: `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
     url: `${baseURL}/auth/login`,
+    timeout: 180_000,
     reuseExistingServer: false,
     env: {
       ...process.env,
+      PANDA_NEXT_DIST_DIR: ".next-admin-playwright",
       ADMIN_SHELL_ENABLED: "true",
       NEXT_PUBLIC_ADMIN_SHELL_ENABLED: "true",
       NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:65535",
