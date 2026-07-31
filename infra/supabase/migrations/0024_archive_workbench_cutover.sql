@@ -159,6 +159,30 @@ begin
   where item.singleton = true
   for update;
 
+  -- A concurrent identical command may have committed while this transaction
+  -- waited for the cutover row lock. Recheck before optimistic concurrency.
+  select * into replay
+  from public.archive_cutover_command_receipts receipt
+  where receipt.actor_account_id = requested_actor_id
+    and receipt.idempotency_key = requested_idempotency_key;
+
+  if found then
+    if replay.command_payload_sha256 <> requested_payload_sha256
+      or replay.requested_state <> requested_state then
+      raise exception 'Idempotency key was reused with a different cutover command'
+        using errcode = '23505';
+    end if;
+    select
+      true,
+      replay.requested_state,
+      replay.resulting_version,
+      replay.reason,
+      replay.actor_account_id,
+      replay.created_at
+    into control;
+    return control;
+  end if;
+
   if control.version <> requested_expected_version then
     raise exception 'Archive cutover version conflict' using errcode = '40001';
   end if;
