@@ -18,7 +18,11 @@
     ".release-gate/map-close.json",
     ".release-gate/map-close-manifest.json",
     ".release-gate/map-close-manifest.sha256",
+    ".release-gate/archive-governance-real-db.xml",
     ".release-gate/archive-governance-rehearsal.json",
+    ".release-gate/admin-bundle-budget.json",
+    ".release-gate/published-return-foundation-manifest.json",
+    ".release-gate/published-return-foundation-manifest.sha256",
     "docs/release/issue-196-single-accountable-archive-governance.md"
   ],
   "rollback_switches": [
@@ -62,13 +66,16 @@
             "infra/supabase/migrations/0018_single_accountable_approver_compatibility.sql",
             "infra/supabase/migrations/0024_archive_workbench_cutover.sql",
             "services/api/scripts/rehearse_archive_governance_cutover.py",
+            "services/api/tests/integration/test_archive_governance_real_db.py",
             "docs/runbooks/archive-governance-cutover.md"
           ],
           "gate_commands": [
             "npm run infra:reset",
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/integration/test_archive_governance_real_db.py",
             "uv run --directory services/api --frozen --extra dev python scripts/rehearse_archive_governance_cutover.py --output ../../.release-gate/archive-governance-rehearsal.json --require-go"
           ],
           "artifact_locations": [
+            ".release-gate/archive-governance-real-db.xml",
             ".release-gate/archive-governance-rehearsal.json"
           ]
         }
@@ -86,10 +93,15 @@
             "infra/supabase/migrations/0020_accountable_archive_publication.sql",
             "services/api/tests/archive_publication/test_accountable_publication_models.py",
             "services/api/tests/contracts/test_accountable_publication_storage_contract.py",
-            "services/api/tests/contracts/test_accountable_publication_openapi_contract.py"
+            "services/api/tests/contracts/test_accountable_publication_openapi_contract.py",
+            "services/api/tests/integration/test_archive_governance_real_db.py"
           ],
           "gate_commands": [
-            "uv run --directory services/api --frozen --extra dev pytest -q tests/archive_publication tests/contracts/test_accountable_publication_storage_contract.py tests/contracts/test_accountable_publication_openapi_contract.py"
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/archive_publication tests/contracts/test_accountable_publication_storage_contract.py tests/contracts/test_accountable_publication_openapi_contract.py",
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/integration/test_archive_governance_real_db.py"
+          ],
+          "artifact_locations": [
+            ".release-gate/archive-governance-real-db.xml"
           ]
         }
       ]
@@ -105,11 +117,17 @@
           "evidence_refs": [
             "services/api/tests/integration/test_activity_projection_real_db.py",
             "services/api/tests/integration/test_notification_real_db.py",
+            "services/api/tests/integration/test_archive_governance_real_db.py",
             "services/api/tests/contracts/test_community_curation_storage_contract.py",
             "docs/architecture/community-curation-bridge.md"
           ],
           "gate_commands": [
             "uv run --directory services/api --frozen --extra dev pytest -q tests/integration/test_activity_projection_real_db.py tests/integration/test_notification_real_db.py tests/contracts/test_community_curation_storage_contract.py"
+          ],
+          "artifact_locations": [
+            ".release-gate/activity-real-db.xml",
+            ".release-gate/notification-real-db.xml",
+            ".release-gate/archive-governance-real-db.xml"
           ]
         }
       ]
@@ -126,10 +144,15 @@
             "infra/supabase/migrations/0022_accountable_archive_operations.sql",
             "infra/supabase/migrations/0023_archive_operation_activity_events.sql",
             "services/api/tests/archive_operations/test_archive_operation_models.py",
-            "services/api/tests/contracts/test_accountable_archive_operations_openapi_contract.py"
+            "services/api/tests/contracts/test_accountable_archive_operations_openapi_contract.py",
+            "services/api/tests/integration/test_archive_governance_real_db.py"
           ],
           "gate_commands": [
-            "uv run --directory services/api --frozen --extra dev pytest -q tests/archive_operations tests/contracts/test_accountable_archive_operations_openapi_contract.py"
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/archive_operations tests/contracts/test_accountable_archive_operations_openapi_contract.py",
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/integration/test_archive_governance_real_db.py"
+          ],
+          "artifact_locations": [
+            ".release-gate/archive-governance-real-db.xml"
           ]
         }
       ]
@@ -146,13 +169,18 @@
             "apps/web/components/admin/archive-workbench.tsx",
             "apps/web/components/admin/archive-advanced-operations.tsx",
             "apps/web/tests/admin/identity-admin-shell.spec.ts",
+            "apps/web/scripts/check-admin-runtime-boundary.mjs",
+            "scripts/release/check-admin-bundle-budget.mjs",
+            "scripts/release/tests/admin-bundle-budget.test.mjs",
             "scripts/release/tests/archive-workbench.test.mjs"
           ],
           "gate_commands": [
+            "node scripts/release/check-admin-bundle-budget.mjs",
             "npm run test:admin-shell -w web",
             "npm run release:map-close"
           ],
           "artifact_locations": [
+            ".release-gate/admin-bundle-budget.json",
             ".release-gate/map-close.json"
           ]
         }
@@ -169,15 +197,19 @@
           "evidence_refs": [
             "scripts/release/map-close.mjs",
             "scripts/release/map-close-evidence.mjs",
+            "scripts/release/seal-published-return-evidence.mjs",
             "services/api/scripts/run_identity_engagement_recovery_drill.py",
             "services/api/scripts/run_postgres_attachment_recovery_drill.py"
           ],
           "gate_commands": [
             "npm run drill:identity-engagement-recovery",
             "npm run drill:postgres-attachment-recovery",
+            "node scripts/release/seal-published-return-evidence.mjs",
             "npm run release:map-close"
           ],
           "artifact_locations": [
+            ".release-gate/published-return-foundation-manifest.json",
+            ".release-gate/published-return-foundation-manifest.sha256",
             ".release-gate/map-close-manifest.json",
             ".release-gate/map-close-manifest.sha256"
           ]
