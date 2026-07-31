@@ -11,6 +11,7 @@ from app.archive_operations.models import ArchiveRollbackCommand
 from app.archive_operations.service import rollback_release
 from app.archive_publication.models import (
     AccountablePublishCommand,
+    AccountableReleaseRead,
     AccountableValidationCommand,
     ArchiveRiskLevel,
     ArchiveValidationOutcome,
@@ -21,7 +22,7 @@ from app.archive_workbench.service import cutover_control, set_cutover_control
 from app.core.config import settings
 from app.db.session import configure_database, session_scope
 from app.identity.models import AccountState, RequestIdentity
-from app.schemas.publication import ChangeSetCreate
+from app.schemas.publication import ChangeSetCreate, ChangeSetRead
 from app.services.panda_service import list_pandas
 from app.services.publication_service import create_change_set
 
@@ -45,10 +46,17 @@ def real_db() -> Iterator[None]:
     try:
         with session_scope() as session:
             assert session is not None
-            assert session.execute(
-                text("select exists(select 1 from identity.accounts where account_id = :actor_id)"),
+            actor_exists = session.execute(
+                text(
+                    """
+                    select exists(
+                      select 1 from identity.accounts where account_id = :actor_id
+                    )
+                    """
+                ),
                 {"actor_id": ACTOR_ID},
             ).scalar_one()
+            assert actor_exists
         yield
     finally:
         settings.database_url = previous_url
@@ -115,7 +123,7 @@ def _archive_and_public_pointers() -> tuple[UUID | None, UUID | None, str]:
         return row[0], row[1], str(row[2])
 
 
-def _draft_change_set(suffix: str) -> object:
+def _draft_change_set(suffix: str) -> ChangeSetRead:
     settings.archive_single_accountable_approver_enabled = False
     panda = list_pandas(
         page=1,
@@ -161,7 +169,7 @@ def _validate_and_publish(
     suffix: str,
     risk_level: ArchiveRiskLevel,
     identity: RequestIdentity,
-):
+) -> AccountableReleaseRead:
     draft = _draft_change_set(suffix)
     _, _, archive_version = _archive_and_public_pointers()
     validation_command = AccountableValidationCommand(
@@ -192,7 +200,9 @@ def _validate_and_publish(
     return release
 
 
-def test_accountable_archive_publication_operation_and_cutover_journey(real_db: None) -> None:
+def test_accountable_archive_publication_operation_and_cutover_journey(
+    real_db: None,
+) -> None:
     _ = real_db
     suffix = uuid4().hex
     editor = _identity(senior=False, recent_auth=False)
@@ -289,16 +299,14 @@ def test_accountable_archive_publication_operation_and_cutover_journey(real_db: 
     assert archive_release_id == rollback.release_id
     assert public_release_id == initial_public_release_id
 
-    resumed = set_cutover_control(
-        ArchiveCutoverCommand(
-            expected_version=held.version,
-            state="open",
-            idempotency_key=f"cutover-resume-{suffix}",
-            reason="Resume publication after the cutover recovery boundary passed.",
-            correlation_id=uuid4(),
-        ),
-        senior,
+    resume_command = ArchiveCutoverCommand(
+        expected_version=held.version,
+        state="open",
+        idempotency_key=f"cutover-resume-{suffix}",
+        reason="Resume publication after the cutover recovery boundary passed.",
+        correlation_id=uuid4(),
     )
+    resumed = set_cutover_control(resume_command, senior)
     assert resumed.state == "open"
 
     with session_scope() as session:
@@ -320,8 +328,9 @@ def test_accountable_archive_publication_operation_and_cutover_journey(real_db: 
                 "sensitive_id": sensitive.change_set_id,
                 "operation_id": rollback.operation_id,
                 "hold_id": hold_command.correlation_id,
-                "resume_id": resumed.changed_by and resumed.changed_by,
+                "resume_id": resume_command.correlation_id,
             },
         ).one()
         assert int(counts[0]) == 2
         assert int(counts[1]) == 1
+        assert int(counts[2]) == 2
