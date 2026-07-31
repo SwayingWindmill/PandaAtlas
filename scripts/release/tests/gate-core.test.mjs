@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
+import "./admin-bundle-budget.test.mjs";
 import "./archive-governance-evidence.test.mjs";
 import "./archive-workbench.test.mjs";
 import "./map-close-config.test.mjs";
