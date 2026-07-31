@@ -1,0 +1,36 @@
+diff --git a/services/api/openapi/panda-atlas-v1.yaml b/services/api/openapi/panda-atlas-v1.yaml
+index 145a189..0000000 100644
+--- a/services/api/openapi/panda-atlas-v1.yaml
++++ b/services/api/openapi/panda-atlas-v1.yaml
+@@ -23,6 +23,7 @@ tags:
+   - name: stats
+   - name: admin
+   - name: admin-accountable-publication
++  - name: admin-archive-operations
+   - name: admin-community-curation
+   - name: admin-review
+   - name: feed
+@@ -1509,6 +1510,24 @@ paths:
+   /api/v1/admin/archive/publication-metrics:
+     $ref: './accountable-publication-v1.yaml#/paths/~1api~1v1~1admin~1archive~1publication-metrics'
+ 
++  /api/v1/admin/archive/operations/rollback:
++    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1rollback'
++
++  /api/v1/admin/archive/operations/corrections:
++    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1corrections'
++
++  /api/v1/admin/archive/operations/merge-split:
++    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1merge-split'
++
++  /api/v1/admin/archive/operations/emergency-takedowns:
++    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1emergency-takedowns'
++
++  /api/v1/admin/archive/operations/emergency-takedowns/{operation_id}/followup:
++    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1emergency-takedowns~1{operation_id}~1followup'
++
++  /api/v1/admin/archive/operations/metrics:
++    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1metrics'
++
+   /api/v1/admin/community-curation/review-cases/{review_case_id}/bridge:
+     $ref: './community-curation-v1.yaml#/paths/~1api~1v1~1admin~1community-curation~1review-cases~1{review_case_id}~1bridge'
