@@ -39,6 +39,8 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(mapClose, /NEXT_PUBLIC_ENGAGEMENT_ENABLED/);
   assert.match(mapClose, /NEXT_PUBLIC_FEED_ENABLED/);
   assert.match(mapClose, /NEXT_PUBLIC_NOTIFICATION_ENABLED/);
+  assert.match(mapClose, /structured-contribution-evidence/);
+  assert.match(mapClose, /validate-structured-contribution-evidence\.mjs/);
   assert.match(mapClose, /identity-engagement-contracts/);
   assert.match(mapClose, /secure-web-boundary/);
   assert.match(mapClose, /follow-through-login-browser/);
