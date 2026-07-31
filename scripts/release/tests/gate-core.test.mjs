@@ -4,6 +4,9 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
+import "./archive-governance-evidence.test.mjs";
+import "./archive-workbench.test.mjs";
+import "./map-close-config.test.mjs";
 import {
   EnvironmentBlockedError,
   ReleaseGateError,
