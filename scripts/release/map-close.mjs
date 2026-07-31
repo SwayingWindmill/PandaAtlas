@@ -63,13 +63,20 @@ export async function runMapCloseGate() {
     reportDir: releaseReportDir,
     steps: [
       {
+        id: "structured-contribution-evidence",
+        label: "Issue #193 structured contribution evidence package",
+        run: () => runCommand("node", ["scripts/release/validate-structured-contribution-evidence.mjs"]),
+      },
+      {
         id: "notification-center-budget",
         label: "Private notification center performance budget",
+        dependsOn: ["structured-contribution-evidence"],
         run: () => runCommand("npm", ["run", "check:notification-center-budget"]),
       },
       {
         id: "supabase-foundation-contracts",
         label: "Supabase/PostGIS/PGMQ foundation contracts",
+        dependsOn: ["structured-contribution-evidence"],
         run: () =>
           runCommand(
             "uv",
@@ -87,6 +94,7 @@ export async function runMapCloseGate() {
       {
         id: "identity-engagement-contracts",
         label: "Identity, capability, Follow, consent, and Passport contracts",
+        dependsOn: ["structured-contribution-evidence"],
         run: () =>
           runCommand(
             "uv",
@@ -104,6 +112,7 @@ export async function runMapCloseGate() {
       {
         id: "secure-web-boundary",
         label: "Public/admin bundle, browser-write, and legacy Saved boundary",
+        dependsOn: ["structured-contribution-evidence"],
         run: () => runCommand("node", ["scripts/release/check-secure-engagement-boundary.mjs"]),
       },
       {
