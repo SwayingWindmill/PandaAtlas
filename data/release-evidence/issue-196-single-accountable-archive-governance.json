@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "issue": 196,
+  "map_issue": 175,
+  "title": "Single-accountable-approver Archive governance map-close evidence",
+  "owned_by": "delivery:map-close",
+  "closure_rule": "Every required category must have covered repository evidence and at least one executable gate command or immutable artifact location before #175 can close.",
+  "blockers": [
+    { "issue": 190, "status": "closed" },
+    { "issue": 191, "status": "closed" },
+    { "issue": 194, "status": "closed" },
+    { "issue": 195, "status": "closed" },
+    { "issue": 182, "status": "closed" },
+    { "issue": 192, "status": "closed" }
+  ],
+  "artifact_locations": [
+    ".release-gate/default.json",
+    ".release-gate/map-close.json",
+    ".release-gate/map-close-manifest.json",
+    ".release-gate/map-close-manifest.sha256",
+    ".release-gate/archive-governance-rehearsal.json",
+    "docs/release/issue-196-single-accountable-archive-governance.md"
+  ],
+  "rollback_switches": [
+    "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false",
+    "COMMUNITY_CURATION_BRIDGE_ENABLED=false",
+    "REVIEW_MODERATION_ENABLED=false",
+    "COMMUNITY_INTAKE_ENABLED=false",
+    "ACTIVITY_ENABLED=false",
+    "NOTIFICATION_ENABLED=false"
+  ],
+  "categories": [
+    {
+      "id": "inventory-adr-cutover",
+      "required_by_issue_196": "Exhaustive dual-approval inventory, accepted superseding ADR, explicit cutover invariants, and no remaining unclassified governance path.",
+      "scenarios": [
+        {
+          "id": "inventory-adr-cutover",
+          "status": "covered",
+          "acceptance": "The machine-readable inventory classifies every high-signal schema, trigger, API, capability, command, contract, test, UI, metric, runbook, ADR, fixture, and script path while the accepted ADR preserves historical four-eyes evidence.",
+          "evidence_refs": [
+            "contracts/archive-governance-migration.v1.json",
+            "docs/architecture/adr-0002-single-accountable-archive-approver.md",
+            "scripts/release/check-archive-governance-migration.mjs",
+            "scripts/release/tests/archive-governance-migration.test.mjs"
+          ],
+          "gate_commands": [
+            "npm run check:archive-governance-migration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "migration-rehearsal-integrity",
+      "required_by_issue_196": "Fresh and populated migration rehearsals with old/new counts, hashes, awaiting-second conversion, no auto-publish, historical audit preservation, cutover hold, and application rollback behavior.",
+      "scenarios": [
+        {
+          "id": "migration-rehearsal-integrity",
+          "status": "covered",
+          "acceptance": "Additive migrations preserve legacy records, never auto-publish revalidated work, provide deterministic GO/NO-GO snapshots, and hold or resume publication without deleting Releases or moving pointers backward.",
+          "evidence_refs": [
+            "infra/supabase/migrations/0018_single_accountable_approver_compatibility.sql",
+            "infra/supabase/migrations/0024_archive_workbench_cutover.sql",
+            "services/api/scripts/rehearse_archive_governance_cutover.py",
+            "docs/runbooks/archive-governance-cutover.md"
+          ],
+          "gate_commands": [
+            "npm run infra:reset",
+            "uv run --directory services/api --frozen --extra dev python scripts/rehearse_archive_governance_cutover.py --output ../../.release-gate/archive-governance-rehearsal.json --require-go"
+          ],
+          "artifact_locations": [
+            ".release-gate/archive-governance-rehearsal.json"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "accountable-publication-transaction",
+      "required_by_issue_196": "Ordinary and sensitive publication, capability and recent-auth enforcement, stale base, optimistic conflict, idempotent replay, audit failure, transaction failure, publish_failed, and immutable Release behavior.",
+      "scenarios": [
+        {
+          "id": "accountable-publication-transaction",
+          "status": "covered",
+          "acceptance": "One authorized accountable editor validates and atomically publishes one immutable Release with provenance, audit, Outbox, pointer, failure metrics, conflict handling, and no implicit Administrator or service-account grant.",
+          "evidence_refs": [
+            "infra/supabase/migrations/0020_accountable_archive_publication.sql",
+            "services/api/tests/archive_publication/test_accountable_publication_models.py",
+            "services/api/tests/contracts/test_accountable_publication_storage_contract.py",
+            "services/api/tests/contracts/test_accountable_publication_openapi_contract.py"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/archive_publication tests/contracts/test_accountable_publication_storage_contract.py tests/contracts/test_accountable_publication_openapi_contract.py"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projection-activity-notification",
+      "required_by_issue_196": "Public Projection outage and retry, prior-version continuity, no duplicate Release, Activity and notification effects, and incorporation only after successful projection.",
+      "scenarios": [
+        {
+          "id": "projection-activity-notification",
+          "status": "covered",
+          "acceptance": "Archive publication remains authoritative during projection failure, the prior public version stays available, Activity projection is idempotent, and contributor or follower notifications originate from projected public-safe events without duplication.",
+          "evidence_refs": [
+            "services/api/tests/integration/test_activity_projection_real_db.py",
+            "services/api/tests/integration/test_notification_real_db.py",
+            "services/api/tests/contracts/test_community_curation_storage_contract.py",
+            "docs/architecture/community-curation-bridge.md"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/integration/test_activity_projection_real_db.py tests/integration/test_notification_real_db.py tests/contracts/test_community_curation_storage_contract.py"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "correction-rollback-identity-history",
+      "required_by_issue_196": "Latest rollback, dependent targeted correction, retraction, merge/split preservation, stable aliases, Activity effects, emergency takedown, and one-business-day formal follow-up.",
+      "scenarios": [
+        {
+          "id": "correction-rollback-identity-history",
+          "status": "covered",
+          "acceptance": "Every corrective operation creates a new immutable Release, keeps stable identity and history evidence, uses Senior capability and recent authentication where required, reduces emergency exposure only, and records follow-up obligations.",
+          "evidence_refs": [
+            "infra/supabase/migrations/0022_accountable_archive_operations.sql",
+            "infra/supabase/migrations/0023_archive_operation_activity_events.sql",
+            "services/api/tests/archive_operations/test_archive_operation_models.py",
+            "services/api/tests/contracts/test_accountable_archive_operations_openapi_contract.py"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/archive_operations tests/contracts/test_accountable_archive_operations_openapi_contract.py"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "admin-browser-accessibility-budget",
+      "required_by_issue_196": "Bounded React-admin browser and mobile journeys, keyboard and WCAG behavior, no generic CRUD, bundle isolation, noindex/no-cache, security, and approved gzip budget.",
+      "scenarios": [
+        {
+          "id": "admin-browser-accessibility-budget",
+          "status": "covered",
+          "acceptance": "Archive and Senior workbenches expose complete evidence and explicit commands only, remain client-isolated from public bundles, use private no-cache/noindex responses, and are certified by browser, accessibility, and performance gates.",
+          "evidence_refs": [
+            "apps/web/components/admin/archive-workbench.tsx",
+            "apps/web/components/admin/archive-advanced-operations.tsx",
+            "apps/web/tests/admin/identity-admin-shell.spec.ts",
+            "scripts/release/tests/archive-workbench.test.mjs"
+          ],
+          "gate_commands": [
+            "npm run test:admin-shell -w web",
+            "npm run release:map-close"
+          ],
+          "artifact_locations": [
+            ".release-gate/map-close.json"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations-recovery-cross-platform",
+      "required_by_issue_196": "Observability, runbooks, database and attachment restore, feature-flag rollback, staging withdrawal and rollback, Windows and Linux Release Gate, immutable hashes, and recorded artifact locations.",
+      "scenarios": [
+        {
+          "id": "operations-recovery-cross-platform",
+          "status": "covered",
+          "acceptance": "Recovery drills, rollback switches, staging evidence, Windows/Linux gates, and sealed manifests provide reproducible final evidence without deleting accountable Archive history.",
+          "evidence_refs": [
+            "scripts/release/map-close.mjs",
+            "scripts/release/map-close-evidence.mjs",
+            "services/api/scripts/run_identity_engagement_recovery_drill.py",
+            "services/api/scripts/run_postgres_attachment_recovery_drill.py"
+          ],
+          "gate_commands": [
+            "npm run drill:identity-engagement-recovery",
+            "npm run drill:postgres-attachment-recovery",
+            "npm run release:map-close"
+          ],
+          "artifact_locations": [
+            ".release-gate/map-close-manifest.json",
+            ".release-gate/map-close-manifest.sha256"
+          ]
+        }
+      ]
+    }
+  ]
+}
