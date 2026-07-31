@@ -21,6 +21,9 @@
     ".release-gate/archive-governance-real-db.xml",
     ".release-gate/archive-governance-rehearsal.json",
     ".release-gate/admin-bundle-budget.json",
+    ".release-gate/panda-atlas-v1-integrated.yaml",
+    ".release-gate/panda-atlas-v1-integrated.yaml.sha256",
+    ".release-gate/panda-atlas-v1.manifest.json",
     ".release-gate/published-return-foundation-manifest.json",
     ".release-gate/published-return-foundation-manifest.sha256",
     "docs/release/issue-196-single-accountable-archive-governance.md"
@@ -36,7 +39,7 @@
   "categories": [
     {
       "id": "inventory-adr-cutover",
-      "required_by_issue_196": "Exhaustive dual-approval inventory, accepted superseding ADR, explicit cutover invariants, and no remaining unclassified governance path.",
+      "required_by_issue_196": "Exhaustive dual-approval inventory, accepted superseding ADR, explicit cutover invariants, canonical API registration, and no remaining unclassified governance path.",
       "scenarios": [
         {
           "id": "inventory-adr-cutover",
@@ -50,6 +53,26 @@
           ],
           "gate_commands": [
             "npm run check:archive-governance-migration"
+          ]
+        },
+        {
+          "id": "canonical-api-bundle",
+          "status": "covered",
+          "acceptance": "The canonical API bundle registers accountable publication, Archive operations, and Archive workbench Path Items, resolves every required method against FastAPI, copies all referenced bounded contracts, rejects conflicts, and emits a tamper-evident integrated YAML.",
+          "evidence_refs": [
+            "services/api/openapi/panda-atlas-v1.manifest.json",
+            "services/api/scripts/build_archive_governance_openapi.py",
+            "services/api/tests/contracts/test_archive_governance_canonical_openapi.py",
+            "scripts/release/map-close-evidence.mjs"
+          ],
+          "gate_commands": [
+            "uv run --directory services/api --frozen --extra dev pytest -q tests/contracts/test_archive_governance_canonical_openapi.py",
+            "uv run --directory services/api --frozen --extra dev python scripts/build_archive_governance_openapi.py --output ../../.release-gate/panda-atlas-v1-integrated.yaml"
+          ],
+          "artifact_locations": [
+            ".release-gate/panda-atlas-v1-integrated.yaml",
+            ".release-gate/panda-atlas-v1-integrated.yaml.sha256",
+            ".release-gate/panda-atlas-v1.manifest.json"
           ]
         }
       ]
