@@ -8,6 +8,7 @@ import type { PublicLocale } from "@/foundation/content/locales";
 
 interface MobileNavigationProps {
   locale: PublicLocale;
+  contributeEnabled: boolean;
   feedEnabled: boolean;
   notificationCenterEnabled: boolean;
   languageHref: string;
@@ -21,6 +22,7 @@ interface MobileNavigationProps {
     lineage: string;
     map: string;
     myPandas: string;
+    contribute: string;
     feed: string;
     inbox: string;
     language: string;
@@ -29,6 +31,7 @@ interface MobileNavigationProps {
 
 export function MobileNavigation({
   locale,
+  contributeEnabled,
   feedEnabled,
   notificationCenterEnabled,
   languageHref,
