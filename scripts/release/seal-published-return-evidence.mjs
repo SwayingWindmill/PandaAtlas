@@ -16,6 +16,7 @@ const requiredArtifacts = [
   "engagement-real-db.xml",
   "feed-real-db.xml",
   "notification-real-db.xml",
+  "archive-governance-real-db.xml",
   "identity-engagement-recovery.json",
   "notification-staging.json",
   "archive-governance-rehearsal.json",
@@ -29,6 +30,41 @@ function resolveCommitSha(commitSha) {
   if (commitSha) return commitSha;
   if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA;
   return execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+}
+
+function archiveEnvironment() {
+  return {
+    ...process.env,
+    ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true",
+    RUN_REAL_DB_TESTS: "1",
+  };
+}
+
+function generateArchiveGovernanceRealDbEvidence(reportDir) {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required to run Archive governance real-DB evidence");
+  }
+  execFileSync(
+    "uv",
+    [
+      "run",
+      "--isolated",
+      "--directory",
+      "services/api",
+      "--frozen",
+      "--extra",
+      "dev",
+      "pytest",
+      "-q",
+      "tests/integration/test_archive_governance_real_db.py",
+      `--junitxml=${path.join(reportDir, "archive-governance-real-db.xml")}`,
+    ],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+      env: archiveEnvironment(),
+    },
+  );
 }
 
 function generateArchiveGovernanceRehearsal(reportDir) {
@@ -54,10 +90,7 @@ function generateArchiveGovernanceRehearsal(reportDir) {
     {
       cwd: repoRoot,
       stdio: "inherit",
-      env: {
-        ...process.env,
-        ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true",
-      },
+      env: archiveEnvironment(),
     },
   );
 }
@@ -67,9 +100,11 @@ export async function sealPublishedReturnEvidence({
   commitSha,
   generatedAt = new Date().toISOString(),
   platform = process.platform,
+  generateArchiveRealDb = true,
   generateArchiveRehearsal = true,
 } = {}) {
   await mkdir(reportDir, { recursive: true });
+  if (generateArchiveRealDb) generateArchiveGovernanceRealDbEvidence(reportDir);
   if (generateArchiveRehearsal) generateArchiveGovernanceRehearsal(reportDir);
 
   const artifacts = [];
