@@ -40,6 +40,10 @@ def test_cutover_command_is_idempotent_versioned_and_recent_auth() -> None:
     assert function_body.index("from public.archive_cutover_command_receipts") < (
         function_body.index("for update")
     )
+    assert "replay.requested_state" in function_body
+    assert "replay.resulting_version" in function_body
+    assert "replay.actor_account_id" in function_body
+    assert "replay.created_at" in function_body
     assert "archive cutover version conflict" in function_body
     assert "archive.cutover.manage" in function_body
     assert "archive cutover requires recent authentication" in function_body
@@ -60,6 +64,17 @@ def test_cutover_evidence_is_append_only_and_capabilities_are_explicit() -> None
     assert "archive.cutover.manage" in sql
     assert "('administrator', 'archive.cutover.manage')" not in sql
     assert "('service', 'archive.cutover.manage')" not in sql
+
+
+def test_projection_lag_only_reports_the_current_unprojected_archive_release() -> None:
+    sql = MIGRATION.read_text(encoding="utf-8").lower()
+
+    assert "cross join public.archive_release_pointer archive_pointer" in sql
+    assert "release.id = archive_pointer.latest_release_id" in sql
+    assert (
+        "public_pointer.active_batch_id is distinct from "
+        "archive_pointer.latest_release_id"
+    ) in sql
 
 
 def test_workbench_views_cover_required_operational_queues() -> None:
