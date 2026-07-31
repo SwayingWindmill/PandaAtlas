@@ -1,0 +1,41 @@
+name: Replay Issue 186
+
+on:
+  push:
+    branches:
+      - issue-186-replay
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  replay:
+    name: Replay #212 onto current master
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure bot identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Replay issue 186 commit
+        run: |
+          set -euxo pipefail
+          git fetch origin master issue-186
+          git checkout -B issue-186 origin/master
+          git cherry-pick -X theirs ed48cb7783c6dbbdff6b8be0e898ea7646dc0596
+          git log --oneline -3
+          git status --short
+
+      - name: Push replayed PR branch
+        run: |
+          set -euxo pipefail
+          git push --force origin HEAD:issue-186
