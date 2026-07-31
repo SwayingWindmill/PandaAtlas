@@ -35,6 +35,7 @@ const projects = browserMatrix
 export default defineConfig({
   testDir: "./tests/smoke",
   workers: 1,
+  reporter: process.env.CI ? "line" : "list",
   use: {
     baseURL,
   },
