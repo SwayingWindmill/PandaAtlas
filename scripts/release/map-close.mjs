@@ -109,6 +109,12 @@ export async function runMapCloseGate() {
           ]),
       },
       {
+        id: "admin-bundle-budget",
+        label: "Isolated React-admin gzip budget",
+        dependsOn: ["archive-governance-web-contracts"],
+        run: () => runCommand("node", ["scripts/release/check-admin-bundle-budget.mjs"]),
+      },
+      {
         id: "structured-contribution-evidence",
         label: "Issue #193 structured contribution evidence package",
         dependsOn: ["archive-governance-evidence"],
@@ -205,8 +211,12 @@ export async function runMapCloseGate() {
       },
       {
         id: "admin-shell-browser",
-        label: "Bounded React-admin shell, headers, keyboard, and WCAG",
-        dependsOn: ["secure-web-boundary", "archive-governance-web-contracts"],
+        label: "Bounded React-admin shell, headers, mobile, keyboard, and WCAG",
+        dependsOn: [
+          "secure-web-boundary",
+          "archive-governance-web-contracts",
+          "admin-bundle-budget",
+        ],
         run: () =>
           runCommand("npm", ["run", "test:admin-shell", "-w", "web"], {
             env: playwrightEnv,
