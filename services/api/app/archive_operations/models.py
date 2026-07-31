@@ -163,6 +163,19 @@ class EmergencyFollowupRead(BaseModel):
     correlation_id: UUID
 
 
+class ArchiveOperationMetricsRead(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    rollback_count: int = Field(ge=0)
+    targeted_correction_count: int = Field(ge=0)
+    retraction_count: int = Field(ge=0)
+    merge_count: int = Field(ge=0)
+    split_count: int = Field(ge=0)
+    emergency_takedown_count: int = Field(ge=0)
+    pending_projection_count: int = Field(ge=0)
+    overdue_emergency_followup_count: int = Field(ge=0)
+
+
 def operation_payload_sha256(command: BaseModel) -> str:
     encoded = json.dumps(
         command.model_dump(mode="json"),
