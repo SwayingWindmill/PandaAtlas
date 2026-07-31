@@ -18,6 +18,7 @@ const requiredArtifacts = [
   "notification-real-db.xml",
   "identity-engagement-recovery.json",
   "notification-staging.json",
+  "archive-governance-rehearsal.json",
 ];
 
 function sha256(value) {
@@ -30,13 +31,47 @@ function resolveCommitSha(commitSha) {
   return execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
 }
 
+function generateArchiveGovernanceRehearsal(reportDir) {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required to seal Archive governance rehearsal evidence");
+  }
+  execFileSync(
+    "uv",
+    [
+      "run",
+      "--isolated",
+      "--directory",
+      "services/api",
+      "--frozen",
+      "--extra",
+      "dev",
+      "python",
+      "scripts/rehearse_archive_governance_cutover.py",
+      "--output",
+      path.join(reportDir, "archive-governance-rehearsal.json"),
+      "--require-go",
+    ],
+    {
+      cwd: repoRoot,
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true",
+      },
+    },
+  );
+}
+
 export async function sealPublishedReturnEvidence({
   reportDir = defaultReportDir,
   commitSha,
   generatedAt = new Date().toISOString(),
   platform = process.platform,
+  generateArchiveRehearsal = true,
 } = {}) {
   await mkdir(reportDir, { recursive: true });
+  if (generateArchiveRehearsal) generateArchiveGovernanceRehearsal(reportDir);
+
   const artifacts = [];
   for (const name of requiredArtifacts) {
     const bytes = await readFile(path.join(reportDir, name));
@@ -48,11 +83,17 @@ export async function sealPublishedReturnEvidence({
     }
     if (name.endsWith(".json")) {
       const parsed = JSON.parse(bytes.toString("utf8"));
-      const acceptedOutcomes = name === "notification-staging.json"
-        ? new Set(["passed", "environment-blocked"])
-        : new Set(["passed"]);
-      if (!acceptedOutcomes.has(parsed.outcome)) {
-        throw new Error(`Published-return recovery evidence did not pass: ${name}`);
+      if (name === "archive-governance-rehearsal.json") {
+        if (parsed.go !== true || !parsed.canonical_sha256) {
+          throw new Error("Archive governance rehearsal evidence is not GO or lacks a hash");
+        }
+      } else {
+        const acceptedOutcomes = name === "notification-staging.json"
+          ? new Set(["passed", "environment-blocked"])
+          : new Set(["passed"]);
+        if (!acceptedOutcomes.has(parsed.outcome)) {
+          throw new Error(`Published-return recovery evidence did not pass: ${name}`);
+        }
       }
     }
     artifacts.push({ path: name, bytes: bytes.length, sha256: sha256(bytes) });
@@ -61,6 +102,8 @@ export async function sealPublishedReturnEvidence({
     schema_version: 1,
     map_issue: 173,
     closing_issue: 186,
+    integrated_map_issue: 175,
+    integrated_closing_issue: 196,
     gate: "published-return-foundation",
     commit_sha: resolveCommitSha(commitSha),
     platform,
