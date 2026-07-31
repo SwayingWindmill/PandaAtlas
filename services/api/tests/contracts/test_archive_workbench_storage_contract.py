@@ -36,9 +36,12 @@ def test_cutover_hold_blocks_new_publication_without_deleting_history() -> None:
 def test_cutover_command_is_idempotent_versioned_and_recent_auth() -> None:
     sql = MIGRATION.read_text(encoding="utf-8").lower()
     function_body = _function(sql, "set_archive_publication_cutover", "$cutover$;")
+    receipt_lookup = "from public.archive_cutover_command_receipts"
 
-    assert function_body.index("from public.archive_cutover_command_receipts") < (
-        function_body.index("for update")
+    assert function_body.index(receipt_lookup) < function_body.index("for update")
+    assert function_body.count(receipt_lookup) == 2
+    assert function_body.rindex(receipt_lookup) < function_body.index(
+        "archive cutover version conflict"
     )
     assert "replay.requested_state" in function_body
     assert "replay.resulting_version" in function_body
