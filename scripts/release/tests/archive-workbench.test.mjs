@@ -6,16 +6,24 @@ const root = new URL("../../../", import.meta.url);
 const source = (relativePath) => readFile(new URL(relativePath, root), "utf8");
 
 test("Archive workbench is bounded, server authenticated, and does not expose generic CRUD", async () => {
-  const [shell, workbench, proxy, route] = await Promise.all([
+  const [shell, workbench, advanced, proxy, route] = await Promise.all([
     source("apps/web/components/admin/react-admin-shell.tsx"),
     source("apps/web/components/admin/archive-workbench.tsx"),
+    source("apps/web/components/admin/archive-advanced-operations.tsx"),
     source("apps/web/lib/server/fastapi-admin-archive-proxy.ts"),
     source("apps/web/app/api/admin/archive/[[...path]]/route.ts"),
   ]);
 
   assert.match(shell, /ArchiveWorkbench/);
+  assert.match(shell, /ArchiveAdvancedOperations/);
   assert.match(shell, /session\.capabilities\.includes\("archive\.workbench\.read"\)/);
+  assert.match(shell, /archive\.sensitive\.merge_split/);
+  assert.match(shell, /archive\.sensitive\.takedown/);
   assert.match(shell, /<Route path="\/archive" element=\{<ArchiveWorkbench \/>\}/);
+  assert.match(
+    shell,
+    /<Route path="\/archive\/operations" element=\{<ArchiveAdvancedOperations \/>\}/,
+  );
   assert.match(shell, /The bounded admin shell does not expose generic CRUD business writes/);
   assert.match(workbench, /^"use client"/);
   assert.match(workbench, /\/api\/admin\/archive/);
@@ -26,9 +34,17 @@ test("Archive workbench is bounded, server authenticated, and does not expose ge
   assert.match(workbench, /创建修正 \/ 撤回 Release/);
   assert.match(workbench, /Hold 新发布/);
   assert.match(workbench, /Resume 新发布/);
+  assert.match(advanced, /operations\/merge-split/);
+  assert.match(advanced, /operations\/emergency-takedowns/);
+  assert.match(advanced, /reduction_only: true/);
+  assert.match(advanced, /archive\.sensitive\.merge_split/);
+  assert.match(advanced, /archive\.sensitive\.takedown/);
+  assert.match(advanced, /recentAuth/);
   assert.match(proxy, /import "server-only"/);
   assert.match(proxy, /getVerifiedSupabaseAccessToken\(\)/);
   assert.match(proxy, /Authorization: `Bearer \$\{accessToken\}`/);
+  assert.match(proxy, /normalizeArchiveCommandBody/);
+  assert.match(proxy, /archive\.profile_corrected/);
   assert.match(proxy, /X-Robots-Tag/);
   assert.match(proxy, /Cache-Control/);
   assert.match(route, /export const GET = proxy/);
