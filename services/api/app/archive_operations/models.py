@@ -9,6 +9,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from app.activity.models import ActivityAction, ArchiveActivityDescriptor
 from app.archive_publication.models import ArchiveRiskLevel
 
 
@@ -52,7 +53,7 @@ class ArchiveOperationCommandBase(BaseModel):
     risk_level: ArchiveRiskLevel
     correlation_id: UUID
     public_schema_version: Literal["1.0.0"] = "1.0.0"
-    database_migration_version: str = Field(default="0022", max_length=120)
+    database_migration_version: str = Field(default="0023", max_length=120)
     projection_code_version: str = Field(default="public-release-v2", max_length=200)
 
 
@@ -69,12 +70,28 @@ class ArchiveCorrectionCommand(ArchiveOperationCommandBase):
     subject: ArchiveEntityRef
     effect_payload: dict[str, object]
     impact_preview: ArchiveImpactPreview
+    activity_descriptor: ArchiveActivityDescriptor
     notification_eligible: bool = True
 
     @model_validator(mode="after")
-    def require_effect_payload(self) -> ArchiveCorrectionCommand:
+    def validate_activity_effect(self) -> ArchiveCorrectionCommand:
         if not self.effect_payload:
             raise ValueError("correction and retraction commands require effect_payload")
+        expected_action = (
+            ActivityAction.CORRECTION
+            if self.operation_type is ArchiveOperationType.TARGETED_CORRECTION
+            else ActivityAction.RETRACTION
+        )
+        if self.activity_descriptor.action is not expected_action:
+            raise ValueError("Activity descriptor action must match the Archive operation")
+        if self.activity_descriptor.notification_eligible != self.notification_eligible:
+            raise ValueError(
+                "Activity descriptor notification eligibility must match the command"
+            )
+        self.effect_payload = {
+            **self.effect_payload,
+            "activity_descriptor": self.activity_descriptor.model_dump(mode="json"),
+        }
         return self
 
 
