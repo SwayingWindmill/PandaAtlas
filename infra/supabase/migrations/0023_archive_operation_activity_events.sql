@@ -156,6 +156,8 @@ create trigger trg_archive_operation_activity_source
 after insert on public.archive_operation_records
 for each row execute function public.emit_archive_operation_activity_source();
 
+drop trigger if exists trg_archive_operation_activity_events_append_only
+  on public.archive_operation_activity_events;
 create trigger trg_archive_operation_activity_events_append_only
 before update or delete on public.archive_operation_activity_events
 for each row execute function public.reject_archive_operation_evidence_mutation();
@@ -165,11 +167,11 @@ alter table public.archive_operation_activity_events enable row level security;
 do $policy$
 begin
   if exists (select 1 from pg_roles where rolname = 'service_role') then
-    create policy archive_operation_activity_events_backend
-      on public.archive_operation_activity_events
-      for all to service_role
-      using (true)
-      with check (true);
+    execute 'drop policy if exists archive_operation_activity_events_backend '
+      || 'on public.archive_operation_activity_events';
+    execute 'create policy archive_operation_activity_events_backend '
+      || 'on public.archive_operation_activity_events for all to service_role '
+      || 'using (true) with check (true)';
   end if;
 end
 $policy$;
