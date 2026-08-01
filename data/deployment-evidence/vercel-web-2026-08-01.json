@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "evidence_id": "vercel-web-2026-08-01",
+  "observed_at": "2026-08-01T10:48:43Z",
+  "phase": 1,
+  "status": "acceptance-in-progress",
+  "project": {
+    "team_slug": "swaying-windmill",
+    "team_id": "team_kTGJFPyzeDcJFchLZ3L3rHv7",
+    "project_name": "zhipanda",
+    "project_id": "prj_f50sXrKegrjBr65b3PZ4A9nf4t2o",
+    "root_directory": "apps/web",
+    "framework": "nextjs",
+    "node_version": "24.x",
+    "production_branch": "master"
+  },
+  "deployment": {
+    "deployment_id": "dpl_33RS6RDqRwEqWZb9xCCxgvFTMNyP",
+    "deployment_url": "https://zhipanda-o6fsq8g3x-swaying-windmill.vercel.app",
+    "stable_project_url": "https://zhipanda.vercel.app",
+    "provided_deployment_url": "https://zhipanda-facewpqg0-swaying-windmill.vercel.app",
+    "target": "production",
+    "state": "READY",
+    "created_at": "2026-08-01T10:13:54.741Z",
+    "source": {
+      "provider": "github",
+      "repository": "SwayingWindmill/PandaAtlas",
+      "branch": "master",
+      "commit": "a004fd628a0d629684dc72b7b4649e93249f080f",
+      "commit_message": "Merge pull request #259 from SwayingWindmill/fix-258-certification-regressions"
+    }
+  },
+  "configuration": {
+    "next_public_api_base_url": {
+      "configured_for": [
+        "production",
+        "preview"
+      ],
+      "value_class": "public",
+      "expected_value": "https://api.zhipanda.com",
+      "verified_by_cli": true
+    },
+    "custom_production_domains_attached": false,
+    "cloudflare_dns_changed": false,
+    "vercel_authentication_enabled": false,
+    "sso_protection": null
+  },
+  "http_verification": [
+    {
+      "url": "https://zhipanda-facewpqg0-swaying-windmill.vercel.app",
+      "status": 308,
+      "location": "/zh"
+    },
+    {
+      "url": "https://zhipanda-facewpqg0-swaying-windmill.vercel.app/zh",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "panda_atlas_content_present": true,
+      "api_base_reference_present": true
+    },
+    {
+      "url": "https://zhipanda.vercel.app",
+      "status": 308,
+      "location": "/zh"
+    },
+    {
+      "url": "https://zhipanda.vercel.app/zh",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "panda_atlas_content_present": true,
+      "api_base_reference_present": true
+    },
+    {
+      "url": "https://zhipanda.vercel.app/atlas/%E0%A4%A",
+      "status": 400,
+      "content_type": "text/plain; charset=utf-8",
+      "body": "400 Bad Request",
+      "verified_with": "Node.js fetch"
+    }
+  ],
+  "tests": {
+    "repository_validators": {
+      "managed_cloud_inventory": "passed",
+      "vercel_web_deployment_plan": "passed",
+      "managed_cloud_unit_tests": {
+        "passed": 5,
+        "failed": 0
+      },
+      "vercel_plan_unit_tests": {
+        "passed": 6,
+        "failed": 0
+      }
+    },
+    "browser_smoke": {
+      "test_source_commit": "a004fd628a0d629684dc72b7b4649e93249f080f",
+      "browser": "Microsoft Edge",
+      "base_url": "https://zhipanda.vercel.app",
+      "passed": 50,
+      "application_failures": 0,
+      "harness_blocked": 1,
+      "not_completed": true,
+      "completed_groups": [
+        {
+          "name": "critical-public-journeys",
+          "passed": 4,
+          "failed": 0
+        },
+        {
+          "name": "atlanta-editorial-golden",
+          "passed": 13,
+          "failed": 0
+        },
+        {
+          "name": "localized-atlas-entities-lineage-map-trust",
+          "passed": 33,
+          "failed": 0,
+          "harness_blocked": 1
+        }
+      ],
+      "harness_issue": {
+        "test": "never renders the generated legacy profile as a rollback",
+        "request": "/atlas/%E0%A4%A",
+        "server_result": "400 Bad Request",
+        "client_result": "Playwright Windows APIRequestContext TLS bad record mac after connection close",
+        "semantic_requirement_met": true
+      },
+      "incomplete_reason": "Long-running Playwright groups exceeded the local CodexPro command bridge 90-second upstream limit."
+    },
+    "automated_accessibility": {
+      "status": "not_completed",
+      "reason": "The full suite exceeded the local CodexPro command bridge 90-second upstream limit."
+    }
+  },
+  "acceptance": {
+    "project_setup": "passed",
+    "deployment_ready": true,
+    "public_vercel_app_access": true,
+    "production_traffic_cutover": false,
+    "phase_1_complete": false,
+    "remaining": [
+      "Complete the remaining deployment-matched browser smoke groups in GitHub Actions.",
+      "Complete the deployment-matched automated accessibility suite in GitHub Actions.",
+      "Record observability, budget, and rollback owners.",
+      "Keep zhipanda.com and www.zhipanda.com on Cloudflare until Phase 4 approval."
+    ]
+  }
+}
