@@ -39,7 +39,7 @@ ModerationReader = Annotated[
 ]
 SanctionIssuer = Annotated[
     RequestIdentity,
-    Depends(require_capability("moderation.sanction.issue")),
+    Depends(require_capability("moderation.sanction.issue", recent_auth=True)),
 ]
 SanctionManager = Annotated[
     RequestIdentity,
