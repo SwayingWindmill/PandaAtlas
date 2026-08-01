@@ -19,11 +19,11 @@
   },
   "inventory": {
     "status": "PASS",
-    "classified_files": 242,
+    "classified_files": 243,
     "unclassified_files": 0,
     "public_migration_debt": 0,
     "categories": {
-      "technical-compatible": 203,
+      "technical-compatible": 204,
       "historical": 39,
       "public-visible": 0
     },
