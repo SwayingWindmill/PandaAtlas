@@ -9,7 +9,11 @@ COPY services/api/scripts/apply_production_migrations.py ./scripts/apply_product
 COPY infra/supabase/migrations ./infra/supabase/migrations
 COPY contracts/golden-dataset/mei-xiang-family.v1.json ./contracts/golden-dataset/mei-xiang-family.v1.json
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir . \
+    && addgroup --system zhipanda \
+    && adduser --system --ingroup zhipanda --home /nonexistent --no-create-home zhipanda
+
+USER zhipanda
 
 EXPOSE 8000
 

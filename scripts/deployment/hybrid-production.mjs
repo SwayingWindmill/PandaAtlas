@@ -270,6 +270,11 @@ function staticCheck() {
     "Production image does not package migration assets",
     failures,
   );
+  assertStaticContract(
+    /^USER zhipanda$/m.test(dockerfile),
+    "Production API and migration containers must run as the dedicated non-root user",
+    failures,
+  );
 
   for (const script of [
     "check:hybrid-production",
@@ -337,6 +342,49 @@ function requireLongSecret(values, key, failures) {
   return value;
 }
 
+export function validateProductionOrigins(value, key = "CORS_ALLOW_ORIGINS") {
+  const failures = [];
+  const origins = String(value ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  if (origins.length === 0) {
+    failures.push(`${key} must contain at least one HTTPS origin`);
+    return failures;
+  }
+
+  for (const origin of origins) {
+    if (origin === "*") {
+      failures.push(`${key} must not contain a wildcard origin`);
+      continue;
+    }
+    try {
+      const parsed = new URL(origin);
+      const hostname = parsed.hostname.toLowerCase();
+      if (parsed.protocol !== "https:") failures.push(`${key} origin must use HTTPS: ${origin}`);
+      if (parsed.origin !== origin) {
+        failures.push(`${key} entries must be bare origins without path, query, fragment, or trailing slash: ${origin}`);
+      }
+      if (parsed.username || parsed.password) {
+        failures.push(`${key} origins must not contain credentials: ${origin}`);
+      }
+      if (
+        hostname === "localhost" ||
+        hostname === "127.0.0.1" ||
+        hostname === "[::1]" ||
+        hostname.endsWith(".localhost") ||
+        hostname === "example.com" ||
+        hostname.endsWith(".example.com")
+      ) {
+        failures.push(`${key} must use a production hostname: ${origin}`);
+      }
+    } catch {
+      failures.push(`${key} contains an invalid URL: ${origin}`);
+    }
+  }
+  return failures;
+}
+
 function preflight(runtimeDirectory) {
   staticCheck();
   const failures = [];
@@ -387,7 +435,8 @@ function preflight(runtimeDirectory) {
   const repositoryPath = requireEnvironmentValue(values, "ZHIPANDA_REPO_ROOT", failures);
   const backupPath = requireEnvironmentValue(values, "ZHIPANDA_BACKUP_DIR", failures);
   const tunnelToken = requireLongSecret(values, "CLOUDFLARE_TUNNEL_TOKEN", failures);
-  requireEnvironmentValue(values, "CORS_ALLOW_ORIGINS", failures);
+  const corsAllowOrigins = requireEnvironmentValue(values, "CORS_ALLOW_ORIGINS", failures);
+  failures.push(...validateProductionOrigins(corsAllowOrigins));
   requireHttpsUrl(values, "NOTIFICATION_PUBLIC_BASE_URL", failures);
   const adminToken = requireLongSecret(values, "ADMIN_API_TOKEN", failures);
   const feedSigningKey = requireLongSecret(values, "FEED_CURSOR_SIGNING_KEY", failures);
@@ -675,9 +724,8 @@ Options:
 `);
 }
 
-const { command, runtimeDirectory, force } = parseArguments(process.argv.slice(2));
-
-try {
+export function runHybridProduction(argv = process.argv.slice(2)) {
+  const { command, runtimeDirectory, force } = parseArguments(argv);
   if (command === "check") staticCheck();
   else if (command === "bootstrap") bootstrap(runtimeDirectory, force);
   else if (command === "preflight") preflight(runtimeDirectory);
@@ -689,7 +737,13 @@ try {
   else if (command === "backup") createBackup(runtimeDirectory);
   else if (command === "help" || command === "--help" || command === "-h") printHelp();
   else throw new Error(`Unknown command: ${command}`);
-} catch (error) {
-  console.error(error instanceof Error ? error.message : error);
-  process.exitCode = 1;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  try {
+    runHybridProduction();
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  }
 }

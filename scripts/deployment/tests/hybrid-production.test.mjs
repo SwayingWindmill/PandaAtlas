@@ -5,6 +5,8 @@ import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+import { validateProductionOrigins } from "../hybrid-production.mjs";
+
 const testDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(testDirectory, "../../..");
 const deploymentDirectory = path.join(repositoryRoot, "deploy", "hybrid-production");
@@ -45,6 +47,25 @@ test("production environment example contains placeholders only", () => {
   assert.doesNotMatch(environmentExample, /sk_live_/);
 });
 
+test("production CORS origins are explicit HTTPS origins", () => {
+  assert.deepEqual(validateProductionOrigins("https://zhipanda.example.org"), []);
+  assert.deepEqual(
+    validateProductionOrigins("https://zhipanda.example.org,https://admin.zhipanda.example.org"),
+    [],
+  );
+  for (const invalid of [
+    "*",
+    "http://zhipanda.example.org",
+    "https://localhost",
+    "https://www.example.com",
+    "https://zhipanda.example.org/",
+    "https://zhipanda.example.org/path",
+    "not-a-url",
+  ]) {
+    assert.notDeepEqual(validateProductionOrigins(invalid), [], invalid);
+  }
+});
+
 test("upstream Supabase source is pinned to a full commit", () => {
   const reference = readFileSync(path.join(deploymentDirectory, "supabase.ref"), "utf8")
     .split(/\r?\n/)
@@ -60,6 +81,7 @@ test("API image packages migrations and excludes local build state", () => {
 
   assert.match(dockerfile, /apply_production_migrations\.py/);
   assert.match(dockerfile, /infra\/supabase\/migrations/);
+  assert.match(dockerfile, /^USER zhipanda$/m);
   assert.match(dockerignore, /\*\*\/\.venv/);
   assert.match(dockerignore, /\.hybrid-production/);
 });
