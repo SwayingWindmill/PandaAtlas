@@ -1,10 +1,10 @@
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 
+import { resolvePlaywrightEnvironment } from "./certification/capabilities.mjs";
 import {
   EnvironmentBlockedError,
   ReleaseGateError,
@@ -197,35 +197,6 @@ export async function stopProcess(child) {
   }
 }
 
-function resolvePlaywrightEnv() {
-  const env = {
-    PLAYWRIGHT_WEB_SERVER_MODE: "production",
-    PLAYWRIGHT_REUSE_EXISTING_SERVER: "0",
-    PLAYWRIGHT_NEXT_DIST_DIR: ".next",
-  };
-
-  if (process.env.PLAYWRIGHT_BROWSER_CHANNEL) {
-    return { ...env, PLAYWRIGHT_BROWSER_CHANNEL: process.env.PLAYWRIGHT_BROWSER_CHANNEL };
-  }
-
-  if (process.platform !== "win32" || process.env.RELEASE_GATE_USE_SYSTEM_EDGE === "0") {
-    return env;
-  }
-
-  const edgeCandidates = [
-    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
-    process.env.LOCALAPPDATA
-      ? path.join(process.env.LOCALAPPDATA, "Microsoft", "Edge", "Application", "msedge.exe")
-      : null,
-  ].filter(Boolean);
-
-  if (edgeCandidates.some((candidate) => existsSync(candidate))) {
-    return { ...env, PLAYWRIGHT_BROWSER_CHANNEL: "msedge" };
-  }
-  return env;
-}
-
 async function runPublicApiSmoke(uv) {
   let apiProcess;
   let primaryError;
@@ -262,7 +233,7 @@ async function runPublicApiSmoke(uv) {
 export async function runDefaultReleaseGate() {
   const npm = commandName("npm");
   const uv = commandName("uv");
-  const playwrightEnv = resolvePlaywrightEnv();
+  const playwrightEnv = resolvePlaywrightEnvironment();
   const workerHttpSkipReason =
     process.platform === "win32"
       ? "Worker HTTP smoke is executed by Linux CI; Windows runs deterministic D1 projection smoke only."
