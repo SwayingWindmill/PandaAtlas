@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "base": "panda-atlas-v1.yaml",
+  "overlays": [
+    "accountable-publication-v1.yaml",
+    "accountable-archive-operations-v1.yaml",
+    "archive-workbench-v1.yaml"
+  ],
+  "required_base_operations": [
+    ["/api/v1/admin/archive/change-sets/{change_set_id}/validate", "post"],
+    ["/api/v1/admin/archive/change-sets/{change_set_id}/publish", "post"],
+    ["/api/v1/admin/archive/publication-metrics", "get"]
+  ],
+  "required_overlay_operations": [
+    ["/api/v1/admin/archive/operations/rollback", "post"],
+    ["/api/v1/admin/archive/operations/corrections", "post"],
+    ["/api/v1/admin/archive/operations/merge-split", "post"],
+    ["/api/v1/admin/archive/operations/emergency-takedowns", "post"],
+    ["/api/v1/admin/archive/operations/emergency-takedowns/{operation_id}/followup", "post"],
+    ["/api/v1/admin/archive/operations/metrics", "get"],
+    ["/api/v1/admin/archive/workbench", "get"],
+    ["/api/v1/admin/archive/workbench/metrics", "get"],
+    ["/api/v1/admin/archive/workbench/items/{item_id}", "get"],
+    ["/api/v1/admin/archive/workbench/cutover", "get"],
+    ["/api/v1/admin/archive/workbench/cutover", "post"],
+    ["/api/v1/admin/archive/workbench/rehearsal-snapshot", "get"]
+  ]
+}

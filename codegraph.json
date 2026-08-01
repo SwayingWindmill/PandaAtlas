@@ -1,0 +1,8 @@
+{
+  "exclude": [
+    "apps/web/lib/generated/**",
+    "data/public-releases/**",
+    "data/reviewed-batches/**",
+    "docs/prototypes/**"
+  ]
+}

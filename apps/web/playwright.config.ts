@@ -15,6 +15,7 @@ const baseURL = externalBaseURL || `http://127.0.0.1:${port}`;
 const reuseExistingServer = process.env.PLAYWRIGHT_REUSE_EXISTING_SERVER === "1";
 const productionDistDir = process.env.PLAYWRIGHT_NEXT_DIST_DIR?.trim()
   || ".next-production-smoke";
+const ci = Boolean(process.env.CI);
 
 const projects = browserMatrix
   ? [
@@ -35,8 +36,19 @@ const projects = browserMatrix
 export default defineConfig({
   testDir: "./tests/smoke",
   workers: 1,
+  outputDir: ci ? "../../.release-gate/playwright-test-results" : "test-results",
+  reporter: ci
+    ? [
+        ["line"],
+        ["json", { outputFile: "../../.release-gate/playwright-results.json" }],
+        ["html", { outputFolder: "../../.release-gate/playwright-report", open: "never" }],
+      ]
+    : "list",
   use: {
     baseURL,
+    trace: ci ? "retain-on-failure" : "off",
+    screenshot: ci ? "only-on-failure" : "off",
+    video: ci ? "retain-on-failure" : "off",
   },
   projects,
   webServer: externalBaseURL ? undefined : {

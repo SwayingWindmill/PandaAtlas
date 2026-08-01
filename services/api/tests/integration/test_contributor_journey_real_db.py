@@ -493,6 +493,7 @@ def test_contributor_commands_status_projection_and_private_view(real_db_url: st
         assert inbox.items[0].body["payload"]["notification_link"] == (
             f"/me/submissions/{draft.submission_id}"
         )
+        assert "account_id" not in inbox.items[0].body["payload"]
 
         with pytest.raises(DBAPIError):
             session.execute(

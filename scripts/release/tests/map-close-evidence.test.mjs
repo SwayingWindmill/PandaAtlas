@@ -6,10 +6,20 @@ import test from "node:test";
 
 import { sealMapCloseEvidence } from "../map-close-evidence.mjs";
 
-test("map-close evidence manifest is deterministic and hashes every report", async () => {
+test("map-close evidence manifest hashes reports and canonical contract artifacts", async () => {
   const reportDir = await mkdtemp(path.join(os.tmpdir(), "panda-map-close-evidence-"));
   await writeFile(path.join(reportDir, "default.json"), '{"outcome":"passed"}\n', "utf8");
   await writeFile(path.join(reportDir, "map-close.json"), '{"outcome":"passed"}\n', "utf8");
+  await writeFile(
+    path.join(reportDir, "panda-atlas-v1-integrated.yaml"),
+    "openapi: 3.1.0\npaths: {}\n",
+    "utf8",
+  );
+  await writeFile(
+    path.join(reportDir, "panda-atlas-v1-integrated.yaml.sha256"),
+    `${"a".repeat(64)}  panda-atlas-v1-integrated.yaml\n`,
+    "utf8",
+  );
 
   const manifest = await sealMapCloseEvidence({
     reportDir,
@@ -22,7 +32,12 @@ test("map-close evidence manifest is deterministic and hashes every report", asy
   assert.equal(manifest.commit_sha, "841bd12ab182a77c159f671b866e94cf299d0681");
   assert.deepEqual(
     manifest.artifacts.map((artifact) => artifact.path),
-    ["default.json", "map-close.json"],
+    [
+      "default.json",
+      "map-close.json",
+      "panda-atlas-v1-integrated.yaml",
+      "panda-atlas-v1-integrated.yaml.sha256",
+    ],
   );
   assert.ok(manifest.artifacts.every((artifact) => /^[a-f0-9]{64}$/.test(artifact.sha256)));
 

@@ -5,6 +5,7 @@
 @import "../styles/typography.css";
 @import "../styles/motion.css";
 @import "../styles/registers.css";
+@import "../styles/global-navigation-resilience.css";
 @import "../styles/licensed-media.css";
 @import "../styles/admin-console.css";
 @import "../styles/trusted-profile.css";

@@ -1,0 +1,29 @@
+.pa-global-header-inner {
+  flex-wrap: wrap;
+  padding-block: 0.65rem;
+}
+
+.pa-brand {
+  min-width: 0;
+}
+
+.pa-brand > span:last-child {
+  min-width: 0;
+}
+
+.pa-desktop-nav {
+  min-width: 0;
+  flex: 1 1 32rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.pa-desktop-nav a,
+.pa-language-link {
+  overflow-wrap: anywhere;
+}
+
+.pa-header-actions {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+}
