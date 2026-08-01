@@ -31,6 +31,7 @@
 .pa-global-header-inner {
   min-height: 4.75rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -79,8 +80,12 @@
 }
 
 .pa-desktop-nav {
+  min-width: 0;
   display: flex;
+  flex: 1 1 30rem;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
 }
 
@@ -110,6 +115,7 @@
 
 .pa-header-actions {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 0.45rem;
 }

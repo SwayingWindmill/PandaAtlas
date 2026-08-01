@@ -433,8 +433,11 @@ def create_change_set(
     change_set_id = session.execute(
         text(
             """
-            insert into public.change_sets (title, reason, created_by)
-            values (:title, :reason, :actor_id)
+            insert into public.change_sets (
+              title, reason, created_by, origin_context, origin_actor_id
+            ) values (
+              :title, :reason, :actor_id, 'archive', :actor_id
+            )
             returning id
             """
         ),

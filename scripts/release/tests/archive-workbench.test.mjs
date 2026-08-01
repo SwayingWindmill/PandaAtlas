@@ -19,10 +19,10 @@ test("Archive workbench is bounded, server authenticated, and does not expose ge
   assert.match(shell, /session\.capabilities\.includes\("archive\.workbench\.read"\)/);
   assert.match(shell, /archive\.sensitive\.merge_split/);
   assert.match(shell, /archive\.sensitive\.takedown/);
-  assert.match(shell, /<Route path="\/archive" element=\{<ArchiveWorkbench \/>\}/);
+  assert.match(shell, /<Route path="archive" element=\{<ArchiveWorkbench \/>\}/);
   assert.match(
     shell,
-    /<Route path="\/archive\/operations" element=\{<ArchiveAdvancedOperations \/>\}/,
+    /<Route path="archive\/operations" element=\{<ArchiveAdvancedOperations \/>\}/,
   );
   assert.match(shell, /The bounded admin shell does not expose generic CRUD business writes/);
   assert.match(workbench, /^"use client"/);

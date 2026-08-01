@@ -51,7 +51,7 @@ test("contributor editor keeps drafts synchronized and formal commands explicit"
   assert.match(editor, /prepareAttachment\(/);
   assert.match(editor, /uploadAttachment\(/);
   assert.match(editor, /Evidence uploaded to the quarantine scan queue/);
-  assert.match(editor, /Submission version history/);
+  assert.match(editor, /Immutable revisions/);
   assert.match(editor, /Per-assertion results/);
 
   assert.match(api, /response\.headers\.get\("etag"\)/);

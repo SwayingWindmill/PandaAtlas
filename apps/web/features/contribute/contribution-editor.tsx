@@ -541,7 +541,7 @@ export function ContributionEditor({ locale, submissionId }: ContributionEditorP
       </section>
 
       <section className="contribution-history" aria-labelledby="revision-history-heading">
-        <h2 id="revision-history-heading">{t("提交版本记录", "Submission version history")}</h2>
+        <h2 id="revision-history-heading">{t("不可变修订", "Immutable revisions")}</h2>
         {submission.revisions.length ? (
           <div className="contribution-revisions">
             {submission.revisions.map((revision) => (

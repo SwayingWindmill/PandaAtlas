@@ -136,7 +136,10 @@ async function archiveFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
 function JsonBlock({ value }: Readonly<{ value: unknown }>) {
   return (
-    <pre className="max-h-72 overflow-auto whitespace-pre-wrap rounded-md border border-stone-300 bg-stone-50 p-3 text-xs leading-5 text-stone-950">
+    <pre
+      className="max-h-72 overflow-auto whitespace-pre-wrap rounded-md border border-stone-300 bg-stone-50 p-3 text-xs leading-5 text-stone-950"
+      tabIndex={0}
+    >
       {JSON.stringify(value, null, 2)}
     </pre>
   );
@@ -383,7 +386,7 @@ export function ArchiveWorkbench() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[1600px] px-4 py-6" aria-labelledby="archive-heading">
+    <main className="mx-auto w-full max-w-[1600px] px-4 py-6 [&_*]:min-w-0" aria-labelledby="archive-heading">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-stone-700">Trusted Archive</p>
@@ -442,8 +445,8 @@ export function ArchiveWorkbench() {
         })}
       </nav>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(280px,0.75fr)_minmax(0,2.25fr)]">
-        <section className="rounded-xl border border-stone-300 bg-white" aria-labelledby="archive-queue-heading">
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(280px,0.75fr)_minmax(0,2.25fr)]">
+        <section className="min-w-0 rounded-xl border border-stone-300 bg-white" aria-labelledby="archive-queue-heading">
           <h2 id="archive-queue-heading" className="border-b border-stone-200 px-4 py-3 text-lg font-bold text-stone-950">
             队列（{items.length}）
           </h2>
@@ -467,7 +470,7 @@ export function ArchiveWorkbench() {
           </ul>
         </section>
 
-        <section className="rounded-xl border border-stone-300 bg-white p-5" aria-labelledby="archive-detail-heading">
+        <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5" aria-labelledby="archive-detail-heading">
           <h2 id="archive-detail-heading" className="text-xl font-bold text-stone-950">
             完整证据与显式命令
           </h2>

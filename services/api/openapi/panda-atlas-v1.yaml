@@ -1771,6 +1771,39 @@ paths:
   /api/v1/admin/archive/publication-metrics:
     $ref: './accountable-publication-v1.yaml#/paths/~1api~1v1~1admin~1archive~1publication-metrics'
 
+  /api/v1/admin/archive/operations/rollback:
+    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1rollback'
+
+  /api/v1/admin/archive/operations/corrections:
+    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1corrections'
+
+  /api/v1/admin/archive/operations/merge-split:
+    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1merge-split'
+
+  /api/v1/admin/archive/operations/emergency-takedowns:
+    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1emergency-takedowns'
+
+  /api/v1/admin/archive/operations/emergency-takedowns/{operation_id}/followup:
+    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1emergency-takedowns~1{operation_id}~1followup'
+
+  /api/v1/admin/archive/operations/metrics:
+    $ref: './accountable-archive-operations-v1.yaml#/paths/~1api~1v1~1admin~1archive~1operations~1metrics'
+
+  /api/v1/admin/archive/workbench:
+    $ref: './archive-workbench-v1.yaml#/paths/~1api~1v1~1admin~1archive~1workbench'
+
+  /api/v1/admin/archive/workbench/metrics:
+    $ref: './archive-workbench-v1.yaml#/paths/~1api~1v1~1admin~1archive~1workbench~1metrics'
+
+  /api/v1/admin/archive/workbench/items/{item_id}:
+    $ref: './archive-workbench-v1.yaml#/paths/~1api~1v1~1admin~1archive~1workbench~1items~1{item_id}'
+
+  /api/v1/admin/archive/workbench/cutover:
+    $ref: './archive-workbench-v1.yaml#/paths/~1api~1v1~1admin~1archive~1workbench~1cutover'
+
+  /api/v1/admin/archive/workbench/rehearsal-snapshot:
+    $ref: './archive-workbench-v1.yaml#/paths/~1api~1v1~1admin~1archive~1workbench~1rehearsal-snapshot'
+
   /api/v1/admin/community-curation/review-cases/{review_case_id}/bridge:
     $ref: './community-curation-v1.yaml#/paths/~1api~1v1~1admin~1community-curation~1review-cases~1{review_case_id}~1bridge'
 
