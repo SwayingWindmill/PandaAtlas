@@ -23,4 +23,5 @@ The target ADR does not claim that migration is already complete. Runtime docume
 - Phase 1 Vercel deployment: [complete](../deployment/vercel-web-phase-1.md)
 - Phase 2 preparation: [FastAPI request-runtime boundary enforced](api-request-runtime-boundary.md)
 - Phase 3 preparation: [bounded batch workflow control plane established](batch-workflow-interfaces.md)
+- Repository boundary: [`contracts/repository-structure.v1.json`](../../contracts/repository-structure.v1.json) enforced by `npm run check:repository-structure`
 - Next action: continue Phase 2 API validation and implement reviewed Phase 3 batch adapters; no production DNS or Cloudflare runtime changes are authorized yet.

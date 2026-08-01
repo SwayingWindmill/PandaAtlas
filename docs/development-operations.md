@@ -33,6 +33,14 @@ Use `--json` with `list` or `describe` when another tool needs machine-readable 
 
 The same catalog supplies changed-scope development acceptance in `scripts/release/development.mjs`. CI planning and local execution therefore cross the same interface instead of maintaining separate command lists.
 
+Repository shape has a machine-readable contract at `contracts/repository-structure.v1.json`. It validates allowed top-level zones, the exact npm workspace list, application and service package names, boundary documents, runtime-status markers, and selected local documentation links. Run it directly with:
+
+```bash
+npm run check:repository-structure
+```
+
+The active npm workspaces are `apps/web` and `services/worker-api`. `services/api` is a Python service and must not become an npm workspace. New top-level zones or application/service package manifests require an explicit contract and boundary-document update.
+
 Before selecting scopes, `verify.dev` runs the repository hygiene check. The check rejects tracked or unignored generated output, dependency directories, Python package metadata, test reports, local platform state, and accidental copy-style filenames such as `middleware (1).ts`. Run it directly with:
 
 ```bash
