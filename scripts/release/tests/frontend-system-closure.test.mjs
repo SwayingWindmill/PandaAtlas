@@ -44,6 +44,10 @@ test("Slice 11 inventories cover every canonical public surface", async () => {
 
 test("Slice 11 architecture, browser matrix, and canonical budgets are release gates", async () => {
   const defaultGate = await readFile(path.join(repoRoot, "scripts/release/default.mjs"), "utf8");
+  const operationsCatalog = await readFile(
+    path.join(repoRoot, "scripts/development/catalog.mjs"),
+    "utf8",
+  );
   const rootPackage = await json("package.json");
   const webPackage = await json("apps/web/package.json");
   const playwrightConfig = await readFile(path.join(repoRoot, "apps/web/playwright.config.ts"), "utf8");
@@ -55,7 +59,14 @@ test("Slice 11 architecture, browser matrix, and canonical budgets are release g
   assert.match(defaultGate, /check:frontend-system-closure/);
   assert.match(defaultGate, /canonical-route-budgets/);
   assert.match(defaultGate, /check:route-performance-budgets/);
-  assert.equal(rootPackage.scripts["smoke:web:matrix"], "npm run smoke:matrix -w web");
+  assert.equal(
+    rootPackage.scripts["smoke:web:matrix"],
+    "node scripts/development/operations.mjs run web.smoke-matrix",
+  );
+  assert.match(
+    operationsCatalog,
+    /id: "web\.smoke-matrix"[\s\S]*?args: \["run", "smoke:matrix", "-w", "web"\]/,
+  );
   assert.equal(webPackage.scripts["smoke:matrix"], "node scripts/run-browser-matrix.mjs");
   assert.match(browserMatrixRunner, /cmd\.exe/);
   assert.match(browserMatrixRunner, /npm exec playwright -- test/);
