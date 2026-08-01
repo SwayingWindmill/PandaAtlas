@@ -156,6 +156,15 @@ const commands = [
     effect: "long-running",
   },
   {
+    id: "api.check-runtime-boundary",
+    category: "verification",
+    description: "Reject batch modules and heavy optional dependencies from the FastAPI request closure.",
+    command: "python",
+    args: ["services/api/scripts/check_request_runtime_boundary.py"],
+    requires: ["python"],
+    effect: "read-only",
+  },
+  {
     id: "api.lint",
     category: "verification",
     description: "Run Ruff across FastAPI implementation, tests, and scripts.",
@@ -395,7 +404,7 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   ],
   web: ["web.lint", "web.typecheck"],
   worker: ["worker.typecheck"],
-  api: ["api.lint", "api.test"],
+  api: ["api.check-runtime-boundary", "api.lint", "api.test"],
   curation: ["curation.test", "curation.check", "curation.media-test"],
   data: ["data.test", "data.check", "data.check-identities"],
 });

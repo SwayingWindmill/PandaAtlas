@@ -79,6 +79,7 @@ Local platform:
 - Any persistent model change must include a new SQL migration in `infra/supabase/migrations`.
 - Geo endpoints must return valid GeoJSON FeatureCollection payloads.
 - DB read paths must preserve `DB_USE_MOCK_FALLBACK=true` behavior for local resilience.
+- Modules reachable from `app.main` must pass `npm run check:api-runtime-boundary`; request code must not import acquisition, enrichment, identity-resolution batch modules, executable scripts, dynamic imports, or heavy crawler/media dependencies.
 
 ## Map-Scoped Delivery and Verification
 - Work performed as child tickets of a `wayfinder:map` uses deferred verification by default.

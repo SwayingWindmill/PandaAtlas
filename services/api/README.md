@@ -9,6 +9,8 @@ FastAPI service for panda encyclopedia and distribution map data. This is the au
 
 The Dockerfile, local Uvicorn process, and local database workflows support development and recovery verification only. They must not be used to introduce a persistent self-managed production server.
 
+The request-runtime import boundary is enforced from `app.main`. Acquisition, enrichment, identity-resolution batch code, executable scripts, dynamic imports, and heavy crawler or media dependencies cannot enter the transitive request closure. See [`docs/architecture/api-request-runtime-boundary.md`](../../docs/architecture/api-request-runtime-boundary.md) and run `npm run check:api-runtime-boundary` from the repository root.
+
 ## Run (uv)
 
 ```bash
