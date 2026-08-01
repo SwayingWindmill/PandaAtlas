@@ -54,6 +54,17 @@ test("release orchestration changes select release tests", () => {
   assert.deepEqual(classifyDevelopmentScopes(["scripts/release/gate-core.mjs"]), ["release"]);
 });
 
+test("research scripts and batch manifests select release policy checks", () => {
+  assert.deepEqual(
+    classifyDevelopmentScopes([
+      "scripts/research/builders/official_media.py",
+      "data/research-batches/2026-08-01-vienna-birthday-media.json",
+      "contracts/research-batch.v1.json",
+    ]),
+    ["release"],
+  );
+});
+
 test("root script changes select only release-development contracts", () => {
   assert.deepEqual(classifyDevelopmentScopes(["package.json"]), ["release"]);
 });

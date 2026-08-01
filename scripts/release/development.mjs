@@ -91,10 +91,13 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith(".github/workflows/") ||
       changedPath.startsWith("scripts/release/") ||
       changedPath.startsWith("scripts/development/") ||
+      changedPath.startsWith("scripts/research/") ||
       changedPath.startsWith("data/beta-launch/") ||
+      changedPath.startsWith("data/research-batches/") ||
       changedPath.startsWith("data/frontend-evidence/") ||
       changedPath.startsWith("data/frontend-system/") ||
       changedPath.startsWith("data/frontend-withdrawals/") ||
+      changedPath === "contracts/research-batch.v1.json" ||
       changedPath.startsWith("contracts/beta-hard-gates") ||
       changedPath.startsWith("contracts/frontend-")
     ) addScope(scopes, "release");

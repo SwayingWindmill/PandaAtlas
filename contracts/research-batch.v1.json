@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "title": "PandaAtlas Research Batch Manifest Contract",
+  "scope": "Declarative inputs for bounded research, discovery, enrichment, repair, and candidate-building work",
+  "manifest_directory": "data/research-batches",
+  "required_fields": [
+    "schema_version",
+    "batch_id",
+    "builder",
+    "subjects",
+    "sources",
+    "operations",
+    "dry_run_default"
+  ],
+  "optional_fields": [
+    "description",
+    "metadata"
+  ],
+  "batch_id_pattern": "^\\d{4}-\\d{2}-\\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$",
+  "builder_pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+  "allowed_operations": [
+    "discover",
+    "collect",
+    "validate",
+    "build-candidates",
+    "repair",
+    "enrich",
+    "report"
+  ],
+  "rules": {
+    "filename_must_match_batch_id": true,
+    "arrays_must_be_non_empty": true,
+    "array_values_must_be_unique": true,
+    "dry_run_default_must_be_true": true,
+    "unknown_fields_are_rejected": true,
+    "batch_specific_code_belongs_in_archive": true
+  }
+}
