@@ -28,8 +28,8 @@ test("tracked repository satisfies the structure contract", () => {
   assert.deepEqual(validateRepositoryStructureContract(contract), []);
   const report = checkRepositoryStructure({ repositoryRoot: repoRoot, quiet: true });
   assert.deepEqual(report.workspaces, ["apps/web", "services/worker-api"]);
-  assert.equal(report.zones, 11);
-  assert.equal(report.markdown_documents, 14);
+  assert.equal(report.zones, 12);
+  assert.equal(report.markdown_documents, 16);
 });
 
 test("contract shape rejects unknown fields and duplicate paths", () => {
@@ -71,8 +71,10 @@ test("npm workspace policy rejects stale globs, name drift, and orphan manifests
 
 test("zones fail closed when boundary or governance files disappear", () => {
   const changed = cloneContract();
-  changed.zones[0].boundary_document = "apps/MISSING.md";
-  changed.zones[0].governance_paths.push("docs/MISSING.md");
+  const appsZone = changed.zones.find((zone) => zone.path === "apps");
+  assert.ok(appsZone);
+  appsZone.boundary_document = "apps/MISSING.md";
+  appsZone.governance_paths.push("docs/MISSING.md");
   const violations = validateZones({ repositoryRoot: repoRoot, contract: changed });
   assert.ok(violations.includes("missing boundary document for apps: apps/MISSING.md"));
   assert.ok(violations.includes("missing governance path for apps: docs/MISSING.md"));

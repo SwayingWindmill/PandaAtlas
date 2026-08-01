@@ -122,6 +122,14 @@ test("root package exposes one canonical interface and compatibility adapters", 
     "node scripts/development/operations.mjs run verify.dev",
   );
   assert.equal(
+    packageJson.scripts["check:delivery-contract"],
+    "node scripts/development/operations.mjs run delivery.check-local",
+  );
+  assert.equal(
+    packageJson.scripts["check:delivery-contract:repository"],
+    "node scripts/development/operations.mjs run release.check-delivery-contract",
+  );
+  assert.equal(
     packageJson.scripts["check:repository-structure"],
     "node scripts/development/operations.mjs run release.check-repository-structure",
   );

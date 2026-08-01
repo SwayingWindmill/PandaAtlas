@@ -67,12 +67,26 @@ function isDocumentationPath(changedPath) {
   );
 }
 
+function isDeliveryMetadataPath(changedPath) {
+  return (
+    changedPath === ".github/README.md" ||
+    changedPath === ".github/PULL_REQUEST_TEMPLATE.md" ||
+    changedPath.startsWith(".github/ISSUE_TEMPLATE/") ||
+    changedPath === "contracts/delivery-workflow.v1.json" ||
+    changedPath === "docs/development-delivery.md"
+  );
+}
+
 export function classifyDevelopmentScopes(paths) {
   const scopes = new Set();
 
   for (const value of paths) {
     const changedPath = normalizeChangedPath(value);
     if (!changedPath || isIgnoredChangedPath(changedPath)) continue;
+    if (isDeliveryMetadataPath(changedPath)) {
+      addScope(scopes, "release");
+      continue;
+    }
     if (isDocumentationPath(changedPath)) continue;
 
     if (changedPath === "package.json") {
