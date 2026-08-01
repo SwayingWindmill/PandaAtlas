@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
@@ -8,9 +9,36 @@ import {
   repoRoot,
 } from "./catalog.mjs";
 
-function executableForPlatform(command) {
-  if (process.platform !== "win32") return command;
-  return ["npm", "npx"].includes(command) ? `${command}.cmd` : command;
+export function resolveDevelopmentInvocation(
+  command,
+  args,
+  {
+    platform = process.platform,
+    npmExecPath = process.env.npm_execpath,
+    nodeExecutable = process.execPath,
+    shell = false,
+  } = {},
+) {
+  if (platform === "win32" && ["npm", "npx"].includes(command)) {
+    if (!npmExecPath) {
+      throw new Error(
+        `Development command ${command} requires npm_execpath on Windows; run it through npm run ops`,
+      );
+    }
+    const npmBinDirectory = path.win32.dirname(npmExecPath);
+    const cliPath =
+      command === "npm" ? npmExecPath : path.win32.join(npmBinDirectory, "npx-cli.js");
+    return {
+      executable: nodeExecutable,
+      args: [cliPath, ...args],
+      shell: false,
+    };
+  }
+  return {
+    executable: command,
+    args,
+    shell: Boolean(shell),
+  };
 }
 
 function quote(value) {
@@ -98,15 +126,17 @@ function printDescription(id, json) {
 
 export async function runDevelopmentCommand(id, additionalArgs = []) {
   const command = getDevelopmentCommand(id);
-  const executable = executableForPlatform(command.command);
   const args = [...command.args, ...additionalArgs];
+  const invocation = resolveDevelopmentInvocation(command.command, args, {
+    shell: command.shell,
+  });
   console.log(`[ops] ${id}: ${[command.command, ...args].map(quote).join(" ")}`);
 
   const status = await new Promise((resolve, reject) => {
-    const child = spawn(executable, args, {
+    const child = spawn(invocation.executable, invocation.args, {
       cwd: repoRoot,
       env: process.env,
-      shell: Boolean(command.shell),
+      shell: invocation.shell,
       stdio: "inherit",
       windowsHide: false,
     });
