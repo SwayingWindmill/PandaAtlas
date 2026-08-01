@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
@@ -8,47 +9,45 @@ import {
   repoRoot,
 } from "./catalog.mjs";
 
+export function resolveDevelopmentInvocation(
+  command,
+  args,
+  {
+    platform = process.platform,
+    npmExecPath = process.env.npm_execpath,
+    nodeExecutable = process.execPath,
+    shell = false,
+  } = {},
+) {
+  if (platform === "win32" && ["npm", "npx"].includes(command)) {
+    if (!npmExecPath) {
+      throw new Error(
+        `Development command ${command} requires npm_execpath on Windows; run it through npm run ops`,
+      );
+    }
+    const npmBinDirectory = path.win32.dirname(npmExecPath);
+    const cliPath =
+      command === "npm" ? npmExecPath : path.win32.join(npmBinDirectory, "npx-cli.js");
+    return {
+      executable: nodeExecutable,
+      args: [cliPath, ...args],
+      shell: false,
+    };
+  }
+  return {
+    executable: command,
+    args,
+    shell: Boolean(shell),
+  };
+}
+
 function quote(value) {
   const text = String(value);
   return /[\s"']/u.test(text) ? JSON.stringify(text) : text;
 }
 
-function quoteWindowsArgument(value) {
-  const text = String(value);
-  if (/^[A-Za-z0-9_./:@=+-]+$/.test(text)) return text;
-  return `"${text.replaceAll('"', '""')}"`;
-}
-
-function windowsCommandLine(command, args) {
-  return [command, ...args].map(quoteWindowsArgument).join(" ");
-}
-
 export function renderDevelopmentCommand(command) {
   return [command.command, ...command.args].map(quote).join(" ");
-}
-
-export function resolveDevelopmentSpawn(
-  command,
-  additionalArgs = [],
-  { platform = process.platform, comSpec = process.env.ComSpec } = {},
-) {
-  const args = [...command.args, ...additionalArgs];
-  const useCommandProcessor =
-    platform === "win32" && ["npm", "npx"].includes(command.command);
-
-  if (useCommandProcessor) {
-    return {
-      executable: comSpec ?? "cmd.exe",
-      args: ["/d", "/s", "/c", windowsCommandLine(command.command, args)],
-      shell: false,
-    };
-  }
-
-  return {
-    executable: command.command,
-    args,
-    shell: Boolean(command.shell),
-  };
 }
 
 function usage() {
@@ -127,16 +126,17 @@ function printDescription(id, json) {
 
 export async function runDevelopmentCommand(id, additionalArgs = []) {
   const command = getDevelopmentCommand(id);
-  const spawnConfig = resolveDevelopmentSpawn(command, additionalArgs);
-  console.log(
-    `[ops] ${id}: ${[command.command, ...command.args, ...additionalArgs].map(quote).join(" ")}`,
-  );
+  const args = [...command.args, ...additionalArgs];
+  const invocation = resolveDevelopmentInvocation(command.command, args, {
+    shell: command.shell,
+  });
+  console.log(`[ops] ${id}: ${[command.command, ...args].map(quote).join(" ")}`);
 
   const status = await new Promise((resolve, reject) => {
-    const child = spawn(spawnConfig.executable, spawnConfig.args, {
+    const child = spawn(invocation.executable, invocation.args, {
       cwd: repoRoot,
       env: process.env,
-      shell: spawnConfig.shell,
+      shell: invocation.shell,
       stdio: "inherit",
       windowsHide: false,
     });
