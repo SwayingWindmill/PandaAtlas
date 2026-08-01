@@ -13,7 +13,12 @@ from app.review_moderation.moderation_models import (
     ClaimAppealCommand,
     DecideAppealCommand,
     IssueModerationActionCommand,
+    ModerationActionKind,
     ModerationMetricsRead,
+    MyAppealCaseRead,
+    MyAppealQueueRead,
+    MyModerationActionRead,
+    MyModerationRead,
     RestoreModerationActionCommand,
     SubmitAppealCommand,
 )
@@ -63,6 +68,26 @@ AppealStateParameter = Annotated[
     Query(),
 ]
 AppealLimitParameter = Annotated[int, Query(ge=1, le=100)]
+
+
+def _user_safe_appeal(appeal: AppealCaseRead) -> MyAppealCaseRead:
+    return MyAppealCaseRead(
+        appeal_case_id=appeal.appeal_case_id,
+        sanction_action_id=appeal.sanction_action_id,
+        state=appeal.state,
+        version=appeal.version,
+        appellant_message=appeal.appellant_message,
+        first_response_due_at=appeal.first_response_due_at,
+        first_responded_at=appeal.first_responded_at,
+        outcome=appeal.outcome,
+        user_visible_resolution=appeal.user_visible_resolution,
+        closed_at=appeal.closed_at,
+        created_at=appeal.created_at,
+        updated_at=appeal.updated_at,
+        sanction_kind=appeal.sanction_kind,
+        sanction_scope=appeal.sanction_scope,
+        sanction_user_visible_explanation=appeal.sanction_user_visible_explanation,
+    )
 
 
 @admin_router.get("/accounts/{account_id}", response_model=AccountModerationRead)
@@ -139,18 +164,59 @@ def moderation_metrics_endpoint(identity: ModerationMetricsReader) -> Moderation
     return moderation_metrics()
 
 
-@router.post("/appeals", response_model=AppealCaseRead, status_code=status.HTTP_201_CREATED)
+@router.get("/actions", response_model=MyModerationRead)
+def get_own_moderation_actions(identity: AppealSubmitter) -> MyModerationRead:
+    moderation = get_account_moderation(identity.account_id)
+    appeals = [
+        appeal
+        for appeal in list_appeals("all", 100).items
+        if appeal.account_id == identity.account_id
+    ]
+    appeal_by_action = {appeal.sanction_action_id: appeal.appeal_case_id for appeal in appeals}
+    return MyModerationRead(
+        account_state=moderation.account_state,
+        actions=[
+            MyModerationActionRead(
+                action_id=action.action_id,
+                kind=action.kind,
+                scope=action.scope,
+                reason_code=action.reason_code,
+                user_visible_explanation=action.user_visible_explanation,
+                starts_at=action.starts_at,
+                ends_at=action.ends_at,
+                created_at=action.created_at,
+                effective=action.effective,
+                appeal_case_id=appeal_by_action.get(action.action_id),
+            )
+            for action in moderation.actions
+            if action.kind is not ModerationActionKind.RESTORATION
+        ],
+    )
+
+
+@router.get("/appeals", response_model=MyAppealQueueRead)
+def list_own_appeals(identity: AppealSubmitter) -> MyAppealQueueRead:
+    return MyAppealQueueRead(
+        items=[
+            _user_safe_appeal(appeal)
+            for appeal in list_appeals("all", 100).items
+            if appeal.account_id == identity.account_id
+        ]
+    )
+
+
+@router.post("/appeals", response_model=MyAppealCaseRead, status_code=status.HTTP_201_CREATED)
 def submit_appeal_endpoint(
     command: SubmitAppealCommand,
     identity: AppealSubmitter,
     correlation_id: CorrelationId,
-) -> AppealCaseRead:
-    return submit_appeal(command, identity, correlation_id)
+) -> MyAppealCaseRead:
+    return _user_safe_appeal(submit_appeal(command, identity, correlation_id))
 
 
-@router.get("/appeals/{appeal_case_id}", response_model=AppealCaseRead)
+@router.get("/appeals/{appeal_case_id}", response_model=MyAppealCaseRead)
 def get_own_appeal_endpoint(
     appeal_case_id: UUID,
     identity: AppealSubmitter,
-) -> AppealCaseRead:
-    return get_appeal(appeal_case_id, account_id=identity.account_id)
+) -> MyAppealCaseRead:
+    return _user_safe_appeal(get_appeal(appeal_case_id, account_id=identity.account_id))
