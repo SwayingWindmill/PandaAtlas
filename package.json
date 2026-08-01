@@ -73,6 +73,8 @@
     "check:frontend-system-closure": "node scripts/release/check-frontend-system-closure.mjs",
     "check:archive-governance-migration": "node scripts/release/check-archive-governance-migration.mjs",
     "check:route-performance-budgets": "node scripts/release/check-route-performance-budgets.mjs",
+    "check:managed-cloud-inventory": "node scripts/release/check-managed-cloud-inventory.mjs",
+    "check:vercel-web-deployment-plan": "node scripts/release/check-vercel-web-deployment-plan.mjs",
     "drill:release-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_release_recovery_drill.py",
     "drill:postgres-attachment-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_postgres_attachment_recovery_drill.py",
     "drill:identity-engagement-recovery": "uv run --directory services/api --frozen --extra dev python scripts/run_identity_engagement_recovery_drill.py",

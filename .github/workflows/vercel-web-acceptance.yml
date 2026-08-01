@@ -1,0 +1,83 @@
+name: Vercel Web Acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: HTTPS vercel.app deployment URL to verify
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vercel-web-acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  NPM_VERSION: "10.9.0"
+
+jobs:
+  preview-acceptance:
+    name: Vercel Web acceptance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v7.0.0
+        with:
+          clean: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Validate preview URL boundary
+        env:
+          TARGET_URL: ${{ inputs.base_url }}
+        run: >-
+          node --input-type=module -e
+          "const url = new URL(process.env.TARGET_URL);
+          if (url.protocol !== 'https:' || !url.hostname.endsWith('.vercel.app'))
+          throw new Error('base_url must be an HTTPS vercel.app preview URL');"
+
+      - name: Install pinned npm
+        run: npm install --global npm@${{ env.NPM_VERSION }}
+
+      - name: Install workspace dependencies from lockfile
+        run: npm ci
+
+      - name: Install Chromium and Linux runtime dependencies
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser smoke against Vercel preview
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ inputs.base_url }}
+          PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED: "0"
+          PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED: "0"
+          RELEASE_GATE_USE_SYSTEM_EDGE: "0"
+        run: npm run smoke:web
+
+      - name: Run automated accessibility against Vercel preview
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ inputs.base_url }}
+          PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED: "0"
+          PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED: "0"
+          RELEASE_GATE_USE_SYSTEM_EDGE: "0"
+        run: npm run test:accessibility -w web
+
+      - name: Upload Vercel acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: vercel-web-acceptance-${{ github.run_id }}
+          path: |
+            .release-gate/
+            apps/web/test-results/
+            test-results/
+          if-no-files-found: warn
+          include-hidden-files: true

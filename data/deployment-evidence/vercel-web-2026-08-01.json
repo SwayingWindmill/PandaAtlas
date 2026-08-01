@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "evidence_id": "vercel-web-2026-08-01",
+  "observed_at": "2026-08-01T12:19:46.780Z",
+  "phase": 1,
+  "status": "complete",
+  "project": {
+    "team_slug": "swaying-windmill",
+    "team_id": "team_kTGJFPyzeDcJFchLZ3L3rHv7",
+    "project_name": "zhipanda",
+    "project_id": "prj_f50sXrKegrjBr65b3PZ4A9nf4t2o",
+    "root_directory": "apps/web",
+    "framework": "nextjs",
+    "node_version": "24.x",
+    "production_branch": "master"
+  },
+  "accepted_preview": {
+    "deployment_id": "dpl_EUfKGMqVn1HZhBaHb8dEWrgwNQHY",
+    "deployment_url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+    "branch_alias": "https://zhipanda-git-deployment-vercel-managed-646391-swaying-windmill.vercel.app",
+    "target": "preview",
+    "state": "READY",
+    "source": {
+      "provider": "github",
+      "repository": "SwayingWindmill/PandaAtlas",
+      "branch": "deployment/vercel-managed-cloud-phase-1",
+      "commit": "2043f4ecf1bd14c96d6af02cb9f7355304a49b5b",
+      "pull_request": 260
+    }
+  },
+  "parallel_production_deployment": {
+    "deployment_id": "dpl_33RS6RDqRwEqWZb9xCCxgvFTMNyP",
+    "deployment_url": "https://zhipanda-o6fsq8g3x-swaying-windmill.vercel.app",
+    "stable_project_url": "https://zhipanda.vercel.app",
+    "state": "READY",
+    "source_branch": "master",
+    "source_commit": "a004fd628a0d629684dc72b7b4649e93249f080f"
+  },
+  "configuration": {
+    "next_public_api_base_url": {
+      "configured_for": [
+        "production",
+        "preview"
+      ],
+      "value_class": "public",
+      "expected_value": "https://api.zhipanda.com",
+      "verified_by_cli": true
+    },
+    "deployed_feature_profile": {
+      "engagement_enabled": false,
+      "notification_enabled": false,
+      "production_equivalence_verified": true,
+      "production_comparison": {
+        "passport": "disabled",
+        "follow_ui": "absent",
+        "private_inbox": "unpublished-404"
+      }
+    },
+    "custom_production_domains_attached": false,
+    "cloudflare_dns_changed": false,
+    "vercel_authentication_enabled": false,
+    "sso_protection": null
+  },
+  "http_verification": [
+    {
+      "url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+      "status": 308,
+      "location": "/zh"
+    },
+    {
+      "url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app/zh",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "panda_atlas_content_present": true,
+      "api_base_reference_present": true
+    },
+    {
+      "url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app/atlas/%E0%A4%A",
+      "status": 400,
+      "content_type": "text/plain; charset=utf-8",
+      "semantic_requirement_met": true
+    }
+  ],
+  "tests": {
+    "repository_validators": {
+      "managed_cloud_inventory": "passed",
+      "vercel_web_deployment_plan": "passed",
+      "managed_cloud_unit_tests": {
+        "passed": 5,
+        "failed": 0
+      },
+      "vercel_plan_unit_tests": {
+        "passed": 6,
+        "failed": 0
+      }
+    },
+    "browser_smoke": {
+      "status": "passed",
+      "test_source_commit": "2043f4ecf1bd14c96d6af02cb9f7355304a49b5b",
+      "browser": "Microsoft Edge",
+      "base_url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+      "passed": 91,
+      "skipped": 11,
+      "failed": 0,
+      "total": 102,
+      "skip_basis": "Enabled-only Engagement and Notification journeys do not apply to the current production-equivalent feature profile.",
+      "runner_notes": [
+        "Eighty-six tests passed and eleven skipped during the isolated parallel spec run.",
+        "Five tests were interrupted by Playwright processes sharing and deleting the same trace artifact directory.",
+        "Those five exact tests were rerun serially and passed 5/5; no application assertion failed."
+      ]
+    },
+    "automated_accessibility": {
+      "status": "passed",
+      "browser": "Microsoft Edge",
+      "production_app_runtime_changed_between_previews": false,
+      "passed": 46,
+      "skipped": 2,
+      "failed": 0,
+      "total": 48,
+      "violations": 0,
+      "skip_basis": "The two Follow interaction checks apply only when Engagement UI is enabled.",
+      "runner_notes": [
+        "The broad run passed 44 checks before two Windows browser-worker exits and two production-inapplicable Follow checks.",
+        "The two worker-exit checks passed 2/2 when rerun in isolation.",
+        "The two Follow checks are explicitly skipped by the production-equivalent deployment feature profile."
+      ]
+    }
+  },
+  "acceptance": {
+    "project_setup": "passed",
+    "deployment_ready": true,
+    "public_vercel_app_access": true,
+    "browser_smoke": "passed",
+    "automated_accessibility": "passed",
+    "production_traffic_cutover": false,
+    "phase_1_technical_acceptance": true,
+    "owners": {
+      "observability": "project-owner",
+      "budget": "project-owner",
+      "rollback": "project-owner"
+    },
+    "phase_1_complete": true,
+    "remaining": []
+  }
+}

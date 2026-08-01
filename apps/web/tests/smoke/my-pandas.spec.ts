@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
 
+import { isDeployedFeatureEnabled } from "../fixtures/deployment-features";
+
+const engagementEnabled = isDeployedFeatureEnabled("engagement");
+
 const PREFERENCES_KEY = "panda-atlas:profile-preferences";
 const LEGACY_KEY = "panda-atlas:saved-profiles";
 
@@ -22,7 +26,11 @@ test("serves canonical bilingual Passport routes", async ({ page, request }) => 
   await expect(page.getByRole("heading", { level: 1, name: "我的熊猫" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "护照与最近浏览使用不同存储边界" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "熊猫护照" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "使用邮箱验证码登录" })).toHaveAttribute("href", "/auth/login?next=/zh/me/passport");
+  if (engagementEnabled) {
+    await expect(page.getByRole("link", { name: "使用邮箱验证码登录" })).toHaveAttribute("href", "/auth/login?next=/zh/me/passport");
+  } else {
+    await expect(page.getByText("熊猫护照尚未在此环境启用。最近浏览仍只保存在当前浏览器。")).toBeVisible();
+  }
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.zhipanda.com/zh/me/passport");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   await expect(page.locator('meta[property="og:title"]')).toHaveCount(0);
@@ -41,7 +49,11 @@ test("deletes legacy anonymous saves without converting them", async ({ page }) 
   }, { legacyKey: LEGACY_KEY, preferencesKey: PREFERENCES_KEY });
 
   await page.goto("/zh/me/passport");
-  await expect(page.getByRole("link", { name: "使用邮箱验证码登录" })).toBeVisible();
+  if (engagementEnabled) {
+    await expect(page.getByRole("link", { name: "使用邮箱验证码登录" })).toBeVisible();
+  } else {
+    await expect(page.getByText("熊猫护照尚未在此环境启用。最近浏览仍只保存在当前浏览器。")).toBeVisible();
+  }
   const stored = await page.evaluate(({ preferencesKey, legacyKey }) => ({
     preferences: JSON.parse(localStorage.getItem(preferencesKey) ?? "null"),
     legacy: localStorage.getItem(legacyKey),
@@ -54,6 +66,7 @@ test("deletes legacy anonymous saves without converting them", async ({ page }) 
 });
 
 test("renders private Passport and local recent history", async ({ page }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   await page.route("**/api/engagement/passport", async (route) => {
     await route.fulfill({
       status: 200,
@@ -85,6 +98,7 @@ test("renders private Passport and local recent history", async ({ page }) => {
 });
 
 test("signed-out Follow creates Pending Intent before OTP", async ({ page }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   let requestBody: Record<string, unknown> | null = null;
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
