@@ -1,4 +1,4 @@
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Never
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -76,7 +76,7 @@ _OWNERSHIP_CONFLICT_MESSAGES = (
 )
 
 
-def _raise_moderation_database_error(error: DBAPIError) -> None:
+def _raise_moderation_database_error(error: DBAPIError) -> Never:
     original = error.orig
     sqlstate = getattr(original, "sqlstate", None)
     description = str(original).lower()
@@ -146,7 +146,6 @@ def restore_moderation_action_endpoint(
         return restore_moderation_action(action_id, command, identity, correlation_id)
     except DBAPIError as error:
         _raise_moderation_database_error(error)
-        raise AssertionError("unreachable")
 
 
 @admin_router.get("/appeals", response_model=AppealQueueRead)
@@ -189,7 +188,6 @@ def decide_appeal_endpoint(
         return decide_appeal(appeal_case_id, command, identity, correlation_id)
     except DBAPIError as error:
         _raise_moderation_database_error(error)
-        raise AssertionError("unreachable")
 
 
 @admin_router.get("/metrics", response_model=ModerationMetricsRead)
