@@ -11,11 +11,30 @@ The Dockerfile, local Uvicorn process, and local database workflows support deve
 
 The request-runtime import boundary is enforced from `app.main`. Acquisition, enrichment, identity-resolution batch code, executable scripts, dynamic imports, and heavy crawler or media dependencies cannot enter the transitive request closure. See [`docs/architecture/api-request-runtime-boundary.md`](../../docs/architecture/api-request-runtime-boundary.md) and run `npm run check:api-runtime-boundary` from the repository root.
 
+`index.py` is the Vercel ASGI entrypoint and only re-exports the authoritative `app.main:app` object. The deterministic serverless closure is governed by [`contracts/api-serverless-runtime.v1.json`](../../contracts/api-serverless-runtime.v1.json) and documented in [`docs/deployment/vercel-api-phase-2.md`](../../docs/deployment/vercel-api-phase-2.md). This is structural preparation only; it does not authorize deployment or production cutover.
+
 ## Run (uv)
 
 ```bash
-uv sync --extra dev
-uv run uvicorn app.main:app --reload
+uv sync --extra dev --extra local-server
+uv run --extra local-server uvicorn app.main:app --reload
+```
+
+The `local-server` group keeps Uvicorn out of the managed request dependency set while preserving local and Docker workflows.
+
+## Serverless verification
+
+Validate the entrypoint, request modules, dependency set, package data, and deterministic file hashes:
+
+```bash
+npm run check:api-runtime-boundary
+npm run check:api-serverless-closure
+```
+
+Write the ignored evidence artifact to `.release-gate/api-serverless-closure.json`:
+
+```bash
+npm run build:api-serverless-closure
 ```
 
 ## Environment

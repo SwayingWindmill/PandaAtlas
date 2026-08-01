@@ -81,13 +81,22 @@ npm run check:batch-workflow-interface
 
 `batch:run` executes only code-allowlisted ready adapters. Planned operations, arbitrary commands, non-JSON or escaping manifest paths, and approval-gated execution without the `production-batch` environment fail closed. Generated plans and results stay under ignored `.batch-work/`.
 
-The API scope begins with the FastAPI request-runtime boundary check. It follows imports reachable from `app.main` and rejects batch-only namespaces, executable script imports, dynamic imports, heavy optional dependencies, and dependency-group drift. Run it directly with:
+The API scope begins with the FastAPI request-runtime and serverless closure checks. They follow imports reachable from `app.main`, validate the Vercel `index.py` re-export, and reject batch-only namespaces, executable script imports, dynamic imports, heavy optional dependencies, unclassified import roots, dependency-group drift, and forbidden closure files. Run them directly with:
 
 ```bash
 npm run check:api-runtime-boundary
+npm run check:api-serverless-closure
 ```
 
 The resolved request closure can be inspected with `python services/api/scripts/check_request_runtime_boundary.py --json`.
+
+Write the deterministic closure artifact under ignored release evidence with:
+
+```bash
+npm run build:api-serverless-closure
+```
+
+The artifact records request modules, package data, direct runtime dependencies, excluded optional groups, file sizes, and SHA-256 hashes. It does not deploy the API.
 
 ## Compatibility adapters
 

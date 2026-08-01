@@ -14,6 +14,15 @@ import {
 const DEFAULT_HOST = "127.0.0.1";
 const DEFAULT_PORT = "8000";
 export const uvRunPrefix = ["run", "--frozen", "--extra", "dev", "--no-sync"];
+export const uvServerRunPrefix = [
+  "run",
+  "--frozen",
+  "--extra",
+  "dev",
+  "--extra",
+  "local-server",
+  "--no-sync",
+];
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 export const repoRoot = path.resolve(scriptDir, "..", "..");
@@ -132,7 +141,7 @@ function waitForExit(child) {
 export function startApiServer(envOverrides = {}) {
   const command = commandName("uv");
   const args = [
-    ...uvRunPrefix,
+    ...uvServerRunPrefix,
     "uvicorn",
     "app.main:app",
     "--host",

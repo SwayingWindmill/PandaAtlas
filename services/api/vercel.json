@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "index.py": {
+      "excludeFiles": "{.dockerignore,Dockerfile,README.md,alembic.ini,alembic/**,openapi/**,scripts/**,tests/**,app/acquisition/**,app/enrichment/**,app/identity_resolution/**,app/community_intake/scanner.py,app/domain/archive_events.py,app/domain/archive_residency.py,app/knowledge/**,app/projection/**,app/services/stats_service.py}"
+    }
+  }
+}

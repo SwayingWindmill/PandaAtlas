@@ -48,8 +48,8 @@ npm run dev
 
 ```bash
 cd services/api
-uv sync --extra dev
-uv run uvicorn app.main:app --reload
+uv sync --extra dev --extra local-server
+uv run --extra local-server uvicorn app.main:app --reload
 ```
 
 ### 3) Local-only container workflow
@@ -94,7 +94,7 @@ uv run python scripts/import_demo_seed.py
 3. Start API and verify endpoints:
 
 ```bash
-uv run uvicorn app.main:app --reload
+uv run --extra local-server uvicorn app.main:app --reload
 curl "http://localhost:8000/api/v1/pandas"
 curl "http://localhost:8000/api/v1/map/snapshots"
 curl "http://localhost:8000/api/v1/map/distribution?bbox=100,25,110,36&layer=wild"
