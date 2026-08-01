@@ -17,6 +17,14 @@ SERVICE_SOURCE = (
     / "review_moderation"
     / "moderation_service.py"
 )
+QUERY_SOURCE = (
+    REPO_ROOT
+    / "services"
+    / "api"
+    / "app"
+    / "review_moderation"
+    / "moderation_queries.py"
+)
 
 
 def _operations() -> set[tuple[str, str]]:
@@ -66,9 +74,21 @@ def test_suspended_user_appeal_uses_identity_and_user_safe_projection() -> None:
 
     assert "AppealSubmitter = Annotated[RequestIdentity, Depends(get_request_identity)]" in source
     assert "_user_safe_appeal(submit_appeal(command, identity, correlation_id))" in source
-    assert "_user_safe_appeal(get_appeal(appeal_case_id, account_id=identity.account_id))" in source
+    assert "return get_my_appeal(identity.account_id, appeal_case_id)" in source
+    assert "return get_my_moderation(identity.account_id)" in source
+    assert "return list_my_appeals(identity.account_id)" in source
     assert "response_model=MyAppealCaseRead" in source
     assert "internal_resolution=appeal.internal_resolution" not in source
+    assert 'list_appeals("all", 100)' not in source
+
+
+def test_private_queries_apply_account_scope_in_sql() -> None:
+    source = QUERY_SOURCE.read_text(encoding="utf-8")
+
+    assert "where action.account_id = :account_id" in source
+    assert source.count("where account_id = :account_id") >= 2
+    assert "and appeal_case_id = :appeal_case_id" in source
+    assert "insert into review_moderation.moderation_subjects" not in source
 
 
 def test_service_uses_authoritative_identity_state_and_canonical_outbox() -> None:
