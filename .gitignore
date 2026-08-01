@@ -44,6 +44,7 @@ htmlcov/
 # Local agent/planning state
 .claude/
 .ai-bridge/
+.codegraph/
 .codex/
 .codex-temp/
 .planning/

@@ -25,6 +25,8 @@ When adding new features, keep changes grouped by boundary: UI in `apps/web`, AP
 ## Build, Test, and Development Commands
 From repository root:
 
+- Initialize local CodeGraph: `npm run codegraph:init`
+- Inspect CodeGraph health: `npm run codegraph:status`
 - Frontend dev: `npm run dev:web`
 - Frontend lint: `npm run lint:web`
 - Frontend typecheck: `npm run typecheck:web`
@@ -35,6 +37,13 @@ Backend (`services/api`):
 - Run API: `uv run uvicorn app.main:app --reload`
 - Run tests: `uv run pytest -q`
 - Quick syntax check: `uv run python -m compileall app`
+
+## CodeGraph Usage
+- The project-pinned CodeGraph integration is documented in `docs/agents/codegraph.md`.
+- When the CodeGraph MCP server is available, use it before broad grep/read exploration for architecture, symbol relationships, callers, callees, route ownership, and change-impact questions.
+- Treat CodeGraph as navigation context, not correctness evidence. Confirm edits with source reads and the repository's normal tests, linters, type checks, and release gates.
+- The `.codegraph/` SQLite index is local-only and must not be committed.
+- Generated frontend projections, immutable release payloads, reviewed batches, and static prototypes are intentionally excluded through `codegraph.json`.
 
 Local platform:
 
