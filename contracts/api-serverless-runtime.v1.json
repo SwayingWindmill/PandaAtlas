@@ -15,7 +15,7 @@
   },
   "vercel_configuration": {
     "file": "services/api/vercel.json",
-    "function": "index.py",
+    "function": "**/*.py",
     "exclude_files": [
       ".dockerignore",
       "Dockerfile",

@@ -39,7 +39,7 @@ def test_real_serverless_closure_is_deterministic_and_bounded() -> None:
     assert payload["request_boundary"]["modules_checked"] == len(
         payload["request_boundary"]["modules"]
     )
-    assert payload["vercel_configuration"]["function"] == "index.py"
+    assert payload["vercel_configuration"]["function"] == "**/*.py"
     assert "tests/**" in payload["vercel_configuration"]["exclude_files"]
     assert "services/api/app/acquisition/adapters.py" in payload[
         "excluded_tracked_files"
