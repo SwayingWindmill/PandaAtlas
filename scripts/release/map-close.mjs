@@ -2,13 +2,13 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 import { resolvePlaywrightEnvironment } from "./certification/capabilities.mjs";
+import { runEvidenceSealedCertification } from "./certification/lifecycle.mjs";
 import {
   createMapCloseCertificationPlan,
   MAP_CLOSE_PROFILE,
   MAP_CLOSE_WEB_ENVIRONMENT,
 } from "./certification/map-close-plan.mjs";
-import { ReleaseGateError, runReleaseGate } from "./gate-core.mjs";
-import { sealMapCloseEvidence } from "./map-close-evidence.mjs";
+import { ReleaseGateError } from "./gate-core.mjs";
 import {
   releaseReportDir,
   runDefaultReleaseGate,
@@ -31,14 +31,11 @@ export async function runMapCloseGate() {
     profile: MAP_CLOSE_PROFILE.AUTHORITATIVE,
     playwrightEnv: resolvePlaywrightEnvironment(),
   });
-  const report = await runReleaseGate({
+  return runEvidenceSealedCertification({
     gate: plan.gate,
     reportDir: releaseReportDir,
     steps: plan.steps,
   });
-
-  await sealMapCloseEvidence({ reportDir: releaseReportDir });
-  return report;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
