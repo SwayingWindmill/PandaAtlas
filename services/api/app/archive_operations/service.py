@@ -31,7 +31,7 @@ from app.identity.models import RequestIdentity
 
 
 @contextmanager
-def _operation_session() -> Iterator[Session]:
+def _operation_session(*, preserve_dbapi_errors: bool = False) -> Iterator[Session]:
     if not settings.archive_single_accountable_approver_enabled:
         raise HTTPException(
             status_code=404,
@@ -57,6 +57,13 @@ def _operation_session() -> Iterator[Session]:
                 raise
     except HTTPException:
         raise
+    except DBAPIError as error:
+        if preserve_dbapi_errors:
+            raise
+        raise HTTPException(
+            status_code=503,
+            detail={"code": "authoritative_database_unavailable"},
+        ) from error
     except SQLAlchemyError as error:
         raise HTTPException(
             status_code=503,
@@ -188,7 +195,7 @@ def _execute_operation(
     identity: RequestIdentity,
 ) -> ArchiveOperationRead:
     try:
-        with _operation_session() as session:
+        with _operation_session(preserve_dbapi_errors=True) as session:
             row = session.execute(
                 text(
                     """
@@ -231,7 +238,7 @@ def _execute_operation(
                     "database_migration_version": database_migration_version,
                     "projection_code_version": projection_code_version,
                     "risk_level": risk_level.value,
-                    "subject": json.dumps(subject),
+                    "subject": json.dumps(subject) if subject is not None else None,
                     "source_entities": json.dumps(source_entities),
                     "destination_entities": json.dumps(destination_entities),
                     "effect_payload": json.dumps(effect_payload),
@@ -371,7 +378,7 @@ def complete_emergency_followup(
 ) -> EmergencyFollowupRead:
     payload_sha256 = operation_payload_sha256(command)
     try:
-        with _operation_session() as session:
+        with _operation_session(preserve_dbapi_errors=True) as session:
             row = session.execute(
                 text(
                     """
