@@ -29,6 +29,39 @@ def test_moderation_routes_are_registered_in_runtime_openapi() -> None:
     assert ADMIN_PATHS <= paths
 
 
+def test_public_moderation_openapi_uses_user_safe_models() -> None:
+    schemas = app.openapi()["components"]["schemas"]
+    sanction_properties = set(schemas["UserSanctionRead"]["properties"])
+    appeal_properties = set(schemas["UserAppealCaseRead"]["properties"])
+    decision_properties = set(schemas["UserAppealDecisionRead"]["properties"])
+
+    assert sanction_properties.isdisjoint(
+        {
+            "account_id",
+            "internal_explanation",
+            "issued_by_account_id",
+            "subject_version_before",
+            "subject_version_after",
+        }
+    )
+    assert appeal_properties.isdisjoint(
+        {
+            "account_id",
+            "first_responded_at",
+            "sla_overdue",
+            "age_seconds",
+        }
+    )
+    assert decision_properties.isdisjoint(
+        {
+            "decision_id",
+            "appeal_case_id",
+            "internal_explanation",
+            "decided_by_account_id",
+        }
+    )
+
+
 def test_public_moderation_notice_requires_authentication() -> None:
     original_identity = settings.identity_auth_enabled
     original_moderation = settings.moderation_controls_enabled
