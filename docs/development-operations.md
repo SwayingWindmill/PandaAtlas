@@ -41,6 +41,16 @@ npm run check:repository-hygiene
 
 Root planning files (`task_plan.md`, `findings.md`, and `progress.md`) remain allowed because they are part of the repository working convention.
 
+Research inputs have a separate policy check. New executable research logic must live in reusable modules under `scripts/research/`, while changing dates, subjects, sources, and operations belong in `data/research-batches/<batch-id>.json`. Round-specific or date-specific scripts are rejected outside `scripts/research/archive/`.
+
+Run the policy directly with:
+
+```bash
+npm run check:research-script-policy
+```
+
+Research code under `scripts/research/`, JSON manifests under `data/research-batches/`, and changes to `contracts/research-batch.v1.json` select the `release` development scope, which runs the policy before the development-gate contract tests.
+
 ## Compatibility adapters
 
 Existing root scripts such as `npm run dev:web`, `npm run verify:dev`, and `npm run infra:status` remain available. They are compatibility adapters that delegate to Development Operations.

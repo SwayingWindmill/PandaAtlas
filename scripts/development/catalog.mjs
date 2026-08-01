@@ -283,6 +283,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "release.check-research-script-policy",
+    category: "verification",
+    description: "Enforce reusable research modules and declarative batch manifests.",
+    command: "node",
+    args: ["scripts/release/check-research-script-policy.mjs"],
+    requires: ["git", "node"],
+    effect: "read-only",
+  },
+  {
     id: "release.test-development",
     category: "verification",
     description: "Run development-gate contract tests.",
@@ -292,6 +301,7 @@ const commands = [
       "scripts/release/tests/development.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
+      "scripts/release/tests/research-script-policy.test.mjs",
       "scripts/release/tests/release-config.test.mjs",
       "scripts/development/tests/operations.test.mjs",
     ],
@@ -379,7 +389,10 @@ if (commandById.size !== commands.length) {
 }
 
 export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
-  release: ["release.test-development"],
+  release: [
+    "release.check-research-script-policy",
+    "release.test-development",
+  ],
   web: ["web.lint", "web.typecheck"],
   worker: ["worker.typecheck"],
   api: ["api.lint", "api.test"],

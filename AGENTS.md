@@ -7,6 +7,8 @@ This repository is the monorepo for ZhiPanda (吱熊猫), a modern panda informa
 - `services/api`: FastAPI backend service (v1 REST endpoints, schema/service split).
 - `services/api/openapi/panda-atlas-v1.yaml`: API contract source of truth for frontend/backend alignment.
 - `infra/supabase/migrations`: forward-only SQL migrations for Supabase Postgres/PostGIS.
+- `scripts/research`: reusable research adapters, builders, runners, validators, migrations, tests, and archived one-off scripts.
+- `data/research-batches`: declarative batch-specific research inputs governed by `contracts/research-batch.v1.json`.
 - `docs/monorepo-structure.md`: architecture and delivery sequencing.
 
 When adding new features, keep changes grouped by boundary: UI in `apps/web`, API behavior in `services/api`, and schema changes in `infra/supabase/migrations`.
@@ -58,6 +60,7 @@ Local platform:
 - API style: versioned routes under `/api/v1`, plural resources, snake_case query params (`page_size`, `snapshot_date`).
 - SQL: lowercase keywords, explicit section comments, `if exists`/`if not exists` for idempotency where possible.
 - Frontend: route files in `apps/web/app/**/page.tsx`; shared utilities in `apps/web/lib`; keep UI primitives in `apps/web/components/ui`.
+- Research: keep executable modules reusable and stable; put dates, subject cohorts, sources, and operation selections in `data/research-batches/<batch-id>.json`, never in new round-specific Python filenames.
 - Naming: use kebab-case for docs/config files and numeric migration prefixes (`0002_*.sql`).
 
 ## UI & Product Conventions
@@ -113,7 +116,7 @@ Local platform:
 - `worker`: `services/worker-api/**` — typecheck without D1 rollback or HTTP runtime smoke.
 - `curation`: reviewed collection and media-processing code or data — bounded curation and media checks.
 - `data`: golden-dataset contracts and generators — contract, dataset, and generated-alias consistency checks.
-- `release`: release scripts, workflow definitions, hard-gate policies, and evidence infrastructure — development-gate contract tests only.
+- `release`: release scripts, workflow definitions, hard-gate policies, evidence infrastructure, and research-script governance — policy checks plus development-gate contract tests.
 
 ## Commit & Pull Request Guidelines
 Use Conventional Commits, for example:
