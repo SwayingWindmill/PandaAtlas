@@ -85,6 +85,7 @@ test("rehearsal produces deterministic GO NO-GO evidence", async () => {
   assert.match(service, /orphan_counts/);
   assert.match(service, /canonical_sha256/);
   assert.match(script, /--require-go/);
+  assert.match(script, /configure_database\(database_url\)/);
   assert.match(script, /temporary\.replace\(args\.output\)/);
   assert.match(contract, /operationId: getArchiveRehearsalSnapshot/);
   assert.match(contract, /canonical_sha256/);

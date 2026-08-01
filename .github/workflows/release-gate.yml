@@ -225,6 +225,7 @@ jobs:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:54322/postgres
       REAL_DB_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:54322/postgres
       RUN_REAL_DB_TESTS: "1"
+      ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true"
       RUN_NOTIFICATION_STAGING: "1"
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}

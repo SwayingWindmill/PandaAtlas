@@ -29,6 +29,7 @@ test("CI declares one reproducible authoritative default gate", async () => {
     'NPM_VERSION: "10.9.0"',
     'PYTHON_VERSION: "3.12"',
     'UV_VERSION: "0.11.7"',
+    'ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true"',
     "run: npm ci",
     "npx playwright install --with-deps chromium",
     "name: release-gate-map-close",

@@ -249,10 +249,13 @@ def _execute_operation(
             ).mappings().one()
             return _operation_read(session, row["operation_id"])
     except OperationalError as error:
-        raise HTTPException(
-            status_code=503,
-            detail={"code": "authoritative_database_unavailable"},
-        ) from error
+        sqlstate = getattr(error.orig, "sqlstate", None)
+        if sqlstate is None or str(sqlstate).startswith("08"):
+            raise HTTPException(
+                status_code=503,
+                detail={"code": "authoritative_database_unavailable"},
+            ) from error
+        _raise_operation_error(error)
     except (IntegrityError, DBAPIError) as error:
         _raise_operation_error(error)
 
