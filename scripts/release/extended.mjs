@@ -1,9 +1,13 @@
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-import { EnvironmentBlockedError, ReleaseGateError, runReleaseGate } from "./gate-core.mjs";
+import {
+  environmentFlag,
+  requireEnvironmentValue,
+} from "./certification/capabilities.mjs";
+import { runEvidenceSealedCertification } from "./certification/lifecycle.mjs";
+import { ReleaseGateError } from "./gate-core.mjs";
 import { runMapCloseGate } from "./map-close.mjs";
-import { sealMapCloseEvidence } from "./map-close-evidence.mjs";
 import {
   apiBaseUrl,
   apiDir,
@@ -17,20 +21,10 @@ import {
   waitForServer,
 } from "./default.mjs";
 
-function envFlag(name) {
-  return (process.env[name] ?? "0").trim().toLowerCase() === "1";
-}
-
-function requireEnvironment(name, flagName) {
-  const value = process.env[name];
-  if (!value) {
-    throw new EnvironmentBlockedError(`${flagName}=1 requires ${name} to be set`);
-  }
-  return value;
-}
-
 async function runAdminImportSmoke(uv) {
-  const adminApiToken = requireEnvironment("ADMIN_API_TOKEN", "RUN_ADMIN_IMPORT_SMOKE");
+  const adminApiToken = requireEnvironmentValue("ADMIN_API_TOKEN", {
+    enabledBy: "RUN_ADMIN_IMPORT_SMOKE",
+  });
   let apiProcess;
   let primaryError;
 
@@ -69,14 +63,14 @@ async function runAdminImportSmoke(uv) {
 
 export async function runExtendedReleaseGate() {
   const uv = "uv";
-  const runRealDbTests = envFlag("RUN_REAL_DB_TESTS");
-  const runAdminImport = envFlag("RUN_ADMIN_IMPORT_SMOKE");
-  const runPostgresAttachmentRecovery = envFlag("RUN_POSTGRES_ATTACHMENT_RECOVERY");
-  const runIdentityEngagementRecovery = envFlag("RUN_IDENTITY_ENGAGEMENT_RECOVERY");
+  const runRealDbTests = environmentFlag("RUN_REAL_DB_TESTS");
+  const runAdminImport = environmentFlag("RUN_ADMIN_IMPORT_SMOKE");
+  const runPostgresAttachmentRecovery = environmentFlag("RUN_POSTGRES_ATTACHMENT_RECOVERY");
+  const runIdentityEngagementRecovery = environmentFlag("RUN_IDENTITY_ENGAGEMENT_RECOVERY");
 
   await runMapCloseGate();
 
-  const report = await runReleaseGate({
+  return runEvidenceSealedCertification({
     gate: "extended",
     reportDir: releaseReportDir,
     steps: [
@@ -100,7 +94,9 @@ export async function runExtendedReleaseGate() {
           ? undefined
           : "RUN_IDENTITY_ENGAGEMENT_RECOVERY is not enabled",
         run: () => {
-          requireEnvironment("DATABASE_URL", "RUN_IDENTITY_ENGAGEMENT_RECOVERY");
+          requireEnvironmentValue("DATABASE_URL", {
+            enabledBy: "RUN_IDENTITY_ENGAGEMENT_RECOVERY",
+          });
           return runEnvironmentCheck(
             uv,
             [...uvRunPrefix, "python", "scripts/run_identity_engagement_recovery_drill.py"],
@@ -113,7 +109,7 @@ export async function runExtendedReleaseGate() {
         label: "FastAPI real database integration tests",
         skipReason: runRealDbTests ? undefined : "RUN_REAL_DB_TESTS is not enabled",
         run: () => {
-          requireEnvironment("DATABASE_URL", "RUN_REAL_DB_TESTS");
+          requireEnvironmentValue("DATABASE_URL", { enabledBy: "RUN_REAL_DB_TESTS" });
           return runCommand(
             uv,
             [
@@ -135,9 +131,6 @@ export async function runExtendedReleaseGate() {
       },
     ],
   });
-
-  await sealMapCloseEvidence({ reportDir: releaseReportDir });
-  return report;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

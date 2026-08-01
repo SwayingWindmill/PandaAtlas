@@ -8,9 +8,12 @@ import "./admin-bundle-budget.test.mjs";
 import "./archive-governance-evidence.test.mjs";
 import "./archive-workbench.test.mjs";
 import "./brand-technical-inventory.test.mjs";
+import "./certification-capabilities.test.mjs";
+import "./certification-lifecycle.test.mjs";
 import "./map-close-config.test.mjs";
 import "./map-close-evidence.test.mjs";
 import "./published-return-evidence.test.mjs";
+import "./workspace-cleanliness.test.mjs";
 import {
   EnvironmentBlockedError,
   ReleaseGateError,

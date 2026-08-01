@@ -4,6 +4,10 @@ import test from "node:test";
 
 const workflowPath = new URL("../../../.github/workflows/release-gate.yml", import.meta.url);
 const defaultGatePath = new URL("../default.mjs", import.meta.url);
+const certificationCapabilitiesPath = new URL(
+  "../certification/capabilities.mjs",
+  import.meta.url,
+);
 const privateGatePath = new URL("../private-collection.mjs", import.meta.url);
 const extendedGatePath = new URL("../extended.mjs", import.meta.url);
 const workerPackagePath = new URL("../../../services/worker-api/package.json", import.meta.url);
@@ -155,9 +159,12 @@ test("default gate records automated core WCAG checks", async () => {
 
 test("release browser checks reuse the clean production build and honor the Edge opt-out", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
+  const capabilities = await readFile(certificationCapabilitiesPath, "utf8");
   const playwrightConfig = await readFile(webPlaywrightConfigPath, "utf8");
 
-  assert.match(defaultGate, /PLAYWRIGHT_NEXT_DIST_DIR: "\.next"/);
+  assert.match(defaultGate, /resolvePlaywrightEnvironment/);
+  assert.match(capabilities, /PLAYWRIGHT_NEXT_DIST_DIR: "\.next"/);
+  assert.match(capabilities, /RELEASE_GATE_USE_SYSTEM_EDGE === "0"/);
   assert.match(playwrightConfig, /process\.env\.PLAYWRIGHT_NEXT_DIST_DIR/);
   assert.match(playwrightConfig, /process\.env\.RELEASE_GATE_USE_SYSTEM_EDGE !== "0"/);
 });

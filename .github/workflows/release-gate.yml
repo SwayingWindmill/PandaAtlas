@@ -28,6 +28,9 @@ env:
   PYTHON_VERSION: "3.12"
   UV_VERSION: "0.11.7"
 
+# The legacy tracked-file policy (`run: git diff --exit-code`) is implemented by
+# scripts/release/check-workspace-cleanliness.mjs with consistent diagnostics.
+
 jobs:
   development-gate:
     name: Development gate
@@ -79,7 +82,7 @@ jobs:
 
       - name: Verify development checks did not modify tracked files
         if: steps.development-plan.outputs.run_checks == 'true'
-        run: git diff --exit-code
+        run: node scripts/release/check-workspace-cleanliness.mjs --context development-gate
 
   release-gate:
     name: Authoritative map-close gate
@@ -132,22 +135,7 @@ jobs:
         run: npm run release:map-close
 
       - name: Verify gate did not modify tracked files
-        shell: bash
-        run: |
-          if git diff --quiet --ignore-submodules --; then
-            exit 0
-          fi
-          echo "::group::Tracked repository changes"
-          git status --short
-          git ls-files --modified
-          git diff --check || true
-          git diff --summary
-          git diff --name-status
-          git diff --raw
-          git diff --no-ext-diff --binary
-          echo "::endgroup::"
-          echo "::error::Release gate modified tracked files."
-          exit 1
+        run: node scripts/release/check-workspace-cleanliness.mjs --context authoritative-map-close
 
       - name: Upload release report
         if: always()
@@ -201,7 +189,7 @@ jobs:
         run: npm run release:map-close:windows
 
       - name: Verify gate did not modify tracked files
-        run: git diff --exit-code
+        run: node scripts/release/check-workspace-cleanliness.mjs --context windows-map-close
 
       - name: Upload Windows release report
         if: always()
@@ -389,7 +377,7 @@ jobs:
         run: npm run release:extended
 
       - name: Verify gate did not modify tracked files
-        run: git diff --exit-code
+        run: node scripts/release/check-workspace-cleanliness.mjs --context extended-gate
 
       - name: Upload extended release report
         if: always()
