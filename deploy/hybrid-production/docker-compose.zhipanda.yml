@@ -159,18 +159,19 @@ services:
       - ${ZHIPANDA_BACKUP_DIR:?Set ZHIPANDA_BACKUP_DIR}:/backups
     entrypoint:
       - /bin/bash
+    command:
       - -ec
-    command: |
-      umask 077
-      stamp=$$(date -u +%Y%m%dT%H%M%SZ)
-      filename="postgres-$${stamp}.dump"
-      partial="/backups/$${filename}.partial"
-      trap 'rm -f "$${partial}"' EXIT
-      pg_dump --host=db --port="$${POSTGRES_PORT}" --username=postgres --dbname="$${POSTGRES_DB}" --format=custom --file="$${partial}"
-      mv "$${partial}" "/backups/$${filename}"
-      cd /backups
-      sha256sum "$${filename}" > "$${filename}.sha256"
-      echo "Created /backups/$${filename}"
+      - |
+        umask 077
+        stamp=$$(date -u +%Y%m%dT%H%M%SZ)
+        filename="postgres-$${stamp}.dump"
+        partial="/backups/$${filename}.partial"
+        trap 'rm -f "$${partial}"' EXIT
+        pg_dump --host=db --port="$${POSTGRES_PORT}" --username=postgres --dbname="$${POSTGRES_DB}" --format=custom --file="$${partial}"
+        mv "$${partial}" "/backups/$${filename}"
+        cd /backups
+        sha256sum "$${filename}" > "$${filename}.sha256"
+        echo "Created /backups/$${filename}"
 
   storage-backup:
     image: alpine:3.22.1
@@ -189,15 +190,16 @@ services:
       - ${ZHIPANDA_BACKUP_DIR:?Set ZHIPANDA_BACKUP_DIR}:/backups
     entrypoint:
       - /bin/sh
+    command:
       - -ec
-    command: |
-      umask 077
-      stamp=$$(date -u +%Y%m%dT%H%M%SZ)
-      filename="storage-$${stamp}.tar.gz"
-      partial="/backups/$${filename}.partial"
-      trap 'rm -f "$${partial}"' EXIT
-      tar -C /source -czf "$${partial}" storage
-      mv "$${partial}" "/backups/$${filename}"
-      cd /backups
-      sha256sum "$${filename}" > "$${filename}.sha256"
-      echo "Created /backups/$${filename}"
+      - |
+        umask 077
+        stamp=$$(date -u +%Y%m%dT%H%M%SZ)
+        filename="storage-$${stamp}.tar.gz"
+        partial="/backups/$${filename}.partial"
+        trap 'rm -f "$${partial}"' EXIT
+        tar -C /source -czf "$${partial}" storage
+        mv "$${partial}" "/backups/$${filename}"
+        cd /backups
+        sha256sum "$${filename}" > "$${filename}.sha256"
+        echo "Created /backups/$${filename}"
