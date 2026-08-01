@@ -24,12 +24,12 @@
       }
     },
     {
-      "path": "scripts/release/map-close.mjs",
+      "path": "scripts/release/certification/map-close-plan.mjs",
       "category": "technical-compatible",
       "user_visibility": "internal",
       "migration_owner": "release engineering",
       "expected_action": "retain-compatibility",
-      "rationale": "The release gate emits the canonical OpenAPI artifact under its compatibility filename.",
+      "rationale": "The shared certification plan emits the canonical OpenAPI artifact under its compatibility filename.",
       "matches": {
         "panda-atlas": 1
       }

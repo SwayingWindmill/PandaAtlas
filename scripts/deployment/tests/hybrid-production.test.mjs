@@ -97,6 +97,6 @@ test("deployments back up before migration and use a maintenance backup window",
   assert.match(manager, /"stop", \.\.\.maintenanceServices/);
   assert.match(compose, /\.partial/);
   assert.match(compose, /read_only: true/);
-  assert.equal((compose.match(/command:\n      - -ec\n      - \|/g) ?? []).length, 2);
-  assert.doesNotMatch(compose, /entrypoint:\n      - \/bin\/(?:bash|sh)\n      - -ec/);
+  assert.equal((compose.match(/command:\r?\n      - -ec\r?\n      - \|/g) ?? []).length, 2);
+  assert.doesNotMatch(compose, /entrypoint:\r?\n      - \/bin\/(?:bash|sh)\r?\n      - -ec/);
 });

@@ -12,7 +12,10 @@ import {
   getDevelopmentCommand,
   listDevelopmentCommands,
 } from "../catalog.mjs";
-import { renderDevelopmentCommand } from "../operations.mjs";
+import {
+  renderDevelopmentCommand,
+  resolveDevelopmentInvocation,
+} from "../operations.mjs";
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -46,6 +49,45 @@ test("development verification scopes resolve through the shared catalog", () =>
 test("command rendering exposes the executable interface", () => {
   assert.equal(renderDevelopmentCommand(getDevelopmentCommand("web.lint")), "npm run lint -w web");
   assert.match(renderDevelopmentCommand(getDevelopmentCommand("api.test")), /uv run/);
+});
+
+test("Windows npm and npx commands run through the Node CLI without a shell", () => {
+  const npmExecPath = "C:\\node\\node_modules\\npm\\bin\\npm-cli.js";
+  const nodeExecutable = "C:\\node\\node.exe";
+  assert.deepEqual(
+    resolveDevelopmentInvocation("npm", ["run", "typecheck", "-w", "web"], {
+      platform: "win32",
+      npmExecPath,
+      nodeExecutable,
+      shell: true,
+    }),
+    {
+      executable: nodeExecutable,
+      args: [npmExecPath, "run", "typecheck", "-w", "web"],
+      shell: false,
+    },
+  );
+  assert.deepEqual(
+    resolveDevelopmentInvocation("npx", ["wrangler", "--version"], {
+      platform: "win32",
+      npmExecPath,
+      nodeExecutable,
+    }),
+    {
+      executable: nodeExecutable,
+      args: ["C:\\node\\node_modules\\npm\\bin\\npx-cli.js", "wrangler", "--version"],
+      shell: false,
+    },
+  );
+  assert.throws(
+    () =>
+      resolveDevelopmentInvocation("npm", ["run", "lint"], {
+        platform: "win32",
+        npmExecPath: "",
+        nodeExecutable,
+      }),
+    /requires npm_execpath/,
+  );
 });
 
 test("operations CLI lists and describes catalog commands", () => {
