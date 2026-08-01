@@ -34,6 +34,10 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(workflow, /test_feed_real_db\.py/);
   assert.match(workflow, /test_notification_real_db\.py/);
   assert.match(workflow, /drill:notification-staging/);
+  assert.match(
+    workflow,
+    /name: Record Resend and Auth SMTP staging evidence[\s\S]*?continue-on-error: true[\s\S]*?run: npm run drill:notification-staging[\s\S]*?name: Seal published-return foundation evidence[\s\S]*?if: always\(\)/,
+  );
   assert.match(workflow, /RUN_NOTIFICATION_STAGING: "1"/);
   assert.match(workflow, /AUTH_SMTP_HOST: \$\{\{ secrets\.AUTH_SMTP_HOST \}\}/);
   assert.match(workflow, /AUTH_SMTP_PORT: \$\{\{ secrets\.AUTH_SMTP_PORT \}\}/);

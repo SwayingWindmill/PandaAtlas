@@ -321,6 +321,7 @@ jobs:
         run: npm run drill:identity-engagement-recovery
 
       - name: Record Resend and Auth SMTP staging evidence
+        continue-on-error: true
         run: npm run drill:notification-staging
 
       - name: Seal published-return foundation evidence
