@@ -53,6 +53,15 @@ Local platform:
 - Run the machine-readable foundation preflight: `npm run infra:preflight`
 - Start FastAPI separately after providing its required local admin credential: `docker compose up --build`
 
+Hybrid production platform:
+
+- Validate committed deployment contracts: `npm run check:hybrid-production`
+- Bootstrap the pinned upstream Supabase Docker runtime: `npm run hybrid:bootstrap`
+- Validate production environment and merged Compose: `npm run hybrid:preflight` then `npm run hybrid:config`
+- Start authoritative services and outbound-only Cloudflare Tunnel ingress: `npm run hybrid:up`
+- Create checksummed PostgreSQL and private Storage backups: `npm run hybrid:backup`
+- Follow `deploy/hybrid-production/README.md`; never run `hybrid:up` against placeholder credentials or expose database, pooler, Studio, or FastAPI host ports.
+
 ## Coding Style & Naming Conventions
 - Python: type hints required for public functions; keep endpoint handlers thin and place business logic in `app/services`.
 - API style: versioned routes under `/api/v1`, plural resources, snake_case query params (`page_size`, `snapshot_date`).

@@ -117,6 +117,7 @@
       ".git",
       ".worktrees",
       ".ai-bridge",
+      ".hybrid-production",
       ".planning",
       "node_modules",
       ".next",

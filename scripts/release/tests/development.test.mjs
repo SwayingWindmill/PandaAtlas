@@ -77,6 +77,17 @@ test("infrastructure changes select API and release checks", () => {
   ]);
 });
 
+test("hybrid production deployment changes select API and release checks", () => {
+  assert.deepEqual(
+    classifyDevelopmentScopes([
+      ".dockerignore",
+      "deploy/hybrid-production/docker-compose.zhipanda.yml",
+      "scripts/deployment/hybrid-production.mjs",
+    ]),
+    ["release", "api"],
+  );
+});
+
 test("Cloudflare infrastructure changes select Worker and release checks", () => {
   assert.deepEqual(classifyDevelopmentScopes(["infra/cloudflare/d1/schema.sql"]), [
     "release",

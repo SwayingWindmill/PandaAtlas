@@ -1,0 +1,56 @@
+# Repository and local orchestration state
+.git
+.gitignore
+.gitattributes
+.ai-bridge
+.codegraph
+.codex
+.codex-temp
+.hybrid-production
+.planning
+.release-gate
+.worktrees
+
+# Package manager and build outputs
+**/node_modules
+**/.npm
+**/.next
+**/.open-next
+**/.vercel
+**/out
+**/test-results
+**/playwright-report
+**/blob-report
+**/.wrangler
+**/*.tsbuildinfo
+
+# Python environments and caches
+**/.venv
+**/.venv-*
+**/venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/.uv-cache*
+**/*.egg-info
+
+# Paths not used by the FastAPI production image
+apps
+data
+deploy
+docs
+scripts
+services/worker-api
+infra/cloudflare
+infra/supabase/seed
+contracts/*
+!contracts/golden-dataset
+contracts/golden-dataset/*
+!contracts/golden-dataset/mei-xiang-family.v1.json
+
+# Editor and operating-system metadata
+.vscode
+.idea
+.DS_Store
+Thumbs.db

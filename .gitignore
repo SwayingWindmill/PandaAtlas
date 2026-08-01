@@ -49,6 +49,7 @@ htmlcov/
 .codex-temp/
 .planning/
 .worktrees/
+.hybrid-production/
 
 # OS/editor
 .DS_Store

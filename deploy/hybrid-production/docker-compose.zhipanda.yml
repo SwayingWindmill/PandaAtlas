@@ -1,0 +1,203 @@
+name: zhipanda-production
+
+x-zhipanda-api-common: &zhipanda-api-common
+  build:
+    context: ${ZHIPANDA_REPO_ROOT:?Set ZHIPANDA_REPO_ROOT to the repository checkout}
+    dockerfile: services/api/Dockerfile
+  image: ${ZHIPANDA_API_IMAGE:-zhipanda-api:production}
+  init: true
+  read_only: true
+  tmpfs:
+    - /tmp:size=128m,mode=1777
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  environment: &zhipanda-api-environment
+    APP_ENV: production
+    APP_PORT: "8000"
+    PYTHONDONTWRITEBYTECODE: "1"
+    PYTHONUNBUFFERED: "1"
+    DATABASE_URL: postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}
+    MIGRATIONS_DIR: /app/infra/supabase/migrations
+    MIGRATION_ADOPT_LEGACY_HISTORY: ${MIGRATION_ADOPT_LEGACY_HISTORY:-false}
+    DB_USE_MOCK_FALLBACK: "false"
+    ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:?Set ADMIN_API_TOKEN}
+    WORKFLOW_ACTOR_TOKENS_JSON: ${WORKFLOW_ACTOR_TOKENS_JSON:-{}}
+    CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:?Set CORS_ALLOW_ORIGINS}
+    IDENTITY_AUTH_ENABLED: ${IDENTITY_AUTH_ENABLED:-true}
+    ADMIN_SHELL_ENABLED: ${ADMIN_SHELL_ENABLED:-false}
+    ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: ${ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED:-false}
+    COMMUNITY_CURATION_BRIDGE_ENABLED: ${COMMUNITY_CURATION_BRIDGE_ENABLED:-false}
+    ENGAGEMENT_ENABLED: ${ENGAGEMENT_ENABLED:-false}
+    ACTIVITY_ENABLED: ${ACTIVITY_ENABLED:-false}
+    FEED_ENABLED: ${FEED_ENABLED:-false}
+    FEED_CURSOR_SIGNING_KEY: ${FEED_CURSOR_SIGNING_KEY:?Set FEED_CURSOR_SIGNING_KEY}
+    NOTIFICATION_ENABLED: ${NOTIFICATION_ENABLED:-false}
+    NOTIFICATION_EMAIL_ENABLED: ${NOTIFICATION_EMAIL_ENABLED:-false}
+    NOTIFICATION_TRANSPORT: ${NOTIFICATION_TRANSPORT:-resend}
+    NOTIFICATION_PUBLIC_BASE_URL: ${NOTIFICATION_PUBLIC_BASE_URL:?Set NOTIFICATION_PUBLIC_BASE_URL}
+    NOTIFICATION_CURSOR_SIGNING_KEY: ${NOTIFICATION_CURSOR_SIGNING_KEY:?Set NOTIFICATION_CURSOR_SIGNING_KEY}
+    NOTIFICATION_WORKER_VISIBILITY_TIMEOUT_SECONDS: ${NOTIFICATION_WORKER_VISIBILITY_TIMEOUT_SECONDS:-120}
+    NOTIFICATION_WORKER_MAX_ATTEMPTS: ${NOTIFICATION_WORKER_MAX_ATTEMPTS:-5}
+    NOTIFICATION_WORKER_BASE_BACKOFF_SECONDS: ${NOTIFICATION_WORKER_BASE_BACKOFF_SECONDS:-30}
+    NOTIFICATION_QUEUE_ALERT_DEPTH: ${NOTIFICATION_QUEUE_ALERT_DEPTH:-100}
+    NOTIFICATION_QUEUE_ALERT_AGE_SECONDS: ${NOTIFICATION_QUEUE_ALERT_AGE_SECONDS:-300}
+    RESEND_API_KEY: ${RESEND_API_KEY:-}
+    RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-}
+    RESEND_WEBHOOK_SECRET: ${RESEND_WEBHOOK_SECRET:-}
+    AUTH_SMTP_USERNAME: ${AUTH_SMTP_USERNAME:-}
+    AUTH_SMTP_PASSWORD: ${AUTH_SMTP_PASSWORD:-}
+    COMMUNITY_INTAKE_ENABLED: ${COMMUNITY_INTAKE_ENABLED:-false}
+    REVIEW_MODERATION_ENABLED: ${REVIEW_MODERATION_ENABLED:-false}
+    COMMUNITY_INTAKE_STORAGE_SIGNING_KEY: ${COMMUNITY_INTAKE_STORAGE_SIGNING_KEY:?Set COMMUNITY_INTAKE_STORAGE_SIGNING_KEY}
+    COMMUNITY_INTAKE_STORAGE_REFERENCE_TTL_SECONDS: ${COMMUNITY_INTAKE_STORAGE_REFERENCE_TTL_SECONDS:-300}
+    COMMUNITY_INTAKE_MAX_SCAN_ATTEMPTS: ${COMMUNITY_INTAKE_MAX_SCAN_ATTEMPTS:-3}
+    SUPABASE_URL: http://kong:8000
+    SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SECRET_KEY:-${SERVICE_ROLE_KEY}}
+    SUPABASE_JWT_ISSUER: ${API_EXTERNAL_URL:?Set API_EXTERNAL_URL}
+    SUPABASE_JWKS_URL: http://kong:8000/auth/v1/.well-known/jwks.json
+    SUPABASE_JWT_AUDIENCE: authenticated
+    SUPABASE_JWT_ALGORITHMS: ${SUPABASE_JWT_ALGORITHMS:-ES256,RS256}
+    PENDING_FOLLOW_TTL_SECONDS: ${PENDING_FOLLOW_TTL_SECONDS:-3600}
+    IDENTITY_RECENT_AUTH_SECONDS: ${IDENTITY_RECENT_AUTH_SECONDS:-900}
+    IDENTITY_BOOTSTRAP_ADMIN_EMAILS: ${IDENTITY_BOOTSTRAP_ADMIN_EMAILS:-}
+
+services:
+  # The tunnel is the only public ingress. The upstream host bindings are removed.
+  kong:
+    ports: !override []
+
+  supavisor:
+    ports: !override []
+
+  api:
+    <<: *zhipanda-api-common
+    profiles:
+      - app
+    restart: unless-stopped
+    expose:
+      - "8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      kong:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3).read()
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  migrate:
+    <<: *zhipanda-api-common
+    profiles:
+      - ops
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      disable: true
+    command:
+      - python
+      - scripts/apply_production_migrations.py
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.7.2
+    profiles:
+      - app
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      api:
+        condition: service_healthy
+      kong:
+        condition: service_healthy
+      studio:
+        condition: service_healthy
+    command:
+      - tunnel
+      - --no-autoupdate
+      - run
+      - --token
+      - ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN}
+
+  db-backup:
+    image: supabase/postgres:17.6.1.136
+    profiles:
+      - ops
+    restart: "no"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ${ZHIPANDA_BACKUP_DIR:?Set ZHIPANDA_BACKUP_DIR}:/backups
+    entrypoint:
+      - /bin/bash
+      - -ec
+    command: |
+      umask 077
+      stamp=$$(date -u +%Y%m%dT%H%M%SZ)
+      filename="postgres-$${stamp}.dump"
+      partial="/backups/$${filename}.partial"
+      trap 'rm -f "$${partial}"' EXIT
+      pg_dump --host=db --port="$${POSTGRES_PORT}" --username=postgres --dbname="$${POSTGRES_DB}" --format=custom --file="$${partial}"
+      mv "$${partial}" "/backups/$${filename}"
+      cd /backups
+      sha256sum "$${filename}" > "$${filename}.sha256"
+      echo "Created /backups/$${filename}"
+
+  storage-backup:
+    image: alpine:3.22.1
+    profiles:
+      - ops
+    restart: "no"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./volumes/storage:/source/storage:ro
+      - ${ZHIPANDA_BACKUP_DIR:?Set ZHIPANDA_BACKUP_DIR}:/backups
+    entrypoint:
+      - /bin/sh
+      - -ec
+    command: |
+      umask 077
+      stamp=$$(date -u +%Y%m%dT%H%M%SZ)
+      filename="storage-$${stamp}.tar.gz"
+      partial="/backups/$${filename}.partial"
+      trap 'rm -f "$${partial}"' EXIT
+      tar -C /source -czf "$${partial}" storage
+      mv "$${partial}" "/backups/$${filename}"
+      cd /backups
+      sha256sum "$${filename}" > "$${filename}.sha256"
+      echo "Created /backups/$${filename}"

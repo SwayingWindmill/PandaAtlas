@@ -215,7 +215,10 @@ export function classifyDevelopmentScopes(paths) {
     }
 
     if (
+      changedPath === ".dockerignore" ||
       changedPath === "docker-compose.yml" ||
+      changedPath.startsWith("deploy/hybrid-production/") ||
+      changedPath.startsWith("scripts/deployment/") ||
       changedPath.startsWith("infra/supabase/")
     ) {
       addScope(scopes, "release");

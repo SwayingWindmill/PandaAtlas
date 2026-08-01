@@ -47,11 +47,28 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload
 ```
 
-### 3) Container (API + Postgres)
+### 3) Local API container
+
+The root Compose file runs FastAPI against the separately started local Supabase CLI stack:
 
 ```bash
+npm run infra:start
 docker compose up --build
 ```
+
+## Hybrid production deployment
+
+The production baseline keeps the public web and read projection on Cloudflare while running authoritative FastAPI, PostgreSQL/PostGIS, Supabase Auth, and private Storage on a controlled Linux server. Cloudflare Tunnel is the only application ingress; database, API, Studio, and pooler ports are not published on the host.
+
+```bash
+npm run check:hybrid-production
+npm run hybrid:bootstrap
+npm run hybrid:preflight
+npm run hybrid:config
+npm run hybrid:up
+```
+
+See [the hybrid production runbook](deploy/hybrid-production/README.md) for pinned Supabase bootstrap, Cloudflare Tunnel and Access routing, key generation, migration controls, backups, restore, and upgrade procedures.
 
 ## Database Behavior
 
