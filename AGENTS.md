@@ -11,6 +11,7 @@ This repository is the monorepo for ZhiPanda (吱熊猫), a modern panda informa
 - `data/research-batches`: declarative batch-specific research inputs governed by `contracts/research-batch.v1.json`.
 - `scripts/batch`: fixed-command batch planning and execution control plane.
 - `.github/workflows/batch-operations.yml`: manual-only bounded batch workflow governed by `contracts/batch-operations.v1.json`.
+- `.github/workflows/delivery-contract.yml`: read-only Issue-to-PR validation governed by `contracts/delivery-workflow.v1.json`.
 - `contracts/repository-structure.v1.json`: allowed top-level zones, npm workspaces, boundary documents, and status-link contract.
 - `docs/monorepo-structure.md`: architecture and delivery sequencing.
 
@@ -122,7 +123,7 @@ Local platform:
 - `worker`: `services/worker-api/**` — typecheck without D1 rollback or HTTP runtime smoke.
 - `curation`: reviewed collection and media-processing code or data — bounded curation and media checks.
 - `data`: golden-dataset contracts and generators — contract, dataset, and generated-alias consistency checks.
-- `release`: release scripts, workflow definitions, hard-gate policies, evidence infrastructure, research-script governance, and bounded batch control-plane rules — policy checks plus development-gate contract tests.
+- `release`: release scripts, workflow definitions, Issue-to-PR delivery rules, hard-gate policies, evidence infrastructure, research-script governance, and bounded batch control-plane rules — policy checks plus development-gate contract tests.
 
 ## Commit & Pull Request Guidelines
 Use Conventional Commits, for example:
@@ -131,12 +132,17 @@ Use Conventional Commits, for example:
 - `feat(api): add distribution endpoint filters`
 - `fix(db): correct rls role policy`
 
-PRs should include:
+Implementation delivery must follow [`docs/development-delivery.md`](docs/development-delivery.md):
 
-- concise problem/solution summary,
-- changed paths,
-- API and DB impact notes,
-- screenshots for UI-visible changes.
+- create one bounded Issue before implementation;
+- use `<type>/issue-<number>-<slug>` for the branch;
+- use `.worktrees/issue-<number>-<slug>` for the isolated worktree;
+- target `master` directly rather than stacking implementation PRs;
+- include exactly one matching `Closes #<number>` line and the canonical worktree line;
+- complete the Summary, Verification, and Safety sections with concrete content;
+- run `npm run check:delivery-contract` before opening the PR.
+
+UI-visible changes should also include screenshots. API and database changes should state their authority, migration, and rollback impact.
 
 ## Security & Configuration Tips
 - Never commit secrets; use local `.env` files and deployment secret managers.

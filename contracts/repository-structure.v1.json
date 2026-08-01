@@ -79,6 +79,21 @@
   },
   "zones": [
     {
+      "path": ".github",
+      "kind": "delivery-automation-root",
+      "boundary_document": ".github/README.md",
+      "required_paths": [
+        ".github/ISSUE_TEMPLATE/delivery.md",
+        ".github/PULL_REQUEST_TEMPLATE.md",
+        ".github/workflows/delivery-contract.yml"
+      ],
+      "governance_paths": [
+        "contracts/delivery-workflow.v1.json",
+        "docs/development-delivery.md",
+        "scripts/release/check-delivery-contract.mjs"
+      ]
+    },
+    {
       "path": "apps",
       "kind": "application-root",
       "boundary_document": "apps/README.md",
@@ -219,6 +234,7 @@
       "required_paths": [
         "contracts/api-request-runtime-boundary.v1.json",
         "contracts/batch-operations.v1.json",
+        "contracts/delivery-workflow.v1.json",
         "contracts/repository-structure.v1.json",
         "contracts/research-batch.v1.json"
       ],
@@ -264,6 +280,7 @@
     }
   ],
   "markdown_documents": [
+    ".github/README.md",
     "apps/README.md",
     "apps/web/README.md",
     "contracts/README.md",
@@ -272,6 +289,7 @@
     "docs/architecture/api-request-runtime-boundary.md",
     "docs/architecture/batch-workflow-interfaces.md",
     "docs/deployment/runtime-status.md",
+    "docs/development-delivery.md",
     "infra/README.md",
     "scripts/README.md",
     "scripts/research/README.md",
@@ -280,6 +298,8 @@
     "services/worker-api/README.md"
   ],
   "required_root_scripts": {
+    "check:delivery-contract": "node scripts/development/operations.mjs run delivery.check-local",
+    "check:delivery-contract:repository": "node scripts/development/operations.mjs run release.check-delivery-contract",
     "check:repository-structure": "node scripts/development/operations.mjs run release.check-repository-structure",
     "check:api-runtime-boundary": "node scripts/development/operations.mjs run api.check-runtime-boundary",
     "check:batch-workflow-interface": "node scripts/development/operations.mjs run release.check-batch-workflow-interface",
