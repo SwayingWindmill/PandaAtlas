@@ -123,11 +123,13 @@
       ".next",
       ".open-next",
       ".venv",
+      ".venv-release",
       "__pycache__",
       ".pytest_cache",
       ".ruff_cache",
       "test-results",
-      ".release-gate"
+      ".release-gate",
+      ".scratch"
     ],
     "excluded_paths": [
       ".git",
@@ -2691,6 +2693,17 @@
       }
     },
     {
+      "path": "services/api/tests/contracts/test_archive_governance_canonical_openapi_contract.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
       "path": "services/api/tests/notification/test_delivery_transport.py",
       "category": "technical-compatible",
       "user_visibility": "internal",
@@ -2869,6 +2882,40 @@
       "matches": {
         "PandaAtlas": 1,
         "panda-atlas": 3
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.31.1/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This immutable reviewed batch retains legacy dataset identifiers as release evidence and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_public_experience_release.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "public experience release projection",
+      "expected_action": "retain-compatibility",
+      "rationale": "The release builder preserves the existing dataset title as an internal immutable compatibility identifier; public product copy remains ZhiPanda.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/api/test_public_experiences.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "public experience API tests",
+      "expected_action": "retain-compatibility",
+      "rationale": "The tests assert existing version-header compatibility names and do not expose retired branding on a public surface.",
+      "matches": {
+        "PandaAtlas": 4
       }
     }
   ]

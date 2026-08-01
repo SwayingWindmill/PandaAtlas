@@ -13,6 +13,8 @@ interface GlobalNavigationProps {
     | "home"
     | "atlas"
     | "profile"
+    | "moments"
+    | "families"
     | "lineage"
     | "map"
     | "my-pandas"
@@ -28,6 +30,8 @@ const copy = {
     description: "发现熊猫、家族与足迹",
     home: "首页",
     atlas: "熊猫",
+    moments: "熊猫时光",
+    families: "家族故事",
     lineage: "谱系",
     map: "地图",
     myPandas: "我的熊猫",
@@ -45,6 +49,8 @@ const copy = {
     description: "Discover pandas, families, and journeys",
     home: "Home",
     atlas: "Pandas",
+    moments: "Moments",
+    families: "Family Stories",
     lineage: "Lineage",
     map: "Map",
     myPandas: "My Pandas",
@@ -88,6 +94,8 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
           <nav className="pa-desktop-nav" aria-label={t.nav}>
             <Link href={`/${locale}` as Route} aria-current={active === "home" ? "page" : undefined}>{t.home}</Link>
             <Link href={`/${locale}/pandas` as Route} aria-current={active === "atlas" || active === "profile" ? "page" : undefined}>{t.atlas}</Link>
+            <Link href={`/${locale}/moments` as Route} aria-current={active === "moments" ? "page" : undefined}>{t.moments}</Link>
+            <Link href={`/${locale}/families/smithsonian-generations` as Route} aria-current={active === "families" ? "page" : undefined}>{t.families}</Link>
             <Link href={`/${locale}/lineage` as Route} aria-current={active === "lineage" ? "page" : undefined}>{t.lineage}</Link>
             <Link href={`/${locale}/map` as Route} aria-current={active === "map" ? "page" : undefined}>{t.map}</Link>
             {contributeEnabled ? (
@@ -134,6 +142,8 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
                 navigation: t.mobileNav,
                 home: t.home,
                 atlas: t.atlas,
+                moments: t.moments,
+                families: t.families,
                 lineage: t.lineage,
                 map: t.map,
                 myPandas: t.myPandas,

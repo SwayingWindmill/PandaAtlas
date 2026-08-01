@@ -5,6 +5,11 @@ import { PandaFollowControl } from "@/components/pandas/panda-follow-control";
 import { PublicPandaActivity } from "@/features/feed/public-panda-activity";
 import type { ActivityPageData } from "@/features/feed/types";
 import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
+import {
+  familyStoriesForPanda,
+  getProfileCohortState,
+  localizedEditorial,
+} from "@/features/public-experiences/data";
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
@@ -469,6 +474,11 @@ export function TrustedProfilePage({
   const primarySrcSet = primaryMedia?.derivatives.length
     ? primaryMedia.derivatives.map((derivative) => `${derivative.url} ${derivative.width}w`).join(", ")
     : undefined;
+  const cohortState = getProfileCohortState(profile.canonicalSlug);
+  const familyStories = familyStoriesForPanda(profile.stableId);
+  const cohortLabel = locale === "zh"
+    ? { rich: "丰富档案", sparse: "基础档案", historic: "历史档案", standard: "熊猫档案" }[cohortState]
+    : { rich: "Rich profile", sparse: "Basic profile", historic: "Historic profile", standard: "Panda profile" }[cohortState];
   const mediaSources = profile.media.sourceIds.flatMap((sourceId) => {
     const source = profile.sources.find((item) => item.id === sourceId);
     return source ? [source] : [];
@@ -521,7 +531,10 @@ export function TrustedProfilePage({
                 <span aria-hidden="true">/</span>
                 <span>{archiveLabel(profile, locale)}</span>
               </div>
-              <p className="mt-8 text-sm font-semibold text-[var(--accent)]">{t.archive}</p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <p className="text-sm font-semibold text-[var(--accent)]">{t.archive}</p>
+                <span className="rounded-full bg-[var(--pa-color-accent-soft)] px-3 py-1 text-xs font-bold text-[var(--accent)]">{cohortLabel}</span>
+              </div>
               <h1 lang={profile.displayNameLanguage} className="mt-3 text-5xl leading-tight text-[var(--fg)] sm:text-6xl" style={{ fontFamily: "var(--font-display)" }}>
                 {profile.displayName}
               </h1>
@@ -531,6 +544,14 @@ export function TrustedProfilePage({
               </p>
               <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]">{profile.summary ?? t.unknown}</p>
               {profile.lastVerifiedAt ? <p className="mt-3 text-sm font-semibold text-[var(--accent)]">{t.verified}{locale === "zh" ? "：" : ": "}{profile.lastVerifiedAt}</p> : null}
+              <div className="mt-6 flex flex-wrap gap-2" aria-label={locale === "zh" ? "继续探索" : "Continue exploring"}>
+                <Link href={`/${locale}/moments?panda=${profile.canonicalSlug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] bg-[var(--pa-color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? "查看熊猫时光" : "View Panda Moments"}</Link>
+                <Link href={`/${locale}/lineage?focus=${profile.canonicalSlug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? "查看谱系" : "View Lineage"}</Link>
+                {familyStories.map((story) => {
+                  const storyContent = localizedEditorial(story.localized_content, locale);
+                  return <Link key={story.id} href={`/${locale}/families/${story.slug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{storyContent.title}</Link>;
+                })}
+              </div>
 
               <dl className="mt-8 grid gap-5 sm:grid-cols-2">
                 {[
@@ -589,9 +610,9 @@ export function TrustedProfilePage({
         </section>
 
         <nav aria-label={t.navLabel} className="sticky top-[78px] z-20 border-y border-[var(--pa-color-accent-border-08)] bg-[var(--card)]">
-          <div className={`${publicShellClassName} flex gap-5 overflow-x-auto py-3 text-sm font-semibold`}>
+          <div className={`${publicShellClassName} flex flex-wrap gap-x-5 gap-y-1 py-3 text-sm font-semibold`}>
             {t.nav.map(([label, id]) => (
-              <a key={id} href={`#${id}`} className="whitespace-nowrap rounded-lg px-2 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
+              <a key={id} href={`#${id}`} className="min-w-0 rounded-lg px-2 py-2 break-words focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
                 {label}
               </a>
             ))}

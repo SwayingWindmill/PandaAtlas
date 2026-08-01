@@ -228,6 +228,12 @@
       "markers": ["validateArchiveGovernanceInventory", "four-eyes governance path"]
     },
     {
+      "path": "scripts/release/tests/release-config.test.mjs",
+      "categories": ["test", "script"],
+      "disposition": "verify_supabase_archive_rehearsal_runtime_configuration",
+      "markers": ["CI declares one reproducible authoritative default gate", "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: \"true\""]
+    },
+    {
       "path": "scripts/release/seal-published-return-evidence.mjs",
       "categories": ["script", "runbook", "metric"],
       "disposition": "generate_and_hash_archive_rehearsal_with_foundation_evidence",

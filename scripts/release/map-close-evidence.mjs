@@ -1,17 +1,47 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { readFileSync, statSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
+
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 
+function normalizedWorktreeGitDir() {
+  const dotGitPath = path.join(repoRoot, ".git");
+  try {
+    if (!statSync(dotGitPath).isFile()) return null;
+  } catch {
+    return null;
+  }
+
+  const pointer = readFileSync(dotGitPath, "utf8").trim().match(/^gitdir:\s*(.+)$/i)?.[1];
+  if (!pointer) return null;
+  const wslPath = process.platform === "win32"
+    ? pointer.match(/^\/mnt\/([a-z])\/(.+)$/i)
+    : null;
+  const normalized = wslPath
+    ? `${wslPath[1].toUpperCase()}:\\${wslPath[2].replaceAll("/", "\\")}`
+    : pointer;
+  return path.isAbsolute(normalized) ? normalized : path.resolve(repoRoot, normalized);
+}
+
 function resolveCommitSha(commitSha) {
   if (commitSha) return commitSha;
   if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA;
-  return execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+  const worktreeGitDir = normalizedWorktreeGitDir();
+  const args = worktreeGitDir
+    ? [`--git-dir=${worktreeGitDir}`, `--work-tree=${repoRoot}`, "rev-parse", "HEAD"]
+    : ["rev-parse", "HEAD"];
+  return execFileSync("git", args, {
+    cwd: repoRoot,
+    encoding: "utf8",
+  }).trim();
 }
 
 function isSealableArtifact(name) {

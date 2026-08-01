@@ -4,9 +4,9 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.data.golden_dataset import trusted_panda_details
 from app.main import app
 from app.services import map_service, panda_service, stats_service
+from app.services.release_service import get_current_api_release
 
 client = TestClient(app)
 
@@ -44,10 +44,10 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
 ) -> None:
     monkeypatch.setattr(settings, "db_use_mock_fallback", True)
 
-    pandas_response = client.get("/api/v1/pandas")
+    pandas_response = client.get("/api/v1/pandas", params={"page_size": 100})
     assert pandas_response.status_code == 200
     pandas_payload = pandas_response.json()
-    expected_ids = {record["id"] for record in trusted_panda_details()}
+    expected_ids = {record["id"] for record in get_current_api_release()["pandas"]}
     assert pandas_payload["meta"]["total"] == len(expected_ids)
     assert {item["id"] for item in pandas_payload["items"]} == expected_ids
     assert {"mei-xiang", "tian-tian"} <= {
@@ -88,7 +88,7 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
     stats_response = client.get("/api/v1/stats/overview")
     assert stats_response.status_code == 200
     stats_payload = stats_response.json()
-    assert stats_payload["total_pandas"] == len(trusted_panda_details())
+    assert stats_payload["total_pandas"] == len(get_current_api_release()["pandas"])
     assert stats_payload["latest_snapshot_date"] == "2026-03-05"
 
 
@@ -96,9 +96,9 @@ def test_public_reads_fall_back_to_mock_data_when_enabled(
     ("path", "params"),
     [
         ("/api/v1/pandas", None),
-        (f"/api/v1/pandas/{trusted_panda_details()[0]['slug']}", None),
+        ("/api/v1/pandas/mei-xiang", None),
         (
-            f"/api/v1/pandas/{trusted_panda_details()[0]['slug']}/lineage",
+            "/api/v1/pandas/mei-xiang/lineage",
             {"ancestor_depth": 2, "descendant_depth": 2},
         ),
         ("/api/v1/map/distribution", {"bbox": "100,25,110,36", "layer": "wild"}),

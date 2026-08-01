@@ -8,7 +8,7 @@ import {
   type DataProvider,
   useLogout,
 } from "react-admin";
-import { Link, Route } from "react-router-dom";
+import { BrowserRouter, Link, Route } from "react-router-dom";
 
 import { adminSessionFailureDestination } from "@/components/admin/admin-session-navigation";
 import { ArchiveAdvancedOperations } from "@/components/admin/archive-advanced-operations";
@@ -295,20 +295,23 @@ function CapabilityDashboard() {
 
 export function ReactAdminShell() {
   return (
-    <Admin
-      authProvider={authProvider}
-      dataProvider={dataProvider}
-      disableTelemetry
-      loginPage={false}
-      requireAuth
-      theme={adminTheme}
-    >
-      <CustomRoutes>
-        <Route path="/" element={<CapabilityDashboard />} />
-        <Route path="/archive" element={<ArchiveWorkbench />} />
-        <Route path="/archive/operations" element={<ArchiveAdvancedOperations />} />
-        <Route path="/reviews" element={<ReviewCaseWorkbench />} />
-      </CustomRoutes>
-    </Admin>
+    <BrowserRouter basename="/admin">
+      <Admin
+        basename="/admin"
+        authProvider={authProvider}
+        dataProvider={dataProvider}
+        disableTelemetry
+        loginPage={false}
+        requireAuth
+        theme={adminTheme}
+      >
+        <CustomRoutes>
+          <Route path="/" element={<CapabilityDashboard />} />
+          <Route path="archive" element={<ArchiveWorkbench />} />
+          <Route path="archive/operations" element={<ArchiveAdvancedOperations />} />
+          <Route path="reviews" element={<ReviewCaseWorkbench />} />
+        </CustomRoutes>
+      </Admin>
+    </BrowserRouter>
   );
 }

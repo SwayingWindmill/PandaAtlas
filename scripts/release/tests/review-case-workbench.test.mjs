@@ -45,7 +45,7 @@ test("reviewer workbench is bounded, server authenticated, and never enables gen
   assert.match(shell, /ReviewCaseWorkbench/);
   assert.match(shell, /session\.capabilities\.includes\("review\.case\.read"\)/);
   assert.match(shell, /The bounded admin shell does not expose generic CRUD business writes/);
-  assert.match(shell, /<Route path="\/reviews" element=\{<ReviewCaseWorkbench \/>\}/);
+  assert.match(shell, /<Route path="reviews" element=\{<ReviewCaseWorkbench \/>\}/);
   assert.match(workbench, /^"use client"/);
   assert.match(workbench, /\/api\/admin\/review-cases/);
   assert.doesNotMatch(workbench, /NEXT_PUBLIC_API_BASE_URL/);

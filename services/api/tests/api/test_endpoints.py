@@ -4,10 +4,10 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.data.golden_dataset import trusted_panda_details
 from app.main import app
 from app.schemas.panda import ImportSourceOption
 from app.services import map_service, panda_service, stats_service
+from app.services.release_service import get_current_api_release
 
 client = TestClient(app)
 ADMIN_HEADERS = {"Authorization": "Bearer dev-admin-token"}
@@ -43,7 +43,7 @@ def test_public_read_endpoints_share_the_active_release() -> None:
     pandas_response = client.get("/api/v1/pandas", params={"page_size": 100})
     assert pandas_response.status_code == 200
     pandas = pandas_response.json()
-    assert pandas["meta"]["total"] == 7
+    assert pandas["meta"]["total"] == 39
     panda = next(item for item in pandas["items"] if item["slug"] == "xiao-qi-ji")
 
     responses = [
@@ -127,10 +127,12 @@ def test_list_pandas_filters_by_habitat() -> None:
 def test_list_pandas_filters_within_current_release() -> None:
     expected_ids = {
         record["id"]
-        for record in trusted_panda_details()
+        for record in get_current_api_release()["pandas"]
         if record["gender"] == "female"
     }
-    response = client.get("/api/v1/pandas", params={"gender": "female"})
+    response = client.get(
+        "/api/v1/pandas", params={"gender": "female", "page_size": 100}
+    )
     assert response.status_code == 200
     assert {item["id"] for item in response.json()["items"]} == expected_ids
 

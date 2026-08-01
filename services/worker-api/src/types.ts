@@ -65,6 +65,7 @@ export interface PublicSourceSummary {
   last_verified_at: string;
   language: string;
   access_state: string;
+  evidence_tier?: string | null;
 }
 
 export interface LocalizedPublicContent {

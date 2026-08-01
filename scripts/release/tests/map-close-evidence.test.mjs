@@ -50,3 +50,17 @@ test("map-close evidence manifest hashes reports and canonical contract artifact
   ).trim();
   assert.match(digest, /^[a-f0-9]{64}  map-close-manifest\.json$/);
 });
+
+test("map-close evidence resolves the current worktree commit", async () => {
+  const reportDir = await mkdtemp(path.join(os.tmpdir(), "panda-map-close-worktree-"));
+  await writeFile(path.join(reportDir, "default.json"), '{"outcome":"passed"}\n', "utf8");
+  await writeFile(path.join(reportDir, "map-close.json"), '{"outcome":"passed"}\n', "utf8");
+
+  const manifest = await sealMapCloseEvidence({
+    reportDir,
+    generatedAt: "2026-08-01T02:30:00.000Z",
+    platform: "test",
+  });
+
+  assert.match(manifest.commit_sha, /^[a-f0-9]{40}$/);
+});
