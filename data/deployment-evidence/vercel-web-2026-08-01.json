@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "evidence_id": "vercel-web-2026-08-01",
-  "observed_at": "2026-08-01T10:48:43Z",
+  "observed_at": "2026-08-01T12:19:46.780Z",
   "phase": 1,
-  "status": "acceptance-in-progress",
+  "status": "acceptance-passed-governance-pending",
   "project": {
     "team_slug": "swaying-windmill",
     "team_id": "team_kTGJFPyzeDcJFchLZ3L3rHv7",
@@ -14,21 +14,27 @@
     "node_version": "24.x",
     "production_branch": "master"
   },
-  "deployment": {
-    "deployment_id": "dpl_33RS6RDqRwEqWZb9xCCxgvFTMNyP",
-    "deployment_url": "https://zhipanda-o6fsq8g3x-swaying-windmill.vercel.app",
-    "stable_project_url": "https://zhipanda.vercel.app",
-    "provided_deployment_url": "https://zhipanda-facewpqg0-swaying-windmill.vercel.app",
-    "target": "production",
+  "accepted_preview": {
+    "deployment_id": "dpl_EUfKGMqVn1HZhBaHb8dEWrgwNQHY",
+    "deployment_url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+    "branch_alias": "https://zhipanda-git-deployment-vercel-managed-646391-swaying-windmill.vercel.app",
+    "target": "preview",
     "state": "READY",
-    "created_at": "2026-08-01T10:13:54.741Z",
     "source": {
       "provider": "github",
       "repository": "SwayingWindmill/PandaAtlas",
-      "branch": "master",
-      "commit": "a004fd628a0d629684dc72b7b4649e93249f080f",
-      "commit_message": "Merge pull request #259 from SwayingWindmill/fix-258-certification-regressions"
+      "branch": "deployment/vercel-managed-cloud-phase-1",
+      "commit": "2043f4ecf1bd14c96d6af02cb9f7355304a49b5b",
+      "pull_request": 260
     }
+  },
+  "parallel_production_deployment": {
+    "deployment_id": "dpl_33RS6RDqRwEqWZb9xCCxgvFTMNyP",
+    "deployment_url": "https://zhipanda-o6fsq8g3x-swaying-windmill.vercel.app",
+    "stable_project_url": "https://zhipanda.vercel.app",
+    "state": "READY",
+    "source_branch": "master",
+    "source_commit": "a004fd628a0d629684dc72b7b4649e93249f080f"
   },
   "configuration": {
     "next_public_api_base_url": {
@@ -40,6 +46,16 @@
       "expected_value": "https://api.zhipanda.com",
       "verified_by_cli": true
     },
+    "deployed_feature_profile": {
+      "engagement_enabled": false,
+      "notification_enabled": false,
+      "production_equivalence_verified": true,
+      "production_comparison": {
+        "passport": "disabled",
+        "follow_ui": "absent",
+        "private_inbox": "unpublished-404"
+      }
+    },
     "custom_production_domains_attached": false,
     "cloudflare_dns_changed": false,
     "vercel_authentication_enabled": false,
@@ -47,35 +63,22 @@
   },
   "http_verification": [
     {
-      "url": "https://zhipanda-facewpqg0-swaying-windmill.vercel.app",
+      "url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
       "status": 308,
       "location": "/zh"
     },
     {
-      "url": "https://zhipanda-facewpqg0-swaying-windmill.vercel.app/zh",
+      "url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app/zh",
       "status": 200,
       "content_type": "text/html; charset=utf-8",
       "panda_atlas_content_present": true,
       "api_base_reference_present": true
     },
     {
-      "url": "https://zhipanda.vercel.app",
-      "status": 308,
-      "location": "/zh"
-    },
-    {
-      "url": "https://zhipanda.vercel.app/zh",
-      "status": 200,
-      "content_type": "text/html; charset=utf-8",
-      "panda_atlas_content_present": true,
-      "api_base_reference_present": true
-    },
-    {
-      "url": "https://zhipanda.vercel.app/atlas/%E0%A4%A",
+      "url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app/atlas/%E0%A4%A",
       "status": 400,
       "content_type": "text/plain; charset=utf-8",
-      "body": "400 Bad Request",
-      "verified_with": "Node.js fetch"
+      "semantic_requirement_met": true
     }
   ],
   "tests": {
@@ -92,54 +95,48 @@
       }
     },
     "browser_smoke": {
-      "test_source_commit": "a004fd628a0d629684dc72b7b4649e93249f080f",
+      "status": "passed",
+      "test_source_commit": "2043f4ecf1bd14c96d6af02cb9f7355304a49b5b",
       "browser": "Microsoft Edge",
-      "base_url": "https://zhipanda.vercel.app",
-      "passed": 50,
-      "application_failures": 0,
-      "harness_blocked": 1,
-      "not_completed": true,
-      "completed_groups": [
-        {
-          "name": "critical-public-journeys",
-          "passed": 4,
-          "failed": 0
-        },
-        {
-          "name": "atlanta-editorial-golden",
-          "passed": 13,
-          "failed": 0
-        },
-        {
-          "name": "localized-atlas-entities-lineage-map-trust",
-          "passed": 33,
-          "failed": 0,
-          "harness_blocked": 1
-        }
-      ],
-      "harness_issue": {
-        "test": "never renders the generated legacy profile as a rollback",
-        "request": "/atlas/%E0%A4%A",
-        "server_result": "400 Bad Request",
-        "client_result": "Playwright Windows APIRequestContext TLS bad record mac after connection close",
-        "semantic_requirement_met": true
-      },
-      "incomplete_reason": "Long-running Playwright groups exceeded the local CodexPro command bridge 90-second upstream limit."
+      "base_url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+      "passed": 91,
+      "skipped": 11,
+      "failed": 0,
+      "total": 102,
+      "skip_basis": "Enabled-only Engagement and Notification journeys do not apply to the current production-equivalent feature profile.",
+      "runner_notes": [
+        "Eighty-six tests passed and eleven skipped during the isolated parallel spec run.",
+        "Five tests were interrupted by Playwright processes sharing and deleting the same trace artifact directory.",
+        "Those five exact tests were rerun serially and passed 5/5; no application assertion failed."
+      ]
     },
     "automated_accessibility": {
-      "status": "not_completed",
-      "reason": "The full suite exceeded the local CodexPro command bridge 90-second upstream limit."
+      "status": "passed",
+      "browser": "Microsoft Edge",
+      "production_app_runtime_changed_between_previews": false,
+      "passed": 46,
+      "skipped": 2,
+      "failed": 0,
+      "total": 48,
+      "violations": 0,
+      "skip_basis": "The two Follow interaction checks apply only when Engagement UI is enabled.",
+      "runner_notes": [
+        "The broad run passed 44 checks before two Windows browser-worker exits and two production-inapplicable Follow checks.",
+        "The two worker-exit checks passed 2/2 when rerun in isolation.",
+        "The two Follow checks are explicitly skipped by the production-equivalent deployment feature profile."
+      ]
     }
   },
   "acceptance": {
     "project_setup": "passed",
     "deployment_ready": true,
     "public_vercel_app_access": true,
+    "browser_smoke": "passed",
+    "automated_accessibility": "passed",
     "production_traffic_cutover": false,
+    "phase_1_technical_acceptance": true,
     "phase_1_complete": false,
     "remaining": [
-      "Complete the remaining deployment-matched browser smoke groups in GitHub Actions.",
-      "Complete the deployment-matched automated accessibility suite in GitHub Actions.",
       "Record observability, budget, and rollback owners.",
       "Keep zhipanda.com and www.zhipanda.com on Cloudflare until Phase 4 approval."
     ]

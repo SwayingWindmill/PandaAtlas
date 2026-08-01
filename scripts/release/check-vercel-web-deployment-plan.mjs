@@ -103,6 +103,22 @@ export function validateVercelWebDeploymentPlan(
     if (deployment.custom_production_domains_attached !== false) {
       errors.push("Phase 1 deployment must not attach production custom domains.");
     }
+    const acceptedPreview = deployment.accepted_preview ?? {};
+    if (plan.acceptance?.current_result === "passed") {
+      if (!isNonEmptyString(acceptedPreview.deployment_id)) {
+        errors.push("Passed Phase 1 acceptance requires an accepted Preview deployment ID.");
+      }
+      if (!isNonEmptyString(acceptedPreview.deployment_url)
+        || !acceptedPreview.deployment_url.endsWith(".vercel.app")) {
+        errors.push("Passed Phase 1 acceptance requires an accepted vercel.app Preview URL.");
+      }
+      if (acceptedPreview.state !== "READY") {
+        errors.push("Accepted Vercel Preview deployment must be READY.");
+      }
+      if (!isNonEmptyString(acceptedPreview.source_commit)) {
+        errors.push("Accepted Vercel Preview must record its source commit.");
+      }
+    }
     const protection = plan.deployment_protection ?? {};
     if (protection.vercel_authentication_enabled !== false
       || protection.sso_protection !== null) {
@@ -186,8 +202,8 @@ export function validateVercelWebDeploymentPlan(
       || !existsSync(path.join(root, acceptance.evidence))) {
       errors.push("Deployed Phase 1 status requires an existing acceptance evidence file.");
     }
-    if (acceptance.current_result !== "incomplete") {
-      errors.push("Phase 1 must remain incomplete until every exit criterion passes.");
+    if (!["incomplete", "passed"].includes(acceptance.current_result)) {
+      errors.push("Phase 1 acceptance result must be incomplete or passed.");
     }
   }
 
@@ -256,6 +272,17 @@ export function validateVercelWebDeploymentPlan(
   if (exitCriteria.length === 0) {
     errors.push("Phase 1 exit criteria must be recorded.");
   }
+  if (acceptance.current_result === "passed") {
+    for (const criterionId of [
+      "browser-smoke-passes-against-preview",
+      "automated-accessibility-passes-against-preview",
+    ]) {
+      const criterion = exitCriteria.find((item) => item.id === criterionId);
+      if (criterion?.complete !== true) {
+        errors.push(`Passed Phase 1 acceptance requires completed criterion ${criterionId}.`);
+      }
+    }
+  }
   if (exitCriteria.every((criterion) => criterion.complete === true)) {
     errors.push("Phase 1 cannot be marked complete before a real preview deployment is verified.");
   }
@@ -270,6 +297,8 @@ export function validateVercelWebDeploymentPlan(
     root_directory: project.root_directory,
     preview_api_base_url: preview.api_base_url,
     deployment_url: plan.deployment?.stable_project_url ?? null,
+    accepted_preview_url: plan.deployment?.accepted_preview?.deployment_url ?? null,
+    acceptance_result: acceptance.current_result,
     acceptance_checks: acceptance.checks.length,
     production_cutover_authorized: false,
     external_setup_steps: plan.external_setup_required.length,

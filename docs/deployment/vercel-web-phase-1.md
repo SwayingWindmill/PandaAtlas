@@ -1,6 +1,6 @@
 # Phase 1: Parallel Vercel Web deployment
 
-- Status: Vercel project deployed; acceptance in progress
+- Status: Technical acceptance passed; observability, budget, and rollback ownership pending
 - Decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 - Phase 0 baseline: [Managed-cloud inventory](managed-cloud-phase-0-inventory.md)
 - Deployment plan: [`contracts/vercel-web-deployment.v1.json`](../../contracts/vercel-web-deployment.v1.json)
@@ -72,6 +72,8 @@ It rejects non-HTTPS targets and hosts outside `.vercel.app`, then performs:
 The existing Playwright configuration disables its local Web server whenever `PLAYWRIGHT_BASE_URL` is present, so the same tests exercise the deployed preview directly.
 
 Phase 1 is an equivalence check against the current Cloudflare production Web build, where Engagement and Notification UI are intentionally disabled. The workflow therefore sets `PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED=0` and `PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED=0`. Enabled-only journeys remain part of the ordinary local and staging test suites; deployment acceptance skips those journeys and instead verifies the safe disabled states, including an unpublished private Inbox and a Passport that remains local-only.
+
+The accepted Preview is `https://zhipanda-62x37p6z5-swaying-windmill.vercel.app`, deployment `dpl_EUfKGMqVn1HZhBaHb8dEWrgwNQHY`, built from commit `2043f4ecf1bd14c96d6af02cb9f7355304a49b5b`. Deployment-matched Smoke completed with 91 passed, 11 production-inapplicable skips, and no application failures. Automated accessibility completed with 46 passed, 2 production-inapplicable skips, and no reported violations. Detailed runner notes and retry evidence are recorded in the versioned deployment evidence file.
 
 ## Required manual verification
 
