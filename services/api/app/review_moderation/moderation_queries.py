@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Iterator
 from uuid import UUID
 
 from fastapi import HTTPException
@@ -10,8 +10,8 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.session import has_database, session_scope
+from app.identity.models import AccountState
 from app.review_moderation.moderation_models import (
-    AccountState,
     AppealCaseState,
     AppealDecisionOutcome,
     ModerationActionKind,
@@ -100,7 +100,7 @@ def get_my_moderation(account_id: UUID) -> MyModerationRead:
         )
 
 
-def _my_appeal_from_row(row) -> MyAppealCaseRead:
+def _my_appeal_from_row(row: dict[str, object]) -> MyAppealCaseRead:
     return MyAppealCaseRead(
         appeal_case_id=row["appeal_case_id"],
         sanction_action_id=row["sanction_action_id"],
@@ -133,7 +133,7 @@ def list_my_appeals(account_id: UUID) -> MyAppealQueueRead:
             ),
             {"account_id": account_id},
         ).mappings().all()
-        return MyAppealQueueRead(items=[_my_appeal_from_row(row) for row in rows])
+        return MyAppealQueueRead(items=[_my_appeal_from_row(dict(row)) for row in rows])
 
 
 def get_my_appeal(account_id: UUID, appeal_case_id: UUID) -> MyAppealCaseRead:
@@ -151,4 +151,4 @@ def get_my_appeal(account_id: UUID, appeal_case_id: UUID) -> MyAppealCaseRead:
         ).mappings().one_or_none()
         if row is None:
             raise HTTPException(status_code=404, detail={"code": "appeal_case_not_found"})
-        return _my_appeal_from_row(row)
+        return _my_appeal_from_row(dict(row))
