@@ -68,6 +68,8 @@ test("Vercel acceptance workflow is read-only and requires no secrets", async ()
   assert.match(workflow, /workflow_dispatch:/);
   assert.match(workflow, /\.vercel\.app/);
   assert.match(workflow, /PLAYWRIGHT_BASE_URL/);
+  assert.match(workflow, /PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED:\s*"0"/);
+  assert.match(workflow, /PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED:\s*"0"/);
   assert.match(workflow, /npm run smoke:web/);
   assert.match(workflow, /npm run test:accessibility -w web/);
   assert.doesNotMatch(workflow, /\bvercel\s+(deploy|promote|rollback)\b/i);

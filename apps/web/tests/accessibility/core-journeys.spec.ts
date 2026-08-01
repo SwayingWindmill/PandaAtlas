@@ -1,6 +1,10 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page, type TestInfo } from "@playwright/test";
 
+import { isDeployedFeatureEnabled } from "../fixtures/deployment-features";
+
+const engagementEnabled = isDeployedFeatureEnabled("engagement");
+
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const AXE_ROUTE_SCAN_TIMEOUT_MS = 60_000;
 const TRANSPARENT_MAP_TILE = Buffer.from(
@@ -100,6 +104,7 @@ for (const { locale, path, buttonName, pressedButtonName } of [
   { locale: "en", path: "/en/pandas/mei-xiang", buttonName: /^Follow /, pressedButtonName: /^Unfollow / },
 ]) {
   test(`${locale} profile Follow is keyboard operable and remains accessible`, async ({ page }, testInfo) => {
+    test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
     await page.route("**/api/identity/session", async (route) => {
       await route.fulfill({
         status: 200,

@@ -168,6 +168,16 @@ export function validateVercelWebDeploymentPlan(
       errors.push(`Acceptance plan is missing ${requiredCheck}.`);
     }
   }
+  const deployedFeatureProfile = acceptance.deployed_feature_profile ?? {};
+  if (deployedFeatureProfile.engagement_enabled !== false) {
+    errors.push("Phase 1 acceptance must match the current production Engagement-disabled Web profile.");
+  }
+  if (deployedFeatureProfile.notification_enabled !== false) {
+    errors.push("Phase 1 acceptance must match the current production Notification-disabled Web profile.");
+  }
+  if (!isNonEmptyString(deployedFeatureProfile.basis)) {
+    errors.push("Phase 1 deployed feature profile must record its production-equivalence basis.");
+  }
   if (!isNonEmptyString(acceptance.workflow)) {
     errors.push("Acceptance workflow path is required.");
   }
@@ -193,6 +203,18 @@ export function validateVercelWebDeploymentPlan(
       requireText(errors, workflow, "base_url:", "the base_url input");
       requireText(errors, workflow, ".vercel.app", "the vercel.app host boundary");
       requireText(errors, workflow, "PLAYWRIGHT_BASE_URL", "PLAYWRIGHT_BASE_URL");
+      requireText(
+        errors,
+        workflow,
+        'PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED: "0"',
+        "the production-equivalent Engagement-disabled profile",
+      );
+      requireText(
+        errors,
+        workflow,
+        'PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED: "0"',
+        "the production-equivalent Notification-disabled profile",
+      );
       requireText(errors, workflow, "npm run smoke:web", "browser smoke");
       requireText(
         errors,

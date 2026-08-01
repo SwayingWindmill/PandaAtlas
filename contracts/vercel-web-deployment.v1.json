@@ -74,6 +74,11 @@
       "browser-smoke",
       "automated-accessibility"
     ],
+    "deployed_feature_profile": {
+      "engagement_enabled": false,
+      "notification_enabled": false,
+      "basis": "Matches the current Cloudflare production Web behavior during Phase 1 equivalence testing."
+    },
     "evidence": "data/deployment-evidence/vercel-web-2026-08-01.json",
     "current_result": "incomplete",
     "artifact_paths": [

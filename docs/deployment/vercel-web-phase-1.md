@@ -71,6 +71,8 @@ It rejects non-HTTPS targets and hosts outside `.vercel.app`, then performs:
 
 The existing Playwright configuration disables its local Web server whenever `PLAYWRIGHT_BASE_URL` is present, so the same tests exercise the deployed preview directly.
 
+Phase 1 is an equivalence check against the current Cloudflare production Web build, where Engagement and Notification UI are intentionally disabled. The workflow therefore sets `PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED=0` and `PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED=0`. Enabled-only journeys remain part of the ordinary local and staging test suites; deployment acceptance skips those journeys and instead verifies the safe disabled states, including an unpublished private Inbox and a Passport that remains local-only.
+
 ## Required manual verification
 
 Automated checks are necessary but not sufficient for the first preview. Record the following observations in the deployment evidence:
