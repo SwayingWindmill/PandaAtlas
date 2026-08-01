@@ -3,7 +3,7 @@
   "evidence_id": "vercel-web-2026-08-01",
   "observed_at": "2026-08-01T12:19:46.780Z",
   "phase": 1,
-  "status": "acceptance-passed-governance-pending",
+  "status": "complete",
   "project": {
     "team_slug": "swaying-windmill",
     "team_id": "team_kTGJFPyzeDcJFchLZ3L3rHv7",
@@ -135,10 +135,12 @@
     "automated_accessibility": "passed",
     "production_traffic_cutover": false,
     "phase_1_technical_acceptance": true,
-    "phase_1_complete": false,
-    "remaining": [
-      "Record observability, budget, and rollback owners.",
-      "Keep zhipanda.com and www.zhipanda.com on Cloudflare until Phase 4 approval."
-    ]
+    "owners": {
+      "observability": "project-owner",
+      "budget": "project-owner",
+      "rollback": "project-owner"
+    },
+    "phase_1_complete": true,
+    "remaining": []
   }
 }

@@ -1,6 +1,6 @@
 # Phase 1: Parallel Vercel Web deployment
 
-- Status: Technical acceptance passed; observability, budget, and rollback ownership pending
+- Status: Complete
 - Decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 - Phase 0 baseline: [Managed-cloud inventory](managed-cloud-phase-0-inventory.md)
 - Deployment plan: [`contracts/vercel-web-deployment.v1.json`](../../contracts/vercel-web-deployment.v1.json)
@@ -75,6 +75,8 @@ Phase 1 is an equivalence check against the current Cloudflare production Web bu
 
 The accepted Preview is `https://zhipanda-62x37p6z5-swaying-windmill.vercel.app`, deployment `dpl_EUfKGMqVn1HZhBaHb8dEWrgwNQHY`, built from commit `2043f4ecf1bd14c96d6af02cb9f7355304a49b5b`. Deployment-matched Smoke completed with 91 passed, 11 production-inapplicable skips, and no application failures. Automated accessibility completed with 46 passed, 2 production-inapplicable skips, and no reported violations. Detailed runner notes and retry evidence are recorded in the versioned deployment evidence file.
 
+Observability, budget, and rollback ownership are assigned to the project owner for this managed deployment phase.
+
 ## Required manual verification
 
 Automated checks are necessary but not sufficient for the first preview. Record the following observations in the deployment evidence:
@@ -107,7 +109,7 @@ After the first successful preview, add a versioned evidence file under `data/fr
 
 ## Exit criteria
 
-Phase 1 remains incomplete until all of the following are true:
+Phase 1 is complete. The following criteria are satisfied:
 
 - Vercel project and team identifiers are recorded.
 - Preview environment configuration is verified.

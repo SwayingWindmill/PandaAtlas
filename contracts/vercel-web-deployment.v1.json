@@ -2,7 +2,7 @@
   "schema_version": 1,
   "plan_id": "vercel-web-phase-1",
   "decision": "docs/architecture/adr-0002-managed-cloud-deployment-target.md",
-  "status": "deployed-acceptance-in-progress",
+  "status": "complete",
   "production_cutover_authorized": false,
   "cloudflare_production_changes_authorized": false,
   "project": {
@@ -90,6 +90,11 @@
     },
     "evidence": "data/deployment-evidence/vercel-web-2026-08-01.json",
     "current_result": "passed",
+    "owners": {
+      "observability": "project-owner",
+      "budget": "project-owner",
+      "rollback": "project-owner"
+    },
     "artifact_paths": [
       ".release-gate/",
       "apps/web/test-results/",
@@ -134,7 +139,7 @@
     },
     {
       "id": "observability-budget-and-rollback-owners-recorded",
-      "complete": false
+      "complete": true
     }
   ]
 }

@@ -48,6 +48,7 @@ export function validateVercelWebDeploymentPlan(
   const allowedStatuses = new Set([
     "repository-ready-account-setup-required",
     "deployed-acceptance-in-progress",
+    "complete",
   ]);
   if (!allowedStatuses.has(plan.status)) {
     errors.push("Phase 1 plan has an unsupported status.");
@@ -82,7 +83,7 @@ export function validateVercelWebDeploymentPlan(
     }
   }
 
-  if (plan.status === "deployed-acceptance-in-progress") {
+  if (["deployed-acceptance-in-progress", "complete"].includes(plan.status)) {
     if (!isNonEmptyString(project.vercel_project_id)) {
       errors.push("Deployed Phase 1 status requires a Vercel project ID.");
     }
@@ -197,7 +198,7 @@ export function validateVercelWebDeploymentPlan(
   if (!isNonEmptyString(acceptance.workflow)) {
     errors.push("Acceptance workflow path is required.");
   }
-  if (plan.status === "deployed-acceptance-in-progress") {
+  if (["deployed-acceptance-in-progress", "complete"].includes(plan.status)) {
     if (!isNonEmptyString(acceptance.evidence)
       || !existsSync(path.join(root, acceptance.evidence))) {
       errors.push("Deployed Phase 1 status requires an existing acceptance evidence file.");
@@ -283,8 +284,22 @@ export function validateVercelWebDeploymentPlan(
       }
     }
   }
-  if (exitCriteria.every((criterion) => criterion.complete === true)) {
-    errors.push("Phase 1 cannot be marked complete before a real preview deployment is verified.");
+  const allExitCriteriaComplete = exitCriteria.every((criterion) => criterion.complete === true);
+  if (plan.status === "complete") {
+    const owners = acceptance.owners ?? {};
+    for (const ownerType of ["observability", "budget", "rollback"]) {
+      if (!isNonEmptyString(owners[ownerType])) {
+        errors.push(`Complete Phase 1 requires ${ownerType} ownership.`);
+      }
+    }
+    if (acceptance.current_result !== "passed") {
+      errors.push("Complete Phase 1 requires passed acceptance.");
+    }
+    if (!allExitCriteriaComplete) {
+      errors.push("Complete Phase 1 requires all exit criteria to pass.");
+    }
+  } else if (allExitCriteriaComplete) {
+    errors.push("All Phase 1 exit criteria require status complete.");
   }
 
   if (errors.length > 0) {

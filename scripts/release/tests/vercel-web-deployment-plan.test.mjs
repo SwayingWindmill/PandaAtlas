@@ -14,7 +14,7 @@ function clonePlan() {
 test("Phase 1 Vercel Web plan is deployed and production-safe", () => {
   const summary = validateVercelWebDeploymentPlan(clonePlan());
 
-  assert.equal(summary.status, "deployed-acceptance-in-progress");
+  assert.equal(summary.status, "complete");
   assert.equal(summary.root_directory, "apps/web");
   assert.equal(summary.preview_api_base_url, "https://api.zhipanda.com");
   assert.equal(summary.deployment_url, "https://zhipanda.vercel.app");
@@ -25,7 +25,7 @@ test("Phase 1 Vercel Web plan is deployed and production-safe", () => {
   assert.equal(summary.acceptance_result, "passed");
   assert.equal(summary.production_cutover_authorized, false);
   assert.equal(summary.acceptance_checks, 2);
-  assert.equal(summary.incomplete_exit_criteria, 1);
+  assert.equal(summary.incomplete_exit_criteria, 0);
 });
 
 test("Phase 1 Vercel Web plan rejects production authorization", () => {
