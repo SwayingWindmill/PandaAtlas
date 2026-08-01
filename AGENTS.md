@@ -11,6 +11,7 @@ This repository is the monorepo for ZhiPanda (吱熊猫), a modern panda informa
 - `data/research-batches`: declarative batch-specific research inputs governed by `contracts/research-batch.v1.json`.
 - `scripts/batch`: fixed-command batch planning and execution control plane.
 - `.github/workflows/batch-operations.yml`: manual-only bounded batch workflow governed by `contracts/batch-operations.v1.json`.
+- `contracts/repository-structure.v1.json`: allowed top-level zones, npm workspaces, boundary documents, and status-link contract.
 - `docs/monorepo-structure.md`: architecture and delivery sequencing.
 
 When adding new features, keep changes grouped by boundary: UI in `apps/web`, API behavior in `services/api`, and schema changes in `infra/supabase/migrations`.
@@ -64,6 +65,7 @@ Local platform:
 - Frontend: route files in `apps/web/app/**/page.tsx`; shared utilities in `apps/web/lib`; keep UI primitives in `apps/web/components/ui`.
 - Research: keep executable modules reusable and stable; put dates, subject cohorts, sources, and operation selections in `data/research-batches/<batch-id>.json`, never in new round-specific Python filenames.
 - Batch: use fixed command arrays from `contracts/batch-operations.v1.json`; manual workflow inputs must never become arbitrary shell, script, branch-write, or unapproved production-write parameters.
+- Structure: run `npm run check:repository-structure`; do not add a top-level zone or an application/service `package.json` without updating the structure contract and its boundary document.
 - Naming: use kebab-case for docs/config files and numeric migration prefixes (`0002_*.sql`).
 
 ## UI & Product Conventions

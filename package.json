@@ -5,7 +5,6 @@
   "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/*",
-    "packages/*",
     "services/worker-api"
   ],
   "scripts": {
@@ -76,6 +75,7 @@
     "check:route-performance-budgets": "node scripts/release/check-route-performance-budgets.mjs",
     "check:managed-cloud-inventory": "node scripts/release/check-managed-cloud-inventory.mjs",
     "check:vercel-web-deployment-plan": "node scripts/release/check-vercel-web-deployment-plan.mjs",
+    "check:repository-structure": "node scripts/development/operations.mjs run release.check-repository-structure",
     "check:repository-hygiene": "node scripts/development/operations.mjs run release.check-repository-hygiene",
     "check:research-script-policy": "node scripts/development/operations.mjs run release.check-research-script-policy",
     "check:batch-workflow-interface": "node scripts/development/operations.mjs run release.check-batch-workflow-interface",
@@ -93,7 +93,7 @@
     "notification:retry": "uv run --directory services/api --frozen --extra dev python scripts/retry_notification_delivery.py",
     "test:notification-delivery": "uv run --directory services/api --frozen --extra dev pytest -q tests/notification/test_delivery_transport.py tests/notification/test_delivery_contract.py",
     "test:release-gate": "node --test scripts/release/tests/*.test.mjs scripts/development/tests/*.test.mjs",
-    "test:development-gate": "node --test scripts/release/tests/batch-workflow-interface.test.mjs scripts/release/tests/development.test.mjs scripts/release/tests/gate-core.test.mjs scripts/release/tests/repository-hygiene.test.mjs scripts/release/tests/research-script-policy.test.mjs scripts/release/tests/release-config.test.mjs scripts/development/tests/operations.test.mjs",
+    "test:development-gate": "node --test scripts/release/tests/repository-structure.test.mjs scripts/release/tests/batch-workflow-interface.test.mjs scripts/release/tests/development.test.mjs scripts/release/tests/gate-core.test.mjs scripts/release/tests/repository-hygiene.test.mjs scripts/release/tests/research-script-policy.test.mjs scripts/release/tests/release-config.test.mjs scripts/development/tests/operations.test.mjs",
     "verify:dev": "node scripts/development/operations.mjs run verify.dev",
     "verify:dev:list": "node scripts/development/operations.mjs run verify.plan",
     "check:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json",

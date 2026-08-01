@@ -6,6 +6,8 @@
 
 This document records the repository shape proposed during the initial scaffold. It is not the current deployment plan and must not be used to introduce a container-hosted production API. ADR 0002 supersedes its deployment assumptions while the repository layout examples remain useful historical context.
 
+The current enforced layout is defined by [`contracts/repository-structure.v1.json`](../contracts/repository-structure.v1.json). The active npm workspaces are `apps/web` and `services/worker-api`; the illustrative `packages/` section below was never activated and is not an available workspace.
+
 ## Scope
 
 - Frontend: Next.js (App Router), Tailwind CSS v4, shadcn/ui, map rendering.

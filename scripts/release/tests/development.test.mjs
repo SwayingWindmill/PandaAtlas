@@ -76,6 +76,13 @@ test("batch operation contracts and runners select release policy checks", () =>
   );
 });
 
+test("repository structure contract selects release policy checks", () => {
+  assert.deepEqual(
+    classifyDevelopmentScopes(["contracts/repository-structure.v1.json"]),
+    ["release"],
+  );
+});
+
 test("root script changes select only release-development contracts", () => {
   assert.deepEqual(classifyDevelopmentScopes(["package.json"]), ["release"]);
 });

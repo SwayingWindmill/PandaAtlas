@@ -283,6 +283,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "release.check-repository-structure",
+    category: "verification",
+    description: "Validate repository zones, npm workspaces, status markers, and governed links.",
+    command: "node",
+    args: ["scripts/release/check-repository-structure.mjs"],
+    requires: ["git", "node"],
+    effect: "read-only",
+  },
+  {
     id: "release.check-repository-hygiene",
     category: "verification",
     description: "Reject generated output and accidental duplicate paths from repository input.",
@@ -316,6 +325,7 @@ const commands = [
     command: "node",
     args: [
       "--test",
+      "scripts/release/tests/repository-structure.test.mjs",
       "scripts/release/tests/batch-workflow-interface.test.mjs",
       "scripts/release/tests/development.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
@@ -409,6 +419,7 @@ if (commandById.size !== commands.length) {
 
 export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   release: [
+    "release.check-repository-structure",
     "release.check-batch-workflow-interface",
     "release.check-research-script-policy",
     "release.test-development",
