@@ -176,7 +176,9 @@ test("Senior Archive operations fail closed without recent authentication", asyn
   await expect(
     page.getByRole("heading", { level: 1, name: "合并、拆分与紧急下架" }),
   ).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByRole("alert")).toContainText("敏感操作要求 15 分钟内认证");
+  await expect(
+    page.getByRole("alert").filter({ hasText: "敏感操作要求 15 分钟内认证" }),
+  ).toBeVisible();
   await expect(page.getByText(`Archive: ${rehearsal.archive_pointer_release_id}`)).toBeVisible();
   await expect(page.getByText(`Public: ${rehearsal.public_pointer_release_id}`)).toBeVisible();
   await expect(page.getByRole("button", { name: "创建新的 Merge Release" })).toBeDisabled();
