@@ -12,7 +12,10 @@ import {
   getDevelopmentCommand,
   listDevelopmentCommands,
 } from "../catalog.mjs";
-import { renderDevelopmentCommand } from "../operations.mjs";
+import {
+  renderDevelopmentCommand,
+  resolveDevelopmentSpawn,
+} from "../operations.mjs";
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -46,6 +49,32 @@ test("development verification scopes resolve through the shared catalog", () =>
 test("command rendering exposes the executable interface", () => {
   assert.equal(renderDevelopmentCommand(getDevelopmentCommand("web.lint")), "npm run lint -w web");
   assert.match(renderDevelopmentCommand(getDevelopmentCommand("api.test")), /uv run/);
+});
+
+test("Windows npm and npx commands use the command processor", () => {
+  const comSpec = "C:\\Windows\\System32\\cmd.exe";
+  const npm = resolveDevelopmentSpawn(getDevelopmentCommand("web.lint"), ["--fix"], {
+    platform: "win32",
+    comSpec,
+  });
+  assert.equal(npm.executable, comSpec);
+  assert.deepEqual(npm.args.slice(0, 3), ["/d", "/s", "/c"]);
+  assert.equal(npm.args[3], "npm run lint -w web --fix");
+  assert.equal(npm.shell, false);
+
+  const npx = resolveDevelopmentSpawn(getDevelopmentCommand("foundation.status"), [], {
+    platform: "win32",
+    comSpec,
+  });
+  assert.equal(npx.executable, comSpec);
+  assert.match(npx.args[3], /^npx --yes supabase@2\.110\.0 status --workdir infra$/);
+
+  const posix = resolveDevelopmentSpawn(getDevelopmentCommand("web.lint"), [], {
+    platform: "linux",
+  });
+  assert.equal(posix.executable, "npm");
+  assert.deepEqual(posix.args, ["run", "lint", "-w", "web"]);
+  assert.equal(posix.shell, false);
 });
 
 test("operations CLI lists and describes catalog commands", () => {
