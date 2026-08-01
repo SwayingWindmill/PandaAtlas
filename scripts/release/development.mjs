@@ -3,16 +3,13 @@ import { appendFileSync } from "node:fs";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
+import {
+  DEVELOPMENT_SCOPE_ORDER,
+  commandsForDevelopmentScope,
+} from "../development/catalog.mjs";
 import { repoRoot, runCommand } from "./default.mjs";
 
-export const DEVELOPMENT_SCOPE_ORDER = [
-  "release",
-  "web",
-  "worker",
-  "api",
-  "curation",
-  "data",
-];
+export { DEVELOPMENT_SCOPE_ORDER } from "../development/catalog.mjs";
 
 const IGNORED_PREFIXES = [
   ".ai-bridge/",
@@ -31,102 +28,6 @@ const IGNORED_PREFIXES = [
   "services/worker-api/node_modules/",
   "test-results/",
 ];
-
-const SCOPE_COMMANDS = {
-  release: [
-    {
-      id: "release-tests",
-      command: "npm",
-      args: ["run", "test:development-gate"],
-    },
-  ],
-  web: [
-    {
-      id: "web-lint",
-      command: "npm",
-      args: ["run", "lint:web"],
-    },
-    {
-      id: "web-typecheck",
-      command: "npm",
-      args: ["run", "typecheck:web"],
-    },
-  ],
-  worker: [
-    {
-      id: "worker-typecheck",
-      command: "npm",
-      args: ["run", "typecheck:api:cf"],
-    },
-  ],
-  api: [
-    {
-      id: "api-lint",
-      command: "uv",
-      args: [
-        "run",
-        "--directory",
-        "services/api",
-        "--frozen",
-        "--extra",
-        "dev",
-        "ruff",
-        "check",
-        "app",
-        "tests",
-        "scripts",
-      ],
-    },
-    {
-      id: "api-tests",
-      command: "uv",
-      args: [
-        "run",
-        "--directory",
-        "services/api",
-        "--frozen",
-        "--extra",
-        "dev",
-        "pytest",
-        "-q",
-      ],
-    },
-  ],
-  curation: [
-    {
-      id: "curation-tests",
-      command: "npm",
-      args: ["run", "test:panda-curation"],
-    },
-    {
-      id: "curation-data",
-      command: "npm",
-      args: ["run", "check:panda-curation"],
-    },
-    {
-      id: "media-tests",
-      command: "npm",
-      args: ["run", "test:panda-media"],
-    },
-  ],
-  data: [
-    {
-      id: "golden-dataset-tests",
-      command: "npm",
-      args: ["run", "test:golden-dataset"],
-    },
-    {
-      id: "golden-dataset-data",
-      command: "npm",
-      args: ["run", "check:golden-dataset"],
-    },
-    {
-      id: "trusted-identity-aliases",
-      command: "npm",
-      args: ["run", "check:trusted-identity-aliases"],
-    },
-  ],
-};
 
 export function normalizeChangedPath(value) {
   return String(value ?? "")
@@ -170,12 +71,8 @@ export function classifyDevelopmentScopes(paths) {
 
   for (const value of paths) {
     const changedPath = normalizeChangedPath(value);
-    if (!changedPath || isIgnoredChangedPath(changedPath)) {
-      continue;
-    }
-    if (isDocumentationPath(changedPath)) {
-      continue;
-    }
+    if (!changedPath || isIgnoredChangedPath(changedPath)) continue;
+    if (isDocumentationPath(changedPath)) continue;
 
     if (changedPath === "package.json") {
       addScope(scopes, "release");
@@ -192,32 +89,20 @@ export function classifyDevelopmentScopes(paths) {
     if (
       changedPath.startsWith(".github/workflows/") ||
       changedPath.startsWith("scripts/release/") ||
+      changedPath.startsWith("scripts/development/") ||
       changedPath.startsWith("data/beta-launch/") ||
       changedPath.startsWith("data/frontend-evidence/") ||
       changedPath.startsWith("data/frontend-system/") ||
       changedPath.startsWith("data/frontend-withdrawals/") ||
       changedPath.startsWith("contracts/beta-hard-gates") ||
       changedPath.startsWith("contracts/frontend-")
-    ) {
-      addScope(scopes, "release");
-    }
+    ) addScope(scopes, "release");
 
-    if (changedPath.startsWith("apps/web/")) {
-      addScope(scopes, "web");
-    }
+    if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");
+    if (changedPath.startsWith("services/worker-api/")) addScope(scopes, "worker");
+    if (changedPath.startsWith("services/api/")) addScope(scopes, "api");
 
-    if (changedPath.startsWith("services/worker-api/")) {
-      addScope(scopes, "worker");
-    }
-
-    if (changedPath.startsWith("services/api/")) {
-      addScope(scopes, "api");
-    }
-
-    if (
-      changedPath === "docker-compose.yml" ||
-      changedPath.startsWith("infra/supabase/")
-    ) {
+    if (changedPath === "docker-compose.yml" || changedPath.startsWith("infra/supabase/")) {
       addScope(scopes, "release");
       addScope(scopes, "api");
     }
@@ -234,18 +119,14 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith("data/reviewed-batches/") ||
       changedPath.startsWith("data/public-releases/") ||
       changedPath.startsWith("data/acquisition-sources/")
-    ) {
-      addScope(scopes, "curation");
-    }
+    ) addScope(scopes, "curation");
 
     if (
       changedPath.startsWith("scripts/golden-dataset/") ||
       changedPath.startsWith("contracts/golden-dataset/") ||
       changedPath === "contracts/panda-expansion.v1.json" ||
       changedPath === "contracts/panda-knowledge.v1.json"
-    ) {
-      addScope(scopes, "data");
-    }
+    ) addScope(scopes, "data");
 
     if (
       changedPath.startsWith("contracts/panda-") ||
@@ -253,9 +134,7 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "contracts/curation-patch.v1.json" ||
       changedPath === "contracts/curator-decisions.v1.json" ||
       changedPath === "contracts/integration-event.v1.json"
-    ) {
-      addScope(scopes, "api");
-    }
+    ) addScope(scopes, "api");
 
     if (changedPath === "contracts/recovery-drill-environments.v1.json") {
       addScope(scopes, "release");
@@ -287,7 +166,7 @@ export function createPlanForScopes(scopes) {
     scopes: orderedScopes,
     groups: orderedScopes.map((scope) => ({
       scope,
-      commands: SCOPE_COMMANDS[scope].map((command) => ({ ...command, args: [...command.args] })),
+      commands: commandsForDevelopmentScope(scope),
     })),
   };
 }
@@ -297,16 +176,14 @@ export function createDevelopmentPlan(paths) {
 }
 
 export function developmentPlanOutputs(plan) {
-  const scopes = new Set(plan.scopes);
-  const requiresPython = ["api", "curation"].some((scope) => scopes.has(scope));
-  const requiresUv = ["api", "curation"].some((scope) => scopes.has(scope));
-  const requiresNodeModules = ["web", "worker"].some((scope) => scopes.has(scope));
-
+  const requirements = new Set(
+    plan.groups.flatMap((group) => group.commands.flatMap((command) => command.requires)),
+  );
   return {
     run_checks: plan.groups.length > 0 ? "true" : "false",
-    requires_node_modules: requiresNodeModules ? "true" : "false",
-    requires_python: requiresPython ? "true" : "false",
-    requires_uv: requiresUv ? "true" : "false",
+    requires_node_modules: requirements.has("node_modules") ? "true" : "false",
+    requires_python: requirements.has("python") ? "true" : "false",
+    requires_uv: requirements.has("uv") ? "true" : "false",
     scopes: plan.scopes.join(","),
   };
 }
@@ -318,7 +195,6 @@ function gitOutput(args, { allowFailure = false } = {}) {
     maxBuffer: 10 * 1024 * 1024,
     windowsHide: true,
   });
-
   if (result.error) {
     if (allowFailure) return null;
     throw new Error(`Unable to run git ${args.join(" ")}: ${result.error.message}`);
@@ -348,7 +224,6 @@ function addOutputPaths(changed, output) {
 function resolveBase(explicitBase) {
   const candidate = explicitBase ?? process.env.DEV_GATE_BASE;
   if (!candidate) return null;
-
   const resolved = gitOutput(["rev-parse", "--verify", "--quiet", `${candidate}^{commit}`], {
     allowFailure: true,
   });
@@ -364,28 +239,19 @@ function resolveBase(explicitBase) {
 export function collectChangedPaths({ base } = {}) {
   const changed = new Set();
   const resolvedBase = resolveBase(base);
-
   if (resolvedBase) {
     addOutputPaths(
       changed,
       gitOutput(["diff", "--name-only", "--diff-filter=ACDMRT", `${resolvedBase}...HEAD`]),
     );
   }
-
   const commands = [
     ["diff", "--name-only", "--diff-filter=ACDMRT"],
     ["diff", "--cached", "--name-only", "--diff-filter=ACDMRT"],
     ["ls-files", "--others", "--exclude-standard"],
   ];
-
-  for (const args of commands) {
-    addOutputPaths(changed, gitOutput(args));
-  }
-
-  return {
-    base: resolvedBase,
-    paths: [...changed].sort(),
-  };
+  for (const args of commands) addOutputPaths(changed, gitOutput(args));
+  return { base: resolvedBase, paths: [...changed].sort() };
 }
 
 function parseArgs(argv) {
@@ -397,48 +263,34 @@ function parseArgs(argv) {
     paths: [],
     scopes: [],
   };
-
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
-    if (argument === "--all") {
-      options.all = true;
-    } else if (argument === "--github-output") {
-      options.githubOutput = true;
-    } else if (argument === "--list") {
-      options.list = true;
-    } else if (argument === "--base") {
+    if (argument === "--all") options.all = true;
+    else if (argument === "--github-output") options.githubOutput = true;
+    else if (argument === "--list") options.list = true;
+    else if (argument === "--base") {
       options.base = argv[index + 1];
       index += 1;
-    } else if (argument.startsWith("--base=")) {
-      options.base = argument.slice("--base=".length);
-    } else if (argument === "--scope") {
+    } else if (argument.startsWith("--base=")) options.base = argument.slice("--base=".length);
+    else if (argument === "--scope") {
       options.scopes.push(argv[index + 1]);
       index += 1;
-    } else if (argument.startsWith("--scope=")) {
-      options.scopes.push(argument.slice("--scope=".length));
-    } else if (argument === "--paths") {
+    } else if (argument.startsWith("--scope=")) options.scopes.push(argument.slice("--scope=".length));
+    else if (argument === "--paths") {
       options.paths.push(...String(argv[index + 1] ?? "").split(/[\n,]/u));
       index += 1;
     } else if (argument.startsWith("--paths=")) {
       options.paths.push(...argument.slice("--paths=".length).split(/[\n,]/u));
-    } else {
-      throw new Error(`Unknown verify:dev argument: ${argument}`);
-    }
+    } else throw new Error(`Unknown verify:dev argument: ${argument}`);
   }
-
   return options;
 }
 
 function writeGithubOutputs(plan) {
   const outputPath = process.env.GITHUB_OUTPUT;
-  if (!outputPath) {
-    throw new Error("--github-output requires the GITHUB_OUTPUT environment variable");
-  }
-
+  if (!outputPath) throw new Error("--github-output requires the GITHUB_OUTPUT environment variable");
   const outputs = developmentPlanOutputs(plan);
-  const body = Object.entries(outputs)
-    .map(([name, value]) => `${name}=${value}`)
-    .join("\n");
+  const body = Object.entries(outputs).map(([name, value]) => `${name}=${value}`).join("\n");
   appendFileSync(outputPath, `${body}\n`, "utf8");
   console.log(`[verify:dev] wrote GitHub outputs: ${Object.keys(outputs).join(", ")}`);
 }
@@ -449,15 +301,10 @@ function printPlan(plan, metadata) {
   if (metadata.pathCount !== undefined) {
     console.log(`[verify:dev] changed paths considered: ${metadata.pathCount}`);
   }
-  console.log(
-    `[verify:dev] scopes: ${plan.scopes.length > 0 ? plan.scopes.join(", ") : "none"}`,
-  );
-
+  console.log(`[verify:dev] scopes: ${plan.scopes.length > 0 ? plan.scopes.join(", ") : "none"}`);
   for (const group of plan.groups) {
     for (const command of group.commands) {
-      console.log(
-        `[verify:dev] ${group.scope}/${command.id}: ${command.command} ${command.args.join(" ")}`,
-      );
+      console.log(`[verify:dev] ${group.scope}/${command.id}: ${command.command} ${command.args.join(" ")}`);
     }
   }
 }
@@ -478,12 +325,9 @@ export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   let plan;
   let metadata = {};
-
-  if (options.all) {
-    plan = createPlanForScopes(DEVELOPMENT_SCOPE_ORDER);
-  } else if (options.scopes.length > 0) {
-    plan = createPlanForScopes(options.scopes);
-  } else if (options.paths.length > 0) {
+  if (options.all) plan = createPlanForScopes(DEVELOPMENT_SCOPE_ORDER);
+  else if (options.scopes.length > 0) plan = createPlanForScopes(options.scopes);
+  else if (options.paths.length > 0) {
     const paths = options.paths.map(normalizeChangedPath).filter(Boolean);
     plan = createDevelopmentPlan(paths);
     metadata = { pathCount: paths.length };
@@ -492,10 +336,8 @@ export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
     plan = createDevelopmentPlan(changed.paths);
     metadata = { base: changed.base, pathCount: changed.paths.length };
   }
-
   printPlan(plan, metadata);
   if (options.githubOutput) writeGithubOutputs(plan);
-
   if (options.list || plan.groups.length === 0) {
     if (plan.groups.length === 0) {
       console.log(
@@ -504,7 +346,6 @@ export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
     }
     return plan;
   }
-
   await runPlan(plan);
   console.log("\n[verify:dev] all selected development scopes passed");
   return plan;
