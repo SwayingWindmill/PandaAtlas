@@ -1,5 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { isDeployedFeatureEnabled } from "../fixtures/deployment-features";
+
+const notificationEnabled = isDeployedFeatureEnabled("notification");
+
 const session = {
   account_id: "11111111-1111-4111-8111-111111111111",
   email: "member@example.invalid",
@@ -107,6 +111,7 @@ async function mockSignedInNotificationCenter(page: Page) {
 }
 
 test("private Inbox exposes read, retraction, preference, locale, and mobile behavior", async ({ page }) => {
+  test.skip(!notificationEnabled, "The deployed Web build intentionally disables Notification UI.");
   await page.setViewportSize({ width: 320, height: 900 });
   await mockSignedInNotificationCenter(page);
   await page.goto("/en/me/inbox");
@@ -138,6 +143,7 @@ test("private Inbox exposes read, retraction, preference, locale, and mobile beh
 });
 
 test("signed-out Inbox never requests private facts and provides a safe return path", async ({ page }) => {
+  test.skip(!notificationEnabled, "The deployed Web build intentionally disables Notification UI.");
   let privateRequests = 0;
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
@@ -153,4 +159,10 @@ test("signed-out Inbox never requests private facts and provides a safe return p
     "/auth/login?next=%2Fen%2Fme%2Finbox",
   );
   expect(privateRequests).toBe(0);
+});
+
+test("disabled Notification deployment keeps the private Inbox unpublished", async ({ request }) => {
+  test.skip(notificationEnabled, "Notification UI is enabled in this deployment profile.");
+  const response = await request.get("/en/me/inbox", { maxRedirects: 0 });
+  expect(response.status()).toBe(404);
 });

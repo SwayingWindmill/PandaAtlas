@@ -1,5 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import { isDeployedFeatureEnabled } from "../fixtures/deployment-features";
+
+const engagementEnabled = isDeployedFeatureEnabled("engagement");
+
 const session = {
   account_id: "11111111-1111-1111-1111-111111111111",
   email: "member@example.invalid",
@@ -78,6 +82,7 @@ test("serves only canonical Panda 200 routes and emits canonical sitemap URLs", 
 });
 
 test("restores visible Follow outcomes on the canonical profile", async ({ page }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   await mockSignedOut(page);
   const outcomes = [
     ["followed", "You now follow Mei Xiang"],
@@ -95,6 +100,7 @@ test("restores visible Follow outcomes on the canonical profile", async ({ page 
 });
 
 test("signed-in Follow updates immediately and asks for email consent separately", async ({ page }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   let followWrites = 0;
   let preferenceWrites = 0;
   await page.route("**/api/identity/session", async (route) => {
@@ -151,6 +157,7 @@ test("signed-in Follow updates immediately and asks for email consent separately
 });
 
 test("expired signed-in session creates a new Pending Intent before reauthentication", async ({ page }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   let pendingWrites = 0;
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(session) });
@@ -208,6 +215,7 @@ test("cross-device continuation clears the fragment and still requires OTP", asy
 });
 
 test("invalid OTP preserves the intended Panda context and moves focus to the error", async ({ page }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   await mockPendingContext(page, "en");
   await page.route("**/api/auth/email-otp/start", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: '{"message":"sent"}' });

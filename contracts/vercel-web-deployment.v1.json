@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "plan_id": "vercel-web-phase-1",
+  "decision": "docs/architecture/adr-0002-managed-cloud-deployment-target.md",
+  "status": "complete",
+  "production_cutover_authorized": false,
+  "cloudflare_production_changes_authorized": false,
+  "project": {
+    "root_directory": "apps/web",
+    "framework": "nextjs",
+    "production_branch": "master",
+    "git_integration": "required",
+    "install_command_override": null,
+    "build_command_override": null,
+    "output_directory_override": null,
+    "vercel_project_id": "prj_f50sXrKegrjBr65b3PZ4A9nf4t2o",
+    "vercel_team_id": "team_kTGJFPyzeDcJFchLZ3L3rHv7"
+  },
+  "deployment": {
+    "deployment_id": "dpl_33RS6RDqRwEqWZb9xCCxgvFTMNyP",
+    "deployment_url": "https://zhipanda-o6fsq8g3x-swaying-windmill.vercel.app",
+    "stable_project_url": "https://zhipanda.vercel.app",
+    "target": "production",
+    "state": "READY",
+    "source_branch": "master",
+    "source_commit": "a004fd628a0d629684dc72b7b4649e93249f080f",
+    "custom_production_domains_attached": false,
+    "accepted_preview": {
+      "deployment_id": "dpl_EUfKGMqVn1HZhBaHb8dEWrgwNQHY",
+      "deployment_url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+      "branch_alias": "https://zhipanda-git-deployment-vercel-managed-646391-swaying-windmill.vercel.app",
+      "state": "READY",
+      "source_branch": "deployment/vercel-managed-cloud-phase-1",
+      "source_commit": "2043f4ecf1bd14c96d6af02cb9f7355304a49b5b",
+      "pull_request": 260
+    }
+  },
+  "deployment_protection": {
+    "vercel_authentication_enabled": false,
+    "sso_protection": null,
+    "changed_for_phase_1_acceptance": true
+  },
+  "environments": {
+    "preview": {
+      "enabled": true,
+      "api_base_url": "https://api.zhipanda.com",
+      "required_environment_variables": [
+        {
+          "name": "NEXT_PUBLIC_API_BASE_URL",
+          "value_class": "public",
+          "expected_value": "https://api.zhipanda.com"
+        }
+      ],
+      "required_secrets": []
+    },
+    "production": {
+      "enabled": true,
+      "traffic_cutover_authorized": false,
+      "domains": [],
+      "pending_domains": [
+        "zhipanda.com",
+        "www.zhipanda.com"
+      ],
+      "required_environment_variables": [
+        {
+          "name": "NEXT_PUBLIC_API_BASE_URL",
+          "value_class": "public",
+          "expected_value": "https://api.zhipanda.com"
+        }
+      ],
+      "environment_variables_pending_review": [
+        "APP_ENV",
+        "PANDA_ATLAS_FRONTEND_WITHDRAWAL_ID"
+      ]
+    }
+  },
+  "acceptance": {
+    "workflow": ".github/workflows/vercel-web-acceptance.yml",
+    "trigger": "workflow_dispatch",
+    "base_url_input": "base_url",
+    "allowed_hostname_suffix": ".vercel.app",
+    "checks": [
+      "browser-smoke",
+      "automated-accessibility"
+    ],
+    "deployed_feature_profile": {
+      "engagement_enabled": false,
+      "notification_enabled": false,
+      "basis": "Matches the current Cloudflare production Web behavior during Phase 1 equivalence testing."
+    },
+    "evidence": "data/deployment-evidence/vercel-web-2026-08-01.json",
+    "current_result": "passed",
+    "owners": {
+      "observability": "project-owner",
+      "budget": "project-owner",
+      "rollback": "project-owner"
+    },
+    "artifact_paths": [
+      ".release-gate/",
+      "apps/web/test-results/",
+      "test-results/"
+    ]
+  },
+  "rollback": {
+    "current_web_runtime": "Cloudflare Worker panda-atlas-web",
+    "current_api_runtime": "Cloudflare Worker panda-atlas-api",
+    "current_public_api_base_url": "https://api.zhipanda.com",
+    "current_production_unchanged": true,
+    "dns_changes_required_for_phase_1": false
+  },
+  "external_setup_required": [
+    "Import the GitHub repository into Vercel.",
+    "Set the Vercel project Root Directory to apps/web.",
+    "Keep the framework preset on Next.js and use platform-default install, build, and output settings initially.",
+    "Set NEXT_PUBLIC_API_BASE_URL=https://api.zhipanda.com for Preview and Production deployments; this is public configuration and does not authorize a domain cutover.",
+    "Record the non-secret Vercel project and team identifiers in this manifest after project creation.",
+    "Run the Vercel Web Acceptance workflow against the generated HTTPS vercel.app preview URL."
+  ],
+  "phase_1_exit_criteria": [
+    {
+      "id": "vercel-project-identifiers-recorded",
+      "complete": true
+    },
+    {
+      "id": "preview-environment-variable-configured",
+      "complete": true
+    },
+    {
+      "id": "vercel-deployment-builds-from-apps-web",
+      "complete": true
+    },
+    {
+      "id": "browser-smoke-passes-against-preview",
+      "complete": true
+    },
+    {
+      "id": "automated-accessibility-passes-against-preview",
+      "complete": true
+    },
+    {
+      "id": "observability-budget-and-rollback-owners-recorded",
+      "complete": true
+    }
+  ]
+}
