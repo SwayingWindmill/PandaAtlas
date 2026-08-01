@@ -149,8 +149,8 @@ test("Archive workbench is mobile-safe, bounded, keyboard reachable, and accessi
     });
   });
 
-  await page.goto("/admin#/archive", { waitUntil: "domcontentloaded", timeout: 60_000 });
-  await expect(page).toHaveURL(/\/admin#\/archive$/);
+  await page.goto("/admin/archive", { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await expect(page).toHaveURL(/\/admin\/archive$/);
   await expect(
     page.getByRole("heading", { level: 1, name: "Archive 发布与迁移工作台" }),
   ).toBeVisible({ timeout: 60_000 });
@@ -168,11 +168,11 @@ test("Senior Archive operations fail closed without recent authentication", asyn
   await page.setViewportSize({ width: 390, height: 844 });
   await mockArchiveSession(page, false);
 
-  await page.goto("/admin#/archive/operations", {
+  await page.goto("/admin/archive/operations", {
     waitUntil: "domcontentloaded",
     timeout: 60_000,
   });
-  await expect(page).toHaveURL(/\/admin#\/archive\/operations$/);
+  await expect(page).toHaveURL(/\/admin\/archive\/operations$/);
   await expect(
     page.getByRole("heading", { level: 1, name: "合并、拆分与紧急下架" }),
   ).toBeVisible({ timeout: 60_000 });
