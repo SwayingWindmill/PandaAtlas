@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "title": "ZhiPanda Issue-to-PR Delivery Contract",
+  "repository": {
+    "default_branch": "master",
+    "allow_forks": false,
+    "protected_branches": [
+      "master"
+    ]
+  },
+  "branch": {
+    "pattern": "^(feat|fix|chore|docs|refactor|test|build|ci|perf)/issue-([1-9][0-9]*)-([a-z0-9]+(?:-[a-z0-9]+)*)$",
+    "types": [
+      "feat",
+      "fix",
+      "chore",
+      "docs",
+      "refactor",
+      "test",
+      "build",
+      "ci",
+      "perf"
+    ],
+    "maximum_length": 96
+  },
+  "worktree": {
+    "parent_directory": ".worktrees",
+    "pattern": "^issue-([1-9][0-9]*)-([a-z0-9]+(?:-[a-z0-9]+)*)$",
+    "require_registered_worktree": true,
+    "require_branch_issue_match": true,
+    "require_branch_slug_match": true
+  },
+  "pull_request": {
+    "required_sections": [
+      "Issue",
+      "Summary",
+      "Verification",
+      "Safety"
+    ],
+    "closing_keywords": [
+      "close",
+      "closes",
+      "closed",
+      "fix",
+      "fixes",
+      "fixed",
+      "resolve",
+      "resolves",
+      "resolved"
+    ],
+    "canonical_issue_line": "Closes #{issue}",
+    "canonical_worktree_line": "Worktree: `.worktrees/issue-{issue}-{slug}`",
+    "require_exactly_one_closing_reference": true,
+    "require_same_repository_issue": true,
+    "require_open_issue": true,
+    "require_unique_open_pull_request": true,
+    "require_nonempty_summary": true,
+    "require_nonempty_verification": true,
+    "require_nonempty_safety": true
+  },
+  "files": {
+    "workflow": ".github/workflows/delivery-contract.yml",
+    "pull_request_template": ".github/PULL_REQUEST_TEMPLATE.md",
+    "issue_template": ".github/ISSUE_TEMPLATE/delivery.md",
+    "documentation": "docs/development-delivery.md"
+  }
+}

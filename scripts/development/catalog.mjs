@@ -283,6 +283,24 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "delivery.check-local",
+    category: "verification",
+    description: "Validate the current Issue-linked branch and isolated worktree.",
+    command: "node",
+    args: ["scripts/release/check-delivery-contract.mjs", "--local"],
+    requires: ["git", "node"],
+    effect: "read-only",
+  },
+  {
+    id: "release.check-delivery-contract",
+    category: "verification",
+    description: "Validate delivery contracts, templates, and read-only pull-request workflow.",
+    command: "node",
+    args: ["scripts/release/check-delivery-contract.mjs", "--repository"],
+    requires: ["node"],
+    effect: "read-only",
+  },
+  {
     id: "release.check-repository-structure",
     category: "verification",
     description: "Validate repository zones, npm workspaces, status markers, and governed links.",
@@ -325,6 +343,7 @@ const commands = [
     command: "node",
     args: [
       "--test",
+      "scripts/release/tests/delivery-contract.test.mjs",
       "scripts/release/tests/repository-structure.test.mjs",
       "scripts/release/tests/batch-workflow-interface.test.mjs",
       "scripts/release/tests/development.test.mjs",
@@ -419,6 +438,7 @@ if (commandById.size !== commands.length) {
 
 export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   release: [
+    "release.check-delivery-contract",
     "release.check-repository-structure",
     "release.check-batch-workflow-interface",
     "release.check-research-script-policy",

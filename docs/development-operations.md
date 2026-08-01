@@ -33,6 +33,14 @@ Use `--json` with `list` or `describe` when another tool needs machine-readable 
 
 The same catalog supplies changed-scope development acceptance in `scripts/release/development.mjs`. CI planning and local execution therefore cross the same interface instead of maintaining separate command lists.
 
+Issue-to-PR delivery is governed by `contracts/delivery-workflow.v1.json`. Validate the current Issue-linked branch and isolated worktree with:
+
+```bash
+npm run check:delivery-contract
+```
+
+CI uses `npm run check:delivery-contract:repository` for the static contract, templates, and read-only workflow. The pull-request workflow separately validates the real PR body, open Issue state, and duplicate open deliveries. See [`docs/development-delivery.md`](development-delivery.md).
+
 Repository shape has a machine-readable contract at `contracts/repository-structure.v1.json`. It validates allowed top-level zones, the exact npm workspace list, application and service package names, boundary documents, runtime-status markers, and selected local documentation links. Run it directly with:
 
 ```bash

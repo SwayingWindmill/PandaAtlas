@@ -76,6 +76,18 @@ test("batch operation contracts and runners select release policy checks", () =>
   );
 });
 
+test("delivery metadata selects release policy checks before documentation filtering", () => {
+  assert.deepEqual(
+    classifyDevelopmentScopes([
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/ISSUE_TEMPLATE/delivery.md",
+      "contracts/delivery-workflow.v1.json",
+      "docs/development-delivery.md",
+    ]),
+    ["release"],
+  );
+});
+
 test("repository structure contract selects release policy checks", () => {
   assert.deepEqual(
     classifyDevelopmentScopes(["contracts/repository-structure.v1.json"]),
