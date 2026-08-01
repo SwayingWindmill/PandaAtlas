@@ -12,10 +12,14 @@ from app.db.session import configure_database, session_scope
 from app.identity.models import AccountState, RequestIdentity
 from app.privacy_operations.models import (
     PrivacyContextState,
+    PrivacyHoldBasis,
+    PrivacyHoldReleaseReason,
+    PrivacyHoldState,
     PrivacyRequestKind,
     PrivacyRequestState,
 )
 from app.privacy_operations.service import (
+    PrivacyOperationsConflictError,
     PrivacyOperationsForbiddenError,
     PrivacyOperationsService,
 )
@@ -168,6 +172,58 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
             correlation_id=correlation_id,
         )
         assert verified.state is PrivacyRequestState.VERIFIED
+        community_context = next(
+            context
+            for context in verified.contexts
+            if context.context_key == "community_intake"
+        )
+        hold_key = f"privacy-hold-{uuid4()}"
+        hold_review_due_at = datetime.now(UTC) + timedelta(days=7)
+        hold = service.create_hold(
+            actor=operator,
+            request_id=created.request_id,
+            context_key=community_context.context_key,
+            expected_context_version=community_context.version,
+            basis=PrivacyHoldBasis.SECURITY_INVESTIGATION,
+            review_due_at=hold_review_due_at,
+            idempotency_key=hold_key,
+            correlation_id=correlation_id,
+        )
+        hold_replay = service.create_hold(
+            actor=operator,
+            request_id=created.request_id,
+            context_key=community_context.context_key,
+            expected_context_version=community_context.version,
+            basis=PrivacyHoldBasis.SECURITY_INVESTIGATION,
+            review_due_at=hold_review_due_at,
+            idempotency_key=hold_key,
+            correlation_id=correlation_id,
+        )
+        assert hold_replay.hold_id == hold.hold_id
+        with pytest.raises(PrivacyOperationsConflictError):
+            service.create_hold(
+                actor=operator,
+                request_id=created.request_id,
+                context_key=community_context.context_key,
+                expected_context_version=community_context.version,
+                basis=PrivacyHoldBasis.LEGAL_OBLIGATION,
+                review_due_at=hold_review_due_at,
+                idempotency_key=hold_key,
+                correlation_id=correlation_id,
+            )
+        assert hold.state is PrivacyHoldState.ACTIVE
+        held_request = service.get_request(created.request_id)
+        held_context = next(
+            context
+            for context in held_request.contexts
+            if context.context_key == "community_intake"
+        )
+        assert held_context.state is PrivacyContextState.HELD
+        assert [item.hold_id for item in service.list_holds(
+            actor=operator,
+            request_id=created.request_id,
+            correlation_id=correlation_id,
+        )] == [hold.hold_id]
 
         processing = service.update_context(
             actor=operator,
@@ -184,6 +240,45 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
             context for context in processing.contexts if context.context_key == "identity_access"
         )
         assert identity_context.attempts == 1
+        release_key = f"privacy-hold-release-{uuid4()}"
+        released = service.release_hold(
+            actor=operator,
+            hold_id=hold.hold_id,
+            expected_hold_version=hold.version,
+            expected_context_version=held_context.version,
+            reason=PrivacyHoldReleaseReason.BASIS_RESOLVED,
+            idempotency_key=release_key,
+            correlation_id=correlation_id,
+        )
+        release_replay = service.release_hold(
+            actor=operator,
+            hold_id=hold.hold_id,
+            expected_hold_version=hold.version,
+            expected_context_version=held_context.version,
+            reason=PrivacyHoldReleaseReason.BASIS_RESOLVED,
+            idempotency_key=release_key,
+            correlation_id=correlation_id,
+        )
+        assert release_replay.hold_id == released.hold_id
+        with pytest.raises(PrivacyOperationsConflictError):
+            service.release_hold(
+                actor=operator,
+                hold_id=hold.hold_id,
+                expected_hold_version=hold.version,
+                expected_context_version=held_context.version,
+                reason=PrivacyHoldReleaseReason.SUPERSEDED,
+                idempotency_key=release_key,
+                correlation_id=correlation_id,
+            )
+        assert released.state is PrivacyHoldState.RELEASED
+        assert released.version == 2
+        released_request = service.get_request(created.request_id)
+        released_context = next(
+            context
+            for context in released_request.contexts
+            if context.context_key == "community_intake"
+        )
+        assert released_context.state is PrivacyContextState.PENDING
 
         failed = service.update_context(
             actor=operator,
@@ -258,6 +353,35 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
     assert all(
         context.state is PrivacyContextState.COMPLETED for context in current.contexts
     )
+    assert _scalar(
+        real_db_url,
+        "select count(*) from privacy.deletion_tombstones where account_id = %s",
+        (account_id,),
+    ) == 6
+    tombstone_replay_key = f"privacy-tombstone-replay-{uuid4()}"
+    with session_scope() as session:
+        assert session is not None
+        service = PrivacyOperationsService(session)
+        replayed_tombstone = service.replay_tombstone(
+            actor=operator,
+            account_id=account_id,
+            context_key="engagement",
+            expected_version=1,
+            idempotency_key=tombstone_replay_key,
+            correlation_id=correlation_id,
+        )
+        tombstone_replay = service.replay_tombstone(
+            actor=operator,
+            account_id=account_id,
+            context_key="engagement",
+            expected_version=1,
+            idempotency_key=tombstone_replay_key,
+            correlation_id=correlation_id,
+        )
+    assert tombstone_replay.version == replayed_tombstone.version
+    assert replayed_tombstone.replay_count == 1
+    assert replayed_tombstone.version == 2
+    assert replayed_tombstone.last_replayed_at is not None
     assert _scalar(
         real_db_url,
         "select count(*) from privacy.audit_events where request_id = %s",
@@ -397,6 +521,17 @@ def test_privacy_operator_cannot_decide_own_request(real_db_url: str) -> None:
             correlation_id=uuid4(),
         )
         context = verified.contexts[0]
+        with pytest.raises(PrivacyOperationsForbiddenError):
+            service.create_hold(
+                actor=operator,
+                request_id=created.request_id,
+                context_key=context.context_key,
+                expected_context_version=context.version,
+                basis=PrivacyHoldBasis.LEGAL_OBLIGATION,
+                review_due_at=datetime.now(UTC) + timedelta(days=7),
+                idempotency_key=f"privacy-self-hold-{uuid4()}",
+                correlation_id=uuid4(),
+            )
         with pytest.raises(PrivacyOperationsForbiddenError):
             service.update_context(
                 actor=operator,

@@ -176,6 +176,7 @@ create table if not exists privacy.holds (
   context_key text not null,
   basis text not null,
   state privacy.hold_state not null default 'active',
+  version integer not null default 1,
   created_by_account_id uuid not null references identity.accounts(account_id) on delete restrict,
   created_at timestamptz not null default now(),
   review_due_at timestamptz not null,
@@ -185,16 +186,22 @@ create table if not exists privacy.holds (
   constraint privacy_holds_context_key_format check (
     context_key ~ '^[a-z][a-z0-9_.-]{2,63}$'
   ),
-  constraint privacy_holds_basis_nonempty check (length(trim(basis)) >= 10),
+  constraint privacy_holds_basis check (
+    basis in ('legal_obligation', 'security_investigation', 'fraud_prevention')
+  ),
+  constraint privacy_holds_version_positive check (version >= 1),
   constraint privacy_holds_review_after_creation check (review_due_at > created_at),
   constraint privacy_holds_release_shape check (
     (state = 'active' and released_by_account_id is null and released_at is null and release_reason is null)
     or
     (state = 'released' and released_by_account_id is not null and released_at is not null
-      and length(trim(release_reason)) > 0)
+      and release_reason in ('basis_resolved', 'review_expired', 'superseded'))
   )
 );
 
+create unique index if not exists idx_privacy_holds_one_active_context
+  on privacy.holds (account_id, context_key)
+  where state = 'active';
 create index if not exists idx_privacy_holds_active_review
   on privacy.holds (review_due_at, hold_id)
   where state = 'active';

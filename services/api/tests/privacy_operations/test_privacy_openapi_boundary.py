@@ -10,6 +10,10 @@ def test_privacy_openapi_separates_user_and_operator_models() -> None:
 
     assert "/api/v1/privacy/requests" in paths
     assert "/api/v1/admin/privacy/requests" in paths
+    assert "/api/v1/admin/privacy/requests/{request_id}/holds" in paths
+    assert "/api/v1/admin/privacy/requests/{request_id}/holds/{context_key}" in paths
+    assert "/api/v1/admin/privacy/holds/{hold_id}/release" in paths
+    assert "/api/v1/admin/privacy/tombstones/{account_id}/{context_key}/replay" in paths
 
     user_fields = set(schemas["UserPrivacyRequestRead"]["properties"])
     operator_fields = set(schemas["PrivacyRequestRead"]["properties"])

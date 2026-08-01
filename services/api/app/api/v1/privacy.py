@@ -11,9 +11,15 @@ from app.db.session import session_scope
 from app.identity.models import AccountState, RequestIdentity
 from app.identity.security import get_request_identity, require_capability, resolve_correlation_id
 from app.privacy_operations.models import (
+    CreatePrivacyHoldCommand,
     CreatePrivacyRequestCommand,
+    DeletionTombstoneRead,
+    PrivacyHoldList,
+    PrivacyHoldRead,
     PrivacyRequestList,
     PrivacyRequestRead,
+    ReleasePrivacyHoldCommand,
+    ReplayDeletionTombstoneCommand,
     UpdatePrivacyContextCommand,
     UserPrivacyContextRead,
     UserPrivacyRequestList,
@@ -319,6 +325,151 @@ def update_privacy_request_context(
                 expected_version=payload.expected_version,
                 next_state=payload.state,
                 internal_error_code=payload.internal_error_code,
+                idempotency_key=payload.idempotency_key,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@admin_router.get("/requests/{request_id}/holds", response_model=PrivacyHoldList)
+def list_privacy_holds(
+    request_id: UUID,
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> PrivacyHoldList:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return PrivacyHoldList(
+                items=PrivacyOperationsService(session).list_holds(
+                    actor=actor,
+                    request_id=request_id,
+                    correlation_id=correlation_id,
+                )
+            )
+    except HTTPException:
+        raise
+    except (PrivacyOperationsNotFoundError, SQLAlchemyError) as error:
+        raise _error(error) from error
+
+
+@admin_router.post(
+    "/requests/{request_id}/holds/{context_key}",
+    response_model=PrivacyHoldRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_privacy_hold(
+    request_id: UUID,
+    context_key: str,
+    payload: CreatePrivacyHoldCommand,
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> PrivacyHoldRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return PrivacyOperationsService(session).create_hold(
+                actor=actor,
+                request_id=request_id,
+                context_key=context_key,
+                expected_context_version=payload.expected_context_version,
+                basis=payload.basis,
+                review_due_at=payload.review_due_at,
+                idempotency_key=payload.idempotency_key,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@admin_router.post("/holds/{hold_id}/release", response_model=PrivacyHoldRead)
+def release_privacy_hold(
+    hold_id: UUID,
+    payload: ReleasePrivacyHoldCommand,
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> PrivacyHoldRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return PrivacyOperationsService(session).release_hold(
+                actor=actor,
+                hold_id=hold_id,
+                expected_hold_version=payload.expected_hold_version,
+                expected_context_version=payload.expected_context_version,
+                reason=payload.reason,
+                idempotency_key=payload.idempotency_key,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@admin_router.post(
+    "/tombstones/{account_id}/{context_key}/replay",
+    response_model=DeletionTombstoneRead,
+)
+def replay_privacy_tombstone(
+    account_id: UUID,
+    context_key: str,
+    payload: ReplayDeletionTombstoneCommand,
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> DeletionTombstoneRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return PrivacyOperationsService(session).replay_tombstone(
+                actor=actor,
+                account_id=account_id,
+                context_key=context_key,
+                expected_version=payload.expected_version,
                 idempotency_key=payload.idempotency_key,
                 correlation_id=correlation_id,
             )

@@ -66,6 +66,6 @@ Deletion tombstones are keyed by account and context. Restore tooling must reapp
 
 ## First-slice status
 
-The first vertical slice delivers request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, retention/hold/tombstone storage, audit, and Outbox contracts.
+The first vertical slice delivers request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, narrow Hold create/release commands, automatic deletion tombstone creation, audited tombstone replay requests, executable retention storage, audit, and Outbox contracts.
 
-Encrypted export generation and delivery, automatic calls into each context's deletion/anonymization command, hold create/release commands, tombstone replay jobs, metrics, alerts, and the Privacy Operator Web workbench remain follow-up work within Issue #198.
+Encrypted export generation and delivery, automatic calls into each context's deletion/anonymization command, scheduled retention/tombstone replay jobs, metrics, alerts, and the Privacy Operator Web workbench remain follow-up work within Issue #198.

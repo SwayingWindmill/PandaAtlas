@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -9,8 +10,13 @@ from sqlalchemy.orm import Session
 
 from app.identity.models import AccountState, RequestIdentity
 from app.privacy_operations.models import (
+    DeletionTombstoneRead,
     PrivacyContextRead,
     PrivacyContextState,
+    PrivacyHoldBasis,
+    PrivacyHoldRead,
+    PrivacyHoldReleaseReason,
+    PrivacyHoldState,
     PrivacyRequestKind,
     PrivacyRequestRead,
     PrivacyRequestState,
@@ -550,7 +556,8 @@ class PrivacyOperationsService:
             text(
                 """
                 select context.state::text as context_state, context.version as context_version,
-                       request.state::text as request_state, request.account_id
+                       request.state::text as request_state, request.kind::text as request_kind,
+                       request.account_id
                 from privacy.request_contexts context
                 join privacy.requests request on request.request_id = context.request_id
                 where context.request_id = :request_id and context.context_key = :context_key
@@ -629,6 +636,17 @@ class PrivacyOperationsService:
                 "idempotency_key": command_key,
             },
         )
+
+        if (
+            PrivacyRequestKind(str(row["request_kind"]))
+            is PrivacyRequestKind.ACCOUNT_DELETION
+            and next_state is PrivacyContextState.COMPLETED
+        ):
+            self._apply_deletion_tombstone(
+                account_id=subject_account_id,
+                request_id=request_id,
+                context_key=context_key,
+            )
 
         if request_state is PrivacyRequestState.VERIFIED:
             self.session.execute(
@@ -719,6 +737,582 @@ class PrivacyOperationsService:
         )
         self.session.commit()
         return self.get_request(request_id)
+
+    def create_hold(
+        self,
+        *,
+        actor: RequestIdentity,
+        request_id: UUID,
+        context_key: str,
+        expected_context_version: int,
+        basis: PrivacyHoldBasis,
+        review_due_at: datetime,
+        idempotency_key: str,
+        correlation_id: UUID,
+    ) -> PrivacyHoldRead:
+        if review_due_at.tzinfo is None or review_due_at <= datetime.now(UTC):
+            raise PrivacyOperationsConflictError("Hold review time must be in the future")
+        command_key = _scoped_key(
+            "privacy-hold",
+            request_id,
+            context_key,
+            idempotency_key,
+        )
+        replay = self.session.execute(
+            text(
+                """
+                select hold.hold_id, hold.basis, hold.review_due_at
+                from privacy.hold_events event
+                join privacy.holds hold on hold.hold_id = event.hold_id
+                where event.idempotency_key = :idempotency_key
+                """
+            ),
+            {"idempotency_key": command_key},
+        ).mappings().one_or_none()
+        if replay is not None:
+            if (
+                replay["basis"] != basis.value
+                or replay["review_due_at"] != review_due_at
+            ):
+                raise PrivacyOperationsConflictError(
+                    "Idempotency key was already used with different hold data"
+                )
+            return self.get_hold(UUID(str(replay["hold_id"])))
+
+        row = self.session.execute(
+            text(
+                """
+                select request.account_id, request.state::text as request_state,
+                       context.state::text as context_state,
+                       context.version as context_version
+                from privacy.requests request
+                join privacy.request_contexts context
+                  on context.request_id = request.request_id
+                where request.request_id = :request_id
+                  and context.context_key = :context_key
+                for update of request, context
+                """
+            ),
+            {"request_id": request_id, "context_key": context_key},
+        ).mappings().one_or_none()
+        if row is None:
+            raise PrivacyOperationsNotFoundError("Privacy request context not found")
+        subject_account_id = UUID(str(row["account_id"]))
+        if actor.account_id == subject_account_id:
+            raise PrivacyOperationsForbiddenError(
+                "Privacy Operators cannot hold their own requests"
+            )
+        if int(row["context_version"]) != expected_context_version:
+            raise PrivacyOperationsConflictError("Privacy context version conflict")
+        request_state = PrivacyRequestState(str(row["request_state"]))
+        if request_state not in {PrivacyRequestState.VERIFIED, PrivacyRequestState.PROCESSING}:
+            raise PrivacyOperationsConflictError("Privacy request is not ready for a hold")
+        previous_state = PrivacyContextState(str(row["context_state"]))
+        if previous_state not in {
+            PrivacyContextState.PENDING,
+            PrivacyContextState.PROCESSING,
+            PrivacyContextState.FAILED,
+        }:
+            raise PrivacyOperationsConflictError("Privacy context cannot be held")
+        active_hold = self.session.execute(
+            text(
+                """
+                select hold_id
+                from privacy.holds
+                where account_id = :account_id
+                  and context_key = :context_key
+                  and state = 'active'
+                """
+            ),
+            {"account_id": subject_account_id, "context_key": context_key},
+        ).scalar_one_or_none()
+        if active_hold is not None:
+            raise PrivacyOperationsConflictError(
+                "An active hold already exists for this account context"
+            )
+
+        hold_id = uuid4()
+        self.session.execute(
+            text(
+                """
+                insert into privacy.holds (
+                  hold_id, account_id, request_id, context_key, basis,
+                  created_by_account_id, review_due_at
+                ) values (
+                  :hold_id, :account_id, :request_id, :context_key, :basis,
+                  :actor_account_id, :review_due_at
+                )
+                """
+            ),
+            {
+                "hold_id": hold_id,
+                "account_id": subject_account_id,
+                "request_id": request_id,
+                "context_key": context_key,
+                "basis": basis.value,
+                "actor_account_id": actor.account_id,
+                "review_due_at": review_due_at,
+            },
+        )
+        self.session.execute(
+            text(
+                """
+                update privacy.request_contexts
+                set state = 'held', last_error_code = null, version = version + 1
+                where request_id = :request_id and context_key = :context_key
+                """
+            ),
+            {"request_id": request_id, "context_key": context_key},
+        )
+        self.session.execute(
+            text(
+                """
+                insert into privacy.context_events (
+                  request_id, context_key, previous_state, next_state,
+                  actor_account_id, correlation_id, idempotency_key
+                ) values (
+                  :request_id, :context_key,
+                  cast(:previous_state as privacy.context_state), 'held',
+                  :actor_account_id, :correlation_id, :idempotency_key
+                )
+                """
+            ),
+            {
+                "request_id": request_id,
+                "context_key": context_key,
+                "previous_state": previous_state.value,
+                "actor_account_id": actor.account_id,
+                "correlation_id": correlation_id,
+                "idempotency_key": _scoped_key(command_key, "context"),
+            },
+        )
+        self.session.execute(
+            text(
+                """
+                insert into privacy.hold_events (
+                  hold_id, event_type, actor_account_id, details,
+                  correlation_id, idempotency_key
+                ) values (
+                  :hold_id, 'privacy.hold.created', :actor_account_id,
+                  cast(:details as jsonb), :correlation_id, :idempotency_key
+                )
+                """
+            ),
+            {
+                "hold_id": hold_id,
+                "actor_account_id": actor.account_id,
+                "details": json.dumps(
+                    {
+                        "basis": basis.value,
+                        "context_key": context_key,
+                        "review_due_at": review_due_at.isoformat(),
+                    },
+                    sort_keys=True,
+                ),
+                "correlation_id": correlation_id,
+                "idempotency_key": command_key,
+            },
+        )
+        self._insert_audit(
+            event_type="privacy.hold.created",
+            actor_account_id=actor.account_id,
+            subject_account_id=subject_account_id,
+            request_id=request_id,
+            outcome="held",
+            reason=basis.value,
+            details={"hold_id": str(hold_id), "context_key": context_key},
+            correlation_id=correlation_id,
+            idempotency_key=_scoped_key(command_key, "audit"),
+        )
+        self._insert_outbox(
+            event_type="privacy.hold.created",
+            request_id=request_id,
+            idempotency_key=_scoped_key(command_key, "outbox"),
+            correlation_id=correlation_id,
+            payload={
+                "hold_id": str(hold_id),
+                "request_id": str(request_id),
+                "account_id": str(subject_account_id),
+                "context_key": context_key,
+                "basis": basis.value,
+            },
+        )
+        self.session.commit()
+        return self.get_hold(hold_id)
+
+    def list_holds(
+        self,
+        *,
+        actor: RequestIdentity,
+        request_id: UUID,
+        correlation_id: UUID,
+    ) -> list[PrivacyHoldRead]:
+        request = self.get_request(request_id)
+        hold_ids = self.session.execute(
+            text(
+                """
+                select hold_id
+                from privacy.holds
+                where request_id = :request_id
+                order by created_at desc, hold_id desc
+                limit 100
+                """
+            ),
+            {"request_id": request_id},
+        ).scalars()
+        values = [self.get_hold(UUID(str(hold_id))) for hold_id in hold_ids]
+        self._insert_audit(
+            event_type="privacy.operator-holds.read",
+            actor_account_id=actor.account_id,
+            subject_account_id=request.account_id,
+            request_id=request_id,
+            outcome="read",
+            reason="operator-read",
+            details={"hold_count": len(values), "limit": 100},
+            correlation_id=correlation_id,
+            idempotency_key=_scoped_key(
+                "privacy-operator-holds-read",
+                request_id,
+                actor.account_id,
+                uuid4(),
+            ),
+        )
+        self.session.commit()
+        return values
+
+    def get_hold(self, hold_id: UUID) -> PrivacyHoldRead:
+        row = self.session.execute(
+            text(
+                """
+                select hold_id, request_id, account_id, context_key, basis,
+                       state::text, version, created_by_account_id, created_at,
+                       review_due_at, released_by_account_id, released_at, release_reason
+                from privacy.holds
+                where hold_id = :hold_id
+                """
+            ),
+            {"hold_id": hold_id},
+        ).mappings().one_or_none()
+        if row is None:
+            raise PrivacyOperationsNotFoundError("Privacy hold not found")
+        return PrivacyHoldRead(
+            hold_id=UUID(str(row["hold_id"])),
+            request_id=UUID(str(row["request_id"])),
+            account_id=UUID(str(row["account_id"])),
+            context_key=str(row["context_key"]),
+            basis=PrivacyHoldBasis(str(row["basis"])),
+            state=PrivacyHoldState(str(row["state"])),
+            version=int(row["version"]),
+            created_by_account_id=UUID(str(row["created_by_account_id"])),
+            created_at=row["created_at"],
+            review_due_at=row["review_due_at"],
+            released_by_account_id=(
+                UUID(str(row["released_by_account_id"]))
+                if row["released_by_account_id"] is not None
+                else None
+            ),
+            released_at=row["released_at"],
+            release_reason=(
+                PrivacyHoldReleaseReason(str(row["release_reason"]))
+                if row["release_reason"] is not None
+                else None
+            ),
+        )
+
+    def release_hold(
+        self,
+        *,
+        actor: RequestIdentity,
+        hold_id: UUID,
+        expected_hold_version: int,
+        expected_context_version: int,
+        reason: PrivacyHoldReleaseReason,
+        idempotency_key: str,
+        correlation_id: UUID,
+    ) -> PrivacyHoldRead:
+        command_key = _scoped_key("privacy-hold-release", hold_id, idempotency_key)
+        replay = self.session.execute(
+            text(
+                """
+                select hold_id, details ->> 'release_reason' as release_reason
+                from privacy.hold_events
+                where idempotency_key = :idempotency_key
+                """
+            ),
+            {"idempotency_key": command_key},
+        ).mappings().one_or_none()
+        if replay is not None:
+            if replay["release_reason"] != reason.value:
+                raise PrivacyOperationsConflictError(
+                    "Idempotency key was already used with a different release reason"
+                )
+            return self.get_hold(UUID(str(replay["hold_id"])))
+
+        row = self.session.execute(
+            text(
+                """
+                select hold.account_id, hold.request_id, hold.context_key,
+                       hold.state::text as hold_state, hold.version as hold_version,
+                       context.state::text as context_state,
+                       context.version as context_version
+                from privacy.holds hold
+                join privacy.request_contexts context
+                  on context.request_id = hold.request_id
+                 and context.context_key = hold.context_key
+                where hold.hold_id = :hold_id
+                for update of hold, context
+                """
+            ),
+            {"hold_id": hold_id},
+        ).mappings().one_or_none()
+        if row is None:
+            raise PrivacyOperationsNotFoundError("Privacy hold not found")
+        subject_account_id = UUID(str(row["account_id"]))
+        request_id = UUID(str(row["request_id"]))
+        context_key = str(row["context_key"])
+        if actor.account_id == subject_account_id:
+            raise PrivacyOperationsForbiddenError(
+                "Privacy Operators cannot release holds on their own requests"
+            )
+        if int(row["hold_version"]) != expected_hold_version:
+            raise PrivacyOperationsConflictError("Privacy hold version conflict")
+        if int(row["context_version"]) != expected_context_version:
+            raise PrivacyOperationsConflictError("Privacy context version conflict")
+        if row["hold_state"] != PrivacyHoldState.ACTIVE.value:
+            raise PrivacyOperationsConflictError("Privacy hold is not active")
+        if row["context_state"] != PrivacyContextState.HELD.value:
+            raise PrivacyOperationsConflictError("Privacy context is not held")
+
+        self.session.execute(
+            text(
+                """
+                update privacy.holds
+                set state = 'released', version = version + 1,
+                    released_by_account_id = :actor_account_id,
+                    released_at = now(), release_reason = :release_reason
+                where hold_id = :hold_id
+                """
+            ),
+            {
+                "hold_id": hold_id,
+                "actor_account_id": actor.account_id,
+                "release_reason": reason.value,
+            },
+        )
+        self.session.execute(
+            text(
+                """
+                update privacy.request_contexts
+                set state = 'pending', version = version + 1
+                where request_id = :request_id and context_key = :context_key
+                """
+            ),
+            {"request_id": request_id, "context_key": context_key},
+        )
+        self.session.execute(
+            text(
+                """
+                insert into privacy.context_events (
+                  request_id, context_key, previous_state, next_state,
+                  actor_account_id, correlation_id, idempotency_key
+                ) values (
+                  :request_id, :context_key, 'held', 'pending',
+                  :actor_account_id, :correlation_id, :idempotency_key
+                )
+                """
+            ),
+            {
+                "request_id": request_id,
+                "context_key": context_key,
+                "actor_account_id": actor.account_id,
+                "correlation_id": correlation_id,
+                "idempotency_key": _scoped_key(command_key, "context"),
+            },
+        )
+        self.session.execute(
+            text(
+                """
+                insert into privacy.hold_events (
+                  hold_id, event_type, actor_account_id, details,
+                  correlation_id, idempotency_key
+                ) values (
+                  :hold_id, 'privacy.hold.released', :actor_account_id,
+                  cast(:details as jsonb), :correlation_id, :idempotency_key
+                )
+                """
+            ),
+            {
+                "hold_id": hold_id,
+                "actor_account_id": actor.account_id,
+                "details": json.dumps({"release_reason": reason.value}, sort_keys=True),
+                "correlation_id": correlation_id,
+                "idempotency_key": command_key,
+            },
+        )
+        self._insert_audit(
+            event_type="privacy.hold.released",
+            actor_account_id=actor.account_id,
+            subject_account_id=subject_account_id,
+            request_id=request_id,
+            outcome="released",
+            reason=reason.value,
+            details={"hold_id": str(hold_id), "context_key": context_key},
+            correlation_id=correlation_id,
+            idempotency_key=_scoped_key(command_key, "audit"),
+        )
+        self._insert_outbox(
+            event_type="privacy.hold.released",
+            request_id=request_id,
+            idempotency_key=_scoped_key(command_key, "outbox"),
+            correlation_id=correlation_id,
+            payload={
+                "hold_id": str(hold_id),
+                "request_id": str(request_id),
+                "account_id": str(subject_account_id),
+                "context_key": context_key,
+                "release_reason": reason.value,
+            },
+        )
+        self.session.commit()
+        return self.get_hold(hold_id)
+
+    def get_tombstone(self, *, account_id: UUID, context_key: str) -> DeletionTombstoneRead:
+        row = self.session.execute(
+            text(
+                """
+                select account_id, context_key, request_id, applied_at,
+                       last_replayed_at, replay_count, version
+                from privacy.deletion_tombstones
+                where account_id = :account_id and context_key = :context_key
+                """
+            ),
+            {"account_id": account_id, "context_key": context_key},
+        ).mappings().one_or_none()
+        if row is None:
+            raise PrivacyOperationsNotFoundError("Deletion tombstone not found")
+        return DeletionTombstoneRead(
+            account_id=UUID(str(row["account_id"])),
+            context_key=str(row["context_key"]),
+            request_id=UUID(str(row["request_id"])),
+            applied_at=row["applied_at"],
+            last_replayed_at=row["last_replayed_at"],
+            replay_count=int(row["replay_count"]),
+            version=int(row["version"]),
+        )
+
+    def replay_tombstone(
+        self,
+        *,
+        actor: RequestIdentity,
+        account_id: UUID,
+        context_key: str,
+        expected_version: int,
+        idempotency_key: str,
+        correlation_id: UUID,
+    ) -> DeletionTombstoneRead:
+        command_key = _scoped_key(
+            "privacy-tombstone-replay",
+            account_id,
+            context_key,
+            idempotency_key,
+        )
+        replay_request_id = self.session.execute(
+            text(
+                """
+                select request_id
+                from privacy.audit_events
+                where idempotency_key = :idempotency_key
+                """
+            ),
+            {"idempotency_key": command_key},
+        ).scalar_one_or_none()
+        if replay_request_id is not None:
+            return self.get_tombstone(account_id=account_id, context_key=context_key)
+        if actor.account_id == account_id:
+            raise PrivacyOperationsForbiddenError(
+                "Privacy Operators cannot replay their own deletion tombstones"
+            )
+        row = self.session.execute(
+            text(
+                """
+                select request_id, version
+                from privacy.deletion_tombstones
+                where account_id = :account_id and context_key = :context_key
+                for update
+                """
+            ),
+            {"account_id": account_id, "context_key": context_key},
+        ).mappings().one_or_none()
+        if row is None:
+            raise PrivacyOperationsNotFoundError("Deletion tombstone not found")
+        if int(row["version"]) != expected_version:
+            raise PrivacyOperationsConflictError("Deletion tombstone version conflict")
+        request_id = UUID(str(row["request_id"]))
+        self.session.execute(
+            text(
+                """
+                update privacy.deletion_tombstones
+                set last_replayed_at = now(), replay_count = replay_count + 1,
+                    version = version + 1
+                where account_id = :account_id and context_key = :context_key
+                """
+            ),
+            {"account_id": account_id, "context_key": context_key},
+        )
+        self._insert_audit(
+            event_type="privacy.deletion-tombstone.replayed",
+            actor_account_id=actor.account_id,
+            subject_account_id=account_id,
+            request_id=request_id,
+            outcome="replay-requested",
+            reason="backup-restore-reapply",
+            details={"context_key": context_key},
+            correlation_id=correlation_id,
+            idempotency_key=command_key,
+        )
+        self._insert_outbox(
+            event_type="privacy.deletion-tombstone.replay-requested",
+            request_id=request_id,
+            idempotency_key=_scoped_key(command_key, "outbox"),
+            correlation_id=correlation_id,
+            payload={
+                "request_id": str(request_id),
+                "account_id": str(account_id),
+                "context_key": context_key,
+            },
+        )
+        self.session.commit()
+        return self.get_tombstone(account_id=account_id, context_key=context_key)
+
+    def _apply_deletion_tombstone(
+        self,
+        *,
+        account_id: UUID,
+        request_id: UUID,
+        context_key: str,
+    ) -> None:
+        self.session.execute(
+            text(
+                """
+                insert into privacy.deletion_tombstones (
+                  account_id, context_key, request_id
+                ) values (
+                  :account_id, :context_key, :request_id
+                )
+                on conflict (account_id, context_key) do update
+                set request_id = excluded.request_id,
+                    applied_at = now(),
+                    last_replayed_at = null,
+                    replay_count = 0,
+                    version = privacy.deletion_tombstones.version + 1
+                """
+            ),
+            {
+                "account_id": account_id,
+                "context_key": context_key,
+                "request_id": request_id,
+            },
+        )
 
     def _block_account_access(
         self,

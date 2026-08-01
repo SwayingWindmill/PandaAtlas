@@ -29,6 +29,23 @@ class PrivacyContextState(StrEnum):
     NOT_APPLICABLE = "not_applicable"
 
 
+class PrivacyHoldBasis(StrEnum):
+    LEGAL_OBLIGATION = "legal_obligation"
+    SECURITY_INVESTIGATION = "security_investigation"
+    FRAUD_PREVENTION = "fraud_prevention"
+
+
+class PrivacyHoldState(StrEnum):
+    ACTIVE = "active"
+    RELEASED = "released"
+
+
+class PrivacyHoldReleaseReason(StrEnum):
+    BASIS_RESOLVED = "basis_resolved"
+    REVIEW_EXPIRED = "review_expired"
+    SUPERSEDED = "superseded"
+
+
 class PrivacyCommand(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -53,6 +70,22 @@ class UpdatePrivacyContextCommand(PrivacyCommand):
         max_length=128,
         pattern=r"^[a-z][a-z0-9_.-]+$",
     )
+
+
+class CreatePrivacyHoldCommand(PrivacyCommand):
+    expected_context_version: int = Field(ge=1)
+    basis: PrivacyHoldBasis
+    review_due_at: datetime
+
+
+class ReleasePrivacyHoldCommand(PrivacyCommand):
+    expected_hold_version: int = Field(ge=1)
+    expected_context_version: int = Field(ge=1)
+    reason: PrivacyHoldReleaseReason
+
+
+class ReplayDeletionTombstoneCommand(PrivacyCommand):
+    expected_version: int = Field(ge=1)
 
 
 class UserPrivacyContextRead(BaseModel):
@@ -102,3 +135,39 @@ class PrivacyRequestList(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     items: list[PrivacyRequestRead]
+
+
+class PrivacyHoldRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    hold_id: UUID
+    request_id: UUID
+    account_id: UUID
+    context_key: str
+    basis: PrivacyHoldBasis
+    state: PrivacyHoldState
+    version: int
+    created_by_account_id: UUID
+    created_at: datetime
+    review_due_at: datetime
+    released_by_account_id: UUID | None = None
+    released_at: datetime | None = None
+    release_reason: PrivacyHoldReleaseReason | None = None
+
+
+class PrivacyHoldList(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[PrivacyHoldRead]
+
+
+class DeletionTombstoneRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    account_id: UUID
+    context_key: str
+    request_id: UUID
+    applied_at: datetime
+    last_replayed_at: datetime | None = None
+    replay_count: int
+    version: int

@@ -57,6 +57,32 @@ def test_sensitive_reads_are_audited_and_bounded() -> None:
     assert "cannot process their own requests" in service
 
 
+def test_holds_are_narrow_versioned_and_release_back_to_pending() -> None:
+    sql = MIGRATION_PATH.read_text(encoding="utf-8").lower()
+    service = SERVICE_PATH.read_text(encoding="utf-8").lower()
+
+    assert "privacy_holds_one_active_context" in sql
+    assert "privacy_holds_version_positive" in sql
+    assert "legal_obligation" in sql
+    assert "security_investigation" in sql
+    assert "fraud_prevention" in sql
+    assert "set state = 'held'" in service
+    assert "set state = 'pending'" in service
+    assert "privacy.hold.created" in service
+    assert "privacy.hold.released" in service
+    assert "cannot hold their own requests" in service
+
+
+def test_completed_deletion_contexts_create_replayable_tombstones() -> None:
+    service = SERVICE_PATH.read_text(encoding="utf-8").lower()
+
+    assert "self._apply_deletion_tombstone" in service
+    assert "on conflict (account_id, context_key) do update" in service
+    assert "privacy.deletion-tombstone.replayed" in service
+    assert "privacy.deletion-tombstone.replay-requested" in service
+    assert "replay_count = replay_count + 1" in service
+
+
 def test_retention_policy_seeds_export_and_backup_boundaries() -> None:
     sql = MIGRATION_PATH.read_text(encoding="utf-8").lower()
 
