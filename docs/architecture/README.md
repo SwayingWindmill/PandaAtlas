@@ -6,6 +6,8 @@ ZhiPanda records accepted cross-cutting architecture choices as Architecture Dec
 
 The current production deployment remains Cloudflare-based until the managed-cloud migration phases are accepted. The approved target is Vercel for the Next.js Web application and bounded API functions, Supabase PostgreSQL/PostGIS/Auth as the authoritative managed data platform, Cloudflare DNS/R2 for domains and public media, and GitHub Actions for bounded batch workflows.
 
+Use the [deployment runtime status](../deployment/runtime-status.md) page for the shared Current production, Target, Transitional, and Local-only labels applied across repository documentation.
+
 | ADR | Status | Decision |
 |---|---|---|
 | [ADR 0001](adr-0001-single-source-api-boundary.md) | Accepted | FastAPI and PostgreSQL/PostGIS own domain rules and writes; D1/R2 may provide a versioned public read projection. |

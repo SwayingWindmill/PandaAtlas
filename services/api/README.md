@@ -2,6 +2,13 @@
 
 FastAPI service for panda encyclopedia and distribution map data. This is the authoritative runtime for validation, domain rules, imports, admin behavior, and PostgreSQL/PostGIS writes. The Cloudflare Worker is only a versioned public read projection; see [`ADR 0001`](../../docs/architecture/adr-0001-single-source-api-boundary.md).
 
+- Architecture status: **Authoritative application boundary / Managed target in progress**
+- Target runtime: bounded FastAPI-compatible functions on Vercel backed by Supabase PostgreSQL/PostGIS
+- Current limitation: the managed production runtime and serverless database-connection policy remain ADR 0002 Phase 2 work
+- Governing status page: [`docs/deployment/runtime-status.md`](../../docs/deployment/runtime-status.md)
+
+The Dockerfile, local Uvicorn process, and local database workflows support development and recovery verification only. They must not be used to introduce a persistent self-managed production server.
+
 ## Run (uv)
 
 ```bash
@@ -107,7 +114,7 @@ uv run pytest -q tests/integration/test_real_db_chain.py
 uv run ruff check app tests
 ```
 
-## Build Container
+## Build local-only container
 
 ```bash
 docker build -t panda-atlas-api .

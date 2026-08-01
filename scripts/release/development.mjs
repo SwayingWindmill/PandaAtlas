@@ -7,6 +7,7 @@ import {
   DEVELOPMENT_SCOPE_ORDER,
   commandsForDevelopmentScope,
 } from "../development/catalog.mjs";
+import { checkRepositoryHygiene } from "./check-repository-hygiene.mjs";
 import { repoRoot, runCommand } from "./default.mjs";
 
 export { DEVELOPMENT_SCOPE_ORDER } from "../development/catalog.mjs";
@@ -90,10 +91,13 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith(".github/workflows/") ||
       changedPath.startsWith("scripts/release/") ||
       changedPath.startsWith("scripts/development/") ||
+      changedPath.startsWith("scripts/research/") ||
       changedPath.startsWith("data/beta-launch/") ||
+      changedPath.startsWith("data/research-batches/") ||
       changedPath.startsWith("data/frontend-evidence/") ||
       changedPath.startsWith("data/frontend-system/") ||
       changedPath.startsWith("data/frontend-withdrawals/") ||
+      changedPath === "contracts/research-batch.v1.json" ||
       changedPath.startsWith("contracts/beta-hard-gates") ||
       changedPath.startsWith("contracts/frontend-")
     ) addScope(scopes, "release");
@@ -323,6 +327,7 @@ async function runPlan(plan) {
 
 export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
+  checkRepositoryHygiene({ quiet: options.githubOutput });
   let plan;
   let metadata = {};
   if (options.all) plan = createPlanForScopes(DEVELOPMENT_SCOPE_ORDER);

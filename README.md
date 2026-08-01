@@ -1,13 +1,18 @@
-﻿# Panda Atlas
+# Panda Atlas
 
 Panda Atlas is a full-stack monorepo for a giant panda encyclopedia and distribution map.
 
-## Stack
+## Stack and deployment status
 
-- Frontend: Next.js App Router + Tailwind CSS v4 + shadcn/ui
-- Backend: FastAPI with PostgreSQL/PostGIS is authoritative for domain rules and writes; the Cloudflare Worker with D1/R2 is an optional versioned public read projection
-- Data: Supabase Postgres/PostGIS/Auth/Storage
-- Deployment: OpenNext/Cloudflare for `apps/web`; Cloudflare Worker for `services/worker-api`; container runtime for `services/api`
+- Frontend: Next.js App Router + Tailwind CSS v4 + shadcn/ui.
+- Authority: FastAPI with PostgreSQL/PostGIS owns domain rules and writes.
+- Managed data target: Supabase PostgreSQL/PostGIS/Auth.
+- Current production Web: OpenNext on Cloudflare Worker.
+- Current production public read API: transitional Cloudflare Worker with D1/R2.
+- Approved target: Vercel for the Next.js Web application and bounded API functions, Supabase for authoritative data and authentication, Cloudflare for DNS/R2, and GitHub Actions for bounded batch workflows.
+- Local Docker, local PostgreSQL/Supabase, and the local admin proxy are development and recovery tools only; they are not production targets.
+
+See [Deployment runtime status](docs/deployment/runtime-status.md) for the Current production, Target, Transitional, and Local-only definitions. The migration is governed by [ADR 0002](docs/architecture/adr-0002-managed-cloud-deployment-target.md); Vercel Phase 1 is parallel acceptance work and has not changed production traffic.
 
 ## API authority
 
@@ -17,7 +22,7 @@ FastAPI and PostgreSQL/PostGIS own validation, imports, admin behavior, and ever
 - Shared public field semantics: [Public API v1 manifest](contracts/public-api-v1.json)
 - Drift check: `npm run check:public-api-boundary`
 
-## Quick Start (Scaffold)
+## Local development quick start
 
 ### Optional: local CodeGraph index
 
@@ -47,7 +52,7 @@ uv sync --extra dev
 uv run uvicorn app.main:app --reload
 ```
 
-### 3) Container (API + Postgres)
+### 3) Local-only container workflow
 
 ```bash
 docker compose up --build
@@ -100,12 +105,12 @@ curl "http://localhost:8000/api/v1/stats/overview"
 
 ```bash
 curl -X POST "http://localhost:8000/api/v1/admin/import-jobs" \
-  -H "Authorization: Bearer dev-admin-token" \
+  -H "Authorization: Bearer [REDACTED_SECRET]" \
   -H "Content-Type: application/json" \
   -d "{\"source_name\":\"0001_demo_seed.sql\"}"
 
 curl -X POST "http://localhost:8000/api/v1/admin/import-jobs/<job_id>/run" \
-  -H "Authorization: Bearer dev-admin-token"
+  -H "Authorization: Bearer [REDACTED_SECRET]"
 ```
 
 5. Real-DB anti-regression + smoke test:
@@ -117,13 +122,15 @@ $env:DATABASE_URL="postgresql+psycopg://postgres:postgres@localhost:5432/panda_a
 uv run pytest -q tests/integration/test_real_db_chain.py
 
 $env:API_BASE_URL="http://localhost:8000"
-$env:ADMIN_API_TOKEN="dev-admin-token"
+$env:ADMIN_API_TOKEN="[REDACTED_SECRET]"
 uv run python scripts/smoke_test_api.py
 ```
 
 ## Project Docs
 
-- Architecture: `docs/monorepo-structure.md`
+- Architecture decisions: `docs/architecture/README.md`
+- Deployment runtime status: `docs/deployment/runtime-status.md`
+- Historical scaffold structure: `docs/monorepo-structure.md`
 - API contract: `services/api/openapi/panda-atlas-v1.yaml`
 - DB migration draft: `infra/supabase/migrations/0001_panda_atlas_init.sql`
 - Demo seed SQL: `infra/supabase/seed/0001_demo_seed.sql`
