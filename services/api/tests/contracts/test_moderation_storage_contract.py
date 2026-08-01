@@ -9,7 +9,7 @@ MIGRATION = (
     / "infra"
     / "supabase"
     / "migrations"
-    / "0025_moderation_sanctions_and_appeals.sql"
+    / "0026_moderation_sanctions_and_appeals.sql"
 )
 
 
