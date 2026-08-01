@@ -93,6 +93,7 @@ class PublicSourceSummary(BaseModel):
     last_verified_at: date
     language: str
     access_state: str
+    evidence_tier: str | None = Field(default=None, exclude_if=lambda value: value is None)
 
 
 class LocalizedPublicContent(BaseModel):

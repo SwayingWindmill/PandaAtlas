@@ -15,12 +15,47 @@ from app.schemas.release import PublicPandaRelease, PublicReleaseMetadata
 
 DATABASE_MIGRATION_VERSION = "0007"
 PROJECTION_CODE_VERSION = "public-release-v3"
+LOCAL_PUBLIC_RELEASE_VERSION = "2026.07.31.1"
 _request_release: ContextVar[PublicReleaseMetadata | None] = ContextVar(
     "request_public_release", default=None
 )
 
 
+def _local_release_manifest() -> dict[str, object] | None:
+    module_path = Path(__file__).resolve()
+    candidates = [
+        parent
+        / "data"
+        / "public-releases"
+        / LOCAL_PUBLIC_RELEASE_VERSION
+        / "manifest.json"
+        for parent in module_path.parents
+    ]
+    candidates.append(
+        Path.cwd()
+        / "data"
+        / "public-releases"
+        / LOCAL_PUBLIC_RELEASE_VERSION
+        / "manifest.json"
+    )
+    for path in dict.fromkeys(candidate.resolve() for candidate in candidates):
+        if path.is_file():
+            return json.loads(path.read_text(encoding="utf-8"))
+    return None
+
+
 def _golden_release_metadata() -> PublicReleaseMetadata:
+    manifest = _local_release_manifest()
+    if manifest is not None:
+        return PublicReleaseMetadata(
+            dataset_release_version=str(manifest["dataset_release_version"]),
+            public_schema_version=str(manifest["public_schema_version"]),
+            database_migration_version=str(manifest["database_migration_version"]),
+            publication_batch_id=str(manifest["publication_batch_id"]),
+            projection_code_version=str(manifest["projection_code_version"]),
+            released_at=str(manifest["released_at"]),
+            licenses=dict(manifest["licenses"]),
+        )
     dataset = load_golden_dataset()["dataset"]
     return PublicReleaseMetadata(
         dataset_release_version=dataset["version"],
@@ -234,6 +269,112 @@ def _apply_database_withdrawals(
         and ("pandas", str(item.get("id"))) not in withdrawn
     ]
     result["pandas"] = pandas
+    withdrawn_panda_ids = {
+        entity_id
+        for entity_type, entity_id in withdrawn
+        if entity_type in {"api_pandas", "pandas"}
+    }
+    for key, entity_types in (
+        ("institutions", {"api_institutions", "institutions"}),
+        ("places", {"api_places", "places"}),
+        ("facilities", {"api_facilities", "facilities"}),
+        ("sources", {"api_sources", "sources"}),
+    ):
+        result[key] = [
+            item
+            for item in result.get(key, [])
+            if not any(
+                (entity_type, str(item.get("id"))) in withdrawn
+                for entity_type in entity_types
+            )
+        ]
+    available_source_ids = {str(item.get("id")) for item in result.get("sources", [])}
+    relationships = []
+    for item in result.get("parentage_assertions", []):
+        if ("api_parentage_assertions", str(item.get("id"))) in withdrawn:
+            continue
+        if ("parentage_assertions", str(item.get("id"))) in withdrawn:
+            continue
+        if str(item.get("child_id")) in withdrawn_panda_ids:
+            continue
+        if str(item.get("parent_id")) in withdrawn_panda_ids:
+            continue
+        item = dict(item)
+        item["source_ids"] = [
+            source_id
+            for source_id in item.get("source_ids", [])
+            if str(source_id) in available_source_ids
+        ]
+        if not item["source_ids"]:
+            continue
+        relationships.append(item)
+    result["parentage_assertions"] = relationships
+    available_relationship_ids = {str(item.get("id")) for item in relationships}
+
+    withdrawn_facility_ids = {
+        entity_id
+        for entity_type, entity_id in withdrawn
+        if entity_type in {"api_facilities", "facilities"}
+    }
+    events = []
+    for item in result.get("events", []):
+        if ("api_events", str(item.get("id"))) in withdrawn:
+            continue
+        if ("events", str(item.get("id"))) in withdrawn:
+            continue
+        item = dict(item)
+        item["participants"] = [
+            participant_id
+            for participant_id in item.get("participants", [])
+            if str(participant_id) not in withdrawn_panda_ids
+        ]
+        item["source_ids"] = [
+            source_id
+            for source_id in item.get("source_ids", [])
+            if str(source_id) in available_source_ids
+        ]
+        if str(item.get("from_facility_id")) in withdrawn_facility_ids:
+            item["from_facility_id"] = None
+        if str(item.get("to_facility_id")) in withdrawn_facility_ids:
+            item["to_facility_id"] = None
+        if not item["participants"] or not item["source_ids"]:
+            continue
+        events.append(item)
+    result["events"] = events
+    available_event_ids = {str(item.get("id")) for item in events}
+
+    family_stories = []
+    for story in result.get("family_stories", []):
+        if ("api_family_stories", str(story.get("id"))) in withdrawn:
+            continue
+        if ("family_stories", str(story.get("id"))) in withdrawn:
+            continue
+        member_ids = {str(item) for item in story.get("member_ids", [])}
+        relationship_ids = {
+            str(item) for item in story.get("relationship_assertion_ids", [])
+        }
+        event_ids = {
+            str(event_id)
+            for chapter in story.get("chapters", [])
+            for event_id in chapter.get("event_ids", [])
+        }
+        source_ids = {str(item) for item in story.get("source_ids", [])}
+        if member_ids & withdrawn_panda_ids:
+            continue
+        if not relationship_ids.issubset(available_relationship_ids):
+            continue
+        if not event_ids.issubset(available_event_ids):
+            continue
+        if not source_ids.issubset(available_source_ids):
+            continue
+        family_stories.append(story)
+    result["family_stories"] = family_stories
+    available_slugs = {str(panda.get("slug")) for panda in pandas}
+    result["profile_cohort"] = [
+        item
+        for item in result.get("profile_cohort", [])
+        if str(item.get("slug")) in available_slugs
+    ]
     for key, entity_type in (
         ("distribution", "api_distribution"),
         ("habitats", "api_habitats"),

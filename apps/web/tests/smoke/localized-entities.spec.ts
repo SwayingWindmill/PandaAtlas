@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const RELEASE_ID = "2026.07.24.2";
+const RELEASE_ID = "2026.07.31.1";
 const INSTITUTION_SLUG = "smithsonian-national-zoo";
 const PLACE_SLUG = "smithsonian-national-zoo-washington-dc";
 
@@ -13,7 +13,7 @@ test("renders a canonical institution as an organization distinct from its place
   await expect(page.getByRole("heading", { level: 1, name: "Smithsonian's National Zoo" })).toBeVisible();
   await expect(page.getByText("This is an institution profile.")).toBeVisible();
   await expect(page.getByText(RELEASE_ID).first()).toBeVisible();
-  await expect(page.getByText(/Information version: 2026\.07\.24\.2/)).toBeVisible();
+  await expect(page.getByText(/Information version: 2026\.07\.31\.1/)).toBeVisible();
   await expect(page.getByRole("link", { name: "Smithsonian's National Zoo, Washington, D.C." })).toHaveAttribute(
     "href",
     `/en/places/${PLACE_SLUG}`,

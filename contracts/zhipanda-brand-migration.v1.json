@@ -2882,6 +2882,40 @@
         "PandaAtlas": 1,
         "panda-atlas": 3
       }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.31.1/source.json",
+      "category": "historical",
+      "user_visibility": "historical-record",
+      "migration_owner": "release and decision history",
+      "expected_action": "retain-historical",
+      "rationale": "This immutable reviewed batch retains legacy dataset identifiers as release evidence and must not be rewritten for branding.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_public_experience_release.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "public experience release projection",
+      "expected_action": "retain-compatibility",
+      "rationale": "The release builder preserves the existing dataset title as an internal immutable compatibility identifier; public product copy remains ZhiPanda.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/api/test_public_experiences.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "public experience API tests",
+      "expected_action": "retain-compatibility",
+      "rationale": "The tests assert existing version-header compatibility names and do not expose retired branding on a public surface.",
+      "matches": {
+        "PandaAtlas": 4
+      }
     }
   ]
 }

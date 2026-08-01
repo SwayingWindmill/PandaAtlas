@@ -17,7 +17,7 @@ export const generatedIdentityAliasesPath = path.resolve(
   "trusted-identity-aliases.ts",
 );
 
-export const WEB_RELEASE_VERSION = "2026.07.24.2";
+export const WEB_RELEASE_VERSION = "2026.07.31.1";
 export const webReleaseDatasetPath = path.resolve(
   scriptDir,
   "..",
@@ -387,7 +387,9 @@ export function buildTrustedPandaDetails(dataset) {
       return {
         id: record.id,
         slug: publicRecord.canonical_slug,
-        name_zh: displayName(publicRecord, "zh-Hans") ?? publicRecord.canonical_slug,
+        name_zh: displayName(publicRecord, "zh-Hans")
+          ?? displayName(publicRecord, "en")
+          ?? publicRecord.canonical_slug,
         name_en: displayName(publicRecord, "en"),
         gender: publicRecord.sex,
         status: publicRecord.life_status,
@@ -480,7 +482,9 @@ export function buildTrustedLineage(dataset) {
       return {
         id: record.id,
         slug: record.public.canonical_slug,
-        name_zh: displayName(record.public, "zh-Hans") ?? record.public.canonical_slug,
+        name_zh: displayName(record.public, "zh-Hans")
+          ?? displayName(record.public, "en")
+          ?? record.public.canonical_slug,
         name_en: displayName(record.public, "en"),
         gender: record.public.sex ?? "unknown",
         status: record.public.life_status ?? "unknown",

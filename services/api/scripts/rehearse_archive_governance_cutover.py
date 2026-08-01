@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 from pathlib import Path
 
 from app.archive_workbench.service import rehearsal_snapshot
+from app.core.config import Settings
 from app.db.session import configure_database
 
 
@@ -29,7 +29,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    database_url = os.getenv("DATABASE_URL")
+    settings = Settings()
+    database_url = settings.database_url
     if not database_url:
         raise SystemExit("DATABASE_URL is required for a production-like rehearsal clone")
     configure_database(database_url)

@@ -27,6 +27,8 @@ tags:
   - name: admin-review
   - name: feed
   - name: notification
+  - name: moments
+  - name: family-stories
 
 paths:
   /health:
@@ -145,6 +147,144 @@ paths:
                 $ref: '#/components/schemas/PandaDetail'
         '404':
           description: Panda not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
+
+  /api/v1/pandas/{panda_ref}/profile:
+    get:
+      tags: [pandas]
+      summary: Get the versioned Panda Profile V2 read model
+      operationId: getPandaProfileV2ByRef
+      parameters:
+        - name: panda_ref
+          in: path
+          required: true
+          description: Canonical panda slug, reviewed legacy slug, stable UUID, or external identity reference
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Panda Profile V2 with module states, reviewed parentage, places, facilities, institutions, and related journeys
+          headers: *PublicReleaseHeaders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicProfileV2Response'
+        '404':
+          description: Panda not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
+
+  /api/v1/moments:
+    get:
+      tags: [moments]
+      summary: List unique public events and optional derived anniversaries
+      operationId: listPublicMoments
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 50 }
+        - name: date_from
+          in: query
+          schema: { type: string, format: date }
+        - name: date_to
+          in: query
+          schema: { type: string, format: date }
+        - name: year
+          in: query
+          schema: { type: integer, minimum: 1800, maximum: 2200 }
+        - name: panda_ref
+          in: query
+          description: Canonical panda slug or stable identity reference
+          schema: { type: string }
+        - name: event_type
+          in: query
+          schema: { type: string }
+        - name: event_status
+          in: query
+          schema: { type: string }
+        - name: include_anniversaries
+          in: query
+          description: Include derived birthday occurrences linked to their source birth event. Derived occurrences never increase source-event totals.
+          schema: { type: boolean, default: false }
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [date_asc, date_desc]
+            default: date_asc
+      responses:
+        '200':
+          description: Paginated source events and derived occurrences from the active immutable release
+          headers: *PublicReleaseHeaders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicMomentsResponse'
+        '404':
+          description: Referenced panda was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
+
+  /api/v1/family-stories:
+    get:
+      tags: [family-stories]
+      summary: List reviewed Family Story read models
+      operationId: listPublicFamilyStories
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: page_size
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      responses:
+        '200':
+          description: Paginated family-story summaries from the active immutable release
+          headers: *PublicReleaseHeaders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicFamilyStoryListResponse'
+        '410': *PublicReleaseWithdrawn
+        '503': *PublicReleaseUnavailable
+
+  /api/v1/family-stories/{story_ref}:
+    get:
+      tags: [family-stories]
+      summary: Get a reviewed Family Story with canonical members, events, assertions, and sources
+      operationId: getPublicFamilyStoryByRef
+      parameters:
+        - name: story_ref
+          in: path
+          required: true
+          description: Canonical family-story slug or stable story ID
+          schema: { type: string }
+      responses:
+        '200':
+          description: Expanded family-story read model
+          headers: *PublicReleaseHeaders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicFamilyStoryResponse'
+        '404':
+          description: Family story not found
           content:
             application/json:
               schema:
@@ -3211,6 +3351,403 @@ components:
           type: integer
           example: 120
 
+    LocalizedEditorialContent:
+      type: object
+      additionalProperties: false
+      required: [locale, title, summary]
+      properties:
+        locale:
+          type: string
+          enum: [zh-CN, en]
+        title:
+          type: string
+        summary:
+          type: string
+
+    PublicParentageAssertion:
+      type: object
+      additionalProperties: false
+      required: [id, child_id, parent_id, role, status, source_ids]
+      properties:
+        id:
+          type: string
+        child_id:
+          type: string
+          format: uuid
+        parent_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum: [father, mother]
+        status:
+          type: string
+          enum: [confirmed, tentative, disputed, superseded]
+        source_ids:
+          type: array
+          items: { type: string }
+
+    PublicProfileModuleSummary:
+      type: object
+      additionalProperties: false
+      required: [id, state, item_count]
+      properties:
+        id:
+          type: string
+          enum: [overview, story, timeline, family, footprint, media, sources, revisions]
+        state:
+          type: string
+          enum: [complete, partial, empty, unavailable]
+        item_count:
+          type: integer
+          minimum: 0
+
+    PublicProfileV2Response:
+      type: object
+      additionalProperties: false
+      required:
+        - panda
+        - modules
+        - parentage_assertions
+        - facilities
+        - places
+        - institutions
+        - family_story_slugs
+        - moments_href
+        - cohort_state
+        - coverage_state
+        - release
+      properties:
+        panda:
+          $ref: '#/components/schemas/PandaDetail'
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicProfileModuleSummary'
+        parentage_assertions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicParentageAssertion'
+        facilities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        places:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        institutions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        family_story_slugs:
+          type: array
+          items: { type: string }
+        moments_href:
+          type: string
+        cohort_state:
+          type: string
+          enum: [rich, sparse, historic, standard]
+        coverage_state:
+          type: string
+          enum: [complete, partial]
+        release:
+          type: object
+          additionalProperties:
+            type: string
+
+    PublicMomentParticipant:
+      type: object
+      additionalProperties: false
+      required: [id, slug, name_zh, profile_available]
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+        name_zh:
+          type: string
+        name_en:
+          type: [string, 'null']
+        profile_available:
+          type: boolean
+          default: true
+
+    PublicMomentOccurrence:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - occurrence_kind
+        - event_type
+        - event_status
+        - occurrence_date
+        - date_precision
+        - source_event_id
+        - participants
+        - source_ids
+        - changes_current_residency
+      properties:
+        id:
+          type: string
+        occurrence_kind:
+          type: string
+          enum: [source_event, derived_anniversary]
+        event_type:
+          type: string
+        event_status:
+          type: string
+        occurrence_date:
+          type: string
+          format: date
+        date_precision:
+          type: string
+          enum: [day, month, year]
+        source_event_id:
+          type: string
+        anniversary_year:
+          type: [integer, 'null']
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicMomentParticipant'
+        from_facility_id:
+          type: [string, 'null']
+          format: uuid
+        from_coarse_location:
+          type: [string, 'null']
+        to_facility_id:
+          type: [string, 'null']
+          format: uuid
+        to_coarse_location:
+          type: [string, 'null']
+        source_ids:
+          type: array
+          items: { type: string }
+        changes_current_residency:
+          type: boolean
+          default: false
+
+    PublicMomentFacets:
+      type: object
+      additionalProperties: false
+      required: [event_types, event_statuses, pandas, years]
+      properties:
+        event_types:
+          type: object
+          additionalProperties: { type: integer }
+        event_statuses:
+          type: object
+          additionalProperties: { type: integer }
+        pandas:
+          type: object
+          additionalProperties: { type: integer }
+        years:
+          type: object
+          additionalProperties: { type: integer }
+
+    PublicMomentsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - items
+        - meta
+        - facets
+        - source_event_total
+        - derived_occurrence_total
+        - coverage_state
+        - release
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicMomentOccurrence'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+        facets:
+          $ref: '#/components/schemas/PublicMomentFacets'
+        source_event_total:
+          type: integer
+          minimum: 0
+        derived_occurrence_total:
+          type: integer
+          minimum: 0
+        coverage_state:
+          type: string
+          enum: [complete, partial]
+        release:
+          type: object
+          additionalProperties:
+            type: string
+
+    PublicFamilyStoryScope:
+      type: object
+      additionalProperties: false
+      required:
+        - coverage_state
+        - member_ids
+        - relationship_assertion_ids
+        - excluded_relationship_assertion_ids
+      properties:
+        coverage_state:
+          type: string
+          enum: [complete_for_declared_scope, partial]
+        member_ids:
+          type: array
+          items: { type: string, format: uuid }
+        relationship_assertion_ids:
+          type: array
+          items: { type: string }
+        excluded_relationship_assertion_ids:
+          type: array
+          items: { type: string }
+
+    PublicFamilyStoryChapter:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - kind
+        - localized_content
+        - member_ids
+        - event_ids
+        - relationship_assertion_ids
+        - facility_ids
+        - place_ids
+      properties:
+        id: { type: string }
+        kind: { type: string }
+        localized_content:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalizedEditorialContent'
+        member_ids:
+          type: array
+          items: { type: string, format: uuid }
+        event_ids:
+          type: array
+          items: { type: string }
+        relationship_assertion_ids:
+          type: array
+          items: { type: string }
+        facility_ids:
+          type: array
+          items: { type: string, format: uuid }
+        place_ids:
+          type: array
+          items: { type: string }
+
+    PublicFamilyStoryMedia:
+      type: object
+      additionalProperties: false
+      required: [featured_panda_ids, selection_state]
+      properties:
+        featured_panda_ids:
+          type: array
+          items: { type: string, format: uuid }
+        selection_state:
+          type: string
+          enum: [reviewed]
+
+    PublicFamilyStoryRevision:
+      type: object
+      additionalProperties: false
+      required: [data_version, public_schema_version]
+      properties:
+        data_version: { type: string }
+        public_schema_version: { type: string }
+
+    PublicFamilyStorySummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - slug
+        - story_type
+        - localized_content
+        - scope
+        - member_ids
+        - source_ids
+        - revision
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        story_type: { type: string }
+        localized_content:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalizedEditorialContent'
+        scope:
+          $ref: '#/components/schemas/PublicFamilyStoryScope'
+        member_ids:
+          type: array
+          items: { type: string, format: uuid }
+        source_ids:
+          type: array
+          items: { type: string }
+        revision:
+          $ref: '#/components/schemas/PublicFamilyStoryRevision'
+
+    PublicFamilyStoryResponse:
+      allOf:
+        - $ref: '#/components/schemas/PublicFamilyStorySummary'
+        - type: object
+          additionalProperties: false
+          required:
+            - relationship_assertion_ids
+            - chapters
+            - media
+            - members
+            - relationships
+            - events
+            - sources
+          properties:
+            relationship_assertion_ids:
+              type: array
+              items: { type: string }
+            chapters:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicFamilyStoryChapter'
+            media:
+              $ref: '#/components/schemas/PublicFamilyStoryMedia'
+            members:
+              type: array
+              items:
+                $ref: '#/components/schemas/PandaDetail'
+            relationships:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicParentageAssertion'
+            events:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicMomentOccurrence'
+            sources:
+              type: array
+              items:
+                $ref: '#/components/schemas/PublicSourceSummary'
+
+    PublicFamilyStoryListResponse:
+      type: object
+      additionalProperties: false
+      required: [items, meta, release]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicFamilyStorySummary'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+        release:
+          type: object
+          additionalProperties:
+            type: string
+
     PandaListItem:
       type: object
       required: [id, slug, name_zh, gender, status]
@@ -3371,6 +3908,10 @@ components:
           type: string
         access_state:
           type: string
+        evidence_tier:
+          anyOf:
+            - type: string
+            - type: 'null'
 
     LocalizedPublicContent:
       type: object

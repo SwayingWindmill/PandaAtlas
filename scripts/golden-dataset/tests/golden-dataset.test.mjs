@@ -120,7 +120,7 @@ test("every core profile declares completeness gaps and current-place verificati
 test("generated web identity aliases match the current reviewed release", async () => {
   const dataset = await readWebReleaseDataset();
   assert.equal(dataset.dataset.version, WEB_RELEASE_VERSION);
-  assert.equal(dataset.pandas.length, 38);
+  assert.equal(dataset.pandas.length, 39);
   const generated = await readFile(generatedIdentityAliasesPath, "utf8");
 
   assert.equal(
@@ -128,7 +128,7 @@ test("generated web identity aliases match the current reviewed release", async 
     normalizeGeneratedModule(renderTrustedIdentityAliasModule(dataset)),
   );
   const identityReferences = buildTrustedIdentityReferences(dataset);
-  assert.equal(Object.keys(identityReferences).length, 57);
+  assert.equal(Object.keys(identityReferences).length, 58);
   for (const reference of [
     "bao-bao",
     "baobao-smithsonian",
@@ -159,7 +159,7 @@ test("generated web identity aliases match the current reviewed release", async 
   assert.match(generated, /TRUSTED_PARENTAGE_ASSERTIONS/);
   assert.match(generated, /2939c16f-1938-5629-928c-b36b1d5cd6ed/);
   const details = buildTrustedPandaDetails(dataset);
-  assert.equal(details.length, 38);
+  assert.equal(details.length, 39);
   const lunLun = details.find((detail) => detail.slug === "lun-lun");
   const yangYang = details.find((detail) => detail.slug === "yang-yang");
   const yaLun = details.find((detail) => detail.slug === "ya-lun");
