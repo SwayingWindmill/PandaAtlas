@@ -1,7 +1,8 @@
 from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.exc import DBAPIError
 
 from app.identity.models import RequestIdentity
 from app.identity.security import get_request_identity, require_capability, resolve_correlation_id
@@ -69,6 +70,31 @@ AppealStateParameter = Annotated[
 ]
 AppealLimitParameter = Annotated[int, Query(ge=1, le=100)]
 
+_OWNERSHIP_CONFLICT_MESSAGES = (
+    "moderation-owned suspension requires an append-only restoration action",
+    "moderation cannot restore an account suspended by another process",
+)
+
+
+def _raise_moderation_database_error(error: DBAPIError) -> None:
+    original = error.orig
+    sqlstate = getattr(original, "sqlstate", None)
+    description = str(original).lower()
+    if sqlstate == "40001" and any(
+        message in description for message in _OWNERSHIP_CONFLICT_MESSAGES
+    ):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "code": "moderation_account_state_ownership_conflict",
+                "message": (
+                    "The account suspension is owned or has been superseded by another process. "
+                    "Moderation history was preserved and the account remains suspended."
+                ),
+            },
+        ) from error
+    raise error
+
 
 def _user_safe_appeal(appeal: AppealCaseRead) -> MyAppealCaseRead:
     return MyAppealCaseRead(
@@ -116,7 +142,11 @@ def restore_moderation_action_endpoint(
     identity: SanctionManager,
     correlation_id: CorrelationId,
 ) -> AccountModerationRead:
-    return restore_moderation_action(action_id, command, identity, correlation_id)
+    try:
+        return restore_moderation_action(action_id, command, identity, correlation_id)
+    except DBAPIError as error:
+        _raise_moderation_database_error(error)
+        raise AssertionError("unreachable")
 
 
 @admin_router.get("/appeals", response_model=AppealQueueRead)
@@ -155,7 +185,11 @@ def decide_appeal_endpoint(
     identity: RecentlyAuthenticatedAppealDecider,
     correlation_id: CorrelationId,
 ) -> AppealCaseRead:
-    return decide_appeal(appeal_case_id, command, identity, correlation_id)
+    try:
+        return decide_appeal(appeal_case_id, command, identity, correlation_id)
+    except DBAPIError as error:
+        _raise_moderation_database_error(error)
+        raise AssertionError("unreachable")
 
 
 @admin_router.get("/metrics", response_model=ModerationMetricsRead)
