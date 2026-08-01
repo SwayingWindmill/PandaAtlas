@@ -8,6 +8,17 @@ export const adminTheme = {
     error: { main: "#991b1b", contrastText: "#ffffff" },
   },
   components: {
+    RaLayout: {
+      styleOverrides: {
+        root: {
+          minWidth: 0,
+          maxWidth: "100%",
+          "& .RaLayout-appFrame": { minWidth: 0, maxWidth: "100%" },
+          "& .RaLayout-contentWithSidebar": { minWidth: 0, maxWidth: "100%" },
+          "& .RaLayout-content": { minWidth: 0, maxWidth: "100%" },
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: { minHeight: 44, fontWeight: 700 },

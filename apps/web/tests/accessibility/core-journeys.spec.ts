@@ -162,7 +162,19 @@ test("bilingual profiles tolerate a simulated 200-percent text-only resize", asy
       });
     });
 
-    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+    const overflowing = await page.locator("*").evaluateAll((elements) => elements
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          tag: element.tagName.toLowerCase(),
+          className: element instanceof HTMLElement ? element.className : "",
+          text: element.textContent?.trim().slice(0, 80) ?? "",
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+        };
+      })
+      .filter((item) => item.left < -1 || item.right > innerWidth + 1));
+    expect(overflowing).toEqual([]);
     await expect(page.getByTestId("footprint-text-view")).toBeVisible();
   }
 });

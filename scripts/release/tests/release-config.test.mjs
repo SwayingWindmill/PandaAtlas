@@ -29,6 +29,7 @@ test("CI declares one reproducible authoritative default gate", async () => {
     'NPM_VERSION: "10.9.0"',
     'PYTHON_VERSION: "3.12"',
     'UV_VERSION: "0.11.7"',
+    'ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true"',
     "run: npm ci",
     "npx playwright install --with-deps chromium",
     "name: release-gate-map-close",
@@ -43,6 +44,14 @@ test("CI declares one reproducible authoritative default gate", async () => {
     assert.match(workflow, new RegExp(requiredText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 
+  assert.equal(
+    (workflow.match(/ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true"/g) ?? []).length,
+    1,
+  );
+  assert.match(
+    workflow,
+    /name: Record deterministic Archive governance rehearsal evidence[\s\S]*?working-directory: services\/api[\s\S]*?env:\s*\r?\n\s+ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED: "true"[\s\S]*?scripts\/rehearse_archive_governance_cutover\.py/,
+  );
   assert.match(workflow, /runs-on: windows-latest/);
   assert.match(workflow, /run: npm run release:map-close:windows/);
   assert.equal((workflow.match(/run: npm run release:map-close$/gm) ?? []).length, 1);

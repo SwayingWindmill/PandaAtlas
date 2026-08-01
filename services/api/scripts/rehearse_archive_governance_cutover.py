@@ -30,9 +30,10 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     settings = Settings()
-    if not settings.database_url:
+    database_url = settings.database_url
+    if not database_url:
         raise SystemExit("DATABASE_URL is required for a production-like rehearsal clone")
-    configure_database(settings.database_url)
+    configure_database(database_url)
     snapshot = rehearsal_snapshot()
     payload = snapshot.model_dump(mode="json")
     args.output.parent.mkdir(parents=True, exist_ok=True)

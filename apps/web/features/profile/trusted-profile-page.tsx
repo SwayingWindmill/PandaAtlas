@@ -610,7 +610,7 @@ export function TrustedProfilePage({
         </section>
 
         <nav aria-label={t.navLabel} className="sticky top-[78px] z-20 border-y border-[var(--pa-color-accent-border-08)] bg-[var(--card)]">
-          <div className={`${publicShellClassName} flex gap-5 overflow-x-auto py-3 text-sm font-semibold`}>
+          <div className={`${publicShellClassName} flex flex-wrap gap-x-5 gap-y-1 py-3 text-sm font-semibold`}>
             {t.nav.map(([label, id]) => (
               <a key={id} href={`#${id}`} className="min-w-0 rounded-lg px-2 py-2 break-words focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
                 {label}

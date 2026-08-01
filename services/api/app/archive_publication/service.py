@@ -9,7 +9,7 @@ from uuid import UUID
 
 from fastapi import HTTPException
 from sqlalchemy import text
-from sqlalchemy.exc import DBAPIError, IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import DBAPIError, IntegrityError, OperationalError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.archive_publication.models import (
@@ -639,6 +639,11 @@ def publish_change_set(
                 },
             ).mappings().one()
             return _release_read(session, row["release_id"])
+    except OperationalError as error:
+        raise HTTPException(
+            status_code=503,
+            detail={"code": "authoritative_database_unavailable"},
+        ) from error
     except IntegrityError as error:
         reason = str(error.orig)
         failure_type = "policy_conflict"
@@ -672,7 +677,12 @@ def publish_change_set(
             failure_type=failure_type,
             reason=reason,
         )
-        status_code = 403 if "capability" in lowered or "contributor" in lowered else 409
+        forbidden = (
+            "capability" in lowered
+            or "contributor" in lowered
+            or "recent authentication" in lowered
+        )
+        status_code = 403 if forbidden else 409
         raise HTTPException(
             status_code=status_code,
             detail={"code": code, "message": reason},

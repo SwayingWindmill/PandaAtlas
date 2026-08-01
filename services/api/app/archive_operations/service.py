@@ -8,7 +8,7 @@ from uuid import UUID
 
 from fastapi import HTTPException
 from sqlalchemy import text
-from sqlalchemy.exc import DBAPIError, IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import DBAPIError, IntegrityError, OperationalError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.archive_operations.models import (
@@ -149,16 +149,17 @@ def _operation_read(session: Session, operation_id: UUID) -> ArchiveOperationRea
 def _raise_operation_error(error: DBAPIError) -> None:
     reason = str(error.orig)
     lowered = reason.lower()
-    if "idempotency key" in lowered:
+    sqlstate = getattr(error.orig, "sqlstate", None)
+    if "idempotency key" in lowered or sqlstate == "23505":
         status_code = 409
         code = "idempotency_key_reused"
-    elif "version conflict" in lowered:
+    elif "version conflict" in lowered or sqlstate == "40001":
         status_code = 409
         code = "archive_release_version_conflict"
-    elif "capability" in lowered or "recent authentication" in lowered:
+    elif sqlstate == "42501":
         status_code = 403
         code = "archive_operation_forbidden"
-    elif "missing" in lowered or "not found" in lowered:
+    elif sqlstate == "P0002" or "missing" in lowered or "not found" in lowered:
         status_code = 404
         code = "archive_operation_target_not_found"
     elif "reduce public exposure" in lowered:
@@ -252,6 +253,14 @@ def _execute_operation(
                 },
             ).mappings().one()
             return _operation_read(session, row["operation_id"])
+    except OperationalError as error:
+        sqlstate = getattr(error.orig, "sqlstate", None)
+        if sqlstate is None or str(sqlstate).startswith("08"):
+            raise HTTPException(
+                status_code=503,
+                detail={"code": "authoritative_database_unavailable"},
+            ) from error
+        _raise_operation_error(error)
     except (IntegrityError, DBAPIError) as error:
         _raise_operation_error(error)
 
