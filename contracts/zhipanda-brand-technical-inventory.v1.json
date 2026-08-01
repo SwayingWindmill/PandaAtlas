@@ -88,6 +88,86 @@
       "matches": {
         "panda-atlas": 2
       }
+    },
+    {
+      "path": "contracts/managed-cloud-deployment-inventory.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The deployment inventory records established Cloudflare Worker, D1, R2, environment-variable, and repository compatibility identifiers; these values are not public product copy.",
+      "matches": {
+        "panda-atlas": 19,
+        "PANDA_ATLAS": 2
+      }
+    },
+    {
+      "path": "contracts/vercel-web-deployment.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The Vercel plan preserves current Cloudflare runtime names and an established environment-variable identifier for rollback and release compatibility.",
+      "matches": {
+        "panda-atlas": 2,
+        "PANDA_ATLAS": 1
+      }
+    },
+    {
+      "path": "data/deployment-evidence/vercel-web-2026-08-01.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The immutable deployment evidence records the GitHub repository slug and a machine-readable result field retained for evidence compatibility.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "docs/deployment/managed-cloud-phase-0-inventory.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The operator inventory names current Cloudflare Workers, D1 databases, R2 buckets, and compatibility paths exactly as deployed.",
+      "matches": {
+        "panda-atlas": 15
+      }
+    },
+    {
+      "path": "docs/deployment/vercel-web-phase-1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The setup instructions name the existing GitHub repository slug required by the Vercel Git integration.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/check-managed-cloud-inventory.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The validator pins an existing Cloudflare runtime identifier as a rollback boundary.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/vercel-web-deployment-plan.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The test asserts the established Cloudflare API runtime identifier retained during the Vercel migration.",
+      "matches": {
+        "panda-atlas": 1
+      }
     }
   ]
 }

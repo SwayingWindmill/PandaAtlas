@@ -10,9 +10,9 @@
 
 ## Objective
 
-Deploy `apps/web` to a Vercel preview URL and verify the existing Panda Atlas Web behavior without changing production traffic or data infrastructure.
+Deploy `apps/web` to a Vercel preview URL and verify the existing ZhiPanda Web behavior without changing production traffic or data infrastructure.
 
-The Vercel project now exists as `swaying-windmill/zhipanda`, with `apps/web` as its Root Directory. The stable Vercel-only URL is `https://zhipanda.vercel.app`. It remains separate from the public Panda Atlas custom domains.
+The Vercel project now exists as `swaying-windmill/zhipanda`, with `apps/web` as its Root Directory. The stable Vercel-only URL is `https://zhipanda.vercel.app`. It remains separate from the public ZhiPanda custom domains.
 
 During this phase:
 
@@ -44,7 +44,7 @@ The project owner must perform the following managed-platform actions:
    NEXT_PUBLIC_API_BASE_URL=https://api.zhipanda.com
    ```
 
-7. Do not add `zhipanda.com` or `www.zhipanda.com` to the Vercel project during this phase. Vercel may label the deployment from `master` as a Production Deployment, but it remains isolated on a `*.vercel.app` URL and receives no Panda Atlas production traffic.
+7. Do not add `zhipanda.com` or `www.zhipanda.com` to the Vercel project during this phase. Vercel may label the deployment from `master` as a Production Deployment, but it remains isolated on a `*.vercel.app` URL and receives no ZhiPanda production traffic.
 8. After the initial import, create a preview deployment from a non-production branch or pull request.
 9. Record the non-secret Vercel project ID and team ID in `contracts/vercel-web-deployment.v1.json`.
 10. Run the GitHub Actions workflow **Vercel Web Acceptance** with the generated HTTPS `*.vercel.app` preview URL.

@@ -1,6 +1,6 @@
 # Architecture decisions
 
-Panda Atlas records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs).
+ZhiPanda records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs).
 
 ## Current and target deployment
 

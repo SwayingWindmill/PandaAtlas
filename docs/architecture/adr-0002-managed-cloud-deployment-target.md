@@ -7,15 +7,15 @@
 
 ## Context
 
-Panda Atlas currently runs its public Web application through OpenNext on Cloudflare Workers, serves the public read API through a Cloudflare Worker backed by D1/R2, and retains FastAPI plus PostgreSQL/PostGIS as the authoritative domain and write path. This architecture is operational, but it requires two public data runtimes, a versioned D1 projection, OpenNext compatibility work, and coordinated Worker, D1, R2, and Web releases.
+ZhiPanda currently runs its public Web application through OpenNext on Cloudflare Workers, serves the public read API through a Cloudflare Worker backed by D1/R2, and retains FastAPI plus PostgreSQL/PostGIS as the authoritative domain and write path. This architecture is operational, but it requires two public data runtimes, a versioned D1 projection, OpenNext compatibility work, and coordinated Worker, D1, R2, and Web releases.
 
-The project owner has selected a managed-only operating model. Panda Atlas must not require a self-managed virtual machine, long-running Docker host, manually administered PostgreSQL server, Nginx instance, or other persistent application server.
+The project owner has selected a managed-only operating model. ZhiPanda must not require a self-managed virtual machine, long-running Docker host, manually administered PostgreSQL server, Nginx instance, or other persistent application server.
 
 The preferred target should also use mainstream managed services, preserve the existing authoritative data model, reduce duplicate infrastructure, and support gradual migration without interrupting the current production site.
 
 ## Decision
 
-Panda Atlas will migrate toward the following managed-cloud target:
+ZhiPanda will migrate toward the following managed-cloud target:
 
 ```text
 GitHub
