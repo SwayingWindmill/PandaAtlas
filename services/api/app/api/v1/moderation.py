@@ -36,6 +36,7 @@ class UserSanctionRead(BaseModel):
     ends_at: datetime | None
     created_at: datetime
     active: bool
+    appealable: bool
     restored_at: datetime | None = None
 
 

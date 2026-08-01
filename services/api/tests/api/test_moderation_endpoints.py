@@ -35,6 +35,7 @@ def test_public_moderation_openapi_uses_user_safe_models() -> None:
     appeal_properties = set(schemas["UserAppealCaseRead"]["properties"])
     decision_properties = set(schemas["UserAppealDecisionRead"]["properties"])
 
+    assert "appealable" in sanction_properties
     assert sanction_properties.isdisjoint(
         {
             "account_id",

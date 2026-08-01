@@ -14,7 +14,11 @@ paths:
       operationId: getCurrentModerationNotice
       summary: Read the authenticated account's current user-visible sanctions and appeals
       responses:
-        '200': { description: Current moderation notice }
+        '200':
+          description: Current moderation notice
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserModerationNoticeRead' }
         '401': { description: Authentication required }
         '404': { description: Moderation controls disabled }
   /api/v1/moderation/appeals:
@@ -27,9 +31,13 @@ paths:
           application/json:
             schema: { $ref: '#/components/schemas/OpenAppealCommand' }
       responses:
-        '201': { description: Appeal opened or idempotently replayed }
+        '201':
+          description: Appeal opened or idempotently replayed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserAppealCaseRead' }
         '404': { description: Sanction not visible }
-        '409': { description: Version, idempotency, or existing appeal conflict }
+        '409': { description: Version, idempotency, existing appeal, or non-appealable sanction conflict }
   /api/v1/admin/moderation/accounts:
     get:
       operationId: listModerationAccounts
@@ -258,3 +266,97 @@ components:
         outcome: { type: string, enum: [upheld, overturned, dismissed] }
         internal_explanation: { type: string, minLength: 10, maxLength: 4000 }
         user_visible_explanation: { type: string, minLength: 10, maxLength: 2000 }
+    UserSanctionRead:
+      type: object
+      additionalProperties: false
+      required:
+        - sanction_id
+        - kind
+        - scope
+        - reason_code
+        - user_visible_explanation
+        - starts_at
+        - ends_at
+        - created_at
+        - active
+        - appealable
+      properties:
+        sanction_id: { type: string, format: uuid }
+        kind:
+          type: string
+          enum:
+            - warning
+            - submission_restricted
+            - attachment_restricted
+            - notification_restricted
+            - account_suspended
+            - account_closed_for_abuse
+        scope: { type: string, enum: [account, submission, attachment, notification] }
+        reason_code: { type: string }
+        user_visible_explanation: { type: string }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: [string, 'null'], format: date-time }
+        created_at: { type: string, format: date-time }
+        active: { type: boolean }
+        appealable: { type: boolean }
+        restored_at: { type: [string, 'null'], format: date-time }
+    UserAppealDecisionRead:
+      type: object
+      additionalProperties: false
+      required: [outcome, user_visible_explanation, decided_at]
+      properties:
+        outcome: { type: string, enum: [upheld, overturned, dismissed] }
+        user_visible_explanation: { type: string }
+        decided_at: { type: string, format: date-time }
+    UserAppealCaseRead:
+      type: object
+      additionalProperties: false
+      required:
+        - appeal_case_id
+        - sanction_id
+        - state
+        - version
+        - user_statement
+        - first_response_due_at
+        - created_at
+        - updated_at
+      properties:
+        appeal_case_id: { type: string, format: uuid }
+        sanction_id: { type: string, format: uuid }
+        state: { type: string, enum: [open, under_review, closed] }
+        version: { type: integer, minimum: 1 }
+        user_statement: { type: string }
+        first_response_due_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        decision:
+          oneOf:
+            - $ref: '#/components/schemas/UserAppealDecisionRead'
+            - type: 'null'
+    UserModerationNoticeRead:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - account_state
+        - submission_restricted
+        - attachment_restricted
+        - notification_restricted
+        - account_suspended
+        - account_closed_for_abuse
+        - sanctions
+        - appeals
+      properties:
+        version: { type: integer, minimum: 1 }
+        account_state: { type: string }
+        submission_restricted: { type: boolean }
+        attachment_restricted: { type: boolean }
+        notification_restricted: { type: boolean }
+        account_suspended: { type: boolean }
+        account_closed_for_abuse: { type: boolean }
+        sanctions:
+          type: array
+          items: { $ref: '#/components/schemas/UserSanctionRead' }
+        appeals:
+          type: array
+          items: { $ref: '#/components/schemas/UserAppealCaseRead' }

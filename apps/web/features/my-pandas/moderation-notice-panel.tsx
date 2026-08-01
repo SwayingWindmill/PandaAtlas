@@ -13,6 +13,7 @@ type Sanction = {
   starts_at: string;
   ends_at: string | null;
   active: boolean;
+  appealable: boolean;
 };
 
 type Appeal = {
@@ -89,14 +90,7 @@ export function ModerationNoticePanel({ locale }: { locale: PublicLocale }) {
     if (!response.ok) throw new Error(t.unavailable);
     const nextNotice = (await response.json()) as ModerationNotice;
     setNotice(nextNotice);
-    const appealed = new Set(
-      nextNotice.appeals
-        .filter((appeal) => appeal.state !== "closed")
-        .map((appeal) => appeal.sanction_id),
-    );
-    const firstAppealable = nextNotice.sanctions.find(
-      (sanction) => !appealed.has(sanction.sanction_id),
-    );
+    const firstAppealable = nextNotice.sanctions.find((sanction) => sanction.appealable);
     setSelectedSanction(firstAppealable?.sanction_id ?? "");
   }, [t.unavailable]);
 
@@ -108,17 +102,8 @@ export function ModerationNoticePanel({ locale }: { locale: PublicLocale }) {
     () => notice?.sanctions.filter((sanction) => sanction.active) ?? [],
     [notice],
   );
-  const openAppealSanctions = useMemo(
-    () =>
-      new Set(
-        notice?.appeals
-          .filter((appeal) => appeal.state !== "closed")
-          .map((appeal) => appeal.sanction_id) ?? [],
-      ),
-    [notice],
-  );
   const appealableSanctions =
-    notice?.sanctions.filter((sanction) => !openAppealSanctions.has(sanction.sanction_id)) ?? [];
+    notice?.sanctions.filter((sanction) => sanction.appealable) ?? [];
 
   async function submitAppeal(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

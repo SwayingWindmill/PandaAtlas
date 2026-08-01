@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from fastapi import HTTPException
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
@@ -224,6 +225,67 @@ def _restore_command(expected_version: int, key: str) -> RestoreSanctionCommand:
     )
 
 
+def test_superseded_sanction_cannot_open_an_appeal(
+    real_db_url: str,
+) -> None:
+    _ = real_db_url
+    moderator_id = uuid4()
+    subject_id = uuid4()
+    _insert_account(moderator_id, "superseded-moderator")
+    _insert_account(subject_id, "superseded-subject")
+    moderator = _moderator(moderator_id)
+
+    first = issue_sanction(
+        subject_id,
+        _sanction_command(
+            expected_version=1,
+            kind=SanctionKind.WARNING,
+            scope=SanctionScope.ACCOUNT,
+            idempotency_key="superseded-warning-first",
+            ends_at=None,
+        ),
+        moderator,
+        uuid4(),
+    )
+    first_warning_id = next(
+        sanction.sanction_id
+        for sanction in first.sanctions
+        if sanction.kind is SanctionKind.WARNING
+    )
+    issue_sanction(
+        subject_id,
+        _sanction_command(
+            expected_version=2,
+            kind=SanctionKind.WARNING,
+            scope=SanctionScope.ACCOUNT,
+            idempotency_key="superseded-warning-second",
+            ends_at=None,
+        ),
+        moderator,
+        uuid4(),
+    )
+
+    with pytest.raises(HTTPException) as error:
+        open_appeal(
+            OpenAppealCommand(
+                idempotency_key="superseded-warning-appeal",
+                expected_version=3,
+                sanction_id=first_warning_id,
+                user_statement=(
+                    "I am requesting review of a warning that is no longer the current sanction."
+                ),
+            ),
+            _identity(subject_id),
+            uuid4(),
+        )
+
+    assert error.value.status_code == 409
+    assert error.value.detail == {
+        "code": "sanction_not_appealable",
+        "message": "Only a current active sanction can be appealed",
+    }
+
+
 def test_warning_projection_supersedes_and_can_be_overturned(
     real_db_url: str,
 ) -> None:
@@ -253,6 +315,7 @@ def test_warning_projection_supersedes_and_can_be_overturned(
     )
     assert first.version == 2
     assert first.sanctions[0].active is True
+    assert first.sanctions[0].appealable is True
 
     second = issue_sanction(
         subject_id,
@@ -278,6 +341,13 @@ def test_warning_projection_supersedes_and_can_be_overturned(
         for sanction in second.sanctions
         if sanction.kind is SanctionKind.WARNING and sanction.active
     } == {second_warning_id}
+    second_warnings = {
+        sanction.sanction_id: sanction
+        for sanction in second.sanctions
+        if sanction.kind is SanctionKind.WARNING
+    }
+    assert second_warnings[first_warning_id].appealable is False
+    assert second_warnings[second_warning_id].appealable is True
 
     appeal = open_appeal(
         OpenAppealCommand(
@@ -291,6 +361,14 @@ def test_warning_projection_supersedes_and_can_be_overturned(
         _identity(subject_id),
         uuid4(),
     )
+    appealed = get_subject(subject_id)
+    current_warning = next(
+        sanction
+        for sanction in appealed.sanctions
+        if sanction.sanction_id == second_warning_id
+    )
+    assert current_warning.appealable is False
+
     decided = decide_appeal(
         appeal.appeal_case_id,
         DecideAppealCommand(
@@ -320,7 +398,9 @@ def test_warning_projection_supersedes_and_can_be_overturned(
     }
     assert restored.version == 4
     assert warnings[first_warning_id].active is False
+    assert warnings[first_warning_id].appealable is False
     assert warnings[second_warning_id].active is False
+    assert warnings[second_warning_id].appealable is False
     assert warnings[second_warning_id].restored_at is not None
 
     with session_scope() as session:

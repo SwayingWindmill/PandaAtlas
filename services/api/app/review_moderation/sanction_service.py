@@ -287,7 +287,23 @@ def _sanctions(session: Session, account_id: UUID, *, include_internal: bool) ->
                        or sanction.sanction_id = subject.attachment_sanction_id
                        or sanction.sanction_id = subject.notification_sanction_id
                        or sanction.sanction_id = subject.account_sanction_id
-                     )) as active
+                     )) as active,
+                   (restoration.restoration_id is null
+                     and sanction.starts_at <= now()
+                     and (sanction.ends_at is null or sanction.ends_at > now())
+                     and (
+                       sanction.sanction_id = subject.warning_sanction_id
+                       or sanction.sanction_id = subject.submission_sanction_id
+                       or sanction.sanction_id = subject.attachment_sanction_id
+                       or sanction.sanction_id = subject.notification_sanction_id
+                       or sanction.sanction_id = subject.account_sanction_id
+                     )
+                     and not exists (
+                       select 1
+                       from review_moderation.appeal_cases appeal
+                       where appeal.sanction_id = sanction.sanction_id
+                         and appeal.state <> 'closed'
+                     )) as appealable
             from review_moderation.sanctions sanction
             join review_moderation.moderation_subjects subject
               on subject.account_id = sanction.account_id
@@ -316,6 +332,7 @@ def _sanctions(session: Session, account_id: UUID, *, include_internal: bool) ->
             subject_version_after=row["subject_version_after"],
             created_at=row["created_at"],
             active=bool(row["active"]),
+            appealable=bool(row["appealable"]),
             restored_at=row["restored_at"],
         )
         for row in rows
@@ -979,14 +996,35 @@ def open_appeal(
         sanction = session.execute(
             text(
                 """
-                select sanction_id from review_moderation.sanctions
-                where sanction_id = :sanction_id and account_id = :account_id
+                select sanction.sanction_id,
+                       (restoration.restoration_id is null
+                         and sanction.starts_at <= now()
+                         and (sanction.ends_at is null or sanction.ends_at > now())
+                         and (
+                           sanction.sanction_id = subject.warning_sanction_id
+                           or sanction.sanction_id = subject.submission_sanction_id
+                           or sanction.sanction_id = subject.attachment_sanction_id
+                           or sanction.sanction_id = subject.notification_sanction_id
+                           or sanction.sanction_id = subject.account_sanction_id
+                         )) as appealable
+                from review_moderation.sanctions sanction
+                join review_moderation.moderation_subjects subject
+                  on subject.account_id = sanction.account_id
+                left join review_moderation.restoration_events restoration
+                  on restoration.sanction_id = sanction.sanction_id
+                where sanction.sanction_id = :sanction_id
+                  and sanction.account_id = :account_id
                 """
             ),
             {"sanction_id": command.sanction_id, "account_id": identity.account_id},
-        ).scalar_one_or_none()
+        ).mappings().one_or_none()
         if sanction is None:
             raise HTTPException(status_code=404, detail={"code": "sanction_not_found"})
+        if not bool(sanction["appealable"]):
+            raise _conflict(
+                "sanction_not_appealable",
+                "Only a current active sanction can be appealed",
+            )
         existing = session.execute(
             text(
                 """

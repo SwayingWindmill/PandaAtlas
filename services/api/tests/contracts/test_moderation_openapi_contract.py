@@ -53,3 +53,30 @@ def test_moderation_openapi_exposes_versioned_commands_and_explicit_capabilities
     assert "idempotency_key" in schemas["IssueSanctionCommand"]["properties"]
     assert "internal_explanation" in schemas["IssueSanctionCommand"]["properties"]
     assert "user_visible_explanation" in schemas["IssueSanctionCommand"]["properties"]
+
+
+def test_moderation_openapi_publishes_user_safe_response_models() -> None:
+    fragment = yaml.safe_load(FRAGMENT.read_text(encoding="utf-8"))
+    schemas = fragment["components"]["schemas"]
+    notice_response = fragment["paths"]["/api/v1/moderation/notice"]["get"]["responses"][
+        "200"
+    ]["content"]["application/json"]["schema"]
+    appeal_response = fragment["paths"]["/api/v1/moderation/appeals"]["post"]["responses"][
+        "201"
+    ]["content"]["application/json"]["schema"]
+
+    assert notice_response == {"$ref": "#/components/schemas/UserModerationNoticeRead"}
+    assert appeal_response == {"$ref": "#/components/schemas/UserAppealCaseRead"}
+    assert "appealable" in schemas["UserSanctionRead"]["required"]
+    assert set(schemas["UserSanctionRead"]["properties"]).isdisjoint(
+        {
+            "account_id",
+            "internal_explanation",
+            "issued_by_account_id",
+            "subject_version_before",
+            "subject_version_after",
+        }
+    )
+    assert set(schemas["UserAppealCaseRead"]["properties"]).isdisjoint(
+        {"account_id", "first_responded_at", "sla_overdue", "age_seconds"}
+    )

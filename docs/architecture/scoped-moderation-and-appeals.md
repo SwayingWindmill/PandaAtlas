@@ -50,9 +50,9 @@ Time-bounded restrictions stop being effective at `ends_at`, but stored projecti
 
 ## Appeals
 
-Authenticated users may read `/api/v1/moderation/notice` and open `/api/v1/moderation/appeals` even while their account is suspended. Internal explanations are never returned by these user routes.
+Authenticated users may read `/api/v1/moderation/notice` and open `/api/v1/moderation/appeals` even while their account is suspended. Internal explanations are never returned by these user routes. Each user-visible sanction includes an `appealable` flag; only the current, unexpired, unrestored projection is appealable, and an existing non-closed appeal temporarily clears that flag.
 
-Each sanction may have at most one non-closed appeal. The first response is due after five business days. An appeal moves from `open` to `under_review` to `closed`, with version checks on every mutation. Supported final outcomes are:
+Each sanction may have at most one non-closed appeal. Superseded, expired, or restored sanctions remain visible as history but cannot open a new appeal. The first response is due after five business days. An appeal moves from `open` to `under_review` to `closed`, with version checks on every mutation. Supported final outcomes are:
 
 - `upheld`: retain the current sanction;
 - `overturned`: append restoration and close the appeal in one transaction; and

@@ -149,6 +149,7 @@ class SanctionRead(BaseModel):
     subject_version_after: int
     created_at: datetime
     active: bool
+    appealable: bool
     restored_at: datetime | None = None
 
 
