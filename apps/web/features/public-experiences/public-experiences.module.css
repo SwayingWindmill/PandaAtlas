@@ -444,6 +444,9 @@
 }
 
 .sourceList a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: #0d513b;
   font-weight: 750;
 }
