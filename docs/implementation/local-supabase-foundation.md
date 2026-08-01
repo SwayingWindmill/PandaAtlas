@@ -1,5 +1,9 @@
 # ZhiPanda local Supabase foundation
 
+- Runtime status: **Local only**
+- Production rule: this stack supports development and recovery verification; it is not a production Supabase deployment or a persistent production dependency
+- Governing status page: [`docs/deployment/runtime-status.md`](../deployment/runtime-status.md)
+
 Issue #177 replaces the repository's standalone PostGIS container with one pinned Supabase CLI stack. The minimum stack supplies PostgreSQL 17, PostGIS, PGMQ, Auth, and private Storage. Studio, local email capture, Realtime, analytics, and Edge Runtime are disabled for this foundation slice. FastAPI remains the sole authoritative application command path.
 
 ## Pinned toolchain

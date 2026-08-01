@@ -1,6 +1,12 @@
 # Panda Atlas Cloudflare Worker read projection
 
-This service is an optional public read projection for Panda Atlas. It is not a replacement for the authoritative FastAPI/PostgreSQL path.
+- Runtime status: **Current production / Transitional**
+- Retirement phase: ADR 0002 Phase 5, after managed API cutover and rollback acceptance
+- Governing status page: [`docs/deployment/runtime-status.md`](../../docs/deployment/runtime-status.md)
+
+This service currently serves the public read API and remains required for production and rollback. It is not the approved long-term API target and is not a replacement for the authoritative FastAPI/PostgreSQL path.
+
+Under [ADR 0002](../../docs/architecture/adr-0002-managed-cloud-deployment-target.md), maintenance is limited to current-production reliability, public-contract compatibility, migration safety, rollback, and retirement work. Do not add new authoritative state, write paths, or unrelated product features to D1 or this Worker.
 
 Ownership is defined in [`docs/architecture/adr-0001-single-source-api-boundary.md`](../../docs/architecture/adr-0001-single-source-api-boundary.md):
 
@@ -40,9 +46,9 @@ curl.exe "http://127.0.0.1:8787/api/v1/map/distribution?bbox=100,25,110,36&layer
 
 Requests to `/api/v1/admin/**` return `404` because the projection runtime has no write surface.
 
-## Production setup
+## Current transitional production setup
 
-Create the Cloudflare resources used by the read projection:
+The following resources are retained while this Worker remains the active public API and rollback path:
 
 ```powershell
 npx wrangler d1 create panda-atlas
@@ -62,7 +68,7 @@ The release builder and atomic rollback/withdrawal procedure are documented in `
 
 From the repository root, use `npm run release:d1:preflight -- ...` before any candidate write, `npm run release:d1:apply -- ...` only after review, and the corresponding `release:d1:rollback:preflight` / `release:d1:rollback` commands for pointer-only rollback. Remote writes always require the explicit write script; the preflight variants are read-only.
 
-Deploy after the projection contract and migration checks pass:
+Deploy only for current-production maintenance, migration safety, or rollback after the projection contract and migration checks pass:
 
 ```powershell
 npm run check:public-api-boundary
@@ -71,4 +77,4 @@ npm run smoke:api:cf
 npm run deploy:api:cf
 ```
 
-Point the web app at the Worker URL with `NEXT_PUBLIC_API_BASE_URL` only when that projection version has passed the shared contract checks.
+Point the web app at the Worker URL with `NEXT_PUBLIC_API_BASE_URL` only when that projection version has passed the shared contract checks. The managed API cutover and Worker retirement require separate Phase 5 evidence and are not implied by a Vercel Web deployment.
