@@ -19,6 +19,18 @@ FastAPI and PostgreSQL/PostGIS own validation, imports, admin behavior, and ever
 
 ## Quick Start (Scaffold)
 
+### Optional: local CodeGraph index
+
+The repository includes a pinned CodeGraph development integration for structural search, call graphs, route ownership, and change-impact analysis used by AI coding agents:
+
+```bash
+npm ci
+npm run codegraph:init
+npm run codegraph:status
+```
+
+The local `.codegraph/` index is ignored by Git and is not used by production or CI. See [the CodeGraph development guide](docs/agents/codegraph.md) for MCP agent setup and index scope.
+
 ### 1) Frontend
 
 ```bash

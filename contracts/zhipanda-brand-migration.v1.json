@@ -1055,6 +1055,17 @@
       }
     },
     {
+      "path": "docs/agents/codegraph.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "repository governance",
+      "expected_action": "retain-compatibility",
+      "rationale": "This internal development guide uses the repository name as a technical identifier and is not rendered on a public ZhiPanda surface.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
       "path": "docs/agents/domain.md",
       "category": "technical-compatible",
       "user_visibility": "internal",
