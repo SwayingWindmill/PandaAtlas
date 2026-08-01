@@ -224,6 +224,121 @@ def _restore_command(expected_version: int, key: str) -> RestoreSanctionCommand:
     )
 
 
+def test_warning_projection_supersedes_and_can_be_overturned(
+    real_db_url: str,
+) -> None:
+    _ = real_db_url
+    moderator_id = uuid4()
+    subject_id = uuid4()
+    _insert_account(moderator_id, "warning-moderator")
+    _insert_account(subject_id, "warning-subject")
+    moderator = _moderator(moderator_id)
+
+    first = issue_sanction(
+        subject_id,
+        _sanction_command(
+            expected_version=1,
+            kind=SanctionKind.WARNING,
+            scope=SanctionScope.ACCOUNT,
+            idempotency_key="warning-first-1",
+            ends_at=None,
+        ),
+        moderator,
+        uuid4(),
+    )
+    first_warning_id = next(
+        sanction.sanction_id
+        for sanction in first.sanctions
+        if sanction.kind is SanctionKind.WARNING
+    )
+    assert first.version == 2
+    assert first.sanctions[0].active is True
+
+    second = issue_sanction(
+        subject_id,
+        _sanction_command(
+            expected_version=2,
+            kind=SanctionKind.WARNING,
+            scope=SanctionScope.ACCOUNT,
+            idempotency_key="warning-second-1",
+            ends_at=None,
+        ),
+        moderator,
+        uuid4(),
+    )
+    second_warning_id = next(
+        sanction.sanction_id
+        for sanction in second.sanctions
+        if sanction.kind is SanctionKind.WARNING and sanction.active
+    )
+    assert second.version == 3
+    assert first_warning_id != second_warning_id
+    assert {
+        sanction.sanction_id
+        for sanction in second.sanctions
+        if sanction.kind is SanctionKind.WARNING and sanction.active
+    } == {second_warning_id}
+
+    appeal = open_appeal(
+        OpenAppealCommand(
+            idempotency_key="warning-appeal-1",
+            expected_version=3,
+            sanction_id=second_warning_id,
+            user_statement=(
+                "I believe the current warning relies on duplicate evidence and should be removed."
+            ),
+        ),
+        _identity(subject_id),
+        uuid4(),
+    )
+    decided = decide_appeal(
+        appeal.appeal_case_id,
+        DecideAppealCommand(
+            idempotency_key="warning-decision-1",
+            expected_version=1,
+            expected_subject_version=3,
+            outcome=AppealDecisionOutcome.OVERTURNED,
+            internal_explanation=(
+                "Independent review confirmed that the warning relied on duplicate evidence."
+            ),
+            user_visible_explanation=(
+                "Your appeal was accepted and the current warning was removed."
+            ),
+        ),
+        moderator,
+        uuid4(),
+    )
+    assert decided.state.value == "closed"
+    assert decided.decision is not None
+    assert decided.decision.outcome is AppealDecisionOutcome.OVERTURNED
+
+    restored = get_subject(subject_id)
+    warnings = {
+        sanction.sanction_id: sanction
+        for sanction in restored.sanctions
+        if sanction.kind is SanctionKind.WARNING
+    }
+    assert restored.version == 4
+    assert warnings[first_warning_id].active is False
+    assert warnings[second_warning_id].active is False
+    assert warnings[second_warning_id].restored_at is not None
+
+    with session_scope() as session:
+        assert session is not None
+        projection = session.execute(
+            text(
+                """
+                select latest_warning_at, warning_sanction_id
+                from review_moderation.moderation_subjects
+                where account_id = :account_id
+                """
+            ),
+            {"account_id": subject_id},
+        ).mappings().one()
+        assert projection["latest_warning_at"] is None
+        assert projection["warning_sanction_id"] is None
+
+
 def test_sanction_appeal_overturn_and_scope_enforcement_are_transactional(
     real_db_url: str,
 ) -> None:

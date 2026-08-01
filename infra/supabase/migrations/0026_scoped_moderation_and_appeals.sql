@@ -83,6 +83,7 @@ create table review_moderation.moderation_subjects (
   account_restricted_until timestamptz,
   account_sanction_id uuid references review_moderation.sanctions(sanction_id) on delete restrict,
   latest_warning_at timestamptz,
+  warning_sanction_id uuid references review_moderation.sanctions(sanction_id) on delete restrict,
   repeat_abuse_count integer not null default 0 check (repeat_abuse_count >= 0),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -90,6 +91,7 @@ create table review_moderation.moderation_subjects (
   check (attachment_restricted or attachment_sanction_id is null),
   check (notification_restricted or notification_sanction_id is null),
   check (account_suspended or account_sanction_id is null),
+  check ((latest_warning_at is null) = (warning_sanction_id is null)),
   check (not account_closed_for_abuse or account_suspended)
 );
 create index idx_moderation_subjects_active

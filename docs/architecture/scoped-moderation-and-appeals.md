@@ -15,7 +15,7 @@ Migration `0026_scoped_moderation_and_appeals.sql` adds six durable fact sets:
 
 Sanctions, restorations, appeal decisions, audit events, and command receipts are append-only. `moderation_subjects` and open `appeal_cases` are versioned projections. Every command carries an idempotency key and `expected_version`; idempotent replay is checked before optimistic-concurrency validation.
 
-A newer sanction in the same scope supersedes the prior projection without deleting or rewriting the prior fact. Historical sanctions remain readable but only the currently projected sanction is reported as active.
+A newer sanction in the same scope supersedes the prior projection without deleting or rewriting the prior fact. Historical sanctions remain readable but only the currently projected sanction, including the latest warning, is reported as active. Overturning that current warning appends a restoration like every other current sanction.
 
 ## Sanction kinds and scope
 

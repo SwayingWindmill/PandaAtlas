@@ -25,6 +25,7 @@ def test_moderation_storage_is_append_only_and_versioned() -> None:
     ):
         assert f"create table {table}" in sql
     assert "moderation subject version must increase by exactly one" in sql
+    assert "warning_sanction_id uuid" in sql
     assert "appeal case version must increase by exactly one" in sql
     assert "trg_moderation_sanctions_append_only" in sql
     assert "trg_moderation_restorations_append_only" in sql

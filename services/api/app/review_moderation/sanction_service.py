@@ -282,7 +282,7 @@ def _sanctions(session: Session, account_id: UUID, *, include_internal: bool) ->
                      and sanction.starts_at <= now()
                      and (sanction.ends_at is null or sanction.ends_at > now())
                      and (
-                       sanction.kind = 'warning'
+                       sanction.sanction_id = subject.warning_sanction_id
                        or sanction.sanction_id = subject.submission_sanction_id
                        or sanction.sanction_id = subject.attachment_sanction_id
                        or sanction.sanction_id = subject.notification_sanction_id
@@ -548,7 +548,10 @@ def _apply_projection(
     command: IssueSanctionCommand,
 ) -> None:
     updates: dict[SanctionKind, str] = {
-        SanctionKind.WARNING: "latest_warning_at = now()",
+        SanctionKind.WARNING: (
+            "latest_warning_at = (select starts_at from review_moderation.sanctions "
+            "where sanction_id = :sanction_id), warning_sanction_id = :sanction_id"
+        ),
         SanctionKind.SUBMISSION_RESTRICTED: (
             "submission_restricted = true, submission_restricted_until = :ends_at, "
             "submission_sanction_id = :sanction_id"
@@ -788,6 +791,7 @@ def _restore_projection(
         raise _conflict("sanction_not_active", "Sanction is not active")
     kind = SanctionKind(str(sanction["kind"]))
     current_id_column = {
+        SanctionKind.WARNING: "warning_sanction_id",
         SanctionKind.SUBMISSION_RESTRICTED: "submission_sanction_id",
         SanctionKind.ATTACHMENT_RESTRICTED: "attachment_sanction_id",
         SanctionKind.NOTIFICATION_RESTRICTED: "notification_sanction_id",
@@ -830,6 +834,7 @@ def _restore_projection(
         },
     )
     clearing = {
+        SanctionKind.WARNING: "latest_warning_at = null, warning_sanction_id = null",
         SanctionKind.SUBMISSION_RESTRICTED: (
             "submission_restricted = false, submission_restricted_until = null, "
             "submission_sanction_id = null"
@@ -1343,7 +1348,7 @@ def moderation_metrics() -> ModerationMetricsRead:
                     and sanction.starts_at <= now()
                     and (sanction.ends_at is null or sanction.ends_at > now())
                     and (
-                      sanction.kind = 'warning'
+                      sanction.sanction_id = subject.warning_sanction_id
                       or sanction.sanction_id = subject.submission_sanction_id
                       or sanction.sanction_id = subject.attachment_sanction_id
                       or sanction.sanction_id = subject.notification_sanction_id
