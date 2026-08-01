@@ -1,5 +1,24 @@
 begin;
 
+insert into review_moderation.moderation_subjects (account_id)
+select account_id
+from identity.accounts
+on conflict (account_id) do nothing;
+
+create or replace function review_moderation.create_account_subject()
+returns trigger
+language plpgsql
+security definer
+set search_path = pg_catalog, public
+as $$
+begin
+  insert into review_moderation.moderation_subjects (account_id)
+  values (new.account_id)
+  on conflict (account_id) do nothing;
+  return new;
+end;
+$$;
+
 create or replace function review_moderation.mark_account_state_command_ownership()
 returns trigger
 language plpgsql
@@ -49,6 +68,10 @@ begin
 end;
 $$;
 
+create trigger trg_identity_account_moderation_subject
+before insert on identity.accounts
+for each row execute function review_moderation.create_account_subject();
+
 create trigger trg_moderation_action_state_claim
 before insert on review_moderation.moderation_actions
 for each row execute function review_moderation.mark_account_state_command_ownership();
@@ -57,6 +80,7 @@ create trigger trg_identity_account_moderation_ownership
 before update of state, state_reason on identity.accounts
 for each row execute function review_moderation.guard_account_state_ownership();
 
+revoke all on function review_moderation.create_account_subject() from public;
 revoke all on function review_moderation.mark_account_state_command_ownership() from public;
 revoke all on function review_moderation.guard_account_state_ownership() from public;
 
