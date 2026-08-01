@@ -153,6 +153,28 @@ class AccountModerationRead(BaseModel):
     actions: list[ModerationActionRead]
 
 
+class MyModerationActionRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    action_id: UUID
+    kind: ModerationActionKind
+    scope: str
+    reason_code: str
+    user_visible_explanation: str
+    starts_at: datetime
+    ends_at: datetime | None = None
+    created_at: datetime
+    effective: bool
+    appeal_case_id: UUID | None = None
+
+
+class MyModerationRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    account_state: Literal["active", "suspended", "deleting", "deleted"]
+    actions: list[MyModerationActionRead]
+
+
 class AppealCaseRead(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -183,6 +205,32 @@ class AppealQueueRead(BaseModel):
 
     items: list[AppealCaseRead]
     state: AppealCaseState | Literal["all"]
+
+
+class MyAppealCaseRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    appeal_case_id: UUID
+    sanction_action_id: UUID
+    state: AppealCaseState
+    version: int
+    appellant_message: str
+    first_response_due_at: datetime
+    first_responded_at: datetime | None = None
+    outcome: AppealDecisionOutcome | None = None
+    user_visible_resolution: str | None = None
+    closed_at: datetime | None = None
+    created_at: datetime
+    updated_at: datetime
+    sanction_kind: ModerationActionKind
+    sanction_scope: str
+    sanction_user_visible_explanation: str
+
+
+class MyAppealQueueRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[MyAppealCaseRead]
 
 
 class ModerationMetricsRead(BaseModel):
