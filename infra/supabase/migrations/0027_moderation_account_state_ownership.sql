@@ -69,7 +69,7 @@ end;
 $$;
 
 create trigger trg_identity_account_moderation_subject
-before insert on identity.accounts
+after insert on identity.accounts
 for each row execute function review_moderation.create_account_subject();
 
 create trigger trg_moderation_action_state_claim
