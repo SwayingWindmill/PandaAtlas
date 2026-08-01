@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 from app.data.golden_dataset import project_panda_details, public_trusted_panda_record
 from app.data.mock_data import MOCK_DISTRIBUTION, MOCK_HABITATS
+from app.projection.public_experiences import build_public_experience_runtime
 from app.schemas.map import (
     DistributionGeoJsonFeature,
     DistributionSnapshot,
@@ -31,7 +32,7 @@ ENTITY_COLLECTIONS = (
     "events",
     "media",
 )
-SUPPORTED_PUBLIC_SCHEMA_VERSIONS = {"1.0.0", "1.1.0", "1.2.0"}
+SUPPORTED_PUBLIC_SCHEMA_VERSIONS = {"1.0.0", "1.1.0", "1.2.0", "1.3.0"}
 ALLOWED_PUBLIC_FIELDS = {
     "access_state",
     "aliases",
@@ -168,7 +169,7 @@ EMAIL_PATTERN = re.compile(r"\b[^\s@]+@[^\s@]+\.[^\s@]+\b")
 PRECISE_COORDINATE_PATTERN = re.compile(
     r"(?<!\d)-?\d{1,3}\.\d{4,}\s*[,/]\s*-?\d{1,3}\.\d{4,}(?!\d)"
 )
-PUBLIC_MEDIA_SCHEMA_VERSION = "1.2.0"
+PUBLIC_MEDIA_SCHEMA_VERSIONS = {"1.2.0", "1.3.0"}
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -294,22 +295,19 @@ def _project_records(source_state: dict[str, Any]) -> list[dict[str, Any]]:
                     raise ProjectionCompatibilityError(
                         "api_pandas entity id must match its public id"
                     )
-                if entity_type in {"api_distribution", "api_habitats"} and str(
-                    public.get("id")
-                ) != entity_id:
+                if (
+                    entity_type in {"api_distribution", "api_habitats"}
+                    and str(public.get("id")) != entity_id
+                ):
                     raise ProjectionCompatibilityError(
                         f"{entity_type} entity id must match its public id"
                     )
-                if entity_type == "api_snapshots" and str(
-                    public.get("version")
-                ) != entity_id:
+                if entity_type == "api_snapshots" and str(public.get("version")) != entity_id:
                     raise ProjectionCompatibilityError(
                         "api_snapshots entity id must match its public version"
                     )
                 if entity_type == "api_stats" and entity_id != "overview":
-                    raise ProjectionCompatibilityError(
-                        "api_stats entity id must be overview"
-                    )
+                    raise ProjectionCompatibilityError("api_stats entity id must be overview")
             else:
                 public = _sanitize_public_value(
                     source_record.get("public", {}),
@@ -535,7 +533,7 @@ def _validated_media_release_record(record: dict[str, Any]) -> dict[str, Any]:
 def _attach_public_media(
     records: list[dict[str, Any]], public_schema_version: str
 ) -> list[dict[str, Any]]:
-    if public_schema_version != PUBLIC_MEDIA_SCHEMA_VERSION:
+    if public_schema_version not in PUBLIC_MEDIA_SCHEMA_VERSIONS:
         return records
 
     panda_ids = {record["id"] for record in records if record["entity_type"] == "pandas"}
@@ -615,7 +613,7 @@ def _bind_runtime_media(
     projected_records: list[dict[str, Any]],
     release: dict[str, str],
 ) -> list[dict[str, Any]]:
-    if release["public_schema_version"] != PUBLIC_MEDIA_SCHEMA_VERSION:
+    if release["public_schema_version"] not in PUBLIC_MEDIA_SCHEMA_VERSIONS:
         return pandas
 
     archive_by_id = {
@@ -678,6 +676,11 @@ def _runtime_api(
     source_state: dict[str, Any], release: dict[str, str], projected_records: list[dict[str, Any]]
 ) -> dict[str, Any]:
     dataset = _runtime_dataset(source_state, projected_records)
+    public_experiences = (
+        build_public_experience_runtime(dataset, release)
+        if release["public_schema_version"] == "1.3.0"
+        else None
+    )
     institutions = [
         {"id": str(record["id"]), **record["public"]}
         for record in projected_records
@@ -689,9 +692,7 @@ def _runtime_api(
         if record["entity_type"] == "places"
     ]
     api_panda_records = [
-        record["public"]
-        for record in projected_records
-        if record["entity_type"] == "api_pandas"
+        record["public"] for record in projected_records if record["entity_type"] == "api_pandas"
     ]
     if api_panda_records:
         pandas = api_panda_records
@@ -703,9 +704,11 @@ def _runtime_api(
             )
         ]
     pandas = _bind_runtime_media(pandas, projected_records, release)
-    if "records" in source_state and any(
-        record["entity_type"] == "pandas" for record in projected_records
-    ) and not api_panda_records:
+    if (
+        "records" in source_state
+        and any(record["entity_type"] == "pandas" for record in projected_records)
+        and not api_panda_records
+    ):
         raise ProjectionCompatibilityError(
             "Reviewed PostgreSQL releases require api_pandas snapshot revisions"
         )
@@ -789,8 +792,7 @@ def _runtime_api(
                 conflicts.append("public_revision.public_schema_version")
             if conflicts:
                 raise ProjectionCompatibilityError(
-                    f"Archive/API panda semantics conflict for {panda_id}: "
-                    + ", ".join(conflicts)
+                    f"Archive/API panda semantics conflict for {panda_id}: " + ", ".join(conflicts)
                 )
     supplied = source_state.get("runtime_api")
     if isinstance(supplied, dict):
@@ -837,9 +839,7 @@ def _runtime_api(
             if record["entity_type"]
             in {"distribution_snapshot", "distribution_snapshots", "api_snapshots"}
         ]
-    pandas = [
-        PandaDetail.model_validate(item).model_dump(mode="json") for item in pandas
-    ]
+    pandas = [PandaDetail.model_validate(item).model_dump(mode="json") for item in pandas]
     distribution_features = [
         DistributionGeoJsonFeature.model_validate(item).model_dump(mode="json")
         for item in distribution.get("features", [])
@@ -849,8 +849,7 @@ def _runtime_api(
         for item in habitats.get("features", [])
     ]
     snapshots = [
-        DistributionSnapshot.model_validate(item).model_dump(mode="json")
-        for item in snapshots
+        DistributionSnapshot.model_validate(item).model_dump(mode="json") for item in snapshots
     ]
     snapshots.sort(key=lambda item: (item["snapshot_date"], item["version"]), reverse=True)
     _assert_wildlife_geometry_is_generalized(distribution_features)
@@ -876,6 +875,8 @@ def _runtime_api(
         "snapshots": snapshots,
         "stats": stats,
     }
+    if public_experiences is not None:
+        runtime.update(public_experiences)
     _assert_runtime_safe(runtime)
     return runtime
 
@@ -952,6 +953,21 @@ def _runtime_records(runtime: dict[str, Any]) -> list[dict[str, Any]]:
         {"entity_type": "api_snapshots", "id": str(item["version"]), "public": item}
         for item in runtime["snapshots"]
     )
+    for key, entity_type in (
+        ("facilities", "api_facilities"),
+        ("sources", "api_sources"),
+        ("parentage_assertions", "api_parentage_assertions"),
+        ("events", "api_events"),
+        ("family_stories", "api_family_stories"),
+    ):
+        records.extend(
+            {
+                "entity_type": entity_type,
+                "id": str(item["id"]),
+                "public": item,
+            }
+            for item in runtime.get(key, [])
+        )
     records.append({"entity_type": "api_stats", "id": "overview", "public": runtime["stats"]})
     return records
 
@@ -964,7 +980,7 @@ def _panda_json(records: list[dict[str, Any]], release: dict[str, str]) -> str:
         and record["public"].get("record_tier") != "dependency_stub"
     ]
     payload: dict[str, Any] = {"release": release, "records": pandas}
-    if release["public_schema_version"] == PUBLIC_MEDIA_SCHEMA_VERSION:
+    if release["public_schema_version"] in PUBLIC_MEDIA_SCHEMA_VERSIONS:
         payload["media"] = [
             {"id": record["id"], **record["public"]}
             for record in records
@@ -1094,23 +1110,17 @@ def build_public_release(release_input: PublicReleaseInput) -> PublicRelease:
     }
     records = _project_records(release_input.source_state)
     records = _attach_public_media(records, public_schema_version)
-    archive_records = [
-        record for record in records if not record["entity_type"].startswith("api_")
-    ]
+    archive_records = [record for record in records if not record["entity_type"].startswith("api_")]
     runtime = _runtime_api(release_input.source_state, release, records)
     runtime_records = _runtime_records(runtime)
     files = {
         "pandas.csv": _panda_csv(archive_records, release),
         "pandas.json": _panda_json(archive_records, release),
         "api.json": _canonical_json(runtime, pretty=True),
-        "d1.sql": _d1_sql(
-            [*archive_records, *runtime_records], release, dataset["licenses"]
-        ),
+        "d1.sql": _d1_sql([*archive_records, *runtime_records], release, dataset["licenses"]),
     }
     counts = {
-        entity_type: sum(
-            record["entity_type"] == entity_type for record in archive_records
-        )
+        entity_type: sum(record["entity_type"] == entity_type for record in archive_records)
         for entity_type in ENTITY_COLLECTIONS
     }
     counts.update(
@@ -1120,11 +1130,25 @@ def build_public_release(release_input: PublicReleaseInput) -> PublicRelease:
                 "api_pandas",
                 "api_distribution",
                 "api_habitats",
+                "api_facilities",
+                "api_sources",
+                "api_parentage_assertions",
+                "api_events",
+                "api_family_stories",
                 "api_snapshots",
                 "api_stats",
             )
         }
     )
+    if public_schema_version != "1.3.0":
+        for entity_type in (
+            "api_facilities",
+            "api_sources",
+            "api_parentage_assertions",
+            "api_events",
+            "api_family_stories",
+        ):
+            counts.pop(entity_type, None)
     manifest_files = {
         filename: {
             "bytes": len(content.encode("utf-8")),

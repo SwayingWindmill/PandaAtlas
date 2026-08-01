@@ -6,6 +6,8 @@
     "atlas",
     "profile",
     "lineage",
+    "moments",
+    "family-story",
     "map",
     "my-pandas",
     "institution",
@@ -39,7 +41,8 @@
   "allowed_cross_feature_targets": [
     "feed",
     "preferences",
-    "public-content"
+    "public-content",
+    "public-experiences"
   ],
   "forbidden_production_import_segments": [
     "mock",

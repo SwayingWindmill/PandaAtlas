@@ -31,6 +31,8 @@
     "check:golden-dataset": "node scripts/golden-dataset/validate.mjs",
     "generate:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs",
     "check:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs --check",
+    "generate:public-experiences": "node scripts/golden-dataset/generate-web-public-experiences.mjs",
+    "check:public-experiences": "node scripts/golden-dataset/generate-web-public-experiences.mjs --check",
     "test:golden-dataset": "node --test scripts/golden-dataset/tests/*.test.mjs",
     "check:panda-curation": "python scripts/curation/validate_panda_curation.py",
     "test:panda-curation": "python -m unittest discover -s scripts/curation/tests -p \"test_validate_panda_curation.py\"",

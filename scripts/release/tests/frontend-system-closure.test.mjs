@@ -11,6 +11,8 @@ const canonicalIds = [
   "atlas",
   "profile",
   "lineage",
+  "moments",
+  "family-story",
   "map",
   "my-pandas",
   "institution",

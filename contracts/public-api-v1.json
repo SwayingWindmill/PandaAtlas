@@ -111,7 +111,8 @@
         "published_at": { "required": false, "nullable": true },
         "last_verified_at": { "required": true, "nullable": false },
         "language": { "required": true, "nullable": false },
-        "access_state": { "required": true, "nullable": false }
+        "access_state": { "required": true, "nullable": false },
+        "evidence_tier": { "required": false, "nullable": true }
       }
     },
     "LocalizedPublicContent": {

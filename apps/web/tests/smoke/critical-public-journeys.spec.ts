@@ -10,26 +10,26 @@ test("searches the localized Atlas and opens the canonical trusted profile", asy
   await profileLink.click();
   await expect(page).toHaveURL(/\/zh\/pandas\/mei-xiang$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.24.2");
+  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.07.31.1");
 });
 
 test("publishes the Ueno family in Atlas search and canonical profiles", async ({ page }) => {
   await page.goto("/en/pandas?q=Ri%20Ri");
 
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found; 38 pandas are currently included");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found; 39 pandas are currently included");
   const profileLink = page.getByRole("link", { name: /Ri Ri/ });
   await expect(profileLink).toHaveAttribute("href", "/en/pandas/ri-ri");
   await profileLink.click();
 
   await expect(page).toHaveURL(/\/en\/pandas\/ri-ri$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByTestId("revision-summary")).toContainText("2026.07.24.2");
+  await expect(page.getByTestId("revision-summary")).toContainText("2026.07.31.1");
 });
 
 test("redirects the legacy global distribution route into the localized structured map", async ({ page }) => {
   await page.goto("/global-distribution");
 
-  await expect(page).toHaveURL(/\/(zh|en)\/map\?mode=institutions&snapshot=2026\.07\.24\.2$/);
+  await expect(page).toHaveURL(/\/(zh|en)\/map\?mode=institutions&snapshot=2026\.07\.31\.1$/);
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
 });
 

@@ -379,7 +379,7 @@ function assertReviewedSource(source, allowedStates, label) {
   );
 }
 
-function assertExpandedArchive(dataset) {
+function assertExpandedArchive(dataset, contract) {
   requireCondition(dataset?.contract_version === "1.0.0", "expanded dataset contract_version must be 1.0.0");
   requireCondition(dataset?.dataset?.id === "panda-atlas-public", "expanded dataset id must be panda-atlas-public");
   requireCondition(
@@ -388,6 +388,19 @@ function assertExpandedArchive(dataset) {
     "expanded dataset must declare a distinct versioned reviewed base release",
   );
   requireCondition(Array.isArray(dataset.dataset.expansion_panda_ids), "expanded dataset must declare expansion_panda_ids");
+  const partialProfilePandaIds = dataset.dataset.partial_profile_panda_ids ?? [];
+  requireCondition(
+    Array.isArray(partialProfilePandaIds),
+    "expanded dataset partial_profile_panda_ids must be an array",
+  );
+  const completeExpansionIds = new Set(dataset.dataset.expansion_panda_ids);
+  const partialProfileIds = new Set(partialProfilePandaIds);
+  for (const pandaId of completeExpansionIds) {
+    requireCondition(
+      !partialProfileIds.has(pandaId),
+      `expanded panda ${pandaId} cannot be both complete and partial`,
+    );
+  }
   for (const collection of [
     "sources", "facilities", "institutions", "places", "pandas", "facts",
     "parentage_assertions", "residencies", "events", "media",
@@ -436,6 +449,70 @@ function assertExpandedArchive(dataset) {
     ).length;
     requireCondition(eventCount >= 3, `${panda.public.canonical_slug} requires at least three reviewed events`);
   }
+
+  const sourceById = new Map(dataset.sources.map((item) => [item.id, item]));
+  const allowedSourceStates = new Set(contract.allowed_reviewed_source_states);
+  for (const pandaId of partialProfilePandaIds) {
+    const panda = publishedPandas.get(pandaId);
+    requireCondition(panda, `partial profile panda ${pandaId} is not published`);
+    const approvedLocales = new Set(
+      (panda.public.content ?? [])
+        .filter((item) => item.translation_status === "approved")
+        .map((item) => item.locale),
+    );
+    requireCondition(
+      approvedLocales.has("zh-CN") && approvedLocales.has("en"),
+      `${panda.public.canonical_slug} partial profile requires approved Chinese and English content`,
+    );
+    requireCondition(
+      panda.public.record_tier === "identity_first_pass",
+      `${panda.public.canonical_slug} partial profile must remain identity_first_pass; got ${String(panda.public.record_tier)}`,
+    );
+    const primaryNames = (panda.public.names ?? []).filter((item) => item.primary === true);
+    requireCondition(primaryNames.length >= 1, `${panda.public.canonical_slug} partial profile has no primary identity name`);
+    for (const name of primaryNames) {
+      requireCondition(
+        Array.isArray(name.source_ids) && name.source_ids.length >= 1,
+        `${panda.public.canonical_slug} partial profile name has no source`,
+      );
+      for (const sourceId of name.source_ids) {
+        assertReviewedSource(
+          sourceById.get(sourceId),
+          allowedSourceStates,
+          `${panda.public.canonical_slug} partial profile name`,
+        );
+      }
+    }
+    const confirmedFacts = dataset.facts.filter(
+      (item) =>
+        item.publication_status === "published" &&
+        item.public.subject_id === pandaId &&
+        item.public.conclusion_status === "confirmed" &&
+        Array.isArray(item.public.source_ids) &&
+        item.public.source_ids.length >= 1 &&
+        /^\d{4}-\d{2}-\d{2}$/.test(item.public.last_verified_at ?? ""),
+    );
+    requireCondition(
+      confirmedFacts.length >= 1,
+      `${panda.public.canonical_slug} partial profile requires at least one reviewed confirmed fact`,
+    );
+    for (const fact of confirmedFacts) {
+      for (const sourceId of fact.public.source_ids) {
+        assertReviewedSource(
+          sourceById.get(sourceId),
+          allowedSourceStates,
+          `${panda.public.canonical_slug} partial profile fact`,
+        );
+      }
+    }
+    const mediaStates = dataset.media
+      .filter((item) => item.publication_status === "published" && item.public.panda_id === pandaId)
+      .map((item) => item.public.license_state);
+    requireCondition(
+      mediaStates.length >= 1 && mediaStates.every((state) => ["no_licensed_media", "source_link_only"].includes(state)),
+      `${panda.public.canonical_slug} partial profile cannot expose licensed media`,
+    );
+  }
 }
 
 function assertTrustedArchive(dataset, contract, api, trackedReleaseVersions) {
@@ -444,7 +521,7 @@ function assertTrustedArchive(dataset, contract, api, trackedReleaseVersions) {
     const report = validateGoldenDataset(dataset);
     requireCondition(report.valid, `golden dataset is invalid: ${JSON.stringify(report.errors)}`);
   } else {
-    assertExpandedArchive(dataset);
+    assertExpandedArchive(dataset, contract);
   }
   assertReviewedMediaArchive(dataset, contract, api, trackedReleaseVersions);
   const publicPandas = dataset.pandas.filter((item) => item.publication_status === "published");
@@ -483,6 +560,7 @@ function assertTrustedArchive(dataset, contract, api, trackedReleaseVersions) {
     );
   }
   for (const panda of publicPandas) {
+    if (panda.public.life_status === "deceased") continue;
     const current = dataset.residencies.filter(
       (item) =>
         item.publication_status === "published" &&
@@ -491,18 +569,19 @@ function assertTrustedArchive(dataset, contract, api, trackedReleaseVersions) {
         item.public.end_date == null,
     );
     requireCondition(
-      current.length === 1,
+      current.length === 1 ||
+        (current.length === 0 && panda.public.record_tier === "identity_first_pass"),
       `${panda.public.canonical_slug} must have exactly one current primary residency`,
     );
     requireCondition(
-      /^\d{4}-\d{2}-\d{2}$/.test(current[0].public.last_verified_at),
+      current.length === 0 || /^\d{4}-\d{2}-\d{2}$/.test(current[0].public.last_verified_at),
       `${panda.public.canonical_slug} current residency is unverified`,
     );
     requireCondition(
-      current[0].public.source_ids.length > 0,
+      current.length === 0 || current[0].public.source_ids.length > 0,
       `${panda.public.canonical_slug} current residency has no source`,
     );
-    current[0].public.source_ids.forEach((sourceId) =>
+    (current[0]?.public.source_ids ?? []).forEach((sourceId) =>
       assertReviewedSource(sources.get(sourceId), allowedStates, `${panda.public.canonical_slug} residency`),
     );
   }

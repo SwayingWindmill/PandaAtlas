@@ -72,9 +72,16 @@ def test_all_seven_family_profiles_are_searchable_and_publicly_projected() -> No
             "en",
         }
         conclusions = {item["field"]: item for item in detail["conclusions"]}
-        for field in ("birth_date", "sex", "current_coarse_location"):
+        for field in ("birth_date", "sex"):
             assert conclusions[field]["source_ids"], (slug, field)
             assert conclusions[field]["last_verified_at"], (slug, field)
+        location_field = (
+            "current_facility"
+            if "current_facility" in conclusions
+            else "current_coarse_location"
+        )
+        assert conclusions[location_field]["source_ids"], (slug, location_field)
+        assert conclusions[location_field]["last_verified_at"], (slug, location_field)
         assert detail["current_place"] is not None
         assert detail["media_release"] is not None
 
@@ -98,8 +105,8 @@ def test_legacy_slug_resolves_to_canonical_identity_with_public_provenance() -> 
         "display_mode": "designed_empty_state",
         "source_ids": [],
     }
-    assert payload["public_revision"]["data_version"] == "2026.07.18.1"
-    assert payload["public_revision"]["public_schema_version"] == "1.1.0"
+    assert payload["public_revision"]["data_version"] == "2026.07.31.1"
+    assert payload["public_revision"]["public_schema_version"] == "1.3.0"
     assert {item["locale"] for item in payload["public_revision"]["summaries"]} == {
         "zh-CN",
         "en",
