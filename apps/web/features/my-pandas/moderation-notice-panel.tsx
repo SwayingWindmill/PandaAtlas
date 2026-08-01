@@ -21,7 +21,6 @@ type Appeal = {
   state: "open" | "under_review" | "closed";
   user_statement: string;
   first_response_due_at: string;
-  sla_overdue: boolean;
   decision: {
     outcome: string;
     user_visible_explanation: string;
@@ -110,7 +109,12 @@ export function ModerationNoticePanel({ locale }: { locale: PublicLocale }) {
     [notice],
   );
   const openAppealSanctions = useMemo(
-    () => new Set(notice?.appeals.filter((appeal) => appeal.state !== "closed").map((appeal) => appeal.sanction_id) ?? []),
+    () =>
+      new Set(
+        notice?.appeals
+          .filter((appeal) => appeal.state !== "closed")
+          .map((appeal) => appeal.sanction_id) ?? [],
+      ),
     [notice],
   );
   const appealableSanctions =
@@ -178,7 +182,10 @@ export function ModerationNoticePanel({ locale }: { locale: PublicLocale }) {
           <h3 className="font-bold text-stone-950">{t.active}</h3>
           <ul className="mt-3 grid gap-3">
             {activeSanctions.map((sanction) => (
-              <li key={sanction.sanction_id} className="rounded-lg border border-amber-800 bg-white p-4">
+              <li
+                key={sanction.sanction_id}
+                className="rounded-lg border border-amber-800 bg-white p-4"
+              >
                 <p className="font-semibold text-stone-950">
                   {sanction.kind} · {sanction.scope}
                 </p>
@@ -201,18 +208,22 @@ export function ModerationNoticePanel({ locale }: { locale: PublicLocale }) {
           <h3 className="font-bold text-stone-950">{t.appeals}</h3>
           <ul className="mt-3 grid gap-3">
             {notice.appeals.map((appeal) => (
-              <li key={appeal.appeal_case_id} className="rounded-lg border border-stone-400 bg-white p-4">
-                <p className="font-semibold text-stone-950">
-                  {appeal.state}
-                  {appeal.sla_overdue ? " · SLA overdue" : ""}
-                </p>
+              <li
+                key={appeal.appeal_case_id}
+                className="rounded-lg border border-stone-400 bg-white p-4"
+              >
+                <p className="font-semibold text-stone-950">{appeal.state}</p>
                 <p className="mt-2 text-sm text-stone-800">{appeal.user_statement}</p>
                 <p className="mt-2 text-xs text-stone-700">
-                  {t.due}: {new Date(appeal.first_response_due_at).toLocaleString(locale === "zh" ? "zh-CN" : "en")}
+                  {t.due}:{" "}
+                  {new Date(appeal.first_response_due_at).toLocaleString(
+                    locale === "zh" ? "zh-CN" : "en",
+                  )}
                 </p>
                 {appeal.decision ? (
                   <p className="mt-2 text-sm text-stone-800">
-                    {t.outcome}: {appeal.decision.outcome} — {appeal.decision.user_visible_explanation}
+                    {t.outcome}: {appeal.decision.outcome} —{" "}
+                    {appeal.decision.user_visible_explanation}
                   </p>
                 ) : null}
               </li>
@@ -257,8 +268,16 @@ export function ModerationNoticePanel({ locale }: { locale: PublicLocale }) {
         </form>
       ) : null}
 
-      {confirmation ? <p className="mt-4 text-sm font-semibold text-emerald-900" role="status">{confirmation}</p> : null}
-      {error ? <p className="mt-4 text-sm font-semibold text-red-900" role="alert">{error}</p> : null}
+      {confirmation ? (
+        <p className="mt-4 text-sm font-semibold text-emerald-900" role="status">
+          {confirmation}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="mt-4 text-sm font-semibold text-red-900" role="alert">
+          {error}
+        </p>
+      ) : null}
     </section>
   );
 }
