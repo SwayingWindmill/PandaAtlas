@@ -13,6 +13,7 @@ const workflowPath = new URL("../../../.github/workflows/release-gate.yml", impo
 const mapClosePath = new URL("../map-close.mjs", import.meta.url);
 const windowsMapClosePath = new URL("../windows-map-close.mjs", import.meta.url);
 const planPath = new URL("../certification/map-close-plan.mjs", import.meta.url);
+const lifecyclePath = new URL("../certification/lifecycle.mjs", import.meta.url);
 const extendedPath = new URL("../extended.mjs", import.meta.url);
 
 const authoritativeStepIds = [
@@ -60,6 +61,7 @@ test("map-close is an explicit authoritative release mode", async () => {
   const mapClose = await readFile(mapClosePath, "utf8");
   const windowsMapClose = await readFile(windowsMapClosePath, "utf8");
   const planSource = await readFile(planPath, "utf8");
+  const lifecycleSource = await readFile(lifecyclePath, "utf8");
   const extended = await readFile(extendedPath, "utf8");
 
   assert.equal(rootPackage.scripts["release:private"], "node scripts/release/private-collection.mjs");
@@ -96,7 +98,7 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(mapClose, /runDefaultReleaseGate/);
   assert.match(mapClose, /MAP_CLOSE_PROFILE\.AUTHORITATIVE/);
   assert.match(mapClose, /MAP_CLOSE_WEB_ENVIRONMENT/);
-  assert.match(mapClose, /sealMapCloseEvidence/);
+  assert.match(mapClose, /runEvidenceSealedCertification/);
   assert.doesNotMatch(mapClose, /steps:\s*\[/);
   assert.match(windowsMapClose, /MAP_CLOSE_PROFILE\.WINDOWS_COMPATIBILITY/);
   assert.doesNotMatch(windowsMapClose, /steps:\s*\[/);
@@ -130,10 +132,12 @@ test("map-close is an explicit authoritative release mode", async () => {
   assert.match(planSource, /published-return-loop\.spec\.ts/);
   assert.match(planSource, /admin-shell-browser/);
 
+  assert.match(lifecycleSource, /runReleaseGate/);
+  assert.match(lifecycleSource, /sealMapCloseEvidence/);
   assert.match(extended, /runMapCloseGate/);
   assert.match(extended, /RUN_IDENTITY_ENGAGEMENT_RECOVERY/);
   assert.match(extended, /test_engagement_real_db\.py/);
-  assert.match(extended, /sealMapCloseEvidence/);
+  assert.match(extended, /runEvidenceSealedCertification/);
 });
 
 test("authoritative and Windows adapters preserve their certified profiles", () => {
