@@ -27,6 +27,7 @@ test("allows source, evidence, and root planning files", () => {
 
 test("rejects generated build, cache, dependency, and test output", () => {
   const violations = findRepositoryHygieneViolations([
+    ".batch-work/plan.json",
     "apps/web/.next/server/app.js",
     "apps/web/test-results/example/error-context.md",
     "node_modules/example/index.js",
@@ -39,6 +40,7 @@ test("rejects generated build, cache, dependency, and test output", () => {
   assert.deepEqual(
     violations.map(({ path }) => path),
     [
+      ".batch-work/plan.json",
       "apps/web/.next/server/app.js",
       "apps/web/.vercel/project.json",
       "apps/web/test-results/example/error-context.md",

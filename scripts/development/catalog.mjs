@@ -156,6 +156,15 @@ const commands = [
     effect: "long-running",
   },
   {
+    id: "api.check-runtime-boundary",
+    category: "verification",
+    description: "Reject batch modules and heavy optional dependencies from the FastAPI request closure.",
+    command: "python",
+    args: ["services/api/scripts/check_request_runtime_boundary.py"],
+    requires: ["python"],
+    effect: "read-only",
+  },
+  {
     id: "api.lint",
     category: "verification",
     description: "Run Ruff across FastAPI implementation, tests, and scripts.",
@@ -292,12 +301,22 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "release.check-batch-workflow-interface",
+    category: "verification",
+    description: "Validate bounded batch operation and GitHub Actions safety contracts.",
+    command: "node",
+    args: ["scripts/release/check-batch-workflow-interface.mjs"],
+    requires: ["node"],
+    effect: "read-only",
+  },
+  {
     id: "release.test-development",
     category: "verification",
     description: "Run development-gate contract tests.",
     command: "node",
     args: [
       "--test",
+      "scripts/release/tests/batch-workflow-interface.test.mjs",
       "scripts/release/tests/development.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
@@ -390,12 +409,13 @@ if (commandById.size !== commands.length) {
 
 export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   release: [
+    "release.check-batch-workflow-interface",
     "release.check-research-script-policy",
     "release.test-development",
   ],
   web: ["web.lint", "web.typecheck"],
   worker: ["worker.typecheck"],
-  api: ["api.lint", "api.test"],
+  api: ["api.check-runtime-boundary", "api.lint", "api.test"],
   curation: ["curation.test", "curation.check", "curation.media-test"],
   data: ["data.test", "data.check", "data.check-identities"],
 });

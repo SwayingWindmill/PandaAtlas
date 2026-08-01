@@ -9,6 +9,8 @@ This repository is the monorepo for ZhiPanda (吱熊猫), a modern panda informa
 - `infra/supabase/migrations`: forward-only SQL migrations for Supabase Postgres/PostGIS.
 - `scripts/research`: reusable research adapters, builders, runners, validators, migrations, tests, and archived one-off scripts.
 - `data/research-batches`: declarative batch-specific research inputs governed by `contracts/research-batch.v1.json`.
+- `scripts/batch`: fixed-command batch planning and execution control plane.
+- `.github/workflows/batch-operations.yml`: manual-only bounded batch workflow governed by `contracts/batch-operations.v1.json`.
 - `docs/monorepo-structure.md`: architecture and delivery sequencing.
 
 When adding new features, keep changes grouped by boundary: UI in `apps/web`, API behavior in `services/api`, and schema changes in `infra/supabase/migrations`.
@@ -61,6 +63,7 @@ Local platform:
 - SQL: lowercase keywords, explicit section comments, `if exists`/`if not exists` for idempotency where possible.
 - Frontend: route files in `apps/web/app/**/page.tsx`; shared utilities in `apps/web/lib`; keep UI primitives in `apps/web/components/ui`.
 - Research: keep executable modules reusable and stable; put dates, subject cohorts, sources, and operation selections in `data/research-batches/<batch-id>.json`, never in new round-specific Python filenames.
+- Batch: use fixed command arrays from `contracts/batch-operations.v1.json`; manual workflow inputs must never become arbitrary shell, script, branch-write, or unapproved production-write parameters.
 - Naming: use kebab-case for docs/config files and numeric migration prefixes (`0002_*.sql`).
 
 ## UI & Product Conventions
@@ -79,6 +82,7 @@ Local platform:
 - Any persistent model change must include a new SQL migration in `infra/supabase/migrations`.
 - Geo endpoints must return valid GeoJSON FeatureCollection payloads.
 - DB read paths must preserve `DB_USE_MOCK_FALLBACK=true` behavior for local resilience.
+- Modules reachable from `app.main` must pass `npm run check:api-runtime-boundary`; request code must not import acquisition, enrichment, identity-resolution batch modules, executable scripts, dynamic imports, or heavy crawler/media dependencies.
 
 ## Map-Scoped Delivery and Verification
 - Work performed as child tickets of a `wayfinder:map` uses deferred verification by default.
@@ -116,7 +120,7 @@ Local platform:
 - `worker`: `services/worker-api/**` — typecheck without D1 rollback or HTTP runtime smoke.
 - `curation`: reviewed collection and media-processing code or data — bounded curation and media checks.
 - `data`: golden-dataset contracts and generators — contract, dataset, and generated-alias consistency checks.
-- `release`: release scripts, workflow definitions, hard-gate policies, evidence infrastructure, and research-script governance — policy checks plus development-gate contract tests.
+- `release`: release scripts, workflow definitions, hard-gate policies, evidence infrastructure, research-script governance, and bounded batch control-plane rules — policy checks plus development-gate contract tests.
 
 ## Commit & Pull Request Guidelines
 Use Conventional Commits, for example:

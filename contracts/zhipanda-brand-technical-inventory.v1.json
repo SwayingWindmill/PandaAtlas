@@ -190,6 +190,94 @@
       "matches": {
         "panda-atlas": 1
       }
+    },
+    {
+      "path": "apps/web/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The application README names the historical backend boundary for architecture compatibility; it is not public product copy.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "contracts/api-request-runtime-boundary.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The machine-readable request-runtime contract retains the established repository and API system identifier as an internal architecture title.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "contracts/research-batch.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "research operations",
+      "expected_action": "retain-compatibility",
+      "rationale": "The research batch contract retains the established repository system identifier in internal governance metadata.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/architecture/api-request-runtime-boundary.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The architecture document names the historical system boundary while defining internal request and batch separation.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "docs/deployment/runtime-status.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The operator status page uses the historical system name when describing current and transitional runtime responsibilities.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "infra/cloudflare/d1/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The infrastructure README names the historical system architecture for D1 projection compatibility and operator context.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/repository-hygiene.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The repository hygiene test uses generated Python package metadata names as technical fixtures, not product copy.",
+      "matches": {
+        "panda_atlas": 2
+      }
+    },
+    {
+      "path": "contracts/batch-operations.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The bounded batch operation catalog retains the established repository system identifier in internal workflow metadata.",
+      "matches": {
+        "PandaAtlas": 1
+      }
     }
   ]
 }

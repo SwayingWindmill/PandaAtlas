@@ -91,7 +91,9 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith(".github/workflows/") ||
       changedPath.startsWith("scripts/release/") ||
       changedPath.startsWith("scripts/development/") ||
+      changedPath.startsWith("scripts/batch/") ||
       changedPath.startsWith("scripts/research/") ||
+      changedPath === "contracts/batch-operations.v1.json" ||
       changedPath.startsWith("data/beta-launch/") ||
       changedPath.startsWith("data/research-batches/") ||
       changedPath.startsWith("data/frontend-evidence/") ||
@@ -137,7 +139,8 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "contracts/acquisition-bundle.v1.json" ||
       changedPath === "contracts/curation-patch.v1.json" ||
       changedPath === "contracts/curator-decisions.v1.json" ||
-      changedPath === "contracts/integration-event.v1.json"
+      changedPath === "contracts/integration-event.v1.json" ||
+      changedPath === "contracts/api-request-runtime-boundary.v1.json"
     ) addScope(scopes, "api");
 
     if (changedPath === "contracts/recovery-drill-environments.v1.json") {

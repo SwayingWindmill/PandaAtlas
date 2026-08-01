@@ -65,6 +65,17 @@ test("research scripts and batch manifests select release policy checks", () => 
   );
 });
 
+test("batch operation contracts and runners select release policy checks", () => {
+  assert.deepEqual(
+    classifyDevelopmentScopes([
+      "scripts/batch/operations.mjs",
+      "contracts/batch-operations.v1.json",
+      ".github/workflows/batch-operations.yml",
+    ]),
+    ["release"],
+  );
+});
+
 test("root script changes select only release-development contracts", () => {
   assert.deepEqual(classifyDevelopmentScopes(["package.json"]), ["release"]);
 });
@@ -99,6 +110,13 @@ test("identity contracts select API checks", () => {
   assert.deepEqual(classifyDevelopmentScopes(["contracts/panda-identity-resolution.v1.json"]), [
     "api",
   ]);
+});
+
+test("request runtime boundary contract selects API checks", () => {
+  assert.deepEqual(
+    classifyDevelopmentScopes(["contracts/api-request-runtime-boundary.v1.json"]),
+    ["api"],
+  );
 });
 
 test("frontend withdrawal evidence selects release checks", () => {
