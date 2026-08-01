@@ -88,6 +88,174 @@
       "matches": {
         "panda-atlas": 2
       }
+    },
+    {
+      "path": "contracts/managed-cloud-deployment-inventory.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The deployment inventory records established Cloudflare Worker, D1, R2, environment-variable, and repository compatibility identifiers; these values are not public product copy.",
+      "matches": {
+        "panda-atlas": 19,
+        "PANDA_ATLAS": 2
+      }
+    },
+    {
+      "path": "contracts/vercel-web-deployment.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The Vercel plan preserves current Cloudflare runtime names and an established environment-variable identifier for rollback and release compatibility.",
+      "matches": {
+        "panda-atlas": 2,
+        "PANDA_ATLAS": 1
+      }
+    },
+    {
+      "path": "data/deployment-evidence/vercel-web-2026-08-01.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The immutable deployment evidence records the GitHub repository slug and a machine-readable result field retained for evidence compatibility.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda_atlas": 1
+      }
+    },
+    {
+      "path": "docs/deployment/managed-cloud-phase-0-inventory.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The operator inventory names current Cloudflare Workers, D1 databases, R2 buckets, and compatibility paths exactly as deployed.",
+      "matches": {
+        "panda-atlas": 15
+      }
+    },
+    {
+      "path": "docs/deployment/vercel-web-phase-1.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The setup instructions name the existing GitHub repository slug required by the Vercel Git integration.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/check-managed-cloud-inventory.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The validator pins an existing Cloudflare runtime identifier as a rollback boundary.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/vercel-web-deployment-plan.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The test asserts the established Cloudflare API runtime identifier retained during the Vercel migration.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "apps/web/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Web platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The application README names the historical backend boundary for architecture compatibility; it is not public product copy.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "contracts/api-request-runtime-boundary.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The machine-readable request-runtime contract retains the established repository and API system identifier as an internal architecture title.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "contracts/research-batch.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "research operations",
+      "expected_action": "retain-compatibility",
+      "rationale": "The research batch contract retains the established repository system identifier in internal governance metadata.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "docs/architecture/api-request-runtime-boundary.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The architecture document names the historical system boundary while defining internal request and batch separation.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "docs/deployment/runtime-status.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "deployment architecture",
+      "expected_action": "retain-compatibility",
+      "rationale": "The operator status page uses the historical system name when describing current and transitional runtime responsibilities.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "infra/cloudflare/d1/README.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Worker platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The infrastructure README names the historical system architecture for D1 projection compatibility and operator context.",
+      "matches": {
+        "Panda Atlas": 1
+      }
+    },
+    {
+      "path": "scripts/release/tests/repository-hygiene.test.mjs",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The repository hygiene test uses generated Python package metadata names as technical fixtures, not product copy.",
+      "matches": {
+        "panda_atlas": 2
+      }
+    },
+    {
+      "path": "contracts/batch-operations.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The bounded batch operation catalog retains the established repository system identifier in internal workflow metadata.",
+      "matches": {
+        "PandaAtlas": 1
+      }
     }
   ]
 }

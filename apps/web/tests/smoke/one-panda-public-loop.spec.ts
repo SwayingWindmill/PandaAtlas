@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { Buffer } from "node:buffer";
 
+import { isDeployedFeatureEnabled } from "../fixtures/deployment-features";
+
+const engagementEnabled = isDeployedFeatureEnabled("engagement");
+
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
   "base64",
@@ -99,6 +103,7 @@ test("renders partial, tentative, facility, source-link-only, and revision state
 });
 
 test("keeps account Follow keyboard operable without creating local saved state", async ({ page }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
   });
@@ -133,6 +138,7 @@ test("keeps account Follow keyboard operable without creating local saved state"
 });
 
 test("exposes the full reading loop to keyboard focus and sequential section navigation", async ({ page, browserName }) => {
+  test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
   });

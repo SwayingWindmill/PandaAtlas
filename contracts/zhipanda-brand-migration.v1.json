@@ -2754,7 +2754,7 @@
       "expected_action": "retain-compatibility",
       "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
       "matches": {
-        "Panda Atlas": 2,
+        "Panda Atlas": 1,
         "panda-atlas": 5
       }
     },

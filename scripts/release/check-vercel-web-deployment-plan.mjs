@@ -48,6 +48,7 @@ export function validateVercelWebDeploymentPlan(
   const allowedStatuses = new Set([
     "repository-ready-account-setup-required",
     "deployed-acceptance-in-progress",
+    "complete",
   ]);
   if (!allowedStatuses.has(plan.status)) {
     errors.push("Phase 1 plan has an unsupported status.");
@@ -82,7 +83,7 @@ export function validateVercelWebDeploymentPlan(
     }
   }
 
-  if (plan.status === "deployed-acceptance-in-progress") {
+  if (["deployed-acceptance-in-progress", "complete"].includes(plan.status)) {
     if (!isNonEmptyString(project.vercel_project_id)) {
       errors.push("Deployed Phase 1 status requires a Vercel project ID.");
     }
@@ -102,6 +103,22 @@ export function validateVercelWebDeploymentPlan(
     }
     if (deployment.custom_production_domains_attached !== false) {
       errors.push("Phase 1 deployment must not attach production custom domains.");
+    }
+    const acceptedPreview = deployment.accepted_preview ?? {};
+    if (plan.acceptance?.current_result === "passed") {
+      if (!isNonEmptyString(acceptedPreview.deployment_id)) {
+        errors.push("Passed Phase 1 acceptance requires an accepted Preview deployment ID.");
+      }
+      if (!isNonEmptyString(acceptedPreview.deployment_url)
+        || !acceptedPreview.deployment_url.endsWith(".vercel.app")) {
+        errors.push("Passed Phase 1 acceptance requires an accepted vercel.app Preview URL.");
+      }
+      if (acceptedPreview.state !== "READY") {
+        errors.push("Accepted Vercel Preview deployment must be READY.");
+      }
+      if (!isNonEmptyString(acceptedPreview.source_commit)) {
+        errors.push("Accepted Vercel Preview must record its source commit.");
+      }
     }
     const protection = plan.deployment_protection ?? {};
     if (protection.vercel_authentication_enabled !== false
@@ -168,16 +185,26 @@ export function validateVercelWebDeploymentPlan(
       errors.push(`Acceptance plan is missing ${requiredCheck}.`);
     }
   }
+  const deployedFeatureProfile = acceptance.deployed_feature_profile ?? {};
+  if (deployedFeatureProfile.engagement_enabled !== false) {
+    errors.push("Phase 1 acceptance must match the current production Engagement-disabled Web profile.");
+  }
+  if (deployedFeatureProfile.notification_enabled !== false) {
+    errors.push("Phase 1 acceptance must match the current production Notification-disabled Web profile.");
+  }
+  if (!isNonEmptyString(deployedFeatureProfile.basis)) {
+    errors.push("Phase 1 deployed feature profile must record its production-equivalence basis.");
+  }
   if (!isNonEmptyString(acceptance.workflow)) {
     errors.push("Acceptance workflow path is required.");
   }
-  if (plan.status === "deployed-acceptance-in-progress") {
+  if (["deployed-acceptance-in-progress", "complete"].includes(plan.status)) {
     if (!isNonEmptyString(acceptance.evidence)
       || !existsSync(path.join(root, acceptance.evidence))) {
       errors.push("Deployed Phase 1 status requires an existing acceptance evidence file.");
     }
-    if (acceptance.current_result !== "incomplete") {
-      errors.push("Phase 1 must remain incomplete until every exit criterion passes.");
+    if (!["incomplete", "passed"].includes(acceptance.current_result)) {
+      errors.push("Phase 1 acceptance result must be incomplete or passed.");
     }
   }
 
@@ -193,6 +220,18 @@ export function validateVercelWebDeploymentPlan(
       requireText(errors, workflow, "base_url:", "the base_url input");
       requireText(errors, workflow, ".vercel.app", "the vercel.app host boundary");
       requireText(errors, workflow, "PLAYWRIGHT_BASE_URL", "PLAYWRIGHT_BASE_URL");
+      requireText(
+        errors,
+        workflow,
+        'PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED: "0"',
+        "the production-equivalent Engagement-disabled profile",
+      );
+      requireText(
+        errors,
+        workflow,
+        'PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED: "0"',
+        "the production-equivalent Notification-disabled profile",
+      );
       requireText(errors, workflow, "npm run smoke:web", "browser smoke");
       requireText(
         errors,
@@ -234,8 +273,33 @@ export function validateVercelWebDeploymentPlan(
   if (exitCriteria.length === 0) {
     errors.push("Phase 1 exit criteria must be recorded.");
   }
-  if (exitCriteria.every((criterion) => criterion.complete === true)) {
-    errors.push("Phase 1 cannot be marked complete before a real preview deployment is verified.");
+  if (acceptance.current_result === "passed") {
+    for (const criterionId of [
+      "browser-smoke-passes-against-preview",
+      "automated-accessibility-passes-against-preview",
+    ]) {
+      const criterion = exitCriteria.find((item) => item.id === criterionId);
+      if (criterion?.complete !== true) {
+        errors.push(`Passed Phase 1 acceptance requires completed criterion ${criterionId}.`);
+      }
+    }
+  }
+  const allExitCriteriaComplete = exitCriteria.every((criterion) => criterion.complete === true);
+  if (plan.status === "complete") {
+    const owners = acceptance.owners ?? {};
+    for (const ownerType of ["observability", "budget", "rollback"]) {
+      if (!isNonEmptyString(owners[ownerType])) {
+        errors.push(`Complete Phase 1 requires ${ownerType} ownership.`);
+      }
+    }
+    if (acceptance.current_result !== "passed") {
+      errors.push("Complete Phase 1 requires passed acceptance.");
+    }
+    if (!allExitCriteriaComplete) {
+      errors.push("Complete Phase 1 requires all exit criteria to pass.");
+    }
+  } else if (allExitCriteriaComplete) {
+    errors.push("All Phase 1 exit criteria require status complete.");
   }
 
   if (errors.length > 0) {
@@ -248,6 +312,8 @@ export function validateVercelWebDeploymentPlan(
     root_directory: project.root_directory,
     preview_api_base_url: preview.api_base_url,
     deployment_url: plan.deployment?.stable_project_url ?? null,
+    accepted_preview_url: plan.deployment?.accepted_preview?.deployment_url ?? null,
+    acceptance_result: acceptance.current_result,
     acceptance_checks: acceptance.checks.length,
     production_cutover_authorized: false,
     external_setup_steps: plan.external_setup_required.length,

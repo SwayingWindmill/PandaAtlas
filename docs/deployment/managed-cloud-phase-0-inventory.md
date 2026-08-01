@@ -14,7 +14,7 @@ The inventory does not change production traffic. Cloudflare remains the active 
 
 ## Fixed operating model
 
-Panda Atlas production must use managed services only. A virtual machine, persistent Docker host, self-managed PostgreSQL server, Nginx host, or manually administered application server is not an allowed target dependency.
+ZhiPanda production must use managed services only. A virtual machine, persistent Docker host, self-managed PostgreSQL server, Nginx host, or manually administered application server is not an allowed target dependency.
 
 The approved target split is:
 

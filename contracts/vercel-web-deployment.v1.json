@@ -2,7 +2,7 @@
   "schema_version": 1,
   "plan_id": "vercel-web-phase-1",
   "decision": "docs/architecture/adr-0002-managed-cloud-deployment-target.md",
-  "status": "deployed-acceptance-in-progress",
+  "status": "complete",
   "production_cutover_authorized": false,
   "cloudflare_production_changes_authorized": false,
   "project": {
@@ -24,7 +24,16 @@
     "state": "READY",
     "source_branch": "master",
     "source_commit": "a004fd628a0d629684dc72b7b4649e93249f080f",
-    "custom_production_domains_attached": false
+    "custom_production_domains_attached": false,
+    "accepted_preview": {
+      "deployment_id": "dpl_EUfKGMqVn1HZhBaHb8dEWrgwNQHY",
+      "deployment_url": "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+      "branch_alias": "https://zhipanda-git-deployment-vercel-managed-646391-swaying-windmill.vercel.app",
+      "state": "READY",
+      "source_branch": "deployment/vercel-managed-cloud-phase-1",
+      "source_commit": "2043f4ecf1bd14c96d6af02cb9f7355304a49b5b",
+      "pull_request": 260
+    }
   },
   "deployment_protection": {
     "vercel_authentication_enabled": false,
@@ -74,8 +83,18 @@
       "browser-smoke",
       "automated-accessibility"
     ],
+    "deployed_feature_profile": {
+      "engagement_enabled": false,
+      "notification_enabled": false,
+      "basis": "Matches the current Cloudflare production Web behavior during Phase 1 equivalence testing."
+    },
     "evidence": "data/deployment-evidence/vercel-web-2026-08-01.json",
-    "current_result": "incomplete",
+    "current_result": "passed",
+    "owners": {
+      "observability": "project-owner",
+      "budget": "project-owner",
+      "rollback": "project-owner"
+    },
     "artifact_paths": [
       ".release-gate/",
       "apps/web/test-results/",
@@ -112,15 +131,15 @@
     },
     {
       "id": "browser-smoke-passes-against-preview",
-      "complete": false
+      "complete": true
     },
     {
       "id": "automated-accessibility-passes-against-preview",
-      "complete": false
+      "complete": true
     },
     {
       "id": "observability-budget-and-rollback-owners-recorded",
-      "complete": false
+      "complete": true
     }
   ]
 }
