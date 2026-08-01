@@ -83,8 +83,14 @@ create table review_moderation.appeal_cases (
   unique (account_id, idempotency_key),
   check ((state = 'closed') = (closed_at is not null)),
   check ((state = 'closed') = (outcome is not null)),
-  check (user_visible_resolution is null or length(trim(user_visible_resolution)) between 10 and 2000),
-  check (internal_resolution is null or length(trim(internal_resolution)) between 3 and 4000)
+  check (
+    user_visible_resolution is null
+    or length(trim(user_visible_resolution)) between 10 and 2000
+  ),
+  check (
+    internal_resolution is null
+    or length(trim(internal_resolution)) between 3 and 4000
+  )
 );
 create unique index idx_appeal_cases_one_open_per_sanction
   on review_moderation.appeal_cases(sanction_action_id)
@@ -123,17 +129,6 @@ create table review_moderation.moderation_audit_events (
 );
 create index idx_moderation_audit_account_time
   on review_moderation.moderation_audit_events(account_id, occurred_at desc);
-
-create table review_moderation.moderation_outbox_events (
-  outbox_event_id uuid primary key default gen_random_uuid(),
-  event_type text not null check (length(event_type) between 3 and 160),
-  aggregate_id uuid not null,
-  payload jsonb not null check (jsonb_typeof(payload) = 'object'),
-  correlation_id uuid not null,
-  idempotency_key text not null unique,
-  created_at timestamptz not null default now(),
-  published_at timestamptz
-);
 
 create or replace function review_moderation.enforce_moderation_subject_version()
 returns trigger
@@ -196,9 +191,6 @@ for each row execute function review_moderation.reject_append_only_mutation();
 create trigger trg_moderation_audit_events_append_only
 before update or delete on review_moderation.moderation_audit_events
 for each row execute function review_moderation.reject_append_only_mutation();
-create trigger trg_moderation_outbox_events_append_only
-before update or delete on review_moderation.moderation_outbox_events
-for each row execute function review_moderation.reject_append_only_mutation();
 
 create or replace view review_moderation.effective_sanctions as
 select action.*
@@ -218,10 +210,15 @@ select
   sanction.kind as sanction_kind,
   sanction.scope as sanction_scope,
   sanction.user_visible_explanation as sanction_user_visible_explanation,
-  (appeal.first_responded_at is null
+  (
+    appeal.first_responded_at is null
     and appeal.state <> 'closed'
-    and now() > appeal.first_response_due_at) as sla_overdue,
-  greatest(0, extract(epoch from (now() - appeal.created_at))::bigint) as queue_age_seconds
+    and now() > appeal.first_response_due_at
+  ) as sla_overdue,
+  greatest(
+    0,
+    extract(epoch from (now() - appeal.created_at))::bigint
+  ) as queue_age_seconds
 from review_moderation.appeal_cases appeal
 join review_moderation.moderation_actions sanction
   on sanction.action_id = appeal.sanction_action_id;
@@ -229,7 +226,11 @@ join review_moderation.moderation_actions sanction
 insert into identity.capabilities (capability_key, description, sensitive) values
   ('moderation.case.read', 'Read moderation sanctions, appeals, and bounded evidence.', true),
   ('moderation.sanction.issue', 'Issue a bounded moderation action.', true),
-  ('moderation.sanction.manage', 'Issue, modify, lift, suspend, close, or restore moderation actions.', true),
+  (
+    'moderation.sanction.manage',
+    'Issue, modify, lift, suspend, close, or restore moderation actions.',
+    true
+  ),
   ('moderation.appeal.decide', 'Claim and decide append-only moderation appeals.', true),
   ('moderation.metrics', 'Read moderation and appeal SLA metrics.', true)
 on conflict (capability_key) do nothing;
