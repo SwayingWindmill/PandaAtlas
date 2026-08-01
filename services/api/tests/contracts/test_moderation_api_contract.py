@@ -38,6 +38,8 @@ def test_moderation_routes_are_bounded_and_registered() -> None:
         ("GET", "/api/v1/admin/moderation/appeals"),
         ("POST", "/api/v1/admin/moderation/appeals/{appeal_case_id}/claim"),
         ("POST", "/api/v1/admin/moderation/appeals/{appeal_case_id}/decide"),
+        ("GET", "/api/v1/moderation/actions"),
+        ("GET", "/api/v1/moderation/appeals"),
         ("POST", "/api/v1/moderation/appeals"),
         ("GET", "/api/v1/moderation/appeals/{appeal_case_id}"),
     ):
@@ -59,12 +61,14 @@ def test_staff_commands_use_explicit_capabilities_and_recent_auth() -> None:
     assert 'require_capability("moderation.appeal.decide", recent_auth=True)' in source
 
 
-def test_suspended_user_appeal_uses_identity_not_active_account_dependency() -> None:
+def test_suspended_user_appeal_uses_identity_and_user_safe_projection() -> None:
     source = ROUTER_SOURCE.read_text(encoding="utf-8")
 
     assert "AppealSubmitter = Annotated[RequestIdentity, Depends(get_request_identity)]" in source
-    assert "return submit_appeal(command, identity, correlation_id)" in source
-    assert "return get_appeal(appeal_case_id, account_id=identity.account_id)" in source
+    assert "_user_safe_appeal(submit_appeal(command, identity, correlation_id))" in source
+    assert "_user_safe_appeal(get_appeal(appeal_case_id, account_id=identity.account_id))" in source
+    assert "response_model=MyAppealCaseRead" in source
+    assert "internal_resolution=appeal.internal_resolution" not in source
 
 
 def test_service_uses_authoritative_identity_state_and_canonical_outbox() -> None:
