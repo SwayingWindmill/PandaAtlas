@@ -31,7 +31,7 @@ from app.services import publication_repository
 
 
 @contextmanager
-def _archive_session() -> Iterator[Session]:
+def _archive_session(*, preserve_dbapi_errors: bool = False) -> Iterator[Session]:
     if not settings.archive_single_accountable_approver_enabled:
         raise HTTPException(
             status_code=404,
@@ -57,6 +57,13 @@ def _archive_session() -> Iterator[Session]:
                 raise
     except HTTPException:
         raise
+    except DBAPIError as error:
+        if preserve_dbapi_errors:
+            raise
+        raise HTTPException(
+            status_code=503,
+            detail={"code": "authoritative_database_unavailable"},
+        ) from error
     except SQLAlchemyError as error:
         raise HTTPException(
             status_code=503,
@@ -599,7 +606,7 @@ def publish_change_set(
 
     payload_sha256 = command_payload_sha256(command)
     try:
-        with _archive_session() as session:
+        with _archive_session(preserve_dbapi_errors=True) as session:
             row = session.execute(
                 text(
                     """
