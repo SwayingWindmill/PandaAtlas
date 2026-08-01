@@ -14,13 +14,18 @@ function clonePlan() {
 test("Phase 1 Vercel Web plan is deployed and production-safe", () => {
   const summary = validateVercelWebDeploymentPlan(clonePlan());
 
-  assert.equal(summary.status, "deployed-acceptance-in-progress");
+  assert.equal(summary.status, "complete");
   assert.equal(summary.root_directory, "apps/web");
   assert.equal(summary.preview_api_base_url, "https://api.zhipanda.com");
   assert.equal(summary.deployment_url, "https://zhipanda.vercel.app");
+  assert.equal(
+    summary.accepted_preview_url,
+    "https://zhipanda-62x37p6z5-swaying-windmill.vercel.app",
+  );
+  assert.equal(summary.acceptance_result, "passed");
   assert.equal(summary.production_cutover_authorized, false);
   assert.equal(summary.acceptance_checks, 2);
-  assert.ok(summary.incomplete_exit_criteria > 0);
+  assert.equal(summary.incomplete_exit_criteria, 0);
 });
 
 test("Phase 1 Vercel Web plan rejects production authorization", () => {
@@ -32,6 +37,16 @@ test("Phase 1 Vercel Web plan rejects production authorization", () => {
   assert.throws(
     () => validateVercelWebDeploymentPlan(plan, { checkWorkflow: false }),
     /must not authorize a production cutover/,
+  );
+});
+
+test("passed Phase 1 acceptance requires an accepted READY Preview", () => {
+  const plan = clonePlan();
+  plan.deployment.accepted_preview = null;
+
+  assert.throws(
+    () => validateVercelWebDeploymentPlan(plan, { checkWorkflow: false }),
+    /requires an accepted Preview deployment ID/,
   );
 });
 
@@ -68,6 +83,8 @@ test("Vercel acceptance workflow is read-only and requires no secrets", async ()
   assert.match(workflow, /workflow_dispatch:/);
   assert.match(workflow, /\.vercel\.app/);
   assert.match(workflow, /PLAYWRIGHT_BASE_URL/);
+  assert.match(workflow, /PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED:\s*"0"/);
+  assert.match(workflow, /PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED:\s*"0"/);
   assert.match(workflow, /npm run smoke:web/);
   assert.match(workflow, /npm run test:accessibility -w web/);
   assert.doesNotMatch(workflow, /\bvercel\s+(deploy|promote|rollback)\b/i);

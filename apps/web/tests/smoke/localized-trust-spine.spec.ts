@@ -64,8 +64,15 @@ test("never renders the generated legacy profile as a rollback", async ({ reques
   const untrustedLegacy = await request.get("/atlas/he-hua", { maxRedirects: 0 });
   expect(untrustedLegacy.status()).toBe(404);
 
-  const malformedLegacy = await request.get("/atlas/%E0%A4%A", { maxRedirects: 0 });
-  expect(malformedLegacy.status()).not.toBe(500);
+  if (process.platform === "win32" && process.env.PLAYWRIGHT_BASE_URL) {
+    const malformedLegacy = await fetch(new URL("/atlas/%E0%A4%A", process.env.PLAYWRIGHT_BASE_URL), {
+      redirect: "manual",
+    });
+    expect(malformedLegacy.status).not.toBe(500);
+  } else {
+    const malformedLegacy = await request.get("/atlas/%E0%A4%A", { maxRedirects: 0 });
+    expect(malformedLegacy.status()).not.toBe(500);
+  }
 
   const reviewedLegacy = await request.get("/atlas/meixiang", { maxRedirects: 0 });
   expect(reviewedLegacy.status()).toBe(308);

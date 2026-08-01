@@ -1,6 +1,6 @@
 # Architecture decisions
 
-Panda Atlas records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs).
+ZhiPanda records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs).
 
 ## Current and target deployment
 
@@ -20,6 +20,6 @@ The target ADR does not claim that migration is already complete. Runtime docume
 - Phase 0 inventory: [complete](../deployment/managed-cloud-phase-0-inventory.md)
 - Machine-readable responsibility register: [`contracts/managed-cloud-deployment-inventory.v1.json`](../../contracts/managed-cloud-deployment-inventory.v1.json)
 - Inventory validation: `node scripts/release/check-managed-cloud-inventory.mjs`
-- Phase 1 Vercel deployment: [deployed with acceptance in progress](../deployment/vercel-web-phase-1.md)
+- Phase 1 Vercel deployment: [complete](../deployment/vercel-web-phase-1.md)
 - Phase 2 preparation: [FastAPI request-runtime boundary enforced](api-request-runtime-boundary.md)
-- Next action: complete the deployment-matched browser and accessibility checks in GitHub Actions; no production DNS or Cloudflare runtime changes are authorized yet.
+- Next action: continue Phase 2 API validation; no production DNS or Cloudflare runtime changes are authorized yet.

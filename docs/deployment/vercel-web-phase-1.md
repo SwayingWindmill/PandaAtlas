@@ -1,6 +1,6 @@
 # Phase 1: Parallel Vercel Web deployment
 
-- Status: Vercel project deployed; acceptance in progress
+- Status: Complete
 - Decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 - Phase 0 baseline: [Managed-cloud inventory](managed-cloud-phase-0-inventory.md)
 - Deployment plan: [`contracts/vercel-web-deployment.v1.json`](../../contracts/vercel-web-deployment.v1.json)
@@ -10,9 +10,9 @@
 
 ## Objective
 
-Deploy `apps/web` to a Vercel preview URL and verify the existing Panda Atlas Web behavior without changing production traffic or data infrastructure.
+Deploy `apps/web` to a Vercel preview URL and verify the existing ZhiPanda Web behavior without changing production traffic or data infrastructure.
 
-The Vercel project now exists as `swaying-windmill/zhipanda`, with `apps/web` as its Root Directory. The stable Vercel-only URL is `https://zhipanda.vercel.app`. It remains separate from the public Panda Atlas custom domains.
+The Vercel project now exists as `swaying-windmill/zhipanda`, with `apps/web` as its Root Directory. The stable Vercel-only URL is `https://zhipanda.vercel.app`. It remains separate from the public ZhiPanda custom domains.
 
 During this phase:
 
@@ -44,7 +44,7 @@ The project owner must perform the following managed-platform actions:
    NEXT_PUBLIC_API_BASE_URL=https://api.zhipanda.com
    ```
 
-7. Do not add `zhipanda.com` or `www.zhipanda.com` to the Vercel project during this phase. Vercel may label the deployment from `master` as a Production Deployment, but it remains isolated on a `*.vercel.app` URL and receives no Panda Atlas production traffic.
+7. Do not add `zhipanda.com` or `www.zhipanda.com` to the Vercel project during this phase. Vercel may label the deployment from `master` as a Production Deployment, but it remains isolated on a `*.vercel.app` URL and receives no ZhiPanda production traffic.
 8. After the initial import, create a preview deployment from a non-production branch or pull request.
 9. Record the non-secret Vercel project ID and team ID in `contracts/vercel-web-deployment.v1.json`.
 10. Run the GitHub Actions workflow **Vercel Web Acceptance** with the generated HTTPS `*.vercel.app` preview URL.
@@ -70,6 +70,12 @@ It rejects non-HTTPS targets and hosts outside `.vercel.app`, then performs:
 7. Upload of `.release-gate` and Playwright evidence.
 
 The existing Playwright configuration disables its local Web server whenever `PLAYWRIGHT_BASE_URL` is present, so the same tests exercise the deployed preview directly.
+
+Phase 1 is an equivalence check against the current Cloudflare production Web build, where Engagement and Notification UI are intentionally disabled. The workflow therefore sets `PLAYWRIGHT_DEPLOYED_ENGAGEMENT_ENABLED=0` and `PLAYWRIGHT_DEPLOYED_NOTIFICATION_ENABLED=0`. Enabled-only journeys remain part of the ordinary local and staging test suites; deployment acceptance skips those journeys and instead verifies the safe disabled states, including an unpublished private Inbox and a Passport that remains local-only.
+
+The accepted Preview is `https://zhipanda-62x37p6z5-swaying-windmill.vercel.app`, deployment `dpl_EUfKGMqVn1HZhBaHb8dEWrgwNQHY`, built from commit `2043f4ecf1bd14c96d6af02cb9f7355304a49b5b`. Deployment-matched Smoke completed with 91 passed, 11 production-inapplicable skips, and no application failures. Automated accessibility completed with 46 passed, 2 production-inapplicable skips, and no reported violations. Detailed runner notes and retry evidence are recorded in the versioned deployment evidence file.
+
+Observability, budget, and rollback ownership are assigned to the project owner for this managed deployment phase.
 
 ## Required manual verification
 
@@ -103,7 +109,7 @@ After the first successful preview, add a versioned evidence file under `data/fr
 
 ## Exit criteria
 
-Phase 1 remains incomplete until all of the following are true:
+Phase 1 is complete. The following criteria are satisfied:
 
 - Vercel project and team identifiers are recorded.
 - Preview environment configuration is verified.
