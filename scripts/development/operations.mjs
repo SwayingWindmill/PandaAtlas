@@ -8,18 +8,47 @@ import {
   repoRoot,
 } from "./catalog.mjs";
 
-function executableForPlatform(command) {
-  if (process.platform !== "win32") return command;
-  return ["npm", "npx"].includes(command) ? `${command}.cmd` : command;
-}
-
 function quote(value) {
   const text = String(value);
   return /[\s"']/u.test(text) ? JSON.stringify(text) : text;
 }
 
+function quoteWindowsArgument(value) {
+  const text = String(value);
+  if (/^[A-Za-z0-9_./:@=+-]+$/.test(text)) return text;
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+function windowsCommandLine(command, args) {
+  return [command, ...args].map(quoteWindowsArgument).join(" ");
+}
+
 export function renderDevelopmentCommand(command) {
   return [command.command, ...command.args].map(quote).join(" ");
+}
+
+export function resolveDevelopmentSpawn(
+  command,
+  additionalArgs = [],
+  { platform = process.platform, comSpec = process.env.ComSpec } = {},
+) {
+  const args = [...command.args, ...additionalArgs];
+  const useCommandProcessor =
+    platform === "win32" && ["npm", "npx"].includes(command.command);
+
+  if (useCommandProcessor) {
+    return {
+      executable: comSpec ?? "cmd.exe",
+      args: ["/d", "/s", "/c", windowsCommandLine(command.command, args)],
+      shell: false,
+    };
+  }
+
+  return {
+    executable: command.command,
+    args,
+    shell: Boolean(command.shell),
+  };
 }
 
 function usage() {
@@ -98,15 +127,16 @@ function printDescription(id, json) {
 
 export async function runDevelopmentCommand(id, additionalArgs = []) {
   const command = getDevelopmentCommand(id);
-  const executable = executableForPlatform(command.command);
-  const args = [...command.args, ...additionalArgs];
-  console.log(`[ops] ${id}: ${[command.command, ...args].map(quote).join(" ")}`);
+  const spawnConfig = resolveDevelopmentSpawn(command, additionalArgs);
+  console.log(
+    `[ops] ${id}: ${[command.command, ...command.args, ...additionalArgs].map(quote).join(" ")}`,
+  );
 
   const status = await new Promise((resolve, reject) => {
-    const child = spawn(executable, args, {
+    const child = spawn(spawnConfig.executable, spawnConfig.args, {
       cwd: repoRoot,
       env: process.env,
-      shell: Boolean(command.shell),
+      shell: spawnConfig.shell,
       stdio: "inherit",
       windowsHide: false,
     });
