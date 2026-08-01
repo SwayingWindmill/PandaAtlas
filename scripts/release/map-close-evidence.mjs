@@ -14,6 +14,14 @@ function resolveCommitSha(commitSha) {
   return execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
 }
 
+function isSealableArtifact(name) {
+  return (
+    (name.endsWith(".json") || name.endsWith(".yaml") || name.endsWith(".sha256")) &&
+    name !== "map-close-manifest.json" &&
+    name !== "map-close-manifest.sha256"
+  );
+}
+
 export async function sealMapCloseEvidence({
   reportDir,
   commitSha,
@@ -23,14 +31,7 @@ export async function sealMapCloseEvidence({
   if (!reportDir) throw new TypeError("sealMapCloseEvidence requires reportDir");
   await mkdir(reportDir, { recursive: true });
 
-  const names = (await readdir(reportDir))
-    .filter(
-      (name) =>
-        name.endsWith(".json") &&
-        name !== "map-close-manifest.json" &&
-        name !== "map-close-manifest.sha256",
-    )
-    .sort();
+  const names = (await readdir(reportDir)).filter(isSealableArtifact).sort();
   if (!names.includes("default.json") || !names.includes("map-close.json")) {
     throw new Error("Map-close evidence requires default.json and map-close.json");
   }

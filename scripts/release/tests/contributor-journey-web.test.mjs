@@ -21,7 +21,9 @@ test("localized contributor pages remain authenticated, private, dynamic, and fe
     assert.match(route, /isCommunityIntakeUiEnabled\(\)/);
     assert.match(route, /getVerifiedSupabaseAccessToken\(\)/);
     assert.match(route, /redirect\(/);
-    assert.match(route, /robots: \{ index: false, follow: false, nocache: true \}/);
+    assert.match(route, /buildPublicMetadata\(\{/);
+    assert.match(route, /privatePage: true/);
+    assert.match(route, /noFollow: true/);
     assert.doesNotMatch(route, /^["']use client["']/m);
   }
 
@@ -49,7 +51,7 @@ test("contributor editor keeps drafts synchronized and formal commands explicit"
   assert.match(editor, /prepareAttachment\(/);
   assert.match(editor, /uploadAttachment\(/);
   assert.match(editor, /Evidence uploaded to the quarantine scan queue/);
-  assert.match(editor, /Immutable revisions/);
+  assert.match(editor, /Submission version history/);
   assert.match(editor, /Per-assertion results/);
 
   assert.match(api, /response\.headers\.get\("etag"\)/);

@@ -5,7 +5,10 @@ import { fileURLToPath } from "node:url";
 const scriptPath = fileURLToPath(import.meta.url);
 const repoRoot = path.resolve(path.dirname(scriptPath), "../..");
 const contractRelativePath = "contracts/zhipanda-brand-migration.v1.json";
+const technicalInventoryRelativePath =
+  "contracts/zhipanda-brand-technical-inventory.v1.json";
 const contractPath = path.join(repoRoot, contractRelativePath);
+const technicalInventoryPath = path.join(repoRoot, technicalInventoryRelativePath);
 
 function normalizePath(value) {
   return value.split(path.sep).join("/");
@@ -81,8 +84,9 @@ async function scanReferences(contract) {
     );
     if (Object.keys(matches).length > 0) references.push({ path: relativePath, matches });
 
-    const isPublicSource = pathIsWithin(relativePath, contract.scan.public_source_roots)
-      && !pathIsWithin(relativePath, contract.scan.public_source_exclusions);
+    const isPublicSource =
+      pathIsWithin(relativePath, contract.scan.public_source_roots) &&
+      !pathIsWithin(relativePath, contract.scan.public_source_exclusions);
     if (!isPublicSource) continue;
     for (const term of contract.public_legacy_brand_terms) {
       const count = countOccurrences(contents, term);
@@ -94,14 +98,25 @@ async function scanReferences(contract) {
 }
 
 function validateContractShape(contract, repositoryPathList, failures) {
-  if (contract.contract_version !== "1.0.0") failures.push("Unsupported brand contract version.");
+  if (contract.contract_version !== "1.0.0") {
+    failures.push("Unsupported brand contract version.");
+  }
   if (contract.public_brand?.zh !== "吱熊猫" || contract.public_brand?.en !== "ZhiPanda") {
     failures.push("Public brand must remain 吱熊猫 / ZhiPanda.");
   }
 
-  const requiredTone = ["warm", "lively", "curious", "concise", "non-childish", "evidence-honest"];
+  const requiredTone = [
+    "warm",
+    "lively",
+    "curious",
+    "concise",
+    "non-childish",
+    "evidence-honest",
+  ];
   for (const value of requiredTone) {
-    if (!contract.tone?.required?.includes(value)) failures.push(`Missing required tone value: ${value}`);
+    if (!contract.tone?.required?.includes(value)) {
+      failures.push(`Missing required tone value: ${value}`);
+    }
   }
 
   const requiredTerms = [
@@ -120,7 +135,9 @@ function validateContractShape(contract, repositoryPathList, failures) {
   ];
   for (const key of requiredTerms) {
     const term = contract.controlled_terms?.[key];
-    if (!term?.zh || !term?.en) failures.push(`Controlled term ${key} must define Chinese and English copy.`);
+    if (!term?.zh || !term?.en) {
+      failures.push(`Controlled term ${key} must define Chinese and English copy.`);
+    }
   }
 
   const repositoryPathSet = new Set(repositoryPathList);
@@ -130,14 +147,28 @@ function validateContractShape(contract, repositoryPathList, failures) {
   const actions = new Set(contract.classification_values?.expected_action ?? []);
 
   for (const entry of contract.inventory ?? []) {
-    if (!entry.path || seen.has(entry.path)) failures.push(`Inventory path is missing or duplicated: ${entry.path ?? "<missing>"}`);
+    if (!entry.path || seen.has(entry.path)) {
+      failures.push(`Inventory path is missing or duplicated: ${entry.path ?? "<missing>"}`);
+    }
     seen.add(entry.path);
-    if (!repositoryPathSet.has(entry.path)) failures.push(`Inventory path is not present in the repository: ${entry.path}`);
-    if (!categories.has(entry.category)) failures.push(`Invalid category for ${entry.path}: ${entry.category}`);
-    if (entry.category === "undecided") failures.push(`Inventory entry remains undecided: ${entry.path}`);
-    if (!visibilities.has(entry.user_visibility)) failures.push(`Invalid user visibility for ${entry.path}: ${entry.user_visibility}`);
-    if (!actions.has(entry.expected_action)) failures.push(`Invalid expected action for ${entry.path}: ${entry.expected_action}`);
-    if (!entry.migration_owner || !entry.rationale) failures.push(`Inventory entry needs an owner and rationale: ${entry.path}`);
+    if (!repositoryPathSet.has(entry.path)) {
+      failures.push(`Inventory path is not present in the repository: ${entry.path}`);
+    }
+    if (!categories.has(entry.category)) {
+      failures.push(`Invalid category for ${entry.path}: ${entry.category}`);
+    }
+    if (entry.category === "undecided") {
+      failures.push(`Inventory entry remains undecided: ${entry.path}`);
+    }
+    if (!visibilities.has(entry.user_visibility)) {
+      failures.push(`Invalid user visibility for ${entry.path}: ${entry.user_visibility}`);
+    }
+    if (!actions.has(entry.expected_action)) {
+      failures.push(`Invalid expected action for ${entry.path}: ${entry.expected_action}`);
+    }
+    if (!entry.migration_owner || !entry.rationale) {
+      failures.push(`Inventory entry needs an owner and rationale: ${entry.path}`);
+    }
     if (entry.category === "public-visible" && !entry.expected_action.startsWith("migrate-in-")) {
       failures.push(`Public-visible entry lacks an assigned migration ticket: ${entry.path}`);
     }
@@ -146,10 +177,16 @@ function validateContractShape(contract, repositoryPathList, failures) {
     }
 
     const matchKeys = Object.keys(entry.matches ?? {});
-    if (matchKeys.length === 0) failures.push(`Inventory entry has no legacy matches: ${entry.path}`);
+    if (matchKeys.length === 0) {
+      failures.push(`Inventory entry has no legacy matches: ${entry.path}`);
+    }
     for (const [term, count] of Object.entries(entry.matches ?? {})) {
-      if (!contract.legacy_terms.includes(term)) failures.push(`Inventory entry uses an unknown legacy term in ${entry.path}: ${term}`);
-      if (!Number.isInteger(count) || count <= 0) failures.push(`Inventory count must be a positive integer in ${entry.path}: ${term}`);
+      if (!contract.legacy_terms.includes(term)) {
+        failures.push(`Inventory entry uses an unknown legacy term in ${entry.path}: ${term}`);
+      }
+      if (!Number.isInteger(count) || count <= 0) {
+        failures.push(`Inventory count must be a positive integer in ${entry.path}: ${term}`);
+      }
     }
   }
 }
@@ -161,7 +198,9 @@ function compareInventory(contract, scan, failures) {
   for (const reference of scan.references) {
     const inventory = inventoryByPath.get(reference.path);
     if (!inventory) {
-      failures.push(`Unclassified legacy reference: ${reference.path}`);
+      failures.push(
+        `Unclassified legacy reference: ${reference.path} ${JSON.stringify(reference.matches)}`,
+      );
       continue;
     }
     if (!sameMatches(reference.matches, inventory.matches, contract.legacy_terms)) {
@@ -170,33 +209,82 @@ function compareInventory(contract, scan, failures) {
   }
 
   for (const inventory of contract.inventory) {
-    if (!scannedByPath.has(inventory.path)) failures.push(`Stale inventory entry has no current legacy reference: ${inventory.path}`);
+    if (!scannedByPath.has(inventory.path)) {
+      failures.push(`Stale inventory entry has no current legacy reference: ${inventory.path}`);
+    }
   }
 
   for (const violation of scan.publicViolations) {
-    failures.push(`Public source exposes retired brand ${violation.term} (${violation.count}): ${violation.path}`);
+    failures.push(
+      `Public source exposes retired brand ${violation.term} (${violation.count}): ${violation.path}`,
+    );
   }
 }
 
-const contract = JSON.parse(await readFile(contractPath, "utf8"));
+function refreshEntries(entries, scannedByPath) {
+  return entries.map((entry) => ({
+    ...entry,
+    matches: scannedByPath.get(entry.path).matches,
+  }));
+}
+
+const primaryContract = JSON.parse(await readFile(contractPath, "utf8"));
+const technicalContract = JSON.parse(await readFile(technicalInventoryPath, "utf8"));
+if (technicalContract.schema_version !== 1 || !Array.isArray(technicalContract.inventory)) {
+  console.error("ZhiPanda technical inventory must use schema_version 1 and contain inventory.");
+  process.exit(1);
+}
+
+const contract = {
+  ...primaryContract,
+  scan: {
+    ...primaryContract.scan,
+    excluded_paths: [
+      ...new Set([
+        ...primaryContract.scan.excluded_paths,
+        technicalInventoryRelativePath,
+      ]),
+    ],
+  },
+  inventory: [...primaryContract.inventory, ...technicalContract.inventory],
+};
 const scan = await scanReferences(contract);
 const refreshInventory = process.argv.includes("--refresh-inventory");
 const reportArgument = process.argv.find((argument) => argument.startsWith("--write-report="));
 
 if (refreshInventory) {
+  const failures = [];
+  validateContractShape(contract, scan.repositoryPaths, failures);
   const existingByPath = new Map(contract.inventory.map((entry) => [entry.path, entry]));
+  const scannedByPath = new Map(scan.references.map((entry) => [entry.path, entry]));
   const unclassified = scan.references.filter((reference) => !existingByPath.has(reference.path));
+  const stale = contract.inventory.filter((entry) => !scannedByPath.has(entry.path));
   if (unclassified.length > 0) {
-    console.error("Inventory refresh refused new unclassified files:");
-    for (const reference of unclassified) console.error(`- ${reference.path}`);
+    failures.push(
+      ...unclassified.map(
+        (reference) =>
+          `Unclassified legacy reference: ${reference.path} ${JSON.stringify(reference.matches)}`,
+      ),
+    );
+  }
+  if (stale.length > 0) {
+    failures.push(...stale.map((entry) => `Stale inventory entry: ${entry.path}`));
+  }
+  if (failures.length > 0) {
+    console.error("Inventory refresh refused invalid or unclassified files:");
+    for (const failure of failures) console.error(`- ${failure}`);
     process.exit(1);
   }
-  contract.inventory = scan.references.map((reference) => ({
-    ...existingByPath.get(reference.path),
-    matches: reference.matches,
-  }));
-  await writeFile(contractPath, `${JSON.stringify(contract, null, 2)}\n`, "utf8");
-  console.log(`Refreshed ${contract.inventory.length} existing legacy-brand inventory entries.`);
+
+  primaryContract.inventory = refreshEntries(primaryContract.inventory, scannedByPath);
+  technicalContract.inventory = refreshEntries(technicalContract.inventory, scannedByPath);
+  await writeFile(contractPath, `${JSON.stringify(primaryContract, null, 2)}\n`, "utf8");
+  await writeFile(
+    technicalInventoryPath,
+    `${JSON.stringify(technicalContract, null, 2)}\n`,
+    "utf8",
+  );
+  console.log(`Refreshed ${contract.inventory.length} classified legacy-brand entries.`);
   process.exit(0);
 }
 
@@ -204,7 +292,9 @@ if (reportArgument) {
   const reportPath = path.resolve(repoRoot, reportArgument.slice("--write-report=".length));
   const report = { contract_version: contract.contract_version, references: scan.references };
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-  console.log(`Wrote deterministic legacy-brand scan to ${normalizePath(path.relative(repoRoot, reportPath))}.`);
+  console.log(
+    `Wrote deterministic legacy-brand scan to ${normalizePath(path.relative(repoRoot, reportPath))}.`,
+  );
   process.exit(0);
 }
 
