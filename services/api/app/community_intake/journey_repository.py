@@ -339,6 +339,7 @@ class ContributorJourneyRepository(CommunityIntakeRepository):
         correlation_id: UUID,
     ) -> AttachmentView:
         self._require_active(identity)
+        self._require_not_restricted(identity, "attachment")
         actor_hash = _subject_hash(identity.account_id)
         content_sha256 = hashlib.sha256(content).hexdigest()
         command_hash = _canonical_hash(
@@ -466,6 +467,7 @@ class ContributorJourneyRepository(CommunityIntakeRepository):
         responding: bool,
     ) -> ContributorCommandResult:
         self._require_active(identity)
+        self._require_not_restricted(identity, "submission")
         actor_hash = _subject_hash(identity.account_id)
         command_hash = _command_hash(command)
         event_type = (

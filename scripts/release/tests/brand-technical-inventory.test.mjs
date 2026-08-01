@@ -14,13 +14,13 @@ test("technical compatibility identifiers use a separate audited brand inventory
   const compatibilityTerm = ["panda", "atlas"].join("-");
 
   assert.equal(inventory.schema_version, 1);
-  assert.equal(inventory.inventory.length, 8);
+  assert.equal(inventory.inventory.length, 10);
   assert.equal(
     inventory.inventory.reduce(
       (count, entry) => count + (entry.matches[compatibilityTerm] ?? 0),
       0,
     ),
-    23,
+    25,
   );
   assert.ok(
     inventory.inventory.every(

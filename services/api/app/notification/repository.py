@@ -983,9 +983,16 @@ class NotificationRepository:
                     self.session.execute(
                         text(
                             """
-                        select account_id, state::text from identity.accounts
-                        where state = 'active'
-                        order by account_id
+                        select account.account_id, account.state::text
+                        from identity.accounts account
+                        where account.state = 'active'
+                          and not exists (
+                            select 1
+                            from review_moderation.moderation_subject_status moderation
+                            where moderation.account_id = account.account_id
+                              and moderation.effective_notification_restricted
+                          )
+                        order by account.account_id
                         """
                         )
                     )
@@ -1003,6 +1010,12 @@ class NotificationRepository:
                         where f.state = 'active'
                           and a.state = 'active'
                           and f.panda_id = any(:panda_ids)
+                          and not exists (
+                            select 1
+                            from review_moderation.moderation_subject_status moderation
+                            where moderation.account_id = a.account_id
+                              and moderation.effective_notification_restricted
+                          )
                         order by a.account_id
                         """
                         ),
@@ -1023,11 +1036,26 @@ class NotificationRepository:
             self.session.execute(
                 text(
                     """
-                select account_id, state::text from identity.accounts
-                where account_id = :account_id and state::text = any(:states)
+                select account.account_id, account.state::text
+                from identity.accounts account
+                where account.account_id = :account_id
+                  and account.state::text = any(:states)
+                  and (
+                    :mandatory
+                    or not exists (
+                      select 1
+                      from review_moderation.moderation_subject_status moderation
+                      where moderation.account_id = account.account_id
+                        and moderation.effective_notification_restricted
+                    )
+                  )
                 """
                 ),
-                {"account_id": UUID(str(account_id)), "states": allowed_states},
+                {
+                    "account_id": UUID(str(account_id)),
+                    "states": allowed_states,
+                    "mandatory": mandatory,
+                },
             )
             .mappings()
             .one_or_none()

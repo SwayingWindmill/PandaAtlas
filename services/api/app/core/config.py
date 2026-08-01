@@ -79,6 +79,22 @@ class Settings(BaseSettings):
     auth_smtp_password: str | None = Field(default=None, alias="AUTH_SMTP_PASSWORD")
     community_intake_enabled: bool = Field(default=False, alias="COMMUNITY_INTAKE_ENABLED")
     review_moderation_enabled: bool = Field(default=False, alias="REVIEW_MODERATION_ENABLED")
+    moderation_controls_enabled: bool = Field(default=False, alias="MODERATION_CONTROLS_ENABLED")
+    moderation_repeat_abuse_alert_count: int = Field(
+        default=3,
+        ge=1,
+        alias="MODERATION_REPEAT_ABUSE_ALERT_COUNT",
+    )
+    moderation_sanction_age_alert_seconds: int = Field(
+        default=2592000,
+        ge=3600,
+        alias="MODERATION_SANCTION_AGE_ALERT_SECONDS",
+    )
+    moderation_appeal_age_alert_seconds: int = Field(
+        default=432000,
+        ge=3600,
+        alias="MODERATION_APPEAL_AGE_ALERT_SECONDS",
+    )
     review_first_response_business_days: int = Field(
         default=3,
         ge=1,
