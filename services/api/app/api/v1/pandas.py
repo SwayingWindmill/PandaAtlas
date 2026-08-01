@@ -4,6 +4,8 @@ from fastapi import APIRouter, Path, Query
 
 from app.api.v1.release_responses import PUBLIC_RELEASE_RESPONSES
 from app.schemas.panda import PaginatedPandasResponse, PandaDetail, PandaLineageResponse
+from app.schemas.public_experience import PublicProfileV2Response
+from app.services.public_experience_service import get_public_profile_v2
 from app.services.release_read_service import (
     get_release_lineage,
     get_release_panda,
@@ -13,9 +15,7 @@ from app.services.release_read_service import (
 router = APIRouter(prefix="/pandas")
 
 
-@router.get(
-    "", response_model=PaginatedPandasResponse, responses=PUBLIC_RELEASE_RESPONSES
-)
+@router.get("", response_model=PaginatedPandasResponse, responses=PUBLIC_RELEASE_RESPONSES)
 def list_pandas_endpoint(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
@@ -38,13 +38,22 @@ def list_pandas_endpoint(
     )
 
 
-@router.get(
-    "/{panda_ref}", response_model=PandaDetail, responses=PUBLIC_RELEASE_RESPONSES
-)
+@router.get("/{panda_ref}", response_model=PandaDetail, responses=PUBLIC_RELEASE_RESPONSES)
 def get_panda_endpoint(
-    panda_ref: str = Path(..., description="Canonical panda slug or legacy UUID alias")
+    panda_ref: str = Path(..., description="Canonical panda slug or legacy UUID alias"),
 ) -> PandaDetail:
     return get_release_panda(panda_ref)
+
+
+@router.get(
+    "/{panda_ref}/profile",
+    response_model=PublicProfileV2Response,
+    responses=PUBLIC_RELEASE_RESPONSES,
+)
+def get_panda_profile_v2_endpoint(
+    panda_ref: str = Path(..., description="Canonical panda slug or legacy UUID alias"),
+) -> PublicProfileV2Response:
+    return get_public_profile_v2(panda_ref)
 
 
 @router.get(

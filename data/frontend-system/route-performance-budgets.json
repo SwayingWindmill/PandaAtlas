@@ -9,6 +9,8 @@
     { "id": "atlas", "manifest_entry": "/[locale]/atlas/page", "html_paths": ["server/app/zh/atlas.html", "server/app/en/atlas.html"] },
     { "id": "profile", "manifest_entry": "/[locale]/atlas/[slug]/page", "html_paths": [] },
     { "id": "lineage", "manifest_entry": "/[locale]/lineage/page", "html_paths": ["server/app/zh/lineage.html", "server/app/en/lineage.html"] },
+    { "id": "moments", "manifest_entry": "/[locale]/moments/page", "html_paths": ["server/app/zh/moments.html", "server/app/en/moments.html"] },
+    { "id": "family-story", "manifest_entry": "/[locale]/families/[slug]/page", "html_paths": ["server/app/zh/families/smithsonian-generations.html", "server/app/en/families/ueno-twins.html"] },
     { "id": "map", "manifest_entry": "/[locale]/map/page", "html_paths": ["server/app/zh/map.html", "server/app/en/map.html"] },
     { "id": "my-pandas", "manifest_entry": "/[locale]/my-pandas/page", "html_paths": ["server/app/zh/my-pandas.html", "server/app/en/my-pandas.html"] },
     { "id": "institution", "manifest_entry": "/[locale]/institutions/[slug]/page", "html_paths": [] },

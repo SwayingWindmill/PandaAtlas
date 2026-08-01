@@ -64,6 +64,7 @@ export interface PublicSourceSummary {
   last_verified_at: string;
   language: string;
   access_state: string;
+  evidence_tier?: string | null;
 }
 
 export type PublicParentageStatus = "confirmed" | "tentative" | "disputed" | "superseded";
@@ -227,6 +228,55 @@ export interface PandaDomainEventSummary {
   to_coarse_location: string | null;
   source_ids: string[];
   changes_current_residency: boolean;
+}
+
+export interface LocalizedEditorialContent {
+  locale: "zh-CN" | "en";
+  title: string;
+  summary: string;
+}
+
+export interface PublicFamilyStoryScope {
+  coverage_state: "complete_for_declared_scope" | "partial";
+  member_ids: string[];
+  relationship_assertion_ids: string[];
+  excluded_relationship_assertion_ids: string[];
+}
+
+export interface PublicFamilyStoryChapter {
+  id: string;
+  kind: string;
+  localized_content: LocalizedEditorialContent[];
+  member_ids: string[];
+  event_ids: string[];
+  relationship_assertion_ids: string[];
+  facility_ids: string[];
+  place_ids: string[];
+}
+
+export interface PublicFamilyStoryRecord {
+  id: string;
+  slug: string;
+  story_type: string;
+  localized_content: LocalizedEditorialContent[];
+  scope: PublicFamilyStoryScope;
+  member_ids: string[];
+  relationship_assertion_ids: string[];
+  chapters: PublicFamilyStoryChapter[];
+  media: {
+    featured_panda_ids: string[];
+    selection_state: "reviewed";
+  };
+  source_ids: string[];
+  revision: {
+    data_version: string;
+    public_schema_version: string;
+  };
+}
+
+export interface PublicProfileCohortRecord {
+  slug: string;
+  state: "rich" | "sparse" | "historic" | "standard";
 }
 
 export interface PandaLineageNode extends PandaListItem {

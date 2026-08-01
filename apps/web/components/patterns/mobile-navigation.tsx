@@ -19,6 +19,8 @@ interface MobileNavigationProps {
     navigation: string;
     home: string;
     atlas: string;
+    moments: string;
+    families: string;
     lineage: string;
     map: string;
     myPandas: string;
@@ -69,6 +71,8 @@ export function MobileNavigation({
         <nav id="public-mobile-navigation" aria-label={labels.navigation} className="pa-mobile-nav-panel">
           <Link href={`/${locale}`} onClick={() => setOpen(false)}>{labels.home}</Link>
           <Link href={`/${locale}/pandas`} onClick={() => setOpen(false)}>{labels.atlas}</Link>
+          <Link href={`/${locale}/moments` as Route} onClick={() => setOpen(false)}>{labels.moments}</Link>
+          <Link href={`/${locale}/families/smithsonian-generations` as Route} onClick={() => setOpen(false)}>{labels.families}</Link>
           <Link href={`/${locale}/lineage` as Route} onClick={() => setOpen(false)}>{labels.lineage}</Link>
           <Link href={`/${locale}/map` as Route} onClick={() => setOpen(false)}>{labels.map}</Link>
           {contributeEnabled ? (

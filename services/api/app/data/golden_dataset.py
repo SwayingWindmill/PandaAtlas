@@ -374,7 +374,11 @@ def project_panda_details(
             {
                 "id": record["id"],
                 "slug": public["canonical_slug"],
-                "name_zh": _display_name(public, "zh-Hans") or public["canonical_slug"],
+                "name_zh": (
+                    _display_name(public, "zh-Hans")
+                    or _display_name(public, "en")
+                    or public["canonical_slug"]
+                ),
                 "name_en": _display_name(public, "en"),
                 "gender": public.get("sex", "unknown"),
                 "status": public.get("life_status", "unknown"),
@@ -499,8 +503,11 @@ def trusted_lineage_pandas() -> tuple[dict[str, Any], ...]:
             {
                 "id": UUID(record["id"]),
                 "slug": public["canonical_slug"],
-                "name_zh": _display_name(public, "zh-Hans")
-                or public["canonical_slug"],
+                "name_zh": (
+                    _display_name(public, "zh-Hans")
+                    or _display_name(public, "en")
+                    or public["canonical_slug"]
+                ),
                 "name_en": _display_name(public, "en"),
                 "gender": public.get("sex", "unknown"),
                 "status": public.get("life_status", "unknown"),

@@ -198,6 +198,18 @@
       "markers": ["Accountable Archive Publication", "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false", "additive and forward-fix only"]
     },
     {
+      "path": "docs/architecture/accountable-archive-operations.md",
+      "categories": ["adr", "runbook", "contract"],
+      "disposition": "document_accountable_archive_operation_boundary",
+      "markers": ["Accountable Archive Operations", "single-accountable-approver", "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED=false"]
+    },
+    {
+      "path": "services/api/app/archive_workbench/service.py",
+      "categories": ["command", "capability", "ui"],
+      "disposition": "retain_fail_closed_accountable_workbench_boundary",
+      "markers": ["archive_single_accountable_approver_enabled", "archive_workbench_disabled", "authoritative_database_unavailable"]
+    },
+    {
       "path": "infra/supabase/migrations/0020_accountable_archive_publication.sql",
       "categories": ["schema", "trigger", "metric"],
       "disposition": "install_accountable_publication_transaction",

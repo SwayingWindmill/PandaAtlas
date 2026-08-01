@@ -22,6 +22,16 @@
       "states": ["complete", "partial", "unknown-focus", "no-javascript"]
     },
     {
+      "id": "moments",
+      "route_pattern": "/{locale}/moments",
+      "states": ["results", "filtered", "empty", "derived-anniversaries", "no-javascript"]
+    },
+    {
+      "id": "family-story",
+      "route_pattern": "/{locale}/families/{slug}",
+      "states": ["complete-scope", "partial-scope", "relationship-status", "no-media", "no-javascript"]
+    },
+    {
       "id": "map",
       "route_pattern": "/{locale}/map",
       "states": ["api", "cached-release", "provider-degraded", "structured-only", "no-javascript"]

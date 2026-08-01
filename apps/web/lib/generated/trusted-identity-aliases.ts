@@ -1,4 +1,4 @@
-// Generated from reviewed Public Release 2026.07.24.2.
+// Generated from reviewed Public Release 2026.07.31.1.
 // Run npm run generate:trusted-identity-aliases after changing trusted identity data.
 
 import type { PandaDetail, PandaLineageEdge, PandaLineageNode, PublicFacilitySummary, PublicInstitutionSummary, PublicParentageAssertionSummary, PublicPlaceSummary } from "@/lib/types";
@@ -220,6 +220,10 @@ export const TRUSTED_PANDA_REFERENCES: Readonly<Record<string, TrustedPandaRefer
   "yangyang": {
     "id": "db108e44-8893-54e1-8cb5-8c5238b75089",
     "slug": "yang-yang"
+  },
+  "yong-ba": {
+    "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+    "slug": "yong-ba"
   },
   "zhao-mei": {
     "id": "51847c05-7342-5e4c-a5b5-c00d23f9a6be",
@@ -582,8 +586,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -604,7 +608,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "gender": "male",
     "status": "alive",
     "birth_date": "2021-07-25",
-    "current_location": null,
+    "current_location": "成都大熊猫繁育研究基地",
     "cover_image_url": null,
     "search_terms": [
       "lun-hui",
@@ -760,8 +764,31 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "access_state": "accessible"
       }
     ],
-    "current_place": null,
-    "residencies": [],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-24"
+    },
+    "residencies": [
+      {
+        "id": "res-lun-hui-chengdu-research-base",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2021-07-25",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "source_ids": [
+          "src_chengdu_newborns_2021_zh",
+          "src_gpg_chengdu_base_current_page_6",
+          "src_gpg_meet_world_page_24"
+        ]
+      }
+    ],
     "events": [
       {
         "id": "evt_lun_hui_birth_20210725",
@@ -800,8 +827,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1002,8 +1029,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1241,8 +1268,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1428,8 +1455,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1628,8 +1655,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -1960,8 +1987,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -2234,8 +2261,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -2473,8 +2500,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -2605,8 +2632,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -2615,6 +2642,110 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         {
           "locale": "en",
           "summary": "Created an identity-first maternal relationship profile."
+        }
+      ]
+    }
+  },
+  {
+    "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+    "slug": "yong-ba",
+    "name_zh": "Yong Ba",
+    "name_en": "Yong Ba",
+    "gender": "unknown",
+    "status": "deceased",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [
+      "yong-ba",
+      "Yong Ba"
+    ],
+    "intro": "仅以英文罗马字 Yong Ba 发布的历史亲缘身份。现有公开来源确认其已死亡，但出生日期、死亡日期、中文名与完整生平尚未达到公开审核要求。",
+    "birthplace": null,
+    "tags": [
+      "trusted-identity",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "habitats": [],
+    "media": [],
+    "identity": {
+      "stable_id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+      "canonical_slug": "yong-ba",
+      "names": [
+        {
+          "value": "Yong Ba",
+          "language": "en",
+          "kind": "romanized",
+          "primary": true,
+          "source_ids": [
+            "src_gpg_yongba_death"
+          ]
+        }
+      ],
+      "aliases": [],
+      "legacy_slugs": [],
+      "external_identifiers": []
+    },
+    "conclusions": [
+      {
+        "field": "life_status",
+        "value": "deceased",
+        "status": "confirmed",
+        "last_verified_at": "2026-05-11",
+        "assertion_ids": [
+          "fact-yong-ba-life-status"
+        ],
+        "source_ids": [
+          "src_gpg_yongba_death"
+        ],
+        "candidate_values": [],
+        "superseded_values": []
+      }
+    ],
+    "sources": [
+      {
+        "id": "src_gpg_yongba_death",
+        "publisher": "Giant Panda Global",
+        "title": "Yong Ba died",
+        "url": "https://www.giantpandaglobal.com/en/news/yong-ba-died",
+        "published_at": "2011-12-06",
+        "last_verified_at": "2026-05-11",
+        "language": "en",
+        "access_state": "accessible"
+      }
+    ],
+    "current_place": null,
+    "residencies": [],
+    "events": [],
+    "record_tier": "identity_first_pass",
+    "localized_content": [
+      {
+        "locale": "zh-CN",
+        "summary": "仅以英文罗马字 Yong Ba 发布的历史亲缘身份。现有公开来源确认其已死亡，但出生日期、死亡日期、中文名与完整生平尚未达到公开审核要求。"
+      },
+      {
+        "locale": "en",
+        "summary": "A historic lineage identity published under the romanized name Yong Ba. The current public source confirms that he died, while birth date, death date, Chinese name, and a full life history remain unverified for publication."
+      }
+    ],
+    "media_release": {
+      "license_state": "no_licensed_media",
+      "display_mode": "designed_empty_state",
+      "source_ids": []
+    },
+    "public_revision": {
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
+      "summaries": [
+        {
+          "locale": "zh-CN",
+          "summary": "将历史亲缘依赖提升为基础公开档案，并明确保留日期与命名缺口。"
+        },
+        {
+          "locale": "en",
+          "summary": "Promoted a historic lineage dependency to a basic public profile while retaining explicit date and naming gaps."
         }
       ]
     }
@@ -2881,8 +3012,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": []
     }
   },
@@ -3212,8 +3343,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -3234,7 +3365,7 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
     "gender": "female",
     "status": "alive",
     "birth_date": "2017-07-15",
-    "current_location": null,
+    "current_location": "成都大熊猫繁育研究基地",
     "cover_image_url": "https://api.zhipanda.com/media/releases/2026.07.24.2/media-zhen-xi-00447d48441585a6-w1080.webp",
     "search_terms": [
       "zhen-xi",
@@ -3420,8 +3551,29 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
         "access_state": "accessible"
       }
     ],
-    "current_place": null,
-    "residencies": [],
+    "current_place": {
+      "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+      "coarse_location": null,
+      "status": "confirmed",
+      "last_verified_at": "2026-07-24"
+    },
+    "residencies": [
+      {
+        "id": "res-zhen-xi-chengdu-research-base",
+        "facility_id": "7b09ec20-5a9c-5041-a2f3-eca29a2bc8b0",
+        "coarse_location": null,
+        "residency_type": "primary",
+        "start_date": "2024-04-01",
+        "start_precision": "day",
+        "end_date": null,
+        "end_precision": null,
+        "status": "confirmed",
+        "last_verified_at": "2026-07-24",
+        "source_ids": [
+          "src_chengdu_zhen_xi_visit_2024"
+        ]
+      }
+    ],
     "events": [
       {
         "id": "evt_zhen_xi_birth_20170715",
@@ -3500,8 +3652,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -3831,8 +3983,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -4018,8 +4170,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -4160,8 +4312,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -4516,8 +4668,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -4718,8 +4870,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -4850,8 +5002,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -5037,8 +5189,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -5169,8 +5321,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -5359,8 +5511,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -5546,8 +5698,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -5805,8 +5957,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -5992,8 +6144,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -6182,8 +6334,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -6326,8 +6478,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -6658,8 +6810,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -6860,8 +7012,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -7202,8 +7354,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -7404,8 +7556,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -7744,8 +7896,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -8075,8 +8227,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -8232,8 +8384,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -8574,8 +8726,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -8813,8 +8965,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       ]
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -8970,8 +9122,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -9157,8 +9309,8 @@ export const TRUSTED_PANDA_DETAILS: PandaDetail[] = [
       "source_ids": []
     },
     "public_revision": {
-      "data_version": "2026.07.24.2",
-      "public_schema_version": "1.2.0",
+      "data_version": "2026.07.31.1",
+      "public_schema_version": "1.3.0",
       "summaries": [
         {
           "locale": "zh-CN",
@@ -10465,6 +10617,27 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
+    "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
+    "slug": "yong-ba",
+    "name_zh": "Yong Ba",
+    "name_en": "Yong Ba",
+    "gender": "unknown",
+    "status": "deceased",
+    "birth_date": null,
+    "current_location": null,
+    "cover_image_url": null,
+    "search_terms": [],
+    "intro": null,
+    "tags": [
+      "trusted-archive",
+      "golden-dataset"
+    ],
+    "father_id": null,
+    "mother_id": null,
+    "record_tier": "identity_first_pass",
+    "profile_available": true
+  },
+  {
     "id": "38cd1cad-3e34-5511-bc35-a091ece74e11",
     "slug": "tian-tian",
     "name_zh": "添添",
@@ -11053,30 +11226,9 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
     "profile_available": true
   },
   {
-    "id": "35f40679-1253-58f4-a2c5-7669ea81cf6e",
-    "slug": "yong-ba",
-    "name_zh": "yong-ba",
-    "name_en": "Yong Ba",
-    "gender": "unknown",
-    "status": "unknown",
-    "birth_date": null,
-    "current_location": null,
-    "cover_image_url": null,
-    "search_terms": [],
-    "intro": null,
-    "tags": [
-      "trusted-archive",
-      "golden-dataset"
-    ],
-    "father_id": null,
-    "mother_id": null,
-    "record_tier": "dependency_stub",
-    "profile_available": false
-  },
-  {
     "id": "b53e84dd-31f1-56a8-b8dd-ab0b75dc7a1a",
     "slug": "pan-pan-baoxing",
-    "name_zh": "pan-pan-baoxing",
+    "name_zh": "Pan Pan",
     "name_en": "Pan Pan",
     "gender": "unknown",
     "status": "unknown",
@@ -11097,7 +11249,7 @@ export const TRUSTED_LINEAGE_NODES: PandaLineageNode[] = [
   {
     "id": "d91afc69-20eb-59dd-ae56-8c8562ab03b3",
     "slug": "an-an-bao-li-father",
-    "name_zh": "an-an-bao-li-father",
+    "name_zh": "An An",
     "name_en": "An An",
     "gender": "unknown",
     "status": "unknown",

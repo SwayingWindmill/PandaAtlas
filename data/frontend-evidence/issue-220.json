@@ -19,12 +19,12 @@
   },
   "inventory": {
     "status": "PASS",
-    "classified_files": 241,
+    "classified_files": 244,
     "unclassified_files": 0,
     "public_migration_debt": 0,
     "categories": {
-      "technical-compatible": 202,
-      "historical": 39,
+      "technical-compatible": 204,
+      "historical": 40,
       "public-visible": 0
     },
     "detail": "Every retained legacy reference is explicitly classified as technical compatibility or historical evidence. No public migration action remains."

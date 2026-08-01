@@ -32,7 +32,10 @@
     "sex", "slug", "snapshot_date", "snapshots", "source_ids", "source_url", "sources", "stable_id", "start_date",
     "start_precision", "state", "stats", "status", "subject_id", "summaries", "summary",
     "superseded_values", "system", "tags", "title", "to_coarse_location", "to_facility_id", "total_pandas",
-    "translation_status", "type", "url", "value", "version", "width", "wild_distribution_cells"
+    "translation_status", "type", "url", "value", "version", "chapters", "coverage_state", "event_ids",
+    "excluded_relationship_assertion_ids", "facilities", "family_stories", "featured_panda_ids", "member_ids",
+    "parentage_assertions", "profile_cohort", "relationship_assertion_ids", "revision", "scope", "selection_state",
+    "story_type", "width", "wild_distribution_cells"
   ],
   "forbidden_public_keys": [
     "contact_email",

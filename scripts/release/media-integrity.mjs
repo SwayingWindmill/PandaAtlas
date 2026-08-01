@@ -3,10 +3,9 @@ import { isDeepStrictEqual } from "node:util";
 const SHA256_PATTERN = /^[a-f0-9]{64}$/i;
 const MEDIA_ID_PATTERN = /^media-[a-z0-9-]+-[a-f0-9]{16}$/;
 const UNKNOWN_RIGHTS = new Set(["", "unknown", "unclear", "copyright_unknown", "none"]);
-const REQUIRED_DERIVATIVE_KINDS = new Map([
-  ["width-480", 480],
-  ["width-1200", 1200],
-]);
+const MIN_MEDIA_WIDTH = 480;
+const MAX_MEDIA_WIDTH = 1200;
+const REQUIRED_THUMBNAIL_WIDTH = 480;
 const IMAGE_PAYLOAD_FIELDS = [
   "url",
   "derivatives",
@@ -83,7 +82,8 @@ function expectedDerivativeUrl(releaseVersion, mediaId, width) {
 function mediaReleaseVersion(publicValue, dataset, mediaId, label, allowedReleaseVersions) {
   const match = String(publicValue.url ?? "").match(
     new RegExp(
-      `^https://api\\.zhipanda\\.com/media/releases/(\\d{4}\\.\\d{2}\\.\\d{2}\\.\\d+)/${mediaId}-w1200\\.webp$`,
+      `^https://api\\.zhipanda\\.com/media/releases/(\\d{4}\\.\\d{2}\\.\\d{2}\\.\\d+)/${mediaId}-w\\d+\\.webp(?:$)`,
+
     ),
   );
   requireCondition(match, `${label} url is not an immutable release media URL`);
@@ -112,8 +112,12 @@ function assertNoImagePayload(publicValue, label) {
 
 function assertDerivative(derivative, releaseVersion, mediaId, label) {
   const kind = requireString(derivative, "kind", label);
-  const expectedWidth = REQUIRED_DERIVATIVE_KINDS.get(kind);
-  requireCondition(expectedWidth, `${label} has unsupported derivative kind ${kind}`);
+  const kindMatch = kind.match(/^width-(\d+)$/);
+  const expectedWidth = Number(kindMatch?.[1]);
+  requireCondition(
+    Number.isInteger(expectedWidth) && expectedWidth >= MIN_MEDIA_WIDTH && expectedWidth <= MAX_MEDIA_WIDTH,
+    `${label} has unsupported derivative kind ${kind}`,
+  );
   requirePositiveInteger(derivative.width, "width", label);
   requirePositiveInteger(derivative.height, "height", label);
   requirePositiveInteger(derivative.bytes, "bytes", label);
@@ -146,6 +150,10 @@ function assertAvailableMedia(
   requireCondition(MEDIA_ID_PATTERN.test(media.id), `${label} media ID is not system-generated`);
   assertRetainedHumanMetadata(publicValue, sources, allowedStates, label);
   requirePositiveInteger(publicValue.width, "width", label);
+  requireCondition(
+    publicValue.width >= MIN_MEDIA_WIDTH && publicValue.width <= MAX_MEDIA_WIDTH,
+    `${label} width must be between ${MIN_MEDIA_WIDTH} and ${MAX_MEDIA_WIDTH}`,
+  );
   requirePositiveInteger(publicValue.height, "height", label);
   requirePositiveInteger(publicValue.bytes, "bytes", label);
   requireCondition(publicValue.mime_type === "image/webp", `${label} mime_type must be image/webp`);
@@ -161,8 +169,13 @@ function assertAvailableMedia(
     allowedReleaseVersions,
   );
   requireCondition(Array.isArray(publicValue.derivatives), `${label} requires derivatives`);
+  const primaryKind = `width-${publicValue.width}`;
+  const requiredDerivativeKinds = new Set([
+    `width-${REQUIRED_THUMBNAIL_WIDTH}`,
+    primaryKind,
+  ]);
   requireCondition(
-    publicValue.derivatives.length >= REQUIRED_DERIVATIVE_KINDS.size,
+    publicValue.derivatives.length >= requiredDerivativeKinds.size,
     `${label} requires WebP derivatives`,
   );
 
@@ -187,15 +200,16 @@ function assertAvailableMedia(
     derivativeUrls.add(derivative.url);
     globalUrls.add(derivative.url);
   }
-  for (const kind of REQUIRED_DERIVATIVE_KINDS.keys()) {
+  for (const kind of requiredDerivativeKinds) {
     requireCondition(derivativeKinds.has(kind), `${label} is missing required derivative ${kind}`);
   }
 
-  const primary = publicValue.derivatives.find((item) => item.kind === "width-1200");
-  requireCondition(publicValue.url === primary.url, `${label} primary url must equal width-1200 derivative url`);
-  requireCondition(publicValue.width === primary.width, `${label} primary width must equal width-1200 derivative width`);
-  requireCondition(publicValue.height === primary.height, `${label} primary height must equal width-1200 derivative height`);
-  requireCondition(publicValue.bytes === primary.bytes, `${label} primary bytes must equal width-1200 derivative bytes`);
+  const primary = publicValue.derivatives.find((item) => item.kind === primaryKind);
+  requireCondition(primary, `${label} is missing primary derivative ${primaryKind}`);
+  requireCondition(publicValue.url === primary.url, `${label} primary url must equal ${primaryKind} derivative url`);
+  requireCondition(publicValue.width === primary.width, `${label} primary width must equal ${primaryKind} derivative width`);
+  requireCondition(publicValue.height === primary.height, `${label} primary height must equal ${primaryKind} derivative height`);
+  requireCondition(publicValue.bytes === primary.bytes, `${label} primary bytes must equal ${primaryKind} derivative bytes`);
   requireCondition(
     publicValue.mime_type === primary.mime_type,
     `${label} primary mime_type must equal width-1200 derivative mime_type`,
