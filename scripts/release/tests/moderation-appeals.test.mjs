@@ -62,16 +62,17 @@ test("user appeal surface is private, bilingual, and cannot receive internal mod
 
   assert.match(page, /privatePage: true/);
   assert.match(page, /getVerifiedSupabaseAccessToken\(\)/);
-  assert.match(surface, /\/api\/moderation\/actions/);
-  assert.match(surface, /\/api\/moderation\/appeals/);
+  assert.match(surface, /`\/api\/moderation\$\{path\}`/);
+  assert.match(surface, /moderationFetch<MyModeration>\("\/actions"\)/);
+  assert.match(surface, /moderationFetch<AppealQueue>\("\/appeals"\)/);
   assert.match(surface, /My restrictions and appeals/);
   assert.doesNotMatch(surface, /internal_resolution/);
   assert.doesNotMatch(surface, /internal_explanation/);
   assert.match(apiRouter, /response_model=MyAppealCaseRead/);
   assert.match(apiRouter, /response_model=MyModerationRead/);
-  assert.match(apiRouter, /internal_resolution=appeal\.internal_resolution/);
+  assert.doesNotMatch(apiRouter, /internal_resolution=appeal\.internal_resolution/);
   assert.match(apiRouter, /def _user_safe_appeal/);
   assert.match(route, /proxyUserModerationRequest/);
-  assert.match(middleware, /me\\\/(?:submissions\|appeals)/);
+  assert.match(middleware, /submissions\|appeals/);
   assert.match(middleware, /noindex, nofollow, noarchive, nosnippet/);
 });
