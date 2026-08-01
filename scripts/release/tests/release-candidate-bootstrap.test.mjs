@@ -9,11 +9,14 @@ const actionPath = new URL(
 );
 
 function jobSource(workflow, jobId, nextJobId) {
-  const start = workflow.indexOf(`  ${jobId}:\n`);
+  const normalized = workflow.replaceAll("\r\n", "\n");
+  const start = normalized.indexOf(`  ${jobId}:\n`);
   assert.notEqual(start, -1, `Missing Workflow job ${jobId}`);
-  const end = nextJobId ? workflow.indexOf(`  ${nextJobId}:\n`, start + 1) : workflow.length;
+  const end = nextJobId
+    ? normalized.indexOf(`  ${nextJobId}:\n`, start + 1)
+    : normalized.length;
   assert.notEqual(end, -1, `Missing Workflow job boundary ${nextJobId}`);
-  return workflow.slice(start, end);
+  return normalized.slice(start, end);
 }
 
 test("release candidate bootstrap owns the pinned cross-platform toolchain", async () => {
