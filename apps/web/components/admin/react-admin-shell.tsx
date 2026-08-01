@@ -13,6 +13,7 @@ import { BrowserRouter, Link, Route } from "react-router-dom";
 import { adminSessionFailureDestination } from "@/components/admin/admin-session-navigation";
 import { ArchiveAdvancedOperations } from "@/components/admin/archive-advanced-operations";
 import { ArchiveWorkbench } from "@/components/admin/archive-workbench";
+import { ModerationWorkbench } from "@/components/admin/moderation-workbench";
 import { ReviewCaseWorkbench } from "@/components/admin/review-case-workbench";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
@@ -274,7 +275,7 @@ function CapabilityDashboard() {
               aria-labelledby="review-workbench-heading"
             >
               <h2 id="review-workbench-heading" className="text-xl font-bold text-stone-950">
-                Review &amp; Moderation
+                ReviewCase
               </h2>
               <p className="mt-2 text-sm leading-6 text-stone-700">
                 使用领域专用命令处理 ReviewCase、来源验证、补充请求、追加决定和 Curation 推荐。通用 React-admin CRUD 仍保持禁用。
@@ -284,6 +285,26 @@ function CapabilityDashboard() {
                 className="mt-4 inline-flex min-h-11 items-center rounded-md bg-stone-950 px-4 py-2 text-sm font-semibold text-white"
               >
                 打开贡献审核工作台
+              </Link>
+            </section>
+          ) : null}
+
+          {session.capabilities.includes("moderation.case.read") ? (
+            <section
+              className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
+              aria-labelledby="moderation-workbench-heading"
+            >
+              <h2 id="moderation-workbench-heading" className="text-xl font-bold text-stone-950">
+                Moderation &amp; Appeals
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                记录最小必要制裁、账号暂停或恢复，并在五个工作日首次响应 SLA 内处理追加式申诉。每条命令重新检查 Capability、最近认证和冲突。
+              </p>
+              <Link
+                to="/moderation"
+                className="mt-4 inline-flex min-h-11 items-center rounded-md bg-stone-950 px-4 py-2 text-sm font-semibold text-white"
+              >
+                打开制裁与申诉工作台
               </Link>
             </section>
           ) : null}
@@ -310,6 +331,7 @@ export function ReactAdminShell() {
           <Route path="archive" element={<ArchiveWorkbench />} />
           <Route path="archive/operations" element={<ArchiveAdvancedOperations />} />
           <Route path="reviews" element={<ReviewCaseWorkbench />} />
+          <Route path="moderation" element={<ModerationWorkbench />} />
         </CustomRoutes>
       </Admin>
     </BrowserRouter>
