@@ -13,6 +13,7 @@ import "./certification-lifecycle.test.mjs";
 import "./map-close-config.test.mjs";
 import "./map-close-evidence.test.mjs";
 import "./published-return-evidence.test.mjs";
+import "./release-candidate-bootstrap.test.mjs";
 import "./workspace-cleanliness.test.mjs";
 import {
   EnvironmentBlockedError,
