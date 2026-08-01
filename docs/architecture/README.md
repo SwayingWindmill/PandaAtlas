@@ -22,4 +22,5 @@ The target ADR does not claim that migration is already complete. Runtime docume
 - Inventory validation: `node scripts/release/check-managed-cloud-inventory.mjs`
 - Phase 1 Vercel deployment: [deployed with acceptance in progress](../deployment/vercel-web-phase-1.md)
 - Phase 2 preparation: [FastAPI request-runtime boundary enforced](api-request-runtime-boundary.md)
+- Phase 3 preparation: [bounded batch workflow control plane established](batch-workflow-interfaces.md)
 - Next action: complete the deployment-matched browser and accessibility checks in GitHub Actions; no production DNS or Cloudflare runtime changes are authorized yet.

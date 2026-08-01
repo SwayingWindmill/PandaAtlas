@@ -1,0 +1,203 @@
+name: Bounded Batch Operations
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Standard bounded batch operation
+        required: true
+        type: choice
+        options:
+          - research.validate
+          - research.build
+          - curation.validate
+          - curation.apply
+          - media.process
+          - media.publish
+          - release.build
+          - release.publish
+          - recovery.drill
+      manifest_path:
+        description: Repository-relative immutable manifest path when required
+        required: false
+        default: ""
+        type: string
+      execute:
+        description: Execute a ready adapter instead of producing a dry-run plan only
+        required: false
+        default: false
+        type: boolean
+      change_reference:
+        description: Issue, PR, or change record required for approval-gated execution
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: batch-${{ inputs.operation }}-${{ inputs.manifest_path || github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "22"
+  PYTHON_VERSION: "3.12"
+  UV_VERSION: "0.11.7"
+
+jobs:
+  plan:
+    name: Validate and plan batch operation
+    runs-on: ubuntu-latest
+    outputs:
+      operation: ${{ steps.plan.outputs.operation }}
+      status: ${{ steps.plan.outputs.status }}
+      executable: ${{ steps.plan.outputs.executable }}
+      approval_required: ${{ steps.plan.outputs.approval_required }}
+      requires_node: ${{ steps.plan.outputs.requires_node }}
+      requires_python: ${{ steps.plan.outputs.requires_python }}
+      requires_uv: ${{ steps.plan.outputs.requires_uv }}
+      artifact_directory: ${{ steps.plan.outputs.artifact_directory }}
+    steps:
+      - name: Check out clean repository
+        uses: actions/checkout@v7.0.0
+        with:
+          clean: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Create fail-closed batch plan
+        id: plan
+        env:
+          BATCH_OPERATION: ${{ inputs.operation }}
+          BATCH_MANIFEST_PATH: ${{ inputs.manifest_path }}
+          BATCH_EXECUTE_REQUESTED: ${{ inputs.execute }}
+          BATCH_CHANGE_REFERENCE: ${{ inputs.change_reference }}
+        run: node scripts/batch/operations.mjs plan --operation "$BATCH_OPERATION" --manifest "$BATCH_MANIFEST_PATH"
+
+      - name: Upload batch plan
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: batch-plan-${{ github.run_id }}
+          path: .batch-work/
+          if-no-files-found: error
+          include-hidden-files: true
+
+  execute-unprotected:
+    name: Execute ready non-production operation
+    needs: plan
+    if: >-
+      inputs.execute == true &&
+      needs.plan.outputs.executable == 'true' &&
+      needs.plan.outputs.approval_required == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out clean repository
+        uses: actions/checkout@v7.0.0
+        with:
+          clean: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Set up Python
+        if: needs.plan.outputs.requires_python == 'true'
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pinned uv
+        if: needs.plan.outputs.requires_uv == 'true'
+        run: python -m pip install uv==${{ env.UV_VERSION }}
+
+      - name: Execute fixed batch adapter
+        env:
+          BATCH_OPERATION: ${{ inputs.operation }}
+          BATCH_MANIFEST_PATH: ${{ inputs.manifest_path }}
+          BATCH_EXECUTE_REQUESTED: "true"
+          BATCH_CHANGE_REFERENCE: ${{ inputs.change_reference }}
+        run: node scripts/batch/operations.mjs run --execute --operation "$BATCH_OPERATION" --manifest "$BATCH_MANIFEST_PATH"
+
+      - name: Verify operation did not modify tracked files
+        run: node scripts/release/check-workspace-cleanliness.mjs --context batch-operation
+
+      - name: Upload batch result
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: batch-result-${{ inputs.operation }}-${{ github.run_id }}
+          path: .batch-work/
+          if-no-files-found: error
+          include-hidden-files: true
+
+  execute-protected:
+    name: Execute approval-gated operation
+    needs: plan
+    if: >-
+      inputs.execute == true &&
+      needs.plan.outputs.executable == 'true' &&
+      needs.plan.outputs.approval_required == 'true'
+    runs-on: ubuntu-latest
+    environment: production-batch
+    env:
+      BATCH_APPROVAL_ENVIRONMENT: production-batch
+    steps:
+      - name: Check out clean repository
+        uses: actions/checkout@v7.0.0
+        with:
+          clean: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Set up Python
+        if: needs.plan.outputs.requires_python == 'true'
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pinned uv
+        if: needs.plan.outputs.requires_uv == 'true'
+        run: python -m pip install uv==${{ env.UV_VERSION }}
+
+      - name: Execute approved fixed batch adapter
+        env:
+          BATCH_OPERATION: ${{ inputs.operation }}
+          BATCH_MANIFEST_PATH: ${{ inputs.manifest_path }}
+          BATCH_EXECUTE_REQUESTED: "true"
+          BATCH_CHANGE_REFERENCE: ${{ inputs.change_reference }}
+        run: node scripts/batch/operations.mjs run --execute --operation "$BATCH_OPERATION" --manifest "$BATCH_MANIFEST_PATH"
+
+      - name: Verify operation did not modify tracked files
+        run: node scripts/release/check-workspace-cleanliness.mjs --context protected-batch-operation
+
+      - name: Upload protected batch result
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: protected-batch-result-${{ inputs.operation }}-${{ github.run_id }}
+          path: .batch-work/
+          if-no-files-found: error
+          include-hidden-files: true
+
+  reject-unavailable-execution:
+    name: Reject unavailable execution adapter
+    needs: plan
+    if: inputs.execute == true && needs.plan.outputs.executable != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail closed
+        env:
+          BATCH_OPERATION: ${{ inputs.operation }}
+          BATCH_STATUS: ${{ needs.plan.outputs.status }}
+        run: |
+          echo "Operation $BATCH_OPERATION is $BATCH_STATUS and cannot execute yet."
+          exit 1

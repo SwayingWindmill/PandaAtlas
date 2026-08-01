@@ -51,6 +51,20 @@ npm run check:research-script-policy
 
 Research code under `scripts/research/`, JSON manifests under `data/research-batches/`, and changes to `contracts/research-batch.v1.json` select the `release` development scope, which runs the policy before the development-gate contract tests.
 
+Bounded batch work uses the fixed operation catalog in `contracts/batch-operations.v1.json`. Produce a local dry-run plan with:
+
+```bash
+npm run batch:plan -- --operation research.validate --json
+```
+
+Validate the catalog and manual GitHub Actions workflow with:
+
+```bash
+npm run check:batch-workflow-interface
+```
+
+`batch:run` executes only code-allowlisted ready adapters. Planned operations, arbitrary commands, non-JSON or escaping manifest paths, and approval-gated execution without the `production-batch` environment fail closed. Generated plans and results stay under ignored `.batch-work/`.
+
 The API scope begins with the FastAPI request-runtime boundary check. It follows imports reachable from `app.main` and rejects batch-only namespaces, executable script imports, dynamic imports, heavy optional dependencies, and dependency-group drift. Run it directly with:
 
 ```bash

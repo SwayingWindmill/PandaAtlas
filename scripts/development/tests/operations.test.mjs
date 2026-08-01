@@ -130,6 +130,15 @@ test("root package exposes one canonical interface and compatibility adapters", 
     "node scripts/development/operations.mjs run release.check-research-script-policy",
   );
   assert.equal(
+    packageJson.scripts["check:batch-workflow-interface"],
+    "node scripts/development/operations.mjs run release.check-batch-workflow-interface",
+  );
+  assert.equal(packageJson.scripts["batch:plan"], "node scripts/batch/operations.mjs plan");
+  assert.equal(
+    packageJson.scripts["batch:run"],
+    "node scripts/batch/operations.mjs run --execute",
+  );
+  assert.equal(
     packageJson.scripts["check:api-runtime-boundary"],
     "node scripts/development/operations.mjs run api.check-runtime-boundary",
   );
