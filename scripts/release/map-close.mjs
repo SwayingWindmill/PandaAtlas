@@ -15,6 +15,9 @@ import {
   runDefaultReleaseGate,
 } from "./default.mjs";
 
+// Archive governance audit locator; executable definitions live in the shared plan:
+// archive-governance-evidence · Exhaustive four-eyes inventory · validate-archive-governance-evidence.mjs
+
 function prepareMapCloseWebEnvironment() {
   for (const [name, value] of Object.entries(MAP_CLOSE_WEB_ENVIRONMENT)) {
     if (!process.env[name]) process.env[name] = value;
