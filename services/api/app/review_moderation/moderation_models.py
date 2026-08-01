@@ -5,7 +5,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class ModerationActionKind(StrEnum):
@@ -200,8 +200,3 @@ class ModerationDenial(BaseModel):
 
     code: str
     message: str
-
-
-@field_validator("scope", "reason_code", check_fields=False)
-def _normalize_identifier(value: str) -> str:
-    return value.strip().lower()
