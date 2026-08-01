@@ -122,6 +122,10 @@ test("root package exposes one canonical interface and compatibility adapters", 
     "node scripts/development/operations.mjs run verify.dev",
   );
   assert.equal(
+    packageJson.scripts["check:repository-structure"],
+    "node scripts/development/operations.mjs run release.check-repository-structure",
+  );
+  assert.equal(
     packageJson.scripts["check:repository-hygiene"],
     "node scripts/development/operations.mjs run release.check-repository-hygiene",
   );
