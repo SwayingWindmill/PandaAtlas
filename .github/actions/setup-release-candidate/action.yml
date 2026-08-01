@@ -1,0 +1,62 @@
+name: Set up release candidate
+
+description: Check out a clean candidate and install the pinned release certification toolchain.
+
+inputs:
+  node-version:
+    description: Node.js version used by release certification.
+    required: true
+  npm-version:
+    description: npm version installed globally before dependency restore.
+    required: true
+  python-version:
+    description: Python version used by release certification.
+    required: true
+  uv-version:
+    description: uv version installed through pip.
+    required: true
+  show-versions:
+    description: Print resolved toolchain versions after installation.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Check out clean repository
+      uses: actions/checkout@v7.0.0
+      with:
+        clean: true
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v6.4.0
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+
+    - name: Set up Python
+      uses: actions/setup-python@v6.3.0
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install pinned npm and uv
+      shell: bash
+      env:
+        RELEASE_NPM_VERSION: ${{ inputs.npm-version }}
+        RELEASE_UV_VERSION: ${{ inputs.uv-version }}
+      run: |
+        npm install --global "npm@${RELEASE_NPM_VERSION}"
+        python -m pip install "uv==${RELEASE_UV_VERSION}"
+
+    - name: Show toolchain versions
+      if: inputs.show-versions == 'true'
+      shell: bash
+      run: |
+        node --version
+        npm --version
+        python --version
+        uv --version
+
+    - name: Install workspace dependencies from lockfile
+      shell: bash
+      run: npm ci
