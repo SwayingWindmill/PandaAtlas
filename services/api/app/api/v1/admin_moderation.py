@@ -14,14 +14,17 @@ from app.review_moderation.moderation_models import (
     ClaimAppealCommand,
     DecideAppealCommand,
     IssueModerationActionCommand,
-    ModerationActionKind,
     ModerationMetricsRead,
     MyAppealCaseRead,
     MyAppealQueueRead,
-    MyModerationActionRead,
     MyModerationRead,
     RestoreModerationActionCommand,
     SubmitAppealCommand,
+)
+from app.review_moderation.moderation_queries import (
+    get_my_appeal,
+    get_my_moderation,
+    list_my_appeals,
 )
 from app.review_moderation.moderation_service import (
     claim_appeal,
@@ -198,43 +201,12 @@ def moderation_metrics_endpoint(identity: ModerationMetricsReader) -> Moderation
 
 @router.get("/actions", response_model=MyModerationRead)
 def get_own_moderation_actions(identity: AppealSubmitter) -> MyModerationRead:
-    moderation = get_account_moderation(identity.account_id)
-    appeals = [
-        appeal
-        for appeal in list_appeals("all", 100).items
-        if appeal.account_id == identity.account_id
-    ]
-    appeal_by_action = {appeal.sanction_action_id: appeal.appeal_case_id for appeal in appeals}
-    return MyModerationRead(
-        account_state=moderation.account_state,
-        actions=[
-            MyModerationActionRead(
-                action_id=action.action_id,
-                kind=action.kind,
-                scope=action.scope,
-                reason_code=action.reason_code,
-                user_visible_explanation=action.user_visible_explanation,
-                starts_at=action.starts_at,
-                ends_at=action.ends_at,
-                created_at=action.created_at,
-                effective=action.effective,
-                appeal_case_id=appeal_by_action.get(action.action_id),
-            )
-            for action in moderation.actions
-            if action.kind is not ModerationActionKind.RESTORATION
-        ],
-    )
+    return get_my_moderation(identity.account_id)
 
 
 @router.get("/appeals", response_model=MyAppealQueueRead)
 def list_own_appeals(identity: AppealSubmitter) -> MyAppealQueueRead:
-    return MyAppealQueueRead(
-        items=[
-            _user_safe_appeal(appeal)
-            for appeal in list_appeals("all", 100).items
-            if appeal.account_id == identity.account_id
-        ]
-    )
+    return list_my_appeals(identity.account_id)
 
 
 @router.post("/appeals", response_model=MyAppealCaseRead, status_code=status.HTTP_201_CREATED)
@@ -251,4 +223,4 @@ def get_own_appeal_endpoint(
     appeal_case_id: UUID,
     identity: AppealSubmitter,
 ) -> MyAppealCaseRead:
-    return _user_safe_appeal(get_appeal(appeal_case_id, account_id=identity.account_id))
+    return get_my_appeal(identity.account_id, appeal_case_id)
