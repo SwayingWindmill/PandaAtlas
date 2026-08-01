@@ -11,6 +11,13 @@ MIGRATION = (
     / "migrations"
     / "0026_moderation_sanctions_and_appeals.sql"
 )
+OWNERSHIP_MIGRATION = (
+    REPO_ROOT
+    / "infra"
+    / "supabase"
+    / "migrations"
+    / "0027_moderation_account_state_ownership.sql"
+)
 
 
 def test_moderation_storage_is_scoped_versioned_and_append_only() -> None:
@@ -68,3 +75,14 @@ def test_moderation_capabilities_are_explicit_and_administrator_is_not_granted()
     assert "('reviewer', 'moderation.sanction.issue')" in sql
     assert "('moderator', 'moderation.sanction.manage')" in sql
     assert "('administrator', 'moderation." not in sql
+
+
+def test_account_state_ownership_prevents_cross_process_reactivation() -> None:
+    sql = OWNERSHIP_MIGRATION.read_text(encoding="utf-8").lower()
+
+    assert "panda.moderation_suspension_claim" in sql
+    assert "panda.moderation_restoration_claim" in sql
+    assert "new.state_reason := 'moderation'" in sql
+    assert "moderation-owned suspension requires an append-only restoration action" in sql
+    assert "moderation cannot restore an account suspended by another process" in sql
+    assert "trg_identity_account_moderation_ownership" in sql
