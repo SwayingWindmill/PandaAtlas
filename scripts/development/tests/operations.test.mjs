@@ -130,6 +130,10 @@ test("root package exposes one canonical interface and compatibility adapters", 
     "node scripts/development/operations.mjs run release.check-research-script-policy",
   );
   assert.equal(
+    packageJson.scripts["check:api-runtime-boundary"],
+    "node scripts/development/operations.mjs run api.check-runtime-boundary",
+  );
+  assert.equal(
     packageJson.scripts["infra:status"],
     "node scripts/development/operations.mjs run foundation.status",
   );

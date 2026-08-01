@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "title": "PandaAtlas API Request Runtime Boundary",
+  "scope": "Transitive Python imports reachable from the managed request entrypoint",
+  "entrypoints": [
+    "app.main"
+  ],
+  "service_root": "services/api",
+  "application_package": "app",
+  "batch_only_prefixes": [
+    "app.acquisition",
+    "app.enrichment",
+    "app.identity_resolution",
+    "app.knowledge.migration"
+  ],
+  "forbidden_local_roots": [
+    "scripts"
+  ],
+  "forbidden_request_import_roots": [
+    "PIL",
+    "playwright",
+    "scrapling",
+    "scrapy",
+    "selenium"
+  ],
+  "separated_dependencies": [
+    {
+      "distribution": "pillow",
+      "import_root": "PIL",
+      "required_optional_group": "dev"
+    },
+    {
+      "distribution": "scrapling",
+      "import_root": "scrapling",
+      "required_optional_group": "crawler-poc"
+    },
+    {
+      "distribution": "scrapy",
+      "import_root": "scrapy",
+      "required_optional_group": "crawler-poc"
+    }
+  ],
+  "rules": {
+    "follow_transitive_local_imports": true,
+    "forbid_dynamic_imports_in_request_closure": true,
+    "forbid_batch_only_modules_in_request_closure": true,
+    "forbid_scripts_package_imports": true,
+    "forbid_heavy_optional_imports": true,
+    "forbid_heavy_optional_distributions_in_base_dependencies": true,
+    "generic_app_wheel_is_not_a_serverless_artifact": true
+  }
+}

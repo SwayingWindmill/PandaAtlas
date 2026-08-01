@@ -21,4 +21,5 @@ The target ADR does not claim that migration is already complete. Runtime docume
 - Machine-readable responsibility register: [`contracts/managed-cloud-deployment-inventory.v1.json`](../../contracts/managed-cloud-deployment-inventory.v1.json)
 - Inventory validation: `node scripts/release/check-managed-cloud-inventory.mjs`
 - Phase 1 Vercel deployment: [complete](../deployment/vercel-web-phase-1.md)
-- Next action: begin Phase 2 API validation; no production DNS or Cloudflare runtime changes are authorized yet.
+- Phase 2 preparation: [FastAPI request-runtime boundary enforced](api-request-runtime-boundary.md)
+- Next action: continue Phase 2 API validation; no production DNS or Cloudflare runtime changes are authorized yet.

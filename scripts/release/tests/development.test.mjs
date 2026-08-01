@@ -101,6 +101,13 @@ test("identity contracts select API checks", () => {
   ]);
 });
 
+test("request runtime boundary contract selects API checks", () => {
+  assert.deepEqual(
+    classifyDevelopmentScopes(["contracts/api-request-runtime-boundary.v1.json"]),
+    ["api"],
+  );
+});
+
 test("frontend withdrawal evidence selects release checks", () => {
   assert.deepEqual(classifyDevelopmentScopes(["data/frontend-withdrawals/example.json"]), [
     "release",

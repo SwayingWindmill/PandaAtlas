@@ -51,6 +51,14 @@ npm run check:research-script-policy
 
 Research code under `scripts/research/`, JSON manifests under `data/research-batches/`, and changes to `contracts/research-batch.v1.json` select the `release` development scope, which runs the policy before the development-gate contract tests.
 
+The API scope begins with the FastAPI request-runtime boundary check. It follows imports reachable from `app.main` and rejects batch-only namespaces, executable script imports, dynamic imports, heavy optional dependencies, and dependency-group drift. Run it directly with:
+
+```bash
+npm run check:api-runtime-boundary
+```
+
+The resolved request closure can be inspected with `python services/api/scripts/check_request_runtime_boundary.py --json`.
+
 ## Compatibility adapters
 
 Existing root scripts such as `npm run dev:web`, `npm run verify:dev`, and `npm run infra:status` remain available. They are compatibility adapters that delegate to Development Operations.
