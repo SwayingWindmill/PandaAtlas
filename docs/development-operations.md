@@ -33,6 +33,14 @@ Use `--json` with `list` or `describe` when another tool needs machine-readable 
 
 The same catalog supplies changed-scope development acceptance in `scripts/release/development.mjs`. CI planning and local execution therefore cross the same interface instead of maintaining separate command lists.
 
+Before selecting scopes, `verify.dev` runs the repository hygiene check. The check rejects tracked or unignored generated output, dependency directories, Python package metadata, test reports, local platform state, and accidental copy-style filenames such as `middleware (1).ts`. Run it directly with:
+
+```bash
+npm run check:repository-hygiene
+```
+
+Root planning files (`task_plan.md`, `findings.md`, and `progress.md`) remain allowed because they are part of the repository working convention.
+
 ## Compatibility adapters
 
 Existing root scripts such as `npm run dev:web`, `npm run verify:dev`, and `npm run infra:status` remain available. They are compatibility adapters that delegate to Development Operations.

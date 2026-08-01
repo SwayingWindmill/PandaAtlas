@@ -274,6 +274,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "release.check-repository-hygiene",
+    category: "verification",
+    description: "Reject generated output and accidental duplicate paths from repository input.",
+    command: "node",
+    args: ["scripts/release/check-repository-hygiene.mjs"],
+    requires: ["git", "node"],
+    effect: "read-only",
+  },
+  {
     id: "release.test-development",
     category: "verification",
     description: "Run development-gate contract tests.",
@@ -282,6 +291,7 @@ const commands = [
       "--test",
       "scripts/release/tests/development.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
+      "scripts/release/tests/repository-hygiene.test.mjs",
       "scripts/release/tests/release-config.test.mjs",
       "scripts/development/tests/operations.test.mjs",
     ],

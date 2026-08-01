@@ -7,6 +7,7 @@ import {
   DEVELOPMENT_SCOPE_ORDER,
   commandsForDevelopmentScope,
 } from "../development/catalog.mjs";
+import { checkRepositoryHygiene } from "./check-repository-hygiene.mjs";
 import { repoRoot, runCommand } from "./default.mjs";
 
 export { DEVELOPMENT_SCOPE_ORDER } from "../development/catalog.mjs";
@@ -323,6 +324,7 @@ async function runPlan(plan) {
 
 export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
+  checkRepositoryHygiene({ quiet: options.githubOutput });
   let plan;
   let metadata = {};
   if (options.all) plan = createPlanForScopes(DEVELOPMENT_SCOPE_ORDER);
