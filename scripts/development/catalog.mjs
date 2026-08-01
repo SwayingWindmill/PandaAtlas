@@ -301,12 +301,22 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "release.check-batch-workflow-interface",
+    category: "verification",
+    description: "Validate bounded batch operation and GitHub Actions safety contracts.",
+    command: "node",
+    args: ["scripts/release/check-batch-workflow-interface.mjs"],
+    requires: ["node"],
+    effect: "read-only",
+  },
+  {
     id: "release.test-development",
     category: "verification",
     description: "Run development-gate contract tests.",
     command: "node",
     args: [
       "--test",
+      "scripts/release/tests/batch-workflow-interface.test.mjs",
       "scripts/release/tests/development.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
@@ -399,6 +409,7 @@ if (commandById.size !== commands.length) {
 
 export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   release: [
+    "release.check-batch-workflow-interface",
     "release.check-research-script-policy",
     "release.test-development",
   ],

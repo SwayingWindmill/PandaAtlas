@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "title": "PandaAtlas Bounded Batch Operations",
+  "workflow": ".github/workflows/batch-operations.yml",
+  "approval_environment": "production-batch",
+  "artifact_directory": ".batch-work",
+  "operations": [
+    {
+      "id": "research.validate",
+      "status": "ready",
+      "effect": "read-only",
+      "approval_required": false,
+      "manifest_required": false,
+      "idempotency": "Read-only validation; repeated runs inspect the same repository state.",
+      "command": [
+        "node",
+        "scripts/release/check-research-script-policy.mjs"
+      ]
+    },
+    {
+      "id": "research.build",
+      "status": "planned",
+      "effect": "generated-output",
+      "approval_required": false,
+      "manifest_required": true,
+      "idempotency": "A future generic runner must derive deterministic candidate output from one immutable research manifest.",
+      "blocked_reason": "No generic research batch runner is committed yet."
+    },
+    {
+      "id": "curation.validate",
+      "status": "ready",
+      "effect": "read-only",
+      "approval_required": false,
+      "manifest_required": false,
+      "idempotency": "Read-only validation; repeated runs inspect the same curation records.",
+      "command": [
+        "python",
+        "scripts/curation/validate_panda_curation.py"
+      ]
+    },
+    {
+      "id": "curation.apply",
+      "status": "planned",
+      "effect": "authoritative-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "A future generic patch applier must use an immutable patch identity and reject replay with different content.",
+      "blocked_reason": "Current apply scripts are cohort-specific and cannot be exposed as one generic write entrypoint."
+    },
+    {
+      "id": "media.process",
+      "status": "ready",
+      "effect": "generated-output",
+      "approval_required": false,
+      "manifest_required": false,
+      "idempotency": "The processor writes an isolated artifact directory and preserves existing output unless explicitly replaced.",
+      "command": [
+        "uv",
+        "run",
+        "--isolated",
+        "--directory",
+        "services/api",
+        "--frozen",
+        "--extra",
+        "dev",
+        "python",
+        "../../scripts/curation/process_panda_media.py",
+        "--output-dir",
+        "../../.batch-work/media"
+      ],
+      "artifact_paths": [
+        ".batch-work/media"
+      ]
+    },
+    {
+      "id": "media.publish",
+      "status": "planned",
+      "effect": "external-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "A future publisher must address immutable objects by checksum and verify the remote object after upload.",
+      "blocked_reason": "Current upload scripts are source-specific and require explicit remote verification."
+    },
+    {
+      "id": "release.build",
+      "status": "planned",
+      "effect": "generated-output",
+      "approval_required": false,
+      "manifest_required": true,
+      "idempotency": "A future adapter must bind one reviewed publication batch to one immutable release directory.",
+      "blocked_reason": "The existing builder requires source, publication, version, and output arguments that are not yet represented by one batch manifest."
+    },
+    {
+      "id": "release.publish",
+      "status": "planned",
+      "effect": "production-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "Publication must activate one immutable release pointer and preserve pointer-only rollback.",
+      "blocked_reason": "Managed production publication is not authorized before the Phase 5 cutover interface is implemented."
+    },
+    {
+      "id": "recovery.drill",
+      "status": "planned",
+      "effect": "isolated-state",
+      "approval_required": false,
+      "manifest_required": true,
+      "idempotency": "The drill must target an isolated environment and produce a new evidence package without mutating production.",
+      "blocked_reason": "The existing drills use separate environment-specific commands and need one explicit drill manifest."
+    }
+  ],
+  "rules": {
+    "workflow_dispatch_only": true,
+    "dry_run_default": true,
+    "contents_permission": "read",
+    "production_writes_require_environment": true,
+    "concurrency_cancel_in_progress": false,
+    "upload_plan_and_result_artifacts": true,
+    "write_job_summary": true,
+    "forbid_default_branch_push": true,
+    "fixed_command_arrays_only": true
+  }
+}

@@ -245,6 +245,17 @@
       "matches": {
         "panda_atlas": 2
       }
+    },
+    {
+      "path": "contracts/batch-operations.v1.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "release engineering",
+      "expected_action": "retain-compatibility",
+      "rationale": "The bounded batch operation catalog retains the established repository system identifier in internal workflow metadata.",
+      "matches": {
+        "PandaAtlas": 1
+      }
     }
   ]
 }

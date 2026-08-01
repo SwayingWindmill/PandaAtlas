@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 export const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 const FORBIDDEN_DIRECTORY_NAMES = new Map([
+  [".batch-work", "bounded batch operation output"],
   [".next", "Next.js build output"],
   [".open-next", "OpenNext build output"],
   [".pytest_cache", "pytest cache"],
