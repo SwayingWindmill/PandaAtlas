@@ -784,8 +784,28 @@ class EngagementRepository:
         idempotency_key: str,
         reason: str,
         correlation_id: UUID,
+        commit: bool = True,
     ) -> dict[str, Any]:
-        self._require_deleting_account(identity.account_id)
+        return self.delete_private_data_for_account(
+            account_id=identity.account_id,
+            actor_account_id=identity.account_id,
+            idempotency_key=idempotency_key,
+            reason=reason,
+            correlation_id=correlation_id,
+            commit=commit,
+        )
+
+    def delete_private_data_for_account(
+        self,
+        *,
+        account_id: UUID,
+        actor_account_id: UUID,
+        idempotency_key: str,
+        reason: str,
+        correlation_id: UUID,
+        commit: bool = True,
+    ) -> dict[str, Any]:
+        self._require_deleting_account(account_id)
         replay = (
             self.session.execute(
                 text(
@@ -797,7 +817,7 @@ class EngagementRepository:
                   and subject_account_id = :account_id
                 """
                 ),
-                {"idempotency_key": idempotency_key, "account_id": identity.account_id},
+                {"idempotency_key": idempotency_key, "account_id": account_id},
             )
             .mappings()
             .one_or_none()
@@ -805,7 +825,7 @@ class EngagementRepository:
         if replay is not None:
             return {
                 **dict(replay["details"]),
-                "account_id": identity.account_id,
+                "account_id": account_id,
                 "outcome": "deleted",
             }
 
@@ -817,44 +837,42 @@ class EngagementRepository:
                 where completed_by_account_id = :account_id
                 """
             ),
-            {"account_id": identity.account_id},
+            {"account_id": account_id},
         )
         feed_last_viewed_deleted = int(
             self.session.execute(
                 text("delete from feed.account_state where account_id = :account_id"),
-                {"account_id": identity.account_id},
+                {"account_id": account_id},
             ).rowcount
             or 0
         )
         community_counts = anonymize_community_intake_account(
             self.session,
-            identity.account_id,
+            account_id,
             reason=reason,
             correlation_id=correlation_id,
         )
-        notification_counts = self._delete_notification_private_data(identity.account_id)
+        notification_counts = self._delete_notification_private_data(account_id)
         counts = {
-            "passport_entries_deleted": self._delete_count("passport_entries", identity.account_id),
-            "preferences_deleted": self._delete_count(
-                "notification_preferences", identity.account_id
-            ),
+            "passport_entries_deleted": self._delete_count("passport_entries", account_id),
+            "preferences_deleted": self._delete_count("notification_preferences", account_id),
             "last_viewed_deleted": (
-                self._delete_count("last_viewed_profiles", identity.account_id)
+                self._delete_count("last_viewed_profiles", account_id)
                 + feed_last_viewed_deleted
             ),
             "contribution_events_deleted": self._delete_count(
-                "passport_contribution_events", identity.account_id
+                "passport_contribution_events", account_id
             ),
-            "follows_deleted": self._delete_count("follows", identity.account_id),
+            "follows_deleted": self._delete_count("follows", account_id),
             **community_counts,
             **notification_counts,
         }
         self._audit(
             event_type="engagement.private_data.deleted",
-            actor_account_id=identity.account_id,
-            subject_account_id=identity.account_id,
+            actor_account_id=actor_account_id,
+            subject_account_id=account_id,
             target_type="account_engagement",
-            target_id=str(identity.account_id),
+            target_id=str(account_id),
             outcome="deleted",
             reason=reason,
             details=counts,
@@ -864,14 +882,15 @@ class EngagementRepository:
         self._outbox(
             event_type="engagement.private_data.deleted",
             aggregate_type="account",
-            aggregate_id=str(identity.account_id),
+            aggregate_id=str(account_id),
             aggregate_version=None,
             idempotency_key=f"engagement-delete:{idempotency_key}",
             correlation_id=correlation_id,
-            payload={"account_id": str(identity.account_id), **counts},
+            payload={"account_id": str(account_id), **counts},
         )
-        self.session.commit()
-        return {"account_id": identity.account_id, **counts, "outcome": "deleted"}
+        if commit:
+            self.session.commit()
+        return {"account_id": account_id, **counts, "outcome": "deleted"}
 
     def _get_intent_by_any_handle(self, handle: str, *, for_update: bool) -> Any:
         suffix = " for update" if for_update else ""

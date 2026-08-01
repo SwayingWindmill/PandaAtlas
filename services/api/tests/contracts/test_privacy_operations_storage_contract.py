@@ -73,6 +73,21 @@ def test_holds_are_narrow_versioned_and_release_back_to_pending() -> None:
     assert "cannot hold their own requests" in service
 
 
+def test_private_deletion_executes_three_owned_contexts_atomically() -> None:
+    service = SERVICE_PATH.read_text(encoding="utf-8").lower()
+    engagement = (
+        REPO_ROOT / "services" / "api" / "app" / "engagement" / "repository.py"
+    ).read_text(encoding="utf-8").lower()
+
+    assert "def execute_private_deletion" in service
+    assert "delete_private_data_for_account" in service
+    assert "commit=false" in service
+    assert "privacy.private-data.deleted" in service
+    assert "cannot execute their own deletion requests" in service
+    assert "def delete_private_data_for_account" in engagement
+    assert "if commit:" in engagement
+
+
 def test_completed_deletion_contexts_create_replayable_tombstones() -> None:
     service = SERVICE_PATH.read_text(encoding="utf-8").lower()
 

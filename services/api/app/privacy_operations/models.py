@@ -88,6 +88,10 @@ class ReplayDeletionTombstoneCommand(PrivacyCommand):
     expected_version: int = Field(ge=1)
 
 
+class ExecutePrivateDeletionCommand(PrivacyCommand):
+    expected_context_versions: dict[str, int]
+
+
 class UserPrivacyContextRead(BaseModel):
     model_config = ConfigDict(frozen=True)
 

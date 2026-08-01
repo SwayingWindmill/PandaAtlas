@@ -10,6 +10,7 @@ def test_privacy_openapi_separates_user_and_operator_models() -> None:
 
     assert "/api/v1/privacy/requests" in paths
     assert "/api/v1/admin/privacy/requests" in paths
+    assert "/api/v1/admin/privacy/requests/{request_id}/execute-private-deletion" in paths
     assert "/api/v1/admin/privacy/requests/{request_id}/holds" in paths
     assert "/api/v1/admin/privacy/requests/{request_id}/holds/{context_key}" in paths
     assert "/api/v1/admin/privacy/holds/{hold_id}/release" in paths

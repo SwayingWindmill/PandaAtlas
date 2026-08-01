@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.engagement.repository import EngagementRepository
 from app.identity.models import AccountState, RequestIdentity
 from app.privacy_operations.models import (
     DeletionTombstoneRead,
@@ -54,6 +55,13 @@ _REQUEST_CONTEXTS: dict[PrivacyRequestKind, tuple[str, ...]] = {
 
 def _scoped_key(*parts: object) -> str:
     return ":".join(str(part) for part in parts)
+
+
+_PRIVATE_DELETION_CONTEXTS = (
+    "engagement",
+    "community_intake",
+    "notification",
+)
 
 
 _ALLOWED_CONTEXT_TRANSITIONS: dict[PrivacyContextState, frozenset[PrivacyContextState]] = {
@@ -579,6 +587,15 @@ class PrivacyOperationsService:
         if request_state not in {PrivacyRequestState.VERIFIED, PrivacyRequestState.PROCESSING}:
             raise PrivacyOperationsConflictError("Privacy request is not ready for processing")
         previous_state = PrivacyContextState(str(row["context_state"]))
+        request_kind = PrivacyRequestKind(str(row["request_kind"]))
+        if (
+            request_kind is PrivacyRequestKind.ACCOUNT_DELETION
+            and context_key in _PRIVATE_DELETION_CONTEXTS
+            and next_state is PrivacyContextState.COMPLETED
+        ):
+            raise PrivacyOperationsConflictError(
+                "Private deletion contexts must complete through the deletion executor"
+            )
         if next_state not in _ALLOWED_CONTEXT_TRANSITIONS[previous_state]:
             raise PrivacyOperationsConflictError(
                 "Privacy context cannot transition from "
@@ -734,6 +751,258 @@ class PrivacyOperationsService:
                 "context_key": context_key,
                 "state": next_state.value,
             },
+        )
+        self.session.commit()
+        return self.get_request(request_id)
+
+    def execute_private_deletion(
+        self,
+        *,
+        actor: RequestIdentity,
+        request_id: UUID,
+        expected_context_versions: dict[str, int],
+        idempotency_key: str,
+        correlation_id: UUID,
+    ) -> PrivacyRequestRead:
+        if set(expected_context_versions) != set(_PRIVATE_DELETION_CONTEXTS):
+            raise PrivacyOperationsConflictError(
+                "Private deletion requires exact engagement, community_intake, "
+                "and notification versions"
+            )
+        if any(version < 1 for version in expected_context_versions.values()):
+            raise PrivacyOperationsConflictError("Privacy context versions must be positive")
+
+        command_key = _scoped_key("privacy-private-deletion", request_id, idempotency_key)
+        replay = self.session.execute(
+            text(
+                """
+                select details
+                from privacy.audit_events
+                where idempotency_key = :idempotency_key
+                """
+            ),
+            {"idempotency_key": command_key},
+        ).mappings().one_or_none()
+        if replay is not None:
+            replay_versions = dict(replay["details"]).get("expected_context_versions")
+            if replay_versions != expected_context_versions:
+                raise PrivacyOperationsConflictError(
+                    "Idempotency key was already used with different context versions"
+                )
+            return self.get_request(request_id)
+
+        request_row = self.session.execute(
+            text(
+                """
+                select account_id, kind::text, state::text
+                from privacy.requests
+                where request_id = :request_id
+                for update
+                """
+            ),
+            {"request_id": request_id},
+        ).mappings().one_or_none()
+        if request_row is None:
+            raise PrivacyOperationsNotFoundError("Privacy request not found")
+        subject_account_id = UUID(str(request_row["account_id"]))
+        if actor.account_id == subject_account_id:
+            raise PrivacyOperationsForbiddenError(
+                "Privacy Operators cannot execute their own deletion requests"
+            )
+        if request_row["kind"] != PrivacyRequestKind.ACCOUNT_DELETION.value:
+            raise PrivacyOperationsConflictError("Privacy request is not an account deletion")
+        request_state = PrivacyRequestState(str(request_row["state"]))
+        if request_state not in {
+            PrivacyRequestState.VERIFIED,
+            PrivacyRequestState.PROCESSING,
+        }:
+            raise PrivacyOperationsConflictError(
+                "Privacy deletion request is not ready for processing"
+            )
+
+        context_rows = self.session.execute(
+            text(
+                """
+                select context_key, state::text, version
+                from privacy.request_contexts
+                where request_id = :request_id
+                  and context_key = any(cast(:context_keys as text[]))
+                for update
+                """
+            ),
+            {
+                "request_id": request_id,
+                "context_keys": list(_PRIVATE_DELETION_CONTEXTS),
+            },
+        ).mappings().all()
+        by_key = {str(row["context_key"]): row for row in context_rows}
+        if set(by_key) != set(_PRIVATE_DELETION_CONTEXTS):
+            raise PrivacyOperationsConflictError("Privacy deletion contexts are incomplete")
+        for context_key in _PRIVATE_DELETION_CONTEXTS:
+            row = by_key[context_key]
+            if int(row["version"]) != expected_context_versions[context_key]:
+                raise PrivacyOperationsConflictError(
+                    f"Privacy context version conflict for {context_key}"
+                )
+            state = PrivacyContextState(str(row["state"]))
+            if state not in {
+                PrivacyContextState.PENDING,
+                PrivacyContextState.PROCESSING,
+                PrivacyContextState.FAILED,
+            }:
+                raise PrivacyOperationsConflictError(
+                    f"Privacy context {context_key} cannot execute from {state.value}"
+                )
+
+        deletion_result = EngagementRepository(
+            self.session
+        ).delete_private_data_for_account(
+            account_id=subject_account_id,
+            actor_account_id=actor.account_id,
+            idempotency_key=command_key,
+            reason="privacy-account-deletion-requested",
+            correlation_id=correlation_id,
+            commit=False,
+        )
+        counts = {
+            key: int(value)
+            for key, value in deletion_result.items()
+            if key.endswith("_deleted")
+        }
+
+        if request_state is PrivacyRequestState.VERIFIED:
+            self.session.execute(
+                text(
+                    """
+                    update privacy.requests
+                    set state = 'processing',
+                        processing_started_at = coalesce(processing_started_at, now()),
+                        version = version + 1
+                    where request_id = :request_id
+                    """
+                ),
+                {"request_id": request_id},
+            )
+            self._insert_request_event(
+                request_id=request_id,
+                event_type="privacy.request.processing",
+                previous_state=PrivacyRequestState.VERIFIED,
+                next_state=PrivacyRequestState.PROCESSING,
+                actor_account_id=actor.account_id,
+                details={"execution": "private-deletion"},
+                correlation_id=correlation_id,
+                idempotency_key=_scoped_key(command_key, "request-processing"),
+            )
+
+        for context_key in _PRIVATE_DELETION_CONTEXTS:
+            previous_state = PrivacyContextState(str(by_key[context_key]["state"]))
+            version_increment = 1 if previous_state is PrivacyContextState.PROCESSING else 2
+            attempt_increment = 0 if previous_state is PrivacyContextState.PROCESSING else 1
+            self.session.execute(
+                text(
+                    """
+                    update privacy.request_contexts
+                    set state = 'completed', last_error_code = null,
+                        attempts = attempts + :attempt_increment,
+                        version = version + :version_increment
+                    where request_id = :request_id and context_key = :context_key
+                    """
+                ),
+                {
+                    "request_id": request_id,
+                    "context_key": context_key,
+                    "attempt_increment": attempt_increment,
+                    "version_increment": version_increment,
+                },
+            )
+            if previous_state is not PrivacyContextState.PROCESSING:
+                self.session.execute(
+                    text(
+                        """
+                        insert into privacy.context_events (
+                          request_id, context_key, previous_state, next_state,
+                          actor_account_id, correlation_id, idempotency_key
+                        ) values (
+                          :request_id, :context_key,
+                          cast(:previous_state as privacy.context_state), 'processing',
+                          :actor_account_id, :correlation_id, :idempotency_key
+                        )
+                        """
+                    ),
+                    {
+                        "request_id": request_id,
+                        "context_key": context_key,
+                        "previous_state": previous_state.value,
+                        "actor_account_id": actor.account_id,
+                        "correlation_id": correlation_id,
+                        "idempotency_key": _scoped_key(
+                            command_key,
+                            context_key,
+                            "processing",
+                        ),
+                    },
+                )
+            self.session.execute(
+                text(
+                    """
+                    insert into privacy.context_events (
+                      request_id, context_key, previous_state, next_state,
+                      actor_account_id, correlation_id, idempotency_key
+                    ) values (
+                      :request_id, :context_key, 'processing', 'completed',
+                      :actor_account_id, :correlation_id, :idempotency_key
+                    )
+                    """
+                ),
+                {
+                    "request_id": request_id,
+                    "context_key": context_key,
+                    "actor_account_id": actor.account_id,
+                    "correlation_id": correlation_id,
+                    "idempotency_key": _scoped_key(
+                        command_key,
+                        context_key,
+                        "completed",
+                    ),
+                },
+            )
+            self._apply_deletion_tombstone(
+                account_id=subject_account_id,
+                request_id=request_id,
+                context_key=context_key,
+            )
+
+        self._insert_audit(
+            event_type="privacy.private-data.deleted",
+            actor_account_id=actor.account_id,
+            subject_account_id=subject_account_id,
+            request_id=request_id,
+            outcome="completed",
+            reason="privacy-account-deletion-requested",
+            details={
+                "expected_context_versions": expected_context_versions,
+                "counts": counts,
+            },
+            correlation_id=correlation_id,
+            idempotency_key=command_key,
+        )
+        self._insert_outbox(
+            event_type="privacy.private-data.deleted",
+            request_id=request_id,
+            idempotency_key=_scoped_key(command_key, "outbox"),
+            correlation_id=correlation_id,
+            payload={
+                "request_id": str(request_id),
+                "account_id": str(subject_account_id),
+                "contexts": list(_PRIVATE_DELETION_CONTEXTS),
+                "counts": counts,
+            },
+        )
+        self._complete_request_if_ready(
+            request_id=request_id,
+            actor_account_id=actor.account_id,
+            correlation_id=correlation_id,
+            idempotency_key=command_key,
         )
         self.session.commit()
         return self.get_request(request_id)
@@ -1283,6 +1552,67 @@ class PrivacyOperationsService:
         )
         self.session.commit()
         return self.get_tombstone(account_id=account_id, context_key=context_key)
+
+    def _complete_request_if_ready(
+        self,
+        *,
+        request_id: UUID,
+        actor_account_id: UUID,
+        correlation_id: UUID,
+        idempotency_key: str,
+    ) -> None:
+        incomplete = int(
+            self.session.execute(
+                text(
+                    """
+                    select count(*)
+                    from privacy.request_contexts
+                    where request_id = :request_id
+                      and state not in ('completed', 'not_applicable')
+                    """
+                ),
+                {"request_id": request_id},
+            ).scalar_one()
+        )
+        if incomplete != 0:
+            return
+        current_state = self.session.execute(
+            text(
+                """
+                select state::text
+                from privacy.requests
+                where request_id = :request_id
+                for update
+                """
+            ),
+            {"request_id": request_id},
+        ).scalar_one()
+        if current_state == PrivacyRequestState.COMPLETED.value:
+            return
+        if current_state != PrivacyRequestState.PROCESSING.value:
+            raise PrivacyOperationsConflictError(
+                "Privacy request cannot complete outside processing state"
+            )
+        self.session.execute(
+            text(
+                """
+                update privacy.requests
+                set state = 'completed', completed_at = now(), version = version + 1
+                where request_id = :request_id
+                """
+            ),
+            {"request_id": request_id},
+        )
+        self._insert_request_event(
+            request_id=request_id,
+            event_type="privacy.request.completed",
+            previous_state=PrivacyRequestState.PROCESSING,
+            next_state=PrivacyRequestState.COMPLETED,
+            actor_account_id=actor_account_id,
+            details={},
+            correlation_id=correlation_id,
+            idempotency_key=_scoped_key(idempotency_key, "request-completed"),
+        )
 
     def _apply_deletion_tombstone(
         self,

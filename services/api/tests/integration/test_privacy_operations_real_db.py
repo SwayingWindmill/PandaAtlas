@@ -321,8 +321,61 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
             idempotency_key=f"privacy-context-complete-{uuid4()}",
             correlation_id=correlation_id,
         )
+        engagement_context = next(
+            context for context in current.contexts if context.context_key == "engagement"
+        )
+        current = service.update_context(
+            actor=operator,
+            request_id=created.request_id,
+            context_key="engagement",
+            expected_version=engagement_context.version,
+            next_state=PrivacyContextState.PROCESSING,
+            internal_error_code=None,
+            idempotency_key=f"privacy-engagement-processing-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        engagement_context = next(
+            context for context in current.contexts if context.context_key == "engagement"
+        )
+        with pytest.raises(PrivacyOperationsConflictError):
+            service.update_context(
+                actor=operator,
+                request_id=created.request_id,
+                context_key="engagement",
+                expected_version=engagement_context.version,
+                next_state=PrivacyContextState.COMPLETED,
+                internal_error_code=None,
+                idempotency_key=f"privacy-engagement-manual-complete-{uuid4()}",
+                correlation_id=correlation_id,
+            )
+        bundle_versions = {
+            context.context_key: context.version
+            for context in current.contexts
+            if context.context_key in {"engagement", "community_intake", "notification"}
+        }
+        deletion_key = f"privacy-private-deletion-{uuid4()}"
+        current = service.execute_private_deletion(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=bundle_versions,
+            idempotency_key=deletion_key,
+            correlation_id=correlation_id,
+        )
+        deletion_replay = service.execute_private_deletion(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=bundle_versions,
+            idempotency_key=deletion_key,
+            correlation_id=correlation_id,
+        )
+        assert deletion_replay.request_id == current.request_id
+        assert {
+            context.context_key
+            for context in current.contexts
+            if context.state is PrivacyContextState.COMPLETED
+        } >= {"identity_access", "engagement", "community_intake", "notification"}
         for context in current.contexts:
-            if context.context_key == "identity_access":
+            if context.state is PrivacyContextState.COMPLETED:
                 continue
             current = service.update_context(
                 actor=operator,
@@ -521,6 +574,19 @@ def test_privacy_operator_cannot_decide_own_request(real_db_url: str) -> None:
             correlation_id=uuid4(),
         )
         context = verified.contexts[0]
+        own_bundle_versions = {
+            item.context_key: item.version
+            for item in verified.contexts
+            if item.context_key in {"engagement", "community_intake", "notification"}
+        }
+        with pytest.raises(PrivacyOperationsForbiddenError):
+            service.execute_private_deletion(
+                actor=operator,
+                request_id=created.request_id,
+                expected_context_versions=own_bundle_versions,
+                idempotency_key=f"privacy-self-delete-{uuid4()}",
+                correlation_id=uuid4(),
+            )
         with pytest.raises(PrivacyOperationsForbiddenError):
             service.create_hold(
                 actor=operator,

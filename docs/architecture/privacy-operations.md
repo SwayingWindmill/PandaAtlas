@@ -64,8 +64,8 @@ Deletion tombstones are keyed by account and context. Restore tooling must reapp
 
 `PRIVACY_OPERATIONS_ENABLED=false` hides all user and operator Privacy Operations HTTP routes before authentication or database access. Disabling the feature does not reverse `deleting` or `deleted` account states, remove requests, discard events, release holds, or delete tombstones. Database rollback is forward-fix only because privacy and Identity lifecycle facts are append-only.
 
-## First-slice status
+## Delivery status
 
-The first vertical slice delivers request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, narrow Hold create/release commands, automatic deletion tombstone creation, audited tombstone replay requests, executable retention storage, audit, and Outbox contracts.
+The delivered vertical slices include request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, narrow Hold create/release commands, automatic deletion tombstone creation, audited tombstone replay requests, executable retention storage, audit, and Outbox contracts. The private-deletion executor now invokes the existing Engagement, Community Intake, and Notification cleanup in one PostgreSQL transaction and atomically completes those three context projections; operators cannot mark those contexts complete manually.
 
-Encrypted export generation and delivery, automatic calls into each context's deletion/anonymization command, scheduled retention/tombstone replay jobs, metrics, alerts, and the Privacy Operator Web workbench remain follow-up work within Issue #198.
+Encrypted export generation and delivery, Archive provenance anonymization, final Identity deletion, scheduled retention/tombstone replay jobs, metrics, alerts, and the Privacy Operator Web workbench remain follow-up work within Issue #198.
