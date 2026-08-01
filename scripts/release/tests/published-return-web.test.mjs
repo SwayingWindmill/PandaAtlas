@@ -78,15 +78,15 @@ test("notification environment examples are disabled and credential-free by defa
 });
 
 test("notification center owns map-close browser and performance evidence", async () => {
-  const [mapClose, budget, smoke, workflow] = await Promise.all([
-    source("scripts/release/map-close.mjs"),
+  const [mapClosePlan, budget, smoke, workflow] = await Promise.all([
+    source("scripts/release/certification/map-close-plan.mjs"),
     source("scripts/release/check-notification-center-budget.mjs"),
     source("apps/web/tests/smoke/published-return-loop.spec.ts"),
     source(".github/workflows/release-gate.yml"),
   ]);
 
-  assert.match(mapClose, /check:notification-center-budget/);
-  assert.match(mapClose, /published-return-loop\.spec\.ts/);
+  assert.match(mapClosePlan, /check:notification-center-budget/);
+  assert.match(mapClosePlan, /published-return-loop\.spec\.ts/);
   assert.match(budget, /\/\[locale\]\/me\/inbox\/page/);
   assert.match(budget, /140 \* 1024/);
   assert.match(smoke, /width: 320/);
