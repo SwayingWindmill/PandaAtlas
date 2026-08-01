@@ -5,9 +5,9 @@ import {
   environmentFlag,
   requireEnvironmentValue,
 } from "./certification/capabilities.mjs";
-import { ReleaseGateError, runReleaseGate } from "./gate-core.mjs";
+import { runEvidenceSealedCertification } from "./certification/lifecycle.mjs";
+import { ReleaseGateError } from "./gate-core.mjs";
 import { runMapCloseGate } from "./map-close.mjs";
-import { sealMapCloseEvidence } from "./map-close-evidence.mjs";
 import {
   apiBaseUrl,
   apiDir,
@@ -70,7 +70,7 @@ export async function runExtendedReleaseGate() {
 
   await runMapCloseGate();
 
-  const report = await runReleaseGate({
+  return runEvidenceSealedCertification({
     gate: "extended",
     reportDir: releaseReportDir,
     steps: [
@@ -131,9 +131,6 @@ export async function runExtendedReleaseGate() {
       },
     ],
   });
-
-  await sealMapCloseEvidence({ reportDir: releaseReportDir });
-  return report;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
