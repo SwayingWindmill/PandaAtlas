@@ -122,11 +122,13 @@
       ".next",
       ".open-next",
       ".venv",
+      ".venv-release",
       "__pycache__",
       ".pytest_cache",
       ".ruff_cache",
       "test-results",
-      ".release-gate"
+      ".release-gate",
+      ".scratch"
     ],
     "excluded_paths": [
       ".git",
@@ -2687,6 +2689,17 @@
       "rationale": "This test asserts an active lowercase compatibility header identifier.",
       "matches": {
         "pandaatlas": 1
+      }
+    },
+    {
+      "path": "services/api/tests/contracts/test_archive_governance_canonical_openapi_contract.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
+      "matches": {
+        "panda-atlas": 1
       }
     },
     {

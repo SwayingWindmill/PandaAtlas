@@ -300,6 +300,21 @@ jobs:
           tests/integration/test_notification_real_db.py
           --junitxml=../../.release-gate/notification-real-db.xml
 
+      - name: Run accountable Archive governance and recovery journey
+        working-directory: services/api
+        run: >-
+          uv run --isolated --frozen --extra dev pytest -q
+          tests/integration/test_accountable_archive_governance_real_db.py
+          --junitxml=../../.release-gate/archive-governance-real-db.xml
+
+      - name: Record deterministic Archive governance rehearsal evidence
+        working-directory: services/api
+        run: >-
+          uv run --isolated --frozen --extra dev python
+          scripts/rehearse_archive_governance_cutover.py
+          --output ../../.release-gate/archive-governance-rehearsal.json
+          --require-go
+
       - name: Run identity deletion, retry, and restore drill
         run: npm run drill:identity-engagement-recovery
 
