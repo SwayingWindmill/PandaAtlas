@@ -9,6 +9,16 @@ MIGRATION_PATH = (
     / "0027_privacy_requests_retention_holds.sql"
 )
 SERVICE_PATH = REPO_ROOT / "services" / "api" / "app" / "privacy_operations" / "service.py"
+EXPORT_MIGRATION_PATH = (
+    REPO_ROOT
+    / "infra"
+    / "supabase"
+    / "migrations"
+    / "0028_privacy_export_artifacts.sql"
+)
+EXPORT_SERVICE_PATH = (
+    REPO_ROOT / "services" / "api" / "app" / "privacy_operations" / "exports.py"
+)
 
 
 def test_privacy_schema_is_private_append_only_and_restore_safe() -> None:
@@ -96,6 +106,27 @@ def test_completed_deletion_contexts_create_replayable_tombstones() -> None:
     assert "privacy.deletion-tombstone.replayed" in service
     assert "privacy.deletion-tombstone.replay-requested" in service
     assert "replay_count = replay_count + 1" in service
+
+
+def test_encrypted_exports_are_private_bounded_and_user_safe() -> None:
+    sql = EXPORT_MIGRATION_PATH.read_text(encoding="utf-8").lower()
+    service = EXPORT_SERVICE_PATH.read_text(encoding="utf-8").lower()
+
+    assert "create table if not exists privacy.export_artifacts" in sql
+    assert "ciphertext bytea" in sql
+    assert "nonce bytea" in sql
+    assert "expires_at <= created_at + interval '24 hours'" in sql
+    assert "plaintext and encryption keys are never stored" in sql
+    assert "revoke all on privacy.export_artifacts from public" in sql
+    assert "aesgcm" in service
+    assert "privacy.export.generated" in service
+    assert "privacy.export-access.granted" in service
+    assert "privacy.export.downloaded" in service
+    assert "storage_object_key" not in service
+    assert "last_authentication_method" not in service
+    assert "source_context" not in service.split("class privacyexportbuilder", 1)[1].split(
+        "class privacyexportservice", 1
+    )[0]
 
 
 def test_retention_policy_seeds_export_and_backup_boundaries() -> None:

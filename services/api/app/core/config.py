@@ -80,6 +80,28 @@ class Settings(BaseSettings):
     community_intake_enabled: bool = Field(default=False, alias="COMMUNITY_INTAKE_ENABLED")
     review_moderation_enabled: bool = Field(default=False, alias="REVIEW_MODERATION_ENABLED")
     privacy_operations_enabled: bool = Field(default=False, alias="PRIVACY_OPERATIONS_ENABLED")
+    privacy_export_master_key: str = Field(
+        default="local-privacy-export-master-key-change-me",
+        min_length=32,
+        alias="PRIVACY_EXPORT_MASTER_KEY",
+    )
+    privacy_export_download_signing_key: str = Field(
+        default="local-privacy-export-download-signing-key-change-me",
+        min_length=32,
+        alias="PRIVACY_EXPORT_DOWNLOAD_SIGNING_KEY",
+    )
+    privacy_export_artifact_ttl_seconds: int = Field(
+        default=86400,
+        ge=300,
+        le=86400,
+        alias="PRIVACY_EXPORT_ARTIFACT_TTL_SECONDS",
+    )
+    privacy_export_download_ttl_seconds: int = Field(
+        default=300,
+        ge=30,
+        le=900,
+        alias="PRIVACY_EXPORT_DOWNLOAD_TTL_SECONDS",
+    )
     review_first_response_business_days: int = Field(
         default=3,
         ge=1,
@@ -216,6 +238,22 @@ class Settings(BaseSettings):
             raise ValueError(
                 "Community Intake upload requires backend Supabase Storage credentials"
             )
+        if self.privacy_export_download_ttl_seconds > self.privacy_export_artifact_ttl_seconds:
+            raise ValueError("Privacy export download TTL cannot exceed artifact TTL")
+        if self.privacy_operations_enabled:
+            if self.privacy_export_master_key == self.privacy_export_download_signing_key:
+                raise ValueError("Privacy export encryption and signing keys must differ")
+            if env not in {"development", "dev", "local", "test"}:
+                if (
+                    self.privacy_export_master_key
+                    == "local-privacy-export-master-key-change-me"
+                ):
+                    raise ValueError("PRIVACY_EXPORT_MASTER_KEY must be configured")
+                if (
+                    self.privacy_export_download_signing_key
+                    == "local-privacy-export-download-signing-key-change-me"
+                ):
+                    raise ValueError("PRIVACY_EXPORT_DOWNLOAD_SIGNING_KEY must be configured")
         return self
 
     def cors_origins(self) -> Sequence[str]:

@@ -5,16 +5,28 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.session import session_scope
 from app.identity.models import AccountState, RequestIdentity
 from app.identity.security import get_request_identity, require_capability, resolve_correlation_id
+from app.privacy_operations.exports import (
+    PrivacyExportCipher,
+    PrivacyExportDecryptionError,
+    PrivacyExportDownloadSigner,
+    PrivacyExportReferenceError,
+    PrivacyExportService,
+)
 from app.privacy_operations.models import (
     CreatePrivacyHoldCommand,
     CreatePrivacyRequestCommand,
     DeletionTombstoneRead,
+    DownloadPrivacyExportCommand,
     ExecutePrivateDeletionCommand,
+    GeneratePrivacyExportCommand,
+    PrivacyExportAccessRead,
+    PrivacyExportRead,
     PrivacyHoldList,
     PrivacyHoldRead,
     PrivacyRequestList,
@@ -85,6 +97,18 @@ PrivacyRequester = Annotated[RequestIdentity, Depends(require_recent_privacy_req
 PrivacyStatusIdentity = Annotated[RequestIdentity, Depends(require_privacy_status_identity)]
 
 
+def _export_service(session: Session) -> PrivacyExportService:
+    return PrivacyExportService(
+        session,
+        cipher=PrivacyExportCipher(settings.privacy_export_master_key),
+        signer=PrivacyExportDownloadSigner(
+            signing_key=settings.privacy_export_download_signing_key,
+            ttl_seconds=settings.privacy_export_download_ttl_seconds,
+        ),
+        artifact_ttl_seconds=settings.privacy_export_artifact_ttl_seconds,
+    )
+
+
 def _private_headers(response: Response) -> None:
     response.headers["Cache-Control"] = "private, no-store"
     response.headers["X-Robots-Tag"] = "noindex, nofollow"
@@ -111,8 +135,13 @@ def _user_read(value: PrivacyRequestRead) -> UserPrivacyRequestRead:
 
 
 def _error(error: Exception) -> HTTPException:
-    if isinstance(error, PrivacyOperationsNotFoundError):
+    if isinstance(error, (PrivacyOperationsNotFoundError, PrivacyExportReferenceError)):
         return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
+    if isinstance(error, PrivacyExportDecryptionError):
+        return HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Privacy export is unavailable",
+        )
     if isinstance(error, PrivacyOperationsForbiddenError):
         return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(error))
     if isinstance(error, PrivacyOperationsConflictError):
@@ -210,6 +239,113 @@ def get_my_privacy_request(
     except HTTPException:
         raise
     except (PrivacyOperationsNotFoundError, SQLAlchemyError) as error:
+        raise _error(error) from error
+
+
+@router.get("/requests/{request_id}/export", response_model=PrivacyExportRead)
+def get_my_privacy_export(
+    request_id: UUID,
+    response: Response,
+    identity: PrivacyRequester,
+    correlation_id: CorrelationId,
+) -> PrivacyExportRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return _export_service(session).get_for_account_audited(
+                actor=identity,
+                request_id=request_id,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        PrivacyExportReferenceError,
+        PrivacyExportDecryptionError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@router.post("/requests/{request_id}/export-access", response_model=PrivacyExportAccessRead)
+def create_my_privacy_export_access(
+    request_id: UUID,
+    response: Response,
+    identity: PrivacyRequester,
+    correlation_id: CorrelationId,
+) -> PrivacyExportAccessRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return _export_service(session).issue_access(
+                actor=identity,
+                request_id=request_id,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        PrivacyExportReferenceError,
+        PrivacyExportDecryptionError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@router.post("/exports/download")
+def download_my_privacy_export(
+    payload: DownloadPrivacyExportCommand,
+    identity: PrivacyRequester,
+    correlation_id: CorrelationId,
+) -> Response:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            content, filename = _export_service(session).download(
+                actor=identity,
+                reference=payload.reference,
+                correlation_id=correlation_id,
+            )
+        return Response(
+            content=content,
+            media_type="application/json",
+            headers={
+                "Cache-Control": "private, no-store",
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "X-Content-Type-Options": "nosniff",
+                "X-Robots-Tag": "noindex, nofollow",
+            },
+        )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        PrivacyExportReferenceError,
+        PrivacyExportDecryptionError,
+        SQLAlchemyError,
+    ) as error:
         raise _error(error) from error
 
 
@@ -335,6 +471,46 @@ def update_privacy_request_context(
         PrivacyOperationsConflictError,
         PrivacyOperationsForbiddenError,
         PrivacyOperationsNotFoundError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@admin_router.post(
+    "/requests/{request_id}/generate-export",
+    response_model=PrivacyExportRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def generate_privacy_export(
+    request_id: UUID,
+    payload: GeneratePrivacyExportCommand,
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> PrivacyExportRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return _export_service(session).generate(
+                actor=actor,
+                request_id=request_id,
+                expected_context_versions=payload.expected_context_versions,
+                idempotency_key=payload.idempotency_key,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        PrivacyExportReferenceError,
+        PrivacyExportDecryptionError,
         SQLAlchemyError,
     ) as error:
         raise _error(error) from error

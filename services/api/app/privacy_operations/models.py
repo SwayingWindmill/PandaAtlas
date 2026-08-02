@@ -40,6 +40,12 @@ class PrivacyHoldState(StrEnum):
     RELEASED = "released"
 
 
+class PrivacyExportState(StrEnum):
+    READY = "ready"
+    EXPIRED = "expired"
+    DELETED = "deleted"
+
+
 class PrivacyHoldReleaseReason(StrEnum):
     BASIS_RESOLVED = "basis_resolved"
     REVIEW_EXPIRED = "review_expired"
@@ -90,6 +96,16 @@ class ReplayDeletionTombstoneCommand(PrivacyCommand):
 
 class ExecutePrivateDeletionCommand(PrivacyCommand):
     expected_context_versions: dict[str, int]
+
+
+class GeneratePrivacyExportCommand(PrivacyCommand):
+    expected_context_versions: dict[str, int]
+
+
+class DownloadPrivacyExportCommand(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    reference: str = Field(min_length=32, max_length=4096)
 
 
 class UserPrivacyContextRead(BaseModel):
@@ -175,3 +191,23 @@ class DeletionTombstoneRead(BaseModel):
     last_replayed_at: datetime | None = None
     replay_count: int
     version: int
+
+
+class PrivacyExportRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    artifact_id: UUID
+    request_id: UUID
+    state: PrivacyExportState
+    schema_version: int
+    plaintext_byte_size: int
+    created_at: datetime
+    expires_at: datetime
+
+
+class PrivacyExportAccessRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    artifact: PrivacyExportRead
+    reference: str
+    expires_at: datetime

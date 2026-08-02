@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
@@ -10,6 +12,11 @@ import pytest
 
 from app.db.session import configure_database, session_scope
 from app.identity.models import AccountState, RequestIdentity
+from app.privacy_operations.exports import (
+    PrivacyExportCipher,
+    PrivacyExportDownloadSigner,
+    PrivacyExportService,
+)
 from app.privacy_operations.models import (
     PrivacyContextState,
     PrivacyHoldBasis,
@@ -574,6 +581,29 @@ def test_privacy_operator_cannot_decide_own_request(real_db_url: str) -> None:
             correlation_id=uuid4(),
         )
         context = verified.contexts[0]
+        own_export_versions = {
+            item.context_key: item.version for item in verified.contexts
+        }
+        with pytest.raises(PrivacyOperationsForbiddenError):
+            PrivacyExportService(
+                session,
+                cipher=PrivacyExportCipher(
+                    "self-conflict-privacy-export-master-key-at-least-32-characters"
+                ),
+                signer=PrivacyExportDownloadSigner(
+                    signing_key=(
+                        "self-conflict-privacy-export-signing-key-at-least-32-characters"
+                    ),
+                    ttl_seconds=300,
+                ),
+                artifact_ttl_seconds=3600,
+            ).generate(
+                actor=operator,
+                request_id=created.request_id,
+                expected_context_versions=own_export_versions,
+                idempotency_key=f"privacy-self-export-{uuid4()}",
+                correlation_id=uuid4(),
+            )
         own_bundle_versions = {
             item.context_key: item.version
             for item in verified.contexts
@@ -609,3 +639,315 @@ def test_privacy_operator_cannot_decide_own_request(real_db_url: str) -> None:
                 idempotency_key=f"privacy-self-process-{uuid4()}",
                 correlation_id=uuid4(),
             )
+
+
+def _seed_export_visible_data(
+    database_url: str,
+    *,
+    account_id: UUID,
+    panda_id: str,
+    visible_marker: str,
+    internal_marker: str,
+) -> None:
+    submission_id = uuid4()
+    attachment_id = uuid4()
+    intent_id = uuid4()
+    contributor_hash = hashlib.sha256(str(account_id).encode()).hexdigest()
+    with psycopg.connect(_normalize_dsn(database_url)) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                update identity.accounts
+                set last_authentication_method = %s, last_session_id = %s,
+                    last_jwt_issued_at = now()
+                where account_id = %s
+                """,
+                (internal_marker, f"session-{internal_marker}", account_id),
+            )
+            cursor.execute(
+                """
+                insert into engagement.follows (
+                  account_id, panda_id, state, first_followed_at, followed_at, version
+                ) values (%s, %s, 'active', now(), now(), 1)
+                """,
+                (account_id, panda_id),
+            )
+            cursor.execute(
+                """
+                insert into engagement.notification_preferences (
+                  account_id, category, channel, enabled, version
+                ) values (%s, 'major_activity', 'email', true, 1)
+                """,
+                (account_id,),
+            )
+            cursor.execute(
+                """
+                insert into engagement.passport_entries (
+                  account_id, panda_id, relationship_state, first_followed_at,
+                  followed_at, contribution_count, projection_version
+                ) values (%s, %s, 'active', now(), now(), 1, 1)
+                """,
+                (account_id, panda_id),
+            )
+            cursor.execute(
+                """
+                insert into community_intake.submissions (
+                  submission_id, account_id, contributor_subject_hash,
+                  submission_type, target_type, target_id, public_version_seen,
+                  draft_content
+                ) values (
+                  %s, %s, %s, 'correction', 'panda', %s, 'release-test',
+                  %s::jsonb
+                )
+                """,
+                (
+                    submission_id,
+                    account_id,
+                    contributor_hash,
+                    panda_id,
+                    json.dumps({"summary": visible_marker, "contact": visible_marker}),
+                ),
+            )
+            cursor.execute(
+                """
+                insert into community_intake.attachments (
+                  attachment_id, submission_id, storage_object_key,
+                  original_filename, media_type, byte_size
+                ) values (%s, %s, %s, 'evidence.pdf', 'application/pdf', 128)
+                """,
+                (attachment_id, submission_id, f"private/{internal_marker}/evidence.pdf"),
+            )
+            cursor.execute(
+                """
+                insert into notification.preferences (
+                  account_id, category, channel, enabled, version
+                ) values (%s, 'major_activity', 'station', true, 1)
+                """,
+                (account_id,),
+            )
+            cursor.execute(
+                """
+                insert into notification.intents (
+                  intent_id, logical_key, source_event_id, source_event_type,
+                  source_context, source_id, source_version, account_id, category,
+                  audience_snapshot, preference_snapshot, content_snapshot,
+                  correlation_id
+                ) values (
+                  %s, %s, %s, 'panda.activity.published', 'activity', %s, 1,
+                  %s, 'major_activity', '{}'::jsonb, '{}'::jsonb, %s::jsonb, %s
+                )
+                """,
+                (
+                    intent_id,
+                    f"privacy-export-{account_id}",
+                    uuid4(),
+                    panda_id,
+                    account_id,
+                    json.dumps(
+                        {
+                            "title": visible_marker,
+                            "internal_delivery_note": internal_marker,
+                        }
+                    ),
+                    uuid4(),
+                ),
+            )
+            cursor.execute(
+                """
+                insert into notification.inbox_items (
+                  intent_id, account_id, category, body
+                ) values (%s, %s, 'major_activity', %s::jsonb)
+                """,
+                (
+                    intent_id,
+                    account_id,
+                    json.dumps({"title": visible_marker, "body": visible_marker}),
+                ),
+            )
+        connection.commit()
+
+
+def test_access_export_is_encrypted_user_scoped_and_audited(real_db_url: str) -> None:
+    account_id = uuid4()
+    other_account_id = uuid4()
+    operator_id = uuid4()
+    _create_account(real_db_url, account_id)
+    _create_account(real_db_url, other_account_id)
+    _create_account(real_db_url, operator_id)
+    visible_marker = f"visible-{uuid4()}"
+    other_marker = f"other-visible-{uuid4()}"
+    internal_marker = f"internal-{uuid4()}"
+    other_internal_marker = f"other-internal-{uuid4()}"
+    _seed_export_visible_data(
+        real_db_url,
+        account_id=account_id,
+        panda_id="panda-export-owner",
+        visible_marker=visible_marker,
+        internal_marker=internal_marker,
+    )
+    _seed_export_visible_data(
+        real_db_url,
+        account_id=other_account_id,
+        panda_id="panda-export-other",
+        visible_marker=other_marker,
+        internal_marker=other_internal_marker,
+    )
+    requester = _identity(account_id)
+    other_requester = _identity(other_account_id)
+    operator = _identity(operator_id, capabilities=frozenset({"privacy.operate"}))
+    correlation_id = uuid4()
+    cipher = PrivacyExportCipher("real-db-privacy-export-master-key-at-least-32-characters")
+    signer = PrivacyExportDownloadSigner(
+        signing_key="real-db-privacy-export-signing-key-at-least-32-characters",
+        ttl_seconds=300,
+    )
+
+    with session_scope() as session:
+        assert session is not None
+        workflow = PrivacyOperationsService(session)
+        created = workflow.create_request(
+            identity=requester,
+            kind=PrivacyRequestKind.ACCESS_EXPORT,
+            reason="Provide a complete encrypted export of my user-visible account data.",
+            idempotency_key=f"privacy-export-request-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        verified = workflow.verify_request(
+            actor=operator,
+            request_id=created.request_id,
+            expected_version=1,
+            idempotency_key=f"privacy-export-verify-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        identity_context = next(
+            context for context in verified.contexts if context.context_key == "identity_profile"
+        )
+        processing = workflow.update_context(
+            actor=operator,
+            request_id=created.request_id,
+            context_key="identity_profile",
+            expected_version=identity_context.version,
+            next_state=PrivacyContextState.PROCESSING,
+            internal_error_code=None,
+            idempotency_key=f"privacy-export-context-processing-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        identity_context = next(
+            context
+            for context in processing.contexts
+            if context.context_key == "identity_profile"
+        )
+        with pytest.raises(PrivacyOperationsConflictError):
+            workflow.update_context(
+                actor=operator,
+                request_id=created.request_id,
+                context_key="identity_profile",
+                expected_version=identity_context.version,
+                next_state=PrivacyContextState.COMPLETED,
+                internal_error_code=None,
+                idempotency_key=f"privacy-export-manual-complete-{uuid4()}",
+                correlation_id=correlation_id,
+            )
+
+        versions = {context.context_key: context.version for context in processing.contexts}
+        export_service = PrivacyExportService(
+            session,
+            cipher=cipher,
+            signer=signer,
+            artifact_ttl_seconds=3600,
+        )
+        generate_key = f"privacy-export-generate-{uuid4()}"
+        artifact = export_service.generate(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=versions,
+            idempotency_key=generate_key,
+            correlation_id=correlation_id,
+        )
+        replay = export_service.generate(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=versions,
+            idempotency_key=generate_key,
+            correlation_id=correlation_id,
+        )
+        assert replay.artifact_id == artifact.artifact_id
+        access = export_service.issue_access(
+            actor=requester,
+            request_id=created.request_id,
+            correlation_id=correlation_id,
+        )
+        with pytest.raises(PrivacyOperationsForbiddenError):
+            export_service.download(
+                actor=other_requester,
+                reference=access.reference,
+                correlation_id=correlation_id,
+            )
+        content, filename = export_service.download(
+            actor=requester,
+            reference=access.reference,
+            correlation_id=correlation_id,
+        )
+
+    payload = json.loads(content)
+    serialized = content.decode("utf-8")
+    owner_email = f"privacy-{account_id}@example.invalid"
+    other_email = f"privacy-{other_account_id}@example.invalid"
+    assert filename == f"zhipanda-privacy-export-{created.request_id}.json"
+    assert payload["schema"] == "zhipanda.privacy-export.v1"
+    assert payload["account"]["email"] == owner_email
+    assert payload["engagement"]["follows"][0]["panda_id"] == "panda-export-owner"
+    assert payload["submissions"][0]["draft_content"]["summary"] == visible_marker
+    assert payload["notifications"]["inbox"][0]["body"]["title"] == visible_marker
+    assert other_email not in serialized
+    assert other_marker not in serialized
+    assert internal_marker not in serialized
+    assert other_internal_marker not in serialized
+    assert "last_authentication_method" not in serialized
+    assert "last_session_id" not in serialized
+    assert "storage_object_key" not in serialized
+    assert "content_snapshot" not in serialized
+
+    ciphertext = _scalar(
+        real_db_url,
+        "select ciphertext from privacy.export_artifacts where artifact_id = %s",
+        (artifact.artifact_id,),
+    )
+    assert isinstance(ciphertext, bytes)
+    assert owner_email.encode() not in ciphertext
+    assert visible_marker.encode() not in ciphertext
+    assert _scalar(
+        real_db_url,
+        """
+        select expires_at <= created_at + interval '24 hours'
+        from privacy.export_artifacts where artifact_id = %s
+        """,
+        (artifact.artifact_id,),
+    ) is True
+    assert _scalar(
+        real_db_url,
+        "select state::text from privacy.requests where request_id = %s",
+        (created.request_id,),
+    ) == "completed"
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*) from privacy.request_contexts
+        where request_id = %s and state = 'completed'
+        """,
+        (created.request_id,),
+    ) == 4
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*) from privacy.audit_events
+        where request_id = %s
+          and event_type in (
+            'privacy.export.generated',
+            'privacy.export-access.granted',
+            'privacy.export-access.denied',
+            'privacy.export.downloaded'
+          )
+        """,
+        (created.request_id,),
+    ) == 4

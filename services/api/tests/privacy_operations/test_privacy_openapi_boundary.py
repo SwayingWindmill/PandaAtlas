@@ -9,7 +9,11 @@ def test_privacy_openapi_separates_user_and_operator_models() -> None:
     schemas = openapi["components"]["schemas"]
 
     assert "/api/v1/privacy/requests" in paths
+    assert "/api/v1/privacy/requests/{request_id}/export" in paths
+    assert "/api/v1/privacy/requests/{request_id}/export-access" in paths
+    assert "/api/v1/privacy/exports/download" in paths
     assert "/api/v1/admin/privacy/requests" in paths
+    assert "/api/v1/admin/privacy/requests/{request_id}/generate-export" in paths
     assert "/api/v1/admin/privacy/requests/{request_id}/execute-private-deletion" in paths
     assert "/api/v1/admin/privacy/requests/{request_id}/holds" in paths
     assert "/api/v1/admin/privacy/requests/{request_id}/holds/{context_key}" in paths
@@ -33,3 +37,24 @@ def test_user_privacy_context_hides_internal_failure_code() -> None:
 
     assert "last_error_code" not in user_fields
     assert "last_error_code" in operator_fields
+
+
+def test_privacy_export_models_never_expose_crypto_or_storage_material() -> None:
+    schemas = app.openapi()["components"]["schemas"]
+
+    export_fields = set(schemas["PrivacyExportRead"]["properties"])
+    access_fields = set(schemas["PrivacyExportAccessRead"]["properties"])
+
+    assert export_fields == {
+        "artifact_id",
+        "request_id",
+        "state",
+        "schema_version",
+        "plaintext_byte_size",
+        "created_at",
+        "expires_at",
+    }
+    assert {"nonce", "ciphertext", "ciphertext_sha256", "key_version"}.isdisjoint(
+        export_fields
+    )
+    assert access_fields == {"artifact", "reference", "expires_at"}

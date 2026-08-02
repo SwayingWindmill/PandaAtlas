@@ -62,6 +62,12 @@ _PRIVATE_DELETION_CONTEXTS = (
     "community_intake",
     "notification",
 )
+_EXPORT_CONTEXTS = (
+    "identity_profile",
+    "engagement",
+    "community_intake",
+    "notification",
+)
 
 
 _ALLOWED_CONTEXT_TRANSITIONS: dict[PrivacyContextState, frozenset[PrivacyContextState]] = {
@@ -595,6 +601,14 @@ class PrivacyOperationsService:
         ):
             raise PrivacyOperationsConflictError(
                 "Private deletion contexts must complete through the deletion executor"
+            )
+        if (
+            request_kind is PrivacyRequestKind.ACCESS_EXPORT
+            and context_key in _EXPORT_CONTEXTS
+            and next_state is PrivacyContextState.COMPLETED
+        ):
+            raise PrivacyOperationsConflictError(
+                "Privacy export contexts must complete through the export generator"
             )
         if next_state not in _ALLOWED_CONTEXT_TRANSITIONS[previous_state]:
             raise PrivacyOperationsConflictError(

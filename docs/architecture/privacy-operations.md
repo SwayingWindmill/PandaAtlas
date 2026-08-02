@@ -39,7 +39,17 @@ Deletion uses:
 
 Context states are `pending`, `processing`, `completed`, `failed`, `held`, and `not_applicable`. Entering `processing` increments the attempt count. A failed context may re-enter `processing`; completed and not-applicable contexts are terminal. Internal failure codes are visible only to Privacy Operators and never cross the user response boundary.
 
-A request completes only when every context is `completed` or `not_applicable`. Context and request projections use optimistic versions, while transition facts remain append-only.
+A request completes only when every context is `completed` or `not_applicable`. Context and request projections use optimistic versions, while transition facts remain append-only. Access/export contexts cannot be marked complete through the generic context command; only successful encrypted artifact generation can complete them.
+
+## Encrypted export boundary
+
+Migration `0028_privacy_export_artifacts.sql` stores only application-layer AES-256-GCM ciphertext, a random 96-bit nonce, integrity metadata, key/schema versions, and expiry facts. The encryption root secret is configured outside PostgreSQL, and HKDF derives a distinct artifact key bound to the artifact ID. Additional authenticated data binds the ciphertext to the artifact, request, account, schema, and key version. Plaintext and key material are never stored.
+
+The export builder uses fixed user-visible allowlists. It includes the account profile, Follow and preference state, Passport entries, owned submissions and contributor-visible status, attachment metadata without private object paths, and native Inbox content. It does not read authentication/session internals, staff workflow fields, delivery snapshots, storage object keys, scan internals, or another account's rows.
+
+A Privacy Operator with recent authentication generates the artifact. The command is versioned, idempotent, conflict-of-interest checked, audited, and completes all four export contexts atomically with the request. A user with recent authentication can read artifact metadata and request an HMAC-signed download reference. The signed payload carries only artifact/request IDs plus a keyed account-subject hash, never the account UUID. References last at most 15 minutes and never beyond the artifact expiry; the configured default is five minutes. Each grant, denied account-mismatch attempt, and successful download appends a separate audit fact. Download rechecks ownership, artifact state, expiry, ciphertext SHA-256, AES-GCM authentication, and plaintext byte size before returning a private no-store JSON attachment.
+
+Artifacts expire no later than 24 hours after generation. Expired artifacts cannot receive new references or be downloaded. `key_version` and `schema_version` support forward key rotation and export-schema evolution without accepting unknown versions.
 
 ## Authorization and sensitive reads
 
@@ -49,7 +59,7 @@ User-facing response models exclude account IDs, operator IDs, internal notes, f
 
 ## Retention and holds
 
-Migration `0027_privacy_requests_retention_holds.sql` establishes executable policy records rather than prose-only retention:
+Migration `0027_privacy_requests_retention_holds.sql` establishes executable policy records rather than prose-only retention, while `0028_privacy_export_artifacts.sql` enforces the artifact lifetime at the storage boundary:
 
 - encrypted export artifacts: at most one day;
 - Community Intake drafts: 90 days;
@@ -62,10 +72,10 @@ Deletion tombstones are keyed by account and context. Restore tooling must reapp
 
 ## Feature and rollback boundary
 
-`PRIVACY_OPERATIONS_ENABLED=false` hides all user and operator Privacy Operations HTTP routes before authentication or database access. Disabling the feature does not reverse `deleting` or `deleted` account states, remove requests, discard events, release holds, or delete tombstones. Database rollback is forward-fix only because privacy and Identity lifecycle facts are append-only.
+`PRIVACY_OPERATIONS_ENABLED=false` hides all user and operator Privacy Operations HTTP routes before authentication or database access. Disabling the feature does not reverse `deleting` or `deleted` account states, remove requests or encrypted artifacts, discard events, release holds, or delete tombstones. Database rollback is forward-fix only because privacy and Identity lifecycle facts are append-only. Export encryption and signing keys are independent production secrets; rotating a key requires a new version rather than rewriting existing audit facts.
 
 ## Delivery status
 
-The delivered vertical slices include request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, narrow Hold create/release commands, automatic deletion tombstone creation, audited tombstone replay requests, executable retention storage, audit, and Outbox contracts. The private-deletion executor now invokes the existing Engagement, Community Intake, and Notification cleanup in one PostgreSQL transaction and atomically completes those three context projections; operators cannot mark those contexts complete manually.
+The delivered vertical slices include request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, encrypted and audited access exports with short-lived download references, narrow Hold create/release commands, automatic deletion tombstone creation, audited tombstone replay requests, executable retention storage, audit, and Outbox contracts. The private-deletion executor invokes the existing Engagement, Community Intake, and Notification cleanup in one PostgreSQL transaction and atomically completes those three context projections; generic commands cannot bypass either the deletion executor or the export generator.
 
-Encrypted export generation and delivery, Archive provenance anonymization, final Identity deletion, scheduled retention/tombstone replay jobs, metrics, alerts, and the Privacy Operator Web workbench remain follow-up work within Issue #198.
+Archive provenance anonymization, final Identity deletion, scheduled retention/export purge/tombstone replay jobs, metrics, alerts, and the Privacy Operator Web workbench remain follow-up work within Issue #198.
