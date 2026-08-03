@@ -8,6 +8,7 @@ from app.projection.approved_release_bootstrap import (
     _revision_payload,
     load_approved_release,
 )
+from app.release_manifests import load_release_manifest
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 
@@ -21,6 +22,12 @@ def test_reviewed_release_reproduces_committed_manifest_and_artifacts() -> None:
     assert bundle.manifest["projection_code_version"] == "public-experience-v1"
     assert len(bundle.manifest_sha256) == 64
     assert len(bundle.source_sha256) == 64
+
+
+def test_packaged_runtime_manifest_matches_reviewed_release() -> None:
+    bundle = load_approved_release(REPO_ROOT)
+
+    assert load_release_manifest(APPROVED_RELEASE_VERSION) == bundle.manifest
 
 
 def test_reviewed_release_contains_complete_archive_and_runtime_snapshots() -> None:
