@@ -1,9 +1,11 @@
 # FastAPI request-runtime boundary
 
-- Status: Enforced architecture boundary; managed deployment not yet implemented
+- Status: Enforced architecture boundary; Vercel entrypoint and deterministic closure implemented; managed deployment not yet authorized
 - Governing deployment decision: [ADR 0002](adr-0002-managed-cloud-deployment-target.md)
 - Machine-readable contract: [`contracts/api-request-runtime-boundary.v1.json`](../../contracts/api-request-runtime-boundary.v1.json)
+- Serverless runtime contract: [`contracts/api-serverless-runtime.v1.json`](../../contracts/api-serverless-runtime.v1.json)
 - Validation command: `npm run check:api-runtime-boundary`
+- Serverless closure command: `npm run check:api-serverless-closure`
 
 ## Purpose
 
@@ -26,21 +28,24 @@ This restriction does not delete or deprecate those modules. They remain availab
 
 ## Dependency separation
 
-The base dependencies in `services/api/pyproject.toml` are the current request-capable dependency set. Heavy or batch-specific distributions remain optional:
+The base dependencies in `services/api/pyproject.toml` are the reviewed managed-request dependency set. Heavy, batch-specific, and local-server distributions remain optional:
 
 | Import root | Distribution | Required optional group |
 |---|---|---|
 | `PIL` | `pillow` | `dev` |
 | `scrapling` | `scrapling` | `crawler-poc` |
 | `scrapy` | `scrapy` | `crawler-poc` |
+| `uvicorn` | `uvicorn[standard]` | `local-server` |
 
-The checker fails when one of these distributions moves into the base dependency list or when a request-reachable module imports its Python root. Playwright, Selenium, and similar browser automation imports are also prohibited from the request closure.
+The checker fails when one of these distributions moves into the base dependency list or when a request-reachable module imports a prohibited Python root. Playwright, Selenium, and similar browser automation imports are also prohibited from the request closure.
 
 ## Packaging rule
 
-The generic setuptools `app*` wheel is a development distribution, not an approved serverless artifact. A future Vercel API package must be constructed from the validated `app.main` entrypoint closure and the reviewed request dependency set. It must not package the entire Python source tree merely because the development wheel can see it.
+The generic setuptools `app*` wheel remains a development distribution, not an approved serverless artifact. `services/api/index.py` is the supported Vercel ASGI entrypoint and only re-exports `app.main:app`.
 
-This slice does not create a Vercel handler or change the existing Uvicorn entrypoint. It creates the fail-closed seam that a later handler and packaging step must consume.
+`services/api/scripts/build_serverless_closure.py` consumes this boundary and the serverless runtime contract. It creates a deterministic manifest of request modules, package initializers, package data, direct runtime requirements, excluded optional groups, Vercel-excluded tracked files, and SHA-256 evidence. `services/api/vercel.json` applies the matching `excludeFiles` set to the actual function bundle. Neither step deploys the application.
+
+The current structural implementation is documented in [`docs/deployment/vercel-api-phase-2.md`](../deployment/vercel-api-phase-2.md).
 
 ## Verification behavior
 
@@ -56,17 +61,22 @@ Print the resolved module closure for review:
 python services/api/scripts/check_request_runtime_boundary.py --json
 ```
 
-The API development scope runs the boundary before Ruff and pytest. Changes to `services/api/**` or `contracts/api-request-runtime-boundary.v1.json` therefore cannot pass development acceptance while the request closure reaches a prohibited module or dependency.
+Validate or build the deterministic serverless manifest:
+
+```bash
+npm run check:api-serverless-closure
+npm run build:api-serverless-closure
+```
+
+The API development scope runs both runtime checks before Ruff and pytest. Changes to `services/api/**`, `contracts/api-request-runtime-boundary.v1.json`, or `contracts/api-serverless-runtime.v1.json` therefore cannot pass development acceptance while the request closure reaches a prohibited module, dependency, or file.
 
 ## Phase 2 work that remains
 
 This boundary does not complete the managed API migration. Phase 2 still requires separate reviewed work for:
 
-1. a Vercel-compatible FastAPI handler and route configuration;
-2. a serverless artifact builder that consumes the validated closure;
-3. Supabase project, region, pooled connection, backup, Auth, and RLS evidence;
-4. SQLAlchemy connection and pooling behavior suitable for serverless execution;
-5. replacement of temporary static administrative bearer tokens;
-6. deployed contract, latency, cold-start, concurrency, and rollback acceptance.
+1. Supabase project, region, pooled connection, backup, Auth, and RLS evidence;
+2. SQLAlchemy connection and pooling behavior suitable for serverless execution;
+3. replacement of temporary static administrative bearer tokens;
+4. deployed contract, latency, cold-start, concurrency, and rollback acceptance.
 
 Crawler, research, import, media, release, and recovery execution remains outside request handlers and moves to bounded GitHub Actions workflows under ADR 0002 Phase 3.

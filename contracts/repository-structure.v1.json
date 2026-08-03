@@ -138,12 +138,17 @@
       "kind": "python-authority-service",
       "boundary_document": "services/api/README.md",
       "required_paths": [
+        "services/api/.python-version",
+        "services/api/index.py",
         "services/api/pyproject.toml",
         "services/api/app/main.py",
-        "services/api/scripts/check_request_runtime_boundary.py"
+        "services/api/scripts/build_serverless_closure.py",
+        "services/api/scripts/check_request_runtime_boundary.py",
+        "services/api/vercel.json"
       ],
       "governance_paths": [
         "contracts/api-request-runtime-boundary.v1.json",
+        "contracts/api-serverless-runtime.v1.json",
         "docs/architecture/api-request-runtime-boundary.md"
       ]
     },
@@ -233,6 +238,7 @@
       "boundary_document": "contracts/README.md",
       "required_paths": [
         "contracts/api-request-runtime-boundary.v1.json",
+        "contracts/api-serverless-runtime.v1.json",
         "contracts/batch-operations.v1.json",
         "contracts/delivery-workflow.v1.json",
         "contracts/repository-structure.v1.json",
@@ -289,6 +295,7 @@
     "docs/architecture/api-request-runtime-boundary.md",
     "docs/architecture/batch-workflow-interfaces.md",
     "docs/deployment/runtime-status.md",
+    "docs/deployment/vercel-api-phase-2.md",
     "docs/development-delivery.md",
     "infra/README.md",
     "scripts/README.md",
@@ -302,6 +309,8 @@
     "check:delivery-contract:repository": "node scripts/development/operations.mjs run release.check-delivery-contract",
     "check:repository-structure": "node scripts/development/operations.mjs run release.check-repository-structure",
     "check:api-runtime-boundary": "node scripts/development/operations.mjs run api.check-runtime-boundary",
+    "check:api-serverless-closure": "node scripts/development/operations.mjs run api.check-serverless-closure",
+    "build:api-serverless-closure": "node scripts/development/operations.mjs run api.build-serverless-closure",
     "check:batch-workflow-interface": "node scripts/development/operations.mjs run release.check-batch-workflow-interface",
     "check:research-script-policy": "node scripts/development/operations.mjs run release.check-research-script-policy"
   }

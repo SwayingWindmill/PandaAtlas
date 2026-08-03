@@ -29,7 +29,7 @@ test("tracked repository satisfies the structure contract", () => {
   const report = checkRepositoryStructure({ repositoryRoot: repoRoot, quiet: true });
   assert.deepEqual(report.workspaces, ["apps/web", "services/worker-api"]);
   assert.equal(report.zones, 12);
-  assert.equal(report.markdown_documents, 16);
+  assert.equal(report.markdown_documents, 17);
 });
 
 test("contract shape rejects unknown fields and duplicate paths", () => {
