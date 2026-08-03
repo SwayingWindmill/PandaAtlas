@@ -43,7 +43,7 @@ on:
       change_reference:
         description: Authorizing Issue, PR, or change record
         required: true
-        default: "#279"
+        default: "#278"
         type: string
 
 permissions:
