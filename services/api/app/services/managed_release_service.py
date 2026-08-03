@@ -15,6 +15,10 @@ from app.release_manifests import load_release_manifest
 from app.schemas.release import PublicPandaRelease, PublicReleaseMetadata
 from app.services import release_service as file_release
 
+_file_get_current_release_metadata = file_release.get_current_release_metadata
+_file_get_current_api_release = file_release.get_current_api_release
+_file_get_current_panda_release = file_release.get_current_panda_release
+
 pin_current_release_metadata = file_release.pin_current_release_metadata
 reset_current_release_metadata = file_release.reset_current_release_metadata
 release_headers = file_release.release_headers
@@ -73,7 +77,7 @@ def get_current_release_metadata() -> PublicReleaseMetadata:
     if pinned is not None:
         return pinned
     if not has_database():
-        return file_release.get_current_release_metadata()
+        return _file_get_current_release_metadata()
     try:
         _, metadata = _active_database_release()
         file_release._ensure_database_release_not_withdrawn(
@@ -138,11 +142,13 @@ def _published_records(
     if manifest is None:
         raise HTTPException(status_code=503, detail="Public release manifest unavailable")
     counts = Counter(str(record["entity_type"]) for record in records)
-    expected = {
-        str(entity_type): int(count)
-        for entity_type, count in dict(manifest["record_counts"]).items()
-    }
-    if counts != Counter(expected):
+    expected = Counter(
+        {
+            str(entity_type): int(count)
+            for entity_type, count in dict(manifest["record_counts"]).items()
+        }
+    )
+    if counts != expected:
         raise HTTPException(status_code=503, detail="Public release record counts mismatch")
     return records
 
@@ -165,7 +171,7 @@ def _database_runtime_release() -> tuple[PublicReleaseMetadata, dict[str, Any], 
 
 def get_current_api_release() -> dict[str, object]:
     if not has_database():
-        return file_release.get_current_api_release()
+        return _file_get_current_api_release()
     try:
         metadata, runtime, _ = _database_runtime_release()
         return file_release._apply_database_withdrawals(
@@ -179,7 +185,7 @@ def get_current_api_release() -> dict[str, object]:
 
 def get_current_panda_release() -> PublicPandaRelease:
     if not has_database():
-        return file_release.get_current_panda_release()
+        return _file_get_current_panda_release()
     try:
         metadata, _, records = _database_runtime_release()
         pandas = [
@@ -196,3 +202,8 @@ def get_current_panda_release() -> PublicPandaRelease:
         raise
     except SQLAlchemyError as error:
         raise HTTPException(status_code=503, detail="Database unavailable") from error
+
+
+file_release.get_current_release_metadata = get_current_release_metadata
+file_release.get_current_api_release = get_current_api_release
+file_release.get_current_panda_release = get_current_panda_release
