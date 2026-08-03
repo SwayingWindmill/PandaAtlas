@@ -17,9 +17,8 @@
     "file": "services/api/vercel.json",
     "function": "**/*.py",
     "exclude_files": [
-      ".dockerignore",
-      "Dockerfile",
-      "README.md",
+      "*ocker*",
+      "*.md",
       "alembic.ini",
       "alembic/**",
       "openapi/**",
@@ -29,8 +28,7 @@
       "app/enrichment/**",
       "app/identity_resolution/**",
       "app/community_intake/scanner.py",
-      "app/domain/archive_events.py",
-      "app/domain/archive_residency.py",
+      "app/domain/archive_*.py",
       "app/knowledge/**",
       "app/projection/**",
       "app/services/stats_service.py"
