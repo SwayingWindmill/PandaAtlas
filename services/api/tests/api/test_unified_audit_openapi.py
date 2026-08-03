@@ -10,6 +10,7 @@ def test_unified_audit_openapi_is_private_and_explicit() -> None:
     assert "/api/v1/admin/audit/integrity-summaries/{summary_id}/verify" in paths
     assert "/api/v1/admin/audit/exports" in paths
     assert "/api/v1/admin/audit/exports/{artifact_id}/download" in paths
+    assert "/api/v1/admin/audit/maintenance/retention" in paths
     event_schema = schema["components"]["schemas"]["AuditEventRead"]
     properties = event_schema["properties"]
     assert "details_hash" in properties

@@ -122,6 +122,8 @@ class AuditMetricsRead(BaseModel):
     bulk_sensitive_read_count_24h: int
     rejected_payload_count_24h: int
     export_event_count_24h: int
+    expired_export_artifact_count: int
+    maintenance_run_count_24h: int
     integrity_mismatch_count_24h: int
     latest_integrity_generated_at: datetime | None
     alerts: list[str]
@@ -174,3 +176,23 @@ class AuditExportArtifactRead(BaseModel):
     reason: str
     created_at: datetime
     expires_at: datetime
+
+
+class RunAuditMaintenanceCommand(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    reason: ReasonText
+    idempotency_key: IdempotencyKey
+
+
+class AuditMaintenanceRunRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    run_id: UUID
+    actor_account_id: UUID
+    reason: str
+    expired_export_count: int
+    started_at: datetime
+    completed_at: datetime
+    correlation_id: UUID
+    idempotency_key: str

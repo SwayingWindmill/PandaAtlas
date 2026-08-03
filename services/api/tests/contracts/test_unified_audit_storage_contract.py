@@ -3,8 +3,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[4]
 MIGRATION = ROOT / "infra/supabase/migrations/0031_unified_audit_projection.sql"
 EXPORT_MIGRATION = ROOT / "infra/supabase/migrations/0032_audit_exports_and_sensitive_reads.sql"
+MAINTENANCE_MIGRATION = ROOT / "infra/supabase/migrations/0033_audit_retention_maintenance.sql"
 SERVICE = ROOT / "services/api/app/audit/service.py"
 EXPORT_SERVICE = ROOT / "services/api/app/audit/exports.py"
+MAINTENANCE_SERVICE = ROOT / "services/api/app/audit/maintenance.py"
 
 
 def test_unified_audit_storage_is_private_append_only_and_hash_only() -> None:
@@ -72,3 +74,15 @@ def test_audit_exports_are_encrypted_bounded_and_self_auditing() -> None:
     assert "encrypted_payload" not in (
         ROOT / "services/api/app/audit/models.py"
     ).read_text(encoding="utf-8")
+
+
+def test_audit_retention_only_removes_expired_ciphertext_and_keeps_evidence() -> None:
+    sql = MAINTENANCE_MIGRATION.read_text(encoding="utf-8")
+    source = MAINTENANCE_SERVICE.read_text(encoding="utf-8")
+    assert "create table audit.maintenance_runs" in sql
+    assert "trg_maintenance_runs_append_only" in sql
+    assert "('audit_exporter', 'audit.maintain')" in sql
+    assert "delete from audit.export_artifacts" in source
+    assert "where expires_at <= now()" in source
+    assert 'action="audit.retention.expired_exports"' in source
+    assert "delete from audit.event_facts" not in source

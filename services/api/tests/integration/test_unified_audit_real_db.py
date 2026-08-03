@@ -12,10 +12,12 @@ from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
 from app.audit.exports import AuditExportService
+from app.audit.maintenance import AuditMaintenanceService
 from app.audit.models import (
     AuditExportScope,
     CreateAuditExportCommand,
     GenerateAuditIntegritySummaryCommand,
+    RunAuditMaintenanceCommand,
     VerifyAuditIntegritySummaryCommand,
 )
 from app.audit.service import (
@@ -522,3 +524,124 @@ def test_encrypted_export_and_attachment_reads_are_audited(real_db_url: str) -> 
         assert projected["actor_subject_hash"] == "b" * 64
         assert len(projected["details_hash"]) == 64
         session.commit()
+
+
+def test_retention_maintenance_removes_only_expired_exports(real_db_url: str) -> None:
+    _ = real_db_url
+    actor_id = uuid4()
+    expired_artifact_id = uuid4()
+    active_artifact_id = uuid4()
+
+    with session_scope() as session:
+        assert session is not None
+        identity = _insert_account(session, actor_id, "audit_exporter")
+        base_params = {
+            "generated_by_account_id": actor_id,
+            "scope_hash": "d" * 64,
+            "request_hash": "e" * 64,
+            "file_sha256": "f" * 64,
+            "nonce": b"n" * 12,
+            "encrypted_payload": b"c" * 16,
+            "reason": "Retention maintenance fixture",
+            "correlation_id": uuid4(),
+        }
+        session.execute(
+            text(
+                """
+                insert into audit.export_artifacts (
+                  artifact_id, generated_by_account_id, scope_hash, request_hash,
+                  file_sha256, row_count, byte_size, key_version, nonce,
+                  encrypted_payload, reason, correlation_id, idempotency_key,
+                  created_at, expires_at
+                ) values (
+                  :artifact_id, :generated_by_account_id, :scope_hash, :request_hash,
+                  :file_sha256, 1, 10, 1, :nonce,
+                  :encrypted_payload, :reason, :correlation_id, :idempotency_key,
+                  now() - interval '2 days', now() - interval '1 day'
+                )
+                """
+            ),
+            {
+                **base_params,
+                "artifact_id": expired_artifact_id,
+                "idempotency_key": f"expired-export-{uuid4()}",
+            },
+        )
+        session.execute(
+            text(
+                """
+                insert into audit.export_artifacts (
+                  artifact_id, generated_by_account_id, scope_hash, request_hash,
+                  file_sha256, row_count, byte_size, key_version, nonce,
+                  encrypted_payload, reason, correlation_id, idempotency_key,
+                  created_at, expires_at
+                ) values (
+                  :artifact_id, :generated_by_account_id, :scope_hash, :request_hash,
+                  :file_sha256, 1, 10, 1, :nonce,
+                  :encrypted_payload, :reason, :correlation_id, :idempotency_key,
+                  now(), now() + interval '1 hour'
+                )
+                """
+            ),
+            {
+                **base_params,
+                "artifact_id": active_artifact_id,
+                "request_hash": "1" * 64,
+                "file_sha256": "2" * 64,
+                "idempotency_key": f"active-export-{uuid4()}",
+            },
+        )
+        command = RunAuditMaintenanceCommand(
+            reason="Remove expired encrypted Audit exports",
+            idempotency_key=f"audit-maintenance-{uuid4()}",
+        )
+        service = AuditMaintenanceService(session)
+        run = service.run_retention(
+            identity=identity,
+            correlation_id=uuid4(),
+            command=command,
+        )
+        assert run.expired_export_count == 1
+        assert session.execute(
+            text("select count(*) from audit.export_artifacts where artifact_id = :artifact_id"),
+            {"artifact_id": expired_artifact_id},
+        ).scalar_one() == 0
+        assert session.execute(
+            text("select count(*) from audit.export_artifacts where artifact_id = :artifact_id"),
+            {"artifact_id": active_artifact_id},
+        ).scalar_one() == 1
+        replay = service.run_retention(
+            identity=identity,
+            correlation_id=uuid4(),
+            command=command,
+        )
+        assert replay.run_id == run.run_id
+        with pytest.raises(AuditConflictError):
+            service.run_retention(
+                identity=identity,
+                correlation_id=uuid4(),
+                command=command.model_copy(update={"reason": "A different retention purpose"}),
+            )
+        assert session.execute(
+            text(
+                """
+                select count(*) from audit.event_facts
+                where actor_account_id = :actor_account_id
+                  and action = 'audit.retention.expired_exports'
+                  and result = 'succeeded'
+                """
+            ),
+            {"actor_account_id": actor_id},
+        ).scalar_one() == 1
+        with pytest.raises(DBAPIError):
+            session.execute(
+                text(
+                    """
+                    update audit.maintenance_runs
+                    set expired_export_count = 99
+                    where run_id = :run_id
+                    """
+                ),
+                {"run_id": run.run_id},
+            )
+        session.rollback()

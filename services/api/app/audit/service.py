@@ -689,6 +689,12 @@ class AuditService:
                     where event_class = 'export'
                       and occurred_at >= now() - interval '24 hours')
                     as export_event_count_24h,
+                  (select count(*) from audit.export_artifacts
+                    where expires_at <= now())
+                    as expired_export_artifact_count,
+                  (select count(*) from audit.maintenance_runs
+                    where completed_at >= now() - interval '24 hours')
+                    as maintenance_run_count_24h,
                   (select count(*) from audit.integrity_checks
                     where not matched and checked_at >= now() - interval '24 hours')
                     as integrity_mismatch_count_24h,
@@ -704,6 +710,8 @@ class AuditService:
             alerts.append("audit_rejected_payload")
         if int(counts["bulk_sensitive_read_count_24h"]) > 0:
             alerts.append("audit_bulk_read_anomaly")
+        if int(counts["expired_export_artifact_count"]) > 0:
+            alerts.append("audit_export_retention_due")
         if int(counts["integrity_mismatch_count_24h"]) > 0:
             alerts.append("audit_integrity_mismatch")
         if counts["latest_integrity_generated_at"] is None:
@@ -727,6 +735,8 @@ class AuditService:
             bulk_sensitive_read_count_24h=int(counts["bulk_sensitive_read_count_24h"]),
             rejected_payload_count_24h=int(counts["rejected_payload_count_24h"]),
             export_event_count_24h=int(counts["export_event_count_24h"]),
+            expired_export_artifact_count=int(counts["expired_export_artifact_count"]),
+            maintenance_run_count_24h=int(counts["maintenance_run_count_24h"]),
             integrity_mismatch_count_24h=int(counts["integrity_mismatch_count_24h"]),
             latest_integrity_generated_at=counts["latest_integrity_generated_at"],
             alerts=alerts,

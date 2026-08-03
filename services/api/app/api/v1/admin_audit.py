@@ -8,15 +8,18 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.audit.exports import AuditExportService
+from app.audit.maintenance import AuditMaintenanceService
 from app.audit.models import (
     AuditEventList,
     AuditExportArtifactRead,
     AuditIntegrityCheckRead,
     AuditIntegritySummaryList,
     AuditIntegritySummaryRead,
+    AuditMaintenanceRunRead,
     AuditMetricsRead,
     CreateAuditExportCommand,
     GenerateAuditIntegritySummaryCommand,
+    RunAuditMaintenanceCommand,
     VerifyAuditIntegritySummaryCommand,
 )
 from app.audit.service import (
@@ -42,6 +45,10 @@ AuditIntegrityOperator = Annotated[
 AuditExporter = Annotated[
     RequestIdentity,
     Depends(require_capability("audit.export", recent_auth=True)),
+]
+AuditMaintainer = Annotated[
+    RequestIdentity,
+    Depends(require_capability("audit.maintain", recent_auth=True)),
 ]
 CorrelationId = Annotated[UUID, Depends(resolve_correlation_id)]
 ReasonParameter = Annotated[str, Query(min_length=3, max_length=1000)]
@@ -279,4 +286,27 @@ def download_audit_export(
         AuditPayloadRejectedError,
         SQLAlchemyError,
     ) as error:
+        raise _error(error) from error
+
+@router.post(
+    "/maintenance/retention",
+    response_model=AuditMaintenanceRunRead,
+)
+def run_audit_retention(
+    command: RunAuditMaintenanceCommand,
+    response: Response,
+    identity: AuditMaintainer,
+    correlation_id: CorrelationId,
+) -> AuditMaintenanceRunRead:
+    _private_headers(response)
+    try:
+        with audit_session() as session:
+            return AuditMaintenanceService(session).run_retention(
+                identity=identity,
+                correlation_id=correlation_id,
+                command=command,
+            )
+    except HTTPException:
+        raise
+    except (AuditConflictError, AuditPayloadRejectedError, SQLAlchemyError) as error:
         raise _error(error) from error

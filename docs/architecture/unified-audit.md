@@ -36,9 +36,15 @@ A summary covers a closed half-open interval `[range_started_at, range_ended_at)
 
 Verification recomputes the digest. A late or unauthorized append inside a sealed interval produces an immutable mismatch check; existing facts and summaries are never updated.
 
+## Retention maintenance
+
+`POST /api/v1/admin/audit/maintenance/retention` requires `audit.maintain` and recent authentication. The idempotent command removes only encrypted export artifacts whose database-enforced expiry has passed. It never deletes `audit.event_facts`, integrity evidence, rejected-payload evidence, or source-context audit facts.
+
+Every run writes append-only `audit.maintenance_runs` evidence and an `audit.retention.expired_exports` event with the number of artifacts removed. Active artifacts remain immutable and cannot be deleted by the maintenance path.
+
 ## Metrics and alerts
 
-The read API reports projected event count, source/projection gaps, sensitive-read volume, bulk reads, rejected payloads, exports, integrity mismatches, and the latest summary time. Alert keys are emitted for projection lag, rejected payloads, bulk-read anomalies, integrity mismatches, and missing summaries.
+The read API reports projected event count, source/projection gaps, sensitive-read volume, bulk reads, rejected payloads, exports, expired export artifacts, recent maintenance runs, integrity mismatches, and the latest summary time. Alert keys are emitted for projection lag, rejected payloads, bulk-read anomalies, overdue export retention, integrity mismatches, and missing summaries.
 
 ## Feature flag and rollback
 
