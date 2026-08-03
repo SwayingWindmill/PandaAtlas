@@ -20,6 +20,7 @@ from app.schemas.panda import (
     PandaListItem,
 )
 from app.schemas.stats import OverviewStats
+from app.services.managed_release_service import get_current_api_release
 from app.services.map_service import (
     HABITAT_FEATURE_LIMIT,
     _distribution_feature_limit,
@@ -31,7 +32,6 @@ from app.services.panda_service import (
     _build_lineage_relationships,
     _lineage_sort_key,
 )
-from app.services.release_service import get_current_api_release
 
 
 def _pandas() -> list[PandaDetail]:
