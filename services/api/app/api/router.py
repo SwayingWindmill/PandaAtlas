@@ -4,6 +4,7 @@ from app.api.v1 import (
     admin_accountable_publications,
     admin_archive_operations,
     admin_archive_workbench,
+    admin_audit,
     admin_community_curation,
     admin_imports,
     admin_publications,
@@ -35,6 +36,7 @@ api_router.include_router(feed.router, tags=["feed"])
 api_router.include_router(notification.router, tags=["notification"])
 api_router.include_router(community_intake.router, tags=["community-intake"])
 api_router.include_router(identity.admin_router, tags=["admin-identity"])
+api_router.include_router(admin_audit.router, tags=["admin-audit"])
 api_router.include_router(admin_imports.router, tags=["admin"])
 api_router.include_router(
     admin_accountable_publications.router,
