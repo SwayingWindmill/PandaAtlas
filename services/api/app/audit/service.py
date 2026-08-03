@@ -653,6 +653,8 @@ class AuditService:
                   union all select 'activity', count(*) from activity.audit_events
                   union all select 'notification', count(*) from notification.audit_events
                   union all select 'community_intake', count(*) from community_intake.audit_events
+                  union all select 'community_intake_evidence', count(*)
+                    from community_intake.sensitive_read_events
                   union all select 'review_moderation', count(*) from review_moderation.audit_events
                   union all select 'archive', count(*) from public.audit_events
                 ), projected_counts as (

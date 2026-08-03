@@ -83,6 +83,12 @@ class Settings(BaseSettings):
     community_intake_enabled: bool = Field(default=False, alias="COMMUNITY_INTAKE_ENABLED")
     review_moderation_enabled: bool = Field(default=False, alias="REVIEW_MODERATION_ENABLED")
     unified_audit_enabled: bool = Field(default=False, alias="UNIFIED_AUDIT_ENABLED")
+    audit_export_encryption_key: str = Field(
+        default="local-audit-export-encryption-key-change-me",
+        min_length=32,
+        alias="AUDIT_EXPORT_ENCRYPTION_KEY",
+    )
+    audit_export_key_version: int = Field(default=1, ge=1, alias="AUDIT_EXPORT_KEY_VERSION")
     review_first_response_business_days: int = Field(
         default=3,
         ge=1,
@@ -219,6 +225,20 @@ class Settings(BaseSettings):
             raise ValueError(
                 "Community Intake upload requires backend Supabase Storage credentials"
             )
+        if (
+            self.unified_audit_enabled
+            and env not in {"development", "dev", "local", "test"}
+            and self.audit_export_encryption_key
+            == "local-audit-export-encryption-key-change-me"
+        ):
+            raise ValueError(
+                "AUDIT_EXPORT_ENCRYPTION_KEY must be configured outside local environments"
+            )
+        if (
+            self.unified_audit_enabled
+            and self.audit_export_encryption_key == self.community_intake_storage_signing_key
+        ):
+            raise ValueError("Audit export and Community Intake storage keys must differ")
         return self
 
     def cors_origins(self) -> Sequence[str]:

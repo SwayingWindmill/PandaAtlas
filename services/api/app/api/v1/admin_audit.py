@@ -7,12 +7,15 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.audit.exports import AuditExportService
 from app.audit.models import (
     AuditEventList,
+    AuditExportArtifactRead,
     AuditIntegrityCheckRead,
     AuditIntegritySummaryList,
     AuditIntegritySummaryRead,
     AuditMetricsRead,
+    CreateAuditExportCommand,
     GenerateAuditIntegritySummaryCommand,
     VerifyAuditIntegritySummaryCommand,
 )
@@ -35,6 +38,10 @@ AuditReader = Annotated[
 AuditIntegrityOperator = Annotated[
     RequestIdentity,
     Depends(require_capability("audit.integrity.manage", recent_auth=True)),
+]
+AuditExporter = Annotated[
+    RequestIdentity,
+    Depends(require_capability("audit.export", recent_auth=True)),
 ]
 CorrelationId = Annotated[UUID, Depends(resolve_correlation_id)]
 ReasonParameter = Annotated[str, Query(min_length=3, max_length=1000)]
@@ -201,6 +208,69 @@ def verify_audit_integrity_summary(
                 summary_id=summary_id,
                 command=command,
             )
+    except HTTPException:
+        raise
+    except (
+        AuditConflictError,
+        AuditNotFoundError,
+        AuditPayloadRejectedError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@router.post(
+    "/exports",
+    response_model=AuditExportArtifactRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_audit_export(
+    command: CreateAuditExportCommand,
+    response: Response,
+    identity: AuditExporter,
+    correlation_id: CorrelationId,
+) -> AuditExportArtifactRead:
+    _private_headers(response)
+    try:
+        with audit_session() as session:
+            return AuditExportService(session).create(
+                identity=identity,
+                correlation_id=correlation_id,
+                command=command,
+            )
+    except HTTPException:
+        raise
+    except (AuditConflictError, AuditPayloadRejectedError, SQLAlchemyError) as error:
+        raise _error(error) from error
+
+
+@router.get("/exports/{artifact_id}/download", response_class=Response)
+def download_audit_export(
+    artifact_id: UUID,
+    identity: AuditExporter,
+    correlation_id: CorrelationId,
+    reason: ReasonParameter,
+) -> Response:
+    try:
+        with audit_session() as session:
+            download = AuditExportService(session).download(
+                identity=identity,
+                correlation_id=correlation_id,
+                artifact_id=artifact_id,
+                reason=reason,
+            )
+        filename = f"audit-export-{artifact_id}.ndjson"
+        return Response(
+            content=download.content,
+            media_type=download.artifact.content_type,
+            headers={
+                "Cache-Control": "no-store, private",
+                "X-Robots-Tag": "noindex, nofollow",
+                "X-Content-Type-Options": "nosniff",
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "X-Audit-File-Sha256": download.artifact.file_sha256,
+            },
+        )
     except HTTPException:
         raise
     except (

@@ -125,3 +125,52 @@ class AuditMetricsRead(BaseModel):
     integrity_mismatch_count_24h: int
     latest_integrity_generated_at: datetime | None
     alerts: list[str]
+
+
+class AuditExportScope(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    source_context: Annotated[str | None, Field(default=None, min_length=2, max_length=64)]
+    action: Annotated[str | None, Field(default=None, min_length=3, max_length=160)]
+    target_type: Annotated[str | None, Field(default=None, min_length=1, max_length=100)]
+    actor_account_id: UUID | None = None
+    result: Annotated[str | None, Field(default=None, min_length=1, max_length=100)]
+    sensitive_only: bool | None = None
+    occurred_after: datetime | None = None
+    occurred_before: datetime | None = None
+
+    @model_validator(mode="after")
+    def validate_range(self) -> AuditExportScope:
+        if (
+            self.occurred_after is not None
+            and self.occurred_before is not None
+            and self.occurred_before <= self.occurred_after
+        ):
+            raise ValueError("occurred_before must be after occurred_after")
+        return self
+
+
+class CreateAuditExportCommand(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    scope: AuditExportScope
+    reason: ReasonText
+    expires_in_seconds: Annotated[int, Field(default=3600, ge=60, le=86400)]
+    idempotency_key: IdempotencyKey
+
+
+class AuditExportArtifactRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    artifact_id: UUID
+    scope_hash: str
+    file_sha256: str
+    content_type: str
+    row_count: int
+    byte_size: int
+    encryption_algorithm: str
+    key_version: int
+    generated_by_account_id: UUID
+    reason: str
+    created_at: datetime
+    expires_at: datetime

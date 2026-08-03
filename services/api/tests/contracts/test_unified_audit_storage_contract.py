@@ -2,7 +2,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 MIGRATION = ROOT / "infra/supabase/migrations/0031_unified_audit_projection.sql"
+EXPORT_MIGRATION = ROOT / "infra/supabase/migrations/0032_audit_exports_and_sensitive_reads.sql"
 SERVICE = ROOT / "services/api/app/audit/service.py"
+EXPORT_SERVICE = ROOT / "services/api/app/audit/exports.py"
 
 
 def test_unified_audit_storage_is_private_append_only_and_hash_only() -> None:
@@ -51,3 +53,22 @@ def test_service_rejects_contacts_and_credentials_and_audits_reads() -> None:
     assert 'action="audit.events.search"' in source
     assert 'event_class="sensitive_read"' in source
     assert "_event_digest" in source
+
+
+def test_audit_exports_are_encrypted_bounded_and_self_auditing() -> None:
+    sql = EXPORT_MIGRATION.read_text(encoding="utf-8")
+    source = EXPORT_SERVICE.read_text(encoding="utf-8")
+    assert "create table audit.export_artifacts" in sql
+    assert "encrypted_payload bytea not null" in sql
+    assert "octet_length(nonce) = 12" in sql
+    assert "expires_at <= created_at + interval '24 hours'" in sql
+    assert "trg_export_artifacts_protected" in sql
+    assert "after insert on community_intake.sensitive_read_events" in sql
+    assert "'community_intake_evidence'" in sql
+    assert "AESGCM" in source
+    assert 'action="audit.export.generate"' in source
+    assert 'action="audit.export.download"' in source
+    assert "_MAX_EXPORT_ROWS = 10_000" in source
+    assert "encrypted_payload" not in (
+        ROOT / "services/api/app/audit/models.py"
+    ).read_text(encoding="utf-8")

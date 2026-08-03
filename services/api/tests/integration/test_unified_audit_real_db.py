@@ -1,19 +1,29 @@
 from __future__ import annotations
 
+import json
 import os
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
+from hashlib import sha256
 from uuid import UUID, uuid4
 
 import pytest
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
+from app.audit.exports import AuditExportService
 from app.audit.models import (
+    AuditExportScope,
+    CreateAuditExportCommand,
     GenerateAuditIntegritySummaryCommand,
     VerifyAuditIntegritySummaryCommand,
 )
-from app.audit.service import AuditConflictError, AuditPayloadRejectedError, AuditService
+from app.audit.service import (
+    AuditConflictError,
+    AuditNotFoundError,
+    AuditPayloadRejectedError,
+    AuditService,
+)
 from app.core.config import settings
 from app.db.session import configure_database, session_scope
 from app.identity.models import AccountState, RequestIdentity
@@ -317,3 +327,198 @@ def test_integrity_summary_detects_late_append_only_event(real_db_url: str) -> N
                 {"event_id": event_id},
             )
         session.rollback()
+
+
+def test_encrypted_export_and_attachment_reads_are_audited(real_db_url: str) -> None:
+    _ = real_db_url
+    actor_id = uuid4()
+    submission_id = uuid4()
+    attachment_id = uuid4()
+
+    with session_scope() as session:
+        assert session is not None
+        identity = _insert_account(session, actor_id, "audit_exporter")
+        source_event_id = session.execute(
+            text(
+                """
+                insert into activity.audit_events (
+                  event_type, actor_account_id, target_type, target_id,
+                  reason, details, correlation_id
+                ) values (
+                  'activity.export.fixture', :actor_account_id,
+                  'activity', :target_id, 'Prepare restricted export evidence',
+                  '{"private_note":"never-export-raw","internal_marker":"not-copied"}'::jsonb,
+                  :correlation_id
+                )
+                returning event_id
+                """
+            ),
+            {
+                "actor_account_id": actor_id,
+                "target_id": f"activity-{uuid4()}",
+                "correlation_id": uuid4(),
+            },
+        ).scalar_one()
+        command = CreateAuditExportCommand(
+            scope=AuditExportScope(
+                source_context="activity",
+                actor_account_id=actor_id,
+            ),
+            reason="Export activity evidence for a bounded investigation",
+            expires_in_seconds=3600,
+            idempotency_key=f"audit-export-{uuid4()}",
+        )
+        service = AuditExportService(session)
+        artifact = service.create(
+            identity=identity,
+            correlation_id=uuid4(),
+            command=command,
+        )
+        stored = session.execute(
+            text(
+                """
+                select encrypted_payload, nonce, file_sha256, expires_at - created_at as lifetime
+                from audit.export_artifacts
+                where artifact_id = :artifact_id
+                """
+            ),
+            {"artifact_id": artifact.artifact_id},
+        ).mappings().one()
+        ciphertext = bytes(stored["encrypted_payload"])
+        assert b"activity.export.fixture" not in ciphertext
+        assert b"never-export-raw" not in ciphertext
+        assert len(bytes(stored["nonce"])) == 12
+        assert stored["lifetime"] <= timedelta(hours=24)
+
+        replay = service.create(
+            identity=identity,
+            correlation_id=uuid4(),
+            command=command,
+        )
+        assert replay.artifact_id == artifact.artifact_id
+        with pytest.raises(AuditConflictError):
+            service.create(
+                identity=identity,
+                correlation_id=uuid4(),
+                command=command.model_copy(update={"reason": "A different export purpose"}),
+            )
+
+        download = service.download(
+            identity=identity,
+            correlation_id=uuid4(),
+            artifact_id=artifact.artifact_id,
+            reason="Download the bounded investigation export",
+        )
+        assert sha256(download.content).hexdigest() == artifact.file_sha256
+        exported = [json.loads(line) for line in download.content.splitlines()]
+        assert [row["source_event_id"] for row in exported] == [str(source_event_id)]
+        assert "details" not in exported[0]
+        assert "payload" not in exported[0]
+        assert exported[0]["details_hash"]
+        assert b"never-export-raw" not in download.content
+        assert session.execute(
+            text(
+                """
+                select count(*) from audit.event_facts
+                where actor_account_id = :actor_account_id
+                  and event_class = 'export'
+                  and action in ('audit.export.generate', 'audit.export.download')
+                """
+            ),
+            {"actor_account_id": actor_id},
+        ).scalar_one() == 2
+
+        other_actor_id = uuid4()
+        other_identity = _insert_account(session, other_actor_id, "audit_exporter")
+        with pytest.raises(AuditNotFoundError):
+            service.download(
+                identity=other_identity,
+                correlation_id=uuid4(),
+                artifact_id=artifact.artifact_id,
+                reason="Attempt a cross-account export download",
+            )
+        assert session.execute(
+            text(
+                """
+                select count(*) from audit.event_facts
+                where actor_account_id = :actor_account_id
+                  and action = 'audit.export.download'
+                  and result = 'denied'
+                """
+            ),
+            {"actor_account_id": other_actor_id},
+        ).scalar_one() == 1
+
+        session.execute(
+            text(
+                """
+                insert into community_intake.submissions (
+                  submission_id, account_id, contributor_subject_hash,
+                  submission_type, target_type, target_id, public_version_seen
+                ) values (
+                  :submission_id, :account_id, :subject_hash,
+                  'sourced_information', 'panda', 'panda-test', 'test-release'
+                )
+                """
+            ),
+            {
+                "submission_id": submission_id,
+                "account_id": actor_id,
+                "subject_hash": "a" * 64,
+            },
+        )
+        session.execute(
+            text(
+                """
+                insert into community_intake.attachments (
+                  attachment_id, submission_id, storage_object_key,
+                  original_filename, media_type, byte_size, state
+                ) values (
+                  :attachment_id, :submission_id, :storage_object_key,
+                  'evidence.pdf', 'application/pdf', 10, 'clean'
+                )
+                """
+            ),
+            {
+                "attachment_id": attachment_id,
+                "submission_id": submission_id,
+                "storage_object_key": f"audit-test/{attachment_id}",
+            },
+        )
+        read_event_id = session.execute(
+            text(
+                """
+                insert into community_intake.sensitive_read_events (
+                  attachment_id, actor_subject_hash, purpose, outcome,
+                  reference_jti_hash, reference_expires_at, correlation_id
+                ) values (
+                  :attachment_id, :actor_subject_hash, 'Review raw evidence', 'granted',
+                  :reference_jti_hash, now() + interval '5 minutes', :correlation_id
+                )
+                returning read_event_id
+                """
+            ),
+            {
+                "attachment_id": attachment_id,
+                "actor_subject_hash": "b" * 64,
+                "reference_jti_hash": "c" * 64,
+                "correlation_id": uuid4(),
+            },
+        ).scalar_one()
+        projected = session.execute(
+            text(
+                """
+                select action, target_id, sensitive_read, actor_subject_hash, details_hash
+                from audit.event_facts
+                where source_context = 'community_intake_evidence'
+                  and source_event_id = :source_event_id
+                """
+            ),
+            {"source_event_id": read_event_id},
+        ).mappings().one()
+        assert projected["action"] == "community.attachment.access"
+        assert projected["target_id"] == str(attachment_id)
+        assert projected["sensitive_read"] is True
+        assert projected["actor_subject_hash"] == "b" * 64
+        assert len(projected["details_hash"]) == 64
+        session.commit()
