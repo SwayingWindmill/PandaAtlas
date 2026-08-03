@@ -39,6 +39,7 @@ exclude = ["openapi*"]
 
 [tool.setuptools.package-data]
 "app.notification" = ["templates/*/*.html", "templates/*/*.txt"]
+"app.release_manifests" = ["*.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
