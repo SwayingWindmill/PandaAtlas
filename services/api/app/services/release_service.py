@@ -21,27 +21,23 @@ _request_release: ContextVar[PublicReleaseMetadata | None] = ContextVar(
 )
 
 
-def _local_release_manifest() -> dict[str, object] | None:
+def _release_manifest(version: str) -> dict[str, object] | None:
     module_path = Path(__file__).resolve()
     candidates = [
-        parent
-        / "data"
-        / "public-releases"
-        / LOCAL_PUBLIC_RELEASE_VERSION
-        / "manifest.json"
+        parent / "data" / "public-releases" / version / "manifest.json"
         for parent in module_path.parents
     ]
     candidates.append(
-        Path.cwd()
-        / "data"
-        / "public-releases"
-        / LOCAL_PUBLIC_RELEASE_VERSION
-        / "manifest.json"
+        Path.cwd() / "data" / "public-releases" / version / "manifest.json"
     )
     for path in dict.fromkeys(candidate.resolve() for candidate in candidates):
         if path.is_file():
             return json.loads(path.read_text(encoding="utf-8"))
     return None
+
+
+def _local_release_manifest() -> dict[str, object] | None:
+    return _release_manifest(LOCAL_PUBLIC_RELEASE_VERSION)
 
 
 def _golden_release_metadata() -> PublicReleaseMetadata:
@@ -93,17 +89,27 @@ def _database_release_metadata() -> PublicReleaseMetadata | None:
         return None
     if row["operation"] == "withdrawal":
         raise HTTPException(status_code=410, detail="Current public release is withdrawn")
-    released_at = row["released_at"]
-    if hasattr(released_at, "isoformat"):
-        released_at = released_at.isoformat().replace("+00:00", "Z")
+
+    manifest = _release_manifest(str(row["data_version"]))
+    if manifest is None:
+        raise HTTPException(status_code=503, detail="Public release manifest unavailable")
+    expected_database_fields = {
+        "public_schema_version": "public_schema_version",
+        "database_migration_version": "database_migration_version",
+        "projection_code_version": "projection_code_version",
+    }
+    for row_field, manifest_field in expected_database_fields.items():
+        if str(row[row_field]) != str(manifest[manifest_field]):
+            raise HTTPException(status_code=503, detail="Public release manifest mismatch")
+
     return PublicReleaseMetadata(
-        dataset_release_version=row["data_version"],
-        public_schema_version=row["public_schema_version"],
-        database_migration_version=row["database_migration_version"],
-        publication_batch_id=str(row["id"]),
-        projection_code_version=row["projection_code_version"],
-        released_at=str(released_at),
-        licenses=_golden_release_metadata().licenses,
+        dataset_release_version=str(manifest["dataset_release_version"]),
+        public_schema_version=str(manifest["public_schema_version"]),
+        database_migration_version=str(manifest["database_migration_version"]),
+        publication_batch_id=str(manifest["publication_batch_id"]),
+        projection_code_version=str(manifest["projection_code_version"]),
+        released_at=str(manifest["released_at"]),
+        licenses=dict(manifest["licenses"]),
     )
 
 
