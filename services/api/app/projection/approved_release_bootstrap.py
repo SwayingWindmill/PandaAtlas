@@ -326,7 +326,7 @@ def import_archive_release(
             """
         )
     ).scalar_one()
-    change_set_id = uuid5(NAMESPACE_URL, f"pandaatlas:{BOOTSTRAP_POLICY}:{bundle.version}")
+    change_set_id = uuid5(NAMESPACE_URL, f"zhipanda:{BOOTSTRAP_POLICY}:{bundle.version}")
     partial = session.execute(
         text("select status from public.change_sets where id = :change_set_id"),
         {"change_set_id": change_set_id},
