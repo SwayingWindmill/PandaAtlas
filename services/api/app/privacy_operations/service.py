@@ -23,6 +23,10 @@ from app.privacy_operations.models import (
     PrivacyRequestRead,
     PrivacyRequestState,
 )
+from app.privacy_operations.replay import (
+    PrivacyDeletionReplayError,
+    reapply_account_deletion,
+)
 
 
 class PrivacyOperationsConflictError(RuntimeError):
@@ -2071,6 +2075,17 @@ class PrivacyOperationsService:
         if int(row["version"]) != expected_version:
             raise PrivacyOperationsConflictError("Deletion tombstone version conflict")
         request_id = UUID(str(row["request_id"]))
+        try:
+            counts = reapply_account_deletion(
+                self.session,
+                actor_account_id=actor.account_id,
+                account_id=account_id,
+                request_id=request_id,
+                idempotency_key=command_key,
+                correlation_id=correlation_id,
+            )
+        except PrivacyDeletionReplayError as error:
+            raise PrivacyOperationsConflictError(str(error)) from error
         self.session.execute(
             text(
                 """
@@ -2087,14 +2102,14 @@ class PrivacyOperationsService:
             actor_account_id=actor.account_id,
             subject_account_id=account_id,
             request_id=request_id,
-            outcome="replay-requested",
+            outcome="reapplied",
             reason="backup-restore-reapply",
-            details={"context_key": context_key},
+            details={"context_key": context_key, "counts": counts},
             correlation_id=correlation_id,
             idempotency_key=command_key,
         )
         self._insert_outbox(
-            event_type="privacy.deletion-tombstone.replay-requested",
+            event_type="privacy.deletion-tombstone.reapplied",
             request_id=request_id,
             idempotency_key=_scoped_key(command_key, "outbox"),
             correlation_id=correlation_id,
@@ -2102,6 +2117,7 @@ class PrivacyOperationsService:
                 "request_id": str(request_id),
                 "account_id": str(account_id),
                 "context_key": context_key,
+                "counts": counts,
             },
         )
         self.session.commit()

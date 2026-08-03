@@ -106,6 +106,12 @@ class GeneratePrivacyExportCommand(PrivacyCommand):
     expected_context_versions: dict[str, int]
 
 
+class RunPrivacyMaintenanceCommand(PrivacyCommand):
+    replay_tombstones_after_restore: bool = False
+    tombstone_account_limit: int = Field(default=100, ge=1, le=1000)
+    max_scan_attempts: int = Field(default=3, ge=1, le=10)
+
+
 class DownloadPrivacyExportCommand(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -215,3 +221,30 @@ class PrivacyExportAccessRead(BaseModel):
     artifact: PrivacyExportRead
     reference: str
     expires_at: datetime
+
+
+class PrivacyMaintenanceRead(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    run_id: UUID
+    started_at: datetime
+    completed_at: datetime
+    replay_tombstones_after_restore: bool
+    counts: dict[str, int]
+
+
+class PrivacyMetricsSnapshot(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    open_request_count: int
+    oldest_open_request_age_seconds: float
+    failed_context_count: int
+    orphan_attachment_count: int
+    overdue_hold_review_count: int
+    expired_export_payload_count: int
+    tombstone_account_count: int
+    tombstone_replay_count_24h: int
+    export_access_grant_count_24h: int
+    export_download_count_24h: int
+    completed_request_count_24h: int
+    alerts: list[str] = Field(default_factory=list)

@@ -18,6 +18,11 @@ from app.privacy_operations.exports import (
     PrivacyExportReferenceError,
     PrivacyExportService,
 )
+from app.privacy_operations.maintenance import (
+    PrivacyMaintenanceConflictError,
+    PrivacyMaintenanceForbiddenError,
+    PrivacyMaintenanceService,
+)
 from app.privacy_operations.models import (
     CreatePrivacyHoldCommand,
     CreatePrivacyRequestCommand,
@@ -30,10 +35,13 @@ from app.privacy_operations.models import (
     PrivacyExportRead,
     PrivacyHoldList,
     PrivacyHoldRead,
+    PrivacyMaintenanceRead,
+    PrivacyMetricsSnapshot,
     PrivacyRequestList,
     PrivacyRequestRead,
     ReleasePrivacyHoldCommand,
     ReplayDeletionTombstoneCommand,
+    RunPrivacyMaintenanceCommand,
     UpdatePrivacyContextCommand,
     UserPrivacyContextRead,
     UserPrivacyRequestList,
@@ -143,9 +151,15 @@ def _error(error: Exception) -> HTTPException:
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Privacy export is unavailable",
         )
-    if isinstance(error, PrivacyOperationsForbiddenError):
+    if isinstance(
+        error,
+        (PrivacyOperationsForbiddenError, PrivacyMaintenanceForbiddenError),
+    ):
         return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(error))
-    if isinstance(error, PrivacyOperationsConflictError):
+    if isinstance(
+        error,
+        (PrivacyOperationsConflictError, PrivacyMaintenanceConflictError),
+    ):
         return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(error))
     return HTTPException(
         status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -373,6 +387,68 @@ def list_privacy_requests(
     except HTTPException:
         raise
     except SQLAlchemyError as error:
+        raise _error(error) from error
+
+
+@admin_router.get("/metrics", response_model=PrivacyMetricsSnapshot)
+def get_privacy_metrics(
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> PrivacyMetricsSnapshot:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return PrivacyMaintenanceService(session).metrics(
+                actor_account_id=actor.account_id,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyMaintenanceForbiddenError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@admin_router.post("/maintenance", response_model=PrivacyMaintenanceRead)
+def run_privacy_maintenance(
+    payload: RunPrivacyMaintenanceCommand,
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> PrivacyMaintenanceRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return PrivacyMaintenanceService(session).run(
+                actor_account_id=actor.account_id,
+                replay_tombstones_after_restore=(
+                    payload.replay_tombstones_after_restore
+                ),
+                tombstone_account_limit=payload.tombstone_account_limit,
+                max_scan_attempts=payload.max_scan_attempts,
+                idempotency_key=payload.idempotency_key,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyMaintenanceConflictError,
+        PrivacyMaintenanceForbiddenError,
+        SQLAlchemyError,
+    ) as error:
         raise _error(error) from error
 
 

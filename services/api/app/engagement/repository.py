@@ -804,8 +804,12 @@ class EngagementRepository:
         reason: str,
         correlation_id: UUID,
         commit: bool = True,
+        allow_tombstone_replay: bool = False,
     ) -> dict[str, Any]:
-        self._require_deleting_account(account_id)
+        self._require_deleting_account(
+            account_id,
+            allow_tombstone_replay=allow_tombstone_replay,
+        )
         replay = (
             self.session.execute(
                 text(
@@ -851,6 +855,7 @@ class EngagementRepository:
             account_id,
             reason=reason,
             correlation_id=correlation_id,
+            allow_tombstone_replay=allow_tombstone_replay,
         )
         notification_counts = self._delete_notification_private_data(account_id)
         counts = {
@@ -1160,7 +1165,12 @@ class EngagementRepository:
         if state != "active":
             raise EngagementAccountUnavailableError("Account is unavailable")
 
-    def _require_deleting_account(self, account_id: UUID) -> None:
+    def _require_deleting_account(
+        self,
+        account_id: UUID,
+        *,
+        allow_tombstone_replay: bool = False,
+    ) -> None:
         state = self.session.execute(
             text(
                 """
@@ -1174,7 +1184,10 @@ class EngagementRepository:
         ).scalar_one_or_none()
         if state is None:
             raise EngagementNotFoundError("Account was not found")
-        if state != "deleting":
+        allowed_states = {"deleting"}
+        if allow_tombstone_replay:
+            allowed_states.update({"active", "suspended", "deleted"})
+        if state not in allowed_states:
             raise EngagementAccountUnavailableError("Account deletion is not active")
 
     def _resolve_panda(self, panda_id: str) -> Any:

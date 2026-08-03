@@ -956,6 +956,7 @@ class CommunityIntakeRepository:
         *,
         correlation_id: UUID,
         max_scan_attempts: int = 3,
+        commit: bool = True,
     ) -> RetentionResult:
         expired = (
             self.session.execute(
@@ -1095,7 +1096,8 @@ class CommunityIntakeRepository:
                     "next_attempt_number": int(row["scan_attempts"]) + 1,
                 },
             )
-        self.session.commit()
+        if commit:
+            self.session.commit()
         return RetentionResult(
             expired_drafts=len(expired),
             closed_submissions_processed=len(closed_due),
@@ -1683,12 +1685,22 @@ def anonymize_community_intake_account(
     *,
     reason: str,
     correlation_id: UUID,
+    allow_tombstone_replay: bool = False,
 ) -> dict[str, int]:
     state = session.execute(
         text("select state::text from identity.accounts where account_id = :account_id"),
         {"account_id": account_id},
     ).scalar_one_or_none()
-    if state != AccountState.DELETING.value:
+    allowed_states = {AccountState.DELETING.value}
+    if allow_tombstone_replay:
+        allowed_states.update(
+            {
+                AccountState.ACTIVE.value,
+                AccountState.SUSPENDED.value,
+                AccountState.DELETED.value,
+            }
+        )
+    if state not in allowed_states:
         raise CommunityIntakeConflictError(
             "Community Intake data can be anonymized only while account is deleting"
         )

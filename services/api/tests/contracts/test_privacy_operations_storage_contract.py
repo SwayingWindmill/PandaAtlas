@@ -26,6 +26,19 @@ FINALIZATION_MIGRATION_PATH = (
     / "migrations"
     / "0029_privacy_archive_identity_finalization.sql"
 )
+MAINTENANCE_MIGRATION_PATH = (
+    REPO_ROOT
+    / "infra"
+    / "supabase"
+    / "migrations"
+    / "0030_privacy_maintenance_metrics.sql"
+)
+MAINTENANCE_SERVICE_PATH = (
+    REPO_ROOT / "services" / "api" / "app" / "privacy_operations" / "maintenance.py"
+)
+REPLAY_SERVICE_PATH = (
+    REPO_ROOT / "services" / "api" / "app" / "privacy_operations" / "replay.py"
+)
 
 
 def test_privacy_schema_is_private_append_only_and_restore_safe() -> None:
@@ -107,12 +120,17 @@ def test_private_deletion_executes_three_owned_contexts_atomically() -> None:
 
 def test_completed_deletion_contexts_create_replayable_tombstones() -> None:
     service = SERVICE_PATH.read_text(encoding="utf-8").lower()
+    replay = REPLAY_SERVICE_PATH.read_text(encoding="utf-8").lower()
 
     assert "self._apply_deletion_tombstone" in service
     assert "on conflict (account_id, context_key) do update" in service
     assert "privacy.deletion-tombstone.replayed" in service
-    assert "privacy.deletion-tombstone.replay-requested" in service
+    assert "privacy.deletion-tombstone.reapplied" in service
     assert "replay_count = replay_count + 1" in service
+    assert "def reapply_account_deletion" in replay
+    assert "privacy-backup-restore-reapply-in-progress" in replay
+    assert "delete from auth.refresh_tokens" in replay
+    assert "allow_tombstone_replay=true" in replay
 
 
 def test_encrypted_exports_are_private_bounded_and_user_safe() -> None:
@@ -166,3 +184,24 @@ def test_retention_policy_seeds_export_and_backup_boundaries() -> None:
     assert "'privacy.backup-boundary.v1', 'backup_tombstone', 35, 35" in sql
     assert "expire no later than 24 hours" in sql
     assert "reapplied to every restore" in sql
+
+
+def test_privacy_maintenance_is_audited_bounded_and_explicit_after_restore() -> None:
+    sql = MAINTENANCE_MIGRATION_PATH.read_text(encoding="utf-8").lower()
+    service = MAINTENANCE_SERVICE_PATH.read_text(encoding="utf-8").lower()
+
+    assert "create table if not exists privacy.maintenance_runs" in sql
+    assert "trg_privacy_maintenance_runs_append_only" in sql
+    assert "idx_privacy_requests_open_age" in sql
+    assert "idx_privacy_export_payload_expiry" in sql
+    assert "revoke all on privacy.maintenance_runs from public" in sql
+    assert "pg_try_advisory_xact_lock" in service
+    assert "replay_tombstones_after_restore" in service
+    assert "state = 'deleted'" in service
+    assert "ciphertext = null" in service
+    assert "purge_expired_bodies(commit=false)" in service
+    assert "expire_and_repair" in service
+    assert "privacy.maintenance.completed" in service
+    assert "privacy.metrics.read" in service
+    assert "privacy_expired_export_payload" in service
+    assert "privacy_hold_review_overdue" in service

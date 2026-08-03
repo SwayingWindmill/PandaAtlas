@@ -17,6 +17,7 @@ from app.privacy_operations.exports import (
     PrivacyExportDownloadSigner,
     PrivacyExportService,
 )
+from app.privacy_operations.maintenance import PrivacyMaintenanceService
 from app.privacy_operations.models import (
     PrivacyContextState,
     PrivacyHoldBasis,
@@ -96,6 +97,34 @@ def _create_account(database_url: str, account_id: UUID) -> None:
                 values (%s, %s)
                 """,
                 (account_id, email),
+            )
+        connection.commit()
+
+
+def _assign_role(
+    database_url: str,
+    *,
+    account_id: UUID,
+    role_key: str,
+    assigned_by_account_id: UUID,
+) -> None:
+    with psycopg.connect(_normalize_dsn(database_url)) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                insert into identity.role_assignments (
+                  account_id, role_key, assigned_by_account_id, reason,
+                  correlation_id, idempotency_key
+                ) values (%s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    account_id,
+                    role_key,
+                    assigned_by_account_id,
+                    "Seed Privacy integration role.",
+                    uuid4(),
+                    f"privacy-test-role-{role_key}-{uuid4()}",
+                ),
             )
         connection.commit()
 
@@ -644,6 +673,82 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
         "select count(*) from privacy.deletion_tombstones where account_id = %s",
         (account_id,),
     ) == 6
+    restored_submission_id = uuid4()
+    restored_assignment_id = uuid4()
+    restored_email = f"restored-{account_id}@example.invalid"
+    legacy_subject_hash = hashlib.sha256(
+        f"community-intake-account:{account_id}".encode()
+    ).hexdigest()
+    with psycopg.connect(_normalize_dsn(real_db_url)) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                update identity.accounts
+                set email = %s, state = 'active', state_reason = 'backup-restored',
+                    state_changed_at = now()
+                where account_id = %s
+                """,
+                (restored_email, account_id),
+            )
+            cursor.execute(
+                """
+                update auth.users
+                set email = %s, deleted_at = null,
+                    raw_app_meta_data = '{"provider":"email","providers":["email"]}'::jsonb
+                where id = %s
+                """,
+                (restored_email, account_id),
+            )
+            cursor.execute(
+                """
+                insert into auth.refresh_tokens (
+                  instance_id, token, user_id, revoked, created_at, updated_at
+                ) values (
+                  '00000000-0000-0000-0000-000000000000', %s, %s, false, now(), now()
+                )
+                """,
+                (f"restored-refresh-{uuid4()}", str(account_id)),
+            )
+            cursor.execute("select id::text from public.pandas order by id limit 1")
+            panda_id = cursor.fetchone()[0]
+            cursor.execute(
+                """
+                insert into engagement.follows (account_id, panda_id)
+                values (%s, %s)
+                """,
+                (account_id, panda_id),
+            )
+            cursor.execute(
+                """
+                insert into community_intake.submissions (
+                  submission_id, account_id, contributor_subject_hash,
+                  submission_type, target_type, target_id, public_version_seen,
+                  state, draft_content
+                ) values (
+                  %s, %s, %s, 'correction', 'panda', %s,
+                  'backup-restored', 'draft', '{"restored":true}'::jsonb
+                )
+                """,
+                (restored_submission_id, account_id, legacy_subject_hash, panda_id),
+            )
+            cursor.execute(
+                """
+                insert into identity.role_assignments (
+                  assignment_id, account_id, role_key, assigned_by_account_id,
+                  reason, correlation_id, idempotency_key
+                ) values (%s, %s, 'member', %s, %s, %s, %s)
+                """,
+                (
+                    restored_assignment_id,
+                    account_id,
+                    operator_id,
+                    "Restored assignment fixture.",
+                    uuid4(),
+                    f"restored-role-{uuid4()}",
+                ),
+            )
+        connection.commit()
+
     tombstone_replay_key = f"privacy-tombstone-replay-{uuid4()}"
     with session_scope() as session:
         assert session is not None
@@ -668,6 +773,71 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
     assert replayed_tombstone.replay_count == 1
     assert replayed_tombstone.version == 2
     assert replayed_tombstone.last_replayed_at is not None
+    assert _scalar(
+        real_db_url,
+        "select state::text from identity.accounts where account_id = %s",
+        (account_id,),
+    ) == "deleted"
+    assert _scalar(
+        real_db_url,
+        "select count(*) from auth.refresh_tokens where user_id = %s",
+        (str(account_id),),
+    ) == 0
+    assert _scalar(
+        real_db_url,
+        "select count(*) from engagement.follows where account_id = %s",
+        (account_id,),
+    ) == 0
+    assert _scalar(
+        real_db_url,
+        "select account_id from community_intake.submissions where submission_id = %s",
+        (restored_submission_id,),
+    ) is None
+    assert _scalar(
+        real_db_url,
+        """
+        select contributor_subject_hash
+        from community_intake.submissions where submission_id = %s
+        """,
+        (restored_submission_id,),
+    ) == _scalar(
+        real_db_url,
+        """
+        select contributor_subject_hash
+        from identity.account_tombstones where account_id = %s
+        """,
+        (account_id,),
+    )
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*) from identity.role_assignment_revocations
+        where assignment_id = %s
+        """,
+        (restored_assignment_id,),
+    ) == 1
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*) from identity.account_state_events
+        where account_id = %s
+          and previous_state = 'active'
+          and next_state = 'deleting'
+          and reason = 'privacy-backup-restore-reapply-in-progress'
+        """,
+        (account_id,),
+    ) == 1
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*) from identity.account_state_events
+        where account_id = %s
+          and previous_state = 'deleting'
+          and next_state = 'deleted'
+          and reason = 'privacy-backup-restore-reapplied'
+        """,
+        (account_id,),
+    ) == 1
     assert _scalar(
         real_db_url,
         "select count(*) from privacy.audit_events where request_id = %s",
@@ -1495,3 +1665,217 @@ def test_access_export_is_encrypted_user_scoped_and_audited(real_db_url: str) ->
         """,
         (created.request_id,),
     ) == 4
+
+
+def test_privacy_maintenance_purges_expired_data_and_reports_alerts(
+    real_db_url: str,
+) -> None:
+    account_id = uuid4()
+    operator_id = uuid4()
+    _create_account(real_db_url, account_id)
+    _create_account(real_db_url, operator_id)
+    _assign_role(
+        real_db_url,
+        account_id=operator_id,
+        role_key="privacy_operator",
+        assigned_by_account_id=operator_id,
+    )
+    visible_marker = f"maintenance-visible-{uuid4()}"
+    _seed_export_visible_data(
+        real_db_url,
+        account_id=account_id,
+        panda_id=f"panda-maintenance-{uuid4().hex}",
+        visible_marker=visible_marker,
+        internal_marker=f"maintenance-internal-{uuid4()}",
+    )
+    requester = _identity(account_id)
+    operator = _identity(operator_id, capabilities=frozenset({"privacy.operate"}))
+    correlation_id = uuid4()
+    orphan_submission_id = uuid4()
+    orphan_attachment_id = uuid4()
+    with session_scope() as session:
+        assert session is not None
+        privacy_service = PrivacyOperationsService(session)
+        created = privacy_service.create_request(
+            identity=requester,
+            kind=PrivacyRequestKind.ACCESS_EXPORT,
+            reason="Generate an export that maintenance will securely expire.",
+            idempotency_key=f"privacy-maintenance-request-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        verified = privacy_service.verify_request(
+            actor=operator,
+            request_id=created.request_id,
+            expected_version=1,
+            idempotency_key=f"privacy-maintenance-verify-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        versions = {context.context_key: context.version for context in verified.contexts}
+        artifact = PrivacyExportService(
+            session,
+            cipher=PrivacyExportCipher(
+                "maintenance-privacy-export-master-key-at-least-32-characters"
+            ),
+            signer=PrivacyExportDownloadSigner(
+                signing_key=(
+                    "maintenance-privacy-export-signing-key-at-least-32-characters"
+                ),
+                ttl_seconds=300,
+            ),
+            artifact_ttl_seconds=3600,
+        ).generate(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=versions,
+            idempotency_key=f"privacy-maintenance-generate-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+
+    with psycopg.connect(_normalize_dsn(real_db_url)) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                update privacy.export_artifacts
+                set created_at = now() - interval '2 hours',
+                    expires_at = now() - interval '1 hour'
+                where artifact_id = %s
+                """,
+                (artifact.artifact_id,),
+            )
+            cursor.execute(
+                """
+                update community_intake.submissions
+                set expires_at = now() - interval '1 hour'
+                where account_id = %s and state = 'draft'
+                """,
+                (account_id,),
+            )
+            cursor.execute(
+                """
+                insert into community_intake.submissions (
+                  submission_id, account_id, contributor_subject_hash,
+                  submission_type, target_type, target_id, public_version_seen,
+                  state, draft_content
+                ) values (
+                  %s, %s, %s, 'correction', 'panda', %s,
+                  'maintenance-orphan', 'draft', '{"orphan":true}'::jsonb
+                )
+                """,
+                (
+                    orphan_submission_id,
+                    account_id,
+                    hashlib.sha256(str(account_id).encode()).hexdigest(),
+                    f"panda-orphan-{uuid4().hex}",
+                ),
+            )
+            cursor.execute(
+                """
+                insert into community_intake.attachments (
+                  attachment_id, submission_id, storage_object_key,
+                  original_filename, media_type, byte_size, created_at
+                ) values (
+                  %s, %s, %s, 'orphan.pdf', 'application/pdf', 64,
+                  now() - interval '2 days'
+                )
+                """,
+                (
+                    orphan_attachment_id,
+                    orphan_submission_id,
+                    f"private/orphan/{orphan_attachment_id}.pdf",
+                ),
+            )
+            cursor.execute(
+                """
+                update notification.inbox_items
+                set created_at = now() - interval '2 hours',
+                    body_expires_at = now() - interval '1 hour'
+                where account_id = %s
+                """,
+                (account_id,),
+            )
+            cursor.execute(
+                """
+                insert into privacy.holds (
+                  account_id, request_id, context_key, basis,
+                  created_by_account_id, created_at, review_due_at
+                ) values (
+                  %s, %s, 'identity_profile', 'legal_obligation',
+                  %s, now() - interval '2 days', now() - interval '1 day'
+                )
+                """,
+                (account_id, created.request_id, operator_id),
+            )
+        connection.commit()
+
+    with session_scope() as session:
+        assert session is not None
+        maintenance = PrivacyMaintenanceService(session)
+        before = maintenance.metrics(
+            actor_account_id=operator_id,
+            correlation_id=correlation_id,
+        )
+        assert before.expired_export_payload_count == 1
+        assert before.orphan_attachment_count >= 1
+        assert before.overdue_hold_review_count >= 1
+        assert "privacy_expired_export_payload" in before.alerts
+        assert "privacy_orphan_attachment" in before.alerts
+        assert "privacy_hold_review_overdue" in before.alerts
+
+        maintenance_key = f"privacy-maintenance-run-{uuid4()}"
+        result = maintenance.run(
+            actor_account_id=operator_id,
+            replay_tombstones_after_restore=False,
+            tombstone_account_limit=100,
+            max_scan_attempts=3,
+            idempotency_key=maintenance_key,
+            correlation_id=correlation_id,
+        )
+        replay = maintenance.run(
+            actor_account_id=operator_id,
+            replay_tombstones_after_restore=False,
+            tombstone_account_limit=100,
+            max_scan_attempts=3,
+            idempotency_key=maintenance_key,
+            correlation_id=correlation_id,
+        )
+        assert replay.run_id == result.run_id
+        assert result.counts["exports_deleted"] == 1
+        assert result.counts["community_drafts_expired"] >= 1
+        assert result.counts["community_orphan_attachments_deleted"] >= 1
+        assert result.counts["notification_bodies_purged"] >= 1
+
+        after = maintenance.metrics(
+            actor_account_id=operator_id,
+            correlation_id=uuid4(),
+        )
+        assert after.expired_export_payload_count == 0
+        assert after.orphan_attachment_count == 0
+        assert "privacy_expired_export_payload" not in after.alerts
+        assert "privacy_orphan_attachment" not in after.alerts
+        assert "privacy_hold_review_overdue" in after.alerts
+
+    assert _scalar(
+        real_db_url,
+        "select state::text from privacy.export_artifacts where artifact_id = %s",
+        (artifact.artifact_id,),
+    ) == "deleted"
+    assert _scalar(
+        real_db_url,
+        "select ciphertext from privacy.export_artifacts where artifact_id = %s",
+        (artifact.artifact_id,),
+    ) is None
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*) from notification.inbox_items
+        where account_id = %s
+          and body = jsonb_build_object('state', 'expired', 'body_version', body_version)
+          and body_purged_at is not null
+        """,
+        (account_id,),
+    ) == 1
+    assert _scalar(
+        real_db_url,
+        "select count(*) from privacy.maintenance_runs where run_id = %s",
+        (result.run_id,),
+    ) == 1

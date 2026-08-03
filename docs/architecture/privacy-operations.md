@@ -76,7 +76,11 @@ Migration `0027_privacy_requests_retention_holds.sql` establishes executable pol
 
 A hold is scoped to one account and one context. It records basis, creator, review due time, and explicit release facts. A held context does not prevent unrelated contexts from continuing. Hold events are append-only.
 
-Deletion tombstones are keyed by account and context. Restore tooling must reapply them throughout the 35-day rolling backup boundary so a restore cannot silently reopen deleted private data.
+Deletion tombstones are keyed by account and context. Restore tooling must reapply them throughout the 35-day rolling backup boundary so a restore cannot silently reopen deleted private data. A replay is an account-level transaction rather than a metadata-only marker: restored private domains are deleted again, community and Archive provenance is re-anonymized with the original tombstone hash, restored roles and refresh credentials are revoked, and Identity returns through an audited `active/suspended -> deleting -> deleted` chain. Routine retention runs never perform this operation unless the explicit post-restore replay flag is present.
+
+Migration `0030_privacy_maintenance_metrics.sql` records append-only maintenance runs and indexes the bounded operational queries. `run_privacy_maintenance.py` and the protected Admin maintenance command purge expired export ciphertext, execute Community Intake retention, purge expired Inbox bodies to minimal tombstones, and optionally reapply deletion tombstones after a restore. One PostgreSQL advisory lock prevents overlapping runs, and command input is idempotently hashed.
+
+The protected metrics snapshot exposes counts and ages only. It covers open-request age, failed contexts, orphan attachments, overdue hold reviews, expired export payloads, tombstone replay, export access/downloads, and completed requests. Alert keys are deterministic and contain no account, request, email, or artifact identifiers. Every metrics read and maintenance run appends a Privacy audit fact.
 
 ## Feature and rollback boundary
 
@@ -84,6 +88,6 @@ Deletion tombstones are keyed by account and context. Restore tooling must reapp
 
 ## Delivery status
 
-The delivered vertical slices include request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, encrypted and audited access exports with short-lived download references, narrow Hold create/release commands, automatic deletion tombstone creation, audited tombstone replay requests, executable retention storage, Archive provenance anonymization, final Identity/Auth tombstoning, audit, and Outbox contracts. The private-deletion executor invokes the existing Engagement, Community Intake, and Notification cleanup in one PostgreSQL transaction; final deletion separately owns Archive/Identity completion. Generic commands cannot bypass the deletion executor, export generator, or final deletion command.
+The delivered vertical slices include request creation and reads, immediate deletion access blocking, operator verification, retryable per-context projections, encrypted and audited access exports with short-lived download references, narrow Hold create/release commands, automatic deletion tombstone creation, real post-restore account-level tombstone replay, executable retention purge, Archive provenance anonymization, final Identity/Auth tombstoning, operational metrics/alerts, audit, and Outbox contracts. The private-deletion executor invokes the existing Engagement, Community Intake, and Notification cleanup in one PostgreSQL transaction; final deletion separately owns Archive/Identity completion. Generic commands cannot bypass the deletion executor, export generator, final deletion command, or explicit post-restore replay boundary.
 
-Scheduled retention/export purge/tombstone replay jobs, metrics, alerts, and the Privacy Operator Web workbench remain follow-up work within Issue #198.
+The Privacy Operator Web workbench remains the final product surface within Issue #198.
