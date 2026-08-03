@@ -17,10 +17,10 @@
     "file": "services/api/vercel.json",
     "function": "**/*.py",
     "exclude_files": [
+      ".gitignore",
       "*ocker*",
       "*.md",
-      "alembic.ini",
-      "alembic/**",
+      "alembic*",
       "openapi/**",
       "scripts/**",
       "tests/**",
