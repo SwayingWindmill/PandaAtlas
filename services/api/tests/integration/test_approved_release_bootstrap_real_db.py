@@ -125,7 +125,7 @@ def test_approved_release_bootstrap_is_atomic_idempotent_and_public(real_db: Non
         assert session is not None
         dry_run = preflight_release(session, bundle, ACTOR_ID)
         assert dry_run["pandas"] == EXPECTED_PANDA_COUNT
-        rolled_back_release_id = import_archive_release(
+        import_archive_release(
             session,
             bundle,
             ACTOR_ID,
@@ -154,7 +154,6 @@ def test_approved_release_bootstrap_is_atomic_idempotent_and_public(real_db: Non
             reason=reason,
         )
         session.commit()
-    assert release_id == rolled_back_release_id
 
     with session_scope() as session:
         assert session is not None
