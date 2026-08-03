@@ -15,6 +15,7 @@ on:
       - "services/api/app/projection/approved_release_bootstrap.py"
       - "services/api/app/services/release_service.py"
       - "services/api/scripts/bootstrap_approved_public_release.py"
+      - "services/api/scripts/check_seedless_release_foundation.py"
       - "services/api/tests/integration/test_approved_release_bootstrap_real_db.py"
       - "services/api/tests/projection/test_approved_release_bootstrap.py"
 
@@ -59,8 +60,11 @@ jobs:
           --workdir infra
           --no-seed
 
-      - name: Verify foundation schema
-        run: npm run infra:preflight
+      - name: Verify seedless release foundation
+        working-directory: services/api
+        run: >-
+          uv run --isolated --frozen --extra dev python
+          scripts/check_seedless_release_foundation.py
 
       - name: Run approved release bootstrap journey
         working-directory: services/api
