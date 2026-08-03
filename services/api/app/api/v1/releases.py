@@ -2,7 +2,10 @@ from fastapi import APIRouter
 
 from app.api.v1.release_responses import PUBLIC_RELEASE_RESPONSES
 from app.schemas.release import PublicPandaRelease, PublicReleaseMetadata
-from app.services.release_service import get_current_panda_release, get_current_release_metadata
+from app.services.managed_release_service import (
+    get_current_panda_release,
+    get_current_release_metadata,
+)
 
 router = APIRouter(prefix="/releases")
 
