@@ -63,6 +63,8 @@
     "check:xi-lun-photo-release": "node scripts/release/check-beta-hard-gates.mjs --dataset data/reviewed-batches/2026.07.21.1/source.json --report .release-gate/xi-lun-photo-hard-gates.json",
     "check:public-api-boundary": "node scripts/check-public-api-boundary.mjs",
     "check:api-runtime-boundary": "node scripts/development/operations.mjs run api.check-runtime-boundary",
+    "check:api-serverless-closure": "node scripts/development/operations.mjs run api.check-serverless-closure",
+    "build:api-serverless-closure": "node scripts/development/operations.mjs run api.build-serverless-closure",
     "check:zhipanda-brand": "node scripts/brand/check-zhipanda-brand.mjs",
     "check:zhipanda-brand-closure": "node scripts/release/check-zhipanda-brand-closure.mjs",
     "check:beta-hard-gates": "node scripts/release/check-beta-hard-gates.mjs",

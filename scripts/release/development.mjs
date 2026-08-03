@@ -155,7 +155,8 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "contracts/curation-patch.v1.json" ||
       changedPath === "contracts/curator-decisions.v1.json" ||
       changedPath === "contracts/integration-event.v1.json" ||
-      changedPath === "contracts/api-request-runtime-boundary.v1.json"
+      changedPath === "contracts/api-request-runtime-boundary.v1.json" ||
+      changedPath === "contracts/api-serverless-runtime.v1.json"
     ) addScope(scopes, "api");
 
     if (changedPath === "contracts/recovery-drill-environments.v1.json") {

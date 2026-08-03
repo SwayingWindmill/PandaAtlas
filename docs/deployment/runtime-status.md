@@ -45,5 +45,5 @@ Until the relevant cutover phase completes:
 - Phase 0 responsibility inventory is complete.
 - Phase 1 has a Vercel project and parallel deployment; acceptance remains in progress.
 - Production traffic for `zhipanda.com`, `www.zhipanda.com`, and `api.zhipanda.com` remains on Cloudflare.
-- Phase 2 managed FastAPI and Supabase production-connection work has not started.
+- Phase 2 now has a reviewed FastAPI Vercel entrypoint and deterministic request-closure artifact; Supabase production connection, serverless database behavior, production authentication, deployed acceptance, and cutover remain open.
 - No production DNS, D1, R2, release activation, or rollback behavior is changed by Phase 1.

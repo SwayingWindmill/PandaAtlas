@@ -7,7 +7,7 @@ COPY services/api/app ./app
 COPY services/api/tests ./tests
 COPY contracts/golden-dataset/mei-xiang-family.v1.json ./contracts/golden-dataset/mei-xiang-family.v1.json
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ".[local-server]"
 
 EXPOSE 8000
 

@@ -131,9 +131,12 @@ test("identity contracts select API checks", () => {
   ]);
 });
 
-test("request runtime boundary contract selects API checks", () => {
+test("API runtime contracts select API checks", () => {
   assert.deepEqual(
-    classifyDevelopmentScopes(["contracts/api-request-runtime-boundary.v1.json"]),
+    classifyDevelopmentScopes([
+      "contracts/api-request-runtime-boundary.v1.json",
+      "contracts/api-serverless-runtime.v1.json",
+    ]),
     ["api"],
   );
 });

@@ -261,6 +261,9 @@
       "migration_phase": 2,
       "disposition": "migrate-runtime-retain-domain-owner",
       "evidence": [
+        "contracts/api-serverless-runtime.v1.json",
+        "docs/deployment/vercel-api-phase-2.md",
+        "services/api/index.py",
         "services/api/app/main.py",
         "services/api/app/api/router.py",
         "docs/architecture/adr-0001-single-source-api-boundary.md"

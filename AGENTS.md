@@ -5,6 +5,8 @@ This repository is the monorepo for ZhiPanda (吱熊猫), a modern panda informa
 
 - `apps/web`: Next.js App Router frontend (Tailwind v4 + shadcn/ui style components).
 - `services/api`: FastAPI backend service (v1 REST endpoints, schema/service split).
+- `services/api/index.py`: Vercel ASGI entrypoint that only re-exports `app.main:app`.
+- `services/api/scripts/build_serverless_closure.py`: deterministic request-module, dependency, package-data, and file-hash manifest builder governed by `contracts/api-serverless-runtime.v1.json`.
 - `services/api/openapi/panda-atlas-v1.yaml`: API contract source of truth for frontend/backend alignment.
 - `infra/supabase/migrations`: forward-only SQL migrations for Supabase Postgres/PostGIS.
 - `scripts/research`: reusable research adapters, builders, runners, validators, migrations, tests, and archived one-off scripts.
@@ -39,8 +41,8 @@ From repository root:
 
 Backend (`services/api`):
 
-- Install deps: `uv sync --extra dev`
-- Run API: `uv run uvicorn app.main:app --reload`
+- Install deps: `uv sync --extra dev --extra local-server`
+- Run API: `uv run --extra local-server uvicorn app.main:app --reload`
 - Run tests: `uv run pytest -q`
 - Quick syntax check: `uv run python -m compileall app`
 
@@ -66,6 +68,7 @@ Local platform:
 - Frontend: route files in `apps/web/app/**/page.tsx`; shared utilities in `apps/web/lib`; keep UI primitives in `apps/web/components/ui`.
 - Research: keep executable modules reusable and stable; put dates, subject cohorts, sources, and operation selections in `data/research-batches/<batch-id>.json`, never in new round-specific Python filenames.
 - Batch: use fixed command arrays from `contracts/batch-operations.v1.json`; manual workflow inputs must never become arbitrary shell, script, branch-write, or unapproved production-write parameters.
+- Serverless API: keep `services/api/index.py` as a re-export only; base Python dependencies must match `contracts/api-serverless-runtime.v1.json`, while Uvicorn and batch tooling remain optional.
 - Structure: run `npm run check:repository-structure`; do not add a top-level zone or an application/service `package.json` without updating the structure contract and its boundary document.
 - Naming: use kebab-case for docs/config files and numeric migration prefixes (`0002_*.sql`).
 
@@ -119,7 +122,7 @@ Local platform:
 ### Development scope mapping
 
 - `web`: `apps/web/**` — lint and typecheck; targeted Playwright specs only when browser behavior changed.
-- `api`: `services/api/**` and database infrastructure — Ruff and pytest without release or recovery drills.
+- `api`: `services/api/**`, API runtime contracts, and database infrastructure — request-boundary and serverless-closure checks, then Ruff and pytest without release or recovery drills.
 - `worker`: `services/worker-api/**` — typecheck without D1 rollback or HTTP runtime smoke.
 - `curation`: reviewed collection and media-processing code or data — bounded curation and media checks.
 - `data`: golden-dataset contracts and generators — contract, dataset, and generated-alias consistency checks.
@@ -182,7 +185,7 @@ Panda Atlas is a brownfield full-stack monorepo for a giant panda encyclopedia a
 ## Runtime
 - The repo root is an `npm` workspace monorepo declared in `package.json`.
 - The web runtime is Next.js App Router in `apps/web`, with both server-rendered route files and client-side interactive shells.
-- The API runtime is FastAPI in `services/api/app/main.py`, started with Uvicorn through `uv run uvicorn app.main:app --reload`.
+- The API runtime is FastAPI in `services/api/app/main.py`; local serving uses `uv run --extra local-server uvicorn app.main:app --reload`, while Vercel imports `services/api/index.py`.
 - Local integration uses the pinned Supabase CLI stack for Auth, private Storage, PostgreSQL/PostGIS, and PGMQ; `docker-compose.yml` runs only the API container.
 - The backend has a first-class degraded runtime mode: `services/api/app/db/session.py` disables DB access when SQLAlchemy or `DATABASE_URL` is missing, and the service layer can fall back to mock data.
 ## Frameworks
@@ -195,7 +198,7 @@ Panda Atlas is a brownfield full-stack monorepo for a giant panda encyclopedia a
 ## Key Dependencies
 - Frontend runtime dependencies in `apps/web/package.json`: `next`, `react`, `react-dom`, `maplibre-gl`, `lucide-react`, `clsx`, `class-variance-authority`, `tailwind-merge`, and `@radix-ui/react-slot`.
 - Frontend dev dependencies in `apps/web/package.json`: `typescript`, `eslint`, `eslint-config-next`, `tailwindcss`, and `@tailwindcss/postcss`.
-- Backend runtime dependencies in `services/api/pyproject.toml`: `fastapi`, `uvicorn[standard]`, `pydantic-settings`, `sqlalchemy`, and `psycopg[binary]`.
+- Managed API runtime dependencies in `services/api/pyproject.toml` exclude Uvicorn; `uvicorn[standard]` is available only through the `local-server` optional group.
 - Backend dev dependencies in `services/api/pyproject.toml`: `pytest`, `httpx`, and `ruff`.
 - The backend currently favors raw SQL through `sqlalchemy.text(...)` in `services/api/app/services/*.py` instead of ORM models.
 ## Configuration
