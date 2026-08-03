@@ -1,18 +1,21 @@
+# The managed release adapter must patch stable release-service imports before API routes load.
+# ruff: noqa: I001
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.router import api_router
 from app.core.config import settings
 from app.db.session import configure_database, database_health
-from app.services.release_service import (
+from app.services.managed_release_service import (
     get_current_release_metadata,
     pin_current_release_metadata,
     release_headers,
     reset_current_release_metadata,
 )
+from app.api.router import api_router
 
 
 @asynccontextmanager
@@ -27,6 +30,7 @@ app = FastAPI(
     summary="Panda encyclopedia and distribution map backend",
     lifespan=lifespan,
 )
+
 
 @app.middleware("http")
 async def attach_public_release(request: Request, call_next):

@@ -2,7 +2,7 @@ import json
 from collections.abc import Sequence
 from uuid import UUID
 
-from pydantic import Field, model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,7 +15,10 @@ class Settings(BaseSettings):
         default="{}",
         alias="WORKFLOW_ACTOR_TOKENS_JSON",
     )
-    database_url: str | None = Field(default=None, alias="DATABASE_URL")
+    database_url: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("DATABASE_URL", "POSTGRES_URL"),
+    )
     db_use_mock_fallback: bool | None = Field(default=None, alias="DB_USE_MOCK_FALLBACK")
     identity_auth_enabled: bool = Field(default=False, alias="IDENTITY_AUTH_ENABLED")
     admin_shell_enabled: bool = Field(default=False, alias="ADMIN_SHELL_ENABLED")

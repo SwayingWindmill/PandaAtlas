@@ -301,6 +301,20 @@ test("default gate runs the Beta hard-gate preflight after the production build"
   assert.match(defaultGate, /check:beta-hard-gates/);
 });
 
+test("default gate installs the local API server before no-sync HTTP smoke", async () => {
+  const defaultGate = await readFile(defaultGatePath, "utf8");
+
+  assert.match(defaultGate, /id: "api-sync"/);
+  assert.match(
+    defaultGate,
+    /"sync",\s*"--frozen",\s*"--extra",\s*"dev",\s*"--extra",\s*"local-server",\s*"--python",\s*"3\.12"/,
+  );
+  assert.match(
+    defaultGate,
+    /export const uvServerRunPrefix = \[[\s\S]*"local-server"[\s\S]*"--no-sync"/,
+  );
+});
+
 test("default gate records the release recovery drill after locked API setup", async () => {
   const defaultGate = await readFile(defaultGatePath, "utf8");
   const rootPackage = JSON.parse(await readFile(rootPackagePath, "utf8"));
