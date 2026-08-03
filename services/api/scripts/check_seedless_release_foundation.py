@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import sys
 from typing import Any
 
 from sqlalchemy import text
@@ -87,9 +86,13 @@ def main() -> int:
             failures.append(f"missing relations: {missing_relations}")
 
         seed_counts = {
-            "pandas": int(session.execute(text("select count(*) from public.pandas")).scalar_one()),
+            "pandas": int(
+                session.execute(text("select count(*) from public.pandas")).scalar_one()
+            ),
             "publication_batches": int(
-                session.execute(text("select count(*) from public.publication_batches")).scalar_one()
+                session.execute(
+                    text("select count(*) from public.publication_batches")
+                ).scalar_one()
             ),
         }
         evidence["seed_counts"] = seed_counts
