@@ -153,7 +153,11 @@ def _published_records(
     return records
 
 
-def _database_runtime_release() -> tuple[PublicReleaseMetadata, dict[str, Any], list[dict[str, Any]]]:
+def _database_runtime_release() -> tuple[
+    PublicReleaseMetadata,
+    dict[str, Any],
+    list[dict[str, Any]],
+]:
     release_id, metadata = _active_database_release()
     records = _published_records(release_id, metadata)
     release = metadata.model_dump(mode="json", exclude={"licenses"})
