@@ -166,8 +166,7 @@ def _database_runtime_release() -> tuple[
             "version": metadata.dataset_release_version,
             "public_schema_version": metadata.public_schema_version,
             "licenses": metadata.licenses,
-        },
-        "records": [],
+        }
     }
     runtime = _runtime_api(source_state, release, records)
     return metadata, runtime, records
