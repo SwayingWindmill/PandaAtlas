@@ -18,8 +18,9 @@ from app.projection.approved_release_bootstrap import (
     load_approved_release,
     preflight_release,
 )
-from app.services.release_service import (
+from app.services.managed_release_service import (
     get_current_api_release,
+    get_current_panda_release,
     get_current_release_metadata,
 )
 
@@ -198,6 +199,8 @@ def test_approved_release_bootstrap_is_atomic_idempotent_and_public(real_db: Non
     assert metadata.publication_batch_id == "public-experiences-first-cohort-2026-07-31"
     api_release = get_current_api_release()
     assert len(api_release["pandas"]) == EXPECTED_PANDA_COUNT
+    panda_release = get_current_panda_release()
+    assert len(panda_release.records) == EXPECTED_PANDA_COUNT
 
     with session_scope() as session:
         assert session is not None
