@@ -1,0 +1,82 @@
+name: Approved Release Bootstrap Gate
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - ".github/workflows/approved-release-bootstrap.yml"
+      - "data/public-releases/**"
+      - "data/reviewed-batches/**"
+      - "infra/supabase/migrations/**"
+      - "services/api/app/projection/approved_release_bootstrap.py"
+      - "services/api/app/services/release_service.py"
+      - "services/api/scripts/bootstrap_approved_public_release.py"
+      - "services/api/tests/integration/test_approved_release_bootstrap_real_db.py"
+      - "services/api/tests/projection/test_approved_release_bootstrap.py"
+
+concurrency:
+  group: approved-release-bootstrap-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  NPM_VERSION: "10.9.0"
+  PYTHON_VERSION: "3.12"
+  UV_VERSION: "0.11.7"
+  DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:54322/postgres
+  REAL_DB_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:54322/postgres
+  RUN_REAL_DB_TESTS: "1"
+
+jobs:
+  approved-release-bootstrap:
+    name: Approved release real PostgreSQL journey
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out clean candidate
+        uses: actions/checkout@v7.0.0
+        with:
+          clean: true
+
+      - name: Set up release candidate toolchain
+        uses: ./.github/actions/setup-release-candidate
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          npm-version: ${{ env.NPM_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION }}
+          uv-version: ${{ env.UV_VERSION }}
+          show-versions: "true"
+
+      - name: Start pinned Supabase foundation
+        run: npm run infra:start
+
+      - name: Reset migrations without demo seed
+        run: >-
+          npx --yes supabase@2.110.0 db reset
+          --workdir infra
+          --no-seed
+
+      - name: Verify foundation schema
+        run: npm run infra:preflight
+
+      - name: Run approved release bootstrap journey
+        working-directory: services/api
+        run: >-
+          uv run --isolated --frozen --extra dev pytest -q
+          tests/integration/test_approved_release_bootstrap_real_db.py
+          --junitxml=../../approved-release-bootstrap-real-db.xml
+
+      - name: Upload database acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: approved-release-bootstrap-real-db
+          path: approved-release-bootstrap-real-db.xml
+          if-no-files-found: warn
+
+      - name: Stop Supabase foundation
+        if: always()
+        run: npm run infra:stop
