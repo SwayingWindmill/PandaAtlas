@@ -46,6 +46,12 @@ Every run writes append-only `audit.maintenance_runs` evidence and an `audit.ret
 
 The read API reports projected event count, source/projection gaps, sensitive-read volume, bulk reads, rejected payloads, exports, expired export artifacts, recent maintenance runs, integrity mismatches, and the latest summary time. Alert keys are emitted for projection lag, rejected payloads, bulk-read anomalies, overdue export retention, integrity mismatches, and missing summaries.
 
+## Audit Operator workbench
+
+The React-admin shell exposes a custom `/admin/audit` route only when the verified staff session includes `audit.read`. The browser calls a server-only Next.js proxy with a fixed allowlist for event search, metrics, integrity summaries, encrypted exports, downloads, and retention maintenance. Arbitrary FastAPI paths and generic React-admin CRUD remain unavailable.
+
+The workbench does not query on every filter keystroke because each search creates sensitive-read evidence. Operators must provide a reason and explicitly refresh the result set. Export, integrity, and maintenance controls remain disabled in the UI without their dedicated capabilities; FastAPI independently enforces those capabilities and recent authentication.
+
 ## Feature flag and rollback
 
 The API is disabled unless `UNIFIED_AUDIT_ENABLED=true`. Disabling the flag removes API access but preserves evidence and source triggers. Rollback is therefore operational: disable the flag first, then ship a reviewed additive migration if trigger removal or schema retirement is required. Existing append-only evidence must not be deleted or rewritten.
