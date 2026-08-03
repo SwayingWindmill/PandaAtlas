@@ -19,6 +19,13 @@ EXPORT_MIGRATION_PATH = (
 EXPORT_SERVICE_PATH = (
     REPO_ROOT / "services" / "api" / "app" / "privacy_operations" / "exports.py"
 )
+FINALIZATION_MIGRATION_PATH = (
+    REPO_ROOT
+    / "infra"
+    / "supabase"
+    / "migrations"
+    / "0029_privacy_archive_identity_finalization.sql"
+)
 
 
 def test_privacy_schema_is_private_append_only_and_restore_safe() -> None:
@@ -127,6 +134,29 @@ def test_encrypted_exports_are_private_bounded_and_user_safe() -> None:
     assert "source_context" not in service.split("class privacyexportbuilder", 1)[1].split(
         "class privacyexportservice", 1
     )[0]
+
+
+def test_final_deletion_preserves_archive_facts_but_anonymizes_identity() -> None:
+    sql = FINALIZATION_MIGRATION_PATH.read_text(encoding="utf-8").lower()
+    service = SERVICE_PATH.read_text(encoding="utf-8").lower()
+
+    assert "create table if not exists identity.account_tombstones" in sql
+    assert "create table if not exists privacy.archive_anonymization_events" in sql
+    assert "origin_actor_subject_hash" in sql
+    assert "privacy_redacted_at" in sql
+    assert "contributor_subject_anonymized_at" in sql
+    assert "contributor_anonymization_request_id" in sql
+    assert "archive provenance anonymization is irreversible" in sql
+    assert "entity revision privacy redaction is irreversible" in sql
+    assert "submission contributor anonymization is irreversible" in sql
+    assert "trg_identity_account_tombstones_append_only" in sql
+    assert "community_submissions_rekeyed" in service
+    assert "def finalize_account_deletion" in service
+    assert "delete from auth.refresh_tokens" in service
+    assert "set email = :tombstone_email" in service
+    assert "privacy.account-deletion.finalized" in service
+    assert "privacy.account.deleted" in service
+    assert "cannot finalize their own deletion requests" in service
 
 
 def test_retention_policy_seeds_export_and_backup_boundaries() -> None:

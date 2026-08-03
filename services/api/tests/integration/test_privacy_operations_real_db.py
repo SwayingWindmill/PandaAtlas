@@ -107,6 +107,205 @@ def _scalar(database_url: str, sql: str, params: tuple[object, ...]) -> object:
             return cursor.fetchone()[0]
 
 
+def _seed_final_deletion_archive_data(
+    database_url: str,
+    *,
+    account_id: UUID,
+    operator_id: UUID,
+) -> dict[str, object]:
+    submission_id = uuid4()
+    review_case_id = uuid4()
+    decision_id = uuid4()
+    change_set_id = uuid4()
+    revision_id = uuid4()
+    bridge_id = uuid4()
+    correlation_id = uuid4()
+    original_subject_hash = hashlib.sha256(
+        f"community-intake-account:{account_id}".encode()
+    ).hexdigest()
+    marker = f"preserved-public-fact-{uuid4()}"
+    target_id = f"panda-final-{uuid4().hex}"
+    revision_content = {
+        "assertions": [{"assertion_key": "name", "value": marker}],
+    }
+    entity_payload = {
+        "public_record": {"marker": marker},
+        "community_provenance": {
+            "submission_id": str(submission_id),
+            "contributor_account_id": str(account_id),
+            "target_type": "panda",
+            "target_id": target_id,
+        },
+    }
+    with psycopg.connect(_normalize_dsn(database_url)) as connection:
+        with connection.cursor() as cursor:
+            for role_key in ("contributor", "archive_editor"):
+                cursor.execute(
+                    """
+                    insert into identity.role_assignments (
+                      account_id, role_key, assigned_by_account_id, reason,
+                      correlation_id, idempotency_key
+                    ) values (%s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        account_id,
+                        role_key,
+                        operator_id,
+                        "Seed final deletion role snapshot.",
+                        correlation_id,
+                        f"privacy-final-role-{role_key}-{uuid4()}",
+                    ),
+                )
+            cursor.execute(
+                """
+                insert into auth.refresh_tokens (
+                  instance_id, token, user_id, revoked, created_at, updated_at
+                ) values (
+                  '00000000-0000-0000-0000-000000000000', %s, %s, false, now(), now()
+                )
+                """,
+                (f"privacy-refresh-{uuid4()}", str(account_id)),
+            )
+            cursor.execute(
+                """
+                insert into community_intake.submissions (
+                  submission_id, account_id, contributor_subject_hash,
+                  submission_type, target_type, target_id, public_version_seen,
+                  state, draft_content, latest_revision_number, submitted_at,
+                  contributor_status
+                ) values (
+                  %s, %s, %s, 'correction', 'panda', %s,
+                  'archive-final-test', 'submitted', %s::jsonb, 1, now(), 'accepted'
+                )
+                """,
+                (
+                    submission_id,
+                    account_id,
+                    original_subject_hash,
+                    target_id,
+                    json.dumps({"summary": marker}),
+                ),
+            )
+            cursor.execute(
+                """
+                insert into community_intake.submission_revisions (
+                  submission_id, revision_number, content, content_sha256,
+                  public_version_seen
+                ) values (%s, 1, %s::jsonb, %s, 'archive-final-test')
+                """,
+                (
+                    submission_id,
+                    json.dumps(revision_content),
+                    hashlib.sha256(
+                        json.dumps(revision_content, sort_keys=True).encode()
+                    ).hexdigest(),
+                ),
+            )
+            cursor.execute(
+                """
+                insert into review_moderation.review_cases (
+                  review_case_id, submission_id, opened_revision_number,
+                  active_revision_number, state, version, primary_assignee_id,
+                  closed_at
+                ) values (%s, %s, 1, 1, 'closed', 1, %s, now())
+                """,
+                (review_case_id, submission_id, operator_id),
+            )
+            cursor.execute(
+                """
+                insert into review_moderation.decisions (
+                  decision_id, review_case_id, active_revision_number, outcome,
+                  user_visible_explanation, selected_assertion_keys,
+                  decided_by_account_id
+                ) values (
+                  %s, %s, 1, 'accepted',
+                  'Accepted for the final deletion provenance fixture.',
+                  '["name"]'::jsonb, %s
+                )
+                """,
+                (decision_id, review_case_id, operator_id),
+            )
+            cursor.execute(
+                """
+                insert into public.entity_revisions (
+                  id, entity_type, entity_id, revision_number, payload,
+                  created_by, substantive_modified_by
+                ) values (%s, 'panda', %s, 1, %s::jsonb, %s, %s)
+                """,
+                (
+                    revision_id,
+                    target_id,
+                    json.dumps(entity_payload),
+                    operator_id,
+                    operator_id,
+                ),
+            )
+            cursor.execute(
+                """
+                insert into public.change_sets (
+                  id, title, reason, status, created_by, governance_mode,
+                  validation_state, base_archive_version, risk_level,
+                  origin_context, origin_actor_id
+                ) values (
+                  %s, 'Published community fact', 'Preserve public fact provenance.',
+                  'draft', %s, 'single-accountable-approver-v1', 'ready',
+                  'archive-final-test', 'ordinary', 'community_intake', %s
+                )
+                """,
+                (change_set_id, operator_id, account_id),
+            )
+            cursor.execute(
+                """
+                insert into public.change_set_revisions (change_set_id, revision_id)
+                values (%s, %s)
+                """,
+                (change_set_id, revision_id),
+            )
+            cursor.execute(
+                "update public.change_sets set status = 'published' where id = %s",
+                (change_set_id,),
+            )
+            cursor.execute(
+                """
+                insert into community_curation.assertion_bridges (
+                  bridge_id, review_case_id, submission_id, revision_number,
+                  decision_id, change_set_id, contributor_account_id,
+                  contributor_subject_hash, target_type, target_id,
+                  base_archive_version, risk_level, selected_assertion_keys,
+                  not_recommended_assertion_keys, source_ids, attachment_ids,
+                  actor_account_id, actor_role_snapshot, reason, correlation_id
+                ) values (
+                  %s, %s, %s, 1, %s, %s, %s, %s, 'panda',
+                  %s, 'archive-final-test', 'ordinary',
+                  '["name"]'::jsonb, '[]'::jsonb, '[]'::jsonb, '[]'::jsonb,
+                  %s, '["archive_editor"]'::jsonb,
+                  'Preserve published fact while anonymizing contributor.', %s
+                )
+                """,
+                (
+                    bridge_id,
+                    review_case_id,
+                    submission_id,
+                    decision_id,
+                    change_set_id,
+                    account_id,
+                    original_subject_hash,
+                    target_id,
+                    operator_id,
+                    correlation_id,
+                ),
+            )
+        connection.commit()
+    return {
+        "submission_id": submission_id,
+        "bridge_id": bridge_id,
+        "change_set_id": change_set_id,
+        "revision_id": revision_id,
+        "marker": marker,
+        "original_subject_hash": original_subject_hash,
+    }
+
+
 def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url: str) -> None:
     account_id = uuid4()
     operator_id = uuid4()
@@ -318,16 +517,18 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
         )
         assert retried_context.attempts == 2
 
-        current = service.update_context(
-            actor=operator,
-            request_id=created.request_id,
-            context_key="identity_access",
-            expected_version=4,
-            next_state=PrivacyContextState.COMPLETED,
-            internal_error_code=None,
-            idempotency_key=f"privacy-context-complete-{uuid4()}",
-            correlation_id=correlation_id,
-        )
+        current = retried
+        with pytest.raises(PrivacyOperationsConflictError):
+            service.update_context(
+                actor=operator,
+                request_id=created.request_id,
+                context_key="identity_access",
+                expected_version=retried_context.version,
+                next_state=PrivacyContextState.COMPLETED,
+                internal_error_code=None,
+                idempotency_key=f"privacy-identity-manual-complete-{uuid4()}",
+                correlation_id=correlation_id,
+            )
         engagement_context = next(
             context for context in current.contexts if context.context_key == "engagement"
         )
@@ -380,33 +581,58 @@ def test_account_deletion_request_is_blocking_verified_and_retryable(real_db_url
             context.context_key
             for context in current.contexts
             if context.state is PrivacyContextState.COMPLETED
-        } >= {"identity_access", "engagement", "community_intake", "notification"}
-        for context in current.contexts:
-            if context.state is PrivacyContextState.COMPLETED:
-                continue
-            current = service.update_context(
-                actor=operator,
-                request_id=created.request_id,
-                context_key=context.context_key,
-                expected_version=context.version,
-                next_state=PrivacyContextState.PROCESSING,
-                internal_error_code=None,
-                idempotency_key=f"privacy-context-start-{context.context_key}-{uuid4()}",
-                correlation_id=correlation_id,
-            )
-            updated = next(
-                item for item in current.contexts if item.context_key == context.context_key
-            )
-            current = service.update_context(
-                actor=operator,
-                request_id=created.request_id,
-                context_key=context.context_key,
-                expected_version=updated.version,
-                next_state=PrivacyContextState.COMPLETED,
-                internal_error_code=None,
-                idempotency_key=f"privacy-context-complete-{context.context_key}-{uuid4()}",
-                correlation_id=correlation_id,
-            )
+        } >= {"engagement", "community_intake", "notification"}
+        final_versions = {
+            context.context_key: context.version
+            for context in current.contexts
+            if context.context_key in {"archive_provenance", "identity_access"}
+        }
+        finalization_key = f"privacy-final-deletion-{uuid4()}"
+        current = service.finalize_account_deletion(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=final_versions,
+            idempotency_key=finalization_key,
+            correlation_id=correlation_id,
+        )
+        finalization_replay = service.finalize_account_deletion(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=final_versions,
+            idempotency_key=finalization_key,
+            correlation_id=correlation_id,
+        )
+        assert finalization_replay.request_id == current.request_id
+        backup_context = next(
+            context
+            for context in current.contexts
+            if context.context_key == "backup_tombstone"
+        )
+        current = service.update_context(
+            actor=operator,
+            request_id=created.request_id,
+            context_key="backup_tombstone",
+            expected_version=backup_context.version,
+            next_state=PrivacyContextState.PROCESSING,
+            internal_error_code=None,
+            idempotency_key=f"privacy-backup-start-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        backup_context = next(
+            context
+            for context in current.contexts
+            if context.context_key == "backup_tombstone"
+        )
+        current = service.update_context(
+            actor=operator,
+            request_id=created.request_id,
+            context_key="backup_tombstone",
+            expected_version=backup_context.version,
+            next_state=PrivacyContextState.COMPLETED,
+            internal_error_code=None,
+            idempotency_key=f"privacy-backup-complete-{uuid4()}",
+            correlation_id=correlation_id,
+        )
 
     assert current.state is PrivacyRequestState.COMPLETED
     assert current.completed_at is not None
@@ -618,6 +844,17 @@ def test_privacy_operator_cannot_decide_own_request(real_db_url: str) -> None:
                 correlation_id=uuid4(),
             )
         with pytest.raises(PrivacyOperationsForbiddenError):
+            service.finalize_account_deletion(
+                actor=operator,
+                request_id=created.request_id,
+                expected_context_versions={
+                    "archive_provenance": 1,
+                    "identity_access": 1,
+                },
+                idempotency_key=f"privacy-self-finalize-{uuid4()}",
+                correlation_id=uuid4(),
+            )
+        with pytest.raises(PrivacyOperationsForbiddenError):
             service.create_hold(
                 actor=operator,
                 request_id=created.request_id,
@@ -639,6 +876,313 @@ def test_privacy_operator_cannot_decide_own_request(real_db_url: str) -> None:
                 idempotency_key=f"privacy-self-process-{uuid4()}",
                 correlation_id=uuid4(),
             )
+
+
+def test_final_account_deletion_anonymizes_archive_and_identity(
+    real_db_url: str,
+) -> None:
+    account_id = uuid4()
+    operator_id = uuid4()
+    _create_account(real_db_url, account_id)
+    _create_account(real_db_url, operator_id)
+    seeded = _seed_final_deletion_archive_data(
+        real_db_url,
+        account_id=account_id,
+        operator_id=operator_id,
+    )
+    requester = _identity(account_id)
+    operator = _identity(operator_id, capabilities=frozenset({"privacy.operate"}))
+    correlation_id = uuid4()
+    original_email = requester.email
+
+    with session_scope() as session:
+        assert session is not None
+        service = PrivacyOperationsService(session)
+        created = service.create_request(
+            identity=requester,
+            kind=PrivacyRequestKind.ACCOUNT_DELETION,
+            reason="Delete this account and irreversibly anonymize published provenance.",
+            idempotency_key=f"privacy-final-request-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        verified = service.verify_request(
+            actor=operator,
+            request_id=created.request_id,
+            expected_version=1,
+            idempotency_key=f"privacy-final-verify-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        private_versions = {
+            context.context_key: context.version
+            for context in verified.contexts
+            if context.context_key in {"engagement", "community_intake", "notification"}
+        }
+        private_deleted = service.execute_private_deletion(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=private_versions,
+            idempotency_key=f"privacy-final-private-{uuid4()}",
+            correlation_id=correlation_id,
+        )
+        final_versions = {
+            context.context_key: context.version
+            for context in private_deleted.contexts
+            if context.context_key in {"archive_provenance", "identity_access"}
+        }
+        finalization_key = f"privacy-finalize-{uuid4()}"
+        finalized = service.finalize_account_deletion(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=final_versions,
+            idempotency_key=finalization_key,
+            correlation_id=correlation_id,
+        )
+        replay = service.finalize_account_deletion(
+            actor=operator,
+            request_id=created.request_id,
+            expected_context_versions=final_versions,
+            idempotency_key=finalization_key,
+            correlation_id=correlation_id,
+        )
+
+    assert replay.request_id == finalized.request_id
+    assert finalized.state is PrivacyRequestState.PROCESSING
+    assert {
+        context.context_key
+        for context in finalized.contexts
+        if context.state is PrivacyContextState.COMPLETED
+    } >= {
+        "archive_provenance",
+        "identity_access",
+        "engagement",
+        "community_intake",
+        "notification",
+    }
+    tombstone_email = _scalar(
+        real_db_url,
+        "select email from identity.accounts where account_id = %s",
+        (account_id,),
+    )
+    assert isinstance(tombstone_email, str)
+    assert tombstone_email.startswith("deleted-")
+    assert tombstone_email.endswith("@deleted.invalid")
+    assert tombstone_email != original_email
+    assert _scalar(
+        real_db_url,
+        "select email from auth.users where id = %s",
+        (account_id,),
+    ) == tombstone_email
+    assert _scalar(
+        real_db_url,
+        "select state::text from identity.accounts where account_id = %s",
+        (account_id,),
+    ) == "deleted"
+    assert _scalar(
+        real_db_url,
+        "select count(*) from auth.refresh_tokens where user_id = %s",
+        (str(account_id),),
+    ) == 0
+    assert _scalar(
+        real_db_url,
+        "select raw_app_meta_data->>'provider' from auth.users where id = %s",
+        (account_id,),
+    ) == "deleted"
+    tombstone_document = _scalar(
+        real_db_url,
+        """
+        select to_jsonb(tombstone)
+        from identity.account_tombstones tombstone where account_id = %s
+        """,
+        (account_id,),
+    )
+    assert original_email not in json.dumps(tombstone_document, sort_keys=True)
+    role_snapshot = _scalar(
+        real_db_url,
+        "select role_snapshot from identity.account_tombstones where account_id = %s",
+        (account_id,),
+    )
+    staff_role_snapshot = _scalar(
+        real_db_url,
+        "select staff_role_snapshot from identity.account_tombstones where account_id = %s",
+        (account_id,),
+    )
+    assert {item["role_key"] for item in role_snapshot} == {
+        "archive_editor",
+        "contributor",
+    }
+    assert [item["role_key"] for item in staff_role_snapshot] == [
+        "archive_editor",
+        "contributor",
+    ]
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*)
+        from identity.role_assignment_revocations revocation
+        join identity.role_assignments assignment
+          on assignment.assignment_id = revocation.assignment_id
+        where assignment.account_id = %s
+        """,
+        (account_id,),
+    ) == 2
+
+    contributor_subject_hash = _scalar(
+        real_db_url,
+        "select contributor_subject_hash from identity.account_tombstones where account_id = %s",
+        (account_id,),
+    )
+    assert contributor_subject_hash != seeded["original_subject_hash"]
+    assert _scalar(
+        real_db_url,
+        """
+        select contributor_subject_hash
+        from community_intake.submissions where submission_id = %s
+        """,
+        (seeded["submission_id"],),
+    ) == contributor_subject_hash
+    assert _scalar(
+        real_db_url,
+        """
+        select contributor_account_id
+        from community_curation.assertion_bridges where bridge_id = %s
+        """,
+        (seeded["bridge_id"],),
+    ) is None
+    assert _scalar(
+        real_db_url,
+        """
+        select contributor_subject_hash
+        from community_curation.assertion_bridges where bridge_id = %s
+        """,
+        (seeded["bridge_id"],),
+    ) == contributor_subject_hash
+    assert _scalar(
+        real_db_url,
+        "select origin_actor_id from public.change_sets where id = %s",
+        (seeded["change_set_id"],),
+    ) is None
+    assert _scalar(
+        real_db_url,
+        "select origin_actor_subject_hash from public.change_sets where id = %s",
+        (seeded["change_set_id"],),
+    ) == contributor_subject_hash
+    assert _scalar(
+        real_db_url,
+        "select status from public.change_sets where id = %s",
+        (seeded["change_set_id"],),
+    ) == "published"
+    payload = _scalar(
+        real_db_url,
+        "select payload from public.entity_revisions where id = %s",
+        (seeded["revision_id"],),
+    )
+    assert payload["public_record"]["marker"] == seeded["marker"]
+    assert "contributor_account_id" not in payload["community_provenance"]
+    assert (
+        payload["community_provenance"]["contributor_subject_hash"]
+        == contributor_subject_hash
+    )
+    counts = _scalar(
+        real_db_url,
+        "select counts from privacy.archive_anonymization_events where request_id = %s",
+        (created.request_id,),
+    )
+    assert counts == {
+        "community_submissions_rekeyed": 1,
+        "assertion_bridges_anonymized": 1,
+        "change_sets_anonymized": 1,
+        "entity_revisions_redacted": 1,
+    }
+    assert _scalar(
+        real_db_url,
+        "select count(*) from privacy.deletion_tombstones where account_id = %s",
+        (account_id,),
+    ) == 5
+    assert _scalar(
+        real_db_url,
+        """
+        select count(*) from privacy.audit_events
+        where request_id = %s and event_type = 'privacy.account-deletion.finalized'
+        """,
+        (created.request_id,),
+    ) == 1
+
+    with psycopg.connect(_normalize_dsn(real_db_url)) as connection:
+        with connection.cursor() as cursor:
+            with pytest.raises(psycopg.Error):
+                cursor.execute(
+                    """
+                    update identity.account_tombstones
+                    set role_snapshot = '[]'::jsonb
+                    where account_id = %s
+                    """,
+                    (account_id,),
+                )
+        connection.rollback()
+    with psycopg.connect(_normalize_dsn(real_db_url)) as connection:
+        with connection.cursor() as cursor:
+            with pytest.raises(psycopg.Error):
+                cursor.execute(
+                    """
+                    update community_intake.submissions
+                    set contributor_subject_hash = %s,
+                        contributor_subject_anonymized_at = null,
+                        contributor_subject_anonymization_request_id = null
+                    where submission_id = %s
+                    """,
+                    (
+                        seeded["original_subject_hash"],
+                        seeded["submission_id"],
+                    ),
+                )
+        connection.rollback()
+    with psycopg.connect(_normalize_dsn(real_db_url)) as connection:
+        with connection.cursor() as cursor:
+            with pytest.raises(psycopg.Error):
+                cursor.execute(
+                    """
+                    update public.change_sets
+                    set origin_actor_id = %s,
+                        origin_actor_subject_hash = null,
+                        origin_actor_anonymized_at = null,
+                        origin_actor_anonymization_request_id = null
+                    where id = %s
+                    """,
+                    (account_id, seeded["change_set_id"]),
+                )
+        connection.rollback()
+    with psycopg.connect(_normalize_dsn(real_db_url)) as connection:
+        with connection.cursor() as cursor:
+            with pytest.raises(psycopg.Error):
+                cursor.execute(
+                    """
+                    update community_curation.assertion_bridges
+                    set contributor_account_id = %s,
+                        contributor_subject_hash = %s,
+                        contributor_anonymized_at = null,
+                        contributor_anonymization_request_id = null
+                    where bridge_id = %s
+                    """,
+                    (
+                        account_id,
+                        seeded["original_subject_hash"],
+                        seeded["bridge_id"],
+                    ),
+                )
+        connection.rollback()
+    with psycopg.connect(_normalize_dsn(real_db_url)) as connection:
+        with connection.cursor() as cursor:
+            with pytest.raises(psycopg.Error):
+                cursor.execute(
+                    """
+                    update public.entity_revisions
+                    set privacy_redacted_at = null,
+                        privacy_redaction_request_id = null
+                    where id = %s
+                    """,
+                    (seeded["revision_id"],),
+                )
+        connection.rollback()
 
 
 def _seed_export_visible_data(

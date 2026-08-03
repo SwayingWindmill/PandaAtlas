@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import UTC, datetime
 from typing import Any
@@ -61,6 +62,10 @@ _PRIVATE_DELETION_CONTEXTS = (
     "engagement",
     "community_intake",
     "notification",
+)
+_FINAL_DELETION_CONTEXTS = (
+    "archive_provenance",
+    "identity_access",
 )
 _EXPORT_CONTEXTS = (
     "identity_profile",
@@ -603,6 +608,14 @@ class PrivacyOperationsService:
                 "Private deletion contexts must complete through the deletion executor"
             )
         if (
+            request_kind is PrivacyRequestKind.ACCOUNT_DELETION
+            and context_key in _FINAL_DELETION_CONTEXTS
+            and next_state is PrivacyContextState.COMPLETED
+        ):
+            raise PrivacyOperationsConflictError(
+                "Archive and Identity contexts must complete through final deletion"
+            )
+        if (
             request_kind is PrivacyRequestKind.ACCESS_EXPORT
             and context_key in _EXPORT_CONTEXTS
             and next_state is PrivacyContextState.COMPLETED
@@ -1010,6 +1023,533 @@ class PrivacyOperationsService:
                 "account_id": str(subject_account_id),
                 "contexts": list(_PRIVATE_DELETION_CONTEXTS),
                 "counts": counts,
+            },
+        )
+        self._complete_request_if_ready(
+            request_id=request_id,
+            actor_account_id=actor.account_id,
+            correlation_id=correlation_id,
+            idempotency_key=command_key,
+        )
+        self.session.commit()
+        return self.get_request(request_id)
+
+    def finalize_account_deletion(
+        self,
+        *,
+        actor: RequestIdentity,
+        request_id: UUID,
+        expected_context_versions: dict[str, int],
+        idempotency_key: str,
+        correlation_id: UUID,
+    ) -> PrivacyRequestRead:
+        if set(expected_context_versions) != set(_FINAL_DELETION_CONTEXTS):
+            raise PrivacyOperationsConflictError(
+                "Final deletion requires exact archive_provenance and identity_access versions"
+            )
+        if any(version < 1 for version in expected_context_versions.values()):
+            raise PrivacyOperationsConflictError("Privacy context versions must be positive")
+
+        command_hash = hashlib.sha256(
+            json.dumps(
+                expected_context_versions,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+        command_key = _scoped_key("privacy-final-deletion", request_id, idempotency_key)
+        replay = self.session.execute(
+            text(
+                """
+                select privacy_request_id, command_hash
+                from identity.account_tombstones
+                where idempotency_key = :idempotency_key
+                """
+            ),
+            {"idempotency_key": command_key},
+        ).mappings().one_or_none()
+        if replay is not None:
+            if (
+                UUID(str(replay["privacy_request_id"])) != request_id
+                or replay["command_hash"] != command_hash
+            ):
+                raise PrivacyOperationsConflictError(
+                    "Idempotency key was already used with different final deletion data"
+                )
+            return self.get_request(request_id)
+
+        request_row = self.session.execute(
+            text(
+                """
+                select request.account_id, request.kind::text, request.state::text,
+                       account.email, account.state::text as account_state
+                from privacy.requests request
+                join identity.accounts account on account.account_id = request.account_id
+                where request.request_id = :request_id
+                for update of request, account
+                """
+            ),
+            {"request_id": request_id},
+        ).mappings().one_or_none()
+        if request_row is None:
+            raise PrivacyOperationsNotFoundError("Privacy request not found")
+        subject_account_id = UUID(str(request_row["account_id"]))
+        if actor.account_id == subject_account_id:
+            raise PrivacyOperationsForbiddenError(
+                "Privacy Operators cannot finalize their own deletion requests"
+            )
+        if request_row["kind"] != PrivacyRequestKind.ACCOUNT_DELETION.value:
+            raise PrivacyOperationsConflictError("Privacy request is not an account deletion")
+        request_state = PrivacyRequestState(str(request_row["state"]))
+        if request_state not in {
+            PrivacyRequestState.VERIFIED,
+            PrivacyRequestState.PROCESSING,
+        }:
+            raise PrivacyOperationsConflictError(
+                "Privacy deletion request is not ready for finalization"
+            )
+        if AccountState(str(request_row["account_state"])) is not AccountState.DELETING:
+            raise PrivacyOperationsConflictError("Identity account is not deleting")
+
+        context_rows = self.session.execute(
+            text(
+                """
+                select context_key, state::text, version
+                from privacy.request_contexts
+                where request_id = :request_id
+                for update
+                """
+            ),
+            {"request_id": request_id},
+        ).mappings().all()
+        by_key = {str(row["context_key"]): row for row in context_rows}
+        if not set(_PRIVATE_DELETION_CONTEXTS).issubset(by_key):
+            raise PrivacyOperationsConflictError("Private deletion contexts are incomplete")
+        for context_key in _PRIVATE_DELETION_CONTEXTS:
+            state = PrivacyContextState(str(by_key[context_key]["state"]))
+            if state is not PrivacyContextState.COMPLETED:
+                raise PrivacyOperationsConflictError(
+                    f"Privacy context {context_key} must complete before final deletion"
+                )
+        for context_key in _FINAL_DELETION_CONTEXTS:
+            row = by_key.get(context_key)
+            if row is None:
+                raise PrivacyOperationsConflictError("Final deletion contexts are incomplete")
+            if int(row["version"]) != expected_context_versions[context_key]:
+                raise PrivacyOperationsConflictError(
+                    f"Privacy context version conflict for {context_key}"
+                )
+            state = PrivacyContextState(str(row["state"]))
+            if state not in {
+                PrivacyContextState.PENDING,
+                PrivacyContextState.PROCESSING,
+                PrivacyContextState.FAILED,
+            }:
+                raise PrivacyOperationsConflictError(
+                    f"Privacy context {context_key} cannot finalize from {state.value}"
+                )
+
+        active_roles = self.session.execute(
+            text(
+                """
+                select assignment.assignment_id, assignment.role_key, role.is_staff
+                from identity.role_assignments assignment
+                join identity.roles role on role.role_key = assignment.role_key
+                left join identity.role_assignment_revocations revocation
+                  on revocation.assignment_id = assignment.assignment_id
+                where assignment.account_id = :account_id
+                  and revocation.assignment_id is null
+                  and (assignment.expires_at is null or assignment.expires_at > now())
+                order by assignment.role_key, assignment.assignment_id
+                for update of assignment
+                """
+            ),
+            {"account_id": subject_account_id},
+        ).mappings().all()
+        role_snapshot = [
+            {"role_key": str(row["role_key"]), "is_staff": bool(row["is_staff"])}
+            for row in active_roles
+        ]
+        staff_role_snapshot = [item for item in role_snapshot if item["is_staff"]]
+
+        tombstone_id = uuid4()
+        tombstone_email = f"deleted-{tombstone_id.hex}@deleted.invalid"
+        contributor_subject_hash = hashlib.sha256(
+            f"privacy-deleted-contributor:{tombstone_id}".encode()
+        ).hexdigest()
+        legacy_community_subject_hash = hashlib.sha256(
+            f"community-intake-account:{subject_account_id}".encode()
+        ).hexdigest()
+        self.session.execute(
+            text(
+                """
+                insert into identity.account_tombstones (
+                  account_id, privacy_request_id, tombstone_id, tombstone_email,
+                  contributor_subject_hash, role_snapshot, staff_role_snapshot,
+                  command_hash, created_by_account_id,
+                  correlation_id, idempotency_key
+                ) values (
+                  :account_id, :request_id, :tombstone_id, :tombstone_email,
+                  :contributor_subject_hash, cast(:role_snapshot as jsonb),
+                  cast(:staff_role_snapshot as jsonb),
+                  :command_hash, :actor_account_id, :correlation_id, :idempotency_key
+                )
+                """
+            ),
+            {
+                "account_id": subject_account_id,
+                "request_id": request_id,
+                "tombstone_id": tombstone_id,
+                "tombstone_email": tombstone_email,
+                "contributor_subject_hash": contributor_subject_hash,
+                "role_snapshot": json.dumps(role_snapshot, sort_keys=True),
+                "staff_role_snapshot": json.dumps(staff_role_snapshot, sort_keys=True),
+                "command_hash": command_hash,
+                "actor_account_id": actor.account_id,
+                "correlation_id": correlation_id,
+                "idempotency_key": command_key,
+            },
+        )
+
+        for role in active_roles:
+            assignment_id = UUID(str(role["assignment_id"]))
+            self.session.execute(
+                text(
+                    """
+                    insert into identity.role_assignment_revocations (
+                      assignment_id, revoked_by_account_id, reason,
+                      correlation_id, idempotency_key
+                    ) values (
+                      :assignment_id, :actor_account_id, :reason,
+                      :correlation_id, :idempotency_key
+                    )
+                    """
+                ),
+                {
+                    "assignment_id": assignment_id,
+                    "actor_account_id": actor.account_id,
+                    "reason": "privacy-account-deletion-finalized",
+                    "correlation_id": correlation_id,
+                    "idempotency_key": _scoped_key(
+                        command_key,
+                        "role-revocation",
+                        assignment_id,
+                    ),
+                },
+            )
+
+        submission_result = self.session.execute(
+            text(
+                """
+                update community_intake.submissions
+                set contributor_subject_hash = :contributor_subject_hash,
+                    contributor_subject_anonymized_at = now(),
+                    contributor_subject_anonymization_request_id = :request_id,
+                    updated_at = now()
+                where contributor_subject_hash = :legacy_subject_hash
+                """
+            ),
+            {
+                "request_id": request_id,
+                "contributor_subject_hash": contributor_subject_hash,
+                "legacy_subject_hash": legacy_community_subject_hash,
+            },
+        )
+        bridge_result = self.session.execute(
+            text(
+                """
+                update community_curation.assertion_bridges
+                set contributor_account_id = null,
+                    contributor_subject_hash = :contributor_subject_hash,
+                    contributor_anonymized_at = now(),
+                    contributor_anonymization_request_id = :request_id
+                where contributor_account_id = :account_id
+                """
+            ),
+            {
+                "account_id": subject_account_id,
+                "request_id": request_id,
+                "contributor_subject_hash": contributor_subject_hash,
+            },
+        )
+        change_set_result = self.session.execute(
+            text(
+                """
+                update public.change_sets
+                set origin_actor_id = null,
+                    origin_actor_subject_hash = :contributor_subject_hash,
+                    origin_actor_anonymized_at = now(),
+                    origin_actor_anonymization_request_id = :request_id
+                where origin_context = 'community_intake'
+                  and origin_actor_id = :account_id
+                """
+            ),
+            {
+                "account_id": subject_account_id,
+                "request_id": request_id,
+                "contributor_subject_hash": contributor_subject_hash,
+            },
+        )
+        revision_result = self.session.execute(
+            text(
+                """
+                update public.entity_revisions
+                set payload = jsonb_set(
+                      payload #- '{community_provenance,contributor_account_id}',
+                      '{community_provenance,contributor_subject_hash}',
+                      to_jsonb(cast(:contributor_subject_hash as text)),
+                      true
+                    ),
+                    privacy_redacted_at = now(),
+                    privacy_redaction_request_id = :request_id
+                where payload #>> '{community_provenance,contributor_account_id}' = :account_id
+                """
+            ),
+            {
+                "account_id": str(subject_account_id),
+                "request_id": request_id,
+                "contributor_subject_hash": contributor_subject_hash,
+            },
+        )
+        archive_counts = {
+            "community_submissions_rekeyed": int(submission_result.rowcount or 0),
+            "assertion_bridges_anonymized": int(bridge_result.rowcount or 0),
+            "change_sets_anonymized": int(change_set_result.rowcount or 0),
+            "entity_revisions_redacted": int(revision_result.rowcount or 0),
+        }
+        self.session.execute(
+            text(
+                """
+                insert into privacy.archive_anonymization_events (
+                  request_id, account_id, actor_account_id, contributor_subject_hash,
+                  counts, correlation_id, idempotency_key
+                ) values (
+                  :request_id, :account_id, :actor_account_id, :contributor_subject_hash,
+                  cast(:counts as jsonb), :correlation_id, :idempotency_key
+                )
+                """
+            ),
+            {
+                "request_id": request_id,
+                "account_id": subject_account_id,
+                "actor_account_id": actor.account_id,
+                "contributor_subject_hash": contributor_subject_hash,
+                "counts": json.dumps(archive_counts, sort_keys=True),
+                "correlation_id": correlation_id,
+                "idempotency_key": _scoped_key(command_key, "archive-anonymization"),
+            },
+        )
+
+        deleted_refresh_credentials = self.session.execute(
+            text("delete from auth.refresh_tokens where user_id = :account_id"),
+            {"account_id": str(subject_account_id)},
+        )
+        self.session.execute(
+            text(
+                """
+                update auth.users
+                set email = :tombstone_email,
+                    encrypted_password = '',
+                    raw_user_meta_data = '{}'::jsonb,
+                    email_confirmed_at = null,
+                    phone = null,
+                    phone_confirmed_at = null,
+                    confirmation_token = '',
+                    recovery_token = '',
+                    email_change = '',
+                    email_change_token_new = '',
+                    email_change_token_current = '',
+                    phone_change = '',
+                    phone_change_token = '',
+                    reauthentication_token = '',
+                    last_sign_in_at = null,
+                    deleted_at = now(),
+                    raw_app_meta_data = jsonb_build_object(
+                      'provider', 'deleted', 'providers', '[]'::jsonb
+                    ),
+                    updated_at = now()
+                where id = :account_id
+                """
+            ),
+            {"account_id": subject_account_id, "tombstone_email": tombstone_email},
+        )
+        self.session.execute(
+            text(
+                """
+                update identity.accounts
+                set email = :tombstone_email,
+                    state = 'deleted',
+                    state_reason = 'privacy-account-deletion-finalized',
+                    state_changed_at = now(),
+                    last_authenticated_at = null,
+                    last_authentication_method = null,
+                    last_session_id = null,
+                    last_jwt_issued_at = null,
+                    last_seen_at = now()
+                where account_id = :account_id
+                """
+            ),
+            {"account_id": subject_account_id, "tombstone_email": tombstone_email},
+        )
+        self.session.execute(
+            text(
+                """
+                insert into identity.account_state_events (
+                  account_id, previous_state, next_state, actor_account_id,
+                  reason, correlation_id, idempotency_key
+                ) values (
+                  :account_id, 'deleting', 'deleted', :actor_account_id,
+                  :reason, :correlation_id, :idempotency_key
+                )
+                """
+            ),
+            {
+                "account_id": subject_account_id,
+                "actor_account_id": actor.account_id,
+                "reason": "privacy-account-deletion-finalized",
+                "correlation_id": correlation_id,
+                "idempotency_key": _scoped_key(command_key, "identity-state"),
+            },
+        )
+
+        if request_state is PrivacyRequestState.VERIFIED:
+            self.session.execute(
+                text(
+                    """
+                    update privacy.requests
+                    set state = 'processing',
+                        processing_started_at = coalesce(processing_started_at, now()),
+                        version = version + 1
+                    where request_id = :request_id
+                    """
+                ),
+                {"request_id": request_id},
+            )
+            self._insert_request_event(
+                request_id=request_id,
+                event_type="privacy.request.processing",
+                previous_state=PrivacyRequestState.VERIFIED,
+                next_state=PrivacyRequestState.PROCESSING,
+                actor_account_id=actor.account_id,
+                details={"execution": "final-account-deletion"},
+                correlation_id=correlation_id,
+                idempotency_key=_scoped_key(command_key, "request-processing"),
+            )
+
+        for context_key in _FINAL_DELETION_CONTEXTS:
+            previous_state = PrivacyContextState(str(by_key[context_key]["state"]))
+            version_increment = 1 if previous_state is PrivacyContextState.PROCESSING else 2
+            attempt_increment = 0 if previous_state is PrivacyContextState.PROCESSING else 1
+            self.session.execute(
+                text(
+                    """
+                    update privacy.request_contexts
+                    set state = 'completed', last_error_code = null,
+                        attempts = attempts + :attempt_increment,
+                        version = version + :version_increment
+                    where request_id = :request_id and context_key = :context_key
+                    """
+                ),
+                {
+                    "request_id": request_id,
+                    "context_key": context_key,
+                    "attempt_increment": attempt_increment,
+                    "version_increment": version_increment,
+                },
+            )
+            if previous_state is not PrivacyContextState.PROCESSING:
+                self.session.execute(
+                    text(
+                        """
+                        insert into privacy.context_events (
+                          request_id, context_key, previous_state, next_state,
+                          actor_account_id, correlation_id, idempotency_key
+                        ) values (
+                          :request_id, :context_key,
+                          cast(:previous_state as privacy.context_state), 'processing',
+                          :actor_account_id, :correlation_id, :idempotency_key
+                        )
+                        """
+                    ),
+                    {
+                        "request_id": request_id,
+                        "context_key": context_key,
+                        "previous_state": previous_state.value,
+                        "actor_account_id": actor.account_id,
+                        "correlation_id": correlation_id,
+                        "idempotency_key": _scoped_key(
+                            command_key,
+                            context_key,
+                            "processing",
+                        ),
+                    },
+                )
+            self.session.execute(
+                text(
+                    """
+                    insert into privacy.context_events (
+                      request_id, context_key, previous_state, next_state,
+                      actor_account_id, correlation_id, idempotency_key
+                    ) values (
+                      :request_id, :context_key, 'processing', 'completed',
+                      :actor_account_id, :correlation_id, :idempotency_key
+                    )
+                    """
+                ),
+                {
+                    "request_id": request_id,
+                    "context_key": context_key,
+                    "actor_account_id": actor.account_id,
+                    "correlation_id": correlation_id,
+                    "idempotency_key": _scoped_key(
+                        command_key,
+                        context_key,
+                        "completed",
+                    ),
+                },
+            )
+            self._apply_deletion_tombstone(
+                account_id=subject_account_id,
+                request_id=request_id,
+                context_key=context_key,
+            )
+
+        identity_counts = {
+            "active_roles_revoked": len(active_roles),
+            "auth_refresh_credentials_revoked": int(
+                deleted_refresh_credentials.rowcount or 0
+            ),
+        }
+        self._insert_audit(
+            event_type="privacy.account-deletion.finalized",
+            actor_account_id=actor.account_id,
+            subject_account_id=subject_account_id,
+            request_id=request_id,
+            outcome="completed",
+            reason="privacy-account-deletion-finalized",
+            details={
+                "expected_context_versions": expected_context_versions,
+                "archive_counts": archive_counts,
+                "identity_counts": identity_counts,
+                "role_count": len(role_snapshot),
+                "staff_role_count": len(staff_role_snapshot),
+                "tombstone_id": str(tombstone_id),
+            },
+            correlation_id=correlation_id,
+            idempotency_key=command_key,
+        )
+        self._insert_outbox(
+            event_type="privacy.account.deleted",
+            request_id=request_id,
+            idempotency_key=_scoped_key(command_key, "outbox"),
+            correlation_id=correlation_id,
+            payload={
+                "request_id": str(request_id),
+                "account_id": str(subject_account_id),
+                "contexts": list(_FINAL_DELETION_CONTEXTS),
+                "archive_counts": archive_counts,
+                "identity_counts": identity_counts,
+                "tombstone_id": str(tombstone_id),
             },
         )
         self._complete_request_if_ready(

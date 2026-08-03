@@ -24,6 +24,7 @@ from app.privacy_operations.models import (
     DeletionTombstoneRead,
     DownloadPrivacyExportCommand,
     ExecutePrivateDeletionCommand,
+    FinalizeAccountDeletionCommand,
     GeneratePrivacyExportCommand,
     PrivacyExportAccessRead,
     PrivacyExportRead,
@@ -536,6 +537,43 @@ def execute_private_deletion(
                     detail="Privacy Operations database is unavailable",
                 )
             return PrivacyOperationsService(session).execute_private_deletion(
+                actor=actor,
+                request_id=request_id,
+                expected_context_versions=payload.expected_context_versions,
+                idempotency_key=payload.idempotency_key,
+                correlation_id=correlation_id,
+            )
+    except HTTPException:
+        raise
+    except (
+        PrivacyOperationsConflictError,
+        PrivacyOperationsForbiddenError,
+        PrivacyOperationsNotFoundError,
+        SQLAlchemyError,
+    ) as error:
+        raise _error(error) from error
+
+
+@admin_router.post(
+    "/requests/{request_id}/finalize-account-deletion",
+    response_model=PrivacyRequestRead,
+)
+def finalize_account_deletion(
+    request_id: UUID,
+    payload: FinalizeAccountDeletionCommand,
+    response: Response,
+    actor: PrivacyOperator,
+    correlation_id: CorrelationId,
+) -> PrivacyRequestRead:
+    _private_headers(response)
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Privacy Operations database is unavailable",
+                )
+            return PrivacyOperationsService(session).finalize_account_deletion(
                 actor=actor,
                 request_id=request_id,
                 expected_context_versions=payload.expected_context_versions,

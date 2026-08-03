@@ -98,6 +98,10 @@ class ExecutePrivateDeletionCommand(PrivacyCommand):
     expected_context_versions: dict[str, int]
 
 
+class FinalizeAccountDeletionCommand(PrivacyCommand):
+    expected_context_versions: dict[str, int]
+
+
 class GeneratePrivacyExportCommand(PrivacyCommand):
     expected_context_versions: dict[str, int]
 
