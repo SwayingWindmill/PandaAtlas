@@ -1,0 +1,437 @@
+openapi: 3.1.0
+info:
+  title: PandaAtlas Moderation and Appeals API
+  version: 1.0.0
+  description: >-
+    Private account and staff contract for scoped sanctions, account-state coordination,
+    restoration, and append-only appeals. FastAPI and PostgreSQL remain authoritative;
+    browser clients never write Review & Moderation tables directly.
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/admin/moderation/accounts/{account_id}:
+    get:
+      operationId: getAccountModeration
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200':
+          description: Staff moderation history and current aggregate version.
+        '403':
+          description: moderation.case.read required.
+        '404':
+          description: Account not found or moderation disabled.
+  /api/v1/admin/moderation/accounts/{account_id}/actions:
+    post:
+      operationId: issueModerationAction
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueModerationActionCommand'
+      responses:
+        '200':
+          description: Append-only action recorded and account state coordinated atomically.
+        '403':
+          description: Capability, recent-auth, self-conflict, scope, or duration denial.
+        '409':
+          description: Aggregate version, idempotency, or account-state conflict.
+  /api/v1/admin/moderation/actions/{action_id}/restore:
+    post:
+      operationId: restoreModerationAction
+      parameters:
+        - $ref: '#/components/parameters/ActionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestoreModerationActionCommand'
+      responses:
+        '200':
+          description: Restoration fact appended without deleting the original action.
+        '403':
+          description: moderation.sanction.manage and recent authentication required.
+        '409':
+          description: Aggregate version, idempotency, or inactive-action conflict.
+  /api/v1/admin/moderation/appeals:
+    get:
+      operationId: listModerationAppeals
+      parameters:
+        - in: query
+          name: state
+          schema:
+            $ref: '#/components/schemas/AppealQueueState'
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 100
+      responses:
+        '200':
+          description: Bounded staff appeal queue with SLA state.
+        '403':
+          description: moderation.case.read required.
+  /api/v1/admin/moderation/appeals/{appeal_case_id}:
+    get:
+      operationId: getModerationAppeal
+      parameters:
+        - $ref: '#/components/parameters/AppealCaseId'
+      responses:
+        '200':
+          description: Staff appeal detail including bounded internal resolution fields.
+        '404':
+          description: Appeal not found.
+  /api/v1/admin/moderation/appeals/{appeal_case_id}/claim:
+    post:
+      operationId: claimModerationAppeal
+      parameters:
+        - $ref: '#/components/parameters/AppealCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VersionedCommand'
+      responses:
+        '200':
+          description: Appeal assigned and first-response time recorded.
+        '403':
+          description: Capability or self-conflict denial.
+        '409':
+          description: Version, state, or assignment conflict.
+  /api/v1/admin/moderation/appeals/{appeal_case_id}/decide:
+    post:
+      operationId: decideModerationAppeal
+      parameters:
+        - $ref: '#/components/parameters/AppealCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecideAppealCommand'
+      responses:
+        '200':
+          description: Append-only appeal decision and any restoration or replacement action recorded.
+        '403':
+          description: Capability, recent-auth, or self-conflict denial.
+        '409':
+          description: Version, state, assignment, or idempotency conflict.
+  /api/v1/admin/moderation/metrics:
+    get:
+      operationId: getModerationMetrics
+      responses:
+        '200':
+          description: Active sanctions, suspended accounts, appeal queue age, and SLA counts.
+        '403':
+          description: moderation.metrics required.
+  /api/v1/moderation/actions:
+    get:
+      operationId: getMyModerationActions
+      responses:
+        '200':
+          description: User-safe sanctions for the authenticated account only.
+        '401':
+          description: Authentication required.
+  /api/v1/moderation/appeals:
+    get:
+      operationId: listMyModerationAppeals
+      responses:
+        '200':
+          description: User-safe appeals for the authenticated account only.
+        '401':
+          description: Authentication required.
+    post:
+      operationId: submitModerationAppeal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAppealCommand'
+      responses:
+        '201':
+          description: Appeal submitted or idempotently replayed.
+        '404':
+          description: Sanction does not belong to the authenticated account.
+        '409':
+          description: Action, idempotency, or active-appeal conflict.
+  /api/v1/moderation/appeals/{appeal_case_id}:
+    get:
+      operationId: getMyModerationAppeal
+      parameters:
+        - $ref: '#/components/parameters/AppealCaseId'
+      responses:
+        '200':
+          description: User-safe appeal detail for the authenticated account only.
+        '404':
+          description: Appeal not visible to the authenticated account.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    AccountId:
+      in: path
+      name: account_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ActionId:
+      in: path
+      name: action_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AppealCaseId:
+      in: path
+      name: appeal_case_id
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    ModerationActionKind:
+      type: string
+      enum:
+        - warning
+        - submission_restricted
+        - attachment_restricted
+        - notification_restricted
+        - account_suspended
+        - account_closed_for_abuse
+        - restoration
+    AppealOutcome:
+      type: string
+      enum: [upheld, modified, overturned]
+    AppealQueueState:
+      type: string
+      enum: [all, open, under_review, closed]
+      default: all
+    CommandBase:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          minLength: 8
+          maxLength: 255
+    VersionedCommand:
+      allOf:
+        - $ref: '#/components/schemas/CommandBase'
+        - type: object
+          required: [expected_version]
+          properties:
+            expected_version:
+              type: integer
+              minimum: 1
+    IssueModerationActionCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          required:
+            - kind
+            - scope
+            - reason_code
+            - internal_explanation
+            - user_visible_explanation
+            - starts_at
+          properties:
+            kind:
+              $ref: '#/components/schemas/ModerationActionKind'
+            scope:
+              type: string
+              minLength: 2
+              maxLength: 128
+            reason_code:
+              type: string
+              minLength: 2
+              maxLength: 128
+            internal_explanation:
+              type: string
+              minLength: 3
+              maxLength: 4000
+            user_visible_explanation:
+              type: string
+              minLength: 10
+              maxLength: 2000
+            starts_at:
+              type: string
+              format: date-time
+            ends_at:
+              type: [string, 'null']
+              format: date-time
+    RestoreModerationActionCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          required: [reason_code, internal_explanation, user_visible_explanation]
+          properties:
+            reason_code:
+              type: string
+              minLength: 2
+              maxLength: 128
+            internal_explanation:
+              type: string
+              minLength: 3
+              maxLength: 4000
+            user_visible_explanation:
+              type: string
+              minLength: 10
+              maxLength: 2000
+    SubmitAppealCommand:
+      allOf:
+        - $ref: '#/components/schemas/CommandBase'
+        - type: object
+          required: [sanction_action_id, appellant_message]
+          properties:
+            sanction_action_id:
+              type: string
+              format: uuid
+            appellant_message:
+              type: string
+              minLength: 10
+              maxLength: 4000
+    DecideAppealCommand:
+      allOf:
+        - $ref: '#/components/schemas/VersionedCommand'
+        - type: object
+          required:
+            - outcome
+            - reason_code
+            - internal_resolution
+            - user_visible_resolution
+          properties:
+            outcome:
+              $ref: '#/components/schemas/AppealOutcome'
+            reason_code:
+              type: string
+              minLength: 2
+              maxLength: 128
+            internal_resolution:
+              type: string
+              minLength: 3
+              maxLength: 4000
+            user_visible_resolution:
+              type: string
+              minLength: 10
+              maxLength: 2000
+            replacement_kind:
+              oneOf:
+                - $ref: '#/components/schemas/ModerationActionKind'
+                - type: 'null'
+            replacement_scope:
+              type: [string, 'null']
+            replacement_starts_at:
+              type: [string, 'null']
+              format: date-time
+            replacement_ends_at:
+              type: [string, 'null']
+              format: date-time
+    MyModerationAction:
+      type: object
+      additionalProperties: false
+      required:
+        - action_id
+        - kind
+        - scope
+        - reason_code
+        - user_visible_explanation
+        - starts_at
+        - created_at
+        - effective
+      properties:
+        action_id:
+          type: string
+          format: uuid
+        kind:
+          $ref: '#/components/schemas/ModerationActionKind'
+        scope:
+          type: string
+        reason_code:
+          type: string
+        user_visible_explanation:
+          type: string
+        starts_at:
+          type: string
+          format: date-time
+        ends_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        effective:
+          type: boolean
+        appeal_case_id:
+          type: [string, 'null']
+          format: uuid
+    MyAppeal:
+      type: object
+      additionalProperties: false
+      description: User-safe projection. Internal explanations, staff identities, and internal audit fields are forbidden.
+      required:
+        - appeal_case_id
+        - sanction_action_id
+        - state
+        - version
+        - appellant_message
+        - first_response_due_at
+        - created_at
+        - updated_at
+        - sanction_kind
+        - sanction_scope
+        - sanction_user_visible_explanation
+      properties:
+        appeal_case_id:
+          type: string
+          format: uuid
+        sanction_action_id:
+          type: string
+          format: uuid
+        state:
+          type: string
+          enum: [open, under_review, closed]
+        version:
+          type: integer
+          minimum: 1
+        appellant_message:
+          type: string
+        first_response_due_at:
+          type: string
+          format: date-time
+        first_responded_at:
+          type: [string, 'null']
+          format: date-time
+        outcome:
+          oneOf:
+            - $ref: '#/components/schemas/AppealOutcome'
+            - type: 'null'
+        user_visible_resolution:
+          type: [string, 'null']
+        closed_at:
+          type: [string, 'null']
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        sanction_kind:
+          $ref: '#/components/schemas/ModerationActionKind'
+        sanction_scope:
+          type: string
+        sanction_user_visible_explanation:
+          type: string

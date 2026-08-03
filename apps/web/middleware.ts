@@ -21,13 +21,18 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   };
 
   if (pathname === "/") return redirect(`/${preferredLocale}`);
-  if (pathname === "/pandas" || pathname === "/atlas") return redirect(`/${preferredLocale}/pandas`);
+  if (pathname === "/pandas" || pathname === "/atlas") {
+    return redirect(`/${preferredLocale}/pandas`);
+  }
   if (pathname === "/me/passport" || pathname === "/my-pandas") {
     return redirect(`/${preferredLocale}/me/passport`);
   }
   if (pathname === "/contribute") return redirect(`/${preferredLocale}/contribute`);
   if (pathname === "/me/submissions") {
     return redirect(`/${preferredLocale}/me/submissions`);
+  }
+  if (pathname === "/me/appeals") {
+    return redirect(`/${preferredLocale}/me/appeals`);
   }
   const unlocalizedSubmission = pathname.match(
     /^\/me\/submissions\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/,
@@ -74,10 +79,10 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set("x-panda-page-language", language);
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   const refreshedResponse = await refreshSupabaseSession(request, response);
-  const isPrivateContributionPath =
+  const isPrivateAccountPath =
     /^\/(zh|en)\/contribute$/.test(pathname) ||
-    /^\/(zh|en)\/me\/submissions(?:\/|$)/.test(pathname);
-  if (isPrivateContributionPath) {
+    /^\/(zh|en)\/me\/(?:submissions|appeals)(?:\/|$)/.test(pathname);
+  if (isPrivateAccountPath) {
     refreshedResponse.headers.set(
       "Cache-Control",
       "no-store, no-cache, private, max-age=0, must-revalidate",

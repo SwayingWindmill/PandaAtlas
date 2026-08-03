@@ -249,6 +249,13 @@ jobs:
           tests/integration/test_notification_real_db.py
           --junitxml=../../.release-gate/notification-real-db.xml
 
+      - name: Run scoped moderation sanctions and appeals journey
+        working-directory: services/api
+        run: >-
+          uv run --isolated --frozen --extra dev pytest -q
+          tests/integration/test_moderation_appeals_real_db.py
+          --junitxml=../../.release-gate/moderation-appeals-real-db.xml
+
       - name: Run accountable Archive governance and recovery journey
         working-directory: services/api
         run: >-
