@@ -39,6 +39,7 @@ exclude = ["openapi*"]
 
 [tool.setuptools.package-data]
 "app.notification" = ["templates/*/*.html", "templates/*/*.txt"]
+"app.release_manifests" = ["*.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
@@ -53,6 +54,7 @@ select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
 "app/archive_workbench/service.py" = ["E501"]
+"app/projection/approved_release_bootstrap.py" = ["E501"]
 "app/review_moderation/service.py" = ["E501", "F841", "UP035"]
 "tests/contracts/test_review_case_storage_contract.py" = ["I001"]
 "tests/contracts/test_review_openapi_contract.py" = ["I001"]

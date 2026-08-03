@@ -422,7 +422,7 @@ export async function runDefaultReleaseGate() {
         id: "api-sync",
         label: "FastAPI locked dependency sync",
         run: () =>
-          runCommand(uv, ["sync", "--frozen", "--extra", "dev", "--python", "3.12"], {
+          runCommand(uv, ["sync", "--frozen", "--extra", "dev", "--extra", "local-server", "--python", "3.12"], {
             cwd: apiDir,
             env: apiReleaseEnv,
           }),
