@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "title": "ZhiPanda API Domain Storage Read Boundary",
+  "service_root": "services/api",
+  "application_package": "app",
+  "domains": {
+    "privacy_operations": {
+      "root": "app.privacy_operations",
+      "owned_schemas": [
+        "privacy"
+      ],
+      "allowed_read_targets": [
+        "community_intake.attachments",
+        "identity.account_tombstones",
+        "identity.accounts",
+        "identity.role_assignment_revocations",
+        "identity.role_assignments",
+        "identity.role_capabilities",
+        "identity.roles"
+      ]
+    },
+    "review_moderation": {
+      "root": "app.review_moderation",
+      "owned_schemas": [
+        "review_moderation"
+      ],
+      "allowed_read_targets": [
+        "community_intake.attachments",
+        "community_intake.submission_revisions",
+        "community_intake.submissions",
+        "community_intake.submitted_sources",
+        "identity.accounts",
+        "identity.authorization_audit_events"
+      ]
+    }
+  },
+  "rules": {
+    "require_schema_qualified_reads": true,
+    "forbid_dynamic_read_targets": true
+  }
+}
