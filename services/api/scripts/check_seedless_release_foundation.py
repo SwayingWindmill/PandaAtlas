@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Any
 
 from sqlalchemy import text
@@ -8,7 +9,7 @@ from sqlalchemy import text
 from app.core.config import settings
 from app.db.session import configure_database, session_scope
 
-EXPECTED_MIGRATIONS = tuple(f"{number:04d}" for number in range(1, 26))
+MIGRATIONS_DIR = Path(__file__).resolve().parents[3] / "infra" / "supabase" / "migrations"
 REQUIRED_EXTENSIONS = {"pgmq", "postgis"}
 REQUIRED_RELATIONS = {
     "identity.accounts",
@@ -21,6 +22,7 @@ REQUIRED_RELATIONS = {
     "public.publication_batches",
 }
 PRIVATE_SCHEMAS = {
+    "audit",
     "engagement",
     "identity",
     "integration",
@@ -28,6 +30,10 @@ PRIVATE_SCHEMAS = {
     "review_moderation",
 }
 BROWSER_ROLES = ("anon", "authenticated")
+
+
+def expected_migrations(migrations_dir: Path = MIGRATIONS_DIR) -> tuple[str, ...]:
+    return tuple(path.name.split("_", 1)[0] for path in sorted(migrations_dir.glob("*.sql")))
 
 
 def _emit(payload: dict[str, Any]) -> None:
@@ -38,6 +44,7 @@ def main() -> int:
     configure_database(settings.database_url)
     failures: list[str] = []
     evidence: dict[str, Any] = {}
+    tracked_migrations = expected_migrations()
     with session_scope() as session:
         if session is None:
             _emit({"outcome": "failed", "failures": ["database session unavailable"]})
@@ -56,9 +63,9 @@ def main() -> int:
             )
         )
         evidence["migration_versions"] = list(migrations)
-        if migrations != EXPECTED_MIGRATIONS:
+        if migrations != tracked_migrations:
             failures.append(
-                f"migration history differs: expected {EXPECTED_MIGRATIONS}, got {migrations}"
+                f"migration history differs: expected {tracked_migrations}, got {migrations}"
             )
 
         extensions = {
