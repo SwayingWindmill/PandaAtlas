@@ -10,6 +10,10 @@ import {
   validateOperationalReadinessContract,
 } from "./check-zhipanda-v1-operational-readiness.mjs";
 import {
+  loadOperationalControlMatrix,
+  validateOperationalControlMatrix,
+} from "./check-zhipanda-v1-operational-controls.mjs";
+import {
   loadRecoveryRehearsalContract,
   validateRecoveryRehearsalContract,
 } from "./check-zhipanda-v1-recovery-rehearsal.mjs";
@@ -22,10 +26,13 @@ export const defaultEvidencePath = path.join(
 
 const EVIDENCE_INPUTS = [
   "contracts/zhipanda-v1-operational-readiness.v1.json",
+  "contracts/zhipanda-v1-operational-controls.v1.json",
   "contracts/zhipanda-v1-recovery-rehearsal.v1.json",
   "docs/runbooks/zhipanda-v1-operational-readiness.md",
   "docs/runbooks/zhipanda-v1-recovery-rehearsal.md",
+  "scripts/release/check-zhipanda-v1-operational-controls.mjs",
   "scripts/release/check-zhipanda-v1-recovery-rehearsal.mjs",
+  "scripts/release/check-zhipanda-log-redaction.mjs",
   "scripts/release/run-zhipanda-v1-recovery-rehearsal.mjs",
   "scripts/release/default.mjs",
   "scripts/release/extended.mjs",
@@ -76,6 +83,11 @@ export function buildOperationalReadinessEvidence({
     "contracts",
     "zhipanda-v1-operational-readiness.v1.json",
   );
+  const controlMatrixPath = path.join(
+    root,
+    "contracts",
+    "zhipanda-v1-operational-controls.v1.json",
+  );
   const rehearsalContractPath = path.join(
     root,
     "contracts",
@@ -83,6 +95,11 @@ export function buildOperationalReadinessEvidence({
   );
   const contract = loadOperationalReadinessContract(contractPath);
   const summary = validateOperationalReadinessContract(contract, { root });
+  const controlMatrix = loadOperationalControlMatrix(controlMatrixPath);
+  const operationalControls = validateOperationalControlMatrix(
+    controlMatrix,
+    { root },
+  );
   const rehearsalContract = loadRecoveryRehearsalContract(rehearsalContractPath);
   const recoveryRehearsal = validateRecoveryRehearsalContract(
     rehearsalContract,
@@ -109,6 +126,7 @@ export function buildOperationalReadinessEvidence({
     contract_id: contract.contract_id,
     contract_status: contract.status,
     summary,
+    operational_controls: operationalControls,
     recovery_rehearsal: recoveryRehearsal,
     inputs,
     planned_drills: plannedDrills,
@@ -120,7 +138,10 @@ export function buildOperationalReadinessEvidence({
     evidence_id: `sha256:${evidenceDigest}`,
     generated_at: generatedAt,
     source_commit: sourceCommit,
-    outcome: plannedDrills.length === 0 ? "passed" : "in-progress",
+    outcome: plannedDrills.length === 0
+      && operationalControls.final_candidate_controls === 0
+      ? "passed"
+      : "in-progress",
   };
 }
 
@@ -146,6 +167,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
         outcome: evidence.outcome,
         evidence_id: evidence.evidence_id,
         inputs: evidence.inputs.length,
+        available_controls: evidence.operational_controls.available_controls,
+        final_candidate_controls: evidence.operational_controls.final_candidate_controls,
         recovery_rehearsal: evidence.recovery_rehearsal.status,
         planned_drills: evidence.planned_drills.length,
       }, null, 2)}\n`,
