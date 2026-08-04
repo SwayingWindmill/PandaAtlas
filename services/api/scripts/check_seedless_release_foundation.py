@@ -62,7 +62,6 @@ def main() -> int:
                 )
             )
         )
-        expected = expected_migrations()
         evidence["migration_versions"] = list(migrations)
         if migrations != tracked_migrations:
             failures.append(
