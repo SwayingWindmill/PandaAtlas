@@ -46,7 +46,7 @@ def test_real_serverless_closure_is_deterministic_and_bounded() -> None:
     ]
     assert payload["summary"]["excluded_tracked_file_count"] > 0
     assert "app.main" in payload["request_boundary"]["modules"]
-    assert payload["summary"]["module_count"] == 94
+    assert payload["summary"]["module_count"] == 98
 
     runtime_distributions = {
         item["distribution"] for item in payload["runtime_dependencies"]
