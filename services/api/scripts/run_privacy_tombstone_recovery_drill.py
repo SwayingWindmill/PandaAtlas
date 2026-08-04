@@ -10,6 +10,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import psycopg
+
 API_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = Path(__file__).resolve().parents[3]
 REPORT_DIR = Path(os.getenv("RELEASE_GATE_REPORT_DIR", REPO_ROOT / ".release-gate"))
@@ -19,6 +21,7 @@ TEST_NODE = (
     "tests/integration/test_privacy_operations_real_db.py::"
     "test_account_deletion_request_is_blocking_verified_and_retryable"
 )
+RECOVERY_PANDA_ID = "52fcd56e-f964-4dce-8180-c6d410f81173"
 CHECKS = [
     "account-deletion-blocks-authenticated-business-access",
     "private-context-deletion-is-transactional-and-idempotent",
@@ -34,13 +37,37 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _normalize_dsn(database_url: str) -> str:
+    return database_url.replace("postgresql+psycopg://", "postgresql://", 1)
+
+
+def _seed_recovery_fixture(database_url: str) -> None:
+    with psycopg.connect(_normalize_dsn(database_url)) as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                insert into public.pandas (
+                  id, slug, name_zh, name_en, gender, status, tags, is_featured
+                ) values (
+                  %s, 'privacy-recovery-fixture', '隐私恢复演练',
+                  'Privacy Recovery Fixture', 'unknown', 'unknown',
+                  array['recovery-fixture'], false
+                )
+                on conflict (id) do nothing
+                """,
+                (RECOVERY_PANDA_ID,),
+            )
+        connection.commit()
+
+
 def run_drill() -> dict[str, Any]:
-    database_url_present = bool(os.getenv("REAL_DB_URL") or os.getenv("DATABASE_URL"))
-    if not database_url_present:
+    database_url = os.getenv("REAL_DB_URL") or os.getenv("DATABASE_URL")
+    if not database_url:
         raise RuntimeError("REAL_DB_URL or DATABASE_URL is required")
 
     started_at = datetime.now(UTC)
     started = time.monotonic()
+    _seed_recovery_fixture(database_url)
     environment = os.environ.copy()
     environment["RUN_REAL_DB_TESTS"] = "1"
     command = [sys.executable, "-m", "pytest", "-q", TEST_NODE]
@@ -73,7 +100,8 @@ def run_drill() -> dict[str, Any]:
         "checks": CHECKS,
         "evidence": {
             "test_source_sha256": _sha256(TEST_PATH),
-            "database_url_present": database_url_present,
+            "isolated_fixture_seeded": True,
+            "database_url_present": True,
             "database_url_copied": False,
         },
     }
