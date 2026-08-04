@@ -24,7 +24,7 @@ export const defaultEvidencePath = path.join(
   "zhipanda-v1-operational-readiness.json",
 );
 
-const EVIDENCE_INPUTS = [
+const BASE_EVIDENCE_INPUTS = [
   "contracts/zhipanda-v1-operational-readiness.v1.json",
   "contracts/zhipanda-v1-operational-controls.v1.json",
   "contracts/zhipanda-v1-recovery-rehearsal.v1.json",
@@ -73,6 +73,13 @@ function generatedAtFromEnvironment() {
   return new Date().toISOString();
 }
 
+function evidenceInputPaths(controlMatrix) {
+  const controlPaths = controlMatrix.controls.flatMap((control) =>
+    control.evidence.map((item) => item.path),
+  );
+  return [...new Set([...BASE_EVIDENCE_INPUTS, ...controlPaths])].sort();
+}
+
 export function buildOperationalReadinessEvidence({
   root = repositoryRoot,
   generatedAt = generatedAtFromEnvironment(),
@@ -106,7 +113,7 @@ export function buildOperationalReadinessEvidence({
     { root },
   );
 
-  const inputs = EVIDENCE_INPUTS.map((relativePath) => {
+  const inputs = evidenceInputPaths(controlMatrix).map((relativePath) => {
     const bytes = readFileSync(path.join(root, relativePath));
     return {
       path: relativePath,
