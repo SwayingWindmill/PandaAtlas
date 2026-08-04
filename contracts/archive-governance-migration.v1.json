@@ -192,6 +192,12 @@
       "markers": ["archive-governance-migration.v1.json", "unclassified approval-governance path"]
     },
     {
+      "path": "scripts/release/check-zhipanda-v1-delivery-closeout.mjs",
+      "categories": ["script", "contract"],
+      "disposition": "preserve_final_launch_rollback_inventory",
+      "markers": ["ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED", "launch rollback switch inventory"]
+    },
+    {
       "path": "scripts/release/tests/archive-governance-migration.test.mjs",
       "categories": ["test", "script"],
       "disposition": "verify_inventory_and_fail_closed_behavior",
