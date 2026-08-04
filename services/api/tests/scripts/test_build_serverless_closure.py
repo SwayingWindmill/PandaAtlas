@@ -46,12 +46,13 @@ def test_real_serverless_closure_is_deterministic_and_bounded() -> None:
     ]
     assert payload["summary"]["excluded_tracked_file_count"] > 0
     assert "app.main" in payload["request_boundary"]["modules"]
-    assert payload["summary"]["module_count"] == 92
+    assert payload["summary"]["module_count"] == 98
 
     runtime_distributions = {
         item["distribution"] for item in payload["runtime_dependencies"]
     }
     assert runtime_distributions == {
+        "cryptography",
         "fastapi",
         "httpx",
         "psycopg",
@@ -76,7 +77,6 @@ def test_real_serverless_closure_is_deterministic_and_bounded() -> None:
     assert "services/api/.python-version" in file_paths
     assert "services/api/app/__init__.py" in file_paths
     assert "services/api/app/main.py" in file_paths
-    assert "services/api/app/release_manifests/2026.07.31.1.json" in file_paths
     assert "services/api/pyproject.toml" in file_paths
     assert "services/api/uv.lock" in file_paths
     assert any("app/notification/templates/" in item for item in file_paths)

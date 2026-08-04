@@ -825,7 +825,12 @@ class NotificationRepository:
         self.session.commit()
         return self._delivery_attempt(row)
 
-    def purge_expired_bodies(self, *, account_id: UUID | None = None) -> int:
+    def purge_expired_bodies(
+        self,
+        *,
+        account_id: UUID | None = None,
+        commit: bool = True,
+    ) -> int:
         result = self.session.execute(
             text(
                 """
@@ -844,7 +849,8 @@ class NotificationRepository:
             {"account_id": account_id},
         )
         count = int(result.rowcount or 0)
-        self.session.commit()
+        if commit:
+            self.session.commit()
         return count
 
     def metrics(

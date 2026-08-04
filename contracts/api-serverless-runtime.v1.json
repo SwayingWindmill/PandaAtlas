@@ -62,6 +62,10 @@
       "import_roots": ["httpx"]
     },
     {
+      "distribution": "cryptography",
+      "import_roots": ["cryptography"]
+    },
+    {
       "distribution": "python-multipart",
       "import_roots": [],
       "reason": "FastAPI form and upload parsing is validated while routes are imported."

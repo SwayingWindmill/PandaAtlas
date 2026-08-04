@@ -26,24 +26,14 @@ PRIVATE_SCHEMAS = {
     "identity",
     "integration",
     "notification",
+    "privacy",
     "review_moderation",
 }
 BROWSER_ROLES = ("anon", "authenticated")
 
 
 def expected_migrations(migrations_dir: Path = MIGRATIONS_DIR) -> tuple[str, ...]:
-    return tuple(
-        sorted(
-            {
-                path.name.split("_", 1)[0]
-                for path in migrations_dir.iterdir()
-                if path.is_file()
-                and path.suffix == ".sql"
-                and "_" in path.name
-                and path.name.split("_", 1)[0].isdigit()
-            }
-        )
-    )
+    return tuple(path.name.split("_", 1)[0] for path in sorted(migrations_dir.glob("*.sql")))
 
 
 def _emit(payload: dict[str, Any]) -> None:
@@ -54,6 +44,7 @@ def main() -> int:
     configure_database(settings.database_url)
     failures: list[str] = []
     evidence: dict[str, Any] = {}
+    tracked_migrations = expected_migrations()
     with session_scope() as session:
         if session is None:
             _emit({"outcome": "failed", "failures": ["database session unavailable"]})
@@ -71,11 +62,10 @@ def main() -> int:
                 )
             )
         )
-        expected = expected_migrations()
         evidence["migration_versions"] = list(migrations)
-        if migrations != expected:
+        if migrations != tracked_migrations:
             failures.append(
-                f"migration history differs: expected {expected}, got {migrations}"
+                f"migration history differs: expected {tracked_migrations}, got {migrations}"
             )
 
         extensions = {

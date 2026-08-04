@@ -20,6 +20,7 @@ from app.api.v1 import (
     moments,
     notification,
     pandas,
+    privacy,
     releases,
     stats,
 )
@@ -36,6 +37,8 @@ api_router.include_router(engagement.router, tags=["engagement"])
 api_router.include_router(feed.router, tags=["feed"])
 api_router.include_router(notification.router, tags=["notification"])
 api_router.include_router(moderation.router, tags=["moderation"])
+api_router.include_router(privacy.router, tags=["privacy"])
+api_router.include_router(privacy.admin_router, tags=["admin-privacy"])
 api_router.include_router(community_intake.router, tags=["community-intake"])
 api_router.include_router(identity.admin_router, tags=["admin-identity"])
 api_router.include_router(admin_imports.router, tags=["admin"])
