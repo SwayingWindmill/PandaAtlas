@@ -6,6 +6,8 @@ on:
       - opened
       - synchronize
       - reopened
+      - ready_for_review
+      - converted_to_draft
       - labeled
       - unlabeled
   workflow_dispatch:
@@ -16,6 +18,10 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: release-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   NODE_VERSION: "22"
   NPM_VERSION: "10.9.0"
@@ -23,11 +29,64 @@ env:
   UV_VERSION: "0.11.7"
 
 jobs:
+  development-gate:
+    name: Development gate
+    if: >-
+      github.event_name == 'pull_request' &&
+      (github.event.pull_request.draft == true ||
+      !contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out development candidate
+        uses: actions/checkout@v7.0.0
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Plan changed-scope development acceptance
+        id: development-plan
+        run: >-
+          node scripts/release/development.mjs --list --github-output
+          --base "${{ github.event.pull_request.base.sha }}"
+
+      - name: Set up Python
+        if: steps.development-plan.outputs.requires_python == 'true'
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pinned npm
+        if: steps.development-plan.outputs.requires_node_modules == 'true'
+        run: npm install --global npm@${{ env.NPM_VERSION }}
+
+      - name: Install pinned uv
+        if: steps.development-plan.outputs.requires_uv == 'true'
+        run: python -m pip install uv==${{ env.UV_VERSION }}
+
+      - name: Install workspace dependencies from lockfile
+        if: steps.development-plan.outputs.requires_node_modules == 'true'
+        run: npm ci
+
+      - name: Run changed-scope development acceptance
+        if: steps.development-plan.outputs.run_checks == 'true'
+        run: npm run verify:dev -- --base "${{ github.event.pull_request.base.sha }}"
+
+      - name: Verify development checks did not modify tracked files
+        if: steps.development-plan.outputs.run_checks == 'true'
+        run: git diff --exit-code
+
   release-gate:
     name: Default gate (${{ matrix.platform }})
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false &&
       contains(github.event.pull_request.labels.*.name, 'delivery:map-close'))
     strategy:
       fail-fast: false

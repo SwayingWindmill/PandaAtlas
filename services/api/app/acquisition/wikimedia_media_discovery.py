@@ -9,8 +9,6 @@ from html.parser import HTMLParser
 from typing import Any
 from urllib.parse import urlencode
 
-import httpx
-
 from .models import ResponseEnvelope
 from .source_registry import ReviewedSource, SourceRegistry
 from .wikimedia_commons import DEFAULT_USER_AGENT, SOURCE_ID, validate_bot_user_agent
@@ -180,6 +178,8 @@ def fetch_search(
     *,
     user_agent: str = DEFAULT_USER_AGENT,
 ) -> tuple[str, ResponseEnvelope]:
+    import httpx
+
     source = registry.get(SOURCE_ID)
     source.assert_live_fetch_allowed()
     source.assert_adapter_allowed(ADAPTER_ID)

@@ -1,5 +1,7 @@
 ﻿# Panda Atlas Monorepo Draft
 
+> Historical scaffold only. This document is not authoritative for deployment. See [`docs/architecture/README.md`](architecture/README.md), [ADR 0002](architecture/adr-0002-managed-cloud-deployment-target.md), and the [Phase 0 managed-cloud inventory](deployment/managed-cloud-phase-0-inventory.md) for the current production boundary and approved target.
+
 ## Scope
 
 - Frontend: Next.js (App Router), Tailwind CSS v4, shadcn/ui, map rendering.
