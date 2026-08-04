@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query, status
 
 from app.identity.models import RequestIdentity
 from app.identity.security import require_capability
-from app.review_moderation.models import (
+from app.review_moderation.public import (
     ClaimReviewCaseCommand,
     DecideReviewCaseCommand,
     IntakeReviewCaseCommand,
@@ -18,8 +18,6 @@ from app.review_moderation.models import (
     ReviewQueue,
     TriageReviewCaseCommand,
     VerifySourceCommand,
-)
-from app.review_moderation.service import (
     claim_review_case,
     decide_review_case,
     get_review_case,

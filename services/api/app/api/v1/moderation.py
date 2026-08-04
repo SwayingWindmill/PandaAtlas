@@ -9,14 +9,15 @@ from pydantic import BaseModel, ConfigDict
 
 from app.identity.models import RequestIdentity
 from app.identity.security import get_request_identity, resolve_correlation_id
-from app.review_moderation.sanction_models import (
+from app.review_moderation.public import (
     AppealDecisionOutcome,
     AppealState,
     OpenAppealCommand,
     SanctionKind,
     SanctionScope,
+    current_notice,
+    open_appeal,
 )
-from app.review_moderation.sanction_service import current_notice, open_appeal
 
 router = APIRouter(prefix="/moderation")
 

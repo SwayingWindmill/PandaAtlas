@@ -1,6 +1,6 @@
 # FastAPI domain dependency boundary
 
-- Status: Enforced initial slice
+- Status: Enforced initial slice; Review & Moderation facade narrowed
 - Machine-readable contract: [`contracts/api-domain-dependencies.v1.json`](../../contracts/api-domain-dependencies.v1.json)
 - Validator: `services/api/scripts/check_domain_dependencies.py`
 - Test integration: `services/api/tests/scripts/test_check_domain_dependencies.py`
@@ -30,14 +30,24 @@ The validator scans all Python modules under `app.api` and each registered domai
 
 These rules govern Python imports. They do not yet prove database-table ownership or prevent raw SQL from reading another schema. Table ownership and cross-domain write policy remain a later boundary slice.
 
-## Current compatibility surfaces
+## Current public surfaces
 
-The initial contract records existing API-compatible modules so the guard can land without a broad refactor:
+Review & Moderation now exposes one explicit facade:
 
-- Review and moderation: `models`, `service`, `sanction_models`, and `sanction_service`.
-- Privacy operations: `models`, `service`, `exports`, and `maintenance`.
+- `app.review_moderation.public` re-exports the existing review and sanction command models, read models, enums, and application functions required by API routes.
+- `app.api.v1.moderation`, `app.api.v1.admin_moderation`, and `app.api.v1.admin_reviews` may no longer import `models`, `service`, `sanction_models`, or `sanction_service` directly.
+- The dependency contract exposes only the `public` module for API and cross-domain imports.
 
-These are compatibility surfaces, not the desired final shape. Follow-up work should introduce narrower `public.py`, `commands.py`, `queries.py`, or `events.py` facades and then remove internal service modules from the allowlists.
+The facade is a compatibility boundary, not a claim that every exported symbol is permanently stable. Future work may split it into smaller `commands.py`, `queries.py`, or `events.py` surfaces when that reduces coupling without duplicating domain behavior.
+
+Privacy Operations remains on its initial compatibility surfaces:
+
+- `models`;
+- `service`;
+- `exports`;
+- `maintenance`.
+
+The next narrowing slice should add `app.privacy_operations.public` and remove those internal modules from the API allowlist.
 
 ## Verification
 
@@ -71,5 +81,3 @@ When adding a domain dependency:
 4. Keep notification, projection, analytics, and similar downstream work event-driven where immediate consistency is unnecessary.
 5. Do not use `app.common`, `app.shared`, or `app.utils` as an unrestricted bypass.
 6. Do not add temporary wildcard surfaces; the contract accepts explicit module prefixes only.
-
-The next recommended slice is to replace direct API imports of the current service modules with narrow facades, beginning with Review & Moderation, then Privacy Operations.
