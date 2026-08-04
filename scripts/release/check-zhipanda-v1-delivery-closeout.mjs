@@ -49,6 +49,7 @@ const REQUIRED_ROLLBACK_SWITCHES = new Set([
   "UNIFIED_AUDIT_ENABLED",
   "ADMIN_SHELL_ENABLED",
 ]);
+const COMMIT_SHA_PATTERN = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/;
 const DECISION_STATUSES = new Set(["pending", "go", "no-go"]);
 const CONTRACT_STATUSES = new Set(["in-progress", "complete"]);
@@ -113,8 +114,8 @@ function requireDecisionMetadata(decision) {
   if (typeof decision.reason !== "string" || !decision.reason.trim()) {
     throw new Error("Final launch decision requires a reason");
   }
-  if (!SHA256_PATTERN.test(decision.candidate_sha ?? "")) {
-    throw new Error("Final launch decision requires a 64-character candidate SHA");
+  if (!COMMIT_SHA_PATTERN.test(decision.candidate_sha ?? "")) {
+    throw new Error("Final launch decision requires a valid Git candidate SHA");
   }
   if (!SHA256_PATTERN.test(decision.evidence_sha256 ?? "")) {
     throw new Error("Final launch decision requires a SHA-256 evidence identity");
@@ -137,7 +138,7 @@ export function validateZhiPandaV1DeliveryCloseout({
   if (!CONTRACT_STATUSES.has(contract.status)) {
     throw new Error(`Unsupported delivery closeout status: ${contract.status}`);
   }
-  if (!SHA256_PATTERN.test(contract.baseline?.master_sha ?? "")) {
+  if (!COMMIT_SHA_PATTERN.test(contract.baseline?.master_sha ?? "")) {
     throw new Error("Delivery closeout baseline master SHA is invalid");
   }
   if (contract.baseline?.operational_readiness_pr !== 285 || contract.baseline?.operational_readiness_issue !== 200) {
@@ -211,7 +212,7 @@ export function validateZhiPandaV1DeliveryCloseout({
   if (!DECISION_STATUSES.has(decision.status)) {
     throw new Error(`Unsupported launch decision status: ${decision.status}`);
   }
-  if (!SHA256_PATTERN.test(decision.candidate_sha ?? "")) {
+  if (!COMMIT_SHA_PATTERN.test(decision.candidate_sha ?? "")) {
     throw new Error("Launch candidate SHA is invalid");
   }
   const rollbackSwitches = new Set(Array.isArray(decision.rollback_switches) ? decision.rollback_switches : []);
