@@ -2433,3 +2433,35 @@
 - The next queue begins with Can Can's cub, Ke Lin, Shui Xiu and Xiao Yuan Qi, followed by Fu Wa, Yuan Man, Chi-Chi, Huan Huan, Kang Kang, Qi Xi, Run Yang, Xiang Bing, Ai Bang's 2016 Cub 66, Ai Jiu, Ai Lin, Ai Si, An An's 2022 cub, Bing Xue, Mei Mei of Qi Yuan's line and Xi Yue.
 - The first complete-suite run exposed ten stale coverage modules only; after targeted updates and one additional Lang Lang shape correction, affected modules, the full suite and the development gate all passed.
 - npm scripts were executed through `cmd.exe` because Node remained unavailable in the Linux Bash path. All records remain offline-only; no formal-vault import, commit or push was performed.
+
+## Session: 2026-08-05 — Direct category depth rounds2127-2146
+
+### Fifty-fifth depth slice
+- Added twenty direct records for Can Can's cub, Ke Lin, Shui Xiu, Xiao Yuan Qi, Fu Wa, Yuan Man, Chi-Chi, Huan Huan, Kang Kang, Qi Xi, Run Yang, Xiang Bing, Ai Bang's 2016 Cub 66, Ai Jiu, Ai Lin, Ai Si, An An's 2022 cub, Bing Xue, Mei Mei of Qi Yuan's line and Xi Yue.
+- Generated 20 batches, 20 source-row declarations, 20 distinct source IDs, 20 distinct reviewed URLs, 20 direct fact records and 80 deterministic artifacts. All records are medium confidence.
+- Record distribution: four birth events, six profile-identity records and one each for parturition, adoption identity, public observation, birthday, capture-transfer, breeding, archival-video profile, maternal-family profile, neonatal event and village observation.
+- Can Can's photographed cub remains unresolved between same-date litter mates Can Yang and Qing Yang; the shared 2024-09-10 date is retained without assigning individual name or sex. Ke Lin gains studbook 678, date, sex and mother Jiao Zi without duplicating the Rong Yao relationship or avatar.
+- Shui Xiu gains the 2016-09-05 23:05 Hetaoping semi-wild-enclosure parturition, 155-day gestation and Xiang Ge mating context without an inferred cub name. Xiao Yuan Qi remains an adoption-name identity with official or studbook name and primary identity confirmation pending.
+- Fu Wa gains an image-specific 2025-12-29 Mianyang observation and remains separate from Ke Lin's 2015 female twin namesake. Yuan Man gains the dated ninth-birthday event with Qi Guo, food and enrichment context.
+- Chi-Chi gains the 1957-07-04 capture, Peking Zoo transport, 1958 selection and 1958-09-05 London arrival chronology; the approximate age at capture does not create an exact birth date.
+- Huan Huan gains the Fei Fei breeding relationship and Japan's first successful giant-panda artificial-insemination breeding milestone with year-precision birth context. Kang Kang gains an official Ueno historical-video identity profile without thumbnail behaviour inference or media duplication and remains separate from Macao and Shanghai namesakes.
+- Qi Xi gains studbook 925 while retaining the 七喜 / 奇喜 name conflict. Run Yang gains studbook 1326, female sex and same-day brother Run Ze without twin inference. Xiang Bing gains studbook 665 and bounded maternal and offspring roles while the exact Bing Bing Subject remains unresolved.
+- Ai Bang's 2016 cub remains identified by milk name 66, without a studbook or inferred death date. Ai Jiu gains studbook 1235, exact time, 219 g weight and immediate maternal holding. Ai Lin and Ai Si retain profile-bounded twin roles without independent clock-time birth order.
+- An An's 2022 cub remains separate from other An An maternal identities and gains no duplicated annual weight or location. Bing Xue retains unsupported twin status. Mei Mei gains the corrected 梅梅 name, studbook 408 and daughter Qi Yuan while remaining separate from founder Mei Mei studbook 152.
+- Xi Yue gains only the official captioned observation of eating honey at a villager's home; birth, location history, paternity and the existing verified image are not duplicated.
+- No source adds, replaces or reclassifies media. Formal evidence review is stored at `data/local-panda-research/media/audits/direct-evidence-audit-rounds2127-2146.json`.
+
+### Coverage and verification
+- Can Can's cub and Shui Xiu now have 7 direct / 6 sources / 7 categories and score -30. Ke Lin has 7 / 5 / 7 and score -30. Xiao Yuan Qi has 5 / 6 / 10 and score -30.
+- Fu Wa has 9 / 4 / 7 and Yuan Man has 9 / 5 / 7, both score -31. Chi-Chi, Huan Huan and Kang Kang have 8 / 2 / 8 and score -35.
+- Qi Xi, Run Yang and Xiang Bing have 4 / 2 / 12 and score -31. Ai Bang's 2016 cub, Ai Jiu, Ai Lin, Ai Si, An An's 2022 cub and Bing Xue have 6 / 2 / 9 and score -31.
+- Mei Mei of Qi Yuan's line has 8 / 2 / 6 and Xi Yue has 8 / 3 / 6, both score -31. All twenty remain multi-source.
+- Updated only affected historical coverage expectations in rounds1247-1266, rounds1387-1406, rounds1487-1506, rounds1507-1526, rounds1627-1646, rounds1647-1666, rounds1787-1806, rounds1807-1826 and rounds1947-1966.
+- Focused rounds2127-2146 verification — PASS: 8/8 before and after deterministic rerun. Related current and historical verification — PASS: 86/86. Full local research suite — PASS: 1,438/1,438. Development acceptance — PASS: `npm run verify:dev -- --scope research`, which reran all 1,438 tests.
+- Research validation — PASS: 691 deduplicated sources, 4,099 records, 4,026 direct records, 72 secondary leads, 352 Subjects and 37 categories.
+- Refreshed index: 4,417 files, 778 Subject IDs, 2,726 normalized name keys, 11,093 record IDs, 10,139 Subject/predicate keys, 1,558 media IDs, 1,330 confirmed-Subject media IDs, 1,549 asset URLs and 695 SHA-256 values.
+- Refreshed coverage audit remains at 1,558 candidate rows, 671 Subjects with individual media, zero media-covered Subjects without facts and four fact-bearing Subjects without individual media.
+- Combined rounds191-2146 contain 1,956 batches, 2,160 source-row declarations, 1,839 distinct source IDs, 4,261 fact records, 371 total media rows, 360 confirmed individual media rows and 369 distinct assets.
+- The next queue begins with Hui Hui, Xian Xian and Xiang Shan, followed by Ao Ao, Ao Ke, Ao Ran, Bao Ge, Bao Mei, Bing Cheng, Bo Wen, CC, Cheng Feng, Cheng Lang, Chu Xin, Chun Chun, Chun Hui, Chun Lai, Da Ni, Fu Sheng and Han Han.
+- The first complete-suite run exposed nine stale coverage modules only; after targeted expectation updates, affected modules, the full suite and the development gate all passed.
+- npm scripts were executed through `cmd.exe` because Node remained unavailable in the Linux Bash path. All records remain offline-only; no formal-vault import, commit or push was performed.
