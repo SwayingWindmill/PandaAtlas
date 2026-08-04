@@ -148,6 +148,7 @@ def test_entrypoint_validator_rejects_runtime_logic(tmp_path: Path) -> None:
     violations = _BUILDER._validate_entrypoint(
         entrypoint_path=entrypoint,
         target="app.main:app",
+        exported_symbol="app",
     )
 
     assert any("unsupported statement" in item for item in violations)
