@@ -2369,7 +2369,7 @@
 - Refreshed coverage audit remains at 1,558 candidate rows, 671 Subjects with individual media, zero media-covered Subjects without facts and four fact-bearing Subjects without individual media.
 - Combined rounds191-2086 contain 1,896 batches, 2,100 source-row declarations, 1,779 distinct source IDs, 4,201 fact records, 371 total media rows, 360 confirmed individual media rows and 369 distinct assets.
 - The next queue begins with Wen Xi, Wu Jun, Wu Wen's 2024 Cub B, Xiao Bao and Xing Yi, followed by Bao Xin, Chuan Chuan, Jing Rong, Liang Liang, Ya Guang, Ya Lin, Ya Xing, Yuan Xiao, Ai Bang, Ba Xi, Bing Dian, Chao Chao, Hua Li, Jing Bao and Li Dui.
-- A shared CodexPro 502 outage temporarily blocked the post-update validation chain across several connectors. The original PandaAtlas connection later recovered; affected modules, the full suite and the development gate all passed without further file changes.
+- A shared CodexPro 502 outage temporarily blocked the post-update validation chain across several connectors. The original ZhiPanda repository connection later recovered; affected modules, the full suite and the development gate all passed without further file changes.
 - npm scripts were executed through `cmd.exe` because Node remained unavailable in the Linux Bash path. All records remain offline-only; no formal-vault import, commit or push was performed.
 
 ## Session: 2026-08-04 — Direct category depth rounds2087-2106

@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-SCRIPT_DIR = ROOT / "scripts" / "research"
+SCRIPT_DIR = ROOT / "scripts" / "research" / "runners"
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 MODULE_PATH = SCRIPT_DIR / "import_local_panda_media_batch.py"

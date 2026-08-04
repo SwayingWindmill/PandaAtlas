@@ -278,6 +278,62 @@
       "matches": {
         "PandaAtlas": 1
       }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.24.3/processor-manifest.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "research operations",
+      "expected_action": "retain-compatibility",
+      "rationale": "The immutable reviewed-batch manifest retains the historical processor identifier used when the release was generated.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "data/reviewed-batches/2026.07.24.3/source.json",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "research operations",
+      "expected_action": "retain-compatibility",
+      "rationale": "The immutable reviewed release preserves its historical system title and stable public-source identifier.",
+      "matches": {
+        "PandaAtlas": 1,
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "scripts/curation/build_smithsonian_commons_media_batch.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "research operations",
+      "expected_action": "retain-compatibility",
+      "rationale": "The historical batch builder reproduces the immutable 2026.07.24.3 release metadata exactly.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/research/runners/collect_local_panda_media.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "research operations",
+      "expected_action": "retain-compatibility",
+      "rationale": "The collector user agent includes the canonical GitHub repository URL for responsible network identification.",
+      "matches": {
+        "PandaAtlas": 1
+      }
+    },
+    {
+      "path": "scripts/research/runners/discover_official_page_images.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "research operations",
+      "expected_action": "retain-compatibility",
+      "rationale": "The discovery user agent includes the canonical GitHub repository URL for responsible network identification.",
+      "matches": {
+        "PandaAtlas": 1
+      }
     }
   ]
 }

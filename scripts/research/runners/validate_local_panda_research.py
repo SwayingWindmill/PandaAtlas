@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 VAULT_DIR = ROOT / "data" / "local-panda-research"
 SOURCES_PATH = VAULT_DIR / "sources.jsonl"
 PLAN_PATH = VAULT_DIR / "collection-plan.json"

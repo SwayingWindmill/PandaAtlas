@@ -12,8 +12,8 @@ from urllib.error import URLError
 from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 
-ROOT = Path(__file__).resolve().parents[2]
-USER_AGENT = "PandaAtlasLocalResearch/0.1 (+https://github.com/SwayingWindmill/PandaAtlas)"
+ROOT = Path(__file__).resolve().parents[3]
+USER_AGENT = "ZhiPandaLocalResearch/0.1 (+https://github.com/SwayingWindmill/PandaAtlas)"
 MAX_HTML_BYTES = 8 * 1024 * 1024
 IMAGE_META_NAMES = {"og:image", "og:image:url", "twitter:image", "twitter:image:src"}
 IMAGE_ATTRS = ("src", "data-src", "data-original", "data-lazy-src", "data-lazy", "data-image")

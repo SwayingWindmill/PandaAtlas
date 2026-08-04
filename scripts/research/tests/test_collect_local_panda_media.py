@@ -10,7 +10,7 @@ import unittest
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[3]
-MODULE_PATH = ROOT / "scripts" / "research" / "collect_local_panda_media.py"
+MODULE_PATH = ROOT / "scripts" / "research" / "runners" / "collect_local_panda_media.py"
 SPEC = importlib.util.spec_from_file_location("collect_local_panda_media", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

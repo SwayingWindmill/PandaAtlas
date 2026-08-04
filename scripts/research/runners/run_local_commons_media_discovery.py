@@ -10,7 +10,7 @@ from typing import Any, BinaryIO, Callable
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 API_ROOT = REPO_ROOT / "services" / "api"
 if str(API_ROOT) not in sys.path:
     sys.path.insert(0, str(API_ROOT))

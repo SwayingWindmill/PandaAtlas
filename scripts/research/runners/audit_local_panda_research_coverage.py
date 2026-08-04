@@ -6,7 +6,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Iterable
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 RESEARCH_ROOT = ROOT / "data" / "local-panda-research"
 DEFAULT_CANDIDATES = RESEARCH_ROOT / "media" / "candidates.jsonl"
 DEFAULT_RECORDS_DIR = RESEARCH_ROOT / "records"

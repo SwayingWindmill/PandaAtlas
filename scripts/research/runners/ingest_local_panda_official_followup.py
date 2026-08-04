@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any, Iterable
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 VAULT_DIR = ROOT / "data" / "local-panda-research"
 SOURCES_PATH = VAULT_DIR / "sources.jsonl"
 OUTPUT_PATH = VAULT_DIR / "records" / "2026-07-25-official-followup.jsonl"

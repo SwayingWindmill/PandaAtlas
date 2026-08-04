@@ -8,7 +8,7 @@ import unittest
 from urllib.error import URLError
 
 ROOT = Path(__file__).resolve().parents[3]
-MODULE_PATH = ROOT / "scripts" / "research" / "run_local_commons_media_discovery.py"
+MODULE_PATH = ROOT / "scripts" / "research" / "runners" / "run_local_commons_media_discovery.py"
 SPEC = importlib.util.spec_from_file_location("run_local_commons_media_discovery", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

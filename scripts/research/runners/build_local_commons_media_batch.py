@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_QUEUE = REPO_ROOT / "data" / "media-library" / "discovery" / "commons-queue.json"
 DEFAULT_CANDIDATES = REPO_ROOT / "data" / "local-panda-research" / "media" / "candidates.jsonl"
 DEFAULT_DISCOVERY_DIR = REPO_ROOT / "data" / "local-panda-research" / "media" / "discovery"

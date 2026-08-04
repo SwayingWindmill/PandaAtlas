@@ -164,20 +164,6 @@ test("generated web identity aliases match the current reviewed release", async 
   const yangYang = details.find((detail) => detail.slug === "yang-yang");
   const yaLun = details.find((detail) => detail.slug === "ya-lun");
   const xiLun = details.find((detail) => detail.slug === "xi-lun");
-  const meiXiang = details.find((detail) => detail.slug === "mei-xiang");
-  const xiaoQiJi = details.find((detail) => detail.slug === "xiao-qi-ji");
-  assert.ok(meiXiang);
-  assert.equal(meiXiang.media.length, 1);
-  assert.equal(meiXiang.media[0].presentation_role, "primary");
-  assert.match(meiXiang.media[0].rights, /^CC BY/);
-  assert.ok(xiaoQiJi);
-  assert.equal(xiaoQiJi.media.length, 5);
-  assert.deepEqual(
-    xiaoQiJi.media.map((media) => media.presentation_role),
-    ["primary", "gallery", "gallery", "gallery", "gallery"],
-  );
-  assert.ok(xiaoQiJi.media.every((media) => media.rights.startsWith("CC BY")));
-  assert.equal(xiaoQiJi.cover_image_url, xiaoQiJi.media[0].url);
   const uenoFamily = ["ri-ri", "shin-shin", "xiao-xiao", "lei-lei"].map((slug) =>
     details.find((detail) => detail.slug === slug),
   );

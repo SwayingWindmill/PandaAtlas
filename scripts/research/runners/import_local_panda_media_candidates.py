@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 LOCAL_MEDIA_ROOT = REPO_ROOT / "data" / "local-panda-research" / "media"
 DEFAULT_OUTPUT = LOCAL_MEDIA_ROOT / "candidates.jsonl"
 MEDIA_RELEASES_ROOT = REPO_ROOT / "data" / "media-library" / "releases"

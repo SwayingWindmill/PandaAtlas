@@ -1,6 +1,6 @@
 # Local Panda Media Vault
 
-This is the image-first, local-only media layer for Panda Atlas.
+This is the image-first, local-only media layer for ZhiPanda.
 
 ## Collection policy
 
@@ -27,7 +27,7 @@ npm run check:local-panda-media
 npm run collect:local-panda-media
 npm run extract:local-panda-media-facts
 npm run test:local-panda-media
-python3 scripts/research/discover_official_page_images.py --page-url <official-page> --output <discovery.json>
+python3 scripts/research/runners/discover_official_page_images.py --page-url <official-page> --output <discovery.json>
 ```
 
 `import` merges candidates from the curated media release and Wikimedia discovery results into the local queue without filtering by rights state. `import:local-panda-media-batch` accepts reviewed candidates from official institutions and archives. `check` validates candidate metadata without downloading. `collect` downloads missing files, prunes orphaned binaries, and rewrites the deterministic inventory. `extract` converts explicit media-page evidence into local-only date, location, identity, behaviour, sex, research, cultural-context, diplomacy, and milestone facts.

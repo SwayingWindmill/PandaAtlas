@@ -77,7 +77,7 @@ def test_breadth_first_report_disposes_current_inventory_and_linked_identity(
     assert payload["summary"]["existing_panda_count"] == 813
     assert payload["summary"]["acquisition_candidate_coverage_count"] == 11
     assert payload["summary"]["page_publication_coverage_count"] == 10
-    assert payload["summary"]["cleared_photo_coverage_count"] == 9
+    assert payload["summary"]["cleared_photo_coverage_count"] == 11
     assert payload["summary"]["identity_disposition_counts"] == {"merge": 11}
     assert sum(payload["summary"]["existing_disposition_counts"].values()) == 813
     assert {

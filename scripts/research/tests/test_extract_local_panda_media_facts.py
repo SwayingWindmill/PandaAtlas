@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-MODULE_PATH = ROOT / "scripts" / "research" / "extract_local_panda_media_facts.py"
+MODULE_PATH = ROOT / "scripts" / "research" / "runners" / "extract_local_panda_media_facts.py"
 SPEC = importlib.util.spec_from_file_location("extract_local_panda_media_facts", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

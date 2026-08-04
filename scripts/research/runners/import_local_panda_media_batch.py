@@ -15,7 +15,7 @@ from collect_local_panda_media import (
     validate_candidates,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 
 
 class MediaBatchImportError(ValueError):

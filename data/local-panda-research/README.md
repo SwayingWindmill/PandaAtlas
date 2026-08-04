@@ -1,6 +1,6 @@
 # Local Panda Research Vault
 
-This directory is the local-first research layer for Panda Atlas. It is intentionally broader than the current website and publication contracts. Records may be incomplete, conflicting, anecdotal, historic, or unsuitable for public release. Nothing in this directory is automatically promoted to production.
+This directory is the local-first research layer for ZhiPanda. It is intentionally broader than the current website and publication contracts. Records may be incomplete, conflicting, anecdotal, historic, or unsuitable for public release. Nothing in this directory is automatically promoted to production.
 
 ## Purpose
 

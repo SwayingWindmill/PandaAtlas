@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 VAULT_DIR = ROOT / "data" / "local-panda-research"
 MEDIA_CANDIDATES_PATH = VAULT_DIR / "media" / "candidates.jsonl"
 DISCOVERY_DIR = VAULT_DIR / "media" / "discovery"
