@@ -247,11 +247,20 @@ def _validate_vercel_configuration(
     except (OSError, json.JSONDecodeError, ValueError) as error:
         return [f"unable to read Vercel configuration {config_path}: {error}"]
 
-    allowed_top_level = {"$schema", "functions"}
+    allowed_top_level = {"$schema", "git", "functions"}
     unknown = sorted(set(payload) - allowed_top_level)
     violations.extend(f"Vercel configuration contains unknown field: {field}" for field in unknown)
     if payload.get("$schema") != "https://openapi.vercel.sh/vercel.json":
         violations.append("Vercel configuration must use the official schema")
+
+    git_config = payload.get("git")
+    if git_config is not None:
+        if not isinstance(git_config, dict) or set(git_config) != {"deploymentEnabled"}:
+            violations.append(
+                "Vercel git configuration must define only deploymentEnabled"
+            )
+        elif git_config.get("deploymentEnabled") is not False:
+            violations.append("Vercel automatic Git deployments must be disabled")
 
     functions = payload.get("functions")
     if not isinstance(functions, dict) or set(functions) != {function_name}:
