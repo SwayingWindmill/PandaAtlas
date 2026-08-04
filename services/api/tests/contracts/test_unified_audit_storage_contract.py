@@ -20,6 +20,7 @@ def test_unified_audit_storage_is_private_append_only_and_hash_only() -> None:
     assert "'integrity_summaries'" in sql
     assert "audit.reject_append_only_mutation()" in sql
     assert "details_hash text not null" in sql
+    assert "extensions.digest" in sql
     event_table_sql = sql.split("create table if not exists audit.event_facts", 1)[1]
     event_table_sql = event_table_sql.split(");", 1)[0]
     assert "details jsonb" not in event_table_sql
