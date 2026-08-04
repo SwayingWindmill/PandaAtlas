@@ -191,7 +191,10 @@ def test_rejects_overlapping_schema_ownership(tmp_path: Path) -> None:
 
 
 def test_repository_domain_storage_write_contract_passes() -> None:
-    report = analyze_domain_storage_writes(repository_root=_REPOSITORY_ROOT)
+    try:
+        report = analyze_domain_storage_writes(repository_root=_REPOSITORY_ROOT)
+    except DomainStorageWriteError as error:
+        pytest.fail("\n".join(error.violations), pytrace=False)
 
     assert set(report.domains) == {"privacy_operations", "review_moderation"}
     assert report.writes
