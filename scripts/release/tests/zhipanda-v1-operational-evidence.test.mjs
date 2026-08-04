@@ -9,7 +9,7 @@ import {
   writeOperationalReadinessEvidence,
 } from "../write-zhipanda-v1-operational-readiness-evidence.mjs";
 
-test("operational readiness evidence seals contracts, runbooks, rehearsal, and gate sources", () => {
+test("operational readiness evidence seals controls, contracts, runbooks, rehearsal, and gate sources", () => {
   const evidence = buildOperationalReadinessEvidence({
     generatedAt: "2026-08-04T00:00:00.000Z",
     sourceCommit: "candidate-commit",
@@ -20,7 +20,16 @@ test("operational readiness evidence seals contracts, runbooks, rehearsal, and g
   assert.equal(evidence.contract_status, "in-progress");
   assert.equal(evidence.outcome, "in-progress");
   assert.match(evidence.evidence_id, /^sha256:[0-9a-f]{64}$/);
-  assert.equal(evidence.inputs.length, 10);
+  assert.equal(evidence.inputs.length, 13);
+  assert.deepEqual(evidence.operational_controls, {
+    matrix_id: "zhipanda-v1-operational-controls",
+    status: "in-progress",
+    controls: 15,
+    available_controls: 11,
+    final_candidate_controls: 4,
+    evidence_files: 23,
+    release_gate_integrated: true,
+  });
   assert.deepEqual(evidence.recovery_rehearsal, {
     rehearsal_id: "zhipanda-v1-cross-feature-recovery",
     status: "available",
@@ -72,5 +81,6 @@ test("operational evidence writer emits a machine-readable report without secret
   assert.doesNotMatch(raw, /begin private key/i);
   assert.doesNotMatch(raw, /authorization:\s*bearer/i);
   assert.equal(parsed.summary.release_gate_integrated, true);
+  assert.equal(parsed.operational_controls.final_candidate_controls, 4);
   assert.equal(parsed.recovery_rehearsal.feature_drills_resolved, false);
 });
