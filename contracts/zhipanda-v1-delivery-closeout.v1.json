@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "contract_id": "zhipanda-v1-delivery-closeout",
+  "issue": 201,
+  "status": "in-progress",
+  "baseline": {
+    "master_sha": "38fa34e0f7287dd592249a34c7c1a27934bac349",
+    "operational_readiness_pr": 285,
+    "operational_readiness_issue": 200
+  },
+  "prerequisite_issues": [
+    {"issue": 181, "state": "closed"},
+    {"issue": 186, "state": "closed"},
+    {"issue": 193, "state": "closed"},
+    {"issue": 196, "state": "closed"},
+    {"issue": 197, "state": "closed"},
+    {"issue": 198, "state": "closed"},
+    {"issue": 199, "state": "closed"},
+    {"issue": 200, "state": "closed"}
+  ],
+  "closed_loop_domains": [
+    {
+      "id": "public-follow-return",
+      "status": "repository-verified",
+      "evidence": [
+        "signed-out OTP Follow",
+        "private Passport projection",
+        "chronological personalized Feed",
+        "canonical locale-preserving return"
+      ]
+    },
+    {
+      "id": "archive-publish-return",
+      "status": "repository-verified",
+      "evidence": [
+        "ordinary and sensitive publication",
+        "Public Projection and Activity rebuild",
+        "native Inbox and consented email",
+        "correction, retraction, withdrawal, and rollback"
+      ]
+    },
+    {
+      "id": "contribution-to-publication",
+      "status": "repository-verified",
+      "evidence": [
+        "structured sourced submission",
+        "private quarantine and scan boundary",
+        "review and partial incorporation",
+        "public and contributor projection"
+      ]
+    },
+    {
+      "id": "moderation-privacy-audit",
+      "status": "repository-verified",
+      "evidence": [
+        "scoped sanction and appeal",
+        "suspension and restoration",
+        "privacy export, deletion, tombstone replay, and Hold",
+        "unified Audit fail-closed writes and sensitive reads"
+      ]
+    },
+    {
+      "id": "failure-recovery",
+      "status": "repository-verified",
+      "evidence": [
+        "expired auth and stale command denial",
+        "queue retry and DLQ replay",
+        "projection and database recovery",
+        "feature-flag stop, drain, rollback, and forward-fix"
+      ]
+    }
+  ],
+  "final_gates": [
+    {
+      "id": "delivery-contract",
+      "status": "passed",
+      "evidence": "GitHub Actions Delivery Contract run 162"
+    },
+    {
+      "id": "approved-release-bootstrap",
+      "status": "passed",
+      "evidence": "GitHub Actions Approved Release Bootstrap Gate run 87"
+    },
+    {
+      "id": "linux-authoritative-map-close",
+      "status": "passed",
+      "evidence": "GitHub Actions Release Gate run 632"
+    },
+    {
+      "id": "windows-map-close",
+      "status": "passed",
+      "evidence": "GitHub Actions Release Gate run 632"
+    },
+    {
+      "id": "supabase-published-return",
+      "status": "passed",
+      "evidence": "GitHub Actions Release Gate run 632"
+    },
+    {
+      "id": "extended-real-service",
+      "status": "pending",
+      "evidence": "Requires staging database and administration credentials"
+    },
+    {
+      "id": "vercel-web-final-preview",
+      "status": "pending",
+      "evidence": "Provider build-rate limit must clear before final-candidate preview"
+    },
+    {
+      "id": "vercel-api-final-preview",
+      "status": "pending",
+      "evidence": "Provider build-rate limit must clear before final-candidate preview"
+    }
+  ],
+  "external_requirements": [
+    {
+      "id": "staging-credentials",
+      "necessary": true,
+      "status": "blocked",
+      "detail": "Run the existing Extended gate against the approved staging services; do not copy credentials into evidence."
+    },
+    {
+      "id": "vercel-provider-capacity",
+      "necessary": true,
+      "status": "blocked",
+      "detail": "Obtain final Web and API preview results after the provider account rate limit clears."
+    },
+    {
+      "id": "launch-decision",
+      "necessary": true,
+      "status": "blocked",
+      "detail": "An accountable launch owner must record the explicit GO or NO-GO decision after all required evidence passes."
+    }
+  ],
+  "launch_decision": {
+    "status": "pending",
+    "owner": null,
+    "decided_at": null,
+    "version": null,
+    "candidate_sha": "38fa34e0f7287dd592249a34c7c1a27934bac349",
+    "evidence_sha256": null,
+    "reason": null,
+    "rollback_switches": [
+      "IDENTITY_AUTH_ENABLED",
+      "ENGAGEMENT_ENABLED",
+      "FEED_ENABLED",
+      "NOTIFICATION_ENABLED",
+      "NOTIFICATION_EMAIL_ENABLED",
+      "COMMUNITY_INTAKE_ENABLED",
+      "ARCHIVE_SINGLE_ACCOUNTABLE_APPROVER_ENABLED",
+      "MODERATION_ENABLED",
+      "PRIVACY_OPERATIONS_ENABLED",
+      "UNIFIED_AUDIT_ENABLED",
+      "ADMIN_SHELL_ENABLED"
+    ],
+    "post_launch_measurement": {
+      "metric": "30-day effective-follow-return",
+      "status": "not-started"
+    }
+  },
+  "production_mutations_performed": false,
+  "rules": [
+    "This contract extends the existing Release Gate and does not create a parallel certification system.",
+    "Repository evidence cannot substitute for the Extended real-service gate or final provider previews.",
+    "The contract cannot be complete while the launch decision is pending or any required final gate is not passed.",
+    "No secret, credential, user payload, signed reference, ciphertext, or production connection string may be copied into this contract."
+  ]
+}
