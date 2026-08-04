@@ -85,6 +85,13 @@
         "Could not load submissions",
         "Could not load more"
       ]
+    },
+    {
+      "path": "apps/web/features/my-pandas/moderation-notice-panel.tsx",
+      "required_markers": [
+        "invalid moderation error payload",
+        "Account status is temporarily unavailable."
+      ]
     }
   ],
   "silent_fallback_source_allowlist": [
