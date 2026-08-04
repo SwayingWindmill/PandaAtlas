@@ -115,6 +115,9 @@ export function validateRecoveryRehearsalContract(
   if (contract.report_path !== ".release-gate/zhipanda-v1-recovery-rehearsal.json") {
     errors.push("report_path must stay inside .release-gate.");
   }
+  if (contract.runbook !== "docs/runbooks/zhipanda-v1-recovery-rehearsal.md") {
+    errors.push("runbook must name the versioned recovery rehearsal procedure.");
+  }
 
   const integration = contract.release_integration ?? {};
   if (integration.test_glob !== "scripts/release/tests/*.test.mjs") {
@@ -137,6 +140,7 @@ export function validateRecoveryRehearsalContract(
       integration.test_path,
       "release_integration.test_path",
     );
+    requireRepositoryPath(errors, root, contract.runbook, "runbook");
   }
 
   const scenarios = Array.isArray(contract.scenarios) ? contract.scenarios : [];
