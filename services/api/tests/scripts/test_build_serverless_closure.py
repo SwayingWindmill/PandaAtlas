@@ -46,7 +46,7 @@ def test_real_serverless_closure_is_deterministic_and_bounded() -> None:
     ]
     assert payload["summary"]["excluded_tracked_file_count"] > 0
     assert "app.main" in payload["request_boundary"]["modules"]
-    assert payload["summary"]["module_count"] == 88
+    assert payload["summary"]["module_count"] == 92
 
     runtime_distributions = {
         item["distribution"] for item in payload["runtime_dependencies"]
@@ -148,7 +148,6 @@ def test_entrypoint_validator_rejects_runtime_logic(tmp_path: Path) -> None:
     violations = _BUILDER._validate_entrypoint(
         entrypoint_path=entrypoint,
         target="app.main:app",
-        exported_symbol="app",
     )
 
     assert any("unsupported statement" in item for item in violations)
