@@ -24,6 +24,7 @@ const EVIDENCE_INPUTS = [
   "contracts/zhipanda-v1-operational-readiness.v1.json",
   "contracts/zhipanda-v1-recovery-rehearsal.v1.json",
   "docs/runbooks/zhipanda-v1-operational-readiness.md",
+  "docs/runbooks/zhipanda-v1-recovery-rehearsal.md",
   "scripts/release/check-zhipanda-v1-recovery-rehearsal.mjs",
   "scripts/release/run-zhipanda-v1-recovery-rehearsal.mjs",
   "scripts/release/default.mjs",
