@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Any
 
 from sqlalchemy import text
@@ -8,7 +9,7 @@ from sqlalchemy import text
 from app.core.config import settings
 from app.db.session import configure_database, session_scope
 
-EXPECTED_MIGRATIONS = tuple(f"{number:04d}" for number in range(1, 26))
+MIGRATIONS_DIR = Path(__file__).resolve().parents[3] / "infra" / "supabase" / "migrations"
 REQUIRED_EXTENSIONS = {"pgmq", "postgis"}
 REQUIRED_RELATIONS = {
     "identity.accounts",
@@ -28,6 +29,21 @@ PRIVATE_SCHEMAS = {
     "review_moderation",
 }
 BROWSER_ROLES = ("anon", "authenticated")
+
+
+def expected_migrations(migrations_dir: Path = MIGRATIONS_DIR) -> tuple[str, ...]:
+    return tuple(
+        sorted(
+            {
+                path.name.split("_", 1)[0]
+                for path in migrations_dir.iterdir()
+                if path.is_file()
+                and path.suffix == ".sql"
+                and "_" in path.name
+                and path.name.split("_", 1)[0].isdigit()
+            }
+        )
+    )
 
 
 def _emit(payload: dict[str, Any]) -> None:
@@ -55,10 +71,11 @@ def main() -> int:
                 )
             )
         )
+        expected = expected_migrations()
         evidence["migration_versions"] = list(migrations)
-        if migrations != EXPECTED_MIGRATIONS:
+        if migrations != expected:
             failures.append(
-                f"migration history differs: expected {EXPECTED_MIGRATIONS}, got {migrations}"
+                f"migration history differs: expected {expected}, got {migrations}"
             )
 
         extensions = {
