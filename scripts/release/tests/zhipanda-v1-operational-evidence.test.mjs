@@ -9,7 +9,7 @@ import {
   writeOperationalReadinessEvidence,
 } from "../write-zhipanda-v1-operational-readiness-evidence.mjs";
 
-test("operational readiness evidence seals contracts, runbook, rehearsal, and gate sources", () => {
+test("operational readiness evidence seals contracts, runbooks, rehearsal, and gate sources", () => {
   const evidence = buildOperationalReadinessEvidence({
     generatedAt: "2026-08-04T00:00:00.000Z",
     sourceCommit: "candidate-commit",
@@ -20,7 +20,7 @@ test("operational readiness evidence seals contracts, runbook, rehearsal, and ga
   assert.equal(evidence.contract_status, "in-progress");
   assert.equal(evidence.outcome, "in-progress");
   assert.match(evidence.evidence_id, /^sha256:[0-9a-f]{64}$/);
-  assert.equal(evidence.inputs.length, 9);
+  assert.equal(evidence.inputs.length, 10);
   assert.deepEqual(evidence.recovery_rehearsal, {
     rehearsal_id: "zhipanda-v1-cross-feature-recovery",
     status: "available",
