@@ -11,19 +11,7 @@ from app.core.config import settings
 from app.db.session import session_scope
 from app.identity.models import AccountState, RequestIdentity
 from app.identity.security import get_request_identity, require_capability, resolve_correlation_id
-from app.privacy_operations.exports import (
-    PrivacyExportCipher,
-    PrivacyExportDecryptionError,
-    PrivacyExportDownloadSigner,
-    PrivacyExportReferenceError,
-    PrivacyExportService,
-)
-from app.privacy_operations.maintenance import (
-    PrivacyMaintenanceConflictError,
-    PrivacyMaintenanceForbiddenError,
-    PrivacyMaintenanceService,
-)
-from app.privacy_operations.models import (
+from app.privacy_operations.public import (
     CreatePrivacyHoldCommand,
     CreatePrivacyRequestCommand,
     DeletionTombstoneRead,
@@ -32,11 +20,23 @@ from app.privacy_operations.models import (
     FinalizeAccountDeletionCommand,
     GeneratePrivacyExportCommand,
     PrivacyExportAccessRead,
+    PrivacyExportCipher,
+    PrivacyExportDecryptionError,
+    PrivacyExportDownloadSigner,
     PrivacyExportRead,
+    PrivacyExportReferenceError,
+    PrivacyExportService,
     PrivacyHoldList,
     PrivacyHoldRead,
+    PrivacyMaintenanceConflictError,
+    PrivacyMaintenanceForbiddenError,
     PrivacyMaintenanceRead,
+    PrivacyMaintenanceService,
     PrivacyMetricsSnapshot,
+    PrivacyOperationsConflictError,
+    PrivacyOperationsForbiddenError,
+    PrivacyOperationsNotFoundError,
+    PrivacyOperationsService,
     PrivacyRequestList,
     PrivacyRequestRead,
     ReleasePrivacyHoldCommand,
@@ -47,12 +47,6 @@ from app.privacy_operations.models import (
     UserPrivacyRequestList,
     UserPrivacyRequestRead,
     VerifyPrivacyRequestCommand,
-)
-from app.privacy_operations.service import (
-    PrivacyOperationsConflictError,
-    PrivacyOperationsForbiddenError,
-    PrivacyOperationsNotFoundError,
-    PrivacyOperationsService,
 )
 
 
