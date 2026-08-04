@@ -16,7 +16,9 @@ on:
       - "services/api/app/services/release_service.py"
       - "services/api/scripts/bootstrap_approved_public_release.py"
       - "services/api/scripts/check_seedless_release_foundation.py"
+      - "services/api/scripts/run_privacy_tombstone_recovery_drill.py"
       - "services/api/tests/integration/test_approved_release_bootstrap_real_db.py"
+      - "services/api/tests/integration/test_privacy_operations_real_db.py"
       - "services/api/tests/projection/test_approved_release_bootstrap.py"
 
 concurrency:
@@ -73,12 +75,20 @@ jobs:
           tests/integration/test_approved_release_bootstrap_real_db.py
           --junitxml=../../approved-release-bootstrap-real-db.xml
 
+      - name: Run privacy tombstone recovery drill
+        working-directory: services/api
+        run: >-
+          uv run --isolated --frozen --extra dev python
+          scripts/run_privacy_tombstone_recovery_drill.py
+
       - name: Upload database acceptance evidence
         if: always()
         uses: actions/upload-artifact@v7.0.1
         with:
           name: approved-release-bootstrap-real-db
-          path: approved-release-bootstrap-real-db.xml
+          path: |
+            approved-release-bootstrap-real-db.xml
+            .release-gate/privacy-tombstone-recovery.json
           if-no-files-found: warn
 
       - name: Stop Supabase foundation

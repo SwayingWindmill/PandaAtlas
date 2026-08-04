@@ -170,6 +170,28 @@
       }
     },
     {
+      "path": "services/api/tests/contracts/test_moderation_openapi_contract.py",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "API platform",
+      "expected_action": "retain-compatibility",
+      "rationale": "The moderation contract test pins the canonical API compatibility filename; it does not expose public product copy.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
+      "path": "docs/architecture/scoped-moderation-and-appeals.md",
+      "category": "technical-compatible",
+      "user_visibility": "internal",
+      "migration_owner": "Trust and Safety",
+      "expected_action": "retain-compatibility",
+      "rationale": "The architecture record names the canonical OpenAPI compatibility file as an internal contract reference, not public brand copy.",
+      "matches": {
+        "panda-atlas": 1
+      }
+    },
+    {
       "path": "apps/web/README.md",
       "category": "technical-compatible",
       "user_visibility": "internal",

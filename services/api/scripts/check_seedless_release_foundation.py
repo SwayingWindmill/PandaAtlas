@@ -27,6 +27,7 @@ PRIVATE_SCHEMAS = {
     "identity",
     "integration",
     "notification",
+    "privacy",
     "review_moderation",
 }
 BROWSER_ROLES = ("anon", "authenticated")

@@ -218,6 +218,7 @@ class CommunityIntakeRepository:
         correlation_id: UUID,
     ) -> SubmissionView:
         self._require_active(identity)
+        self._require_not_restricted(identity, "submission")
         actor_hash = _subject_hash(identity.account_id)
         command_hash = _command_hash(command)
         self._lock_idempotency(actor_hash, command.idempotency_key)
@@ -559,6 +560,7 @@ class CommunityIntakeRepository:
         correlation_id: UUID,
     ) -> AttachmentUploadReservation:
         self._require_active(identity)
+        self._require_not_restricted(identity, "attachment")
         actor_hash = _subject_hash(identity.account_id)
         command_hash = _command_hash(command)
         self._lock_idempotency(actor_hash, command.idempotency_key)
@@ -956,6 +958,7 @@ class CommunityIntakeRepository:
         *,
         correlation_id: UUID,
         max_scan_attempts: int = 3,
+        commit: bool = True,
     ) -> RetentionResult:
         expired = (
             self.session.execute(
@@ -1095,7 +1098,8 @@ class CommunityIntakeRepository:
                     "next_attempt_number": int(row["scan_attempts"]) + 1,
                 },
             )
-        self.session.commit()
+        if commit:
+            self.session.commit()
         return RetentionResult(
             expired_drafts=len(expired),
             closed_submissions_processed=len(closed_due),
@@ -1453,6 +1457,28 @@ class CommunityIntakeRepository:
         if identity.state is not AccountState.ACTIVE:
             raise CommunityIntakeForbiddenError("account is not active")
 
+    def _require_not_restricted(self, identity: RequestIdentity, restriction: str) -> None:
+        column = {
+            "submission": "effective_submission_restricted",
+            "attachment": "effective_attachment_restricted",
+        }.get(restriction)
+        if column is None:
+            raise ValueError("unsupported moderation restriction")
+        restricted = self.session.execute(
+            text(
+                f"""
+                select coalesce((
+                  select {column}
+                  from review_moderation.moderation_subject_status
+                  where account_id = :account_id
+                ), false)
+                """
+            ),
+            {"account_id": identity.account_id},
+        ).scalar_one()
+        if bool(restricted):
+            raise CommunityIntakeForbiddenError(f"{restriction} access is restricted")
+
     def _require_capability(self, identity: RequestIdentity, capability: str) -> None:
         if identity.state is not AccountState.ACTIVE or not identity.has_capability(capability):
             raise CommunityIntakeForbiddenError("required capability is missing")
@@ -1683,12 +1709,22 @@ def anonymize_community_intake_account(
     *,
     reason: str,
     correlation_id: UUID,
+    allow_tombstone_replay: bool = False,
 ) -> dict[str, int]:
     state = session.execute(
         text("select state::text from identity.accounts where account_id = :account_id"),
         {"account_id": account_id},
     ).scalar_one_or_none()
-    if state != AccountState.DELETING.value:
+    allowed_states = {AccountState.DELETING.value}
+    if allow_tombstone_replay:
+        allowed_states.update(
+            {
+                AccountState.ACTIVE.value,
+                AccountState.SUSPENDED.value,
+                AccountState.DELETED.value,
+            }
+        )
+    if state not in allowed_states:
         raise CommunityIntakeConflictError(
             "Community Intake data can be anonymized only while account is deleting"
         )

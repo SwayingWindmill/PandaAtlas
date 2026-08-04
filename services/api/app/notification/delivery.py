@@ -602,7 +602,13 @@ class NotificationDeliveryRepository:
                        exists(
                          select 1 from notification.email_suppressions suppression
                          where suppression.account_id = job.account_id
-                       ) as email_suppressed
+                       ) as email_suppressed,
+                       exists(
+                         select 1
+                         from review_moderation.moderation_subject_status moderation
+                         where moderation.account_id = job.account_id
+                           and moderation.effective_notification_restricted
+                       ) as notification_restricted
                 from notification.delivery_jobs job
                 join identity.accounts account on account.account_id = job.account_id
                 left join notification.intents intent on intent.intent_id = job.intent_id
@@ -635,6 +641,11 @@ class NotificationDeliveryRepository:
             return "paused"
         if row["account_state"] in {"deleting", "deleted"} or bool(row["email_suppressed"]):
             self._suppress_delivery(row, reason="email_channel_suppressed")
+            self._archive(DELIVERY_QUEUE, msg_id)
+            self.session.commit()
+            return "suppressed"
+        if bool(row["notification_restricted"]) and not bool(row["mandatory"]):
+            self._suppress_delivery(row, reason="moderation_notification_restricted")
             self._archive(DELIVERY_QUEUE, msg_id)
             self.session.commit()
             return "suppressed"
