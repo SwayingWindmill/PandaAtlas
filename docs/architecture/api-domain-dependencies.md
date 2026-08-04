@@ -1,6 +1,6 @@
 # FastAPI domain dependency boundary
 
-- Status: Enforced initial slice; Review & Moderation facade narrowed
+- Status: Enforced initial slice; Review & Moderation and Privacy Operations facades narrowed
 - Machine-readable contract: [`contracts/api-domain-dependencies.v1.json`](../../contracts/api-domain-dependencies.v1.json)
 - Validator: `services/api/scripts/check_domain_dependencies.py`
 - Test integration: `services/api/tests/scripts/test_check_domain_dependencies.py`
@@ -28,26 +28,23 @@ The validator scans all Python modules under `app.api` and each registered domai
 6. The observed registered-domain dependency graph must be acyclic.
 7. Missing domain roots, overlapping roots, malformed surfaces, and unknown dependency names fail closed.
 
-These rules govern Python imports. They do not yet prove database-table ownership or prevent raw SQL from reading another schema. Table ownership and cross-domain write policy remain a later boundary slice.
+These rules govern Python imports. Raw SQL write ownership for the guarded domains is enforced separately by `contracts/api-domain-storage-writes.v1.json`.
 
 ## Current public surfaces
 
-Review & Moderation now exposes one explicit facade:
+Review & Moderation exposes one explicit facade:
 
 - `app.review_moderation.public` re-exports the existing review and sanction command models, read models, enums, and application functions required by API routes.
 - `app.api.v1.moderation`, `app.api.v1.admin_moderation`, and `app.api.v1.admin_reviews` may no longer import `models`, `service`, `sanction_models`, or `sanction_service` directly.
 - The dependency contract exposes only the `public` module for API and cross-domain imports.
 
-The facade is a compatibility boundary, not a claim that every exported symbol is permanently stable. Future work may split it into smaller `commands.py`, `queries.py`, or `events.py` surfaces when that reduces coupling without duplicating domain behavior.
+Privacy Operations now also exposes one explicit facade:
 
-Privacy Operations remains on its initial compatibility surfaces:
+- `app.privacy_operations.public` re-exports the command and read models, application services, export cipher and signer, and domain errors required by public and administrative privacy routes.
+- `app.api.v1.privacy` may no longer import `models`, `service`, `exports`, or `maintenance` directly.
+- The dependency contract exposes only the `public` module for API and cross-domain imports.
 
-- `models`;
-- `service`;
-- `exports`;
-- `maintenance`.
-
-The next narrowing slice should add `app.privacy_operations.public` and remove those internal modules from the API allowlist.
+These facades are compatibility boundaries, not claims that every exported symbol is permanently stable. Future work may split them into smaller `commands.py`, `queries.py`, or `events.py` surfaces when that reduces coupling without duplicating domain behavior.
 
 ## Verification
 

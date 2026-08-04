@@ -11,16 +11,10 @@
       "root": "app.privacy_operations",
       "may_depend_on": [],
       "public_surfaces": [
-        "exports",
-        "maintenance",
-        "models",
-        "service"
+        "public"
       ],
       "api_surfaces": [
-        "exports",
-        "maintenance",
-        "models",
-        "service"
+        "public"
       ]
     },
     "review_moderation": {
