@@ -9,6 +9,10 @@ import {
   repositoryRoot,
   validateOperationalReadinessContract,
 } from "./check-zhipanda-v1-operational-readiness.mjs";
+import {
+  loadRecoveryRehearsalContract,
+  validateRecoveryRehearsalContract,
+} from "./check-zhipanda-v1-recovery-rehearsal.mjs";
 
 export const defaultEvidencePath = path.join(
   repositoryRoot,
@@ -18,7 +22,10 @@ export const defaultEvidencePath = path.join(
 
 const EVIDENCE_INPUTS = [
   "contracts/zhipanda-v1-operational-readiness.v1.json",
+  "contracts/zhipanda-v1-recovery-rehearsal.v1.json",
   "docs/runbooks/zhipanda-v1-operational-readiness.md",
+  "scripts/release/check-zhipanda-v1-recovery-rehearsal.mjs",
+  "scripts/release/run-zhipanda-v1-recovery-rehearsal.mjs",
   "scripts/release/default.mjs",
   "scripts/release/extended.mjs",
   "scripts/release/map-close.mjs",
@@ -68,8 +75,18 @@ export function buildOperationalReadinessEvidence({
     "contracts",
     "zhipanda-v1-operational-readiness.v1.json",
   );
+  const rehearsalContractPath = path.join(
+    root,
+    "contracts",
+    "zhipanda-v1-recovery-rehearsal.v1.json",
+  );
   const contract = loadOperationalReadinessContract(contractPath);
   const summary = validateOperationalReadinessContract(contract, { root });
+  const rehearsalContract = loadRecoveryRehearsalContract(rehearsalContractPath);
+  const recoveryRehearsal = validateRecoveryRehearsalContract(
+    rehearsalContract,
+    { root },
+  );
 
   const inputs = EVIDENCE_INPUTS.map((relativePath) => {
     const bytes = readFileSync(path.join(root, relativePath));
@@ -91,6 +108,7 @@ export function buildOperationalReadinessEvidence({
     contract_id: contract.contract_id,
     contract_status: contract.status,
     summary,
+    recovery_rehearsal: recoveryRehearsal,
     inputs,
     planned_drills: plannedDrills,
   };
@@ -127,6 +145,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
         outcome: evidence.outcome,
         evidence_id: evidence.evidence_id,
         inputs: evidence.inputs.length,
+        recovery_rehearsal: evidence.recovery_rehearsal.status,
         planned_drills: evidence.planned_drills.length,
       }, null, 2)}\n`,
     );
