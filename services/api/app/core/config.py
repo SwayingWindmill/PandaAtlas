@@ -82,6 +82,52 @@ class Settings(BaseSettings):
     auth_smtp_password: str | None = Field(default=None, alias="AUTH_SMTP_PASSWORD")
     community_intake_enabled: bool = Field(default=False, alias="COMMUNITY_INTAKE_ENABLED")
     review_moderation_enabled: bool = Field(default=False, alias="REVIEW_MODERATION_ENABLED")
+    moderation_controls_enabled: bool = Field(default=False, alias="MODERATION_CONTROLS_ENABLED")
+    moderation_repeat_abuse_alert_count: int = Field(
+        default=3,
+        ge=1,
+        alias="MODERATION_REPEAT_ABUSE_ALERT_COUNT",
+    )
+    moderation_sanction_age_alert_seconds: int = Field(
+        default=2592000,
+        ge=3600,
+        alias="MODERATION_SANCTION_AGE_ALERT_SECONDS",
+    )
+    moderation_appeal_age_alert_seconds: int = Field(
+        default=432000,
+        ge=3600,
+        alias="MODERATION_APPEAL_AGE_ALERT_SECONDS",
+    )
+    privacy_operations_enabled: bool = Field(default=False, alias="PRIVACY_OPERATIONS_ENABLED")
+    privacy_export_master_key: str = Field(
+        default="local-privacy-export-master-key-change-me",
+        min_length=32,
+        alias="PRIVACY_EXPORT_MASTER_KEY",
+    )
+    privacy_export_download_signing_key: str = Field(
+        default="local-privacy-export-download-signing-key-change-me",
+        min_length=32,
+        alias="PRIVACY_EXPORT_DOWNLOAD_SIGNING_KEY",
+    )
+    privacy_export_artifact_ttl_seconds: int = Field(
+        default=86400,
+        ge=300,
+        le=86400,
+        alias="PRIVACY_EXPORT_ARTIFACT_TTL_SECONDS",
+    )
+    privacy_export_download_ttl_seconds: int = Field(
+        default=300,
+        ge=30,
+        le=900,
+        alias="PRIVACY_EXPORT_DOWNLOAD_TTL_SECONDS",
+    )
+    unified_audit_enabled: bool = Field(default=False, alias="UNIFIED_AUDIT_ENABLED")
+    audit_export_encryption_key: str = Field(
+        default="local-audit-export-encryption-key-change-me",
+        min_length=32,
+        alias="AUDIT_EXPORT_ENCRYPTION_KEY",
+    )
+    audit_export_key_version: int = Field(default=1, ge=1, alias="AUDIT_EXPORT_KEY_VERSION")
     review_first_response_business_days: int = Field(
         default=3,
         ge=1,
@@ -218,6 +264,36 @@ class Settings(BaseSettings):
             raise ValueError(
                 "Community Intake upload requires backend Supabase Storage credentials"
             )
+        if self.privacy_export_download_ttl_seconds > self.privacy_export_artifact_ttl_seconds:
+            raise ValueError("Privacy export download TTL cannot exceed artifact TTL")
+        if self.privacy_operations_enabled:
+            if self.privacy_export_master_key == self.privacy_export_download_signing_key:
+                raise ValueError("Privacy export encryption and signing keys must differ")
+            if env not in {"development", "dev", "local", "test"}:
+                if (
+                    self.privacy_export_master_key
+                    == "local-privacy-export-master-key-change-me"
+                ):
+                    raise ValueError("PRIVACY_EXPORT_MASTER_KEY must be configured")
+                if (
+                    self.privacy_export_download_signing_key
+                    == "local-privacy-export-download-signing-key-change-me"
+                ):
+                    raise ValueError("PRIVACY_EXPORT_DOWNLOAD_SIGNING_KEY must be configured")
+        if (
+            self.unified_audit_enabled
+            and env not in {"development", "dev", "local", "test"}
+            and self.audit_export_encryption_key
+            == "local-audit-export-encryption-key-change-me"
+        ):
+            raise ValueError(
+                "AUDIT_EXPORT_ENCRYPTION_KEY must be configured outside local environments"
+            )
+        if (
+            self.unified_audit_enabled
+            and self.audit_export_encryption_key == self.community_intake_storage_signing_key
+        ):
+            raise ValueError("Audit export and Community Intake storage keys must differ")
         return self
 
     def cors_origins(self) -> Sequence[str]:

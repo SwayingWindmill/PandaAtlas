@@ -22,10 +22,12 @@ REQUIRED_RELATIONS = {
     "public.publication_batches",
 }
 PRIVATE_SCHEMAS = {
+    "audit",
     "engagement",
     "identity",
     "integration",
     "notification",
+    "privacy",
     "review_moderation",
 }
 BROWSER_ROLES = ("anon", "authenticated")

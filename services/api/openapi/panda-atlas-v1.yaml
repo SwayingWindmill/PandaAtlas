@@ -1866,6 +1866,39 @@ paths:
               schema: { $ref: '#/components/schemas/CommunityIntakeMetrics' }
         '401': { description: Administrator authentication is required }
 
+  /api/v1/moderation/notice:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1moderation~1notice'
+
+  /api/v1/moderation/appeals:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1moderation~1appeals'
+
+  /api/v1/admin/moderation/accounts:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1accounts'
+
+  /api/v1/admin/moderation/accounts/{account_id}:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1accounts~1{account_id}'
+
+  /api/v1/admin/moderation/accounts/{account_id}/sanctions:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1accounts~1{account_id}~1sanctions'
+
+  /api/v1/admin/moderation/accounts/{account_id}/temporary-submission-freezes:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1accounts~1{account_id}~1temporary-submission-freezes'
+
+  /api/v1/admin/moderation/accounts/{account_id}/sanctions/{sanction_id}/restore:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1accounts~1{account_id}~1sanctions~1{sanction_id}~1restore'
+
+  /api/v1/admin/moderation/appeals:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1appeals'
+
+  /api/v1/admin/moderation/appeals/{appeal_case_id}/acknowledge:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1appeals~1{appeal_case_id}~1acknowledge'
+
+  /api/v1/admin/moderation/appeals/{appeal_case_id}/decide:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1appeals~1{appeal_case_id}~1decide'
+
+  /api/v1/admin/moderation/metrics:
+    $ref: './moderation-v1.yaml#/paths/~1api~1v1~1admin~1moderation~1metrics'
+
   /api/v1/admin/review-cases:
     $ref: './review-moderation-v1.yaml#/paths/~1api~1v1~1admin~1review-cases'
 

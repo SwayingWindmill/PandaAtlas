@@ -868,6 +868,7 @@ name = "panda-atlas-api"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "cryptography" },
     { name = "fastapi" },
     { name = "httpx" },
     { name = "psycopg", extra = ["binary"] },
@@ -896,6 +897,7 @@ local-server = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cryptography", specifier = "==49.0.0" },
     { name = "fastapi", specifier = ">=0.115.0" },
     { name = "httpx", specifier = ">=0.28.0" },
     { name = "httpx", marker = "extra == 'crawler-poc'", specifier = "==0.28.1" },

@@ -58,8 +58,16 @@
       "import_roots": ["jwt"]
     },
     {
+      "distribution": "cryptography",
+      "import_roots": ["cryptography"]
+    },
+    {
       "distribution": "httpx",
       "import_roots": ["httpx"]
+    },
+    {
+      "distribution": "cryptography",
+      "import_roots": ["cryptography"]
     },
     {
       "distribution": "python-multipart",
