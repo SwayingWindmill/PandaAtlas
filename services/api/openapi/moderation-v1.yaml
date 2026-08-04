@@ -1,0 +1,362 @@
+openapi: 3.1.0
+info:
+  title: ZhiPanda Scoped Moderation and Appeals API
+  version: 1.0.0
+  description: >-
+    Authoritative FastAPI and PostgreSQL contract for scoped sanctions, account-state
+    projection, append-only restoration, and user appeals. Browser clients never write
+    moderation tables directly.
+security:
+  - BearerAuth: []
+paths:
+  /api/v1/moderation/notice:
+    get:
+      operationId: getCurrentModerationNotice
+      summary: Read the authenticated account's current user-visible sanctions and appeals
+      responses:
+        '200':
+          description: Current moderation notice
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserModerationNoticeRead' }
+        '401': { description: Authentication required }
+        '404': { description: Moderation controls disabled }
+  /api/v1/moderation/appeals:
+    post:
+      operationId: openModerationAppeal
+      summary: Open an appeal for one sanction owned by the authenticated account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OpenAppealCommand' }
+      responses:
+        '201':
+          description: Appeal opened or idempotently replayed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserAppealCaseRead' }
+        '404': { description: Sanction not visible }
+        '409': { description: Version, idempotency, existing appeal, or non-appealable sanction conflict }
+  /api/v1/admin/moderation/accounts:
+    get:
+      operationId: listModerationAccounts
+      summary: List bounded moderation subjects
+      responses:
+        '200': { description: Moderation subject list }
+        '403': { description: moderation.sanction.read required }
+  /api/v1/admin/moderation/accounts/{account_id}:
+    get:
+      operationId: getModerationAccount
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      responses:
+        '200': { description: Moderation subject detail }
+        '403': { description: moderation.sanction.read required }
+        '404': { description: Account not found }
+  /api/v1/admin/moderation/accounts/{account_id}/sanctions:
+    post:
+      operationId: issueModerationSanction
+      summary: Issue a warning, scoped restriction, suspension, or abuse closure
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/IssueSanctionCommand' }
+      responses:
+        '200': { description: Updated moderation subject }
+        '403': { description: moderation.sanction.apply and recent auth required }
+        '409': { description: Version, account-state, or idempotency conflict }
+  /api/v1/admin/moderation/accounts/{account_id}/temporary-submission-freezes:
+    post:
+      operationId: issueTemporarySubmissionFreeze
+      summary: Apply a reviewer-bounded submission freeze of at most 24 hours
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TemporarySubmissionFreezeCommand' }
+      responses:
+        '200': { description: Updated moderation subject }
+        '403': { description: Reviewer scope or duration exceeded }
+        '409': { description: Version or idempotency conflict }
+  /api/v1/admin/moderation/accounts/{account_id}/sanctions/{sanction_id}/restore:
+    post:
+      operationId: restoreModerationSanction
+      summary: Append restoration and remove only the current sanction projection
+      parameters:
+        - $ref: '#/components/parameters/AccountId'
+        - $ref: '#/components/parameters/SanctionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RestoreSanctionCommand' }
+      responses:
+        '200': { description: Updated moderation subject }
+        '403': { description: moderation.sanction.restore and recent auth required }
+        '409': { description: Version, ownership, or superseded sanction conflict }
+  /api/v1/admin/moderation/appeals:
+    get:
+      operationId: listModerationAppeals
+      summary: List bounded appeal queue ordered by SLA risk
+      responses:
+        '200': { description: Appeal case list }
+        '403': { description: moderation.appeal.read required }
+  /api/v1/admin/moderation/appeals/{appeal_case_id}/acknowledge:
+    post:
+      operationId: acknowledgeModerationAppeal
+      parameters:
+        - $ref: '#/components/parameters/AppealCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AcknowledgeAppealCommand' }
+      responses:
+        '200': { description: Appeal acknowledged }
+        '403': { description: moderation.appeal.decide and recent auth required }
+        '409': { description: Version or closed-state conflict }
+  /api/v1/admin/moderation/appeals/{appeal_case_id}/decide:
+    post:
+      operationId: decideModerationAppeal
+      summary: Append appeal decision and optionally restore the challenged sanction atomically
+      parameters:
+        - $ref: '#/components/parameters/AppealCaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DecideAppealCommand' }
+      responses:
+        '200': { description: Appeal decided }
+        '403': { description: moderation.appeal.decide and recent auth required }
+        '409': { description: Appeal or moderation subject version conflict }
+  /api/v1/admin/moderation/metrics:
+    get:
+      operationId: getModerationMetrics
+      summary: Read sanction, appeal, expiry, restoration, denial, and consistency metrics
+      responses:
+        '200': { description: Moderation metrics and alerts }
+        '403': { description: moderation.metrics required }
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    AccountId:
+      in: path
+      name: account_id
+      required: true
+      schema: { type: string, format: uuid }
+    SanctionId:
+      in: path
+      name: sanction_id
+      required: true
+      schema: { type: string, format: uuid }
+    AppealCaseId:
+      in: path
+      name: appeal_case_id
+      required: true
+      schema: { type: string, format: uuid }
+  schemas:
+    IssueSanctionCommand:
+      type: object
+      additionalProperties: false
+      required:
+        - idempotency_key
+        - expected_version
+        - kind
+        - scope
+        - reason_code
+        - internal_explanation
+        - user_visible_explanation
+        - starts_at
+        - ends_at
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        kind:
+          type: string
+          enum:
+            - warning
+            - submission_restricted
+            - attachment_restricted
+            - notification_restricted
+            - account_suspended
+            - account_closed_for_abuse
+        scope: { type: string, enum: [account, submission, attachment, notification] }
+        reason_code: { type: string, minLength: 3, maxLength: 64 }
+        internal_explanation: { type: string, minLength: 10, maxLength: 4000 }
+        user_visible_explanation: { type: string, minLength: 10, maxLength: 2000 }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: [string, 'null'], format: date-time }
+    TemporarySubmissionFreezeCommand:
+      type: object
+      additionalProperties: false
+      required:
+        - idempotency_key
+        - expected_version
+        - scope
+        - reason_code
+        - internal_explanation
+        - user_visible_explanation
+        - starts_at
+        - ends_at
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        scope: { type: string, const: submission }
+        reason_code: { type: string, minLength: 3, maxLength: 64 }
+        internal_explanation: { type: string, minLength: 10, maxLength: 4000 }
+        user_visible_explanation: { type: string, minLength: 10, maxLength: 2000 }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+    RestoreSanctionCommand:
+      type: object
+      additionalProperties: false
+      required:
+        - idempotency_key
+        - expected_version
+        - reason_code
+        - internal_explanation
+        - user_visible_explanation
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        reason_code: { type: string, minLength: 3, maxLength: 64 }
+        internal_explanation: { type: string, minLength: 10, maxLength: 4000 }
+        user_visible_explanation: { type: string, minLength: 10, maxLength: 2000 }
+    OpenAppealCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, expected_version, sanction_id, user_statement]
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        sanction_id: { type: string, format: uuid }
+        user_statement: { type: string, minLength: 20, maxLength: 4000 }
+    AcknowledgeAppealCommand:
+      type: object
+      additionalProperties: false
+      required: [idempotency_key, expected_version, internal_note]
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        internal_note: { type: string, minLength: 10, maxLength: 4000 }
+    DecideAppealCommand:
+      type: object
+      additionalProperties: false
+      required:
+        - idempotency_key
+        - expected_version
+        - outcome
+        - internal_explanation
+        - user_visible_explanation
+      properties:
+        idempotency_key: { type: string, minLength: 8, maxLength: 255 }
+        expected_version: { type: integer, minimum: 1 }
+        expected_subject_version: { type: [integer, 'null'], minimum: 1 }
+        outcome: { type: string, enum: [upheld, overturned, dismissed] }
+        internal_explanation: { type: string, minLength: 10, maxLength: 4000 }
+        user_visible_explanation: { type: string, minLength: 10, maxLength: 2000 }
+    UserSanctionRead:
+      type: object
+      additionalProperties: false
+      required:
+        - sanction_id
+        - kind
+        - scope
+        - reason_code
+        - user_visible_explanation
+        - starts_at
+        - ends_at
+        - created_at
+        - active
+        - appealable
+      properties:
+        sanction_id: { type: string, format: uuid }
+        kind:
+          type: string
+          enum:
+            - warning
+            - submission_restricted
+            - attachment_restricted
+            - notification_restricted
+            - account_suspended
+            - account_closed_for_abuse
+        scope: { type: string, enum: [account, submission, attachment, notification] }
+        reason_code: { type: string }
+        user_visible_explanation: { type: string }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: [string, 'null'], format: date-time }
+        created_at: { type: string, format: date-time }
+        active: { type: boolean }
+        appealable: { type: boolean }
+        restored_at: { type: [string, 'null'], format: date-time }
+    UserAppealDecisionRead:
+      type: object
+      additionalProperties: false
+      required: [outcome, user_visible_explanation, decided_at]
+      properties:
+        outcome: { type: string, enum: [upheld, overturned, dismissed] }
+        user_visible_explanation: { type: string }
+        decided_at: { type: string, format: date-time }
+    UserAppealCaseRead:
+      type: object
+      additionalProperties: false
+      required:
+        - appeal_case_id
+        - sanction_id
+        - state
+        - version
+        - user_statement
+        - first_response_due_at
+        - created_at
+        - updated_at
+      properties:
+        appeal_case_id: { type: string, format: uuid }
+        sanction_id: { type: string, format: uuid }
+        state: { type: string, enum: [open, under_review, closed] }
+        version: { type: integer, minimum: 1 }
+        user_statement: { type: string }
+        first_response_due_at: { type: string, format: date-time }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        decision:
+          oneOf:
+            - $ref: '#/components/schemas/UserAppealDecisionRead'
+            - type: 'null'
+    UserModerationNoticeRead:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - account_state
+        - submission_restricted
+        - attachment_restricted
+        - notification_restricted
+        - account_suspended
+        - account_closed_for_abuse
+        - sanctions
+        - appeals
+      properties:
+        version: { type: integer, minimum: 1 }
+        account_state: { type: string }
+        submission_restricted: { type: boolean }
+        attachment_restricted: { type: boolean }
+        notification_restricted: { type: boolean }
+        account_suspended: { type: boolean }
+        account_closed_for_abuse: { type: boolean }
+        sanctions:
+          type: array
+          items: { $ref: '#/components/schemas/UserSanctionRead' }
+        appeals:
+          type: array
+          items: { $ref: '#/components/schemas/UserAppealCaseRead' }

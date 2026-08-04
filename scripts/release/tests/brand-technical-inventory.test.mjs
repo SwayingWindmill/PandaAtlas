@@ -12,7 +12,7 @@ test("technical compatibility identifiers use a separate audited brand inventory
   const inventory = JSON.parse(await readFile(inventoryUrl, "utf8"));
   const checker = await readFile(checkerUrl, "utf8");
   const compatibilityTerm = ["panda", "atlas"].join("-");
-  const requiredDeploymentPaths = [
+  const requiredInventoryPaths = [
     "contracts/managed-cloud-deployment-inventory.v1.json",
     "contracts/vercel-web-deployment.v1.json",
     "data/deployment-evidence/vercel-web-2026-08-01.json",
@@ -20,12 +20,14 @@ test("technical compatibility identifiers use a separate audited brand inventory
     "docs/deployment/vercel-web-phase-1.md",
     "scripts/release/check-managed-cloud-inventory.mjs",
     "scripts/release/tests/vercel-web-deployment-plan.test.mjs",
+    "services/api/tests/contracts/test_moderation_openapi_contract.py",
+    "docs/architecture/scoped-moderation-and-appeals.md",
   ];
 
   assert.equal(inventory.schema_version, 1);
   const inventoryPaths = inventory.inventory.map((entry) => entry.path);
   assert.equal(new Set(inventoryPaths).size, inventoryPaths.length);
-  for (const requiredPath of requiredDeploymentPaths) {
+  for (const requiredPath of requiredInventoryPaths) {
     assert.ok(inventoryPaths.includes(requiredPath), `Missing technical inventory path: ${requiredPath}`);
   }
   assert.ok(inventory.inventory.some((entry) => (entry.matches[compatibilityTerm] ?? 0) > 0));

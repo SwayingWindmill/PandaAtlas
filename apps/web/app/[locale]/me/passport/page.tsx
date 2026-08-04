@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { ModerationNoticePanel } from "@/features/my-pandas/moderation-notice-panel";
 import { MyPandasPage } from "@/features/my-pandas/my-pandas-page";
 import { buildMyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
@@ -42,5 +43,10 @@ export default async function LocalizedPassportPage({ params }: LocalizedPasspor
 
   const envelope = loadPublishedAtlasDataset(locale);
   const view = buildMyPandasViewModel(envelope.data, locale);
-  return <MyPandasPage locale={locale} view={view} envelope={envelope} />;
+  return (
+    <>
+      <ModerationNoticePanel locale={locale} />
+      <MyPandasPage locale={locale} view={view} envelope={envelope} />
+    </>
+  );
 }
