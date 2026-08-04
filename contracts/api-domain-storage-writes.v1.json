@@ -7,16 +7,37 @@
     "privacy_operations": {
       "root": "app.privacy_operations",
       "owned_schemas": [
-        "privacy_operations"
+        "privacy"
       ],
-      "allowed_write_schemas": []
+      "allowed_write_targets": [
+        "auth.refresh_tokens",
+        "auth.users",
+        "community_curation.assertion_bridges",
+        "community_intake.submissions",
+        "identity.account_state_events",
+        "identity.account_tombstones",
+        "identity.accounts",
+        "identity.authorization_audit_events",
+        "identity.role_assignment_revocations",
+        "integration.outbox_events",
+        "public.change_sets",
+        "public.entity_revisions"
+      ]
     },
     "review_moderation": {
       "root": "app.review_moderation",
       "owned_schemas": [
         "review_moderation"
       ],
-      "allowed_write_schemas": []
+      "allowed_write_targets": [
+        "community_intake.contributor_assertion_results",
+        "community_intake.contributor_status_events",
+        "community_intake.submissions",
+        "identity.account_state_events",
+        "identity.accounts",
+        "identity.authorization_audit_events",
+        "integration.outbox_events"
+      ]
     }
   },
   "rules": {
