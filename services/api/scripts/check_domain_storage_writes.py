@@ -15,7 +15,7 @@ _DEFAULT_CONTRACT_PATH = (
     _REPOSITORY_ROOT / "contracts" / "api-domain-storage-writes.v1.json"
 )
 _DYNAMIC_WRITE_PATTERN = re.compile(
-    r"\b(?:insert\s+into|update|delete\s+from|merge\s+into|"
+    r"\b(?:insert\s+into|(?<!for\s)(?<!do\s)update|delete\s+from|merge\s+into|"
     r"truncate(?:\s+table)?)\s+\{dynamic\}",
     re.IGNORECASE,
 )
@@ -23,7 +23,7 @@ _WRITE_PATTERN = re.compile(
     r"""
     \b(?P<operation>
         insert\s+into
-        |update
+        |(?<!for\s)(?<!do\s)update
         |delete\s+from
         |merge\s+into
         |truncate(?:\s+table)?
@@ -36,6 +36,7 @@ _WRITE_PATTERN = re.compile(
     """,
     re.IGNORECASE | re.VERBOSE,
 )
+_TARGET_PATTERN = re.compile(r"^[a-z_][a-z0-9_$]*\.[a-z_][a-z0-9_$]*$")
 
 
 @dataclass(frozen=True)
@@ -43,7 +44,7 @@ class DomainDefinition:
     name: str
     root: str
     owned_schemas: tuple[str, ...]
-    allowed_write_schemas: tuple[str, ...]
+    allowed_write_targets: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -160,7 +161,7 @@ def _load_domains(
             continue
         root = raw.get("root")
         owned_schemas = raw.get("owned_schemas")
-        allowed_write_schemas = raw.get("allowed_write_schemas")
+        allowed_write_targets = raw.get("allowed_write_targets")
         if not isinstance(root, str) or not root:
             violations.append(f"domain {name} root must be a non-empty string")
             continue
@@ -173,8 +174,8 @@ def _load_domains(
         )
         violations.extend(
             _validate_string_array(
-                allowed_write_schemas,
-                field=f"domain {name} field allowed_write_schemas",
+                allowed_write_targets,
+                field=f"domain {name} field allowed_write_targets",
             )
         )
 
@@ -190,12 +191,19 @@ def _load_domains(
         roots[root] = name
 
         owned = tuple(str(item).lower() for item in owned_schemas or [])
-        allowed = tuple(str(item).lower() for item in allowed_write_schemas or [])
-        overlap = sorted(set(owned) & set(allowed))
-        violations.extend(
-            f"domain {name} schema is both owned and allowed: {schema}"
-            for schema in overlap
-        )
+        allowed = tuple(str(item).lower() for item in allowed_write_targets or [])
+        for target in allowed:
+            if _TARGET_PATTERN.fullmatch(target) is None:
+                violations.append(
+                    f"domain {name} allowed write target must be schema.table: {target}"
+                )
+                continue
+            schema, _ = target.split(".", maxsplit=1)
+            if schema in owned:
+                violations.append(
+                    f"domain {name} allowed write target is already owned: {target}"
+                )
+
         for schema in owned:
             previous = schema_owners.get(schema)
             if previous is not None:
@@ -208,7 +216,7 @@ def _load_domains(
             name=name,
             root=root,
             owned_schemas=owned,
-            allowed_write_schemas=allowed,
+            allowed_write_targets=allowed,
         )
 
     return domains, violations
@@ -302,7 +310,8 @@ def _scan_module(
 
     writes: list[WriteReference] = []
     violations: list[str] = []
-    permitted = set(domain.owned_schemas) | set(domain.allowed_write_schemas)
+    owned_schemas = set(domain.owned_schemas)
+    allowed_targets = set(domain.allowed_write_targets)
 
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call) or _call_name(node.func) != "text":
@@ -347,11 +356,11 @@ def _scan_module(
                 table=table,
             )
             writes.append(reference)
-            if schema not in permitted:
+            if schema not in owned_schemas and reference.target not in allowed_targets:
                 violations.append(
                     f"{module}:{line}: domain {domain.name} may not {operation} "
                     f"{reference.target}; owned={list(domain.owned_schemas)} "
-                    f"allowed={list(domain.allowed_write_schemas)}"
+                    f"allowed_targets={list(domain.allowed_write_targets)}"
                 )
 
     return writes, violations
