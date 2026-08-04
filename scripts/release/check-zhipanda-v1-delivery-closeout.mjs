@@ -212,9 +212,6 @@ export function validateZhiPandaV1DeliveryCloseout({
   if (!DECISION_STATUSES.has(decision.status)) {
     throw new Error(`Unsupported launch decision status: ${decision.status}`);
   }
-  if (!COMMIT_SHA_PATTERN.test(decision.candidate_sha ?? "")) {
-    throw new Error("Launch candidate SHA is invalid");
-  }
   const rollbackSwitches = new Set(Array.isArray(decision.rollback_switches) ? decision.rollback_switches : []);
   requireExactSet(rollbackSwitches, REQUIRED_ROLLBACK_SWITCHES, "launch rollback switch inventory");
   if (decision.post_launch_measurement?.metric !== "30-day effective-follow-return") {
@@ -231,6 +228,7 @@ export function validateZhiPandaV1DeliveryCloseout({
     decision.owner !== null ||
     decision.decided_at !== null ||
     decision.version !== null ||
+    decision.candidate_sha !== null ||
     decision.evidence_sha256 !== null ||
     decision.reason !== null
   ) {
