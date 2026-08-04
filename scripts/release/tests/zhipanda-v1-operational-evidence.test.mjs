@@ -20,7 +20,7 @@ test("operational readiness evidence seals controls, contracts, runbooks, rehear
   assert.equal(evidence.contract_status, "in-progress");
   assert.equal(evidence.outcome, "in-progress");
   assert.match(evidence.evidence_id, /^sha256:[0-9a-f]{64}$/);
-  assert.equal(evidence.inputs.length, 13);
+  assert.equal(evidence.inputs.length, 26);
   assert.deepEqual(evidence.operational_controls, {
     matrix_id: "zhipanda-v1-operational-controls",
     status: "in-progress",
@@ -43,6 +43,13 @@ test("operational readiness evidence seals controls, contracts, runbooks, rehear
     evidence.planned_drills.map((drill) => drill.blocked_by_issue),
     [197, 198, 199],
   );
+
+  const inputPaths = evidence.inputs.map((input) => input.path);
+  assert.ok(inputPaths.includes("package.json"));
+  assert.ok(inputPaths.includes("services/api/scripts/check_seedless_release_foundation.py"));
+  assert.ok(inputPaths.includes("apps/web/scripts/check-admin-runtime-boundary.mjs"));
+  assert.ok(inputPaths.includes("docs/release/frontend-quality-gates-and-visual-verification.md"));
+  assert.equal(new Set(inputPaths).size, inputPaths.length);
 
   for (const input of evidence.inputs) {
     assert.ok(input.bytes > 0, `${input.path} must not be empty`);
