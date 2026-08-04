@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Query
 
 from app.identity.models import RequestIdentity
 from app.identity.security import require_capability, resolve_correlation_id
-from app.review_moderation.sanction_models import (
+from app.review_moderation.public import (
     AcknowledgeAppealCommand,
     AppealCaseList,
     AppealCaseRead,
@@ -19,8 +19,6 @@ from app.review_moderation.sanction_models import (
     ModerationSubjectRead,
     RestoreSanctionCommand,
     TemporarySubmissionFreezeCommand,
-)
-from app.review_moderation.sanction_service import (
     acknowledge_appeal,
     decide_appeal,
     get_subject,
