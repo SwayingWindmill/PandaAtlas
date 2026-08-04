@@ -14,6 +14,8 @@ import { adminSessionFailureDestination } from "@/components/admin/admin-session
 import { ArchiveAdvancedOperations } from "@/components/admin/archive-advanced-operations";
 import { ArchiveWorkbench } from "@/components/admin/archive-workbench";
 import { AuditWorkbench } from "@/components/admin/audit-workbench";
+import { ModerationWorkbench } from "@/components/admin/moderation-workbench";
+import { PrivacyWorkbench } from "@/components/admin/privacy-workbench";
 import { ReviewCaseWorkbench } from "@/components/admin/review-case-workbench";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
