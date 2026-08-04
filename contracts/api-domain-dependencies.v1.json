@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "title": "ZhiPanda API Domain Dependency Boundary",
+  "service_root": "services/api",
+  "application_package": "app",
+  "api_prefixes": [
+    "app.api"
+  ],
+  "domains": {
+    "privacy_operations": {
+      "root": "app.privacy_operations",
+      "may_depend_on": [],
+      "public_surfaces": [
+        "exports",
+        "maintenance",
+        "models",
+        "service"
+      ],
+      "api_surfaces": [
+        "exports",
+        "maintenance",
+        "models",
+        "service"
+      ]
+    },
+    "review_moderation": {
+      "root": "app.review_moderation",
+      "may_depend_on": [],
+      "public_surfaces": [
+        "models",
+        "sanction_models",
+        "sanction_service",
+        "service"
+      ],
+      "api_surfaces": [
+        "models",
+        "sanction_models",
+        "sanction_service",
+        "service"
+      ]
+    }
+  },
+  "rules": {
+    "forbid_dynamic_imports": true,
+    "forbid_domain_to_api_imports": true,
+    "reject_dependency_cycles": true
+  }
+}
