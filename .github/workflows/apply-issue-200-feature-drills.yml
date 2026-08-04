@@ -1,3 +1,4 @@
+# One-time branch reconciliation; removed after a successful run.
 name: Apply Issue 200 Feature Drills
 
 on:
