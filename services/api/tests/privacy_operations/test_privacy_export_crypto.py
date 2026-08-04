@@ -86,7 +86,9 @@ def test_privacy_export_reference_is_short_lived_and_artifact_bounded() -> None:
     with pytest.raises(PrivacyExportReferenceError):
         signer.verify(reference, now=artifact_expires_at)
 
-    tampered = reference[:-1] + ("A" if reference[-1] != "A" else "B")
+    encoded_payload, encoded_signature = reference.split(".", 1)
+    tampered_signature = ("A" if encoded_signature[0] != "A" else "B") + encoded_signature[1:]
+    tampered = f"{encoded_payload}.{tampered_signature}"
     with pytest.raises(PrivacyExportReferenceError):
         signer.verify(tampered, now=issued_at + timedelta(seconds=30))
 
