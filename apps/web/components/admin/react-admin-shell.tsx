@@ -13,6 +13,7 @@ import { BrowserRouter, Link, Route } from "react-router-dom";
 import { adminSessionFailureDestination } from "@/components/admin/admin-session-navigation";
 import { ArchiveAdvancedOperations } from "@/components/admin/archive-advanced-operations";
 import { ArchiveWorkbench } from "@/components/admin/archive-workbench";
+import { AuditWorkbench } from "@/components/admin/audit-workbench";
 import { ModerationWorkbench } from "@/components/admin/moderation-workbench";
 import { PrivacyWorkbench } from "@/components/admin/privacy-workbench";
 import { ReviewCaseWorkbench } from "@/components/admin/review-case-workbench";
@@ -270,6 +271,26 @@ function CapabilityDashboard() {
             </section>
           ) : null}
 
+          {session.capabilities.includes("audit.read") ? (
+            <section
+              className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
+              aria-labelledby="audit-workbench-heading"
+            >
+              <h2 id="audit-workbench-heading" className="text-xl font-bold text-stone-950">
+                Unified Audit
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-stone-700">
+                搜索统一只读证据、检查完整性和指标，并按独立 Capability 生成加密导出或执行过期密文维护。通用 CRUD 始终禁用。
+              </p>
+              <Link
+                to="/audit"
+                className="mt-4 inline-flex min-h-11 items-center rounded-md bg-stone-950 px-4 py-2 text-sm font-semibold text-white"
+              >
+                打开 Audit 工作台
+              </Link>
+            </section>
+          ) : null}
+
           {session.capabilities.includes("review.case.read") ? (
             <section
               className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
@@ -355,6 +376,7 @@ export function ReactAdminShell() {
           <Route path="/" element={<CapabilityDashboard />} />
           <Route path="archive" element={<ArchiveWorkbench />} />
           <Route path="archive/operations" element={<ArchiveAdvancedOperations />} />
+          <Route path="audit" element={<AuditWorkbench />} />
           <Route path="reviews" element={<ReviewCaseWorkbench />} />
           <Route path="moderation" element={<ModerationWorkbench />} />
           <Route path="privacy" element={<PrivacyWorkbench />} />
