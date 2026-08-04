@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import tempfile
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, BinaryIO, Callable
@@ -18,6 +19,7 @@ DEFAULT_INVENTORY = MEDIA_ROOT / "inventory.jsonl"
 DEFAULT_FILES_DIR = MEDIA_ROOT / "files"
 USER_AGENT = "PandaAtlasLocalResearch/0.1 (+https://github.com/SwayingWindmill/PandaAtlas)"
 MAX_IMAGE_BYTES = 100 * 1024 * 1024
+MAX_INDIVIDUAL_IMAGES_PER_PANDA = 20
 LOCAL_IMAGE_SUFFIXES = {".gif", ".jpg", ".jpeg", ".png", ".svg", ".tif", ".tiff", ".webp"}
 
 REQUIRED_FIELDS = {
@@ -80,6 +82,7 @@ def validate_candidates(rows: list[dict[str, Any]]) -> None:
     errors: list[str] = []
     seen_ids: set[str] = set()
     seen_filenames: set[str] = set()
+    individual_counts: Counter[str] = Counter()
 
     for row in rows:
         line = row.get("__line__", "?")
@@ -87,6 +90,11 @@ def validate_candidates(rows: list[dict[str, Any]]) -> None:
         if missing:
             errors.append(f"line {line}: missing fields: {', '.join(missing)}")
             continue
+
+        media_kind = str(row.get("media_kind") or "individual_panda")
+        subject_id = row["subject_id"]
+        if media_kind == "individual_panda" and _non_empty_string(subject_id):
+            individual_counts[subject_id] += 1
 
         media_id = row["media_id"]
         if not _non_empty_string(media_id) or not media_id.startswith("local-media-"):
@@ -132,6 +140,13 @@ def validate_candidates(rows: list[dict[str, Any]]) -> None:
                 errors.append(f"line {line}: duplicate local_filename: {filename}")
             else:
                 seen_filenames.add(filename)
+
+    for subject_id, image_count in sorted(individual_counts.items()):
+        if image_count > MAX_INDIVIDUAL_IMAGES_PER_PANDA:
+            errors.append(
+                f"subject {subject_id}: individual image count {image_count} exceeds "
+                f"maximum {MAX_INDIVIDUAL_IMAGES_PER_PANDA}"
+            )
 
     if errors:
         raise LocalMediaError("\n".join(errors))

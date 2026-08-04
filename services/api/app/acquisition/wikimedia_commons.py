@@ -6,10 +6,8 @@ from dataclasses import asdict, dataclass
 from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlencode, urlparse
-
-import httpx
 
 from .contracts import (
     CandidateKind,
@@ -26,8 +24,10 @@ from .contracts import (
 )
 from .models import CapabilityMode, ResponseEnvelope
 from .models import EvidenceSnapshot as LegacyEvidenceSnapshot
-from .runner import AdapterParseContext, AdapterRequest
 from .source_registry import ReviewedSource, SourceRegistry
+
+if TYPE_CHECKING:
+    from .runner import AdapterParseContext, AdapterRequest
 
 SOURCE_ID = "wikimedia-commons-action-api"
 ADAPTER_ID = "wikimedia-commons-xi-lun"
@@ -134,6 +134,8 @@ class WikimediaCommonsXiLunAdapter:
         *,
         cohort: str | None,
     ) -> tuple[AdapterRequest, ...]:
+        from .runner import AdapterRequest
+
         del cohort
         return (
             AdapterRequest(
@@ -198,6 +200,8 @@ def fetch_imageinfo(
     user_agent: str = DEFAULT_USER_AGENT,
     timeout_seconds: float = 30,
 ) -> tuple[str, ResponseEnvelope]:
+    import httpx
+
     source = registry.get(SOURCE_ID)
     source.assert_live_fetch_allowed()
     source.assert_adapter_allowed(ADAPTER_ID)

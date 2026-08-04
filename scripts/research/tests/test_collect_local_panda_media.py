@@ -127,6 +127,23 @@ class LocalPandaMediaCollectorTests(unittest.TestCase):
         with self.assertRaisesRegex(MODULE.LocalMediaError, "plain filename"):
             MODULE.validate_candidates([candidate(local_filename="../escape.jpg")])
 
+    def test_more_than_twenty_individual_images_for_one_panda_is_rejected(self) -> None:
+        rows = [
+            candidate(
+                media_id=f"local-media-cap-{index:02d}",
+                asset_url=f"https://example.test/image-{index:02d}.jpg",
+                local_filename=f"example-panda-{index:02d}.jpg",
+                media_kind="individual_panda",
+            )
+            for index in range(21)
+        ]
+
+        with self.assertRaisesRegex(
+            MODULE.LocalMediaError,
+            "individual image count 21 exceeds maximum 20",
+        ):
+            MODULE.validate_candidates(rows)
+
     def test_strict_failure_mode_is_opt_in(self) -> None:
         parser = MODULE.build_parser()
 

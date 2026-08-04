@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "mode": "local_first_research",
   "publication_enabled": false,
   "started_at": "2026-07-24T00:00:00+08:00",
@@ -9,9 +9,12 @@
   },
   "collection_principles": [
     "Collect first, normalize later.",
+    "Collect all traceable, source-supported information related to every panda; do not stop at a representative sample or basic biography.",
     "Keep every traceable conflicting assertion.",
     "Separate primary evidence from secondary discovery leads.",
+    "For material identity and life-history claims, seek as many independent source families as practical; do not count syndicated copies or verbatim reposts as separate confirmation.",
     "Retain original-language names and values.",
+    "Run broad image discovery for every individually identified panda; retain only images whose source explicitly confirms that the current Subject is depicted, collect up to 20, prefer at least one when available, and allow a carefully justified zero-media result without blocking the Subject batch.",
     "Collect local media bytes regardless of rights state while preserving source, credit and rights metadata; keep binaries out of Git.",
     "Keep all records local-only until a future publication decision."
   ],
@@ -24,6 +27,127 @@
     "research_and_studbook",
     "media_and_archive"
   ],
+  "individual_collection_requirements": {
+    "information_scope": "all_traceable_source_supported_related_information",
+    "source_bounded_exhaustive_collection": true,
+    "basic_biography_only_is_complete": false,
+    "required_fact_domains": [
+      "identity_and_aliases",
+      "birth_death_sex_and_origin",
+      "lineage_family_and_relationships",
+      "locations_transfers_returns_and_public_debuts",
+      "reproduction_maternal_care_and_offspring",
+      "health_veterinary_care_and_husbandry_training",
+      "growth_measurements_diet_and_daily_care",
+      "personality_behaviour_communication_preferences_and_enrichment",
+      "appearance_and_distinguishing_features",
+      "research_conservation_cultural_context_diplomacy_and_milestones",
+      "media_rights_conflicts_and_unresolved_leads"
+    ],
+    "media_search_required": true,
+    "media_gate_enabled": false,
+    "media_network_or_hash_validation_required": false,
+    "subject_media_requires_confirmed_depiction": true,
+    "relative_or_lineage_context_media_allowed_on_individual_subject": false,
+    "group_media_allowed_only_when_subject_membership_is_explicit": true,
+    "minimum_individual_images_for_batch_acceptance": 0,
+    "preferred_minimum_media_candidates_per_new_subject": 1,
+    "maximum_individual_images_per_panda": 20,
+    "new_subject_media_target": "min(20, all_distinct_qualified_candidates_from_reviewed_sources)",
+    "stop_after_first_qualified_image": false,
+    "single_media_candidate_is_acceptable_for_new_subject": true,
+    "image_requirements": [
+      "distinct",
+      "nonduplicate",
+      "identity_confirmed",
+      "source_caption_text_layout_or_archive_explicitly_maps_the_image_to_the_subject",
+      "source_and_rights_metadata_preserved",
+      "multi_source_identity_confirmation_when_ambiguous"
+    ],
+    "non_substituting_media_kinds": [
+      "lineage_context",
+      "relative_only",
+      "offspring_only",
+      "parent_only",
+      "partner_only",
+      "generic_panda",
+      "group_without_explicit_subject_membership",
+      "transport_scene",
+      "historical_artifact",
+      "facility_signage",
+      "cultural_object",
+      "memorial_sculpture",
+      "research_diagram"
+    ],
+    "no_qualifying_image_policy": "accept_subject_after_careful_search_if_channels_and_failure_reason_for_no_confirmed_individual_image_are_recorded",
+    "zero_media_required_metadata": [
+      "search_channels_reviewed",
+      "no_media_reason",
+      "reviewed_at"
+    ],
+    "unsupported_inference_allowed": false
+  },
+  "multi_source_confirmation": {
+    "enabled": true,
+    "goal": "maximize_independent_traceable_corroboration",
+    "maximum_useful_sources": "no_fixed_maximum",
+    "source_family_definition": "An independent source family represents a distinct evidence origin, authoring institution, firsthand observation, dataset, research study, archive, or independently reported account. Syndicated copies, mirrored pages, verbatim reposts, and articles derived only from the same press release count as one source family.",
+    "high_impact_claims": [
+      "official_name_and_name_status",
+      "identity_and_namesake_disambiguation",
+      "sex",
+      "birth_and_death",
+      "parentage_siblings_offspring_and_other_lineage",
+      "transfer_return_release_and_current_location",
+      "pregnancy_birth_and_reproductive_outcome",
+      "medical_diagnosis_cause_of_death_and_major_treatment",
+      "current_living_or_holding_status",
+      "record_claims_world_firsts_and_population_totals"
+    ],
+    "minimum_confirmation_targets": {
+      "high_impact_claim": {
+        "independent_source_families": 2,
+        "minimum_primary_holder_government_or_research_sources": 1
+      },
+      "ambiguous_identity_name_or_lineage": {
+        "independent_source_families": 2,
+        "minimum_primary_holder_government_or_research_sources": 1,
+        "community_only_resolution_allowed": false
+      },
+      "ordinary_explicit_claim": {
+        "independent_source_families": 1,
+        "continue_search_when_additional_sources_can_materially_improve_confidence_or_detail": true
+      }
+    },
+    "single_source_exception": "A claim explicitly supported by only one discoverable primary source may be retained as direct evidence, but it must be marked as single-source, remain open for corroboration, and must not be described as independently confirmed.",
+    "record_annotation_convention": {
+      "single_source_tag": "single-source",
+      "corroborated_tag": "multi-source-confirmed",
+      "source_family_tag_prefix": "source-family:",
+      "rule": "Future high-impact claim records must identify their source family. Use single-source until at least two independent source families support the same scoped claim; then use multi-source-confirmed on the corroborated records."
+    },
+    "secondary_and_community_rule": "News reports, community databases, fan-maintained profiles, social posts, video captions, search snippets, and corporate adoption material are discovery channels. They may add traceable detail, aliases, adoption names, dates, images, or leads, but cannot alone resolve a disputed high-impact claim unless they reproduce or link to identifiable primary evidence.",
+    "source_priority_order": [
+      "current_holding_institution_or_breeding_center",
+      "government_forestry_studbook_or_official_partner",
+      "peer_reviewed_research_or_archival_primary_material",
+      "state_media_or_independently_reported_news_with_named_sources",
+      "corporate_adoption_event_or_sponsor_primary_material",
+      "community_database_social_video_or_fan_archive_as_lead"
+    ],
+    "required_search_channels_when_information_is_sparse": [
+      "official_institution_websites_and_news_archives",
+      "government_and_forestry_portals",
+      "state_and_local_news_media",
+      "research_papers_studbooks_and_conference_material",
+      "corporate_adoption_and_public_event_announcements",
+      "official_social_media_video_and_livestream_archives",
+      "web_archives_and_cached_historic_pages",
+      "community_databases_and_fan_archives_for_discovery_only"
+    ],
+    "conflict_policy": "Store each conflicting assertion separately with its own source family, publication date, authority level and exact scope. Do not resolve by majority count; prefer the strongest direct evidence and explain the resolution while retaining the conflict.",
+    "collection_stop_condition": "Stop only after the relevant channels have been searched, additional results are duplicates or materially weaker derivatives, and unresolved gaps are explicitly recorded. A convenient first official page is not sufficient when further independent evidence is discoverable."
+  },
   "categories": [
     "identity",
     "alias",
@@ -130,7 +254,8 @@
     "Extract anecdotes, temperament, preferences, appearance and husbandry notes from official profile and news archives.",
     "Build a complete dated movement history for every panda with facility-level provenance.",
     "Capture all births, deaths, pregnancies, health events, naming events and public debuts.",
-    "Expand media-candidate discovery while recording file-level rights and identity confidence.",
+    "Run image discovery for every individually identified panda, retain only source-confirmed depictions of that Subject, retain at least one when available, enforce the 20-image maximum, and record file-level rights and identity confidence.",
+    "For names, identities, lineage, births, deaths, transfers, diagnoses and other high-impact claims, seek at least two independent source families when available and retain every additional materially useful source.",
     "Record unresolved identities and contradictory dates without forcing premature merges."
   ]
 }
