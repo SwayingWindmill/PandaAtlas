@@ -27,16 +27,10 @@
       "root": "app.review_moderation",
       "may_depend_on": [],
       "public_surfaces": [
-        "models",
-        "sanction_models",
-        "sanction_service",
-        "service"
+        "public"
       ],
       "api_surfaces": [
-        "models",
-        "sanction_models",
-        "sanction_service",
-        "service"
+        "public"
       ]
     }
   },
