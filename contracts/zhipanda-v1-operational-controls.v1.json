@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "matrix_id": "zhipanda-v1-operational-controls",
+  "issue": 200,
+  "status": "in-progress",
+  "controls": [
+    {
+      "id": "foundation-preflight",
+      "status": "available",
+      "gate": "default",
+      "owner": "Release Engineering",
+      "evidence": [
+        {
+          "path": "package.json",
+          "contains": ["\"supabase\": \"2.110.0\""]
+        },
+        {
+          "path": "services/api/scripts/check_seedless_release_foundation.py",
+          "contains": ["REQUIRED_EXTENSIONS = {\"pgmq\", \"postgis\"}"]
+        }
+      ],
+      "proves": "Pinned Supabase tooling plus required PostGIS and PGMQ extension checks."
+    },
+    {
+      "id": "seedless-migration-and-private-schema",
+      "status": "available",
+      "gate": "default",
+      "owner": "Release Engineering and Data",
+      "evidence": [
+        {
+          "path": "services/api/scripts/check_seedless_release_foundation.py",
+          "contains": [
+            "supabase_migrations.schema_migrations",
+            "seedless database contains application data",
+            "browser roles can use private schemas"
+          ]
+        }
+      ],
+      "proves": "Migration history, seedless state, empty release pointers, and browser denial for private schemas."
+    },
+    {
+      "id": "public-private-api-boundary",
+      "status": "available",
+      "gate": "default",
+      "owner": "API and Web",
+      "evidence": [
+        {
+          "path": "scripts/check-public-api-boundary.mjs",
+          "contains": ["assertWorkerIsReadOnly", "/api/v1/admin/"]
+        },
+        {
+          "path": "contracts/public-api-v1.json",
+          "contains": ["\"schemas\""]
+        }
+      ],
+      "proves": "Shared public schemas remain aligned and the public Worker does not expose authoritative admin behavior."
+    },
+    {
+      "id": "admin-runtime-isolation",
+      "status": "available",
+      "gate": "default",
+      "owner": "Web Administration",
+      "evidence": [
+        {
+          "path": "apps/web/scripts/check-admin-runtime-boundary.mjs",
+          "contains": ["ssr: false", "react-server-dom", "administration runtime outside its isolated shell"]
+        }
+      ],
+      "proves": "React-admin stays client-only, dynamically isolated, pinned, and absent from public runtime modules."
+    },
+    {
+      "id": "capability-separation",
+      "status": "available",
+      "gate": "default",
+      "owner": "Identity and each administration context",
+      "evidence": [
+        {
+          "path": "services/api/tests/contracts/test_identity_capability_storage_contract.py",
+          "contains": ["administrator_capabilities.isdisjoint", "privacy.operate", "audit.export"]
+        }
+      ],
+      "proves": "Administration shell access does not inherit moderation, privacy, audit, or Archive authority."
+    },
+    {
+      "id": "sensitive-log-redaction",
+      "status": "available",
+      "gate": "default",
+      "owner": "Security and Release Engineering",
+      "evidence": [
+        {
+          "path": "scripts/release/check-zhipanda-log-redaction.mjs",
+          "contains": ["SENSITIVE_IDENTIFIERS", "scanSensitiveLogging"]
+        },
+        {
+          "path": "scripts/release/tests/zhipanda-log-redaction.test.mjs",
+          "contains": ["repository source does not directly log high-risk credential values"]
+        }
+      ],
+      "proves": "Web, FastAPI, and Release source cannot directly log high-risk credential values."
+    },
+    {
+      "id": "fastapi-serverless-boundary",
+      "status": "available",
+      "gate": "default",
+      "owner": "API Platform",
+      "evidence": [
+        {
+          "path": "services/api/scripts/build_serverless_closure.py",
+          "contains": ["_DEFAULT_CONTRACT_PATH", "_BOUNDARY_CHECKER_PATH", "ServerlessClosureError"]
+        },
+        {
+          "path": "contracts/api-serverless-runtime.v1.json",
+          "contains": ["\"runtime_dependencies\""]
+        }
+      ],
+      "proves": "The FastAPI request closure is bounded, versioned, dependency checked, and suitable for the managed serverless target."
+    },
+    {
+      "id": "web-production-build",
+      "status": "available",
+      "gate": "default",
+      "owner": "Web Platform",
+      "evidence": [
+        {
+          "path": "scripts/release/default.mjs",
+          "contains": ["Web production build", "build:web"]
+        }
+      ],
+      "proves": "The production Next.js build remains part of the default Release Gate."
+    },
+    {
+      "id": "worker-d1-and-http",
+      "status": "available",
+      "gate": "default",
+      "owner": "Public API Platform",
+      "evidence": [
+        {
+          "path": "scripts/release/default.mjs",
+          "contains": ["worker-d1-rollback-smoke", "worker-d1-smoke", "worker-http-smoke"]
+        }
+      ],
+      "proves": "Worker rollback projection, current D1 projection, and Linux HTTP runtime checks remain sequenced."
+    },
+    {
+      "id": "performance-budgets",
+      "status": "available",
+      "gate": "default",
+      "owner": "Web Performance",
+      "evidence": [
+        {
+          "path": "scripts/release/check-route-performance-budgets.mjs",
+          "contains": []
+        },
+        {
+          "path": "scripts/release/check-map-visualization-budget.mjs",
+          "contains": []
+        },
+        {
+          "path": "scripts/release/default.mjs",
+          "contains": ["canonical-route-budgets", "map-visualization-budget"]
+        }
+      ],
+      "proves": "Canonical route and map bundle budgets fail the existing default Release Gate on regression."
+    },
+    {
+      "id": "immutable-operational-evidence",
+      "status": "available",
+      "gate": "default",
+      "owner": "Release Engineering",
+      "evidence": [
+        {
+          "path": "scripts/release/write-zhipanda-v1-operational-readiness-evidence.mjs",
+          "contains": ["evidence_id", "planned_drills", "recovery_rehearsal"]
+        },
+        {
+          "path": "scripts/release/run-zhipanda-v1-recovery-rehearsal.mjs",
+          "contains": ["evidence_id", "sha256"]
+        }
+      ],
+      "proves": "Operational contracts, runbooks, gate sources, and rehearsal behavior receive deterministic SHA-256 identities."
+    },
+    {
+      "id": "extended-real-services",
+      "status": "final-candidate",
+      "gate": "extended",
+      "owner": "Release Engineering and service owners",
+      "evidence": [
+        {
+          "path": "scripts/release/extended.mjs",
+          "contains": ["RUN_REAL_DB_TESTS", "runPostgresAttachmentRecovery", "runIdentityEngagementRecovery"]
+        }
+      ],
+      "proves": "Real PostgreSQL, private attachment recovery, Identity and Engagement restore, and admin import checks run only with explicit environment capability."
+    },
+    {
+      "id": "linux-map-close",
+      "status": "final-candidate",
+      "gate": "map-close",
+      "owner": "Release Engineering",
+      "evidence": [
+        {
+          "path": "scripts/release/map-close.mjs",
+          "contains": ["runMapCloseGate", "runEvidenceSealedCertification"]
+        }
+      ],
+      "proves": "The authoritative Linux map-close profile extends the default gate and seals its evidence."
+    },
+    {
+      "id": "windows-map-close",
+      "status": "final-candidate",
+      "gate": "windows",
+      "owner": "Release Engineering",
+      "evidence": [
+        {
+          "path": "scripts/release/windows-map-close.mjs",
+          "contains": []
+        }
+      ],
+      "proves": "The separate Windows compatibility profile closes path, command-shell, and browser differences."
+    },
+    {
+      "id": "browser-mobile-wcag",
+      "status": "final-candidate",
+      "gate": "map-close",
+      "owner": "Web Quality and Accessibility",
+      "evidence": [
+        {
+          "path": "docs/release/frontend-quality-gates-and-visual-verification.md",
+          "contains": ["WCAG 2.2 AA"]
+        },
+        {
+          "path": "scripts/release/map-close.mjs",
+          "contains": ["createMapCloseCertificationPlan"]
+        }
+      ],
+      "proves": "Browser, mobile viewport, keyboard, automated accessibility, and visual evidence remain final-candidate requirements."
+    }
+  ],
+  "completion_rule": {
+    "required_final_candidate_controls": [
+      "extended-real-services",
+      "linux-map-close",
+      "windows-map-close",
+      "browser-mobile-wcag"
+    ],
+    "rule": "The matrix remains in-progress until every final-candidate control has dated immutable evidence from the selected candidate."
+  }
+}

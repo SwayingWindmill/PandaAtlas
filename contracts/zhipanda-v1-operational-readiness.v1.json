@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "contract_id": "zhipanda-v1-operational-readiness",
+  "issue": 200,
+  "status": "in-progress",
+  "release_system": {
+    "default_gate": "scripts/release/default.mjs",
+    "extended_gate": "scripts/release/extended.mjs",
+    "map_close_gate": "scripts/release/map-close.mjs",
+    "windows_gate": "scripts/release/windows-map-close.mjs",
+    "test_glob": "scripts/release/tests/*.test.mjs",
+    "rule": "Extend the existing Release Gate; do not create an independent certification path."
+  },
+  "service_level_objectives": [
+    {
+      "id": "auth",
+      "owner": "Identity and Engagement",
+      "sli": "Successful email-OTP session establishment and authoritative account loading for eligible users.",
+      "objective": "At least 99.9% successful eligible authentication journeys over 30 days; invalid, expired, suspended, deleting, and deleted accounts fail closed.",
+      "alert": {
+        "severity": "P1",
+        "condition": "Eligible authentication success falls below 99.0% for 15 minutes or inactive-account access succeeds once.",
+        "for_minutes": 15
+      },
+      "rollback_control": "Set IDENTITY_AUTH_ENABLED=false for new authenticated product journeys while preserving account identifiers and audit evidence.",
+      "runbook_anchor": "auth-and-session"
+    },
+    {
+      "id": "follow",
+      "owner": "Identity and Engagement",
+      "sli": "Idempotent Follow command completion for active accounts and valid targets.",
+      "objective": "At least 99.9% successful eligible Follow commands over 30 days with p95 command latency below 750 ms.",
+      "alert": {
+        "severity": "P2",
+        "condition": "Follow command error rate exceeds 2% for 15 minutes or duplicate active relationships are detected.",
+        "for_minutes": 15
+      },
+      "rollback_control": "Set ENGAGEMENT_ENABLED=false to stop new relationship commands without deleting existing Follows or Passport history.",
+      "runbook_anchor": "follow-and-passport"
+    },
+    {
+      "id": "feed",
+      "owner": "Public Activity",
+      "sli": "Authenticated chronological Feed responses from active Follow targets.",
+      "objective": "At least 99.5% successful Feed reads over 30 days with p95 response time below 1.5 seconds.",
+      "alert": {
+        "severity": "P2",
+        "condition": "Feed error rate exceeds 3% for 15 minutes or unpublished activity appears once.",
+        "for_minutes": 15
+      },
+      "rollback_control": "Set FEED_ENABLED=false and retain public Activity plus authoritative Follow state for forward repair.",
+      "runbook_anchor": "activity-and-feed"
+    },
+    {
+      "id": "activity_projection",
+      "owner": "Public Activity",
+      "sli": "Elapsed time from an eligible published Archive event to its Activity projection.",
+      "objective": "At least 99% of eligible events project within 5 minutes over 30 days; correction and retraction events remain ordered and idempotent.",
+      "alert": {
+        "severity": "P1",
+        "condition": "Oldest eligible unprojected event exceeds 15 minutes or projection consistency fails.",
+        "for_minutes": 5
+      },
+      "rollback_control": "Stop the Activity projector, retain the authoritative Outbox, and rebuild the projection after repair.",
+      "runbook_anchor": "activity-and-feed"
+    },
+    {
+      "id": "inbox",
+      "owner": "Notification Orchestration",
+      "sli": "Native Inbox creation and authenticated read-state commands for eligible notification intents.",
+      "objective": "At least 99.5% of eligible intents create or update one logical Inbox item within 2 minutes over 30 days.",
+      "alert": {
+        "severity": "P2",
+        "condition": "Inbox projection lag exceeds 10 minutes or duplicate logical Inbox items are detected.",
+        "for_minutes": 5
+      },
+      "rollback_control": "Set NOTIFICATION_ENABLED=false for new notification commands while preserving intents, read state, and retraction evidence.",
+      "runbook_anchor": "notification-inbox-and-email"
+    },
+    {
+      "id": "queue",
+      "owner": "Release Engineering and context worker owners",
+      "sli": "Oldest ready message age, retry count, and dead-letter volume for PostgreSQL Outbox and PGMQ-backed workers.",
+      "objective": "Oldest ready message remains below 5 minutes during normal operation and every dead-letter item has an acknowledged incident or replay decision.",
+      "alert": {
+        "severity": "P1",
+        "condition": "Oldest ready message exceeds 15 minutes, dead-letter volume increases unexpectedly, or replay creates a duplicate business result.",
+        "for_minutes": 5
+      },
+      "rollback_control": "Stop consumers, preserve the authoritative Outbox and queue rows, then resume with idempotent replay after repair.",
+      "runbook_anchor": "queue-and-dlq"
+    },
+    {
+      "id": "email",
+      "owner": "Notification Orchestration",
+      "sli": "Delivery acceptance for eligible, consented, non-suppressed application email.",
+      "objective": "At least 99% of eligible messages reach a terminal provider state within 10 minutes over 30 days, excluding documented provider-wide incidents.",
+      "alert": {
+        "severity": "P2",
+        "condition": "Terminal delivery latency exceeds 30 minutes, webhook verification fails, or duplicate provider delivery is detected.",
+        "for_minutes": 10
+      },
+      "rollback_control": "Set NOTIFICATION_EMAIL_ENABLED=false while keeping native Inbox delivery active and retaining queued delivery evidence.",
+      "runbook_anchor": "notification-inbox-and-email"
+    },
+    {
+      "id": "submissions",
+      "owner": "Community Intake and Review and Moderation",
+      "sli": "Eligible contribution command success plus age of submitted and assigned review work.",
+      "objective": "At least 99.5% successful eligible submission commands over 30 days; review queues remain within the documented SLA or carry an explicit exception.",
+      "alert": {
+        "severity": "P2",
+        "condition": "Submission command error rate exceeds 3% for 15 minutes or the oldest untriaged submission breaches SLA.",
+        "for_minutes": 15
+      },
+      "rollback_control": "Set COMMUNITY_INTAKE_ENABLED=false to stop new submissions while preserving immutable revisions, sources, attachments, and review state.",
+      "runbook_anchor": "submission-review-and-scanning"
+    },
+    {
+      "id": "attachment_scanning",
+      "owner": "Community Intake",
+      "sli": "Time from completed private attachment upload to clean, infected, or scan_failed classification.",
+      "objective": "At least 99% of completed uploads receive a terminal scan classification within 15 minutes over 30 days; non-clean evidence remains inaccessible.",
+      "alert": {
+        "severity": "P1",
+        "condition": "Any quarantined attachment becomes readable or oldest unclassified attachment exceeds 30 minutes.",
+        "for_minutes": 5
+      },
+      "rollback_control": "Stop new attachment completion and fail closed on preview or download while retaining quarantine objects and metadata.",
+      "runbook_anchor": "submission-review-and-scanning"
+    },
+    {
+      "id": "archive_chain",
+      "owner": "Trusted Archive",
+      "sli": "Validated Change Set provenance chain and accountable publication authorization consistency.",
+      "objective": "Zero broken provenance chains, self-publication successes, unauthorized publication successes, or mutable published history.",
+      "alert": {
+        "severity": "P1",
+        "condition": "Any chain validation, separation-of-duties, or append-only invariant fails.",
+        "for_minutes": 0
+      },
+      "rollback_control": "Stop publication commands, retain the current immutable Release, and use correction, withdrawal, or forward-fix procedures.",
+      "runbook_anchor": "archive-publication-and-projection"
+    },
+    {
+      "id": "publish_projection",
+      "owner": "Trusted Archive and Public Projection",
+      "sli": "Elapsed time from an authorized immutable Release to consistent public Web and API projection.",
+      "objective": "At least 99% of authorized Releases become consistently readable within 10 minutes over 30 days with matching release identifiers.",
+      "alert": {
+        "severity": "P1",
+        "condition": "Web and API release identifiers disagree, projection exceeds 20 minutes, or withdrawn data remains publicly readable.",
+        "for_minutes": 5
+      },
+      "rollback_control": "Withdraw or roll back the public pointer without rewriting historical Releases, then rebuild projections from authoritative state.",
+      "runbook_anchor": "archive-publication-and-projection"
+    },
+    {
+      "id": "privacy_deletion",
+      "owner": "Privacy Operations",
+      "sli": "Immediate access block and per-context completion state for confirmed irreversible deletion requests.",
+      "objective": "100% of confirmed deletions block authenticated access in the confirming transaction; at least 99% of context workflows complete within 24 hours or expose a retryable failed state.",
+      "alert": {
+        "severity": "P1",
+        "condition": "A confirmed deletion account can authenticate, a context failure is hidden, a tombstone replay is missed after restore, or held scope expands unexpectedly.",
+        "for_minutes": 0
+      },
+      "rollback_control": "Set PRIVACY_OPERATIONS_ENABLED=false for new requests without reopening blocked accounts, releasing Holds, removing tombstones, or reversing anonymization.",
+      "runbook_anchor": "privacy-deletion-retention-and-holds"
+    },
+    {
+      "id": "audit",
+      "owner": "Audit",
+      "sli": "Required audit-write success, unified projection lag, rejected payload volume, export access, and integrity verification.",
+      "objective": "100% persistence for commands designated fail-closed; at least 99% of accepted source facts project within 60 seconds; zero unexplained integrity mismatches.",
+      "alert": {
+        "severity": "P1",
+        "condition": "A required audit write fails open, projection lag exceeds 5 minutes, rejected sensitive payloads increase, or an integrity digest mismatches.",
+        "for_minutes": 0
+      },
+      "rollback_control": "Set UNIFIED_AUDIT_ENABLED=false for the read surface only; required source-context audit persistence continues and sensitive commands remain fail closed.",
+      "runbook_anchor": "audit-and-sensitive-reads"
+    },
+    {
+      "id": "admin_access",
+      "owner": "Identity and Engagement plus each administration context",
+      "sli": "Authorized administration-shell entry and server-side capability enforcement for every business command.",
+      "objective": "Zero unauthorized command successes, zero browser direct business-table writes, and at least 99.5% successful eligible admin-shell loads over 30 days.",
+      "alert": {
+        "severity": "P1",
+        "condition": "Any unauthorized command succeeds, browser credentials or private dependencies leak, or direct browser business writes are detected.",
+        "for_minutes": 0
+      },
+      "rollback_control": "Set ADMIN_SHELL_ENABLED=false while retaining FastAPI deny-by-default authorization and all authoritative business state.",
+      "runbook_anchor": "admin-access-and-security"
+    }
+  ],
+  "recovery_drills": [
+    {
+      "id": "immutable-release-recovery",
+      "status": "available",
+      "command": "npm run drill:release-recovery",
+      "evidence": "docs/release/recovery-drill.md",
+      "proves": "Immutable release switch, rollback, withdrawal, cache purge surrogate, and deterministic rebuild."
+    },
+    {
+      "id": "postgres-attachment-recovery",
+      "status": "available",
+      "command": "npm run drill:postgres-attachment-recovery",
+      "evidence": "services/api/scripts/run_postgres_attachment_recovery_drill.py",
+      "proves": "Authoritative PostgreSQL and private attachment restore assumptions plus recovery checks."
+    },
+    {
+      "id": "identity-engagement-recovery",
+      "status": "available",
+      "command": "npm run drill:identity-engagement-recovery",
+      "evidence": "services/api/scripts/run_identity_engagement_recovery_drill.py",
+      "proves": "Account, Follow, consent, Passport, queue replay, and identity recovery behavior."
+    },
+    {
+      "id": "notification-staging",
+      "status": "available",
+      "command": "npm run drill:notification-staging",
+      "evidence": "services/api/scripts/run_notification_staging_drill.py",
+      "proves": "Notification relay, delivery, signed webhook, retry, duplicate, and dead-letter behavior."
+    },
+    {
+      "id": "api-withdrawal-rollback",
+      "status": "available",
+      "command": "npm run staging:api:full",
+      "evidence": "docs/release/api-staging-withdrawal.md",
+      "proves": "Production-like API deployment, withdrawal, rollback, and public release consistency."
+    },
+    {
+      "id": "web-withdrawal-rollback",
+      "status": "available",
+      "command": "npm run staging:web:full",
+      "evidence": "docs/release/frontend-staging-withdrawal.md",
+      "proves": "Production-like Web baseline, withdrawal, rollback, and stale-response checks."
+    },
+    {
+      "id": "supabase-clean-reset",
+      "status": "available",
+      "command": "npm run infra:reset",
+      "evidence": "infra/supabase/config.toml",
+      "proves": "Pinned Supabase, PostgreSQL, PostGIS, PGMQ, migrations, and seed behavior from a clean reset."
+    },
+    {
+      "id": "moderation-stop-drain",
+      "status": "planned",
+      "command": null,
+      "blocked_by_issue": 197,
+      "proves": "Scoped-sanction stop, expiry, restoration, appeal, and account-state recovery."
+    },
+    {
+      "id": "privacy-tombstone-replay",
+      "status": "planned",
+      "command": null,
+      "blocked_by_issue": 198,
+      "proves": "Deletion tombstone reapplication after restore, narrow Holds, and non-held deletion continuation."
+    },
+    {
+      "id": "audit-integrity-recovery",
+      "status": "planned",
+      "command": null,
+      "blocked_by_issue": 199,
+      "proves": "Fail-closed audit outage behavior, projection recovery, encrypted export expiry, and digest mismatch response."
+    }
+  ],
+  "required_runbook_sections": [
+    "auth-and-session",
+    "follow-and-passport",
+    "activity-and-feed",
+    "notification-inbox-and-email",
+    "queue-and-dlq",
+    "submission-review-and-scanning",
+    "archive-publication-and-projection",
+    "privacy-deletion-retention-and-holds",
+    "audit-and-sensitive-reads",
+    "admin-access-and-security",
+    "launch-decision-and-evidence"
+  ],
+  "map_close_requirements": {
+    "all_planned_drills_resolved": true,
+    "linux_and_windows": true,
+    "default_and_extended_gate": true,
+    "clean_checkout_no_diff": true,
+    "browser_mobile_wcag_2_2_aa": true,
+    "performance_security_privacy": true,
+    "immutable_evidence_hashes": true,
+    "launch_owner_and_go_no_go": true
+  }
+}

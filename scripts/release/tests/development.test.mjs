@@ -12,6 +12,21 @@ import {
   developmentPlanOutputs,
   normalizeChangedPath,
 } from "../development.mjs";
+import { scanSensitiveLogging } from "../check-zhipanda-log-redaction.mjs";
+import {
+  loadOperationalControlMatrix,
+  validateOperationalControlMatrix,
+} from "../check-zhipanda-v1-operational-controls.mjs";
+import {
+  loadOperationalReadinessContract,
+  validateOperationalReadinessContract,
+} from "../check-zhipanda-v1-operational-readiness.mjs";
+import {
+  loadRecoveryRehearsalContract,
+  validateRecoveryRehearsalContract,
+} from "../check-zhipanda-v1-recovery-rehearsal.mjs";
+import { runRecoveryRehearsal } from "../run-zhipanda-v1-recovery-rehearsal.mjs";
+import { buildOperationalReadinessEvidence } from "../write-zhipanda-v1-operational-readiness-evidence.mjs";
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -269,4 +284,35 @@ test("release workflow skips draft map-close runs and cancels stale PR runs", as
     workflow.indexOf("  release-gate:"),
   );
   assert.doesNotMatch(developmentJob, /playwright install|release:default|release:extended/);
+});
+
+test("Issue 200 readiness contracts run in the fast development gate", () => {
+  const readiness = validateOperationalReadinessContract(
+    loadOperationalReadinessContract(),
+  );
+  const controls = validateOperationalControlMatrix(
+    loadOperationalControlMatrix(),
+  );
+  const rehearsalContract = validateRecoveryRehearsalContract(
+    loadRecoveryRehearsalContract(),
+  );
+  const rehearsal = runRecoveryRehearsal({
+    generatedAt: "2026-08-04T00:00:00.000Z",
+  });
+  const logRedaction = scanSensitiveLogging();
+  const evidence = buildOperationalReadinessEvidence({
+    generatedAt: "2026-08-04T00:00:00.000Z",
+    sourceCommit: "development-candidate",
+  });
+
+  assert.equal(readiness.slos, 14);
+  assert.equal(readiness.planned_drills, 3);
+  assert.equal(controls.controls, 15);
+  assert.equal(controls.final_candidate_controls, 4);
+  assert.equal(rehearsalContract.required_checks, 12);
+  assert.equal(rehearsal.outcome, "passed");
+  assert.equal(rehearsal.summary.failed, 0);
+  assert.equal(logRedaction.outcome, "passed");
+  assert.equal(evidence.inputs.length, 26);
+  assert.equal(evidence.outcome, "in-progress");
 });

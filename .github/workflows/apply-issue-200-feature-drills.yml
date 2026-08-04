@@ -1,0 +1,36 @@
+# One-time branch reconciliation; removed after a successful run.
+name: Apply Issue 200 Feature Drills
+
+on:
+  push:
+    branches:
+      - feat/issue-200-operational-readiness
+    paths:
+      - .github/workflows/apply-issue-200-feature-drills.yml
+      - scripts/release/apply_issue_200_feature_drills.py
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out operational branch
+        uses: actions/checkout@v7.0.0
+        with:
+          ref: feat/issue-200-operational-readiness
+          fetch-depth: 0
+
+      - name: Apply feature drill integration
+        run: python scripts/release/apply_issue_200_feature_drills.py
+
+      - name: Commit integrated controls
+        run: |
+          rm .github/workflows/apply-issue-200-feature-drills.yml
+          rm scripts/release/apply_issue_200_feature_drills.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat(release): bind real feature recovery drills"
+          git push origin HEAD:feat/issue-200-operational-readiness
