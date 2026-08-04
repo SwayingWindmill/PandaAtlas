@@ -34,18 +34,7 @@ BROWSER_ROLES = ("anon", "authenticated")
 
 
 def expected_migrations(migrations_dir: Path = MIGRATIONS_DIR) -> tuple[str, ...]:
-    return tuple(
-        sorted(
-            {
-                path.name.split("_", 1)[0]
-                for path in migrations_dir.iterdir()
-                if path.is_file()
-                and path.suffix == ".sql"
-                and "_" in path.name
-                and path.name.split("_", 1)[0].isdigit()
-            }
-        )
-    )
+    return tuple(path.name.split("_", 1)[0] for path in sorted(migrations_dir.glob("*.sql")))
 
 
 def _emit(payload: dict[str, Any]) -> None:

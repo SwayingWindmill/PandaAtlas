@@ -132,6 +132,12 @@
       "markers": ["ChangeSetReview", "Independent Activity review complete"]
     },
     {
+      "path": "services/api/tests/integration/conftest.py",
+      "categories": ["test", "fixture"],
+      "disposition": "provision_archive_publication_actor_identities",
+      "markers": ["ARCHIVE_MAP_CLOSE_REVIEWER_ID", "bind_archive_publication_test_actors", "review_change_set"]
+    },
+    {
       "path": "services/api/tests/integration/test_real_db_chain.py",
       "categories": ["test", "fixture"],
       "disposition": "retain_historical_chain_fixture",

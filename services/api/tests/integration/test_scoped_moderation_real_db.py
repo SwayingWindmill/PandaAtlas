@@ -87,6 +87,7 @@ def clean_moderation_data(
                       review_moderation.restoration_events,
                       review_moderation.moderation_subjects,
                       review_moderation.sanctions,
+                      audit.event_facts,
                       identity.authorization_audit_events,
                       identity.account_state_events
                     cascade
