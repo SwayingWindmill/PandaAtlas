@@ -137,7 +137,7 @@
     "owner": null,
     "decided_at": null,
     "version": null,
-    "candidate_sha": "38fa34e0f7287dd592249a34c7c1a27934bac349",
+    "candidate_sha": null,
     "evidence_sha256": null,
     "reason": null,
     "rollback_switches": [
