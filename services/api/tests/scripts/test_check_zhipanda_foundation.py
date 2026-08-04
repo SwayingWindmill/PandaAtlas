@@ -70,6 +70,7 @@ def test_version_and_database_url_helpers_are_deterministic() -> None:
         "0023",
         "0024",
         "0025",
+        "0026",
         "0027",
         "0028",
         "0029",
