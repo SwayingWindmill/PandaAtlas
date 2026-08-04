@@ -28,7 +28,7 @@ def _write_file(root: Path, relative_path: str, content: str) -> None:
 
 def _contract(
     *,
-    allowed_write_schemas: tuple[str, ...] = (),
+    allowed_write_targets: tuple[str, ...] = (),
 ) -> dict[str, object]:
     return {
         "schema_version": 1,
@@ -38,7 +38,7 @@ def _contract(
             "moderation": {
                 "root": "app.moderation",
                 "owned_schemas": ["moderation"],
-                "allowed_write_schemas": list(allowed_write_schemas),
+                "allowed_write_targets": list(allowed_write_targets),
             }
         },
         "rules": {
@@ -52,13 +52,13 @@ def _write_fixture(
     root: Path,
     *,
     source: str,
-    allowed_write_schemas: tuple[str, ...] = (),
+    allowed_write_targets: tuple[str, ...] = (),
 ) -> Path:
     contract_path = root / "contracts" / "api-domain-storage-writes.v1.json"
     _write_file(
         root,
         "contracts/api-domain-storage-writes.v1.json",
-        json.dumps(_contract(allowed_write_schemas=allowed_write_schemas)),
+        json.dumps(_contract(allowed_write_targets=allowed_write_targets)),
     )
     _write_file(root, "services/api/app/__init__.py", "")
     _write_file(root, "services/api/app/moderation/__init__.py", "")
@@ -83,14 +83,14 @@ def test_accepts_owned_schema_writes(tmp_path: Path) -> None:
     assert [item.target for item in report.writes] == ["moderation.actions"]
 
 
-def test_accepts_explicit_cross_schema_writes(tmp_path: Path) -> None:
+def test_accepts_explicit_cross_schema_write_target(tmp_path: Path) -> None:
     contract_path = _write_fixture(
         tmp_path,
         source=(
             "from sqlalchemy import text\n\n"
             "STATEMENT = text('update identity.accounts set state = 1')\n"
         ),
-        allowed_write_schemas=("identity",),
+        allowed_write_targets=("identity.accounts",),
     )
 
     report = analyze_domain_storage_writes(
@@ -99,6 +99,28 @@ def test_accepts_explicit_cross_schema_writes(tmp_path: Path) -> None:
     )
 
     assert [item.target for item in report.writes] == ["identity.accounts"]
+
+
+def test_rejects_another_table_in_an_approved_target_schema(tmp_path: Path) -> None:
+    contract_path = _write_fixture(
+        tmp_path,
+        source=(
+            "from sqlalchemy import text\n\n"
+            "STATEMENT = text('delete from identity.sessions where id = 1')\n"
+        ),
+        allowed_write_targets=("identity.accounts",),
+    )
+
+    with pytest.raises(DomainStorageWriteError) as captured:
+        analyze_domain_storage_writes(
+            repository_root=tmp_path,
+            contract_path=contract_path,
+        )
+
+    assert any(
+        "may not delete from identity.sessions" in item
+        for item in captured.value.violations
+    )
 
 
 def test_rejects_unapproved_cross_schema_writes(tmp_path: Path) -> None:
@@ -165,6 +187,26 @@ def test_rejects_dynamic_write_targets(tmp_path: Path) -> None:
     )
 
 
+def test_ignores_locking_and_upsert_update_clauses(tmp_path: Path) -> None:
+    contract_path = _write_fixture(
+        tmp_path,
+        source=(
+            "from sqlalchemy import text\n\n"
+            "LOCK = text('select id from moderation.actions for update of actions')\n"
+            "UPSERT = text('insert into moderation.actions (id) values (1) '
+"
+            "              'on conflict (id) do update set id = excluded.id')\n"
+        ),
+    )
+
+    report = analyze_domain_storage_writes(
+        repository_root=tmp_path,
+        contract_path=contract_path,
+    )
+
+    assert [item.target for item in report.writes] == ["moderation.actions"]
+
+
 def test_rejects_overlapping_schema_ownership(tmp_path: Path) -> None:
     contract = _contract()
     domains = contract["domains"]
@@ -172,7 +214,7 @@ def test_rejects_overlapping_schema_ownership(tmp_path: Path) -> None:
     domains["identity"] = {
         "root": "app.identity",
         "owned_schemas": ["moderation"],
-        "allowed_write_schemas": [],
+        "allowed_write_targets": [],
     }
     contract_path = tmp_path / "contracts" / "api-domain-storage-writes.v1.json"
     _write_file(
