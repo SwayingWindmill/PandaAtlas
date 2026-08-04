@@ -193,9 +193,8 @@ def test_ignores_locking_and_upsert_update_clauses(tmp_path: Path) -> None:
         source=(
             "from sqlalchemy import text\n\n"
             "LOCK = text('select id from moderation.actions for update of actions')\n"
-            "UPSERT = text('insert into moderation.actions (id) values (1) '
-"
-            "              'on conflict (id) do update set id = excluded.id')\n"
+            "UPSERT = text('insert into moderation.actions (id) values (1) "
+            "on conflict (id) do update set id = excluded.id')\n"
         ),
     )
 
