@@ -50,6 +50,7 @@ test("GO remains fail closed while any final gate or external requirement is pen
         owner: "Launch owner",
         decided_at: "2026-08-04T12:00:00Z",
         version: "v1.0.0",
+        candidate_sha: "b".repeat(40),
         evidence_sha256: "a".repeat(64),
         reason: "All evidence passed",
       };
@@ -58,6 +59,20 @@ test("GO remains fail closed while any final gate or external requirement is pen
       assert.throws(
         () => validateZhiPandaV1DeliveryCloseout({ contractPath }),
         /GO decision is forbidden until every domain, gate, and external requirement passes/,
+      );
+    },
+  );
+});
+
+test("pending launch decisions cannot retain stale candidate metadata", () => {
+  withContract(
+    (contract) => {
+      contract.launch_decision.candidate_sha = "b".repeat(40);
+    },
+    (contractPath) => {
+      assert.throws(
+        () => validateZhiPandaV1DeliveryCloseout({ contractPath }),
+        /Pending launch decision must not contain partial decision metadata/,
       );
     },
   );
