@@ -32,6 +32,12 @@ services/api/.venv-release/
 .media-work-*/
 .release-candidate*/
 data/curation/pandas/media-inbox/
+
+# Local research workspace
+# Raw fetches, caches, temporary query output, and media binaries may live here
+# but must not enter Git history. Promote reviewed material into governed data zones.
+data/local-panda-research/
+
 *.egg-info/
 .coverage
 coverage.xml
