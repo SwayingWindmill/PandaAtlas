@@ -52,13 +52,12 @@ const REQUIRED_AVAILABLE_DRILLS = new Set([
   "api-withdrawal-rollback",
   "web-withdrawal-rollback",
   "supabase-clean-reset",
+  "moderation-stop-drain",
+  "privacy-tombstone-replay",
+  "audit-integrity-recovery",
 ]);
 
-const REQUIRED_PLANNED_DRILLS = new Map([
-  ["moderation-stop-drain", 197],
-  ["privacy-tombstone-replay", 198],
-  ["audit-integrity-recovery", 199],
-]);
+const REQUIRED_PLANNED_DRILLS = new Map();
 
 const REQUIRED_GATE_PATHS = new Map([
   ["default_gate", "scripts/release/default.mjs"],

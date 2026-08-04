@@ -21,8 +21,8 @@ test("V1 operational readiness is integrated into the existing Release Gate", ()
     status: "in-progress",
     slos: 14,
     p1_slos: 9,
-    available_drills: 7,
-    planned_drills: 3,
+    available_drills: 10,
+    planned_drills: 0,
     runbook_sections: 11,
     release_gate_integrated: true,
   });
@@ -39,7 +39,7 @@ test("operational runbook contains every contract section", () => {
     assert.match(runbook, new RegExp(`^## ${section}$`, "m"));
   }
   assert.match(runbook, /does not authorize an independent release path/);
-  assert.match(runbook, /The contract remains `in-progress` while any recovery drill is `planned`/);
+  assert.match(runbook, /No feature-specific recovery drill remains `planned`/);
 });
 
 test("operational readiness rejects a missing product SLO", () => {
@@ -75,34 +75,39 @@ test("operational readiness forbids a parallel certification system", () => {
   );
 });
 
-test("planned drills cannot claim commands or evidence before their blockers land", () => {
+test("feature drills cannot regress to planned after their slices land", () => {
   const contract = cloneContract();
   const replay = contract.recovery_drills.find(
     (drill) => drill.id === "privacy-tombstone-replay",
   );
-  replay.command = "npm run privacy:tombstone-replay";
-  replay.evidence = "temporary/privacy-evidence.json";
+  replay.status = "planned";
+  replay.command = null;
+  replay.blocked_by_issue = 198;
+  delete replay.evidence;
 
   assert.throws(
     () => validateOperationalReadinessContract(contract, { checkEvidence: false }),
-    /command must remain null until the blocking slice lands/,
+    /is not a recognized planned drill/,
   );
 });
 
-test("complete status requires every recovery drill to be executable", () => {
+test("available feature drills require executable commands", () => {
   const contract = cloneContract();
-  contract.status = "complete";
+  const drill = contract.recovery_drills.find(
+    (item) => item.id === "moderation-stop-drain",
+  );
+  drill.command = null;
 
   assert.throws(
     () => validateOperationalReadinessContract(contract, { checkEvidence: false }),
-    /cannot contain planned drills/,
+    /must use an npm run command/,
   );
 });
 
 test("available recovery drills require repository evidence", () => {
   const contract = cloneContract();
   const drill = contract.recovery_drills.find(
-    (item) => item.id === "immutable-release-recovery",
+    (item) => item.id === "audit-integrity-recovery",
   );
   drill.evidence = "missing/recovery-evidence.md";
 

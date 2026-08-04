@@ -119,6 +119,10 @@ npm run staging:web:full
 
 The first command is a clean-checkout deterministic drill. The staging commands require approved non-production credentials and must record the target environment, release identifiers, withdrawal evidence, rollback evidence, and stale-response checks.
 
+### Moderation stop, drain, and restoration drill
+
+Before final-candidate closure, run `npm run drill:moderation-recovery`. The drill proves the disabled command boundary fails closed before database access, then exercises appeal drain, append-only decision, account-state restoration, scoped enforcement, and projection cleanup against real PostgreSQL.
+
 ## privacy-deletion-retention-and-holds
 
 **Owner:** Privacy Operations.
@@ -129,7 +133,7 @@ The first command is a clean-checkout deterministic drill. The staging commands 
 
 **Recovery:** retry only failed contexts using current version checks. Non-held scope must continue deletion. Post-restore replay requires explicit operator intent, account scope, and evidence that the restored data falls within the rolling backup boundary.
 
-The dedicated tombstone replay drill remains planned until Issue #198 is merged into the Issue #200 branch. The contract must not mark that drill available or claim evidence before then.
+Run `npm run drill:privacy-tombstone-recovery` after a restore or before final-candidate closure. It reapplies the account tombstone against real PostgreSQL, verifies narrow Hold behavior, and proves duplicate replay idempotency without copying database credentials into evidence.
 
 ## audit-and-sensitive-reads
 
@@ -139,7 +143,7 @@ The dedicated tombstone replay drill remains planned until Issue #198 is merged 
 
 **Stop boundary:** `UNIFIED_AUDIT_ENABLED=false` may hide the unified read surface only. It must not disable required source-context audit persistence. Commands designated fail-closed remain unavailable until durable audit writes recover.
 
-**Recovery:** repair source persistence first, then replay projection idempotently, verify rejected-payload evidence, expire encrypted artifacts according to policy, generate a new integrity check, and record the mismatch disposition. The dedicated outage and integrity recovery drill remains planned until Issue #199 is merged into the Issue #200 branch.
+**Recovery:** repair source persistence first, then replay projection idempotently, verify rejected-payload evidence, expire encrypted artifacts according to policy, generate a new integrity check, and record the mismatch disposition. Run `npm run drill:audit-integrity-recovery` to verify late-fact mismatch detection, append-only mutation denial, encrypted artifact expiry, and idempotent retention maintenance against real PostgreSQL.
 
 ## admin-access-and-security
 
@@ -166,4 +170,4 @@ A final candidate must record:
 - dashboards, alerts, incident owners, rollback switches, and post-launch monitoring window;
 - unresolved exceptions with explicit owner, expiry, and decision impact.
 
-The contract remains `in-progress` while any recovery drill is `planned`. It may be marked `complete` only after all planned drills have executable commands and repository evidence, and the existing Release Gate proves the contract from a clean checkout without modifying tracked files.
+No feature-specific recovery drill remains `planned`; Moderation, Privacy, and Audit now have executable real PostgreSQL commands and repository evidence. The contract remains `in-progress` until the four final-candidate controls are closed by Extended, Linux, Windows, browser/mobile/WCAG, and published-return evidence through the existing Release Gate.

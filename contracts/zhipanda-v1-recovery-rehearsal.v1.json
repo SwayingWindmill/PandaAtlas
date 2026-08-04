@@ -19,7 +19,7 @@
         "in-flight-appeal-drains",
         "projection-replay-is-idempotent"
       ],
-      "limitation": "Model-level orchestration rehearsal; the Issue #197 real PostgreSQL drill remains required."
+      "limitation": "Model-level orchestration rehearsal; paired real PostgreSQL evidence is provided by services/api/scripts/run_moderation_recovery_drill.py."
     },
     {
       "id": "privacy-tombstone-replay-orchestration",
@@ -30,7 +30,7 @@
         "tombstone-replay-deletes-only-non-held-contexts",
         "duplicate-tombstone-replay-is-idempotent"
       ],
-      "limitation": "Model-level orchestration rehearsal; the Issue #198 real PostgreSQL and restore drill remains required."
+      "limitation": "Model-level orchestration rehearsal; paired real PostgreSQL evidence is provided by services/api/scripts/run_privacy_tombstone_recovery_drill.py."
     },
     {
       "id": "audit-integrity-recovery-orchestration",
@@ -42,7 +42,7 @@
         "expired-export-ciphertext-is-removed-but-fact-remains",
         "healthy-required-audit-command-succeeds"
       ],
-      "limitation": "Model-level orchestration rehearsal; the Issue #199 real PostgreSQL fail-closed and digest drill remains required."
+      "limitation": "Model-level orchestration rehearsal; paired real PostgreSQL evidence is provided by services/api/scripts/run_audit_integrity_recovery_drill.py."
     }
   ],
   "completion_boundary": {
@@ -52,6 +52,6 @@
       "privacy-tombstone-replay",
       "audit-integrity-recovery"
     ],
-    "rule": "This rehearsal validates recovery orchestration and evidence determinism but does not replace feature-specific real PostgreSQL, restore, or integrity drills."
+    "rule": "This rehearsal validates recovery orchestration and evidence determinism; feature-specific real PostgreSQL evidence is provided by the three available drill commands in the operational-readiness contract."
   }
 }

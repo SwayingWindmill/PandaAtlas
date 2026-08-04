@@ -9,7 +9,7 @@ import {
   writeOperationalReadinessEvidence,
 } from "../write-zhipanda-v1-operational-readiness-evidence.mjs";
 
-test("operational readiness evidence seals controls, contracts, runbooks, rehearsal, and gate sources", () => {
+test("operational readiness evidence seals controls, contracts, runbooks, rehearsal, gates, and real drills", () => {
   const evidence = buildOperationalReadinessEvidence({
     generatedAt: "2026-08-04T00:00:00.000Z",
     sourceCommit: "candidate-commit",
@@ -20,7 +20,7 @@ test("operational readiness evidence seals controls, contracts, runbooks, rehear
   assert.equal(evidence.contract_status, "in-progress");
   assert.equal(evidence.outcome, "in-progress");
   assert.match(evidence.evidence_id, /^sha256:[0-9a-f]{64}$/);
-  assert.equal(evidence.inputs.length, 26);
+  assert.ok(evidence.inputs.length > 26);
   assert.deepEqual(evidence.operational_controls, {
     matrix_id: "zhipanda-v1-operational-controls",
     status: "in-progress",
@@ -38,15 +38,14 @@ test("operational readiness evidence seals controls, contracts, runbooks, rehear
     feature_drills_resolved: false,
     release_gate_integrated: true,
   });
-  assert.equal(evidence.planned_drills.length, 3);
-  assert.deepEqual(
-    evidence.planned_drills.map((drill) => drill.blocked_by_issue),
-    [197, 198, 199],
-  );
+  assert.deepEqual(evidence.planned_drills, []);
 
   const inputPaths = evidence.inputs.map((input) => input.path);
   assert.ok(inputPaths.includes("package.json"));
   assert.ok(inputPaths.includes("services/api/scripts/check_seedless_release_foundation.py"));
+  assert.ok(inputPaths.includes("services/api/scripts/run_moderation_recovery_drill.py"));
+  assert.ok(inputPaths.includes("services/api/scripts/run_privacy_tombstone_recovery_drill.py"));
+  assert.ok(inputPaths.includes("services/api/scripts/run_audit_integrity_recovery_drill.py"));
   assert.ok(inputPaths.includes("apps/web/scripts/check-admin-runtime-boundary.mjs"));
   assert.ok(inputPaths.includes("docs/release/frontend-quality-gates-and-visual-verification.md"));
   assert.equal(new Set(inputPaths).size, inputPaths.length);
@@ -88,6 +87,7 @@ test("operational evidence writer emits a machine-readable report without secret
   assert.doesNotMatch(raw, /begin private key/i);
   assert.doesNotMatch(raw, /authorization:\s*bearer/i);
   assert.equal(parsed.summary.release_gate_integrated, true);
+  assert.equal(parsed.summary.planned_drills, 0);
   assert.equal(parsed.operational_controls.final_candidate_controls, 4);
   assert.equal(parsed.recovery_rehearsal.feature_drills_resolved, false);
 });

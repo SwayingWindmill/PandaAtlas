@@ -73,11 +73,14 @@ function generatedAtFromEnvironment() {
   return new Date().toISOString();
 }
 
-function evidenceInputPaths(controlMatrix) {
+function evidenceInputPaths(contract, controlMatrix) {
   const controlPaths = controlMatrix.controls.flatMap((control) =>
     control.evidence.map((item) => item.path),
   );
-  return [...new Set([...BASE_EVIDENCE_INPUTS, ...controlPaths])].sort();
+  const drillPaths = contract.recovery_drills
+    .filter((drill) => drill.status === "available")
+    .map((drill) => drill.evidence);
+  return [...new Set([...BASE_EVIDENCE_INPUTS, ...controlPaths, ...drillPaths])].sort();
 }
 
 export function buildOperationalReadinessEvidence({
@@ -113,7 +116,7 @@ export function buildOperationalReadinessEvidence({
     { root },
   );
 
-  const inputs = evidenceInputPaths(controlMatrix).map((relativePath) => {
+  const inputs = evidenceInputPaths(contract, controlMatrix).map((relativePath) => {
     const bytes = readFileSync(path.join(root, relativePath));
     return {
       path: relativePath,

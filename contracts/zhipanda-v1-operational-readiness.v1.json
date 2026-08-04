@@ -247,24 +247,24 @@
     },
     {
       "id": "moderation-stop-drain",
-      "status": "planned",
-      "command": null,
-      "blocked_by_issue": 197,
-      "proves": "Scoped-sanction stop, expiry, restoration, appeal, and account-state recovery."
+      "status": "available",
+      "command": "npm run drill:moderation-recovery",
+      "proves": "Fail-closed command stop, appeal drain to append-only decision, sanction restoration, scoped enforcement, and transactional projections.",
+      "evidence": "services/api/scripts/run_moderation_recovery_drill.py"
     },
     {
       "id": "privacy-tombstone-replay",
-      "status": "planned",
-      "command": null,
-      "blocked_by_issue": 198,
-      "proves": "Deletion tombstone reapplication after restore, narrow Holds, and non-held deletion continuation."
+      "status": "available",
+      "command": "npm run drill:privacy-tombstone-recovery",
+      "proves": "Deletion tombstone reapplication after restore, narrow Holds, non-held deletion continuation, and duplicate replay idempotency.",
+      "evidence": "services/api/scripts/run_privacy_tombstone_recovery_drill.py"
     },
     {
       "id": "audit-integrity-recovery",
-      "status": "planned",
-      "command": null,
-      "blocked_by_issue": 199,
-      "proves": "Fail-closed audit outage behavior, projection recovery, encrypted export expiry, and digest mismatch response."
+      "status": "available",
+      "command": "npm run drill:audit-integrity-recovery",
+      "proves": "Integrity mismatch detection, append-only mutation denial, encrypted export expiry, and idempotent retention recovery.",
+      "evidence": "services/api/scripts/run_audit_integrity_recovery_drill.py"
     }
   ],
   "required_runbook_sections": [
