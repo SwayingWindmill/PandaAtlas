@@ -5,6 +5,7 @@
   "status": "available",
   "command": "node scripts/release/run-zhipanda-v1-recovery-rehearsal.mjs",
   "report_path": ".release-gate/zhipanda-v1-recovery-rehearsal.json",
+  "runbook": "docs/runbooks/zhipanda-v1-recovery-rehearsal.md",
   "release_integration": {
     "test_glob": "scripts/release/tests/*.test.mjs",
     "test_path": "scripts/release/tests/zhipanda-v1-recovery-rehearsal.test.mjs"
