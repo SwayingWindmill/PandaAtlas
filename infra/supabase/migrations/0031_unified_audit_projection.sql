@@ -194,7 +194,7 @@ returns text
 language sql
 immutable
 as $$
-  select encode(digest(coalesce(payload, '{}'::jsonb)::text, 'sha256'), 'hex');
+  select encode(extensions.digest(coalesce(payload, '{}'::jsonb)::text, 'sha256'), 'hex');
 $$;
 
 create or replace function audit.project_identity_authorization()
