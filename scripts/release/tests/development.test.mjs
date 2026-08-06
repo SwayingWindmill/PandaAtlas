@@ -13,6 +13,7 @@ import {
   normalizeChangedPath,
 } from "../development.mjs";
 import { scanSensitiveLogging } from "../check-zhipanda-log-redaction.mjs";
+import { validateZhiPandaV1DeliveryCloseout } from "../check-zhipanda-v1-delivery-closeout.mjs";
 import {
   loadOperationalControlMatrix,
   validateOperationalControlMatrix,
@@ -315,4 +316,20 @@ test("Issue 200 readiness contracts run in the fast development gate", () => {
   assert.equal(logRedaction.outcome, "passed");
   assert.ok(evidence.inputs.length > 26);
   assert.equal(evidence.outcome, "in-progress");
+});
+
+test("Issue 201 delivery closeout runs in the fast development gate", () => {
+  const closeout = validateZhiPandaV1DeliveryCloseout();
+
+  assert.equal(closeout.status, "PASS");
+  assert.equal(closeout.contract_status, "in-progress");
+  assert.equal(closeout.decision_status, "pending");
+  assert.equal(closeout.prerequisite_count, 8);
+  assert.equal(closeout.domain_count, 5);
+  assert.equal(closeout.repository_gate_count, 5);
+  assert.deepEqual(closeout.pending_gate_ids, [
+    "extended-real-service",
+    "vercel-api-final-preview",
+    "vercel-web-final-preview",
+  ]);
 });
