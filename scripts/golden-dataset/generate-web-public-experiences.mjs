@@ -4,7 +4,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-export const PUBLIC_EXPERIENCE_RELEASE_VERSION = "2026.07.31.1";
+export const PUBLIC_EXPERIENCE_RELEASE_VERSION = "2026.08.12.1";
 export const publicExperienceApiPath = path.resolve(
   scriptDir,
   "..",

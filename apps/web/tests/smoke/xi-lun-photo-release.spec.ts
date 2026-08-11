@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { Buffer } from "node:buffer";
 
-const RELEASE_ID = "2026.07.31.1";
+const RELEASE_ID = "2026.08.12.1";
 const MEDIA_RELEASE_ID = "2026.07.21.1";
 const ONE_PIXEL_PNG = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
@@ -34,7 +34,7 @@ test("publishes Xi Lun in the current trusted Atlas release", async ({ page }) =
   );
 
   await page.goto("/en/pandas");
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("39");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("679");
 });
 
 test("renders Xi Lun bilingual profile, reviewed media, current residency, and three events", async ({ page }) => {

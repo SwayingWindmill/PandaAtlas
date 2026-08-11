@@ -1,0 +1,758 @@
+{
+  "base_version": "2026.07.31.1",
+  "conflicts": {
+    "birth_date_subject_ids": [
+      "ai-bang-shirahama-2006",
+      "an-an-2022-cub-qinling",
+      "ding-ding",
+      "fu-duo-duo-qifu-offspring-2021",
+      "jia-jia-singapore",
+      "kai-kai-singapore",
+      "long-hui",
+      "meng-meng-berlin",
+      "nuo-mi-junzu-offspring-2018",
+      "qi-ji-yaya-twin-2021",
+      "ru-yi",
+      "sheng-yi",
+      "shu-hui-huihui-offspring-2023",
+      "suhail",
+      "tai-shan",
+      "wu-wen",
+      "xi-qing-yaya-twin-2021",
+      "xiang-bing-bingbing-offspring-2007",
+      "xiang-shan-xiangbing-offspring-2023",
+      "ya-ya-chengdu-1990",
+      "yang-yang-vienna"
+    ],
+    "birthplace_subject_ids": [
+      "a-ling-yeye-offspring-2008",
+      "ao-ke-xianxian-twin-2023",
+      "hai-hai-wulin-sibling",
+      "han-han-yeye-offspring-2012",
+      "lao-lao-wulin-sibling",
+      "lun-hui-meilun-offspring-2021",
+      "ni-ke-nini-twin-2017",
+      "ni-na-nini-twin-2017",
+      "shan-hu-princess-offspring-2010",
+      "shu-hui-huihui-offspring-2023",
+      "wu-jun-yeye-twin-2007",
+      "ya-song-yali-offspring-2021",
+      "yang-hua-junzu-offspring-2010",
+      "ying-xue-sixue-offspring-2015",
+      "yun-yun-princess-offspring-2009",
+      "zhen-xi"
+    ],
+    "death_date_subject_ids": [],
+    "life_status_subject_ids": [],
+    "sex_subject_ids": [
+      "jing-jing-chengdu-2005",
+      "lin-bing",
+      "ling-ling-smithsonian-1972",
+      "mang-zai-chongqing-2011",
+      "nuo-mi-junzu-offspring-2018",
+      "qi-ji-yaya-twin-2021",
+      "si-yuan-chengdu-2004",
+      "xiang-shan-xiangbing-offspring-2023",
+      "ya-ya-qinling"
+    ]
+  },
+  "deduplication": {
+    "duplicate_record_ids": 2454,
+    "duplicate_source_ids": 1051
+  },
+  "events": {
+    "added_birth_death_events": 531
+  },
+  "identity": {
+    "ambiguous_subject_ids": [
+      "an-an-hk-2019",
+      "an-an-ocean-park",
+      "bao-bao-berlin",
+      "bao-bao-smithsonian",
+      "bei-bei-chengdu-2008",
+      "li-li-chengdu-zoo-1992",
+      "li-li-paris-1973",
+      "qi-miao-macao-historic",
+      "qi-zhen-chengdu-1999",
+      "qi-zhen-chongqing-2021",
+      "qing-qing-baixue-twin-1999",
+      "qing-qing-chengdu-early-lineage",
+      "qing-qing-chongqing-2019",
+      "qing-qing-dujiangyan-2015",
+      "tai-shan-smithsonian-2005",
+      "tian-tian-edinburgh",
+      "xin-xin-macao-2015",
+      "xin-xin-mexico-city",
+      "yang-yang-vienna",
+      "zhen-zhen-chengdu-2011"
+    ],
+    "matched_existing_subjects": 35,
+    "new_subjects": 639,
+    "promoted_dependency_subjects": 1
+  },
+  "input": {
+    "panda_records": 10668,
+    "panda_subject_ids": 675,
+    "records": 11113,
+    "skipped_non_panda_records": 445,
+    "sources": 3076
+  },
+  "media_policy": "Existing formal media is preserved. Local research media is not auto-published unless it was already in the formal release; new pandas receive a no_licensed_media state so per-item rights are not bypassed.",
+  "mode": "direct_merge_without_human_review",
+  "output": {
+    "events": 574,
+    "facts": 12743,
+    "media": 678,
+    "pandas": 679,
+    "parentage_assertions": 289,
+    "residencies": 28,
+    "sources": 3119
+  },
+  "relationships": {
+    "added_parentage_assertions": 265,
+    "unresolved_parent_reference_count": 128,
+    "unresolved_parent_references": [
+      {
+        "reference": "Mei Mei / 梅梅",
+        "role": "mother",
+        "subject_id": "ai-bang-shirahama-2006"
+      },
+      {
+        "reference": "梅梅 / Meimei",
+        "role": "mother",
+        "subject_id": "ai-bang-shirahama-2006"
+      },
+      {
+        "reference": "乐乐",
+        "role": "father",
+        "subject_id": "ai-le-aibang-offspring-2022"
+      },
+      {
+        "reference": "安安",
+        "role": "mother",
+        "subject_id": "an-an-2022-cub-qinling"
+      },
+      {
+        "reference": "安安 / An An",
+        "role": "mother",
+        "subject_id": "an-an-2022-cub-qinling"
+      },
+      {
+        "reference": "安安",
+        "role": "mother",
+        "subject_id": "an-an-2023-cub-a-qinling"
+      },
+      {
+        "reference": "安安（小馨） / An An (Xiao Xin)",
+        "role": "mother",
+        "subject_id": "an-an-2023-cub-a-qinling"
+      },
+      {
+        "reference": "安安",
+        "role": "mother",
+        "subject_id": "an-an-2023-cub-b-qinling"
+      },
+      {
+        "reference": "安安（小馨） / An An (Xiao Xin)",
+        "role": "mother",
+        "subject_id": "an-an-2023-cub-b-qinling"
+      },
+      {
+        "reference": "莉莉 / Li Li",
+        "role": "mother",
+        "subject_id": "ao-ao-lili-twin-2001"
+      },
+      {
+        "reference": "阿宝 / Po",
+        "role": "mother",
+        "subject_id": "bao-ge-abao-twin-2019"
+      },
+      {
+        "reference": "阿宝 / Po",
+        "role": "mother",
+        "subject_id": "bao-mei-abao-twin-2019"
+      },
+      {
+        "reference": "北川",
+        "role": "mother",
+        "subject_id": "bei-chen-chengdu-companion"
+      },
+      {
+        "reference": "Pang / 胖",
+        "role": "father",
+        "subject_id": "bing-bing-chengdu-1986"
+      },
+      {
+        "reference": "胖",
+        "role": "father",
+        "subject_id": "bing-bing-chengdu-1986"
+      },
+      {
+        "reference": "Bing Bing / 冰冰",
+        "role": "mother",
+        "subject_id": "bing-dian-bingbing-twin-2000"
+      },
+      {
+        "reference": "冰冰",
+        "role": "mother",
+        "subject_id": "bing-dian-bingbing-twin-2000"
+      },
+      {
+        "reference": "冰冰 / Bing Bing",
+        "role": "mother",
+        "subject_id": "bing-dian-bingbing-twin-2000"
+      },
+      {
+        "reference": "冰冰",
+        "role": "mother",
+        "subject_id": "bing-zai-mianyang"
+      },
+      {
+        "reference": "冰冰 / Bing Bing",
+        "role": "mother",
+        "subject_id": "bing-zai-mianyang"
+      },
+      {
+        "reference": "璨璨",
+        "role": "mother",
+        "subject_id": "can-can-cub-2025"
+      },
+      {
+        "reference": "璨璨 / Can Can",
+        "role": "mother",
+        "subject_id": "can-can-cub-2025"
+      },
+      {
+        "reference": "璨璨",
+        "role": "mother",
+        "subject_id": "can-yang-shenshuping"
+      },
+      {
+        "reference": "璨璨 / Can Can",
+        "role": "mother",
+        "subject_id": "can-yang-shenshuping"
+      },
+      {
+        "reference": "Qiang Qiang",
+        "role": "father",
+        "subject_id": "cheng-cheng-chengdu-matriarch-1985"
+      },
+      {
+        "reference": "强强",
+        "role": "father",
+        "subject_id": "cheng-cheng-chengdu-matriarch-1985"
+      },
+      {
+        "reference": "Mei Mei",
+        "role": "mother",
+        "subject_id": "cheng-cheng-chengdu-matriarch-1985"
+      },
+      {
+        "reference": "美美",
+        "role": "mother",
+        "subject_id": "cheng-cheng-chengdu-matriarch-1985"
+      },
+      {
+        "reference": "福娃",
+        "role": "mother",
+        "subject_id": "fu-sheng-fuwa-offspring-2024"
+      },
+      {
+        "reference": "福娃 / Fu Wa",
+        "role": "mother",
+        "subject_id": "fu-sheng-fuwa-offspring-2024"
+      },
+      {
+        "reference": "林萍",
+        "role": "mother",
+        "subject_id": "hai-hai-wulin-sibling"
+      },
+      {
+        "reference": "草草",
+        "role": "mother",
+        "subject_id": "he-he-shenshuping"
+      },
+      {
+        "reference": "草草 / Cao Cao",
+        "role": "mother",
+        "subject_id": "he-he-shenshuping"
+      },
+      {
+        "reference": "Lin Nan / 林楠",
+        "role": "father",
+        "subject_id": "jiao-zi-bingbing-offspring-1995"
+      },
+      {
+        "reference": "林楠",
+        "role": "father",
+        "subject_id": "jiao-zi-bingbing-offspring-1995"
+      },
+      {
+        "reference": "Bing Bing / 冰冰",
+        "role": "mother",
+        "subject_id": "jiao-zi-bingbing-offspring-1995"
+      },
+      {
+        "reference": "冰冰",
+        "role": "mother",
+        "subject_id": "jiao-zi-bingbing-offspring-1995"
+      },
+      {
+        "reference": "紫金",
+        "role": "father",
+        "subject_id": "jin-hui-zhenzhen-offspring-2024"
+      },
+      {
+        "reference": "珍珍 / Zhen Zhen",
+        "role": "mother",
+        "subject_id": "jin-hui-zhenzhen-offspring-2024"
+      },
+      {
+        "reference": "美美",
+        "role": "mother",
+        "subject_id": "jin-jin-meimei-offspring-1981"
+      },
+      {
+        "reference": "born on opening day of 1992 Barcelona Olympics",
+        "role": "father",
+        "subject_id": "jing-jing-chengdu-2005"
+      },
+      {
+        "reference": "born on opening day of 1990 Beijing Asian Games",
+        "role": "mother",
+        "subject_id": "jing-jing-chengdu-2005"
+      },
+      {
+        "reference": "庆庆",
+        "role": "mother",
+        "subject_id": "jing-rong-chengdu-1992"
+      },
+      {
+        "reference": "庆庆 / Qing Qing",
+        "role": "mother",
+        "subject_id": "jing-rong-chengdu-1992"
+      },
+      {
+        "reference": "Gong Zhu / 公主",
+        "role": "mother",
+        "subject_id": "jun-zu-princess-offspring-2003"
+      },
+      {
+        "reference": "Princess / 公主",
+        "role": "mother",
+        "subject_id": "jun-zu-princess-offspring-2003"
+      },
+      {
+        "reference": "公主 / Princess",
+        "role": "mother",
+        "subject_id": "jun-zu-princess-offspring-2003"
+      },
+      {
+        "reference": "not established in reviewed sources",
+        "role": "father",
+        "subject_id": "kang-kang-shanghai-2019"
+      },
+      {
+        "reference": "林萍",
+        "role": "mother",
+        "subject_id": "lao-lao-wulin-sibling"
+      },
+      {
+        "reference": "Kai Kai",
+        "role": "father",
+        "subject_id": "le-le-singapore"
+      },
+      {
+        "reference": "Jia Jia",
+        "role": "mother",
+        "subject_id": "le-le-singapore"
+      },
+      {
+        "reference": "Ying Ying",
+        "role": "mother",
+        "subject_id": "liang-liang-chapultepec-1983"
+      },
+      {
+        "reference": "Pan Pan / 盼盼",
+        "role": "father",
+        "subject_id": "lin-yang-tangtang-twin-2001"
+      },
+      {
+        "reference": "美轮",
+        "role": "mother",
+        "subject_id": "lun-hui-meilun-offspring-2021"
+      },
+      {
+        "reference": "美轮",
+        "role": "mother",
+        "subject_id": "lun-wen-meilun-sibling-2023"
+      },
+      {
+        "reference": "美轮",
+        "role": "mother",
+        "subject_id": "lun-wu-meilun-sibling-2023"
+      },
+      {
+        "reference": "灵灵 / Ling Ling",
+        "role": "father",
+        "subject_id": "mei-ling-huamei-offspring-2004"
+      },
+      {
+        "reference": "Lin Nan / 林楠",
+        "role": "father",
+        "subject_id": "mei-mei-chengdu-qiyuan-mother"
+      },
+      {
+        "reference": "Meng Meng / 萌萌",
+        "role": "mother",
+        "subject_id": "meng-meng-chimelong-2014"
+      },
+      {
+        "reference": "王佳",
+        "role": "mother",
+        "subject_id": "nan-xiao-yue-wangjia-offspring-2018"
+      },
+      {
+        "reference": "妮小",
+        "role": "mother",
+        "subject_id": "ni-hao-xiaoni-offspring-2023"
+      },
+      {
+        "reference": "禄禄",
+        "role": "mother",
+        "subject_id": "nong-nong-shenshuping"
+      },
+      {
+        "reference": "莉莉 / Li Li",
+        "role": "mother",
+        "subject_id": "oreo-chengdu-2012"
+      },
+      {
+        "reference": "丫丫 / Ya Ya",
+        "role": "mother",
+        "subject_id": "qi-ji-yaya-twin-2021"
+      },
+      {
+        "reference": "not established in reviewed sources",
+        "role": "father",
+        "subject_id": "qi-qi-shanghai-2018"
+      },
+      {
+        "reference": "屏屏",
+        "role": "father",
+        "subject_id": "qin-chuan-zhuzhu-offspring-2008"
+      },
+      {
+        "reference": "not established in reviewed source",
+        "role": "father",
+        "subject_id": "qin-mei-qinling"
+      },
+      {
+        "reference": "Xin Xin / 欣欣",
+        "role": "mother",
+        "subject_id": "qin-qin-qinling-2013"
+      },
+      {
+        "reference": "not established in reviewed source",
+        "role": "father",
+        "subject_id": "qin-xiu-qinling"
+      },
+      {
+        "reference": "not established because both AI and natural mating occurred",
+        "role": "father",
+        "subject_id": "qin-yun-qinling"
+      },
+      {
+        "reference": "美美",
+        "role": "mother",
+        "subject_id": "qing-qing-chengdu-early-lineage"
+      },
+      {
+        "reference": "美美 / Mei Mei",
+        "role": "mother",
+        "subject_id": "qing-qing-chengdu-early-lineage"
+      },
+      {
+        "reference": "庆庆",
+        "role": "mother",
+        "subject_id": "qing-zai-qingqing-offspring-2003"
+      },
+      {
+        "reference": "美美",
+        "role": "mother",
+        "subject_id": "rong-sheng-meimei-offspring-1980"
+      },
+      {
+        "reference": "英英",
+        "role": "mother",
+        "subject_id": "sen-sen-shenshuping"
+      },
+      {
+        "reference": "公主",
+        "role": "mother",
+        "subject_id": "shan-hu-princess-offspring-2010"
+      },
+      {
+        "reference": "Li Li / 莉莉",
+        "role": "mother",
+        "subject_id": "shen-shen-lili-twin-2001"
+      },
+      {
+        "reference": "莉莉 / Li Li",
+        "role": "mother",
+        "subject_id": "shen-shen-lili-twin-2001"
+      },
+      {
+        "reference": "辉辉",
+        "role": "mother",
+        "subject_id": "shu-hui-huihui-offspring-2023"
+      },
+      {
+        "reference": "越越",
+        "role": "father",
+        "subject_id": "shu-lan-susu-twin-1994"
+      },
+      {
+        "reference": "Mei Lan / 美兰",
+        "role": "father",
+        "subject_id": "si-yuan-chengdu-2004"
+      },
+      {
+        "reference": "Tian Tian / 添添",
+        "role": "father",
+        "subject_id": "tai-shan-smithsonian-2005"
+      },
+      {
+        "reference": "芦芦 / Lu Lu",
+        "role": "father",
+        "subject_id": "tao-tao-sijia-twin-2006"
+      },
+      {
+        "reference": "林萍",
+        "role": "mother",
+        "subject_id": "wen-hui-wulin-sibling"
+      },
+      {
+        "reference": "武岗",
+        "role": "father",
+        "subject_id": "wu-jie-fulong-roommate"
+      },
+      {
+        "reference": "喜豆",
+        "role": "mother",
+        "subject_id": "xi-dou-cub-2025"
+      },
+      {
+        "reference": "喜豆 / Xi Dou",
+        "role": "mother",
+        "subject_id": "xi-dou-cub-2025"
+      },
+      {
+        "reference": "丫丫 / Ya Ya",
+        "role": "mother",
+        "subject_id": "xi-qing-yaya-twin-2021"
+      },
+      {
+        "reference": "公主",
+        "role": "mother",
+        "subject_id": "xian-xian-princess-offspring-2014"
+      },
+      {
+        "reference": "公主 / Princess",
+        "role": "mother",
+        "subject_id": "xian-xian-princess-offspring-2014"
+      },
+      {
+        "reference": "冰冰",
+        "role": "mother",
+        "subject_id": "xiang-bing-bingbing-offspring-2007"
+      },
+      {
+        "reference": "庆庆",
+        "role": "mother",
+        "subject_id": "xiao-shuang-qingqing-twin-1997"
+      },
+      {
+        "reference": "星雅",
+        "role": "mother",
+        "subject_id": "xing-chen-xingya-offspring-2016"
+      },
+      {
+        "reference": "星雅 / Xing Ya",
+        "role": "mother",
+        "subject_id": "xing-chen-xingya-offspring-2016"
+      },
+      {
+        "reference": "星雅",
+        "role": "mother",
+        "subject_id": "xing-guang-xingya-offspring-2016"
+      },
+      {
+        "reference": "星雅 / Xing Ya",
+        "role": "mother",
+        "subject_id": "xing-guang-xingya-offspring-2016"
+      },
+      {
+        "reference": "勇勇 / Yong Yong",
+        "role": "father",
+        "subject_id": "xing-mei-yaxing-offspring-2011"
+      },
+      {
+        "reference": "娅星",
+        "role": "mother",
+        "subject_id": "xing-mei-yaxing-offspring-2011"
+      },
+      {
+        "reference": "星雅",
+        "role": "mother",
+        "subject_id": "xing-qing-xingya-offspring-2019"
+      },
+      {
+        "reference": "娜娜",
+        "role": "mother",
+        "subject_id": "xing-rui-xinghui-twin"
+      },
+      {
+        "reference": "not established in reviewed sources",
+        "role": "father",
+        "subject_id": "xue-bao-shanghai-2017"
+      },
+      {
+        "reference": "Gong Zhu / 公主",
+        "role": "mother",
+        "subject_id": "ya-ao-princess-offspring-2004"
+      },
+      {
+        "reference": "公主 / Princess",
+        "role": "mother",
+        "subject_id": "ya-ao-princess-offspring-2004"
+      },
+      {
+        "reference": "星雅",
+        "role": "mother",
+        "subject_id": "ya-er-xingya-twin-2013"
+      },
+      {
+        "reference": "娅娅",
+        "role": "mother",
+        "subject_id": "ya-guang-chengdu-lineage"
+      },
+      {
+        "reference": "娅娅 / Ya Ya",
+        "role": "mother",
+        "subject_id": "ya-guang-chengdu-lineage"
+      },
+      {
+        "reference": "娅娅",
+        "role": "mother",
+        "subject_id": "ya-lin-chengdu-lineage"
+      },
+      {
+        "reference": "娅娅 / Ya Ya",
+        "role": "mother",
+        "subject_id": "ya-lin-chengdu-lineage"
+      },
+      {
+        "reference": "娅娅",
+        "role": "mother",
+        "subject_id": "ya-shuang-chengdu-lineage"
+      },
+      {
+        "reference": "娅娅",
+        "role": "mother",
+        "subject_id": "ya-xiang-chengdu-lineage"
+      },
+      {
+        "reference": "星雅",
+        "role": "mother",
+        "subject_id": "ya-yi-xingya-twin-2013"
+      },
+      {
+        "reference": "娅娅",
+        "role": "mother",
+        "subject_id": "ya-yun-chengdu-lineage"
+      },
+      {
+        "reference": "娅娅",
+        "role": "mother",
+        "subject_id": "ya-zai-chengdu-lineage"
+      },
+      {
+        "reference": "not established because Wang Jia mated with two males in the reported cycle",
+        "role": "father",
+        "subject_id": "yan-hui-yaan-2016"
+      },
+      {
+        "reference": "Yuan Yuan",
+        "role": "mother",
+        "subject_id": "yuan-bao"
+      },
+      {
+        "reference": "鑫鑫",
+        "role": "mother",
+        "subject_id": "yuan-xiao-shenshuping"
+      },
+      {
+        "reference": "冰冰",
+        "role": "mother",
+        "subject_id": "yuan-yuan-chengdu-bingbing-offspring-2003"
+      },
+      {
+        "reference": "冰冰 / Bing Bing",
+        "role": "mother",
+        "subject_id": "yuan-yuan-chengdu-bingbing-offspring-2003"
+      },
+      {
+        "reference": "园园 / Yuan Yuan",
+        "role": "mother",
+        "subject_id": "yuan-yue-yuanyuan-twin-2016"
+      },
+      {
+        "reference": "Zhen Zhen",
+        "role": "mother",
+        "subject_id": "yun-chuan"
+      },
+      {
+        "reference": "武岗",
+        "role": "father",
+        "subject_id": "yun-hui-sulin-offspring-2011"
+      },
+      {
+        "reference": "苏琳 / Su Lin",
+        "role": "mother",
+        "subject_id": "yun-hui-sulin-offspring-2011"
+      },
+      {
+        "reference": "公主",
+        "role": "mother",
+        "subject_id": "yun-yun-princess-offspring-2009"
+      },
+      {
+        "reference": "白杨",
+        "role": "father",
+        "subject_id": "zhao-yang-juxiao-twin-2010"
+      },
+      {
+        "reference": "Gong Zhu / 公主",
+        "role": "mother",
+        "subject_id": "zhu-hai-princess-twin-2007"
+      },
+      {
+        "reference": "公主",
+        "role": "mother",
+        "subject_id": "zhu-hai-princess-twin-2007"
+      },
+      {
+        "reference": "Gong Zhu / 公主",
+        "role": "mother",
+        "subject_id": "zhu-ling-princess-twin-2007"
+      },
+      {
+        "reference": "公主",
+        "role": "mother",
+        "subject_id": "zhu-ling-princess-twin-2007"
+      }
+    ]
+  },
+  "release_version": "2026.08.12.1"
+}

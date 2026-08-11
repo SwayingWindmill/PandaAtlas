@@ -36,8 +36,8 @@ const coreJourneys = [
   { name: "English Atlas discovery", path: "/en/pandas?status=alive&sort=name" },
   { name: "Chinese trusted profile", path: "/zh/pandas/mei-xiang" },
   { name: "English trusted profile", path: "/en/pandas/mei-xiang" },
-  { name: "Chinese structured map journey", path: "/zh/map?mode=institutions&snapshot=2026.07.31.1" },
-  { name: "English structured map journey", path: "/en/map?mode=wild&snapshot=2026.07.31.1" },
+  { name: "Chinese structured map journey", path: "/zh/map?mode=institutions&snapshot=2026.08.12.1" },
+  { name: "English structured map journey", path: "/en/map?mode=wild&snapshot=2026.08.12.1" },
   { name: "Chinese institution entity", path: "/zh/institutions/smithsonian-national-zoo" },
   { name: "English institution entity", path: "/en/institutions/smithsonian-national-zoo" },
   { name: "Chinese place entity", path: "/zh/places/wolong-shenshuping-base" },
@@ -219,7 +219,7 @@ test("bilingual Editorial Home tolerates a simulated 200-percent text-only resiz
 
 test("structured map filters remain keyboard operable and accessible", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/en/map?mode=institutions&snapshot=2026.07.31.1");
+  await page.goto("/en/map?mode=institutions&snapshot=2026.08.12.1");
   const form = page.getByRole("form", { name: "Find pandas and places on the map" });
   await form.getByLabel("Panda, zoo, base, or region").fill("Smithsonian");
   await form.getByLabel("Country or region").selectOption("US");
@@ -245,8 +245,8 @@ test("reduced-motion removes nonessential animation from core journeys", async (
     "/en/pandas?status=alive&sort=name",
     "/zh/pandas/mei-xiang",
     "/en/pandas/mei-xiang",
-    "/zh/map?mode=institutions&snapshot=2026.07.31.1",
-    "/en/map?mode=wild&snapshot=2026.07.31.1",
+    "/zh/map?mode=institutions&snapshot=2026.08.12.1",
+    "/en/map?mode=wild&snapshot=2026.08.12.1",
     "/zh/families?view=lineage&focus=mei-xiang",
     "/en/families?view=lineage&focus=bao-li&descendants=1",
   ]) {
@@ -296,7 +296,7 @@ test("activated map visualization remains keyboard-equivalent and accessible", a
     });
   });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/en/map?mode=institutions&snapshot=2026.07.31.1");
+  await page.goto("/en/map?mode=institutions&snapshot=2026.08.12.1");
   await page.getByTestId("activate-map-visualization").click();
 
   const island = page.getByTestId("map-visualization-island");
