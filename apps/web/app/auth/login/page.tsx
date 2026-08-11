@@ -5,7 +5,7 @@ import { EmailOtpLogin } from "@/features/auth";
 
 export const metadata: Metadata = {
   title: { absolute: "登录吱熊猫 | ZhiPanda sign-in" },
-  description: "使用邮箱验证码安全登录吱熊猫，继续关注熊猫并查看私有动态。",
+  description: "使用邮箱验证码安全登录吱熊猫，继续收藏熊猫并查看私有动态。",
   applicationName: "吱熊猫 ZhiPanda",
   robots: { index: false, follow: false, nocache: true, noarchive: true },
   referrer: "no-referrer",

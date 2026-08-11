@@ -54,10 +54,10 @@ const copy = {
   zh: {
     account: "吱熊猫账号",
     heading: "使用邮箱验证码登录",
-    pendingSupport: "验证码登录成功后才会完成关注。邮件继续入口不会自动登录。",
+    pendingSupport: "验证码登录成功后才会完成收藏。邮件继续入口不会自动登录。",
     accountSupport: "登录后，吱熊猫会再次核对账号状态和可用权限。",
-    pandaContext: (slug: string) => `待关注熊猫：${slug}`,
-    expiredSession: "登录状态已过期。重新验证后会继续关注。",
+    pandaContext: (slug: string) => `待收藏熊猫：${slug}`,
+    expiredSession: "登录状态已过期。重新验证后会继续收藏。",
     email: "邮箱",
     send: "发送验证码",
     sending: "正在发送…",
@@ -69,22 +69,23 @@ const copy = {
     verifying: "正在验证…",
     changeEmail: "更换邮箱",
     invalidOtp: "验证码不正确，请检查后重试。",
-    completionFailed: "关注暂时无法完成，请返回熊猫资料页后重试。",
+    magicLinkFailed: "登录链接无效或已过期，请重新登录。",
+    completionFailed: "收藏暂时无法完成，请返回熊猫资料页后重试。",
     consentTitle: "要接收重要熊猫动态邮件吗？",
-    consentBody: "关注不会自动订阅邮件。站内关注和熊猫护照会保留。",
+    consentBody: "收藏不会自动订阅邮件。你的收藏和熊猫护照会保留。",
     consentEnable: "开启重要动态邮件",
     consentEnabling: "正在开启…",
     consentSkip: "暂不开启邮件，返回熊猫资料页",
-    consentFailed: "邮件提醒暂时无法开启。关注关系和站内状态不受影响。",
-    followed: "已关注。关注状态已写入你的熊猫护照。",
+    consentFailed: "邮件提醒暂时无法开启。收藏和站内状态不受影响。",
+    followed: "已收藏。熊猫已加入你的“我的熊猫”和熊猫护照。",
   },
   en: {
     account: "ZhiPanda account",
     heading: "Sign in with an email code",
-    pendingSupport: "Following completes only after code verification. An email continuation link never signs you in by itself.",
+    pendingSupport: "Saving this panda completes only after code verification. An email continuation link never signs you in by itself.",
     accountSupport: "After sign-in, ZhiPanda checks your account status and available access again.",
-    pandaContext: (slug: string) => `Panda to follow: ${slug}`,
-    expiredSession: "Your session expired. Verify again to continue following this panda.",
+    pandaContext: (slug: string) => `Panda to favorite: ${slug}`,
+    expiredSession: "Your session expired. Verify again to continue favoriting this panda.",
     email: "Email",
     send: "Send verification code",
     sending: "Sending…",
@@ -96,14 +97,15 @@ const copy = {
     verifying: "Verifying…",
     changeEmail: "Use another email",
     invalidOtp: "That verification code is not correct. Check it and try again.",
-    completionFailed: "This panda could not be followed. Return to the profile and try again.",
+    magicLinkFailed: "That sign-in link is invalid or expired. Sign in again.",
+    completionFailed: "This panda could not be favorited. Return to the profile and try again.",
     consentTitle: "Receive important panda updates by email?",
-    consentBody: "Following never subscribes you to email automatically. Your follow and Panda Passport remain available either way.",
+    consentBody: "Favoriting never subscribes you to email automatically. Your favorite and Panda Passport remain available either way.",
     consentEnable: "Enable important update emails",
     consentEnabling: "Enabling…",
     consentSkip: "Not now; return to the panda profile",
-    consentFailed: "Email updates could not be enabled. Your follow and account state are unchanged.",
-    followed: "You are now following this panda. It is listed in your Panda Passport.",
+    consentFailed: "Email updates could not be enabled. Your favorite and account state are unchanged.",
+    followed: "This panda is now in your favorites and Panda Passport.",
   },
 } as const;
 
@@ -130,6 +132,7 @@ export function EmailOtpLogin() {
   const [pending, setPending] = useState<PendingFollowContext | null>(null);
   const [returnPath, setReturnPath] = useState(destination);
   const consentIdempotencyKey = useRef<string | null>(null);
+  const adminAuthRestoreStartedRef = useRef(false);
   const otpInputRef = useRef<HTMLInputElement | null>(null);
   const messageRef = useRef<HTMLParagraphElement | null>(null);
   const locale = pending?.locale ?? localeFromPath(returnPath);
@@ -142,6 +145,43 @@ export function EmailOtpLogin() {
   useEffect(() => {
     if (messageKind === "error" && message) messageRef.current?.focus();
   }, [message, messageKind]);
+
+  useEffect(() => {
+    if (!destination.startsWith("/admin")) return;
+    if (adminAuthRestoreStartedRef.current) return;
+
+    const currentUrl = new URL(window.location.href);
+    const authCode = currentUrl.searchParams.get("code");
+    const fragment = new URLSearchParams(window.location.hash.slice(1));
+    const accessToken = fragment.get("access_token");
+    const refreshToken = fragment.get("refresh_token");
+    if (!authCode && (!accessToken || !refreshToken)) return;
+
+    adminAuthRestoreStartedRef.current = true;
+    async function restoreMagicLinkSession() {
+      const client = getSupabaseBrowserClient();
+      await (authCode
+        ? await client.auth.exchangeCodeForSession(authCode)
+        : await client.auth.setSession({
+            access_token: accessToken as string,
+            refresh_token: refreshToken as string,
+          }));
+
+      const cleanedUrl = new URL(window.location.href);
+      cleanedUrl.searchParams.delete("code");
+      cleanedUrl.hash = "";
+      history.replaceState(null, "", `${cleanedUrl.pathname}${cleanedUrl.search}`);
+      const adminSession = await fetch("/api/admin/session", { cache: "no-store" });
+      if (!adminSession.ok) {
+        adminAuthRestoreStartedRef.current = false;
+        setMessage(copy[localeFromPath(destination)].magicLinkFailed);
+        setMessageKind("error");
+        return;
+      }
+      window.location.replace(destination);
+    }
+    void restoreMagicLinkSession();
+  }, [destination]);
 
   useEffect(() => {
     let cancelled = false;
