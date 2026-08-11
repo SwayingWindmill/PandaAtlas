@@ -149,9 +149,9 @@ class PandaResidencySummary(CurrentPlaceSummary):
     id: str
     residency_type: str = Field(pattern="^(primary|temporary|transit|quarantine)$")
     start_date: date
-    start_precision: str = Field(default="day", pattern="^(day|month|year)$")
+    start_precision: str = Field(default="day", pattern="^(day|month|year|unknown)$")
     end_date: date | None = None
-    end_precision: str | None = Field(default=None, pattern="^(day|month|year)$")
+    end_precision: str | None = Field(default=None, pattern="^(day|month|year|unknown)$")
     source_ids: list[str]
 
 
@@ -165,7 +165,7 @@ class PandaDomainEventSummary(BaseModel):
     )
     event_status: str = Field(pattern="^(announced|completed|cancelled|disputed)$")
     event_date: date
-    event_date_precision: str = Field(default="day", pattern="^(day|month|year)$")
+    event_date_precision: str = Field(default="day", pattern="^(day|month|year|unknown)$")
     participants: list[UUID]
     from_facility_id: UUID | None = None
     from_coarse_location: str | None = None

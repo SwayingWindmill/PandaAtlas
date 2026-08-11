@@ -672,6 +672,14 @@ def hydrate_revisions_for_preview(
     revisions: tuple[EntityRevision, ...],
 ) -> tuple[EntityRevision, ...]:
     revision_keys = {(item.entity_type, item.entity_id) for item in revisions}
+    revision_public_records = {
+        (item.entity_type, item.entity_id): (
+            item.payload.get("public_record", {})
+            if isinstance(item.payload.get("public_record"), dict)
+            else {}
+        )
+        for item in revisions
+    }
     reference_queries = {
         "panda": "select exists(select 1 from public.pandas where id::text = :id or slug = :id)",
         "evidence_source": """
@@ -727,6 +735,13 @@ def hydrate_revisions_for_preview(
         for source in checks.get("sources", []):
             if not isinstance(source, dict):
                 continue
+            source_id = str(source.get("id"))
+            pending_source = revision_public_records.get(("source", source_id))
+            if pending_source is not None:
+                source["access_state"] = str(
+                    pending_source.get("access_state") or "missing"
+                )
+                continue
             state = session.execute(
                 text(
                     """
@@ -735,16 +750,21 @@ def hydrate_revisions_for_preview(
                     where id = :id and publication_status = 'published'
                     """
                 ),
-                {"id": source.get("id")},
+                {"id": source_id},
             ).scalar_one_or_none()
             source["access_state"] = state or "missing"
 
         for media in checks.get("media", []):
             if not isinstance(media, dict):
                 continue
+            media_id = str(media.get("id"))
+            pending_media = revision_public_records.get(("media_item", media_id))
+            if pending_media is not None:
+                media["license"] = pending_media.get("rights")
+                continue
             license_value = session.execute(
                 text("select license from public.media_assets where id::text = :id"),
-                {"id": media.get("id")},
+                {"id": media_id},
             ).scalar_one_or_none()
             media["license"] = license_value
 

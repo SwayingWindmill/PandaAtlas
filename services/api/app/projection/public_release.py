@@ -57,7 +57,9 @@ ALLOWED_PUBLIC_FIELDS = {
     "death_date",
     "derivatives",
     "end_date",
+    "end_precision",
     "event_date",
+    "event_date_precision",
     "event_status",
     "event_type",
     "evidence_tier",
@@ -76,6 +78,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "intro",
     "institution_ids",
     "institution_type",
+    "is_cover",
     "is_featured",
     "language",
     "level",
@@ -87,6 +90,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "localized_content",
     "locality",
     "max_age_days",
+    "media",
     "media_release",
     "mime_type",
     "name_en",
@@ -116,6 +120,7 @@ ALLOWED_PUBLIC_FIELDS = {
     "sha256",
     "source_url",
     "start_date",
+    "start_precision",
     "state",
     "status",
     "subject_id",
@@ -388,6 +393,11 @@ def _validated_public_media(record: dict[str, Any]) -> dict[str, Any]:
         raise ProjectionCompatibilityError(
             f"Public media {media_id} requires at least one reviewed source_id"
         )
+    is_cover = public.get("is_cover", False)
+    if not isinstance(is_cover, bool):
+        raise ProjectionCompatibilityError(
+            f"Public media {media_id} is_cover must be a boolean"
+        )
     status = public.get("status")
     if status not in {"available", "withdrawn", "unavailable"}:
         raise ProjectionCompatibilityError(
@@ -580,7 +590,11 @@ def _attach_public_media(
             continue
         media = sorted(
             media_by_panda.get(record["id"], []),
-            key=lambda item: (item["status"] != "available", item["id"]),
+            key=lambda item: (
+                item["status"] != "available",
+                not item.get("is_cover", False),
+                item["id"],
+            ),
         )
         cover = next((item["url"] for item in media if item["status"] == "available"), None)
         derived_media_release = (
@@ -767,7 +781,14 @@ def _runtime_api(
                         for item in names
                         if item.get("language") == "zh-Hans" and item.get("primary")
                     ),
-                    archive.get("name_zh"),
+                    next(
+                        (
+                            item.get("value")
+                            for item in names
+                            if item.get("language") == "en" and item.get("primary")
+                        ),
+                        archive.get("name_zh") or archive.get("canonical_slug"),
+                    ),
                 ),
                 "name_en": next(
                     (

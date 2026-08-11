@@ -7,7 +7,18 @@ from uuid import UUID
 from app.domain.archive_residency import ArchiveDate, PlaceReference
 from app.domain.trusted_identity import PublicationStatus
 
-EventType = Literal["transfer"]
+EventType = Literal[
+    "birth",
+    "arrival",
+    "transfer",
+    "return",
+    "naming",
+    "public_debut",
+    "selection",
+    "announcement",
+    "observation",
+    "death",
+]
 EventStatus = Literal["announced", "completed", "cancelled", "disputed"]
 
 

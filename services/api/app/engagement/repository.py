@@ -859,6 +859,10 @@ class EngagementRepository:
         )
         notification_counts = self._delete_notification_private_data(account_id)
         counts = {
+            "collections_deleted": self._delete_count("collections", account_id),
+            "location_checkins_deleted": self._delete_count("location_checkins", account_id),
+            "seen_pandas_deleted": self._delete_count("seen_pandas", account_id),
+            "game_attempts_deleted": self._delete_count("game_attempts", account_id),
             "passport_entries_deleted": self._delete_count("passport_entries", account_id),
             "preferences_deleted": self._delete_count("notification_preferences", account_id),
             "last_viewed_deleted": (

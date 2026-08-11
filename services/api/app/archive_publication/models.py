@@ -34,9 +34,9 @@ class AccountablePublishCommand(BaseModel):
     idempotency_key: str = Field(min_length=8, max_length=255)
     reason: str = Field(min_length=3, max_length=2000)
     data_version: str = Field(min_length=1, max_length=120)
-    public_schema_version: Literal["1.0.0"] = "1.0.0"
-    database_migration_version: str = Field(default="0020", max_length=120)
-    projection_code_version: str = Field(default="public-release-v2", max_length=200)
+    public_schema_version: Literal["1.3.0"] = "1.3.0"
+    database_migration_version: str = Field(default="0041", max_length=120)
+    projection_code_version: str = Field(default="public-experience-v1", max_length=200)
     correlation_id: UUID
 
 

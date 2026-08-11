@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from uuid import UUID, uuid4
 
 import psycopg
@@ -10,6 +10,9 @@ import pytest
 from sqlalchemy import text
 
 from app.db.session import configure_database, session_scope
+from app.engagement.fan_games import FanGameRepository
+from app.engagement.fan_library import FanLibraryRepository
+from app.engagement.fan_memory import FanMemoryRepository
 from app.engagement.models import (
     EngagementAccountUnavailableError,
     EngagementNotFoundError,
@@ -382,3 +385,158 @@ def test_repository_rechecks_account_state_inside_write_transaction(real_db_url:
                 idempotency_key=f"deleting-race-{uuid4()}",
                 correlation_id=uuid4(),
             )
+
+
+def test_fan_library_favorite_and_collection_lifecycle(real_db_url: str) -> None:
+    account_id = uuid4()
+    panda_id, second_panda_id = _create_account(real_db_url, account_id)
+    identity = _identity(account_id)
+
+    with session_scope() as session:
+        assert session is not None
+        library = FanLibraryRepository(session)
+
+        favorite = library.favorite(
+            identity=identity,
+            panda_id=panda_id,
+            idempotency_key=f"favorite-{uuid4()}",
+            correlation_id=uuid4(),
+        )
+        assert favorite["panda_id"] == panda_id
+        library.favorite(
+            identity=identity,
+            panda_id=second_panda_id,
+            idempotency_key=f"favorite-{uuid4()}",
+            correlation_id=uuid4(),
+        )
+        assert {item["panda_id"] for item in library.list_favorites(account_id)} == {
+            panda_id,
+            second_panda_id,
+        }
+
+        collection = library.create_collection(identity=identity, name="成都想见")
+        collection_id = collection["collection_id"]
+        assert collection["panda_ids"] == []
+
+        collection = library.add_panda(
+            identity=identity,
+            collection_id=collection_id,
+            panda_id=panda_id,
+        )
+        collection = library.add_panda(
+            identity=identity,
+            collection_id=collection_id,
+            panda_id=second_panda_id,
+        )
+        assert collection["panda_ids"] == [panda_id, second_panda_id]
+
+        collection = library.rename_collection(
+            identity=identity,
+            collection_id=collection_id,
+            name="最喜欢",
+        )
+        assert collection["name"] == "最喜欢"
+
+        collection = library.remove_panda(
+            identity=identity,
+            collection_id=collection_id,
+            panda_id=second_panda_id,
+        )
+        assert collection["panda_ids"] == [panda_id]
+
+        removed = library.unfavorite(
+            identity=identity,
+            panda_id=panda_id,
+            idempotency_key=f"unfavorite-{uuid4()}",
+            correlation_id=uuid4(),
+        )
+        assert removed["favorited"] is False
+        assert [item["panda_id"] for item in library.list_favorites(account_id)] == [
+            second_panda_id
+        ]
+        assert library.list_collections(account_id)[0]["panda_ids"] == []
+        library.unfavorite(
+            identity=identity,
+            panda_id=second_panda_id,
+            idempotency_key=f"unfavorite-{uuid4()}",
+            correlation_id=uuid4(),
+        )
+        assert library.list_favorites(account_id) == []
+
+        deleted_id = library.delete_collection(
+            identity=identity,
+            collection_id=collection_id,
+        )
+        assert deleted_id == collection_id
+        assert library.list_collections(account_id) == []
+
+
+def test_fan_memory_checkin_and_seen_panda_are_independent(real_db_url: str) -> None:
+    account_id = uuid4()
+    panda_id, _ = _create_account(real_db_url, account_id)
+    identity = _identity(account_id)
+    visited_on = date(2026, 8, 10)
+    place_id = "place-fan-memory-real-db"
+
+    with session_scope() as session:
+        assert session is not None
+        memory = FanMemoryRepository(session)
+
+        checkin = memory.create_checkin(
+            identity=identity,
+            place_id=place_id,
+            visited_on=visited_on,
+            note="第一次来这里",
+        )
+        assert checkin["place_id"] == place_id
+        assert memory.list_seen_pandas(account_id) == []
+
+        seen = memory.save_seen_panda(
+            identity=identity,
+            panda_id=panda_id,
+            seen_on=visited_on,
+            place_id=None,
+            note="亲眼见到",
+        )
+        assert seen["panda_id"] == panda_id
+        assert seen["place_id"] is None
+        assert len(memory.list_checkins(account_id)) == 1
+
+        memory.delete_seen_panda(identity=identity, panda_id=panda_id)
+        assert memory.list_seen_pandas(account_id) == []
+        assert len(memory.list_checkins(account_id)) == 1
+
+        memory.delete_checkin(identity=identity, checkin_id=checkin["checkin_id"])
+        assert memory.list_checkins(account_id) == []
+
+
+def test_guess_panda_attempt_history_is_private_and_server_computed(real_db_url: str) -> None:
+    account_id = uuid4()
+    target_panda_id, other_panda_id = _create_account(real_db_url, account_id)
+    identity = _identity(account_id)
+
+    with session_scope() as session:
+        assert session is not None
+        games = FanGameRepository(session)
+
+        wrong = games.save_attempt(
+            identity=identity,
+            target_panda_id=target_panda_id,
+            selected_panda_id=other_panda_id,
+            public_release_version="2026.08.10-test",
+        )
+        assert wrong["correct"] is False
+
+        correct = games.save_attempt(
+            identity=identity,
+            target_panda_id=target_panda_id,
+            selected_panda_id=target_panda_id,
+            public_release_version="2026.08.10-test",
+        )
+        assert correct["correct"] is True
+        assert len(games.list_attempts(account_id)) == 2
+
+        games.delete_attempt(identity=identity, attempt_id=wrong["attempt_id"])
+        rows = games.list_attempts(account_id)
+        assert len(rows) == 1
+        assert rows[0]["attempt_id"] == correct["attempt_id"]

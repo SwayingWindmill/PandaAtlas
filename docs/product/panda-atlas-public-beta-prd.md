@@ -1,10 +1,11 @@
 # PandaAtlas 公开 Beta 产品需求文档
 
-- **状态**：已完成产品决策，待实施拆分
-- **Triage**：`ready-for-agent`
-- **日期**：2026-07-13
-- **范围**：美香—添添家族端到端可信档案样板
-- **产品模式**：公共档案免费开放，专业协作与机构服务可商业化
+> **文档定位说明（2026-08-10）**：本文档保留为早期“可信档案样板 / 专业资料能力”设计参考，不再定义 ZhiPanda V1 的主产品定位。当前产品方向以**熊猫粉丝体验优先**为准，正式基准见 [`docs/architecture/zhipanda-v1-architecture-baseline.md`](../architecture/zhipanda-v1-architecture-baseline.md)，当前 V1 缺口与实施顺序见 [`docs/product/zhipanda-v1-feature-gap-matrix.md`](zhipanda-v1-feature-gap-matrix.md)。本文中的数据可信、审核、发布、审计等能力继续作为底层支撑，但不应覆盖或延后收藏、合集、打卡、见过熊猫、日历和游戏等粉丝向核心能力。
+
+- **状态**：历史 Beta / 专业资料能力参考
+- **原始日期**：2026-07-13
+- **原始范围**：美香—添添家族端到端可信档案样板
+- **当前优先级**：低于粉丝向 V1 闭环
 
 ## Problem Statement
 

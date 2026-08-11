@@ -38,9 +38,9 @@ def test_publish_command_pins_release_contract_defaults() -> None:
         correlation_id=CORRELATION_ID,
     )
 
-    assert command.public_schema_version == "1.0.0"
-    assert command.database_migration_version == "0020"
-    assert command.projection_code_version == "public-release-v2"
+    assert command.public_schema_version == "1.3.0"
+    assert command.database_migration_version == "0041"
+    assert command.projection_code_version == "public-experience-v1"
 
 
 def test_risk_classification_is_explicit() -> None:

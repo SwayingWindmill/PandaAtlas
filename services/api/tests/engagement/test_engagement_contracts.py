@@ -77,7 +77,7 @@ def test_engagement_routes_hide_when_feature_is_disabled(
     assert response.json() == {"detail": "Not found"}
 
 
-def test_deleting_account_cannot_create_follow(
+def test_deleting_account_cannot_create_favorite(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(settings, "engagement_enabled", True)
@@ -85,7 +85,7 @@ def test_deleting_account_cannot_create_follow(
     try:
         with TestClient(app) as client:
             response = client.post(
-                "/api/v1/me/follows/fixture",
+                "/api/v1/me/favorites/fixture",
                 json={"idempotency_key": "deleting-account-follow"},
             )
     finally:

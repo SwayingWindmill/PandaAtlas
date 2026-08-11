@@ -35,7 +35,7 @@ def test_static_foundation_configuration_is_pinned_and_private() -> None:
     assert "privacy" not in evidence["api_schemas"]
     assert "review_moderation" not in evidence["api_schemas"]
     assert "storage" not in evidence["api_schemas"]
-    assert evidence["migration_versions"][-1] == "0033"
+    assert evidence["migration_versions"][-1] == "0041"
 
 
 def test_version_and_database_url_helpers_are_deterministic() -> None:
@@ -79,6 +79,14 @@ def test_version_and_database_url_helpers_are_deterministic() -> None:
         "0031",
         "0032",
         "0033",
+        "0034",
+        "0035",
+        "0036",
+        "0037",
+        "0038",
+        "0039",
+        "0040",
+        "0041",
     ]
 
 

@@ -8,6 +8,9 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.config import settings
 from app.db.session import session_scope
+from app.engagement.fan_games import FanGameRepository
+from app.engagement.fan_library import FanLibraryRepository
+from app.engagement.fan_memory import FanMemoryRepository
 from app.engagement.models import (
     EngagementAccountUnavailableError,
     EngagementConflictError,
@@ -30,10 +33,26 @@ from app.notification.repository import (
     NotificationRepository,
 )
 from app.schemas.engagement import (
+    CollectionCreate,
+    CollectionDeletedRead,
+    CollectionRead,
+    CollectionsRead,
+    CollectionUpdate,
     EngagementDataDelete,
     EngagementDataDeleteRead,
+    FavoriteRead,
+    FavoriteRemovedRead,
+    FavoritesRead,
     FollowCommand,
     FollowRead,
+    GameAttemptCreate,
+    GameAttemptDeletedRead,
+    GameAttemptRead,
+    GameAttemptsRead,
+    LocationCheckinCreate,
+    LocationCheckinDeletedRead,
+    LocationCheckinRead,
+    LocationCheckinsRead,
     NotificationPreferenceChange,
     NotificationPreferenceRead,
     PassportEntryRead,
@@ -43,6 +62,10 @@ from app.schemas.engagement import (
     PendingFollowCurrentRead,
     PendingFollowHandleCommand,
     PendingFollowHandleRead,
+    SeenPandaDeletedRead,
+    SeenPandaRead,
+    SeenPandasRead,
+    SeenPandaUpsert,
 )
 
 
@@ -211,7 +234,7 @@ def complete_pending_follow(
         raise _handle_error(error) from error
 
 
-@router.post("/me/follows/{panda_id}", response_model=FollowRead)
+# Direct Follow commands are not exposed; Favorite is the single saved-panda API.
 def follow_panda(
     panda_id: str,
     payload: FollowCommand,
@@ -240,7 +263,7 @@ def follow_panda(
         raise _handle_error(error) from error
 
 
-@router.delete("/me/follows/{panda_id}", response_model=FollowRead)
+# Internal helper retained for the Favorite command path.
 def unfollow_panda(
     panda_id: str,
     identity: ActiveIdentity,
@@ -269,7 +292,7 @@ def unfollow_panda(
         raise _handle_error(error) from error
 
 
-@router.get("/me/follows/{panda_id}", response_model=FollowRead)
+# Internal read helper retained for repository-level diagnostics.
 def get_follow(
     panda_id: str,
     identity: ActiveIdentity,
@@ -284,6 +307,229 @@ def get_follow(
     except HTTPException:
         raise
     except (EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.get("/me/favorites", response_model=FavoritesRead)
+def list_favorites(identity: ActiveIdentity) -> FavoritesRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            rows = FanLibraryRepository(session).list_favorites(identity.account_id)
+            return FavoritesRead(items=[FavoriteRead.model_validate(row) for row in rows])
+    except HTTPException:
+        raise
+    except (EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.get("/me/favorites/{panda_id}", response_model=FavoriteRead)
+def get_favorite(panda_id: str, identity: ActiveIdentity) -> FavoriteRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanLibraryRepository(session).get_favorite(identity.account_id, panda_id)
+            return FavoriteRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.post("/me/favorites/{panda_id}", response_model=FavoriteRead)
+def favorite_panda(
+    panda_id: str,
+    identity: ActiveIdentity,
+    correlation_id: CorrelationId,
+) -> FavoriteRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanLibraryRepository(session).favorite(
+                identity=identity,
+                panda_id=panda_id,
+                idempotency_key=f"favorite-{correlation_id}",
+                correlation_id=correlation_id,
+            )
+            return FavoriteRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (
+        EngagementAccountUnavailableError,
+        EngagementNotFoundError,
+        EngagementConflictError,
+        SQLAlchemyError,
+    ) as error:
+        raise _handle_error(error) from error
+
+
+@router.delete("/me/favorites/{panda_id}", response_model=FavoriteRemovedRead)
+def unfavorite_panda(
+    panda_id: str,
+    identity: ActiveIdentity,
+    correlation_id: CorrelationId,
+) -> FavoriteRemovedRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanLibraryRepository(session).unfavorite(
+                identity=identity,
+                panda_id=panda_id,
+                idempotency_key=f"unfavorite-{correlation_id}",
+                correlation_id=correlation_id,
+            )
+            return FavoriteRemovedRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (
+        EngagementAccountUnavailableError,
+        EngagementNotFoundError,
+        EngagementConflictError,
+        SQLAlchemyError,
+    ) as error:
+        raise _handle_error(error) from error
+
+
+@router.get("/me/collections", response_model=CollectionsRead)
+def list_collections(identity: ActiveIdentity) -> CollectionsRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            rows = FanLibraryRepository(session).list_collections(identity.account_id)
+            return CollectionsRead(items=[CollectionRead.model_validate(row) for row in rows])
+    except HTTPException:
+        raise
+    except SQLAlchemyError as error:
+        raise _handle_error(error) from error
+
+
+@router.post("/me/collections", response_model=CollectionRead, status_code=status.HTTP_201_CREATED)
+def create_collection(payload: CollectionCreate, identity: ActiveIdentity) -> CollectionRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanLibraryRepository(session).create_collection(
+                identity=identity,
+                name=payload.name,
+            )
+            return CollectionRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (
+        EngagementAccountUnavailableError,
+        EngagementNotFoundError,
+        EngagementConflictError,
+        SQLAlchemyError,
+    ) as error:
+        raise _handle_error(error) from error
+
+
+@router.patch("/me/collections/{collection_id}", response_model=CollectionRead)
+def rename_collection(
+    collection_id: UUID,
+    payload: CollectionUpdate,
+    identity: ActiveIdentity,
+) -> CollectionRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanLibraryRepository(session).rename_collection(
+                identity=identity,
+                collection_id=collection_id,
+                name=payload.name,
+            )
+            return CollectionRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (
+        EngagementAccountUnavailableError,
+        EngagementNotFoundError,
+        EngagementConflictError,
+        SQLAlchemyError,
+    ) as error:
+        raise _handle_error(error) from error
+
+
+@router.delete("/me/collections/{collection_id}", response_model=CollectionDeletedRead)
+def delete_collection(collection_id: UUID, identity: ActiveIdentity) -> CollectionDeletedRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            deleted_id = FanLibraryRepository(session).delete_collection(
+                identity=identity,
+                collection_id=collection_id,
+            )
+            return CollectionDeletedRead(collection_id=deleted_id)
+    except HTTPException:
+        raise
+    except (
+        EngagementAccountUnavailableError,
+        EngagementNotFoundError,
+        EngagementConflictError,
+        SQLAlchemyError,
+    ) as error:
+        raise _handle_error(error) from error
+
+
+@router.post("/me/collections/{collection_id}/pandas/{panda_id}", response_model=CollectionRead)
+def add_panda_to_collection(
+    collection_id: UUID,
+    panda_id: str,
+    identity: ActiveIdentity,
+) -> CollectionRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanLibraryRepository(session).add_panda(
+                identity=identity,
+                collection_id=collection_id,
+                panda_id=panda_id,
+            )
+            return CollectionRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (
+        EngagementAccountUnavailableError,
+        EngagementNotFoundError,
+        EngagementConflictError,
+        SQLAlchemyError,
+    ) as error:
+        raise _handle_error(error) from error
+
+
+@router.delete("/me/collections/{collection_id}/pandas/{panda_id}", response_model=CollectionRead)
+def remove_panda_from_collection(
+    collection_id: UUID,
+    panda_id: str,
+    identity: ActiveIdentity,
+) -> CollectionRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanLibraryRepository(session).remove_panda(
+                identity=identity,
+                collection_id=collection_id,
+                panda_id=panda_id,
+            )
+            return CollectionRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (
+        EngagementAccountUnavailableError,
+        EngagementNotFoundError,
+        EngagementConflictError,
+        SQLAlchemyError,
+    ) as error:
         raise _handle_error(error) from error
 
 
@@ -414,6 +660,181 @@ def require_engagement_deletion_identity(
 
 
 DeletionIdentity = Annotated[RequestIdentity, Depends(require_engagement_deletion_identity)]
+
+
+@router.get("/me/checkins", response_model=LocationCheckinsRead)
+def list_checkins(identity: ActiveIdentity) -> LocationCheckinsRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            rows = FanMemoryRepository(session).list_checkins(identity.account_id)
+            return LocationCheckinsRead(
+                items=[LocationCheckinRead.model_validate(row) for row in rows]
+            )
+    except HTTPException:
+        raise
+    except SQLAlchemyError as error:
+        raise _handle_error(error) from error
+
+
+@router.post("/me/checkins", response_model=LocationCheckinRead)
+def create_checkin(payload: LocationCheckinCreate, identity: ActiveIdentity) -> LocationCheckinRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanMemoryRepository(session).create_checkin(
+                identity=identity,
+                place_id=payload.place_id,
+                visited_on=payload.visited_on,
+                note=payload.note,
+            )
+            return LocationCheckinRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (EngagementAccountUnavailableError, EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.delete("/me/checkins/{checkin_id}", response_model=LocationCheckinDeletedRead)
+def delete_checkin(checkin_id: UUID, identity: ActiveIdentity) -> LocationCheckinDeletedRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            deleted_id = FanMemoryRepository(session).delete_checkin(
+                identity=identity,
+                checkin_id=checkin_id,
+            )
+            return LocationCheckinDeletedRead(checkin_id=deleted_id)
+    except HTTPException:
+        raise
+    except (EngagementAccountUnavailableError, EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.get("/me/seen-pandas", response_model=SeenPandasRead)
+def list_seen_pandas(identity: ActiveIdentity) -> SeenPandasRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            rows = FanMemoryRepository(session).list_seen_pandas(identity.account_id)
+            return SeenPandasRead(items=[SeenPandaRead.model_validate(row) for row in rows])
+    except HTTPException:
+        raise
+    except SQLAlchemyError as error:
+        raise _handle_error(error) from error
+
+
+@router.get("/me/seen-pandas/{panda_id}", response_model=SeenPandaRead)
+def get_seen_panda(panda_id: str, identity: ActiveIdentity) -> SeenPandaRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanMemoryRepository(session).get_seen_panda(identity.account_id, panda_id)
+            return SeenPandaRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.put("/me/seen-pandas/{panda_id}", response_model=SeenPandaRead)
+def save_seen_panda(
+    panda_id: str,
+    payload: SeenPandaUpsert,
+    identity: ActiveIdentity,
+) -> SeenPandaRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanMemoryRepository(session).save_seen_panda(
+                identity=identity,
+                panda_id=panda_id,
+                seen_on=payload.seen_on,
+                place_id=payload.place_id,
+                note=payload.note,
+            )
+            return SeenPandaRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (EngagementAccountUnavailableError, EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.delete("/me/seen-pandas/{panda_id}", response_model=SeenPandaDeletedRead)
+def delete_seen_panda(panda_id: str, identity: ActiveIdentity) -> SeenPandaDeletedRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            deleted_id = FanMemoryRepository(session).delete_seen_panda(
+                identity=identity,
+                panda_id=panda_id,
+            )
+            return SeenPandaDeletedRead(panda_id=deleted_id)
+    except HTTPException:
+        raise
+    except (EngagementAccountUnavailableError, EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.get("/me/game-attempts", response_model=GameAttemptsRead)
+def list_game_attempts(identity: ActiveIdentity) -> GameAttemptsRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            rows = FanGameRepository(session).list_attempts(identity.account_id)
+            return GameAttemptsRead(items=[GameAttemptRead.model_validate(row) for row in rows])
+    except HTTPException:
+        raise
+    except SQLAlchemyError as error:
+        raise _handle_error(error) from error
+
+
+@router.post(
+    "/me/game-attempts",
+    response_model=GameAttemptRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def save_game_attempt(payload: GameAttemptCreate, identity: ActiveIdentity) -> GameAttemptRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            row = FanGameRepository(session).save_attempt(
+                identity=identity,
+                target_panda_id=payload.target_panda_id,
+                selected_panda_id=payload.selected_panda_id,
+                public_release_version=payload.public_release_version,
+            )
+            return GameAttemptRead.model_validate(row)
+    except HTTPException:
+        raise
+    except (EngagementAccountUnavailableError, EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
+
+
+@router.delete("/me/game-attempts/{attempt_id}", response_model=GameAttemptDeletedRead)
+def delete_game_attempt(attempt_id: UUID, identity: ActiveIdentity) -> GameAttemptDeletedRead:
+    try:
+        with session_scope() as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Engagement database is unavailable")
+            deleted_id = FanGameRepository(session).delete_attempt(
+                identity=identity,
+                attempt_id=attempt_id,
+            )
+            return GameAttemptDeletedRead(attempt_id=deleted_id)
+    except HTTPException:
+        raise
+    except (EngagementAccountUnavailableError, EngagementNotFoundError, SQLAlchemyError) as error:
+        raise _handle_error(error) from error
 
 
 @router.post("/me/engagement-data/delete", response_model=EngagementDataDeleteRead)

@@ -10,7 +10,7 @@ from app.domain.trusted_identity import PublicationStatus
 if TYPE_CHECKING:
     from app.domain.archive_events import DomainEvent
 
-DatePrecision = Literal["day", "month", "year"]
+DatePrecision = Literal["day", "month", "year", "unknown"]
 ResidencyType = Literal["primary", "temporary", "transit", "quarantine"]
 ResidencyStatus = Literal["confirmed", "confirmed_country_level", "provisional"]
 

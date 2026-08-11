@@ -2,6 +2,14 @@
 
 ZhiPanda records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs).
 
+## Governing V1 product architecture
+
+The current V1 product direction is defined by [ZhiPanda V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md).
+
+The governing product priority is **panda fan experience first**. Archive, provenance, review, moderation, audit, and publication capabilities remain supporting infrastructure and must not displace the missing fan-facing V1 loops.
+
+Use the active [V1 fan product gap matrix](../product/zhipanda-v1-feature-gap-matrix.md) to determine which product capabilities are complete, partial, or missing.
+
 ## Current and target deployment
 
 The current production deployment remains Cloudflare-based until the managed-cloud migration phases are accepted. The approved target is Vercel for the Next.js Web application and bounded API functions, Supabase PostgreSQL/PostGIS/Auth as the authoritative managed data platform, Cloudflare DNS/R2 for domains and public media, and GitHub Actions for bounded batch workflows.
