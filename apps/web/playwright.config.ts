@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const localhostNoProxy = "127.0.0.1,localhost";
+process.env.NO_PROXY = [localhostNoProxy, process.env.NO_PROXY].filter(Boolean).join(",");
+process.env.no_proxy = [localhostNoProxy, process.env.no_proxy].filter(Boolean).join(",");
+
 const browserChannel = process.env.PLAYWRIGHT_BROWSER_CHANNEL?.trim()
   || (
     process.platform === "win32" && process.env.RELEASE_GATE_USE_SYSTEM_EDGE !== "0"

@@ -91,7 +91,7 @@ test("email OTP login is semantic, mobile-safe, and accessible", async ({ page }
   await expectNoWcagViolations(page);
 });
 
-test("bounded React-admin shell exposes only effective capabilities", async ({ page }) => {
+test("bounded React-admin shell renders the product dashboard without exposing raw capability keys", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({
       status: 200,
@@ -104,20 +104,71 @@ test("bounded React-admin shell exposes only effective capabilities", async ({ p
   const response = await page.goto("/admin", { waitUntil: "domcontentloaded", timeout: 60_000 });
   expect(response?.headers()["cache-control"]).toContain("no-store");
   expect(response?.headers()["x-robots-tag"]).toContain("noindex");
-  await expect(page.getByRole("heading", { level: 1, name: "工作人员控制台" })).toBeVisible({
+  await expect(page.getByRole("heading", { level: 1, name: "概览" })).toBeVisible({
     timeout: 60_000,
   });
-  await expect(page.getByText("ZhiPanda Administration", { exact: true })).toBeVisible();
+  await expect(page.getByText("ZhiPanda Admin", { exact: true })).toBeVisible();
   const retiredAdminBrand = ["Panda", "Atlas Administration"].join("");
   await expect(page.getByText(retiredAdminBrand, { exact: true })).toHaveCount(0);
-  await expect(page.getByText("identity.role.manage", { exact: true })).toBeVisible();
+  await expect(page.getByText("identity.role.manage", { exact: true })).toHaveCount(0);
   await expect(page.getByText("archive.review", { exact: true })).toHaveCount(0);
 
-  const logout = page.getByRole("button", { name: "退出登录" });
-  await logout.focus();
-  await expect(logout).toBeFocused();
+  const pandaMenuItem = page.getByRole("menuitem", { name: "熊猫", exact: true });
+  await pandaMenuItem.focus();
+  await expect(pandaMenuItem).toBeFocused();
   await expectNoWcagViolations(page);
 });
+
+test("product Admin centers and curated Guess Panda bank are real operational pages", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ...session,
+        capabilities: [
+          ...session.capabilities,
+          "archive.workbench.read",
+          "game.question.read",
+          "game.question.edit",
+          "game.question.publish",
+          "media.upload",
+        ],
+      }),
+      headers: { "Cache-Control": "no-store, private" },
+    });
+  });
+  await page.route("**/api/admin/content/centers/events?**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        domain: "events",
+        items: [],
+        total: 0,
+        page: 1,
+        page_size: 20,
+        issue_count: 0,
+      }),
+    });
+  });
+  await page.goto("/admin/events", { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await expect(page.getByRole("heading", { level: 1, name: "事件中心" })).toBeVisible();
+  await expect(page.getByText("当前筛选条件下没有记录。")).toBeVisible();
+
+  await page.route("**/api/admin/games/guess/questions?**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ items: [], total: 0, page: 1, page_size: 20 }),
+    });
+  });
+  await page.goto("/admin/games", { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await expect(page.getByRole("heading", { level: 1, name: "Guess Panda 题库" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "创建题目草稿" })).toBeVisible();
+  await expect(page.getByText("当前没有题目。")).toBeVisible();
+});
+
 
 test("Archive workbench is mobile-safe, bounded, keyboard reachable, and accessible", async ({
   page,

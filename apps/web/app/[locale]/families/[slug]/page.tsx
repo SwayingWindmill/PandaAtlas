@@ -35,7 +35,7 @@ const copy = {
     relationship: "亲本断言",
     events: "引用事件",
     profile: "打开档案",
-    lineage: "在谱系中查看",
+    lineage: "在家族谱系中查看",
     moments: "在熊猫时光中查看",
     otherStories: "其他家族故事",
     partial: "当前故事为明确声明的部分范围，不代表完整生物学家族。",
@@ -56,7 +56,7 @@ const copy = {
     relationship: "Parentage assertion",
     events: "Referenced events",
     profile: "Open profile",
-    lineage: "View in Lineage",
+    lineage: "View family lineage",
     moments: "View in Panda Moments",
     otherStories: "Other family stories",
     partial: "This story has an explicitly partial scope and does not represent a complete biological family.",
@@ -240,7 +240,7 @@ export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) 
                 <details>
                   <summary>{locale === "zh" ? "继续探索" : "Continue exploring"}</summary>
                   <div className={styles.directory}>
-                    <Link href={`/${locale}/lineage?focus=${members[0]?.slug ?? ""}` as Route}>{t.lineage}</Link>
+                    <Link href={`/${locale}/families?view=lineage&focus=${members[0]?.slug ?? ""}` as Route}>{t.lineage}</Link>
                     <Link href={`/${locale}/moments?panda=${members[0]?.slug ?? ""}` as Route}>{t.moments}</Link>
                   </div>
                 </details>

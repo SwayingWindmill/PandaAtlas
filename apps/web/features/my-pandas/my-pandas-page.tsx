@@ -3,6 +3,9 @@ import Link from "next/link";
 import { ArrowRight, Database, ShieldCheck } from "lucide-react";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
+import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
+import { isFeedUiEnabled } from "@/features/feed/config";
+import { isNotificationCenterEnabled } from "@/features/notification-center/config";
 import { MyPandasPassportIsland } from "@/features/my-pandas/my-pandas-passport-island";
 import type { MyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import type {
@@ -20,13 +23,16 @@ interface MyPandasPageProps {
 export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
   const { copy } = view;
   const alternateLocale = locale === "zh" ? "en" : "zh";
+  const feedEnabled = isFeedUiEnabled();
+  const notificationCenterEnabled = isNotificationCenterEnabled();
+  const contributionEnabled = isCommunityIntakeUiEnabled();
 
   return (
     <>
       <GlobalNavigation
         locale={locale}
         active="my-pandas"
-        alternatePath={`/${alternateLocale}/me/passport`}
+        alternatePath={`/${alternateLocale}/me`}
       />
       <main id="main-content" className="my-pandas-page" data-testid="my-pandas-page">
         <section className={`${publicShellClassName} my-pandas-delivery`}>
@@ -45,10 +51,42 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
               <p className="my-pandas-eyebrow">{copy.eyebrow}</p>
               <h1>{copy.title}</h1>
               <p className="my-pandas-hero-description">{copy.description}</p>
-              <Link href={`/${locale}/pandas` as Route} className="my-pandas-hero-link">
-                {copy.browsePandas}
-                <ArrowRight aria-hidden="true" />
-              </Link>
+              <div className="flex flex-wrap gap-3">
+                <Link href={`/${locale}/me/collections` as Route} className="my-pandas-hero-link">
+                  {locale === "zh" ? "收藏与合集" : "Favorites & collections"}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+                {feedEnabled ? (
+                  <Link href={`/${locale}/me/feed` as Route} className="my-pandas-hero-link">
+                    {locale === "zh" ? "收藏动态" : "Favorite activity"}
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                ) : null}
+                {notificationCenterEnabled ? (
+                  <Link href={`/${locale}/me/inbox` as Route} className="my-pandas-hero-link">
+                    {locale === "zh" ? "通知" : "Notifications"}
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                ) : null}
+                <Link href={`/${locale}/me/memories` as Route} className="my-pandas-hero-link">
+                  {locale === "zh" ? "足迹与见过" : "Visits & seen pandas"}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+                <Link href={`/${locale}/me/game-history` as Route} className="my-pandas-hero-link">
+                  {locale === "zh" ? "游戏历史" : "Game history"}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+                {contributionEnabled ? (
+                  <Link href={`/${locale}/me/submissions` as Route} className="my-pandas-hero-link">
+                    {locale === "zh" ? "我的投稿" : "My submissions"}
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                ) : null}
+                <Link href={`/${locale}/pandas` as Route} className="my-pandas-hero-link">
+                  {copy.browsePandas}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              </div>
             </div>
             <aside className="my-pandas-release-card" aria-label={copy.releaseLabel}>
               <Database aria-hidden="true" />

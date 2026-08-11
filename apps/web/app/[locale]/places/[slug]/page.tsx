@@ -1,6 +1,7 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { PublicEntityPage } from "@/components/patterns/public-entity-page";
+import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
 import { buildPlacePageViewModel } from "@/features/places/place-page-view-model";
 import {
   loadPublishedPlace,
@@ -56,6 +57,14 @@ export default async function PlacePage({ params, searchParams }: PlacePageProps
       delivery={envelope.delivery}
       coverage={envelope.coverage}
       localeDelivery={envelope.locale}
+      fanAction={(
+        <PlaceCheckinControl
+          placeId={entity.stableId}
+          slug={entity.canonicalSlug}
+          name={entity.displayName}
+          locale={locale}
+        />
+      )}
     />
   );
 }

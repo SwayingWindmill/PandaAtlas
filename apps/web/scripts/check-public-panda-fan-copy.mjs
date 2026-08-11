@@ -5,7 +5,7 @@ const retiredPublicBrand = ["Panda", "Atlas"].join("");
 const checks = [
   {
     path: "features/home/editorial-home-view-model.ts",
-    required: ["认识你关注的每一只熊猫", "今天认识哪只熊猫？", "从家庭和地点认识更多熊猫", "Discover the pandas you care about", "Which panda will you meet today?", "Discover more through family and place", "最后核实", "Last verified"],
+    required: ["认识你收藏的每一只熊猫", "今天认识哪只熊猫？", "从家庭和地点认识更多熊猫", "Discover the pandas you care about", "Which panda will you meet today?", "Discover more through family and place", "最后核实", "Last verified"],
     banned: ["档案控制台", "结构化入口", "Archive console", "structured entry point", retiredPublicBrand],
   },
   {

@@ -30,7 +30,7 @@ export async function POST() {
     ? currentBody.intent_id
     : null;
   if (!intentId) {
-    return NextResponse.json({ detail: "Invalid pending Follow state" }, { status: 502 });
+    return NextResponse.json({ detail: "Invalid pending Favorite state" }, { status: 502 });
   }
 
   const result = await callFastApiEngagement("/api/v1/me/follows/complete-pending", {

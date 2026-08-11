@@ -99,12 +99,12 @@ async function verifyDiscovery(page, baseUrl, mode) {
     "/en",
     "/zh/pandas",
     "/en/pandas",
-    "/zh/lineage",
-    "/en/lineage",
+    "/zh/families?view=lineage&focus=mei-xiang",
+    "/en/families?view=lineage&focus=mei-xiang",
     "/zh/map",
     "/en/map",
-    "/zh/me/passport",
-    "/en/me/passport",
+    "/zh/me",
+    "/en/me",
   ];
   const evidence = [];
   for (const route of routes) {

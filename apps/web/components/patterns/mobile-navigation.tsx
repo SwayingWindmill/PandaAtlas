@@ -9,8 +9,6 @@ import type { PublicLocale } from "@/foundation/content/locales";
 interface MobileNavigationProps {
   locale: PublicLocale;
   contributeEnabled: boolean;
-  feedEnabled: boolean;
-  notificationCenterEnabled: boolean;
   languageHref: string;
   languageHrefLang: "zh-CN" | "en";
   labels: {
@@ -21,12 +19,10 @@ interface MobileNavigationProps {
     atlas: string;
     moments: string;
     families: string;
-    lineage: string;
     map: string;
+    games: string;
     myPandas: string;
     contribute: string;
-    feed: string;
-    inbox: string;
     language: string;
   };
 }
@@ -34,8 +30,6 @@ interface MobileNavigationProps {
 export function MobileNavigation({
   locale,
   contributeEnabled,
-  feedEnabled,
-  notificationCenterEnabled,
   languageHref,
   languageHrefLang,
   labels,
@@ -72,25 +66,15 @@ export function MobileNavigation({
           <Link href={`/${locale}`} onClick={() => setOpen(false)}>{labels.home}</Link>
           <Link href={`/${locale}/pandas`} onClick={() => setOpen(false)}>{labels.atlas}</Link>
           <Link href={`/${locale}/moments` as Route} onClick={() => setOpen(false)}>{labels.moments}</Link>
-          <Link href={`/${locale}/families/smithsonian-generations` as Route} onClick={() => setOpen(false)}>{labels.families}</Link>
-          <Link href={`/${locale}/lineage` as Route} onClick={() => setOpen(false)}>{labels.lineage}</Link>
+          <Link href={`/${locale}/families` as Route} onClick={() => setOpen(false)}>{labels.families}</Link>
           <Link href={`/${locale}/map` as Route} onClick={() => setOpen(false)}>{labels.map}</Link>
+          <Link href={`/${locale}/games` as Route} onClick={() => setOpen(false)}>{labels.games}</Link>
           {contributeEnabled ? (
             <Link href={`/${locale}/contribute` as Route} onClick={() => setOpen(false)}>
               {labels.contribute}
             </Link>
           ) : null}
-          {feedEnabled ? (
-            <Link href={`/${locale}/me/feed` as Route} onClick={() => setOpen(false)}>
-              {labels.feed}
-            </Link>
-          ) : null}
-          {notificationCenterEnabled ? (
-            <Link href={`/${locale}/me/inbox` as Route} onClick={() => setOpen(false)}>
-              {labels.inbox}
-            </Link>
-          ) : null}
-          <Link href={`/${locale}/me/passport` as Route} onClick={() => setOpen(false)}>{labels.myPandas}</Link>
+          <Link href={`/${locale}/me` as Route} onClick={() => setOpen(false)}>{labels.myPandas}</Link>
           <Link href={languageHref as Route} hrefLang={languageHrefLang} onClick={() => setOpen(false)}>
             {labels.language}
           </Link>

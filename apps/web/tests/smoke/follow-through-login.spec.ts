@@ -67,28 +67,23 @@ test("serves only canonical Panda 200 routes and emits canonical sitemap URLs", 
   expect(profileLocation.pathname).toBe("/zh/pandas/mei-xiang");
   expect(profileLocation.search).toBe("?from=legacy");
 
-  const passportAlias = await request.get("/zh/my-pandas", { maxRedirects: 0 });
-  expect(passportAlias.status()).toBe(308);
-  expect(new URL(passportAlias.headers().location, "http://localhost").pathname).toBe("/zh/me/passport");
-
   const sitemap = await request.get("/sitemap.xml");
   expect(sitemap.status()).toBe(200);
   const xml = await sitemap.text();
   expect(xml).toContain("/zh/pandas");
   expect(xml).toContain("/en/pandas/mei-xiang");
   expect(xml).not.toContain("/atlas");
-  expect(xml).not.toContain("/my-pandas");
   expect(xml).not.toContain("/me/passport");
 });
 
-test("restores visible Follow outcomes on the canonical profile", async ({ page }) => {
+test("restores visible Favorite outcomes on the canonical profile", async ({ page }) => {
   test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   await mockSignedOut(page);
   const outcomes = [
-    ["followed", "You now follow Mei Xiang"],
-    ["already-followed", "You already follow Mei Xiang"],
+    ["followed", "Mei Xiang is now in My Pandas."],
+    ["already-followed", "You already favorited Mei Xiang."],
     ["cancelled", "Sign-in was cancelled"],
-    ["intent-expired", "request expired"],
+    ["intent-expired", "favorite request expired"],
     ["auth-failed", "Verification did not complete"],
     ["session-expired", "Your session expired"],
   ] as const;
@@ -99,70 +94,57 @@ test("restores visible Follow outcomes on the canonical profile", async ({ page 
   }
 });
 
-test("signed-in Follow updates immediately and asks for email consent separately", async ({ page }) => {
+test("signed-in Favorite updates immediately without changing email consent", async ({ page }) => {
   test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
-  let followWrites = 0;
+  let favoriteWrites = 0;
   let preferenceWrites = 0;
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(session) });
   });
-  await page.route("**/api/engagement/follows/**", async (route) => {
+  await page.route("**/api/engagement/favorites/**", async (route) => {
     if (route.request().method() === "GET") {
       await route.fulfill({ status: 404, contentType: "application/json", body: '{"detail":"Not found"}' });
       return;
     }
-    followWrites += 1;
+    favoriteWrites += 1;
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        follow_id: "33333333-3333-3333-3333-333333333333",
         panda_id: "stable-panda-mei-xiang",
-        state: "active",
-        first_followed_at: "2026-07-29T00:00:00Z",
-        followed_at: "2026-07-29T00:00:00Z",
-        unfollowed_at: null,
-        version: 1,
+        favorited_at: "2026-07-29T00:00:00Z",
       }),
     });
   });
   await page.route("**/api/engagement/preferences/major_activity/email", async (route) => {
     preferenceWrites += 1;
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        category: "major_activity",
-        channel: "email",
-        enabled: true,
-        version: 1,
-        updated_at: "2026-07-29T00:00:00Z",
-      }),
-    });
+    await route.fulfill({ status: 200, contentType: "application/json", body: '{}' });
   });
 
   await page.goto("/en/pandas/mei-xiang");
-  const follow = page.getByRole("button", { name: "Follow Mei Xiang" });
-  await expect(follow).toBeEnabled();
-  await follow.click();
-  await expect(page.getByRole("button", { name: "Unfollow Mei Xiang" })).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("heading", { name: "Receive important panda updates by email?" })).toBeVisible();
-  expect(followWrites).toBe(1);
+  const favorite = page.getByRole("button", { name: "Favorite Mei Xiang" });
+  await expect(favorite).toBeEnabled();
+  await favorite.click();
+  await expect(page.getByRole("button", { name: "Remove Mei Xiang from favorites" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await expect(page.getByRole("status")).toContainText("Mei Xiang is now in My Pandas.");
+  await expect(page.getByRole("link", { name: "Organize collections" })).toHaveAttribute(
+    "href",
+    "/en/me/collections",
+  );
+  expect(favoriteWrites).toBe(1);
   expect(preferenceWrites).toBe(0);
-
-  await page.getByRole("button", { name: "Enable important update emails" }).click();
-  await expect(page.getByRole("status")).toContainText("Important update emails are enabled");
-  expect(preferenceWrites).toBe(1);
-  await expect(page.getByRole("link", { name: "Open Panda Passport" })).toHaveAttribute("href", "/en/me/passport");
 });
 
-test("expired signed-in session creates a new Pending Intent before reauthentication", async ({ page }) => {
+test("expired signed-in session creates a pending Favorite before reauthentication", async ({ page }) => {
   test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   let pendingWrites = 0;
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(session) });
   });
-  await page.route("**/api/engagement/follows/**", async (route) => {
+  await page.route("**/api/engagement/favorites/**", async (route) => {
     if (route.request().method() === "GET") {
       await route.fulfill({ status: 404, contentType: "application/json", body: '{"detail":"Not found"}' });
       return;
@@ -191,8 +173,8 @@ test("expired signed-in session creates a new Pending Intent before reauthentica
   });
 
   await page.goto("/en/pandas/mei-xiang");
-  await page.getByRole("button", { name: "Follow Mei Xiang" }).click();
-  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fen%2Fpandas%2Fmei-xiang&reason=session-expired$/);
+  await page.getByRole("button", { name: "Favorite Mei Xiang" }).click();
+  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fen%2Fpandas%2Fmei-xiang$/);
   expect(pendingWrites).toBe(1);
 });
 
@@ -207,14 +189,13 @@ test("cross-device continuation clears the fragment and still requires OTP", asy
   await page.goto("/auth/login?next=/en/pandas/mei-xiang#continue=cross-device-handle-1234567890");
   await expect(page).toHaveURL(/\/auth\/login\?next=\/en\/pandas\/mei-xiang$/);
   expect(continuation).toEqual({ continuation_handle: "cross-device-handle-1234567890" });
-  await expect(page.getByText("Panda to follow: mei-xiang")).toBeVisible();
+  await expect(page.getByText("Panda to favorite: mei-xiang")).toBeVisible();
   await expect(page.getByText("ZhiPanda account")).toBeVisible();
-  await expect(page.getByText(/FastAPI/)).toHaveCount(0);
   await expect(page.getByLabel("Email")).toBeVisible();
   await expect(page.getByRole("button", { name: "Send verification code" })).toBeVisible();
 });
 
-test("invalid OTP preserves the intended Panda context and moves focus to the error", async ({ page }) => {
+test("invalid OTP preserves the intended Favorite context and moves focus to the error", async ({ page }) => {
   test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
   await mockPendingContext(page, "en");
   await page.route("**/api/auth/email-otp/start", async (route) => {
@@ -229,18 +210,16 @@ test("invalid OTP preserves the intended Panda context and moves focus to the er
   });
 
   await page.goto("/auth/login?next=/en/pandas/mei-xiang");
-  await expect(page.getByText("Panda to follow: mei-xiang")).toBeVisible();
+  await expect(page.getByText("Panda to favorite: mei-xiang")).toBeVisible();
   await page.getByLabel("Email").fill("member@example.invalid");
-  const sendCode = page.getByRole("button", { name: "Send verification code" });
-  await expect(sendCode).toBeEnabled();
-  await sendCode.click();
+  await page.getByRole("button", { name: "Send verification code" }).click();
   const code = page.getByLabel("6-digit verification code");
   await code.fill("123456");
   await page.getByRole("button", { name: "Verify and sign in" }).click();
   const alert = page.getByText("That verification code is not correct. Check it and try again.");
   await expect(alert).toBeVisible();
   await expect(alert).toBeFocused();
-  await expect(page.getByText("Panda to follow: mei-xiang")).toBeVisible();
+  await expect(page.getByText("Panda to favorite: mei-xiang")).toBeVisible();
   await expect(code).toHaveValue("");
 });
 

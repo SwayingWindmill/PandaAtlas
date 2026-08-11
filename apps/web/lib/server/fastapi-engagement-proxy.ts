@@ -7,7 +7,7 @@ import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 const FASTAPI_BASE_URL = (process.env.API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 interface EngagementProxyOptions {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   anonymous?: boolean;
   headers?: Record<string, string>;

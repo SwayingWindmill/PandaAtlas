@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const localhostNoProxy = "127.0.0.1,localhost";
+process.env.NO_PROXY = [localhostNoProxy, process.env.NO_PROXY].filter(Boolean).join(",");
+process.env.no_proxy = [localhostNoProxy, process.env.no_proxy].filter(Boolean).join(",");
+
 const productionServer = process.env.PLAYWRIGHT_WEB_SERVER_MODE === "production";
 const port = Number(process.env.PLAYWRIGHT_ADMIN_PORT ?? "3300");
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL?.trim();

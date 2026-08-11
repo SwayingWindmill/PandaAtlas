@@ -7,7 +7,7 @@ export default function FeedLoading() {
           <div key={item} className="h-56 animate-pulse rounded-3xl bg-[var(--pa-color-accent-fill-04)]" />
         ))}
       </div>
-      <span className="sr-only">正在加载关注动态 / Loading Follow Activity</span>
+      <span className="sr-only">正在加载收藏动态 / Loading Favorite Activity</span>
     </main>
   );
 }

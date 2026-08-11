@@ -110,7 +110,7 @@ const copy = {
   zh: {
     hero: {
       eyebrow: "吱熊猫 ZhiPanda",
-      title: "认识你关注的每一只熊猫",
+      title: "认识你收藏的每一只熊猫",
       description: "搜索名字，查看它的图片、家庭关系、生活地点与公开资料。",
       searchLabel: "搜索熊猫",
       inputLabel: "输入熊猫名字",
@@ -481,7 +481,7 @@ export function buildEditorialHomeViewModel(
           title: t.explorations.relationships.title,
           body: t.explorations.relationships.body,
           primaryLabel: t.explorations.relationships.primaryLabel,
-          primaryHref: `/${locale}/lineage?focus=mei-xiang`,
+          primaryHref: `/${locale}/families?view=lineage&focus=mei-xiang`,
           secondaryLinks: [
             { label: t.explorations.relationships.secondary, href: `/${locale}/pandas/bao-li` },
           ],

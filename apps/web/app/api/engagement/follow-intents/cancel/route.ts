@@ -24,7 +24,7 @@ export async function POST() {
   const currentBody = current.body as Record<string, unknown> | null;
   const intentId = typeof currentBody?.intent_id === "string" ? currentBody.intent_id : null;
   if (!intentId) {
-    return NextResponse.json({ detail: "Invalid pending Follow state" }, { status: 502 });
+    return NextResponse.json({ detail: "Invalid pending Favorite state" }, { status: 502 });
   }
   const result = await callFastApiEngagement("/api/v1/follow-intents/cancel", {
     method: "POST",

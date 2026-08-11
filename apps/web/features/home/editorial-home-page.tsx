@@ -10,6 +10,7 @@ import {
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
+import SphereImageGrid, { type ImageData } from "@/components/ui/img-sphere";
 import type {
   PublicCoverage,
   PublicDelivery,
@@ -22,6 +23,7 @@ import type { EditorialHomeViewModel } from "./editorial-home-view-model";
 interface EditorialHomePageProps {
   locale: PublicLocale;
   view: EditorialHomeViewModel;
+  sphereImages: ImageData[];
   release: PublicReleaseIdentity;
   delivery: PublicDelivery;
   coverage: PublicCoverage;
@@ -35,6 +37,7 @@ function route(value: string): Route {
 export function EditorialHomePage({
   locale,
   view,
+  sphereImages,
   release,
   delivery,
   coverage,
@@ -79,7 +82,22 @@ export function EditorialHomePage({
             </Link>
           </div>
 
-          <div className="pa-home-hero-visual" aria-label={view.hero.noMediaLabel}>
+          <div className="pa-home-hero-visual relative min-h-[25rem] overflow-hidden rounded-[2rem]" aria-label={view.hero.noMediaLabel}>
+            {sphereImages.length >= 8 ? (
+              <div className="absolute inset-0 z-10 overflow-hidden rounded-[2rem] border border-[var(--pa-color-line)] bg-[radial-gradient(circle_at_50%_45%,rgba(206,232,210,0.98),rgba(238,242,225,0.94)_38%,rgba(223,232,211,0.88)_68%,rgba(255,255,255,0.82)_100%)] shadow-[var(--pa-shadow-card)]">
+                <SphereImageGrid
+                  images={sphereImages}
+                  sphereRadius={205}
+                  baseImageScale={0.145}
+                  autoRotateSpeed={0.1}
+                  regionLabel={locale === "zh" ? "可拖动旋转的熊猫图片球" : "Draggable rotating panda image sphere"}
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-[rgba(18,48,31,0.84)] to-transparent px-5 pb-4 pt-12 text-xs font-semibold text-white">
+                  <span>{locale === "zh" ? "拖动旋转 · 点击照片认识熊猫" : "Drag to rotate · Select a panda"}</span>
+                  <span aria-hidden="true">↔</span>
+                </div>
+              </div>
+            ) : null}
             <LicensedMediaFigure
               locale={locale}
               variant="home"

@@ -1,7 +1,8 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
-import { PandaFollowControl } from "@/components/pandas/panda-follow-control";
+import { PandaFavoriteControl } from "@/components/pandas/panda-favorite-control";
+import { PandaSeenControl } from "@/components/pandas/panda-seen-control";
 import { PublicPandaActivity } from "@/features/feed/public-panda-activity";
 import type { ActivityPageData } from "@/features/feed/types";
 import { ProfileVisitRecorder } from "@/features/preferences/profile-visit-recorder";
@@ -15,6 +16,7 @@ import { GlobalNavigation, publicShellClassName } from "@/components/patterns/gl
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
+import { buildPandaStructuredData, serializeStructuredData } from "@/foundation/metadata/panda-structured-data";
 import type { PandaDetail } from "@/lib/types";
 import type {
   ProfileModuleState,
@@ -483,9 +485,24 @@ export function TrustedProfilePage({
     const source = profile.sources.find((item) => item.id === sourceId);
     return source ? [source] : [];
   });
+  const structuredData = serializeStructuredData(buildPandaStructuredData({
+    locale,
+    stableId: profile.stableId,
+    canonicalSlug: profile.canonicalSlug,
+    displayName: profile.displayName,
+    alternateName: profile.alternateName,
+    pinyin: profile.pinyin,
+    summary: profile.summary,
+    coverImageUrl: envelope.data.panda.cover_image_url,
+  }));
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        data-testid="panda-structured-data"
+        dangerouslySetInnerHTML={{ __html: structuredData }}
+      />
       <ProfileVisitRecorder stableId={profile.stableId} slug={profile.canonicalSlug} />
       <GlobalNavigation locale={locale} active="profile" alternatePath={profile.alternateLanguageHref} />
       <main
@@ -546,7 +563,7 @@ export function TrustedProfilePage({
               {profile.lastVerifiedAt ? <p className="mt-3 text-sm font-semibold text-[var(--accent)]">{t.verified}{locale === "zh" ? "：" : ": "}{profile.lastVerifiedAt}</p> : null}
               <div className="mt-6 flex flex-wrap gap-2" aria-label={locale === "zh" ? "继续探索" : "Continue exploring"}>
                 <Link href={`/${locale}/moments?panda=${profile.canonicalSlug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] bg-[var(--pa-color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? "查看熊猫时光" : "View Panda Moments"}</Link>
-                <Link href={`/${locale}/lineage?focus=${profile.canonicalSlug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? "查看谱系" : "View Lineage"}</Link>
+                <Link href={`/${locale}/families?view=lineage&focus=${profile.canonicalSlug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? "查看家族谱系" : "View family lineage"}</Link>
                 {familyStories.map((story) => {
                   const storyContent = localizedEditorial(story.localized_content, locale);
                   return <Link key={story.id} href={`/${locale}/families/${story.slug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{storyContent.title}</Link>;
@@ -599,12 +616,20 @@ export function TrustedProfilePage({
                   ))}
                 </ul>
               </div>
-              <PandaFollowControl
-                stableId={profile.stableId}
-                slug={profile.canonicalSlug}
-                name={profile.displayName}
-                locale={locale}
-              />
+              <div className="grid gap-5">
+                <PandaFavoriteControl
+                  stableId={profile.stableId}
+                  slug={profile.canonicalSlug}
+                  name={profile.displayName}
+                  locale={locale}
+                />
+                <PandaSeenControl
+                  stableId={profile.stableId}
+                  slug={profile.canonicalSlug}
+                  name={profile.displayName}
+                  locale={locale}
+                />
+              </div>
             </aside>
           </div>
         </section>

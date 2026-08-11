@@ -220,6 +220,15 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
           <p className="pa-eyebrow">{locale === "zh" ? "吱熊猫 / 熊猫资料" : "ZhiPanda / Panda profiles"}</p>
           <h1>{t.title}</h1>
           <p className="pa-lede">{t.description}</p>
+          <div className="mt-6">
+            <Link
+              href={`/${locale}/pandas/discover` as Route}
+              className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[#173d28] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#245c3c] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#173d28]/25"
+            >
+              {locale === "zh" ? "进入沉浸式熊猫画廊" : "Enter immersive panda gallery"}
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
 
           <form role="search" aria-label={t.searchLabel} action={`/${locale}/pandas`} method="get" className="pa-atlas-discovery-form" data-testid="atlas-discovery-form">
             <div className="pa-search-form pa-search-form-compact">

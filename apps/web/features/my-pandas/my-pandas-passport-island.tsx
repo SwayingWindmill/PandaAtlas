@@ -42,8 +42,8 @@ function formatDate(value: string, locale: PublicLocale): string {
 }
 
 function relationshipLabel(entry: PassportEntry, locale: PublicLocale): string {
-  if (entry.relationship_state === "active") return locale === "zh" ? "正在关注" : "Following";
-  if (entry.relationship_state === "inactive") return locale === "zh" ? "历史关注" : "Follow history";
+  if (entry.relationship_state === "active") return locale === "zh" ? "已收藏" : "Favorited";
+  if (entry.relationship_state === "inactive") return locale === "zh" ? "收藏历史" : "Favorite history";
   return locale === "zh" ? "贡献记录" : "Contribution record";
 }
 
@@ -123,8 +123,8 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
         {passportState === "signed-out" ? (
           <div className="my-pandas-empty">
             <LogIn aria-hidden="true" />
-            <p>{locale === "zh" ? "登录后可查看跨设备同步的关注关系。" : "Sign in to view synced follows."}</p>
-            <Link href={`/auth/login?next=/${locale}/me/passport` as Route}>
+            <p>{locale === "zh" ? "登录后可查看跨设备同步的收藏。" : "Sign in to view synced favorites."}</p>
+            <Link href={`/auth/login?next=/${locale}/me` as Route}>
               {locale === "zh" ? "使用邮箱验证码登录" : "Sign in with email OTP"}
               <ArrowRight aria-hidden="true" />
             </Link>
@@ -141,8 +141,8 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
             <Heart aria-hidden="true" />
             <p>
               {locale === "zh"
-                ? "你的熊猫护照还没有关注或贡献记录。"
-                : "Your Panda Passport has no follow or contribution records yet."}
+                ? "你的熊猫护照还没有收藏或贡献记录。"
+                : "Your Panda Passport has no favorite or contribution records yet."}
             </p>
             <Link href={`/${locale}/pandas` as Route}>
               {copy.browsePandas}
@@ -169,7 +169,7 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
                   </div>
                   {entry.first_followed_at ? (
                     <p>
-                      {locale === "zh" ? "首次关注" : "First followed"}: {formatDate(entry.first_followed_at, locale)}
+                      {locale === "zh" ? "首次收藏" : "First favorited"}: {formatDate(entry.first_followed_at, locale)}
                     </p>
                   ) : null}
                   {entry.contribution_count > 0 ? (

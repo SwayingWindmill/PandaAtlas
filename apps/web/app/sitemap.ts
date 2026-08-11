@@ -11,7 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       { url: `${siteUrl}/${locale}`, changeFrequency: "weekly", priority: 1 },
       { url: `${siteUrl}/${locale}/pandas`, changeFrequency: "weekly", priority: 0.9 },
       { url: `${siteUrl}/${locale}/map`, changeFrequency: "weekly", priority: 0.7 },
-      { url: `${siteUrl}/${locale}/lineage`, changeFrequency: "weekly", priority: 0.7 },
+      { url: `${siteUrl}/${locale}/moments`, changeFrequency: "daily", priority: 0.7 },
+      { url: `${siteUrl}/${locale}/families`, changeFrequency: "weekly", priority: 0.7 },
+      { url: `${siteUrl}/${locale}/games`, changeFrequency: "monthly", priority: 0.6 },
+      { url: `${siteUrl}/${locale}/games/random`, changeFrequency: "monthly", priority: 0.5 },
+      { url: `${siteUrl}/${locale}/games/guess`, changeFrequency: "monthly", priority: 0.5 },
     );
     for (const panda of dataset.pandas) {
       entries.push({

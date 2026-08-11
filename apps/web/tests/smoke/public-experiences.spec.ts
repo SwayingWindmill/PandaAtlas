@@ -3,9 +3,9 @@ import { expect, test } from "@playwright/test";
 test("Panda Moments preserves URL state and distinguishes source events from anniversaries", async ({ page }) => {
   await page.goto("/zh/moments?year=2026&anniversaries=1&panda=xi-lun");
 
-  await expect(page.getByRole("heading", { level: 1, name: "熊猫年鉴" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "熊猫时光" })).toBeVisible();
   await expect(page.getByText("公开版本: 2026.07.31.1 · Schema 1.3.0")).toBeVisible();
-  await expect(page.locator("main")).toContainText("派生周年");
+  await expect(page.locator("main")).toContainText("生日周年");
   await expect(page.locator("main")).toContainText("喜伦");
   await expect(page.locator("input[name=year]")).toHaveValue("2026");
   await expect(page.locator("select[name=panda]")).toHaveValue("xi-lun");
@@ -18,7 +18,7 @@ test("Panda Moments preserves URL state and distinguishes source events from ann
 test("English Panda Moments renders a truthful empty state", async ({ page }) => {
   await page.goto("/en/moments?year=1800&panda=mei-xiang");
 
-  await expect(page.getByRole("heading", { level: 1, name: "Panda Almanac" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Panda Moments" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "No public moments match these filters" })).toBeVisible();
   await expect(page.getByText(/This does not prove inactivity/)).toBeVisible();
 });
@@ -46,9 +46,9 @@ test("Profile V2 links into Moments, Lineage, and a related Family Story", async
     "href",
     "/en/moments?panda=xi-lun",
   );
-  await expect(page.getByRole("link", { name: "View Lineage" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "View family lineage" })).toHaveAttribute(
     "href",
-    "/en/lineage?focus=xi-lun",
+    "/en/families?view=lineage&focus=xi-lun",
   );
 
   await page.goto("/en/pandas/ri-ri");
@@ -77,7 +77,7 @@ test("public experience core content works without JavaScript", async ({ browser
   const page = await context.newPage();
 
   await page.goto("/zh/moments?year=2026&anniversaries=1&panda=xi-lun");
-  await expect(page.getByRole("heading", { level: 1, name: "熊猫年鉴" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "熊猫时光" })).toBeVisible();
   await expect(page.locator("main")).toContainText("喜伦");
   await expect(page.locator("form")).toHaveAttribute("method", "get");
 

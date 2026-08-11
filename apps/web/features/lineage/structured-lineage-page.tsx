@@ -10,7 +10,7 @@ import type {
   PublicReleaseIdentity,
 } from "@/features/public-content/public-release";
 import type { PublicLocale } from "@/foundation/content/locales";
-import { lineageHref, type LineageQueryState } from "./lineage-query";
+import { familyLineageHref, type LineageQueryState } from "./lineage-query";
 import type {
   StructuredLineageRelation,
   StructuredLineageSection,
@@ -221,7 +221,7 @@ function RelationCard({
           <Link href={`/${locale}/pandas/${relation.related.slug}` as Route}>{t.profile}<ArrowRight aria-hidden="true" /></Link>
         ) : <span>{t.profileUnavailable}</span>}
         <Link
-          href={lineageHref(locale, relationState(state, relation.id)) as Route}
+          href={familyLineageHref(locale, relationState(state, relation.id)) as Route}
           aria-current={relation.selected ? "true" : undefined}
         >
           {t.inspect}<SearchCheck aria-hidden="true" />
@@ -276,8 +276,8 @@ export function StructuredLineagePage({
     <>
       <GlobalNavigation
         locale={locale}
-        active="lineage"
-        alternatePath={lineageHref(alternateLocale, state)}
+        active="families"
+        alternatePath={familyLineageHref(alternateLocale, state)}
       />
       <main id="main-content" className="pa-public-main" data-testid="structured-lineage-page">
         <section className={`${publicShellClassName} pa-lineage-hero`}>
@@ -285,7 +285,13 @@ export function StructuredLineagePage({
           <h1>{t.title}</h1>
           <p className="pa-lede">{t.description}</p>
 
-          <form action={`/${locale}/lineage`} method="get" className="pa-lineage-scope-form" aria-label={t.apply}>
+          <nav className="mt-6 flex flex-wrap gap-2" aria-label={locale === "zh" ? "家族视图" : "Family views"}>
+            <Link href={`/${locale}/families` as Route} className="inline-flex min-h-11 items-center rounded-full border border-[var(--pa-color-line)] px-4 font-semibold">{locale === "zh" ? "家族故事" : "Family stories"}</Link>
+            <Link href={familyLineageHref(locale, state) as Route} aria-current="page" className="inline-flex min-h-11 items-center rounded-full bg-[var(--pa-color-accent)] px-4 font-semibold text-white">{locale === "zh" ? "谱系图" : "Lineage"}</Link>
+          </nav>
+
+          <form action={`/${locale}/families`} method="get" className="pa-lineage-scope-form" aria-label={t.apply}>
+            <input type="hidden" name="view" value="lineage" />
             <label>{t.focus}
               <select name="focus" defaultValue={state.focusSlug}>
                 {view.focusOptions.map((node) => (
@@ -347,7 +353,7 @@ export function StructuredLineagePage({
                 <strong>{t.selected}</strong>
                 <p>{relationLabel(selected, locale)} · {t[selected.status]} · {t.generationLabel(selected.generation)}</p>
               </div>
-              <Link href={lineageHref(locale, relationState(state, "")) as Route}>{t.clearSelection}</Link>
+              <Link href={familyLineageHref(locale, relationState(state, "")) as Route}>{t.clearSelection}</Link>
             </aside>
           ) : null}
 

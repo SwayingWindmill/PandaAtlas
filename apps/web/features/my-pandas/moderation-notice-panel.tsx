@@ -43,7 +43,7 @@ type ModerationNotice = {
 const copy = {
   zh: {
     heading: "账号状态与申诉",
-    intro: "这里显示当前账号的用户可见处分说明。处分不会删除 Follow、熊猫护照、投稿历史或已公开的档案事实。",
+    intro: "这里显示当前账号的用户可见处分说明。处分不会删除收藏、熊猫护照、投稿历史或已公开的档案事实。",
     active: "当前有效处分",
     appeals: "申诉状态",
     noAppeal: "选择一项处分提交申诉。工作人员应在五个工作日内首次响应。",
@@ -56,7 +56,7 @@ const copy = {
   },
   en: {
     heading: "Account status and appeals",
-    intro: "This shows the user-visible reasons for current sanctions. Sanctions do not delete Follow state, Panda Passport history, submissions, or published Archive facts.",
+    intro: "This shows the user-visible reasons for current sanctions. Sanctions do not delete favorites, Panda Passport history, submissions, or published Archive facts.",
     active: "Current sanctions",
     appeals: "Appeal status",
     noAppeal: "Select a sanction to appeal. Staff should provide a first response within five business days.",

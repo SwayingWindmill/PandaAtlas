@@ -1,4 +1,5 @@
 import type { Route } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
@@ -60,6 +61,7 @@ interface PublicEntityPageProps {
   delivery: PublicDelivery;
   coverage: PublicCoverage;
   localeDelivery: PublicLocaleDelivery;
+  fanAction?: ReactNode;
 }
 
 const copy = {
@@ -132,6 +134,7 @@ export function PublicEntityPage({
   delivery,
   coverage,
   localeDelivery,
+  fanAction,
 }: PublicEntityPageProps) {
   const t = copy[locale];
   const isInstitution = entity.kind === "institution";
@@ -148,6 +151,7 @@ export function PublicEntityPage({
             <p className="mt-5 rounded-2xl bg-[var(--surface-muted)] p-4 text-sm leading-6">
               {isInstitution ? t.distinctionInstitution : t.distinctionPlace}
             </p>
+            {fanAction}
           </header>
 
           <PublicDeliveryNotice

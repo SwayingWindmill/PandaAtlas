@@ -30,8 +30,8 @@ async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentN
 const coreJourneys = [
   { name: "Chinese Editorial Home", path: "/zh" },
   { name: "English Editorial Home", path: "/en" },
-  { name: "Chinese My Pandas", path: "/zh/me/passport" },
-  { name: "English My Pandas", path: "/en/me/passport" },
+  { name: "Chinese My Pandas", path: "/zh/me" },
+  { name: "English My Pandas", path: "/en/me" },
   { name: "Chinese Atlas discovery", path: "/zh/pandas?status=alive&sort=name" },
   { name: "English Atlas discovery", path: "/en/pandas?status=alive&sort=name" },
   { name: "Chinese trusted profile", path: "/zh/pandas/mei-xiang" },
@@ -44,11 +44,11 @@ const coreJourneys = [
   { name: "English place entity", path: "/en/places/wolong-shenshuping-base" },
   {
     name: "Chinese structured lineage relationship content",
-    path: "/zh/lineage?focus=mei-xiang",
+    path: "/zh/families?view=lineage&focus=mei-xiang",
   },
   {
     name: "English structured lineage relationship content",
-    path: "/en/lineage?focus=bao-li&descendants=1",
+    path: "/en/families?view=lineage&focus=bao-li&descendants=1",
   },
   {
     name: "Chinese Panda Moments with derived anniversaries",
@@ -100,10 +100,10 @@ test("bilingual profile content declares its language", async ({ page }) => {
 });
 
 for (const { locale, path, buttonName, pressedButtonName } of [
-  { locale: "zh", path: "/zh/pandas/mei-xiang", buttonName: /^关注/, pressedButtonName: /^取消关注/ },
-  { locale: "en", path: "/en/pandas/mei-xiang", buttonName: /^Follow /, pressedButtonName: /^Unfollow / },
+  { locale: "zh", path: "/zh/pandas/mei-xiang", buttonName: /^收藏/, pressedButtonName: /^取消收藏/ },
+  { locale: "en", path: "/en/pandas/mei-xiang", buttonName: /^Favorite /, pressedButtonName: /^Remove .* from favorites$/ },
 ]) {
-  test(`${locale} profile Follow is keyboard operable and remains accessible`, async ({ page }, testInfo) => {
+  test(`${locale} profile Favorite is keyboard operable and remains accessible`, async ({ page }, testInfo) => {
     test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
     await page.route("**/api/identity/session", async (route) => {
       await route.fulfill({
@@ -123,7 +123,7 @@ for (const { locale, path, buttonName, pressedButtonName } of [
         }),
       });
     });
-    await page.route("**/api/engagement/follows/**", async (route) => {
+    await page.route("**/api/engagement/favorites/**", async (route) => {
       if (route.request().method() === "GET") {
         await route.fulfill({ status: 404, contentType: "application/json", body: '{"detail":"Not found"}' });
         return;
@@ -247,8 +247,8 @@ test("reduced-motion removes nonessential animation from core journeys", async (
     "/en/pandas/mei-xiang",
     "/zh/map?mode=institutions&snapshot=2026.07.31.1",
     "/en/map?mode=wild&snapshot=2026.07.31.1",
-    "/zh/lineage?focus=mei-xiang",
-    "/en/lineage?focus=bao-li&descendants=1",
+    "/zh/families?view=lineage&focus=mei-xiang",
+    "/en/families?view=lineage&focus=bao-li&descendants=1",
   ]) {
     await page.goto(path);
     const movingElements = await page.locator("*").evaluateAll((elements) =>

@@ -50,8 +50,9 @@ export function lineageQueryString(state: LineageQueryState): string {
   return query.toString();
 }
 
-export function lineageHref(locale: "zh" | "en", state: LineageQueryState): string {
-  return `/${locale}/lineage?${lineageQueryString(state)}`;
+export function familyLineageHref(locale: "zh" | "en", state: LineageQueryState): string {
+  const query = lineageQueryString(state);
+  return `/${locale}/families?view=lineage${query ? `&${query}` : ""}`;
 }
 
 export function parseLineageQuery(

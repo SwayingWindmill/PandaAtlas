@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("completes the localized search-to-profile trust spine", async ({ page }) => {
   await page.goto("/zh");
 
-  await expect(page.getByRole("heading", { level: 1, name: "认识你关注的每一只熊猫" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "认识你收藏的每一只熊猫" })).toBeVisible();
   const search = page.getByRole("search", { name: "搜索熊猫" });
   await search.getByLabel("输入熊猫名字").fill("美香");
   await search.getByRole("button", { name: "找熊猫" }).click();

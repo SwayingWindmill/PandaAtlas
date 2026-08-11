@@ -11,5 +11,5 @@ export default async function LegacyMyPandasPage({ params }: LegacyMyPandasPageP
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  permanentRedirect(`/${locale}/me/passport` as Route);
+  permanentRedirect(`/${locale}/me` as Route);
 }

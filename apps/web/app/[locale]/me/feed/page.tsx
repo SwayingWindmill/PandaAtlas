@@ -21,11 +21,11 @@ interface LocalizedFeedPageProps {
 const metadataCopy = {
   zh: {
     title: "我的熊猫动态 | 吱熊猫",
-    description: "按发布时间查看你关注的大熊猫动态。此页面仅对当前账号可见，不会建立公开主页或排名。",
+    description: "按发布时间查看你收藏的大熊猫动态。此页面仅对当前账号可见，不会建立公开主页或排名。",
   },
   en: {
     title: "My panda updates | ZhiPanda",
-    description: "See published updates from the pandas you follow. This page is private to your account and never creates a public profile or ranking.",
+    description: "See published updates from your favorite pandas. This page is private to your account and never creates a public profile or ranking.",
   },
 } as const;
 

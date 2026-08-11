@@ -6,20 +6,75 @@ import {
   type AuthProvider,
   CustomRoutes,
   type DataProvider,
+  Layout,
+  type LayoutProps,
+  Menu,
   useLogout,
 } from "react-admin";
 import { BrowserRouter, Link, Route } from "react-router-dom";
 
+import { AdminDashboardPage } from "@/components/admin/admin-dashboard-page";
+import { AdminDomainCenterPage } from "@/components/admin/admin-domain-center-page";
+import { AdminGuessQuestionBankPage } from "@/components/admin/admin-guess-question-bank-page";
+import { AdminPandaCreatePage } from "@/components/admin/admin-panda-create-page";
+import { AdminPandaDetailPage } from "@/components/admin/admin-panda-detail-page";
+import { AdminPandaListPage } from "@/components/admin/admin-panda-list-page";
+import { adminMenuSections } from "@/components/admin/admin-product-menu";
 import { adminSessionFailureDestination } from "@/components/admin/admin-session-navigation";
 import { ArchiveAdvancedOperations } from "@/components/admin/archive-advanced-operations";
 import { ArchiveWorkbench } from "@/components/admin/archive-workbench";
 import { AuditWorkbench } from "@/components/admin/audit-workbench";
 import { ModerationWorkbench } from "@/components/admin/moderation-workbench";
 import { PrivacyWorkbench } from "@/components/admin/privacy-workbench";
+import { productAdminDomains } from "@/components/admin/product-operations-page";
 import { ReviewCaseWorkbench } from "@/components/admin/review-case-workbench";
 import { Button } from "@/components/ui/button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { adminTheme } from "@/styles/admin-theme";
+
+const adminCenterDomains = [
+  "locations",
+  "relationships",
+  "events",
+  "images",
+  "sources",
+  "users",
+] as const;
+
+const productDomainLabels: Record<(typeof productAdminDomains)[number], string> = {
+  pandas: "熊猫资料",
+  locations: "地点与机构",
+  relationships: "家族关系",
+  events: "熊猫事件",
+  images: "图片与媒体",
+  sources: "来源与证据",
+  games: "熊猫游戏",
+  users: "用户与账号",
+};
+
+function AdminProductMenu() {
+  return (
+    <Menu>
+      {adminMenuSections.flatMap((section, sectionIndex) => [
+        <p
+          key={`${section.label}-label`}
+          className="px-4 pb-1 pt-5 text-xs font-bold uppercase tracking-[0.14em] text-stone-600"
+        >
+          {section.label}
+        </p>,
+        ...section.items.map((item) => (
+          <Menu.Item key={item.to} to={item.to} primaryText={item.label} />
+        )),
+        sectionIndex === adminMenuSections.length - 1 ? null : null,
+      ])}
+    </Menu>
+  );
+}
+
+function AdminProductLayout(props: LayoutProps) {
+  return <Layout {...props} menu={AdminProductMenu} />;
+}
+
 
 type AdminSession = {
   account_id: string;
@@ -241,6 +296,29 @@ function CapabilityDashboard() {
             </ul>
           </section>
 
+          <section
+            className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
+            aria-labelledby="product-operations-heading"
+          >
+            <h2 id="product-operations-heading" className="text-xl font-bold text-stone-950">
+              V1 产品运营入口
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-stone-700">
+              按产品领域进入现有治理工作流。这里不创建第二套 CRUD；所有写操作继续由 Archive、Review、Moderation、Privacy 与 Audit 的显式权限边界执行。
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {productAdminDomains.map((domain) => (
+                <Link
+                  key={domain}
+                  to={`/${domain}`}
+                  className="inline-flex min-h-11 items-center rounded-md border border-stone-400 bg-white px-4 py-2 text-sm font-semibold text-stone-950"
+                >
+                  {productDomainLabels[domain]}
+                </Link>
+              ))}
+            </div>
+          </section>
+
           {session.capabilities.includes("archive.workbench.read") ? (
             <section
               className="rounded-xl border border-stone-300 bg-white p-5 lg:col-span-2"
@@ -368,15 +446,25 @@ export function ReactAdminShell() {
         authProvider={authProvider}
         dataProvider={dataProvider}
         disableTelemetry
+        layout={AdminProductLayout}
         loginPage={false}
         requireAuth
         theme={adminTheme}
       >
         <CustomRoutes>
-          <Route path="/" element={<CapabilityDashboard />} />
+          <Route path="/" element={<AdminDashboardPage />} />
+          <Route path="pandas" element={<AdminPandaListPage />} />
+          <Route path="pandas/new" element={<AdminPandaCreatePage />} />
+          <Route path="pandas/:pandaId" element={<AdminPandaDetailPage />} />
+          <Route path="capabilities" element={<CapabilityDashboard />} />
+          {adminCenterDomains.map((domain) => (
+            <Route key={domain} path={domain} element={<AdminDomainCenterPage domain={domain} />} />
+          ))}
+          <Route path="games" element={<AdminGuessQuestionBankPage />} />
           <Route path="archive" element={<ArchiveWorkbench />} />
           <Route path="archive/operations" element={<ArchiveAdvancedOperations />} />
           <Route path="audit" element={<AuditWorkbench />} />
+          <Route path="audit-logs" element={<AuditWorkbench />} />
           <Route path="reviews" element={<ReviewCaseWorkbench />} />
           <Route path="moderation" element={<ModerationWorkbench />} />
           <Route path="privacy" element={<PrivacyWorkbench />} />

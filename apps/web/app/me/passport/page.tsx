@@ -6,5 +6,5 @@ import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
 
 export default async function UnlocalizedPassportPage() {
   const locale = resolvePreferredPublicLocale((await headers()).get("accept-language"));
-  permanentRedirect(`/${locale}/me/passport` as Route);
+  permanentRedirect(`/${locale}/me` as Route);
 }

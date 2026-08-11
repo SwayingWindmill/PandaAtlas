@@ -18,7 +18,7 @@ test("renders the complete Chinese ZhiPanda Home information architecture", asyn
   await expect(page.getByTestId("editorial-home")).toBeVisible();
   await expect(page.getByTestId("public-delivery-notice")).toContainText("正在显示最近可用的熊猫资料");
   await expect(page.getByTestId("public-delivery-notice")).not.toContainText("公共结构");
-  await expect(page.getByRole("heading", { level: 1, name: "认识你关注的每一只熊猫" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "认识你收藏的每一只熊猫" })).toBeVisible();
   await expect(page.getByTestId("home-hero-media-image")).toBeVisible();
   await expect(page.getByTestId("home-hero-media")).toContainText("CC BY-SA 4.0");
   await expect(page.getByTestId("editorial-selections")).toContainText("今天认识哪只熊猫？");
@@ -52,7 +52,7 @@ test("links relationship and place exploration to existing canonical surfaces", 
 
   await expect(exploration.getByRole("link", { name: "See the full family" })).toHaveAttribute(
     "href",
-    "/en/lineage?focus=mei-xiang",
+    "/en/families?view=lineage&focus=mei-xiang",
   );
   await expect(exploration.getByRole("link", { name: "Open the panda map" })).toHaveAttribute(
     "href",

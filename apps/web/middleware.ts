@@ -22,8 +22,8 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
 
   if (pathname === "/") return redirect(`/${preferredLocale}`);
   if (pathname === "/pandas" || pathname === "/atlas") return redirect(`/${preferredLocale}/pandas`);
-  if (pathname === "/me/passport" || pathname === "/my-pandas") {
-    return redirect(`/${preferredLocale}/me/passport`);
+  if (pathname === "/me" || pathname === "/me/passport" || pathname === "/my-pandas") {
+    return redirect(`/${preferredLocale}/me`);
   }
   if (pathname === "/contribute") return redirect(`/${preferredLocale}/contribute`);
   if (pathname === "/me/submissions") {
@@ -40,7 +40,7 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   if (localizedCollection) return redirect(`/${localizedCollection[1]}/pandas`);
 
   const localizedPassportAlias = pathname.match(/^\/(zh|en)\/my-pandas$/);
-  if (localizedPassportAlias) return redirect(`/${localizedPassportAlias[1]}/me/passport`);
+  if (localizedPassportAlias) return redirect(`/${localizedPassportAlias[1]}/me`);
 
   const unlocalizedProfile = pathname.match(/^\/(?:atlas|pandas)\/([^/]+)$/);
   if (unlocalizedProfile) {

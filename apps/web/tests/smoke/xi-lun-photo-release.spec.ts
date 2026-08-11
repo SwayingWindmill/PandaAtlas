@@ -84,7 +84,7 @@ test("renders Xi Lun parentage and structured lineage from reviewed assertions",
     "/zh/pandas/yang-yang",
   );
 
-  await page.goto("/en/lineage?focus=xi-lun&ancestors=1");
+  await page.goto("/en/families?view=lineage&focus=xi-lun&ancestors=1");
   await expect(page.getByTestId("structured-lineage-page")).toBeVisible();
   await expect(page.getByTestId("lineage-relation-parent-xi-lun-father")).toContainText("Yang Yang");
   await expect(page.getByTestId("lineage-relation-parent-xi-lun-mother")).toContainText("Lun Lun");
@@ -129,7 +129,7 @@ test("renders Xi Lun profile and lineage without JavaScript", async ({ browser }
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByTestId("profile-hero-media-image")).toBeVisible();
 
-  await page.goto("/en/lineage?focus=xi-lun&ancestors=1");
+  await page.goto("/en/families?view=lineage&focus=xi-lun&ancestors=1");
   await expect(page.getByTestId("structured-lineage-page")).toBeVisible();
   await expect(page.getByTestId("lineage-relation-parent-xi-lun-father")).toContainText("Confirmed");
   await context.close();
