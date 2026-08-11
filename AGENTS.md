@@ -1,3 +1,5 @@
+- All project command execution must use WSL. Use Linux/WSL commands and Linux paths for shell work; do not run project commands through Windows `cmd.exe`, PowerShell, or Windows-side `node`, `npm`, `python`, `git`, or other toolchain executables.
+- When invoking commands from a Windows-side host, enter WSL explicitly (for example with `wsl.exe bash -lc ...`) and run commands from the repository's WSL-mounted root. Load the WSL-native toolchain first when needed (for example `source ~/.nvm/nvm.sh` before Node/npm commands).
 - Do not preserve backward compatibility. Remove obsolete paths instead of
   adding compatibility layers, fallbacks, or migrations.
 - Choose the simplest implementation that fully meets the current
