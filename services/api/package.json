@@ -16,7 +16,7 @@
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "db:types": "kysely-codegen --include-pattern identity.* --out-file src/platform/database/database.identity.generated.ts && kysely-codegen --include-pattern integration.* --out-file src/platform/database/database.integration.generated.ts",
+    "db:types": "kysely-codegen --date-parser string --include-pattern identity.* --out-file src/platform/database/database.identity.generated.ts && kysely-codegen --date-parser string --include-pattern integration.* --out-file src/platform/database/database.integration.generated.ts && kysely-codegen --date-parser string --include-pattern evidence.* --out-file src/platform/database/database.evidence.generated.ts && kysely-codegen --date-parser string --include-pattern panda.* --out-file src/platform/database/database.panda.generated.ts && kysely-codegen --date-parser string --include-pattern place.* --out-file src/platform/database/database.place.generated.ts && kysely-codegen --date-parser string --include-pattern life_history.* --out-file src/platform/database/database.life-history.generated.ts && kysely-codegen --date-parser string --include-pattern lineage.* --out-file src/platform/database/database.lineage.generated.ts && kysely-codegen --date-parser string --include-pattern media.* --out-file src/platform/database/database.media.generated.ts",
     "check:architecture": "npm run check:architecture:v2 --prefix ../.."
   },
   "dependencies": {

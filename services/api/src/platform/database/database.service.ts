@@ -6,6 +6,16 @@ import type { Database } from "./database.types.js";
 
 export type DatabaseTransaction = Transaction<Database>;
 
+const POSTGRES_DATE_OID = 1082;
+const postgresTypes: pg.CustomTypesConfig = {
+  getTypeParser: (oid, format) => {
+    if (Number(oid) === POSTGRES_DATE_OID) {
+      return (value: string) => value;
+    }
+    return pg.types.getTypeParser(oid, format) as (value: string) => unknown;
+  },
+};
+
 @Injectable()
 export class DatabaseService implements OnApplicationShutdown {
   private readonly pool: pg.Pool | undefined;
@@ -18,6 +28,7 @@ export class DatabaseService implements OnApplicationShutdown {
 
     this.pool = new pg.Pool({
       connectionString: config.databaseUrl,
+      types: postgresTypes,
       max: config.databasePoolMax,
       min: 0,
       connectionTimeoutMillis: config.databaseConnectionTimeoutMs,
