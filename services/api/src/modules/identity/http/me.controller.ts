@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Post, Put, Req } from "@nestjs/common";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
@@ -6,6 +6,7 @@ import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import { AccountProvisioningBlockedError } from "../application/identity.errors.js";
 import { IDENTITY_PORT, type IdentityPort } from "../application/identity.port.js";
 import { AllowUnprovisioned, RequireCapabilities } from "./access.metadata.js";
+import { ReplaceProfileDto } from "./profile.dto.js";
 import { getActorContext } from "./request-actor.js";
 
 @Controller("me")
@@ -63,5 +64,25 @@ export class MeController {
       aal: actor.aal,
       capabilities: [...actor.capabilities].sort(),
     };
+  }
+
+  @Get("profile")
+  @RequireCapabilities("account.profile.read")
+  public async getProfile(@Req() request: FastifyRequest) {
+    const actor = getActorContext(request);
+    if (actor === undefined) {
+      throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
+    }
+    return this.identity.getProfile(actor.accountId);
+  }
+
+  @Put("profile")
+  @RequireCapabilities("account.profile.manage")
+  public async replaceProfile(@Req() request: FastifyRequest, @Body() input: ReplaceProfileDto) {
+    const actor = getActorContext(request);
+    if (actor === undefined) {
+      throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
+    }
+    return this.identity.replaceProfile(actor.accountId, input);
   }
 }

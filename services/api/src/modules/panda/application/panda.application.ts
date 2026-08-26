@@ -1,3 +1,5 @@
+import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
+
 export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
 export type JsonPrimitive = string | number | boolean | null;
 export interface JsonObject {
@@ -98,6 +100,20 @@ export interface SetFactConclusionInput {
   assertionIds: string[];
 }
 
+export interface CuratedPandaFactInput {
+  assertionId: string;
+  pandaId: string;
+  fieldKey: string;
+  value: JsonValue;
+  certainty: FactCertainty;
+  lastVerifiedOn: string;
+  sourceIds: string[];
+}
+
+export interface PandaCurationParticipant {
+  applyCuratedFact(transaction: DatabaseTransaction, input: CuratedPandaFactInput): Promise<void>;
+}
+
 export interface PandaRepository {
   createPanda(input: CreatePandaInput): Promise<PandaRecord>;
   getPanda(idOrSlug: string): Promise<PandaRecord | undefined>;
@@ -117,6 +133,7 @@ export interface PandaReferencePort {
 export const PANDA_REPOSITORY = Symbol("PANDA_REPOSITORY");
 export const PANDA_PORT = Symbol("PANDA_PORT");
 export const PANDA_REFERENCE_PORT = Symbol("PANDA_REFERENCE_PORT");
+export const PANDA_CURATION_PARTICIPANT = Symbol("PANDA_CURATION_PARTICIPANT");
 
 export function normalizeIdentityTerm(value: string): string {
   return value

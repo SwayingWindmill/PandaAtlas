@@ -7,7 +7,11 @@ import type {
   CapabilityPolicy,
 } from "../application/identity-access.types.js";
 import { AccountProvisioningBlockedError } from "../application/identity.errors.js";
-import type { IdentityPort } from "../application/identity.port.js";
+import type {
+  IdentityModerationParticipant,
+  ModerationAccountStateInput,
+} from "../application/identity-moderation.port.js";
+import type { FanProfile, IdentityPort, UpdateFanProfileInput } from "../application/identity.port.js";
 
 interface AuthorizationRow {
   account_id: string;
@@ -22,7 +26,7 @@ function assuranceLevel(value: string | null): AssuranceLevel {
   return value === "aal2" ? "aal2" : "aal1";
 }
 
-export class PostgresIdentityRepository implements IdentityPort {
+export class PostgresIdentityRepository implements IdentityPort, IdentityModerationParticipant {
   public constructor(private readonly database: DatabaseService) {}
 
   public async loadAuthorizationSnapshot(accountId: string): Promise<AuthorizationSnapshot | undefined> {
@@ -34,6 +38,90 @@ export class PostgresIdentityRepository implements IdentityPort {
       select identity.is_live_auth_session(${sessionId}::uuid, ${accountId}::uuid) as live
     `.execute(this.database.db);
     return result.rows[0]?.live === true;
+  }
+
+  public async getProfile(accountId: string): Promise<FanProfile> {
+    const row = await this.database.db
+      .selectFrom("identity.profiles")
+      .select(["account_id", "nickname", "bio"])
+      .where("account_id", "=", accountId)
+      .executeTakeFirst();
+    return row === undefined
+      ? { accountId, nickname: "", bio: "" }
+      : { accountId: row.account_id, nickname: row.nickname, bio: row.bio };
+  }
+
+  public async replaceProfile(accountId: string, input: UpdateFanProfileInput): Promise<FanProfile> {
+    const row = await this.database.db
+      .insertInto("identity.profiles")
+      .values({ account_id: accountId, nickname: input.nickname, bio: input.bio })
+      .onConflict((conflict) =>
+        conflict.column("account_id").doUpdateSet({
+          nickname: input.nickname,
+          bio: input.bio,
+          updated_at: new Date(),
+        }),
+      )
+      .returning(["account_id", "nickname", "bio"])
+      .executeTakeFirstOrThrow();
+    return { accountId: row.account_id, nickname: row.nickname, bio: row.bio };
+  }
+
+  public async setModerationSuspension(
+    transaction: DatabaseTransaction,
+    input: ModerationAccountStateInput,
+  ): Promise<void> {
+    const account = await transaction
+      .selectFrom("identity.accounts")
+      .select(["state", "state_reason"])
+      .where("account_id", "=", input.accountId)
+      .forUpdate()
+      .executeTakeFirst();
+    if (account === undefined) throw new Error("Moderation target account does not exist");
+
+    const nextState = input.suspended ? "suspended" : "active";
+    if (account.state === nextState) {
+      if (
+        input.suspended &&
+        (account.state_reason === null || !account.state_reason.startsWith("moderation:"))
+      ) {
+        throw new Error("Identity account is suspended outside Moderation authority");
+      }
+      return;
+    }
+    if (input.suspended && account.state !== "active") {
+      throw new Error(`Identity account cannot be moderation-suspended from ${account.state}`);
+    }
+    if (
+      !input.suspended &&
+      (account.state !== "suspended" ||
+        account.state_reason === null ||
+        !account.state_reason.startsWith("moderation:"))
+    ) {
+      throw new Error("Identity account suspension is not owned by Moderation");
+    }
+
+    await transaction
+      .updateTable("identity.accounts")
+      .set({
+        state: nextState,
+        state_reason: input.suspended ? `moderation:${input.reason}` : null,
+        state_changed_at: new Date(),
+      })
+      .where("account_id", "=", input.accountId)
+      .executeTakeFirstOrThrow();
+    await transaction
+      .insertInto("identity.account_state_events")
+      .values({
+        account_id: input.accountId,
+        previous_state: account.state,
+        next_state: nextState,
+        actor_account_id: input.actorAccountId,
+        reason: input.reason,
+        correlation_id: input.correlationId,
+        idempotency_key: input.idempotencyKey,
+      })
+      .execute();
   }
 
   public async provisionAccount(accountId: string, correlationId: string): Promise<AuthorizationSnapshot> {

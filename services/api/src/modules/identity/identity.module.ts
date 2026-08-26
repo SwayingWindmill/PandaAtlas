@@ -6,6 +6,7 @@ import { ConfigModule } from "../../platform/config/config.module.js";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { RequestContextModule } from "../../platform/request-context/request-context.module.js";
+import { IDENTITY_MODERATION_PARTICIPANT } from "./application/identity-moderation.port.js";
 import { IDENTITY_PORT } from "./application/identity.port.js";
 import { ApplicationAccessGuard } from "./http/application-access.guard.js";
 import { MeController } from "./http/me.controller.js";
@@ -24,6 +25,10 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
       provide: IDENTITY_PORT,
       useExisting: PostgresIdentityRepository,
     },
+    {
+      provide: IDENTITY_MODERATION_PARTICIPANT,
+      useExisting: PostgresIdentityRepository,
+    },
     ApplicationAccessGuard,
     {
       provide: APP_GUARD,
@@ -34,5 +39,6 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
       useExisting: ApplicationAccessGuard,
     },
   ],
+  exports: [IDENTITY_MODERATION_PARTICIPANT],
 })
 export class IdentityModule {}

@@ -14,6 +14,7 @@ import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import type { AssuranceLevel, CapabilityPolicy } from "../application/identity-access.types.js";
 import { IDENTITY_PORT, type IdentityPort } from "../application/identity.port.js";
 import {
+  ALLOW_SUSPENDED_ACCOUNT,
   ALLOW_UNPROVISIONED,
   REQUIRED_AAL,
   REQUIRED_CAPABILITIES,
@@ -93,7 +94,15 @@ export class ApplicationAccessGuard implements CanActivate {
         "An application account is required for this operation.",
       );
     }
-    if (snapshot.accountState !== "active") {
+    const allowSuspendedAccount =
+      this.reflector.getAllAndOverride<boolean>(ALLOW_SUSPENDED_ACCOUNT, [
+        context.getHandler(),
+        context.getClass(),
+      ]) === true;
+    if (
+      snapshot.accountState !== "active" &&
+      !(allowSuspendedAccount && snapshot.accountState === "suspended")
+    ) {
       throw new ProblemException(
         403,
         "authorization.accountInactive",

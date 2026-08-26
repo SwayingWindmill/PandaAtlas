@@ -97,13 +97,35 @@ describe("Identity HTTP security path", () => {
     expect(provision.json()).toMatchObject({
       accountId: ACCOUNT_ID,
       state: "active",
-      capabilities: ["account.session.read"],
+      capabilities: [
+        "account.profile.manage",
+        "account.profile.read",
+        "account.session.read",
+        "contribution.manage",
+        "contribution.read",
+        "engagement.manage",
+        "engagement.read",
+        "game.attempt.manage",
+        "game.attempt.read",
+        "moderation.appeal.submit",
+      ],
     });
     expect(current.statusCode).toBe(200);
     expect(current.json()).toMatchObject({
       accountId: ACCOUNT_ID,
       aal: "aal1",
-      capabilities: ["account.session.read"],
+      capabilities: [
+        "account.profile.manage",
+        "account.profile.read",
+        "account.session.read",
+        "contribution.manage",
+        "contribution.read",
+        "engagement.manage",
+        "engagement.read",
+        "game.attempt.manage",
+        "game.attempt.read",
+        "moderation.appeal.submit",
+      ],
     });
   });
 });

@@ -66,6 +66,12 @@ function createGuard(options: {
     provisionAccount() {
       return Promise.reject(new Error("not used"));
     },
+    getProfile() {
+      return Promise.reject(new Error("not used"));
+    },
+    replaceProfile() {
+      return Promise.reject(new Error("not used"));
+    },
   };
   const config = { recentAuthWindowSeconds: 900 } as AppConfig;
   const guard = new ApplicationAccessGuard(

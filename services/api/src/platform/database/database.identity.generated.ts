@@ -92,6 +92,13 @@ export interface IdentityCapabilities {
   sensitive: Generated<boolean>;
 }
 
+export interface IdentityProfiles {
+  account_id: string;
+  bio: Generated<string>;
+  nickname: Generated<string>;
+  updated_at: Generated<Timestamp>;
+}
+
 export interface IdentityRoleAssignmentRevocations {
   assignment_id: string;
   correlation_id: string;
@@ -135,6 +142,7 @@ export interface DB {
   "identity.accounts": IdentityAccounts;
   "identity.authorization_audit_events": IdentityAuthorizationAuditEvents;
   "identity.capabilities": IdentityCapabilities;
+  "identity.profiles": IdentityProfiles;
   "identity.role_assignment_revocations": IdentityRoleAssignmentRevocations;
   "identity.role_assignments": IdentityRoleAssignments;
   "identity.role_capabilities": IdentityRoleCapabilities;

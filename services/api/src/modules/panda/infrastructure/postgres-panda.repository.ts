@@ -1,12 +1,17 @@
 import { sql, type Selectable } from "kysely";
-import type { DatabaseService } from "../../../platform/database/database.service.js";
+import type {
+  DatabaseService,
+  DatabaseTransaction,
+} from "../../../platform/database/database.service.js";
 import type { PandaFactConclusions } from "../../../platform/database/database.panda.generated.js";
 import type {
   AddExternalIdentifierInput,
   AddPandaNameInput,
   CreatePandaInput,
+  CuratedPandaFactInput,
   FactConclusionStatus,
   JsonValue,
+  PandaCurationParticipant,
   PandaExternalIdentifier,
   PandaFactConclusion,
   PandaName,
@@ -32,7 +37,7 @@ function jsonArray(value: unknown): JsonValue[] {
   return Array.isArray(value) ? value.map((item) => jsonValue(item)) : [];
 }
 
-export class PostgresPandaRepository implements PandaRepository {
+export class PostgresPandaRepository implements PandaRepository, PandaCurationParticipant {
   public constructor(private readonly database: DatabaseService) {}
 
   public async createPanda(input: CreatePandaInput): Promise<PandaRecord> {
@@ -235,73 +240,97 @@ export class PostgresPandaRepository implements PandaRepository {
   }
 
   public async recordFactAssertion(input: RecordFactAssertionInput): Promise<void> {
-    await this.database.transaction(async (transaction) => {
-      await transaction.insertInto("panda.fact_assertions").values({
-        assertion_id: input.assertionId,
-        panda_id: input.pandaId,
-        field_key: input.fieldKey,
-        value_json: sql`${JSON.stringify(input.value)}::jsonb`,
-        certainty: input.certainty,
-        last_verified_on: input.lastVerifiedOn,
-        supersedes_assertion_id: input.supersedesAssertionId,
-      }).execute();
-      if (input.supersedesAssertionId !== undefined) {
-        await transaction
-          .updateTable("panda.fact_assertions")
-          .set({ lifecycle_state: "superseded" })
-          .where("assertion_id", "=", input.supersedesAssertionId)
-          .execute();
-      }
-      await transaction.insertInto("panda.fact_assertion_sources").values(
-        input.sourceIds.map((sourceId) => ({
-          assertion_id: input.assertionId,
-          source_id: sourceId,
-          stance: "supports",
-        })),
-      ).execute();
-    });
+    await this.database.transaction((transaction) => this.recordFactAssertionIn(transaction, input));
   }
 
   public async setFactConclusion(input: SetFactConclusionInput): Promise<PandaFactConclusion> {
-    const row = await this.database.transaction(async (transaction) => {
-      await transaction
-        .updateTable("panda.fact_conclusions")
-        .set({ is_current: false })
-        .where("panda_id", "=", input.pandaId)
-        .where("field_key", "=", input.fieldKey)
-        .where("is_current", "=", true)
-        .execute();
-      const latest = await transaction
-        .selectFrom("panda.fact_conclusions")
-        .select(({ fn }) => fn.max<number>("conclusion_version").as("version"))
-        .where("panda_id", "=", input.pandaId)
-        .where("field_key", "=", input.fieldKey)
-        .executeTakeFirst();
-      const conclusion = await transaction
-        .insertInto("panda.fact_conclusions")
-        .values({
-          panda_id: input.pandaId,
-          field_key: input.fieldKey,
-          value_json:
-            input.value === undefined ? null : sql`${JSON.stringify(input.value)}::jsonb`,
-          status: input.status,
-          last_verified_on: input.lastVerifiedOn,
-          candidate_values_json: sql`${JSON.stringify(input.candidateValues ?? [])}::jsonb`,
-          superseded_values_json: sql`${JSON.stringify(input.supersededValues ?? [])}::jsonb`,
-          conclusion_version: (latest?.version ?? 0) + 1,
-          is_current: true,
-        })
-        .returningAll()
-        .executeTakeFirstOrThrow();
-      await transaction.insertInto("panda.fact_conclusion_assertions").values(
-        input.assertionIds.map((assertionId) => ({
-          conclusion_id: conclusion.conclusion_id,
-          assertion_id: assertionId,
-        })),
-      ).execute();
-      return conclusion;
-    });
+    const row = await this.database.transaction((transaction) => this.setFactConclusionIn(transaction, input));
     return this.mapConclusion(row);
+  }
+
+  public async applyCuratedFact(
+    transaction: DatabaseTransaction,
+    input: CuratedPandaFactInput,
+  ): Promise<void> {
+    await this.recordFactAssertionIn(transaction, input);
+    await this.setFactConclusionIn(transaction, {
+      pandaId: input.pandaId,
+      fieldKey: input.fieldKey,
+      value: input.value,
+      status: input.certainty,
+      lastVerifiedOn: input.lastVerifiedOn,
+      assertionIds: [input.assertionId],
+    });
+  }
+
+  private async recordFactAssertionIn(
+    transaction: DatabaseTransaction,
+    input: RecordFactAssertionInput,
+  ): Promise<void> {
+    await transaction.insertInto("panda.fact_assertions").values({
+      assertion_id: input.assertionId,
+      panda_id: input.pandaId,
+      field_key: input.fieldKey,
+      value_json: sql`${JSON.stringify(input.value)}::jsonb`,
+      certainty: input.certainty,
+      last_verified_on: input.lastVerifiedOn,
+      supersedes_assertion_id: input.supersedesAssertionId,
+    }).execute();
+    if (input.supersedesAssertionId !== undefined) {
+      await transaction
+        .updateTable("panda.fact_assertions")
+        .set({ lifecycle_state: "superseded" })
+        .where("assertion_id", "=", input.supersedesAssertionId)
+        .execute();
+    }
+    await transaction.insertInto("panda.fact_assertion_sources").values(
+      input.sourceIds.map((sourceId) => ({
+        assertion_id: input.assertionId,
+        source_id: sourceId,
+        stance: "supports",
+      })),
+    ).execute();
+  }
+
+  private async setFactConclusionIn(
+    transaction: DatabaseTransaction,
+    input: SetFactConclusionInput,
+  ): Promise<Selectable<PandaFactConclusions>> {
+    await transaction
+      .updateTable("panda.fact_conclusions")
+      .set({ is_current: false })
+      .where("panda_id", "=", input.pandaId)
+      .where("field_key", "=", input.fieldKey)
+      .where("is_current", "=", true)
+      .execute();
+    const latest = await transaction
+      .selectFrom("panda.fact_conclusions")
+      .select(({ fn }) => fn.max<number>("conclusion_version").as("version"))
+      .where("panda_id", "=", input.pandaId)
+      .where("field_key", "=", input.fieldKey)
+      .executeTakeFirst();
+    const conclusion = await transaction
+      .insertInto("panda.fact_conclusions")
+      .values({
+        panda_id: input.pandaId,
+        field_key: input.fieldKey,
+        value_json: input.value === undefined ? null : sql`${JSON.stringify(input.value)}::jsonb`,
+        status: input.status,
+        last_verified_on: input.lastVerifiedOn,
+        candidate_values_json: sql`${JSON.stringify(input.candidateValues ?? [])}::jsonb`,
+        superseded_values_json: sql`${JSON.stringify(input.supersededValues ?? [])}::jsonb`,
+        conclusion_version: (latest?.version ?? 0) + 1,
+        is_current: true,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    await transaction.insertInto("panda.fact_conclusion_assertions").values(
+      input.assertionIds.map((assertionId) => ({
+        conclusion_id: conclusion.conclusion_id,
+        assertion_id: assertionId,
+      })),
+    ).execute();
+    return conclusion;
   }
 
   private mapConclusion(row: Selectable<PandaFactConclusions>): PandaFactConclusion {
