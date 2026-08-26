@@ -2,10 +2,10 @@
   "schema_version": 1,
   "title": "ZhiPanda Issue-to-PR Delivery Contract",
   "repository": {
-    "default_branch": "master",
+    "default_branch": "main",
     "allow_forks": false,
     "protected_branches": [
-      "master"
+      "main"
     ]
   },
   "branch": {

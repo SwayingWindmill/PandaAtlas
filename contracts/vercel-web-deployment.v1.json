@@ -8,7 +8,7 @@
   "project": {
     "root_directory": "apps/web",
     "framework": "nextjs",
-    "production_branch": "master",
+    "production_branch": "main",
     "git_integration": "required",
     "install_command_override": null,
     "build_command_override": null,

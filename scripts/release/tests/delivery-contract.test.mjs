@@ -53,7 +53,7 @@ function validContext(overrides = {}) {
     title: "Enforce delivery contracts",
     body: validBody(),
     draft: false,
-    baseRef: "master",
+    baseRef: "main",
     headRef: "chore/issue-270-delivery-contract",
     baseRepository: "SwayingWindmill/ZhiPanda",
     headRepository: "SwayingWindmill/ZhiPanda",
@@ -96,7 +96,7 @@ test("branch and worktree naming parse the same issue and slug", () => {
 });
 
 test("branch policy rejects protected, malformed, and excessive names", () => {
-  assert.ok(parseBranchName("master", contract).violations.length > 0);
+  assert.ok(parseBranchName("main", contract).violations.length > 0);
   assert.ok(parseBranchName("feature/issue-1-wrong-type", contract).violations.length > 0);
   assert.ok(parseBranchName("feat/no-issue", contract).violations.length > 0);
   assert.ok(
@@ -130,7 +130,7 @@ test("valid pull-request metadata passes", () => {
 
 test("pull-request metadata rejects stacked bases, forks, and protected heads", () => {
   const stacked = validatePullRequestContext(validContext({ baseRef: "other-branch" }), contract);
-  assert.ok(stacked.violations.some((item) => item.includes("must target master")));
+  assert.ok(stacked.violations.some((item) => item.includes("must target main")));
 
   const fork = validatePullRequestContext(
     validContext({ headRepository: "contributor/ZhiPanda" }),
@@ -139,7 +139,7 @@ test("pull-request metadata rejects stacked bases, forks, and protected heads", 
   assert.ok(fork.violations.some((item) => item.includes("fork pull requests are not allowed")));
 
   const protectedHead = validatePullRequestContext(
-    validContext({ headRef: "master" }),
+    validContext({ headRef: "main" }),
     contract,
   );
   assert.ok(protectedHead.violations.some((item) => item.includes("protected branch")));

@@ -96,18 +96,18 @@ function gitOutput(args) {
 export function validateExecutionCheckout() {
   const branch = gitOutput(["branch", "--show-current"]);
   const head = gitOutput(["rev-parse", "HEAD"]);
-  const originMaster = gitOutput(["rev-parse", "origin/master"]);
+  const originMain = gitOutput(["rev-parse", "origin/main"]);
   const trackedChanges = gitOutput(["status", "--porcelain", "--untracked-files=no"]);
-  if (branch !== "master") {
-    throw new Error(`Production execution requires master; current branch is ${branch || "detached"}.`);
+  if (branch !== "main") {
+    throw new Error(`Production execution requires main; current branch is ${branch || "detached"}.`);
   }
-  if (head !== originMaster) {
-    throw new Error(`Production execution requires HEAD=${head} to match origin/master=${originMaster}.`);
+  if (head !== originMain) {
+    throw new Error(`Production execution requires HEAD=${head} to match origin/main=${originMain}.`);
   }
   if (trackedChanges) {
     throw new Error(`Production execution requires no tracked working-tree changes:\n${trackedChanges}`);
   }
-  return { branch, head, origin_master: originMaster };
+  return { branch, head, origin_main: originMain };
 }
 
 export function parsePublicMediaUrl(rawUrl, apiBase = DEFAULT_API_BASE) {

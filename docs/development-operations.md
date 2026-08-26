@@ -125,7 +125,7 @@ Inspect the selected plan without executing it:
 
 ```bash
 npm run ops -- run verify.plan
-npm run ops -- run verify.plan --base master
+npm run ops -- run verify.plan --base main
 ```
 
 Run selected scopes explicitly:
