@@ -28,8 +28,8 @@ npm run release:production -- --release 2026.07.24.2 --execute
 
 Execution requires:
 
-- branch `master`;
-- `HEAD` equal to `origin/master`;
+- branch `main`;
+- `HEAD` equal to `origin/main`;
 - no tracked working-tree changes;
 - a complete private collection Release Gate pass.
 

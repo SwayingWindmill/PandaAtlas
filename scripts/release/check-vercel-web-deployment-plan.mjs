@@ -67,8 +67,8 @@ export function validateVercelWebDeploymentPlan(
   if (project.framework !== "nextjs") {
     errors.push("Vercel framework must remain nextjs.");
   }
-  if (project.production_branch !== "master") {
-    errors.push("Vercel production branch must match repository branch master.");
+  if (project.production_branch !== "main") {
+    errors.push("Vercel production branch must match repository branch main.");
   }
   if (project.git_integration !== "required") {
     errors.push("Phase 1 requires Vercel Git integration.");

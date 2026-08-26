@@ -75,18 +75,18 @@ jobs:
       CONFIRMATION: ${{ inputs.confirmation }}
       CHANGE_REFERENCE: ${{ inputs.change_reference }}
     steps:
-      - name: Check out authoritative master
+      - name: Check out authoritative main
         uses: actions/checkout@v7.0.0
         with:
-          ref: master
+          ref: main
           clean: true
 
       - name: Validate bounded deployment request
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "$GITHUB_REF" != "refs/heads/master" ]]; then
-            echo "Approved Release deployment must run from master."
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "Approved Release deployment must run from main."
             exit 1
           fi
           if [[ "$REQUESTED_VERSION" != "$APPROVED_RELEASE_VERSION" ]]; then

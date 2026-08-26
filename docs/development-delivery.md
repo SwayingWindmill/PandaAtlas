@@ -3,7 +3,7 @@
 Repository implementation work follows one accountable chain:
 
 ```text
-Issue -> branch -> isolated worktree -> pull request -> master
+Issue -> branch -> isolated worktree -> pull request -> main
 ```
 
 The machine-readable rules are in [`contracts/delivery-workflow.v1.json`](../contracts/delivery-workflow.v1.json), and the validator is available through:
@@ -30,7 +30,7 @@ chore/issue-270-delivery-contract
 
 Supported branch types are `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `build`, `ci`, and `perf`. Slugs use lowercase letters, digits, and single hyphens.
 
-Each implementation pull request targets `master` directly. Stacked implementation pull requests are not part of the governed flow because changing their bases after predecessor merges can recreate conflicts and obscure the single accountable Issue.
+Each implementation pull request targets `main` directly. Stacked implementation pull requests are not part of the governed flow because changing their bases after predecessor merges can recreate conflicts and obscure the single accountable Issue.
 
 ## Pull-request body
 
@@ -80,7 +80,7 @@ The local check cannot prove that a pull-request body or remote Issue is correct
 
 The [`Delivery Contract`](../.github/workflows/delivery-contract.yml) workflow verifies:
 
-- base branch is `master`;
+- base branch is `main`;
 - head branch and repository satisfy the contract;
 - required body sections are present and non-empty;
 - one canonical `Closes #<issue>` line matches the branch;
