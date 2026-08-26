@@ -1,10 +1,11 @@
 import { Module, ValidationPipe } from "@nestjs/common";
 import { APP_FILTER, APP_PIPE } from "@nestjs/core";
+import { ObservabilityModule } from "../observability/observability.module.js";
 import { RequestContextModule } from "../request-context/request-context.module.js";
 import { ProblemDetailsFilter } from "./problem-details.filter.js";
 
 @Module({
-  imports: [RequestContextModule],
+  imports: [RequestContextModule, ObservabilityModule],
   providers: [
     {
       provide: APP_PIPE,

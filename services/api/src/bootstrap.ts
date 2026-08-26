@@ -3,12 +3,16 @@ import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter, type NestFastifyApplication } from "@nestjs/platform-fastify";
 import { AppModule } from "./app.module.js";
 import { AppConfig } from "./platform/config/app-config.js";
+import { PinoLoggerService } from "./platform/observability/pino-logger.service.js";
 
 const BODY_LIMIT_BYTES = 1_048_576;
 
 export async function createApplication(): Promise<NestFastifyApplication> {
   const adapter = new FastifyAdapter({ bodyLimit: BODY_LIMIT_BYTES });
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter);
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
+    bufferLogs: true,
+  });
+  app.useLogger(app.get(PinoLoggerService));
   const config = app.get(AppConfig);
 
   app.setGlobalPrefix("api", {

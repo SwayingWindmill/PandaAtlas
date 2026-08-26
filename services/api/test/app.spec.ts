@@ -7,6 +7,8 @@ let app: NestFastifyApplication | undefined;
 beforeEach(() => {
   process.env.APP_ENV = "test";
   process.env.CORS_ALLOW_ORIGINS = "http://localhost:3000";
+  delete process.env.DATABASE_URL;
+  delete process.env.SUPABASE_URL;
 });
 
 afterEach(async () => {
@@ -25,8 +27,11 @@ describe("NestJS V2 runtime", () => {
 
     expect(health.statusCode).toBe(200);
     expect(health.json()).toEqual({ status: "ok" });
-    expect(ready.statusCode).toBe(200);
-    expect(ready.json()).toEqual({ status: "ok" });
+    expect(ready.statusCode).toBe(503);
+    expect(ready.json()).toMatchObject({
+      status: 503,
+      code: "system.dependencyUnavailable",
+    });
   });
 
   it("returns RFC 9457 problem details with the request id", async () => {

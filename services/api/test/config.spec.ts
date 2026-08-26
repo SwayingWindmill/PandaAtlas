@@ -14,9 +14,13 @@ describe("environment validation", () => {
   });
 
   it("requires an explicit CORS allowlist in production", () => {
-    expect(() => validateEnvironment({ APP_ENV: "production" })).toThrow(
-      "CORS_ALLOW_ORIGINS is required in staging and production",
-    );
+    expect(() =>
+      validateEnvironment({
+        APP_ENV: "production",
+        DATABASE_URL: "postgresql://example",
+        SUPABASE_URL: "https://example.supabase.co",
+      }),
+    ).toThrow("CORS_ALLOW_ORIGINS is required in staging and production");
   });
 
   it("rejects an invalid port", () => {
