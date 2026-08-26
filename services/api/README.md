@@ -1,17 +1,37 @@
-# Panda Atlas API
+# Panda Atlas API workspace
 
-FastAPI service for panda encyclopedia and distribution map data. This is the authoritative runtime for validation, domain rules, imports, admin behavior, and PostgreSQL/PostGIS writes. The Cloudflare Worker is only a versioned public read projection; see [`ADR 0001`](../../docs/architecture/adr-0001-single-source-api-boundary.md).
+This directory now contains the **NestJS V2 target runtime** alongside the **transitional FastAPI V1 source** that remains only until the V2 migration/cutover sequence retires it.
 
-- Architecture status: **Authoritative application boundary / Managed target in progress**
-- Target runtime: bounded FastAPI-compatible functions on Vercel backed by Supabase PostgreSQL/PostGIS
-- Current limitation: the managed production runtime and serverless database-connection policy remain ADR 0002 Phase 2 work
-- Governing status page: [`docs/deployment/runtime-status.md`](../../docs/deployment/runtime-status.md)
+- V2 implementation authority: [`docs/architecture/zhipanda-v2-architecture-baseline.md`](../../docs/architecture/zhipanda-v2-architecture-baseline.md)
+- V2 execution map: [`docs/implementation/nestjs-v2-implementation-map.md`](../../docs/implementation/nestjs-v2-implementation-map.md)
+- Current production status: [`docs/deployment/runtime-status.md`](../../docs/deployment/runtime-status.md)
+- V2 runtime: Node 24 + NestJS 11 + Fastify 5
+- V1 transitional source: `app/`, Python `scripts/`, `tests/`, `pyproject.toml`, and `uv.lock`
+
+## V2 NestJS runtime
+
+From the repository root on Windows:
+
+```powershell
+npm run dev:api
+npm run typecheck:v2
+npm run test:v2
+npm run lint:v2
+npm run check:architecture:v2
+npm run build:v2
+```
+
+`GET /health` is version-neutral and does not call remote dependencies. `GET /ready` currently uses a replaceable local readiness probe; V2-02 replaces that probe with the bounded PostgreSQL readiness check.
+
+## V1 transitional Python runtime
+
+The remaining Python instructions describe the legacy runtime and local migration/recovery tooling. They are not the NestJS V2 target and must not gain new V2 business architecture.
 
 The Dockerfile, local Uvicorn process, and local database workflows support development and recovery verification only. They must not be used to introduce a persistent self-managed production server.
 
 The request-runtime import boundary is enforced from `app.main`. Acquisition, enrichment, identity-resolution batch code, executable scripts, dynamic imports, and heavy crawler or media dependencies cannot enter the transitive request closure. See [`docs/architecture/api-request-runtime-boundary.md`](../../docs/architecture/api-request-runtime-boundary.md) and run `npm run check:api-runtime-boundary` from the repository root.
 
-`index.py` is the Vercel ASGI entrypoint and only re-exports the authoritative `app.main:app` object. The deterministic serverless closure is governed by [`contracts/api-serverless-runtime.v1.json`](../../contracts/api-serverless-runtime.v1.json) and documented in [`docs/deployment/vercel-api-phase-2.md`](../../docs/deployment/vercel-api-phase-2.md). This is structural preparation only; it does not authorize deployment or production cutover.
+Do not extend FastAPI architecture, `/api/v1`, Worker/D1 compatibility, or the old FastAPI-on-Vercel serverless closure. The existing `index.py` and FastAPI `vercel.json` remain V1-transition-only assets until production cutover; NestJS does not import or depend on them and uses the conventional `src/main.ts` composition root.
 
 ## Run (uv)
 

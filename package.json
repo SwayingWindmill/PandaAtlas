@@ -4,11 +4,19 @@
   "version": "0.1.0",
   "packageManager": "npm@10.9.0",
   "workspaces": [
-    "apps/*",
+    "packages/api-client",
+    "apps/web",
+    "services/api",
     "services/worker-api"
   ],
   "scripts": {
     "ops": "node scripts/development/operations.mjs",
+    "dev:api": "npm run dev -w @zhipanda/api",
+    "lint:v2": "npm run lint -w @zhipanda/api",
+    "typecheck:v2": "npm run typecheck -w @zhipanda/api && npm run typecheck -w @zhipanda/api-client",
+    "test:v2": "npm run test -w @zhipanda/api",
+    "build:v2": "npm run build -w @zhipanda/api-client && npm run build -w @zhipanda/api",
+    "check:architecture:v2": "depcruise services/api/src packages/api-client/src --config dependency-cruiser.config.mjs",
     "codegraph:init": "node scripts/development/operations.mjs run codegraph.init",
     "codegraph:index": "node scripts/development/operations.mjs run codegraph.index",
     "codegraph:sync": "node scripts/development/operations.mjs run codegraph.sync",
@@ -145,6 +153,12 @@
   },
   "devDependencies": {
     "@colbymchenry/codegraph": "1.5.0",
-    "supabase": "2.110.0"
+    "supabase": "2.110.0",
+    "@eslint/js": "^9.39.0",
+    "dependency-cruiser": "^17.0.0",
+    "eslint": "^9.39.0",
+    "globals": "^16.0.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.40.0"
   }
 }
