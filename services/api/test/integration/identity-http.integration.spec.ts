@@ -108,6 +108,9 @@ describe("Identity HTTP security path", () => {
         "game.attempt.manage",
         "game.attempt.read",
         "moderation.appeal.submit",
+        "notification.manage",
+        "notification.read",
+        "privacy.request.manage",
       ],
     });
     expect(current.statusCode).toBe(200);
@@ -125,6 +128,9 @@ describe("Identity HTTP security path", () => {
         "game.attempt.manage",
         "game.attempt.read",
         "moderation.appeal.submit",
+        "notification.manage",
+        "notification.read",
+        "privacy.request.manage",
       ],
     });
   });

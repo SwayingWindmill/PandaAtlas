@@ -589,11 +589,339 @@
           "Publication"
         ]
       }
+    },
+    "/api/v2/updates": {
+      "get": {
+        "operationId": "listUpdates",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpdateItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List asynchronously projected publication updates",
+        "tags": [
+          "Updates"
+        ]
+      }
+    },
+    "/api/v2/me/notifications": {
+      "get": {
+        "operationId": "listMyNotifications",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationMessageDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "List the signed-in account notification inbox",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v2/me/notifications/{messageId}/read": {
+      "patch": {
+        "operationId": "markMyNotificationRead",
+        "parameters": [
+          {
+            "name": "messageId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Mark one inbox item read",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v2/me/notifications/preferences": {
+      "get": {
+        "operationId": "listMyNotificationPreferences",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NotificationPreferenceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "List effective notification preferences",
+        "tags": [
+          "Notification"
+        ]
+      },
+      "put": {
+        "operationId": "setMyNotificationPreference",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationPreferenceInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationPreferenceDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Set one notification channel preference",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v2/me/privacy/requests": {
+      "post": {
+        "operationId": "createMyPrivacyRequest",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePrivacyRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Create an asynchronous privacy request",
+        "tags": [
+          "Privacy"
+        ]
+      }
+    },
+    "/api/v2/me/privacy/requests/{requestId}": {
+      "get": {
+        "operationId": "getMyPrivacyRequest",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Read one privacy request state",
+        "tags": [
+          "Privacy"
+        ]
+      }
+    },
+    "/api/v2/me/privacy/requests/{requestId}/export": {
+      "get": {
+        "operationId": "getMyPrivacyExport",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyExportDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Read a completed, unexpired privacy export snapshot",
+        "tags": [
+          "Privacy"
+        ]
+      }
+    },
+    "/api/v2/audit/evidence": {
+      "get": {
+        "operationId": "listAuditEvidence",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 200,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditEvidenceDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "List selected append-only V2 audit evidence",
+        "tags": [
+          "Audit"
+        ]
+      }
     }
   },
   "info": {
     "title": "PandaAtlas V2 API",
-    "description": "Canonical NestJS V2 HTTP contract. The public-read surface is release-scoped and PostgreSQL-backed.",
+    "description": "Canonical NestJS V2 HTTP contract for release-scoped public reads and bounded downstream product APIs.",
     "version": "2.0.0",
     "contact": {}
   },
@@ -1297,6 +1625,358 @@
           "reason",
           "resourceKind",
           "resourceId"
+        ]
+      },
+      "UpdateTargetDto": {
+        "type": "object",
+        "properties": {
+          "resourceKind": {
+            "type": "string",
+            "enum": [
+              "panda",
+              "institution",
+              "place",
+              "lineage",
+              "residency",
+              "life_event",
+              "media",
+              "evidence"
+            ]
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "changeType": {
+            "type": "string",
+            "enum": [
+              "added",
+              "changed",
+              "removed"
+            ]
+          }
+        },
+        "required": [
+          "resourceKind",
+          "resourceId",
+          "changeType"
+        ]
+      },
+      "UpdateItemDto": {
+        "type": "object",
+        "properties": {
+          "updateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updateType": {
+            "type": "string",
+            "enum": [
+              "release_activated",
+              "release_rolled_back"
+            ]
+          },
+          "releaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "previousReleaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "releaseVersion": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateTargetDto"
+            }
+          }
+        },
+        "required": [
+          "updateId",
+          "updateType",
+          "releaseId",
+          "releaseVersion",
+          "occurredAt",
+          "publishedAt",
+          "targets"
+        ]
+      },
+      "NotificationMessageDto": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "knowledge_update",
+              "correction"
+            ]
+          },
+          "content": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "seenAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "readAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "messageId",
+          "category",
+          "content",
+          "createdAt",
+          "seenAt",
+          "readAt"
+        ]
+      },
+      "NotificationPreferenceDto": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "knowledge_update",
+              "correction"
+            ]
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "station",
+              "email"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "category",
+          "channel",
+          "enabled",
+          "version",
+          "updatedAt"
+        ]
+      },
+      "NotificationPreferenceInputDto": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "knowledge_update",
+              "correction"
+            ]
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "station",
+              "email"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "category",
+          "channel",
+          "enabled"
+        ]
+      },
+      "CreatePrivacyRequestDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "access_export",
+              "account_deletion"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 1000
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "kind",
+          "reason",
+          "idempotencyKey"
+        ]
+      },
+      "PrivacyRequestDto": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "access_export",
+              "account_deletion"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "requestedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "failedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "failureCode": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "requestId",
+          "kind",
+          "state",
+          "reason",
+          "requestedAt",
+          "updatedAt"
+        ]
+      },
+      "PrivacyExportDto": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "requestId",
+          "createdAt",
+          "expiresAt",
+          "payload"
+        ]
+      },
+      "AuditEvidenceDto": {
+        "type": "object",
+        "properties": {
+          "sourceEventId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceContext": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "aggregateType": {
+            "type": "string"
+          },
+          "aggregateId": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "payloadSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "sourceEventId",
+          "sourceContext",
+          "eventType",
+          "aggregateType",
+          "aggregateId",
+          "correlationId",
+          "occurredAt",
+          "payloadSha256",
+          "recordedAt"
         ]
       }
     }

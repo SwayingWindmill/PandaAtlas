@@ -17,6 +17,7 @@ import { PandaModule } from "../panda/panda.module.js";
 import { PLACES_PUBLICATION_PORT, type PlacesPublicationPort } from "../places/application/places-publication.application.js";
 import { PlacesModule } from "../places/places.module.js";
 import { PUBLIC_READ_PORT } from "./application/public-read.application.js";
+import { PUBLICATION_CHANGE_PORT } from "./application/publication-change.port.js";
 import {
   PUBLICATION_COORDINATOR,
   PUBLICATION_PORT,
@@ -26,6 +27,7 @@ import {
 import { PublicReadController } from "./http/public-read.controller.js";
 import { PublicationController } from "./http/publication.controller.js";
 import { PostgresPublicReadRepository } from "./infrastructure/postgres-public-read.repository.js";
+import { PostgresPublicationChangeQuery } from "./infrastructure/postgres-publication-change.query.js";
 import { PostgresPublicationCoordinator } from "./infrastructure/postgres-publication.coordinator.js";
 
 @Module({
@@ -75,7 +77,8 @@ import { PostgresPublicationCoordinator } from "./infrastructure/postgres-public
       useFactory: (database: DatabaseService) => new PostgresPublicReadRepository(database),
       inject: [DatabaseService],
     },
+    { provide: PUBLICATION_CHANGE_PORT, useFactory: () => new PostgresPublicationChangeQuery() },
   ],
-  exports: [PUBLICATION_PORT, PUBLIC_READ_PORT],
+  exports: [PUBLICATION_PORT, PUBLIC_READ_PORT, PUBLICATION_CHANGE_PORT],
 })
 export class PublicationModule {}

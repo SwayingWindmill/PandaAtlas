@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
+import { GAME_PRIVACY_PORT } from "./application/game-privacy.port.js";
 import {
   GAME_PORT,
   GAME_REPOSITORY,
@@ -8,6 +9,7 @@ import {
   type GameRepository,
 } from "./application/game.application.js";
 import { GameAttemptController, GameController } from "./http/game.controller.js";
+import { PostgresGamePrivacyQuery } from "./infrastructure/postgres-game-privacy.query.js";
 import { PostgresGameRepository } from "./infrastructure/postgres-game.repository.js";
 
 @Module({
@@ -25,7 +27,8 @@ import { PostgresGameRepository } from "./infrastructure/postgres-game.repositor
       inject: [GAME_REPOSITORY],
     },
     { provide: GAME_PORT, useExisting: GameApplication },
+    { provide: GAME_PRIVACY_PORT, useFactory: () => new PostgresGamePrivacyQuery() },
   ],
-  exports: [GAME_PORT],
+  exports: [GAME_PORT, GAME_PRIVACY_PORT],
 })
 export class GameModule {}

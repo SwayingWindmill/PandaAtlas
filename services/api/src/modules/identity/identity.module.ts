@@ -7,6 +7,8 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { RequestContextModule } from "../../platform/request-context/request-context.module.js";
 import { IDENTITY_MODERATION_PARTICIPANT } from "./application/identity-moderation.port.js";
+import { IDENTITY_NOTIFICATION_CONTACT_PORT } from "./application/identity-notification.port.js";
+import { IDENTITY_PRIVACY_PORT } from "./application/identity-privacy.port.js";
 import { IDENTITY_PORT } from "./application/identity.port.js";
 import { ApplicationAccessGuard } from "./http/application-access.guard.js";
 import { MeController } from "./http/me.controller.js";
@@ -29,6 +31,14 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
       provide: IDENTITY_MODERATION_PARTICIPANT,
       useExisting: PostgresIdentityRepository,
     },
+    {
+      provide: IDENTITY_NOTIFICATION_CONTACT_PORT,
+      useExisting: PostgresIdentityRepository,
+    },
+    {
+      provide: IDENTITY_PRIVACY_PORT,
+      useExisting: PostgresIdentityRepository,
+    },
     ApplicationAccessGuard,
     {
       provide: APP_GUARD,
@@ -39,6 +49,6 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
       useExisting: ApplicationAccessGuard,
     },
   ],
-  exports: [IDENTITY_MODERATION_PARTICIPANT],
+  exports: [IDENTITY_MODERATION_PARTICIPANT, IDENTITY_NOTIFICATION_CONTACT_PORT, IDENTITY_PRIVACY_PORT],
 })
 export class IdentityModule {}
