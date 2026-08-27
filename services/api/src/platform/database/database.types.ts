@@ -11,6 +11,8 @@ import type { DB as GameDatabase } from "./database.game.generated.js";
 import type { DB as ContributionDatabase } from "./database.contribution.generated.js";
 import type { DB as ReviewModerationDatabase } from "./database.review-moderation.generated.js";
 import type { DB as CurationDatabase } from "./database.curation.generated.js";
+import type { DB as PublicationDatabase } from "./database.publication.generated.js";
+import type { DB as PublicReadDatabase } from "./database.public-read.generated.js";
 
 export type Database = IdentityDatabase &
   IntegrationDatabase &
@@ -24,4 +26,6 @@ export type Database = IdentityDatabase &
   GameDatabase &
   ContributionDatabase &
   ReviewModerationDatabase &
-  CurationDatabase;
+  CurationDatabase &
+  PublicationDatabase &
+  PublicReadDatabase;

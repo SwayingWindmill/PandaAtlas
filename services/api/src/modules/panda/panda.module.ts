@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
+import { PANDA_PUBLICATION_PORT } from "./application/panda-publication.application.js";
 import {
   PANDA_CURATION_PARTICIPANT,
   PANDA_PORT,
@@ -9,6 +10,7 @@ import {
   PandaApplication,
   type PandaRepository,
 } from "./application/panda.application.js";
+import { PostgresPandaPublicationQuery } from "./infrastructure/postgres-panda-publication.query.js";
 import { PostgresPandaRepository } from "./infrastructure/postgres-panda.repository.js";
 
 @Module({
@@ -24,10 +26,14 @@ import { PostgresPandaRepository } from "./infrastructure/postgres-panda.reposit
       useFactory: (repository: PandaRepository) => new PandaApplication(repository),
       inject: [PANDA_REPOSITORY],
     },
+    {
+      provide: PANDA_PUBLICATION_PORT,
+      useFactory: () => new PostgresPandaPublicationQuery(),
+    },
     { provide: PANDA_PORT, useExisting: PandaApplication },
     { provide: PANDA_REFERENCE_PORT, useExisting: PandaApplication },
     { provide: PANDA_CURATION_PARTICIPANT, useExisting: PANDA_REPOSITORY },
   ],
-  exports: [PANDA_PORT, PANDA_REFERENCE_PORT, PANDA_CURATION_PARTICIPANT],
+  exports: [PANDA_PORT, PANDA_REFERENCE_PORT, PANDA_CURATION_PARTICIPANT, PANDA_PUBLICATION_PORT],
 })
 export class PandaModule {}

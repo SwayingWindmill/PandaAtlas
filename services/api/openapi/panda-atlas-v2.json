@@ -1,0 +1,1304 @@
+{
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v2/release": {
+      "get": {
+        "operationId": "getCurrentPublicRelease",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReadReleaseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "Get the active public release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/pandas": {
+      "get": {
+        "operationId": "listPublicPandas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPandaListDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "List pandas from one active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/pandas/{slug}": {
+      "get": {
+        "operationId": "getPublicPanda",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPandaDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The panda is absent or under emergency takedown."
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "Get a release-pinned public panda detail",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/places": {
+      "get": {
+        "operationId": "listPublicPlaces",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPlaceListDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "List places from one active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/places/{slug}": {
+      "get": {
+        "operationId": "getPublicPlace",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPlaceDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The place is absent or under emergency takedown."
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "Get one public place from the active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/evidence/{sourceId}": {
+      "get": {
+        "operationId": "getPublicEvidence",
+        "parameters": [
+          {
+            "name": "sourceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicEvidenceDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The evidence source is absent or under emergency takedown."
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "Get public-safe evidence metadata",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/stats": {
+      "get": {
+        "operationId": "getPublicStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicStatsResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "Get sealed-release public projection counts",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/publication/releases/{releaseId}": {
+      "get": {
+        "operationId": "getPublicationRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The release does not exist."
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Get a V2 public release lifecycle record",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/releases": {
+      "post": {
+        "operationId": "buildPublicationRelease",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuildPublicReleaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Build a release-scoped public projection",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/releases/{releaseId}/seal": {
+      "post": {
+        "operationId": "sealPublicationRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicationReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The release does not exist."
+          },
+          "409": {
+            "description": "The release has no publishable membership yet."
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Seal a built release immutably",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/releases/{releaseId}/activate": {
+      "post": {
+        "operationId": "activatePublicationRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicationReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The release is not a valid forward activation target."
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Atomically activate a newer sealed release",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/releases/{releaseId}/rollback": {
+      "post": {
+        "operationId": "rollbackPublicationRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicationReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The release is not a valid rollback target."
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Atomically reactivate an older compatible sealed release",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/releases/{releaseId}/suspend": {
+      "post": {
+        "operationId": "suspendPublicationRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicationReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Apply emergency whole-release suspension",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/releases/{releaseId}/restore": {
+      "post": {
+        "operationId": "restorePublicationRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicationReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Restore a suspended release",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/resources/takedown": {
+      "post": {
+        "operationId": "takeDownPublicationResource",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicationResourceControlDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Apply a narrow emergency resource takedown",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/resources/restore": {
+      "post": {
+        "operationId": "restorePublicationResource",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublicationResourceControlDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Restore an emergency-taken-down resource",
+        "tags": [
+          "Publication"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "PandaAtlas V2 API",
+    "description": "Canonical NestJS V2 HTTP contract. The public-read surface is release-scoped and PostgreSQL-backed.",
+    "version": "2.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "supabaseJwt": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "PublicReadReleaseDto": {
+        "type": "object",
+        "properties": {
+          "releaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "releaseId",
+          "version"
+        ]
+      },
+      "PublicPandaNameDto": {
+        "type": "object",
+        "properties": {
+          "languageTag": {
+            "type": "string"
+          },
+          "nameKind": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "isPrimary": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "languageTag",
+          "nameKind",
+          "value",
+          "isPrimary"
+        ]
+      },
+      "PublicPandaFactDto": {
+        "type": "object",
+        "properties": {
+          "fieldKey": {
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "lastVerifiedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "conclusionVersion": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "fieldKey",
+          "status",
+          "lastVerifiedOn",
+          "conclusionVersion"
+        ]
+      },
+      "PublicPandaSummaryDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canonicalSlug": {
+            "type": "string"
+          },
+          "legacySlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPandaNameDto"
+            }
+          },
+          "facts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPandaFactDto"
+            }
+          }
+        },
+        "required": [
+          "pandaId",
+          "canonicalSlug",
+          "legacySlugs",
+          "names",
+          "facts"
+        ]
+      },
+      "PublicPandaListDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPandaSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "items"
+        ]
+      },
+      "PublicLineageSummaryDto": {
+        "type": "object",
+        "properties": {
+          "assertionId": {
+            "type": "string"
+          },
+          "childId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "parentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "parentRole": {
+            "type": "string",
+            "enum": [
+              "father",
+              "mother"
+            ]
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "assertionId",
+          "childId",
+          "parentId",
+          "parentRole",
+          "sourceIds"
+        ]
+      },
+      "PublicResidencySummaryDto": {
+        "type": "object",
+        "properties": {
+          "residencyId": {
+            "type": "string"
+          },
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "placeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "residencyType": {
+            "type": "string"
+          },
+          "startOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "startPrecision": {
+            "type": "string"
+          },
+          "endOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "endPrecision": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "residencyId",
+          "pandaId",
+          "placeId",
+          "residencyType",
+          "startPrecision",
+          "status",
+          "sourceIds"
+        ]
+      },
+      "PublicLifeEventSummaryDto": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "eventStatus": {
+            "type": "string"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "occurredPrecision": {
+            "type": "string"
+          },
+          "fromPlaceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "toPlaceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "participantIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "eventId",
+          "eventType",
+          "eventStatus",
+          "occurredPrecision",
+          "participantIds",
+          "sourceIds"
+        ]
+      },
+      "PublicMediaSummaryDto": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "usageRole": {
+            "type": "string"
+          },
+          "displayOrder": {
+            "type": "number",
+            "minimum": 0
+          },
+          "objectKey": {
+            "type": "string"
+          },
+          "contentSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "copyrightText": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "attributionText": {
+            "type": "string"
+          },
+          "takenAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "assetId",
+          "pandaId",
+          "usageRole",
+          "displayOrder",
+          "objectKey",
+          "contentSha256",
+          "mediaType"
+        ]
+      },
+      "PublicEvidenceSummaryDto": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastVerifiedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "languageTag": {
+            "type": "string"
+          },
+          "accessState": {
+            "type": "string"
+          },
+          "evidenceTier": {
+            "type": "string"
+          },
+          "publicSummary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceId",
+          "publisher",
+          "title",
+          "url",
+          "lastVerifiedOn",
+          "languageTag",
+          "accessState"
+        ]
+      },
+      "PublicPandaDetailDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "panda": {
+            "$ref": "#/components/schemas/PublicPandaSummaryDto"
+          },
+          "lineage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicLineageSummaryDto"
+            }
+          },
+          "residencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicResidencySummaryDto"
+            }
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicLifeEventSummaryDto"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicMediaSummaryDto"
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicEvidenceSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "panda",
+          "lineage",
+          "residencies",
+          "events",
+          "media",
+          "evidence"
+        ]
+      },
+      "PublicPlaceSummaryDto": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "institutionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "placeType": {
+            "type": "string"
+          },
+          "nameZh": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "latitude": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "placeId",
+          "slug",
+          "placeType"
+        ]
+      },
+      "PublicPlaceListDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPlaceSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "items"
+        ]
+      },
+      "PublicPlaceDetailDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "place": {
+            "$ref": "#/components/schemas/PublicPlaceSummaryDto"
+          }
+        },
+        "required": [
+          "release",
+          "place"
+        ]
+      },
+      "PublicEvidenceDetailDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "source": {
+            "$ref": "#/components/schemas/PublicEvidenceSummaryDto"
+          }
+        },
+        "required": [
+          "release",
+          "source"
+        ]
+      },
+      "PublicStatsDto": {
+        "type": "object",
+        "properties": {
+          "pandaCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "institutionCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "placeCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "lineageCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "residencyCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "lifeEventCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "mediaCount": {
+            "type": "number",
+            "minimum": 0
+          },
+          "evidenceSourceCount": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "pandaCount",
+          "institutionCount",
+          "placeCount",
+          "lineageCount",
+          "residencyCount",
+          "lifeEventCount",
+          "mediaCount",
+          "evidenceSourceCount"
+        ]
+      },
+      "PublicStatsResponseDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/PublicStatsDto"
+          }
+        },
+        "required": [
+          "release",
+          "stats"
+        ]
+      },
+      "PublicReleaseDto": {
+        "type": "object",
+        "properties": {
+          "releaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "string"
+          },
+          "projectionSchemaVersion": {
+            "type": "number",
+            "minimum": 1
+          },
+          "lifecycleState": {
+            "type": "string",
+            "enum": [
+              "building",
+              "sealed"
+            ]
+          },
+          "builtAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sealedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contentSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "releaseId",
+          "version",
+          "projectionSchemaVersion",
+          "lifecycleState",
+          "builtAt"
+        ]
+      },
+      "BuildPublicReleaseDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "example": "2026.08.27.1",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "PublicationReasonDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "PublicationResourceControlDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 2000
+          },
+          "resourceKind": {
+            "type": "string",
+            "enum": [
+              "panda",
+              "place",
+              "media",
+              "evidence"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "reason",
+          "resourceKind",
+          "resourceId"
+        ]
+      }
+    }
+  }
+}
