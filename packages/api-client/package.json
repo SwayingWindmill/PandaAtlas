@@ -10,8 +10,17 @@
     }
   },
   "scripts": {
+    "generate": "openapi-typescript ../../services/api/openapi/panda-atlas-v2.json -o src/schema.generated.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
-  "files": ["dist"]
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "openapi-fetch": "^0.14.0"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.13.0"
+  }
 }

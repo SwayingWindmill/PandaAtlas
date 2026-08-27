@@ -11,6 +11,7 @@ import { MediaModule } from "./modules/media/media.module.js";
 import { ModerationModule } from "./modules/moderation/moderation.module.js";
 import { PandaModule } from "./modules/panda/panda.module.js";
 import { PlacesModule } from "./modules/places/places.module.js";
+import { PublicationModule } from "./modules/publication/publication.module.js";
 import { ReviewModule } from "./modules/review/review.module.js";
 import { ConfigModule } from "./platform/config/config.module.js";
 import { HealthModule } from "./platform/health/health.module.js";
@@ -34,6 +35,7 @@ import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
     LifeHistoryModule,
     LineageModule,
     MediaModule,
+    PublicationModule,
   ],
 })
 export class AppModule {}
