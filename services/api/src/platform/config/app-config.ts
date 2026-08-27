@@ -23,6 +23,9 @@ export interface EnvironmentConfig {
   LOG_LEVEL: LogLevel;
   OTEL_SERVICE_NAME: string;
   SENTRY_DSN: string | undefined;
+  RESEND_API_KEY: string | undefined;
+  RESEND_FROM_EMAIL: string | undefined;
+  CRON_SECRET: string | undefined;
 }
 
 const APP_ENVIRONMENTS = new Set<AppEnvironment>([
@@ -156,6 +159,9 @@ export function validateEnvironment(
     LOG_LEVEL: rawLogLevel as LogLevel,
     OTEL_SERVICE_NAME: optionalString(input.OTEL_SERVICE_NAME) ?? "zhipanda-api",
     SENTRY_DSN: optionalString(input.SENTRY_DSN),
+    RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
+    RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
+    CRON_SECRET: optionalString(input.CRON_SECRET),
   };
 }
 
@@ -243,5 +249,17 @@ export class AppConfig {
 
   public get sentryDsn(): string | undefined {
     return this.config.get("SENTRY_DSN", { infer: true });
+  }
+
+  public get resendApiKey(): string | undefined {
+    return this.config.get("RESEND_API_KEY", { infer: true });
+  }
+
+  public get resendFromEmail(): string | undefined {
+    return this.config.get("RESEND_FROM_EMAIL", { infer: true });
+  }
+
+  public get cronSecret(): string | undefined {
+    return this.config.get("CRON_SECRET", { infer: true });
   }
 }

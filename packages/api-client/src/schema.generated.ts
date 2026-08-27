@@ -276,6 +276,143 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/updates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List asynchronously projected publication updates */
+        get: operations["listUpdates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the signed-in account notification inbox */
+        get: operations["listMyNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/notifications/{messageId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mark one inbox item read */
+        patch: operations["markMyNotificationRead"];
+        trace?: never;
+    };
+    "/api/v2/me/notifications/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List effective notification preferences */
+        get: operations["listMyNotificationPreferences"];
+        /** Set one notification channel preference */
+        put: operations["setMyNotificationPreference"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/privacy/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create an asynchronous privacy request */
+        post: operations["createMyPrivacyRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/privacy/requests/{requestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read one privacy request state */
+        get: operations["getMyPrivacyRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/privacy/requests/{requestId}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read a completed, unexpired privacy export snapshot */
+        get: operations["getMyPrivacyExport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/audit/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List selected append-only V2 audit evidence */
+        get: operations["listAuditEvidence"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -462,6 +599,112 @@ export interface components {
             /** @enum {string} */
             resourceKind: "panda" | "place" | "media" | "evidence";
             resourceId: string;
+        };
+        UpdateTargetDto: {
+            /** @enum {string} */
+            resourceKind: "panda" | "institution" | "place" | "lineage" | "residency" | "life_event" | "media" | "evidence";
+            resourceId: string;
+            /** @enum {string} */
+            changeType: "added" | "changed" | "removed";
+        };
+        UpdateItemDto: {
+            /** Format: uuid */
+            updateId: string;
+            /** @enum {string} */
+            updateType: "release_activated" | "release_rolled_back";
+            /** Format: uuid */
+            releaseId: string;
+            /** Format: uuid */
+            previousReleaseId?: string;
+            releaseVersion: string;
+            /** Format: date-time */
+            occurredAt: string;
+            /** Format: date-time */
+            publishedAt: string;
+            targets: components["schemas"]["UpdateTargetDto"][];
+        };
+        NotificationMessageDto: {
+            /** Format: uuid */
+            messageId: string;
+            /** @enum {string} */
+            category: "knowledge_update" | "correction";
+            content: {
+                [key: string]: unknown;
+            };
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            seenAt: string | null;
+            /** Format: date-time */
+            readAt: string | null;
+        };
+        NotificationPreferenceDto: {
+            /** @enum {string} */
+            category: "knowledge_update" | "correction";
+            /** @enum {string} */
+            channel: "station" | "email";
+            enabled: boolean;
+            version: number;
+            /** Format: date-time */
+            updatedAt: string | null;
+        };
+        NotificationPreferenceInputDto: {
+            /** @enum {string} */
+            category: "knowledge_update" | "correction";
+            /** @enum {string} */
+            channel: "station" | "email";
+            enabled: boolean;
+        };
+        CreatePrivacyRequestDto: {
+            /** @enum {string} */
+            kind: "access_export" | "account_deletion";
+            reason: string;
+            /** Format: uuid */
+            idempotencyKey: string;
+        };
+        PrivacyRequestDto: {
+            /** Format: uuid */
+            requestId: string;
+            /** @enum {string} */
+            kind: "access_export" | "account_deletion";
+            /** @enum {string} */
+            state: "pending" | "processing" | "completed" | "failed";
+            reason: string;
+            /** Format: date-time */
+            requestedAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            completedAt?: string;
+            /** Format: date-time */
+            failedAt?: string;
+            failureCode?: string;
+        };
+        PrivacyExportDto: {
+            /** Format: uuid */
+            requestId: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            payload: {
+                [key: string]: unknown;
+            };
+        };
+        AuditEvidenceDto: {
+            /** Format: uuid */
+            sourceEventId: string;
+            sourceContext: string;
+            eventType: string;
+            aggregateType: string;
+            aggregateId: string;
+            /** Format: uuid */
+            correlationId: string;
+            /** Format: date-time */
+            occurredAt: string;
+            payloadSha256: string;
+            /** Format: date-time */
+            recordedAt: string;
         };
     };
     responses: never;
@@ -924,6 +1167,197 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    listUpdates: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateItemDto"][];
+                };
+            };
+        };
+    };
+    listMyNotifications: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationMessageDto"][];
+                };
+            };
+        };
+    };
+    markMyNotificationRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                messageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationMessageDto"];
+                };
+            };
+        };
+    };
+    listMyNotificationPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPreferenceDto"][];
+                };
+            };
+        };
+    };
+    setMyNotificationPreference: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NotificationPreferenceInputDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPreferenceDto"];
+                };
+            };
+        };
+    };
+    createMyPrivacyRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePrivacyRequestDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivacyRequestDto"];
+                };
+            };
+        };
+    };
+    getMyPrivacyRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivacyRequestDto"];
+                };
+            };
+        };
+    };
+    getMyPrivacyExport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivacyExportDto"];
+                };
+            };
+        };
+    };
+    listAuditEvidence: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditEvidenceDto"][];
+                };
             };
         };
     };

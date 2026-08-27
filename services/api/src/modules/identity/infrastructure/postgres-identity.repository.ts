@@ -7,6 +7,8 @@ import type {
   CapabilityPolicy,
 } from "../application/identity-access.types.js";
 import { AccountProvisioningBlockedError } from "../application/identity.errors.js";
+import type { IdentityNotificationContactPort } from "../application/identity-notification.port.js";
+import type { IdentityPrivacyPort } from "../application/identity-privacy.port.js";
 import type {
   IdentityModerationParticipant,
   ModerationAccountStateInput,
@@ -26,7 +28,9 @@ function assuranceLevel(value: string | null): AssuranceLevel {
   return value === "aal2" ? "aal2" : "aal1";
 }
 
-export class PostgresIdentityRepository implements IdentityPort, IdentityModerationParticipant {
+export class PostgresIdentityRepository
+  implements IdentityPort, IdentityModerationParticipant, IdentityNotificationContactPort, IdentityPrivacyPort
+{
   public constructor(private readonly database: DatabaseService) {}
 
   public async loadAuthorizationSnapshot(accountId: string): Promise<AuthorizationSnapshot | undefined> {
@@ -65,6 +69,82 @@ export class PostgresIdentityRepository implements IdentityPort, IdentityModerat
       .returning(["account_id", "nickname", "bio"])
       .executeTakeFirstOrThrow();
     return { accountId: row.account_id, nickname: row.nickname, bio: row.bio };
+  }
+
+  public async getDeliverableEmail(
+    transaction: DatabaseTransaction,
+    accountId: string,
+  ): Promise<string | undefined> {
+    const row = await transaction
+      .selectFrom("identity.accounts")
+      .select(["email", "state"])
+      .where("account_id", "=", accountId)
+      .executeTakeFirst();
+    if (row === undefined || row.state !== "active" || row.email === null) return undefined;
+    const email = row.email.trim();
+    return email === "" ? undefined : email;
+  }
+
+  public async exportPrivacySubject(
+    transaction: DatabaseTransaction,
+    accountId: string,
+  ): Promise<Record<string, unknown>> {
+    const account = await transaction
+      .selectFrom("identity.accounts")
+      .select(["account_id", "email", "state", "created_at", "state_changed_at"])
+      .where("account_id", "=", accountId)
+      .executeTakeFirstOrThrow();
+    const profile = await transaction
+      .selectFrom("identity.profiles")
+      .select(["nickname", "bio", "updated_at"])
+      .where("account_id", "=", accountId)
+      .executeTakeFirst();
+    return {
+      accountId: account.account_id,
+      email: account.email,
+      state: account.state,
+      createdAt: account.created_at.toISOString(),
+      stateChangedAt: account.state_changed_at.toISOString(),
+      profile:
+        profile === undefined
+          ? null
+          : { nickname: profile.nickname, bio: profile.bio, updatedAt: profile.updated_at.toISOString() },
+    };
+  }
+
+  public async erasePrivacySubject(
+    transaction: DatabaseTransaction,
+    accountId: string,
+    requestId: string,
+    correlationId: string,
+  ): Promise<void> {
+    const account = await transaction
+      .selectFrom("identity.accounts")
+      .select("state")
+      .where("account_id", "=", accountId)
+      .forUpdate()
+      .executeTakeFirstOrThrow();
+    await transaction.deleteFrom("identity.profiles").where("account_id", "=", accountId).execute();
+    if (account.state === "deleted") return;
+    const now = new Date();
+    await transaction
+      .updateTable("identity.accounts")
+      .set({ email: null, state: "deleted", state_reason: `privacy:${requestId}`, state_changed_at: now })
+      .where("account_id", "=", accountId)
+      .executeTakeFirstOrThrow();
+    await transaction
+      .insertInto("identity.account_state_events")
+      .values({
+        account_id: accountId,
+        previous_state: account.state,
+        next_state: "deleted",
+        actor_account_id: accountId,
+        reason: `Privacy request ${requestId}`,
+        correlation_id: correlationId,
+        idempotency_key: `privacy:${requestId}`,
+      })
+      .onConflict((conflict) => conflict.column("idempotency_key").doNothing())
+      .execute();
   }
 
   public async setModerationSuspension(
