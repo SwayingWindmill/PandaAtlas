@@ -92,17 +92,10 @@ def collection_policy_decision(
 ) -> tuple[DecisionAction, str]:
     lane = review_lane_for_candidate(candidate)
     if lane is ReviewLane.MANUAL_CREATE_IDENTITY:
-        if _is_v2_promotable_candidate(candidate):
-            return (
-                DecisionAction.ACCEPTED,
-                "Accepted as a reviewed V2 identity-intake proposal for a new source identity; "
-                "promotion must preserve the source identity and must not auto-create or merge an "
-                "authoritative panda without the Curation identity checks.",
-            )
         return (
             DecisionAction.DEFERRED,
-            "Deferred because the candidate is not representable by the reviewed V2 panda "
-            "promotion contract.",
+            "Deferred because V2 Curation promotion requires an existing target Panda UUID; the "
+            "source-local identity remains reviewable but is not auto-created or merged.",
         )
     if lane is ReviewLane.BATCH_READY:
         if _is_v2_promotable_candidate(candidate):
@@ -117,10 +110,16 @@ def collection_policy_decision(
             "promotion contract.",
         )
     if lane is ReviewLane.SUPPORTING_UNCHANGED:
+        if _is_v2_promotable_candidate(candidate):
+            return (
+                DecisionAction.ACCEPTED,
+                "Accepted as corroborating V2 provenance for an existing value; Curation records "
+                "the additional sourced assertion without duplicating the canonical fact.",
+            )
         return (
             DecisionAction.DEFERRED,
-            "Deferred pending the V2 corroboration path that can attach additional provenance "
-            "without duplicating the current canonical fact.",
+            "Deferred because this supporting evidence is not yet representable by a V2 owner "
+            "operation.",
         )
     if lane is ReviewLane.MANUAL_CONTRADICTION:
         return (
