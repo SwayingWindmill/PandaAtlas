@@ -59,6 +59,15 @@ export class PostgresPandaCurationParticipant implements PandaCurationParticipan
         throw new Error(`Corroboration must preserve the current Panda fact value for ${input.fieldKey}`);
       }
     }
+    if (mode === "refine") {
+      const refined = current as CurrentConclusion;
+      if (refined.row.value_json === null) {
+        throw new Error(`Fact refinement requires a selected current value for ${input.fieldKey}`);
+      }
+      if (isDeepStrictEqual(refined.row.value_json, input.value)) {
+        throw new Error(`Fact refinement must change the current Panda fact value for ${input.fieldKey}`);
+      }
+    }
 
     await transaction.insertInto("panda.fact_assertions").values({
       assertion_id: input.assertionId,
@@ -99,6 +108,21 @@ export class PostgresPandaCurationParticipant implements PandaCurationParticipan
         candidateValues: jsonValues(existing.row.candidate_values_json),
         supersededValues: jsonValues(existing.row.superseded_values_json),
         assertionIds: [...existing.assertionIds, input.assertionId],
+      });
+      return input.assertionId;
+    }
+    if (mode === "refine") {
+      await this.replaceConclusion(transaction, {
+        pandaId: input.pandaId,
+        fieldKey: input.fieldKey,
+        value: input.value,
+        status: input.certainty,
+        lastVerifiedOn: latestDate(existing.row.last_verified_on, input.lastVerifiedOn),
+        supersededValues: distinctJson([
+          ...jsonValues(existing.row.superseded_values_json),
+          existing.row.value_json as JsonValue,
+        ]),
+        assertionIds: [input.assertionId],
       });
       return input.assertionId;
     }
