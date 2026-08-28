@@ -1,0 +1,41 @@
+name: Issue 351 acquisition adapter check
+
+on:
+  push:
+    branches:
+      - feat/issue-351-acquisition-adapter
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  UV_VERSION: "0.11.7"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.0
+        with:
+          ref: feat/issue-351-acquisition-adapter
+          clean: true
+      - uses: actions/setup-python@v6.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install pinned uv
+        run: python -m pip install uv==${{ env.UV_VERSION }}
+      - name: Run focused promotion and collection-policy tests
+        run: >-
+          uv run --isolated --directory tools/panda-data --frozen --extra dev
+          pytest -q tests/test_acquisition_curation_promotion.py tests/test_collection_policy.py
+      - name: Lint final adapter slice
+        run: >-
+          uv run --isolated --directory tools/panda-data --frozen --extra dev
+          ruff check src/panda_data/acquisition/curation/promotion.py
+          src/panda_data/acquisition/curation/collection_policy.py
+          tests/test_acquisition_curation_promotion.py tests/test_collection_policy.py
+      - name: Run existing curation validator
+        run: >-
+          uv run --isolated --directory tools/panda-data --frozen
+          panda-data curation validate
