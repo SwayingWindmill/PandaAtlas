@@ -91,7 +91,9 @@ def _candidate(
     )
 
 
-def _bundle(snapshot: EvidenceSnapshot, candidates: tuple[FieldCandidate, ...]) -> AcquisitionBundle:
+def _bundle(
+    snapshot: EvidenceSnapshot, candidates: tuple[FieldCandidate, ...]
+) -> AcquisitionBundle:
     run = AcquisitionRun(
         run_id="promotion-run",
         source_id=SOURCE_ID,

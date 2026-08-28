@@ -26,7 +26,9 @@ def _candidate(
     match = PandaIdentityMatch(
         state=identity_state,
         source_identity="source:panda-1",
-        matched_canonical_slug=("panda-1" if identity_state is IdentityMatchState.MATCHED else None),
+        matched_canonical_slug=(
+            "panda-1" if identity_state is IdentityMatchState.MATCHED else None
+        ),
     )
     current_value = CurrentTrustedValue(
         present=conflict_state is ConflictState.UNCHANGED,

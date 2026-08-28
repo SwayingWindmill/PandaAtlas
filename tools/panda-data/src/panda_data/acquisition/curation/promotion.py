@@ -184,7 +184,8 @@ def _target_panda_id(candidate: FieldCandidate) -> str:
     if match.state is not IdentityMatchState.MATCHED or match.matched_panda_id is None:
         raise ValueError(
             f"accepted candidate {candidate.candidate_id} has no resolved target Panda UUID; "
-            "new identities and slug-only matches stay in review until identity resolution completes"
+            "new identities and slug-only matches stay in review until identity resolution "
+            "completes"
         )
     _require_uuid("matched_panda_id", match.matched_panda_id)
     return match.matched_panda_id
@@ -361,7 +362,9 @@ def _parentage_change(
             raise ValueError("generic parentage candidates require a structured normalized value")
         role = _optional_string(value, "parent_role", "parentRole") or ""
     if role not in {"father", "mother"}:
-        raise ValueError(f"parentage role must resolve to father or mother, got {role or 'missing'}")
+        raise ValueError(
+            f"parentage role must resolve to father or mother, got {role or 'missing'}"
+        )
 
     parent_id: str | None = None
     status: str | None = None
