@@ -49,11 +49,14 @@ export class PostgresPandaCurationParticipant implements PandaCurationParticipan
     if (mode !== "propose" && current === undefined) {
       throw new Error(`${mode} requires an existing Panda fact conclusion for ${input.fieldKey}`);
     }
-    if (
-      mode === "corroborate" &&
-      (current?.row.value_json === null || !isDeepStrictEqual(current.row.value_json, input.value))
-    ) {
-      throw new Error(`Corroboration must preserve the current Panda fact value for ${input.fieldKey}`);
+    if (mode === "corroborate") {
+      const corroborated = current as CurrentConclusion;
+      if (
+        corroborated.row.value_json === null ||
+        !isDeepStrictEqual(corroborated.row.value_json, input.value)
+      ) {
+        throw new Error(`Corroboration must preserve the current Panda fact value for ${input.fieldKey}`);
+      }
     }
 
     await transaction.insertInto("panda.fact_assertions").values({
