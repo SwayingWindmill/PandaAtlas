@@ -120,6 +120,18 @@ export class PostgresCurationRepository implements CurationRepository {
     input: AcquisitionCurationRecommendationInput,
   ): Promise<CurationChangeSet> {
     return this.database.transaction(async (transaction) => {
+      const artifact = await sql<{ artifact_id: string }>`
+        select artifact.artifact_id
+        from pipeline.artifacts artifact
+        join pipeline.jobs job on job.job_id = artifact.job_id
+        where artifact.artifact_id = ${input.pipelineArtifactId}::uuid
+          and artifact.artifact_kind = 'acquisition.bundle'
+          and job.state = 'completed'
+      `.execute(transaction);
+      if (artifact.rows.length !== 1) {
+        throw new Error("Acquisition Curation requires a completed acquisition.bundle artifact");
+      }
+
       const existing = await transaction
         .selectFrom("curation.change_sets")
         .select("change_set_id")
