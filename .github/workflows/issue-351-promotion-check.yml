@@ -1,0 +1,42 @@
+name: Issue 351 promotion check
+
+on:
+  push:
+    branches:
+      - feat/issue-351-panda-data-curation-adapter
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: npm ci
+      - name: Typecheck V2
+        run: npm run typecheck:v2
+      - name: Lint API
+        run: npm run lint:v2
+      - name: Check V2 architecture
+        run: npm run check:architecture:v2
+      - name: Test panda-data V2 promotion mapper
+        run: uv run --isolated --directory tools/panda-data --frozen --extra dev pytest -q tests/test_v2_curation_promotion.py
+      - name: Lint panda-data V2 promotion mapper
+        run: uv run --isolated --directory tools/panda-data --frozen --extra dev ruff check src/panda_data/acquisition/curation/promotion.py tests/test_v2_curation_promotion.py
+      - name: Start fresh local Supabase
+        run: npm run infra:start
+      - name: Apply migrations and seeds through 0050
+        run: npm run infra:reset
+      - name: Run acquisition Curation owner-routing journey
+        run: npm run test:integration -w @zhipanda/api -- test/integration/acquisition-curation.integration.spec.ts
+      - name: Stop local Supabase
+        if: always()
+        run: npm run infra:stop
