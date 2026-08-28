@@ -39,10 +39,13 @@ export interface CurationChangeSets {
   change_set_id: Generated<string>;
   created_at: Generated<Timestamp>;
   created_by_account_id: string;
-  origin_decision_id: string;
-  origin_review_case_id: string;
-  origin_revision_number: number;
-  origin_submission_id: string;
+  origin_acquisition_bundle_id: string | null;
+  origin_decision_id: string | null;
+  origin_kind: Generated<string>;
+  origin_pipeline_artifact_id: string | null;
+  origin_review_case_id: string | null;
+  origin_revision_number: number | null;
+  origin_submission_id: string | null;
   reason: string;
   state: Generated<string>;
   target_panda_id: string;
@@ -50,6 +53,19 @@ export interface CurationChangeSets {
   validated_at: Timestamp | null;
   validated_by_account_id: string | null;
   version: Generated<number>;
+}
+
+export interface CurationOwnerChanges {
+  applied_reference: string | null;
+  change_id: Generated<string>;
+  change_set_id: string;
+  created_at: Generated<Timestamp>;
+  last_verified_on: string;
+  operation: string;
+  origin_candidate_id: string;
+  owner_module: string;
+  payload: Json;
+  source_ids: string[];
 }
 
 export interface CurationPandaFactChanges {
@@ -68,5 +84,6 @@ export interface CurationPandaFactChanges {
 export interface DB {
   "curation.approval_decisions": CurationApprovalDecisions;
   "curation.change_sets": CurationChangeSets;
+  "curation.owner_changes": CurationOwnerChanges;
   "curation.panda_fact_changes": CurationPandaFactChanges;
 }
