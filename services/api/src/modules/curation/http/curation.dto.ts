@@ -64,6 +64,7 @@ export class CurationOwnerChangeDto {
     enum: [
       "fact.propose",
       "fact.corroborate",
+      "fact.refine",
       "fact.dispute",
       "name.add",
       "name.corroborate",
