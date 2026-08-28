@@ -140,11 +140,13 @@ def build_v2_curation_promotion(
             )
         if candidate.normalized_value is None:
             raise ValueError(
-                f"accepted candidate {candidate.candidate_id} is source absence, not a promotable fact"
+                "accepted candidate "
+                f"{candidate.candidate_id} is source absence, not a promotable fact"
             )
         if candidate.candidate_kind is CandidateKind.MEDIA_METADATA:
             raise ValueError(
-                f"accepted candidate {candidate.candidate_id} is media metadata; Media owns that path"
+                "accepted candidate "
+                f"{candidate.candidate_id} is media metadata; Media owns that path"
             )
         grouped[target_panda_id].append(
             _owner_change(candidate, last_verified_on=decision.decided_at.date())
@@ -244,7 +246,8 @@ def _identity_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, Jso
 def _name_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, JsonValue]]:
     if candidate.conflict_state is ConflictState.CONTRADICTION:
         raise ValueError(
-            f"accepted name candidate {candidate.candidate_id} requires explicit identity conflict review"
+            "accepted name candidate "
+            f"{candidate.candidate_id} requires explicit identity conflict review"
         )
     if candidate.conflict_state is ConflictState.NOT_COMPARED:
         raise ValueError(f"accepted name candidate {candidate.candidate_id} was not compared")
@@ -278,16 +281,25 @@ def _name_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, JsonVal
 def _external_identifier_change(
     candidate: FieldCandidate,
 ) -> tuple[str, str, dict[str, JsonValue]]:
-    if candidate.conflict_state in {ConflictState.CONTRADICTION, ConflictState.NOT_COMPARED}:
+    if candidate.conflict_state in {
+        ConflictState.CONTRADICTION,
+        ConflictState.NOT_COMPARED,
+    }:
         raise ValueError(
-            f"accepted external identifier candidate {candidate.candidate_id} requires explicit conflict review"
+            "accepted external identifier candidate "
+            f"{candidate.candidate_id} requires explicit conflict review"
         )
     value = candidate.normalized_value
     if not isinstance(value, dict):
         raise ValueError("external identifier candidates require structured normalized values")
     system = value.get("system")
     identifier = value.get("value")
-    if not isinstance(system, str) or not system or not isinstance(identifier, str) or not identifier:
+    if (
+        not isinstance(system, str)
+        or not system
+        or not isinstance(identifier, str)
+        or not identifier
+    ):
         raise ValueError("external identifier candidates require system and value")
     operation = (
         "external_identifier.corroborate"
@@ -298,9 +310,13 @@ def _external_identifier_change(
 
 
 def _parentage_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, JsonValue]]:
-    if candidate.conflict_state not in {ConflictState.NEW, ConflictState.MISSING_CURRENT_VALUE}:
+    if candidate.conflict_state not in {
+        ConflictState.NEW,
+        ConflictState.MISSING_CURRENT_VALUE,
+    }:
         raise ValueError(
-            f"accepted parentage candidate {candidate.candidate_id} is {candidate.conflict_state.value}; "
+            "accepted parentage candidate "
+            f"{candidate.candidate_id} is {candidate.conflict_state.value}; "
             "only new resolved parentage can use parentage.create"
         )
     role = candidate.field_path.removeprefix("relationship.").removeprefix("parentage.")
@@ -326,9 +342,13 @@ def _parentage_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, Js
 
 
 def _residency_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, JsonValue]]:
-    if candidate.conflict_state not in {ConflictState.NEW, ConflictState.MISSING_CURRENT_VALUE}:
+    if candidate.conflict_state not in {
+        ConflictState.NEW,
+        ConflictState.MISSING_CURRENT_VALUE,
+    }:
         raise ValueError(
-            f"accepted residency candidate {candidate.candidate_id} is {candidate.conflict_state.value}; "
+            "accepted residency candidate "
+            f"{candidate.candidate_id} is {candidate.conflict_state.value}; "
             "existing residency reconciliation requires a dedicated owner operation"
         )
     value = candidate.normalized_value
@@ -336,7 +356,9 @@ def _residency_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, Js
         raise ValueError("residency promotion requires a resolved structured value")
     place_id = value.get("place_id")
     if not isinstance(place_id, str):
-        raise ValueError(f"accepted residency candidate {candidate.candidate_id} has no resolved place UUID")
+        raise ValueError(
+            f"accepted residency candidate {candidate.candidate_id} has no resolved place UUID"
+        )
     _require_uuid("place_id", place_id)
     residency_type = value.get("residency_type")
     if residency_type is None and candidate.field_path == "residency.current_location":
@@ -366,7 +388,8 @@ def _residency_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, Js
 def _event_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, JsonValue]]:
     if candidate.conflict_state is not ConflictState.NEW:
         raise ValueError(
-            f"accepted event candidate {candidate.candidate_id} is {candidate.conflict_state.value}; "
+            "accepted event candidate "
+            f"{candidate.candidate_id} is {candidate.conflict_state.value}; "
             "only genuinely new events can use event.create"
         )
     value = candidate.normalized_value
@@ -375,7 +398,9 @@ def _event_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, JsonVa
     event_type = value.get("event_type")
     if not isinstance(event_type, str) or not event_type:
         raise ValueError("event promotion requires event_type")
-    occurred_on, occurred_precision = _life_date(value.get("event_date") or value.get("date"))
+    occurred_on, occurred_precision = _life_date(
+        value.get("event_date") or value.get("date")
+    )
     payload: dict[str, JsonValue] = {
         "eventType": event_type,
         "eventStatus": value.get("event_status", "completed"),
@@ -394,23 +419,28 @@ def _event_change(candidate: FieldCandidate) -> tuple[str, str, dict[str, JsonVa
                 raise ValueError(f"event {source_key} must be a UUID string")
             _require_uuid(source_key, place_id)
             payload[target_key] = place_id
-    if value.get("location") is not None and "toPlaceId" not in payload and "fromPlaceId" not in payload:
+    has_location = value.get("location") is not None
+    has_resolved_place = "toPlaceId" in payload or "fromPlaceId" in payload
+    if has_location and not has_resolved_place:
         raise ValueError(
-            f"accepted event candidate {candidate.candidate_id} has source location text but no resolved place UUID"
+            "accepted event candidate "
+            f"{candidate.candidate_id} has source location text but no resolved place UUID"
         )
     participant_ids = value.get("participant_ids")
     if participant_ids is not None:
-        if not isinstance(participant_ids, list) or not all(isinstance(item, str) for item in participant_ids):
+        if not isinstance(participant_ids, list) or not all(
+            isinstance(item, str) for item in participant_ids
+        ):
             raise ValueError("event participant_ids must be UUID strings")
         for participant_id in participant_ids:
             _require_uuid("participant_id", participant_id)
         payload["participantIds"] = participant_ids
     related = value.get("related_slugs")
-    if related:
-        if participant_ids is None:
-            raise ValueError(
-                f"accepted event candidate {candidate.candidate_id} has unresolved related panda references"
-            )
+    if related and participant_ids is None:
+        raise ValueError(
+            "accepted event candidate "
+            f"{candidate.candidate_id} has unresolved related panda references"
+        )
     summary = value.get("summary")
     if isinstance(summary, str) and summary.strip():
         payload["summary"] = summary.strip()
