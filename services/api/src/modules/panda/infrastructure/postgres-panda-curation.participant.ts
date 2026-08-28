@@ -43,9 +43,10 @@ export class PostgresPandaCurationParticipant implements PandaCurationParticipan
     input: CuratedPandaFactInput,
     mode: CuratedFactMode = "propose",
   ): Promise<string> {
-    const current = mode === "propose"
-      ? undefined
-      : await this.currentConclusion(transaction, input.pandaId, input.fieldKey);
+    const current = await this.currentConclusion(transaction, input.pandaId, input.fieldKey);
+    if (mode === "propose" && current !== undefined) {
+      throw new Error(`Fact proposal requires no current Panda conclusion for ${input.fieldKey}`);
+    }
     if (mode !== "propose" && current === undefined) {
       throw new Error(`${mode} requires an existing Panda fact conclusion for ${input.fieldKey}`);
     }
@@ -133,6 +134,9 @@ export class PostgresPandaCurationParticipant implements PandaCurationParticipan
       .where("name_kind", "=", input.nameKind)
       .where("value", "=", input.value)
       .executeTakeFirst();
+    if (mode === "add" && existing !== undefined) {
+      throw new Error("Panda name add requires a previously absent name");
+    }
     if (mode === "corroborate" && existing === undefined) {
       throw new Error("Panda name corroboration requires an existing name");
     }
@@ -176,6 +180,9 @@ export class PostgresPandaCurationParticipant implements PandaCurationParticipan
       .executeTakeFirst();
     if (existing !== undefined && existing.panda_id !== input.pandaId) {
       throw new Error("External identifier is already assigned to a different Panda");
+    }
+    if (mode === "add" && existing !== undefined) {
+      throw new Error("External identifier add requires a previously absent identifier");
     }
     if (mode === "corroborate" && existing === undefined) {
       throw new Error("External identifier corroboration requires an existing identifier");
