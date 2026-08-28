@@ -6,13 +6,15 @@ on:
       - feat/issue-351-panda-data-curation-adapter
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -21,6 +23,10 @@ jobs:
         with:
           enable-cache: true
       - run: npm ci
+      - name: Regenerate API contracts
+        run: |
+          npm run openapi:generate -w @zhipanda/api
+          npm run generate -w @zhipanda/api-client
       - name: Typecheck V2
         run: npm run typecheck:v2
       - name: Lint API
@@ -40,3 +46,15 @@ jobs:
       - name: Stop local Supabase
         if: always()
         run: npm run infra:stop
+      - name: Commit generated contracts when changed
+        if: success()
+        shell: bash
+        run: |
+          if git diff --quiet -- services/api/openapi/panda-atlas-v2.json packages/api-client/src/schema.generated.ts; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add services/api/openapi/panda-atlas-v2.json packages/api-client/src/schema.generated.ts
+          git commit -m "chore(api): regenerate V2 contracts for issue 351"
+          git push origin HEAD:feat/issue-351-panda-data-curation-adapter
