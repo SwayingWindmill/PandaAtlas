@@ -124,6 +124,7 @@ export class PostgresCurationRepository implements CurationRepository {
         .selectFrom("curation.change_sets")
         .select("change_set_id")
         .where("origin_pipeline_artifact_id", "=", input.pipelineArtifactId)
+        .where("target_panda_id", "=", input.targetPandaId)
         .executeTakeFirst();
       if (existing !== undefined) {
         const current = await this.getIn(transaction, existing.change_set_id);
