@@ -203,6 +203,25 @@ describe("V2 acquisition-origin Curation routing", () => {
       assertionIds: [sexAssertionId],
     });
 
+    const birthAssertionId = `fixture-birth:${suffix}`;
+    await pandas.recordFactAssertion({
+      assertionId: birthAssertionId,
+      pandaId: target.pandaId,
+      fieldKey: "profile.birth_date",
+      value: { value: "2021", precision: "year" },
+      certainty: "confirmed",
+      lastVerifiedOn: "2026-08-27",
+      sourceIds: [originalSourceId],
+    });
+    await pandas.setFactConclusion({
+      pandaId: target.pandaId,
+      fieldKey: "profile.birth_date",
+      value: { value: "2021", precision: "year" },
+      status: "confirmed",
+      lastVerifiedOn: "2026-08-27",
+      assertionIds: [birthAssertionId],
+    });
+
     const statusAssertionId = `fixture-status:${suffix}`;
     await pandas.recordFactAssertion({
       assertionId: statusAssertionId,
@@ -243,6 +262,18 @@ describe("V2 acquisition-origin Curation routing", () => {
           ownerModule: "panda",
           operation: "fact.corroborate",
           payload: { fieldKey: "profile.sex", value: "male", certainty: "confirmed" },
+          lastVerifiedOn: "2026-08-28",
+          sourceIds: [acquiredSourceId],
+        },
+        {
+          candidateId: `birth-refinement-${suffix}`,
+          ownerModule: "panda",
+          operation: "fact.refine",
+          payload: {
+            fieldKey: "profile.birth_date",
+            value: { value: "2021-08-21", precision: "day" },
+            certainty: "confirmed",
+          },
           lastVerifiedOn: "2026-08-28",
           sourceIds: [acquiredSourceId],
         },
@@ -341,6 +372,20 @@ describe("V2 acquisition-origin Curation routing", () => {
     const sex = updated?.conclusions.find((conclusion) => conclusion.fieldKey === "profile.sex");
     expect(sex).toMatchObject({ value: "male", status: "confirmed", lastVerifiedOn: "2026-08-28" });
     expect(sex?.conclusionVersion).toBe(2);
+
+    const birthDate = updated?.conclusions.find(
+      (conclusion) => conclusion.fieldKey === "profile.birth_date",
+    );
+    expect(birthDate).toMatchObject({
+      value: { value: "2021-08-21", precision: "day" },
+      status: "confirmed",
+      lastVerifiedOn: "2026-08-28",
+      conclusionVersion: 2,
+    });
+    expect(birthDate?.supersededValues).toEqual(
+      expect.arrayContaining([{ value: "2021", precision: "year" }]),
+    );
+
     const lifeStatus = updated?.conclusions.find(
       (conclusion) => conclusion.fieldKey === "profile.life_status",
     );
