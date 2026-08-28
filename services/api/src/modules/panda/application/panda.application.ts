@@ -110,8 +110,25 @@ export interface CuratedPandaFactInput {
   sourceIds: string[];
 }
 
+export type CuratedFactMode = "propose" | "corroborate" | "dispute";
+export type CuratedIdentityMode = "add" | "corroborate";
+
 export interface PandaCurationParticipant {
-  applyCuratedFact(transaction: DatabaseTransaction, input: CuratedPandaFactInput): Promise<void>;
+  applyCuratedFact(
+    transaction: DatabaseTransaction,
+    input: CuratedPandaFactInput,
+    mode?: CuratedFactMode,
+  ): Promise<string>;
+  applyCuratedName(
+    transaction: DatabaseTransaction,
+    input: AddPandaNameInput,
+    mode: CuratedIdentityMode,
+  ): Promise<string>;
+  applyCuratedExternalIdentifier(
+    transaction: DatabaseTransaction,
+    input: AddExternalIdentifierInput,
+    mode: CuratedIdentityMode,
+  ): Promise<string>;
 }
 
 export interface PandaRepository {
