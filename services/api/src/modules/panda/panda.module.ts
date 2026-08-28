@@ -27,11 +27,7 @@ import { PostgresPandaRepository } from "./infrastructure/postgres-panda.reposit
       useFactory: (repository: PandaRepository) => new PandaApplication(repository),
       inject: [PANDA_REPOSITORY],
     },
-    {
-      provide: PostgresPandaCurationParticipant,
-      useFactory: (database: DatabaseService) => new PostgresPandaCurationParticipant(database),
-      inject: [DatabaseService],
-    },
+    { provide: PostgresPandaCurationParticipant, useClass: PostgresPandaCurationParticipant },
     {
       provide: PANDA_PUBLICATION_PORT,
       useFactory: () => new PostgresPandaPublicationQuery(),
