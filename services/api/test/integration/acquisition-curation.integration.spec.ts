@@ -58,6 +58,11 @@ afterAll(async () => {
 });
 
 async function seedAccount(accountId: string): Promise<void> {
+  await sql`
+    insert into auth.users (id, aud, role, created_at, updated_at)
+    values (${accountId}::uuid, 'authenticated', 'authenticated', now(), now())
+    on conflict (id) do nothing
+  `.execute(database.db);
   await database.db
     .insertInto("identity.accounts")
     .values({ account_id: accountId, email: null })
