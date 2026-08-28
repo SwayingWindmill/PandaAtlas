@@ -8,10 +8,8 @@ import type {
   AddExternalIdentifierInput,
   AddPandaNameInput,
   CreatePandaInput,
-  CuratedPandaFactInput,
   FactConclusionStatus,
   JsonValue,
-  PandaCurationParticipant,
   PandaExternalIdentifier,
   PandaFactConclusion,
   PandaName,
@@ -37,7 +35,7 @@ function jsonArray(value: unknown): JsonValue[] {
   return Array.isArray(value) ? value.map((item) => jsonValue(item)) : [];
 }
 
-export class PostgresPandaRepository implements PandaRepository, PandaCurationParticipant {
+export class PostgresPandaRepository implements PandaRepository {
   public constructor(private readonly database: DatabaseService) {}
 
   public async createPanda(input: CreatePandaInput): Promise<PandaRecord> {
@@ -246,21 +244,6 @@ export class PostgresPandaRepository implements PandaRepository, PandaCurationPa
   public async setFactConclusion(input: SetFactConclusionInput): Promise<PandaFactConclusion> {
     const row = await this.database.transaction((transaction) => this.setFactConclusionIn(transaction, input));
     return this.mapConclusion(row);
-  }
-
-  public async applyCuratedFact(
-    transaction: DatabaseTransaction,
-    input: CuratedPandaFactInput,
-  ): Promise<void> {
-    await this.recordFactAssertionIn(transaction, input);
-    await this.setFactConclusionIn(transaction, {
-      pandaId: input.pandaId,
-      fieldKey: input.fieldKey,
-      value: input.value,
-      status: input.certainty,
-      lastVerifiedOn: input.lastVerifiedOn,
-      assertionIds: [input.assertionId],
-    });
   }
 
   private async recordFactAssertionIn(

@@ -4,8 +4,12 @@ import type {
   DatabaseTransaction,
 } from "../../../platform/database/database.service.js";
 import type {
+  AcquisitionCurationRecommendationInput,
   CurationChangeSet,
   CurationJsonValue,
+  CurationOwnerChange,
+  CurationOwnerModule,
+  CurationOwnerOperation,
   CurationPandaFactChange,
   CurationRepository,
   ReviewCurationRecommendationInput,
@@ -13,6 +17,10 @@ import type {
 
 function jsonValue(value: unknown): CurationJsonValue {
   return value as CurationJsonValue;
+}
+
+function jsonObject(value: unknown): { [key: string]: CurationJsonValue } {
+  return value as { [key: string]: CurationJsonValue };
 }
 
 function state(value: string): CurationChangeSet["state"] {
@@ -26,6 +34,34 @@ function state(value: string): CurationChangeSet["state"] {
     return value;
   }
   throw new Error(`Unsupported Curation state: ${value}`);
+}
+
+function originKind(value: string): CurationChangeSet["originKind"] {
+  if (value === "review" || value === "acquisition") return value;
+  throw new Error(`Unsupported Curation origin kind: ${value}`);
+}
+
+function ownerModule(value: string): CurationOwnerModule {
+  if (value === "panda" || value === "lineage" || value === "life_history") return value;
+  throw new Error(`Unsupported Curation owner module: ${value}`);
+}
+
+function ownerOperation(value: string): CurationOwnerOperation {
+  if (
+    value === "fact.propose" ||
+    value === "fact.corroborate" ||
+    value === "fact.dispute" ||
+    value === "name.add" ||
+    value === "name.corroborate" ||
+    value === "external_identifier.add" ||
+    value === "external_identifier.corroborate" ||
+    value === "parentage.create" ||
+    value === "residency.create" ||
+    value === "event.create"
+  ) {
+    return value;
+  }
+  throw new Error(`Unsupported Curation owner operation: ${value}`);
 }
 
 export class PostgresCurationRepository implements CurationRepository {
@@ -47,6 +83,7 @@ export class PostgresCurationRepository implements CurationRepository {
       const changeSet = await transaction
         .insertInto("curation.change_sets")
         .values({
+          origin_kind: "review",
           origin_review_case_id: input.reviewCaseId,
           origin_decision_id: input.decisionId,
           origin_submission_id: input.submissionId,
@@ -75,6 +112,68 @@ export class PostgresCurationRepository implements CurationRepository {
 
       const created = await this.getIn(transaction, changeSet.change_set_id);
       if (created === undefined) throw new Error("Created Curation change set could not be reloaded");
+      return created;
+    });
+  }
+
+  public async createFromAcquisition(
+    input: AcquisitionCurationRecommendationInput,
+  ): Promise<CurationChangeSet> {
+    return this.database.transaction(async (transaction) => {
+      const artifact = await sql<{ artifact_id: string }>`
+        select artifact.artifact_id
+        from pipeline.artifacts artifact
+        join pipeline.jobs job on job.job_id = artifact.job_id
+        where artifact.artifact_id = ${input.pipelineArtifactId}::uuid
+          and artifact.artifact_kind = 'acquisition.bundle'
+          and job.state = 'completed'
+      `.execute(transaction);
+      if (artifact.rows.length !== 1) {
+        throw new Error("Acquisition Curation requires a completed acquisition.bundle artifact");
+      }
+
+      const existing = await transaction
+        .selectFrom("curation.change_sets")
+        .select("change_set_id")
+        .where("origin_pipeline_artifact_id", "=", input.pipelineArtifactId)
+        .where("target_panda_id", "=", input.targetPandaId)
+        .executeTakeFirst();
+      if (existing !== undefined) {
+        const current = await this.getIn(transaction, existing.change_set_id);
+        if (current === undefined) throw new Error("Existing acquisition Curation change set could not be reloaded");
+        return current;
+      }
+
+      const changeSet = await transaction
+        .insertInto("curation.change_sets")
+        .values({
+          origin_kind: "acquisition",
+          origin_pipeline_artifact_id: input.pipelineArtifactId,
+          origin_acquisition_bundle_id: input.acquisitionBundleId,
+          target_panda_id: input.targetPandaId,
+          reason: input.reason,
+          created_by_account_id: input.recommendedByAccountId,
+        })
+        .returning("change_set_id")
+        .executeTakeFirstOrThrow();
+
+      await transaction
+        .insertInto("curation.owner_changes")
+        .values(
+          input.changes.map((change) => ({
+            change_set_id: changeSet.change_set_id,
+            origin_candidate_id: change.candidateId,
+            owner_module: change.ownerModule,
+            operation: change.operation,
+            payload: sql`${JSON.stringify(change.payload)}::jsonb`,
+            last_verified_on: change.lastVerifiedOn,
+            source_ids: change.sourceIds,
+          })),
+        )
+        .execute();
+
+      const created = await this.getIn(transaction, changeSet.change_set_id);
+      if (created === undefined) throw new Error("Created acquisition Curation change set could not be reloaded");
       return created;
     });
   }
@@ -122,11 +221,20 @@ export class PostgresCurationRepository implements CurationRepository {
     actorAccountId: string,
     reason: string,
     appliedAssertions: ReadonlyMap<string, string>,
+    appliedOwnerReferences: ReadonlyMap<string, string>,
   ): Promise<CurationChangeSet> {
     for (const [changeId, assertionId] of appliedAssertions) {
       await transaction
         .updateTable("curation.panda_fact_changes")
         .set({ applied_assertion_id: assertionId })
+        .where("change_id", "=", changeId)
+        .where("change_set_id", "=", changeSetId)
+        .executeTakeFirstOrThrow();
+    }
+    for (const [changeId, reference] of appliedOwnerReferences) {
+      await transaction
+        .updateTable("curation.owner_changes")
+        .set({ applied_reference: reference })
         .where("change_id", "=", changeId)
         .where("change_set_id", "=", changeSetId)
         .executeTakeFirstOrThrow();
@@ -173,13 +281,22 @@ export class PostgresCurationRepository implements CurationRepository {
       .executeTakeFirst();
     if (set === undefined) return undefined;
 
-    const changeRows = await executor
-      .selectFrom("curation.panda_fact_changes")
-      .selectAll()
-      .where("change_set_id", "=", changeSetId)
-      .orderBy("created_at")
-      .orderBy("change_id")
-      .execute();
+    const [changeRows, ownerRows] = await Promise.all([
+      executor
+        .selectFrom("curation.panda_fact_changes")
+        .selectAll()
+        .where("change_set_id", "=", changeSetId)
+        .orderBy("created_at")
+        .orderBy("change_id")
+        .execute(),
+      executor
+        .selectFrom("curation.owner_changes")
+        .selectAll()
+        .where("change_set_id", "=", changeSetId)
+        .orderBy("created_at")
+        .orderBy("change_id")
+        .execute(),
+    ]);
     const changes: CurationPandaFactChange[] = changeRows.map((change) => ({
       changeId: change.change_id,
       assertionKey: change.origin_assertion_key,
@@ -190,13 +307,47 @@ export class PostgresCurationRepository implements CurationRepository {
       sourceIds: change.source_ids,
       ...(change.applied_assertion_id === null ? {} : { appliedAssertionId: change.applied_assertion_id }),
     }));
+    const ownerChanges: CurationOwnerChange[] = ownerRows.map((change) => ({
+      changeId: change.change_id,
+      candidateId: change.origin_candidate_id,
+      ownerModule: ownerModule(change.owner_module),
+      operation: ownerOperation(change.operation),
+      payload: jsonObject(change.payload),
+      lastVerifiedOn: change.last_verified_on,
+      sourceIds: change.source_ids,
+      ...(change.applied_reference === null ? {} : { appliedReference: change.applied_reference }),
+    }));
+
+    const kind = originKind(set.origin_kind);
+    if (kind === "review") {
+      if (
+        set.origin_review_case_id === null ||
+        set.origin_decision_id === null ||
+        set.origin_submission_id === null ||
+        set.origin_revision_number === null
+      ) {
+        throw new Error(`Review-origin Curation change set ${changeSetId} has incomplete provenance`);
+      }
+    } else if (
+      set.origin_pipeline_artifact_id === null ||
+      set.origin_acquisition_bundle_id === null
+    ) {
+      throw new Error(`Acquisition-origin Curation change set ${changeSetId} has incomplete provenance`);
+    }
 
     return {
       changeSetId: set.change_set_id,
-      reviewCaseId: set.origin_review_case_id,
-      decisionId: set.origin_decision_id,
-      submissionId: set.origin_submission_id,
-      revisionNumber: set.origin_revision_number,
+      originKind: kind,
+      ...(set.origin_review_case_id === null ? {} : { reviewCaseId: set.origin_review_case_id }),
+      ...(set.origin_decision_id === null ? {} : { decisionId: set.origin_decision_id }),
+      ...(set.origin_submission_id === null ? {} : { submissionId: set.origin_submission_id }),
+      ...(set.origin_revision_number === null ? {} : { revisionNumber: set.origin_revision_number }),
+      ...(set.origin_acquisition_bundle_id === null
+        ? {}
+        : { acquisitionBundleId: set.origin_acquisition_bundle_id }),
+      ...(set.origin_pipeline_artifact_id === null
+        ? {}
+        : { pipelineArtifactId: set.origin_pipeline_artifact_id }),
       targetPandaId: set.target_panda_id,
       state: state(set.state),
       version: set.version,
@@ -205,6 +356,7 @@ export class PostgresCurationRepository implements CurationRepository {
       ...(set.validated_by_account_id === null ? {} : { validatedByAccountId: set.validated_by_account_id }),
       ...(set.approved_by_account_id === null ? {} : { approvedByAccountId: set.approved_by_account_id }),
       changes,
+      ownerChanges,
     };
   }
 }
