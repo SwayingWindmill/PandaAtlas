@@ -2,22 +2,21 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import datetime
 
 from ..contracts import AcquisitionBundle, CandidateKind, FieldCandidate
 from .batch_review import ReviewLane, review_lane_for_candidate
 from .models import CuratorDecision, DecisionAction, DecisionLog
 
-POLICY_ID = "pandaatlas-collection-batch-policy/v1"
-_SUPPORTED_CREATE_FIELDS = {
-    "identity.names.official.zh",
-    "identity.names.official.en",
-    "identity.birth_date",
-    "identity.sex",
-}
-_SUPPORTED_MATCHED_FIELDS = {
-    "identity.names.official.zh",
-}
+POLICY_ID = "pandaatlas-collection-batch-policy/v2"
+_PROMOTABLE_KINDS = frozenset(
+    {
+        CandidateKind.IDENTITY,
+        CandidateKind.RELATIONSHIP,
+        CandidateKind.RESIDENCY,
+        CandidateKind.EVENT,
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,65 +92,53 @@ def collection_policy_decision(
 ) -> tuple[DecisionAction, str]:
     lane = review_lane_for_candidate(candidate)
     if lane is ReviewLane.MANUAL_CREATE_IDENTITY:
-        if candidate.field_path in _SUPPORTED_CREATE_FIELDS:
+        if _is_v2_promotable_candidate(candidate):
             return (
                 DecisionAction.ACCEPTED,
-                "Accepted by the collection batch policy as a field for a new source identity; "
-                "the identity intake application must aggregate bilingual duplicates before "
-                "creating one reviewed curation row.",
+                "Accepted as a reviewed V2 identity-intake proposal for a new source identity; "
+                "promotion must preserve the source identity and must not auto-create or merge an "
+                "authoritative panda without the Curation identity checks.",
             )
         return (
             DecisionAction.DEFERRED,
-            "Deferred because the new-identity field is not representable by the current curation "
-            "CSV contract.",
+            "Deferred because the candidate is not representable by the reviewed V2 panda "
+            "promotion contract.",
         )
     if lane is ReviewLane.BATCH_READY:
-        if candidate.candidate_kind is CandidateKind.EVENT:
-            if not _event_has_exact_date(candidate):
-                return (
-                    DecisionAction.DEFERRED,
-                    "Deferred because the current events.csv contract requires a complete ISO "
-                    "date; the source supplies only year- or month-level precision.",
-                )
+        if _is_v2_promotable_candidate(candidate):
             return (
                 DecisionAction.ACCEPTED,
-                "Accepted by the collection batch policy as a structured event with an exact date "
-                "for an explicitly matched panda identity; bilingual duplicates must be "
-                "idempotently upserted.",
-            )
-        if candidate.field_path in _SUPPORTED_MATCHED_FIELDS:
-            return (
-                DecisionAction.ACCEPTED,
-                "Accepted by the collection batch policy as a missing canonical display field for "
-                "an explicitly matched panda identity.",
+                "Accepted as a reviewed V2 promotion proposal; the legacy curation CSV shape does "
+                "not determine whether this candidate is representable.",
             )
         return (
             DecisionAction.DEFERRED,
-            "Deferred because this low-conflict candidate is not representable by the current "
-            "curation CSV contract without a schema extension.",
+            "Deferred because this candidate kind is not yet supported by the reviewed V2 "
+            "promotion contract.",
         )
     if lane is ReviewLane.SUPPORTING_UNCHANGED:
         return (
             DecisionAction.DEFERRED,
-            "Deferred as corroborating evidence only; no duplicate curation write is required.",
+            "Deferred pending the V2 corroboration path that can attach additional provenance "
+            "without duplicating the current canonical fact.",
         )
     if lane is ReviewLane.MANUAL_CONTRADICTION:
         return (
             DecisionAction.DEFERRED,
-            "Deferred because the candidate contradicts the current curation value and requires an "
-            "explicit correction decision.",
+            "Deferred because the candidate contradicts the current trusted value and requires an "
+            "explicit Curation decision that preserves the competing assertion and evidence.",
         )
     if lane is ReviewLane.MANUAL_RELATIONSHIP_RESOLUTION:
         return (
             DecisionAction.DEFERRED,
-            "Deferred because the parent is represented only by source text; no parent slug is "
-            "inferred from a name alone.",
+            "Deferred because the parent is represented only by source text; no canonical parent "
+            "identity is inferred from a name alone.",
         )
     if lane is ReviewLane.BLOCKED_ON_CREATE:
         return (
             DecisionAction.DEFERRED,
-            "Deferred until the source-local panda identity has been created and the acquisition "
-            "bundle has been replayed against the updated identity snapshot.",
+            "Deferred until the source-local panda identity has been reviewed and created; the "
+            "bundle must then be replayed against the updated identity snapshot.",
         )
     if lane is ReviewLane.MANUAL_NOT_COMPARED:
         return (
@@ -165,27 +152,23 @@ def collection_policy_decision(
         )
     return (
         DecisionAction.DEFERRED,
-        "Deferred because the candidate is outside the unattended collection application policy.",
+        "Deferred because the candidate remains outside the reviewed V2 promotion policy.",
     )
 
 
-def _event_has_exact_date(candidate: FieldCandidate) -> bool:
-    value = candidate.normalized_value
-    if not isinstance(value, dict):
+def _is_v2_promotable_candidate(candidate: FieldCandidate) -> bool:
+    if candidate.candidate_kind not in _PROMOTABLE_KINDS:
         return False
-    event_date = value.get("event_date")
-    if not isinstance(event_date, dict):
-        return False
-    if event_date.get("precision") != "day":
-        return False
-    raw_date = event_date.get("value")
-    if not isinstance(raw_date, str):
-        return False
-    try:
-        date.fromisoformat(raw_date)
-    except ValueError:
-        return False
-    return True
+    if candidate.candidate_kind is CandidateKind.IDENTITY:
+        return candidate.field_path.startswith("identity.")
+    if candidate.candidate_kind is CandidateKind.RELATIONSHIP:
+        return candidate.field_path.startswith("relationship.")
+    if candidate.candidate_kind is CandidateKind.RESIDENCY:
+        return candidate.field_path.startswith("residency.")
+    if candidate.candidate_kind is CandidateKind.EVENT:
+        value = candidate.normalized_value
+        return isinstance(value, dict) and bool(value.get("event_type"))
+    return False
 
 
 __all__ = [
