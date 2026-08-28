@@ -36,6 +36,7 @@ const copy = {
     month: "月份",
     panda: "熊猫",
     type: "事件类型",
+    location: "地点",
     sort: "顺序",
     anniversaries: "包括生日周年",
     apply: "应用筛选",
@@ -67,6 +68,7 @@ const copy = {
     month: "Month",
     panda: "Panda",
     type: "Event type",
+    location: "Location",
     sort: "Order",
     anniversaries: "Include birthday anniversaries",
     apply: "Apply filters",
@@ -151,6 +153,7 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
   const month = integer(one(rawSearch.month), 1, 12);
   const panda = one(rawSearch.panda);
   const eventType = one(rawSearch.type);
+  const location = one(rawSearch.location);
   const includeAnniversaries = one(rawSearch.anniversaries) === "1";
   const sort = one(rawSearch.sort) === "date_desc" ? "date_desc" : "date_asc";
   const now = new Date();
@@ -159,7 +162,7 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
   const momentDataset = await loadV2PublicMomentDataset();
   if (!momentDataset) notFound();
 
-  const timelineItems = filterV2PublicMoments(momentDataset, { year, month, panda, eventType, includeAnniversaries, sort });
+  const timelineItems = filterV2PublicMoments(momentDataset, { year, month, panda, eventType, location, includeAnniversaries, sort });
   const calendarItems = filterV2PublicMoments(momentDataset, {
     year: calendarYear,
     month: calendarMonth,
@@ -167,6 +170,26 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
     sort: "date_asc",
   });
   const visibleItems = view === "calendar" ? calendarItems : timelineItems;
+  const placeNames = new Map(momentDataset.places.map((place) => {
+    const preferredLanguage = locale === "zh" ? "zh-Hans" : "en";
+    const preferred = place.names.find((name) => name.language === preferredLanguage)?.value;
+    return [place.id, preferred ?? place.names[0]?.value ?? place.id] as const;
+  }));
+  const locationOptions = new Map<string, string>();
+  const addLocationOption = (facilityId: string | null, coarseLocation: string | null) => {
+    if (facilityId) {
+      locationOptions.set(`facility:${facilityId}`, placeNames.get(facilityId) ?? coarseLocation ?? facilityId);
+    } else if (coarseLocation) {
+      locationOptions.set(`coarse:${coarseLocation}`, coarseLocation);
+    }
+  };
+  for (const item of momentDataset.sourceEvents) {
+    addLocationOption(item.fromFacilityId, item.fromCoarseLocation);
+    addLocationOption(item.toFacilityId, item.toCoarseLocation);
+  }
+  const sortedLocationOptions = [...locationOptions.entries()]
+    .map(([value, label]) => ({ value, label }))
+    .sort((left, right) => left.label.localeCompare(right.label, locale === "zh" ? "zh-CN" : "en"));
   const sourceEventCount = new Set(
     visibleItems.filter((item) => item.occurrenceKind === "source_event").map((item) => item.sourceEventId),
   ).size;
@@ -230,6 +253,7 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
                   <div className={styles.field}><label htmlFor="month">{t.month}</label><select id="month" name="month" defaultValue={month?.toString() ?? ""}><option value="">{t.all}</option>{Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}</select></div>
                   <div className={styles.field}><label htmlFor="panda">{t.panda}</label><select id="panda" name="panda" defaultValue={panda ?? ""}><option value="">{t.all}</option>{momentDataset.pandas.map((item) => <option key={item.id} value={item.slug}>{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</option>)}</select></div>
                   <div className={styles.field}><label htmlFor="type">{t.type}</label><select id="type" name="type" defaultValue={eventType ?? ""}><option value="">{t.all}</option>{Object.keys(eventLabels.zh).filter((value) => value !== "birth_anniversary").map((value) => <option key={value} value={value}>{eventLabel(locale, value)}</option>)}</select></div>
+                  <div className={styles.field}><label htmlFor="location">{t.location}</label><select id="location" name="location" defaultValue={location ?? ""}><option value="">{t.all}</option>{sortedLocationOptions.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></div>
                   <div className={styles.field}><label htmlFor="sort">{t.sort}</label><select id="sort" name="sort" defaultValue={sort}><option value="date_asc">{t.ascending}</option><option value="date_desc">{t.descending}</option></select></div>
                   <div className={styles.field}><label htmlFor="anniversaries">{t.anniversaries}</label><select id="anniversaries" name="anniversaries" defaultValue={includeAnniversaries ? "1" : "0"}><option value="0">{locale === "zh" ? "不包括" : "Exclude"}</option><option value="1">{locale === "zh" ? "包括" : "Include"}</option></select></div>
                   <button className={styles.submit} type="submit">{t.apply}</button>

@@ -10,6 +10,13 @@ test("Panda Moments preserves URL state and distinguishes source events from ann
   await expect(page.locator("input[name=year]")).toHaveValue("2026");
   await expect(page.locator("select[name=panda]")).toHaveValue("xi-lun");
   await expect(page.locator("select[name=anniversaries]")).toHaveValue("1");
+  const locationSelect = page.locator("select[name=location]");
+  await expect(locationSelect).toBeVisible();
+  const firstLocation = await locationSelect.locator("option:not([value=''])").first().getAttribute("value");
+  expect(firstLocation).toBeTruthy();
+  await locationSelect.selectOption(firstLocation!);
+  await page.getByRole("button", { name: "应用筛选" }).click();
+  await expect(page).toHaveURL(new RegExp(`location=${encodeURIComponent(firstLocation!)}`));
 
   const sourceIds = await page.locator("text=/来源事件 ID:/").allTextContents();
   expect(new Set(sourceIds).size).toBe(sourceIds.length);
