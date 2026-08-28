@@ -1,0 +1,21 @@
+{
+  "schema_version": "panda-atlas-acquisition-fixtures/v1",
+  "responses": [
+    {
+      "request_id": "newborns-2021-zh",
+      "body_path": "chengdu-newborns-2021-zh.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8"
+      }
+    },
+    {
+      "request_id": "newborns-2021-en",
+      "body_path": "chengdu-newborns-2021-en.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8"
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": "panda-atlas-acquisition-fixtures/v1",
+  "responses": [
+    {
+      "request_id": "giant-panda-profile",
+      "body_path": "smithsonian-giant-panda.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8"
+      }
+    },
+    {
+      "request_id": "giant-panda-faqs",
+      "body_path": "smithsonian-giant-panda-faqs.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8"
+      }
+    },
+    {
+      "request_id": "giant-panda-history",
+      "body_path": "smithsonian-history-giant-pandas.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8"
+      }
+    }
+  ]
+}

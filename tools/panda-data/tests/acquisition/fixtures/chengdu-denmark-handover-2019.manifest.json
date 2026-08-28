@@ -1,0 +1,21 @@
+{
+  "schema_version": "panda-atlas-acquisition-fixtures/v1",
+  "responses": [
+    {
+      "request_id": "denmark-handover-2019-zh",
+      "body_path": "chengdu-denmark-handover-2019-zh.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8"
+      }
+    },
+    {
+      "request_id": "denmark-handover-2019-en",
+      "body_path": "chengdu-denmark-handover-2019-en.html",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8"
+      }
+    }
+  ]
+}
