@@ -44,8 +44,10 @@ alter table curation.change_sets
       )
     );
 
-create unique index if not exists idx_curation_change_sets_acquisition_artifact
-  on curation.change_sets(origin_pipeline_artifact_id)
+-- One immutable acquisition artifact can contain candidates for many pandas.
+-- Idempotency is therefore per artifact + target panda, not per artifact globally.
+create unique index if not exists idx_curation_change_sets_acquisition_target
+  on curation.change_sets(origin_pipeline_artifact_id, target_panda_id)
   where origin_kind = 'acquisition';
 
 create table if not exists curation.owner_changes (
