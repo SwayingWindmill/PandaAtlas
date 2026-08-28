@@ -2,10 +2,10 @@ import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { loadPublicPandaActivity } from "@/features/feed/feed-api";
 import {
-  loadPublishedAtlasDataset,
-  loadPublishedPandaProfile,
-  resolvePublishedPandaReference,
-} from "@/features/public-content/public-release";
+  loadV2PublicAtlasDataset,
+  loadV2PublicPandaProfile,
+  resolveV2PublicPandaReference,
+} from "@/features/public-content/public-v2";
 import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
 import { TrustedProfilePage } from "@/features/profile/trusted-profile-page";
 import { parsePublicLocale } from "@/foundation/content/locales";
@@ -23,7 +23,7 @@ interface LocalizedPandaPageProps {
 export async function generateMetadata({ params }: LocalizedPandaPageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);
-  const envelope = locale ? loadPublishedPandaProfile(slug, locale) : null;
+  const envelope = locale ? await loadV2PublicPandaProfile(slug, locale) : null;
   if (!locale || !envelope) return {};
 
   const profile = buildTrustedProfilePageViewModel(envelope.data, locale);
@@ -47,7 +47,7 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const reference = resolvePublishedPandaReference(slug);
+  const reference = await resolveV2PublicPandaReference(slug);
   if (!reference) notFound();
   if (slug !== reference.slug) {
     permanentRedirect(
@@ -55,7 +55,7 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
     );
   }
 
-  const envelope = loadPublishedPandaProfile(reference.slug, locale);
+  const envelope = await loadV2PublicPandaProfile(reference.slug, locale);
   if (!envelope) notFound();
 
   const profile = buildTrustedProfilePageViewModel(envelope.data, locale);
@@ -64,7 +64,8 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
     ? rawActivityCursor[0]
     : rawActivityCursor;
   const activityResult = await loadPublicPandaActivity(profile.stableId, activityCursor);
-  const atlas = loadPublishedAtlasDataset(locale);
+  const atlas = await loadV2PublicAtlasDataset(locale);
+  if (!atlas) notFound();
 
   return (
     <TrustedProfilePage

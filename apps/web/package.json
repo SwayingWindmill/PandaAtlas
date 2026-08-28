@@ -34,6 +34,7 @@
         "test:map-viewport": "node scripts/test-map-viewport.mjs"
     },
     "dependencies": {
+        "@zhipanda/api-client": "0.1.0",
         "@radix-ui/react-slot": "^1.1.0",
         "@supabase/ssr": "0.12.3",
         "@supabase/supabase-js": "2.110.9",

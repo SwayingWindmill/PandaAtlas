@@ -8,25 +8,26 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import type { PublicLocale } from "@/foundation/content/locales";
 import type {
-  InboxItemData,
-  InboxPageData,
+  NotificationInboxData,
+  NotificationMessageData,
+
   NotificationCategory,
   NotificationPreferenceData,
 } from "@/features/notification-center/types";
 
 interface NotificationCenterPageProps {
   locale: PublicLocale;
-  cursor?: string;
+
 }
 
 type LoadState = "loading" | "ready" | "signed-out" | "blocked" | "unavailable";
 
 const optionalCategories: NotificationCategory[] = [
-  "birthday",
-  "major_activity",
-  "submission_status",
-  "incorporation",
-  "correction_retraction",
+  "knowledge_update",
+  "correction",
+
+
+
 ];
 
 const copy = {
@@ -63,8 +64,8 @@ const copy = {
     saved: "偏好已保存",
     actionFailed: "操作未完成，请重试。",
     category: {
-      birthday: "生日动态",
-      major_activity: "重要动态",
+      knowledge_update: "生日动态",
+      correction: "重要动态",
       submission_status: "提交状态",
       incorporation: "内容收录",
       correction_retraction: "更正与撤回",
@@ -106,8 +107,8 @@ const copy = {
     saved: "Preference saved",
     actionFailed: "The action did not complete. Try again.",
     category: {
-      birthday: "Birthday Activity",
-      major_activity: "Major Activity",
+      knowledge_update: "Birthday Activity",
+      correction: "Major Activity",
       submission_status: "Submission status",
       incorporation: "Contribution incorporation",
       correction_retraction: "Corrections and retractions",
@@ -119,20 +120,20 @@ const copy = {
 } as const;
 
 function localizedContent(
-  item: InboxItemData,
+  item: NotificationMessageData,
   locale: PublicLocale,
   fallbackTitle: string,
   fallbackSummary: string,
 ): { title: string; summary: string } {
-  const directTitle = item.body[locale === "zh" ? "title_zh" : "title_en"];
-  const directSummary = item.body[locale === "zh" ? "summary_zh" : "summary_en"];
+  const directTitle = item.content[locale === "zh" ? "title_zh" : "title_en"];
+  const directSummary = item.content[locale === "zh" ? "summary_zh" : "summary_en"];
   if (typeof directTitle === "string" || typeof directSummary === "string") {
     return {
       title: typeof directTitle === "string" ? directTitle : fallbackTitle,
       summary: typeof directSummary === "string" ? directSummary : fallbackSummary,
     };
   }
-  const snapshots = item.body.localized_snapshots;
+  const snapshots = item.content.localized_snapshots;
   if (Array.isArray(snapshots)) {
     const wanted = locale === "zh" ? "zh-CN" : "en";
     const snapshot = snapshots.find((value) => {
@@ -147,14 +148,10 @@ function localizedContent(
   return { title: fallbackTitle, summary: fallbackSummary };
 }
 
-function idempotencyKey(prefix: string): string {
-  return `${prefix}:${crypto.randomUUID()}`;
-}
-
-export function NotificationCenterPage({ locale, cursor }: NotificationCenterPageProps) {
+export function NotificationCenterPage({ locale }: NotificationCenterPageProps) {
   const t = copy[locale];
   const [state, setState] = useState<LoadState>("loading");
-  const [page, setPage] = useState<InboxPageData | null>(null);
+  const [page, setPage] = useState<NotificationInboxData | null>(null);
   const [preferences, setPreferences] = useState<NotificationPreferenceData[]>([]);
   const [statusMessage, setStatusMessage] = useState("");
   const [busyKey, setBusyKey] = useState<string | null>(null);
@@ -174,9 +171,9 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
       setState(session.status === 403 ? "blocked" : "unavailable");
       return;
     }
-    const query = cursor ? `?cursor=${encodeURIComponent(cursor)}` : "";
+
     const [inboxResponse, preferenceResponse] = await Promise.all([
-      fetch(`/api/notification/inbox${query}`, { cache: "no-store", signal }).catch(() => null),
+      fetch("/api/notification/inbox", { cache: "no-store", signal }).catch(() => null),
       fetch("/api/notification/preferences", { cache: "no-store", signal }).catch(() => null),
     ]);
     if (!inboxResponse || !preferenceResponse) {
@@ -195,10 +192,10 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
       setState("unavailable");
       return;
     }
-    setPage(await inboxResponse.json() as InboxPageData);
+    setPage(await inboxResponse.json() as NotificationInboxData);
     setPreferences(await preferenceResponse.json() as NotificationPreferenceData[]);
     setState("ready");
-  }, [cursor]);
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -212,24 +209,24 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
       .map((preference) => [preference.category, preference]),
   ), [preferences]);
 
-  async function markRead(item: InboxItemData) {
-    setBusyKey(item.inbox_item_id);
+  async function markRead(item: NotificationMessageData) {
+    setBusyKey(item.messageId);
     setStatusMessage("");
-    const response = await fetch(`/api/notification/inbox/${item.inbox_item_id}/read`, {
-      method: "POST",
+    const response = await fetch(`/api/notification/inbox/${item.messageId}/read`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idempotency_key: idempotencyKey("inbox-read") }),
+
     }).catch(() => null);
     if (!response?.ok) {
       setStatusMessage(t.actionFailed);
       setBusyKey(null);
       return;
     }
-    const updated = await response.json() as InboxItemData;
+    const updated = await response.json() as NotificationMessageData;
     setPage((current) => current ? {
       ...current,
-      unread_count: Math.max(0, current.unread_count - (item.read_at ? 0 : 1)),
-      items: current.items.map((entry) => entry.inbox_item_id === item.inbox_item_id ? updated : entry),
+      unreadCount: Math.max(0, current.unreadCount - (item.readAt ? 0 : 1)),
+      items: current.items.map((entry) => entry.messageId === item.messageId ? updated : entry),
     } : current);
     setStatusMessage(t.read);
     setBusyKey(null);
@@ -239,9 +236,9 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
     setBusyKey("read-all");
     setStatusMessage("");
     const response = await fetch("/api/notification/inbox/read-all", {
-      method: "POST",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idempotency_key: idempotencyKey("inbox-read-all") }),
+
     }).catch(() => null);
     if (!response?.ok) {
       setStatusMessage(t.actionFailed);
@@ -251,8 +248,8 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
     const now = new Date().toISOString();
     setPage((current) => current ? {
       ...current,
-      unread_count: 0,
-      items: current.items.map((entry) => ({ ...entry, read_at: entry.read_at ?? now })),
+      unreadCount: 0,
+      items: current.items.map((entry) => ({ ...entry, readAt: entry.readAt ?? now })),
     } : current);
     setStatusMessage(t.read);
     setBusyKey(null);
@@ -261,12 +258,14 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
   async function updatePreference(category: NotificationCategory, enabled: boolean) {
     setBusyKey(`preference:${category}`);
     setStatusMessage("");
-    const response = await fetch(`/api/engagement/preferences/${category}/email`, {
+    const response = await fetch("/api/notification/preferences", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        category,
+        channel: "email",
         enabled,
-        idempotency_key: idempotencyKey(`preference-${category}`),
+
       }),
     }).catch(() => null);
     if (!response?.ok) {
@@ -331,9 +330,9 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
               <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                 <div>
                   <h2 id="inbox-heading" className="flex items-center gap-2 text-2xl font-semibold text-[var(--fg)]"><Bell aria-hidden="true" />{t.inbox}</h2>
-                  <p className="mt-2 text-sm text-[var(--muted)]">{t.unread}: <strong>{page.unread_count}</strong></p>
+                  <p className="mt-2 text-sm text-[var(--muted)]">{t.unread}: <strong>{page.unreadCount}</strong></p>
                 </div>
-                <button type="button" disabled={page.unread_count === 0 || busyKey === "read-all"} onClick={() => void markAllRead()} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50"><CheckCheck aria-hidden="true" />{t.markAll}</button>
+                <button type="button" disabled={page.unreadCount === 0 || busyKey === "read-all"} onClick={() => void markAllRead()} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50"><CheckCheck aria-hidden="true" />{t.markAll}</button>
               </div>
 
               {page.items.length ? (
@@ -341,20 +340,20 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
                   {page.items.map((item) => {
                     const content = localizedContent(item, locale, t.fallbackTitle, t.fallbackSummary);
                     return (
-                      <li key={item.inbox_item_id} className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 md:p-6">
+                      <li key={item.messageId} className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 md:p-6">
                         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
                           <span>{t.category[item.category]}</span>
                           <span aria-hidden="true">•</span>
-                          <time dateTime={item.created_at}>{new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.created_at))}</time>
-                          {item.retracted_at ? <span className="rounded-full bg-red-100 px-2 py-1 text-red-800">{t.retracted}</span> : null}
+                          <time dateTime={item.createdAt}>{new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.createdAt))}</time>
+
                         </div>
                         <h3 className="mt-3 text-xl font-semibold text-[var(--fg)]">{content.title}</h3>
                         <p className="mt-2 leading-7 text-[var(--muted)]">{content.summary}</p>
-                        {item.retraction_reason ? <p className="mt-2 text-sm text-red-800">{item.retraction_reason}</p> : null}
+
                         <div className="mt-4 flex items-center justify-between gap-3">
-                          <span className="text-sm text-[var(--muted)]">{item.read_at ? t.read : t.unread}</span>
-                          {!item.read_at ? (
-                            <button type="button" disabled={busyKey === item.inbox_item_id} onClick={() => void markRead(item)} className="min-h-12 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50">{t.markRead}</button>
+                          <span className="text-sm text-[var(--muted)]">{item.readAt ? t.read : t.unread}</span>
+                          {!item.readAt ? (
+                            <button type="button" disabled={busyKey === item.messageId} onClick={() => void markRead(item)} className="min-h-12 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50">{t.markRead}</button>
                           ) : null}
                         </div>
                       </li>
@@ -368,9 +367,8 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
                 </div>
               )}
 
-              {page.next_cursor ? (
-                <Link href={`/${locale}/me/inbox?cursor=${encodeURIComponent(page.next_cursor)}` as Route} rel="next" className="mx-auto mt-6 flex min-h-12 w-fit items-center rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 font-semibold text-[var(--accent)]">{t.earlier}</Link>
-              ) : null}
+
+
             </section>
 
             <section className="mt-12 rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-6 md:p-8" aria-labelledby="preferences-heading">
@@ -390,10 +388,7 @@ export function NotificationCenterPage({ locale, cursor }: NotificationCenterPag
                     </li>
                   );
                 })}
-                <li className="py-4">
-                  <h3 className="font-semibold text-[var(--fg)]">{t.category.security_role}</h3>
-                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{t.mandatory}</p>
-                </li>
+
               </ul>
             </section>
           </>

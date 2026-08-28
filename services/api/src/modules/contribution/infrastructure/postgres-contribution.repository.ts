@@ -107,7 +107,9 @@ export class PostgresContributionRepository implements ContributionRepository {
 
       return {
         submissionId: submission.submission_id,
+        submissionType: input.submissionType,
         targetPandaId: submission.target_id,
+        publicVersionSeen: input.publicVersionSeen,
         revisionNumber: 1,
         status: submission.contributor_status,
         submittedAt: submission.submitted_at ?? submittedAt,
@@ -115,17 +117,56 @@ export class PostgresContributionRepository implements ContributionRepository {
     });
   }
 
+  public async listOwn(accountId: string): Promise<ContributionRecord[]> {
+    const rows = await this.database.db
+      .selectFrom("community_intake.submissions")
+      .select([
+        "submission_id",
+        "submission_type",
+        "target_id",
+        "public_version_seen",
+        "latest_revision_number",
+        "contributor_status",
+        "submitted_at",
+      ])
+      .where("account_id", "=", accountId)
+      .where("submitted_at", "is not", null)
+      .where("latest_revision_number", ">", 0)
+      .orderBy("submitted_at", "desc")
+      .limit(100)
+      .execute();
+    return rows.map((row) => ({
+      submissionId: row.submission_id,
+      submissionType: row.submission_type as ContributionRecord["submissionType"],
+      targetPandaId: row.target_id,
+      publicVersionSeen: row.public_version_seen,
+      revisionNumber: row.latest_revision_number,
+      status: row.contributor_status,
+      submittedAt: row.submitted_at!,
+    }));
+  }
+
   public async getOwn(accountId: string, submissionId: string): Promise<ContributionRecord | undefined> {
     const row = await this.database.db
       .selectFrom("community_intake.submissions")
-      .select(["submission_id", "target_id", "latest_revision_number", "contributor_status", "submitted_at"])
+      .select([
+        "submission_id",
+        "submission_type",
+        "target_id",
+        "public_version_seen",
+        "latest_revision_number",
+        "contributor_status",
+        "submitted_at",
+      ])
       .where("submission_id", "=", submissionId)
       .where("account_id", "=", accountId)
       .executeTakeFirst();
     if (row === undefined || row.submitted_at === null || row.latest_revision_number === 0) return undefined;
     return {
       submissionId: row.submission_id,
+      submissionType: row.submission_type as ContributionRecord["submissionType"],
       targetPandaId: row.target_id,
+      publicVersionSeen: row.public_version_seen,
       revisionNumber: row.latest_revision_number,
       status: row.contributor_status,
       submittedAt: row.submitted_at,

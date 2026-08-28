@@ -21,6 +21,7 @@ export interface NotificationMessage {
 export interface NotificationRepository {
   listMessages(accountId: string, limit: number): Promise<NotificationMessage[]>;
   markRead(accountId: string, messageId: string): Promise<NotificationMessage | undefined>;
+  markAllRead(accountId: string): Promise<number>;
   listPreferences(accountId: string): Promise<NotificationPreference[]>;
   setPreference(
     accountId: string,
@@ -46,6 +47,10 @@ export class NotificationApplication implements NotificationPort {
 
   public markRead(accountId: string, messageId: string) {
     return this.repository.markRead(accountId, messageId);
+  }
+
+  public markAllRead(accountId: string) {
+    return this.repository.markAllRead(accountId);
   }
 
   public listPreferences(accountId: string) {

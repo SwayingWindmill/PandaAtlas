@@ -1,14 +1,21 @@
 import { Body, Controller, Get, Inject, Post, Put, Req } from "@nestjs/common";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
+import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
-import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import { AccountProvisioningBlockedError } from "../application/identity.errors.js";
 import { IDENTITY_PORT, type IdentityPort } from "../application/identity.port.js";
 import { AllowUnprovisioned, RequireCapabilities } from "./access.metadata.js";
-import { ReplaceProfileDto } from "./profile.dto.js";
+import {
+  CurrentAccountDto,
+  FanProfileDto,
+  ProvisionedAccountDto,
+  ReplaceProfileDto,
+} from "./profile.dto.js";
 import { getActorContext } from "./request-actor.js";
 
+@ApiTags("Identity")
 @Controller("me")
 export class MeController {
   public constructor(
@@ -18,6 +25,8 @@ export class MeController {
 
   @Post("account")
   @AllowUnprovisioned()
+  @ApiOperation({ operationId: "provisionCurrentAccount" })
+  @ApiCreatedResponse({ type: ProvisionedAccountDto })
   public async provisionAccount(@Req() request: FastifyRequest): Promise<{
     accountId: string;
     state: "active";
@@ -50,6 +59,8 @@ export class MeController {
 
   @Get()
   @RequireCapabilities("account.session.read")
+  @ApiOperation({ operationId: "getCurrentAccount" })
+  @ApiOkResponse({ type: CurrentAccountDto })
   public getCurrentAccount(@Req() request: FastifyRequest): {
     accountId: string;
     aal: "aal1" | "aal2";
@@ -68,6 +79,8 @@ export class MeController {
 
   @Get("profile")
   @RequireCapabilities("account.profile.read")
+  @ApiOperation({ operationId: "getCurrentProfile" })
+  @ApiOkResponse({ type: FanProfileDto })
   public async getProfile(@Req() request: FastifyRequest) {
     const actor = getActorContext(request);
     if (actor === undefined) {
@@ -78,6 +91,8 @@ export class MeController {
 
   @Put("profile")
   @RequireCapabilities("account.profile.manage")
+  @ApiOperation({ operationId: "replaceCurrentProfile" })
+  @ApiOkResponse({ type: FanProfileDto })
   public async replaceProfile(@Req() request: FastifyRequest, @Body() input: ReplaceProfileDto) {
     const actor = getActorContext(request);
     if (actor === undefined) {

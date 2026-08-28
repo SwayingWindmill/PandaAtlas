@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
@@ -11,6 +12,11 @@ import { MODERATION_PORT, type ModerationPort } from "../application/moderation.
 import {
   ApplySanctionDto,
   DecideAppealDto,
+  ModerationAccountDto,
+  ModerationAppealDecisionDto,
+  ModerationAppealDto,
+  ModerationSanctionDto,
+  RestoredSanctionDto,
   RestoreSanctionDto,
   SubmitAppealDto,
 } from "./moderation.dto.js";
@@ -23,6 +29,7 @@ function actorAccountId(request: FastifyRequest): string {
   return actor.accountId;
 }
 
+@ApiTags("Moderation")
 @Controller("moderation")
 export class ModerationController {
   public constructor(
@@ -32,6 +39,8 @@ export class ModerationController {
 
   @Get("accounts/:accountId")
   @RequireCapabilities("moderation.sanction.read")
+  @ApiOperation({ operationId: "getModerationAccount" })
+  @ApiOkResponse({ type: ModerationAccountDto })
   public async getAccount(@Param("accountId", ParseUUIDPipe) accountId: string) {
     return {
       subject: await this.moderation.getSubject(accountId),
@@ -41,6 +50,8 @@ export class ModerationController {
 
   @Post("accounts/:accountId/sanctions")
   @RequireCapabilities("moderation.sanction.apply")
+  @ApiOperation({ operationId: "applyModerationSanction" })
+  @ApiCreatedResponse({ type: ModerationSanctionDto })
   public async applySanction(
     @Req() request: FastifyRequest,
     @Param("accountId", ParseUUIDPipe) accountId: string,
@@ -63,6 +74,8 @@ export class ModerationController {
   @Post("sanctions/:sanctionId/restore")
   @HttpCode(200)
   @RequireCapabilities("moderation.sanction.restore")
+  @ApiOperation({ operationId: "restoreModerationSanction" })
+  @ApiOkResponse({ type: RestoredSanctionDto })
   public async restoreSanction(
     @Req() request: FastifyRequest,
     @Param("sanctionId", ParseUUIDPipe) sanctionId: string,
@@ -80,12 +93,14 @@ export class ModerationController {
     if (!restored) {
       throw new ProblemException(409, "moderation.notRestorable", "The sanction is not the current restorable sanction.");
     }
-    return { restored: true };
+    return { restored: true as const };
   }
 
   @Post("appeals/:appealCaseId/decision")
   @HttpCode(200)
   @RequireCapabilities("moderation.appeal.decide")
+  @ApiOperation({ operationId: "decideModerationAppeal" })
+  @ApiOkResponse({ type: ModerationAppealDecisionDto })
   public async decideAppeal(
     @Req() request: FastifyRequest,
     @Param("appealCaseId", ParseUUIDPipe) appealCaseId: string,
@@ -114,6 +129,7 @@ export class ModerationController {
   }
 }
 
+@ApiTags("Moderation")
 @Controller("me/moderation")
 export class OwnModerationController {
   public constructor(@Inject(MODERATION_PORT) private readonly moderation: ModerationPort) {}
@@ -121,6 +137,8 @@ export class OwnModerationController {
   @Post("appeals")
   @AllowSuspendedAccount()
   @RequireCapabilities("moderation.appeal.submit")
+  @ApiOperation({ operationId: "submitModerationAppeal" })
+  @ApiCreatedResponse({ type: ModerationAppealDto })
   public async submitAppeal(@Req() request: FastifyRequest, @Body() input: SubmitAppealDto) {
     const appeal = await this.moderation.submitAppeal(
       actorAccountId(request),

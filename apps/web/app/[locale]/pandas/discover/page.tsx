@@ -5,7 +5,7 @@ import { ArrowDown, ArrowLeft, ArrowRight, Grid3X3, MousePointer2 } from "lucide
 
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { CircularGallery, type GalleryItem } from "@/components/ui/circular-gallery";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale, type PublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import type { PandaDetail, PublicPandaMediaAsset } from "@/lib/types";
@@ -149,7 +149,8 @@ export default async function PandaDiscoveryPage({ params }: PandaDiscoveryPageP
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const envelope = loadPublishedAtlasDataset(locale);
+  const envelope = await loadV2PublicAtlasDataset(locale);
+  if (!envelope) notFound();
   const items = buildGalleryItems(envelope.data.pandas, locale);
   const t = copy[locale];
   const alternateLocale = locale === "zh" ? "en" : "zh";

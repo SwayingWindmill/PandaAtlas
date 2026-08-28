@@ -11,26 +11,25 @@ import { isEngagementUiEnabled } from "@/lib/engagement/config";
 type SaveState = "idle" | "saving" | "saved" | "error";
 
 type PendingAttempt = {
-  target_panda_id: string;
-  selected_panda_id: string;
-  public_release_version: string;
+  questionId: string;
+  selectedPandaId: string;
 };
 
 interface GuessQuestion {
-  question_id: string;
-  image_url: string;
-  image_alt: string;
+  questionId: string;
+  imageUrl: string;
+  imageAlt: string;
   difficulty: "easy" | "medium" | "hard";
-  options: Array<{ panda_id: string; name: string }>;
+  options: Array<{ pandaId: string; name: string }>;
 }
 
 interface GuessAnswer {
   correct: boolean;
-  answer: { panda_id: string; name: string; slug: string };
-  recognition_tips: string[];
+  answer: { pandaId: string; name: string; slug: string };
+  recognitionTips: string[];
 }
 
-const pendingAttemptKey = "zhipanda:pending-guess-attempt:v1";
+const pendingAttemptKey = "zhipanda:pending-guess-attempt:v2";
 
 const copy = {
   zh: {
@@ -79,13 +78,7 @@ const copy = {
   },
 } as const;
 
-export function GuessPandaGame({
-  locale,
-  publicReleaseVersion,
-}: {
-  locale: PublicLocale;
-  publicReleaseVersion: string;
-}) {
+export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
   const [question, setQuestion] = useState<GuessQuestion | null>(null);
   const [answerResult, setAnswerResult] = useState<GuessAnswer | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -130,7 +123,7 @@ export function GuessPandaGame({
     setAnswerResult(null);
     setSaveState("idle");
     try {
-      const response = await fetch("/api/games/guess/question", { cache: "no-store" });
+      const response = await fetch(`/api/games/guess/question?locale=${locale}`, { cache: "no-store" });
       if (!response.ok) {
         setQuestion(null);
         setGameError(true);
@@ -155,8 +148,9 @@ export function GuessPandaGame({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question_id: question.question_id,
-          selected_panda_id: pandaId,
+          questionId: question.questionId,
+          selectedPandaId: pandaId,
+          locale,
         }),
       });
       if (!response.ok) {
@@ -178,16 +172,16 @@ export function GuessPandaGame({
 
   async function saveAttempt() {
     if (
-      !answerResult
+      !question
+      || !answerResult
       || !selectedId
       || !engagementEnabled
       || saveState === "saving"
       || saveState === "saved"
     ) return;
     const payload: PendingAttempt = {
-      target_panda_id: answerResult.answer.panda_id,
-      selected_panda_id: selectedId,
-      public_release_version: publicReleaseVersion,
+      questionId: question.questionId,
+      selectedPandaId: selectedId,
     };
     setSaveState("saving");
     const response = await fetch("/api/engagement/game-attempts", {
@@ -234,9 +228,9 @@ export function GuessPandaGame({
       <div className="overflow-hidden rounded-[2rem] border border-[var(--pa-color-accent-border-10)] bg-[var(--card)]">
         <div
           role="img"
-          aria-label={question.image_alt || t.mysteryAlt}
+          aria-label={question.imageAlt || t.mysteryAlt}
           className="min-h-[24rem] bg-cover bg-center sm:min-h-[34rem]"
-          style={{ backgroundImage: `url(${JSON.stringify(question.image_url)})` }}
+          style={{ backgroundImage: `url(${JSON.stringify(question.imageUrl)})` }}
         />
       </div>
 
@@ -249,8 +243,8 @@ export function GuessPandaGame({
         <h2 className="mt-5 text-2xl font-semibold">{t.title}</h2>
         <div className="mt-6 grid gap-3">
           {question.options.map((choice) => {
-            const isAnswer = answerResult?.answer.panda_id === choice.panda_id;
-            const isSelected = choice.panda_id === selectedId;
+            const isAnswer = answerResult?.answer.pandaId === choice.pandaId;
+            const isSelected = choice.pandaId === selectedId;
             const icon = answerResult && isAnswer
               ? <Check className="h-4 w-4" aria-hidden="true" />
               : answerResult && isSelected
@@ -258,10 +252,10 @@ export function GuessPandaGame({
                 : null;
             return (
               <button
-                key={choice.panda_id}
+                key={choice.pandaId}
                 type="button"
                 disabled={Boolean(answerResult) || loading}
-                onClick={() => void submitAnswer(choice.panda_id)}
+                onClick={() => void submitAnswer(choice.pandaId)}
                 className="flex min-h-12 items-center justify-between gap-3 rounded-xl border border-[var(--pa-color-accent-border-14)] px-4 py-3 text-left font-semibold disabled:cursor-default disabled:opacity-100"
               >
                 <span>{choice.name}</span>{icon}
@@ -276,11 +270,11 @@ export function GuessPandaGame({
             <p className="font-semibold">
               {answerResult.correct ? t.correct(answerResult.answer.name) : t.wrong(answerResult.answer.name)}
             </p>
-            {answerResult.recognition_tips.length ? (
+            {answerResult.recognitionTips.length ? (
               <div className="mt-4">
                 <strong className="text-sm">{t.tips}</strong>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-[var(--muted)]">
-                  {answerResult.recognition_tips.map((tip) => <li key={tip}>{tip}</li>)}
+                  {answerResult.recognitionTips.map((tip) => <li key={tip}>{tip}</li>)}
                 </ul>
               </div>
             ) : null}

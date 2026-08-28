@@ -4,9 +4,9 @@ import { PublicEntityPage } from "@/components/patterns/public-entity-page";
 import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
 import { buildPlacePageViewModel } from "@/features/places/place-page-view-model";
 import {
-  loadPublishedPlace,
-  resolvePublishedPlaceReference,
-} from "@/features/public-content/public-release";
+  loadV2PublicPlace,
+  resolveV2PublicPlaceReference,
+} from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import {
@@ -22,7 +22,7 @@ interface PlacePageProps {
 export async function generateMetadata({ params }: PlacePageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);
-  const envelope = locale ? loadPublishedPlace(slug, locale) : null;
+  const envelope = locale ? await loadV2PublicPlace(slug, locale) : null;
   if (!locale || !envelope) return {};
   const entity = buildPlacePageViewModel(envelope, locale);
   return buildPublicMetadata({
@@ -39,14 +39,14 @@ export default async function PlacePage({ params, searchParams }: PlacePageProps
   const [{ locale: rawLocale, slug }, query] = await Promise.all([params, searchParams]);
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const reference = resolvePublishedPlaceReference(slug);
+  const reference = await resolveV2PublicPlaceReference(slug);
   if (!reference) notFound();
   if (slug !== reference.slug) {
     permanentRedirect(
       localizedPublicDestination(locale, `/places/${reference.slug}`, query) as Route,
     );
   }
-  const envelope = loadPublishedPlace(reference.slug, locale);
+  const envelope = await loadV2PublicPlace(reference.slug, locale);
   if (!envelope) notFound();
   const entity = buildPlacePageViewModel(envelope, locale);
   return (

@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
 
 import {
-  callFastApiEngagement,
-  engagementJsonResponse,
-  isNextResponse,
-} from "@/lib/server/fastapi-engagement-proxy";
+  authenticationRequiredResponse,
+  createAuthenticatedV2Client,
+  v2JsonResponse,
+} from "@/lib/server/v2-api";
 
 export const dynamic = "force-dynamic";
 
@@ -12,22 +12,30 @@ interface CollectionRouteContext {
   params: Promise<{ collectionId: string }>;
 }
 
-function pathFor(collectionId: string): string {
-  return `/api/v1/me/collections/${encodeURIComponent(collectionId)}`;
-}
-
 export async function PATCH(request: NextRequest, context: CollectionRouteContext) {
   const { collectionId } = await context.params;
-  const body = await request.json();
-  const result = await callFastApiEngagement(pathFor(collectionId), {
-    method: "PATCH",
-    body,
-  });
-  return isNextResponse(result) ? result : engagementJsonResponse(result);
+  const api = await createAuthenticatedV2Client();
+  if (!api) return authenticationRequiredResponse();
+  const body = (await request.json()) as { name: string };
+
+  return v2JsonResponse(
+    await api.client.PATCH("/api/v2/me/collections/{collectionId}", {
+      params: { path: { collectionId } },
+      headers: api.headers,
+      body,
+    }),
+  );
 }
 
 export async function DELETE(_request: NextRequest, context: CollectionRouteContext) {
   const { collectionId } = await context.params;
-  const result = await callFastApiEngagement(pathFor(collectionId), { method: "DELETE" });
-  return isNextResponse(result) ? result : engagementJsonResponse(result);
+  const api = await createAuthenticatedV2Client();
+  if (!api) return authenticationRequiredResponse();
+
+  return v2JsonResponse(
+    await api.client.DELETE("/api/v2/me/collections/{collectionId}", {
+      params: { path: { collectionId } },
+      headers: api.headers,
+    }),
+  );
 }

@@ -133,6 +133,9 @@ export interface PublicReadPort {
   getPanda(slug: string): Promise<PublicReadResult<PublicPandaDetail>>;
   listPlaces(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicPlaceSummary[] }>>;
   getPlace(slug: string): Promise<PublicReadResult<{ release: PublicReadRelease; place: PublicPlaceSummary }>>;
+  listLineage(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicLineageSummary[] }>>;
+  listResidencies(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicResidencySummary[] }>>;
+  listLifeEvents(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicLifeEventSummary[] }>>;
   getEvidence(sourceId: string): Promise<PublicReadResult<{ release: PublicReadRelease; source: PublicEvidenceSummary }>>;
   stats(): Promise<PublicReadResult<{ release: PublicReadRelease; stats: PublicStats }>>;
 }

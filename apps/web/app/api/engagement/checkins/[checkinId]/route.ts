@@ -1,8 +1,8 @@
 import {
-  callFastApiEngagement,
-  engagementJsonResponse,
-  isNextResponse,
-} from "@/lib/server/fastapi-engagement-proxy";
+  authenticationRequiredResponse,
+  createAuthenticatedV2Client,
+  v2JsonResponse,
+} from "@/lib/server/v2-api";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +12,13 @@ interface CheckinRouteContext {
 
 export async function DELETE(_request: Request, context: CheckinRouteContext) {
   const { checkinId } = await context.params;
-  const result = await callFastApiEngagement(
-    `/api/v1/me/checkins/${encodeURIComponent(checkinId)}`,
-    { method: "DELETE" },
+  const api = await createAuthenticatedV2Client();
+  if (!api) return authenticationRequiredResponse();
+
+  return v2JsonResponse(
+    await api.client.DELETE("/api/v2/me/checkins/{checkinId}", {
+      params: { path: { checkinId } },
+      headers: api.headers,
+    }),
   );
-  return isNextResponse(result) ? result : engagementJsonResponse(result);
 }

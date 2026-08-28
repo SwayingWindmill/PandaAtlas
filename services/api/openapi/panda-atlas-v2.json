@@ -1,6 +1,1360 @@
 {
   "openapi": "3.1.0",
   "paths": {
+    "/api/v2/me/account": {
+      "post": {
+        "operationId": "provisionCurrentAccount",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvisionedAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v2/me": {
+      "get": {
+        "operationId": "getCurrentAccount",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v2/me/profile": {
+      "get": {
+        "operationId": "getCurrentProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FanProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Identity"
+        ]
+      },
+      "put": {
+        "operationId": "replaceCurrentProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplaceProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FanProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Identity"
+        ]
+      }
+    },
+    "/api/v2/contributions": {
+      "post": {
+        "operationId": "submitContribution",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitContributionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributionRecordDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Contributions"
+        ]
+      }
+    },
+    "/api/v2/me/contributions": {
+      "get": {
+        "operationId": "listOwnContributions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributionListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Contributions"
+        ]
+      }
+    },
+    "/api/v2/me/contributions/{submissionId}": {
+      "get": {
+        "operationId": "getOwnContribution",
+        "parameters": [
+          {
+            "name": "submissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributionRecordDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Contributions"
+        ]
+      }
+    },
+    "/api/v2/contributions/{submissionId}/attachments": {
+      "post": {
+        "operationId": "registerContributionAttachment",
+        "parameters": [
+          {
+            "name": "submissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterContributionAttachmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContributionAttachmentDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Contributions"
+        ]
+      }
+    },
+    "/api/v2/curation/change-sets/{changeSetId}": {
+      "get": {
+        "operationId": "getCurationChangeSet",
+        "parameters": [
+          {
+            "name": "changeSetId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurationChangeSetDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Curation"
+        ]
+      }
+    },
+    "/api/v2/curation/change-sets/{changeSetId}/validate": {
+      "post": {
+        "operationId": "validateCurationChangeSet",
+        "parameters": [
+          {
+            "name": "changeSetId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurationChangeSetDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Curation"
+        ]
+      }
+    },
+    "/api/v2/curation/change-sets/{changeSetId}/approve": {
+      "post": {
+        "operationId": "approveCurationChangeSet",
+        "parameters": [
+          {
+            "name": "changeSetId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveCurationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurationChangeSetDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Curation"
+        ]
+      }
+    },
+    "/api/v2/review/cases": {
+      "post": {
+        "operationId": "openReviewCase",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenReviewCaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewCaseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
+      }
+    },
+    "/api/v2/review/cases/{reviewCaseId}": {
+      "get": {
+        "operationId": "getReviewCase",
+        "parameters": [
+          {
+            "name": "reviewCaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewCaseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
+      }
+    },
+    "/api/v2/review/cases/{reviewCaseId}/claim": {
+      "post": {
+        "operationId": "claimReviewCase",
+        "parameters": [
+          {
+            "name": "reviewCaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewCaseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
+      }
+    },
+    "/api/v2/review/cases/{reviewCaseId}/source-verifications": {
+      "post": {
+        "operationId": "verifyReviewSource",
+        "parameters": [
+          {
+            "name": "reviewCaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyReviewSourceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewVerificationResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
+      }
+    },
+    "/api/v2/review/cases/{reviewCaseId}/decision": {
+      "post": {
+        "operationId": "decideReviewCase",
+        "parameters": [
+          {
+            "name": "reviewCaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordReviewDecisionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewDecisionResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
+      }
+    },
+    "/api/v2/review/cases/{reviewCaseId}/recommend": {
+      "post": {
+        "operationId": "recommendReviewCase",
+        "parameters": [
+          {
+            "name": "reviewCaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendReviewDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewRecommendationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
+      }
+    },
+    "/api/v2/moderation/accounts/{accountId}": {
+      "get": {
+        "operationId": "getModerationAccount",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Moderation"
+        ]
+      }
+    },
+    "/api/v2/moderation/accounts/{accountId}/sanctions": {
+      "post": {
+        "operationId": "applyModerationSanction",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplySanctionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationSanctionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Moderation"
+        ]
+      }
+    },
+    "/api/v2/moderation/sanctions/{sanctionId}/restore": {
+      "post": {
+        "operationId": "restoreModerationSanction",
+        "parameters": [
+          {
+            "name": "sanctionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreSanctionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestoredSanctionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Moderation"
+        ]
+      }
+    },
+    "/api/v2/moderation/appeals/{appealCaseId}/decision": {
+      "post": {
+        "operationId": "decideModerationAppeal",
+        "parameters": [
+          {
+            "name": "appealCaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideAppealDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationAppealDecisionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Moderation"
+        ]
+      }
+    },
+    "/api/v2/me/moderation/appeals": {
+      "post": {
+        "operationId": "submitModerationAppeal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitAppealDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationAppealDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Moderation"
+        ]
+      }
+    },
+    "/api/v2/me/favorites": {
+      "get": {
+        "operationId": "listFavorites",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/favorites/{pandaId}": {
+      "post": {
+        "operationId": "favoritePanda",
+        "parameters": [
+          {
+            "name": "pandaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "unfavoritePanda",
+        "parameters": [
+          {
+            "name": "pandaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnfavoriteDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/collections": {
+      "get": {
+        "operationId": "listCollections",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "post": {
+        "operationId": "createCollection",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionNameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/collections/{collectionId}": {
+      "patch": {
+        "operationId": "renameCollection",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionNameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCollection",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedCollectionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/collections/{collectionId}/pandas/{pandaId}": {
+      "post": {
+        "operationId": "addPandaToCollection",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pandaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "removePandaFromCollection",
+        "parameters": [
+          {
+            "name": "collectionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pandaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/checkins": {
+      "get": {
+        "operationId": "listCheckins",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "post": {
+        "operationId": "createCheckin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCheckinDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/checkins/{checkinId}": {
+      "delete": {
+        "operationId": "deleteCheckin",
+        "parameters": [
+          {
+            "name": "checkinId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedCheckinDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/seen-pandas": {
+      "get": {
+        "operationId": "listSeenPandas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeenPandaListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/me/seen-pandas/{pandaId}": {
+      "get": {
+        "operationId": "getSeenPanda",
+        "parameters": [
+          {
+            "name": "pandaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeenPandaDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "put": {
+        "operationId": "saveSeenPanda",
+        "parameters": [
+          {
+            "name": "pandaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveSeenPandaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeenPandaDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteSeenPanda",
+        "parameters": [
+          {
+            "name": "pandaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedSeenPandaDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Engagement"
+        ]
+      }
+    },
+    "/api/v2/games/random-panda": {
+      "get": {
+        "operationId": "getRandomPanda",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RandomPandaDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
+    "/api/v2/games/guess/question": {
+      "get": {
+        "operationId": "getGuessQuestion",
+        "parameters": [
+          {
+            "name": "difficulty",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "easy",
+                "medium",
+                "hard"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuessQuestionDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
+    "/api/v2/games/guess/answer": {
+      "post": {
+        "operationId": "answerGuessQuestion",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuessAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuessResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
+    "/api/v2/me/game-attempts": {
+      "get": {
+        "operationId": "listGameAttempts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameAttemptListDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      },
+      "post": {
+        "operationId": "saveGameAttempt",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuessAnswerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedGameAttemptDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
     "/api/v2/release": {
       "get": {
         "operationId": "getCurrentPublicRelease",
@@ -145,6 +1499,81 @@
           }
         },
         "summary": "Get one public place from the active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/lineage": {
+      "get": {
+        "operationId": "listPublicLineage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicLineageListDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "List lineage assertions from one active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/residencies": {
+      "get": {
+        "operationId": "listPublicResidencies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicResidencyListDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "List panda residencies from one active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/life-events": {
+      "get": {
+        "operationId": "listPublicLifeEvents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicLifeEventListDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "List panda life events from one active release",
         "tags": [
           "Public reads"
         ]
@@ -703,6 +2132,33 @@
         ]
       }
     },
+    "/api/v2/me/notifications/read-all": {
+      "patch": {
+        "operationId": "markAllMyNotificationsRead",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationBulkReadResultDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Mark every unread inbox item read",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
     "/api/v2/me/notifications/preferences": {
       "get": {
         "operationId": "listMyNotificationPreferences",
@@ -921,7 +2377,7 @@
   },
   "info": {
     "title": "PandaAtlas V2 API",
-    "description": "Canonical NestJS V2 HTTP contract for release-scoped public reads and bounded downstream product APIs.",
+    "description": "Canonical NestJS V2 HTTP contract for PandaAtlas product and administration APIs.",
     "version": "2.0.0",
     "contact": {}
   },
@@ -936,6 +2392,1445 @@
       }
     },
     "schemas": {
+      "ProvisionedAccountDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active"
+            ]
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "accountId",
+          "state",
+          "capabilities"
+        ]
+      },
+      "CurrentAccountDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "aal": {
+            "type": "string",
+            "enum": [
+              "aal1",
+              "aal2"
+            ]
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "accountId",
+          "aal",
+          "capabilities"
+        ]
+      },
+      "FanProfileDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "nickname",
+          "bio"
+        ]
+      },
+      "ReplaceProfileDto": {
+        "type": "object",
+        "properties": {
+          "nickname": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "bio": {
+            "type": "string",
+            "maxLength": 280
+          }
+        },
+        "required": [
+          "nickname",
+          "bio"
+        ]
+      },
+      "ContributionAssertionDto": {
+        "type": "object",
+        "properties": {
+          "assertionKey": {
+            "type": "string"
+          },
+          "fieldKey": {
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "certainty": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "provisional"
+            ]
+          },
+          "lastVerifiedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "assertionKey",
+          "fieldKey",
+          "value",
+          "certainty",
+          "lastVerifiedOn",
+          "sourceKeys"
+        ]
+      },
+      "ContributionSourceDto": {
+        "type": "object",
+        "properties": {
+          "sourceKey": {
+            "type": "string"
+          },
+          "sourceKind": {
+            "type": "string",
+            "enum": [
+              "url",
+              "publication",
+              "document",
+              "other"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "locator": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "sourceKey",
+          "sourceKind",
+          "title",
+          "locator"
+        ]
+      },
+      "SubmitContributionDto": {
+        "type": "object",
+        "properties": {
+          "submissionType": {
+            "type": "string",
+            "enum": [
+              "correction",
+              "sourced_information"
+            ]
+          },
+          "targetPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "publicVersionSeen": {
+            "type": "string"
+          },
+          "assertions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributionAssertionDto"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributionSourceDto"
+            }
+          }
+        },
+        "required": [
+          "submissionType",
+          "targetPandaId",
+          "publicVersionSeen",
+          "assertions",
+          "sources"
+        ]
+      },
+      "ContributionRecordDto": {
+        "type": "object",
+        "properties": {
+          "submissionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "submissionType": {
+            "type": "string",
+            "enum": [
+              "correction",
+              "sourced_information"
+            ]
+          },
+          "targetPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "publicVersionSeen": {
+            "type": "string"
+          },
+          "revisionNumber": {
+            "type": "number",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string"
+          },
+          "submittedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "submissionId",
+          "submissionType",
+          "targetPandaId",
+          "publicVersionSeen",
+          "revisionNumber",
+          "status",
+          "submittedAt"
+        ]
+      },
+      "ContributionListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributionRecordDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "RegisterContributionAttachmentDto": {
+        "type": "object",
+        "properties": {
+          "storageObjectKey": {
+            "type": "string"
+          },
+          "objectVersion": {
+            "type": "string"
+          },
+          "originalFilename": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string",
+            "enum": [
+              "application/pdf",
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          },
+          "byteSize": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10485760
+          },
+          "contentSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "storageObjectKey",
+          "objectVersion",
+          "originalFilename",
+          "mediaType",
+          "byteSize",
+          "contentSha256"
+        ]
+      },
+      "ContributionAttachmentDto": {
+        "type": "object",
+        "properties": {
+          "attachmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "byteSize": {
+            "type": "number",
+            "minimum": 1
+          },
+          "state": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "attachmentId",
+          "mediaType",
+          "byteSize",
+          "state"
+        ]
+      },
+      "CurationChangeDto": {
+        "type": "object",
+        "properties": {
+          "changeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assertionKey": {
+            "type": "string"
+          },
+          "fieldKey": {
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "certainty": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "provisional"
+            ]
+          },
+          "lastVerifiedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "appliedAssertionId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "changeId",
+          "assertionKey",
+          "fieldKey",
+          "value",
+          "certainty",
+          "lastVerifiedOn",
+          "sourceIds"
+        ]
+      },
+      "CurationChangeSetDto": {
+        "type": "object",
+        "properties": {
+          "changeSetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reviewCaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "decisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "submissionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revisionNumber": {
+            "type": "number",
+            "minimum": 1
+          },
+          "targetPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "validated",
+              "approved",
+              "applied",
+              "rejected"
+            ]
+          },
+          "version": {
+            "type": "number",
+            "minimum": 1
+          },
+          "reason": {
+            "type": "string"
+          },
+          "createdByAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "validatedByAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "approvedByAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurationChangeDto"
+            }
+          }
+        },
+        "required": [
+          "changeSetId",
+          "reviewCaseId",
+          "decisionId",
+          "submissionId",
+          "revisionNumber",
+          "targetPandaId",
+          "state",
+          "version",
+          "reason",
+          "createdByAccountId",
+          "changes"
+        ]
+      },
+      "ApproveCurationDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "OpenReviewCaseDto": {
+        "type": "object",
+        "properties": {
+          "submissionId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "submissionId"
+        ]
+      },
+      "ReviewCaseDto": {
+        "type": "object",
+        "properties": {
+          "reviewCaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "submissionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revisionNumber": {
+            "type": "number",
+            "minimum": 1
+          },
+          "state": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number",
+            "minimum": 1
+          },
+          "primaryAssigneeId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "reviewCaseId",
+          "submissionId",
+          "revisionNumber",
+          "state",
+          "version"
+        ]
+      },
+      "VerifyReviewSourceDto": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "rejected"
+            ]
+          },
+          "normalizedLocator": {
+            "type": "string"
+          },
+          "canonicalSourceId": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceId",
+          "outcome",
+          "reason"
+        ]
+      },
+      "ReviewVerificationResultDto": {
+        "type": "object",
+        "properties": {
+          "verified": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "verified"
+        ]
+      },
+      "RecordReviewDecisionDto": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "not_accepted",
+              "duplicate",
+              "out_of_scope",
+              "abuse"
+            ]
+          },
+          "selectedAssertionKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "userVisibleExplanation": {
+            "type": "string"
+          },
+          "internalReason": {
+            "type": "string"
+          },
+          "duplicateOfReviewCaseId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "outcome",
+          "selectedAssertionKeys",
+          "userVisibleExplanation"
+        ]
+      },
+      "ReviewDecisionResultDto": {
+        "type": "object",
+        "properties": {
+          "decided": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "decided"
+        ]
+      },
+      "RecommendReviewDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "ReviewRecommendationDto": {
+        "type": "object",
+        "properties": {
+          "changeSetId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "changeSetId"
+        ]
+      },
+      "ModerationSubjectDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "number",
+            "minimum": 1
+          },
+          "submissionRestricted": {
+            "type": "boolean"
+          },
+          "attachmentRestricted": {
+            "type": "boolean"
+          },
+          "notificationRestricted": {
+            "type": "boolean"
+          },
+          "accountSuspended": {
+            "type": "boolean"
+          },
+          "accountClosedForAbuse": {
+            "type": "boolean"
+          },
+          "repeatAbuseCount": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "accountId",
+          "version",
+          "submissionRestricted",
+          "attachmentRestricted",
+          "notificationRestricted",
+          "accountSuspended",
+          "accountClosedForAbuse",
+          "repeatAbuseCount"
+        ]
+      },
+      "ModerationSanctionDto": {
+        "type": "object",
+        "properties": {
+          "sanctionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "warning",
+              "submission_restricted",
+              "attachment_restricted",
+              "notification_restricted",
+              "account_suspended",
+              "account_closed_for_abuse"
+            ]
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "sanctionId",
+          "accountId",
+          "kind",
+          "reasonCode",
+          "startsAt",
+          "createdAt"
+        ]
+      },
+      "ModerationAccountDto": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "$ref": "#/components/schemas/ModerationSubjectDto"
+          },
+          "sanctions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModerationSanctionDto"
+            }
+          }
+        },
+        "required": [
+          "subject",
+          "sanctions"
+        ]
+      },
+      "ApplySanctionDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "warning",
+              "submission_restricted",
+              "attachment_restricted",
+              "notification_restricted",
+              "account_suspended",
+              "account_closed_for_abuse"
+            ]
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "internalExplanation": {
+            "type": "string"
+          },
+          "userVisibleExplanation": {
+            "type": "string"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "reasonCode",
+          "internalExplanation",
+          "userVisibleExplanation",
+          "idempotencyKey"
+        ]
+      },
+      "RestoreSanctionDto": {
+        "type": "object",
+        "properties": {
+          "reasonCode": {
+            "type": "string"
+          },
+          "internalExplanation": {
+            "type": "string"
+          },
+          "userVisibleExplanation": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reasonCode",
+          "internalExplanation",
+          "userVisibleExplanation",
+          "idempotencyKey"
+        ]
+      },
+      "RestoredSanctionDto": {
+        "type": "object",
+        "properties": {
+          "restored": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "restored"
+        ]
+      },
+      "DecideAppealDto": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "upheld",
+              "modified",
+              "overturned",
+              "dismissed"
+            ]
+          },
+          "internalExplanation": {
+            "type": "string"
+          },
+          "userVisibleExplanation": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "outcome",
+          "internalExplanation",
+          "userVisibleExplanation"
+        ]
+      },
+      "ModerationAppealDecisionDto": {
+        "type": "object",
+        "properties": {
+          "decisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "appealCaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "upheld",
+              "modified",
+              "overturned",
+              "dismissed"
+            ]
+          },
+          "decidedByAccountId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "decisionId",
+          "appealCaseId",
+          "outcome",
+          "decidedByAccountId"
+        ]
+      },
+      "SubmitAppealDto": {
+        "type": "object",
+        "properties": {
+          "sanctionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userStatement": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sanctionId",
+          "userStatement"
+        ]
+      },
+      "ModerationAppealDto": {
+        "type": "object",
+        "properties": {
+          "appealCaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sanctionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "open",
+              "under_review",
+              "closed"
+            ]
+          },
+          "version": {
+            "type": "number",
+            "minimum": 1
+          },
+          "userStatement": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "appealCaseId",
+          "accountId",
+          "sanctionId",
+          "state",
+          "version",
+          "userStatement"
+        ]
+      },
+      "FavoriteDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "favoritedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "pandaId",
+          "favoritedAt"
+        ]
+      },
+      "FavoriteListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FavoriteDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "UnfavoriteDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "favorited": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "favoritedAt": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "pandaId",
+          "favorited",
+          "favoritedAt"
+        ]
+      },
+      "CollectionDto": {
+        "type": "object",
+        "properties": {
+          "collectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pandaIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "collectionId",
+          "name",
+          "pandaIds",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CollectionListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CollectionNameDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "DeletedCollectionDto": {
+        "type": "object",
+        "properties": {
+          "collectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deleted": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "collectionId",
+          "deleted"
+        ]
+      },
+      "CheckinDto": {
+        "type": "object",
+        "properties": {
+          "checkinId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "placeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "visitedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "checkinId",
+          "placeId",
+          "visitedOn",
+          "createdAt"
+        ]
+      },
+      "CheckinListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckinDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "CreateCheckinDto": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "visitedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 280
+          }
+        },
+        "required": [
+          "placeId",
+          "visitedOn"
+        ]
+      },
+      "DeletedCheckinDto": {
+        "type": "object",
+        "properties": {
+          "checkinId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deleted": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "checkinId",
+          "deleted"
+        ]
+      },
+      "SeenPandaDto": {
+        "type": "object",
+        "properties": {
+          "seenId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "seenOn": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "placeId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "firstSeenAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "seenId",
+          "pandaId",
+          "firstSeenAt",
+          "updatedAt"
+        ]
+      },
+      "SeenPandaListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeenPandaDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "SaveSeenPandaDto": {
+        "type": "object",
+        "properties": {
+          "seenOn": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "placeId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 280
+          }
+        }
+      },
+      "DeletedSeenPandaDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deleted": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        },
+        "required": [
+          "pandaId",
+          "deleted"
+        ]
+      },
+      "RandomPandaDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "pandaId"
+        ]
+      },
+      "GuessQuestionDto": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "mediaAssetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "easy",
+              "medium",
+              "hard"
+            ]
+          },
+          "optionPandaIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "questionId",
+          "mediaAssetId",
+          "difficulty",
+          "optionPandaIds"
+        ]
+      },
+      "GuessAnswerDto": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "selectedPandaId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "questionId",
+          "selectedPandaId"
+        ]
+      },
+      "GuessResultDto": {
+        "type": "object",
+        "properties": {
+          "correct": {
+            "type": "boolean"
+          },
+          "answerPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "recognitionTips": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "correct",
+          "answerPandaId",
+          "recognitionTips"
+        ]
+      },
+      "GameAttemptDto": {
+        "type": "object",
+        "properties": {
+          "attemptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "questionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "selectedPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "correct": {
+            "type": "boolean"
+          },
+          "attemptedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "attemptId",
+          "questionId",
+          "selectedPandaId",
+          "correct",
+          "attemptedAt"
+        ]
+      },
+      "GameAttemptListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameAttemptDto"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "SavedGameAttemptDto": {
+        "type": "object",
+        "properties": {
+          "attempt": {
+            "$ref": "#/components/schemas/GameAttemptDto"
+          },
+          "answer": {
+            "$ref": "#/components/schemas/GuessResultDto"
+          }
+        },
+        "required": [
+          "attempt",
+          "answer"
+        ]
+      },
       "PublicReadReleaseDto": {
         "type": "object",
         "properties": {
@@ -1452,6 +4347,60 @@
           "place"
         ]
       },
+      "PublicLineageListDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicLineageSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "items"
+        ]
+      },
+      "PublicResidencyListDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicResidencySummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "items"
+        ]
+      },
+      "PublicLifeEventListDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicLifeEventSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "items"
+        ]
+      },
       "PublicEvidenceDetailDto": {
         "type": "object",
         "properties": {
@@ -1755,6 +4704,17 @@
           "createdAt",
           "seenAt",
           "readAt"
+        ]
+      },
+      "NotificationBulkReadResultDto": {
+        "type": "object",
+        "properties": {
+          "updatedCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "updatedCount"
         ]
       },
       "NotificationPreferenceDto": {

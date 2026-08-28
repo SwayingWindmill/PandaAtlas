@@ -15,11 +15,14 @@ import {
 } from "../application/public-read.application.js";
 import {
   PublicEvidenceDetailDto,
+  PublicLifeEventListDto,
+  PublicLineageListDto,
   PublicPandaDetailDto,
   PublicPandaListDto,
   PublicPlaceDetailDto,
   PublicPlaceListDto,
   PublicReadReleaseDto,
+  PublicResidencyListDto,
   PublicStatsResponseDto,
 } from "./publication.dto.js";
 
@@ -87,6 +90,33 @@ export class PublicReadController {
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
   public async getPlace(@Param("slug") slug: string) {
     return publicResult(await this.publicRead.getPlace(slug), "The public place does not exist.");
+  }
+
+  @Get("lineage")
+  @Public()
+  @ApiOperation({ operationId: "listPublicLineage", summary: "List lineage assertions from one active release" })
+  @ApiOkResponse({ type: PublicLineageListDto })
+  @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
+  public async listLineage() {
+    return publicResult(await this.publicRead.listLineage(), "The public lineage collection does not exist.");
+  }
+
+  @Get("residencies")
+  @Public()
+  @ApiOperation({ operationId: "listPublicResidencies", summary: "List panda residencies from one active release" })
+  @ApiOkResponse({ type: PublicResidencyListDto })
+  @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
+  public async listResidencies() {
+    return publicResult(await this.publicRead.listResidencies(), "The public residency collection does not exist.");
+  }
+
+  @Get("life-events")
+  @Public()
+  @ApiOperation({ operationId: "listPublicLifeEvents", summary: "List panda life events from one active release" })
+  @ApiOkResponse({ type: PublicLifeEventListDto })
+  @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
+  public async listLifeEvents() {
+    return publicResult(await this.publicRead.listLifeEvents(), "The public life-event collection does not exist.");
   }
 
   @Get("evidence/:sourceId")

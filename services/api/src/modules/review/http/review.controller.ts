@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
@@ -9,6 +10,10 @@ import {
   OpenReviewCaseDto,
   RecommendReviewDto,
   RecordReviewDecisionDto,
+  ReviewCaseDto,
+  ReviewDecisionResultDto,
+  ReviewRecommendationDto,
+  ReviewVerificationResultDto,
   VerifyReviewSourceDto,
 } from "./review.dto.js";
 
@@ -20,6 +25,7 @@ function actorAccountId(request: FastifyRequest): string {
   return actor.accountId;
 }
 
+@ApiTags("Review")
 @Controller("review/cases")
 export class ReviewController {
   public constructor(
@@ -29,6 +35,8 @@ export class ReviewController {
 
   @Post()
   @RequireCapabilities("review.case.intake")
+  @ApiOperation({ operationId: "openReviewCase" })
+  @ApiCreatedResponse({ type: ReviewCaseDto })
   public async open(@Body() input: OpenReviewCaseDto) {
     const reviewCase = await this.review.openCase(input.submissionId);
     if (reviewCase === undefined) {
@@ -39,6 +47,8 @@ export class ReviewController {
 
   @Get(":reviewCaseId")
   @RequireCapabilities("review.case.read")
+  @ApiOperation({ operationId: "getReviewCase" })
+  @ApiOkResponse({ type: ReviewCaseDto })
   public async get(@Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string) {
     const reviewCase = await this.review.getCase(reviewCaseId);
     if (reviewCase === undefined) {
@@ -50,6 +60,8 @@ export class ReviewController {
   @Post(":reviewCaseId/claim")
   @HttpCode(200)
   @RequireCapabilities("review.case.claim")
+  @ApiOperation({ operationId: "claimReviewCase" })
+  @ApiOkResponse({ type: ReviewCaseDto })
   public async claim(
     @Req() request: FastifyRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
@@ -63,6 +75,8 @@ export class ReviewController {
 
   @Post(":reviewCaseId/source-verifications")
   @RequireCapabilities("review.case.verify_source")
+  @ApiOperation({ operationId: "verifyReviewSource" })
+  @ApiCreatedResponse({ type: ReviewVerificationResultDto })
   public async verifySource(
     @Req() request: FastifyRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
@@ -82,12 +96,14 @@ export class ReviewController {
         "A verified submitted source must resolve to an existing canonical Evidence source.",
       );
     }
-    return { verified: true };
+    return { verified: true as const };
   }
 
   @Post(":reviewCaseId/decision")
   @HttpCode(200)
   @RequireCapabilities("review.case.decide")
+  @ApiOperation({ operationId: "decideReviewCase" })
+  @ApiOkResponse({ type: ReviewDecisionResultDto })
   public async decide(
     @Req() request: FastifyRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
@@ -100,12 +116,14 @@ export class ReviewController {
     if (result === "invalid_assertion") {
       throw new ProblemException(422, "review.invalidAssertion", "A selected assertion is not in the active revision.");
     }
-    return { decided: true };
+    return { decided: true as const };
   }
 
   @Post(":reviewCaseId/recommend")
   @HttpCode(200)
   @RequireCapabilities("review.case.recommend")
+  @ApiOperation({ operationId: "recommendReviewCase" })
+  @ApiOkResponse({ type: ReviewRecommendationDto })
   public async recommend(
     @Req() request: FastifyRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,

@@ -4,6 +4,550 @@
  */
 
 export interface paths {
+    "/api/v2/me/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["provisionCurrentAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCurrentAccount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCurrentProfile"];
+        put: operations["replaceCurrentProfile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/contributions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["submitContribution"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/contributions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listOwnContributions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/contributions/{submissionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getOwnContribution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/contributions/{submissionId}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["registerContributionAttachment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/curation/change-sets/{changeSetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCurationChangeSet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/curation/change-sets/{changeSetId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["validateCurationChangeSet"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/curation/change-sets/{changeSetId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["approveCurationChangeSet"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/review/cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["openReviewCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/review/cases/{reviewCaseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getReviewCase"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/review/cases/{reviewCaseId}/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["claimReviewCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/review/cases/{reviewCaseId}/source-verifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["verifyReviewSource"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/review/cases/{reviewCaseId}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["decideReviewCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/review/cases/{reviewCaseId}/recommend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["recommendReviewCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/moderation/accounts/{accountId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getModerationAccount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/moderation/accounts/{accountId}/sanctions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["applyModerationSanction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/moderation/sanctions/{sanctionId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["restoreModerationSanction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/moderation/appeals/{appealCaseId}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["decideModerationAppeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/moderation/appeals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["submitModerationAppeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/favorites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listFavorites"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/favorites/{pandaId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["favoritePanda"];
+        delete: operations["unfavoritePanda"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listCollections"];
+        put?: never;
+        post: operations["createCollection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/collections/{collectionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteCollection"];
+        options?: never;
+        head?: never;
+        patch: operations["renameCollection"];
+        trace?: never;
+    };
+    "/api/v2/me/collections/{collectionId}/pandas/{pandaId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["addPandaToCollection"];
+        delete: operations["removePandaFromCollection"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listCheckins"];
+        put?: never;
+        post: operations["createCheckin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/checkins/{checkinId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteCheckin"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/seen-pandas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listSeenPandas"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/seen-pandas/{pandaId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getSeenPanda"];
+        put: operations["saveSeenPanda"];
+        post?: never;
+        delete: operations["deleteSeenPanda"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/games/random-panda": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getRandomPanda"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/games/guess/question": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getGuessQuestion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/games/guess/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["answerGuessQuestion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/game-attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listGameAttempts"];
+        put?: never;
+        post: operations["saveGameAttempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/release": {
         parameters: {
             query?: never;
@@ -81,6 +625,57 @@ export interface paths {
         };
         /** Get one public place from the active release */
         get: operations["getPublicPlace"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/lineage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List lineage assertions from one active release */
+        get: operations["listPublicLineage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/residencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List panda residencies from one active release */
+        get: operations["listPublicResidencies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/life-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List panda life events from one active release */
+        get: operations["listPublicLifeEvents"];
         put?: never;
         post?: never;
         delete?: never;
@@ -327,6 +922,23 @@ export interface paths {
         patch: operations["markMyNotificationRead"];
         trace?: never;
     };
+    "/api/v2/me/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Mark every unread inbox item read */
+        patch: operations["markAllMyNotificationsRead"];
+        trace?: never;
+    };
     "/api/v2/me/notifications/preferences": {
         parameters: {
             query?: never;
@@ -417,6 +1029,406 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ProvisionedAccountDto: {
+            /** Format: uuid */
+            accountId: string;
+            /** @enum {string} */
+            state: "active";
+            capabilities: string[];
+        };
+        CurrentAccountDto: {
+            /** Format: uuid */
+            accountId: string;
+            /** @enum {string} */
+            aal: "aal1" | "aal2";
+            capabilities: string[];
+        };
+        FanProfileDto: {
+            /** Format: uuid */
+            accountId: string;
+            nickname: string;
+            bio: string;
+        };
+        ReplaceProfileDto: {
+            nickname: string;
+            bio: string;
+        };
+        ContributionAssertionDto: {
+            assertionKey: string;
+            fieldKey: string;
+            value: string | number | boolean | unknown[] | {
+                [key: string]: unknown;
+            } | null;
+            /** @enum {string} */
+            certainty: "confirmed" | "provisional";
+            /** Format: date */
+            lastVerifiedOn: string;
+            sourceKeys: string[];
+        };
+        ContributionSourceDto: {
+            sourceKey: string;
+            /** @enum {string} */
+            sourceKind: "url" | "publication" | "document" | "other";
+            title: string;
+            locator: string;
+            publisher?: string;
+            /** Format: date */
+            publishedOn?: string;
+        };
+        SubmitContributionDto: {
+            /** @enum {string} */
+            submissionType: "correction" | "sourced_information";
+            /** Format: uuid */
+            targetPandaId: string;
+            publicVersionSeen: string;
+            assertions: components["schemas"]["ContributionAssertionDto"][];
+            sources: components["schemas"]["ContributionSourceDto"][];
+        };
+        ContributionRecordDto: {
+            /** Format: uuid */
+            submissionId: string;
+            /** @enum {string} */
+            submissionType: "correction" | "sourced_information";
+            /** Format: uuid */
+            targetPandaId: string;
+            publicVersionSeen: string;
+            revisionNumber: number;
+            status: string;
+            /** Format: date-time */
+            submittedAt: string;
+        };
+        ContributionListDto: {
+            items: components["schemas"]["ContributionRecordDto"][];
+        };
+        RegisterContributionAttachmentDto: {
+            storageObjectKey: string;
+            objectVersion: string;
+            originalFilename: string;
+            /** @enum {string} */
+            mediaType: "application/pdf" | "image/jpeg" | "image/png" | "image/webp";
+            byteSize: number;
+            contentSha256: string;
+        };
+        ContributionAttachmentDto: {
+            /** Format: uuid */
+            attachmentId: string;
+            mediaType: string;
+            byteSize: number;
+            state: string;
+        };
+        CurationChangeDto: {
+            /** Format: uuid */
+            changeId: string;
+            assertionKey: string;
+            fieldKey: string;
+            value: string | number | boolean | unknown[] | {
+                [key: string]: unknown;
+            } | null;
+            /** @enum {string} */
+            certainty: "confirmed" | "provisional";
+            /** Format: date */
+            lastVerifiedOn: string;
+            sourceIds: string[];
+            /** Format: uuid */
+            appliedAssertionId?: string;
+        };
+        CurationChangeSetDto: {
+            /** Format: uuid */
+            changeSetId: string;
+            /** Format: uuid */
+            reviewCaseId: string;
+            /** Format: uuid */
+            decisionId: string;
+            /** Format: uuid */
+            submissionId: string;
+            revisionNumber: number;
+            /** Format: uuid */
+            targetPandaId: string;
+            /** @enum {string} */
+            state: "draft" | "validated" | "approved" | "applied" | "rejected";
+            version: number;
+            reason: string;
+            /** Format: uuid */
+            createdByAccountId: string;
+            /** Format: uuid */
+            validatedByAccountId?: string;
+            /** Format: uuid */
+            approvedByAccountId?: string;
+            changes: components["schemas"]["CurationChangeDto"][];
+        };
+        ApproveCurationDto: {
+            reason: string;
+        };
+        OpenReviewCaseDto: {
+            /** Format: uuid */
+            submissionId: string;
+        };
+        ReviewCaseDto: {
+            /** Format: uuid */
+            reviewCaseId: string;
+            /** Format: uuid */
+            submissionId: string;
+            revisionNumber: number;
+            state: string;
+            version: number;
+            /** Format: uuid */
+            primaryAssigneeId?: string;
+        };
+        VerifyReviewSourceDto: {
+            /** Format: uuid */
+            sourceId: string;
+            /** @enum {string} */
+            outcome: "verified" | "rejected";
+            normalizedLocator?: string;
+            canonicalSourceId?: string;
+            reason: string;
+        };
+        ReviewVerificationResultDto: {
+            /** @enum {boolean} */
+            verified: true;
+        };
+        RecordReviewDecisionDto: {
+            /** @enum {string} */
+            outcome: "accepted" | "not_accepted" | "duplicate" | "out_of_scope" | "abuse";
+            selectedAssertionKeys: string[];
+            userVisibleExplanation: string;
+            internalReason?: string;
+            /** Format: uuid */
+            duplicateOfReviewCaseId?: string;
+        };
+        ReviewDecisionResultDto: {
+            /** @enum {boolean} */
+            decided: true;
+        };
+        RecommendReviewDto: {
+            reason: string;
+        };
+        ReviewRecommendationDto: {
+            /** Format: uuid */
+            changeSetId: string;
+        };
+        ModerationSubjectDto: {
+            /** Format: uuid */
+            accountId: string;
+            version: number;
+            submissionRestricted: boolean;
+            attachmentRestricted: boolean;
+            notificationRestricted: boolean;
+            accountSuspended: boolean;
+            accountClosedForAbuse: boolean;
+            repeatAbuseCount: number;
+        };
+        ModerationSanctionDto: {
+            /** Format: uuid */
+            sanctionId: string;
+            /** Format: uuid */
+            accountId: string;
+            /** @enum {string} */
+            kind: "warning" | "submission_restricted" | "attachment_restricted" | "notification_restricted" | "account_suspended" | "account_closed_for_abuse";
+            reasonCode: string;
+            /** Format: date-time */
+            startsAt: string;
+            /** Format: date-time */
+            endsAt?: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ModerationAccountDto: {
+            subject: components["schemas"]["ModerationSubjectDto"];
+            sanctions: components["schemas"]["ModerationSanctionDto"][];
+        };
+        ApplySanctionDto: {
+            /** @enum {string} */
+            kind: "warning" | "submission_restricted" | "attachment_restricted" | "notification_restricted" | "account_suspended" | "account_closed_for_abuse";
+            reasonCode: string;
+            internalExplanation: string;
+            userVisibleExplanation: string;
+            /** Format: date-time */
+            endsAt?: string;
+            idempotencyKey: string;
+        };
+        RestoreSanctionDto: {
+            reasonCode: string;
+            internalExplanation: string;
+            userVisibleExplanation: string;
+            idempotencyKey: string;
+        };
+        RestoredSanctionDto: {
+            /** @enum {boolean} */
+            restored: true;
+        };
+        DecideAppealDto: {
+            /** @enum {string} */
+            outcome: "upheld" | "modified" | "overturned" | "dismissed";
+            internalExplanation: string;
+            userVisibleExplanation: string;
+        };
+        ModerationAppealDecisionDto: {
+            /** Format: uuid */
+            decisionId: string;
+            /** Format: uuid */
+            appealCaseId: string;
+            /** @enum {string} */
+            outcome: "upheld" | "modified" | "overturned" | "dismissed";
+            /** Format: uuid */
+            decidedByAccountId: string;
+        };
+        SubmitAppealDto: {
+            /** Format: uuid */
+            sanctionId: string;
+            userStatement: string;
+        };
+        ModerationAppealDto: {
+            /** Format: uuid */
+            appealCaseId: string;
+            /** Format: uuid */
+            accountId: string;
+            /** Format: uuid */
+            sanctionId: string;
+            /** @enum {string} */
+            state: "open" | "under_review" | "closed";
+            version: number;
+            userStatement: string;
+        };
+        FavoriteDto: {
+            /** Format: uuid */
+            pandaId: string;
+            /** Format: date-time */
+            favoritedAt: string;
+        };
+        FavoriteListDto: {
+            items: components["schemas"]["FavoriteDto"][];
+        };
+        UnfavoriteDto: {
+            /** Format: uuid */
+            pandaId: string;
+            /** @enum {boolean} */
+            favorited: false;
+            favoritedAt: null;
+        };
+        CollectionDto: {
+            /** Format: uuid */
+            collectionId: string;
+            name: string;
+            pandaIds: string[];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CollectionListDto: {
+            items: components["schemas"]["CollectionDto"][];
+        };
+        CollectionNameDto: {
+            name: string;
+        };
+        DeletedCollectionDto: {
+            /** Format: uuid */
+            collectionId: string;
+            /** @enum {boolean} */
+            deleted: true;
+        };
+        CheckinDto: {
+            /** Format: uuid */
+            checkinId: string;
+            /** Format: uuid */
+            placeId: string;
+            /** Format: date */
+            visitedOn: string;
+            note?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CheckinListDto: {
+            items: components["schemas"]["CheckinDto"][];
+        };
+        CreateCheckinDto: {
+            /** Format: uuid */
+            placeId: string;
+            /** Format: date */
+            visitedOn: string;
+            note?: string | null;
+        };
+        DeletedCheckinDto: {
+            /** Format: uuid */
+            checkinId: string;
+            /** @enum {boolean} */
+            deleted: true;
+        };
+        SeenPandaDto: {
+            /** Format: uuid */
+            seenId: string;
+            /** Format: uuid */
+            pandaId: string;
+            /** Format: date */
+            seenOn?: string | null;
+            /** Format: uuid */
+            placeId?: string | null;
+            note?: string | null;
+            /** Format: date-time */
+            firstSeenAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        SeenPandaListDto: {
+            items: components["schemas"]["SeenPandaDto"][];
+        };
+        SaveSeenPandaDto: {
+            /** Format: date */
+            seenOn?: string | null;
+            /** Format: uuid */
+            placeId?: string | null;
+            note?: string | null;
+        };
+        DeletedSeenPandaDto: {
+            /** Format: uuid */
+            pandaId: string;
+            /** @enum {boolean} */
+            deleted: true;
+        };
+        RandomPandaDto: {
+            /** Format: uuid */
+            pandaId: string;
+        };
+        GuessQuestionDto: {
+            /** Format: uuid */
+            questionId: string;
+            /** Format: uuid */
+            mediaAssetId: string;
+            /** @enum {string} */
+            difficulty: "easy" | "medium" | "hard";
+            optionPandaIds: string[];
+        };
+        GuessAnswerDto: {
+            /** Format: uuid */
+            questionId: string;
+            /** Format: uuid */
+            selectedPandaId: string;
+        };
+        GuessResultDto: {
+            correct: boolean;
+            /** Format: uuid */
+            answerPandaId: string;
+            recognitionTips: string[];
+        };
+        GameAttemptDto: {
+            /** Format: uuid */
+            attemptId: string;
+            /** Format: uuid */
+            questionId: string;
+            /** Format: uuid */
+            selectedPandaId: string;
+            correct: boolean;
+            /** Format: date-time */
+            attemptedAt: string;
+        };
+        GameAttemptListDto: {
+            items: components["schemas"]["GameAttemptDto"][];
+        };
+        SavedGameAttemptDto: {
+            attempt: components["schemas"]["GameAttemptDto"];
+            answer: components["schemas"]["GuessResultDto"];
+        };
         PublicReadReleaseDto: {
             /** Format: uuid */
             releaseId: string;
@@ -556,6 +1568,18 @@ export interface components {
             release: components["schemas"]["PublicReadReleaseDto"];
             place: components["schemas"]["PublicPlaceSummaryDto"];
         };
+        PublicLineageListDto: {
+            release: components["schemas"]["PublicReadReleaseDto"];
+            items: components["schemas"]["PublicLineageSummaryDto"][];
+        };
+        PublicResidencyListDto: {
+            release: components["schemas"]["PublicReadReleaseDto"];
+            items: components["schemas"]["PublicResidencySummaryDto"][];
+        };
+        PublicLifeEventListDto: {
+            release: components["schemas"]["PublicReadReleaseDto"];
+            items: components["schemas"]["PublicLifeEventSummaryDto"][];
+        };
         PublicEvidenceDetailDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
             source: components["schemas"]["PublicEvidenceSummaryDto"];
@@ -638,6 +1662,9 @@ export interface components {
             /** Format: date-time */
             readAt: string | null;
         };
+        NotificationBulkReadResultDto: {
+            updatedCount: number;
+        };
         NotificationPreferenceDto: {
             /** @enum {string} */
             category: "knowledge_update" | "correction";
@@ -715,6 +1742,947 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    provisionCurrentAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvisionedAccountDto"];
+                };
+            };
+        };
+    };
+    getCurrentAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrentAccountDto"];
+                };
+            };
+        };
+    };
+    getCurrentProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FanProfileDto"];
+                };
+            };
+        };
+    };
+    replaceCurrentProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReplaceProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FanProfileDto"];
+                };
+            };
+        };
+    };
+    submitContribution: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitContributionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributionRecordDto"];
+                };
+            };
+        };
+    };
+    listOwnContributions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributionListDto"];
+                };
+            };
+        };
+    };
+    getOwnContribution: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submissionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributionRecordDto"];
+                };
+            };
+        };
+    };
+    registerContributionAttachment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                submissionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterContributionAttachmentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributionAttachmentDto"];
+                };
+            };
+        };
+    };
+    getCurationChangeSet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                changeSetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurationChangeSetDto"];
+                };
+            };
+        };
+    };
+    validateCurationChangeSet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                changeSetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurationChangeSetDto"];
+                };
+            };
+        };
+    };
+    approveCurationChangeSet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                changeSetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApproveCurationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurationChangeSetDto"];
+                };
+            };
+        };
+    };
+    openReviewCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OpenReviewCaseDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewCaseDto"];
+                };
+            };
+        };
+    };
+    getReviewCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reviewCaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewCaseDto"];
+                };
+            };
+        };
+    };
+    claimReviewCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reviewCaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewCaseDto"];
+                };
+            };
+        };
+    };
+    verifyReviewSource: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reviewCaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyReviewSourceDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewVerificationResultDto"];
+                };
+            };
+        };
+    };
+    decideReviewCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reviewCaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordReviewDecisionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewDecisionResultDto"];
+                };
+            };
+        };
+    };
+    recommendReviewCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reviewCaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecommendReviewDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewRecommendationDto"];
+                };
+            };
+        };
+    };
+    getModerationAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationAccountDto"];
+                };
+            };
+        };
+    };
+    applyModerationSanction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplySanctionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationSanctionDto"];
+                };
+            };
+        };
+    };
+    restoreModerationSanction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sanctionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RestoreSanctionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RestoredSanctionDto"];
+                };
+            };
+        };
+    };
+    decideModerationAppeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                appealCaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideAppealDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationAppealDecisionDto"];
+                };
+            };
+        };
+    };
+    submitModerationAppeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitAppealDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationAppealDto"];
+                };
+            };
+        };
+    };
+    listFavorites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteListDto"];
+                };
+            };
+        };
+    };
+    favoritePanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pandaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteDto"];
+                };
+            };
+        };
+    };
+    unfavoritePanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pandaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnfavoriteDto"];
+                };
+            };
+        };
+    };
+    listCollections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionListDto"];
+                };
+            };
+        };
+    };
+    createCollection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionNameDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionDto"];
+                };
+            };
+        };
+    };
+    deleteCollection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeletedCollectionDto"];
+                };
+            };
+        };
+    };
+    renameCollection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionNameDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionDto"];
+                };
+            };
+        };
+    };
+    addPandaToCollection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collectionId: string;
+                pandaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionDto"];
+                };
+            };
+        };
+    };
+    removePandaFromCollection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collectionId: string;
+                pandaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionDto"];
+                };
+            };
+        };
+    };
+    listCheckins: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckinListDto"];
+                };
+            };
+        };
+    };
+    createCheckin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCheckinDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckinDto"];
+                };
+            };
+        };
+    };
+    deleteCheckin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                checkinId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeletedCheckinDto"];
+                };
+            };
+        };
+    };
+    listSeenPandas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeenPandaListDto"];
+                };
+            };
+        };
+    };
+    getSeenPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pandaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeenPandaDto"];
+                };
+            };
+        };
+    };
+    saveSeenPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pandaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveSeenPandaDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeenPandaDto"];
+                };
+            };
+        };
+    };
+    deleteSeenPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pandaId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeletedSeenPandaDto"];
+                };
+            };
+        };
+    };
+    getRandomPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RandomPandaDto"];
+                };
+            };
+        };
+    };
+    getGuessQuestion: {
+        parameters: {
+            query?: {
+                difficulty?: "easy" | "medium" | "hard";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GuessQuestionDto"];
+                };
+            };
+        };
+    };
+    answerGuessQuestion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GuessAnswerDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GuessResultDto"];
+                };
+            };
+        };
+    };
+    listGameAttempts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GameAttemptListDto"];
+                };
+            };
+        };
+    };
+    saveGameAttempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GuessAnswerDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedGameAttemptDto"];
+                };
+            };
+        };
+    };
     getCurrentPublicRelease: {
         parameters: {
             query?: never;
@@ -853,6 +2821,84 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description No active deliverable release is available. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPublicLineage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicLineageListDto"];
+                };
+            };
+            /** @description No active deliverable release is available. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPublicResidencies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicResidencyListDto"];
+                };
+            };
+            /** @description No active deliverable release is available. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPublicLifeEvents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicLifeEventListDto"];
+                };
             };
             /** @description No active deliverable release is available. */
             503: {
@@ -1229,6 +3275,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotificationMessageDto"];
+                };
+            };
+        };
+    };
+    markAllMyNotificationsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationBulkReadResultDto"];
                 };
             };
         };

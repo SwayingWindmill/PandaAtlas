@@ -6,9 +6,9 @@ import { parseStructuredMapQuery, structuredMapHref } from "@/features/map/map-q
 import { buildStructuredMapViewModel } from "@/features/map/map-view-model";
 import { buildMapVisualizationModel } from "@/features/map/visualization/map-visual-model";
 import {
-  loadPublishedMapDataset,
+  loadV2PublicMapDataset,
   type PublicCoverage,
-} from "@/features/public-content/public-release";
+} from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
@@ -41,7 +41,8 @@ export default async function LocalizedMapPage({ params, searchParams }: Localiz
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const envelope = loadPublishedMapDataset(locale);
+  const envelope = await loadV2PublicMapDataset(locale);
+  if (!envelope) notFound();
   const habitatInput = await loadHabitatMapInput({ bbox: "73,18,136,54" });
   const parsed = parseStructuredMapQuery(rawQuery, envelope.release.id);
   const initialView = buildStructuredMapViewModel(
@@ -69,9 +70,7 @@ export default async function LocalizedMapPage({ params, searchParams }: Localiz
   const coverage: PublicCoverage = view.hasPartialCoverage
     ? {
         state: "partial",
-        scope: habitatInput.source === "api"
-          ? "reviewed structured geography with some records lacking clickable source links"
-          : "reviewed institutions and residencies plus an explicitly cached partial habitat release",
+        scope: "reviewed institutions and residencies plus an explicitly cached partial habitat release",
       }
     : envelope.coverage;
 

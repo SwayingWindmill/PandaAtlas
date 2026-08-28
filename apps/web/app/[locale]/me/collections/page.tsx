@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { FanLibraryPage } from "@/features/my-pandas/fan-library-page";
 import { buildMyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
@@ -42,7 +42,8 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const envelope = loadPublishedAtlasDataset(locale);
+  const envelope = await loadV2PublicAtlasDataset(locale);
+  if (!envelope) notFound();
   const view = buildMyPandasViewModel(envelope.data, locale);
   const alternateLocale = locale === "zh" ? "en" : "zh";
 

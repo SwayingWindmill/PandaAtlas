@@ -5,7 +5,12 @@ import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import { NOTIFICATION_PORT, type NotificationPort } from "../application/notification.application.js";
-import { NotificationMessageDto, NotificationPreferenceDto, NotificationPreferenceInputDto } from "./notification.dto.js";
+import {
+  NotificationBulkReadResultDto,
+  NotificationMessageDto,
+  NotificationPreferenceDto,
+  NotificationPreferenceInputDto,
+} from "./notification.dto.js";
 
 function accountId(request: FastifyRequest): string {
   const actor = getActorContext(request);
@@ -46,6 +51,14 @@ export class NotificationController {
       throw new ProblemException(404, "notification.messageNotFound", "The notification does not exist.");
     }
     return message;
+  }
+
+  @Patch("read-all")
+  @RequireCapabilities("notification.manage")
+  @ApiOperation({ operationId: "markAllMyNotificationsRead", summary: "Mark every unread inbox item read" })
+  @ApiOkResponse({ type: NotificationBulkReadResultDto })
+  public async markAllRead(@Req() request: FastifyRequest) {
+    return { updatedCount: await this.notifications.markAllRead(accountId(request)) };
   }
 
   @Get("preferences")

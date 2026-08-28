@@ -7,7 +7,7 @@ import { GlobalNavigation, publicShellClassName } from "@/components/patterns/gl
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { atlasHref, parseAtlasQuery, type AtlasQueryState } from "@/features/atlas/atlas-query";
 import { buildAtlasSearchViewModel } from "@/features/atlas/atlas-search";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
@@ -168,7 +168,8 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const envelope = loadPublishedAtlasDataset(locale);
+  const envelope = await loadV2PublicAtlasDataset(locale);
+  if (!envelope) notFound();
   const parsed = parseAtlasQuery(rawQuery, envelope.data.facilities);
   const view = buildAtlasSearchViewModel(envelope.data.pandas, envelope.data.facilities, parsed.state, locale);
   const canonicalState = { ...parsed.state, page: view.page };

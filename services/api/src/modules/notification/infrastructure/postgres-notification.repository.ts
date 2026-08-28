@@ -43,6 +43,17 @@ export class PostgresNotificationRepository implements NotificationRepository {
     return row === undefined ? undefined : this.mapMessage(row);
   }
 
+  public async markAllRead(accountId: string): Promise<number> {
+    const now = new Date();
+    const result = await this.database.db
+      .updateTable("notification.messages")
+      .set({ seen_at: now, read_at: now })
+      .where("account_id", "=", accountId)
+      .where("read_at", "is", null)
+      .executeTakeFirst();
+    return Number(result.numUpdatedRows);
+  }
+
   public async listPreferences(accountId: string): Promise<NotificationPreference[]> {
     const rows = await this.database.db
       .selectFrom("notification.channel_preferences")

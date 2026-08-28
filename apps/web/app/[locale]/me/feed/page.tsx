@@ -5,7 +5,7 @@ import { connection } from "next/server";
 import { isFeedUiEnabled } from "@/features/feed/config";
 import { loadPersonalizedFeed } from "@/features/feed/feed-api";
 import { PersonalizedFeedPage } from "@/features/feed/personalized-feed-page";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
@@ -64,7 +64,8 @@ export default async function LocalizedFeedPage({
   }
   if (result.state === "disabled") notFound();
 
-  const atlas = loadPublishedAtlasDataset(locale);
+  const atlas = await loadV2PublicAtlasDataset(locale);
+  if (!atlas) notFound();
   return (
     <PersonalizedFeedPage
       locale={locale}
