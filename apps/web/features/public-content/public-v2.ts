@@ -51,6 +51,7 @@ interface V2CoreDataset {
 export interface V2MomentDataset {
   release: V2Release;
   pandas: PandaDetail[];
+  places: PublicPlaceSummary[];
   sourceEvents: PublicMomentOccurrence[];
 }
 
@@ -58,6 +59,10 @@ export interface V2MomentResult {
   release: V2Release;
   pandas: PandaDetail[];
   items: PublicMomentOccurrence[];
+}
+
+export interface V2MomentQuery extends MomentQuery {
+  location?: string;
 }
 
 function normalizeSearchTerm(value: string): string {
@@ -658,13 +663,29 @@ export async function loadV2PublicMomentDataset(): Promise<V2MomentDataset | nul
   return {
     release: core.release,
     pandas,
+    places: core.places.map(mapPlace),
     sourceEvents: [...eventMap.values()].map((event) => sourceOccurrence(event, pandasById)),
   };
 }
 
+function matchesMomentLocation(item: PublicMomentOccurrence, location: string): boolean {
+  if (location.startsWith("facility:")) {
+    const facilityId = location.slice("facility:".length);
+    return item.fromFacilityId === facilityId || item.toFacilityId === facilityId;
+  }
+  if (location.startsWith("coarse:")) {
+    const coarseLocation = location.slice("coarse:".length);
+    return item.fromCoarseLocation === coarseLocation || item.toCoarseLocation === coarseLocation;
+  }
+  return item.fromFacilityId === location
+    || item.toFacilityId === location
+    || item.fromCoarseLocation === location
+    || item.toCoarseLocation === location;
+}
+
 export function filterV2PublicMoments(
   dataset: V2MomentDataset,
-  query: MomentQuery = {},
+  query: V2MomentQuery = {},
 ): PublicMomentOccurrence[] {
   const targetYear = query.year ?? new Date().getUTCFullYear();
   let items = [...dataset.sourceEvents];
@@ -684,6 +705,7 @@ export function filterV2PublicMoments(
     items = selected ? items.filter((item) => item.participants.some((participant) => participant.id === selected.id)) : [];
   }
   if (query.eventType) items = items.filter((item) => item.eventType === query.eventType);
+  if (query.location) items = items.filter((item) => matchesMomentLocation(item, query.location!));
   items.sort((left, right) => {
     const compared = left.occurrenceDate.localeCompare(right.occurrenceDate) || left.id.localeCompare(right.id);
     return query.sort === "date_desc" ? -compared : compared;
@@ -691,7 +713,7 @@ export function filterV2PublicMoments(
   return items;
 }
 
-export async function listV2PublicMoments(query: MomentQuery = {}): Promise<V2MomentResult | null> {
+export async function listV2PublicMoments(query: V2MomentQuery = {}): Promise<V2MomentResult | null> {
   const dataset = await loadV2PublicMomentDataset();
   if (!dataset) return null;
   return {
