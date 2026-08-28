@@ -8,10 +8,18 @@ interface AdminCatchAllPageProps {
   params: Promise<{ path: string[] }>;
 }
 
-const removedNonProductPaths = new Set(["imports"]);
+const retainedAdminPaths = new Set([
+  "reviews",
+  "moderation",
+  "curation",
+  "publication",
+  "audit",
+  "audit-logs",
+  "capabilities",
+]);
 
 export default async function AdminCatchAllPage({ params }: AdminCatchAllPageProps) {
   const { path } = await params;
-  if (removedNonProductPaths.has(path.join("/"))) notFound();
+  if (!retainedAdminPaths.has(path.join("/"))) notFound();
   return <AdminShellPage />;
 }

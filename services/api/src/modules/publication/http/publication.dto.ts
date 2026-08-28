@@ -342,6 +342,30 @@ export class PublicPlaceListDto {
   public declare items: PublicPlaceSummaryDto[];
 }
 
+export class PublicLineageListDto {
+  @ApiProperty({ type: () => PublicReadReleaseDto })
+  public declare release: PublicReadReleaseDto;
+
+  @ApiProperty({ type: () => PublicLineageSummaryDto, isArray: true })
+  public declare items: PublicLineageSummaryDto[];
+}
+
+export class PublicResidencyListDto {
+  @ApiProperty({ type: () => PublicReadReleaseDto })
+  public declare release: PublicReadReleaseDto;
+
+  @ApiProperty({ type: () => PublicResidencySummaryDto, isArray: true })
+  public declare items: PublicResidencySummaryDto[];
+}
+
+export class PublicLifeEventListDto {
+  @ApiProperty({ type: () => PublicReadReleaseDto })
+  public declare release: PublicReadReleaseDto;
+
+  @ApiProperty({ type: () => PublicLifeEventSummaryDto, isArray: true })
+  public declare items: PublicLifeEventSummaryDto[];
+}
+
 export class PublicPlaceDetailDto {
   @ApiProperty({ type: () => PublicReadReleaseDto })
   public declare release: PublicReadReleaseDto;

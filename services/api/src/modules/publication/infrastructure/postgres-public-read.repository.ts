@@ -194,6 +194,83 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     return { kind: "ok", value: { release, place: this.mapPlace(row) } };
   }
 
+  public async listLineage(): Promise<
+    PublicReadResult<{ release: PublicReadRelease; items: PublicLineageSummary[] }>
+  > {
+    const release = await this.resolveCurrentRelease(this.database.db);
+    if (release === undefined) return { kind: "unavailable" };
+    const controls = await this.loadDeliveryControls(this.database.db);
+    const rows = await this.database.db
+      .selectFrom("public_read.lineage")
+      .selectAll()
+      .where("release_id", "=", release.releaseId)
+      .orderBy("assertion_id")
+      .execute();
+    return {
+      kind: "ok",
+      value: {
+        release,
+        items: rows
+          .filter((row) => !controls.panda.has(row.child_id) && !controls.panda.has(row.parent_id))
+          .map((row) => this.mapLineage(row)),
+      },
+    };
+  }
+
+  public async listResidencies(): Promise<
+    PublicReadResult<{ release: PublicReadRelease; items: PublicResidencySummary[] }>
+  > {
+    const release = await this.resolveCurrentRelease(this.database.db);
+    if (release === undefined) return { kind: "unavailable" };
+    const controls = await this.loadDeliveryControls(this.database.db);
+    const rows = await this.database.db
+      .selectFrom("public_read.residencies")
+      .selectAll()
+      .where("release_id", "=", release.releaseId)
+      .orderBy("panda_id")
+      .orderBy("start_on", "desc")
+      .orderBy("residency_id")
+      .execute();
+    return {
+      kind: "ok",
+      value: {
+        release,
+        items: rows
+          .filter((row) => !controls.panda.has(row.panda_id) && !controls.place.has(row.place_id))
+          .map((row) => this.mapResidency(row)),
+      },
+    };
+  }
+
+  public async listLifeEvents(): Promise<
+    PublicReadResult<{ release: PublicReadRelease; items: PublicLifeEventSummary[] }>
+  > {
+    const release = await this.resolveCurrentRelease(this.database.db);
+    if (release === undefined) return { kind: "unavailable" };
+    const controls = await this.loadDeliveryControls(this.database.db);
+    const rows = await this.database.db
+      .selectFrom("public_read.life_events")
+      .selectAll()
+      .where("release_id", "=", release.releaseId)
+      .orderBy("occurred_on", "desc")
+      .orderBy("event_id")
+      .execute();
+    return {
+      kind: "ok",
+      value: {
+        release,
+        items: rows
+          .filter(
+            (row) =>
+              !row.participant_ids.some((pandaId) => controls.panda.has(pandaId)) &&
+              (row.from_place_id === null || !controls.place.has(row.from_place_id)) &&
+              (row.to_place_id === null || !controls.place.has(row.to_place_id)),
+          )
+          .map((row) => this.mapEvent(row)),
+      },
+    };
+  }
+
   public async getEvidence(
     sourceId: string,
   ): Promise<PublicReadResult<{ release: PublicReadRelease; source: PublicEvidenceSummary }>> {

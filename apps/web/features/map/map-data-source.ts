@@ -2,7 +2,6 @@ import { CACHED_HABITAT_PUBLIC_RELEASE } from "@/features/map/cached-habitat-rel
 import type {
   CompleteGeoJsonFeatureCollection,
   HabitatFeatureProperties,
-  OverviewStats,
 } from "@/lib/types";
 
 const DEFAULT_BBOX = "100,25,110,36";
@@ -14,29 +13,8 @@ export interface HabitatQueryOptions {
 
 export interface HabitatMapInput {
   collection: CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>;
-  source: "api" | "cached-release";
+  source: "cached-release";
   snapshotDate: string;
-}
-
-function apiBaseUrl(): string {
-  return process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-}
-
-function buildQuery(params: Record<string, string | number | null | undefined>): string {
-  const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    if (value === undefined || value === null || value === "") continue;
-    query.set(key, String(value));
-  }
-  return query.toString();
-}
-
-async function fetchJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${apiBaseUrl()}${path}`, {
-    cache: "no-store",
-  });
-  if (!response.ok) throw new Error(`Public API request failed with ${response.status}`);
-  return (await response.json()) as T;
 }
 
 type ParsedBBox = [number, number, number, number];
@@ -82,7 +60,9 @@ function geometryIntersectsBBox(coordinates: unknown, bbox: ParsedBBox | null): 
   );
 }
 
-function cachedHabitatInput(options: HabitatQueryOptions): HabitatMapInput {
+export async function loadHabitatMapInput(
+  options: HabitatQueryOptions = {},
+): Promise<HabitatMapInput> {
   const bbox = parseBBox(options.bbox ?? DEFAULT_BBOX);
   return {
     collection: {
@@ -96,29 +76,4 @@ function cachedHabitatInput(options: HabitatQueryOptions): HabitatMapInput {
     source: "cached-release",
     snapshotDate: CACHED_HABITAT_PUBLIC_RELEASE.snapshotDate,
   };
-}
-
-export async function loadHabitatMapInput(
-  options: HabitatQueryOptions = {},
-): Promise<HabitatMapInput> {
-  const query = buildQuery({
-    bbox: options.bbox ?? DEFAULT_BBOX,
-    level: options.level,
-  });
-
-  try {
-    const [collection, overview] = await Promise.all([
-      fetchJson<CompleteGeoJsonFeatureCollection<HabitatFeatureProperties>>(
-        `/api/v1/map/habitats?${query}`,
-      ),
-      fetchJson<OverviewStats>("/api/v1/stats/overview"),
-    ]);
-    return {
-      collection,
-      source: "api",
-      snapshotDate: overview.latest_snapshot_date,
-    };
-  } catch {
-    return cachedHabitatInput(options);
-  }
 }

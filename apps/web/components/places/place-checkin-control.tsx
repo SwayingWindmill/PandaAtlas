@@ -13,9 +13,9 @@ interface PlaceCheckinControlProps {
 }
 
 interface CheckinRecord {
-  checkin_id: string;
-  place_id: string;
-  visited_on: string;
+  checkinId: string;
+  placeId: string;
+  visitedOn: string;
 }
 
 type CheckinState = "loading" | "signed-out" | "not-checked" | "checked";
@@ -53,10 +53,10 @@ export function PlaceCheckinControl({ placeId, slug, name, locale }: PlaceChecki
       }
       const payload = await response.json() as { items?: CheckinRecord[] };
       const current = payload.items?.find(
-        (item) => item.place_id === placeId && item.visited_on === today,
+        (item) => item.placeId === placeId && item.visitedOn === today,
       );
       if (current) {
-        setCheckinId(current.checkin_id);
+        setCheckinId(current.checkinId);
         setState("checked");
       } else {
         setState("not-checked");
@@ -82,7 +82,7 @@ export function PlaceCheckinControl({ placeId, slug, name, locale }: PlaceChecki
       : await fetch("/api/engagement/checkins", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ place_id: placeId, visited_on: today, note: null }),
+          body: JSON.stringify({ placeId, visitedOn: today, note: null }),
         });
     setBusy(false);
     if (response.status === 401) {
@@ -101,7 +101,7 @@ export function PlaceCheckinControl({ placeId, slug, name, locale }: PlaceChecki
       return;
     }
     const created = await response.json() as CheckinRecord;
-    setCheckinId(created.checkin_id);
+    setCheckinId(created.checkinId);
     setState("checked");
     setFeedback(zh ? `已记录今天来过${name}。` : `Recorded today's visit to ${name}.`);
   }

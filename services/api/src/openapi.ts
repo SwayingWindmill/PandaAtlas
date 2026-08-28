@@ -1,9 +1,16 @@
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { DocumentBuilder, SwaggerModule, type OpenAPIObject } from "@nestjs/swagger";
 import { AuditModule } from "./modules/audit/audit.module.js";
+import { ContributionModule } from "./modules/contribution/contribution.module.js";
+import { CurationModule } from "./modules/curation/curation.module.js";
+import { EngagementModule } from "./modules/engagement/engagement.module.js";
+import { GameModule } from "./modules/game/game.module.js";
+import { IdentityModule } from "./modules/identity/identity.module.js";
+import { ModerationModule } from "./modules/moderation/moderation.module.js";
 import { NotificationModule } from "./modules/notification/notification.module.js";
 import { PrivacyModule } from "./modules/privacy/privacy.module.js";
 import { PublicationModule } from "./modules/publication/publication.module.js";
+import { ReviewModule } from "./modules/review/review.module.js";
 import { UpdatesModule } from "./modules/updates/updates.module.js";
 
 function normalizeOpenApi31Nullable(value: unknown): void {
@@ -33,13 +40,26 @@ function normalizeOpenApi31Nullable(value: unknown): void {
 export function createV2OpenApiDocument(app: NestFastifyApplication): OpenAPIObject {
   const config = new DocumentBuilder()
     .setTitle("PandaAtlas V2 API")
-    .setDescription("Canonical NestJS V2 HTTP contract for release-scoped public reads and bounded downstream product APIs.")
+    .setDescription("Canonical NestJS V2 HTTP contract for PandaAtlas product and administration APIs.")
     .setVersion("2.0.0")
     .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" }, "supabaseJwt")
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
-    include: [PublicationModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule],
+    include: [
+      IdentityModule,
+      ContributionModule,
+      CurationModule,
+      ReviewModule,
+      ModerationModule,
+      EngagementModule,
+      GameModule,
+      PublicationModule,
+      UpdatesModule,
+      NotificationModule,
+      PrivacyModule,
+      AuditModule,
+    ],
     deepScanRoutes: false,
   });
   normalizeOpenApi31Nullable(document);

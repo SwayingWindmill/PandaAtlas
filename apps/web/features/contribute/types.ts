@@ -161,3 +161,39 @@ export interface ContributorAnalytics {
   by_status: Partial<Record<ContributorStatus, number>>;
   latest_activity_at: string | null;
 }
+
+export interface V2ContributionRecord {
+  submissionId: string;
+  submissionType: SubmissionType;
+  targetPandaId: string;
+  publicVersionSeen: string;
+  revisionNumber: number;
+  status: string;
+  submittedAt: string;
+}
+
+export interface V2ContributionList {
+  items: V2ContributionRecord[];
+}
+
+export interface V2ContributionInput {
+  submissionType: SubmissionType;
+  targetPandaId: string;
+  publicVersionSeen: string;
+  assertions: Array<{
+    assertionKey: string;
+    fieldKey: string;
+    value: unknown;
+    certainty: "confirmed" | "provisional";
+    lastVerifiedOn: string;
+    sourceKeys: string[];
+  }>;
+  sources: Array<{
+    sourceKey: string;
+    sourceKind: "url" | "publication" | "document" | "other";
+    title: string;
+    locator: string;
+    publisher?: string;
+    publishedOn?: string;
+  }>;
+}

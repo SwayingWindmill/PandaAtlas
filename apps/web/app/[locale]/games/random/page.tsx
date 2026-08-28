@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { buildGamePandas } from "@/features/games/game-panda";
 import { RandomPandaGame } from "@/features/games/random-panda-game";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
@@ -50,7 +50,9 @@ export default async function RandomPandaPage({ params }: RandomPandaPageProps) 
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const alternateLocale = locale === "zh" ? "en" : "zh";
-  const pandas = buildGamePandas(loadPublishedAtlasDataset(locale).data.pandas, locale);
+  const envelope = await loadV2PublicAtlasDataset(locale);
+  if (!envelope) notFound();
+  const pandas = buildGamePandas(envelope.data.pandas, locale);
   const t = copy[locale];
 
   return (

@@ -36,7 +36,7 @@ export interface PublicReleaseIdentity {
 
 export interface PublicDelivery {
   state: PublicDeliveryState;
-  label: "versioned-local-public-release";
+  label: "versioned-local-public-release" | "generated-v2-public-read";
   lastSuccessfulAt: string | null;
 }
 

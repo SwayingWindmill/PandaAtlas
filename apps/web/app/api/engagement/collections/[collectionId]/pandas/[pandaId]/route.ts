@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
 
 import {
-  callFastApiEngagement,
-  engagementJsonResponse,
-  isNextResponse,
-} from "@/lib/server/fastapi-engagement-proxy";
+  authenticationRequiredResponse,
+  createAuthenticatedV2Client,
+  v2JsonResponse,
+} from "@/lib/server/v2-api";
 
 export const dynamic = "force-dynamic";
 
@@ -12,18 +12,28 @@ interface CollectionPandaRouteContext {
   params: Promise<{ collectionId: string; pandaId: string }>;
 }
 
-function pathFor(collectionId: string, pandaId: string): string {
-  return `/api/v1/me/collections/${encodeURIComponent(collectionId)}/pandas/${encodeURIComponent(pandaId)}`;
-}
-
 export async function POST(_request: NextRequest, context: CollectionPandaRouteContext) {
   const { collectionId, pandaId } = await context.params;
-  const result = await callFastApiEngagement(pathFor(collectionId, pandaId), { method: "POST" });
-  return isNextResponse(result) ? result : engagementJsonResponse(result);
+  const api = await createAuthenticatedV2Client();
+  if (!api) return authenticationRequiredResponse();
+
+  return v2JsonResponse(
+    await api.client.POST("/api/v2/me/collections/{collectionId}/pandas/{pandaId}", {
+      params: { path: { collectionId, pandaId } },
+      headers: api.headers,
+    }),
+  );
 }
 
 export async function DELETE(_request: NextRequest, context: CollectionPandaRouteContext) {
   const { collectionId, pandaId } = await context.params;
-  const result = await callFastApiEngagement(pathFor(collectionId, pandaId), { method: "DELETE" });
-  return isNextResponse(result) ? result : engagementJsonResponse(result);
+  const api = await createAuthenticatedV2Client();
+  if (!api) return authenticationRequiredResponse();
+
+  return v2JsonResponse(
+    await api.client.DELETE("/api/v2/me/collections/{collectionId}/pandas/{pandaId}", {
+      params: { path: { collectionId, pandaId } },
+      headers: api.headers,
+    }),
+  );
 }

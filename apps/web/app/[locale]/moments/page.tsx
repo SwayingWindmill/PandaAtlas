@@ -5,14 +5,15 @@ import { notFound } from "next/navigation";
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { PandaCalendarPage } from "@/features/calendar/panda-calendar-page";
 import {
-  listPublicMoments,
-  publicExperienceRelease,
+  
+  
   type PublicExperienceLocale,
   type PublicMomentOccurrence,
 } from "@/features/public-experiences/data";
+import { filterV2PublicMoments, loadV2PublicMomentDataset } from "@/features/public-content/public-v2";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import { parsePublicLocale } from "@/foundation/content/locales";
-import { TRUSTED_PANDA_DETAILS } from "@/lib/generated/trusted-identity-aliases";
+
 
 interface MomentsPageProps {
   params: Promise<{ locale: string }>;
@@ -155,9 +156,11 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
   const now = new Date();
   const calendarYear = year ?? now.getUTCFullYear();
   const calendarMonth = month ?? now.getUTCMonth() + 1;
+  const momentDataset = await loadV2PublicMomentDataset();
+  if (!momentDataset) notFound();
 
-  const timelineItems = listPublicMoments({ year, month, panda, eventType, includeAnniversaries, sort });
-  const calendarItems = listPublicMoments({
+  const timelineItems = filterV2PublicMoments(momentDataset, { year, month, panda, eventType, includeAnniversaries, sort });
+  const calendarItems = filterV2PublicMoments(momentDataset, {
     year: calendarYear,
     month: calendarMonth,
     includeAnniversaries: true,
@@ -183,7 +186,7 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
       <main id="main-content">
         <div className={styles.shell}>
           <p className={styles.releaseNote}>
-            {t.release}: {publicExperienceRelease.dataset_release_version} · Schema {publicExperienceRelease.public_schema_version}
+            {t.release}: {momentDataset.release.version} · Schema {"v2"}
           </p>
 
           <section className={styles.hero} aria-labelledby="moments-title">
@@ -212,7 +215,7 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
               year={calendarYear}
               month={calendarMonth}
               moments={calendarItems}
-              releaseId={publicExperienceRelease.dataset_release_version}
+              releaseId={momentDataset.release.version}
             />
           ) : (
             <>
@@ -225,7 +228,7 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
                   <input type="hidden" name="view" value="timeline" />
                   <div className={styles.field}><label htmlFor="year">{t.year}</label><input id="year" name="year" inputMode="numeric" defaultValue={year?.toString() ?? ""} placeholder="2026" /></div>
                   <div className={styles.field}><label htmlFor="month">{t.month}</label><select id="month" name="month" defaultValue={month?.toString() ?? ""}><option value="">{t.all}</option>{Array.from({ length: 12 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}</select></div>
-                  <div className={styles.field}><label htmlFor="panda">{t.panda}</label><select id="panda" name="panda" defaultValue={panda ?? ""}><option value="">{t.all}</option>{TRUSTED_PANDA_DETAILS.map((item) => <option key={item.id} value={item.slug}>{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</option>)}</select></div>
+                  <div className={styles.field}><label htmlFor="panda">{t.panda}</label><select id="panda" name="panda" defaultValue={panda ?? ""}><option value="">{t.all}</option>{momentDataset.pandas.map((item) => <option key={item.id} value={item.slug}>{locale === "zh" ? item.name_zh : item.name_en ?? item.name_zh}</option>)}</select></div>
                   <div className={styles.field}><label htmlFor="type">{t.type}</label><select id="type" name="type" defaultValue={eventType ?? ""}><option value="">{t.all}</option>{Object.keys(eventLabels.zh).filter((value) => value !== "birth_anniversary").map((value) => <option key={value} value={value}>{eventLabel(locale, value)}</option>)}</select></div>
                   <div className={styles.field}><label htmlFor="sort">{t.sort}</label><select id="sort" name="sort" defaultValue={sort}><option value="date_asc">{t.ascending}</option><option value="date_desc">{t.descending}</option></select></div>
                   <div className={styles.field}><label htmlFor="anniversaries">{t.anniversaries}</label><select id="anniversaries" name="anniversaries" defaultValue={includeAnniversaries ? "1" : "0"}><option value="0">{locale === "zh" ? "不包括" : "Exclude"}</option><option value="1">{locale === "zh" ? "包括" : "Include"}</option></select></div>
@@ -270,7 +273,7 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
                   <p>{locale === "zh" ? "生日周年保留原始出生事件 ID，不创建新的来源或修订记录。" : "Birthday anniversaries retain their birth-event ID and create no new source or revision record."}</p>
                 </div>
                 <div className={styles.evidenceGrid}>
-                  <details open><summary>{locale === "zh" ? "覆盖范围" : "Coverage"}</summary><dl><dt>{t.release}</dt><dd>{publicExperienceRelease.dataset_release_version}</dd><dt>Schema</dt><dd>{publicExperienceRelease.public_schema_version}</dd><dt>{t.sourceEvents}</dt><dd>{sourceEventCount}</dd><dt>{t.derived}</dt><dd>{timelineItems.filter((item) => item.occurrenceKind === "derived_anniversary").length}</dd></dl></details>
+                  <details open><summary>{locale === "zh" ? "覆盖范围" : "Coverage"}</summary><dl><dt>{t.release}</dt><dd>{momentDataset.release.version}</dd><dt>Schema</dt><dd>{"v2"}</dd><dt>{t.sourceEvents}</dt><dd>{sourceEventCount}</dd><dt>{t.derived}</dt><dd>{timelineItems.filter((item) => item.occurrenceKind === "derived_anniversary").length}</dd></dl></details>
                   <details><summary>{locale === "zh" ? "继续探索" : "Continue exploring"}</summary><div className={styles.directory}><Link href={`/${locale}/pandas` as Route}>{locale === "zh" ? "熊猫" : "Pandas"}</Link><Link href={`/${locale}/families` as Route}>{locale === "zh" ? "家族" : "Families"}</Link></div></details>
                 </div>
               </section>

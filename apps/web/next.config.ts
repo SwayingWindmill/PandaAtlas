@@ -6,7 +6,7 @@ const productionSmokeDistDir = process.env.PANDA_NEXT_DIST_DIR
 const nextConfig: NextConfig = {
   typedRoutes: true,
   ...(productionSmokeDistDir ? { distDir: productionSmokeDistDir } : {}),
-  transpilePackages: ["maplibre-gl"],
+  transpilePackages: ["@zhipanda/api-client", "maplibre-gl"],
   webpack(config, { isServer }) {
     config.module.rules.push({
       resourceQuery: /maplibre-worker/,

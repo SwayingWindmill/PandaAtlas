@@ -2,7 +2,6 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -17,6 +16,10 @@ interface PandaFavoriteControlProps {
 
 type FavoriteState = "loading" | "signed-out" | "not-favorite" | "favorite";
 
+interface FavoriteListResponse {
+  items: Array<{ pandaId: string }>;
+}
+
 const copy = {
   zh: {
     add: (name: string) => `收藏${name}`,
@@ -25,13 +28,8 @@ const copy = {
     saved: (name: string) => `已把${name}加入“我的熊猫”。`,
     removed: (name: string) => `已取消收藏${name}。`,
     unavailable: "收藏暂时不可用，请稍后重试。",
-    support: "收藏会同步到“我的熊猫”和熊猫护照；邮件提醒仍由你单独决定。",
+    support: "收藏会同步到“我的熊猫”；通知偏好可以在通知中心单独设置。",
     collections: "整理我的合集",
-    already: (name: string) => `你已经收藏${name}。`,
-    cancelled: "已取消登录，这只熊猫没有加入收藏。",
-    expired: "登录成功，但收藏请求已过期。请再次点击收藏。",
-    authFailed: "验证未完成，没有创建收藏或邮件许可。",
-    sessionExpired: "登录状态已过期。重新验证后会继续收藏。",
   },
   en: {
     add: (name: string) => `Favorite ${name}`,
@@ -40,30 +38,10 @@ const copy = {
     saved: (name: string) => `${name} is now in My Pandas.`,
     removed: (name: string) => `${name} was removed from your favorites.`,
     unavailable: "Favorites are temporarily unavailable. Please try again.",
-    support: "Favorites sync to My Pandas and your Panda Passport; email updates remain your choice.",
+    support: "Favorites sync to My Pandas; notification preferences are managed separately in the notification center.",
     collections: "Organize collections",
-    already: (name: string) => `You already favorited ${name}.`,
-    cancelled: "Sign-in was cancelled. This panda was not added to favorites.",
-    expired: "Sign-in succeeded, but the favorite request expired. Select Favorite again.",
-    authFailed: "Verification did not complete. No favorite or email permission was created.",
-    sessionExpired: "Your session expired. Verify again to continue favoriting this panda.",
   },
 } as const;
-
-function continuationMessage(
-  outcome: string | null,
-  locale: "zh" | "en",
-  name: string,
-): string {
-  const t = copy[locale];
-  if (outcome === "followed") return t.saved(name);
-  if (outcome === "already-followed") return t.already(name);
-  if (outcome === "cancelled") return t.cancelled;
-  if (outcome === "intent-expired") return t.expired;
-  if (outcome === "auth-failed") return t.authFailed;
-  if (outcome === "session-expired") return t.sessionExpired;
-  return "";
-}
 
 export function PandaFavoriteControl({
   stableId,
@@ -72,12 +50,9 @@ export function PandaFavoriteControl({
   locale,
 }: PandaFavoriteControlProps) {
   const engagementEnabled = isEngagementUiEnabled();
-  const searchParams = useSearchParams();
   const [state, setState] = useState<FavoriteState>("loading");
   const [busy, setBusy] = useState(false);
-  const [feedback, setFeedback] = useState(() =>
-    continuationMessage(searchParams.get("follow"), locale, name),
-  );
+  const [feedback, setFeedback] = useState("");
   const t = copy[locale];
   const returnPath = `/${locale}/pandas/${slug}`;
   const collectionsPath = `/${locale}/me/collections` as Route;
@@ -99,21 +74,20 @@ export function PandaFavoriteControl({
         return;
       }
 
-      const favorite = await fetch(
-        `/api/engagement/favorites/${encodeURIComponent(stableId)}`,
-        { cache: "no-store" },
-      );
+      const favorites = await fetch("/api/engagement/favorites", { cache: "no-store" });
       if (cancelled) return;
-      if (favorite.ok) {
-        setState("favorite");
-      } else if (favorite.status === 404) {
-        setState("not-favorite");
-      } else if (favorite.status === 401) {
+      if (favorites.status === 401) {
         setState("signed-out");
-      } else {
+        return;
+      }
+      if (!favorites.ok) {
         setState("not-favorite");
         setFeedback(t.unavailable);
+        return;
       }
+
+      const payload = (await favorites.json()) as FavoriteListResponse;
+      setState(payload.items.some((favorite) => favorite.pandaId === stableId) ? "favorite" : "not-favorite");
     }
 
     void loadState();
@@ -122,25 +96,13 @@ export function PandaFavoriteControl({
     };
   }, [engagementEnabled, stableId, t.unavailable]);
 
-  async function beginAuthentication() {
-    setBusy(true);
-    setFeedback("");
-    const response = await fetch("/api/engagement/follow-intents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ panda_id: stableId, locale, return_path: returnPath }),
-    });
-    if (!response.ok) {
-      setBusy(false);
-      setFeedback(t.unavailable);
-      return;
-    }
+  function beginAuthentication() {
     window.location.assign(`/auth/login?next=${encodeURIComponent(returnPath)}`);
   }
 
   async function toggleFavorite() {
     if (state === "signed-out") {
-      await beginAuthentication();
+      beginAuthentication();
       return;
     }
 
@@ -155,7 +117,7 @@ export function PandaFavoriteControl({
 
     if (response.status === 401) {
       setState("signed-out");
-      await beginAuthentication();
+      beginAuthentication();
       return;
     }
     if (!response.ok) {

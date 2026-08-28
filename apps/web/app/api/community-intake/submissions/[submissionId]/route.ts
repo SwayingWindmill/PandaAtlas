@@ -1,10 +1,8 @@
-import { NextRequest } from "next/server";
-
 import {
-  callFastApiCommunityIntake,
-  communityIntakeJsonResponse,
-  isCommunityNextResponse,
-} from "@/lib/server/fastapi-community-intake-proxy";
+  authenticationRequiredResponse,
+  createAuthenticatedV2Client,
+  v2JsonResponse,
+} from "@/lib/server/v2-api";
 
 export const dynamic = "force-dynamic";
 
@@ -12,10 +10,15 @@ interface SubmissionRouteContext {
   params: Promise<{ submissionId: string }>;
 }
 
-export async function GET(_request: NextRequest, context: SubmissionRouteContext) {
+export async function GET(_request: Request, context: SubmissionRouteContext) {
   const { submissionId } = await context.params;
-  const result = await callFastApiCommunityIntake(
-    `/api/v1/me/submissions/${encodeURIComponent(submissionId)}`,
+  const api = await createAuthenticatedV2Client();
+  if (!api) return authenticationRequiredResponse();
+
+  return v2JsonResponse(
+    await api.client.GET("/api/v2/me/contributions/{submissionId}", {
+      params: { path: { submissionId } },
+      headers: api.headers,
+    }),
   );
-  return isCommunityNextResponse(result) ? result : communityIntakeJsonResponse(result);
 }

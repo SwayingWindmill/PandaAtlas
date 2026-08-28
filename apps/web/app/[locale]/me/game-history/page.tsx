@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { GameHistoryPage } from "@/features/my-pandas/game-history-page";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
@@ -40,7 +40,8 @@ export default async function GameHistoryRoute({ params }: GameHistoryRouteProps
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const envelope = loadPublishedAtlasDataset(locale);
+  const envelope = await loadV2PublicAtlasDataset(locale);
+  if (!envelope) notFound();
   const alternateLocale = locale === "zh" ? "en" : "zh";
   const pandas = envelope.data.pandas.map((panda) => ({
     id: panda.id,

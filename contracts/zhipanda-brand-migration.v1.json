@@ -121,6 +121,7 @@
       "node_modules",
       ".next",
       ".open-next",
+      "dist",
       ".venv",
       ".venv-release",
       "__pycache__",
@@ -145,20 +146,6 @@
     "public_source_exclusions": []
   },
   "inventory": [
-    {
-      "path": "AGENTS.md",
-      "category": "technical-compatible",
-      "user_visibility": "internal",
-      "migration_owner": "repository governance",
-      "expected_action": "retain-compatibility",
-      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
-      "matches": {
-        "PandaAtlas": 1,
-        "Panda Atlas": 2,
-        "panda-atlas": 8,
-        "panda_atlas": 2
-      }
-    },
     {
       "path": "CONTEXT-MAP.md",
       "category": "technical-compatible",
@@ -191,7 +178,7 @@
       "expected_action": "retain-compatibility",
       "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
       "matches": {
-        "panda-atlas": 2
+        "panda-atlas": 1
       }
     },
     {
@@ -236,17 +223,6 @@
       "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
       "matches": {
         "PANDA_ATLAS": 1
-      }
-    },
-    {
-      "path": "apps/web/lib/server/pending-follow-cookie.ts",
-      "category": "technical-compatible",
-      "user_visibility": "internal",
-      "migration_owner": "web platform",
-      "expected_action": "retain-compatibility",
-      "rationale": "This is an active technical identifier, repository/path reference, fixture namespace, operational string, or internal document retained until a separate compatibility migration is approved.",
-      "matches": {
-        "panda-atlas": 2
       }
     },
     {

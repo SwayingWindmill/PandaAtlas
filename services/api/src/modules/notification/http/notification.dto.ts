@@ -51,3 +51,8 @@ export class NotificationMessageDto {
   @ApiProperty({ type: String, nullable: true, format: "date-time" })
   public declare readAt: string | null;
 }
+
+export class NotificationBulkReadResultDto {
+  @ApiProperty({ type: Number })
+  public declare updatedCount: number;
+}

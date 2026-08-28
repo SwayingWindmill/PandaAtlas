@@ -7,6 +7,7 @@ import { ContributionEditor } from "@/features/contribute/contribution-editor";
 import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
+import { createServerV2Client } from "@/lib/server/v2-api";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -52,6 +53,24 @@ export default async function ContributionPage({ params }: ContributionPageProps
   if (!accessToken) {
     redirect(`/auth/login?next=${encodeURIComponent(`/${locale}/contribute`)}`);
   }
+
+  const api = createServerV2Client();
+  const [releaseResult, pandasResult] = await Promise.all([
+    api.GET("/api/v2/release"),
+    api.GET("/api/v2/pandas"),
+  ]);
+  const publicVersion = releaseResult.data?.version;
+  const languageTag = locale === "zh" ? "zh-CN" : "en";
+  const pandas = (pandasResult.data?.items ?? []).map((panda) => {
+    const localized = panda.names.find((name) => name.languageTag === languageTag && name.isPrimary)
+      ?? panda.names.find((name) => name.isPrimary)
+      ?? panda.names[0];
+    return {
+      id: panda.pandaId,
+      label: localized?.value ?? panda.canonicalSlug,
+    };
+  });
+
   const alternate = locale === "zh" ? "en" : "zh";
   return (
     <div className="contribution-page">
@@ -61,7 +80,7 @@ export default async function ContributionPage({ params }: ContributionPageProps
         alternatePath={`/${alternate}/contribute`}
       />
       <main id="main-content" className="contribution-shell">
-        <ContributionEditor locale={locale} />
+        <ContributionEditor locale={locale} publicVersion={publicVersion} pandas={pandas} />
       </main>
     </div>
   );

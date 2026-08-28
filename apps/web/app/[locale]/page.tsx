@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { ImageData } from "@/components/ui/img-sphere";
 import { EditorialHomePage } from "@/features/home/editorial-home-page";
 import { buildEditorialHomeViewModel } from "@/features/home/editorial-home-view-model";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
+import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale, type PublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import type { PandaDetail } from "@/lib/types";
@@ -96,7 +96,8 @@ export default async function LocalizedHomePage({ params }: LocalizedHomePagePro
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const envelope = loadPublishedAtlasDataset(locale);
+  const envelope = await loadV2PublicAtlasDataset(locale);
+  if (!envelope) notFound();
   const view = buildEditorialHomeViewModel(envelope, locale);
   const sphereImages = buildHomeSphereImages(envelope.data.pandas, locale);
 

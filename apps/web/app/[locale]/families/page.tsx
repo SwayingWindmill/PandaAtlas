@@ -4,10 +4,10 @@ import { notFound, permanentRedirect } from "next/navigation";
 
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import {
-  loadPublishedLineageDataset,
-  resolvePublishedPandaReference,
+  loadV2PublicLineageDataset,
+  
   type PublicCoverage,
-} from "@/features/public-content/public-release";
+} from "@/features/public-content/public-v2";
 import {
   familyStoryMembers,
   listFamilyStories,
@@ -82,12 +82,13 @@ export default async function FamiliesPage({ params, searchParams }: FamiliesPag
   const view = one(rawSearch.view) === "lineage" ? "lineage" : "stories";
 
   if (view === "lineage") {
-    const envelope = loadPublishedLineageDataset(locale);
+    const envelope = await loadV2PublicLineageDataset(locale);
+    if (!envelope) notFound();
     const defaultNode = envelope.data.nodes.find((node) => node.profile_available) ?? envelope.data.nodes[0];
     if (!defaultNode) notFound();
     const defaultFocus: LineageFocusReference = { id: defaultNode.id, slug: defaultNode.slug };
     const resolveFocus = (input: string): LineageFocusReference | null => {
-      const published = resolvePublishedPandaReference(input);
+      const published = envelope.data.nodes.find((node) => node.id === input || node.slug === input || node.search_terms?.includes(input));
       if (published && envelope.data.nodes.some((node) => node.id === published.id)) return published;
       const direct = envelope.data.nodes.find((node) => node.id === input || node.slug === input);
       return direct ? { id: direct.id, slug: direct.slug } : null;

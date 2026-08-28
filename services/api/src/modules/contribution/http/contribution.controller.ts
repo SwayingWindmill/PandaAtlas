@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
@@ -9,7 +10,13 @@ import {
   type ContributionJsonValue,
   type ContributionPort,
 } from "../application/contribution.application.js";
-import { RegisterContributionAttachmentDto, SubmitContributionDto } from "./contribution.dto.js";
+import {
+  ContributionAttachmentDto,
+  ContributionListDto,
+  ContributionRecordDto,
+  RegisterContributionAttachmentDto,
+  SubmitContributionDto,
+} from "./contribution.dto.js";
 
 function accountId(request: FastifyRequest): string {
   const actor = getActorContext(request);
@@ -19,6 +26,7 @@ function accountId(request: FastifyRequest): string {
   return actor.accountId;
 }
 
+@ApiTags("Contributions")
 @Controller()
 export class ContributionController {
   public constructor(
@@ -28,6 +36,8 @@ export class ContributionController {
 
   @Post("contributions")
   @RequireCapabilities("contribution.manage")
+  @ApiOperation({ operationId: "submitContribution" })
+  @ApiCreatedResponse({ type: ContributionRecordDto })
   public submit(@Req() request: FastifyRequest, @Body() input: SubmitContributionDto) {
     const correlationId = this.requestContext.current?.correlationId;
     if (correlationId === undefined) {
@@ -58,8 +68,18 @@ export class ContributionController {
     });
   }
 
+  @Get("me/contributions")
+  @RequireCapabilities("contribution.read")
+  @ApiOperation({ operationId: "listOwnContributions" })
+  @ApiOkResponse({ type: ContributionListDto })
+  public async listOwn(@Req() request: FastifyRequest) {
+    return { items: await this.contribution.listOwn(accountId(request)) };
+  }
+
   @Get("me/contributions/:submissionId")
   @RequireCapabilities("contribution.read")
+  @ApiOperation({ operationId: "getOwnContribution" })
+  @ApiOkResponse({ type: ContributionRecordDto })
   public async getOwn(
     @Req() request: FastifyRequest,
     @Param("submissionId", ParseUUIDPipe) submissionId: string,
@@ -73,6 +93,8 @@ export class ContributionController {
 
   @Post("contributions/:submissionId/attachments")
   @RequireCapabilities("contribution.manage")
+  @ApiOperation({ operationId: "registerContributionAttachment" })
+  @ApiCreatedResponse({ type: ContributionAttachmentDto })
   public async registerAttachment(
     @Req() request: FastifyRequest,
     @Param("submissionId", ParseUUIDPipe) submissionId: string,

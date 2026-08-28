@@ -1,10 +1,11 @@
 import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import { CURATION_PORT, type CurationPort } from "../application/curation.application.js";
-import { ApproveCurationDto } from "./curation.dto.js";
+import { ApproveCurationDto, CurationChangeSetDto } from "./curation.dto.js";
 
 function actorAccountId(request: FastifyRequest): string {
   const actor = getActorContext(request);
@@ -14,12 +15,15 @@ function actorAccountId(request: FastifyRequest): string {
   return actor.accountId;
 }
 
+@ApiTags("Curation")
 @Controller("curation/change-sets")
 export class CurationController {
   public constructor(@Inject(CURATION_PORT) private readonly curation: CurationPort) {}
 
   @Get(":changeSetId")
   @RequireCapabilities("curation.change.read")
+  @ApiOperation({ operationId: "getCurationChangeSet" })
+  @ApiOkResponse({ type: CurationChangeSetDto })
   public async get(@Param("changeSetId", ParseUUIDPipe) changeSetId: string) {
     const changeSet = await this.curation.get(changeSetId);
     if (changeSet === undefined) {
@@ -31,6 +35,8 @@ export class CurationController {
   @Post(":changeSetId/validate")
   @HttpCode(200)
   @RequireCapabilities("curation.change.manage")
+  @ApiOperation({ operationId: "validateCurationChangeSet" })
+  @ApiOkResponse({ type: CurationChangeSetDto })
   public async validate(
     @Req() request: FastifyRequest,
     @Param("changeSetId", ParseUUIDPipe) changeSetId: string,
@@ -48,6 +54,8 @@ export class CurationController {
   @Post(":changeSetId/approve")
   @HttpCode(200)
   @RequireCapabilities("curation.change.approve")
+  @ApiOperation({ operationId: "approveCurationChangeSet" })
+  @ApiOkResponse({ type: CurationChangeSetDto })
   public async approve(
     @Req() request: FastifyRequest,
     @Param("changeSetId", ParseUUIDPipe) changeSetId: string,

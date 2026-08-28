@@ -97,7 +97,7 @@ export function PandaSeenControl({ stableId, slug, name, locale }: PandaSeenCont
         ? {}
         : {
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ seen_on: localDate(), place_id: null, note: null }),
+            body: JSON.stringify({ seenOn: localDate(), placeId: null, note: null }),
           }),
     });
     setBusy(false);

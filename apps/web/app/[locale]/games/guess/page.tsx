@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { GuessPandaGame } from "@/features/games/guess-panda-game";
-import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
@@ -49,7 +48,6 @@ export default async function GuessPandaPage({ params }: GuessPandaPageProps) {
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const alternateLocale = locale === "zh" ? "en" : "zh";
-  const envelope = loadPublishedAtlasDataset(locale);
   const t = copy[locale];
 
   return (
@@ -69,10 +67,7 @@ export default async function GuessPandaPage({ params }: GuessPandaPageProps) {
               {t.back}
             </Link>
           </header>
-          <GuessPandaGame
-            locale={locale}
-            publicReleaseVersion={envelope.release.id}
-          />
+          <GuessPandaGame locale={locale} />
         </div>
       </main>
     </>

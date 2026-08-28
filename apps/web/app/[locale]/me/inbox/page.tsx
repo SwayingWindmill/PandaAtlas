@@ -10,7 +10,6 @@ export const revalidate = 0;
 
 interface LocalizedInboxPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ cursor?: string }>;
 }
 
 const metadataCopy = {
@@ -44,13 +43,9 @@ export async function generateMetadata({ params }: LocalizedInboxPageProps): Pro
   };
 }
 
-export default async function LocalizedInboxPage({
-  params,
-  searchParams,
-}: LocalizedInboxPageProps) {
+export default async function LocalizedInboxPage({ params }: LocalizedInboxPageProps) {
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale || !isNotificationCenterEnabled()) notFound();
-  const { cursor } = await searchParams;
-  return <NotificationCenterPage locale={locale} cursor={cursor} />;
+  return <NotificationCenterPage locale={locale} />;
 }

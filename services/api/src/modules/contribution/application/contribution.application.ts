@@ -49,7 +49,9 @@ export interface SubmitContributionInput {
 
 export interface ContributionRecord {
   submissionId: string;
+  submissionType: ContributionSubmissionType;
   targetPandaId: string;
+  publicVersionSeen: string;
   revisionNumber: number;
   status: string;
   submittedAt: Date;
@@ -90,6 +92,7 @@ export interface RegisterContributionAttachmentInput {
 
 export interface ContributionRepository {
   submit(input: SubmitContributionInput): Promise<ContributionRecord>;
+  listOwn(accountId: string): Promise<ContributionRecord[]>;
   getOwn(accountId: string, submissionId: string): Promise<ContributionRecord | undefined>;
   getReviewSurface(submissionId: string): Promise<ContributionReviewSurface | undefined>;
   registerAttachment(input: RegisterContributionAttachmentInput): Promise<ContributionAttachmentRecord | undefined>;
@@ -134,6 +137,10 @@ export class ContributionApplication implements ContributionPort, ContributionRe
       throw new Error("Every contribution assertion must reference known sources");
     }
     return this.repository.submit(input);
+  }
+
+  public listOwn(accountId: string): Promise<ContributionRecord[]> {
+    return this.repository.listOwn(accountId);
   }
 
   public getOwn(accountId: string, submissionId: string): Promise<ContributionRecord | undefined> {

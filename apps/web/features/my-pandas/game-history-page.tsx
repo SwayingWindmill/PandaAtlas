@@ -2,8 +2,8 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import { Gamepad2, LogIn, Trash2 } from "lucide-react";
-import { useMemo, useState, useEffect } from "react";
+import { Gamepad2, LogIn } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { PublicLocale } from "@/foundation/content/locales";
 
@@ -14,13 +14,11 @@ interface PandaReference {
 }
 
 interface GameAttempt {
-  attempt_id: string;
-  game_type: "guess_panda";
-  target_panda_id: string;
-  selected_panda_id: string;
+  attemptId: string;
+  questionId: string;
+  selectedPandaId: string;
   correct: boolean;
-  public_release_version: string | null;
-  attempted_at: string;
+  attemptedAt: string;
 }
 
 type PageState = "loading" | "ready" | "signed-out" | "error";
@@ -38,9 +36,6 @@ const copy = {
     correct: "答对",
     wrong: "答错",
     answer: "你的答案",
-    target: "正确答案",
-    release: "公开版本",
-    remove: "删除记录",
     unknown: "当前公开版本中没有这只熊猫",
   },
   en: {
@@ -55,9 +50,6 @@ const copy = {
     correct: "Correct",
     wrong: "Incorrect",
     answer: "Your answer",
-    target: "Correct answer",
-    release: "Public release",
-    remove: "Delete result",
     unknown: "This panda is not in the current public release",
   },
 } as const;
@@ -65,7 +57,6 @@ const copy = {
 export function GameHistoryPage({ locale, pandas }: { locale: PublicLocale; pandas: PandaReference[] }) {
   const [state, setState] = useState<PageState>("loading");
   const [attempts, setAttempts] = useState<GameAttempt[]>([]);
-  const [busyId, setBusyId] = useState<string | null>(null);
   const pandaById = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda])), [pandas]);
   const t = copy[locale];
 
@@ -90,17 +81,6 @@ export function GameHistoryPage({ locale, pandas }: { locale: PublicLocale; pand
       active = false;
     };
   }, []);
-
-  async function removeAttempt(attemptId: string) {
-    setBusyId(attemptId);
-    const response = await fetch(`/api/engagement/game-attempts/${encodeURIComponent(attemptId)}`, {
-      method: "DELETE",
-    });
-    setBusyId(null);
-    if (response.ok) {
-      setAttempts((current) => current.filter((attempt) => attempt.attempt_id !== attemptId));
-    }
-  }
 
   if (state === "loading") {
     return <p className="py-12 text-sm text-[var(--muted)]" role="status">{locale === "zh" ? "正在读取游戏历史……" : "Loading game history…"}</p>;
@@ -133,23 +113,13 @@ export function GameHistoryPage({ locale, pandas }: { locale: PublicLocale; pand
       {attempts.length ? (
         <ol className="grid gap-4">
           {attempts.map((attempt) => {
-            const target = pandaById.get(attempt.target_panda_id);
-            const selected = pandaById.get(attempt.selected_panda_id);
+            const selected = pandaById.get(attempt.selectedPandaId);
             return (
-              <li key={attempt.attempt_id} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 sm:p-6">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <strong className="text-lg">{attempt.correct ? t.correct : t.wrong}</strong>
-                    <p className="mt-1 text-sm text-[var(--muted)]">{new Date(attempt.attempted_at).toLocaleString(locale === "zh" ? "zh-CN" : "en")}</p>
-                  </div>
-                  <button type="button" disabled={busyId === attempt.attempt_id} onClick={() => void removeAttempt(attempt.attempt_id)} className="inline-flex min-h-11 items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold disabled:opacity-60">
-                    <Trash2 className="h-4 w-4" aria-hidden="true" />{t.remove}
-                  </button>
-                </div>
+              <li key={attempt.attemptId} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 sm:p-6">
+                <strong className="text-lg">{attempt.correct ? t.correct : t.wrong}</strong>
+                <p className="mt-1 text-sm text-[var(--muted)]">{new Date(attempt.attemptedAt).toLocaleString(locale === "zh" ? "zh-CN" : "en")}</p>
                 <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
-                  <div><dt className="font-semibold">{t.target}</dt><dd className="mt-1 text-[var(--muted)]">{target ? <Link href={target.href as Route} className="underline underline-offset-4">{target.name}</Link> : t.unknown}</dd></div>
                   <div><dt className="font-semibold">{t.answer}</dt><dd className="mt-1 text-[var(--muted)]">{selected ? <Link href={selected.href as Route} className="underline underline-offset-4">{selected.name}</Link> : t.unknown}</dd></div>
-                  {attempt.public_release_version ? <div><dt className="font-semibold">{t.release}</dt><dd className="mt-1 text-[var(--muted)]">{attempt.public_release_version}</dd></div> : null}
                 </dl>
               </li>
             );
