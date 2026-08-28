@@ -110,7 +110,7 @@ export interface CuratedPandaFactInput {
   sourceIds: string[];
 }
 
-export type CuratedFactMode = "propose" | "corroborate" | "dispute";
+export type CuratedFactMode = "propose" | "corroborate" | "refine" | "dispute";
 export type CuratedIdentityMode = "add" | "corroborate";
 
 export interface PandaCurationParticipant {
