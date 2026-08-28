@@ -275,6 +275,7 @@ export class PostgresCurationApplyCoordinator implements CurationApplyCoordinato
     if (
       change.operation === "fact.propose" ||
       change.operation === "fact.corroborate" ||
+      change.operation === "fact.refine" ||
       change.operation === "fact.dispute"
     ) {
       const mode: CuratedFactMode = change.operation.slice("fact.".length) as CuratedFactMode;
