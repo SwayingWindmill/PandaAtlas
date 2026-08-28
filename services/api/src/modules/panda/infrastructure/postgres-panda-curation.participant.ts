@@ -1,9 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
 import { sql, type Selectable } from "kysely";
-import type {
-  DatabaseService,
-  DatabaseTransaction,
-} from "../../../platform/database/database.service.js";
+import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
 import type { PandaFactConclusions } from "../../../platform/database/database.panda.generated.js";
 import {
   normalizeIdentityTerm,
@@ -41,8 +38,6 @@ function latestDate(left: string, right: string): string {
 }
 
 export class PostgresPandaCurationParticipant implements PandaCurationParticipant {
-  public constructor(private readonly database: DatabaseService) {}
-
   public async applyCuratedFact(
     transaction: DatabaseTransaction,
     input: CuratedPandaFactInput,
