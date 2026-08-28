@@ -102,7 +102,7 @@ def test_collection_policy_uses_v2_representability_instead_of_legacy_csv_whitel
     )
 
 
-def test_collection_policy_allows_reviewed_new_identity_fields_beyond_old_csv_shape() -> None:
+def test_collection_policy_keeps_new_identity_creation_reviewable_but_not_promotable() -> None:
     candidate = _candidate(
         kind=CandidateKind.IDENTITY,
         field_path="identity.external_identifiers.studbook",
@@ -110,9 +110,10 @@ def test_collection_policy_allows_reviewed_new_identity_fields_beyond_old_csv_sh
         identity_state=IdentityMatchState.UNMATCHED,
     )
 
-    action, _ = collection_policy_decision(candidate)
+    action, note = collection_policy_decision(candidate)
 
-    assert action is DecisionAction.ACCEPTED
+    assert action is DecisionAction.DEFERRED
+    assert "target Panda UUID" in note
 
 
 def test_collection_policy_keeps_unresolved_parentage_and_contradictions_review_only() -> None:
@@ -132,7 +133,7 @@ def test_collection_policy_keeps_unresolved_parentage_and_contradictions_review_
     assert collection_policy_decision(contradiction)[0] is DecisionAction.DEFERRED
 
 
-def test_collection_policy_does_not_expand_into_unsupported_media_or_duplicate_corroboration() -> None:
+def test_collection_policy_accepts_corroboration_without_expanding_media_scope() -> None:
     media = _candidate(
         kind=CandidateKind.MEDIA_METADATA,
         field_path="media.caption",
@@ -146,4 +147,6 @@ def test_collection_policy_does_not_expand_into_unsupported_media_or_duplicate_c
     )
 
     assert collection_policy_decision(media)[0] is DecisionAction.DEFERRED
-    assert collection_policy_decision(unchanged)[0] is DecisionAction.DEFERRED
+    action, note = collection_policy_decision(unchanged)
+    assert action is DecisionAction.ACCEPTED
+    assert "corroborating V2 provenance" in note
