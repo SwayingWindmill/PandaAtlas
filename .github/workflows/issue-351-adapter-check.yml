@@ -6,7 +6,7 @@ on:
       - feat/issue-351-acquisition-adapter
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   PYTHON_VERSION: "3.12"
@@ -20,61 +20,9 @@ jobs:
         with:
           ref: feat/issue-351-acquisition-adapter
           clean: true
-          fetch-depth: 0
       - uses: actions/setup-python@v6.3.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Normalize lint-only line wrapping
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          replacements = {
-              Path("tools/panda-data/src/panda_data/acquisition/curation/promotion.py"): [
-                  (
-                      '            "new identities and slug-only matches stay in review until identity resolution completes"\n',
-                      '            "new identities and slug-only matches stay in review until identity resolution "\n'
-                      '            "completes"\n',
-                  ),
-                  (
-                      '        raise ValueError(f"parentage role must resolve to father or mother, got {role or \'missing\'}")\n',
-                      '        raise ValueError(\n'
-                      '            f"parentage role must resolve to father or mother, got {role or \'missing\'}"\n'
-                      '        )\n',
-                  ),
-              ],
-              Path("tools/panda-data/tests/test_acquisition_curation_promotion.py"): [
-                  (
-                      'def _bundle(snapshot: EvidenceSnapshot, candidates: tuple[FieldCandidate, ...]) -> AcquisitionBundle:\n',
-                      'def _bundle(\n'
-                      '    snapshot: EvidenceSnapshot, candidates: tuple[FieldCandidate, ...]\n'
-                      ') -> AcquisitionBundle:\n',
-                  ),
-              ],
-              Path("tools/panda-data/tests/test_collection_policy.py"): [
-                  (
-                      '        matched_canonical_slug=("panda-1" if identity_state is IdentityMatchState.MATCHED else None),\n',
-                      '        matched_canonical_slug=(\n'
-                      '            "panda-1" if identity_state is IdentityMatchState.MATCHED else None\n'
-                      '        ),\n',
-                  ),
-              ],
-          }
-          for path, changes in replacements.items():
-              text = path.read_text(encoding="utf-8")
-              for before, after in changes:
-                  text = text.replace(before, after)
-              path.write_text(text, encoding="utf-8")
-          PY
-          if git diff --quiet -- tools/panda-data; then
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/panda-data
-          git commit -m "style(data): satisfy adapter lint"
-          git push origin HEAD:feat/issue-351-acquisition-adapter
       - name: Install pinned uv
         run: python -m pip install uv==${{ env.UV_VERSION }}
       - name: Run focused promotion and collection-policy tests
