@@ -6,6 +6,7 @@ import { createApplication } from "../../src/bootstrap.js";
 import {
   CURATION_INTAKE_PORT,
   CURATION_PORT,
+  type AcquisitionCurationRecommendationInput,
   type CurationIntakePort,
   type CurationPort,
 } from "../../src/modules/curation/application/curation.application.js";
@@ -225,7 +226,7 @@ describe("V2 acquisition-origin Curation routing", () => {
     const artifactId = randomUUID();
     await seedPipelineArtifact(artifactId, suffix);
 
-    const input = {
+    const input: AcquisitionCurationRecommendationInput = {
       acquisitionBundleId: `bundle-${suffix}`,
       pipelineArtifactId: artifactId,
       targetPandaId: target.pandaId,
@@ -234,24 +235,24 @@ describe("V2 acquisition-origin Curation routing", () => {
       changes: [
         {
           candidateId: `sex-corroboration-${suffix}`,
-          ownerModule: "panda" as const,
-          operation: "fact.corroborate" as const,
+          ownerModule: "panda",
+          operation: "fact.corroborate",
           payload: { fieldKey: "profile.sex", value: "male", certainty: "confirmed" },
           lastVerifiedOn: "2026-08-28",
           sourceIds: [acquiredSourceId],
         },
         {
           candidateId: `status-dispute-${suffix}`,
-          ownerModule: "panda" as const,
-          operation: "fact.dispute" as const,
+          ownerModule: "panda",
+          operation: "fact.dispute",
           payload: { fieldKey: "profile.life_status", value: "deceased", certainty: "provisional" },
           lastVerifiedOn: "2026-08-28",
           sourceIds: [acquiredSourceId],
         },
         {
           candidateId: `name-corroboration-${suffix}`,
-          ownerModule: "panda" as const,
-          operation: "name.corroborate" as const,
+          ownerModule: "panda",
+          operation: "name.corroborate",
           payload: {
             languageTag: "en",
             nameKind: "alias",
@@ -262,24 +263,24 @@ describe("V2 acquisition-origin Curation routing", () => {
         },
         {
           candidateId: `identifier-corroboration-${suffix}`,
-          ownerModule: "panda" as const,
-          operation: "external_identifier.corroborate" as const,
+          ownerModule: "panda",
+          operation: "external_identifier.corroborate",
           payload: { system: "integration-studbook", value: `SB-${suffix}` },
           lastVerifiedOn: "2026-08-28",
           sourceIds: [acquiredSourceId],
         },
         {
           candidateId: `parentage-${suffix}`,
-          ownerModule: "lineage" as const,
-          operation: "parentage.create" as const,
+          ownerModule: "lineage",
+          operation: "parentage.create",
           payload: { parentId: parent.pandaId, parentRole: "father", status: "confirmed" },
           lastVerifiedOn: "2026-08-28",
           sourceIds: [acquiredSourceId],
         },
         {
           candidateId: `residency-${suffix}`,
-          ownerModule: "life_history" as const,
-          operation: "residency.create" as const,
+          ownerModule: "life_history",
+          operation: "residency.create",
           payload: {
             placeId: place.placeId,
             residencyType: "primary",
@@ -292,8 +293,8 @@ describe("V2 acquisition-origin Curation routing", () => {
         },
         {
           candidateId: `event-${suffix}`,
-          ownerModule: "life_history" as const,
-          operation: "event.create" as const,
+          ownerModule: "life_history",
+          operation: "event.create",
           payload: {
             eventType: "arrival",
             eventStatus: "completed",
