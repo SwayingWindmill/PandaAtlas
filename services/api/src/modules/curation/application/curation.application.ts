@@ -33,6 +33,7 @@ export type CurationOwnerModule = "panda" | "lineage" | "life_history";
 export type CurationOwnerOperation =
   | "fact.propose"
   | "fact.corroborate"
+  | "fact.refine"
   | "fact.dispute"
   | "name.add"
   | "name.corroborate"
