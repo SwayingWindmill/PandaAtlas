@@ -1,36 +1,36 @@
 # Architecture decisions
 
-ZhiPanda records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs).
+ZhiPanda records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs) and governing architecture baselines.
 
-## Governing V1 product architecture
+## V2 target implementation architecture
 
-The current V1 product direction is defined by [ZhiPanda V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md).
+The governing target for all new backend migration work is [ZhiPanda V2 Architecture Baseline](zhipanda-v2-architecture-baseline.md).
 
-The governing product priority is **panda fan experience first**. Archive, provenance, review, moderation, audit, and publication capabilities remain supporting infrastructure and must not displace the missing fan-facing V1 loops.
+Its implementation sequence is [NestJS V2 Implementation Map](../implementation/nestjs-v2-implementation-map.md).
 
-Use the active [V1 fan product gap matrix](../product/zhipanda-v1-feature-gap-matrix.md) to determine which product capabilities are complete, partial, or missing.
+The V2 target is NestJS 11 + Fastify 5 on Node 24, a business-capability modular monolith, Supabase PostgreSQL/PostGIS/Auth as the single authoritative managed data platform, Cloudflare DNS/R2, Vercel Web/API runtimes, and GitHub Actions for bounded long/heavy work.
 
-## Current and target deployment
+The V2 baseline intentionally does not preserve FastAPI package architecture, `/api/v1` transport compatibility, Worker/D1 public-read architecture, or OpenNext deployment machinery.
 
-The current production deployment remains Cloudflare-based until the managed-cloud migration phases are accepted. The approved target is Vercel for the Next.js Web application and bounded API functions, Supabase PostgreSQL/PostGIS/Auth as the authoritative managed data platform, Cloudflare DNS/R2 for domains and public media, and GitHub Actions for bounded batch workflows.
+## Current production remains V1 until cutover
 
-Use the [deployment runtime status](../deployment/runtime-status.md) page for the shared Current production, Target, Transitional, and Local-only labels applied across repository documentation.
+The [ZhiPanda V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md) and existing deployment documents remain useful for describing the system that is still serving production during migration. They are **not** the implementation authority for NestJS V2.
 
-| ADR | Status | Decision |
+The governing product priority remains **panda fan experience first**. Archive, provenance, review, moderation, audit, and publication capabilities support the product and must not displace the fan-facing loops carried forward from the [V1 product architecture baseline](zhipanda-v1-architecture-baseline.md).
+
+Use [deployment runtime status](../deployment/runtime-status.md) for the actual Current production / Target / Transitional / Local-only state. Do not describe V2 as production before the cutover ticket reaches its explicit commit point.
+
+## ADR disposition
+
+| Decision | V2 status | Meaning |
 |---|---|---|
-| [ADR 0001](adr-0001-single-source-api-boundary.md) | Accepted | FastAPI and PostgreSQL/PostGIS own domain rules and writes; D1/R2 may provide a versioned public read projection. |
-| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Accepted | Migrate gradually to a managed-only Vercel, Supabase, Cloudflare DNS/R2, and GitHub Actions deployment without self-managed production servers. |
+| [ADR 0001](adr-0001-single-source-api-boundary.md) | Superseded for V2 runtime design | Its single-authority principle remains; FastAPI/Worker/D1 and `/api/v1` compatibility do not. |
+| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Partially superseded | Managed-only Vercel + Supabase + Cloudflare DNS/R2 + GitHub Actions remains; its FastAPI-specific managed API phase is replaced by NestJS V2. |
+| [V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md) | Current-production historical/product input | Product truths remain where still valid; FastAPI/runtime/module implementation is not a V2 constraint. |
+| [V2 Architecture Baseline](zhipanda-v2-architecture-baseline.md) | Governing target | Canonical architecture for V2 implementation. |
 
-The target ADR does not claim that migration is already complete. Runtime documentation and release tooling must continue to describe the current production path until each cutover is verified.
+## V2 planning record
 
-## Migration implementation status
+Wayfinder #309 resolved the V2 architecture through decisions #310-#322. Detailed research notes remain under `docs/research/` as supporting evidence; the V2 baseline is the governing synthesis.
 
-- Phase 0 inventory: [complete](../deployment/managed-cloud-phase-0-inventory.md)
-- Machine-readable responsibility register: [`contracts/managed-cloud-deployment-inventory.v1.json`](../../contracts/managed-cloud-deployment-inventory.v1.json)
-- Inventory validation: `node scripts/release/check-managed-cloud-inventory.mjs`
-- Phase 1 Vercel deployment: [complete](../deployment/vercel-web-phase-1.md)
-- Phase 2 preparation: [FastAPI request boundary, Vercel entrypoint, and deterministic closure implemented](../deployment/vercel-api-phase-2.md)
-- Phase 3 preparation: [bounded batch workflow control plane established](batch-workflow-interfaces.md)
-- Repository boundary: [`contracts/repository-structure.v1.json`](../../contracts/repository-structure.v1.json) enforced by `npm run check:repository-structure`
-- Delivery boundary: [`contracts/delivery-workflow.v1.json`](../../contracts/delivery-workflow.v1.json) enforced locally and by a read-only pull-request workflow
-- Next action: validate Phase 2 serverless database behavior and production authentication, and implement reviewed Phase 3 batch adapters; no production DNS or Cloudflare runtime changes are authorized yet.
+The implementation issues linked from the V2 Implementation Map should refine only code-level details inside the accepted architecture. Reopen architecture only when implementation produces material correctness, security, product, managed-platform, or operability evidence that the baseline cannot satisfy.
