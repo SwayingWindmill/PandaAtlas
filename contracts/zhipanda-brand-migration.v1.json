@@ -119,6 +119,7 @@
       ".ai-bridge",
       ".planning",
       "node_modules",
+      ".next-production-smoke",
       ".next",
       ".open-next",
       "dist",

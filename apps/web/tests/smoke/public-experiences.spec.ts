@@ -4,7 +4,7 @@ test("Panda Moments preserves URL state and distinguishes source events from ann
   await page.goto("/zh/moments?year=2026&anniversaries=1&panda=xi-lun");
 
   await expect(page.getByRole("heading", { level: 1, name: "熊猫时光" })).toBeVisible();
-  await expect(page.getByText("公开版本: 2026.08.12.1 · Schema 1.3.0")).toBeVisible();
+  await expect(page.getByText("公开版本: 2026.08.12.1 · Schema v2")).toBeVisible();
   await expect(page.locator("main")).toContainText("生日周年");
   await expect(page.locator("main")).toContainText("喜伦");
   await expect(page.locator("input[name=year]")).toHaveValue("2026");

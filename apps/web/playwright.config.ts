@@ -16,6 +16,8 @@ const productionServer = process.env.PLAYWRIGHT_WEB_SERVER_MODE === "production"
 const port = Number(process.env.PLAYWRIGHT_PORT ?? (productionServer ? "3200" : "3100"));
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL?.trim();
 const baseURL = externalBaseURL || `http://127.0.0.1:${port}`;
+const v2ApiPort = Number(process.env.PLAYWRIGHT_V2_API_PORT ?? "3300");
+const v2ApiBaseURL = `http://127.0.0.1:${v2ApiPort}`;
 const reuseExistingServer = process.env.PLAYWRIGHT_REUSE_EXISTING_SERVER === "1";
 const productionDistDir = process.env.PLAYWRIGHT_NEXT_DIST_DIR?.trim()
   || ".next-production-smoke";
@@ -55,21 +57,33 @@ export default defineConfig({
     video: ci ? "retain-on-failure" : "off",
   },
   projects,
-  webServer: externalBaseURL ? undefined : {
-    command: productionServer
-      ? `npm run start -- --hostname 127.0.0.1 --port ${port}`
-      : `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
-    url: `${baseURL}/pandas`,
-    reuseExistingServer,
-    env: {
-      ...process.env,
-      NEXT_PUBLIC_API_BASE_URL: "http://127.0.0.1:65535",
-      NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:65534",
-      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
-      NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
-      NEXT_PUBLIC_FEED_ENABLED: "true",
-      NEXT_PUBLIC_NOTIFICATION_ENABLED: "true",
-      ...(productionServer ? { PANDA_NEXT_DIST_DIR: productionDistDir } : {}),
+  webServer: externalBaseURL ? undefined : [
+    {
+      command: "node tests/fixtures/v2-public-api-server.mjs",
+      url: `${v2ApiBaseURL}/health`,
+      reuseExistingServer,
+      env: {
+        ...process.env,
+        PLAYWRIGHT_V2_API_PORT: String(v2ApiPort),
+      },
     },
-  },
+    {
+      command: productionServer
+        ? `npm run start -- --hostname 127.0.0.1 --port ${port}`
+        : `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
+      url: `${baseURL}/auth/login`,
+      reuseExistingServer,
+      env: {
+        ...process.env,
+        API_BASE_URL: v2ApiBaseURL,
+        NEXT_PUBLIC_API_BASE_URL: v2ApiBaseURL,
+        NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:65534",
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-publishable-key",
+        NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
+        NEXT_PUBLIC_FEED_ENABLED: "true",
+        NEXT_PUBLIC_NOTIFICATION_ENABLED: "true",
+        ...(productionServer ? { PANDA_NEXT_DIST_DIR: productionDistDir } : {}),
+      },
+    },
+  ],
 });
