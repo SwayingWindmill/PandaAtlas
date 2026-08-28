@@ -1,4 +1,4 @@
-"""Curator decisions and provenance-preserving curation patch proposals."""
+"""Curator decisions and provenance-preserving Curation promotion contracts."""
 
 from .batch_review import (
     LOCAL_REVIEW_PLAN_ROOT,
@@ -44,6 +44,13 @@ from .models import (
     ReviewSummary,
     ReviewSummaryGroup,
 )
+from .promotion import (
+    PROMOTION_SCHEMA_VERSION,
+    V2AcquisitionCurationRecommendation,
+    V2CurationOwnerChange,
+    V2CurationPromotionBatch,
+    build_v2_curation_promotion,
+)
 from .workflow import (
     export_curation_patch,
     record_decision,
@@ -60,6 +67,7 @@ __all__ = [
     "POLICY_ID",
     "DECISION_SCHEMA_VERSION",
     "PATCH_SCHEMA_VERSION",
+    "PROMOTION_SCHEMA_VERSION",
     "SUMMARY_SCHEMA_VERSION",
     "BatchReviewGroup",
     "BatchReviewPlan",
@@ -76,8 +84,12 @@ __all__ = [
     "ReviewLane",
     "ReviewSummary",
     "ReviewSummaryGroup",
+    "V2AcquisitionCurationRecommendation",
+    "V2CurationOwnerChange",
+    "V2CurationPromotionBatch",
     "build_batch_review_plan",
     "build_collection_decision_log",
+    "build_v2_curation_promotion",
     "collection_policy_decision",
     "export_curation_patch",
     "load_acquisition_bundle",
