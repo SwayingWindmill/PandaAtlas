@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://panda-atlas.dev/contracts/panda-data/pipeline-job.v1.schema.json",
+  "title": "Panda data pipeline job v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "jobId",
+    "jobType",
+    "correlationId",
+    "requestedAt",
+    "parameters",
+    "inputArtifacts"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "panda-data.pipeline-job/v1"
+    },
+    "jobId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "jobType": {
+      "$ref": "#/$defs/identifier"
+    },
+    "correlationId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "requestedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "inputArtifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifactReference"
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+    },
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "artifactKind", "bucket", "objectKey", "sha256"],
+      "properties": {
+        "artifactId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "artifactKind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "bucket": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "objectKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^[^\\\\]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

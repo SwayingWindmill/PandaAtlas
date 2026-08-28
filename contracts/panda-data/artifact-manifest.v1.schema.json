@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://panda-atlas.dev/contracts/panda-data/artifact-manifest.v1.schema.json",
+  "title": "Panda data immutable artifact manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactId",
+    "artifactKind",
+    "storage",
+    "sha256",
+    "byteSize",
+    "mediaType",
+    "producedByJobId",
+    "createdAt",
+    "metadata"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "panda-data.artifact-manifest/v1"
+    },
+    "artifactId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "artifactKind": {
+      "$ref": "#/$defs/identifier"
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "bucket", "objectKey"],
+      "properties": {
+        "provider": {
+          "const": "r2"
+        },
+        "bucket": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "objectKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "pattern": "^[^\\\\]+$"
+        }
+      }
+    },
+    "sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "byteSize": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "mediaType": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "contract": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["schemaId"],
+      "properties": {
+        "schemaId": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "producedByJobId": {
+      "$ref": "#/$defs/uuid"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+    }
+  }
+}
