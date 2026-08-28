@@ -10,6 +10,7 @@ import {
   PandaApplication,
   type PandaRepository,
 } from "./application/panda.application.js";
+import { PostgresPandaCurationParticipant } from "./infrastructure/postgres-panda-curation.participant.js";
 import { PostgresPandaPublicationQuery } from "./infrastructure/postgres-panda-publication.query.js";
 import { PostgresPandaRepository } from "./infrastructure/postgres-panda.repository.js";
 
@@ -27,12 +28,17 @@ import { PostgresPandaRepository } from "./infrastructure/postgres-panda.reposit
       inject: [PANDA_REPOSITORY],
     },
     {
+      provide: PostgresPandaCurationParticipant,
+      useFactory: (database: DatabaseService) => new PostgresPandaCurationParticipant(database),
+      inject: [DatabaseService],
+    },
+    {
       provide: PANDA_PUBLICATION_PORT,
       useFactory: () => new PostgresPandaPublicationQuery(),
     },
     { provide: PANDA_PORT, useExisting: PandaApplication },
     { provide: PANDA_REFERENCE_PORT, useExisting: PandaApplication },
-    { provide: PANDA_CURATION_PARTICIPANT, useExisting: PANDA_REPOSITORY },
+    { provide: PANDA_CURATION_PARTICIPANT, useExisting: PostgresPandaCurationParticipant },
   ],
   exports: [PANDA_PORT, PANDA_REFERENCE_PORT, PANDA_CURATION_PARTICIPANT, PANDA_PUBLICATION_PORT],
 })
