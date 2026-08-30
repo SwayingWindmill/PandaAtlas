@@ -4,6 +4,7 @@ Status: **in progress**
 Issue: `#333 V2-11: Cut over production and retire the legacy runtimes`  
 Started: 2026-08-30 (Asia/Singapore)  
 Branch: `feat/issue-333-production-cutover`
+Draft PR: `#355 V2-11: cut over production and retire legacy runtimes`
 
 This file is the execution evidence for the bounded V2 production cutover defined by
 `docs/runbooks/zhipanda-v2-production-cutover.md`. It records observed production state;
@@ -45,6 +46,33 @@ That project-level configuration has been corrected to the accepted V2 shape:
 - Output Directory: auto-detect
 
 This settings correction did **not** deploy a new production build and did **not** change DNS.
+
+Production environment preparation continued without changing live traffic:
+
+- API `APP_ENV=production` is configured as a readable Vercel Production Config value.
+- API `CORS_ALLOW_ORIGINS` is explicitly limited to `https://zhipanda.com`,
+  `https://www.zhipanda.com`, and the temporary candidate Web origin
+  `https://zhipanda.vercel.app`.
+- API `DATABASE_SSL_CA_CERT` now contains the verified Supabase Root 2021 CA. The downloaded
+  certificate is self-signed `CN=Supabase Root 2021 CA`, expires 2031-04-26, and has SHA-256
+  fingerprint `807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa`.
+- Web Production `NEXT_PUBLIC_API_BASE_URL` is now the temporary cutover value
+  `https://zhipanda-api.vercel.app`, matching the Step A / Step B runbook requirement. It is
+  public configuration rather than a secret.
+
+The three canonical hostnames are also attached to the intended Vercel projects before any DNS
+change:
+
+| Hostname | Vercel project | Vercel DNS target |
+| --- | --- | --- |
+| `zhipanda.com` | `zhipanda` | `f22e3e5fb5ddc981.vercel-dns-017.com` |
+| `www.zhipanda.com` | `zhipanda` | `f22e3e5fb5ddc981.vercel-dns-017.com` |
+| `api.zhipanda.com` | `zhipanda-api` | `4e22a95b9aeab32d.vercel-dns-017.com` |
+
+Vercel reports each hostname as verified for its project and its current DNS configuration as
+invalid only because traffic still intentionally points at Cloudflare. The cutover form is a
+CNAME to the target above with Cloudflare proxying disabled; Cloudflare remains authoritative
+DNS.
 
 ## 3. Production Supabase source baseline
 
@@ -115,16 +143,24 @@ Public DNS remained Cloudflare-proxied at capture time:
 
 No DNS cutover has occurred in #333 yet.
 
+Wrangler OAuth remains valid for Workers, routes and the legacy runtime rollback actions. Its
+current OAuth grants do not permit reading the zone's DNS-record objects through the Cloudflare
+API: a read-only `/dns_records` request returned HTTP 403. Therefore the public Anycast A/AAAA
+answers above are **not** treated as the exact rollback record values. The final pre-Step-A
+record export and the DNS writes still require Cloudflare DNS-record permission (or an explicit
+Cloudflare dashboard/Domain Connect action).
+
 ## 6. Production API environment gap
 
 The existing `zhipanda-api` production Vercel project still exposes the old V1-era
-Supabase/Postgres integration variable set. The accepted NestJS runtime contract additionally
-requires these production inputs before a candidate deployment can be validated:
+Supabase/Postgres integration variable set. The accepted NestJS runtime contract now has these
+production inputs prepared:
 
-- `APP_ENV=production`
-- `DATABASE_URL` using a production login that is a member of `zhipanda_app`
-- `DATABASE_SSL_CA_CERT` with the Supabase Root 2021 CA
-- `CORS_ALLOW_ORIGINS` with the explicit production Web origins
+- `APP_ENV=production`: configured.
+- `DATABASE_SSL_CA_CERT`: configured with the verified Supabase Root 2021 CA.
+- `CORS_ALLOW_ORIGINS`: configured with the explicit production/candidate Web origins.
+- `DATABASE_URL`: **not configured yet**; it must use a production login that is a member of
+  `zhipanda_app` through the Supavisor transaction pool.
 
 The least-privilege login must not be replaced by a permanent `postgres`-privileged runtime
 connection merely to make the cutover easier.
@@ -140,7 +176,14 @@ path is therefore an authenticated CLI `supabase db push` so repository versions
 remain the remote migration versions as well. #333 must not manufacture a second,
 server-generated migration-version sequence as a shortcut.
 
-Until CLI database deployment and the production runtime login/environment are ready:
+The connected Supabase MCP `apply_migration` tool is intentionally **not** used as a substitute:
+the current Supabase MCP implementation generates its own server-side migration timestamp and
+does not accept the repository version. Supabase issue `supabase/mcp#241` documents the resulting
+orphan remote-only migration history and recommends `supabase db push` when local migration
+versions must remain canonical.
+
+Until CLI database deployment, the production runtime login, and final DNS-record authority are
+ready:
 
 - V1 writes are **not** frozen.
 - no production V2 candidate is deployed.
