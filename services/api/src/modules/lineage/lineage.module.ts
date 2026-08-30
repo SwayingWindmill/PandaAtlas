@@ -5,11 +5,13 @@ import { PANDA_REFERENCE_PORT, type PandaReferencePort } from "../panda/applicat
 import { PandaModule } from "../panda/panda.module.js";
 import { LINEAGE_PUBLICATION_PORT } from "./application/lineage-publication.application.js";
 import {
+  LINEAGE_CURATION_PARTICIPANT,
   LINEAGE_PORT,
   LINEAGE_REPOSITORY,
   LineageApplication,
   type LineageRepository,
 } from "./application/lineage.application.js";
+import { PostgresLineageCurationParticipant } from "./infrastructure/postgres-lineage-curation.participant.js";
 import { PostgresLineagePublicationQuery } from "./infrastructure/postgres-lineage-publication.query.js";
 import { PostgresLineageRepository } from "./infrastructure/postgres-lineage.repository.js";
 
@@ -27,8 +29,9 @@ import { PostgresLineageRepository } from "./infrastructure/postgres-lineage.rep
         new LineageApplication(repository, pandas),
       inject: [LINEAGE_REPOSITORY, PANDA_REFERENCE_PORT],
     },
+    { provide: LINEAGE_CURATION_PARTICIPANT, useClass: PostgresLineageCurationParticipant },
     { provide: LINEAGE_PUBLICATION_PORT, useFactory: () => new PostgresLineagePublicationQuery() },
   ],
-  exports: [LINEAGE_PORT, LINEAGE_PUBLICATION_PORT],
+  exports: [LINEAGE_PORT, LINEAGE_CURATION_PARTICIPANT, LINEAGE_PUBLICATION_PORT],
 })
 export class LineageModule {}

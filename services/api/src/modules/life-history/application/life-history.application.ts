@@ -1,3 +1,4 @@
+import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
 import type { PandaReferencePort } from "../../panda/application/panda.application.js";
 import type { PlaceReferencePort } from "../../places/application/places.application.js";
 
@@ -68,10 +69,22 @@ export interface LifeHistoryRepository {
   getForPanda(pandaId: string): Promise<LifeHistoryRecord>;
 }
 
+export interface LifeHistoryCurationParticipant {
+  applyCuratedResidency(
+    transaction: DatabaseTransaction,
+    input: CreateResidencyInput,
+  ): Promise<string>;
+  applyCuratedEvent(
+    transaction: DatabaseTransaction,
+    input: CreateLifeEventInput,
+  ): Promise<string>;
+}
+
 export type LifeHistoryPort = LifeHistoryRepository;
 
 export const LIFE_HISTORY_REPOSITORY = Symbol("LIFE_HISTORY_REPOSITORY");
 export const LIFE_HISTORY_PORT = Symbol("LIFE_HISTORY_PORT");
+export const LIFE_HISTORY_CURATION_PARTICIPANT = Symbol("LIFE_HISTORY_CURATION_PARTICIPANT");
 
 export class LifeHistoryApplication implements LifeHistoryPort {
   public constructor(

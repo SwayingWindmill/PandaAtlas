@@ -1129,19 +1129,39 @@ export interface components {
             /** Format: date */
             lastVerifiedOn: string;
             sourceIds: string[];
-            /** Format: uuid */
             appliedAssertionId?: string;
+        };
+        CurationOwnerChangeDto: {
+            /** Format: uuid */
+            changeId: string;
+            candidateId: string;
+            /** @enum {string} */
+            ownerModule: "panda" | "lineage" | "life_history";
+            /** @enum {string} */
+            operation: "fact.propose" | "fact.corroborate" | "fact.dispute" | "name.add" | "name.corroborate" | "external_identifier.add" | "external_identifier.corroborate" | "parentage.create" | "residency.create" | "event.create";
+            payload: {
+                [key: string]: unknown;
+            };
+            /** Format: date */
+            lastVerifiedOn: string;
+            sourceIds: string[];
+            appliedReference?: string;
         };
         CurationChangeSetDto: {
             /** Format: uuid */
             changeSetId: string;
+            /** @enum {string} */
+            originKind: "review" | "acquisition";
             /** Format: uuid */
-            reviewCaseId: string;
+            reviewCaseId?: string;
             /** Format: uuid */
-            decisionId: string;
+            decisionId?: string;
             /** Format: uuid */
-            submissionId: string;
-            revisionNumber: number;
+            submissionId?: string;
+            revisionNumber?: number;
+            acquisitionBundleId?: string;
+            /** Format: uuid */
+            pipelineArtifactId?: string;
             /** Format: uuid */
             targetPandaId: string;
             /** @enum {string} */
@@ -1155,6 +1175,7 @@ export interface components {
             /** Format: uuid */
             approvedByAccountId?: string;
             changes: components["schemas"]["CurationChangeDto"][];
+            ownerChanges: components["schemas"]["CurationOwnerChangeDto"][];
         };
         ApproveCurationDto: {
             reason: string;

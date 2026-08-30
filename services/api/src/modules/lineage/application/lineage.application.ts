@@ -1,3 +1,4 @@
+import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
 import type { PandaReferencePort } from "../../panda/application/panda.application.js";
 
 export type ParentRole = "father" | "mother";
@@ -26,10 +27,18 @@ export interface LineageRepository {
   getFamily(pandaId: string): Promise<LineageFamily>;
 }
 
+export interface LineageCurationParticipant {
+  applyCuratedParentage(
+    transaction: DatabaseTransaction,
+    input: ParentageAssertion,
+  ): Promise<string>;
+}
+
 export type LineagePort = LineageRepository;
 
 export const LINEAGE_REPOSITORY = Symbol("LINEAGE_REPOSITORY");
 export const LINEAGE_PORT = Symbol("LINEAGE_PORT");
+export const LINEAGE_CURATION_PARTICIPANT = Symbol("LINEAGE_CURATION_PARTICIPANT");
 
 export class LineageApplication implements LineagePort {
   public constructor(
