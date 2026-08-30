@@ -16,16 +16,16 @@ A localhost-only helper, `prepare-local-rehearsal.mjs`, exists solely to make th
 
 ### Measured local full rebuild
 
-A fresh local Supabase database was recreated from all migrations `0001` through `0048` and repository seeds. The rehearsal fixture then supplied only missing demo object metadata and one demo Game target/media relationship.
+A fresh local Supabase database was recreated from all migrations `0001` through `0049` and repository seeds after merging the current `main`, including the acquisition-to-Curation owner-routing migration added by #351. The rehearsal fixture then supplied only missing demo object metadata and one demo Game target/media relationship.
 
-Measured full migration runs:
+Measured full migration runs on the `0049` baseline:
 
-| Run | Source pandas | Media links | Result | Migration duration |
-|---|---:|---:|---|---:|
-| first full rebuild | 19 | 7 | pass | 86 ms |
-| repeat full rebuild | 19 | 7 | pass | 76 ms |
+| Run | Source pandas | Media links | Result | Migration duration | Verifier |
+|---|---:|---:|---|---:|---:|
+| first full rebuild | 19 | 7 | pass | 91 ms | 14/14 pass in 52 ms |
+| repeat full rebuild | 19 | 7 | pass | 107 ms | 14/14 pass in 41 ms |
 
-The repeat run clears only V2 migration-owned target state and recreates it from V1 authority, demonstrating that the full migration is repeatable before V2 writes open. At this scale there is no evidence supporting a delta/CDC mechanism.
+The repeat run clears only V2 migration-owned target state and recreates it from V1 authority, demonstrating that the full migration remains repeatable before V2 writes open after the `0049` schema change. At this scale there is still no evidence supporting a delta/CDC mechanism.
 
 The compact verifier ran 14 business/integrity checks after both runs and passed with zero failures. It checks stable Panda UUID preservation, canonical slug cardinality, Evidence/Fact/Lineage/Residency/Event counts, media associations, Follow→Favorite coverage, Supabase Auth UUID referential identity, media rights non-promotion, and Game migration counts.
 
