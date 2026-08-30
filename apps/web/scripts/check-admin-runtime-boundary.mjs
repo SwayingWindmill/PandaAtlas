@@ -25,8 +25,8 @@ function readPackageVersion(packageName) {
 
 const expectedVersions = new Map([
   ["react-admin", "5.15.1"],
-  ["react-router", "7.18.1"],
-  ["react-router-dom", "7.18.1"],
+  ["react-router", "7.18.3"],
+  ["react-router-dom", "7.18.3"],
 ]);
 
 const failures = [];

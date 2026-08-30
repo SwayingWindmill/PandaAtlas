@@ -34,20 +34,21 @@
         "test:map-viewport": "node scripts/test-map-viewport.mjs"
     },
     "dependencies": {
-        "@zhipanda/api-client": "0.1.0",
         "@radix-ui/react-slot": "^1.1.0",
         "@supabase/ssr": "0.12.3",
         "@supabase/supabase-js": "2.110.9",
+        "@zhipanda/api-client": "0.1.0",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "lucide-react": "^0.460.0",
         "maplibre-gl": "^5.0.0",
-        "next": "^15.0.0",
+        "next": "^15.5.24",
         "react": "^19.0.0",
         "react-admin": "5.15.1",
         "react-dom": "^19.0.0",
-        "react-router": "7.18.1",
-        "react-router-dom": "7.18.1",
+        "react-router": "7.18.3",
+        "react-router-dom": "7.18.3",
+        "sharp": "^0.35.4",
         "tailwind-merge": "^2.5.4"
     },
     "devDependencies": {

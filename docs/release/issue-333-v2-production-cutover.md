@@ -74,6 +74,45 @@ invalid only because traffic still intentionally points at Cloudflare. The cutov
 CNAME to the target above with Cloudflare proxying disabled; Cloudflare remains authoritative
 DNS.
 
+### Joint Vercel/Supabase runtime placement
+
+The production Supabase project is in `ap-northeast-1` (Tokyo). The old FastAPI production
+Vercel deployment was observed running in `iad1`, which would add a trans-Pacific hop to every
+database round trip. The V2 deployment shape now versions `regions: ["hnd1"]` for both the
+NestJS API and Next.js Web dynamic runtime. Static Web assets remain CDN-delivered globally;
+only dynamic compute is pinned near the database.
+
+The Nest database layer also follows Vercel Fluid Compute guidance for `pg.Pool`: on Vercel it
+registers the pool with `attachDatabasePool()` from `@vercel/functions`, while local/container
+execution retains normal Nest lifecycle shutdown. The existing request-pool limits, strict TLS
+and Supavisor transaction-pool design remain unchanged.
+
+### Production dependency baseline
+
+The production candidate dependency set was refreshed only within existing supported release
+lines:
+
+- Next.js `15.5.24` (the patched 15.5 maintenance release).
+- React Router / React Router DOM `7.18.3`.
+- Sharp `0.35.4` as an explicit Web dependency, which satisfies Next 15.5.24's supported Sharp
+  range.
+- DOMPurify resolved to `3.4.14` through the existing React Admin range.
+- AJV root/runtime dedupe resolved to `8.20.0` where dependency ranges permit it.
+
+`npm audit --omit=dev` still reports the PostCSS advisory inherited from Next.js because
+Next `15.5.24` continues to pin PostCSS `8.4.31`. The Next.js 15.x upstream is actively working
+on the PostCSS bump; #333 intentionally does not use a root override that would pretend to
+change Next's published dependency closure without an upstream-supported release.
+
+Local candidate verification after a clean lockfile-driven install:
+
+- Web typecheck: pass.
+- Web Next.js production build: pass.
+- API typecheck: pass.
+- API Nest build: pass.
+- API fast tests: 12/12 pass.
+- V2 architecture check: pass, 182 modules / 370 dependencies, zero violations.
+
 ## 3. Production Supabase source baseline
 
 Production project:
@@ -81,6 +120,15 @@ Production project:
 - project ref: `gsnpkwlezpdkdupizjdb`
 - region: `ap-northeast-1`
 - migration history: `0001` through `0025`
+- organization plan observed during #333 preparation: Free
+
+Supabase's production guidance does not provide automatic downloadable backups for Free projects
+and recommends regular off-site logical exports with `supabase db dump`; Free projects may also
+be paused for low activity. Therefore #333 requires a fresh logical `db dump` before the first
+production DDL write at minimum. For a durable long-lived production service, moving the
+production organization to a paid plan with managed backups/no inactivity pausing is the
+preferred production posture rather than treating the Free tier as the final availability
+baseline.
 
 Read-only production inspection on 2026-08-30 confirmed the migration source remains
 business-empty:
@@ -167,20 +215,22 @@ connection merely to make the cutover easier.
 
 ## 7. Current execution blocker
 
-The connected Supabase OAuth/MCP session can inspect the production project, but the local
-Supabase CLI is not authenticated with a Personal Access Token. In this non-TTY executor,
-`supabase login` explicitly requires `SUPABASE_ACCESS_TOKEN` or `--token`.
+The Windows executor's Supabase CLI is still not authenticated with a Personal Access Token.
+`SUPABASE_ACCESS_TOKEN` was rechecked after the local execution channel recovered on 2026-08-31
+and remains absent. In this non-TTY executor, `supabase login` requires
+`SUPABASE_ACCESS_TOKEN` or `--token`.
 
 Production already owns canonical migration history `0001`–`0025`. The preferred production
-path is therefore an authenticated CLI `supabase db push` so repository versions `0026`–`0049`
-remain the remote migration versions as well. #333 must not manufacture a second,
+path is therefore an authenticated CLI sequence: first `supabase db dump` to create the required
+Free-plan logical recovery baseline, then `supabase db push` so repository versions
+`0026`–`0049` remain the remote migration versions as well. #333 must not manufacture a second,
 server-generated migration-version sequence as a shortcut.
 
-The connected Supabase MCP `apply_migration` tool is intentionally **not** used as a substitute:
-the current Supabase MCP implementation generates its own server-side migration timestamp and
-does not accept the repository version. Supabase issue `supabase/mcp#241` documents the resulting
-orphan remote-only migration history and recommends `supabase db push` when local migration
-versions must remain canonical.
+Supabase MCP `apply_migration` is intentionally **not** used as a substitute: the current
+implementation generates its own server-side migration timestamp and does not accept the
+repository version. Supabase issue `supabase/mcp#241` documents the resulting orphan remote-only
+migration history and recommends `supabase db push` when local migration versions must remain
+canonical.
 
 Until CLI database deployment, the production runtime login, and final DNS-record authority are
 ready:
