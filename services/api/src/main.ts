@@ -1,13 +1,17 @@
 import "reflect-metadata";
-import { registerObservability } from "./instrumentation.js";
+import type { IncomingMessage, ServerResponse } from "node:http";
+import { NestFactory } from "@nestjs/core";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { AppModule } from "./app.module.js";
+import { configureApplication, createHttpAdapter } from "./bootstrap.js";
 
-registerObservability();
+const app = await NestFactory.create<NestFastifyApplication>(AppModule, createHttpAdapter(), {
+  bufferLogs: true,
+});
+await configureApplication(app);
+const fastify = app.getHttpAdapter().getInstance();
+await fastify.ready();
 
-const [{ createApplication }, { AppConfig }] = await Promise.all([
-  import("./bootstrap.js"),
-  import("./platform/config/app-config.js"),
-]);
-
-const app = await createApplication();
-const config = app.get(AppConfig);
-await app.listen(config.port, config.host);
+export default function handler(request: IncomingMessage, response: ServerResponse): void {
+  fastify.routing(request, response);
+}

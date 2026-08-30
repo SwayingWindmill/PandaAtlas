@@ -1,6 +1,6 @@
 # Issue #332 — V1 → V2 migration and managed-staging rehearsal
 
-Date: 2026-08-28
+Date: 2026-08-30
 
 ## Migration rehearsal
 
@@ -31,55 +31,67 @@ The compact verifier ran 14 business/integrity checks after both runs and passed
 
 ## Managed staging repository readiness
 
-The V2 runtime already provides the required staging shape:
+The V2 runtime now provides the managed staging shape used in this rehearsal:
 
-- Node `24.x` pinned in `services/api/package.json`.
-- Conventional Nest composition root in `services/api/src/main.ts`; no Vercel handler wrapper.
-- Fastify/Nest runtime with `/health` liveness and `/ready` bounded DB readiness.
-- request DB pool defaults to `DB_POOL_MAX=1`.
-- staging/production require `DATABASE_URL`, `SUPABASE_URL`, and explicit CORS origins.
-- request runtime does not run database migrations.
+- Node `24.x` is pinned in `services/api/package.json`.
+- `services/api/src/main.ts` is the Vercel serverless entry: it initializes Nest/Fastify, waits for `fastify.ready()`, then exports the request handler instead of calling `listen()`.
+- `services/api/src/cli.ts` is the long-running local/container entry and retains normal `app.listen(...)` semantics.
+- Shared application configuration remains centralized in `services/api/src/bootstrap.ts`.
+- Vercel uses its zero-configuration NestJS builder; the API package exposes `build:local` for local/CI Nest builds rather than overriding Vercel with a package-level `build` command.
+- Fastify/Nest exposes `/health` liveness and `/ready` bounded database readiness.
+- Request DB pool defaults to `DB_POOL_MAX=1`.
+- Staging PostgreSQL uses the Supabase transaction pool on port `6543` with the least-privilege `zhipanda_app` login role.
+- PostgreSQL TLS verification remains enabled. `DATABASE_SSL_CA_CERT` carries the Supabase Root 2021 CA and `pg` uses `rejectUnauthorized: true`; the runtime does not disable certificate validation.
+- Staging/production require `DATABASE_URL`, `SUPABASE_URL`, and explicit CORS origins.
+- Request runtime does not run database migrations.
+- Root `services/api/instrumentation.ts` follows Vercel's instrumentation hook while application observability registration stays in the existing source module.
 - V2 Outbox/consumer receipts/PGMQ, Publication/PublicRead, R2-oriented media metadata, auth, logging/OTel/Sentry hooks are implemented by the preceding V2 tickets.
-- `services/api/vercel.json` no longer contains the obsolete FastAPI Python-function bundle or disabled Git-deployment configuration. Current Vercel supports zero-configuration NestJS deployment; the project should be rooted at `services/api`.
 
-## External managed-staging blocker
+## Managed staging resources and evidence
 
-A real managed staging deployment cannot be truthfully certified from the current repository credentials:
+The isolated managed Supabase staging project is `zhipanda-staging` (`lmhxnumzlveehqolypqg`, `ap-northeast-1`). Migrations `0001` through `0049` are present. The runtime role `zhipanda_app` has login enabled and was independently verified through the Supavisor transaction pool with strict CA validation and `select 1`.
 
-- GitHub repository Actions secrets list is empty.
-- No repository-managed staging Supabase project metadata/transaction-pool URL is available.
-- No usable local Vercel CLI authorization could be established during this rehearsal.
+The dedicated Vercel API staging project is `zhipanda-api-staging`. The accepted Preview deployment is:
 
-Therefore no production traffic was switched and no managed-staging success is claimed.
+- `https://zhipanda-api-staging-a6f8rryew-swaying-windmill.vercel.app`
 
-The remaining external provisioning task must provide a distinct staging Supabase project and a stable Vercel Nest staging project, then configure at minimum:
+Managed acceptance completed on 2026-08-30:
 
-- `APP_ENV=staging`
-- `DATABASE_URL` using the staging Supabase transaction-pool endpoint
-- `SUPABASE_URL`
-- `CORS_ALLOW_ORIGINS` for the staging Web origin
-- Supabase JWT/JWKS settings as required by the project
-- R2 staging bucket/public-media settings used by the Web/API deployment
-- `CRON_SECRET` and provider credentials only for the bounded jobs actually exercised
-- observability destinations where production-like staging evidence is required
+- `/health` returned `200 {"status":"ok"}`.
+- `/ready` returned `200 {"status":"ok"}` through the real `zhipanda_app` / Supavisor / managed PostgreSQL path.
+- Supabase Auth/JWKS accepted a real staging user. `POST /api/v2/me/account` returned 201, `GET /api/v2/me` returned 200, and capability-protected profile replacement returned 200.
+- A managed release was built, sealed and activated; a second release was built, sealed and activated; rollback restored the first release pointer. Release-scoped panda reads returned 200 at each stage and the rolled-back response did not expose second-release content.
+- The deployed Vercel API independently returned the rolled-back release and panda detail from the same current-release pointer.
+- Publication emitted three managed outbox events. Dispatch produced six PGMQ messages across `integration_updates` and `integration_audit`.
+- The updates consumer processed three messages, the audit consumer processed three messages, and a deliberate duplicate updates delivery produced `duplicates=1` while retaining exactly one consumer receipt for that event.
+- A browser smoke using the real Web generated V2 client against the managed API rendered the managed panda profile with HTTP 200 and displayed the active managed release version. A local read-only bypass proxy was used solely to cross Vercel Preview Protection; no staging-only protection logic was added to product code.
+
+The old managed Supabase source project was also inspected read-only. Its migration history stops at `0025` and its relevant V1 tables are empty, so production cutover planning must preserve that real source-shape finding rather than assuming the newer local V1 rehearsal shape.
+
+## Remaining external acceptance
+
+Two items remain before managed staging can be declared fully complete:
+
+1. **Cloudflare R2 remote object journey.** The retained staging bucket is `panda-atlas-media-staging`, but the local Wrangler OAuth session expired during acceptance. No R2 success is claimed until Wrangler authentication is restored and one reviewed staging object is verified remotely.
+2. **Managed Web Preview evidence.** The critical browser journey already passed with the real generated V2 client and managed API, but a Vercel-hosted Web Preview still needs to be captured as deployment evidence without weakening API Preview Protection.
+
+The cutover runbook also still needs the final staging Web deployment URL plus Supabase backup/PITR status and current/intended Cloudflare DNS values.
 
 ## Managed-staging acceptance checklist
 
-Once those external values exist, the remaining rehearsal is intentionally small:
-
-1. Apply migrations outside Vercel using migration credentials.
-2. Run V1→V2 migration plan, full apply, then the compact verifier; record duration.
-3. Build and deploy the Nest staging project rooted at `services/api`; verify Fluid Compute in project settings.
-4. Confirm `/health` is 200 without remote dependency work and `/ready` is 200 through the real Supabase transaction-pool path.
-5. Build one V2 release, seal it, exercise release-scoped PublicRead and rollback pointer behavior without touching production DNS.
-6. Exercise one Outbox event through the relevant consumer receipt/PGMQ path and verify idempotent processing.
-7. Exercise Supabase Auth against staging and one capability-protected command.
-8. Verify one R2 public-media object through the staging Web journey.
-9. Run the critical Web staging browser journeys using the generated V2 client.
-10. Capture the staging API/Web deployment URLs, Supabase backup/PITR status, Cloudflare DNS current values and intended rollback values for the production cutover runbook.
+1. [x] Apply migrations outside Vercel using migration credentials.
+2. [x] Run V1→V2 migration plan, full apply, then the compact verifier; record duration.
+3. [x] Build and deploy the Nest staging project rooted at `services/api` using the Vercel NestJS zero-config backend path.
+4. [x] Confirm `/health` is 200 and `/ready` is 200 through the real Supabase transaction-pool path.
+5. [x] Build/seal/activate managed V2 releases, exercise release-scoped PublicRead, and verify rollback pointer behavior without touching production DNS.
+6. [x] Exercise Outbox through PGMQ/consumer receipts and verify duplicate delivery is idempotent.
+7. [x] Exercise Supabase Auth/JWKS against staging and capability-protected commands.
+8. [ ] Verify one R2 public-media object through the staging Web/R2 journey after Wrangler auth is restored.
+9. [x] Run a critical browser journey using the generated V2 client against the managed API; capture the Vercel-hosted Web Preview separately as remaining deployment evidence.
+10. [ ] Capture the final staging Web deployment URL, Supabase backup/PITR status, and Cloudflare DNS current/intended rollback values for the production cutover runbook.
 
 ## Cutover conclusion
 
 The measured full rebuild is comfortably inside any realistic bounded write-freeze window for the current repository data scale, so #332 does **not** justify a delta migration. D1 remains comparison-only and is never a V2 source.
 
-Production cutover must remain blocked until the external managed-staging checklist above is executed against real staging resources.
+Production cutover remains blocked until the R2 remote check and final managed Web/backup/DNS evidence are captured. No production traffic or DNS was changed by this rehearsal.

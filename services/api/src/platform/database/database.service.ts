@@ -28,6 +28,14 @@ export class DatabaseService implements OnApplicationShutdown {
 
     this.pool = new pg.Pool({
       connectionString: config.databaseUrl,
+      ...(config.databaseSslCaCert === undefined
+        ? {}
+        : {
+            ssl: {
+              ca: config.databaseSslCaCert,
+              rejectUnauthorized: true,
+            },
+          }),
       types: postgresTypes,
       max: config.databasePoolMax,
       min: 0,

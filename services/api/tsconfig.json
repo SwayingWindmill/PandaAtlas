@@ -3,6 +3,7 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "target": "ES2023",
     "outDir": "./dist",
     "rootDir": ".",
     "sourceMap": true,
@@ -15,6 +16,6 @@
     "allowSyntheticDefaultImports": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"],
+  "include": ["instrumentation.ts", "src/**/*.ts", "test/**/*.ts", "vitest.config.ts"],
   "exclude": ["dist", "node_modules", "app", "scripts", "tests"]
 }

@@ -10,6 +10,7 @@ export interface EnvironmentConfig {
   PORT: number;
   CORS_ALLOW_ORIGINS: string[];
   DATABASE_URL: string | undefined;
+  DATABASE_SSL_CA_CERT: string | undefined;
   DB_POOL_MAX: number;
   DB_CONNECTION_TIMEOUT_MS: number;
   DB_IDLE_TIMEOUT_MS: number;
@@ -103,6 +104,7 @@ export function validateEnvironment(
     PORT: parseInteger(input.PORT, 3001, "PORT", 1, 65_535),
     CORS_ALLOW_ORIGINS: parseOrigins(input.CORS_ALLOW_ORIGINS, appEnv),
     DATABASE_URL: databaseUrl,
+    DATABASE_SSL_CA_CERT: optionalString(input.DATABASE_SSL_CA_CERT),
     DB_POOL_MAX: parseInteger(input.DB_POOL_MAX, 1, "DB_POOL_MAX", 1, 10),
     DB_CONNECTION_TIMEOUT_MS: parseInteger(
       input.DB_CONNECTION_TIMEOUT_MS,
@@ -187,6 +189,10 @@ export class AppConfig {
 
   public get databaseUrl(): string | undefined {
     return this.config.get("DATABASE_URL", { infer: true });
+  }
+
+  public get databaseSslCaCert(): string | undefined {
+    return this.config.get("DATABASE_SSL_CA_CERT", { infer: true });
   }
 
   public get databasePoolMax(): number {

@@ -15,7 +15,7 @@
     "lint:v2": "npm run lint -w @zhipanda/api",
     "typecheck:v2": "npm run typecheck -w @zhipanda/api && npm run typecheck -w @zhipanda/api-client",
     "test:v2": "npm run test -w @zhipanda/api",
-    "build:v2": "npm run build -w @zhipanda/api-client && npm run build -w @zhipanda/api",
+    "build:v2": "npm run build -w @zhipanda/api-client && npm run build:local -w @zhipanda/api",
     "check:architecture:v2": "depcruise services/api/src packages/api-client/src --config dependency-cruiser.config.mjs",
     "codegraph:init": "node scripts/development/operations.mjs run codegraph.init",
     "codegraph:index": "node scripts/development/operations.mjs run codegraph.index",
