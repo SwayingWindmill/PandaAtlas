@@ -7,11 +7,13 @@ import { PinoLoggerService } from "./platform/observability/pino-logger.service.
 
 const BODY_LIMIT_BYTES = 1_048_576;
 
-export async function createApplication(): Promise<NestFastifyApplication> {
-  const adapter = new FastifyAdapter({ bodyLimit: BODY_LIMIT_BYTES });
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
-    bufferLogs: true,
-  });
+export function createHttpAdapter(): FastifyAdapter {
+  return new FastifyAdapter({ bodyLimit: BODY_LIMIT_BYTES });
+}
+
+export async function configureApplication(
+  app: NestFastifyApplication,
+): Promise<NestFastifyApplication> {
   app.useLogger(app.get(PinoLoggerService));
   const config = app.get(AppConfig);
 
@@ -32,4 +34,11 @@ export async function createApplication(): Promise<NestFastifyApplication> {
 
   await app.init();
   return app;
+}
+
+export async function createApplication(): Promise<NestFastifyApplication> {
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, createHttpAdapter(), {
+    bufferLogs: true,
+  });
+  return configureApplication(app);
 }
