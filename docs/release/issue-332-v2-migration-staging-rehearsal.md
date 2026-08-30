@@ -65,17 +65,19 @@ Managed acceptance completed on 2026-08-30:
 - Publication emitted three managed outbox events. Dispatch produced six PGMQ messages across `integration_updates` and `integration_audit`.
 - The updates consumer processed three messages, the audit consumer processed three messages, and a deliberate duplicate updates delivery produced `duplicates=1` while retaining exactly one consumer receipt for that event.
 - A browser smoke using the real Web generated V2 client against the managed API rendered the managed panda profile with HTTP 200 and displayed the active managed release version. A local read-only bypass proxy was used solely to cross Vercel Preview Protection; no staging-only protection logic was added to product code.
+- Cloudflare Wrangler OAuth was restored and the retained `panda-atlas-media-staging` bucket was verified remotely. The reviewed object `releases/2026.07.20.2/media-shin-shin-6b36624de9829665-w480.webp` downloaded as exactly 60,930 bytes with SHA-256 `d937360864bdae72e2fa093c5fa4ee244b9777e4b5b1b2543ca0b2931fe7561a`, matching the reviewed manifest.
+- Public access was enabled only for the staging bucket through its non-production `r2.dev` surface. The reviewed object returned HTTP 200 there. A managed media asset referencing that exact R2 object was attached through `MEDIA_PORT`, published in a new managed release, and independently returned by the deployed Vercel API with the same object key and SHA-256.
+- The Web browser journey was then repeated with `NEXT_PUBLIC_MEDIA_BASE_URL` pointed at the staging `r2.dev` surface. The generated V2 client rendered the managed panda profile, the hero `<img>` requested the reviewed R2 object directly, the browser observed HTTP 200 from R2, and decoded dimensions were 480×360. Production R2 and production DNS were not changed.
+- Supabase Management API backup status for `zhipanda-staging` reported `walg_enabled=true`, `pitr_enabled=false`, and no listed backups. This is recorded staging state only; enabling a paid PITR add-on is a production-cutover decision for #333, not a rehearsal side effect.
+- The pre-cutover Cloudflare rollback baseline was captured without changing DNS. `zhipanda.com` and `www.zhipanda.com` remain bound to Worker `panda-atlas-web`; `api.zhipanda.com` remains bound to Worker `panda-atlas-api`. Public resolution remained on Cloudflare anycast with observed TTLs of 300–600 seconds, while `media.zhipanda.com` had no public resolution. The latest captured Worker versions were Web `4e6a494b-633a-4f35-8ac9-9489dfb37511` (2026-08-04T19:49:42Z) and legacy API `53d63faa-e2bf-407d-935a-c9cfa8675454` (2026-08-26T16:38:12Z).
 
 The old managed Supabase source project was also inspected read-only. Its migration history stops at `0025` and its relevant V1 tables are empty, so production cutover planning must preserve that real source-shape finding rather than assuming the newer local V1 rehearsal shape.
 
 ## Remaining external acceptance
 
-Two items remain before managed staging can be declared fully complete:
+One deployment-evidence item remains before managed staging can be declared fully complete:
 
-1. **Cloudflare R2 remote object journey.** The retained staging bucket is `panda-atlas-media-staging`, but the local Wrangler OAuth session expired during acceptance. No R2 success is claimed until Wrangler authentication is restored and one reviewed staging object is verified remotely.
-2. **Managed Web Preview evidence.** The critical browser journey already passed with the real generated V2 client and managed API, but a Vercel-hosted Web Preview still needs to be captured as deployment evidence without weakening API Preview Protection.
-
-The cutover runbook also still needs the final staging Web deployment URL plus Supabase backup/PITR status and current/intended Cloudflare DNS values.
+1. **Managed Web Preview evidence.** The critical browser journey and direct R2 media journey both pass against the managed API, and the staging backup/DNS rollback baseline is captured. A Vercel-hosted Web Preview still needs to reach `Ready` and pass the same journey without weakening API Preview Protection.
 
 ## Managed-staging acceptance checklist
 
@@ -86,12 +88,12 @@ The cutover runbook also still needs the final staging Web deployment URL plus S
 5. [x] Build/seal/activate managed V2 releases, exercise release-scoped PublicRead, and verify rollback pointer behavior without touching production DNS.
 6. [x] Exercise Outbox through PGMQ/consumer receipts and verify duplicate delivery is idempotent.
 7. [x] Exercise Supabase Auth/JWKS against staging and capability-protected commands.
-8. [ ] Verify one R2 public-media object through the staging Web/R2 journey after Wrangler auth is restored.
+8. [x] Verify one reviewed R2 public-media object through the staging Web/R2 journey, including remote byte/hash integrity and browser image decode.
 9. [x] Run a critical browser journey using the generated V2 client against the managed API; capture the Vercel-hosted Web Preview separately as remaining deployment evidence.
-10. [ ] Capture the final staging Web deployment URL, Supabase backup/PITR status, and Cloudflare DNS current/intended rollback values for the production cutover runbook.
+10. [ ] Capture the final staging Web deployment URL. Supabase backup/PITR status and the current Cloudflare DNS/Worker rollback baseline are already recorded above.
 
 ## Cutover conclusion
 
 The measured full rebuild is comfortably inside any realistic bounded write-freeze window for the current repository data scale, so #332 does **not** justify a delta migration. D1 remains comparison-only and is never a V2 source.
 
-Production cutover remains blocked until the R2 remote check and final managed Web/backup/DNS evidence are captured. No production traffic or DNS was changed by this rehearsal.
+Production cutover remains blocked until the final managed Web Preview evidence is captured. No production traffic or DNS was changed by this rehearsal.
