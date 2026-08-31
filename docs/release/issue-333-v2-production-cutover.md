@@ -297,17 +297,62 @@ are configured. Legacy `POSTGRES_*` and Supabase service-role variables remain i
 live public API is still the old FastAPI/Worker path; they are retirement work after the V2 commit
 point, not inputs to the Nest runtime.
 
-V1 writes are still **not** frozen, no public DNS cutover has started, and the legacy Workers remain
-the live rollback authority.
+## 9. Managed Vercel candidates
 
-## 9. Next executable sequence
+The accepted NestJS API production candidate is deployment
+`dpl_Az5CMoifskdJM3kHMBmD2ZKrk3qs` (`zhipanda-72lhymnn7-swaying-windmill.vercel.app`). The first
+successful deployment was rejected because Vercel placed its Lambda in `iad1` even though the
+repository config carried `regions: ["hnd1"]`. Redeploying the same committed build closure with an
+explicit `--regions hnd1` produced the accepted candidate. Deployment JSON now records the Nest
+`index` Lambda as Node.js 24 with `deployedTo: ["hnd1"]`; `zhipanda-api.vercel.app` and the project
+custom-domain association both point at this deployment.
+
+The local executor's household DNS currently mis-resolves `zhipanda-api.vercel.app`, so local curl
+results are not used as health evidence. Instead, #333 built an isolated Vercel Web probe whose only
+source change was a prebuild script that requested the stable API alias. Vercel's own build logs show
+both remote checks passing before the Web build started:
+
+- `/health`: HTTP 200, `status=ok`;
+- `/ready`: HTTP 200, `status=ok`.
+
+The `/ready` result is the managed-runtime proof: the Nest Lambda can start in Vercel, resolve the
+stable alias, connect through the production Tokyo Supavisor transaction pool, validate the Supabase
+Root CA, and execute its readiness query using the steady-state `zhipanda_app_runtime` permissions
+after all migration-only grants were revoked.
+
+The accepted Web production candidate is deployment
+`dpl_3znHquSdb2dVVsXw8FF16gTFxmSy` (`zhipanda-1uslkzp1m-swaying-windmill.vercel.app`). It is Ready,
+targets Production, is associated with `zhipanda.com`, `www.zhipanda.com`, and `zhipanda.vercel.app`,
+and its Node.js functions are actually deployed to `hnd1` (middleware retains Vercel's expected
+global distribution). Vercel metadata ties it to commit
+`f2049270a94c32d88fc08aa75bceb1cb0b6efcc8` on `feat/issue-333-production-cutover`.
+
+The Web deployment metadata says `gitDirty=1` because it came from an isolated deployment bundle, so
+#333 audited the bundle instead of trusting that flag. All 288 files from the clean commit archive
+match the deployed bundle byte-for-byte. The only additional non-Vercel file is
+`data/frontend-withdrawals/2026.07.20.2-ri-ri.json`; it is itself tracked at the same commit and its
+Git blob hash matches `HEAD` exactly (`bad05d4a0f6c5838d97f04c1e71ab2cfbb0e7348`). No business-code
+or configuration drift was introduced by the bundle.
+
+A current-commit Vercel probe deployment also completed the normal Web guards and Next.js 15.5.24
+production build after the API probes, including all 56 static-generation steps. The ordinary GitHub
+PR Preview for the same commit remains Ready as an independent build path.
+
+V1 writes are still **not** frozen, no public DNS cutover has started, and the legacy Workers remain
+the live rollback authority. A temporary `api-v2-probe.zhipanda.com` experiment was not created in
+Cloudflare because the local network could not reach the Cloudflare API; no root, `www`, or `api`
+record was modified. The managed Vercel-to-Vercel probe above makes that temporary hostname
+unnecessary.
+
+## 10. Next executable sequence
 
 Continue the runbook without adding a compatibility phase:
 
-1. deploy and validate the NestJS V2 API candidate at the stable Vercel hostname;
-2. deploy and validate the V2 Web candidate against that stable API hostname;
-3. begin the bounded freeze, recapture exact DNS rollback values, and rerun the deterministic
-   migration/verifier as the final freeze-window copy;
+1. restore a reliable Cloudflare control-plane path and recapture the exact root/`www`/`api` rollback
+   records plus current legacy Worker deployment anchors;
+2. begin the bounded freeze only after that DNS write/rollback path is demonstrably available;
+3. rerun the deterministic migration and 14-check verifier as the final freeze-window copy;
 4. execute Web then API DNS cutover;
-5. establish the V2-only commit point, reopen V2 writes/async work, and retire the legacy
-   OpenNext/Worker/D1/FastAPI runtime paths immediately as required by #333.
+5. establish the V2-only commit point, switch the Web API base from the stable Vercel alias to
+   `https://api.zhipanda.com`, reopen V2 writes/async work, and retire the legacy
+   OpenNext/Worker-D1/FastAPI runtime paths immediately as required by #333.
