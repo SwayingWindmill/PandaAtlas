@@ -244,14 +244,15 @@ Supabase MCP `apply_migration` remains intentionally unused because it cannot pr
 repository migration versions required by this cutover.
 
 Post-migration role evidence confirms `zhipanda_app` and `zhipanda_pipeline` exist as `NOLOGIN`,
-`NOINHERIT`, `NOBYPASSRLS` group roles. Production also now has a dedicated
-`zhipanda_app_runtime` role structure with `NOLOGIN`, `INHERIT`, no superuser/createdb/createrole/
-bypass-RLS privileges, and membership in `zhipanda_app`. It remains deliberately unable to log in
-until its generated production credential is handed directly to Vercel.
+`NOINHERIT`, `NOBYPASSRLS` group roles. Production now has a separate
+`zhipanda_app_runtime` login with `INHERIT`, no superuser/createdb/createrole/bypass-RLS privileges,
+and membership in `zhipanda_app`. Its generated password is stored only in Windows Credential
+Manager and was handed directly to Vercel; Vercel Production now exposes `DATABASE_URL` as a Secret
+using the Tokyo Supavisor transaction pool on port `6543`.
 
-## 8. Deterministic migration preflight
+## 8. Deterministic migration and verification
 
-Fresh production source counts are all zero for the V1 authorities consumed by
+Fresh production source counts were all zero for the V1 authorities consumed by
 `migrate-v1-to-v2.mjs`: pandas, evidence, facts, institutions/facilities, residencies, life events,
 lineage, linked media, and active follows.
 
@@ -264,25 +265,49 @@ the pre-V2 logical backup, #333 removed only that orphan legacy seed instead of 
 compatibility branch. The complete strict preflight was then rerun and all ten blockers returned
 zero.
 
-The Vercel production API project is locally linked as `swaying-windmill/zhipanda-api`.
-`APP_ENV`, `DATABASE_SSL_CA_CERT`, and explicit `CORS_ALLOW_ORIGINS` are configured. `DATABASE_URL`
-remains the only new Nest runtime database input still pending. Legacy `POSTGRES_*` and Supabase
-service-role variables remain in place while the live production API is still the old FastAPI
-runtime; they are retirement work after the V2 commit point, not inputs to the Nest runtime.
+The migration and verifier now accept `DATABASE_SSL_CA_CERT` and configure node-postgres with the
+same strict CA validation used by the Nest runtime (`rejectUnauthorized=true`). The production
+migration plan succeeded over the least-privilege runtime connection with all source counts zero and
+no blockers.
 
-V1 writes are still **not** frozen, no production V2 candidate has been promoted, Web/API DNS are
-unchanged, and the legacy Workers remain the live rollback authority.
+The runtime group intentionally has no access to legacy V1 authorities or destructive cleanup
+rights. #333 therefore granted a short-lived, direct migration bridge only to
+`zhipanda_app_runtime`: exact V1 source `SELECT` permissions plus the target `DELETE` permissions
+required by the deterministic clear phase. Two apply attempts failed on omitted legacy dependencies
+(`public.public_evidence_sources`, reached through V1 RLS, then `notification.preferences`); both
+failures occurred inside the migration transaction and rolled back completely. After catalog/source
+review added only those two missing `SELECT` grants, the next apply committed successfully in
+**6,557 ms** with all source and target counts zero and no blockers. This is comfortably inside the
+bounded freeze window, so no delta/CDC migration path is required.
+
+The compact verifier then passed **14/14** in **2,033 ms**. Its Supabase Auth invariant no longer
+requires direct runtime access to the protected `auth` schema: it verifies the exact validated
+foreign key from `identity.accounts.account_id` to `auth.users.id`, which preserves the same UUID
+invariant while respecting the production Auth boundary. Both migration scripts pass `node --check`.
+
+Immediately after verification, every direct migration-bridge grant was revoked. Post-revoke checks
+confirm no runtime `SELECT` remains on legacy `public.pandas`, the legacy evidence helper view,
+`notification.preferences`, or `auth.users`, and no migration-only `DELETE` remains on
+`notification.provider_jobs`. The steady-state runtime is back to the privileges inherited from
+`zhipanda_app` only.
+
+The Vercel production API project is locally linked as `swaying-windmill/zhipanda-api`.
+`APP_ENV`, `DATABASE_SSL_CA_CERT`, explicit `CORS_ALLOW_ORIGINS`, and the new `DATABASE_URL` Secret
+are configured. Legacy `POSTGRES_*` and Supabase service-role variables remain in place while the
+live public API is still the old FastAPI/Worker path; they are retirement work after the V2 commit
+point, not inputs to the Nest runtime.
+
+V1 writes are still **not** frozen, no public DNS cutover has started, and the legacy Workers remain
+the live rollback authority.
 
 ## 9. Next executable sequence
 
 Continue the runbook without adding a compatibility phase:
 
-1. enable `zhipanda_app_runtime` with a generated password and set Vercel Production `DATABASE_URL`
-   to the Tokyo Supavisor transaction pool (`6543`), without exposing the secret;
-2. run the repository `migrate-v1-to-v2.mjs` plan, apply, and `verify-v1-to-v2.mjs` against the
-   least-privilege production runtime connection;
-3. deploy and validate the V2 API candidate at the stable Vercel hostname;
-4. deploy and validate the V2 Web candidate against that stable API hostname;
-5. begin the bounded freeze, recapture exact DNS rollback values, and execute Web then API cutover;
-6. establish the V2-only commit point, reopen V2 writes/async work, and retire the legacy
+1. deploy and validate the NestJS V2 API candidate at the stable Vercel hostname;
+2. deploy and validate the V2 Web candidate against that stable API hostname;
+3. begin the bounded freeze, recapture exact DNS rollback values, and rerun the deterministic
+   migration/verifier as the final freeze-window copy;
+4. execute Web then API DNS cutover;
+5. establish the V2-only commit point, reopen V2 writes/async work, and retire the legacy
    OpenNext/Worker/D1/FastAPI runtime paths immediately as required by #333.
