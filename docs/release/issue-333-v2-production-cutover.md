@@ -212,58 +212,77 @@ production inputs prepared:
 The least-privilege login must not be replaced by a permanent `postgres`-privileged runtime
 connection merely to make the cutover easier.
 
-## 7. Current production backup blocker
+## 7. Production backup and canonical schema deployment
 
-Supabase CLI authentication is now available from the Windows native credential store. A
-read-only project listing confirmed production `gsnpkwlezpdkdupizjdb` and staging
-`lmhxnumzlveehqolypqg`, both in Tokyo. The repository-pinned CLI `2.110.0` and current CLI
-`2.116.0` still fail to read that persisted credential in the non-interactive Windows executor,
-matching upstream Windows credential regressions. A transient, untracked `supabase@2.102.0`
-invocation reads the same native credential successfully; no PAT is copied into the repository,
-command line, or evidence file.
+Supabase CLI authentication is available from the Windows native credential store. A read-only
+project listing confirmed production `gsnpkwlezpdkdupizjdb` and staging `lmhxnumzlveehqolypqg`,
+both in Tokyo. The repository-pinned CLI `2.110.0` and current CLI `2.116.0` still fail to read
+that persisted credential in the non-interactive Windows executor, matching upstream Windows
+credential regressions. A transient, untracked `supabase@2.102.0` invocation reads the same native
+credential successfully; no PAT is copied into the repository, command line, or evidence file.
 
 Because CLI `2.102.0` predates the repository's `[local_smtp]` config key, #333 uses an ignored
 `infra/supabase/.temp/cli-2.102-workdir` with a minimal compatible config and a junction back to
 the canonical `infra/supabase/migrations` directory. This creates no second migration source.
-The linked production migration ledger was read successfully and confirms the exact expected
-state: remote `0001`–`0025` are applied, while local `0026`–`0049` are pending. The pending SQL
-contains no `SET ROLE` or `RESET ROLE` statements.
 
-Production still requires a fresh logical recovery baseline before the first V2 DDL. The current
-blocker is Docker Desktop's Linux engine: `com.docker.service` is running, but the Docker engine
-named pipe is absent, and the non-interactive executor cannot launch the Desktop backend. Supabase
-`db dump` uses Docker-backed `pg_dump`, so no production DDL will be attempted until Docker Desktop
-is running and the roles/schema/data plus `supabase_migrations` history dumps complete.
+Before the first V2 DDL, a five-file logical recovery baseline was written outside the repository
+to `C:\Users\HaoZhang\PandaAtlas-backups\issue-333-20260831-pre-v2`:
 
-The preferred production path remains: create the required Free-plan logical backup first, then
-use `supabase db push` so repository versions `0026`–`0049` remain the remote migration versions.
-#333 must not manufacture a second, server-generated migration-version sequence as a shortcut.
+- `roles.sql`: 431 bytes, SHA-256 `0decd601faa70260a3a31e8ce63208cc4a4c1f99921bc6f3ed4faf1cd980da3a`;
+- `schema.sql`: 770,390 bytes, SHA-256 `21cdb817ccfc0cee93ef6f80cfc414d679a668cc298212639cd6837c66b4397b`;
+- `data.sql`: 64,720 bytes, SHA-256 `8e898f9136cd6a11f2ac93c4f25654493eb990aa5409c608e265e5fab5e7bbd3`;
+- `supabase-migrations-schema.sql`: 887 bytes, SHA-256 `18b99fbbb3ec9fbb964bb255a56171329acd99b6977ece2addd89fdf5aa5105b`;
+- `supabase-migrations-data.sql`: 282,299 bytes, SHA-256 `a138a9330d01a8760bb7153206266ffc0fa4c744a8898b9a7ccb8a079429cec7`.
 
-Supabase MCP `apply_migration` is intentionally **not** used as a substitute: the current
-implementation generates its own server-side migration timestamp and does not accept the
-repository version. Supabase issue `supabase/mcp#241` documents the resulting orphan remote-only
-migration history and recommends `supabase db push` when local migration versions must remain
-canonical.
+Docker Desktop engine `29.6.2` was active for the backup. A production `db push --dry-run`
+reported **only** canonical migrations `0026`–`0049`. The real `db push` then applied those 24
+repository migrations successfully. A post-push migration-list read confirms local and remote
+history now match exactly from `0001` through `0049`; no repair or server-generated migration
+version was introduced.
 
-Until the logical backup, CLI database deployment, and production runtime login are ready:
+Supabase MCP `apply_migration` remains intentionally unused because it cannot preserve the
+repository migration versions required by this cutover.
 
-- V1 writes are **not** frozen.
-- no production V2 candidate is deployed.
-- Web DNS is unchanged.
-- API DNS is unchanged.
-- the legacy Workers remain the live rollback authority.
+Post-migration role evidence confirms `zhipanda_app` and `zhipanda_pipeline` exist as `NOLOGIN`,
+`NOINHERIT`, `NOBYPASSRLS` group roles. Production also now has a dedicated
+`zhipanda_app_runtime` role structure with `NOLOGIN`, `INHERIT`, no superuser/createdb/createrole/
+bypass-RLS privileges, and membership in `zhipanda_app`. It remains deliberately unable to log in
+until its generated production credential is handed directly to Vercel.
 
-## 8. Next executable sequence
+## 8. Deterministic migration preflight
 
-Once the production Supabase CLI/runtime credential prerequisite is available, continue the
-runbook without adding a compatibility phase:
+Fresh production source counts are all zero for the V1 authorities consumed by
+`migrate-v1-to-v2.mjs`: pandas, evidence, facts, institutions/facilities, residencies, life events,
+lineage, linked media, and active follows.
 
-1. record the final legacy source/deployment anchor and database restore/backup state;
-2. apply repository migrations `0026`–`0049` to production with exact migration history;
-3. provision the production login as a member of `zhipanda_app` and set the Nest runtime env;
-4. run the deterministic full V1-to-V2 migration and compact verifier;
-5. deploy and validate the V2 API candidate at the stable Vercel hostname;
-6. deploy and validate the V2 Web candidate against that stable API hostname;
-7. begin the bounded freeze, recapture exact DNS rollback values, and execute Web then API cutover;
-8. establish the V2-only commit point, reopen V2 writes/async work, and retire the legacy
+The first strict preflight correctly found two blockers from one row in `game.guess_questions`:
+`unresolvedLegacyGameTarget=1` and `ambiguousLegacyGameMedia=1`. Inspection proved that row was
+exactly the baseline question hard-coded by canonical migration `0040` (`question_id`
+`55ad14ea-cc08-4aa2-bba2-4e77823f74db`), with zero attempts and no matching legacy attempt rows.
+Because production has no V1 panda/media authority to migrate it from, and the row is preserved in
+the pre-V2 logical backup, #333 removed only that orphan legacy seed instead of adding a migration
+compatibility branch. The complete strict preflight was then rerun and all ten blockers returned
+zero.
+
+The Vercel production API project is locally linked as `swaying-windmill/zhipanda-api`.
+`APP_ENV`, `DATABASE_SSL_CA_CERT`, and explicit `CORS_ALLOW_ORIGINS` are configured. `DATABASE_URL`
+remains the only new Nest runtime database input still pending. Legacy `POSTGRES_*` and Supabase
+service-role variables remain in place while the live production API is still the old FastAPI
+runtime; they are retirement work after the V2 commit point, not inputs to the Nest runtime.
+
+V1 writes are still **not** frozen, no production V2 candidate has been promoted, Web/API DNS are
+unchanged, and the legacy Workers remain the live rollback authority.
+
+## 9. Next executable sequence
+
+Continue the runbook without adding a compatibility phase:
+
+1. enable `zhipanda_app_runtime` with a generated password and set Vercel Production `DATABASE_URL`
+   to the Tokyo Supavisor transaction pool (`6543`), without exposing the secret;
+2. run the repository `migrate-v1-to-v2.mjs` plan, apply, and `verify-v1-to-v2.mjs` against the
+   least-privilege production runtime connection;
+3. deploy and validate the V2 API candidate at the stable Vercel hostname;
+4. deploy and validate the V2 Web candidate against that stable API hostname;
+5. begin the bounded freeze, recapture exact DNS rollback values, and execute Web then API cutover;
+6. establish the V2-only commit point, reopen V2 writes/async work, and retire the legacy
    OpenNext/Worker/D1/FastAPI runtime paths immediately as required by #333.
