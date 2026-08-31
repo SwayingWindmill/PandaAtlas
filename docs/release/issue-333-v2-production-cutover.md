@@ -183,20 +183,19 @@ Workers:
 
 The active API deployment was created 2026-08-26T16:38:13Z.
 
-Public DNS remained Cloudflare-proxied at capture time:
+Cloudflare DNS-record authority is now available through a dedicated token limited to the
+`zhipanda.com` zone. The token was verified without exposing its secret, and exact host-routing
+records were read from zone `zhipanda.com`:
 
-- `zhipanda.com`: TTL 300s
-- `www.zhipanda.com`: TTL 600s
-- `api.zhipanda.com`: TTL 600s
+- `zhipanda.com`: `AAAA 100::`, proxied, TTL automatic;
+- `www.zhipanda.com`: `AAAA 100::`, proxied, TTL automatic;
+- `api.zhipanda.com`: `AAAA 100::`, proxied, TTL automatic.
 
-No DNS cutover has occurred in #333 yet.
-
-Wrangler OAuth remains valid for Workers, routes and the legacy runtime rollback actions. Its
-current OAuth grants do not permit reading the zone's DNS-record objects through the Cloudflare
-API: a read-only `/dns_records` request returned HTTP 403. Therefore the public Anycast A/AAAA
-answers above are **not** treated as the exact rollback record values. The final pre-Step-A
-record export and the DNS writes still require Cloudflare DNS-record permission (or an explicit
-Cloudflare dashboard/Domain Connect action).
+The root MX and SPF records are unrelated to the Web/API cutover and must remain untouched. These
+exact AAAA records are the current legacy custom-domain routing baseline; Cloudflare Anycast IP
+answers are no longer being used as a proxy for rollback record contents. No DNS write has been
+executed in #333. The exact records will still be recaptured immediately before Step A so the
+rollback snapshot is contemporaneous with cutover.
 
 ## 6. Production API environment gap
 
@@ -213,18 +212,32 @@ production inputs prepared:
 The least-privilege login must not be replaced by a permanent `postgres`-privileged runtime
 connection merely to make the cutover easier.
 
-## 7. Current execution blocker
+## 7. Current production backup blocker
 
-The Windows executor's Supabase CLI is still not authenticated with a Personal Access Token.
-`SUPABASE_ACCESS_TOKEN` was rechecked after the local execution channel recovered on 2026-08-31
-and remains absent. In this non-TTY executor, `supabase login` requires
-`SUPABASE_ACCESS_TOKEN` or `--token`.
+Supabase CLI authentication is now available from the Windows native credential store. A
+read-only project listing confirmed production `gsnpkwlezpdkdupizjdb` and staging
+`lmhxnumzlveehqolypqg`, both in Tokyo. The repository-pinned CLI `2.110.0` and current CLI
+`2.116.0` still fail to read that persisted credential in the non-interactive Windows executor,
+matching upstream Windows credential regressions. A transient, untracked `supabase@2.102.0`
+invocation reads the same native credential successfully; no PAT is copied into the repository,
+command line, or evidence file.
 
-Production already owns canonical migration history `0001`–`0025`. The preferred production
-path is therefore an authenticated CLI sequence: first `supabase db dump` to create the required
-Free-plan logical recovery baseline, then `supabase db push` so repository versions
-`0026`–`0049` remain the remote migration versions as well. #333 must not manufacture a second,
-server-generated migration-version sequence as a shortcut.
+Because CLI `2.102.0` predates the repository's `[local_smtp]` config key, #333 uses an ignored
+`infra/supabase/.temp/cli-2.102-workdir` with a minimal compatible config and a junction back to
+the canonical `infra/supabase/migrations` directory. This creates no second migration source.
+The linked production migration ledger was read successfully and confirms the exact expected
+state: remote `0001`–`0025` are applied, while local `0026`–`0049` are pending. The pending SQL
+contains no `SET ROLE` or `RESET ROLE` statements.
+
+Production still requires a fresh logical recovery baseline before the first V2 DDL. The current
+blocker is Docker Desktop's Linux engine: `com.docker.service` is running, but the Docker engine
+named pipe is absent, and the non-interactive executor cannot launch the Desktop backend. Supabase
+`db dump` uses Docker-backed `pg_dump`, so no production DDL will be attempted until Docker Desktop
+is running and the roles/schema/data plus `supabase_migrations` history dumps complete.
+
+The preferred production path remains: create the required Free-plan logical backup first, then
+use `supabase db push` so repository versions `0026`–`0049` remain the remote migration versions.
+#333 must not manufacture a second, server-generated migration-version sequence as a shortcut.
 
 Supabase MCP `apply_migration` is intentionally **not** used as a substitute: the current
 implementation generates its own server-side migration timestamp and does not accept the
@@ -232,8 +245,7 @@ repository version. Supabase issue `supabase/mcp#241` documents the resulting or
 migration history and recommends `supabase db push` when local migration versions must remain
 canonical.
 
-Until CLI database deployment, the production runtime login, and final DNS-record authority are
-ready:
+Until the logical backup, CLI database deployment, and production runtime login are ready:
 
 - V1 writes are **not** frozen.
 - no production V2 candidate is deployed.
