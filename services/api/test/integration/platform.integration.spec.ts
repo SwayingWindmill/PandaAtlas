@@ -80,10 +80,10 @@ describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
       from pg_roles
       where rolname = 'zhipanda_app'
     `.execute(database.db);
-    const privileges = await sql<{ identity_select: boolean; public_pandas_select: boolean }>`
+    const privileges = await sql<{ identity_select: boolean; panda_select: boolean }>`
       select
         has_table_privilege('zhipanda_app', 'identity.accounts', 'select') as identity_select,
-        has_table_privilege('zhipanda_app', 'public.pandas', 'select') as public_pandas_select
+        has_table_privilege('zhipanda_app', 'panda.pandas', 'select') as panda_select
     `.execute(database.db);
 
     expect(extensions.rows.map((row) => row.extname)).toEqual(["pgmq", "postgis"]);
@@ -95,7 +95,7 @@ describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
     });
     expect(privileges.rows[0]).toEqual({
       identity_select: true,
-      public_pandas_select: false,
+      panda_select: true,
     });
   });
 

@@ -4,7 +4,7 @@
 - Production rule: this stack supports development and recovery verification; it is not a production Supabase deployment or a persistent production dependency
 - Governing status page: [`docs/deployment/runtime-status.md`](../deployment/runtime-status.md)
 
-Issue #177 replaces the repository's standalone PostGIS container with one pinned Supabase CLI stack. The minimum stack supplies PostgreSQL 17, PostGIS, PGMQ, Auth, and private Storage. Studio, local email capture, Realtime, analytics, and Edge Runtime are disabled for this foundation slice. FastAPI remains the sole authoritative application command path.
+Issue #177 originally replaced the repository's standalone PostGIS container with one pinned Supabase CLI stack. The minimum stack supplies PostgreSQL 17, PostGIS, PGMQ, Auth, and private Storage. After the #333 cutover, NestJS V2 is the sole authoritative application runtime; the local Supabase stack remains development/recovery infrastructure rather than a compatibility host for the retired FastAPI runtime.
 
 ## Pinned toolchain
 
@@ -12,7 +12,7 @@ Issue #177 replaces the repository's standalone PostGIS container with one pinne
 - PostgreSQL major: `17`, committed in `infra/supabase/config.toml`.
 - PGMQ compatibility range enforced by preflight: `>=1.5.1,<2.0`.
 - Migrations: `infra/supabase/migrations/*.sql`, applied in filename order.
-- Seeds: `infra/supabase/seed/*.sql`, applied in filename order after migrations.
+- Seeds: automatic SQL seeding is disabled after #356 because the checked-in seed files target retired V1 tables; focused tests/rehearsals create the V2 data they need explicitly.
 
 Do not use an unpinned global CLI or a floating database image for release evidence.
 
@@ -41,11 +41,11 @@ The default local endpoints are:
 | Supabase API, Auth, Storage | `http://127.0.0.1:54321` |
 | PostgreSQL | `127.0.0.1:54322` |
 
-`docker-compose.yml` now starts only FastAPI. Start the Supabase stack first and provide `ADMIN_API_TOKEN` explicitly before starting the API container. The Compose database default points to the host Supabase database through `host.docker.internal:54322`.
+The current application runtime is NestJS V2 under `services/api/`. Start the Supabase stack before local API flows that require PostgreSQL/Auth/Storage; no retired FastAPI container is part of the authoritative local topology.
 
 ## Reset and preflight contract
 
-`npm run infra:reset` recreates the local database, applies all checked-in migrations, and loads every ordered seed file. It is destructive to local Supabase data.
+`npm run infra:reset` recreates the local database and applies all checked-in migrations. Automatic SQL seed loading is disabled because the historical seed files target retired V1 relations. The command is destructive to local Supabase data.
 
 `npm run infra:preflight` writes `.release-gate/zhipanda-foundation.json` and fails closed unless it proves:
 

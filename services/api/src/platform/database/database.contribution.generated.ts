@@ -169,8 +169,6 @@ export interface CommunityIntakeSubmissions {
   closed_at: Timestamp | null;
   contributor_status: Generated<CommunityIntakeContributorStatus>;
   contributor_status_updated_at: Generated<Timestamp>;
-  contributor_subject_anonymization_request_id: string | null;
-  contributor_subject_anonymized_at: Timestamp | null;
   contributor_subject_hash: string;
   created_at: Generated<Timestamp>;
   current_status_event_id: string | null;

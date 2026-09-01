@@ -52,21 +52,6 @@ export interface IdentityAccountStateEvents {
   reason: string;
 }
 
-export interface IdentityAccountTombstones {
-  account_id: string;
-  command_hash: string;
-  contributor_subject_hash: string;
-  correlation_id: string;
-  created_at: Generated<Timestamp>;
-  created_by_account_id: string;
-  idempotency_key: string;
-  privacy_request_id: string;
-  role_snapshot: Json;
-  staff_role_snapshot: Json;
-  tombstone_email: string;
-  tombstone_id: string;
-}
-
 export interface IdentityAuthorizationAuditEvents {
   actor_account_id: string | null;
   assignment_id: string | null;
@@ -138,7 +123,6 @@ export interface IdentityRoles {
 
 export interface DB {
   "identity.account_state_events": IdentityAccountStateEvents;
-  "identity.account_tombstones": IdentityAccountTombstones;
   "identity.accounts": IdentityAccounts;
   "identity.authorization_audit_events": IdentityAuthorizationAuditEvents;
   "identity.capabilities": IdentityCapabilities;

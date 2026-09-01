@@ -1,3 +1,4 @@
+import { sql } from "kysely";
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
 import type { PgmqMessage, PgmqService } from "../../../platform/integration/pgmq.service.js";
@@ -18,6 +19,7 @@ interface ProviderJobSnapshot {
   content: Record<string, unknown>;
   correlationId: string;
   attemptCount: number;
+  databaseNow: Date;
   state: string;
   nextAttemptAt: Date;
   to?: string;
@@ -76,8 +78,8 @@ export class NotificationProviderWorkerService {
       await this.database.transaction((transaction) => this.pgmq.archive(transaction, QUEUE, message.msgId));
       return "duplicates";
     }
-    if (snapshot.nextAttemptAt.getTime() > Date.now()) {
-      const delaySeconds = Math.max(1, Math.ceil((snapshot.nextAttemptAt.getTime() - Date.now()) / 1_000));
+    if (snapshot.nextAttemptAt.getTime() > snapshot.databaseNow.getTime()) {
+      const delaySeconds = Math.max(1, Math.ceil((snapshot.nextAttemptAt.getTime() - snapshot.databaseNow.getTime()) / 1_000));
       await this.database.transaction((transaction) =>
         this.pgmq.setVisibility(transaction, QUEUE, message.msgId, delaySeconds),
       );
@@ -302,6 +304,7 @@ export class NotificationProviderWorkerService {
           "job.state",
           "job.next_attempt_at",
           "job.correlation_id",
+          sql<Date>`now()`.as("database_now"),
           "message.account_id",
           "message.category",
           "message.content",
@@ -317,6 +320,7 @@ export class NotificationProviderWorkerService {
         content: row.content as Record<string, unknown>,
         correlationId: row.correlation_id,
         attemptCount: row.attempt_count,
+        databaseNow: row.database_now,
         state: row.state,
         nextAttemptAt: row.next_attempt_at,
         ...(to === undefined ? {} : { to }),

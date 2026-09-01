@@ -25,6 +25,20 @@ export interface EvidenceAttachments {
   storage_key: string;
 }
 
+export interface EvidencePipelineSourceExportV1 {
+  access_state: string | null;
+  content_sha256: string | null;
+  evidence_tier: string | null;
+  language_tag: string | null;
+  last_verified_on: string | null;
+  public_summary: string | null;
+  published_on: string | null;
+  publisher: string | null;
+  source_id: string | null;
+  title: string | null;
+  url: string | null;
+}
+
 export interface EvidenceSources {
   access_state: string;
   content_sha256: string | null;
@@ -44,5 +58,6 @@ export interface EvidenceSources {
 
 export interface DB {
   "evidence.attachments": EvidenceAttachments;
+  "evidence.pipeline_source_export_v1": EvidencePipelineSourceExportV1;
   "evidence.sources": EvidenceSources;
 }

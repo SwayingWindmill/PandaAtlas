@@ -83,7 +83,7 @@ export class IntegrationOutboxService {
         "payload",
       ])
       .where("published_at", "is", null)
-      .where("available_at", "<=", new Date())
+      .where("available_at", "<=", sql<Date>`now()`)
       .orderBy("available_at")
       .orderBy("occurred_at")
       .orderBy("event_id")

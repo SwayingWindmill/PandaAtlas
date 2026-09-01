@@ -62,8 +62,29 @@ export interface MediaPandaAssets {
   usage_role: Generated<string>;
 }
 
+export interface MediaPipelineAssetExportV1 {
+  asset_id: string | null;
+  attribution_text: string | null;
+  byte_size: Int8 | null;
+  content_sha256: string | null;
+  copyright_text: string | null;
+  creator: string | null;
+  eligibility_status: string | null;
+  license: string | null;
+  media_type: string | null;
+  pandas: Json | null;
+  rights_status: string | null;
+  source_id: string | null;
+  storage_bucket: string | null;
+  storage_key: string | null;
+  taken_at: Timestamp | null;
+  title: string | null;
+  updated_at: Timestamp | null;
+}
+
 export interface DB {
   "media.assets": MediaAssets;
   "media.derivatives": MediaDerivatives;
   "media.panda_assets": MediaPandaAssets;
+  "media.pipeline_asset_export_v1": MediaPipelineAssetExportV1;
 }
