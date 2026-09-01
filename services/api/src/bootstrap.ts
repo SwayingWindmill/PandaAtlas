@@ -21,6 +21,7 @@ export async function configureApplication(
     exclude: [
       { path: "health", method: RequestMethod.GET },
       { path: "ready", method: RequestMethod.GET },
+      { path: "internal/jobs/async-downstream", method: RequestMethod.GET },
     ],
   });
   app.enableVersioning({

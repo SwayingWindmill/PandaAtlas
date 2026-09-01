@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from "@nestjs/common";
+import { Controller, Get, Req, VERSION_NEUTRAL, Version } from "@nestjs/common";
 import { ApiExcludeController } from "@nestjs/swagger";
 import { timingSafeEqual } from "node:crypto";
 import type { FastifyRequest } from "fastify";
@@ -16,6 +16,7 @@ export class AsyncJobsController {
   ) {}
 
   @Get("async-downstream")
+  @Version(VERSION_NEUTRAL)
   @Public()
   public run(@Req() request: FastifyRequest) {
     this.assertCronAuthorization(request.headers.authorization);
