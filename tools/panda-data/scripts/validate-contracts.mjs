@@ -9,6 +9,10 @@ const repositoryRoot = resolve(scriptDirectory, "../../..");
 const contractDirectory = resolve(repositoryRoot, "contracts/panda-data");
 
 const cases = [
+  [
+    "acquisition-curation-recommendation.v1.schema.json",
+    "acquisition-curation-recommendation.valid.json",
+  ],
   ["artifact-manifest.v1.schema.json", "artifact-manifest.valid.json"],
   ["pipeline-job.v1.schema.json", "pipeline-job.valid.json"],
   ["pipeline-result.v1.schema.json", "pipeline-result.valid.json"],

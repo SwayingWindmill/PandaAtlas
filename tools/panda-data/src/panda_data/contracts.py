@@ -9,6 +9,7 @@ from typing import Any
 from jsonschema import Draft202012Validator, FormatChecker
 
 CONTRACT_FILES = {
+    "acquisition-curation-recommendation": "acquisition-curation-recommendation.v1.schema.json",
     "artifact-manifest": "artifact-manifest.v1.schema.json",
     "pipeline-job": "pipeline-job.v1.schema.json",
     "pipeline-result": "pipeline-result.v1.schema.json",

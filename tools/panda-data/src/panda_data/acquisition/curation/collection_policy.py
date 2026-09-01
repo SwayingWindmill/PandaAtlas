@@ -117,6 +117,12 @@ def collection_policy_decision(
             "promotion contract.",
         )
     if lane is ReviewLane.SUPPORTING_UNCHANGED:
+        if candidate.candidate_kind is CandidateKind.IDENTITY:
+            return (
+                DecisionAction.ACCEPTED,
+                "Accepted for the V2 corroboration path, which retains the additional sourced "
+                "assertion without duplicating or replacing the current canonical conclusion.",
+            )
         return (
             DecisionAction.DEFERRED,
             "Deferred pending the V2 corroboration path that can attach additional provenance "

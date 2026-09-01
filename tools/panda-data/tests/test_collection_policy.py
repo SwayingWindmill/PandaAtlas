@@ -26,7 +26,9 @@ def _candidate(
     match = PandaIdentityMatch(
         state=identity_state,
         source_identity="source:panda-1",
-        matched_canonical_slug=("panda-1" if identity_state is IdentityMatchState.MATCHED else None),
+        matched_canonical_slug=(
+            "panda-1" if identity_state is IdentityMatchState.MATCHED else None
+        ),
     )
     current_value = CurrentTrustedValue(
         present=conflict_state is ConflictState.UNCHANGED,
@@ -132,7 +134,7 @@ def test_collection_policy_keeps_unresolved_parentage_and_contradictions_review_
     assert collection_policy_decision(contradiction)[0] is DecisionAction.DEFERRED
 
 
-def test_collection_policy_does_not_expand_into_unsupported_media_or_duplicate_corroboration() -> None:
+def test_collection_policy_keeps_media_deferred_but_allows_identity_corroboration() -> None:
     media = _candidate(
         kind=CandidateKind.MEDIA_METADATA,
         field_path="media.caption",
@@ -145,5 +147,13 @@ def test_collection_policy_does_not_expand_into_unsupported_media_or_duplicate_c
         conflict_state=ConflictState.UNCHANGED,
     )
 
+    unchanged_parentage = _candidate(
+        kind=CandidateKind.RELATIONSHIP,
+        field_path="relationship.mother",
+        normalized_value={"canonical_slug": "mother-panda"},
+        conflict_state=ConflictState.UNCHANGED,
+    )
+
     assert collection_policy_decision(media)[0] is DecisionAction.DEFERRED
-    assert collection_policy_decision(unchanged)[0] is DecisionAction.DEFERRED
+    assert collection_policy_decision(unchanged)[0] is DecisionAction.ACCEPTED
+    assert collection_policy_decision(unchanged_parentage)[0] is DecisionAction.DEFERRED
