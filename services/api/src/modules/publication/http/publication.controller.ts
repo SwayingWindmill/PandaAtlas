@@ -193,6 +193,6 @@ export class PublicationController {
     if (actor === undefined || correlationId === undefined) {
       throw new ProblemException(500, "system.internal", "The publication command context is unavailable.");
     }
-    return { actorAccountId: actor.accountId, correlationId };
+    return { actor: { kind: "account", accountId: actor.accountId }, correlationId };
   }
 }

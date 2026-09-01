@@ -1,5 +1,6 @@
 import { Injectable, type OnApplicationShutdown } from "@nestjs/common";
 import { Kysely, PostgresDialect, sql, type Transaction } from "kysely";
+import { attachDatabasePool } from "@vercel/functions";
 import pg from "pg";
 import { AppConfig } from "../config/app-config.js";
 import type { Database } from "./database.types.js";
@@ -45,6 +46,9 @@ export class DatabaseService implements OnApplicationShutdown {
       statement_timeout: config.databaseStatementTimeoutMs,
       idle_in_transaction_session_timeout: config.databaseIdleTransactionTimeoutMs,
     });
+    if (process.env.VERCEL === "1") {
+      attachDatabasePool(this.pool);
+    }
     this.client = new Kysely<Database>({ dialect: new PostgresDialect({ pool: this.pool }) });
   }
 

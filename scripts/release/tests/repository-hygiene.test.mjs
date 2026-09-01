@@ -14,7 +14,7 @@ import {
 
 test("normalizes repository paths across operating systems", () => {
   assert.equal(normalizeRepositoryPath(".\\apps\\web\\app\\page.tsx"), "apps/web/app/page.tsx");
-  assert.equal(normalizeRepositoryPath("./services//api/app/main.py"), "services/api/app/main.py");
+  assert.equal(normalizeRepositoryPath("./tools//panda-data/src/main.py"), "tools/panda-data/src/main.py");
 });
 
 test("allows source, evidence, and root planning files", () => {
@@ -31,8 +31,8 @@ test("rejects generated build, cache, dependency, and test output", () => {
     "apps/web/.next/server/app.js",
     "apps/web/test-results/example/error-context.md",
     "node_modules/example/index.js",
-    "services/api/app/__pycache__/main.cpython-314.pyc",
-    "services/api/panda_atlas_api.egg-info/PKG-INFO",
+    "tools/panda-data/src/panda_data/__pycache__/cli.cpython-314.pyc",
+    "tools/panda-data/zhipanda_panda_data.egg-info/PKG-INFO",
     "apps/web/tsconfig.tsbuildinfo",
     "apps/web/.vercel/project.json",
   ]);
@@ -46,8 +46,8 @@ test("rejects generated build, cache, dependency, and test output", () => {
       "apps/web/test-results/example/error-context.md",
       "apps/web/tsconfig.tsbuildinfo",
       "node_modules/example/index.js",
-      "services/api/app/__pycache__/main.cpython-314.pyc",
-      "services/api/panda_atlas_api.egg-info/PKG-INFO",
+      "tools/panda-data/src/panda_data/__pycache__/cli.cpython-314.pyc",
+      "tools/panda-data/zhipanda_panda_data.egg-info/PKG-INFO",
     ],
   );
 });

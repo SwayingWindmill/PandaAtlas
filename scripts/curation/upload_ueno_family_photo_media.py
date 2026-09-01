@@ -15,7 +15,7 @@ BATCH_VERSION = "2026.07.20.2"
 BUCKET = "panda-atlas-media"
 MANIFEST_PATH = REPO_ROOT / "data" / "reviewed-batches" / BATCH_VERSION / "media-manifest.json"
 DERIVATIVE_DIR = REPO_ROOT / ".media-work-ueno" / "derivatives"
-WRANGLER_CONFIG = REPO_ROOT / "services" / "worker-api" / "wrangler.jsonc"
+WRANGLER_VERSION = "4.110.0"
 CACHE_CONTROL = "public, max-age=31536000, immutable"
 EXPECTED_DERIVATIVES = 8
 
@@ -81,8 +81,8 @@ def load_uploads() -> list[Upload]:
     return uploads
 
 
-def npm_command() -> str:
-    executable = "npm.cmd" if os.name == "nt" else "npm"
+def npx_command() -> str:
+    executable = "npx.cmd" if os.name == "nt" else "npx"
     resolved = shutil.which(executable)
     if not resolved:
         raise FileNotFoundError(f"Required command is unavailable: {executable}")
@@ -91,10 +91,10 @@ def npm_command() -> str:
 
 def wrangler_command(upload: Upload) -> list[str]:
     return [
-        npm_command(),
-        "exec",
-        "wrangler",
-        "--",
+        npx_command(),
+        "-y",
+        f"wrangler@{WRANGLER_VERSION}",
+        
         "r2",
         "object",
         "put",
@@ -107,17 +107,17 @@ def wrangler_command(upload: Upload) -> list[str]:
         CACHE_CONTROL,
         "--remote",
         "--force",
-        "--config",
-        str(WRANGLER_CONFIG),
+        
+        
     ]
 
 
 def wrangler_get_command(upload: Upload, destination: Path) -> list[str]:
     return [
-        npm_command(),
-        "exec",
-        "wrangler",
-        "--",
+        npx_command(),
+        "-y",
+        f"wrangler@{WRANGLER_VERSION}",
+        
         "r2",
         "object",
         "get",
@@ -125,8 +125,8 @@ def wrangler_get_command(upload: Upload, destination: Path) -> list[str]:
         "--file",
         str(destination),
         "--remote",
-        "--config",
-        str(WRANGLER_CONFIG),
+        
+        
     ]
 
 

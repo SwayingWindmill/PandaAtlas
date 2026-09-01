@@ -4,17 +4,6 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import "./admin-bundle-budget.test.mjs";
-import "./archive-governance-evidence.test.mjs";
-import "./archive-workbench.test.mjs";
-import "./brand-technical-inventory.test.mjs";
-import "./certification-capabilities.test.mjs";
-import "./certification-lifecycle.test.mjs";
-import "./map-close-config.test.mjs";
-import "./map-close-evidence.test.mjs";
-import "./published-return-evidence.test.mjs";
-import "./release-candidate-bootstrap.test.mjs";
-import "./workspace-cleanliness.test.mjs";
 import {
   EnvironmentBlockedError,
   ReleaseGateError,
@@ -45,14 +34,14 @@ test("release gate reports passed, failed, skipped, and environment-blocked step
           {
             id: "skip",
             label: "Platform skip",
-            skipReason: "Linux-only runtime",
+            skipReason: "Not required on this platform",
           },
           {
             id: "blocked",
-            label: "Missing browser",
+            label: "Missing capability",
             run: async () => {
               order.push("blocked");
-              throw new EnvironmentBlockedError("Chromium executable is unavailable");
+              throw new EnvironmentBlockedError("Required local capability is unavailable");
             },
           },
           {
@@ -103,7 +92,7 @@ test("release gate reports passed, failed, skipped, and environment-blocked step
     );
 
     const markdown = await readFile(path.join(reportDir, "test.md"), "utf8");
-    assert.match(markdown, /\| Missing browser \| environment-blocked \|/);
+    assert.match(markdown, /\| Missing capability \| environment-blocked \|/);
     assert.match(markdown, /\| Dependent step \| skipped \| Dependency failed did not pass/);
   } finally {
     await rm(reportDir, { recursive: true, force: true });
@@ -120,8 +109,8 @@ test("skipped steps do not fail an otherwise successful gate", async () => {
       reportDir,
       logger: silentLogger,
       steps: [
-        { id: "d1", label: "D1 smoke", run: async () => undefined },
-        { id: "http", label: "Worker HTTP smoke", skipReason: "Linux CI only" },
+        { id: "primary", label: "Primary check", run: async () => undefined },
+        { id: "optional", label: "Optional check", skipReason: "Not selected" },
       ],
     });
 

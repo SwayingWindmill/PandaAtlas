@@ -8,7 +8,7 @@ import {
   commandsForDevelopmentScope,
 } from "../development/catalog.mjs";
 import { checkRepositoryHygiene } from "./check-repository-hygiene.mjs";
-import { repoRoot, runCommand } from "./default.mjs";
+import { repoRoot, runCommand } from "../development/command-runner.mjs";
 
 export { DEVELOPMENT_SCOPE_ORDER } from "../development/catalog.mjs";
 
@@ -18,15 +18,10 @@ const IGNORED_PREFIXES = [
   ".release-gate/",
   ".worktrees/",
   "apps/web/.next/",
-  "apps/web/.open-next/",
-  "apps/web/.wrangler/",
   "apps/web/node_modules/",
   "apps/web/playwright-report/",
   "apps/web/test-results/",
   "node_modules/",
-  "services/api/.venv-release/",
-  "services/api/.venv/",
-  "services/worker-api/node_modules/",
   "test-results/",
 ];
 
@@ -72,7 +67,6 @@ function isDeliveryMetadataPath(changedPath) {
     changedPath === ".github/README.md" ||
     changedPath === ".github/PULL_REQUEST_TEMPLATE.md" ||
     changedPath.startsWith(".github/ISSUE_TEMPLATE/") ||
-    changedPath === "contracts/delivery-workflow.v1.json" ||
     changedPath === "docs/development-delivery.md"
   );
 }
@@ -97,7 +91,7 @@ export function classifyDevelopmentScopes(paths) {
     if (changedPath === "package-lock.json") {
       addScope(scopes, "release");
       addScope(scopes, "web");
-      addScope(scopes, "worker");
+      addScope(scopes, "api");
       continue;
     }
 
@@ -108,7 +102,6 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith("scripts/batch/") ||
       changedPath.startsWith("scripts/research/") ||
       changedPath === "contracts/batch-operations.v1.json" ||
-      changedPath === "contracts/repository-structure.v1.json" ||
       changedPath.startsWith("data/beta-launch/") ||
       changedPath.startsWith("data/research-batches/") ||
       changedPath.startsWith("data/frontend-evidence/") ||
@@ -120,18 +113,14 @@ export function classifyDevelopmentScopes(paths) {
     ) addScope(scopes, "release");
 
     if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");
-    if (changedPath.startsWith("services/worker-api/")) addScope(scopes, "worker");
     if (changedPath.startsWith("services/api/")) addScope(scopes, "api");
+    if (changedPath.startsWith("tools/panda-data/")) { addScope(scopes, "curation"); addScope(scopes, "data"); }
 
     if (changedPath === "docker-compose.yml" || changedPath.startsWith("infra/supabase/")) {
       addScope(scopes, "release");
       addScope(scopes, "api");
     }
-
-    if (changedPath.startsWith("infra/cloudflare/")) {
-      addScope(scopes, "release");
-      addScope(scopes, "worker");
-    }
+    if (changedPath.startsWith("infra/cloudflare/")) addScope(scopes, "release");
 
     if (
       changedPath.startsWith("scripts/curation/") ||
@@ -155,20 +144,10 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "contracts/curation-patch.v1.json" ||
       changedPath === "contracts/curator-decisions.v1.json" ||
       changedPath === "contracts/integration-event.v1.json" ||
-      changedPath === "contracts/api-request-runtime-boundary.v1.json" ||
-      changedPath === "contracts/api-serverless-runtime.v1.json"
     ) addScope(scopes, "api");
 
     if (changedPath === "contracts/recovery-drill-environments.v1.json") {
       addScope(scopes, "release");
-    }
-
-    if (
-      changedPath === "scripts/check-public-api-boundary.mjs" ||
-      changedPath === "contracts/public-api-v1.json"
-    ) {
-      addScope(scopes, "release");
-      addScope(scopes, "api");
     }
   }
 

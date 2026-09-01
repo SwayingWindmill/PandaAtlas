@@ -15,6 +15,7 @@ const databaseUrl = localRehearsal
   ? "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
   : option("--database-url") ?? process.env.DATABASE_URL;
 const reportPath = option("--report");
+const databaseSslCaCert = process.env.DATABASE_SSL_CA_CERT;
 
 if (!databaseUrl) throw new Error("DATABASE_URL or --database-url is required");
 if (process.argv.includes("--database-url") && !option("--database-url")) {
@@ -466,7 +467,12 @@ async function output(report) {
   process.stdout.write(text);
 }
 
-const client = new Client({ connectionString: databaseUrl });
+const client = new Client({
+  connectionString: databaseUrl,
+  ...(databaseSslCaCert === undefined
+    ? {}
+    : { ssl: { ca: databaseSslCaCert, rejectUnauthorized: true } }),
+});
 const startedAt = new Date();
 const started = performance.now();
 

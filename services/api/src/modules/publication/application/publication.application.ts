@@ -11,8 +11,12 @@ export interface PublicRelease {
   contentSha256?: string;
 }
 
+export type PublicationActor =
+  | { kind: "account"; accountId: string }
+  | { kind: "system"; systemKey: string };
+
 export interface PublicationCommandContext {
-  actorAccountId: string;
+  actor: PublicationActor;
   correlationId: string;
 }
 

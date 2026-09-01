@@ -1,36 +1,41 @@
-# Panda Atlas Web
+# ZhiPanda Web
 
-- Application status: **Current product / Target-compatible**
-- Current production deployment: **Transitional OpenNext on Cloudflare Worker**
-- Approved target deployment: **Native Next.js on Vercel**
-- Governing status page: [`docs/deployment/runtime-status.md`](../../docs/deployment/runtime-status.md)
+`apps/web` is the production Next.js V2 application.
 
-The application under `app/`, `features/`, `components/`, `foundation/`, `lib/`, and `styles/` is the long-term Next.js product code. It must continue to build and run through the standard Next.js scripts without depending on Cloudflare-only behavior.
+## Runtime
 
-The following files and directories are retained for current production, migration safety, and rollback until ADR 0002 Phase 4 and Phase 6 complete:
+- Next.js 15
+- React 19
+- Vercel
+- production functions pinned to Tokyo (`hnd1`) where applicable
+- canonical API base: `https://api.zhipanda.com`
 
-- `open-next.config.ts`;
-- `cloudflare/`;
-- `wrangler.jsonc`;
-- `wrangler.staging.jsonc`;
-- `wrangler.staging.withdrawn.jsonc`;
-- OpenNext and Wrangler package scripts and dependencies.
-
-Do not add new application behavior that works only through OpenNext or Cloudflare bindings. Production custom domains remain on Cloudflare during Vercel Phase 1; the parallel Vercel deployment continues to call the existing public API and does not authorize DNS cutover.
+Cloudflare remains authoritative for DNS and R2 only. OpenNext, Wrangler Web deployment, and Cloudflare Worker runtime support were retired at the V2 production cutover.
 
 ## Local development
 
-```bash
-npm install
-npm run dev
+From the repository root on Windows:
+
+```powershell
+npm run dev:web
+npm run typecheck:web
+npm run lint:web
+npm run build:web
 ```
 
-## Standard verification
+Or from this workspace directly:
 
-```bash
-npm run lint
+```powershell
+npm run dev
 npm run typecheck
+npm run lint
 npm run build
 ```
 
-Cloudflare preview and deployment commands remain available only for current-production maintenance and rollback. Vercel acceptance and production cutover are governed by the phase documents under `docs/deployment/`.
+## Production deployment
+
+Vercel owns the online Web runtime. `vercel.json` pins the primary function region to `hnd1`.
+
+The Production `NEXT_PUBLIC_API_BASE_URL` is `https://api.zhipanda.com`. Changes to production environment variables require a new Vercel deployment before they become active.
+
+Application code must remain standard Next.js code and must not depend on Cloudflare Worker bindings or OpenNext compatibility behavior.

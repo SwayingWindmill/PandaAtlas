@@ -4,6 +4,7 @@ import pg from "pg";
 const { Client } = pg;
 const index = process.argv.indexOf("--database-url");
 const databaseUrl = index >= 0 ? process.argv[index + 1] : process.env.DATABASE_URL;
+const databaseSslCaCert = process.env.DATABASE_SSL_CA_CERT;
 if (!databaseUrl) throw new Error("DATABASE_URL or --database-url is required");
 
 const checks = [
@@ -53,9 +54,30 @@ const checks = [
       )
   `],
   ["identity account UUIDs still reference Supabase Auth", `
-    select count(*)::bigint as count
-    from identity.accounts account
-    where not exists (select 1 from auth.users auth_user where auth_user.id=account.account_id)
+    select case when exists (
+      select 1
+      from pg_constraint constraint_row
+      join pg_class source_table on source_table.oid = constraint_row.conrelid
+      join pg_namespace source_schema on source_schema.oid = source_table.relnamespace
+      join pg_class target_table on target_table.oid = constraint_row.confrelid
+      join pg_namespace target_schema on target_schema.oid = target_table.relnamespace
+      where constraint_row.contype = 'f'
+        and constraint_row.convalidated
+        and source_schema.nspname = 'identity'
+        and source_table.relname = 'accounts'
+        and target_schema.nspname = 'auth'
+        and target_table.relname = 'users'
+        and constraint_row.conkey = array[(
+          select attribute.attnum
+          from pg_attribute attribute
+          where attribute.attrelid = source_table.oid and attribute.attname = 'account_id'
+        )]::smallint[]
+        and constraint_row.confkey = array[(
+          select attribute.attnum
+          from pg_attribute attribute
+          where attribute.attrelid = target_table.oid and attribute.attname = 'id'
+        )]::smallint[]
+    ) then 0::bigint else 1::bigint end as count
   `],
   ["no migrated media promoted without clearance", `
     select count(*)::bigint as count
@@ -70,7 +92,12 @@ const checks = [
   `],
 ];
 
-const client = new Client({ connectionString: databaseUrl });
+const client = new Client({
+  connectionString: databaseUrl,
+  ...(databaseSslCaCert === undefined
+    ? {}
+    : { ssl: { ca: databaseSslCaCert, rejectUnauthorized: true } }),
+});
 const failures = [];
 const started = performance.now();
 try {

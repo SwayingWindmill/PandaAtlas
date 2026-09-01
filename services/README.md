@@ -1,10 +1,9 @@
 # Service boundary
 
-`services/` contains independently governed runtime services:
+`services/` contains the production backend runtime:
 
-- [`api`](api/) is the authoritative FastAPI and PostgreSQL/PostGIS application boundary.
-- [`worker-api`](worker-api/) is the current transitional public read projection.
+- [`api`](api/) is the authoritative NestJS/Fastify application boundary running on Vercel.
 
-Authority and projection ownership are defined by [ADR 0001](../docs/architecture/adr-0001-single-source-api-boundary.md). Current, target, transitional, and local-only runtime labels are defined by the [deployment status page](../docs/deployment/runtime-status.md).
+Business data authority is Supabase PostgreSQL; authentication authority is Supabase Auth. Cloudflare Worker/D1 projection services were retired at the V2 production cutover and are not part of the runtime graph.
 
-Only services with a committed `package.json` may be npm workspaces. The Python API remains outside the npm workspace list and is governed through `pyproject.toml` and its request-runtime boundary.
+`services/api` is an npm workspace. Offline acquisition, enrichment, curation, and data-processing Python code lives under `tools/panda-data`, outside the online API runtime.

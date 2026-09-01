@@ -1,0 +1,28 @@
+name: V2 Async Downstream
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v2-async-downstream-production
+  cancel-in-progress: false
+
+jobs:
+  run:
+    name: Drain V2 async queues
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Run bounded downstream cycle
+        env:
+          CRON_SECRET: ${{ secrets.V2_ASYNC_CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            https://api.zhipanda.com/internal/jobs/async-downstream

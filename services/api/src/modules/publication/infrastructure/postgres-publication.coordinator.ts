@@ -38,6 +38,14 @@ interface ReleaseRow {
   created_at: Date;
 }
 
+function actorAccountId(context: PublicationCommandContext): string | null {
+  return context.actor.kind === "account" ? context.actor.accountId : null;
+}
+
+function actorSystemKey(context: PublicationCommandContext): string | null {
+  return context.actor.kind === "system" ? context.actor.systemKey : null;
+}
+
 export class PostgresPublicationCoordinator implements PublicationCoordinator {
   public constructor(
     private readonly database: DatabaseService,
@@ -57,7 +65,11 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
       .execute(async (transaction) => {
         const release = await transaction
           .insertInto("publication.releases")
-          .values({ version, created_by_account_id: context.actorAccountId })
+          .values({
+            version,
+            created_by_account_id: actorAccountId(context),
+            created_by_system_key: actorSystemKey(context),
+          })
           .returningAll()
           .executeTakeFirstOrThrow();
 
@@ -374,7 +386,8 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           .values({
             release_id: release.release_id,
             transition_type: "built",
-            actor_account_id: context.actorAccountId,
+            actor_account_id: actorAccountId(context),
+            actor_system_key: actorSystemKey(context),
             reason: `Built immutable public projection for ${version}`,
           })
           .execute();
@@ -422,7 +435,8 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
         .values({
           release_id: releaseId,
           transition_type: "sealed",
-          actor_account_id: context.actorAccountId,
+          actor_account_id: actorAccountId(context),
+            actor_system_key: actorSystemKey(context),
           reason,
           occurred_at: sealedAt,
         })
@@ -464,7 +478,8 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           control_kind: "release_suspension",
           release_id: releaseId,
           action: suspended ? "apply" : "restore",
-          actor_account_id: context.actorAccountId,
+          actor_account_id: actorAccountId(context),
+            actor_system_key: actorSystemKey(context),
           reason,
           occurred_at: now,
         })
@@ -474,7 +489,8 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
         .values({
           release_id: releaseId,
           transition_type: suspended ? "suspended" : "restored",
-          actor_account_id: context.actorAccountId,
+          actor_account_id: actorAccountId(context),
+            actor_system_key: actorSystemKey(context),
           reason,
           occurred_at: now,
         })
@@ -510,7 +526,8 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           resource_kind: resourceKind,
           resource_id: resourceId,
           action: takenDown ? "apply" : "restore",
-          actor_account_id: context.actorAccountId,
+          actor_account_id: actorAccountId(context),
+            actor_system_key: actorSystemKey(context),
           reason,
           occurred_at: now,
         })
@@ -597,7 +614,8 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           release_id: releaseId,
           transition_type: transitionType,
           from_release_id: current?.release_id ?? null,
-          actor_account_id: context.actorAccountId,
+          actor_account_id: actorAccountId(context),
+            actor_system_key: actorSystemKey(context),
           reason,
           occurred_at: now,
         })

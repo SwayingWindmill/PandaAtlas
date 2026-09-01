@@ -95,7 +95,7 @@ class AtlantaPhotoUploadTests(unittest.TestCase):
             sha256="a" * 64,
             byte_size=1,
         )
-        with patch.object(MODULE, "npm_command", return_value="npm"):
+        with patch.object(MODULE, "npx_command", return_value="npx"):
             put_command = MODULE.wrangler_command(upload)
             get_command = MODULE.wrangler_get_command(upload, Path("download.webp"))
 
@@ -103,7 +103,9 @@ class AtlantaPhotoUploadTests(unittest.TestCase):
         self.assertIn("--force", put_command)
         self.assertIn("image/webp", put_command)
         self.assertIn(MODULE.CACHE_CONTROL, put_command)
-        self.assertIn(str(MODULE.WRANGLER_CONFIG), put_command)
+        self.assertIn(f"wrangler@{MODULE.WRANGLER_VERSION}", put_command)
+        self.assertNotIn("--config", put_command)
+        self.assertNotIn("--config", get_command)
         self.assertIn(f"{MODULE.BUCKET}/{upload.object_key}", put_command)
         self.assertIn("--remote", get_command)
         self.assertIn("download.webp", get_command)
