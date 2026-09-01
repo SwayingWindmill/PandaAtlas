@@ -55,4 +55,17 @@ describe("NestJS V2 runtime", () => {
     expect(response.headers["x-request-id"]).toBe(body.requestId);
   });
 
+  it("keeps internal async jobs outside the public API prefix and version", async () => {
+    app = await createApplication();
+
+    const internal = await app.inject({ method: "GET", url: "/internal/jobs/async-downstream" });
+    const publicPrefix = await app.inject({ method: "GET", url: "/api/v2/internal/jobs/async-downstream" });
+
+    expect(internal.statusCode).toBe(401);
+    expect(internal.json()).toMatchObject({
+      status: 401,
+      code: "auth.unauthorized",
+    });
+    expect(publicPrefix.statusCode).toBe(404);
+  });
 });
