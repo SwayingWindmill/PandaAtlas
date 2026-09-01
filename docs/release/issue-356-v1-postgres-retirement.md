@@ -5,7 +5,7 @@
 - Data-classification authority: `docs/migration/v1-to-v2-data-classification.md`
 - Migration: `infra/supabase/migrations/0051_retire_obsolete_v1_postgres.sql`
 - Post-migration verifier: `services/api/scripts/migration/verify-v1-retirement.mjs`
-- Status: implementation/rehearsal in progress; production destructive DDL not yet applied
+- Status: production migration 0051 applied and verified; final async scheduler wiring is being closed before issue completion
 
 ## Decision boundary
 
@@ -92,4 +92,10 @@ Production retirement is not allowed until all of the following are true:
 6. canonical PublicRead/Publication, Curation, async consumer/queue, and health smoke checks pass after DDL;
 7. production migration history contains 0051 exactly once.
 
-No production destructive DDL has been executed while this document is in the current in-progress state.
+## Production execution evidence
+
+On 2026-09-01, production was verified at migration `0050` with zero unfinished Community Curation bridges, zero open legacy Privacy requests, and zero active V1 Follows missing their V2 Favorite. A fresh pre-0051 logical backup was then created outside the repository under `PandaAtlas-backups/issue-356-20260901-155117-pre-0051`; all five dump artifacts were non-empty and recorded in a SHA-256 manifest. The canonical Supabase migration dry-run listed only `0051_retire_obsolete_v1_postgres.sql`, after which 0051 was applied successfully.
+
+Post-DDL verification recorded migration `0051` exactly once (`51` migrations total). The production retirement verifier passed with `35` retired relations, `24` required retained/V2 relations, `3` retired schemas, `12` retired legacy function names, and zero failures. Canonical `/health`, `/ready`, `/api/v2/release`, `/api/v2/stats`, and `/api/v2/pandas` remained healthy; the active public release stayed `2026.07.31.1-v2-recovery` with `39` published pandas. Publication, Curation owner-routing, V2 PGMQ queues, and retained authority counts remained intact.
+
+The post-DDL async smoke also exposed one pre-existing `publication.release.activated` Outbox event from the #333 cutover with zero publish attempts and no error. Production had no `CRON_SECRET` and therefore no operational scheduler path for `GET /internal/jobs/async-downstream`. #356 closure therefore also restores the already-designed bounded Vercel Cron pump and its Production scheduler secret rather than manually mutating Outbox/PGMQ state.
