@@ -48,7 +48,10 @@ test("development verification scopes resolve through the shared catalog", () =>
 
 test("command rendering exposes the executable interface", () => {
   assert.equal(renderDevelopmentCommand(getDevelopmentCommand("web.lint")), "npm run lint -w web");
-  assert.match(renderDevelopmentCommand(getDevelopmentCommand("api.test")), /uv run/);
+  assert.equal(
+    renderDevelopmentCommand(getDevelopmentCommand("api.test")),
+    "npm run test -w @zhipanda/api",
+  );
 });
 
 test("Windows npm and npx commands run through the Node CLI without a shell", () => {
@@ -68,14 +71,14 @@ test("Windows npm and npx commands run through the Node CLI without a shell", ()
     },
   );
   assert.deepEqual(
-    resolveDevelopmentInvocation("npx", ["wrangler", "--version"], {
+    resolveDevelopmentInvocation("npx", ["supabase", "--version"], {
       platform: "win32",
       npmExecPath,
       nodeExecutable,
     }),
     {
       executable: nodeExecutable,
-      args: ["C:\\node\\node_modules\\npm\\bin\\npx-cli.js", "wrangler", "--version"],
+      args: ["C:\\node\\node_modules\\npm\\bin\\npx-cli.js", "supabase", "--version"],
       shell: false,
     },
   );
@@ -99,6 +102,7 @@ test("operations CLI lists and describes catalog commands", () => {
   assert.equal(listed.status, 0, listed.stderr);
   assert.match(listed.stdout, /web\.dev/);
   assert.match(listed.stdout, /api\.dev/);
+  assert.doesNotMatch(listed.stdout, /worker\./);
 
   const described = spawnSync(process.execPath, [cliPath, "describe", "verify.dev", "--json"], {
     cwd: repoRoot,
@@ -110,28 +114,17 @@ test("operations CLI lists and describes catalog commands", () => {
   assert.equal(payload.category, "verification");
 });
 
-test("root package exposes one canonical interface and compatibility adapters", async () => {
+test("root package exposes the current canonical development interface", async () => {
   const packageJson = JSON.parse(await readFile(path.join(repoRoot, "package.json"), "utf8"));
   assert.equal(packageJson.scripts.ops, "node scripts/development/operations.mjs");
   assert.equal(
     packageJson.scripts["dev:web"],
     "node scripts/development/operations.mjs run web.dev",
   );
+  assert.equal(packageJson.scripts["dev:api"], "npm run dev -w @zhipanda/api");
   assert.equal(
     packageJson.scripts["verify:dev"],
     "node scripts/development/operations.mjs run verify.dev",
-  );
-  assert.equal(
-    packageJson.scripts["check:delivery-contract"],
-    "node scripts/development/operations.mjs run delivery.check-local",
-  );
-  assert.equal(
-    packageJson.scripts["check:delivery-contract:repository"],
-    "node scripts/development/operations.mjs run release.check-delivery-contract",
-  );
-  assert.equal(
-    packageJson.scripts["check:repository-structure"],
-    "node scripts/development/operations.mjs run release.check-repository-structure",
   );
   assert.equal(
     packageJson.scripts["check:repository-hygiene"],
@@ -146,24 +139,13 @@ test("root package exposes one canonical interface and compatibility adapters", 
     "node scripts/development/operations.mjs run release.check-batch-workflow-interface",
   );
   assert.equal(packageJson.scripts["batch:plan"], "node scripts/batch/operations.mjs plan");
-  assert.equal(
-    packageJson.scripts["batch:run"],
-    "node scripts/batch/operations.mjs run --execute",
-  );
-  assert.equal(
-    packageJson.scripts["check:api-runtime-boundary"],
-    "node scripts/development/operations.mjs run api.check-runtime-boundary",
-  );
-  assert.equal(
-    packageJson.scripts["check:api-serverless-closure"],
-    "node scripts/development/operations.mjs run api.check-serverless-closure",
-  );
-  assert.equal(
-    packageJson.scripts["build:api-serverless-closure"],
-    "node scripts/development/operations.mjs run api.build-serverless-closure",
-  );
+  assert.equal(packageJson.scripts["batch:run"], "node scripts/batch/operations.mjs run --execute");
   assert.equal(
     packageJson.scripts["infra:status"],
     "node scripts/development/operations.mjs run foundation.status",
   );
+  assert.equal(packageJson.scripts["check:delivery-contract"], undefined);
+  assert.equal(packageJson.scripts["check:repository-structure"], undefined);
+  assert.equal(packageJson.scripts["check:api-runtime-boundary"], undefined);
+  assert.equal(packageJson.scripts["deploy:api:cf"], undefined);
 });

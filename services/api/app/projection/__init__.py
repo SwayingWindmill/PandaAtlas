@@ -1,1 +1,0 @@
-"""Deterministic public release projection."""

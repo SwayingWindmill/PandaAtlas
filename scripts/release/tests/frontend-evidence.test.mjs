@@ -23,25 +23,14 @@ test("classifies an isolated public style change as Level 1", () => {
   assert.equal(result.level, 1);
 });
 
-test("classifies public release migration and Cloudflare entry changes as Level 3", () => {
+test("classifies Vercel deployment and public release integrity changes as Level 3", () => {
   const result = classifyFrontendRisk([
-    "apps/web/cloudflare/worker-entry.mjs",
-    "apps/web/wrangler.staging.jsonc",
-    "infra/cloudflare/d1/migrations/0007a_public_releases_immutable_update.sql",
-    "scripts/release/apply-d1-migrations.mjs",
-    "scripts/release/d1-public-release.mjs",
-    "scripts/release/apply-public-release-d1.mjs",
-    "scripts/release/rollback-public-release-d1.mjs",
+    "apps/web/vercel.json",
+    ".github/workflows/vercel-web-acceptance.yml",
+    "contracts/vercel-web-deployment.v1.json",
+    "scripts/release/check-vercel-web-deployment-plan.mjs",
     "scripts/release/check-beta-hard-gates.mjs",
     "scripts/release/media-integrity.mjs",
-    "scripts/release/api-staging-withdrawal.mjs",
-    "scripts/release/run-api-staging-withdrawal.mjs",
-    "scripts/release/frontend-staging-withdrawal.mjs",
-    "scripts/release/run-frontend-staging-withdrawal.mjs",
-    "apps/web/scripts/verify-frontend-staging-withdrawal.mjs",
-    "apps/web/wrangler.staging.withdrawn.jsonc",
-    "data/frontend-withdrawals/2026.07.20.2-ri-ri.json",
-    "services/worker-api/wrangler.staging.jsonc",
   ]);
 
   assert.equal(result.level, 3);

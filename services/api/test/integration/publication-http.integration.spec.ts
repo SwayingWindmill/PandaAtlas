@@ -49,7 +49,10 @@ describe("V2 publication and release-scoped public reads", () => {
     const media = app.get<MediaPort>(MEDIA_PORT);
     const publication = app.get<PublicationPort>(PUBLICATION_PORT);
     const actorAccountId = randomUUID();
-    const context = { actorAccountId, correlationId: randomUUID() };
+    const context = {
+      actor: { kind: "account" as const, accountId: actorAccountId },
+      correlationId: randomUUID(),
+    };
 
     await sql`
       insert into auth.users (id, aud, role, created_at, updated_at)

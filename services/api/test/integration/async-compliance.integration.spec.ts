@@ -121,7 +121,10 @@ describe("V2 async downstream and compliance", () => {
     });
     await engagement.favorite(accountId, panda.pandaId);
 
-    const publicationContext = { actorAccountId: accountId, correlationId: randomUUID() };
+    const publicationContext = {
+      actor: { kind: "account" as const, accountId },
+      correlationId: randomUUID(),
+    };
     const release = await publication.build(`async-${suffix}-1`, publicationContext);
     const sealed = await publication.seal(release.releaseId, publicationContext, "Seal async integration release");
     expect(sealed.kind).toBe("ok");

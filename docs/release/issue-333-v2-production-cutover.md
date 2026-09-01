@@ -1,6 +1,6 @@
 # Issue #333 — V2 Production Cutover Evidence
 
-Status: **in progress**  
+Status: **complete**  
 Issue: `#333 V2-11: Cut over production and retire the legacy runtimes`  
 Started: 2026-08-30 (Asia/Singapore)  
 Branch: `feat/issue-333-production-cutover`
@@ -344,9 +344,13 @@ Cloudflare because the local network could not reach the Cloudflare API; no root
 record was modified. The managed Vercel-to-Vercel probe above makes that temporary hostname
 unnecessary.
 
-## 10. Next executable sequence
+## 10. Historical pre-cutover sequence (superseded by sections 13–14)
 
-Continue the runbook without adding a compatibility phase:
+The following was the executable sequence before the V2 commit point. **Do not execute these DNS or
+rollback steps now**: section 13 records that the concurrent #333 lane already completed the traffic
+cutover and canonical API switch. It is retained only to preserve the chronological execution record.
+
+The pre-commit runbook sequence was:
 
 1. restore a reliable Cloudflare control-plane path and recapture the exact root/`www`/`api` rollback
    records plus current legacy Worker deployment anchors;
@@ -356,3 +360,160 @@ Continue the runbook without adding a compatibility phase:
 5. establish the V2-only commit point, switch the Web API base from the stable Vercel alias to
    `https://api.zhipanda.com`, reopen V2 writes/async work, and retire the legacy
    OpenNext/Worker-D1/FastAPI runtime paths immediately as required by #333.
+
+## 11. Fresh pre-recovery backup and Publication system actor migration
+
+The later production recovery pass did not bypass the logical-backup gate. The managed `postgres`
+password was rotated through the Supabase Management API and the new value was persisted only in
+Windows Credential Manager under `PandaAtlas:postgres:production`. The independent
+`zhipanda_app_runtime` application credential was not rotated or widened.
+
+A fresh off-repository logical backup completed on 2026-09-01 before migration `0050` was applied.
+Its manifest was generated at `2026-09-01T01:31:39.6375252Z` and bound the backup to migration
+`0050_publication_system_actor_provenance.sql` SHA-256
+`079585f3ad29f67718dc620cd099eac76f9491534b5ba3828f7adca2ce29f878`.
+The five non-empty recovery artifacts were:
+
+| Artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `roles.sql` | 7,060 | `a640c30b9c68232877b93065f0b56056409d7a245dbabaf2a4d9c7eac7ca8598` |
+| `schema.sql` | 831,800 | `66758f40e0e1bd90428f625684d9426afd682e9b17eb21a2f99bb66143dd4f82` |
+| `data.sql` | 111,784 | `be12d1898c64bfe8233241e435d5045e71d492a9126d31243bbc09ec0261dc87` |
+| `supabase-migrations-schema.sql` | 1,294 | `553d8c88616fcf2af358f58deb778483446e67090dff8c80265ad23dee968264` |
+| `supabase-migrations-data.sql` | 479,647 | `8911e5024a92820c1933285a23a10a930c53d988fecb03870a0b83205830a36` |
+
+`pg_dump` emitted only the expected data-only circular-FK restore warnings; all five commands exited
+successfully. The backup remains outside the repository under the operator's
+`PandaAtlas-backups` directory.
+
+The canonical Supabase CLI dry-run then reported exactly one pending migration:
+`0050_publication_system_actor_provenance.sql`. The real push applied exactly that migration. Final
+migration history is `0001` through `0050` with 50 rows. Readback confirms all three system-actor
+columns exist and all three mutually-exclusive account/system actor constraints are validated.
+
+## 12. Governed authority recovery and immutable public release
+
+The migration-only recovery path remains pinned to governed release `2026.07.31.1`, source SHA-256
+`0c3bb311c21774d478c4586c64f20cc34d9b49a31319f5917689469d16eca0b1`, and manifest SHA-256
+`eaf303b953c16c71ec630b989fc07e2ce1ba8e6910e0e3b5189794962fb599a1`.
+The first production dry-run validated those artifacts and observed exact empty V2 authority state.
+
+The first apply attempt correctly failed inside the serializable authority-import transaction on the
+legacy slug `mei_xiang`, because V2 accepts only lower-case hyphenated slugs. Production readback
+immediately afterward confirmed the transaction had rolled back completely and authority was still
+empty. The recovery mapper was then tightened rather than the database constraint weakened: an
+invalid legacy slug may be omitted only when replacing `_` with `-` produces the record's canonical
+slug exactly. The governed bundle contains exactly three such duplicate legacy spellings:
+`mei_xiang`, `tian_tian`, and `xiao_qi_ji`; every other legacy slug is already V2-valid. This rule is
+also evaluated during dry-run bundle validation.
+
+The completed recovery now has the exact authority state:
+
+- 41 Panda identity rows: 39 governed public Pandas plus 2 dependency-only FK identities;
+- 39 canonical Panda slugs;
+- 110 fact assertions and 110 current fact conclusions;
+- 43 evidence sources;
+- 12 places: 8 governed facilities plus deterministic coarse locations;
+- 28 residencies;
+- 43 life events;
+- 24 lineage assertions.
+
+`auth.users` remains **0**. No Supabase Auth user was invented to attribute migration work.
+
+Publication created immutable release `0318efce-f1fb-4d97-be03-356c6c0c2a75`, version
+`2026.07.31.1-v2-recovery`, with system actor `production-cutover-recovery` and no account actor.
+Its content SHA-256 is `596ef2e73bf75821f4b87400d2abf6271c8cd005e52bfa644ff696026d64c69a`.
+The lifecycle evidence is exactly:
+
+1. `built` at `2026-09-01T01:41:53.887148Z`;
+2. `sealed` at `2026-09-01T01:41:56.918Z`;
+3. `activated` at `2026-09-01T01:41:57.369Z`.
+
+All three transitions use the same controlled system actor and null `actor_account_id`. The release is
+sealed, is the sole `publication.current_release`, has 186 immutable memberships, and there are zero
+emergency delivery-control events.
+
+The public projection intentionally contains 39 Pandas, 43 evidence sources, 12 places, 28
+residencies, 43 life events, 21 lineage assertions, and 0 media. The authority retains all 24 lineage
+assertions; the public projection contains 21 because the normal Publication lineage snapshot exposes
+only `status='confirmed'`. The governed bundle contains exactly 21 confirmed and 3 tentative lineage
+assertions. Media remains intentionally deferred from this recovery as planned.
+
+The production recovery gate is therefore complete. It does not require another authority bootstrap,
+fabricated Auth identity, D1 reverse import, or Media migration prerequisite. A later readback showed
+that the bounded traffic cutover described in section 10 had already been completed by the concurrent
+#333 execution lane; those observed commit-point facts are recorded below rather than repeating the
+old Step A / Step B mutations.
+
+## 13. Observed completed traffic cutover and V2 commit point
+
+A fresh Cloudflare DNS read on 2026-09-01 showed that all three public application hostnames had
+already moved from the legacy proxied `AAAA 100::` Worker-routing form to DNS-only Vercel targets:
+
+| Hostname | Current record | Proxied | TTL | Cloudflare record id |
+| --- | --- | --- | ---: | --- |
+| `zhipanda.com` | `CNAME f22e3e5fb5ddc981.vercel-dns-017.com` | false | automatic (`1`) | `f2a73c2ee7915e621b5d4ce1ccda8b3b` |
+| `www.zhipanda.com` | `CNAME f22e3e5fb5ddc981.vercel-dns-017.com` | false | automatic (`1`) | `22918646bb920a57b38a0eca6e4dfce7` |
+| `api.zhipanda.com` | `CNAME 4e22a95b9aeab32d.vercel-dns-017.com` | false | automatic (`1`) | `8678eedcec8a50e8b8fbac2acc960ff1` |
+
+The root-zone MX records and SPF TXT record remained present and were not modified by this recovery
+pass. Because these application records are DNS-only CNAMEs directly to Vercel, the legacy OpenNext
+and API Worker runtimes are no longer in the public routing path. A separate Workers custom-domain
+inventory could not be re-run because the local Wrangler package/cache had already been retired; this
+was treated as an inventory limitation rather than a reason to repeat DNS mutations whose current
+state was already conclusive.
+
+The canonical Nest production API is live:
+
+- `GET https://api.zhipanda.com/health` -> HTTP 200, `{"status":"ok"}`;
+- `GET https://api.zhipanda.com/ready` -> HTTP 200, `{"status":"ok"}`.
+
+The Web Production environment now has
+`NEXT_PUBLIC_API_BASE_URL=https://api.zhipanda.com`, so the temporary stable Vercel API hostname used
+during the rollback window is no longer the browser/runtime authority.
+
+Fresh public smoke against the canonical hosts also passed:
+
+- `https://zhipanda.com/` returns the expected permanent/canonical redirect (HTTP 308);
+- `https://www.zhipanda.com/zh` returns HTTP 200 and the ZhiPanda page title;
+- `/api/v2/release` returns HTTP 200 and version `2026.07.31.1-v2-recovery`;
+- `/api/v2/stats` returns HTTP 200 with 39 Pandas, 12 places, 21 confirmed lineage assertions,
+  28 residencies, 43 life events, 0 media and 43 evidence sources;
+- `/api/v2/pandas` returns HTTP 200 with 39 public Pandas.
+
+Together with the sealed/activated V2 release, canonical Web API base, direct Vercel DNS and healthy
+canonical Nest API, these observations establish that the V2 commit point has already been crossed.
+Rollback is therefore V2-to-V2 only; #333 must not route public traffic back to Worker/D1/FastAPI.
+The remaining work is repository/runtime retirement verification and delivery of the already-staged
+legacy removals, not another production migration or traffic cutover.
+
+## 14. V2-only repository and runtime retirement verification
+
+After the V2 commit point was observed, the current repository shape was verified without restoring
+any retired compatibility surface. The existing legacy-retirement deletions remained staged throughout
+these checks; they were not reset, unstaged, or replaced by recovery work.
+
+Windows-native verification against the current NestJS/Vercel-only source closure passed:
+
+- `npm run typecheck:v2`: PASS for `@zhipanda/api` and `@zhipanda/api-client`;
+- `npm run build:v2`: PASS for the generated client and Nest production build;
+- `npm run check:architecture:v2`: PASS, 182 modules / 370 dependencies / zero violations;
+- `npm run typecheck:web`: PASS;
+- `npm run build:web`: PASS on Next.js 15.5.24 with all 56 static-generation steps complete;
+- `npm run test:development-gate`: 28/28 PASS;
+- `npm run check:repository-hygiene`: PASS across 1,164 tracked or unignored paths.
+
+The Web build reported only the two existing `@next/next/no-img-element` performance warnings in
+`circular-gallery.tsx` and `img-sphere.tsx`; neither is a build or retirement failure.
+
+The focused real-Postgres Publication integration was also rerun. Its first executable attempt showed
+that the local Supabase development volume was one migration behind production and therefore lacked
+`created_by_system_key`. No application fallback or test workaround was added, and the local database
+was not reset. Only the pending local repository migration was applied with
+`supabase migration up --local --workdir infra`; the same Publication integration then passed 1/1.
+The local Supabase foundation was stopped afterward with its development volume preserved.
+
+These checks demonstrate that the repository builds and tests as the intended V2 topology after
+legacy FastAPI, Worker/D1 and OpenNext retirement. The production and repository evidence therefore
+agree on the post-commit architecture: Next.js on Vercel, NestJS on Vercel, Supabase PostgreSQL as the
+business authority, and Cloudflare outside the application runtime path.

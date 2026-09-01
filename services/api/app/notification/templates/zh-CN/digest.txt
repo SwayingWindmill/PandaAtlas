@@ -1,7 +1,0 @@
-$title
-
-本期共 $item_count 项动态。
-
-$items_text
-
-打开吱熊猫站内消息：$inbox_url

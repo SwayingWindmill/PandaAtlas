@@ -1,6 +1,0 @@
-$title
-
-$summary
-
-Open your ZhiPanda inbox: $inbox_url
-Update type: $category

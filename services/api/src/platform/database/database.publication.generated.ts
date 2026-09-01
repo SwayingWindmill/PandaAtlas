@@ -19,7 +19,8 @@ export interface PublicationCurrentRelease {
 
 export interface PublicationDeliveryControlEvents {
   action: string;
-  actor_account_id: string;
+  actor_account_id: string | null;
+  actor_system_key: string | null;
   control_event_id: Generated<string>;
   control_kind: string;
   occurred_at: Generated<Timestamp>;
@@ -44,7 +45,8 @@ export interface PublicationReleases {
   built_at: Generated<Timestamp>;
   content_sha256: string | null;
   created_at: Generated<Timestamp>;
-  created_by_account_id: string;
+  created_by_account_id: string | null;
+  created_by_system_key: string | null;
   lifecycle_state: Generated<string>;
   projection_schema_version: Generated<number>;
   release_id: Generated<string>;
@@ -53,7 +55,8 @@ export interface PublicationReleases {
 }
 
 export interface PublicationReleaseTransitions {
-  actor_account_id: string;
+  actor_account_id: string | null;
+  actor_system_key: string | null;
   from_release_id: string | null;
   occurred_at: Generated<Timestamp>;
   reason: string;
