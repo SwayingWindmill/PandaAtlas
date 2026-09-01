@@ -13,7 +13,16 @@ FIXTURES = Path(__file__).resolve().parents[3] / "contracts" / "panda-data" / "f
 
 
 def test_canonical_draft_2020_12_contracts_and_fixtures_validate() -> None:
-    assert check_contracts() == ("artifact-manifest", "pipeline-job", "pipeline-result")
+    assert check_contracts() == (
+        "acquisition-curation-recommendation",
+        "artifact-manifest",
+        "pipeline-job",
+        "pipeline-result",
+    )
+    validate_contract(
+        "acquisition-curation-recommendation",
+        json.loads((FIXTURES / "acquisition-curation-recommendation.valid.json").read_text()),
+    )
     validate_contract(
         "artifact-manifest",
         json.loads((FIXTURES / "artifact-manifest.valid.json").read_text()),

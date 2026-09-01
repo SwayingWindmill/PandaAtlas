@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zhipanda:contracts:panda-data:acquisition-curation-recommendation:v1",
+  "title": "Acquisition Curation Recommendation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "acquisitionBundleId",
+    "pipelineArtifactId",
+    "targetPandaId",
+    "recommendedByAccountId",
+    "reason",
+    "changes"
+  ],
+  "properties": {
+    "acquisitionBundleId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pipelineArtifactId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "targetPandaId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "recommendedByAccountId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 2000
+    },
+    "changes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/change"
+      }
+    }
+  },
+  "$defs": {
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "ownerModule",
+        "operation",
+        "payload",
+        "lastVerifiedOn",
+        "sourceIds"
+      ],
+      "properties": {
+        "candidateId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ownerModule": {
+          "enum": ["panda", "lineage", "life_history"]
+        },
+        "operation": {
+          "enum": [
+            "fact.propose",
+            "fact.corroborate",
+            "fact.dispute",
+            "name.add",
+            "name.corroborate",
+            "external_identifier.add",
+            "external_identifier.corroborate",
+            "parentage.create",
+            "residency.create",
+            "event.create"
+          ]
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "lastVerifiedOn": {
+          "type": "string",
+          "format": "date"
+        },
+        "sourceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}
