@@ -1,0 +1,41 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [
+      ".next*/**",
+      "lib/generated/**",
+      "styles/third-party/**",
+      "tests/fixtures/**"
+    ],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "files": [
+          "styles/panda-fan-brand-story-prototype.css"
+        ],
+        "createdAt": "2026-09-01T15:34:03.802Z",
+        "reason": "retired historical prototype, not production visual authority"
+      },
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "styles/panda-fan-prototype.css"
+        ],
+        "createdAt": "2026-09-01T15:34:13.198Z",
+        "reason": "retired historical prototype, not production visual authority"
+      }
+    ],
+    "designSystem": {
+      "enabled": true
+    }
+  },
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 8,
+      "maxChars": 12000
+    }
+  }
+}

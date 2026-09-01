@@ -14,8 +14,8 @@
 
 .releaseNote {
   margin-top: 1.25rem;
-  padding: 0.7rem 0 0.7rem 1rem;
-  border-left: 3px solid #187653;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgb(24 118 83 / 28%);
   color: #486158;
   font-size: 0.84rem;
 }
@@ -333,8 +333,8 @@
 
 .scope {
   padding: 1.25rem;
-  border-left: 4px solid #ad3d1d;
-  border-radius: 0 1rem 1rem 0;
+  border: 1px solid rgb(173 61 29 / 30%);
+  border-radius: 1rem;
   background: #f7dfd2;
 }
 
@@ -352,7 +352,7 @@
 .member {
   min-width: 0;
   padding: 1rem;
-  border-top: 4px solid #187653;
+  border: 1px solid rgb(24 118 83 / 22%);
   border-radius: 0.9rem;
   background: #fff;
 }

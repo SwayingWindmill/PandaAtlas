@@ -351,5 +351,49 @@ function SourcesTab({ detail, pandaId, disabled, onSaved, onError }: ModuleTabPr
 function PublishTab({ detail, validation, working, onValidate, onReopen, onPublish }: { detail: AdminPandaDetailRead; validation: AdminPandaValidationRead | null; working: boolean; onValidate: () => void; onReopen: () => void; onPublish: () => void }) {
   const ready = detail.workflow.status === "ready";
   const failed = detail.workflow.status === "validation_failed";
-  return <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.8fr)]"><ReadSection title="发布检查"><ul className="grid gap-2">{detail.quality_issues.length ? detail.quality_issues.map((issue) => <li key={issue} className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">! {issueLabels[issue] ?? issue}</li>) : <li className="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-950">✓ 当前后台完整度检查没有发现建议性缺口</li>}{validation?.issues.map((issue) => <li key={`${issue.category}-${issue.detail}`} className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-950">错误 · {issue.category}: {issue.detail}</li>)}</ul>{failed ? <p className="mt-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-950">发布检查未通过。先返回草稿修复资料，再重新运行检查；历史验证结果会继续保留在审计链中。</p> : null}</ReadSection><ReadSection title="发布状态"><dl className="grid gap-3 text-sm"><div><dt className="font-semibold text-stone-600">Change Set</dt><dd className="break-all">{detail.workflow.change_set_id ?? "无"}</dd></div><div><dt className="font-semibold text-stone-600">状态</dt><dd>{detail.workflow.status}</dd></div><div><dt className="font-semibold text-stone-600">Archive 基线</dt><dd>{detail.workflow.base_archive_version}</dd></div></dl><div className="mt-5 grid gap-3">{failed ? <button type="button" disabled={working || !detail.workflow.can_validate} onClick={onReopen} className="min-h-11 rounded-md border border-red-700 px-4 font-semibold text-red-900 disabled:opacity-40">返回草稿继续完善</button> : <button type="button" disabled={working || !detail.workflow.change_set_id || !detail.workflow.can_validate || ready} onClick={onValidate} className="min-h-11 rounded-md border border-stone-500 px-4 font-semibold disabled:opacity-40">运行发布检查</button>}<button type="button" disabled={working || !ready || !detail.workflow.can_publish} onClick={onPublish} className="min-h-11 rounded-md bg-stone-950 px-4 font-semibold text-white disabled:opacity-40">发布到 Archive</button>{ready && !detail.workflow.can_publish ? <p className="text-xs text-amber-800">发布要求具备发布 Capability 且最近完成认证。</p> : null}</div></ReadSection></div>;
+  return (
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.8fr)]">
+      <ReadSection title="发布检查">
+        <ul className="grid gap-2">
+          {detail.quality_issues.length
+            ? detail.quality_issues.map((issue) => (
+                <li key={issue} className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                  ! {issueLabels[issue] ?? issue}
+                </li>
+              ))
+            : (
+                <li className="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-950">
+                  ✓ 当前后台完整度检查没有发现建议性缺口
+                </li>
+              )}
+          {validation?.issues.map((issue) => (
+            <li key={`${issue.category}-${issue.detail}`} className="rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-950">
+              错误 · {issue.category}: {issue.detail}
+            </li>
+          ))}
+        </ul>
+        {failed ? (
+          <p className="mt-4 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-950">
+            发布检查未通过。先返回草稿修复资料，再重新运行检查；历史验证结果会继续保留在审计链中。
+          </p>
+        ) : null}
+      </ReadSection>
+      <ReadSection title="发布状态">
+        <dl className="grid gap-3 text-sm">
+          <div><dt className="font-semibold text-stone-600">Change Set</dt><dd className="break-all">{detail.workflow.change_set_id ?? "无"}</dd></div>
+          <div><dt className="font-semibold text-stone-600">状态</dt><dd>{detail.workflow.status}</dd></div>
+          <div><dt className="font-semibold text-stone-600">Archive 基线</dt><dd>{detail.workflow.base_archive_version}</dd></div>
+        </dl>
+        <div className="mt-5 grid gap-3">
+          {failed ? (
+            <button type="button" disabled={working || !detail.workflow.can_validate} onClick={onReopen} className="min-h-11 rounded-md border border-red-700 px-4 font-semibold text-red-900 disabled:opacity-40">返回草稿继续完善</button>
+          ) : (
+            <button type="button" disabled={working || !detail.workflow.change_set_id || !detail.workflow.can_validate || ready} onClick={onValidate} className="min-h-11 rounded-md border border-stone-500 px-4 font-semibold disabled:opacity-40">运行发布检查</button>
+          )}
+          <button type="button" disabled={working || !ready || !detail.workflow.can_publish} onClick={onPublish} className="min-h-11 rounded-md bg-stone-950 px-4 font-semibold text-white disabled:opacity-40">发布到 Archive</button>
+          {ready && !detail.workflow.can_publish ? <p className="text-xs text-amber-800">发布要求具备发布 Capability 且最近完成认证。</p> : null}
+        </div>
+      </ReadSection>
+    </div>
+  );
 }

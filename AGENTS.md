@@ -21,3 +21,18 @@
   `/mnt/e`, because mixed Windows/WSL `node_modules`, permissions, native
   binaries, and small-file I/O make installs and verification unreliable.
   Use WSL only for tooling that genuinely requires Linux.
+- Impeccable is the default design workflow for user-visible Web frontend work.
+  Do not wait for the user to request it explicitly. Before changing a public
+  UI/UX surface under `apps/web`, load `.agents/skills/impeccable/SKILL.md`, run
+  its context setup for the concrete target, and use `apps/web/PRODUCT.md`,
+  `apps/web/DESIGN.md`, plus the nearest persisted surface brief as design
+  authority. Use the relevant Impeccable critique/shape/layout/typeset/adapt/
+  audit/polish passes for the scope instead of treating the skill as an
+  optional final review.
+- For Web code changes, run `npm run check:impeccable -w web` (or the normal
+  Web lint command, which includes it) before considering the work complete.
+  Fix real detector findings rather than adding broad ignores. Only exclude
+  generated code, third-party code, fixtures, or intentionally retired design
+  prototypes. Admin/operator surfaces may use their own operational visual
+  language; do not force the public panda-fan aesthetic onto admin screens, but
+  the Impeccable detector and accessibility/craft checks still apply.

@@ -47,7 +47,7 @@
 
 .pa-structured-map-no-canvas {
   padding: 0.9rem 1rem;
-  border-left: 4px solid var(--pa-color-accent);
+  border: 1px solid var(--pa-color-accent-border-22);
   border-radius: 0.5rem;
   background: var(--pa-color-accent-soft);
   color: var(--pa-color-ink) !important;
@@ -311,7 +311,8 @@
   display: grid;
   gap: 0.45rem;
   padding: 0.9rem;
-  border-left: 3px solid var(--pa-color-line);
+  border: 1px solid var(--pa-color-line);
+  border-radius: var(--pa-radius-sm);
   background: var(--pa-color-surface-subtle);
 }
 

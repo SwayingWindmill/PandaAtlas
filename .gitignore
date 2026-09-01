@@ -52,7 +52,8 @@ htmlcov/
 .claude/
 .ai-bridge/
 .codegraph/
-.codex/
+.codex/*
+!.codex/hooks.json
 .codex-temp/
 .planning/
 .worktrees/

@@ -423,7 +423,32 @@ export function ModerationWorkbench() {
       <section className="mt-8 rounded-xl border border-stone-300 bg-white p-5" aria-labelledby="appeal-queue-heading">
         <h2 id="appeal-queue-heading" className="text-xl font-bold text-stone-950">申诉队列</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2"><label className="grid gap-1 text-sm font-semibold text-stone-800">内部处理说明<textarea className="min-h-24 rounded-md border border-stone-400 p-3 font-normal" value={appealInternal} onChange={(event) => setAppealInternal(event.target.value)} minLength={10} /></label><label className="grid gap-1 text-sm font-semibold text-stone-800">用户可见决定说明<textarea className="min-h-24 rounded-md border border-stone-400 p-3 font-normal" value={appealVisible} onChange={(event) => setAppealVisible(event.target.value)} minLength={10} /></label><label className="grid gap-1 text-sm font-semibold text-stone-800">结果<select className="min-h-11 rounded-md border border-stone-400 px-3 font-normal" value={appealOutcome} onChange={(event) => setAppealOutcome(event.target.value)}><option value="upheld">upheld</option><option value="overturned">overturned</option><option value="dismissed">dismissed</option></select></label><label className="grid gap-1 text-sm font-semibold text-stone-800">Overturn 的 subject version<input type="number" min={1} className="min-h-11 rounded-md border border-stone-400 px-3 font-normal" value={appealSubjectVersion} onChange={(event) => setAppealSubjectVersion(event.target.value)} /></label></div>
-        <ul className="mt-5 grid gap-4">{appeals.map((appeal) => <li key={appeal.appeal_case_id} className={`rounded-lg border p-4 ${appeal.sla_overdue ? "border-red-700 bg-red-50" : "border-stone-300"}`}><p className="font-semibold text-stone-950">{appeal.state} · {appeal.sla_overdue ? "SLA OVERDUE" : `到期 ${new Date(appeal.first_response_due_at).toLocaleString()}`}</p><p className="mt-2 text-sm text-stone-700">{appeal.user_statement}</p><p className="mt-2 break-all font-mono text-xs text-stone-600">account {appeal.account_id} · appeal {appeal.appeal_case_id}</p>{appeal.state !== "closed" ? <div className="mt-3 flex flex-wrap gap-3"><Button variant="outline" disabled={busy || appealInternal.length < 10} onClick={() => void acknowledgeAppeal(appeal)}>确认接收</Button><Button disabled={busy || appealInternal.length < 10 || appealVisible.length < 10 || (appealOutcome === "overturned" && !appealSubjectVersion)} onClick={() => void decideAppeal(appeal)}>追加决定</Button><Button variant="outline" onClick={() => void loadSubject(appeal.account_id)}>读取申诉账号</Button></div> : null}</li>)}</ul>
+        <ul className="mt-5 grid gap-4">
+          {appeals.map((appeal) => {
+            const overdue = appeal.sla_overdue;
+            return (
+              <li
+                key={appeal.appeal_case_id}
+                className={`rounded-lg border p-4 ${overdue ? "border-red-700 bg-red-50" : "border-stone-300"}`}
+              >
+                <p className={`font-semibold ${overdue ? "text-red-950" : "text-stone-950"}`}>
+                  {appeal.state} · {overdue ? "SLA OVERDUE" : `到期 ${new Date(appeal.first_response_due_at).toLocaleString()}`}
+                </p>
+                <p className={`mt-2 text-sm ${overdue ? "text-red-900" : "text-stone-700"}`}>{appeal.user_statement}</p>
+                <p className={`mt-2 break-all font-mono text-xs ${overdue ? "text-red-800" : "text-stone-600"}`}>
+                  account {appeal.account_id} · appeal {appeal.appeal_case_id}
+                </p>
+                {appeal.state !== "closed" ? (
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    <Button variant="outline" disabled={busy || appealInternal.length < 10} onClick={() => void acknowledgeAppeal(appeal)}>确认接收</Button>
+                    <Button disabled={busy || appealInternal.length < 10 || appealVisible.length < 10 || (appealOutcome === "overturned" && !appealSubjectVersion)} onClick={() => void decideAppeal(appeal)}>追加决定</Button>
+                    <Button variant="outline" onClick={() => void loadSubject(appeal.account_id)}>读取申诉账号</Button>
+                  </div>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
       </section>
     </main>
   );

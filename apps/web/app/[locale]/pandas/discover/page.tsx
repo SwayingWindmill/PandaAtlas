@@ -195,7 +195,7 @@ export default async function PandaDiscoveryPage({ params }: PandaDiscoveryPageP
 
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-[1500px] items-end justify-between gap-5 px-5 pb-7 sm:px-10 sm:pb-10 lg:px-14">
               <div className="flex items-center gap-3 rounded-full border border-white/20 bg-black/25 px-4 py-2 text-xs font-semibold text-white/80 backdrop-blur-md">
-                <ArrowDown className="size-4 animate-bounce" aria-hidden="true" />
+                <ArrowDown className="size-4" aria-hidden="true" />
                 <span>{t.scroll}</span>
               </div>
               <div className="hidden items-center gap-2 text-xs font-medium text-white/55 sm:flex">

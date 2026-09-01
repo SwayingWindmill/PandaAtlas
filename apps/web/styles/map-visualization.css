@@ -55,7 +55,7 @@
 .pa-map-visualization-privacy {
   margin: 0;
   padding: 0.85rem 1rem;
-  border-left: 4px solid var(--pa-color-accent);
+  border: 1px solid var(--pa-color-accent-border-22);
   border-radius: 0.55rem;
   background: var(--pa-color-accent-soft);
 }
@@ -116,7 +116,9 @@
 
 .pa-map-visualization-island[data-provider-status="degraded"] .pa-map-visualization-status,
 .pa-map-visualization-island[data-provider-status="offline"] .pa-map-visualization-status {
-  border-left: 4px solid #9a5c24;
+  border: 1px solid rgb(154 92 36 / 28%);
+  background: rgb(154 92 36 / 10%);
+  color: #6f431f;
 }
 
 .pa-map-visualization-canvas-wrap {
