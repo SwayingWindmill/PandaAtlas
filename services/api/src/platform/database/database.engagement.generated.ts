@@ -5,44 +5,11 @@
 
 import type { ColumnType } from "kysely";
 
-export type EngagementFollowState = "active" | "inactive";
-
-export type EngagementPendingFollowOutcome = "already_followed" | "cancelled" | "followed" | "intent_expired";
-
-export type EngagementPendingFollowStatus = "cancelled" | "completed" | "expired" | "pending";
-
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Json = JsonValue;
-
-export type JsonArray = JsonValue[];
-
-export type JsonObject = {
-  [x: string]: JsonValue | undefined;
-};
-
-export type JsonPrimitive = boolean | number | string | null;
-
-export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
-
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
-
-export interface EngagementAuditEvents {
-  actor_account_id: string | null;
-  audit_id: Generated<string>;
-  correlation_id: string;
-  details: Generated<Json>;
-  event_type: string;
-  idempotency_key: string;
-  occurred_at: Generated<Timestamp>;
-  outcome: string;
-  reason: string | null;
-  subject_account_id: string | null;
-  target_id: string;
-  target_type: string;
-}
 
 export interface EngagementCollectionPandas {
   added_at: Generated<Timestamp>;
@@ -64,48 +31,6 @@ export interface EngagementFavorites {
   panda_id: string;
 }
 
-export interface EngagementFollowEvents {
-  account_subject_hash: string;
-  action: string;
-  correlation_id: string;
-  event_id: Generated<string>;
-  follow_id: string;
-  follow_version: number;
-  idempotency_key: string;
-  occurred_at: Generated<Timestamp>;
-  panda_id: string;
-  pending_intent_id: string | null;
-}
-
-export interface EngagementFollows {
-  account_id: string;
-  first_followed_at: Generated<Timestamp>;
-  follow_id: Generated<string>;
-  followed_at: Generated<Timestamp>;
-  panda_id: string;
-  state: Generated<EngagementFollowState>;
-  unfollowed_at: Timestamp | null;
-  updated_at: Generated<Timestamp>;
-  version: Generated<number>;
-}
-
-export interface EngagementGameAttempts {
-  account_id: string;
-  attempt_id: Generated<string>;
-  attempted_at: Generated<Timestamp>;
-  correct: boolean;
-  game_type: Generated<string>;
-  public_release_version: string | null;
-  selected_panda_id: string;
-  target_panda_id: string;
-}
-
-export interface EngagementLastViewedProfiles {
-  account_id: string;
-  panda_id: string;
-  viewed_at: Generated<Timestamp>;
-}
-
 export interface EngagementLocationCheckins {
   account_id: string;
   checkin_id: Generated<string>;
@@ -113,66 +38,6 @@ export interface EngagementLocationCheckins {
   note: string | null;
   place_id: string;
   visited_on: string;
-}
-
-export interface EngagementNotificationPreferenceEvents {
-  account_subject_hash: string;
-  category: string;
-  channel: string;
-  correlation_id: string;
-  enabled: boolean;
-  event_id: Generated<string>;
-  idempotency_key: string;
-  occurred_at: Generated<Timestamp>;
-  preference_version: number;
-}
-
-export interface EngagementNotificationPreferences {
-  account_id: string;
-  category: string;
-  channel: string;
-  enabled: boolean;
-  updated_at: Generated<Timestamp>;
-  version: Generated<number>;
-}
-
-export interface EngagementPassportContributionEvents {
-  account_id: string;
-  correlation_id: string;
-  occurred_at: Timestamp;
-  panda_id: string;
-  recorded_at: Generated<Timestamp>;
-  source_event_id: string;
-}
-
-export interface EngagementPassportEntries {
-  account_id: string;
-  contribution_count: Generated<number>;
-  first_followed_at: Timestamp | null;
-  followed_at: Timestamp | null;
-  panda_id: string;
-  projected_at: Generated<Timestamp>;
-  projection_version: number;
-  relationship_state: EngagementFollowState | null;
-  unfollowed_at: Timestamp | null;
-}
-
-export interface EngagementPendingFollowIntents {
-  completed_at: Timestamp | null;
-  completed_by_account_id: string | null;
-  continuation_handle_hash: string | null;
-  correlation_id: string;
-  created_at: Generated<Timestamp>;
-  expires_at: Timestamp;
-  handle_hash: string;
-  intent_id: Generated<string>;
-  locale: string;
-  outcome: EngagementPendingFollowOutcome | null;
-  panda_id: string;
-  request_id: string;
-  safe_return_path: string;
-  status: Generated<EngagementPendingFollowStatus>;
-  version: Generated<number>;
 }
 
 export interface EngagementSeenPandas {
@@ -187,19 +52,9 @@ export interface EngagementSeenPandas {
 }
 
 export interface DB {
-  "engagement.audit_events": EngagementAuditEvents;
   "engagement.collection_pandas": EngagementCollectionPandas;
   "engagement.collections": EngagementCollections;
   "engagement.favorites": EngagementFavorites;
-  "engagement.follow_events": EngagementFollowEvents;
-  "engagement.follows": EngagementFollows;
-  "engagement.game_attempts": EngagementGameAttempts;
-  "engagement.last_viewed_profiles": EngagementLastViewedProfiles;
   "engagement.location_checkins": EngagementLocationCheckins;
-  "engagement.notification_preference_events": EngagementNotificationPreferenceEvents;
-  "engagement.notification_preferences": EngagementNotificationPreferences;
-  "engagement.passport_contribution_events": EngagementPassportContributionEvents;
-  "engagement.passport_entries": EngagementPassportEntries;
-  "engagement.pending_follow_intents": EngagementPendingFollowIntents;
   "engagement.seen_pandas": EngagementSeenPandas;
 }

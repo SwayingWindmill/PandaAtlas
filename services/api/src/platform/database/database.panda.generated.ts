@@ -98,6 +98,14 @@ export interface PandaPandas {
   updated_at: Generated<Timestamp>;
 }
 
+export interface PandaPipelineIdentityExportV1 {
+  canonical_slug: string | null;
+  external_identifiers: Json | null;
+  names: Json | null;
+  panda_id: string | null;
+  updated_at: Timestamp | null;
+}
+
 export interface PandaSlugs {
   created_at: Generated<Timestamp>;
   panda_id: string;
@@ -118,5 +126,6 @@ export interface DB {
   "panda.name_sources": PandaNameSources;
   "panda.names": PandaNames;
   "panda.pandas": PandaPandas;
+  "panda.pipeline_identity_export_v1": PandaPipelineIdentityExportV1;
   "panda.slugs": PandaSlugs;
 }

@@ -9,8 +9,6 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
-
 export type Json = JsonValue;
 
 export type JsonArray = JsonValue[];
@@ -34,23 +32,6 @@ export interface GameAttempts {
   selected_panda_id: string;
 }
 
-export interface GameGuessQuestions {
-  attempt_count: Generated<Int8>;
-  correct_count: Generated<Int8>;
-  created_at: Generated<Timestamp>;
-  created_by: string | null;
-  difficulty: string;
-  media_id: string;
-  option_panda_ids: string[];
-  panda_id: string;
-  published_at: Timestamp | null;
-  question_id: Generated<string>;
-  recognition_tips: Generated<Json>;
-  state: Generated<string>;
-  updated_at: Generated<Timestamp>;
-  updated_by: string | null;
-}
-
 export interface GameQuestions {
   created_at: Generated<Timestamp>;
   created_by: string | null;
@@ -68,6 +49,5 @@ export interface GameQuestions {
 
 export interface DB {
   "game.attempts": GameAttempts;
-  "game.guess_questions": GameGuessQuestions;
   "game.questions": GameQuestions;
 }
