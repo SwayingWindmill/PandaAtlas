@@ -1,99 +1,117 @@
-/* eslint-disable @next/next/no-img-element -- recovered visual review uses explicitly isolated historical photo fixtures. */
+/* eslint-disable @next/next/no-img-element -- recovered V0.7 review uses explicit historical media fixtures. */
 
 import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Search } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
 
-import { fixtureCredit, pickPhotographedPandas, reviewAltName, reviewImage, reviewImageAlt, reviewMeta, reviewName } from "../review-data";
-import { ReviewShell } from "../review-shell";
+import { withReviewVisuals } from "../review-data";
+import { choosePandas, pandaAltName, pandaName, pandaPhotoAlt, ReviewShell } from "../review-shell";
 import styles from "../review.module.css";
 
-interface Props {
-  params: Promise<{ locale: string }>;
-}
+interface Props { params: Promise<{ locale: string }> }
 
 export const metadata: Metadata = {
-  title: "ZhiPanda V0.7 panda directory review",
+  title: "ZhiPanda panda directory prototype V0.7",
   robots: { index: false, follow: false },
 };
+
+const preferred = ["he-hua", "fu-bao", "mei-xiang", "meng-lan", "xiang-xiang", "xiao-qi-ji", "bao-bao", "bei-bei", "ya-lun", "xi-lun", "shin-shin", "ri-ri", "xiao-xiao", "lei-lei", "tian-tian", "yang-guang"] as const;
+
+function statusLabel(status: string, zh: boolean): string {
+  if (status === "alive") return zh ? "存活" : "Alive";
+  if (status === "deceased") return zh ? "已死亡" : "Deceased";
+  return zh ? "状态未知" : "Unknown status";
+}
+
+function genderLabel(gender: string, zh: boolean): string {
+  if (gender === "female") return zh ? "雌性" : "Female";
+  if (gender === "male") return zh ? "雄性" : "Male";
+  return zh ? "未知" : "Unknown";
+}
 
 export default async function FanV07ReviewPandas({ params }: Props) {
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const zh = locale === "zh";
-  const envelope = loadPublishedAtlasDataset(locale);
-  const pandas = pickPhotographedPandas(envelope.data.pandas, 25);
-  const featured = pandas.find((panda) => reviewImage(panda)) ?? pandas[0] ?? null;
-  const rest = pandas.filter((panda) => panda.id !== featured?.id);
+  const atlas = loadPublishedAtlasDataset(locale);
+  const visualPandas = withReviewVisuals(atlas.data.pandas);
+  const photographed = visualPandas.filter((panda) => Boolean(panda.cover_image_url));
+  const pandas = choosePandas(photographed, preferred, 25);
+  const featured = pandas[0] ?? null;
 
   return (
     <ReviewShell locale={locale} active="pandas">
-      <main className={styles.main}>
-        <div className={styles.shell}>
+      <main className={styles.subPage}>
+        <div className={styles.subShell}>
           <section className={styles.pageIntro}>
-            <h1 className={styles.display}>{zh ? "熊猫图鉴" : "Panda directory"}</h1>
-            <div className={styles.pageIntroCopy}>
-              <p>{zh ? "按名字寻找一只熊猫，或直接从照片开始浏览。V0.7 的核心判断是：搜索和筛选要容易找到，但不能让工具盖过熊猫本身。" : "Search by name or start with a face. V0.7 kept search and filters close at hand without letting tools overpower the pandas themselves."}</p>
-              <div className={styles.count}><strong>{envelope.data.pandas.length}</strong><span>{zh ? "当前公开熊猫" : "pandas in the current public release"}</span></div>
+            <div className={styles.pageIntroRow}>
+              <div>
+                <h1 className={styles.pageTitle}>{zh ? "熊猫图鉴" : "Panda directory"}</h1>
+                <p className={styles.pageDek}>{zh ? "按名字寻找一只熊猫，或直接从照片开始浏览。这里把搜索和筛选放在前面，但不让工具盖过熊猫本身。" : "Search by name or simply start with a face. Search and filters are easy to reach without overpowering the pandas themselves."}</p>
+                <p className={styles.countNote}>{zh ? `当前公开收录 ${atlas.data.pandas.length} 只熊猫` : `${atlas.data.pandas.length} pandas in the current public release`}</p>
+              </div>
+              <div>
+                <form className={styles.searchBar} action={`/${locale}/search`} method="get" role="search">
+                  <Search aria-hidden="true" />
+                  <Input name="q" type="search" aria-label={zh ? "搜索熊猫" : "Search pandas"} placeholder={zh ? "搜索：美香、和花、福宝……" : "Search: Mei Xiang, He Hua, Fu Bao…"} />
+                  <Button type="submit">{zh ? "搜索" : "Search"}</Button>
+                </form>
+                <nav className={styles.filterRow} aria-label={zh ? "快速筛选" : "Quick filters"}>
+                  <Link href={`/${locale}/pandas?status=alive` as Route}>{zh ? "存活" : "Alive"}</Link>
+                  <Link href={`/${locale}/pandas?sex=female` as Route}>{zh ? "雌性" : "Female"}</Link>
+                  <Link href={`/${locale}/pandas?sex=male` as Route}>{zh ? "雄性" : "Male"}</Link>
+                  <Link href={`/${locale}/games/random` as Route}>{zh ? "随机一只" : "Random panda"}</Link>
+                  <Link href={`/${locale}/pandas` as Route}>{zh ? "完整筛选" : "All filters"}</Link>
+                </nav>
+              </div>
             </div>
           </section>
 
-          <div className={styles.searchRow}>
-            <form className={styles.searchForm} action={`/${locale}/search`} method="get" role="search">
-              <Search aria-hidden="true" />
-              <input name="q" type="search" aria-label={zh ? "搜索熊猫" : "Search pandas"} placeholder={zh ? "搜索：美香、福宝、小奇迹……" : "Search: Mei Xiang, Fu Bao, Xiao Qi Ji…"} />
-              <button type="submit">{zh ? "搜索" : "Search"}</button>
-            </form>
-            <nav className={styles.quickFilters} aria-label={zh ? "快速筛选" : "Quick filters"}>
-              <Link href={`/${locale}/pandas?status=alive` as Route}>{zh ? "存活" : "Alive"}</Link>
-              <Link href={`/${locale}/pandas?sex=female` as Route}>{zh ? "雌性" : "Female"}</Link>
-              <Link href={`/${locale}/pandas?sex=male` as Route}>{zh ? "雄性" : "Male"}</Link>
-              <Link href={`/${locale}/games/random` as Route}>{zh ? "随机一只" : "Random panda"}</Link>
-              <Link href={`/${locale}/pandas` as Route}>{zh ? "完整筛选" : "All filters"}</Link>
-            </nav>
-          </div>
-
           {featured ? (
             <section className={styles.spotlight}>
-              <div className={styles.spotlightMedia}>
-                {reviewImage(featured) ? <img src={reviewImage(featured) ?? ""} alt={reviewImageAlt(featured, locale)} /> : <div className={styles.noPhoto}>{reviewName(featured, locale).slice(0, 1)}</div>}
-              </div>
-              <div className={styles.spotlightCopy}>
-                <small>SPOTLIGHT</small>
-                <h2>{reviewName(featured, locale)}</h2>
-                {reviewAltName(featured, locale) ? <p>{reviewAltName(featured, locale)}</p> : null}
-                <p>{featured.intro ?? (zh ? "从照片、身份、家族、时间和地点继续认识这只熊猫。" : "Continue through photographs, identity, family, time, and place.")}</p>
-                <p>{reviewMeta(featured, locale)}</p>
-                {fixtureCredit(featured.slug) ? <p className={styles.credit}>{fixtureCredit(featured.slug)}</p> : null}
-                <Link className={styles.textLink} href={`/${locale}/pandas/${featured.slug}` as Route}>{zh ? "查看熊猫档案" : "View panda profile"}<ArrowRight aria-hidden="true" /></Link>
+              <p className={styles.sectionLabel}>{zh ? "Spotlight · 今天先认识" : "Spotlight"}</p>
+              <div className={styles.spotlightCard}>
+                <div className={styles.spotlightMedia}><img src={featured.cover_image_url ?? ""} alt={pandaPhotoAlt(featured, locale)} /></div>
+                <div className={styles.spotlightCopy}>
+                  <small>{zh ? "熊猫 Spotlight" : "Panda spotlight"}</small>
+                  <h2>{pandaName(featured, locale)}</h2>
+                  {pandaAltName(featured, locale) ? <p className={styles.spotlightAlt}>{pandaAltName(featured, locale)}</p> : null}
+                  <p className={styles.spotlightSummary}>{featured.intro ?? (zh ? "从照片、身份、家族、时间和地点继续认识这只熊猫。" : "Continue through photographs, identity, family, time, and place.")}</p>
+                  <p className={styles.spotlightMeta}>{[
+                    genderLabel(featured.gender, zh),
+                    featured.birth_date?.slice(0, 4),
+                    featured.current_location,
+                    statusLabel(featured.status, zh),
+                  ].filter(Boolean).join(" · ")}</p>
+                  <Link className={styles.textAction} href={`/${locale}/pandas/${featured.slug}` as Route}>{zh ? "查看熊猫档案" : "View panda profile"}<ArrowRight aria-hidden="true" /></Link>
+                </div>
               </div>
             </section>
           ) : null}
 
-          <section>
-            <div className={styles.directoryHeader}>
-              <div><span className={styles.sectionMeta}>BROWSE</span><h2>{zh ? "全部熊猫" : "All pandas"}</h2></div>
-              <p>{zh ? "V0.7 已经把“没有授权照片”当作正常档案状态。这里不会用另一只熊猫的照片补洞。" : "V0.7 already treated missing licensed media as a normal record state. Another panda is never used as a substitute image."}</p>
+          <section className={styles.directorySection}>
+            <div className={styles.directoryHead}>
+              <div><p className={styles.sectionLabel}>{zh ? "Browse · 浏览" : "Browse"}</p><h2>{zh ? "全部熊猫" : "All pandas"}</h2></div>
+              <p>{zh ? "照片、名字和少量关键信息保持同一层级，方便快速扫视。" : "Consistent cards keep photographs, names, and essential metadata easy to scan."}</p>
             </div>
             <div className={styles.pandaGrid}>
-              {rest.map((panda) => {
-                const image = reviewImage(panda);
-                return (
-                  <Link className={styles.tile} key={panda.id} href={`/${locale}/pandas/${panda.slug}` as Route}>
-                    <div className={styles.tileMedia}>{image ? <img src={image} alt={reviewImageAlt(panda, locale)} loading="lazy" /> : <div className={styles.noPhoto}>{reviewName(panda, locale).slice(0, 1)}</div>}</div>
-                    <div>
-                      <div className={styles.tileTitle}><strong>{reviewName(panda, locale)}</strong><ArrowRight aria-hidden="true" /></div>
-                      {reviewAltName(panda, locale) ? <p className={styles.tileAlt}>{reviewAltName(panda, locale)}</p> : null}
-                      <p className={styles.tileMeta}>{reviewMeta(panda, locale)}</p>
-                    </div>
-                  </Link>
-                );
-              })}
+              {pandas.slice(featured ? 1 : 0).map((panda) => (
+                <Link className={styles.pandaCard} key={panda.id} href={`/${locale}/pandas/${panda.slug}` as Route}>
+                  <div className={styles.pandaCardMedia}>{panda.cover_image_url ? <img src={panda.cover_image_url} alt={pandaPhotoAlt(panda, locale)} loading="lazy" /> : null}</div>
+                  <div className={styles.pandaCardBody}>
+                    <div className={styles.pandaCardTitle}><strong>{pandaName(panda, locale)}</strong><ArrowRight aria-hidden="true" /></div>
+                    {pandaAltName(panda, locale) ? <p className={styles.pandaCardAlt}>{pandaAltName(panda, locale)}</p> : null}
+                    <p className={styles.pandaCardMeta}>{[panda.birth_date?.slice(0, 4), panda.current_location, statusLabel(panda.status, zh)].filter(Boolean).join(" · ")}</p>
+                  </div>
+                </Link>
+              ))}
             </div>
           </section>
         </div>

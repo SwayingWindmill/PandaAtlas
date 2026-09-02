@@ -1,23 +1,23 @@
-/* eslint-disable @next/next/no-img-element -- recovered visual review uses explicitly isolated historical photo fixtures. */
+/* eslint-disable @next/next/no-img-element -- recovered V0.7 review uses explicit historical media fixtures. */
 
 import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Bell, BookHeart, Eye, Gamepad2, Heart, MapPinCheck, Settings2 } from "lucide-react";
 
+import { MyPandasPassportIsland } from "@/features/my-pandas/my-pandas-passport-island";
+import { buildMyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import { loadPublishedAtlasDataset } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
 
-import { pickPhotographedPandas, reviewImage, reviewImageAlt, reviewName } from "../review-data";
-import { ReviewShell } from "../review-shell";
+import { withReviewVisuals } from "../review-data";
+import { choosePandas, pandaName, pandaPhotoAlt, ReviewShell } from "../review-shell";
 import styles from "../review.module.css";
 
-interface Props {
-  params: Promise<{ locale: string }>;
-}
+interface Props { params: Promise<{ locale: string }> }
 
 export const metadata: Metadata = {
-  title: "ZhiPanda V0.7 My Pandas review",
+  title: "ZhiPanda My Pandas prototype V0.7",
   robots: { index: false, follow: false },
 };
 
@@ -27,58 +27,79 @@ export default async function FanV07ReviewMe({ params }: Props) {
   if (!locale) notFound();
   const zh = locale === "zh";
   const envelope = loadPublishedAtlasDataset(locale);
-  const starterPandas = pickPhotographedPandas(envelope.data.pandas, 3);
+  const view = buildMyPandasViewModel(envelope.data, locale);
+  const prototypeProfiles = view.profiles.map((profile) => ({ ...profile, href: `/${locale}/pandas/${profile.slug}` }));
+  const starterPandas = choosePandas(
+    withReviewVisuals(envelope.data.pandas).filter((panda) => Boolean(panda.cover_image_url)),
+    ["he-hua", "fu-bao", "meng-lan", "mei-xiang", "xiao-qi-ji"],
+    3,
+  );
 
   const destinations = [
     { icon: BookHeart, title: zh ? "收藏与合集" : "Favorites & collections", body: zh ? "把喜欢的熊猫整理成自己的集合。" : "Organize favorite pandas into personal collections.", href: `/${locale}/me/collections` },
     { icon: Eye, title: zh ? "见过的熊猫" : "Seen pandas", body: zh ? "记录现实中见过哪些熊猫。" : "Remember pandas you have seen in real life.", href: `/${locale}/me/memories` },
     { icon: MapPinCheck, title: zh ? "去过的地点" : "Visited places", body: zh ? "把动物园、基地和旅途变成个人足迹。" : "Turn zoos, bases, and trips into a personal footprint.", href: `/${locale}/me/memories` },
     { icon: Gamepad2, title: zh ? "游戏记录" : "Game history", body: zh ? "回看猜熊猫和其他互动记录。" : "Review Guess Panda and other game activity.", href: `/${locale}/me/game-history` },
-    { icon: Bell, title: zh ? "通知" : "Notifications", body: zh ? "把关注熊猫的新动态集中起来。" : "Keep updates from followed pandas together.", href: `/${locale}/me/inbox` },
+    { icon: Bell, title: zh ? "通知" : "Notifications", body: zh ? "以后熊猫动态和收藏提醒都收进这里。" : "Keep panda updates and favorite alerts together.", href: `/${locale}/me/inbox` },
     { icon: Settings2, title: zh ? "账号与隐私" : "Account & privacy", body: zh ? "昵称、资料和私有数据边界。" : "Nickname, profile, and private-data boundaries.", href: `/${locale}/me` },
   ];
 
   return (
-    <ReviewShell locale={locale} active="me">
-      <main className={styles.main}>
-        <div className={styles.shell}>
-          <section className={styles.meHero}>
-            <div className={styles.meCopy}>
-              <span className={styles.sectionMeta}>MY PANDAS</span>
-              <h1 className={styles.display}>{zh ? "把喜欢、见过和去过，慢慢变成自己的熊猫世界。" : "Turn favorites, sightings, and visits into your own panda world."}</h1>
-              <p>{zh ? "V0.7 的判断是：普通爱好者真正会反复回来的，不只是资料页，而是“我关注的熊猫最近怎么样、我收藏了什么、我见过谁”。" : "V0.7 assumed repeat visits would come from a personal relationship with pandas: what followed pandas are doing, what you saved, and whom you have seen."}</p>
-              <p className={styles.privacyLine}><Heart aria-hidden="true" />{zh ? "本页是视觉恢复，不读取真实账号数据；正式个人记录默认私有。" : "This review does not read real account data; production personal records remain private by default."}</p>
+    <ReviewShell locale={locale}>
+      <main className={`${styles.subPage} ${styles.myPandasPrototype}`}>
+        <div className={styles.subShell}>
+          <section className={styles.myPandasHero}>
+            <div className={styles.myPandasHeroCopy}>
+              <p className={styles.sectionLabel}>{zh ? "My Pandas · 我的熊猫" : "My Pandas"}</p>
+              <h1>{zh ? "把喜欢、见过和去过，慢慢变成自己的熊猫世界。" : "Turn favorites, sightings, and visits into your own panda world."}</h1>
+              <p>{zh ? "从喜欢的一只开始。收藏、见过、去过和一起玩过的记录，会慢慢变成只属于你的熊猫世界。" : "Start with one panda you love. Favorites, sightings, visits, and play gradually become a panda world that is yours."}</p>
+              <p className={styles.myPandasPrivacyLine}><Heart aria-hidden="true" />{zh ? "账号记录默认私有，不会生成公开主页或排行榜。" : "Account records stay private by default. No public profile or ranking is created."}</p>
             </div>
-            <div className={styles.meGallery}>
-              {starterPandas.map((panda) => (
-                <Link key={panda.id} href={`/${locale}/pandas/${panda.slug}` as Route}>
-                  {reviewImage(panda) ? <img src={reviewImage(panda) ?? ""} alt={reviewImageAlt(panda, locale)} /> : null}
-                  <strong>{reviewName(panda, locale)}</strong>
-                </Link>
-              ))}
+            <div className={styles.myPandasHeroGallery}>
+              <div className={styles.myPandasGalleryHead}>
+                <span>{zh ? "从喜欢的一只开始" : "Start with one panda"}</span>
+                <small>{zh ? "认识 · 收藏 · 再继续发现" : "Meet · save · keep exploring"}</small>
+              </div>
+              <div className={styles.myPandasGalleryGrid}>
+                {starterPandas.map((panda, index) => (
+                  <Link key={panda.id} data-featured={index === 0 ? "true" : undefined} href={`/${locale}/pandas/${panda.slug}` as Route}>
+                    <span><img src={panda.cover_image_url ?? ""} alt={pandaPhotoAlt(panda, locale)} /></span>
+                    <strong>{pandaName(panda, locale)}</strong>
+                  </Link>
+                ))}
+              </div>
             </div>
           </section>
 
-          <section className={styles.meStats} aria-label={zh ? "个人数据区视觉占位" : "Personal data visual placeholders"}>
-            <div className={styles.meStat}><strong>—</strong><span>{zh ? "收藏的熊猫" : "Favorite pandas"}</span></div>
-            <div className={styles.meStat}><strong>—</strong><span>{zh ? "见过的熊猫" : "Seen pandas"}</span></div>
-            <div className={styles.meStat}><strong>—</strong><span>{zh ? "去过的熊猫地点" : "Visited panda places"}</span></div>
+          <section className={styles.myPandasDestinations}>
+            <div className={styles.directoryHead}>
+              <div><p className={styles.sectionLabel}>{zh ? "Your space · 你的空间" : "Your space"}</p><h2>{zh ? "从一处进入所有个人记录" : "One home for personal panda records"}</h2></div>
+              <p>{zh ? "收藏、足迹、通知和游戏不再散落成同级导航。" : "Favorites, footprints, notifications, and games no longer compete as separate top-level products."}</p>
+            </div>
+            <div className={styles.myPandasDestinationLayout}>
+              <div className={styles.myPandasPrimaryRoutes}>
+                {destinations.slice(0, 3).map(({ icon: Icon, title, body, href }) => (
+                  <Link key={title} href={href as Route}>
+                    <Icon aria-hidden="true" />
+                    <span><strong>{title}</strong><small>{body}</small></span>
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                ))}
+              </div>
+              <div className={styles.myPandasSupportRoutes}>
+                {destinations.slice(3).map(({ icon: Icon, title, body, href }) => (
+                  <Link key={title} href={href as Route}>
+                    <Icon aria-hidden="true" />
+                    <span><strong>{title}</strong><small>{body}</small></span>
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                ))}
+              </div>
+            </div>
           </section>
 
-          <section className={styles.destinations}>
-            <div className={styles.directoryHeader}>
-              <div><span className={styles.sectionMeta}>YOUR SPACE</span><h2>{zh ? "从一处进入所有个人记录" : "One home for personal panda records"}</h2></div>
-              <p>{zh ? "V0.7 把收藏、足迹、通知和游戏从散落的产品入口收回 My Pandas，形成“关注后回来”的闭环。" : "V0.7 brought favorites, footprints, notifications, and games back under My Pandas to create a clear return loop after following a panda."}</p>
-            </div>
-            <div className={styles.destinationGrid}>
-              {destinations.map(({ icon: Icon, title, body, href }) => (
-                <Link className={styles.destination} key={title} href={href as Route}>
-                  <Icon aria-hidden="true" />
-                  <span><strong>{title}</strong><small>{body}</small></span>
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              ))}
-            </div>
+          <section className={styles.myPandasPassportWrap}>
+            <MyPandasPassportIsland locale={locale} profiles={prototypeProfiles} copy={view.copy} />
           </section>
         </div>
       </main>
