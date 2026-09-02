@@ -1,11 +1,10 @@
-/* eslint-disable @next/next/no-img-element -- V8 review intentionally renders isolated, identity-matched prototype media fixtures. */
+/* eslint-disable @next/next/no-img-element -- prototype review renders identity-matched research media directly. */
 "use client";
 
 import type { Route } from "next";
 import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { ArrowRight, Search, SlidersHorizontal, Shuffle } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { ArrowRight, Search, SlidersHorizontal } from "lucide-react";
 
 import styles from "./directory.module.css";
 
@@ -26,7 +25,7 @@ export interface DirectoryPanda {
 }
 
 type BrowseMode = "all" | "photos" | "alive" | "female" | "male";
-const PHOTO_BATCH_SIZE = 48;
+const PAGE_SIZE = 60;
 
 function normalize(value: string): string {
   return value
@@ -36,42 +35,45 @@ function normalize(value: string): string {
     .trim();
 }
 
-function metaFor(panda: DirectoryPanda, zh: boolean): string {
-  const gender = panda.gender === "female"
-    ? zh ? "雌性" : "Female"
-    : panda.gender === "male"
-      ? zh ? "雄性" : "Male"
-      : null;
-  const status = panda.status === "alive"
-    ? zh ? "在世" : "Living"
-    : panda.status === "deceased"
-      ? zh ? "历史档案" : "Historic"
-      : null;
-
-  return [panda.birthYear, gender, panda.location, status].filter(Boolean).join(" · ");
+function genderLabel(value: DirectoryPanda["gender"], zh: boolean): string {
+  if (value === "female") return zh ? "雌性" : "Female";
+  if (value === "male") return zh ? "雄性" : "Male";
+  return "";
 }
 
-function PandaCaption({ panda, zh, showArrow }: { panda: DirectoryPanda; zh: boolean; showArrow: boolean }) {
+function statusLabel(value: DirectoryPanda["status"], zh: boolean): string {
+  if (value === "alive") return zh ? "在世" : "Living";
+  if (value === "deceased") return zh ? "历史档案" : "Historic";
+  return "";
+}
+
+function PandaThumbnail({ panda, zh }: { panda: DirectoryPanda; zh: boolean }) {
+  if (panda.image) {
+    return <img src={panda.image} alt={panda.imageAlt} loading="lazy" />;
+  }
+
   return (
-    <>
-      <span className={styles.visualCaption}>
-        <span>
-          <strong>{panda.name}</strong>
-          {panda.altName ? <em>{panda.altName}</em> : null}
-        </span>
-        {showArrow ? <ArrowRight aria-hidden="true" /> : <small>{zh ? "研究库原型" : "Research prototype"}</small>}
-      </span>
-      {metaFor(panda, zh) ? <span className={styles.visualMeta}>{metaFor(panda, zh)}</span> : null}
-    </>
+    <span className={styles.noPhoto} aria-label={zh ? `${panda.name}暂无确认个体照片` : `No confirmed individual photograph for ${panda.name}`}>
+      <span aria-hidden="true">●</span>
+      <small>{zh ? "暂无照片" : "No photo"}</small>
+    </span>
+  );
+}
+
+function PandaIdentity({ panda }: { panda: DirectoryPanda }) {
+  return (
+    <span className={styles.identity}>
+      <strong>{panda.name}</strong>
+      {panda.altName ? <em>{panda.altName}</em> : null}
+    </span>
   );
 }
 
 export function DirectoryExplorer({ locale, pandas, initialQuery = "" }: { locale: "zh" | "en"; pandas: DirectoryPanda[]; initialQuery?: string }) {
   const zh = locale === "zh";
-  const reduceMotion = useReducedMotion();
   const [query, setQuery] = useState(initialQuery);
   const [mode, setMode] = useState<BrowseMode>("all");
-  const [photoLimit, setPhotoLimit] = useState(PHOTO_BATCH_SIZE);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const deferredQuery = useDeferredValue(query);
 
   const filtered = useMemo(() => {
@@ -83,31 +85,26 @@ export function DirectoryExplorer({ locale, pandas, initialQuery = "" }: { local
       if (mode === "male" && panda.gender !== "male") return false;
 
       if (!needle) return true;
-      const haystack = normalize([
+      return normalize([
         panda.name,
         panda.altName,
         panda.slug,
         panda.birthYear,
         panda.location,
-      ].filter(Boolean).join(" "));
-      return haystack.includes(needle);
+      ].filter(Boolean).join(" ")).includes(needle);
     });
   }, [deferredQuery, mode, pandas]);
 
-  const photographed = filtered.filter((panda) => Boolean(panda.image));
-  const visiblePhotographed = photographed.slice(0, photoLimit);
-  const namesOnly = filtered.filter((panda) => !panda.image)
-    .sort((left, right) => left.name.localeCompare(right.name, locale));
-
+  const visible = filtered.slice(0, visibleCount);
   const modes: Array<{ id: BrowseMode; label: string }> = [
     { id: "all", label: zh ? "全部" : "All" },
-    { id: "photos", label: zh ? "从照片开始" : "Start with photos" },
-    { id: "alive", label: zh ? "还在世" : "Living" },
+    { id: "photos", label: zh ? "有照片" : "With photo" },
+    { id: "alive", label: zh ? "在世" : "Living" },
     { id: "female", label: zh ? "雌性" : "Female" },
     { id: "male", label: zh ? "雄性" : "Male" },
   ];
 
-  const resetPhotoWindow = () => setPhotoLimit(PHOTO_BATCH_SIZE);
+  const resetWindow = () => setVisibleCount(PAGE_SIZE);
 
   return (
     <>
@@ -120,16 +117,16 @@ export function DirectoryExplorer({ locale, pandas, initialQuery = "" }: { local
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                resetPhotoWindow();
+                resetWindow();
               }}
               aria-label={zh ? "按名字搜索熊猫" : "Search pandas by name"}
-              placeholder={zh ? "输入名字：美香、福宝、小奇迹……" : "Type a name: Mei Xiang, Fu Bao, Xiao Qi Ji…"}
+              placeholder={zh ? "搜索名字、英文名或标识" : "Search name, alternate name, or identifier"}
             />
             <span aria-live="polite">{zh ? `${filtered.length} 只` : `${filtered.length} pandas`}</span>
           </div>
 
           <div className={styles.modeRow}>
-            <div className={styles.modeButtons} role="group" aria-label={zh ? "快速浏览方式" : "Quick browse modes"}>
+            <div className={styles.modeButtons} role="group" aria-label={zh ? "快速筛选" : "Quick filters"}>
               {modes.map((item) => (
                 <button
                   key={item.id}
@@ -137,7 +134,7 @@ export function DirectoryExplorer({ locale, pandas, initialQuery = "" }: { local
                   aria-pressed={mode === item.id}
                   onClick={() => {
                     setMode(item.id);
-                    resetPhotoWindow();
+                    resetWindow();
                   }}
                 >
                   {item.label}
@@ -146,118 +143,68 @@ export function DirectoryExplorer({ locale, pandas, initialQuery = "" }: { local
             </div>
             <Link href={`/${locale}/pandas` as Route} className={styles.precisionLink}>
               <SlidersHorizontal aria-hidden="true" />
-              {zh ? "正式站精确筛选" : "Production precise filters"}
+              {zh ? "更多筛选" : "More filters"}
             </Link>
           </div>
         </div>
       </section>
 
-      <section className={styles.gallerySection} aria-labelledby="visual-index-heading">
-        <div className={styles.sectionShell}>
-          <div className={styles.sectionHeading}>
-            <h2 id="visual-index-heading">{zh ? "先从一张脸开始。" : "Start with a face."}</h2>
-            <p>{zh ? "照片不是结果缩略图，而是认识一只熊猫的第一条线索。本地研究库影像只用于这张原型评审，不代表已经获得公开发布资格。" : "Photography is not a result thumbnail. It is the first clue to an individual panda. Local research-vault media appears here for prototype review only and is not publication clearance."}</p>
+      <section className={styles.listSection} aria-labelledby="panda-list-heading">
+        <div className={styles.listShell}>
+          <div className={styles.listHeading}>
+            <div>
+              <h2 id="panda-list-heading">{zh ? "熊猫列表" : "Panda list"}</h2>
+              <p>{zh ? "缩略图和名字共同构成每只熊猫的主体信息；其余字段只用于快速辨认。" : "Thumbnail and name are the primary identity cues. Everything else stays secondary."}</p>
+            </div>
+            <span>{zh ? `显示 ${Math.min(visible.length, filtered.length)} / ${filtered.length}` : `Showing ${Math.min(visible.length, filtered.length)} / ${filtered.length}`}</span>
           </div>
 
-          {photographed.length ? (
-            <div className={styles.visualGrid} data-testid="fan-v08-directory-grid">
-              {visiblePhotographed.map((panda) => (
-                <motion.article
-                  className={styles.visualCard}
-                  key={panda.id}
-                  layout={reduceMotion ? false : "position"}
-                  transition={reduceMotion ? { duration: 0 } : { layout: { duration: 0.46, ease: [0.16, 1, 0.3, 1] } }}
-                >
-                  {panda.published ? (
-                    <Link className={styles.visualLink} href={`/${locale}/pandas/${panda.slug}` as Route}>
-                      <span className={styles.visualFrame}>
-                        <img src={panda.image ?? ""} alt={panda.imageAlt} loading="lazy" />
-                        <span className={styles.visualShade} aria-hidden="true" />
-                      </span>
-                      <PandaCaption panda={panda} zh={zh} showArrow />
-                    </Link>
-                  ) : (
-                    <div className={styles.visualLink}>
-                      <span className={styles.visualFrame}>
-                        <img src={panda.image ?? ""} alt={panda.imageAlt} loading="lazy" />
-                        <span className={styles.visualShade} aria-hidden="true" />
-                      </span>
-                      <PandaCaption panda={panda} zh={zh} showArrow={false} />
-                    </div>
-                  )}
-                  {panda.credit ? <p className={styles.photoCredit}>{panda.credit}{panda.rights ? ` · ${panda.rights}` : ""}</p> : null}
-                </motion.article>
-              ))}
+          {visible.length ? (
+            <div className={styles.pandaList} data-testid="fan-v08-directory-list">
+              {visible.map((panda) => {
+                const content = (
+                  <>
+                    <span className={styles.thumbnail}><PandaThumbnail panda={panda} zh={zh} /></span>
+                    <PandaIdentity panda={panda} />
+                    <span className={styles.metaCluster}>
+                      <span className={styles.birth}>{panda.birthYear ?? ""}</span>
+                      <span>{genderLabel(panda.gender, zh)}</span>
+                      <span>{statusLabel(panda.status, zh)}</span>
+                    </span>
+                    <span className={styles.accessState}>
+                      {panda.published ? (zh ? "已发布" : "Published") : (zh ? "研究原型" : "Research")}
+                    </span>
+                    {panda.published ? <ArrowRight className={styles.rowArrow} aria-hidden="true" /> : null}
+                  </>
+                );
+
+                return panda.published ? (
+                  <Link key={panda.id} className={styles.pandaRow} data-testid="fan-v08-panda-row" href={`/${locale}/pandas/${panda.slug}` as Route}>
+                    {content}
+                  </Link>
+                ) : (
+                  <div key={panda.id} className={`${styles.pandaRow} ${styles.researchRow}`} data-testid="fan-v08-panda-row">
+                    {content}
+                  </div>
+                );
+              })}
             </div>
           ) : (
-            <div className={styles.noVisualResults}>
-              <p>{zh ? "这个条件下暂时没有确认的个体照片。名字索引仍会保留匹配的研究 Subject。" : "There are no confirmed individual photographs for this view. Matching research subjects still remain in the name index."}</p>
+            <div className={styles.emptyState}>
+              <h2>{zh ? "没有匹配的熊猫" : "No pandas matched"}</h2>
+              <p>{zh ? "换一个名字或清除筛选继续浏览。" : "Try another name or clear the filters to continue browsing."}</p>
+              <button type="button" onClick={() => { setQuery(""); setMode("all"); resetWindow(); }}>{zh ? "清除条件" : "Clear filters"}</button>
             </div>
           )}
 
-          {photographed.length > visiblePhotographed.length ? (
+          {filtered.length > visible.length ? (
             <div className={styles.loadMoreRow}>
-              <button type="button" onClick={() => setPhotoLimit((value) => value + PHOTO_BATCH_SIZE)}>
-                <span>{zh ? `继续浏览另外 ${Math.min(PHOTO_BATCH_SIZE, photographed.length - visiblePhotographed.length)} 只` : `Browse ${Math.min(PHOTO_BATCH_SIZE, photographed.length - visiblePhotographed.length)} more`}</span>
-                <em>{visiblePhotographed.length} / {photographed.length}</em>
+              <button type="button" onClick={() => setVisibleCount((value) => value + PAGE_SIZE)}>
+                <span>{zh ? `继续显示 ${Math.min(PAGE_SIZE, filtered.length - visible.length)} 只` : `Show ${Math.min(PAGE_SIZE, filtered.length - visible.length)} more`}</span>
+                <em>{visible.length} / {filtered.length}</em>
               </button>
             </div>
           ) : null}
-        </div>
-      </section>
-
-      {mode !== "photos" ? (
-        <section className={styles.nameSection} aria-labelledby="name-index-heading">
-          <div className={styles.sectionShell}>
-            <div className={styles.nameHeading}>
-              <h2 id="name-index-heading">{zh ? "没有照片，也仍然是一个名字。" : "No photograph does not mean no identity."}</h2>
-              <p>{zh ? "没有确认个体影像的研究 Subject，不会被塞进一排灰色占位卡。它们在这里以名字和已知基础信息继续被看见。" : "Research subjects without confirmed individual imagery do not become rows of gray placeholders. They remain visible through names and the basic information actually known."}</p>
-            </div>
-
-            {namesOnly.length ? (
-              <div className={styles.nameIndex}>
-                {namesOnly.map((panda) => panda.published ? (
-                  <Link key={panda.id} href={`/${locale}/pandas/${panda.slug}` as Route}>
-                    <span>
-                      <strong>{panda.name}</strong>
-                      {panda.altName ? <em>{panda.altName}</em> : null}
-                    </span>
-                    <span>{metaFor(panda, zh) || (zh ? "公开基础档案" : "Public basic profile")}</span>
-                    <ArrowRight aria-hidden="true" />
-                  </Link>
-                ) : (
-                  <div key={panda.id}>
-                    <span>
-                      <strong>{panda.name}</strong>
-                      {panda.altName ? <em>{panda.altName}</em> : null}
-                    </span>
-                    <span>{metaFor(panda, zh) || (zh ? "研究库基础记录" : "Research-vault record")}</span>
-                    <small>{zh ? "原型" : "Prototype"}</small>
-                  </div>
-                ))}
-              </div>
-            ) : filtered.length ? (
-              <p className={styles.namesComplete}>{zh ? "当前匹配的熊猫都有确认个体影像。" : "Every panda in the current result has confirmed individual media."}</p>
-            ) : null}
-          </div>
-        </section>
-      ) : null}
-
-      {!filtered.length ? (
-        <section className={styles.emptyState}>
-          <div>
-            <h2>{zh ? "没有找到这个名字。" : "That name is not here yet."}</h2>
-            <p>{zh ? "换一个名字，或回到“全部”继续浏览当前原型数据集。" : "Try another name or return to All to keep browsing the current prototype dataset."}</p>
-            <button type="button" onClick={() => { setQuery(""); setMode("all"); resetPhotoWindow(); }}>{zh ? "清除条件" : "Clear filters"}</button>
-          </div>
-        </section>
-      ) : null}
-
-      <section className={styles.randomScene}>
-        <div>
-          <h2>{zh ? "不知道从谁开始？\n交给偶然。" : "Not sure who to meet?\nLeave it to chance."}</h2>
-          <p>{zh ? "随机功能仍只进入正式已发布熊猫；研究库 Subject 不会被当成公开档案。" : "Random discovery still opens published pandas only; research-vault subjects are never presented as public profiles."}</p>
-          <Link href={`/${locale}/games/random` as Route}><Shuffle aria-hidden="true" />{zh ? "随机遇见一只已发布熊猫" : "Meet a published panda at random"}<ArrowRight aria-hidden="true" /></Link>
         </div>
       </section>
     </>

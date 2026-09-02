@@ -7,7 +7,6 @@ import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import type { PandaDetail, PublicPandaMediaAsset } from "@/lib/types";
 
-import { HeroMotionCopy, HeroMotionImage } from "../motion-parts";
 import homeStyles from "../prototype.module.css";
 import { fanV08VisualFixtures } from "../visual-fixtures";
 import { DirectoryExplorer, type DirectoryPanda } from "./directory-explorer";
@@ -160,9 +159,6 @@ export default async function FanV08PandaDirectoryPrototype({ params, searchPara
     return left.name.localeCompare(right.name, locale);
   });
 
-  const heroFixture = fanV08VisualFixtures.find((fixture) => fixture.slug === "fu-bao") ?? fanV08VisualFixtures[0];
-  const heroPanda = pandas.find((panda) => panda.slug === heroFixture.slug) ?? null;
-  const heroName = heroPanda?.name ?? (zh ? heroFixture.zh : heroFixture.en);
   const otherLocale = zh ? "en" : "zh";
   const initialQuery = one(rawSearch.q);
   const researchMode = Boolean(researchCatalog);
@@ -195,33 +191,31 @@ export default async function FanV08PandaDirectoryPrototype({ params, searchPara
       </header>
 
       <main>
-        <section className={styles.hero} aria-labelledby="v8-directory-title">
-          <HeroMotionImage className={styles.heroImage} src={heroFixture.image} alt={zh ? `${heroName}的照片` : `Photograph of ${heroName}`} />
-          <div className={styles.heroShade} aria-hidden="true" />
-          <span className={styles.prototypeNote}>
-            {researchMode
-              ? zh ? "V8.2 · 本地研究目录原型，不代表公开发布" : "V8.2 · local research-catalog prototype, not publication"
-              : zh ? "V8.2 熊猫图鉴原型" : "V8.2 panda directory prototype"}
-          </span>
-          <a className={styles.heroCredit} href={heroFixture.source} target="_blank" rel="noreferrer">{heroFixture.credit} · {heroFixture.rights}</a>
-
-          <div className={styles.heroShell}>
-            <HeroMotionCopy className={styles.heroCopy}>
-              <h1 id="v8-directory-title">{zh ? "今天想认识哪一只？" : "Who do you want to meet today?"}</h1>
-              <p>{zh ? "不要从字段和筛选开始。从一张脸、一个名字，或一次偶然的相遇开始。" : "Do not begin with fields and filters. Begin with a face, a name, or a chance encounter."}</p>
-            </HeroMotionCopy>
-            <div className={styles.heroCount} data-testid={researchMode ? "fan-v08-research-count" : undefined}>
-              <strong>{pandas.length}</strong>
-              <span>
-                {researchMode
-                  ? zh
-                    ? `个本地研究 Subject · ${photoCount} 有确认个体影像 · ${noPhotoCount} 无图 · 当前正式发布 ${publishedCount}`
-                    : `local research subjects · ${photoCount} with confirmed individual media · ${noPhotoCount} without · ${publishedCount} currently published`
-                  : zh
-                    ? "只熊猫在当前公开版本中可继续探索"
-                    : "pandas available to explore in the current public release"}
-              </span>
+        <section className={styles.directoryMasthead} aria-labelledby="v8-directory-title">
+          <div className={styles.mastheadShell}>
+            <div className={styles.mastheadTop}>
+              <div className={styles.mastheadCopy}>
+                <h1 id="v8-directory-title">{zh ? "熊猫图鉴" : "Panda directory"}</h1>
+                <p>{zh ? "用照片和名字快速浏览每一只熊猫。搜索、筛选和状态信息都服务于辨认，不抢走主体。" : "Browse every panda through thumbnail and name. Search, filters, and status information support recognition without competing with identity."}</p>
+              </div>
+              <div className={styles.datasetCount} data-testid={researchMode ? "fan-v08-research-count" : undefined}>
+                <strong>{pandas.length}</strong>
+                <span>
+                  {researchMode
+                    ? zh
+                      ? `${photoCount} 有确认个体影像 · ${noPhotoCount} 暂无确认个体影像 · 正式发布 ${publishedCount}`
+                      : `${photoCount} with confirmed individual media · ${noPhotoCount} without confirmed media · ${publishedCount} published`
+                    : zh
+                      ? "当前公开版本中的熊猫"
+                      : "pandas in the current public release"}
+                </span>
+              </div>
             </div>
+            <span className={styles.prototypeNote}>
+              {researchMode
+                ? zh ? "V8.3 列表原型 · 本地研究数据仅用于规模与版式评审，不代表公开发布。" : "V8.3 list prototype · local research data is for scale and layout review only, not publication."
+                : zh ? "V8.3 熊猫列表原型" : "V8.3 panda list prototype"}
+            </span>
           </div>
         </section>
 

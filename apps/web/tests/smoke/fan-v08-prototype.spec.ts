@@ -14,17 +14,17 @@ test("fan V8 panda directory renders the editorial discovery flow", async ({ pag
   await page.goto("/zh/prototype/fan-v08/pandas", { waitUntil: "domcontentloaded" });
 
   await expect(page.getByTestId("fan-v08-directory")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1, name: "今天想认识哪一只？" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "熊猫图鉴" })).toBeVisible();
   await expect(page.getByRole("searchbox", { name: "按名字搜索熊猫" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "从照片开始" })).toBeVisible();
-  await expect(page.getByTestId("fan-v08-directory-grid")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "没有照片，也仍然是一个名字。" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "有照片" })).toBeVisible();
+  await expect(page.getByTestId("fan-v08-directory-list")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "熊猫列表" })).toBeVisible();
 
   const researchCount = page.getByTestId("fan-v08-research-count");
   if (await researchCount.count()) {
     await expect(researchCount).toContainText("960");
     await expect(researchCount).toContainText("785 有确认个体影像");
-    await expect(page.getByRole("button", { name: /继续浏览另外 48 只/ })).toContainText("48 / 785");
+    await expect(page.getByRole("button", { name: /继续显示 60 只/ })).toContainText("60 / 960");
 
     const search = page.getByRole("searchbox", { name: "按名字搜索熊猫" });
     await search.fill("阿旭");

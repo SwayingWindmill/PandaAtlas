@@ -21,15 +21,15 @@ Open a panda profile because a face, name, life period or place made the visitor
 
 ## Chosen direction
 
-**Living contact sheet.** The directory should feel like an edited photographic index rather than a database result grid. A cinematic lead photograph establishes the world, then utility condenses into a quiet search/filter rail. Published photographs form an irregular editorial contact sheet with deliberately varied proportions; pandas without published imagery move into a typographic name index instead of creating rows of gray empty cards.
+**Panda directory list.** This page is a true browseable list, not a gallery, story page, masonry layout, or database table. Every row gives equal visual priority to the panda thumbnail and the panda name. Photography is an identity cue; typography is the other identity cue. Neither becomes background decoration or a tiny caption.
 
 ## Structural thesis
 
-1. Editorial cover: one strong panda image, large directory statement, current published count.
-2. Quiet discovery rail: search plus a few fan-readable quick modes; advanced database controls are not the first interaction.
-3. Visual index: varied image spans, minimal captions, no equal card grid.
-4. Name index: no-image/partial profiles remain first-class through typography rather than fake media placeholders.
-5. Continuation: random panda and other discovery routes at the end.
+1. Compact directory masthead: title, scope, total count, and a clear prototype/publication boundary. No cinematic hero image.
+2. Sticky discovery controls: name search plus a few fan-readable filters.
+3. One consistent panda list: every result uses the same thumbnail-and-name-led row anatomy, whether or not it has publishable media.
+4. Secondary metadata stays quiet and aligned: birth year, sex, life state, and publication state never compete with thumbnail or name.
+5. Progressive loading keeps the 960-subject prototype fast while search and filters always cover the full dataset.
 
 ## Constraints
 
@@ -38,12 +38,12 @@ Open a panda profile because a face, name, life period or place made the visitor
 - Do not imply all published pandas have photos, family data or current locations.
 - Omit unknown metadata instead of printing repeated empty rows.
 - Search/filter interactions must remain keyboard and touch usable.
-- Filtering may reorganize content with restrained layout motion, but there is no repeated reveal choreography or smooth-scroll hijacking.
-- At 320 CSS px, the page becomes a deliberate single-column editorial flow rather than a compressed desktop masonry grid.
-- The photo grid must not become Pinterest-style randomness; varied spans follow a small repeatable composition pattern.
+- Filtering must preserve row order and row anatomy; there is no masonry reflow, repeated reveal choreography, or smooth-scroll hijacking.
+- At 320 CSS px, each row keeps thumbnail and name visible together, then collapses secondary metadata beneath them.
+- Thumbnail and name are co-primary identity cues. Metadata, publication state, and affordances must never visually outrank either one.
 - Local review may enable `FAN_V08_RESEARCH_CATALOG=1` and load all canonical research Subjects to test real scale. This mode is explicitly prototype-only and must never be described as the public release.
 - Research-only Subjects must never link to a production panda profile. Only a matching active PublicRead panda is navigable as a published profile.
-- The full research catalog participates in search and filtering, while photographed results render in bounded batches so 785 media records do not create hundreds of image elements on first paint.
+- The full research catalog participates in search and filtering, while list rows render in bounded batches so 960 subjects do not create hundreds of media elements on first paint.
 - Research media coverage counts describe the local vault only; they do not communicate publication rights or public media eligibility.
 
 ## Visual language
@@ -55,8 +55,8 @@ Open a panda profile because a face, name, life period or place made the visitor
 
 ## Motion
 
-One authored interaction: changing search/filter state lets the visual contact sheet reflow smoothly through Motion layout animation. Entry photography may use the existing restrained settle. Reduced-motion users get immediate state changes without spatial animation.
+Motion is deliberately minimal. Rows do not reflow theatrically. Hover may use a tiny thumbnail scale and arrow shift; filtering and progressive loading update immediately. Reduced-motion users receive the same information with transitions removed.
 
 ## Prototype success criteria
 
-Within a few seconds a visitor should understand: how many pandas are publicly available, how to search, how to browse visually, that some profiles intentionally have no public image, and where to click next. The page should feel more like a premium nature/editorial product than a filtered database or SaaS gallery.
+Within a few seconds a visitor should understand: this is a panda list, thumbnail and name are the two primary identity cues, how many pandas are in the review dataset, how to search/filter, and which rows represent published profiles versus research-only prototype records. The page should feel calm, premium, and highly scannable rather than like a gallery, spreadsheet, or SaaS result table.
