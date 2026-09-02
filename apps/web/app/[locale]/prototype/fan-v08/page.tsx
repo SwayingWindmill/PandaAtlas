@@ -19,6 +19,7 @@ import {
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 
+import { FamilyMotionImage, HeroMotionCopy, HeroMotionImage, JourneyMotionPath } from "./motion-parts";
 import styles from "./prototype.module.css";
 import { fanV08VisualFixtures } from "./visual-fixtures";
 
@@ -78,7 +79,7 @@ export default async function FanV08HomePrototype({ params }: Props) {
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <Link className={styles.brand} href={route(`/${locale}`)}>
-            <span className={styles.brandMark}>●</span>
+            <span className={styles.brandMark} aria-hidden="true" />
             <span>吱熊猫 ZhiPanda</span>
           </Link>
           <nav className={styles.nav} aria-label={zh ? "V8 原型主导航" : "V8 prototype navigation"}>
@@ -97,14 +98,13 @@ export default async function FanV08HomePrototype({ params }: Props) {
 
       <main>
         <section className={styles.hero} aria-labelledby="v8-home-title">
-          <img className={styles.heroImage} src={hero.image} alt={zh ? `${hero.zh}的照片` : `Photograph of ${hero.en}`} />
+          <HeroMotionImage className={styles.heroImage} src={hero.image} alt={zh ? `${hero.zh}的照片` : `Photograph of ${hero.en}`} />
           <div className={styles.heroShade} />
-          <div className={styles.prototypeFlag}>{zh ? "V8 视觉原型 · 图片为评审 fixture" : "V8 visual prototype · review image fixture"}</div>
+          <div className={styles.prototypeFlag}>{zh ? "V8.1 视觉原型 · 图片为评审 fixture" : "V8.1 visual prototype · review image fixture"}</div>
 
-          <div className={styles.heroCopy}>
-            <p className={styles.kicker}>{zh ? "从一只熊猫开始" : "Start with one panda"}</p>
+          <HeroMotionCopy className={styles.heroCopy}>
             <h1 id="v8-home-title">{zh ? "从一只熊猫，走进整个世界。" : "One panda can open an entire world."}</h1>
-            <p>{zh ? "家族、地点、时间和记忆，都从同一个名字开始。" : "Family, places, time, and memories all begin with one name."}</p>
+            <p className={styles.heroLead}>{zh ? "家族、地点、时间和记忆，都从同一个名字开始。" : "Family, places, time, and memories all begin with one name."}</p>
             <div className={styles.heroActions}>
               <Link className={styles.primaryButton} href={route(`/${locale}/pandas/${hero.slug}`)}>
                 {zh ? `认识${hero.zh}` : `Meet ${hero.en}`}<ArrowUpRight />
@@ -113,7 +113,7 @@ export default async function FanV08HomePrototype({ params }: Props) {
                 <Shuffle />{zh ? "换一只看看" : "Meet another"}
               </Link>
             </div>
-          </div>
+          </HeroMotionCopy>
 
           <Link className={styles.heroIdentity} href={route(`/${locale}/pandas/${hero.slug}`)}>
             <span>{zh ? "今天从这里开始" : "Start here today"}</span>
@@ -133,8 +133,8 @@ export default async function FanV08HomePrototype({ params }: Props) {
         <section className={styles.threadScene}>
           <div className={styles.shell}>
             <div className={styles.threadIntro}>
-              <p>{zh ? "一只熊猫，不只是几行资料" : "More than a few facts"}</p>
               <h2>{zh ? "先记住它的几个瞬间。" : "Remember a few moments first."}</h2>
+              <p>{zh ? "一只熊猫不该从一张字段表开始。先从几个真实发生过的时刻，认识这个名字。" : "A panda should not begin as a field table. Start with a few moments that actually happened, and let the name become memorable."}</p>
             </div>
 
             <div className={styles.threadGrid}>
@@ -143,11 +143,6 @@ export default async function FanV08HomePrototype({ params }: Props) {
                 <strong>{displayName(locale, hero.zh, hero.en)}</strong>
                 <p>{zh ? "雌性 · 1998 年出生" : "Female · born 1998"}</p>
                 <Link href={route(`/${locale}/pandas/${hero.slug}`)}>{zh ? "打开完整档案" : "Open full profile"}<ArrowRight /></Link>
-                <div className={styles.miniFaces}>
-                  {fanV08VisualFixtures.slice(2, 6).map((panda) => (
-                    <span key={panda.slug} title={displayName(locale, panda.zh, panda.en)}><img src={panda.image} alt="" /></span>
-                  ))}
-                </div>
               </aside>
 
               <ol className={styles.timeline}>
@@ -164,10 +159,9 @@ export default async function FanV08HomePrototype({ params }: Props) {
         </section>
 
         <section className={styles.familyScene}>
-          <img className={styles.familyBackground} src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Mei_Xiang_%2813047314694%29.jpg" alt="" />
+          <FamilyMotionImage className={styles.familyBackground} src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Mei_Xiang_%2813047314694%29.jpg" alt="" />
           <div className={styles.familyShade} />
           <div className={styles.familyContent}>
-            <p className={styles.kicker}>{zh ? "家族" : "Family"}</p>
             <h2>{zh ? "美香不是一个孤立的名字。" : "Mei Xiang is not an isolated name."}</h2>
             <p>{zh ? "沿着孩子、父母与兄弟姐妹，档案会变成一整个家族故事。" : "Follow children, parents, and siblings and a profile becomes a family story."}</p>
             <Link className={styles.yellowButton} href={route(`/${locale}/families`)}>{zh ? "进入这个家族" : "Enter this family"}<ArrowRight /></Link>
@@ -196,22 +190,32 @@ export default async function FanV08HomePrototype({ params }: Props) {
         <section className={styles.journeyScene}>
           <div className={`${styles.shell} ${styles.journeyGrid}`}>
             <div className={styles.journeyCopy}>
-              <p className={styles.kicker}>{zh ? "生活足迹" : "Journey"}</p>
               <h2>{zh ? "从它生活过的地方，继续认识更多熊猫。" : "Follow where it lived, then meet more pandas."}</h2>
               <p>{zh ? "地点不是一枚孤立的图钉。它把一只熊猫的时间、迁居和同一地点里的其他熊猫连起来。" : "A place is more than a pin. It connects time, movement, and other pandas that shared the same place."}</p>
-              <div className={styles.placeList}>
-                <div><span>2000 — 2023</span><strong>{zh ? "史密森国家动物园" : "Smithsonian's National Zoo"}</strong><em>{zh ? "历史居住" : "Historic"}</em></div>
-                <div><span>2023 —</span><strong>{zh ? "中国" : "China"}</strong><em>{zh ? "公开记录" : "Published record"}</em></div>
-              </div>
               <Link className={styles.textLink} href={route(`/${locale}/map`)}>{zh ? "打开熊猫地图" : "Open the panda map"}<ArrowRight /></Link>
             </div>
 
-            <div className={styles.mapMock} aria-label={zh ? "地图视觉原型" : "Map visual prototype"}>
-              <div className={styles.mapGrid} />
-              <span className={`${styles.mapDot} ${styles.mapDotWashington}`}><i /><b>{zh ? "华盛顿" : "Washington"}</b></span>
-              <span className={`${styles.mapDot} ${styles.mapDotChina}`}><i /><b>{zh ? "中国" : "China"}</b></span>
-              <svg viewBox="0 0 1000 620" aria-hidden="true"><path d="M220 275 C380 190, 540 185, 760 305" /></svg>
-              <div className={styles.mapCard}><MapPin /><div><strong>{zh ? "一只熊猫的足迹" : "One panda's journey"}</strong><span>{zh ? "从华盛顿回到中国" : "From Washington back to China"}</span></div><ArrowUpRight /></div>
+            <div className={styles.routePlate} aria-label={zh ? "美香生活足迹视觉原型" : "Mei Xiang journey visual prototype"}>
+              <div className={styles.routePlateTopline}>
+                <span>{zh ? "从华盛顿到中国" : "Washington to China"}</span>
+                <em>2000 — 2023 —</em>
+              </div>
+              <div className={styles.routeStops}>
+                <div className={styles.routeStop}>
+                  <i aria-hidden="true" />
+                  <span>2000 — 2023</span>
+                  <strong>{zh ? "史密森国家动物园" : "Smithsonian's National Zoo"}</strong>
+                  <em>{zh ? "历史居住" : "Historic residency"}</em>
+                </div>
+                <JourneyMotionPath className={styles.routeLine} />
+                <div className={styles.routeStop}>
+                  <i aria-hidden="true" />
+                  <span>2023 —</span>
+                  <strong>{zh ? "中国" : "China"}</strong>
+                  <em>{zh ? "公开记录" : "Published record"}</em>
+                </div>
+              </div>
+              <p>{zh ? "地点会随时间改变；公开页只呈现已经发布的记录。" : "Places change over time; the public page shows only published records."}</p>
             </div>
           </div>
         </section>
@@ -220,7 +224,6 @@ export default async function FanV08HomePrototype({ params }: Props) {
           <div className={styles.shell}>
             <div className={styles.worldHeading}>
               <div>
-                <p className={styles.kicker}>{zh ? "然后，世界打开" : "Then the world opens"}</p>
                 <h2>{zh ? `${publishedCount || "更多"} 只公开熊猫，等你继续认识。` : `${publishedCount || "More"} published pandas to keep discovering.`}</h2>
               </div>
               <Link href={route(`/${locale}/pandas`)}>{zh ? "浏览全部熊猫" : "Browse all pandas"}<ArrowRight /></Link>
@@ -236,7 +239,7 @@ export default async function FanV08HomePrototype({ params }: Props) {
                   <span><strong>{displayName(locale, panda.zh, panda.en)}</strong><em>{zh ? panda.metaZh : panda.metaEn}</em></span>
                   <ArrowUpRight />
                 </span>
-                {index === 0 ? <small>{zh ? "横向滑动继续" : "Scroll sideways"}</small> : null}
+                {index === 0 ? <small>{zh ? "横向浏览" : "Browse sideways"}</small> : null}
               </Link>
             ))}
           </div>
@@ -245,7 +248,7 @@ export default async function FanV08HomePrototype({ params }: Props) {
             <form className={styles.searchBox} action={`/${locale}/pandas`} method="get" role="search">
               <Search />
               <input name="q" type="search" aria-label={zh ? "搜索熊猫" : "Search pandas"} placeholder={zh ? "搜名字：美香、花花、福宝……" : "Search Mei Xiang, He Hua, Fu Bao…"} />
-              <button type="submit">{zh ? "搜索" : "Search"}</button>
+              <button type="submit">{zh ? "搜索" : "Search"}<ArrowRight /></button>
             </form>
             <nav className={styles.browseLinks} aria-label={zh ? "更多探索方式" : "More ways to explore"}>
               <Link href={route(`/${locale}/pandas`)}>{zh ? "全部熊猫" : "Pandas"}<ArrowRight /></Link>
@@ -263,7 +266,6 @@ export default async function FanV08HomePrototype({ params }: Props) {
         <section className={styles.returnScene}>
           <div className={`${styles.shell} ${styles.returnGrid}`}>
             <div>
-              <p className={styles.kicker}>{zh ? "回来看看" : "Come back"}</p>
               <h2>{zh ? "今天认识一只，明天还有新的故事。" : "Meet one today. There is another story tomorrow."}</h2>
               <div className={styles.updateList}>
                 {(atlasPreview.length ? atlasPreview : []).map((panda) => (
