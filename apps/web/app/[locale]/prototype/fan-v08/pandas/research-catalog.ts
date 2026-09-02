@@ -50,8 +50,8 @@ async function readCatalogAt(path: string): Promise<ResearchCatalog | null> {
   }
 }
 
-export async function loadFanV08ResearchCatalog(): Promise<ResearchCatalog | null> {
-  if (process.env.FAN_V08_RESEARCH_CATALOG !== "1") return null;
+export async function loadFanV08ResearchCatalog(force = false): Promise<ResearchCatalog | null> {
+  if (!force && process.env.FAN_V08_RESEARCH_CATALOG !== "1") return null;
 
   const candidates = [
     resolve(process.cwd(), "../../", CATALOG_RELATIVE_PATH),

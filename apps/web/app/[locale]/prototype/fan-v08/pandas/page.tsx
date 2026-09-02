@@ -11,6 +11,7 @@ import homeStyles from "../prototype.module.css";
 import { fanV08VisualFixtures } from "../visual-fixtures";
 import { DirectoryExplorer, type DirectoryPanda } from "./directory-explorer";
 import styles from "./directory.module.css";
+import { AnimatedContent, CountUpNumber } from "./react-bits-directory";
 import { loadFanV08ResearchCatalog, type ResearchCatalogPanda } from "./research-catalog";
 
 interface Props {
@@ -126,12 +127,12 @@ export default async function FanV08PandaDirectoryPrototype({ params, searchPara
 
   const zh = locale === "zh";
   const [atlas, researchCatalog] = await Promise.all([
-    loadV2PublicAtlasDataset(locale),
-    loadFanV08ResearchCatalog(),
+    loadV2PublicAtlasDataset(locale).catch(() => null),
+    loadFanV08ResearchCatalog(true),
   ]);
-  if (!atlas) notFound();
+  if (!atlas && !researchCatalog) notFound();
 
-  const publishedPandas = atlas.data.pandas.map((panda) => serializePublishedPanda(panda, locale));
+  const publishedPandas = atlas?.data.pandas.map((panda) => serializePublishedPanda(panda, locale)) ?? [];
   const publishedBySlug = new Map(publishedPandas.map((panda) => [panda.slug, panda]));
 
   let pandas: DirectoryPanda[];
@@ -162,11 +163,6 @@ export default async function FanV08PandaDirectoryPrototype({ params, searchPara
   const otherLocale = zh ? "en" : "zh";
   const initialQuery = one(rawSearch.q);
   const researchMode = Boolean(researchCatalog);
-  const publishedCount = publishedPandas.length;
-  const photoCount = researchCatalog?.summary.subjects_with_confirmed_media
-    ?? pandas.filter((panda) => Boolean(panda.image)).length;
-  const noPhotoCount = researchCatalog?.summary.subjects_without_confirmed_media
-    ?? pandas.filter((panda) => !panda.image).length;
 
   return (
     <div className={homeStyles.page} data-testid="fan-v08-directory">
@@ -194,28 +190,15 @@ export default async function FanV08PandaDirectoryPrototype({ params, searchPara
         <section className={styles.directoryMasthead} aria-labelledby="v8-directory-title">
           <div className={styles.mastheadShell}>
             <div className={styles.mastheadTop}>
-              <div className={styles.mastheadCopy}>
+              <AnimatedContent className={styles.mastheadCopy} distance={20}>
                 <h1 id="v8-directory-title">{zh ? "熊猫图鉴" : "Panda directory"}</h1>
-                <p>{zh ? "用照片和名字快速浏览每一只熊猫。搜索、筛选和状态信息都服务于辨认，不抢走主体。" : "Browse every panda through thumbnail and name. Search, filters, and status information support recognition without competing with identity."}</p>
-              </div>
-              <div className={styles.datasetCount} data-testid={researchMode ? "fan-v08-research-count" : undefined}>
-                <strong>{pandas.length}</strong>
-                <span>
-                  {researchMode
-                    ? zh
-                      ? `${photoCount} 有确认个体影像 · ${noPhotoCount} 暂无确认个体影像 · 正式发布 ${publishedCount}`
-                      : `${photoCount} with confirmed individual media · ${noPhotoCount} without confirmed media · ${publishedCount} published`
-                    : zh
-                      ? "当前公开版本中的熊猫"
-                      : "pandas in the current public release"}
-                </span>
-              </div>
+              </AnimatedContent>
+              <AnimatedContent className={styles.datasetCount} delay={0.08} distance={14}>
+                <div data-testid={researchMode ? "fan-v08-research-count" : undefined} aria-label={zh ? `${pandas.length} 只熊猫` : `${pandas.length} pandas`}>
+                  <strong><CountUpNumber value={pandas.length} /></strong>
+                </div>
+              </AnimatedContent>
             </div>
-            <span className={styles.prototypeNote}>
-              {researchMode
-                ? zh ? "V8.3 列表原型 · 本地研究数据仅用于规模与版式评审，不代表公开发布。" : "V8.3 list prototype · local research data is for scale and layout review only, not publication."
-                : zh ? "V8.3 熊猫列表原型" : "V8.3 panda list prototype"}
-            </span>
           </div>
         </section>
 

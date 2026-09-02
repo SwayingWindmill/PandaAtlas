@@ -1,167 +1,171 @@
 .directoryMasthead {
-  padding: 9.5rem 0 3.5rem;
+  padding: 10.5rem 0 4.4rem;
   background: #f7f6f1;
-  border-bottom: 1px solid rgba(20, 32, 25, 0.14);
 }
 
 .mastheadShell,
 .discoveryShell,
 .listShell {
-  width: min(80rem, calc(100% - 4rem));
+  width: min(92rem, calc(100% - 4rem));
   margin-inline: auto;
 }
 
 .mastheadTop {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: 3rem;
-  align-items: end;
 }
 
 .mastheadCopy {
-  max-width: 48rem;
+  min-width: 0;
 }
 
 .mastheadCopy h1 {
   margin: 0;
+  color: #172019;
   font-family: var(--font-display);
-  font-size: clamp(3.1rem, 6vw, 5.8rem);
-  font-weight: 680;
-  letter-spacing: -0.055em;
-  line-height: 0.94;
-}
-
-.mastheadCopy p {
-  max-width: 42rem;
-  margin: 1.4rem 0 0;
-  color: #4f5c54;
-  font-size: 1rem;
-  line-height: 1.75;
+  font-size: clamp(4.4rem, 8.5vw, 7.8rem);
+  font-weight: 730;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
 }
 
 .datasetCount {
-  min-width: 15rem;
-  padding-left: 2rem;
-  border-left: 1px solid rgba(20, 32, 25, 0.18);
+  padding-bottom: 0.35rem;
 }
 
 .datasetCount strong {
   display: block;
+  color: #24543a;
   font-family: var(--font-display);
-  font-size: clamp(3rem, 5vw, 4.8rem);
+  font-size: clamp(2.8rem, 4.6vw, 4.7rem);
   font-weight: 690;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.04em;
   line-height: 0.88;
-}
-
-.datasetCount span {
-  max-width: 18rem;
-  margin-top: 0.9rem;
-  display: block;
-  color: #56635a;
-  font-size: 0.78rem;
-  line-height: 1.6;
-}
-
-.prototypeNote {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  display: block;
-  border-top: 1px solid rgba(20, 32, 25, 0.12);
-  color: #59665d;
-  font-size: 0.76rem;
-  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
 }
 
 .discoveryRail {
   position: sticky;
   z-index: 40;
   top: 4.5rem;
-  background: rgba(247, 246, 241, 0.96);
-  border-bottom: 1px solid rgba(20, 32, 25, 0.14);
-  backdrop-filter: blur(12px);
+  background: rgba(247, 246, 241, 0.94);
+  border-top: 1px solid rgba(20, 32, 25, 0.12);
+  border-bottom: 1px solid rgba(20, 32, 25, 0.12);
+  backdrop-filter: blur(16px) saturate(120%);
 }
 
-.discoveryShell {
-  min-height: 7.5rem;
-  padding: 1.15rem 0;
+.discoverySurface {
+  min-height: 5.4rem;
   display: grid;
-  gap: 0.85rem;
+  grid-template-columns: minmax(19rem, 1fr) auto;
+  gap: 1.4rem 3rem;
+  align-items: center;
 }
 
 .searchLine {
-  min-height: 3rem;
+  min-height: 3.4rem;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 0.9rem;
+  gap: 0.85rem;
   align-items: center;
-  border-bottom: 1px solid rgba(20, 32, 25, 0.2);
+  border-bottom: 1px solid rgba(20, 32, 25, 0.28);
+}
+
+.searchLine:focus-within {
+  border-color: #24543a;
 }
 
 .searchLine svg {
   width: 1rem;
-  color: #48564d;
+  color: #47564d;
 }
 
 .searchLine input {
   width: 100%;
+  min-width: 0;
   padding: 0.8rem 0;
   border: 0;
   outline: 0;
   background: transparent;
-  color: #142019;
+  color: #172019;
   font: inherit;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
+  caret-color: #24543a;
 }
 
 .searchLine input::placeholder {
-  color: #7a837d;
+  color: #737e77;
 }
 
 .searchLine > span {
-  color: #4d5b52;
-  font-size: 0.78rem;
+  color: #59675f;
+  font-size: 0.74rem;
   font-variant-numeric: tabular-nums;
 }
 
 .modeRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1.5rem;
 }
 
 .modeButtons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.2rem;
+  gap: 0.15rem;
 }
 
 .modeButtons button {
-  padding: 0.25rem 0;
+  position: relative;
+  min-height: 2.45rem;
+  padding: 0 0.82rem;
   border: 0;
-  border-bottom: 1px solid transparent;
   background: transparent;
-  color: #637067;
+  color: #657168;
   cursor: pointer;
   font: inherit;
-  font-size: 0.78rem;
-  font-weight: 650;
+  font-size: 0.74rem;
+  font-weight: 680;
+}
+
+.modeButtons button > span[aria-hidden="true"] {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #172019;
+  border-radius: 999px;
+}
+
+.modeButtons button > span:not([aria-hidden="true"]) {
+  position: relative;
+  z-index: 1;
 }
 
 .modeButtons button[aria-pressed="true"] {
-  border-color: #17382a;
-  color: #17382a;
+  color: #f7f6f1;
+}
+
+.modeButtons button:focus-visible {
+  outline: 2px solid #397253;
+  outline-offset: 2px;
+  border-radius: 999px;
 }
 
 .precisionLink {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: #4c5b52 !important;
+  color: #31483b !important;
   text-decoration: none;
-  font-size: 0.76rem;
-  font-weight: 650;
+  text-underline-offset: 0.24em;
+  font-size: 0.74rem;
+  font-weight: 680;
+}
+
+.precisionLink:hover {
+  text-decoration: underline;
 }
 
 .precisionLink svg {
@@ -169,73 +173,74 @@
 }
 
 .listSection {
-  padding: 4.5rem 0 7rem;
+  padding: 3.4rem 0 8rem;
   background: #f7f6f1;
 }
 
-.listHeading {
-  padding-bottom: 1.6rem;
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 2rem;
-  border-bottom: 1px solid rgba(20, 32, 25, 0.25);
-}
-
-.listHeading h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.7rem;
-  font-weight: 680;
-  letter-spacing: -0.035em;
-}
-
-.listHeading p {
-  max-width: 44rem;
-  margin: 0.55rem 0 0;
-  color: #5b675f;
-  font-size: 0.84rem;
-  line-height: 1.65;
-}
-
-.listHeading > span {
-  flex: 0 0 auto;
-  color: #59665d;
-  font-size: 0.76rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.pandaList {
-  border-bottom: 1px solid rgba(20, 32, 25, 0.24);
-}
-
-.pandaRow {
-  min-height: 8.5rem;
-  padding: 1rem 0;
+.pandaGrid {
   display: grid;
-  grid-template-columns: 6.5rem minmax(16rem, 1.7fr) minmax(18rem, 1fr) 7rem 1.25rem;
-  gap: 1.25rem;
-  align-items: center;
-  border-bottom: 1px solid rgba(20, 32, 25, 0.12);
-  color: #142019 !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: clamp(1.25rem, 2vw, 2rem);
+  row-gap: clamp(2.6rem, 4vw, 4rem);
+}
+
+.pandaCard {
+  --spotlight-x: 50%;
+  --spotlight-y: 32%;
+  position: relative;
+  min-width: 0;
+  background: transparent;
+}
+
+.pandaCard:focus-within {
+  outline: none;
+}
+
+.cardLink,
+.cardContents {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardLink {
+  color: #172019 !important;
   text-decoration: none;
-  transition: background 160ms ease;
 }
 
-.pandaRow:last-child {
-  border-bottom: 0;
+.cardLink:focus-visible {
+  outline: none;
 }
 
-a.pandaRow:hover {
-  background: rgba(20, 32, 25, 0.035);
+.cardLink:focus-visible .thumbnail {
+  outline: 3px solid rgba(57, 114, 83, 0.22);
+  outline-offset: 3px;
 }
 
 .thumbnail {
-  width: 6.5rem;
-  height: 6.5rem;
+  position: relative;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   display: block;
-  background: #dfe4dd;
+  background: #dfe6de;
+  border-radius: 0.7rem;
+  transform: translateZ(0);
+}
+
+.thumbnail::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(circle 10rem at var(--spotlight-x) var(--spotlight-y), rgba(255, 255, 255, 0.2), transparent 68%);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.pandaCard:hover .thumbnail::after,
+.pandaCard:focus-within .thumbnail::after {
+  opacity: 1;
 }
 
 .thumbnail img {
@@ -243,151 +248,227 @@ a.pandaRow:hover {
   height: 100%;
   display: block;
   object-fit: cover;
-  transition: transform 220ms ease;
+  transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1), filter 320ms ease;
 }
 
-a.pandaRow:hover .thumbnail img {
-  transform: scale(1.025);
+.pandaCard:hover .thumbnail img {
+  transform: scale(1.028);
+  filter: saturate(1.02) contrast(1.015);
+}
+
+.photoShade {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 24%;
+  background: linear-gradient(to top, rgba(12, 18, 14, 0.16), transparent);
+  pointer-events: none;
+}
+
+.cardArrow {
+  position: absolute;
+  right: 0.85rem;
+  top: 0.85rem;
+  z-index: 3;
+  width: 2.55rem;
+  height: 2.55rem;
+  display: grid;
+  place-items: center;
+  background: rgba(247, 246, 241, 0.9);
+  border-radius: 999px;
+  color: #17382a;
+  backdrop-filter: blur(10px);
+  transform: translate3d(0, 0.25rem, 0) scale(0.96);
+  opacity: 0;
+  transition: opacity 220ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cardArrow svg {
+  width: 1rem;
+}
+
+.pandaCard:hover .cardArrow,
+.pandaCard:focus-within .cardArrow {
+  transform: translate3d(0, 0, 0) scale(1);
+  opacity: 1;
 }
 
 .noPhoto {
+  position: relative;
   width: 100%;
   height: 100%;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 0.45rem;
-  background: #dfe4dd;
-  color: #617067;
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  background: #dfe7dd;
+  color: #385243;
 }
 
-.noPhoto > span {
-  font-size: 1.1rem;
+.noPhoto::after {
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid rgba(23, 56, 42, 0.13);
+  border-radius: 0.35rem;
+  content: "";
+}
+
+.noPhotoInitial {
+  position: absolute;
+  right: 0.9rem;
+  top: 0.65rem;
+  color: rgba(23, 56, 42, 0.11);
+  font-family: var(--font-display);
+  font-size: clamp(5.8rem, 8vw, 9rem);
+  font-weight: 760;
+  line-height: 0.9;
 }
 
 .noPhoto small {
-  font-size: 0.7rem;
-  font-weight: 650;
+  position: relative;
+  z-index: 1;
+  font-size: 0.67rem;
+  font-weight: 680;
+}
+
+.cardBody {
+  min-height: 7.7rem;
+  padding-top: 1rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .identity {
   min-width: 0;
   display: grid;
-  gap: 0.35rem;
+  gap: 0.22rem;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pandaCard:hover .identity {
+  transform: translateY(-0.12rem);
 }
 
 .identity strong {
   overflow: hidden;
+  color: #172019;
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 1.8vw, 1.65rem);
-  font-weight: 690;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
+  font-size: clamp(1.35rem, 1.8vw, 1.72rem);
+  font-weight: 720;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .identity em {
   overflow: hidden;
-  color: #667269;
-  font-size: 0.8rem;
+  color: #657168;
+  font-size: 0.75rem;
   font-style: normal;
+  line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .metaCluster {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  color: #56635a;
-  font-size: 0.78rem;
-  line-height: 1.45;
+  margin-top: 0.72rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.62rem;
+  color: #536158;
+  font-size: 0.7rem;
+  line-height: 1.4;
 }
 
-.metaCluster > span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.metaCluster > span + span::before {
+  margin-right: 0.62rem;
+  color: rgba(23, 32, 25, 0.28);
+  content: "·";
 }
 
 .birth {
   font-variant-numeric: tabular-nums;
 }
 
-.accessState {
-  color: #56635a;
-  font-size: 0.78rem;
-  line-height: 1.45;
-}
-
-.accessState {
-  justify-self: start;
-  font-weight: 650;
-}
-
-.rowArrow {
-  width: 1rem;
-  color: #516057;
-  transition: transform 160ms ease;
-}
-
-a.pandaRow:hover .rowArrow {
-  transform: translateX(0.18rem);
-}
-
-.researchRow {
-  cursor: default;
-}
-
-.researchRow .accessState {
-  color: #7b6847;
+.location {
+  margin-top: auto;
+  padding-top: 0.8rem;
+  overflow: hidden;
+  color: #7a857e;
+  font-size: 0.67rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .loadMoreRow {
-  margin-top: 1.5rem;
+  margin-top: 4.8rem;
 }
 
 .loadMoreRow button {
   width: 100%;
-  min-height: 4.5rem;
+  min-height: 5rem;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
   border: 0;
-  border-top: 1px solid rgba(20, 32, 25, 0.2);
-  border-bottom: 1px solid rgba(20, 32, 25, 0.2);
+  border-top: 1px solid rgba(23, 56, 42, 0.2);
+  border-bottom: 1px solid rgba(23, 56, 42, 0.2);
   background: transparent;
   color: #17382a;
   cursor: pointer;
   font: inherit;
+  transition: border-color 180ms ease;
+}
+
+.loadMoreRow button:hover {
+  border-color: rgba(23, 56, 42, 0.45);
+}
+
+.loadMoreRow button:focus-visible {
+  outline: 3px solid rgba(57, 114, 83, 0.14);
+  outline-offset: 3px;
 }
 
 .loadMoreRow span {
   font-size: 0.9rem;
-  font-weight: 680;
+  font-weight: 700;
 }
 
-.loadMoreRow em {
-  color: #69736d;
-  font-size: 0.78rem;
+.loadMoreMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.loadMoreMeta em {
+  color: #69766e;
+  font-size: 0.76rem;
   font-style: normal;
   font-variant-numeric: tabular-nums;
 }
 
+.loadMoreMeta svg {
+  width: 0.95rem;
+}
+
 .emptyState {
-  padding: 6rem 0;
+  padding: 7rem 0;
   text-align: center;
 }
 
 .emptyState h2 {
   margin: 0;
+  color: #172019;
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 2.1rem;
+  letter-spacing: -0.03em;
 }
 
 .emptyState p {
@@ -397,27 +478,37 @@ a.pandaRow:hover .rowArrow {
 
 .emptyState button {
   margin-top: 1.5rem;
-  padding: 0.7rem 1rem;
+  padding: 0.72rem 1.05rem;
   border: 1px solid #17382a;
   background: transparent;
+  border-radius: 0.65rem;
   color: #17382a;
   cursor: pointer;
   font: inherit;
-  font-weight: 650;
+  font-weight: 680;
 }
 
-@media (max-width: 68rem) {
-  .pandaRow {
-    grid-template-columns: 5.5rem minmax(12rem, 1.5fr) minmax(15rem, 1fr) 1.25rem;
+.listSection ::selection,
+.discoveryRail ::selection,
+.directoryMasthead ::selection {
+  background: #dfeee4;
+  color: #17382a;
+}
+
+@media (max-width: 74rem) {
+  .pandaGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 64rem) {
+  .discoverySurface {
+    grid-template-columns: 1fr;
+    padding: 0.75rem 0;
   }
 
-  .thumbnail {
-    width: 5.5rem;
-    height: 5.5rem;
-  }
-
-  .accessState {
-    display: none;
+  .modeRow {
+    justify-content: space-between;
   }
 }
 
@@ -425,22 +516,28 @@ a.pandaRow:hover .rowArrow {
   .mastheadShell,
   .discoveryShell,
   .listShell {
-    width: min(100% - 2rem, 80rem);
+    width: min(100% - 2rem, 92rem);
   }
 
   .directoryMasthead {
-    padding-top: 7.6rem;
+    padding: 7.8rem 0 2.8rem;
   }
 
   .mastheadTop {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    align-items: flex-end;
+    gap: 1.5rem;
+  }
+
+  .mastheadCopy h1 {
+    font-size: clamp(3.45rem, 16vw, 5rem);
   }
 
   .datasetCount {
-    padding: 1.4rem 0 0;
-    border-top: 1px solid rgba(20, 32, 25, 0.16);
-    border-left: 0;
+    padding-bottom: 0.2rem;
+  }
+
+  .datasetCount strong {
+    font-size: clamp(2rem, 10vw, 3rem);
   }
 
   .discoveryRail {
@@ -448,7 +545,17 @@ a.pandaRow:hover .rowArrow {
   }
 
   .modeRow {
-    align-items: flex-start;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .modeRow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .modeButtons {
+    flex: 0 0 auto;
   }
 
   .precisionLink {
@@ -456,59 +563,84 @@ a.pandaRow:hover .rowArrow {
   }
 
   .listSection {
-    padding-top: 3rem;
+    padding: 2.5rem 0 6rem;
   }
 
-  .listHeading {
-    align-items: flex-start;
+  .pandaGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 0.8rem;
+    row-gap: 2.4rem;
   }
 
-  .listHeading p {
-    display: none;
-  }
-
-  .pandaRow {
+  .cardBody {
     min-height: 7rem;
-    grid-template-columns: 5rem minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
-    gap: 0.35rem 1rem;
-  }
-
-  .thumbnail {
-    width: 5rem;
-    height: 5rem;
-    grid-row: 1 / 3;
-  }
-
-  .identity {
-    align-self: end;
+    padding-top: 0.82rem;
   }
 
   .identity strong {
-    font-size: 1.2rem;
+    font-size: 1.13rem;
+  }
+
+  .identity em {
+    font-size: 0.67rem;
   }
 
   .metaCluster {
-    grid-row: 2;
-    grid-column: 2;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 0.7rem;
-    align-self: start;
-    font-size: 0.72rem;
+    gap: 0.28rem 0.5rem;
+    font-size: 0.64rem;
   }
 
-  .rowArrow {
-    grid-column: 3;
-    grid-row: 1 / 3;
-    align-self: center;
+  .metaCluster > span + span::before {
+    margin-right: 0.5rem;
+  }
+
+  .location {
+    font-size: 0.62rem;
+  }
+
+  .cardArrow {
+    display: none;
+  }
+}
+
+@media (max-width: 24rem) {
+  .mastheadTop {
+    gap: 1rem;
+  }
+
+  .mastheadCopy h1 {
+    font-size: 3.2rem;
+  }
+
+  .datasetCount strong {
+    font-size: 1.8rem;
+  }
+
+  .searchLine > span {
+    display: none;
+  }
+
+  .pandaGrid {
+    column-gap: 0.65rem;
+    row-gap: 2rem;
+  }
+
+  .identity strong {
+    font-size: 1.04rem;
+  }
+
+  .identity em,
+  .location {
+    font-size: 0.6rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .thumbnail::after,
   .thumbnail img,
-  .rowArrow,
-  .pandaRow {
+  .cardArrow,
+  .identity,
+  .loadMoreRow button {
     transition: none;
   }
 }

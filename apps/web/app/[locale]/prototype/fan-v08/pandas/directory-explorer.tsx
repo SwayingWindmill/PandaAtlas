@@ -4,9 +4,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useDeferredValue, useMemo, useState } from "react";
-import { ArrowRight, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Search, SlidersHorizontal } from "lucide-react";
 
 import styles from "./directory.module.css";
+import { PortraitTransitionLink } from "./portrait-transition-link";
+import { ActivePill, AnimatedContent, SpotlightCard } from "./react-bits-directory";
 
 export interface DirectoryPanda {
   id: string;
@@ -54,8 +56,8 @@ function PandaThumbnail({ panda, zh }: { panda: DirectoryPanda; zh: boolean }) {
 
   return (
     <span className={styles.noPhoto} aria-label={zh ? `${panda.name}暂无确认个体照片` : `No confirmed individual photograph for ${panda.name}`}>
-      <span aria-hidden="true">●</span>
-      <small>{zh ? "暂无照片" : "No photo"}</small>
+      <span className={styles.noPhotoInitial} aria-hidden="true">{panda.name.slice(0, 1)}</span>
+      <small>{zh ? "暂无确认照片" : "No confirmed photo"}</small>
     </span>
   );
 }
@@ -110,82 +112,81 @@ export function DirectoryExplorer({ locale, pandas, initialQuery = "" }: { local
     <>
       <section className={styles.discoveryRail} id="directory-search" aria-label={zh ? "寻找熊猫" : "Find pandas"}>
         <div className={styles.discoveryShell}>
-          <div className={styles.searchLine}>
-            <Search aria-hidden="true" />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                resetWindow();
-              }}
-              aria-label={zh ? "按名字搜索熊猫" : "Search pandas by name"}
-              placeholder={zh ? "搜索名字、英文名或标识" : "Search name, alternate name, or identifier"}
-            />
-            <span aria-live="polite">{zh ? `${filtered.length} 只` : `${filtered.length} pandas`}</span>
-          </div>
-
-          <div className={styles.modeRow}>
-            <div className={styles.modeButtons} role="group" aria-label={zh ? "快速筛选" : "Quick filters"}>
-              {modes.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  aria-pressed={mode === item.id}
-                  onClick={() => {
-                    setMode(item.id);
-                    resetWindow();
-                  }}
-                >
-                  {item.label}
-                </button>
-              ))}
+          <AnimatedContent className={styles.discoverySurface} distance={10}>
+            <div className={styles.searchLine}>
+              <Search aria-hidden="true" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  resetWindow();
+                }}
+                aria-label={zh ? "按名字搜索熊猫" : "Search pandas by name"}
+                placeholder={zh ? "搜索熊猫名字、英文名或标识" : "Search name, alternate name, or identifier"}
+              />
+              <span aria-live="polite">{zh ? `${filtered.length} 只` : `${filtered.length} pandas`}</span>
             </div>
-            <Link href={`/${locale}/pandas` as Route} className={styles.precisionLink}>
-              <SlidersHorizontal aria-hidden="true" />
-              {zh ? "更多筛选" : "More filters"}
-            </Link>
-          </div>
+
+            <div className={styles.modeRow}>
+              <div className={styles.modeButtons} role="group" aria-label={zh ? "快速筛选" : "Quick filters"}>
+                {modes.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-pressed={mode === item.id}
+                    onClick={() => {
+                      setMode(item.id);
+                      resetWindow();
+                    }}
+                  >
+                    {mode === item.id ? <ActivePill /> : null}
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+              <Link href={`/${locale}/pandas` as Route} className={styles.precisionLink}>
+                <SlidersHorizontal aria-hidden="true" />
+                {zh ? "更多筛选" : "More filters"}
+              </Link>
+            </div>
+          </AnimatedContent>
         </div>
       </section>
 
-      <section className={styles.listSection} aria-labelledby="panda-list-heading">
+      <section className={styles.listSection} aria-label={zh ? "熊猫目录" : "Panda directory"}>
         <div className={styles.listShell}>
-          <div className={styles.listHeading}>
-            <div>
-              <h2 id="panda-list-heading">{zh ? "熊猫列表" : "Panda list"}</h2>
-              <p>{zh ? "缩略图和名字共同构成每只熊猫的主体信息；其余字段只用于快速辨认。" : "Thumbnail and name are the primary identity cues. Everything else stays secondary."}</p>
-            </div>
-            <span>{zh ? `显示 ${Math.min(visible.length, filtered.length)} / ${filtered.length}` : `Showing ${Math.min(visible.length, filtered.length)} / ${filtered.length}`}</span>
-          </div>
-
           {visible.length ? (
-            <div className={styles.pandaList} data-testid="fan-v08-directory-list">
+            <div className={styles.pandaGrid} data-testid="fan-v08-directory-list">
               {visible.map((panda) => {
                 const content = (
                   <>
-                    <span className={styles.thumbnail}><PandaThumbnail panda={panda} zh={zh} /></span>
-                    <PandaIdentity panda={panda} />
-                    <span className={styles.metaCluster}>
-                      <span className={styles.birth}>{panda.birthYear ?? ""}</span>
-                      <span>{genderLabel(panda.gender, zh)}</span>
-                      <span>{statusLabel(panda.status, zh)}</span>
+                    <span className={styles.thumbnail}>
+                      <PandaThumbnail panda={panda} zh={zh} />
+                      <span className={styles.photoShade} aria-hidden="true" />
+                      <span className={styles.cardArrow} aria-hidden="true"><ArrowUpRight /></span>
                     </span>
-                    <span className={styles.accessState}>
-                      {panda.published ? (zh ? "已发布" : "Published") : (zh ? "研究原型" : "Research")}
+                    <span className={styles.cardBody}>
+                      <PandaIdentity panda={panda} />
+                      <span className={styles.metaCluster}>
+                        {panda.birthYear ? <span className={styles.birth}>{panda.birthYear}</span> : null}
+                        {panda.gender !== "unknown" ? <span>{genderLabel(panda.gender, zh)}</span> : null}
+                        {panda.status !== "unknown" ? <span>{statusLabel(panda.status, zh)}</span> : null}
+                      </span>
+                      {panda.location ? <span className={styles.location}>{panda.location}</span> : null}
                     </span>
-                    {panda.published ? <ArrowRight className={styles.rowArrow} aria-hidden="true" /> : null}
                   </>
                 );
 
-                return panda.published ? (
-                  <Link key={panda.id} className={styles.pandaRow} data-testid="fan-v08-panda-row" href={`/${locale}/pandas/${panda.slug}` as Route}>
-                    {content}
-                  </Link>
-                ) : (
-                  <div key={panda.id} className={`${styles.pandaRow} ${styles.researchRow}`} data-testid="fan-v08-panda-row">
-                    {content}
-                  </div>
+                return (
+                  <SpotlightCard key={panda.id} className={styles.pandaCard}>
+                    <PortraitTransitionLink
+                      className={styles.cardLink}
+                      href={`/${locale}/prototype/fan-v08/pandas/${panda.slug}`}
+                    >
+                      <span data-testid="fan-v08-panda-row" className={styles.cardContents}>{content}</span>
+                    </PortraitTransitionLink>
+                  </SpotlightCard>
                 );
               })}
             </div>
@@ -201,7 +202,7 @@ export function DirectoryExplorer({ locale, pandas, initialQuery = "" }: { local
             <div className={styles.loadMoreRow}>
               <button type="button" onClick={() => setVisibleCount((value) => value + PAGE_SIZE)}>
                 <span>{zh ? `继续显示 ${Math.min(PAGE_SIZE, filtered.length - visible.length)} 只` : `Show ${Math.min(PAGE_SIZE, filtered.length - visible.length)} more`}</span>
-                <em>{visible.length} / {filtered.length}</em>
+                <span className={styles.loadMoreMeta}><em>{visible.length} / {filtered.length}</em><ArrowDown aria-hidden="true" /></span>
               </button>
             </div>
           ) : null}
