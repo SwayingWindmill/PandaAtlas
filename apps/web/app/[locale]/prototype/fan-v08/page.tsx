@@ -83,13 +83,13 @@ export default async function FanV08HomePrototype({ params }: Props) {
             <span>吱熊猫 ZhiPanda</span>
           </Link>
           <nav className={styles.nav} aria-label={zh ? "V8 原型主导航" : "V8 prototype navigation"}>
-            <Link href={route(`/${locale}/pandas`)}>{zh ? "熊猫" : "Pandas"}</Link>
+            <Link href={route(`/${locale}/prototype/fan-v08/pandas`)}>{zh ? "熊猫" : "Pandas"}</Link>
             <Link href={route(`/${locale}/families`)}>{zh ? "家族" : "Families"}</Link>
             <Link href={route(`/${locale}/map`)}>{zh ? "地图" : "Map"}</Link>
             <Link href={route(`/${locale}/moments`)}>{zh ? "动态" : "Moments"}</Link>
           </nav>
           <div className={styles.headerActions}>
-            <Link className={styles.roundButton} href={route(`/${locale}/pandas`)} aria-label={zh ? "搜索" : "Search"}><Search /></Link>
+            <Link className={styles.roundButton} href={route(`/${locale}/prototype/fan-v08/pandas`)} aria-label={zh ? "搜索" : "Search"}><Search /></Link>
             <Link className={styles.roundButton} href={route(`/${locale}/my-pandas`)} aria-label={zh ? "我的熊猫" : "My Pandas"}><Heart /></Link>
             <Link className={styles.lang} href={route(`/${locale === "zh" ? "en" : "zh"}/prototype/fan-v08`)}>{locale === "zh" ? "EN" : "中"}</Link>
           </div>
@@ -226,7 +226,7 @@ export default async function FanV08HomePrototype({ params }: Props) {
               <div>
                 <h2>{zh ? `${publishedCount || "更多"} 只公开熊猫，等你继续认识。` : `${publishedCount || "More"} published pandas to keep discovering.`}</h2>
               </div>
-              <Link href={route(`/${locale}/pandas`)}>{zh ? "浏览全部熊猫" : "Browse all pandas"}<ArrowRight /></Link>
+              <Link href={route(`/${locale}/prototype/fan-v08/pandas`)}>{zh ? "浏览全部熊猫" : "Browse all pandas"}<ArrowRight /></Link>
             </div>
           </div>
 
@@ -245,13 +245,13 @@ export default async function FanV08HomePrototype({ params }: Props) {
           </div>
 
           <div className={`${styles.shell} ${styles.discoveryRail}`}>
-            <form className={styles.searchBox} action={`/${locale}/pandas`} method="get" role="search">
+            <form className={styles.searchBox} action={`/${locale}/prototype/fan-v08/pandas`} method="get" role="search">
               <Search />
               <input name="q" type="search" aria-label={zh ? "搜索熊猫" : "Search pandas"} placeholder={zh ? "搜名字：美香、花花、福宝……" : "Search Mei Xiang, He Hua, Fu Bao…"} />
               <button type="submit">{zh ? "搜索" : "Search"}<ArrowRight /></button>
             </form>
             <nav className={styles.browseLinks} aria-label={zh ? "更多探索方式" : "More ways to explore"}>
-              <Link href={route(`/${locale}/pandas`)}>{zh ? "全部熊猫" : "Pandas"}<ArrowRight /></Link>
+              <Link href={route(`/${locale}/prototype/fan-v08/pandas`)}>{zh ? "全部熊猫" : "Pandas"}<ArrowRight /></Link>
               <Link href={route(`/${locale}/families`)}><UsersRound />{zh ? "家族" : "Families"}<ArrowRight /></Link>
               <Link href={route(`/${locale}/map`)}><MapPin />{zh ? "地点" : "Places"}<ArrowRight /></Link>
               <Link href={route(`/${locale}/moments`)}><CalendarDays />{zh ? "动态" : "Moments"}<ArrowRight /></Link>
