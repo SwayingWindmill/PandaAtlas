@@ -1,0 +1,38 @@
+:root {
+  --zp-font-display-latin: "Archivo Variable", "Arial Narrow", sans-serif;
+  --zp-font-display-cjk: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --zp-font-body: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --zp-font-ui-latin: "Archivo Variable", "Noto Sans SC Variable", sans-serif;
+
+  --zp-brand-deep: #003e40;
+  --zp-brand-ink: #002526;
+  --zp-brand-ivory: #fffff2;
+  --zp-brand-acid: #fbff36;
+  --zp-brand-leaf: #65b878;
+  --zp-brand-water: #66c8cb;
+
+  --zp-radius-action: 999px;
+  --zp-radius-card: 1.5rem;
+  --zp-radius-scene: 2rem;
+  --zp-shadow-float: 0 0.75rem 2.5rem rgba(0, 37, 38, 0.14);
+
+  --font-display: var(--zp-font-display-latin);
+  --font-body: var(--zp-font-body);
+}
+
+html[lang="zh-CN"] {
+  --font-display: var(--zp-font-display-cjk);
+}
+
+.zp-brand-display {
+  font-family: var(--font-display);
+  font-variation-settings: "wght" 820;
+  letter-spacing: -0.055em;
+}
+
+.zp-brand-label {
+  font-family: var(--zp-font-ui-latin);
+  font-variation-settings: "wght" 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

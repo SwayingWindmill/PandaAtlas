@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ZhiPanda Zhi Glyph logo concept</title>
+  <desc id="desc">A geometric abstraction of the mouth radical and branching structure in the Chinese brand name.</desc>
+  <rect x="20" y="36" width="22" height="26" rx="6" fill="none" stroke="currentColor" stroke-width="6" />
+  <path d="M 58 25 V 73 M 50 39 H 75 M 55 52 C 61 59 67 65 77 70"
+        fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

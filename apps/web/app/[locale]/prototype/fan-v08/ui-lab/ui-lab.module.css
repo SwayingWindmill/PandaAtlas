@@ -1,0 +1,977 @@
+.page {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: #f4f4ef;
+  color: #172019;
+  font-family: var(--v08-font-body-cjk), var(--v08-font-latin), sans-serif;
+}
+
+.page * {
+  box-sizing: border-box;
+}
+
+.page button,
+.page a {
+  font: inherit;
+}
+
+.page button:focus-visible,
+.page a:focus-visible {
+  outline: 2px solid #2d6043;
+  outline-offset: 3px;
+}
+
+.header {
+  min-height: 4.5rem;
+  padding: 0 2rem;
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 2rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(23, 32, 25, 0.12);
+  background: rgba(244, 244, 239, 0.95);
+  backdrop-filter: blur(14px);
+}
+
+.header > div {
+  display: flex;
+  gap: 0.55rem;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.header > div span {
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.header > div strong {
+  color: #778178;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.header > .sourceLink {
+  justify-self: end;
+}
+
+.back,
+.sourceLink {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  color: #4c5c52;
+  text-decoration: none;
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.back svg,
+.sourceLink svg {
+  width: 0.82rem;
+  height: 0.82rem;
+}
+
+.back:hover,
+.sourceLink:hover {
+  color: #24543a;
+}
+
+.page main {
+  width: min(76rem, calc(100% - 3rem));
+  margin-inline: auto;
+}
+
+.intro {
+  max-width: 54rem;
+  padding: clamp(5rem, 10vw, 8rem) 0 clamp(4rem, 7vw, 6rem);
+}
+
+.kicker {
+  margin: 0 0 1rem;
+  color: #52705e;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.intro h1 {
+  margin: 0;
+  max-width: 14ch;
+  color: #172019;
+  font-size: clamp(3rem, 6vw, 5.8rem);
+  font-weight: 760;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+}
+
+.intro > p:last-child {
+  max-width: 45rem;
+  margin: 2rem 0 0;
+  color: #556159;
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.scoreSection,
+.demoSection {
+  padding: clamp(3.5rem, 6vw, 5.5rem) 0;
+  border-top: 1px solid rgba(23, 32, 25, 0.13);
+}
+
+.sectionTitle {
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.sectionTitle > span {
+  padding-top: 0.35rem;
+  color: #879088;
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sectionTitle h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+  font-weight: 730;
+  letter-spacing: -0.035em;
+}
+
+.sectionTitle p {
+  margin: 0.5rem 0 0;
+  color: #6b766e;
+  font-size: 0.8rem;
+}
+
+.scoreTable {
+  border-top: 1px solid rgba(23, 32, 25, 0.15);
+}
+
+.scoreRow {
+  min-height: 4.25rem;
+  padding: 0.8rem 0;
+  display: grid;
+  grid-template-columns: 5.3rem minmax(9rem, 0.75fr) minmax(15rem, 1.5fr) minmax(9rem, 0.7fr);
+  gap: 1.25rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(23, 32, 25, 0.1);
+}
+
+.scoreRow > strong {
+  font-size: 0.84rem;
+  font-weight: 720;
+}
+
+.scoreRow > span:not(.fit) {
+  color: #5f6a63;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.fit,
+.keepBadge,
+.adaptBadge {
+  width: fit-content;
+  padding: 0.3rem 0.45rem;
+  border-radius: 0.3rem;
+  font-size: 0.58rem;
+  font-weight: 780;
+  letter-spacing: 0.04em;
+}
+
+.adopt,
+.keepBadge {
+  background: #deebdf;
+  color: #2b5c3f;
+}
+
+.adapt,
+.adaptBadge {
+  background: #e9e7d9;
+  color: #6b5d2f;
+}
+
+.skip {
+  background: #e9e5e2;
+  color: #76584d;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.demoBlock,
+.demoBlockWide {
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border: 1px solid rgba(23, 32, 25, 0.12);
+  border-radius: 0.8rem;
+  background: #fbfbf8;
+}
+
+.demoBlockWide {
+  margin-top: 1rem;
+}
+
+.demoHead {
+  margin-bottom: 1.7rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+}
+
+.demoHead > div > span {
+  color: #7a857d;
+  font-size: 0.62rem;
+  font-weight: 650;
+}
+
+.demoHead h3 {
+  margin: 0.22rem 0 0;
+  font-size: 1rem;
+  font-weight: 740;
+}
+
+.demoNote,
+.microcopy {
+  margin: 1.2rem 0 0;
+  color: #768078;
+  font-size: 0.68rem;
+  line-height: 1.65;
+}
+
+.smoothTabsShared {
+  width: 100%;
+}
+
+.panelCopy strong {
+  display: block;
+  font-size: 1.35rem;
+}
+
+.panelCopy p {
+  max-width: 34rem;
+  margin: 0.75rem 0 0;
+  color: #556259;
+  font-size: 0.82rem;
+  line-height: 1.75;
+}
+
+.sharedDrawerNav {
+  border-top: 1px solid rgba(23, 32, 25, 0.12);
+}
+
+.sharedDrawerNav button {
+  width: 100%;
+  min-height: 3.7rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid rgba(23, 32, 25, 0.1);
+  background: transparent;
+  color: #2a382f;
+  text-align: left;
+  font-size: 0.82rem;
+}
+
+.sharedDrawerNav button span {
+  color: #8b938d;
+  font-size: 0.6rem;
+}
+
+.smoothTabs {
+  padding: 0.35rem;
+  display: flex;
+  gap: 0.25rem;
+  border: 1px solid rgba(23, 32, 25, 0.11);
+  border-radius: 0.55rem;
+  background: #eff0ea;
+  overflow-x: auto;
+}
+
+.smoothTabs button {
+  min-height: 2.55rem;
+  position: relative;
+  flex: 1 0 auto;
+  padding: 0 0.95rem;
+  border: 0;
+  background: transparent;
+  color: #69746c;
+  font-size: 0.72rem;
+  font-weight: 680;
+  cursor: pointer;
+}
+
+.smoothTabs button > span:last-child {
+  position: relative;
+  z-index: 1;
+}
+
+.smoothTabs button[aria-selected="true"] {
+  color: #233b2c;
+}
+
+.tabIndicator {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.4rem;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(23, 32, 25, 0.08);
+}
+
+.disclosureList {
+  border-top: 1px solid rgba(23, 32, 25, 0.12);
+}
+
+.disclosureItem {
+  border-bottom: 1px solid rgba(23, 32, 25, 0.1);
+}
+
+.disclosureItem button {
+  width: 100%;
+  min-height: 3.7rem;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: #25332a;
+  text-align: left;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 690;
+  cursor: pointer;
+}
+
+.disclosureItem svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.disclosureBody {
+  overflow: hidden;
+}
+
+.disclosureBody p {
+  margin: 0;
+  padding: 0 2.2rem 1.15rem 0;
+  color: #606b63;
+  font-size: 0.76rem;
+  line-height: 1.75;
+}
+
+.transitionPanel {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+  gap: 2.5rem;
+}
+
+.segmentedControl {
+  display: grid;
+  align-content: start;
+  border-top: 1px solid rgba(23, 32, 25, 0.13);
+}
+
+.segmentedControl button {
+  min-height: 3.4rem;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(23, 32, 25, 0.1);
+  background: transparent;
+  color: #748078;
+  text-align: left;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.segmentedControl button[aria-selected="true"] {
+  color: #20422e;
+  font-weight: 720;
+}
+
+.panelStage {
+  min-height: 11rem;
+  display: grid;
+  place-items: center start;
+  padding: 2rem;
+  border-radius: 0.6rem;
+  background: #e9eee7;
+}
+
+.panelStage strong {
+  font-size: 1.4rem;
+}
+
+.panelStage p {
+  max-width: 34rem;
+  margin: 0.75rem 0 0;
+  color: #556259;
+  font-size: 0.82rem;
+  line-height: 1.75;
+}
+
+.familyRail {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x proximity;
+}
+
+.familyPerson {
+  min-width: 15rem;
+  padding: 0.55rem;
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  align-items: center;
+  border: 1px solid rgba(23, 32, 25, 0.1);
+  border-radius: 0.55rem;
+  background: #f6f6f1;
+  color: #26332b;
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+
+.familyPerson[aria-pressed="true"] {
+  border-color: rgba(39, 86, 58, 0.42);
+  background: #edf2eb;
+}
+
+.familyPerson img {
+  width: 3rem;
+  height: 3.8rem;
+  display: block;
+  object-fit: cover;
+  border-radius: 0.35rem;
+}
+
+.familyPerson > span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.familyPerson strong {
+  font-size: 0.82rem;
+}
+
+.familyPerson small {
+  color: #7a847d;
+  font-size: 0.64rem;
+}
+
+.familyPerson svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.familyPreview {
+  margin-top: 1rem;
+  min-height: 13rem;
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.42fr) minmax(0, 1fr);
+  background: #e9eee7;
+  overflow: hidden;
+  border-radius: 0.65rem;
+}
+
+.familyPreview img {
+  width: 100%;
+  height: 100%;
+  min-height: 13rem;
+  display: block;
+  object-fit: cover;
+}
+
+.familyPreview > div {
+  padding: 2rem;
+  align-self: center;
+}
+
+.familyPreview span {
+  color: #758078;
+  font-size: 0.66rem;
+}
+
+.familyPreview strong {
+  margin-top: 0.25rem;
+  display: block;
+  font-size: 1.7rem;
+}
+
+.familyPreview p {
+  max-width: 33rem;
+  margin: 0.75rem 0 0;
+  color: #5f6b63;
+  font-size: 0.78rem;
+  line-height: 1.75;
+}
+
+.lifeSpike {
+  min-width: 0;
+}
+
+.lifeScale {
+  height: 13rem;
+  position: relative;
+  margin: 0 1.4rem;
+}
+
+.bandRow {
+  height: 2.4rem;
+  position: absolute;
+  inset: 1.1rem 0 auto;
+}
+
+.bandRow span {
+  min-width: 2rem;
+  height: 1.7rem;
+  padding: 0 0.6rem;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  border-left: 2px solid #75917d;
+  background: rgba(91, 125, 100, 0.12);
+  color: #51675a;
+  font-size: 0.6rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.lifeRail {
+  height: 1px;
+  position: absolute;
+  top: 6.25rem;
+  right: 0;
+  left: 0;
+  background: #abb5ad;
+}
+
+.lifePoint {
+  width: 5rem;
+  padding: 0;
+  position: absolute;
+  top: 5.82rem;
+  border: 0;
+  background: transparent;
+  color: #66736a;
+  text-align: center;
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.lifePoint:first-of-type {
+  transform: translateX(0);
+}
+
+.lifePoint:last-of-type {
+  transform: translateX(-100%);
+}
+
+.lifeDot {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-inline: auto;
+  display: block;
+  border: 3px solid #f4f4ef;
+  border-radius: 50%;
+  outline: 1px solid #56745f;
+  background: #f4f4ef;
+}
+
+.lifePoint[aria-pressed="true"] .lifeDot {
+  background: #315d43;
+}
+
+.lifePoint strong,
+.lifePoint small {
+  display: block;
+}
+
+.lifePoint strong {
+  margin-top: 0.7rem;
+  color: #355442;
+  font-size: 0.68rem;
+}
+
+.lifePoint small {
+  margin-top: 0.25rem;
+  font-size: 0.58rem;
+}
+
+.lifeDetail {
+  min-height: 5rem;
+  padding: 1.2rem 0;
+  display: grid;
+  grid-template-columns: 5rem 8rem minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: baseline;
+  border-top: 1px solid rgba(23, 32, 25, 0.12);
+  border-bottom: 1px solid rgba(23, 32, 25, 0.12);
+}
+
+.lifeDetail span {
+  color: #758078;
+  font-size: 0.66rem;
+}
+
+.lifeDetail strong {
+  font-size: 0.78rem;
+}
+
+.lifeDetail p {
+  margin: 0;
+  color: #5a675f;
+  font-size: 0.76rem;
+  line-height: 1.65;
+}
+
+.photoActions {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: #6e7971;
+  font-size: 0.64rem;
+}
+
+.photoActions span {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.photoActions svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.lightboxPitch,
+.drawerPitch {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lightboxPitch > div,
+.drawerPitch > div {
+  max-width: 42rem;
+}
+
+.lightboxPitch strong,
+.drawerPitch strong {
+  font-size: 0.92rem;
+}
+
+.lightboxPitch p,
+.drawerPitch p {
+  margin: 0.45rem 0 0;
+  color: #667269;
+  font-size: 0.74rem;
+  line-height: 1.7;
+}
+
+.drawerPitch > svg {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  color: #5f7e69;
+}
+
+.actionButton,
+.drawerClose {
+  min-height: 2.65rem;
+  padding: 0 0.9rem;
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(31, 74, 49, 0.22);
+  border-radius: 0.45rem;
+  background: #e7eee7;
+  color: #28523a;
+  font-size: 0.7rem;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.actionButton svg,
+.drawerClose svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.decisionSection {
+  padding: clamp(4rem, 8vw, 7rem) 0 8rem;
+  border-top: 1px solid rgba(23, 32, 25, 0.13);
+}
+
+.decisionSection h2 {
+  max-width: 16ch;
+  margin: 0;
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.decisionGrid {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid rgba(23, 32, 25, 0.14);
+  border-left: 1px solid rgba(23, 32, 25, 0.1);
+}
+
+.decisionGrid div {
+  min-height: 5rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+  border-right: 1px solid rgba(23, 32, 25, 0.1);
+  border-bottom: 1px solid rgba(23, 32, 25, 0.1);
+}
+
+.decisionGrid span {
+  color: #879088;
+  font-size: 0.62rem;
+}
+
+.decisionGrid strong {
+  font-size: 0.82rem;
+}
+
+.decisionSection > p:last-child {
+  max-width: 44rem;
+  margin: 2rem 0 0;
+  color: #6b766e;
+  font-size: 0.75rem;
+  line-height: 1.7;
+}
+
+.lightbox {
+  --yarl__color_backdrop: rgba(11, 17, 13, 0.96);
+  --yarl__color_button: rgba(255, 255, 255, 0.9);
+}
+
+.drawerOverlay {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  background: rgba(10, 16, 12, 0.48);
+}
+
+.drawerContent {
+  max-height: 82vh;
+  z-index: 81;
+  border-radius: 1.2rem 1.2rem 0 0;
+  background: #f7f6f1;
+  color: #172019;
+  outline: none;
+}
+
+.drawerHeader,
+.drawerFooter,
+.drawerContent > .sharedDrawerNav {
+  width: min(34rem, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+.drawerHeader {
+  padding: 1.2rem 0 1.5rem;
+  text-align: left;
+}
+
+.drawerHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.drawerHeader p {
+  margin: 0.55rem 0 0;
+  color: #68746c;
+  font-size: 0.75rem;
+  line-height: 1.65;
+}
+
+.drawerFooter {
+  padding: 0 0 2rem;
+}
+
+.drawerClose {
+  width: 100%;
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 64rem) {
+  .scoreRow {
+    grid-template-columns: 5rem minmax(8rem, 0.7fr) minmax(0, 1.3fr);
+  }
+
+  .scoreRow .sourceLink {
+    grid-column: 2 / -1;
+  }
+
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+
+  .transitionPanel {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .segmentedControl {
+    display: flex;
+    overflow-x: auto;
+    border-top: 0;
+    border-bottom: 1px solid rgba(23, 32, 25, 0.12);
+  }
+
+  .segmentedControl button {
+    min-width: max-content;
+    padding-right: 1.4rem;
+    border-bottom: 0;
+  }
+}
+
+@media (max-width: 48rem) {
+  .header {
+    min-height: 4.05rem;
+    padding: 0 1rem;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+  }
+
+  .header > div {
+    display: grid;
+    gap: 0;
+    justify-content: start;
+  }
+
+  .header > .sourceLink {
+    font-size: 0;
+  }
+
+  .header > .sourceLink svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .page main {
+    width: calc(100% - 2rem);
+  }
+
+  .intro {
+    padding-top: 4rem;
+  }
+
+  .intro h1 {
+    font-size: clamp(2.8rem, 14vw, 4.2rem);
+  }
+
+  .scoreRow {
+    padding: 1rem 0;
+    grid-template-columns: 4.8rem minmax(0, 1fr);
+    gap: 0.45rem 0.8rem;
+  }
+
+  .scoreRow > span:not(.fit) {
+    grid-column: 2;
+  }
+
+  .scoreRow .sourceLink {
+    grid-column: 2;
+  }
+
+  .demoBlock,
+  .demoBlockWide {
+    padding: 1.2rem;
+  }
+
+  .familyPreview {
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+  }
+
+  .familyPreview > div {
+    padding: 1.2rem;
+  }
+
+  .lifeScale {
+    margin-inline: 0.6rem;
+  }
+
+  .lifePoint {
+    width: 4rem;
+  }
+
+  .lifeDetail {
+    grid-template-columns: 4rem minmax(0, 1fr);
+    gap: 0.45rem 0.8rem;
+  }
+
+  .lifeDetail p {
+    grid-column: 2;
+  }
+
+  .lightboxPitch,
+  .drawerPitch {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .drawerPitch > svg {
+    display: none;
+  }
+
+  .actionButton {
+    width: 100%;
+  }
+
+  .decisionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 22rem) {
+  .intro h1 {
+    font-size: 2.65rem;
+  }
+
+  .familyPreview {
+    display: block;
+  }
+
+  .familyPreview img {
+    height: 12rem;
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    scroll-behavior: auto !important;
+  }
+}

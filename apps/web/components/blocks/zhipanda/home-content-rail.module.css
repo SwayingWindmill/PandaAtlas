@@ -1,0 +1,51 @@
+.shell {
+  position: relative;
+}
+
+.viewport {
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+}
+
+.viewport:active {
+  cursor: grabbing;
+}
+
+.shell img {
+  pointer-events: none;
+  user-select: none;
+}
+
+.track {
+  display: flex;
+  gap: 1rem;
+  padding-inline: max(1rem, calc((100vw - 75rem) / 2));
+}
+
+.track > * {
+  flex: 0 0 clamp(19rem, 27vw, 25rem);
+  min-width: 0;
+}
+
+.track[data-variant="wide"] > * {
+  flex-basis: clamp(23rem, 36vw, 32rem);
+}
+
+@media (max-width: 767px) {
+  .track {
+    gap: .85rem;
+    padding-inline: 1rem;
+  }
+
+  .track > *,
+  .track[data-variant="wide"] > * {
+    flex-basis: min(84vw, 22rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    scroll-behavior: auto;
+  }
+}

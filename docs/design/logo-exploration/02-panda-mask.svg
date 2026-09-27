@@ -1,0 +1,13 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ZhiPanda Panda Mask logo concept</title>
+  <desc id="desc">A restrained panda mask reduced to two ears, one head form, and two negative-space eye patches.</desc>
+  <g fill="currentColor">
+    <circle cx="30" cy="28" r="9" />
+    <circle cx="70" cy="28" r="9" />
+    <path fill-rule="evenodd" d="
+      M 50 22 C 31 22 20 35 20 53 C 20 72 32 80 50 80 C 68 80 80 72 80 53 C 80 35 69 22 50 22 Z
+      M 37 43 C 31 44 29 50 31 55 C 33 60 39 61 44 57 C 48 54 48 48 45 44 C 43 42 40 42 37 43 Z
+      M 63 43 C 69 44 71 50 69 55 C 67 60 61 61 56 57 C 52 54 52 48 55 44 C 57 42 60 42 63 43 Z
+    " />
+  </g>
+</svg>

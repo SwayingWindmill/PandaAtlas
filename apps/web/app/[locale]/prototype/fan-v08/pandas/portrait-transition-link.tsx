@@ -24,14 +24,41 @@ function shouldHandle(event: MouseEvent<HTMLAnchorElement>): boolean {
 }
 
 function heroGeometry() {
-  const desktop = window.innerWidth >= 768;
-  const heroTop = desktop ? 72 : 68;
+  const viewportWidth = document.documentElement.clientWidth;
+
+  if (window.innerWidth <= 768) {
+    const minHeight = window.innerWidth <= 352 ? 416 : 448;
+    return {
+      left: 0,
+      top: 0,
+      width: viewportWidth,
+      height: Math.max(minHeight, window.innerHeight * 0.62),
+    };
+  }
+
+  if (window.innerWidth <= 1024) {
+    return {
+      left: 0,
+      top: 0,
+      width: viewportWidth,
+      height: Math.max(544, Math.min(window.innerHeight * 0.68, 704)),
+    };
+  }
+
+  if (window.innerWidth < 1120) {
+    return {
+      left: 0,
+      top: 0,
+      width: viewportWidth,
+      height: Math.max(544, Math.min(window.innerHeight * 0.72, 800)),
+    };
+  }
+
   return {
-    heroTop,
-    width: desktop ? window.innerWidth * 0.56 : window.innerWidth,
-    height: desktop
-      ? window.innerHeight - heroTop
-      : Math.min(window.innerHeight * 0.58, 520),
+    left: 0,
+    top: 0,
+    width: viewportWidth,
+    height: Math.max(736, Math.min(window.innerHeight, 992)),
   };
 }
 
@@ -63,7 +90,7 @@ export function PortraitTransitionLink({ href, className, children }: PortraitTr
       position: "fixed",
       inset: "0",
       zIndex: "998",
-      background: "#f7f6f1",
+      background: "#07140d",
       opacity: "0",
       pointerEvents: "none",
       willChange: "opacity",
@@ -110,8 +137,8 @@ export function PortraitTransitionLink({ href, className, children }: PortraitTr
     timeline
       .to(veil, { opacity: 1, duration: 0.42, ease: "power2.out" }, 0.04)
       .to(overlay, {
-        left: 0,
-        top: target.heroTop,
+        left: target.left,
+        top: target.top,
         width: target.width,
         height: target.height,
         borderRadius: 0,

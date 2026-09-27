@@ -1,0 +1,141 @@
+.carousel {
+  --carousel-card-width: clamp(17rem, 72vw, 22rem);
+  --carousel-card-height: clamp(10.35rem, 43.7vw, 13.35rem);
+  width: 100%;
+  height: var(--carousel-card-height);
+  position: relative;
+  z-index: 5;
+}
+
+.viewport {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.viewportDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.track {
+  width: max-content;
+  height: 100%;
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.set {
+  height: 100%;
+  display: flex;
+  gap: 1rem;
+}
+
+.slide {
+  width: var(--carousel-card-width);
+  height: 100%;
+  margin: 0;
+  flex: 0 0 var(--carousel-card-width);
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #173d3d;
+  pointer-events: none;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 50% 50%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.button {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  position: absolute;
+  z-index: 7;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(247, 248, 218, 0.82);
+  color: #003e40;
+  box-shadow: 0 0.4rem 1.4rem rgba(0, 34, 35, 0.16);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.button:hover {
+  background: #f7f8da;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.button:active {
+  transform: translateY(-50%) scale(0.97);
+}
+
+.button:focus-visible {
+  outline: 2px solid #f7f8da;
+  outline-offset: 3px;
+}
+
+.button svg {
+  width: 1.55rem;
+  height: 1.55rem;
+  stroke-width: 3;
+}
+
+.previous {
+  left: clamp(0.9rem, 5vw, 4.75rem);
+}
+
+.next {
+  right: clamp(0.9rem, 5vw, 4.75rem);
+}
+
+@media (min-width: 70rem) {
+  .carousel {
+    --carousel-card-width: clamp(18rem, 20.5vw, 24rem);
+    --carousel-card-height: clamp(10.9rem, 12.45vw, 14.6rem);
+  }
+
+  .track,
+  .set {
+    gap: 1.5rem;
+  }
+
+  .slide {
+    border-radius: 1.5rem;
+  }
+
+  .previous {
+    left: clamp(2rem, 5.4vw, 6.5rem);
+  }
+
+  .next {
+    right: clamp(2rem, 5.4vw, 6.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}

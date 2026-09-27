@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ZhiPanda Panda Gaze logo concept</title>
+  <desc id="desc">Two asymmetrical tilted rings abstract the panda's eye patches without drawing a face.</desc>
+  <ellipse cx="36" cy="50" rx="14" ry="20" transform="rotate(-22 36 50)"
+           fill="none" stroke="currentColor" stroke-width="8" />
+  <ellipse cx="64" cy="48" rx="13" ry="19" transform="rotate(19 64 48)"
+           fill="none" stroke="currentColor" stroke-width="8" />
+</svg>

@@ -1,0 +1,244 @@
+.section {
+  background: #073d3f;
+  color: #f5f7ef;
+}
+
+.shell {
+  width: min(86rem, calc(100% - 2rem));
+  margin-inline: auto;
+  padding: 5.5rem 0 6rem;
+}
+
+.shell > h2 {
+  max-width: 14ch;
+  margin: 0 auto 3.2rem;
+  color: #f5f7ef;
+  font-family: var(--font-body);
+  font-size: clamp(3.3rem, 10vw, 5.4rem);
+  font-weight: 820;
+  letter-spacing: -0.04em;
+  line-height: 0.94;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+.card {
+  --card-ink: #13372f;
+  min-height: 20rem;
+  padding: 1.55rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3rem;
+  border-radius: 1rem;
+  background: #d8e6df;
+  color: var(--card-ink);
+}
+
+.card[data-kind="identity"] {
+  background: #b9dfd4;
+}
+
+.card[data-kind="birth"] {
+  background: #dce8d2;
+}
+
+.card[data-kind="personality"] {
+  background: #cfe3d8;
+}
+
+.card[data-kind="family"] {
+  background: #d8e8c8;
+}
+
+.card[data-kind="place"] {
+  background: #c8ded7;
+}
+
+.card[data-kind="life"] {
+  background: #e4e0d6;
+}
+
+.card[data-kind="significance"] {
+  background: #d7e7c8;
+}
+
+.card[data-kind="status"] {
+  background: #d9dfdc;
+}
+
+.icon {
+  width: 3.6rem;
+  height: 3.6rem;
+  margin-inline: auto;
+  stroke-width: 1.8;
+}
+
+.copy {
+  display: grid;
+  gap: 0.55rem;
+  text-align: center;
+}
+
+.label {
+  color: rgba(19, 55, 47, 0.68);
+  font-size: 0.68rem;
+  font-weight: 760;
+  letter-spacing: 0.045em;
+}
+
+.copy h3 {
+  max-width: 14ch;
+  margin: 0 auto;
+  color: var(--card-ink);
+  font-size: clamp(1.55rem, 6vw, 2.05rem);
+  font-weight: 810;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.copy p {
+  max-width: 32ch;
+  margin: 0.35rem auto 0;
+  color: rgba(19, 55, 47, 0.82);
+  font-size: 0.9rem;
+  line-height: 1.62;
+}
+
+.metadata {
+  margin: 2rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.4rem;
+  color: rgba(245, 247, 239, 0.72);
+}
+
+.metadata > div {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.metadata dt,
+.metadata dd {
+  margin: 0;
+}
+
+.metadata dt {
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.metadata dd {
+  color: #f5f7ef;
+  font-size: 0.76rem;
+  font-weight: 720;
+}
+
+@media (min-width: 46rem) {
+  .shell {
+    width: min(86rem, calc(100% - 4rem));
+    padding: 6.5rem 0 7rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+
+  .card {
+    min-height: 22rem;
+    padding: 1.9rem;
+  }
+}
+
+@media (min-width: 70rem) {
+  .shell {
+    width: min(92rem, calc(100% - 6rem));
+    padding: 8rem 0 8.5rem;
+  }
+
+  .section[data-fact-count="2"] .shell,
+  .section[data-fact-count="3"] .shell {
+    padding-block: 4.75rem 5.25rem;
+  }
+
+  .shell > h2 {
+    margin-bottom: 4.5rem;
+    font-size: clamp(3.9rem, 5vw, 5.25rem);
+  }
+
+  .section[data-fact-count="2"] .shell > h2,
+  .section[data-fact-count="3"] .shell > h2 {
+    margin-bottom: 2.75rem;
+  }
+
+  .grid {
+    gap: 1.25rem;
+  }
+
+  .grid[data-count="2"] {
+    max-width: 64rem;
+    margin-inline: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid[data-count="3"] {
+    max-width: 72rem;
+    margin-inline: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .grid[data-count="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .grid[data-count="5"] {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .grid[data-count="5"] .card {
+    grid-column: span 2;
+  }
+
+  .grid[data-count="5"] .card:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .grid[data-count="6"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card {
+    min-height: 25rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    gap: 4rem;
+  }
+
+  .section[data-fact-count="2"] .card,
+  .section[data-fact-count="3"] .card {
+    min-height: 17rem;
+    gap: 2.25rem;
+  }
+
+  .icon {
+    width: 4.15rem;
+    height: 4.15rem;
+  }
+
+  .copy h3 {
+    font-size: clamp(1.8rem, 2.1vw, 2.35rem);
+  }
+
+  .copy p {
+    font-size: 0.96rem;
+  }
+}

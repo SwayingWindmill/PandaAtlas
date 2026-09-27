@@ -1,92 +1,282 @@
 ---
-version: 2
+version: 9
 slug: "app-locale-prototype-fan-v08-page-tsx"
 primary_target: "app/[locale]/prototype/fan-v08/page.tsx"
-related_targets: ["app/[locale]/prototype/fan-v08/prototype.module.css","app/[locale]/prototype/fan-v08/visual-fixtures.ts","app/[locale]/prototype/fan-v08/layout.tsx","app/[locale]/prototype/fan-v08/motion-parts.tsx"]
+related_targets:
+  - "features/home/home-community.tsx"
+  - "features/home/home-community.module.css"
+  - "features/home/home-v09-view-model.ts"
+  - "features/home/home-v09-review-model.ts"
+  - "components/navbar-1.tsx"
+  - "components/command-menu-04.tsx"
 ---
 
-# Fan V8 Home
+# Fan V12 Home — Chester-structure Zoo × Panda Community
 
-## Scope and mode
+> **Status: active visual direction.**
+>
+> V10 "Contemporary Zoological Identity" is rejected for Home because its full-width photography, hard grid, hairline indexes, oversized typography and scene/index sequencing still read as magazine, museum, or editorial-front-page design.
 
-Visitor mode: **Experience** with a supporting discovery/utility layer.
+## Mode
 
-This surface is the fan-first public Home prototype. It should make the visitor feel that they have entered a panda world before asking them to search or inspect data.
+**Operate.** Home is the fan's panda hub. The visitor should immediately be able to meet, browse, follow, revisit, and navigate rather than passively read a composed visual essay.
 
-## Audience and job
+## Design Read
 
-An ordinary panda fan who may know one panda by name or may simply want to browse. Their immediate job is to recognize a panda, feel curious about it, and find an obvious path to more pandas.
+**A premium modern zoo website crossed with a lightweight panda fan community: animal-first, friendly, interactive, visual, current, and return-worthy.**
 
-## Action
+The feeling should be closer to a well-funded contemporary zoo/aquarium digital product plus a fan collection/community layer than to a museum, magazine, fashion editorial, archive, or campaign microsite.
 
-Primary: open the featured panda profile.
+## Taste dials
 
-Secondary: continue through family, places, moments, panorama, search and My Pandas.
+- **DESIGN_VARIANCE: 6/10**
+- **MOTION_INTENSITY: 4/10**
+- **VISUAL_DENSITY: 6/10**
 
-## Proof and content
+Enough variation to feel designed, but product structure and interaction outrank art-direction theatrics.
 
-- one full-viewport correct panda photograph;
-- a small number of meaningful life moments;
-- family continuation when published relationships support it;
-- place/journey continuation when published residency data supports it;
-- a large multi-panda panorama;
-- active-release published count;
-- search/browse utility after emotional engagement;
-- return value through moments/updates/My Pandas.
+## Reference ownership
 
-Prototype-only historical image fixtures are explicitly labeled and may not become production data sources.
+Primary references for Home:
+- **Chester Zoo — primary visual reference:** bold zoo-brand color field, strong animal imagery, horizontally browsable content, rounded entity cards, pill actions, clear "what can I do here?" sections, and mobile-first interaction density;
+- Monterey Bay Aquarium — animal-first identity, current animal content, strong photography, useful discovery loops;
+- Smithsonian National Zoo — named animals, current/historical animal context, approachable institutional trust;
+- San Diego Zoo — mature animal browse patterns and visitor-friendly information architecture;
+- Letterboxd — personal collection/return-loop ideas only, without ratings culture or popularity authority.
 
-## Constraints
+Chester Zoo is a reference for design principles, not a brand clone. ZhiPanda keeps its own panda-specific palette, typography, data, IA, copy and interaction logic.
 
-- Do not turn the first viewport into a standard split hero, search landing page or card shell.
-- The panda image remains the visual subject; navigation and metadata recede.
-- Family and journey scenes are conditional in production and disappear cleanly when unsupported.
-- Do not restore V0.7 animation/map/carousel dependencies merely for visual parity.
-- Mobile must preserve the emotional first viewport without covering the panda's face.
-- No invented facts, current locations, relationship certainty or media rights.
-- Do not bring back repeated eyebrow/kicker labels, avatar stacks, fake map grids, glass-pill navigation, rounded search cards or generic feature-card rhythm. Those treatments made the surface read as a designed prototype rather than a mature editorial product.
+Do **not** use as Home visual references:
+- M+;
+- Rijksmuseum / Rijksstudio;
+- MoMA;
+- V&A;
+- Google Arts & Culture;
+- WIRED;
+- newspaper/magazine layouts;
+- museum collection indexes;
+- exhibition catalogues.
 
-## Chosen direction
+Those may remain research references for other surfaces, but they are anti-reference for the Home's visual composition.
 
-**One panda opens the world, with quiet editorial confidence.** Large truthful photography, warm-paper reading scenes, deep forest fields, sparse antique-gold highlights, precise hairlines and deliberately oversized whitespace create the rhythm. The interface should feel authored and calm rather than decorated.
+## Core product feeling
 
-V8.1 raises the craft bar by:
+A fan opens Home and thinks:
 
-- using a full-width restrained photographic navigation instead of a floating capsule;
-- removing repeated kicker labels so headlines carry their own hierarchy;
-- turning life moments into a spacious editorial ledger rather than a decorated timeline widget;
-- presenting family members as portrait records connected by a hairline instead of circular social-avatar chips;
-- replacing the faux map/grid with a chronological journey plate that tells the location story without pretending to be cartography;
-- treating search as a quiet utility line after discovery rather than another rounded component;
-- making My Pandas a photographic closing scene instead of a conventional card;
-- keeping display sizes at or below the durable 6rem ceiling and increasing supporting text to mature reading sizes.
+- "Which panda do I want to look at?"
+- "What happened recently?"
+- "Who else is here?"
+- "Where can I see pandas?"
+- "Who is related to whom?"
+- "What did I save last time?"
 
-The memorable movement remains: one featured panda → a few life moments → a cinematic family scene → a clear journey through places → a broad panda panorama → a reason to return.
+They should **not** think:
+- "This is a publication."
+- "This is a museum collection."
+- "This is an archive index."
+- "This is a design portfolio."
+- "This is a landing-page template."
 
-## Typography commitment
+## Home structure
 
-The V8 prototype now owns a scoped, real font-delivery layer through `next/font` rather than relying on uninstalled family names:
+1. **Immersive zoo entrance**
+   - use one full-viewport real panda photographic scene as the Home entrance;
+   - center one short brand statement and two clear product actions over the scene;
+   - this is allowed to use very large display type because it functions as a zoo entrance, not an editorial chapter;
+   - embed a horizontally browsable panda carousel into the bottom of the same Hero scene;
+   - the carousel must expose real named pandas immediately, so the immersive Hero remains interactive and product-like rather than becoming a campaign poster.
 
-- English display and UI: Manrope;
-- Chinese display: Noto Serif SC, used to give large editorial headlines a more authored photographic-publication character;
-- Chinese body: Noto Sans SC;
-- font delivery stays scoped to the prototype until the direction is approved for the public site.
+2. **Pandas to explore**
+   - recognizable panda cards or tiles;
+   - image, name, place/status context;
+   - mixed but controlled sizes are allowed;
+   - cards must read as animal entities, not marketing features.
 
-## Motion commitment
+3. **What's happening**
+   - recent panda updates as a visual feed;
+   - image/avatar + panda + concise event/change + date/place;
+   - should feel closer to zoo animal updates/community activity than a changelog or news article list.
 
-Motion is intentionally sparse and uses the MIT-licensed `motion` package rather than a global smooth-scroll stack:
+4. **Family**
+   - people should understand relationships at a glance;
+   - use portraits/photos where available;
+   - relationship visualization may be compact, friendly and interactive;
+   - do not turn this into a genealogical research diagram on Home.
 
-- hero photography performs one restrained settle on entry;
-- hero copy arrives as part of the same focal sequence rather than as a generic repeated section reveal;
-- the family photograph opens with a subtle scale settle when the family relationship enters the story;
-- the journey line draws once when the route becomes visible, directly expressing movement between published places;
-- Panorama keeps native CSS scroll snap and direct manipulation;
-- no Lenis, GSAP ScrollSmoother or global scroll hijacking;
-- `prefers-reduced-motion` is respected through Motion's user preference hook and existing CSS fallbacks.
+5. **Places to see pandas**
+   - zoo/center cards or map preview;
+   - place photography or linked panda photography;
+   - practical place identity first;
+   - deeper map is one click away.
 
-## Unresolved decisions
+6. **My Pandas / return loop**
+   - visible and useful, not a giant campaign statement;
+   - saved/followed pandas when real private data exists;
+   - signed-out state should invite saving without pretending the user has favorites.
 
-- Final production hero-selection rotation strategy.
-- Whether the full-width dark photographic navigation becomes the shared public navigation treatment or remains Home-specific.
-- Whether the Chinese display serif pairing should graduate from the prototype into the shared public design system.
-- Whether the production Home journey preview should remain a chronological plate or later gain a real lightweight geographic preview when PublicRead supports it cleanly.
+7. **Collections / fan paths**
+   - compact thematic browse paths;
+   - family, recently updated, photo-rich, place-based, stories;
+   - secondary to pandas and current activity.
+
+## Visual language
+
+- bold, friendly, modern zoo/aquarium product;
+- deep bamboo/forest green may act as the main Home ground instead of white;
+- warm ivory/off-white is the primary text/surface counterpoint;
+- one bright bamboo-yellow/lime accent is allowed for the most important action and small moments of delight;
+- the first viewport may be fully photographic when it also contains immediate actions and panda browsing; do not repeat full-screen photography as the rhythm for later sections;
+- medium radii are allowed for panda/place entity cards and controls;
+- avoid both extremes: neither zero-radius editorial austerity nor soft rounded-card soup;
+- subtle elevation is allowed where it helps interactive hierarchy;
+- use grouped surfaces and spatial hierarchy rather than endless horizontal rules;
+- typography should feel friendly and contemporary, not editorial;
+- one Chester-style oversized brand statement is permitted in the first viewport only; later headings return to product scale.
+
+## Explicit anti-magazine rules
+
+Home must not use:
+- hard editorial grids as the primary layout language;
+- repeated full-width photography followed by large statement text outside the first immersive zoo entrance;
+- long-form chapter pacing;
+- oversized 5–6rem section statements as the main rhythm;
+- hairline index lists as repeated section templates;
+- caption-heavy photography;
+- "cover", "front page", "edition", "index", "archive", "collection catalogue" visual metaphors;
+- visual hierarchy based mainly on typographic scale and empty space;
+- black/white editorial austerity as a shortcut to "premium".
+
+## Premium quality means
+
+Premium here comes from:
+- exceptional crops of real panda photography;
+- coherent entity-card proportions;
+- excellent spacing;
+- polished hover/focus/touch states;
+- strong hierarchy with giant display type reserved for the first zoo-entrance statement only;
+- high-quality micro-interaction;
+- clear, useful fan actions;
+- consistent iconography;
+- thoughtful responsive behavior;
+- information that feels alive and current.
+
+It does **not** come from making the site look like a luxury magazine.
+
+## Community feeling
+
+Community should come from real product mechanics:
+- My Pandas;
+- collections;
+- recent panda updates;
+- shared family/place discovery;
+- optional future contributions or observations when product support exists.
+
+Do not fabricate:
+- likes;
+- follower counts;
+- comments;
+- trending;
+- popularity;
+- "people are watching";
+- social proof.
+
+## Hero / first viewport
+
+Desktop:
+- use a full-bleed real panda photographic scene behind the first viewport;
+- a floating warm-ivory pill navigation sits above the scene;
+- one short centered brand statement may reach Chester-like display scale;
+- two clear pill CTAs sit directly beneath the statement;
+- a 255×350-ish portrait panda carousel is embedded into the bottom of the Hero so real panda entities are browseable before leaving the first scene;
+- use a functional dark wash only as needed for text contrast.
+
+Mobile:
+- keep the same composition rather than falling back to a generic stacked marketing Hero;
+- navigation remains a compact floating ivory capsule;
+- brand statement and primary CTA remain visible before the panda carousel;
+- carousel cards become wider touch targets around 72–80vw and scroll natively;
+- background photography may sit behind text when a contrast wash preserves readability; avoid placing small metadata over the panda's face.
+
+## Panda cards
+
+- real entity cards are encouraged;
+- image first, then name and one useful secondary line;
+- consistent but not monotonous;
+- no generic icon + heading + paragraph feature-card pattern;
+- no excessive borders or shadows;
+- no tiny metadata overload;
+- no substitute imagery.
+
+## Recent activity
+
+Use user-facing language:
+- "小奇迹新增了一组近期照片"
+- "宝力的家族信息更新了"
+- "贝贝现在生活的地点已补充"
+
+Do not expose:
+- revision IDs;
+- release language;
+- schema changes;
+- verification workflow;
+- "public record updated" as the headline style.
+
+## Places
+
+- feel like zoo discovery;
+- names and animals matter more than counts;
+- counts can support but should not dominate;
+- use map/visitor affordances where useful;
+- avoid institutional index-list presentation.
+
+## Motion
+
+- small, purposeful product motion;
+- hover/tap feedback on panda and place cards;
+- gentle image transitions;
+- optional controlled hero/media change when switching pandas;
+- no scroll hijacking;
+- no cinematic chapter transitions;
+- no repeated reveal animation across every section;
+- reduced motion retains the full experience.
+
+## Navigation
+
+- product-like and compact;
+- brand, Pandas, Families, Places, Stories, Search, My Pandas;
+- no editorial section numbering;
+- no magazine masthead treatment;
+- mobile Sheet remains accessible and direct.
+
+## Responsive commitments
+
+Review at:
+- 1440 × 1000;
+- 1024 × 768;
+- 390 × 844;
+- 320 × 760;
+- light and dark system themes.
+
+Required:
+- zero document-level horizontal overflow;
+- zero broken images;
+- zero console/page errors;
+- exactly one H1;
+- primary panda action visible quickly at 320px;
+- interactive horizontal regions scroll internally;
+- search and mobile navigation fit the viewport;
+- no desktop-only composition simply stacked on mobile.
+
+## Craft guardrails
+
+- no magazine/museum/editorial-front-page composition;
+- no archive-first language;
+- no giant typographic statement sections after the first immersive Hero;
+- no repeated index rows separated only by hairlines;
+- no card soup;
+- no bento-as-default;
+- no fake metrics;
+- no decorative gradients/glass/glows;
+- no generic AI landing-page hero;
+- no repeated full-screen photos merely to look premium; the first Hero earns full-screen photography through direct browsing and actions;
+- no visual trick that makes panda identity or interaction harder to use.

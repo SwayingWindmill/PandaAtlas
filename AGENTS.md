@@ -29,6 +29,11 @@
   authority. Use the relevant Impeccable critique/shape/layout/typeset/adapt/
   audit/polish passes for the scope instead of treating the skill as an
   optional final review.
+- For public Web design and implementation, the newest approved prototype and
+  its nearest persisted surface brief are the visual source of truth. Do not
+  copy, restore, or preserve an older prototype merely because its code already
+  exists. Older prototypes are historical reference only unless the current
+  brief explicitly carries a pattern forward.
 - For Web code changes, run `npm run check:impeccable -w web` (or the normal
   Web lint command, which includes it) before considering the work complete.
   Fix real detector findings rather than adding broad ignores. Only exclude
@@ -41,37 +46,41 @@
   are available tools for achieving a premium, modern, photographic experience;
   the agent does not need to ask the user for permission each time they are the
   appropriate implementation choice.
-- React Bits is the default source of expressive public-facing interaction and
-  visual component patterns. Prefer official React Bits components/source when a
-  suitable pattern exists instead of building a loose imitation. Use it for
+- shadcn/ui is the default source for generic Web UI primitives and controls.
+  Before authoring a reusable button, input, select, dialog, sheet, drawer, tabs,
+  popover, tooltip, accordion, command surface, form control, table primitive,
+  badge, card shell or similar UI, check shadcn/ui first. The configured shadcn
+  registries are the next source of reusable code: Animate UI, React Bits,
+  Aceternity UI, KokonutUI and Magic UI. Prefer installing and adapting an
+  established registry component over creating a parallel generic primitive.
+  Review third-party registry source before adding it, keep ZhiPanda tokens and
+  accessibility semantics authoritative, and avoid importing demo aesthetics
+  wholesale.
+- React Bits remains a preferred source for expressive public-facing interaction
+  and visual patterns after the generic shadcn layer is exhausted. Use it for
   things such as animated content, masked/split headings, spotlight/glare/tilt
-  treatments, pill or editorial navigation, image-led galleries, cursors and
-  other reusable experiential primitives. Adapt styling to ZhiPanda's design
-  system rather than copying demo aesthetics verbatim, and preserve keyboard,
-  touch and reduced-motion behavior.
-- Motion (`motion/react`) is the default React-native animation layer for local
-  component state, entrance/reveal choreography, layout continuity, hover/tap
-  feedback and small reusable interactions. Keep these animations restrained and
-  composable. Do not use Motion to hand-build a complex spatial transition when
-  GSAP/Flip is a clearer and more reliable fit.
-- GSAP is approved for complex cinematic choreography and performance-sensitive
-  spatial animation. Prefer GSAP Flip for shared-element/layout morphs such as a
-  panda directory portrait expanding into the detail-page hero, and GSAP
-  timelines when several animation phases must share one authoritative clock.
-  Favor `transform`/`opacity` animation over repeatedly animating layout
-  properties such as `left`, `top`, `width` and `height`. Do not run competing
-  GSAP and Motion animations on the same property of the same element.
+  treatments, image-led galleries, cursors and other reusable experiential
+  primitives. Adapt styling to ZhiPanda's design system rather than copying demo
+  aesthetics verbatim, and preserve keyboard, touch and reduced-motion behavior.
+- Motion (`motion/react`) and GSAP are both approved for local state,
+  entrance/reveal choreography, layout continuity, hover/tap feedback, scroll
+  effects and cinematic spatial animation. Choose the implementation that best
+  matches the selected component source, interaction quality, accessibility,
+  maintainability and performance instead of assigning effects to a library by
+  category. GSAP Flip remains a strong fit for shared-element/layout morphs such
+  as a panda directory portrait expanding into the detail-page hero.
+- Favor `transform`/`opacity` animation over repeatedly animating layout
+  properties such as `left`, `top`, `width` and `height` when the same effect
+  can be achieved cleanly. Do not run competing animation systems on the same
+  property of the same element at the same time.
 - Lenis is approved for premium long-page scrolling and scroll-linked experience
-  when native scrolling feels insufficient. Use it for smooth reading journeys,
-  galleries and other deliberate long-form surfaces, not as a substitute for
-  route transitions. Integrate it only when the page benefits materially, keep
-  native keyboard/touch semantics, and disable or simplify it for reduced-motion
-  users when appropriate.
-- Animation ownership should be explicit: React Bits supplies reusable visual
-  patterns, Motion owns ordinary React micro-interactions, GSAP/Flip owns complex
-  spatial morphs and coordinated timelines, and Lenis owns smooth-scroll feel.
-  Prefer one owner per interaction. More libraries in one effect do not make the
-  result more premium.
+  when native scrolling feels insufficient. Use it only when the page benefits
+  materially, keep native keyboard/touch semantics, and disable or simplify it
+  for reduced-motion users when appropriate.
+- Animation ownership should be explicit per interaction, but it is not tied to
+  a fixed library taxonomy. React Bits, Motion, GSAP/Flip and Lenis may each own
+  the interactions they implement best. More libraries in one effect do not
+  make the result more premium.
 - For premium frontend work, motion quality is part of the craft floor: prefetch
   destinations before cinematic navigation where useful, align source and target
   geometry exactly, avoid layout-thrashing animation, keep a single transition

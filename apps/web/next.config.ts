@@ -2,10 +2,21 @@ import type { NextConfig } from "next";
 
 const productionSmokeDistDir = process.env.PANDA_NEXT_DIST_DIR
   ?? (process.env.npm_lifecycle_event === "build:production-smoke" ? ".next-production-smoke" : undefined);
+const externalQualityChecksPassed = process.env.PANDA_EXTERNAL_QUALITY_CHECKS_PASSED === "1";
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
   ...(productionSmokeDistDir ? { distDir: productionSmokeDistDir } : {}),
+  ...(externalQualityChecksPassed
+    ? {
+        eslint: { ignoreDuringBuilds: true },
+        typescript: { ignoreBuildErrors: true },
+      }
+    : {}),
+  experimental: {
+    cpus: 1,
+    webpackMemoryOptimizations: true,
+  },
   transpilePackages: ["@zhipanda/api-client", "maplibre-gl"],
   webpack(config, { isServer }) {
     config.module.rules.push({

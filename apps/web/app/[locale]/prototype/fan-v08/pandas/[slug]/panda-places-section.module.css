@@ -1,0 +1,205 @@
+.section {
+  background: #062f31;
+  color: #f3f6ee;
+}
+
+.shell {
+  width: min(92rem, calc(100% - 2rem));
+  margin-inline: auto;
+  padding: 5.5rem 0 6.25rem;
+}
+
+.heading {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.heading h2 {
+  max-width: 10ch;
+  margin: 0;
+  color: #f3f6ee;
+  font-family: var(--font-body);
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 820;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+
+.heading p {
+  max-width: 38rem;
+  margin: 0;
+  color: rgba(243, 246, 238, 0.66);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.route {
+  margin: 4.5rem 0 0;
+  padding: 0;
+  display: grid;
+  list-style: none;
+}
+
+.route li {
+  min-height: 9.5rem;
+  padding: 0 0 3rem 2.8rem;
+  position: relative;
+}
+
+.routeNode {
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+  top: 0.55rem;
+  left: 0;
+  z-index: 2;
+  border: 0.28rem solid #062f31;
+  border-radius: 50%;
+  background: #f3f6ee;
+  box-shadow: 0 0 0 0.16rem rgba(243, 246, 238, 0.18);
+}
+
+.routeLine {
+  width: 0.35rem;
+  position: absolute;
+  top: 1.55rem;
+  bottom: -0.1rem;
+  left: 0.33rem;
+  border-radius: 999px;
+  background: rgba(243, 246, 238, 0.18);
+}
+
+.routeCopy {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.routeCopy strong {
+  max-width: 19ch;
+  color: #f3f6ee;
+  font-size: clamp(2rem, 7vw, 3.3rem);
+  font-weight: 780;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.routeCopy span {
+  color: #91a89a;
+  font-size: 0.78rem;
+  font-weight: 680;
+  font-variant-numeric: tabular-nums;
+}
+
+.notes {
+  margin-top: 4.5rem;
+}
+
+.featureNote {
+  max-width: 34ch;
+  margin: 0;
+  color: #eef5ef;
+  font-size: clamp(1.55rem, 5.2vw, 2.45rem);
+  font-weight: 620;
+  letter-spacing: -0.022em;
+  line-height: 1.42;
+}
+
+.noteGrid {
+  margin-top: 3rem;
+  display: grid;
+  gap: 1.7rem;
+}
+
+.noteGrid p {
+  max-width: 62ch;
+  margin: 0;
+  color: #c8d5cc;
+  font-size: 1rem;
+  line-height: 1.82;
+}
+
+@media (min-width: 70rem) {
+  .shell {
+    width: min(88rem, calc(100% - 8rem));
+    padding: 8rem 0 8.75rem;
+  }
+
+  .section[data-has-stops="false"] .shell {
+    padding-block: 6.75rem 7.25rem;
+  }
+
+  .heading {
+    grid-template-columns: minmax(0, 1.25fr) minmax(22rem, 0.75fr);
+    gap: 7rem;
+    align-items: end;
+  }
+
+  .heading h2 {
+    max-width: 9ch;
+    font-size: clamp(4rem, 5vw, 5.35rem);
+  }
+
+  .heading p {
+    padding-bottom: 0.45rem;
+    font-size: 1.04rem;
+  }
+
+  .route {
+    margin-top: 5.5rem;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(18rem, 1fr);
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .route::-webkit-scrollbar {
+    display: none;
+  }
+
+  .route li {
+    min-height: 14rem;
+    padding: 3.2rem 4rem 0 0;
+  }
+
+  .routeNode {
+    top: 0;
+  }
+
+  .routeLine {
+    width: auto;
+    height: 0.35rem;
+    top: 0.34rem;
+    right: 0;
+    bottom: auto;
+    left: 1rem;
+  }
+
+  .routeCopy strong {
+    max-width: 14ch;
+    font-size: clamp(2.8rem, 3.1vw, 3.8rem);
+  }
+
+  .notes {
+    margin-top: 5.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(24rem, 0.88fr);
+    gap: clamp(5rem, 8vw, 9rem);
+    align-items: start;
+  }
+
+  .featureNote {
+    max-width: 31ch;
+    font-size: clamp(2.35rem, 2.8vw, 3rem);
+    line-height: 1.35;
+  }
+
+  .noteGrid {
+    margin-top: 0;
+    gap: 2.1rem;
+  }
+
+  .noteGrid p {
+    font-size: 1.04rem;
+  }
+}

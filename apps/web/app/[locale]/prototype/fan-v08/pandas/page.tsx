@@ -1,17 +1,17 @@
-import type { Metadata, Route } from "next";
-import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Heart, Search } from "lucide-react";
 
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import type { PandaDetail, PublicPandaMediaAsset } from "@/lib/types";
 
 import homeStyles from "../prototype.module.css";
+import { PrototypeFooter } from "../prototype-footer";
+import { PrototypeHeader } from "../prototype-header";
 import { fanV08VisualFixtures } from "../visual-fixtures";
 import { DirectoryExplorer, type DirectoryPanda } from "./directory-explorer";
+import { DirectoryMasthead } from "./directory-masthead";
 import styles from "./directory.module.css";
-import { AnimatedContent, CountUpNumber } from "./react-bits-directory";
 import { loadFanV08ResearchCatalog, type ResearchCatalogPanda } from "./research-catalog";
 
 interface Props {
@@ -25,13 +25,9 @@ function one(value: string | string[] | undefined): string {
 
 export const metadata: Metadata = {
   title: "ZhiPanda Fan V8 Panda Directory Prototype",
-  description: "Fan-first editorial panda directory design prototype.",
+  description: "Fan-first photographic panda directory design prototype.",
   robots: { index: false, follow: false },
 };
-
-function route(value: string): Route {
-  return value as Route;
-}
 
 function localizedName(panda: PandaDetail, locale: "zh" | "en"): string {
   return locale === "zh" ? panda.name_zh : panda.name_en ?? panda.name_zh;
@@ -52,20 +48,34 @@ function serializePublishedPanda(panda: PandaDetail, locale: "zh" | "en"): Direc
   const fixture = fanV08VisualFixtures.find((item) => item.slug === panda.slug) ?? null;
   const media = mediaFor(panda);
   const image = panda.cover_image_url ?? media?.url ?? fixture?.image ?? null;
-  const name = localizedName(panda, locale);
+  const name = fixture
+    ? locale === "zh" ? fixture.zh : fixture.en
+    : localizedName(panda, locale);
+  const fixtureAlternate = fixture
+    ? locale === "zh" ? fixture.en : fixture.zh
+    : null;
   const mediaAlt = locale === "zh" ? media?.alt_zh : media?.alt_en;
   const location = panda.current_place?.coarse_location ?? panda.current_location;
+
+  const imageCandidates = Array.from(new Set([
+    panda.cover_image_url,
+    media?.url,
+    fixture?.image,
+  ].filter((value): value is string => Boolean(value))));
 
   return {
     id: panda.id,
     slug: panda.slug,
     name,
-    altName: alternateName(panda, locale),
+    altName: fixtureAlternate && fixtureAlternate !== name
+      ? fixtureAlternate
+      : alternateName(panda, locale),
     gender: panda.gender,
     status: panda.status,
     birthYear: panda.birth_date?.slice(0, 4) ?? null,
     location,
     image,
+    imageCandidates,
     imageAlt: mediaAlt ?? (locale === "zh" ? `${name}的大熊猫照片` : `Photograph of giant panda ${name}`),
     credit: panda.cover_image_url || media?.url ? media?.credit ?? null : fixture?.credit ?? null,
     rights: panda.cover_image_url || media?.url ? media?.rights ?? null : fixture?.rights ?? null,
@@ -85,9 +95,15 @@ function serializeResearchPanda(
 ): DirectoryPanda {
   if (published) {
     const researchMedia = panda.media;
+    const imageCandidates = Array.from(new Set([
+      ...(published.imageCandidates ?? []),
+      researchMedia?.url,
+    ].filter((value): value is string => Boolean(value))));
+
     return {
       ...published,
       image: published.image ?? researchMedia?.url ?? null,
+      imageCandidates,
       imageAlt: published.image
         ? published.imageAlt
         : locale === "zh"
@@ -99,9 +115,18 @@ function serializeResearchPanda(
   }
 
   const fixture = fanV08VisualFixtures.find((item) => item.slug === panda.slug) ?? null;
-  const name = researchName(panda, locale);
-  const alternate = locale === "zh" ? panda.name_en : panda.name_zh;
+  const name = fixture
+    ? locale === "zh" ? fixture.zh : fixture.en
+    : researchName(panda, locale);
+  const alternate = fixture
+    ? locale === "zh" ? fixture.en : fixture.zh
+    : locale === "zh" ? panda.name_en : panda.name_zh;
   const image = panda.media?.url ?? fixture?.image ?? null;
+
+  const imageCandidates = Array.from(new Set([
+    panda.media?.url,
+    fixture?.image,
+  ].filter((value): value is string => Boolean(value))));
 
   return {
     id: panda.id,
@@ -113,6 +138,7 @@ function serializeResearchPanda(
     birthYear: panda.birth_year,
     location: null,
     image,
+    imageCandidates,
     imageAlt: locale === "zh" ? `${name}的研究库确认个体照片` : `Research-vault confirmed individual photograph of ${name}`,
     credit: panda.media?.credit ?? fixture?.credit ?? null,
     rights: panda.media?.rights ?? fixture?.rights ?? null,
@@ -163,54 +189,33 @@ export default async function FanV08PandaDirectoryPrototype({ params, searchPara
   const otherLocale = zh ? "en" : "zh";
   const initialQuery = one(rawSearch.q);
   const researchMode = Boolean(researchCatalog);
+  const heroFixture = fanV08VisualFixtures.find((item) => item.slug === "bao-li") ?? fanV08VisualFixtures[0] ?? null;
 
   return (
-    <div className={homeStyles.page} data-testid="fan-v08-directory">
-      <header className={homeStyles.header}>
-        <div className={homeStyles.headerInner}>
-          <Link className={homeStyles.brand} href={route(`/${locale}/prototype/fan-v08`)}>
-            <span className={homeStyles.brandMark} aria-hidden="true" />
-            <span>吱熊猫 ZhiPanda</span>
-          </Link>
-          <nav className={homeStyles.nav} aria-label={zh ? "V8 原型主导航" : "V8 prototype navigation"}>
-            <Link aria-current="page" href={route(`/${locale}/prototype/fan-v08/pandas`)}>{zh ? "熊猫" : "Pandas"}</Link>
-            <Link href={route(`/${locale}/families`)}>{zh ? "家族" : "Families"}</Link>
-            <Link href={route(`/${locale}/map`)}>{zh ? "地图" : "Map"}</Link>
-            <Link href={route(`/${locale}/moments`)}>{zh ? "动态" : "Moments"}</Link>
-          </nav>
-          <div className={homeStyles.headerActions}>
-            <a className={homeStyles.roundButton} href="#directory-search" aria-label={zh ? "搜索熊猫" : "Search pandas"}><Search /></a>
-            <Link className={homeStyles.roundButton} href={route(`/${locale}/my-pandas`)} aria-label={zh ? "我的熊猫" : "My Pandas"}><Heart /></Link>
-            <Link className={homeStyles.lang} href={route(`/${otherLocale}/prototype/fan-v08/pandas`)}>{zh ? "EN" : "中"}</Link>
-          </div>
-        </div>
-      </header>
+    <div className={`${homeStyles.page} ${styles.directoryPage}`} data-testid="fan-v08-directory">
+      <PrototypeHeader
+        locale={locale}
+        active="pandas"
+        searchHref="#directory-search"
+        languageHref={`/${otherLocale}/prototype/fan-v08/pandas`}
+      />
 
       <main>
-        <section className={styles.directoryMasthead} aria-labelledby="v8-directory-title">
-          <div className={styles.mastheadShell}>
-            <div className={styles.mastheadTop}>
-              <AnimatedContent className={styles.mastheadCopy} distance={20}>
-                <h1 id="v8-directory-title">{zh ? "熊猫图鉴" : "Panda directory"}</h1>
-              </AnimatedContent>
-              <AnimatedContent className={styles.datasetCount} delay={0.08} distance={14}>
-                <div data-testid={researchMode ? "fan-v08-research-count" : undefined} aria-label={zh ? `${pandas.length} 只熊猫` : `${pandas.length} pandas`}>
-                  <strong><CountUpNumber value={pandas.length} /></strong>
-                </div>
-              </AnimatedContent>
-            </div>
-          </div>
-        </section>
+        <DirectoryMasthead
+          locale={locale}
+          count={pandas.length}
+          researchMode={researchMode}
+          hero={heroFixture ? {
+            image: heroFixture.image,
+            alt: locale === "zh" ? `${heroFixture.zh}的大熊猫照片` : `Photograph of giant panda ${heroFixture.en}`,
+            credit: heroFixture.credit,
+            rights: heroFixture.rights,
+          } : null}
+        />
 
         <DirectoryExplorer locale={locale} pandas={pandas} initialQuery={initialQuery} />
 
-        <footer className={homeStyles.footer}>
-          <div><strong>吱熊猫 ZhiPanda</strong><span>{zh ? "给熊猫爱好者的熊猫世界。" : "A panda world for panda fans."}</span></div>
-          <nav>
-            <Link href={route(`/${locale}/prototype/fan-v08`)}>{zh ? "V8 首页" : "V8 Home"}</Link>
-            <Link href={route(`/${locale}/pandas`)}>{zh ? "正式熊猫图鉴与完整筛选" : "Production directory and full filters"}</Link>
-          </nav>
-        </footer>
+        <PrototypeFooter locale={locale} directory />
       </main>
     </div>
   );

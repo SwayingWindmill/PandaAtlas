@@ -1,6 +1,9 @@
 # ZhiPanda Public Experience V0.7
 
-> Status: Active prototype experience map
+> **Historical / superseded for Home visual direction.**
+> Reference assignments such as WIRED editorial hierarchy and Natural History Museum editorial depth must not be used to steer the current Home.
+>
+> Status: Historical prototype experience map
 > Updated: 2026-08-15
 > Primary contract: `DESIGN.md`
 > Product routes: `docs/product/ZhiPanda_PAGE_SPEC_V0.2.md`

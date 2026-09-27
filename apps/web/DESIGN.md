@@ -2,51 +2,51 @@
 
 ## Overview
 
-ZhiPanda is a photographic, editorial panda world for ordinary fans. The interface should feel warm, alive and exploratory: one named panda is allowed to dominate the first impression, while navigation and trust controls recede until they are needed.
+ZhiPanda is a photographic panda world for ordinary fans. The interface should feel alive, clear and exploratory: one named panda is allowed to dominate the first impression, while navigation and trust controls recede until they are needed.
 
-The durable visual thesis is **living panda atlas**: large truthful panda photography, quiet warm-paper reading surfaces, deep forest fields, precise hairlines, selective warm-gold highlights and generous editorial rhythm. It is not a SaaS dashboard, a card catalogue, a generic zoo site or a research-console aesthetic.
+The durable visual thesis is **a modern digital panda zoo and fan community**: named pandas, real photography, recognizable animal profiles, clear places and families, and personal return paths. The product should feel like a living destination fans browse and revisit, not like an archive, magazine, museum collection, editorial front page, SaaS dashboard, or research console.
+
+This document defines reusable defaults, not an obligation to preserve stale visual choices. A well-supported surface redesign may replace these defaults when browser review and stronger references show a better direction; product truth, accessibility and panda-image identity remain the non-negotiable constraints.
 
 ## Colors
 
-Use the existing Web tokens as the default public palette:
+Use the ZhiPanda brand palette as the primary public identity, with neutral delivery tokens underneath:
 
 | Token | Value | Role |
 |---|---|---|
-| canvas | `#f7f6f1` | warm page ground |
-| surface | `#ffffff` | clear reading surface |
-| surface-subtle | `#edf3ec` | pale green supporting field |
-| ink | `#172019` | primary text; never pure black |
-| ink-muted | `#5c685f` | secondary text on light grounds |
-| accent | `#397253` | forest action/accent |
-| accent-strong | `#24543a` | strong forest action |
-| accent-soft | `#dfeee4` | quiet accent field |
-| line | `#d7dfd8` | hairlines and separators |
+| brand-deep | `#003e40` | primary immersive brand field |
+| brand-ink | `#002526` | deepest text/mark/action color |
+| brand-ivory | `#fffff2` | warm high-contrast surface and text color |
+| brand-acid | `#fbff36` | signature high-energy CTA/accent; use sparingly |
+| brand-leaf | `#65b878` | secondary living/nature accent |
+| brand-water | `#66c8cb` | secondary informational accent |
+| canvas | `#ffffff` | ordinary reading surface when immersive branding is not appropriate |
+| surface-subtle | `#f2f5f3` | quiet supporting field |
+| ink-muted | `#626963` | secondary text on light grounds |
+| line | `#dfe3df` | separators on reading surfaces |
 | warning | `#845c19` | uncertainty/warning when semantically needed |
-| dark-canvas | `#101611` | immersive dark field |
-| dark-surface | `#18211a` | elevated dark field |
-| dark-ink | `#edf3ee` | light text on dark fields |
-| dark-muted | `#b3c2b5` | supporting text on dark fields |
-| warm-gold | `#e7bd3f` | sparse cinematic highlight used by fan-first immersive surfaces |
 
-Do not introduce purple/blue AI gradients, pure black, neutral-gray UI chrome or decorative color without a semantic or photographic reason. On photographic sections, derive contrast through tinted forest overlays rather than gray text over imagery.
+Do not introduce purple/blue AI gradients, flat beige page grounds, neutral-gray UI chrome or decorative color without a semantic or photographic reason. Prefer keeping important text outside photography; when text must overlay an image, use the lightest local contrast treatment that preserves legibility rather than automatically darkening the whole photograph.
 
 ## Typography
 
-- Display family: `Manrope`, then the existing CJK fallbacks in `--font-display`.
-- Body family: `Noto Sans SC`, then the existing CJK/system fallbacks in `--font-body`.
-- Public display headings use tight editorial tracking and compact line height; large photographic scenes may scale beyond the current production `h1` ramp when the surface brief calls for immersion.
+- Brand/display Latin: bundled `Archivo Variable` through `--zp-font-display-latin`.
+- Brand/display Chinese: bundled `Noto Sans SC Variable` through `--zp-font-display-cjk`; use heavy weights, compact line height and controlled negative tracking rather than serif display styling.
+- Body/UI: bundled `Noto Sans SC Variable` through `--zp-font-body`; Latin UI may use Archivo where the label benefits from a tighter branded voice.
+- `--font-display` resolves to Archivo for Latin pages and Noto Sans SC Variable for Chinese pages. Do not rely on a font merely being installed on the user's machine.
+- Do not use serif/CJK editorial display type by default on animal profile pages; it pushes the product toward magazine styling.
 - Body copy should remain comfortable, generally `1.55–1.8` line height.
 - Eyebrows are small, firm and sparse. They support hierarchy; they are not repeated above every block.
 - Avoid tiny body text. Metadata may be small only when it is nonessential and still legible at zoom.
 
 ## Layout
 
-- Public pages use a bounded reading shell for ordinary content and may break out to full-bleed photographic or map scenes when the content earns it.
-- The first viewport of expressive fan surfaces is a thesis, not a standard two-column hero card.
-- Prefer long-form editorial rhythm: strong scene → quiet explanation → strong scene → utility/discovery.
-- Use whitespace and hairlines to separate information before adding containers.
-- Avoid bento layouts, nested cards and rows of equal marketing feature cards as the default information architecture.
-- Lists, timelines, family strips and panoramas should read as content rather than dashboard widgets.
+- Public pages should behave like a polished zoo/community product: clear destinations, recognizable animals, useful controls, visual grouping and fast continuation.
+- Home should expose multiple things a fan can do immediately: meet a panda, see what is new, browse pandas, open a family, visit a place, or return to My Pandas.
+- Do not use long-form editorial pacing, magazine chapter sequencing, museum-index composition, or oversized statement typography as the default Home structure.
+- Use photography, spacing, restrained surfaces, typography and interaction together. Hairlines may clarify local structure but must not become the page's visual identity.
+- Cards are allowed when they represent a real object or action (panda, place, family, collection), but avoid card soup, nested cards and equal marketing-feature rows.
+- Lists, feeds, family views, places and collections should feel interactive and browseable rather than like article indexes.
 
 ## Shapes
 
@@ -86,9 +86,45 @@ Large photography may be full-bleed with no radius. Do not round every image or 
 
 ## Components
 
+### Component sourcing
+
+The newest approved prototype and its nearest persisted surface brief determine
+what a public surface should look and feel like. Older prototype code is not a
+design source merely because it is already implemented.
+
+Use **shadcn/ui first** for ordinary interface primitives and controls. The Web
+app also has shadcn-compatible registries configured for:
+
+- `@animate-ui` — restrained animated primitives and state transitions;
+- `@react-bits` — expressive, image-led and experiential interaction patterns;
+- `@aceternity` — selective image, gallery and specialized interaction pieces;
+- `@kokonutui` — niche utility and interaction components when shadcn lacks one;
+- `@magicui` — selective effects or utilities only when they fit the approved
+  photographic direction.
+
+Before writing a reusable generic UI component, search these sources. Prefer
+composition of established primitives over a parallel in-house Button, Dialog,
+Tabs, Drawer, Tooltip, Popover, Accordion, form control, card shell or similar
+abstraction. Install only the component needed; do not import an entire library
+or demo visual system.
+
+ZhiPanda may own branded domain blocks when generic libraries cannot encode the
+product semantics. Current examples are `ZhiPandaLogo`, `LicensedHeroVideo`
+and `PandaHeroRail`. These blocks must expose stable data/behavior interfaces,
+carry accessibility and reduced-motion behavior themselves, and consume brand
+tokens instead of page-local magic values.
+
+Registry source is raw material, not visual authority. Adapt it to ZhiPanda's
+tokens, typography, accessibility, responsive behavior and reduced-motion rules.
+Reject components whose default concept conflicts with the current surface
+brief. In particular, registry availability does not justify bento layouts,
+AI-style gradients, neon/glow decoration, gratuitous glass, autoplay spectacle
+or repeated animation. Photography, content hierarchy and spatial rhythm remain
+the visual thesis.
+
 ### Global navigation
 
-Compact and quiet. Over immersive photography it may float as a dark forest translucent pill; on reading surfaces it should return to the normal public shell. Primary destinations remain Pandas, Families, Map and Moments, with Search and My Pandas as actions.
+On the Home immersive entrance, use the branded warm-ivory floating pill navigation over media, with the ZhiPanda mark/wordmark and acid-yellow My Pandas action. On reading surfaces it returns to the normal public shell. Primary destinations remain Pandas, Families, Map and Moments, with Search and My Pandas as actions.
 
 ### Buttons and links
 
@@ -125,6 +161,8 @@ Evidence and sources are contextual secondary disclosure. Uncertainty that chang
 Do not ship:
 
 - generic SaaS hero + feature-card grids;
+- magazine, newspaper, museum-front-page or exhibition-catalogue composition on the public Home;
+- hard editorial grids, repeated hairline indexes or oversized typographic statements used as a substitute for product interaction;
 - cards nested inside cards;
 - purple/blue AI gradients;
 - pure black/gray visual systems;

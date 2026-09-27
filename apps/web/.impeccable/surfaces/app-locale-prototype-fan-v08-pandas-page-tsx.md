@@ -21,11 +21,13 @@ Recognize an individual through face and name, then open a published profile whe
 
 ## Chosen direction
 
-**Digital Panda Portrait Library.** The photograph is the object rather than content inside a UI card. Cards have no white container, border or dashboard chrome. Portraits use a 4:5 frame, localized names sit directly beneath the image, alternate names and a minimal identity line recede, and optional location is last.
+**Digital Panda Portrait Library.** The photograph is the object rather than content inside a UI card. Cards have no white container, border or dashboard chrome. Portraits use a 4:5 frame and follow the image-led catalogue principle of Chester Zoo's animal directory: the localized name, alternate name and minimal identity context live inside the photograph at its lower edge rather than forming a separate text card beneath it. A restrained local gradient is allowed only to protect text contrast without flattening the photograph. Optional location remains tertiary.
 
-Desktop uses four generous portrait columns, reducing to three before a deliberate two-column mobile composition. Missing-photo records preserve the same portrait geometry with a quiet archival typographic treatment.
+Desktop uses four generous portrait columns, reducing to three before a deliberate two-column mobile composition. Missing-photo records preserve the same portrait geometry with a quiet archival treatment. Remote media uses ordered identity-matched candidates and falls back to the no-photo treatment when every source fails; early portrait images no longer compete aggressively with the hero image for network priority.
 
-The masthead contains only the page title and total count. Prototype disclaimers, publication counts, media-coverage explanations, repeated section introductions and research badges stay out of the fan-facing visual layer. Search and fast filters remain sticky; after them the portrait field begins immediately.
+The entrance is now a photographic hero rather than a database masthead. One licensed panda image fills the opening scene, then fades naturally into the same deep-teal field used by the search rail and portrait library. The large title remains the only headline; the total panda count is a compact supporting pill instead of a KPI. Search follows immediately in the same color world. Quick filters are intentionally limited to All / Living / With photo; gender, historic status, photo presence, birth-year range and place move into a right-side filter sheet.
+
+The global header follows Chester Zoo's visible desktop composition rather than merely borrowing its hierarchy: one large warm-white rounded navigation bar floats over media with the approved ZhiPanda resting-panda mark, primary destinations, language/My Pandas actions and one acid-lime Find a Panda action. There is no second utility strip, dark full-width bar, circular app-toolbar control, or decorative active underline. Search remains sticky for long-directory browsing; after it, the portrait field begins immediately.
 
 ## Motion language
 

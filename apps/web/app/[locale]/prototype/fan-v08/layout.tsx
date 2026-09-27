@@ -1,29 +1,13 @@
-import { Manrope, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
+import type { CSSProperties, ReactNode } from "react";
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--v08-font-latin",
-});
+const fontVariables = {
+  "--v08-font-latin": '"Avenir Next", "Segoe UI", Arial, sans-serif',
+  "--v08-font-body-cjk": '"Noto Sans SC", "PingFang SC", "Microsoft YaHei"',
+  "--v08-font-display-cjk": '"Noto Serif SC", "Songti SC", "STSong", "SimSun"',
+  "--v08-font-body": '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Avenir Next", "Segoe UI", Arial, sans-serif',
+  "--v08-font-display": '"Noto Serif SC", "Songti SC", "STSong", "SimSun", "Palatino Linotype", Georgia, serif',
+} as CSSProperties;
 
-const notoSansSc = Noto_Sans_SC({
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  preload: false,
-  variable: "--v08-font-body-cjk",
-});
-
-const notoSerifSc = Noto_Serif_SC({
-  weight: ["500", "600", "700"],
-  display: "swap",
-  preload: false,
-  variable: "--v08-font-display-cjk",
-});
-
-export default function FanV08PrototypeLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className={`${manrope.variable} ${notoSansSc.variable} ${notoSerifSc.variable}`}>
-      {children}
-    </div>
-  );
+export default function FanV08PrototypeLayout({ children }: { children: ReactNode }) {
+  return <div style={fontVariables}>{children}</div>;
 }

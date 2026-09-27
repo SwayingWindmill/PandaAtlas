@@ -25,12 +25,11 @@ from scripts.research.build_information_collection_queue import (
     _record_subject,
     build_report,
 )
+from scripts.prototypes.fan_v08_media_policy import media_is_hero_usable
 
 OUTPUT = ROOT / ".ai-bridge/fan-v08-research-catalog.json"
 YEAR_RE = re.compile(r"(?<!\d)(18\d{2}|19\d{2}|20\d{2})(?!\d)")
 CJK_RE = re.compile(r"[\u3400-\u9fff]")
-
-
 def _clean_name(value: str) -> str:
     value = value.strip()
     value = re.sub(r"\s*[（(].*$", "", value).strip()
@@ -49,6 +48,31 @@ def _names_from_label(label: str, subject_id: str) -> tuple[str, str | None]:
         return cleaned, None
     fallback = " ".join(part.capitalize() for part in subject_id.split("-") if part)
     return cleaned or fallback, cleaned if cleaned and cleaned != fallback else None
+
+
+def _direct_official_chinese_name(rows: list[dict[str, Any]]) -> str | None:
+    candidates: set[str] = set()
+    for row in rows:
+        if str(row.get("category") or "").casefold() != "name":
+            continue
+        if str(row.get("predicate") or "").casefold() != "official_chinese_name_form":
+            continue
+        evidence = str(row.get("evidence_level") or "").casefold()
+        confidence = str(row.get("confidence") or "").casefold()
+        review = str(row.get("review_status") or "").casefold()
+        if evidence != "direct" and not evidence.startswith("direct_"):
+            continue
+        if confidence not in {"high", "very_high"}:
+            continue
+        if any(marker in review for marker in ("needs_", "open_", "conflict", "disputed", "rejected", "superseded", "withheld")):
+            continue
+        value = row.get("value")
+        if not isinstance(value, dict):
+            continue
+        raw_name = value.get("name_zh") or value.get("chinese_name") or value.get("displayed_chinese_name")
+        if isinstance(raw_name, str) and CJK_RE.search(raw_name):
+            candidates.add(raw_name.strip())
+    return next(iter(candidates)) if len(candidates) == 1 else None
 
 
 def _normalize_sex(value: Any) -> str | None:
@@ -99,6 +123,24 @@ def _subject_status(rows: list[dict[str, Any]]) -> str:
         return "alive"
     if not explicit and death_evidence:
         return "deceased"
+    return "unknown"
+
+
+def _direct_death_status(rows: list[dict[str, Any]]) -> str:
+    for row in rows:
+        evidence = str(row.get("evidence_level") or "").casefold()
+        confidence = str(row.get("confidence") or "high").casefold()
+        review = str(row.get("review_status") or "").casefold()
+        if evidence != "direct" and not evidence.startswith("direct_"):
+            continue
+        if confidence not in {"high", "very_high"}:
+            continue
+        if any(marker in review for marker in ("needs_", "open_", "conflict", "disputed", "rejected", "superseded", "withheld")):
+            continue
+        category = str(row.get("category") or "").casefold()
+        predicate = str(row.get("predicate") or "").casefold()
+        if category == "death" or predicate in {"death_date", "date_of_death"} or predicate.startswith("death_"):
+            return "deceased"
     return "unknown"
 
 
@@ -157,7 +199,7 @@ def main() -> None:
 
     media_by_subject: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in unique_rows(media, "media_id"):
-        if not media_row_is_confirmed_subject_depiction(row):
+        if not media_row_is_confirmed_subject_depiction(row) or not media_is_hero_usable(row):
             continue
         raw_subject_id = str(row.get("subject_id") or "").strip()
         asset_url = str(row.get("asset_url") or row.get("url") or "").strip()
@@ -173,6 +215,8 @@ def main() -> None:
         label = str(queue_row["subject_label"])
         name_zh, name_en = _names_from_label(label, subject_id)
         subject_rows = rows_by_subject.get(subject_id, [])
+        if not CJK_RE.search(name_zh):
+            name_zh = _direct_official_chinese_name(subject_rows) or name_zh
         p0_status = queue_row["p0_status"]
         media_rows = sorted(media_by_subject.get(subject_id, []), key=_media_score, reverse=True)
         media_row = media_rows[0] if media_rows else None
@@ -186,7 +230,9 @@ def main() -> None:
                 "name_zh": name_zh,
                 "name_en": name_en,
                 "gender": _subject_sex(subject_rows) if p0_status.get("sex_or_explicit_unknown") == "present" else "unknown",
-                "status": _subject_status(subject_rows) if p0_status.get("life_status") == "present" else "unknown",
+                "status": _subject_status(subject_rows)
+                if p0_status.get("life_status") == "present"
+                else _direct_death_status(subject_rows),
                 "birth_year": _extract_birth_year(subject_rows) if p0_status.get("birth_date_or_explicit_unknown") == "present" else None,
                 "record_count": int(queue_row["record_count"]),
                 "direct_record_count": int(queue_row["direct_record_count"]),

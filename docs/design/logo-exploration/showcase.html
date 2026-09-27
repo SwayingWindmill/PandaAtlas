@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>吱熊猫 ZhiPanda — Logo Exploration</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f7f6f1;
+      --surface: #ffffff;
+      --ink: #172019;
+      --muted: #5c685f;
+      --accent: #397253;
+      --accent-strong: #24543a;
+      --line: #d7dfd8;
+      --soft: #edf3ec;
+      --mark-size: 96px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    body[data-theme="ink"] {
+      --canvas: #ffffff;
+      --surface: #f7f6f1;
+      --ink: #111511;
+      --muted: #5d625d;
+      --accent: #111511;
+      --accent-strong: #111511;
+      --line: #dedfdc;
+      --soft: #f1f1ee;
+    }
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      --canvas: #101611;
+      --surface: #18211a;
+      --ink: #edf3ee;
+      --muted: #b3c2b5;
+      --accent: #78aa7e;
+      --accent-strong: #a4d3aa;
+      --line: #314036;
+      --soft: #1f2c22;
+    }
+    main { width: min(1180px, calc(100% - 40px)); margin: 0 auto; padding: 72px 0 96px; }
+    .eyebrow { margin: 0 0 14px; color: var(--accent-strong); font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 0; max-width: 900px; font-size: clamp(42px, 7vw, 84px); line-height: .98; letter-spacing: -.055em; font-weight: 760; }
+    .intro { max-width: 760px; margin: 26px 0 0; color: var(--muted); font-size: 17px; line-height: 1.8; }
+    .controls { position: sticky; top: 12px; z-index: 3; display: flex; flex-wrap: wrap; gap: 10px; margin: 42px 0 34px; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--canvas) 88%, transparent); backdrop-filter: blur(16px); }
+    button { border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; background: var(--surface); color: var(--ink); font: inherit; font-size: 13px; font-weight: 750; cursor: pointer; }
+    button:hover, button[aria-pressed="true"] { border-color: var(--accent); background: var(--soft); color: var(--accent-strong); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { min-height: 470px; padding: 30px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); display: flex; flex-direction: column; transition: transform .25s ease, border-color .25s ease; }
+    .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+    .card[data-priority="true"] { border-color: color-mix(in srgb, var(--accent) 65%, var(--line)); }
+    .badge { align-self: flex-start; min-height: 25px; padding: 5px 9px; border-radius: 999px; background: var(--soft); color: var(--accent-strong); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .badge.placeholder { visibility: hidden; }
+    .stage { flex: 1; display: grid; place-items: center; min-height: 220px; color: var(--accent-strong); }
+    .mark { width: var(--mark-size); height: var(--mark-size); overflow: visible; transition: width .25s ease, height .25s ease; }
+    .lockup { display: flex; align-items: center; gap: 14px; margin: -10px auto 30px; color: var(--accent-strong); }
+    .lockup .mini-mark { width: 36px; height: 36px; }
+    .lockup strong { display: block; font-size: 17px; line-height: 1.1; }
+    .lockup small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .meta { padding-top: 22px; border-top: 1px solid var(--line); }
+    .meta h2 { margin: 0; font-size: 23px; letter-spacing: -.025em; }
+    .meta h3 { margin: 7px 0 0; color: var(--accent-strong); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    .meta p { margin: 14px 0 0; color: var(--muted); line-height: 1.68; font-size: 14px; }
+    .footer-note { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); line-height: 1.7; font-size: 13px; }
+    @media (max-width: 760px) {
+      main { width: min(100% - 24px, 1180px); padding-top: 44px; }
+      .grid { grid-template-columns: 1fr; }
+      .card { min-height: 430px; padding: 24px; }
+      .controls { top: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body data-theme="paper">
+  <main>
+    <p class="eyebrow">Logo Generator Skill · Phase 2</p>
+    <h1>吱熊猫<br />ZhiPanda</h1>
+    <p class="intro">六个方向都遵循项目已经接受的视觉约束：温暖但不卖萌、自然但不使用竹子壁纸、可信但不做审计控制台、以森林绿和纸张中性色为核心，并保证图形在导航栏、favicon 与深色背景中仍然成立。</p>
+
+    <div class="controls" aria-label="预览控制">
+      <button type="button" data-theme-button="paper" aria-pressed="true">Paper / 品牌绿</button>
+      <button type="button" data-theme-button="ink" aria-pressed="false">Monochrome / 黑白</button>
+      <button type="button" data-theme-button="dark" aria-pressed="false">Dark / 深色</button>
+      <button type="button" data-size-button="24" aria-pressed="false">24 px</button>
+      <button type="button" data-size-button="44" aria-pressed="false">44 px</button>
+      <button type="button" data-size-button="96" aria-pressed="true">96 px</button>
+    </div>
+
+    <section class="grid" aria-label="Logo variants">
+      <article class="card">
+        <span class="badge placeholder">候选</span>
+        <div class="stage">
+          <svg class="mark" viewBox="0 0 100 100" aria-label="Echo Orbit">
+            <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round">
+              <path d="M 72 27 A 31 31 0 1 1 28 70" />
+              <path d="M 31 30 A 31 31 0 0 1 55 19" />
+            </g>
+            <circle cx="76" cy="30" r="5" fill="currentColor" />
+          </svg>
+        </div>
+        <div class="lockup" aria-hidden="true">
+          <svg class="mini-mark" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M 72 27 A 31 31 0 1 1 28 70"/><path d="M 31 30 A 31 31 0 0 1 55 19"/></g><circle cx="76" cy="30" r="5" fill="currentColor"/></svg>
+          <span><strong>吱熊猫 ZhiPanda</strong><small>发现熊猫、家族与足迹</small></span>
+        </div>
+        <div class="meta"><h2>01 · Echo Orbit</h2><h3>回声 / 发现 / 继续探索</h3><p>用断开的轨道和偏置节点表达“吱”的回声、探索未闭合以及从一个个体继续追踪关系。气质最克制，但熊猫类别识别较弱。</p></div>
+      </article>
+
+      <article class="card" data-priority="true">
+        <span class="badge">优先候选</span>
+        <div class="stage">
+          <svg class="mark" viewBox="0 0 100 100" aria-label="Panda Mask">
+            <g fill="currentColor">
+              <circle cx="30" cy="28" r="9"/><circle cx="70" cy="28" r="9"/>
+              <path fill-rule="evenodd" d="M 50 22 C 31 22 20 35 20 53 C 20 72 32 80 50 80 C 68 80 80 72 80 53 C 80 35 69 22 50 22 Z M 37 43 C 31 44 29 50 31 55 C 33 60 39 61 44 57 C 48 54 48 48 45 44 C 43 42 40 42 37 43 Z M 63 43 C 69 44 71 50 69 55 C 67 60 61 61 56 57 C 52 54 52 48 55 44 C 57 42 60 42 63 43 Z"/>
+            </g>
+          </svg>
+        </div>
+        <div class="lockup" aria-hidden="true">
+          <svg class="mini-mark" viewBox="0 0 100 100"><g fill="currentColor"><circle cx="30" cy="28" r="9"/><circle cx="70" cy="28" r="9"/><path fill-rule="evenodd" d="M 50 22 C 31 22 20 35 20 53 C 20 72 32 80 50 80 C 68 80 80 72 80 53 C 80 35 69 22 50 22 Z M 37 43 C 31 44 29 50 31 55 C 33 60 39 61 44 57 C 48 54 48 48 45 44 C 43 42 40 42 37 43 Z M 63 43 C 69 44 71 50 69 55 C 67 60 61 61 56 57 C 52 54 52 48 55 44 C 57 42 60 42 63 43 Z"/></g></svg>
+          <span><strong>吱熊猫 ZhiPanda</strong><small>发现熊猫、家族与足迹</small></span>
+        </div>
+        <div class="meta"><h2>02 · Panda Mask</h2><h3>熊猫识别 / 极简 / 亲和但不幼稚</h3><p>只保留耳朵、头部和两块负空间眼斑，不画嘴、鼻子或表情。它是六个方向里类别识别最快、缩小后最稳定的一项，也最适合替代当前导航里的“吱 / Z”字母方块。</p></div>
+      </article>
+
+      <article class="card">
+        <span class="badge placeholder">候选</span>
+        <div class="stage">
+          <svg class="mark" viewBox="0 0 100 100" aria-label="Kinship Node">
+            <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M 31 30 C 38 37, 43 42, 49 49 C 55 43, 62 36, 70 31 M 49 49 C 49 58, 47 66, 42 73"/></g>
+            <g fill="currentColor"><circle cx="29" cy="28" r="6"/><circle cx="72" cy="29" r="5"/><circle cx="41" cy="76" r="7"/></g>
+          </svg>
+        </div>
+        <div class="lockup" aria-hidden="true">
+          <svg class="mini-mark" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M 31 30 C 38 37, 43 42, 49 49 C 55 43, 62 36, 70 31 M 49 49 C 49 58, 47 66, 42 73"/></g><g fill="currentColor"><circle cx="29" cy="28" r="6"/><circle cx="72" cy="29" r="5"/><circle cx="41" cy="76" r="7"/></g></svg>
+          <span><strong>吱熊猫 ZhiPanda</strong><small>发现熊猫、家族与足迹</small></span>
+        </div>
+        <div class="meta"><h2>03 · Kinship Node</h2><h3>家族 / 关系 / 个体网络</h3><p>三节点关系图把“个体档案为中心、沿家族继续探索”直接变成符号。对产品信息架构最诚实，但作为独立品牌标记会更接近知识图谱或网络产品。</p></div>
+      </article>
+
+      <article class="card" data-priority="true">
+        <span class="badge">优先候选</span>
+        <div class="stage">
+          <svg class="mark" viewBox="0 0 100 100" aria-label="Journey Z">
+            <path d="M 27 30 C 39 24, 57 24, 72 29 C 62 39, 50 51, 38 63 C 47 66, 59 70, 73 70" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="27" cy="30" r="6" fill="currentColor"/><circle cx="74" cy="70" r="5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="lockup" aria-hidden="true">
+          <svg class="mini-mark" viewBox="0 0 100 100"><path d="M 27 30 C 39 24, 57 24, 72 29 C 62 39, 50 51, 38 63 C 47 66, 59 70, 73 70" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="30" r="6" fill="currentColor"/><circle cx="74" cy="70" r="5" fill="currentColor"/></svg>
+          <span><strong>吱熊猫 ZhiPanda</strong><small>发现熊猫、家族与足迹</small></span>
+        </div>
+        <div class="meta"><h2>04 · Journey Z</h2><h3>ZhiPanda / 足迹 / 起点与去向</h3><p>一条连续圆角路径形成松弛的 Z，并以不同大小的端点表现“从一个熊猫开始，到另一个事实继续”。品牌独特性强，尤其适合英文环境，但单独出现时不直接说明“熊猫”。</p></div>
+      </article>
+
+      <article class="card">
+        <span class="badge placeholder">候选</span>
+        <div class="stage">
+          <svg class="mark" viewBox="0 0 100 100" aria-label="Zhi Glyph">
+            <rect x="20" y="36" width="22" height="26" rx="6" fill="none" stroke="currentColor" stroke-width="6"/>
+            <path d="M 58 25 V 73 M 50 39 H 75 M 55 52 C 61 59 67 65 77 70" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="lockup" aria-hidden="true">
+          <svg class="mini-mark" viewBox="0 0 100 100"><rect x="20" y="36" width="22" height="26" rx="6" fill="none" stroke="currentColor" stroke-width="6"/><path d="M 58 25 V 73 M 50 39 H 75 M 55 52 C 61 59 67 65 77 70" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><strong>吱熊猫 ZhiPanda</strong><small>发现熊猫、家族与足迹</small></span>
+        </div>
+        <div class="meta"><h2>05 · Zhi Glyph</h2><h3>吱 / 双语品牌 / 几何字形</h3><p>从“口”部和右侧支状结构提炼一个并非字体描摹的几何符号，让中文名成为品牌资产。最有文化识别度，但需要后续精修比例，避免被误读成普通图标组合。</p></div>
+      </article>
+
+      <article class="card">
+        <span class="badge placeholder">候选</span>
+        <div class="stage">
+          <svg class="mark" viewBox="0 0 100 100" aria-label="Panda Gaze">
+            <ellipse cx="36" cy="50" rx="14" ry="20" transform="rotate(-22 36 50)" fill="none" stroke="currentColor" stroke-width="8"/>
+            <ellipse cx="64" cy="48" rx="13" ry="19" transform="rotate(19 64 48)" fill="none" stroke="currentColor" stroke-width="8"/>
+          </svg>
+        </div>
+        <div class="lockup" aria-hidden="true">
+          <svg class="mini-mark" viewBox="0 0 100 100"><ellipse cx="36" cy="50" rx="14" ry="20" transform="rotate(-22 36 50)" fill="none" stroke="currentColor" stroke-width="8"/><ellipse cx="64" cy="48" rx="13" ry="19" transform="rotate(19 64 48)" fill="none" stroke="currentColor" stroke-width="8"/></svg>
+          <span><strong>吱熊猫 ZhiPanda</strong><small>发现熊猫、家族与足迹</small></span>
+        </div>
+        <div class="meta"><h2>06 · Panda Gaze</h2><h3>眼斑 / 负空间 / 抽象熊猫</h3><p>把熊猫最具识别性的眼斑独立出来，不画头部轮廓。它比 02 更抽象、更时尚，也天然接近“关系 / 双环”，但小尺寸下需要严格控制线宽。</p></div>
+      </article>
+    </section>
+
+    <p class="footer-note">本轮只完成 Logo Generator 的概念探索与 SVG 阶段，不生成“仿真品牌摄影”或直接替换生产 UI。确认方向后再进入精修、favicon / app icon / Open Graph 尺寸导出，以及导航组件接入。</p>
+  </main>
+  <script>
+    const themeButtons = document.querySelectorAll("[data-theme-button]");
+    const sizeButtons = document.querySelectorAll("[data-size-button]");
+    themeButtons.forEach((button) => button.addEventListener("click", () => {
+      document.body.dataset.theme = button.dataset.themeButton;
+      themeButtons.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+    }));
+    sizeButtons.forEach((button) => button.addEventListener("click", () => {
+      document.documentElement.style.setProperty("--mark-size", `${button.dataset.sizeButton}px`);
+      sizeButtons.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+    }));
+  </script>
+</body>
+</html>

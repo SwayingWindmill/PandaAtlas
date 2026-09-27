@@ -1,6 +1,10 @@
 # ZhiPanda Public Experience V0.8 — Fan-first Home
 
-> Status: Proposed implementation baseline
+> **Historical / superseded. Do not use this document as current Home visual authority.**
+> Its museum, archive-front-page and editorial reference study is retained only as design history.
+> Current Home authority is `apps/web/DESIGN.md` plus the nearest Impeccable Home surface brief.
+>
+> Status: Superseded historical proposal
 > Date: 2026-09-01
 > Scope: Public Home first, then shared fan-first patterns
 > Design source: recovered V0.7 `fan-v07` prototype

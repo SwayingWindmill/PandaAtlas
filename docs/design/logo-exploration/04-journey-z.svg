@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ZhiPanda Journey Z logo concept</title>
+  <desc id="desc">A continuous rounded path shaped as a relaxed Z with two endpoint nodes.</desc>
+  <path d="M 27 30 C 39 24, 57 24, 72 29 C 62 39, 50 51, 38 63 C 47 66, 59 70, 73 70"
+        fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="27" cy="30" r="6" fill="currentColor" />
+  <circle cx="74" cy="70" r="5" fill="currentColor" />
+</svg>

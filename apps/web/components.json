@@ -14,5 +14,16 @@
     "utils": "@/lib/utils",
     "ui": "@/components/ui",
     "lib": "@/lib"
+  },
+  "registries": {
+    "@animate-ui": "https://animate-ui.com/r/{name}.json",
+    "@react-bits": "https://reactbits.dev/r/{name}.json",
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json",
+    "@kokonutui": "https://kokonutui.com/r/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}",
+    "@hexui": "https://hexui.sh/r/{name}.json",
+    "@tailark-oss": "https://oss.tailark.com/r/radix/{name}.json",
+    "@blocks-so": "https://blocks.so/r/{name}.json",
+    "@shadcnstore": "https://shadcnstore.com/r/{name}.json"
   }
 }

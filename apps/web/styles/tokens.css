@@ -35,8 +35,8 @@
   --pa-focus-ring: 0 0 0 0.2rem var(--pa-color-canvas), 0 0 0 0.4rem var(--pa-color-accent);
   --pa-space-page: clamp(1rem, 4vw, 4rem);
   --pa-content-max: 76rem;
-  --font-display: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --font-display: var(--zp-font-display-latin, "Archivo Variable"), "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: var(--zp-font-body, "Noto Sans SC Variable"), "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
 
   /* Compatibility aliases used by the trusted profile and admin console. */
   --bg: var(--pa-color-canvas);
