@@ -31,6 +31,18 @@ const FORBIDDEN_FILE_SUFFIXES = new Map([
 ]);
 
 const COPY_SUFFIX_PATTERN = /(?:^|\/)[^/]+ \(\d+\)(?:\.[^/]+)?$/u;
+const WEB_PUBLIC_VIDEO_PATTERN = /^apps\/web\/public\/.*\.(?:m4v|mov|mp4|webm)$/iu;
+const LEGACY_WEB_PUBLIC_VIDEO_PATHS = new Set([
+  "apps/web/public/media/home-official/CNnEP98dul4.mp4",
+  "apps/web/public/media/home-official/ebcCgSRobc4.webm",
+  "apps/web/public/media/home-official/f9KVNw799aE.webm",
+  "apps/web/public/media/home-official/l10zoaT-Q04.webm",
+  "apps/web/public/media/home-official/pNff91GIIUg.webm",
+  "apps/web/public/media/home-official/pgxIO6nyZEY.webm",
+  "apps/web/public/media/home-official/s-lxbWhtq40.webm",
+  "apps/web/public/media/home-official/wKR67WFrlj8.webm",
+  "apps/web/public/media/home-official/wTVtbr-R4yA.webm",
+]);
 
 export function normalizeRepositoryPath(value) {
   return String(value ?? "")
@@ -57,6 +69,9 @@ export function repositoryHygieneViolation(value) {
 
   if (/\.wrangler-dev\.[^/]+\.log$/u.test(path)) return "Wrangler development log";
   if (COPY_SUFFIX_PATTERN.test(path)) return "copy-style filename suffix such as (1)";
+  if (WEB_PUBLIC_VIDEO_PATTERN.test(path) && !LEGACY_WEB_PUBLIC_VIDEO_PATHS.has(path)) {
+    return "Web video binary must use governed R2 media publication instead of apps/web/public";
+  }
 
   return null;
 }

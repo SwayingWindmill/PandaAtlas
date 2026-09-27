@@ -33,9 +33,15 @@ The template is progressive. It never requires every panda to fill every chapter
 13. Sources — quiet, expandable support layer
 14. Continue to a related panda — full-photo ending when a usable relation exists
 
-## Data coverage check — current 1157-subject frontend research catalogue
+## Current canonical research/detail status
 
-Snapshot rebuilt from the current canonical research store on 2026-09-08 via `.ai-bridge/fan-v08-research-catalog.json` and `fan-v08-research-details.json`. The generated frontend catalogue now contains **1157 canonical detail subjects**; 1106 match the current detail projection, 993 have safe direct records, and the projection remains regenerated rather than hard-coded as collection grows.
+The research/detail projection is regenerated from the canonical research store rather than hard-coded. A fresh audit on **2026-09-27** reports **1287 canonical subjects in both the catalogue and detail projection**, with **0 critical profile contradictions**. Of those subjects, 810 have no flagged audit issue and 477 have at least one warning or informational completeness/media issue. Current queues include 329 subjects that have individual media but no Hero-eligible photograph under the strict UI policy, 116 subjects whose direct records remain below the detail-promotion threshold, 13 subjects with public highlights not yet promoted into profile fields, and 12 deliberately sparse profiles without a public fact payload.
+
+This count is not the same as the strict curation CSV layer or the active PublicRead release. The curation layer currently validates **813 panda rows**; the research/detail canonical layer contains **1287 subjects**; the public site must show only the subjects in the active Publication/PublicRead release. Treat these as three different lifecycle layers rather than competing totals.
+
+## Coverage snapshot — 2026-09-08, 1157-subject frontend research catalogue
+
+The following detailed coverage table is a dated **2026-09-08** snapshot rebuilt via `.ai-bridge/fan-v08-research-catalog.json` and `fan-v08-research-details.json`. At that point the generated frontend catalogue contained **1157 canonical detail subjects**; 1106 matched the then-current detail projection and 993 had safe direct records. Keep these percentages as a historical baseline until the full coverage metrics are regenerated for the current 1287-subject catalogue.
 
 | Capability | Pandas | Coverage | Template consequence |
 | --- | ---: | ---: | --- |
@@ -56,7 +62,7 @@ Snapshot rebuilt from the current canonical research store on 2026-09-08 via `.a
 | Sources | 999 | 86.3% | Trust/support layer has strong coverage. |
 | Essentially name-only records | 64 | 5.5% | Sparse/no-photo page state must remain intentionally minimal rather than padded. |
 
-The repeatable full-profile audit (`scripts/prototypes/audit_fan_v08_detail_profiles.py`) currently reports **0 critical profile contradictions**. Its remaining queues are quality/completeness work: 371 subjects have individual media but no Hero-eligible photograph under the strict UI policy, 156 have direct records not yet promoted into profile fields/story facts, and 26 are deliberately sparse with no public fact payload.
+For this dated 2026-09-08 coverage snapshot, the repeatable full-profile audit (`scripts/prototypes/audit_fan_v08_detail_profiles.py`) reported **0 critical profile contradictions**. The current 2026-09-27 audit status and queues are recorded above; do not use this snapshot's older queue sizes as current operating totals.
 
 ## Conclusion from coverage
 
@@ -91,7 +97,7 @@ The model deliberately preserves `unknown` instead of inferring from a name, zoo
 
 The classification is available on the prototype detail root as `data-profile-era` and `data-profile-journey` so browser QA and future conditional copy/layout can verify the correct template context without adding visual chrome.
 
-Current conservative audit over the 1157-subject schema-v2 projection finds **541 living**, **193 historical** and **423 unknown-era** profiles. For the life-journey axis it can currently prove **372 managed**, **9 wild-rescued in care**, **3 wild-rescued and released**, **9 rewilding-training**, **2 rewilding-released**, **6 other confirmed releases whose origin/training path is not yet safe to infer**, and **1 explicitly native-wild monitored** profile; the remaining **755** are `unknown` on this axis. These numbers measure **classification evidence coverage**, not the real biological/captive population split; collection should improve them rather than the UI guessing.
+The dated 2026-09-08 conservative audit over the 1157-subject schema-v2 projection found **541 living**, **193 historical** and **423 unknown-era** profiles. For the life-journey axis it proved **372 managed**, **9 wild-rescued in care**, **3 wild-rescued and released**, **9 rewilding-training**, **2 rewilding-released**, **6 other confirmed releases whose origin/training path was not yet safe to infer**, and **1 explicitly native-wild monitored** profile; the remaining **755** were `unknown` on this axis. These numbers measure **classification evidence coverage**, not the real biological/captive population split; collection should improve them rather than the UI guessing.
 
 ## Content selection rules
 

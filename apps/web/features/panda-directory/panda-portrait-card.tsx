@@ -106,7 +106,7 @@ export function PandaPortraitCard({
       <article className={styles.pandaCard}>
         <PortraitTransitionLink
           className={styles.cardLink}
-          href={`/${locale}/prototype/fan-v08/pandas/${panda.slug}`}
+          href={`/${locale}/pandas/${panda.slug}`}
         >
           <span data-testid="fan-v08-panda-row" className={styles.cardContents}>
             <span className={`${styles.thumbnail} ${panda.image ? "" : styles.thumbnailNoPhoto}`}>

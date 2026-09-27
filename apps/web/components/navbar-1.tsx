@@ -45,25 +45,28 @@ export function Navbar1({
   searchResults,
   immersive = false,
   featuredPandas = [],
+  languageHref,
 }: {
   locale: "zh" | "en";
   searchResults: ArchiveSearchResult[];
   immersive?: boolean;
   featuredPandas?: NavbarFeature[];
+  languageHref?: string;
 }) {
   const zh = locale === "zh";
+  const languageDestination = languageHref ?? `/${locale === "zh" ? "en" : "zh"}`;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const sections: NavSection[] = [
     {
       label: zh ? "熊猫" : "Pandas",
-      href: `/${locale}/prototype/fan-v08/pandas`,
+      href: `/${locale}/pandas`,
       items: [
         {
           label: zh ? "全部熊猫" : "All pandas",
           description: zh ? "按名字浏览真实熊猫个体" : "Browse named individual pandas",
-          href: `/${locale}/prototype/fan-v08/pandas`,
+          href: `/${locale}/pandas`,
         },
         {
           label: zh ? "发现熊猫" : "Discover",
@@ -152,7 +155,7 @@ export function Navbar1({
         style={immersive ? immersiveVars : undefined}
       >
         <Link
-          href={`/${locale}/prototype/fan-v08` as Route}
+          href={`/${locale}` as Route}
           className="flex min-h-9 shrink-0 items-center text-[var(--pa-color-ink)] lg:justify-self-start"
           aria-label={zh ? "吱熊猫首页" : "ZhiPanda home"}
         >
@@ -278,7 +281,7 @@ export function Navbar1({
             compact={immersive}
           />
           <Link
-            href={`/${locale === "zh" ? "en" : "zh"}/prototype/fan-v08` as Route}
+            href={languageDestination as Route}
             className="inline-flex min-h-9 min-w-9 items-center justify-center px-1.5 text-[11px] font-medium text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)]"
           >
             {zh ? "中 / EN" : "EN / 中"}
@@ -377,7 +380,7 @@ export function Navbar1({
                 </SheetClose>
                 <SheetClose asChild>
                   <Link
-                    href={`/${locale === "zh" ? "en" : "zh"}/prototype/fan-v08` as Route}
+                    href={languageDestination as Route}
                     className="inline-flex min-h-12 items-center text-sm text-[#fffff2]/68"
                   >
                     {zh ? "English" : "中文"}

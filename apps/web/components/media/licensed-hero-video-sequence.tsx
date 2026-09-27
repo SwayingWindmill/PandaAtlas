@@ -279,7 +279,15 @@ export function LicensedHeroVideoSequence({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!current) return null;
+  if (!current) {
+    return poster ? (
+      <div
+        className={cn("relative size-full overflow-hidden bg-black bg-cover bg-center", className, videoClassName)}
+        style={{ backgroundImage: `url("${poster}")` }}
+        aria-hidden="true"
+      />
+    ) : null;
+  }
 
   return (
     <div className={cn("relative size-full overflow-hidden bg-black", className)}>

@@ -9,9 +9,9 @@ import homeStyles from "../prototype.module.css";
 import { PrototypeFooter } from "../prototype-footer";
 import { PrototypeHeader } from "../prototype-header";
 import { fanV08VisualFixtures } from "../visual-fixtures";
-import { DirectoryExplorer, type DirectoryPanda } from "./directory-explorer";
-import { DirectoryMasthead } from "./directory-masthead";
-import styles from "./directory.module.css";
+import { DirectoryExplorer, type DirectoryPanda } from "@/features/panda-directory/directory-explorer";
+import { DirectoryMasthead } from "@/features/panda-directory/directory-masthead";
+import styles from "@/features/panda-directory/directory.module.css";
 import { loadFanV08ResearchCatalog, type ResearchCatalogPanda } from "./research-catalog";
 
 interface Props {

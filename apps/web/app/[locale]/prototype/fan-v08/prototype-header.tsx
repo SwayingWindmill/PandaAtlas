@@ -22,11 +22,11 @@ export function PrototypeHeader({
   locale,
   active,
   languageHref,
-  searchHref = `/${locale}/prototype/fan-v08/pandas#directory-search`,
+  searchHref = `/${locale}/pandas#directory-search`,
 }: PrototypeHeaderProps) {
   const zh = locale === "zh";
   const items: Array<{ id: ActiveSection; href: string; zh: string; en: string }> = [
-    { id: "pandas", href: `/${locale}/prototype/fan-v08/pandas`, zh: "熊猫", en: "Pandas" },
+    { id: "pandas", href: `/${locale}/pandas`, zh: "熊猫", en: "Pandas" },
     { id: "families", href: `/${locale}/families`, zh: "家族", en: "Families" },
     { id: "map", href: `/${locale}/map`, zh: "地图", en: "Map" },
     { id: "moments", href: `/${locale}/moments`, zh: "动态", en: "Moments" },
@@ -35,7 +35,7 @@ export function PrototypeHeader({
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        <Link className={styles.brand} href={route(`/${locale}/prototype/fan-v08`)}>
+        <Link className={styles.brand} href={route(`/${locale}`)}>
           <ZhiPandaLogo locale={locale} />
         </Link>
 

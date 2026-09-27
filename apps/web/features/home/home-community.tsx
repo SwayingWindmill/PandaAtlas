@@ -7,7 +7,10 @@ import Link from "next/link";
 import { HomeContentRail } from "@/components/blocks/zhipanda/home-content-rail";
 import { HomeReveal } from "@/components/blocks/zhipanda/home-motion";
 import { PandaHeroRail, type PandaHeroRailItem } from "@/components/blocks/zhipanda/panda-hero-rail";
-import { LicensedHeroVideoSequence } from "@/components/media/licensed-hero-video-sequence";
+import {
+  LicensedHeroVideoSequence,
+  type LicensedHeroSequenceItem,
+} from "@/components/media/licensed-hero-video-sequence";
 import type { HomeV09Panda, HomeV09ViewModel } from "@/features/home/home-v09-view-model";
 import { ZHIPANDA_HOME_HERO_VIDEOS } from "@/features/home/home-brand-media";
 
@@ -73,10 +76,12 @@ export default function HomeCommunity({
   locale,
   model,
   pandaRailItems,
+  heroVideos = ZHIPANDA_HOME_HERO_VIDEOS,
 }: {
   locale: "zh" | "en";
   model: HomeV09ViewModel;
   pandaRailItems: PandaHeroRailItem[];
+  heroVideos?: LicensedHeroSequenceItem[];
 }) {
   const zh = locale === "zh";
   const hero = model.today.lead.panda;
@@ -128,7 +133,7 @@ export default function HomeCommunity({
       <section className={styles.hero}>
         <div className={styles.heroBackdrop}>
           <LicensedHeroVideoSequence
-            items={ZHIPANDA_HOME_HERO_VIDEOS}
+            items={heroVideos}
             poster={heroVideoPoster}
             videoClassName={styles.heroBackdropImage}
             creditClassName={styles.heroVideoCredit}
@@ -146,7 +151,7 @@ export default function HomeCommunity({
               : "Enter the real panda world through names, families, and places."}
           </p>
           <div className={styles.heroActions}>
-            <Link href={("/" + locale + "/prototype/fan-v08/pandas") as Route} className={styles.heroPrimary}>
+            <Link href={("/" + locale + "/pandas") as Route} className={styles.heroPrimary}>
               {zh ? "开始认识熊猫" : "Explore pandas"}
               <ArrowRight aria-hidden="true" />
             </Link>
@@ -179,7 +184,7 @@ export default function HomeCommunity({
           </div>
 
           <div className={styles.discoveryGrid}>
-            <Link href={("/" + locale + "/prototype/fan-v08/pandas") as Route} className={styles.discoveryPanel}>
+            <Link href={("/" + locale + "/pandas") as Route} className={styles.discoveryPanel}>
               <div className={styles.discoveryMedia}>
                 <PandaImage panda={model.today.lead.panda} fallback={zh ? "熊猫" : "Panda"} />
               </div>

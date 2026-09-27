@@ -4,13 +4,13 @@ const retiredPublicBrand = ["Panda", "Atlas"].join("");
 
 const checks = [
   {
-    path: "features/home/editorial-home-view-model.ts",
-    required: ["认识你收藏的每一只熊猫", "今天认识哪只熊猫？", "从家庭和地点认识更多熊猫", "Discover the pandas you care about", "Which panda will you meet today?", "Discover more through family and place", "最后核实", "Last verified"],
+    path: "features/home/home-community.tsx",
+    required: ["认识每一只熊猫", "继续探索熊猫世界", "最近有什么新鲜事？", "Meet every panda", "Explore the panda world", "What's happening with the pandas?"],
     banned: ["档案控制台", "结构化入口", "Archive console", "structured entry point", retiredPublicBrand],
   },
   {
     path: "app/[locale]/pandas/page.tsx",
-    required: ["熊猫图鉴", "寻找熊猫", "查看熊猫资料", "Panda guide", "Find a panda", "View panda profile"],
+    required: ["熊猫图鉴", "已公开", "Panda directory", "Meet published giant pandas"],
     banned: ["熊猫档案检索", "搜索与筛选公开档案", "打开可信档案", "Panda profile discovery", "versioned public archive", "Open trusted profile"],
   },
   {

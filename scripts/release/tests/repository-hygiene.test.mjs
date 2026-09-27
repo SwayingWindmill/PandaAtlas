@@ -64,6 +64,22 @@ test("rejects copy-style filenames that commonly come from accidental duplicates
   assert.equal(repositoryHygieneViolation("docs/adr-0001.md"), null);
 });
 
+test("rejects new Web video binaries while grandfathering the legacy audition set", () => {
+  assert.equal(
+    repositoryHygieneViolation("apps/web/public/media/new-home-hero.webm"),
+    "Web video binary must use governed R2 media publication instead of apps/web/public",
+  );
+  assert.equal(
+    repositoryHygieneViolation("apps/web/public/videos/new-profile.mp4"),
+    "Web video binary must use governed R2 media publication instead of apps/web/public",
+  );
+  assert.equal(
+    repositoryHygieneViolation("apps/web/public/media/home-official/wKR67WFrlj8.webm"),
+    null,
+  );
+  assert.equal(repositoryHygieneViolation("apps/web/public/brand/zhipanda-mark.svg"), null);
+});
+
 test("deduplicates and sorts violations for stable output", () => {
   assert.deepEqual(findRepositoryHygieneViolations([
     "build/test-results/result.json",
