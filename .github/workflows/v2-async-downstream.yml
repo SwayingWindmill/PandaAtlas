@@ -2,7 +2,10 @@ name: V2 Async Downstream
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    # The Hobby production API has a 4 CPU-hour rolling allowance. An hourly
+    # reliability pump is sufficient for the current non-realtime downstream
+    # queues and avoids forcing a Nest cold start every five minutes.
+    - cron: "17 * * * *"
   workflow_dispatch:
 
 permissions:
