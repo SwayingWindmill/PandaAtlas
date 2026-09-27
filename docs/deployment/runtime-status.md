@@ -44,9 +44,11 @@ Architecture cutover and runtime availability are separate facts. A fresh probe 
 - `https://zhipanda-api.vercel.app/health` -> HTTP `402 Payment Required`, `X-Vercel-Error: DEPLOYMENT_DISABLED`;
 - the canonical `api.zhipanda.com/health` probe also returns HTTP `402` through the current Vercel path.
 
-This is an **availability incident on the V2 hosting path**, not evidence that production rolled back to V1. Repository and cutover evidence still establish Vercel/NestJS/Supabase as the production architecture. Restore availability by resolving the Vercel project/deployment/account state while keeping the V2 topology; do not reintroduce retired legacy runtimes as a workaround.
+The account-level cause is now confirmed from Vercel's 2026-09-25 notification: the free team `swaying-windmill` consumed **300% of the Hobby included Fluid Active CPU allowance (4 CPU-hours)** and Vercel paused the account. Earlier notifications recorded Active CPU reaching 75% on 2026-09-06 and 100% on 2026-09-08 / 2026-09-22; Fluid Provisioned Memory also reached 100% of its 360 GB-hour Hobby allowance on 2026-09-14. This is a usage-cap pause, not a build failure, billing-method failure, domain failure, or rollback to V1.
 
-No production mutation was performed while recording this status.
+One structural contributor was the production GitHub scheduler invoking `GET /internal/jobs/async-downstream` every five minutes. That endpoint performs multiple bounded dispatcher/consumer batches and therefore wakes the NestJS Vercel runtime even when public traffic is low. On 2026-09-27 the schedule was reduced from every five minutes to once per hour (`17 * * * *`), cutting fixed scheduler invocations from about 8,640 to about 720 per 30 days while retaining a durable reliability pump for non-realtime downstream work.
+
+The Hobby plan does not require payment while usage remains within the included limits. Immediate restoration after a usage-cap pause may require upgrading to Pro; remaining on Hobby requires the rolling usage window to return below the included limits and then an account unpause/review through Vercel support if the team remains paused. Do not reintroduce retired legacy runtimes as a workaround.
 
 ## Legacy disposition
 
@@ -67,6 +69,7 @@ New product work must target V2. Do not add compatibility layers for retired run
 With the architecture migration complete, current engineering work should prioritize:
 
 - restoring/maintaining V2 production availability;
+- keeping fixed background invocations inside the intended Vercel Hobby/Pro compute envelope;
 - publishing curated panda knowledge through V2 Publication/PublicRead;
 - the fan-facing Next.js experience and generated V2 client;
 - `tools/panda-data` acquisition, curation, identity-resolution assistance, and media/data processing;
