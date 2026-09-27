@@ -1,12 +1,14 @@
 # Phase 1: Parallel Vercel Web deployment
 
-- Status: Complete
+- Status: **Historical phase evidence — superseded by the completed V2 production cutover**
 - Decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 - Phase 0 baseline: [Managed-cloud inventory](managed-cloud-phase-0-inventory.md)
 - Deployment plan: [`contracts/vercel-web-deployment.v1.json`](../../contracts/vercel-web-deployment.v1.json)
 - Deployment evidence: [`data/deployment-evidence/vercel-web-2026-08-01.json`](../../data/deployment-evidence/vercel-web-2026-08-01.json)
 - Acceptance workflow: [`.github/workflows/vercel-web-acceptance.yml`](../../.github/workflows/vercel-web-acceptance.yml)
 - Plan validation: `npm run check:vercel-web-deployment-plan`
+
+> Historical scope: this file records the August 2026 parallel-Vercel phase before production cutover. For the present architecture and availability state, use [`runtime-status.md`](runtime-status.md).
 
 ## Objective
 

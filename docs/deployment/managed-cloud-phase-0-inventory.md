@@ -1,10 +1,12 @@
 # Managed-cloud migration Phase 0 inventory
 
-- Status: Complete
+- Status: **Historical inventory — completed 2026-08-01 and superseded as a current-state source after V2 cutover**
 - Inventory date: 2026-08-01
 - Decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 - Machine-readable register: [`contracts/managed-cloud-deployment-inventory.v1.json`](../../contracts/managed-cloud-deployment-inventory.v1.json)
 - Validation command: `node scripts/release/check-managed-cloud-inventory.mjs`
+
+> Historical scope: every “current production” statement below describes the 2026-08-01 inventory snapshot. For present runtime state, use [`runtime-status.md`](runtime-status.md).
 
 ## Purpose
 

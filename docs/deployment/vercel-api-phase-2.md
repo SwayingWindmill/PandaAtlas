@@ -1,10 +1,12 @@
 # Vercel FastAPI Phase 2 preparation
 
-- Status: **Structural entrypoint and deterministic request closure implemented; deployment not authorized**
+- Status: **Historical / superseded — FastAPI Vercel deployment was not carried forward into V2 production**
 - Governing decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 - Runtime contract: [`contracts/api-serverless-runtime.v1.json`](../../contracts/api-serverless-runtime.v1.json)
 - Request boundary: [`contracts/api-request-runtime-boundary.v1.json`](../../contracts/api-request-runtime-boundary.v1.json)
 - Current runtime status: [`runtime-status.md`](runtime-status.md)
+
+> Historical scope: this file records a superseded FastAPI-on-Vercel preparation path. The production API is NestJS/Fastify V2; do not execute this document as a current deployment runbook.
 
 ## Platform constraints
 

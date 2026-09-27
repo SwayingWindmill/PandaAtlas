@@ -1,16 +1,18 @@
 # ZhiPanda V2 Architecture Baseline
 
-- Status: **Target implementation baseline**
-- Date: 2026-08-26
+- Status: **Implemented production baseline**
+- Architecture accepted: 2026-08-26
+- Production cutover: 2026-09-01
+- Status reviewed: 2026-09-27
 - Planning source: Wayfinder map #309 and decisions #310-#321
 - Product priority: panda fan experience first
-- Current production status: see `docs/deployment/runtime-status.md` until V2 cutover completes
+- Current production / availability status: see `docs/deployment/runtime-status.md`
 
 ## 1. Purpose
 
-This document is the canonical architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas.
+This document is the canonical production architecture baseline for ZhiPanda/PandaAtlas V2.
 
-It governs V2 implementation. It does **not** claim that production has already cut over from the current FastAPI/Cloudflare V1 runtime.
+It governs current V2 implementation and future architecture work. Production crossed the V2-only commit point on 2026-09-01; the retired FastAPI/Cloudflare Worker/D1/OpenNext runtime is historical implementation evidence, not a compatibility target.
 
 The core migration rule is:
 

@@ -1,52 +1,75 @@
 # Deployment runtime status
 
-- Status date: 2026-08-28
-- Governing target: [ZhiPanda V2 Architecture Baseline](../architecture/zhipanda-v2-architecture-baseline.md)
-- Earlier managed-cloud decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
-- Inventory: [Managed-cloud migration Phase 0](managed-cloud-phase-0-inventory.md)
+- Status date: 2026-09-27
+- Architecture authority: [ZhiPanda V2 Architecture Baseline](../architecture/zhipanda-v2-architecture-baseline.md)
+- Cutover evidence: [Issue #333 — V2 Production Cutover Evidence](../release/issue-333-v2-production-cutover.md)
+- Repository structure: [ZhiPanda Monorepo Structure](../monorepo-structure.md)
 
-This page is the human-readable status key for runtime and deployment documentation. It distinguishes what serves production today from the accepted V2 target and from tooling retained only for migration, rollback, local development, or historical evidence.
+This page is the canonical human-readable **current-state** document for ZhiPanda runtime and deployment status. Architecture and migration documents may preserve historical states, but they must not be used to infer present production routing when they conflict with this page.
 
-## Status labels
+## Source-of-truth order
 
-| Label | Meaning |
-|---|---|
-| **Current production** | Actively serves ZhiPanda production traffic or production release operations today. It remains supported until the V2 cutover reaches its explicit commit/retirement boundary. |
-| **Target** | Accepted NestJS V2 end state. A target component is not assumed to serve production until its implementation/cutover ticket exits. |
-| **Transitional** | Retained only to support current production, migration, bounded rollback, or retirement. Do not add unrelated feature work or new authority. |
-| **Local only** | Supported for development, verification, or recovery exercises. It must not become a persistent production dependency. |
+Use the documents in this order when a deployment statement appears inconsistent:
 
-## Runtime matrix
+1. **This file** for the latest reviewed runtime and availability snapshot.
+2. **`zhipanda-v2-architecture-baseline.md`** for the governing production architecture and runtime boundaries.
+3. **`issue-333-v2-production-cutover.md`** for the immutable chronological record of the V2 cutover and legacy retirement.
+4. Older managed-cloud phase, V1, Worker/D1, OpenNext, or FastAPI deployment documents only as historical evidence for the state at the date they were written.
 
-| Responsibility | Current status | Accepted V2 target | Rule |
-|---|---|---|---|
-| Public Web | **Current production:** OpenNext application on Cloudflare Worker | **Target:** native Next.js on Vercel | The existing Vercel Web project is useful migration evidence, but production custom-domain cutover belongs to the V2 implementation/cutover map. |
-| Public read API | **Current production / Transitional:** Cloudflare Worker backed by D1/R2 | **Target:** NestJS 11 + Fastify 5 on Vercel backed by Supabase release-scoped PostgreSQL read models | Do not add new D1 authority or `/api/v1` compatibility to V2. Worker/D1 exists only until the bounded legacy API rollback window closes. |
-| Domain rules and writes | **Current/repository authority:** FastAPI and PostgreSQL/PostGIS | **Target:** NestJS business-capability modular monolith on Vercel + Supabase PostgreSQL/PostGIS | V2 migrates business meaning, not FastAPI package/service architecture. There is no dual-write target. |
-| Authoritative database and authentication | Supabase PostgreSQL/PostGIS/Auth foundation is established | **Target:** Supabase PostgreSQL/PostGIS/Auth remains the single managed authority; PostgreSQL Identity capabilities authorize Nest requests | Do not create another authoritative database or browser/server shadow authority. |
-| Public media and large immutable objects | **Current production and Target:** Cloudflare R2, currently partly exposed through legacy API routes | **Target:** R2 custom-domain delivery with Nest-authorized direct uploads/finalization | Keep reviewed R2 objects; retire Worker media proxying after V2 media-domain transition. |
-| DNS | **Current production and Target:** Cloudflare | **Target:** retain Cloudflare DNS | Vercel Web/API records remain managed through the cutover plan; Cloudflare proxy behavior is not assumed where unverified. |
-| Short durable background work | V1 projectors/workers/scripts | **Target:** transactional Outbox + consumer-specific PGMQ queues drained by bounded Vercel Cron/invocations | No API-startup polling or long-running request worker. |
-| Long/heavy batch/data work | **Current production:** guarded local/operator scripts plus some GitHub Actions | **Target:** GitHub Actions + independent `tools/panda-data` Python runtime | Python is a data/research runtime, not a second backend. |
-| Local Docker, local Supabase/PostgreSQL, local admin tooling | **Local only** | **Local only** | Development/recovery only; never production authority. |
+Do not rewrite historical execution records to make them look current. Mark them historical or superseded instead.
 
-## Transitional freeze rules
+## Current production architecture
 
-Until the V2 cutover closes the relevant rollback window:
+The V2 cutover crossed its commit point on 2026-09-01. The production architecture is therefore V2-only:
 
-1. Keep the current Cloudflare Web Worker, public API Worker, D1 projection, FastAPI authority, and OpenNext configuration operational only for current production and bounded rollback.
-2. Do not add new D1-backed product authority, new Worker product features, or new OpenNext-only behavior.
-3. Do not invest further in deploying FastAPI to Vercel; `vercel-api-phase-2.md` is superseded by the NestJS V2 target.
-4. Do not add `/api/v1`, FastAPI error, snake_case, admin-token, Worker, or D1 compatibility to NestJS V2.
-5. Do not introduce a persistent Docker host, VM, Nginx host, or self-managed PostgreSQL server as a production dependency.
-6. Keep current-production documentation accurate; do not describe NestJS V2 as live before cutover.
-7. Remove transitional runtime/tooling immediately after its bounded rollback role closes rather than preserving an arbitrary long cooling period.
+| Responsibility | Current architecture | Authority / rule |
+|---|---|---|
+| Public Web | Next.js on Vercel | `zhipanda.com` and `www.zhipanda.com` are Vercel-routed Web domains. OpenNext/Cloudflare Worker Web is retired. |
+| Public and application API | NestJS 11 + Fastify 5 on Vercel | `api.zhipanda.com` is the canonical API host. FastAPI and the Cloudflare Worker/D1 API are retired. |
+| Business data | Supabase PostgreSQL/PostGIS | Sole authoritative business database. No D1 or local database is a production authority. |
+| Authentication | Supabase Auth + NestJS authorization | Supabase Auth owns authentication identity; application capabilities and policy are enforced by V2. |
+| Public media / large immutable objects | Cloudflare R2 | Retained object/media platform. |
+| DNS | Cloudflare DNS | Retained DNS authority; application traffic targets Vercel. |
+| Short durable async work | V2 Outbox/PGMQ plus bounded scheduler invocation | No API-startup polling or persistent request worker. |
+| Long/heavy data work | GitHub Actions + `tools/panda-data` | Python is an offline data/research runtime, not an HTTP backend. |
+| Local Supabase/Docker/admin tooling | Local only | Development, verification, and recovery exercises only. |
 
-## Current migration position
+Post-cutover rollback is **V2-to-V2 only**. Do not restore public traffic to the retired FastAPI, Worker/D1, or OpenNext runtimes.
 
-- The original managed-cloud Phase 0 inventory remains useful historical/current-resource evidence.
-- The Vercel Next.js Web project and accepted preview evidence from the original Phase 1 remain useful inputs.
-- The old FastAPI Vercel Phase 2 preparation is **superseded**; do not finish FastAPI serverless pooling/auth/deployment as an intermediate target.
-- NestJS V2 architecture planning is complete under Wayfinder #309/#310-#322. V2-01 through V2-09 (#323-#331) are complete; V2-10 (#332) is the active migration and managed-staging rehearsal before production cutover.
-- Production traffic for `zhipanda.com`, `www.zhipanda.com`, and `api.zhipanda.com` remains on the current legacy paths until the V2 cutover ticket changes them.
-- Supabase stays the authoritative managed data platform and R2 stays the retained public-media/object platform through the migration.
+## Current availability observation
+
+Architecture cutover and runtime availability are separate facts. A fresh probe on **2026-09-27** found that the Vercel deployments are currently disabled:
+
+- `https://zhipanda.vercel.app/zh` -> HTTP `402 Payment Required`, `X-Vercel-Error: DEPLOYMENT_DISABLED`;
+- `https://zhipanda-api.vercel.app/health` -> HTTP `402 Payment Required`, `X-Vercel-Error: DEPLOYMENT_DISABLED`;
+- the canonical `api.zhipanda.com/health` probe also returns HTTP `402` through the current Vercel path.
+
+This is an **availability incident on the V2 hosting path**, not evidence that production rolled back to V1. Repository and cutover evidence still establish Vercel/NestJS/Supabase as the production architecture. Restore availability by resolving the Vercel project/deployment/account state while keeping the V2 topology; do not reintroduce retired legacy runtimes as a workaround.
+
+No production mutation was performed while recording this status.
+
+## Legacy disposition
+
+The following are retired production implementations and may remain only as historical documentation, migration evidence, or Git history:
+
+- FastAPI online request runtime;
+- `/api/v1` compatibility surfaces;
+- Cloudflare Worker/D1 public-read authority;
+- OpenNext Web runtime;
+- Worker/D1 projection and release replay;
+- FastAPI Vercel serverless-closure preparation;
+- legacy admin-token / actor-header compatibility.
+
+New product work must target V2. Do not add compatibility layers for retired runtime shapes.
+
+## Active engineering focus
+
+With the architecture migration complete, current engineering work should prioritize:
+
+- restoring/maintaining V2 production availability;
+- publishing curated panda knowledge through V2 Publication/PublicRead;
+- the fan-facing Next.js experience and generated V2 client;
+- `tools/panda-data` acquisition, curation, identity-resolution assistance, and media/data processing;
+- repository hygiene and current-state documentation.
+
+Historical migration plans remain useful for auditability but are not active implementation queues unless explicitly reopened.

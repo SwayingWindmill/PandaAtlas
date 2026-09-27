@@ -1,4 +1,4 @@
-﻿# Node / Next
+# Node / Next
 node_modules/
 .npm/
 apps/web/.next/
@@ -57,6 +57,18 @@ htmlcov/
 .codex-temp/
 .planning/
 .worktrees/
+.devspace-runtime/
+.devspace-local/
+.impeccable/
+apps/web/.impeccable/review/
+CodePandaAtlas.ai-bridgechrome-*/
+.panda-*.log
+supabase/.temp/
+apps/web/public/review/
+
+# Prototype scratch artifacts
+apps/web/app/[locale]/prototype/fan-v08/.tmp-*.png
+apps/web/app/[locale]/prototype/fan-v08/pandas/*.tmp
 
 # OS/editor
 .DS_Store

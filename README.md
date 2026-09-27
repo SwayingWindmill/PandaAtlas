@@ -1,136 +1,142 @@
-# Panda Atlas
+# Panda Atlas / ZhiPanda
 
-Panda Atlas is a full-stack monorepo for a giant panda encyclopedia and distribution map.
+Panda Atlas is the monorepo behind **ZhiPanda (吱熊猫)**, a fan-first giant-panda knowledge product centered on named individual pandas, their families, life histories, places, media, and published evidence.
 
-## Stack and deployment status
+## Production architecture
 
-- Frontend: Next.js App Router + Tailwind CSS v4 + shadcn/ui.
-- Authority: FastAPI with PostgreSQL/PostGIS owns domain rules and writes.
-- Managed data target: Supabase PostgreSQL/PostGIS/Auth.
-- Current production Web: OpenNext on Cloudflare Worker.
-- Current production public read API: transitional Cloudflare Worker with D1/R2.
-- Approved target: Vercel for the Next.js Web application and bounded API functions, Supabase for authoritative data and authentication, Cloudflare for DNS/R2, and GitHub Actions for bounded batch workflows.
-- Local Docker, local PostgreSQL/Supabase, and the local admin proxy are development and recovery tools only; they are not production targets.
+The V2 production cutover is complete. The active architecture is:
 
-See [Deployment runtime status](docs/deployment/runtime-status.md) for the Current production, Target, Transitional, and Local-only definitions. The migration is governed by [ADR 0002](docs/architecture/adr-0002-managed-cloud-deployment-target.md); Vercel Phase 1 is parallel acceptance work and has not changed production traffic.
+- **Web:** Next.js on Vercel (`apps/web`)
+- **API:** NestJS 11 + Fastify 5 on Vercel (`services/api`)
+- **Business data:** Supabase PostgreSQL/PostGIS
+- **Authentication:** Supabase Auth with NestJS application authorization
+- **Public media / immutable objects:** Cloudflare R2
+- **DNS:** Cloudflare DNS
+- **Typed client:** `packages/api-client`
+- **Offline acquisition / research / curation:** Python + `uv` in `tools/panda-data`
+- **Long/heavy batch work:** GitHub Actions and bounded repository workflows
 
-## API authority
+FastAPI, `/api/v1`, Cloudflare Worker/D1 public-read authority, and OpenNext are retired production implementations. They are not compatibility targets.
 
-FastAPI and PostgreSQL/PostGIS own validation, imports, admin behavior, and every persistent write. The Cloudflare Worker exposes only compatible public read endpoints from an approved D1/R2 projection; it has no admin or import routes.
+For the latest reviewed runtime and availability state, use [`docs/deployment/runtime-status.md`](docs/deployment/runtime-status.md). Do not infer current production health from historical migration documents.
 
-- Architecture decision: [ADR 0001](docs/architecture/adr-0001-single-source-api-boundary.md)
-- Shared public field semantics: [Public API v1 manifest](contracts/public-api-v1.json)
-- Drift check: `npm run check:public-api-boundary`
+## Repository layout
 
-## Local development quick start
-
-### Optional: local CodeGraph index
-
-The repository includes a pinned CodeGraph development integration for structural search, call graphs, route ownership, and change-impact analysis used by AI coding agents:
-
-```bash
-npm ci
-npm run codegraph:init
-npm run codegraph:status
+```text
+PandaAtlas/
+├─ apps/
+│  └─ web/                 # Next.js public/admin Web product
+├─ services/
+│  └─ api/                 # NestJS/Fastify V2 modular monolith
+├─ packages/
+│  └─ api-client/          # generated/typed V2 API client
+├─ tools/
+│  └─ panda-data/          # Python acquisition/research/curation runtime
+├─ infra/
+│  └─ supabase/            # canonical PostgreSQL migrations and local Supabase config
+├─ contracts/              # active cross-runtime/process contracts
+├─ data/                   # governed datasets and release evidence
+├─ scripts/                # development, release, curation, batch, and research tooling
+└─ docs/
 ```
 
-The local `.codegraph/` index is ignored by Git and is not used by production or CI. See [the CodeGraph development guide](docs/agents/codegraph.md) for MCP agent setup and index scope.
+See [`docs/monorepo-structure.md`](docs/monorepo-structure.md) for the maintained structure and runtime boundaries.
 
-### 1) Frontend
+## Local development
 
-```bash
-cd apps/web
-npm install
-npm run dev
-```
+This repository is hosted on Windows. Run Node.js/npm/NestJS/Next.js commands with the **Windows toolchain against the native workspace**, not Node/npm through WSL against `/mnt/e`.
 
-### 2) Backend (uv)
-
-```bash
-cd services/api
-uv sync --extra dev --extra local-server
-uv run --extra local-server uvicorn app.main:app --reload
-```
-
-### 3) Local-only container workflow
-
-```bash
-docker compose up --build
-```
-
-## Database Behavior
-
-- If `DATABASE_URL` is configured and SQLAlchemy dependencies are installed, API read endpoints query Postgres/PostGIS.
-- If DB connection is unavailable and `DB_USE_MOCK_FALLBACK=true`, endpoints automatically use in-memory mock data.
-- Health endpoint returns database status in `db` field: `ok`, `disabled`, `error`, or `driver_missing`.
-
-## Release Gate
-
-Run the Windows-first default gate from the repository root:
+Install dependencies from the repository root:
 
 ```powershell
-npm run release:default
+npm ci
 ```
 
-It runs Web, FastAPI, Worker projection, contract, and browser checks serially. Reports are written to `.release-gate/default.json` and `.release-gate/default.md`. Windows records Worker HTTP as an explicit platform skip; Linux CI executes the complete Workerd HTTP smoke.
+Inspect the canonical development command catalog:
 
-The extended gate adds opt-in real-database and admin-import verification. See [the cross-platform release-gate runbook](docs/release/release-gate.md) for pinned tool versions, clean-checkout reproduction, browser selection, report status definitions, and extended configuration.
-
-## Real DB Verification Flow
-
-1. Apply schema migration (Supabase SQL editor or `psql`):
-
-```bash
-psql "$env:DATABASE_URL" -f infra/supabase/migrations/0001_panda_atlas_init.sql
+```powershell
+npm run ops -- list
+npm run ops -- describe verify.dev
 ```
 
-2. Import demo dataset:
+Start the local infrastructure when a task needs Supabase/PostgreSQL:
 
-```bash
-cd services/api
-uv run python scripts/import_demo_seed.py
+```powershell
+npm run infra:start
+npm run infra:status
 ```
 
-3. Start API and verify endpoints:
+Run Web and API development processes in separate terminals:
 
-```bash
-uv run --extra local-server uvicorn app.main:app --reload
-curl "http://localhost:8000/api/v1/pandas"
-curl "http://localhost:8000/api/v1/map/snapshots"
-curl "http://localhost:8000/api/v1/map/distribution?bbox=100,25,110,36&layer=wild"
-curl "http://localhost:8000/api/v1/stats/overview"
+```powershell
+npm run dev:web
+npm run dev:api
 ```
 
-4. Execute import jobs via admin API:
+## Verification
 
-```bash
-curl -X POST "http://localhost:8000/api/v1/admin/import-jobs" \
-  -H "Authorization: Bearer [REDACTED_SECRET]" \
-  -H "Content-Type: application/json" \
-  -d "{\"source_name\":\"0001_demo_seed.sql\"}"
+V2 API and client:
 
-curl -X POST "http://localhost:8000/api/v1/admin/import-jobs/<job_id>/run" \
-  -H "Authorization: Bearer [REDACTED_SECRET]"
+```powershell
+npm run typecheck:v2
+npm run test:v2
+npm run lint:v2
+npm run check:architecture:v2
+npm run build:v2
 ```
 
-5. Real-DB anti-regression + smoke test:
+Web:
 
-```bash
-cd services/api
-$env:RUN_REAL_DB_TESTS="1"
-$env:DATABASE_URL="postgresql+psycopg://postgres:postgres@localhost:5432/panda_atlas"
-uv run pytest -q tests/integration/test_real_db_chain.py
-
-$env:API_BASE_URL="http://localhost:8000"
-$env:ADMIN_API_TOKEN="[REDACTED_SECRET]"
-uv run python scripts/smoke_test_api.py
+```powershell
+npm run typecheck:web
+npm run lint:web
+npm run build:web
+npm run smoke:web
 ```
 
-## Project Docs
+Repository-scoped verification:
 
-- Architecture decisions: `docs/architecture/README.md`
-- Deployment runtime status: `docs/deployment/runtime-status.md`
-- Historical scaffold structure: `docs/monorepo-structure.md`
-- API contract: `services/api/openapi/panda-atlas-v1.yaml`
-- DB migration draft: `infra/supabase/migrations/0001_panda_atlas_init.sql`
-- Demo seed SQL: `infra/supabase/seed/0001_demo_seed.sql`
+```powershell
+npm run verify:dev:list
+npm run verify:dev
+npm run check:repository-hygiene
+npm run check:research-script-policy
+```
+
+The canonical development operations are documented in [`docs/development-operations.md`](docs/development-operations.md).
+
+## Panda data runtime
+
+`tools/panda-data` is an independent offline Python runtime. It supports source acquisition, crawler adapters, research/discovery, identity-resolution assistance, enrichment, curation assistance, media processing, and immutable artifact construction.
+
+It is **not** an HTTP backend and must not become a second business-data authority.
+
+Typical commands:
+
+```powershell
+npm run check:panda-curation
+npm run test:panda-data
+npm run lint:panda-data
+npm run crawler:poc
+```
+
+See [`tools/panda-data/README.md`](tools/panda-data/README.md) for authority and contract boundaries.
+
+## Database and migrations
+
+`infra/supabase/migrations/*.sql` is the sole schema-migration authority for V2 PostgreSQL state. Application runtime code must not run surprise migrations or create an alternate schema authority.
+
+The NestJS API uses Kysely + `node-postgres`; the production runtime uses a least-privilege Supavisor transaction-pool connection.
+
+## Architecture and product docs
+
+- Current runtime state: [`docs/deployment/runtime-status.md`](docs/deployment/runtime-status.md)
+- V2 architecture baseline: [`docs/architecture/zhipanda-v2-architecture-baseline.md`](docs/architecture/zhipanda-v2-architecture-baseline.md)
+- Architecture index / ADR disposition: [`docs/architecture/README.md`](docs/architecture/README.md)
+- V2 implementation history: [`docs/implementation/nestjs-v2-implementation-map.md`](docs/implementation/nestjs-v2-implementation-map.md)
+- V2 production cutover evidence: [`docs/release/issue-333-v2-production-cutover.md`](docs/release/issue-333-v2-production-cutover.md)
+- Public Web product contract: [`apps/web/PRODUCT.md`](apps/web/PRODUCT.md)
+- Public Web design authority: [`apps/web/DESIGN.md`](apps/web/DESIGN.md)
+- Current panda detail template: [`docs/product/panda-detail-template-v2.md`](docs/product/panda-detail-template-v2.md)
+
+Historical V1, OpenNext, Worker/D1, and FastAPI deployment documents remain useful as dated evidence only. When a historical document conflicts with the runtime-status page about the present system, the runtime-status page is authoritative.
