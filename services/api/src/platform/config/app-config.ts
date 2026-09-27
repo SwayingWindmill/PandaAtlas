@@ -27,6 +27,8 @@ export interface EnvironmentConfig {
   RESEND_API_KEY: string | undefined;
   RESEND_FROM_EMAIL: string | undefined;
   CRON_SECRET: string | undefined;
+  PUBLIC_WEB_BASE_URL: string | undefined;
+  PUBLIC_REVALIDATION_AUTH: string | undefined;
 }
 
 const APP_ENVIRONMENTS = new Set<AppEnvironment>([
@@ -74,6 +76,27 @@ function parseSupabaseUrl(value: unknown): string | undefined {
   return raw?.replace(/\/+$/, "");
 }
 
+function parseHttpOrigin(value: unknown, name: string): string | undefined {
+  const raw = optionalString(value);
+  if (raw === undefined) return undefined;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw new Error(`${name} must be an absolute HTTP(S) origin`);
+  }
+  if (
+    (parsed.protocol !== "https:" && parsed.protocol !== "http:") ||
+    parsed.pathname !== "/" ||
+    parsed.search !== "" ||
+    parsed.hash !== ""
+  ) {
+    throw new Error(`${name} must be an absolute HTTP(S) origin`);
+  }
+  return parsed.origin;
+}
+
 export function validateEnvironment(
   input: Record<string, unknown>,
 ): EnvironmentConfig & Record<string, unknown> {
@@ -83,13 +106,29 @@ export function validateEnvironment(
   }
 
   const appEnv = rawAppEnv as AppEnvironment;
+  const corsAllowOrigins = parseOrigins(input.CORS_ALLOW_ORIGINS, appEnv);
   const databaseUrl = optionalString(input.DATABASE_URL);
+  const publicWebBaseUrl = parseHttpOrigin(input.PUBLIC_WEB_BASE_URL, "PUBLIC_WEB_BASE_URL");
+  const publicRevalidationToken = optionalString(input.PUBLIC_REVALIDATION_AUTH);
   const supabaseUrl = parseSupabaseUrl(input.SUPABASE_URL);
   if ((appEnv === "production" || appEnv === "staging") && databaseUrl === undefined) {
     throw new Error("DATABASE_URL is required in staging and production");
   }
   if ((appEnv === "production" || appEnv === "staging") && supabaseUrl === undefined) {
     throw new Error("SUPABASE_URL is required in staging and production");
+  }
+
+  if ((publicWebBaseUrl === undefined) !== (publicRevalidationToken === undefined)) {
+    throw new Error("PUBLIC_WEB_BASE_URL and PUBLIC_REVALIDATION_AUTH must be configured together");
+  }
+  if (
+    (appEnv === "production" || appEnv === "staging") &&
+    (publicWebBaseUrl === undefined || publicRevalidationToken === undefined)
+  ) {
+    throw new Error("PUBLIC_WEB_BASE_URL and PUBLIC_REVALIDATION_AUTH are required in staging and production");
+  }
+  if (publicRevalidationToken !== undefined && publicRevalidationToken.length < 32) {
+    throw new Error("PUBLIC_REVALIDATION_AUTH must be at least 32 characters");
   }
 
   const rawLogLevel = input.LOG_LEVEL ?? "info";
@@ -102,7 +141,7 @@ export function validateEnvironment(
     APP_ENV: appEnv,
     HOST: typeof input.HOST === "string" && input.HOST.trim() !== "" ? input.HOST : "0.0.0.0",
     PORT: parseInteger(input.PORT, 3001, "PORT", 1, 65_535),
-    CORS_ALLOW_ORIGINS: parseOrigins(input.CORS_ALLOW_ORIGINS, appEnv),
+    CORS_ALLOW_ORIGINS: corsAllowOrigins,
     DATABASE_URL: databaseUrl,
     DATABASE_SSL_CA_CERT: optionalString(input.DATABASE_SSL_CA_CERT),
     DB_POOL_MAX: parseInteger(input.DB_POOL_MAX, 1, "DB_POOL_MAX", 1, 10),
@@ -163,6 +202,8 @@ export function validateEnvironment(
     SENTRY_DSN: optionalString(input.SENTRY_DSN),
     RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
+    PUBLIC_WEB_BASE_URL: publicWebBaseUrl,
+    PUBLIC_REVALIDATION_AUTH: publicRevalidationToken,
     CRON_SECRET: optionalString(input.CRON_SECRET),
   };
 }
@@ -263,6 +304,14 @@ export class AppConfig {
 
   public get resendFromEmail(): string | undefined {
     return this.config.get("RESEND_FROM_EMAIL", { infer: true });
+  }
+
+  public get publicWebBaseUrl(): string | undefined {
+    return this.config.get("PUBLIC_WEB_BASE_URL", { infer: true });
+  }
+
+  public get publicRevalidationAuth(): string | undefined {
+    return this.config.get("PUBLIC_REVALIDATION_AUTH", { infer: true });
   }
 
   public get cronSecret(): string | undefined {

@@ -7,6 +7,8 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Public } from "../../../platform/auth/public.decorator.js";
+import { PUBLIC_READ_CACHE_TAG } from "../../../platform/http/public-cache.constants.js";
+import { PublicCache } from "../../../platform/http/public-cache.decorator.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import {
   PUBLIC_READ_PORT,
@@ -47,6 +49,7 @@ export class PublicReadController {
 
   @Get("release")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "getCurrentPublicRelease", summary: "Get the active public release" })
   @ApiOkResponse({ type: PublicReadReleaseDto })
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
@@ -56,6 +59,7 @@ export class PublicReadController {
 
   @Get("pandas")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "listPublicPandas", summary: "List pandas from one active release" })
   @ApiOkResponse({ type: PublicPandaListDto })
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
@@ -65,6 +69,7 @@ export class PublicReadController {
 
   @Get("pandas/:slug")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "getPublicPanda", summary: "Get a release-pinned public panda detail" })
   @ApiOkResponse({ type: PublicPandaDetailDto })
   @ApiNotFoundResponse({ description: "The panda is absent or under emergency takedown." })
@@ -75,6 +80,7 @@ export class PublicReadController {
 
   @Get("places")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "listPublicPlaces", summary: "List places from one active release" })
   @ApiOkResponse({ type: PublicPlaceListDto })
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
@@ -84,6 +90,7 @@ export class PublicReadController {
 
   @Get("places/:slug")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "getPublicPlace", summary: "Get one public place from the active release" })
   @ApiOkResponse({ type: PublicPlaceDetailDto })
   @ApiNotFoundResponse({ description: "The place is absent or under emergency takedown." })
@@ -94,6 +101,7 @@ export class PublicReadController {
 
   @Get("lineage")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "listPublicLineage", summary: "List lineage assertions from one active release" })
   @ApiOkResponse({ type: PublicLineageListDto })
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
@@ -103,6 +111,7 @@ export class PublicReadController {
 
   @Get("residencies")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "listPublicResidencies", summary: "List panda residencies from one active release" })
   @ApiOkResponse({ type: PublicResidencyListDto })
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
@@ -112,6 +121,7 @@ export class PublicReadController {
 
   @Get("life-events")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "listPublicLifeEvents", summary: "List panda life events from one active release" })
   @ApiOkResponse({ type: PublicLifeEventListDto })
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
@@ -121,6 +131,7 @@ export class PublicReadController {
 
   @Get("evidence/:sourceId")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "getPublicEvidence", summary: "Get public-safe evidence metadata" })
   @ApiOkResponse({ type: PublicEvidenceDetailDto })
   @ApiNotFoundResponse({ description: "The evidence source is absent or under emergency takedown." })
@@ -134,6 +145,7 @@ export class PublicReadController {
 
   @Get("stats")
   @Public()
+  @PublicCache({ maxAgeSeconds: 60, staleWhileRevalidateSeconds: 30, tags: [PUBLIC_READ_CACHE_TAG] })
   @ApiOperation({ operationId: "getPublicStats", summary: "Get sealed-release public projection counts" })
   @ApiOkResponse({ type: PublicStatsResponseDto })
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })

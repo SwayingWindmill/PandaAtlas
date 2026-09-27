@@ -471,6 +471,9 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
       const release = await this.lockRelease(transaction, releaseId);
       if (release === undefined) return { kind: "not_found" };
       if (release.lifecycle_state !== "sealed") return { kind: "not_ready" };
+      if ((await this.isReleaseSuspended(transaction, releaseId)) === suspended) {
+        return { kind: "already_current", release: this.mapRelease(release) };
+      }
       const now = new Date();
       await transaction
         .insertInto("publication.delivery_control_events")
@@ -518,6 +521,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
     reason: string,
   ): Promise<void> {
     await this.database.transaction(async (transaction) => {
+      if ((await this.isResourceTakenDown(transaction, resourceKind, resourceId)) === takenDown) return;
       const now = new Date();
       const control = await transaction
         .insertInto("publication.delivery_control_events")
@@ -659,6 +663,23 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
       .select("action")
       .where("control_kind", "=", "release_suspension")
       .where("release_id", "=", releaseId)
+      .orderBy("occurred_at", "desc")
+      .orderBy("control_event_id", "desc")
+      .executeTakeFirst();
+    return event?.action === "apply";
+  }
+
+  private async isResourceTakenDown(
+    transaction: DatabaseTransaction,
+    resourceKind: PublicationResourceKind,
+    resourceId: string,
+  ): Promise<boolean> {
+    const event = await transaction
+      .selectFrom("publication.delivery_control_events")
+      .select("action")
+      .where("control_kind", "=", "resource_takedown")
+      .where("resource_kind", "=", resourceKind)
+      .where("resource_id", "=", resourceId)
       .orderBy("occurred_at", "desc")
       .orderBy("control_event_id", "desc")
       .executeTakeFirst();

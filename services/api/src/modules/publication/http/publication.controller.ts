@@ -10,6 +10,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
+import { PublicCacheInvalidationService } from "../../../platform/http/public-cache-invalidation.service.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
@@ -55,6 +56,7 @@ export class PublicationController {
   public constructor(
     @Inject(PUBLICATION_PORT) private readonly publication: PublicationPort,
     private readonly requestContext: RequestContextService,
+    private readonly publicCache: PublicCacheInvalidationService,
   ) {}
 
   @Get("releases/:releaseId")
@@ -104,7 +106,9 @@ export class PublicationController {
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
-    return publicationRelease(await this.publication.activate(releaseId, this.commandContext(request), input.reason));
+    const release = publicationRelease(await this.publication.activate(releaseId, this.commandContext(request), input.reason));
+    await this.invalidatePublicDelivery();
+    return release;
   }
 
   @Post("releases/:releaseId/rollback")
@@ -118,7 +122,9 @@ export class PublicationController {
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
-    return publicationRelease(await this.publication.rollback(releaseId, this.commandContext(request), input.reason));
+    const release = publicationRelease(await this.publication.rollback(releaseId, this.commandContext(request), input.reason));
+    await this.invalidatePublicDelivery();
+    return release;
   }
 
   @Post("releases/:releaseId/suspend")
@@ -131,7 +137,7 @@ export class PublicationController {
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
-    return publicationRelease(
+    return this.publicationReleaseWithInvalidation(
       await this.publication.setReleaseSuspension(releaseId, true, this.commandContext(request), input.reason),
     );
   }
@@ -146,7 +152,7 @@ export class PublicationController {
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
-    return publicationRelease(
+    return this.publicationReleaseWithInvalidation(
       await this.publication.setReleaseSuspension(releaseId, false, this.commandContext(request), input.reason),
     );
   }
@@ -167,6 +173,7 @@ export class PublicationController {
       this.commandContext(request),
       input.reason,
     );
+    await this.invalidatePublicDelivery();
   }
 
   @Post("resources/restore")
@@ -185,6 +192,27 @@ export class PublicationController {
       this.commandContext(request),
       input.reason,
     );
+    await this.invalidatePublicDelivery();
+  }
+
+  private async publicationReleaseWithInvalidation(
+    result: PublicationReleaseResult,
+  ): Promise<PublicRelease> {
+    const release = publicationRelease(result);
+    await this.invalidatePublicDelivery();
+    return release;
+  }
+
+  private async invalidatePublicDelivery(): Promise<void> {
+    try {
+      await this.publicCache.invalidatePublication();
+    } catch {
+      throw new ProblemException(
+        503,
+        "publication.cacheInvalidationFailed",
+        "Publication state changed, but public cache invalidation did not complete. Public delivery must be treated as stale until cache invalidation succeeds.",
+      );
+    }
   }
 
   private commandContext(request: FastifyRequest): PublicationCommandContext {

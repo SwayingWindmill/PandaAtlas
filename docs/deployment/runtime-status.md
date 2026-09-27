@@ -48,6 +48,18 @@ The account-level cause is now confirmed from Vercel's 2026-09-25 notification: 
 
 One structural contributor was the production GitHub scheduler invoking `GET /internal/jobs/async-downstream` every five minutes. That endpoint performs multiple bounded dispatcher/consumer batches and therefore wakes the NestJS Vercel runtime even when public traffic is low. On 2026-09-27 the schedule was reduced from every five minutes to once per hour (`17 * * * *`), cutting fixed scheduler invocations from about 8,640 to about 720 per 30 days while retaining a durable reliability pump for non-realtime downstream work.
 
+A second compute-reduction pass was completed on 2026-09-27 without changing the V2 authority boundaries:
+
+- public Publication/PublicRead responses keep browser caching conservative (`Cache-Control: public, max-age=0, must-revalidate`) while allowing Vercel CDN reuse for 60 seconds with a 30-second stale-while-revalidate window; public Updates use a shorter 30-second/15-second window;
+- cacheable Publication/PublicRead responses carry the shared `zhipanda-public-read` Vercel cache tag;
+- every public-state-changing Publication command (`activate`, `rollback`, release `suspend`/`restore`, resource `takedown`/`restore`) synchronously purges that API cache tag with foreground revalidation semantics and then calls the Web project's authenticated revalidation endpoint;
+- the Web revalidation endpoint marks the complete localized public tree (`/[locale]`) plus `/sitemap.xml` stale, so Next.js ISR cannot continue serving a pre-takedown snapshot merely because its normal TTL has not expired;
+- staging/production API startup now requires `PUBLIC_WEB_BASE_URL` and `PUBLIC_REVALIDATION_AUTH` together, and Vercel production Web builds require the same `PUBLIC_REVALIDATION_AUTH` value; the credential belongs only in the Web/API deployment environments, never in repository files;
+- the Next.js public panda, place, institution, and legacy atlas detail routes use on-demand static generation instead of request-by-request SSR; panda and place pages retain a 60-second background revalidation interval as a resilience/performance fallback;
+- public panda profile loading no longer performs separate full-collection reference lookups and duplicate atlas loads, and shared public identity context is memoized per server render.
+
+These changes reduce both Active CPU and Provisioned Memory pressure while preserving NestJS/Supabase as the online business-data authority and preserving emergency takedown correctness. They were validated locally with V2 lint/typecheck/build, Web typecheck/lint/build, unit tests, architecture checks, and clean-database publication/async integration tests. Production cache-hit/purge verification remains pending while the Vercel team is paused.
+
 The Hobby plan does not require payment while usage remains within the included limits. Immediate restoration after a usage-cap pause may require upgrading to Pro; remaining on Hobby requires the rolling usage window to return below the included limits and then an account unpause/review through Vercel support if the team remains paused. Do not reintroduce retired legacy runtimes as a workaround.
 
 ## Legacy disposition

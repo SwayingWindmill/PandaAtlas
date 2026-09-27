@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import type { components } from "@zhipanda/api-client";
 
 export type { PublicCoverage } from "@/features/public-content/public-release";
@@ -38,6 +40,13 @@ type V2Event = components["schemas"]["PublicLifeEventSummaryDto"];
 type V2Lineage = components["schemas"]["PublicLineageSummaryDto"];
 type V2Evidence = components["schemas"]["PublicEvidenceSummaryDto"];
 type V2Media = components["schemas"]["PublicMediaSummaryDto"];
+
+interface V2IdentityContext {
+  release: V2Release;
+  pandas: V2Panda[];
+  places: V2Place[];
+  lineage: V2Lineage[];
+}
 
 interface V2CoreDataset {
   release: V2Release;
@@ -420,25 +429,36 @@ function v2Envelope<T>(
   };
 }
 
-async function loadCore(): Promise<V2CoreDataset | null> {
+const loadIdentityContext = cache(async (): Promise<V2IdentityContext | null> => {
   const client = createServerV2Client();
-  const [pandas, places, residencies, events, lineage] = await Promise.all([
+  const [pandas, places, lineage] = await Promise.all([
     client.GET("/api/v2/pandas"),
     client.GET("/api/v2/places"),
-    client.GET("/api/v2/residencies"),
-    client.GET("/api/v2/life-events"),
     client.GET("/api/v2/lineage"),
   ]);
-  if (!pandas.data || !places.data || !residencies.data || !events.data || !lineage.data) return null;
+  if (!pandas.data || !places.data || !lineage.data) return null;
   return {
     release: pandas.data.release,
     pandas: pandas.data.items,
     places: places.data.items,
-    residencies: residencies.data.items,
-    events: events.data.items,
     lineage: lineage.data.items,
   };
-}
+});
+
+const loadCore = cache(async (): Promise<V2CoreDataset | null> => {
+  const client = createServerV2Client();
+  const [identity, residencies, events] = await Promise.all([
+    loadIdentityContext(),
+    client.GET("/api/v2/residencies"),
+    client.GET("/api/v2/life-events"),
+  ]);
+  if (!identity || !residencies.data || !events.data) return null;
+  return {
+    ...identity,
+    residencies: residencies.data.items,
+    events: events.data.items,
+  };
+});
 
 function buildCorePandas(core: V2CoreDataset): PandaDetail[] {
   const placesById = new Map(core.places.map((place) => [place.placeId, place]));
@@ -514,55 +534,42 @@ export async function searchV2PublicPandas(query: string, locale: PublicLocale):
   );
 }
 
-export async function resolveV2PublicPandaReference(input: string): Promise<{ id: string; slug: string } | null> {
-  const client = createServerV2Client();
-  const result = await client.GET("/api/v2/pandas");
-  if (!result.data) return null;
-  const normalized = input.trim();
-  const panda = result.data.items.find((item) =>
-    item.pandaId === normalized || item.canonicalSlug === normalized || item.legacySlugs.includes(normalized),
-  );
-  return panda ? { id: panda.pandaId, slug: panda.canonicalSlug } : null;
-}
-
-export async function loadV2PublicPandaProfile(
+export const loadV2PublicPandaProfile = cache(async (
   input: string,
   locale: PublicLocale,
-): Promise<PublicContentEnvelope<PublicProfileRecord> | null> {
+): Promise<PublicContentEnvelope<PublicProfileRecord> | null> => {
   const client = createServerV2Client();
-  const [detailResult, pandasResult, placesResult, lineageResult] = await Promise.all([
+  const [identity, detailResult] = await Promise.all([
+    loadIdentityContext(),
     client.GET("/api/v2/pandas/{slug}", { params: { path: { slug: input } } }),
-    client.GET("/api/v2/pandas"),
-    client.GET("/api/v2/places"),
-    client.GET("/api/v2/lineage"),
   ]);
-  if (!detailResult.data || !pandasResult.data || !placesResult.data || !lineageResult.data) return null;
+  if (!identity || !detailResult.data) return null;
   const detail: V2PandaDetail = detailResult.data;
-  const placesById = new Map(placesResult.data.items.map((place) => [place.placeId, place]));
+  const placesById = new Map(identity.places.map((place) => [place.placeId, place]));
   const panda = buildPanda(
     detail.panda,
     placesById,
     detail.residencies,
     detail.events,
-    lineageResult.data.items,
+    identity.lineage,
     detail.release,
     detail.media,
     detail.evidence,
   );
-  const allNodes = pandasResult.data.items.map((item) => buildPanda(
+  const allNodes = identity.pandas.map((item) => buildPanda(
     item,
     placesById,
     [],
     [],
-    lineageResult.data.items,
+    identity.lineage,
     detail.release,
   ));
-  const edges = lineageResult.data.items.map((item) => ({ parent_id: item.parentId, child_id: item.childId }));
+  const edges = identity.lineage.map((item) => ({ parent_id: item.parentId, child_id: item.childId }));
   const lineage: PandaLineageResponse = {
     focus_id: panda.id,
     nodes: allNodes,
     edges,
-    relationships: buildRelationships(allNodes, lineageResult.data.items),
+    relationships: buildRelationships(allNodes, identity.lineage),
     meta: { ancestor_depth: 8, descendant_depth: 8 },
   };
   const sources = detail.evidence.map(mapSource);
@@ -570,32 +577,23 @@ export async function loadV2PublicPandaProfile(
     {
       panda,
       institutions: [],
-      places: placesResult.data.items.map(mapPlace),
-      facilities: placesResult.data.items.map(mapFacility),
+      places: identity.places.map(mapPlace),
+      facilities: identity.places.map(mapFacility),
       lineage,
-      parentageAssertions: parentageAssertions(lineageResult.data.items),
+      parentageAssertions: parentageAssertions(identity.lineage),
     },
     detail.release,
-    pandasResult.data.items,
+    identity.pandas,
     { state: "complete", scope: "canonical V2 public panda profile, lineage, residencies, life events, media, and evidence" },
     locale,
     sources,
   );
-}
+});
 
-export async function resolveV2PublicPlaceReference(input: string): Promise<{ id: string; slug: string } | null> {
-  const client = createServerV2Client();
-  const result = await client.GET("/api/v2/places");
-  if (!result.data) return null;
-  const normalized = input.trim();
-  const place = result.data.items.find((item) => item.placeId === normalized || item.slug === normalized);
-  return place ? { id: place.placeId, slug: place.slug } : null;
-}
-
-export async function loadV2PublicPlace(
+export const loadV2PublicPlace = cache(async (
   input: string,
   locale: PublicLocale,
-): Promise<PublicContentEnvelope<PublicPlaceRecord> | null> {
+): Promise<PublicContentEnvelope<PublicPlaceRecord> | null> => {
   const core = await loadCore();
   if (!core) return null;
   const place = core.places.find((item) => item.placeId === input || item.slug === input);
@@ -611,7 +609,7 @@ export async function loadV2PublicPlace(
     { state: "partial", scope: "canonical V2 public place identity, panda residencies, and life events; institution detail is not published by V2" },
     locale,
   );
-}
+});
 
 function sourceOccurrence(event: PandaDetail["events"][number], pandasById: Map<string, PandaDetail>): PublicMomentOccurrence {
   return {

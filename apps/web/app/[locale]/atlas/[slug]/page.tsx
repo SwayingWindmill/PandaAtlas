@@ -8,6 +8,10 @@ interface LegacyAtlasProfileProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
+export function generateStaticParams(): Array<{ slug: string }> {
+  return [];
+}
+
 export default async function LegacyAtlasProfile({ params }: LegacyAtlasProfileProps) {
   const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);

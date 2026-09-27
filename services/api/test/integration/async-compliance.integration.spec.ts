@@ -214,6 +214,9 @@ describe("V2 async downstream and compliance", () => {
       .executeTakeFirstOrThrow();
     const updatesRead = await app.inject({ method: "GET", url: "/api/v2/updates" });
     expect(updatesRead.statusCode, updatesRead.body).toBe(200);
+    expect(updatesRead.headers["cache-control"]).toBe("public, max-age=0, must-revalidate");
+    expect(updatesRead.headers["vercel-cdn-cache-control"]).toBe("public, max-age=30, stale-while-revalidate=15");
+    expect(updatesRead.headers["vercel-cache-tag"]).toBe("zhipanda-public-updates");
     const auditCountAfterRead = await database.db
       .selectFrom("audit.evidence_events")
       .select(({ fn }) => fn.countAll().as("count"))

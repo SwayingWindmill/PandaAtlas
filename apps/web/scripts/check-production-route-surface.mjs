@@ -16,6 +16,13 @@ const violations = forbiddenRouteFiles
   .filter((relativePath) => existsSync(resolve(webRoot, relativePath)))
   .map((relativePath) => `forbidden production route exists: ${relativePath}`);
 
+if (process.env.VERCEL_ENV === "production") {
+  const publicRevalidationAuth = process.env.PUBLIC_REVALIDATION_AUTH?.trim();
+  if (!publicRevalidationAuth || publicRevalidationAuth.length < 32) {
+    violations.push("PUBLIC_REVALIDATION_AUTH must be configured with at least 32 characters for production Web deployments");
+  }
+}
+
 const globalsPath = resolve(webRoot, "app/globals.css");
 const globals = readFileSync(globalsPath, "utf8");
 for (const prototypeStylesheet of [

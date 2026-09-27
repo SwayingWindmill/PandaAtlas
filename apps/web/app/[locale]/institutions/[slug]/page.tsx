@@ -8,14 +8,13 @@ import {
 } from "@/features/public-content/public-release";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
-import {
-  localizedPublicDestination,
-  type PublicSearchParams,
-} from "@/foundation/routing/public-redirects";
 
 interface InstitutionPageProps {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<PublicSearchParams>;
+}
+
+export function generateStaticParams(): Array<{ slug: string }> {
+  return [];
 }
 
 export async function generateMetadata({ params }: InstitutionPageProps): Promise<Metadata> {
@@ -34,16 +33,14 @@ export async function generateMetadata({ params }: InstitutionPageProps): Promis
   });
 }
 
-export default async function InstitutionPage({ params, searchParams }: InstitutionPageProps) {
-  const [{ locale: rawLocale, slug }, query] = await Promise.all([params, searchParams]);
+export default async function InstitutionPage({ params }: InstitutionPageProps) {
+  const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
   const reference = resolvePublishedInstitutionReference(slug);
   if (!reference) notFound();
   if (slug !== reference.slug) {
-    permanentRedirect(
-      localizedPublicDestination(locale, `/institutions/${reference.slug}`, query) as Route,
-    );
+    permanentRedirect(`/${locale}/institutions/${reference.slug}` as Route);
   }
   const envelope = loadPublishedInstitution(reference.slug, locale);
   if (!envelope) notFound();

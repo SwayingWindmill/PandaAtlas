@@ -1,5 +1,8 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "../../platform/config/config.module.js";
 import { DatabaseModule } from "../../platform/database/database.module.js";
+import { PublicCacheInvalidationService } from "../../platform/http/public-cache-invalidation.service.js";
+import { PublicCacheModule } from "../../platform/http/public-cache.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
 import { IntegrationOutboxService } from "../../platform/integration/integration-outbox.service.js";
@@ -32,7 +35,9 @@ import { PostgresPublicationCoordinator } from "./infrastructure/postgres-public
 
 @Module({
   imports: [
+    ConfigModule,
     DatabaseModule,
+    PublicCacheModule,
     IntegrationModule,
     RequestContextModule,
     EvidenceModule,
@@ -44,6 +49,7 @@ import { PostgresPublicationCoordinator } from "./infrastructure/postgres-public
   ],
   controllers: [PublicReadController, PublicationController],
   providers: [
+    PublicCacheInvalidationService,
     {
       provide: PUBLICATION_COORDINATOR,
       useFactory: (

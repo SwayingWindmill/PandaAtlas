@@ -177,6 +177,9 @@ describe("V2 publication and release-scoped public reads", () => {
 
     const firstRead = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(firstRead.statusCode, firstRead.body).toBe(200);
+    expect(firstRead.headers["cache-control"]).toBe("public, max-age=0, must-revalidate");
+    expect(firstRead.headers["vercel-cdn-cache-control"]).toBe("public, max-age=60, stale-while-revalidate=30");
+    expect(firstRead.headers["vercel-cache-tag"]).toBe("zhipanda-public-read");
     const firstBody = firstRead.json<PublicPandaDetail>();
     expect(firstBody.release.releaseId).toBe(first.releaseId);
     expect(firstBody.panda.pandaId).toBe(panda.pandaId);
@@ -235,6 +238,16 @@ describe("V2 publication and release-scoped public reads", () => {
     expect(JSON.stringify(secondRead.json())).toContain("Second-release public summary");
 
     await publication.setResourceTakedown("panda", panda.pandaId, true, context, "Emergency panda takedown");
+    await publication.setResourceTakedown("panda", panda.pandaId, true, context, "Retry emergency panda takedown");
+    const takedownApplyCount = await database.db
+      .selectFrom("publication.delivery_control_events")
+      .select(({ fn }) => fn.countAll().as("count"))
+      .where("control_kind", "=", "resource_takedown")
+      .where("resource_kind", "=", "panda")
+      .where("resource_id", "=", panda.pandaId)
+      .where("action", "=", "apply")
+      .executeTakeFirstOrThrow();
+    expect(Number(takedownApplyCount.count)).toBe(1);
     const takenDown = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(takenDown.statusCode).toBe(404);
 
@@ -251,6 +264,16 @@ describe("V2 publication and release-scoped public reads", () => {
 
     const suspended = await publication.setReleaseSuspension(first.releaseId, true, context, "Emergency release suspension");
     expect(suspended.kind).toBe("ok");
+    const repeatedSuspension = await publication.setReleaseSuspension(first.releaseId, true, context, "Retry release suspension");
+    expect(repeatedSuspension.kind).toBe("already_current");
+    const suspensionApplyCount = await database.db
+      .selectFrom("publication.delivery_control_events")
+      .select(({ fn }) => fn.countAll().as("count"))
+      .where("control_kind", "=", "release_suspension")
+      .where("release_id", "=", first.releaseId)
+      .where("action", "=", "apply")
+      .executeTakeFirstOrThrow();
+    expect(Number(suspensionApplyCount.count)).toBe(1);
     const unavailable = await app.inject({ method: "GET", url: "/api/v2/release" });
     expect(unavailable.statusCode).toBe(503);
     const restored = await publication.setReleaseSuspension(first.releaseId, false, context, "Restore release delivery");

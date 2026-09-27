@@ -3,20 +3,18 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { PublicEntityPage } from "@/components/patterns/public-entity-page";
 import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
 import { buildPlacePageViewModel } from "@/features/places/place-page-view-model";
-import {
-  loadV2PublicPlace,
-  resolveV2PublicPlaceReference,
-} from "@/features/public-content/public-v2";
+import { loadV2PublicPlace } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
-import {
-  localizedPublicDestination,
-  type PublicSearchParams,
-} from "@/foundation/routing/public-redirects";
 
 interface PlacePageProps {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<PublicSearchParams>;
+}
+
+export const revalidate = 60;
+
+export function generateStaticParams(): Array<{ slug: string }> {
+  return [];
 }
 
 export async function generateMetadata({ params }: PlacePageProps): Promise<Metadata> {
@@ -35,19 +33,15 @@ export async function generateMetadata({ params }: PlacePageProps): Promise<Meta
   });
 }
 
-export default async function PlacePage({ params, searchParams }: PlacePageProps) {
-  const [{ locale: rawLocale, slug }, query] = await Promise.all([params, searchParams]);
+export default async function PlacePage({ params }: PlacePageProps) {
+  const { locale: rawLocale, slug } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const reference = await resolveV2PublicPlaceReference(slug);
-  if (!reference) notFound();
-  if (slug !== reference.slug) {
-    permanentRedirect(
-      localizedPublicDestination(locale, `/places/${reference.slug}`, query) as Route,
-    );
-  }
-  const envelope = await loadV2PublicPlace(reference.slug, locale);
+  const envelope = await loadV2PublicPlace(slug, locale);
   if (!envelope) notFound();
+  if (slug !== envelope.data.place.canonical_slug) {
+    permanentRedirect(`/${locale}/places/${envelope.data.place.canonical_slug}` as Route);
+  }
   const entity = buildPlacePageViewModel(envelope, locale);
   return (
     <PublicEntityPage
