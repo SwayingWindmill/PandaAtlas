@@ -20,9 +20,22 @@ test("normalizes repository paths across operating systems", () => {
 test("allows source, evidence, and root planning files", () => {
   assert.equal(repositoryHygieneViolation("apps/web/app/page.tsx"), null);
   assert.equal(repositoryHygieneViolation("data/frontend-evidence/test-results.json"), null);
+  assert.equal(repositoryHygieneViolation("GLOSSARY-MAP.md"), null);
+  assert.equal(repositoryHygieneViolation("contracts/golden-dataset/GLOSSARY.md"), null);
   assert.equal(repositoryHygieneViolation("task_plan.md"), null);
   assert.equal(repositoryHygieneViolation("findings.md"), null);
   assert.equal(repositoryHygieneViolation("progress.md"), null);
+});
+
+test("rejects the retired CONTEXT domain documentation convention", () => {
+  assert.equal(
+    repositoryHygieneViolation("CONTEXT-MAP.md"),
+    "retired domain documentation filename; use GLOSSARY-MAP.md",
+  );
+  assert.equal(
+    repositoryHygieneViolation("contracts/golden-dataset/CONTEXT.md"),
+    "retired domain documentation filename; use GLOSSARY.md",
+  );
 });
 
 test("rejects generated build, cache, dependency, and test output", () => {

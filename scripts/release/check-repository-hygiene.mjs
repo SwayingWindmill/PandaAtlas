@@ -44,6 +44,13 @@ export function repositoryHygieneViolation(value) {
   const path = normalizeRepositoryPath(value);
   if (!path) return null;
 
+  if (path === "CONTEXT-MAP.md") {
+    return "retired domain documentation filename; use GLOSSARY-MAP.md";
+  }
+  if (path.endsWith("/CONTEXT.md")) {
+    return "retired domain documentation filename; use GLOSSARY.md";
+  }
+
   const segments = path.split("/");
   for (const segment of segments) {
     const directoryReason = FORBIDDEN_DIRECTORY_NAMES.get(segment);

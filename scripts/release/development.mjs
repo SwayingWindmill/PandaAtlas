@@ -51,13 +51,13 @@ function addScope(scopes, scope) {
 function isDocumentationPath(changedPath) {
   return (
     changedPath === "AGENTS.md" ||
-    changedPath === "CONTEXT-MAP.md" ||
+    changedPath === "GLOSSARY-MAP.md" ||
     changedPath === "README.md" ||
     changedPath === "progress.md" ||
     changedPath === "task_plan.md" ||
     changedPath === "findings.md" ||
     changedPath.startsWith("docs/") ||
-    changedPath.endsWith("/CONTEXT.md") ||
+    changedPath.endsWith("/GLOSSARY.md") ||
     changedPath.endsWith(".md")
   );
 }
