@@ -68,4 +68,6 @@ Historical Vercel contracts, research, release reports, and cutover evidence sta
 
 OpenNext is the **current production Web adapter** and must not be described as retired while `zhipanda-v2-web` serves it.
 
-`vinext` is a separate possible runtime migration, not part of current production. A compatibility probe on 2026-10-03 reported 93% compatibility; any switch from OpenNext to vinext requires its own architecture ticket, verification, and PR rather than being folded into CI maintenance.
+Issue #385 completed the current vinext evaluation and records the decision to **schedule a deliberate follow-up migration**, while leaving production unchanged in this issue. The measured PandaAtlas compatibility result remains 93%; the remaining concrete findings are a test-fixture Node module-path usage and partial `typedRoutes` parity. The evaluation also found no current positive ISR/tag/data-cache use, so the OpenNext R2/Durable Object cache topology should not be recreated automatically in a vinext migration.
+
+See [Vinext evaluation for the Cloudflare Web runtime](../research/vinext-cloudflare-web-runtime-2026-10-03.md) for the evidence, risk comparison, and smallest credible migration plan. Any actual switch still requires its own implementation ticket, verification, and PR. Until that lands, the production topology above remains Next.js 16 + OpenNext 1.20.8.
