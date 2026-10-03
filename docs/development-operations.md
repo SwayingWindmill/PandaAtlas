@@ -77,3 +77,15 @@ npm run check:batch-workflow-interface
 - recurring V2 async trigger: GitHub Actions calling the authenticated Nest internal job endpoint
 
 FastAPI request-closure checks, Cloudflare Worker/D1 development commands, OpenNext deployment commands, and V1 repository/deployment contracts were retired with the V2 production cutover. Do not reintroduce compatibility adapters for them.
+
+## Local state
+
+Hidden local state needs an owner and a lifecycle. Treat ignored directories as one of these categories:
+
+- **Repository assets** such as `.agents/` and `.github/` are tracked source and follow normal review.
+- **Generated state** such as `.next*`, `.open-next/`, `.wrangler/`, `.pytest_cache/`, `.ruff_cache/`, `.release-gate/`, and local virtual environments is disposable. Keep it only while the command or investigation that produced it is active; remove stale copies instead of naming new historical variants.
+- **Tool-local state** such as workspace Vercel links, Supabase link metadata, `.devspace-local/`, `.claude/`, and Impeccable local context may stay only while the corresponding tool still uses it. Keep the minimum current config/state; logs, screenshots, backups, and retired runtimes are not durable project records.
+- **Acquisition working state** lives only under the root `.acquisition/` seam owned by `tools/panda-data`. Use its named bundle, queue, backfill, review, decision, patch, and report directories; do not use `.acquisition/` as a general scratch directory or recreate it under another runtime.
+- **Scratch state** such as `.codex-temp/` is task-local. Durable evidence belongs in an existing governed data/evidence location or an external backup; credentials and secret-bearing screenshots/JSON do not belong in repository-local scratch.
+
+Before finishing a task, remove scratch and generated state that no active next step consumes. Prefer deleting obsolete local paths over adding another ignore, compatibility path, cleanup wrapper, or retention mechanism.

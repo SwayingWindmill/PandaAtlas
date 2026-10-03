@@ -14,7 +14,7 @@ apps/web/blob-report/
 *.wrangler-dev.*.log
 .release-gate/
 .batch-work/
-.acquisition/
+/.acquisition/
 
 # Python
 __pycache__/
@@ -26,8 +26,6 @@ __pycache__/
 .venv/
 venv/
 .uv-cache/
-services/api/.uv-cache-codex/
-services/api/.venv-release/
 .media-work/
 .media-work-*/
 .release-candidate*/
@@ -62,4 +60,3 @@ htmlcov/
 Thumbs.db
 .vscode/
 .idea/
-.vercel/
