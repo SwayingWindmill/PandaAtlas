@@ -2,8 +2,6 @@ import { notFound } from "next/navigation";
 
 import { AdminShellLoader } from "@/components/admin/admin-shell-loader";
 
-export const dynamic = "force-dynamic";
-
 function isEnabled(value: string | undefined): boolean {
   return value?.trim().toLowerCase() === "true" || value?.trim() === "1";
 }

@@ -3,7 +3,9 @@ node_modules/
 .npm/
 apps/web/.next/
 apps/web/.next-*/
+apps/web/next-env.d.ts
 apps/web/.open-next/
+apps/web/public/maplibre/maplibre-gl-csp-worker.js
 apps/web/.vercel/
 apps/web/out/
 apps/web/test-results/
