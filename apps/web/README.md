@@ -4,7 +4,7 @@
 
 ## Runtime
 
-- Next.js 15
+- Next.js 16
 - React 19
 - Vercel
 - production functions pinned to Tokyo (`hnd1`) where applicable

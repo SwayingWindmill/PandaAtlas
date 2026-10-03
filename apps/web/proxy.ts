@@ -65,7 +65,7 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   return null;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const redirect = redirectToCanonicalRoute(request);
   if (redirect) return redirect;
   const requestHeaders = new Headers(request.headers);

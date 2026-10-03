@@ -1,1 +1,5 @@
-export { AdminShellPage as default, dynamic } from "./admin-shell-page";
+import { AdminShellPage } from "./admin-shell-page";
+
+export const dynamic = "force-dynamic";
+
+export default AdminShellPage;

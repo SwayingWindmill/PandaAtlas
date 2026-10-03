@@ -5,8 +5,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
-import { Map as MapLibreMapClass, setWorkerUrl } from "@/features/map/visualization/maplibre-source-runtime.js";
-import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-csp-worker.js?maplibre-worker";
+import { Map as MapLibreMapClass, setWorkerUrl } from "maplibre-gl";
 import { structuredMapHref, type StructuredMapQueryState } from "@/features/map/map-query";
 import { applyMapViewport, prefersReducedMapMotion } from "@/features/map/visualization/map-camera-preferences";
 import {
@@ -34,6 +33,8 @@ interface MapVisualizationIslandProps {
 }
 
 type ProviderStatus = "loading" | "ready" | "degraded" | "offline" | "recovering";
+
+const MAPLIBRE_WORKER_URL = "/maplibre/maplibre-gl-csp-worker.js";
 
 const copy = {
   zh: {
@@ -167,7 +168,7 @@ export function MapVisualizationIsland({ locale, state, model, loadingLabel, onM
       ? parseMapViewport(initialState.view, initialState.mode)
       : defaultMapViewport(initialState.mode);
 
-    setWorkerUrl(maplibreWorkerUrl);
+    setWorkerUrl(MAPLIBRE_WORKER_URL);
     const map = new MapLibreMapClass({
       container: containerRef.current,
       style: createMapProviderStyle(initialModel),
