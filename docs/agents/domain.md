@@ -4,7 +4,7 @@ Engineering skills should consult the repository's domain documentation before p
 
 ## Before exploring
 
-Read the root `CONTEXT-MAP.md` when it exists. It identifies the bounded contexts and points to their respective `CONTEXT.md` files.
+Read the root `GLOSSARY-MAP.md` when it exists. It identifies the bounded contexts and points to their respective `GLOSSARY.md` files.
 
 Read the context documents relevant to the work being performed.
 
@@ -21,12 +21,12 @@ PandaAtlas uses the following domain documentation structure:
 
 ```text
 /
-├── CONTEXT-MAP.md
+├── GLOSSARY-MAP.md
 ├── docs/
 │   └── architecture/
 └── contracts/
     └── golden-dataset/
-        └── CONTEXT.md
+        └── GLOSSARY.md
 ```
 
 The primary contexts are:
@@ -35,11 +35,11 @@ The primary contexts are:
 - **Curation Intake** — incomplete or contradictory working records awaiting review
 - **Public Projection** — reviewed, versioned, public-safe data consumed by APIs, D1, snapshots, and browser experiences
 
-The root `CONTEXT-MAP.md` should describe relationships and ownership boundaries between these contexts.
+The root `GLOSSARY-MAP.md` should describe relationships and ownership boundaries between these contexts.
 
 ## Vocabulary
 
-When issues, tests, specifications, or refactor proposals name domain concepts, use the terminology defined by the relevant `CONTEXT.md`.
+When issues, tests, specifications, or refactor proposals name domain concepts, use the terminology defined by the relevant `GLOSSARY.md`.
 
 Avoid introducing synonyms for concepts that already have canonical names.
 
