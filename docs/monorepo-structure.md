@@ -31,18 +31,18 @@ The npm workspaces are exactly:
 
 ## Runtime boundaries
 
-- `apps/web` runs on Vercel and calls the canonical API at `https://api.zhipanda.com`.
-- `services/api` runs NestJS/Fastify on Vercel and is the only online business API runtime.
+- `apps/web` runs as Cloudflare Worker `zhipanda-v2-web` through OpenNext and calls the canonical API at `https://api.zhipanda.com`; deployed server calls use the `V2_API` service binding.
+- `services/api` runs NestJS/Fastify as Cloudflare Worker `zhipanda-v2-api` and is the only online business API runtime.
 - Supabase PostgreSQL is the sole business-data authority.
 - Supabase Auth is the identity authority.
-- Cloudflare is retained for authoritative DNS and R2 media storage only.
+- Cloudflare Hyperdrive supplies production request-scoped PostgreSQL connectivity; Cloudflare also owns DNS and R2 media storage.
 - `tools/panda-data` is offline data tooling and is not imported into the online request runtime.
 
 ## Deployment
 
-Production functions are placed in Tokyo (`hnd1`) near the Supabase production project. The API uses a least-privilege PostgreSQL login through Supavisor transaction pooling with strict Supabase CA verification.
+`apps/web/cloudflare.config.ts` and `services/api/cloudflare.config.ts` are the tracked production deployment topology. `cf` is the operator/deployment CLI; Wrangler is retained only where OpenNext currently requires it during the Web build.
 
-Cloudflare Worker/D1, OpenNext, FastAPI, `/api/v1`, and FastAPI serverless-closure tooling are retired implementation history, not supported compatibility surfaces.
+Vercel Web/API deployment, the old Worker/D1 projection runtime, FastAPI, `/api/v1`, and FastAPI serverless-closure tooling are retired implementation history, not supported compatibility surfaces.
 
 ## Development
 

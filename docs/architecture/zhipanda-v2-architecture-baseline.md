@@ -1,16 +1,16 @@
 # ZhiPanda V2 Architecture Baseline
 
-- Status: **Target implementation baseline**
+- Status: **Application/domain architecture baseline; deployment-provider sections superseded**
 - Date: 2026-08-26
 - Planning source: Wayfinder map #309 and decisions #310-#321
 - Product priority: panda fan experience first
-- Current production status: see `docs/deployment/runtime-status.md` until V2 cutover completes
+- Current production topology: see `docs/deployment/runtime-status.md`
+
+> **Deployment update (2026-10-03):** V2 is live on Cloudflare Workers. `docs/deployment/runtime-status.md` is authoritative for current provider/runtime topology. References below to Vercel placement/cutover, Vercel OTel/Cron, or retiring OpenNext are historical planning decisions and are superseded. The business-capability, database-authority, module-boundary, security, testing, and data-contract rules in this baseline remain governing.
 
 ## 1. Purpose
 
-This document is the canonical architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas.
-
-It governs V2 implementation. It does **not** claim that production has already cut over from the current FastAPI/Cloudflare V1 runtime.
+This document is the canonical application/domain architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas. Current deployment-provider facts live in `docs/deployment/runtime-status.md`.
 
 The core migration rule is:
 

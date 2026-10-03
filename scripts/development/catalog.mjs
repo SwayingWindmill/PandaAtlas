@@ -149,7 +149,7 @@ const commands = [
   {
     id: "api.build",
     category: "build",
-    description: "Build the NestJS API for Vercel.",
+    description: "Build the NestJS API locally.",
     command: "npm",
     args: ["run", "build:local", "-w", "@zhipanda/api"],
     requires: ["node_modules"],

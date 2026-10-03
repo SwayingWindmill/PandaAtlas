@@ -76,7 +76,7 @@ test("Phase 1 Vercel Web plan retains the current Cloudflare API boundary", () =
 
 test("Vercel acceptance workflow is read-only and requires no secrets", async () => {
   const workflow = await readFile(
-    new URL("../../../.github/workflows/vercel-web-acceptance.yml", import.meta.url),
+    new URL("../../../docs/deployment/history/vercel-web-acceptance.yml", import.meta.url),
     "utf8",
   );
 

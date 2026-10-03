@@ -5,14 +5,15 @@ apps/web/.next/
 apps/web/.next-*/
 apps/web/next-env.d.ts
 apps/web/.open-next/
+apps/web/.cloudflare/
 apps/web/public/maplibre/maplibre-gl-csp-worker.js
-apps/web/.vercel/
 apps/web/out/
 apps/web/test-results/
 apps/web/playwright-report/
 apps/web/blob-report/
 *.tsbuildinfo
 **/.wrangler/
+services/api/.cloudflare/
 *.wrangler-dev.*.log
 .release-gate/
 .batch-work/

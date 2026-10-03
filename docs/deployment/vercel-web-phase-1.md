@@ -5,7 +5,7 @@
 - Phase 0 baseline: [Managed-cloud inventory](managed-cloud-phase-0-inventory.md)
 - Deployment plan: [`contracts/vercel-web-deployment.v1.json`](../../contracts/vercel-web-deployment.v1.json)
 - Deployment evidence: [`data/deployment-evidence/vercel-web-2026-08-01.json`](../../data/deployment-evidence/vercel-web-2026-08-01.json)
-- Acceptance workflow: [`.github/workflows/vercel-web-acceptance.yml`](../../.github/workflows/vercel-web-acceptance.yml)
+- Acceptance workflow (historical snapshot): [`docs/deployment/history/vercel-web-acceptance.yml`](history/vercel-web-acceptance.yml)
 - Plan validation: `npm run check:vercel-web-deployment-plan`
 
 ## Objective

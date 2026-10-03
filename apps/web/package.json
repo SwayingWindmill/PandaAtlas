@@ -2,6 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "predev": "node scripts/sync-maplibre-worker.mjs",
     "dev": "next dev",
@@ -27,9 +28,13 @@
     "test:admin-proxy": "node scripts/smoke-admin-proxy.mjs",
     "test:admin-proxy:production": "node scripts/smoke-admin-proxy.mjs --production",
     "test:admin-shell": "node scripts/run-admin-shell-tests.mjs",
-    "test:map-viewport": "node scripts/test-map-viewport.mjs"
+    "test:map-viewport": "node scripts/test-map-viewport.mjs",
+    "prebuild:cloudflare": "node scripts/sync-maplibre-worker.mjs",
+    "build:cloudflare": "node scripts/build-cloudflare.mjs",
+    "deploy:cloudflare": "npm run build:cloudflare && cf deploy --prebuilt --mode production"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "1.20.8",
     "@radix-ui/react-slot": "^1.1.0",
     "@supabase/ssr": "0.12.3",
     "@supabase/supabase-js": "2.110.9",
@@ -52,6 +57,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
+    "@cloudflare/vite-plugin": "2.0.0-beta.sha-52b0dc0e9",
     "@eslint/eslintrc": "^3.3.4",
     "@playwright/test": "^1.54.1",
     "@tailwindcss/postcss": "^4.0.0",
@@ -59,10 +65,13 @@
     "@types/node": "^22.8.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "cf": "1.0.0-beta.12",
     "eslint": "^9.39.3",
     "eslint-config-next": "^16.3.8",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vite": "8.2.2",
+    "wrangler": "4.147.0"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "4.2.1",

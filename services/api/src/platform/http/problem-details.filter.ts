@@ -6,7 +6,6 @@ import {
 } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
 import { STATUS_CODES } from "node:http";
-import { SentryService } from "../observability/sentry.service.js";
 import { RequestContextService } from "../request-context/request-context.service.js";
 import { ProblemException } from "./problem.exception.js";
 
@@ -73,15 +72,11 @@ export class ProblemDetailsFilter implements ExceptionFilter {
   public constructor(
     private readonly context: RequestContextService,
     private readonly adapterHost: HttpAdapterHost,
-    private readonly sentry: SentryService,
   ) {}
 
   public catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<unknown>();
     const status = exception instanceof HttpException ? exception.getStatus() : 500;
-    if (!(exception instanceof HttpException)) {
-      this.sentry.captureException(exception);
-    }
     const requestId = this.context.current?.requestId ?? "unavailable";
     const errors = validationErrors(exception);
     const problem: ProblemDetails = {

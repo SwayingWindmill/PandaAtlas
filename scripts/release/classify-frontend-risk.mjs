@@ -5,12 +5,13 @@ import { pathToFileURL } from "node:url";
 const RULES = [
   {
     level: 3,
-    reason: "Vercel production deployment or public release integrity semantics",
+    reason: "Cloudflare production deployment or public release integrity semantics",
     patterns: [
-      /^apps\/web\/vercel\.json$/,
-      /^\.github\/workflows\/vercel-web-acceptance\.yml$/,
-      /^contracts\/vercel-web-deployment\.v1\.json$/,
-      /^scripts\/release\/check-vercel-web-deployment-plan\.mjs$/,
+      /^apps\/web\/cloudflare\.config\.ts$/,
+      /^apps\/web\/open-next\.config\.ts$/,
+      /^apps\/web\/vite\.config\.ts$/,
+      /^apps\/web\/worker\//,
+      /^\.github\/workflows\/cloudflare-deployability\.yml$/,
       /^scripts\/release\/check-beta-hard-gates\.mjs$/,
       /^scripts\/release\/media-integrity\.mjs$/,
     ],

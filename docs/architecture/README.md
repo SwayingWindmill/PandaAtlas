@@ -8,25 +8,25 @@ The governing target for all new backend migration work is [ZhiPanda V2 Architec
 
 Its implementation sequence is [NestJS V2 Implementation Map](../implementation/nestjs-v2-implementation-map.md).
 
-The V2 target is NestJS 11 + Fastify 5 on Node 24, a business-capability modular monolith, Supabase PostgreSQL/PostGIS/Auth as the single authoritative managed data platform, Cloudflare DNS/R2, Vercel Web/API runtimes, and GitHub Actions for bounded long/heavy work.
+The live V2 target is NestJS 11 + Fastify 5 on Node 24, a business-capability modular monolith, Supabase PostgreSQL/PostGIS/Auth as the single authoritative managed data platform, Cloudflare Workers/DNS/R2/Hyperdrive for the online runtime boundary, and GitHub Actions for bounded long/heavy work.
 
-The V2 baseline intentionally does not preserve FastAPI package architecture, `/api/v1` transport compatibility, Worker/D1 public-read architecture, or OpenNext deployment machinery.
+The V2 baseline intentionally does not preserve FastAPI package architecture, `/api/v1` transport compatibility, or the old Worker/D1 public-read architecture. OpenNext is currently the Web-to-Cloudflare adapter, not a V1 compatibility surface.
 
-## Current production remains V1 until cutover
+## Current production is V2
 
-The [ZhiPanda V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md) and existing deployment documents remain useful for describing the system that is still serving production during migration. They are **not** the implementation authority for NestJS V2.
+The [ZhiPanda V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md) and historical deployment documents remain forensic/history inputs only. They are **not** implementation authority for the live V2 runtime.
 
 The governing product priority remains **panda fan experience first**. Archive, provenance, review, moderation, audit, and publication capabilities support the product and must not displace the fan-facing loops carried forward from the [V1 product architecture baseline](zhipanda-v1-architecture-baseline.md).
 
-Use [deployment runtime status](../deployment/runtime-status.md) for the actual Current production / Target / Transitional / Local-only state. Do not describe V2 as production before the cutover ticket reaches its explicit commit point.
+Use [deployment runtime status](../deployment/runtime-status.md) as the single source of truth for the actual production provider/runtime topology.
 
 ## ADR disposition
 
 | Decision | V2 status | Meaning |
 |---|---|---|
 | [ADR 0001](adr-0001-single-source-api-boundary.md) | Superseded for V2 runtime design | Its single-authority principle remains; FastAPI/Worker/D1 and `/api/v1` compatibility do not. |
-| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Partially superseded | Managed-only Vercel + Supabase + Cloudflare DNS/R2 + GitHub Actions remains; its FastAPI-specific managed API phase is replaced by NestJS V2. |
-| [V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md) | Current-production historical/product input | Product truths remain where still valid; FastAPI/runtime/module implementation is not a V2 constraint. |
+| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Superseded for deployment provider | Its managed-only principle remains; Vercel placement is historical. Current Web/API runtime is Cloudflare Workers with Supabase and GitHub Actions. |
+| [V1 Architecture Baseline](zhipanda-v1-architecture-baseline.md) | Historical/product input | Product truths remain where still valid; FastAPI/runtime/module implementation is not a V2 constraint. |
 | [V2 Architecture Baseline](zhipanda-v2-architecture-baseline.md) | Governing target | Canonical architecture for V2 implementation. |
 
 ## V2 planning record

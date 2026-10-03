@@ -75,7 +75,7 @@
     }
   },
   "acceptance": {
-    "workflow": ".github/workflows/vercel-web-acceptance.yml",
+    "workflow": "docs/deployment/history/vercel-web-acceptance.yml",
     "trigger": "workflow_dispatch",
     "base_url_input": "base_url",
     "allowed_hostname_suffix": ".vercel.app",

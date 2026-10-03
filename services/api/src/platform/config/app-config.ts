@@ -10,6 +10,7 @@ export interface EnvironmentConfig {
   PORT: number;
   CORS_ALLOW_ORIGINS: string[];
   DATABASE_URL: string | undefined;
+  DATABASE_CONNECTION_MODE: "direct" | "hyperdrive";
   DATABASE_SSL_CA_CERT: string | undefined;
   DB_POOL_MAX: number;
   DB_CONNECTION_TIMEOUT_MS: number;
@@ -23,7 +24,6 @@ export interface EnvironmentConfig {
   AUTH_JWKS_TIMEOUT_MS: number;
   LOG_LEVEL: LogLevel;
   OTEL_SERVICE_NAME: string;
-  SENTRY_DSN: string | undefined;
   RESEND_API_KEY: string | undefined;
   RESEND_FROM_EMAIL: string | undefined;
   CRON_SECRET: string | undefined;
@@ -83,9 +83,17 @@ export function validateEnvironment(
   }
 
   const appEnv = rawAppEnv as AppEnvironment;
+  const corsAllowOrigins = parseOrigins(input.CORS_ALLOW_ORIGINS, appEnv);
   const databaseUrl = optionalString(input.DATABASE_URL);
+  const databaseConnectionMode = input.DATABASE_CONNECTION_MODE ?? "direct";
+  if (databaseConnectionMode !== "direct" && databaseConnectionMode !== "hyperdrive") {
+    throw new Error("DATABASE_CONNECTION_MODE must be direct or hyperdrive");
+  }
+  if (databaseConnectionMode === "hyperdrive" && databaseUrl !== undefined) {
+    throw new Error("Hyperdrive connections must be created inside each Worker request; do not set DATABASE_URL.");
+  }
   const supabaseUrl = parseSupabaseUrl(input.SUPABASE_URL);
-  if ((appEnv === "production" || appEnv === "staging") && databaseUrl === undefined) {
+  if ((appEnv === "production" || appEnv === "staging") && databaseConnectionMode === "direct" && databaseUrl === undefined) {
     throw new Error("DATABASE_URL is required in staging and production");
   }
   if ((appEnv === "production" || appEnv === "staging") && supabaseUrl === undefined) {
@@ -102,8 +110,9 @@ export function validateEnvironment(
     APP_ENV: appEnv,
     HOST: typeof input.HOST === "string" && input.HOST.trim() !== "" ? input.HOST : "0.0.0.0",
     PORT: parseInteger(input.PORT, 3001, "PORT", 1, 65_535),
-    CORS_ALLOW_ORIGINS: parseOrigins(input.CORS_ALLOW_ORIGINS, appEnv),
+    CORS_ALLOW_ORIGINS: corsAllowOrigins,
     DATABASE_URL: databaseUrl,
+    DATABASE_CONNECTION_MODE: databaseConnectionMode,
     DATABASE_SSL_CA_CERT: optionalString(input.DATABASE_SSL_CA_CERT),
     DB_POOL_MAX: parseInteger(input.DB_POOL_MAX, 1, "DB_POOL_MAX", 1, 10),
     DB_CONNECTION_TIMEOUT_MS: parseInteger(
@@ -160,7 +169,6 @@ export function validateEnvironment(
     ),
     LOG_LEVEL: rawLogLevel as LogLevel,
     OTEL_SERVICE_NAME: optionalString(input.OTEL_SERVICE_NAME) ?? "zhipanda-api",
-    SENTRY_DSN: optionalString(input.SENTRY_DSN),
     RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
     CRON_SECRET: optionalString(input.CRON_SECRET),
@@ -251,10 +259,6 @@ export class AppConfig {
 
   public get otelServiceName(): string {
     return this.config.get("OTEL_SERVICE_NAME", { infer: true });
-  }
-
-  public get sentryDsn(): string | undefined {
-    return this.config.get("SENTRY_DSN", { infer: true });
   }
 
   public get resendApiKey(): string | undefined {

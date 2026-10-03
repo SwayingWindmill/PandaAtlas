@@ -23,12 +23,13 @@ test("classifies an isolated public style change as Level 1", () => {
   assert.equal(result.level, 1);
 });
 
-test("classifies Vercel deployment and public release integrity changes as Level 3", () => {
+test("classifies Cloudflare deployment and public release integrity changes as Level 3", () => {
   const result = classifyFrontendRisk([
-    "apps/web/vercel.json",
-    ".github/workflows/vercel-web-acceptance.yml",
-    "contracts/vercel-web-deployment.v1.json",
-    "scripts/release/check-vercel-web-deployment-plan.mjs",
+    "apps/web/cloudflare.config.ts",
+    "apps/web/open-next.config.ts",
+    "apps/web/vite.config.ts",
+    "apps/web/worker/index.mjs",
+    ".github/workflows/cloudflare-deployability.yml",
     "scripts/release/check-beta-hard-gates.mjs",
     "scripts/release/media-integrity.mjs",
   ]);
