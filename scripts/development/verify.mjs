@@ -6,11 +6,11 @@ import { fileURLToPath } from "node:url";
 import {
   DEVELOPMENT_SCOPE_ORDER,
   commandsForDevelopmentScope,
-} from "../development/catalog.mjs";
-import { checkRepositoryHygiene } from "./check-repository-hygiene.mjs";
-import { repoRoot, runCommand } from "../development/command-runner.mjs";
+} from "./catalog.mjs";
+import { checkRepositoryHygiene } from "../release/check-repository-hygiene.mjs";
+import { repoRoot, runCommand } from "./command-runner.mjs";
 
-export { DEVELOPMENT_SCOPE_ORDER } from "../development/catalog.mjs";
+export { DEVELOPMENT_SCOPE_ORDER } from "./catalog.mjs";
 
 const IGNORED_PREFIXES = [
   ".ai-bridge/",
@@ -53,9 +53,6 @@ function isDocumentationPath(changedPath) {
     changedPath === "AGENTS.md" ||
     changedPath === "GLOSSARY-MAP.md" ||
     changedPath === "README.md" ||
-    changedPath === "progress.md" ||
-    changedPath === "task_plan.md" ||
-    changedPath === "findings.md" ||
     changedPath.startsWith("docs/") ||
     changedPath.endsWith("/GLOSSARY.md") ||
     changedPath.endsWith(".md")
@@ -143,7 +140,7 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "contracts/acquisition-bundle.v1.json" ||
       changedPath === "contracts/curation-patch.v1.json" ||
       changedPath === "contracts/curator-decisions.v1.json" ||
-      changedPath === "contracts/integration-event.v1.json" ||
+      changedPath === "contracts/integration-event.v1.json"
     ) addScope(scopes, "api");
 
     if (changedPath === "contracts/recovery-drill-environments.v1.json") {
