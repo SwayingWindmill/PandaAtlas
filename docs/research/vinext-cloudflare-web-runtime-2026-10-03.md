@@ -21,7 +21,7 @@ The migration is justified because the remaining PandaAtlas-specific incompatibi
 1. `vinext 1.0.1 check` against the current Web reports **93% compatibility**: 18 supported checks, one partial feature, and one concrete source issue.
 2. All six currently used `next/*` / Next-adjacent import families reported by the checker are supported. `proxy.ts`, App Router routing, nuqs, Tailwind, and lucide also pass the checker.
 3. The only concrete source incompatibility is a test fixture using `__dirname`; it is not production application code.
-4. `typedRoutes` remains partial because vinext does not currently generate the same typed `Link` href surface as Next. PandaAtlas already runs `next typegen` before `tsc`; preserving Next only as temporary development-time type-generation tooling is possible without retaining two production runtimes.
+4. `typedRoutes` remains partial because vinext does not currently generate the same typed `Link` href surface as Next. PandaAtlas already runs `next typegen` before `tsc`; keeping Next as an explicit development-only route type generator is compatible with a single vinext production runtime.
 5. The current OpenNext cache topology is configured but not exercised by current Web application code. The repository has no `revalidateTag`, `revalidatePath`, `unstable_cache`, Cache Components, positive `revalidate` interval, or `force-cache` use. The only route-level `revalidate` exports are `revalidate = 0` on force-dynamic/private pages. Therefore the R2 incremental-cache bucket, Durable Object revalidation queue, sharded tag cache, and Web self-binding should not be reproduced automatically in a vinext migration.
 6. The current Web build is a multi-adapter chain: Next build -> OpenNext -> custom asset copy -> Cloudflare Vite packaging -> Cloudflare Build Output -> `cf`. Vinext can collapse this to Vite + vinext + the Cloudflare Vite plugin -> Cloudflare Build Output -> `cf`.
 7. PandaAtlas can keep `cf` as its primary operator/deployment CLI. Cloudflare documents that the Vite plugin writes the Build Output consumed by `cf deploy --prebuilt`; vinext therefore does not require returning Wrangler to the primary deployment path.
@@ -126,7 +126,7 @@ Vinext 1.0.1 currently requires the React Server Components peer set around Reac
 
 `apps/web` is already ESM (`"type": "module"`), so there is no CommonJS-to-ESM migration cost.
 
-## 3. `typedRoutes` is a development-time gap, not a production-runtime blocker
+## 3. `typedRoutes` is a development-tool boundary, not a production-runtime blocker
 
 PandaAtlas currently enables `typedRoutes` in `next.config.ts`, includes `.next/types/**` in TypeScript, and runs:
 
@@ -136,9 +136,14 @@ next typegen && tsc --noEmit
 
 Vinext's route-aware type generation supports route component helper types but does not yet reproduce Next's typed `Link` href surface. This is a real regression if PandaAtlas simply removes Next type generation.
 
-The follow-up migration must therefore verify route typing explicitly. The smallest acceptable bridge is to keep the real Next package only as **development-time type-generation tooling** while production dev/build/start commands use vinext. This is not a second production runtime and must not be used as runtime fallback behavior.
+The migration should therefore define a stable tooling boundary rather than a runtime fallback:
 
-That bridge should be removed when vinext supplies equivalent route-link typing or PandaAtlas deliberately replaces the current `typedRoutes` contract with an equally strong local typing seam. The migration must not add a parallel production Next/OpenNext path merely to preserve route types.
+```text
+production dev/build/start runtime: vinext + Vite + Cloudflare Vite plugin
+route type generation:             Next `typegen`
+```
+
+The Next package can move to development-only ownership if the production vinext build no longer needs it. It must not serve requests, build a fallback production artifact, or preserve an OpenNext path. If PandaAtlas later wants to replace `next typegen`, that should be a separate deliberate tooling decision with equivalent route-type safety, not a pre-declared cleanup step attached to this migration.
 
 ## 4. The configured OpenNext cache topology is currently unused
 
@@ -271,11 +276,11 @@ Use one vertical follow-up ticket/PR. Do not create a permanent dual-runtime pha
 2. Replace the OpenNext-specific custom Worker delegation with a vinext entry while preserving the `HOME_MEDIA` public behavior.
 3. Replace `getCloudflareContext()` with native Cloudflare binding access for `V2_API`, retaining the current non-Worker HTTP transport path.
 4. Remove the OpenNext build/config/dependency path and the unused OpenNext cache bindings/resources from the Web artifact definition.
-5. Preserve route typing through the smallest development-only seam required for the current codebase; do not create a production runtime fallback.
+5. Keep Next only as development-time route type-generation tooling if required to preserve the current `typedRoutes` contract; do not build or retain a production Next/OpenNext fallback.
 6. Keep the existing `cf` Build Output deployment flow and existing deployability workflow rather than adding a second comparison gate.
 7. Verify, in order:
    - `vinext check` has no unexplained production-code issue;
-   - Web typecheck is green, including the chosen route-typing seam;
+   - Web typecheck is green, including the route-typing tooling boundary;
    - the vinext + Cloudflare Vite production build produces valid Cloudflare Build Output;
    - `cf deploy --prebuilt --mode production --dry-run` accepts that artifact;
    - existing Web browser/smoke coverage passes for public routing, media, authenticated/private surfaces, and admin routing that already have coverage.
