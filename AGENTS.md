@@ -21,3 +21,21 @@
   `/mnt/e`, because mixed Windows/WSL `node_modules`, permissions, native
   binaries, and small-file I/O make installs and verification unreliable.
   Use WSL only for tooling that genuinely requires Linux.
+
+## Agent skills
+
+### Issue tracker
+
+Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the repository's five canonical triage roles. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+PandaAtlas uses a multi-context glossary map. See `docs/agents/domain.md`.
+
+### Local state
+
+When creating or retaining ignored build, tool, scratch, or acquisition state, follow `docs/development-operations.md#local-state`.
