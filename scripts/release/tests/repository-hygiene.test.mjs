@@ -17,14 +17,11 @@ test("normalizes repository paths across operating systems", () => {
   assert.equal(normalizeRepositoryPath("./tools//panda-data/src/main.py"), "tools/panda-data/src/main.py");
 });
 
-test("allows source, evidence, and root planning files", () => {
+test("allows source, evidence, and glossary files", () => {
   assert.equal(repositoryHygieneViolation("apps/web/app/page.tsx"), null);
   assert.equal(repositoryHygieneViolation("data/frontend-evidence/test-results.json"), null);
   assert.equal(repositoryHygieneViolation("GLOSSARY-MAP.md"), null);
   assert.equal(repositoryHygieneViolation("contracts/golden-dataset/GLOSSARY.md"), null);
-  assert.equal(repositoryHygieneViolation("task_plan.md"), null);
-  assert.equal(repositoryHygieneViolation("findings.md"), null);
-  assert.equal(repositoryHygieneViolation("progress.md"), null);
 });
 
 test("rejects the retired CONTEXT domain documentation convention", () => {

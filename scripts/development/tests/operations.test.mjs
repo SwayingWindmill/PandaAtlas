@@ -112,6 +112,13 @@ test("operations CLI lists and describes catalog commands", () => {
   const payload = JSON.parse(described.stdout);
   assert.equal(payload.id, "verify.dev");
   assert.equal(payload.category, "verification");
+
+  const verified = spawnSync(process.execPath, [cliPath, "run", "verify.plan"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  });
+  assert.equal(verified.status, 0, verified.stderr);
+  assert.match(verified.stdout, /\[verify:dev\] fast development acceptance/);
 });
 
 test("root package exposes the current canonical development interface", async () => {
