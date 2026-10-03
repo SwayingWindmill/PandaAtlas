@@ -16,6 +16,6 @@
     "allowSyntheticDefaultImports": true,
     "types": ["node"]
   },
-  "include": ["instrumentation.ts", "src/**/*.ts", "test/**/*.ts", "vitest.config.ts"],
+  "include": ["src/**/*.ts", "test/**/*.ts", "vitest.config.ts"],
   "exclude": ["dist", "node_modules", "app", "scripts", "tests"]
 }

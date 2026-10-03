@@ -5,6 +5,8 @@
 - Architecture authority: `docs/architecture/zhipanda-v2-architecture-baseline.md`
 - Planning source: Wayfinder #309 / #322
 
+> **Deployment-history note (2026-10-03):** the Vercel placement/cutover steps in this execution map describe the completed 2026-08 migration plan and are no longer current deployment instructions. Live Web/API runtime ownership is defined only by `docs/deployment/runtime-status.md`. Do not use this map to reintroduce retired Vercel or V1 runtime paths.
+
 ## 1. Delivery rule
 
 This implementation map converts the accepted V2 architecture into a small number of delivery slices.

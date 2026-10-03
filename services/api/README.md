@@ -6,11 +6,10 @@
 
 - Node.js 24
 - NestJS 11 + Fastify 5
-- Vercel Functions
+- Cloudflare Worker `zhipanda-v2-api`
 - Supabase PostgreSQL as the sole business-data authority
 - Supabase Auth UUID identity
-- Supavisor transaction pool for serverless runtime connections
-- strict database TLS with the Supabase Root 2021 CA
+- Cloudflare Hyperdrive for production request-scoped PostgreSQL connections
 
 The V2 architecture authority is [`docs/architecture/zhipanda-v2-architecture-baseline.md`](../../docs/architecture/zhipanda-v2-architecture-baseline.md).
 
@@ -31,18 +30,19 @@ npm run build:v2
 
 ## Production deployment
 
-Vercel owns the online API runtime. `services/api/vercel.json` pins the function region to Tokyo (`hnd1`) next to the production Supabase project.
+Cloudflare owns the online API runtime. `cloudflare.config.ts` declares the Worker, `api.zhipanda.com`, Hyperdrive, service bindings, and compatibility flags. `worker/index.mjs` bridges the existing Nest/Fastify application into the Cloudflare Node HTTP runtime.
+
+Build the deployable artifact with `npm run build:cloudflare -w @zhipanda/api`. Deployment uses `cf` through `npm run deploy:cloudflare -w @zhipanda/api`.
 
 Production runtime configuration includes:
 
 - `APP_ENV=production`
-- `DATABASE_URL` using the Supavisor transaction pool
-- `DATABASE_SSL_CA_CERT` containing the Supabase Root 2021 CA
+- `DATABASE_CONNECTION_MODE=hyperdrive`
 - `CORS_ALLOW_ORIGINS`
 - Supabase Auth configuration
 - observability/provider credentials where enabled
 
-The runtime database login is a dedicated least-privilege login that inherits `zhipanda_app`; migration-only direct grants are not part of the steady-state runtime role.
+The Worker does not carry a production `DATABASE_URL`; each request receives its PostgreSQL connection string from the Hyperdrive binding. Migration-only direct grants remain outside the request runtime.
 
 ## API and jobs
 
@@ -58,4 +58,4 @@ The generated V2 contract is `openapi/panda-atlas-v2.json`.
 
 ## Legacy retirement
 
-FastAPI, `/api/v1`, the Python ASGI entrypoint, the FastAPI Vercel closure, Cloudflare Worker/D1 projection runtime, and OpenNext Web runtime were retired at the V2 production cutover. They are not compatibility targets and must not be reintroduced. Historical evidence remains in Git history and the legacy cutover tag.
+FastAPI, `/api/v1`, the Python ASGI entrypoint, the FastAPI/Vercel closure, the Vercel Nest runtime, and the old `services/worker-api`/D1 projection runtime are retired. They are not compatibility targets and must not be reintroduced. The current Cloudflare Nest Worker and OpenNext Web Worker are V2 production runtime, not legacy compatibility paths.

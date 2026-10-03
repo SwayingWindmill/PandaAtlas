@@ -2,11 +2,11 @@ import "server-only";
 
 import { createApiClient, type ApiClient } from "@zhipanda/api-client";
 import { NextResponse } from "next/server";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
-const V2_API_BASE_URL = (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
-const API_PROTECTION_BYPASS_SECRET = process.env.API_PROTECTION_BYPASS_SECRET?.trim();
+const V2_API_BASE_URL = (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001").replace(/\/$/, "");
 
 export interface AuthenticatedV2Client {
   client: ApiClient;
@@ -23,16 +23,12 @@ interface V2Result {
 }
 
 export function createServerV2Client(): ApiClient {
-  const client = createApiClient(V2_API_BASE_URL);
-  if (API_PROTECTION_BYPASS_SECRET) {
-    client.use({
-      onRequest({ request }) {
-        request.headers.set("x-vercel-protection-bypass", API_PROTECTION_BYPASS_SECRET);
-        return request;
-      },
-    });
-  }
-  return client;
+  return createApiClient(V2_API_BASE_URL, (request) => {
+    if (process.env.API_TRANSPORT === "service-binding") {
+      return getCloudflareContext().env.V2_API.fetch(request);
+    }
+    return fetch(request);
+  });
 }
 
 export async function createAuthenticatedV2Client(): Promise<AuthenticatedV2Client | null> {
