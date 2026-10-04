@@ -26,7 +26,6 @@ test("classifies an isolated public style change as Level 1", () => {
 test("classifies Cloudflare deployment and public release integrity changes as Level 3", () => {
   const result = classifyFrontendRisk([
     "apps/web/cloudflare.config.ts",
-    "apps/web/open-next.config.ts",
     "apps/web/vite.config.ts",
     "apps/web/worker/index.mjs",
     ".github/workflows/cloudflare-deployability.yml",

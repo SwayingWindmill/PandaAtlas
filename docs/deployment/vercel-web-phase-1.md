@@ -1,12 +1,14 @@
 # Phase 1: Parallel Vercel Web deployment
 
+> Historical deployment record. Vercel is not a current Web runtime or release gate; use [`runtime-status.md`](runtime-status.md) for the active deployment topology.
+
 - Status: Complete
 - Decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 - Phase 0 baseline: [Managed-cloud inventory](managed-cloud-phase-0-inventory.md)
 - Deployment plan: [`contracts/vercel-web-deployment.v1.json`](../../contracts/vercel-web-deployment.v1.json)
 - Deployment evidence: [`data/deployment-evidence/vercel-web-2026-08-01.json`](../../data/deployment-evidence/vercel-web-2026-08-01.json)
 - Acceptance workflow (historical snapshot): [`docs/deployment/history/vercel-web-acceptance.yml`](history/vercel-web-acceptance.yml)
-- Plan validation: `npm run check:vercel-web-deployment-plan`
+- Plan validation: historical validator retired after the Cloudflare/vinext cutover.
 
 ## Objective
 

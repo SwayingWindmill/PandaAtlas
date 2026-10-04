@@ -38,10 +38,12 @@ The map-close candidate enables these feature-flagged private routes:
 - signed-out, blocked-account, unavailable, empty, and populated states;
 - keyboard-sized controls and a 320 px no-overflow browser contract.
 
-The production budget is enforced by `npm run check:notification-center-budget`:
+The historical Next-build budget for this release was:
 
 - first-load JavaScript gzip limit: 140 KiB;
 - estimated initial transfer gzip limit: 500 KiB.
+
+That validator was retired when the Web production artifact moved to vinext/Cloudflare Build Output; it is not a current release gate.
 
 ## Authoritative gates
 

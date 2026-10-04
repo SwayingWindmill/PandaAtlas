@@ -8,7 +8,6 @@ const RULES = [
     reason: "Cloudflare production deployment or public release integrity semantics",
     patterns: [
       /^apps\/web\/cloudflare\.config\.ts$/,
-      /^apps\/web\/open-next\.config\.ts$/,
       /^apps\/web\/vite\.config\.ts$/,
       /^apps\/web\/worker\//,
       /^\.github\/workflows\/cloudflare-deployability\.yml$/,

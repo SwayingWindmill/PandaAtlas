@@ -106,7 +106,6 @@
   "media_manifest": "data/frontend-system/public-media-manifest.json",
   "state_registry": "data/frontend-system/public-surface-state-registry.json",
   "screenshot_inventory": "data/frontend-system/canonical-screenshot-inventory.json",
-  "route_budget_inventory": "data/frontend-system/route-performance-budgets.json",
   "browser_matrix": [
     "chromium",
     "firefox",

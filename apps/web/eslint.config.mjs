@@ -5,7 +5,15 @@ const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypeScript,
   {
-    ignores: [".next/**", ".next-*/**", ".cloudflare/**", "out/**", "build/**", "next-env.d.ts"]
+    ignores: [
+      ".next/**",
+      ".next-*/**",
+      ".cloudflare/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+      "public/maplibre/maplibre-gl-csp-worker.js",
+    ]
   }
 ];
 
