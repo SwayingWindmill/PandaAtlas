@@ -45,7 +45,7 @@ export function buildPublicMetadata({
     title: { absolute: title },
     description,
     applicationName: ZHIPANDA_APPLICATION_NAME,
-    authors: [{ name: ZHIPANDA_PUBLISHER, url: ZHIPANDA_PUBLIC_ORIGIN }],
+    authors: [{ name: ZHIPANDA_PUBLISHER, url: ZHIPANDA_PUBLIC_ORIGIN.toString() }],
     creator: ZHIPANDA_PUBLISHER,
     publisher: ZHIPANDA_PUBLISHER,
     alternates: {

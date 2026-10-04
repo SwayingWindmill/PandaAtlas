@@ -13,7 +13,7 @@ function isEnabled(value: string | undefined): boolean {
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  if (!isEnabled(process.env.ADMIN_SHELL_ENABLED ?? process.env.NEXT_PUBLIC_ADMIN_SHELL_ENABLED)) {
+  if (!isEnabled(process.env.ADMIN_SHELL_ENABLED)) {
     notFound();
   }
   return <AdminProviders>{children}</AdminProviders>;

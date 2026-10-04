@@ -1,8 +1,8 @@
 import "server-only";
 
 import { createApiClient, type ApiClient } from "@zhipanda/api-client";
+import { env } from "cloudflare:workers";
 import { NextResponse } from "next/server";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
@@ -25,7 +25,7 @@ interface V2Result {
 export function createServerV2Client(): ApiClient {
   return createApiClient(V2_API_BASE_URL, (request) => {
     if (process.env.API_TRANSPORT === "service-binding") {
-      return getCloudflareContext().env.V2_API.fetch(request);
+      return env.V2_API.fetch(request);
     }
     return fetch(request);
   });

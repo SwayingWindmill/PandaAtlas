@@ -19,8 +19,6 @@ const baseURL = externalBaseURL || `http://127.0.0.1:${port}`;
 const v2ApiPort = Number(process.env.PLAYWRIGHT_V2_API_PORT ?? "3300");
 const v2ApiBaseURL = `http://127.0.0.1:${v2ApiPort}`;
 const reuseExistingServer = process.env.PLAYWRIGHT_REUSE_EXISTING_SERVER === "1";
-const productionDistDir = process.env.PLAYWRIGHT_NEXT_DIST_DIR?.trim()
-  || ".next-production-smoke";
 const ci = Boolean(process.env.CI);
 
 const projects = browserMatrix
@@ -69,8 +67,8 @@ export default defineConfig({
     },
     {
       command: productionServer
-        ? `npm run start -- --hostname 127.0.0.1 --port ${port}`
-        : `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
+        ? `npm run start -- --host 127.0.0.1 --port ${port}`
+        : `npm run dev -- --host 127.0.0.1 --port ${port}`,
       url: `${baseURL}/auth/login`,
       reuseExistingServer,
       env: {
@@ -82,7 +80,6 @@ export default defineConfig({
         NEXT_PUBLIC_ENGAGEMENT_ENABLED: "true",
         NEXT_PUBLIC_FEED_ENABLED: "true",
         NEXT_PUBLIC_NOTIFICATION_ENABLED: "true",
-        ...(productionServer ? { PANDA_NEXT_DIST_DIR: productionDistDir } : {}),
       },
     },
   ],

@@ -121,7 +121,7 @@
       "node_modules",
       ".next-production-smoke",
       ".next",
-      ".open-next",
+      ".vinext",
       "dist",
       ".venv",
       ".venv-release",

@@ -1,6 +1,5 @@
-import nextWorker from "../.open-next/worker.js";
+import vinextWorker from "vinext/server/app-router-entry";
 import publishedPhotoKeys from "./published-photo-keys.json" with { type: "json" };
-export { DOQueueHandler, DOShardedTagCache } from "../.open-next/worker.js";
 
 // Only the approved playlist and photo manifest are public. The bucket remains private.
 const homeVideos = new Set([
@@ -14,7 +13,7 @@ const worker = {
   async fetch(request, env, context) {
     const url = new URL(request.url);
     const isPhoto = url.pathname.startsWith("/media/pandas/photos/");
-    if (!isPhoto && !url.pathname.startsWith("/media/home-official/")) return nextWorker.fetch(request, env, context);
+    if (!isPhoto && !url.pathname.startsWith("/media/home-official/")) return vinextWorker.fetch(request, env, context);
     const key = url.pathname.slice("/media/".length);
     if (isPhoto ? !publicPhotos.has(key) : !homeVideos.has(key.slice("home-official/".length))) return new Response("Not found", { status: 404 });
     if (request.method !== "GET" && request.method !== "HEAD") {

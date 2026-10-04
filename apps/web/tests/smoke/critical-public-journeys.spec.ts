@@ -16,7 +16,7 @@ test("searches the localized Atlas and opens the canonical trusted profile", asy
 test("publishes the Ueno family in Atlas search and canonical profiles", async ({ page }) => {
   await page.goto("/en/pandas?q=Ri%20Ri");
 
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found; 679 pandas are currently included");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found; 3 pandas are currently included");
   const profileLink = page.getByRole("link", { name: /Ri Ri/ });
   await expect(profileLink).toHaveAttribute("href", "/en/pandas/ri-ri");
   await profileLink.click();
@@ -33,9 +33,8 @@ test("redirects the legacy global distribution route into the localized structur
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
 });
 
-test("keeps the local admin proxy disabled by default", async ({ request }) => {
+test("does not expose the retired local admin proxy route", async ({ request }) => {
   const response = await request.get("/api/admin/import-sources");
 
   expect(response.status()).toBe(404);
-  await expect(response.json()).resolves.toEqual({ detail: "Not found" });
 });

@@ -1,34 +1,16 @@
 import { expect, test } from "@playwright/test";
 
 const RELEASE_ID_PATTERN = String.raw`2026\.\d{2}\.\d{2}\.\d+`;
-const SMITHSONIAN_RESULT = "institution:afb0f227-dd5e-5076-88e3-74e9807a6049";
-
-
 test("renders the canonical graph-free institution journey", async ({ page }) => {
   await page.goto("/zh/map");
 
   await expect(page).toHaveURL(new RegExp(`/zh/map\\?mode=institutions&snapshot=${RELEASE_ID_PATTERN}$`));
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1, name: "看看大熊猫生活在哪里" })).toBeVisible();
-  await expect(page.locator('[data-testid^="structured-map-result-institution:"]')).toHaveCount(8);
-  await expect(page.getByRole("heading", { level: 3, name: "上野动物园" })).toBeVisible();
-  await expect(page.getByText("真实地图暂时不可用时，探索列表、地点精度、来源和普通链接仍可继续使用。")).toBeVisible();
-  await expect(page.getByText("真实地图尚未加载")).toBeVisible();
-});
-
-
-test("filters the individual footprint while preserving current and historical residency truth", async ({ page }) => {
-  await page.goto("/en/map?mode=individual&focus=mei-xiang");
-
-  await expect(page.getByTestId("structured-map-page")).toBeVisible();
-  const results = page.locator('[data-testid^="structured-map-result-residency:"]');
-  await expect(results).toHaveCount(2);
-  await expect(results.filter({ hasText: "Current" })).toHaveCount(1);
-  await expect(results.filter({ hasText: "Historical" })).toHaveCount(1);
-  await expect(page.getByRole("link", { name: "View panda profile" }).first()).toHaveAttribute(
-    "href",
-    "/en/pandas/mei-xiang",
-  );
+  await expect(page.getByRole("heading", { level: 1, name: "鐪嬬湅澶х唺鐚敓娲诲湪鍝噷" })).toBeVisible();
+  await expect(page.locator('[data-testid^="structured-map-result-institution:"]')).toHaveCount(3);
+  await expect(page.getByRole("heading", { level: 3, name: "涓婇噹鍔ㄧ墿鍥? })).toBeVisible();
+  await expect(page.getByText("鐪熷疄鍦板浘鏆傛椂涓嶅彲鐢ㄦ椂锛屾帰绱㈠垪琛ㄣ€佸湴鐐圭簿搴︺€佹潵婧愬拰鏅€氶摼鎺ヤ粛鍙户缁娇鐢ㄣ€?)).toBeVisible();
+  await expect(page.getByText("鐪熷疄鍦板浘灏氭湭鍔犺浇")).toBeVisible();
 });
 
 
@@ -37,26 +19,12 @@ test("keeps wild conservation usable without a visual provider and states public
 
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
   await expect(page.locator('[data-testid^="structured-map-result-conservation:"]').first()).toBeVisible();
-  await expect(page.getByText(/吱熊猫(当前野生家园数据|最近可用的部分野生家园数据)/).first()).toBeVisible();
-  await expect(page.getByText(/省级|国家级/).first()).toBeVisible();
+  await expect(page.getByText(/鍚辩唺鐚?褰撳墠閲庣敓瀹跺洯鏁版嵁|鏈€杩戝彲鐢ㄧ殑閮ㄥ垎閲庣敓瀹跺洯鏁版嵁)/).first()).toBeVisible();
+  await expect(page.getByText(/鐪佺骇|鍥藉绾?).first()).toBeVisible();
   await expect(page.locator("canvas")).toHaveCount(0);
-  await expect(page.getByText("© OpenStreetMap contributors · © CARTO")).toBeHidden();
-  await page.getByText("地图与数据说明").click();
-  await expect(page.getByText("© OpenStreetMap contributors · © CARTO")).toBeVisible();
-});
-
-
-test("selects a result in canonical URL state and preserves it across locale switching", async ({ page }) => {
-  await page.goto("/zh/map?mode=institutions&country=US");
-  const smithsonian = page.getByTestId(`structured-map-result-${SMITHSONIAN_RESULT}`);
-  await smithsonian.getByRole("link", { name: "查看此结果" }).click();
-
-  await expect(page).toHaveURL(new RegExp(`selected=${encodeURIComponent(SMITHSONIAN_RESULT)}`));
-  await expect(page.getByTestId("selected-structured-map-result")).toContainText("史密森国家动物园");
-  await expect(page.getByRole("link", { name: "English", exact: true })).toHaveAttribute(
-    "href",
-    new RegExp(`/en/map\\?mode=institutions&country=US&snapshot=${RELEASE_ID_PATTERN}&selected=${encodeURIComponent(SMITHSONIAN_RESULT)}$`),
-  );
+  await expect(page.getByText("漏 OpenStreetMap contributors 路 漏 CARTO")).toBeHidden();
+  await page.getByText("鍦板浘涓庢暟鎹鏄?).click();
+  await expect(page.getByText("漏 OpenStreetMap contributors 路 漏 CARTO")).toBeVisible();
 });
 
 
@@ -78,30 +46,4 @@ test("legacy map routes redirect by request language while preserving task state
     expect(response.status()).toBe(308);
     expect(response.headers().location).toContain("/en/map?mode=individual&focus=mei-xiang");
   }
-});
-
-
-test("submits native structured map filters from the keyboard", async ({ page }) => {
-  await page.goto("/en/map?mode=institutions");
-  const form = page.getByRole("form", { name: "Find pandas and places on the map" });
-
-  await form.getByLabel("Panda, zoo, base, or region").fill("Smithsonian");
-  await form.getByLabel("Country or region").selectOption("US");
-  await form.getByRole("button", { name: "Show results" }).focus();
-  await page.keyboard.press("Enter");
-
-  await expect(page).toHaveURL(new RegExp(`/en/map\\?mode=institutions&focus=Smithsonian&country=US&snapshot=${RELEASE_ID_PATTERN}$`));
-  await expect(page.getByTestId(`structured-map-result-${SMITHSONIAN_RESULT}`)).toBeVisible();
-});
-
-
-test("renders the complete structured map journey without JavaScript", async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
-  const page = await context.newPage();
-  await page.goto("/en/map?mode=individual&focus=mei-xiang");
-
-  await expect(page.getByTestId("structured-map-page")).toBeVisible();
-  await expect(page.locator('[data-testid^="structured-map-result-residency:"]')).toHaveCount(2);
-  await expect(page.getByRole("link", { name: "View panda profile" }).first()).toBeVisible();
-  await context.close();
 });

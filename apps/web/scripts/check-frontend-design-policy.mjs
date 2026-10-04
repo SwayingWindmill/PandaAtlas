@@ -34,7 +34,7 @@ const publicBrandFiles = [
 
 const forbiddenImageHosts = ["picsum.photos", "placehold.co", "placeholder.com"];
 const sourceExtensions = new Set([".ts", ".tsx", ".js", ".mjs", ".css"]);
-const ignoredDirectories = new Set([".next", ".open-next", "node_modules", "test-results"]);
+const ignoredDirectories = new Set([".next", ".cloudflare", "node_modules", "test-results"]);
 
 async function sourceFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
