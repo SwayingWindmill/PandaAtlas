@@ -7,15 +7,11 @@ PandaAtlas is a personal collection site and now uses one release policy only. T
 ```bash
 npm run check:panda-curation
 npm run process:panda-media
-npm run release:default
+npm run verify:dev
+npm run build:cloudflare
 ```
 
-`release:default` is also available as `release:private` and writes its report to:
-
-```text
-.release-gate/private-collection.json
-.release-gate/private-collection.md
-```
+There is no separate private/public release-gate command. Use the tracked Development Operations checks plus the Cloudflare artifact build described in [`release-gate.md`](release-gate.md).
 
 ## Remaining safeguards
 
@@ -30,7 +26,7 @@ The collection workflow keeps checks that prevent broken data, unsafe files, and
 - bounded file size and decoded-pixel limits;
 - supported, non-animated image formats;
 - immutable media output unless replacement is explicit;
-- FastAPI tests, Web lint, TypeScript checks, and production build.
+- current API tests, Web lint/typecheck, browser acceptance, and Cloudflare artifact build.
 
 ## Removed review gates
 

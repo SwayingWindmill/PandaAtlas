@@ -10,7 +10,7 @@ Its implementation sequence is [NestJS V2 Implementation Map](../implementation/
 
 The live V2 target is NestJS 11 + Fastify 5 on Node 24, a business-capability modular monolith, Supabase PostgreSQL/PostGIS/Auth as the single authoritative managed data platform, Cloudflare Workers/DNS/R2/Hyperdrive for the online runtime boundary, and GitHub Actions for bounded long/heavy work.
 
-The V2 baseline intentionally does not preserve FastAPI package architecture, `/api/v1` transport compatibility, or the old Worker/D1 public-read architecture. OpenNext is currently the Web-to-Cloudflare adapter, not a V1 compatibility surface.
+The V2 baseline intentionally does not preserve FastAPI package architecture, `/api/v1` transport compatibility, or the old Worker/D1 public-read architecture. The current Web runtime uses vinext + Vite on Cloudflare Workers; use [deployment runtime status](../deployment/runtime-status.md) for provider/runtime details.
 
 ## Current production is V2
 

@@ -24,9 +24,15 @@
 
 ## Agent skills
 
+For Matt Pocock workflows in this repository, explicitly read the tracked `.agents/skills/<skill>/SKILL.md`; user-global duplicate skills are not PandaAtlas authority.
+
 ### Issue tracker
 
-Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. See `docs/agents/issue-tracker.md`.
+Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. For project-status or next-work questions, use live `main` plus GitHub state as described in `docs/agents/issue-tracker.md`.
+
+### Web browser tests
+
+When changing Playwright tests, Web fixtures, or a browser-covered product surface, read `apps/web/tests/README.md`.
 
 ### Triage labels
 

@@ -1,6 +1,8 @@
 # ZhiPanda V2 production cutover runbook
 
-Status: prepared by #332; execution belongs to #333 after managed-staging acceptance.
+> Historical execution plan for #333. The cutover is complete; do not use these Vercel/OpenNext steps as current operations. See [`../runtime-status.md`](../runtime-status.md) for current production topology.
+
+Historical status: prepared by #332 and executed by completed issue #333.
 
 ## Preconditions
 

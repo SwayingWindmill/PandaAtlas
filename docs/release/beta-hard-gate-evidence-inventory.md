@@ -1,5 +1,7 @@
 # Public Beta hard-gate evidence inventory
 
+> Historical evidence snapshot from 2026-07-15. Paths, runtimes, test names, and counts below describe that audited baseline and may no longer exist. Use [`../deployment/runtime-status.md`](../deployment/runtime-status.md), [`release-gate.md`](release-gate.md), and the current GitHub/main state for present-day operation and acceptance.
+
 ## Audit scope
 
 - Parent objective: [beta-launch-hard-gates](https://github.com/SwayingWindmill/PandaAtlas/issues/13)

@@ -1,6 +1,6 @@
 # ZhiPanda Web
 
-`apps/web` is the production Next.js V2 application.
+`apps/web` is the production V2 Web application. It keeps the Next App Router source contract while vinext + Vite own development and Cloudflare production runtime execution.
 
 ## Runtime
 

@@ -5,7 +5,7 @@ The active repository layout after the V2 production cutover is:
 ```text
 PandaAtlas/
   apps/
-    web/                    # Next.js V2 Web runtime
+    web/                    # Next-compatible V2 app; vinext/Vite Cloudflare runtime
   services/
     api/                    # NestJS/Fastify V2 API runtime
   packages/
