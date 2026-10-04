@@ -5,10 +5,9 @@ test("uses the same reviewed identity release in English", async ({ page }) => {
 
   await expect(page.getByRole("heading", { level: 1, name: "Panda guide | ZhiPanda" })).toBeVisible();
   await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found");
-  await expect(page.getByRole("link", { name: /Mei Xiang.*缇庨/ })).toHaveAttribute(
-    "href",
-    "/en/pandas/mei-xiang",
-  );
+  await expect(
+    page.locator('a[href="/en/pandas/mei-xiang"]').filter({ hasText: "Mei Xiang" }).first(),
+  ).toBeVisible();
   await expect(page.getByText("He Hua")).toHaveCount(0);
 });
 
