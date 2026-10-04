@@ -107,30 +107,15 @@ test("renders private Passport and local recent history", async ({ page }) => {
   await expect(page.getByTestId("recent-pandas-section")).toBeVisible();
 });
 
-test("signed-out Favorite creates Pending Intent before OTP", async ({ page }) => {
+test("signed-out Favorite goes directly to OTP without creating a legacy follow intent", async ({ page }) => {
   test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
-  let requestBody: Record<string, unknown> | null = null;
+  let legacyIntentRequests = 0;
   await page.route("**/api/identity/session", async (route) => {
     await route.fulfill({ status: 401, contentType: "application/json", body: '{"detail":"Authentication required"}' });
   });
   await page.route("**/api/engagement/follow-intents", async (route) => {
-    if (route.request().method() !== "POST") {
-      await route.fallback();
-      return;
-    }
-    requestBody = route.request().postDataJSON() as Record<string, unknown>;
-    await route.fulfill({
-      status: 201,
-      contentType: "application/json",
-      body: JSON.stringify({
-        intent_id: "11111111-1111-1111-1111-111111111111",
-        panda_id: requestBody.panda_id,
-        locale: requestBody.locale,
-        safe_return_path: requestBody.return_path,
-        status: "pending",
-        expires_at: "2026-07-28T10:00:00Z",
-      }),
-    });
+    legacyIntentRequests += 1;
+    await route.abort();
   });
 
   await page.goto("/en/pandas/mei-xiang");
@@ -138,7 +123,7 @@ test("signed-out Favorite creates Pending Intent before OTP", async ({ page }) =
   await expect(follow).toBeVisible();
   await follow.click();
   await expect(page).toHaveURL(/\/auth\/login\?next=%2Fen%2Fpandas%2Fmei-xiang$/);
-  expect(requestBody).toMatchObject({ locale: "en", return_path: "/en/pandas/mei-xiang" });
+  expect(legacyIntentRequests).toBe(0);
 });
 
 test("reflows at 320 CSS pixels with private Passport", async ({ page }) => {

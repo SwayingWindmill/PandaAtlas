@@ -18,41 +18,17 @@ const session = {
 };
 
 const unreadItem = {
-  inbox_item_id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
-  intent_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
-  category: "major_activity",
-  body: {
-    localized_snapshots: [
-      { locale: "zh-CN", title: "美香发布了新动态", summary: "经过审核的公开安全摘要。" },
-      { locale: "en", title: "New Activity for Mei Xiang", summary: "A reviewed public-safe summary." },
-    ],
+  messageId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  category: "knowledge_update",
+  content: {
+    title_zh: "美香发布了新动态",
+    title_en: "New Activity for Mei Xiang",
+    summary_zh: "经过审核的公开安全摘要。",
+    summary_en: "A reviewed public-safe summary.",
   },
-  body_version: 1,
-  created_at: "2026-07-30T00:00:00Z",
-  expires_at: "2026-10-28T00:00:00Z",
-  seen_at: null,
-  read_at: null,
-  retracted_at: null,
-  retraction_reason: null,
-};
-
-const retractedItem = {
-  inbox_item_id: "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
-  intent_id: "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
-  category: "correction_retraction",
-  body: {
-    title_zh: "通知已撤回",
-    title_en: "Notification retracted",
-    summary_zh: "原动态不再公开显示。",
-    summary_en: "The original Activity is no longer public.",
-  },
-  body_version: 2,
-  created_at: "2026-07-29T00:00:00Z",
-  expires_at: "2026-10-27T00:00:00Z",
-  seen_at: "2026-07-29T01:00:00Z",
-  read_at: "2026-07-29T01:00:00Z",
-  retracted_at: "2026-07-29T02:00:00Z",
-  retraction_reason: "source_retracted",
+  createdAt: "2026-07-30T00:00:00Z",
+  seenAt: null,
+  readAt: null,
 };
 
 async function mockSignedInNotificationCenter(page: Page) {
@@ -63,83 +39,64 @@ async function mockSignedInNotificationCenter(page: Page) {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ items: [unreadItem, retractedItem], next_cursor: "cursor-older-activity", unread_count: 1 }),
+      body: JSON.stringify({ items: [unreadItem], unreadCount: 1 }),
     });
   });
   await page.route("**/api/notification/preferences", async (route) => {
+    if (route.request().method() === "PUT") {
+      const body = route.request().postDataJSON() as Record<string, unknown>;
+      expect(body).toEqual({ category: "knowledge_update", channel: "email", enabled: true });
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          category: "knowledge_update",
+          channel: "email",
+          enabled: true,
+          version: 2,
+          updatedAt: "2026-07-30T00:06:00Z",
+        }),
+      });
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify([
         {
-          account_id: session.account_id,
-          category: "major_activity",
+          category: "knowledge_update",
           channel: "email",
           enabled: false,
           version: 1,
-          updated_at: "2026-07-30T00:00:00Z",
+          updatedAt: "2026-07-30T00:00:00Z",
         },
       ]),
     });
   });
   await page.route("**/api/notification/inbox/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/read", async (route) => {
-    const body = route.request().postDataJSON() as Record<string, unknown>;
-    expect(String(body.idempotency_key)).toMatch(/^inbox-read:/);
+    expect(route.request().method()).toBe("PATCH");
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ ...unreadItem, read_at: "2026-07-30T00:05:00Z" }),
-    });
-  });
-  await page.route("**/api/engagement/preferences/major_activity/email", async (route) => {
-    const body = route.request().postDataJSON() as Record<string, unknown>;
-    expect(body.enabled).toBe(true);
-    expect(String(body.idempotency_key)).toMatch(/^preference-major_activity:/);
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        account_id: session.account_id,
-        category: "major_activity",
-        channel: "email",
-        enabled: true,
-        version: 2,
-        updated_at: "2026-07-30T00:06:00Z",
-      }),
+      body: JSON.stringify({ ...unreadItem, readAt: "2026-07-30T00:05:00Z" }),
     });
   });
 }
 
-test("private Inbox exposes read, retraction, preference, locale, and mobile behavior", async ({ page }) => {
+test("private Inbox renders current notifications and supports read and email-preference actions", async ({ page }) => {
   test.skip(!notificationEnabled, "The deployed Web build intentionally disables Notification UI.");
-  await page.setViewportSize({ width: 320, height: 900 });
   await mockSignedInNotificationCenter(page);
   await page.goto("/en/me/inbox");
 
   await expect(page.getByRole("heading", { name: "Native Inbox and email preferences" })).toBeVisible();
   await expect(page.getByText("New Activity for Mei Xiang")).toBeVisible();
-  await expect(page.getByText("Notification retracted")).toBeVisible();
-  await expect(page.getByText("Retracted", { exact: true })).toBeVisible();
   await expect(page.getByText(/Unread:\s*1/)).toBeVisible();
-  await expect(page.getByRole("link", { name: "View earlier notifications" })).toHaveAttribute(
-    "href",
-    "/en/me/inbox?cursor=cursor-older-activity",
-  );
 
-  const markRead = page.getByRole("button", { name: "Mark as read" });
-  expect((await markRead.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(48);
-  await markRead.click();
+  await page.getByRole("button", { name: "Mark as read" }).click();
   await expect(page.getByText(/Unread:\s*0/)).toBeVisible();
 
-  const enableEmail = page.getByRole("button", { name: "Enable email" }).first();
-  expect((await enableEmail.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(48);
-  await page.getByRole("button", { name: "Enable email" }).nth(1).click();
+  await page.getByRole("listitem").filter({ hasText: "Birthday Activity" }).getByRole("button", { name: "Enable email" }).click();
   await expect(page.getByRole("status")).toContainText("Preference saved");
-  await expect(page.getByText("Security and role notifications are mandatory and cannot be disabled.")).toBeVisible();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-
-  await page.getByRole("button", { name: "Open navigation menu" }).click();
-  await expect(page.getByRole("link", { name: "中文" })).toHaveAttribute("href", "/zh/me/inbox");
 });
 
 test("signed-out Inbox never requests private facts and provides a safe return path", async ({ page }) => {

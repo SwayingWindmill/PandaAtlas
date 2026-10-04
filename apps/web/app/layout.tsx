@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | ZhiPanda",
   },
   description: "Discover giant pandas, their families, the places they have lived, and their latest published updates.",
-  authors: [{ name: ZHIPANDA_PUBLISHER, url: ZHIPANDA_PUBLIC_ORIGIN }],
+  authors: [{ name: ZHIPANDA_PUBLISHER, url: ZHIPANDA_PUBLIC_ORIGIN.toString() }],
   creator: ZHIPANDA_PUBLISHER,
   publisher: ZHIPANDA_PUBLISHER,
   openGraph: {

@@ -70,11 +70,7 @@
   ],
   "geometry_only_public_keys": ["coordinates"],
   "forbidden_client_markers": ["ADMIN_API_TOKEN", "dev-admin-token"],
-  "admin_token_server_source_allowlist": [
-    "apps/web/app/api/admin/_shared.ts",
-    "apps/web/scripts/dev-local-admin.mjs",
-    "apps/web/scripts/smoke-admin-proxy.mjs"
-  ],
+  "admin_token_server_source_allowlist": [],
   "hard_gate_ids": [
     "accessibility-core-journeys",
     "admin-auth-mfa",

@@ -23,7 +23,7 @@ export interface GoldenDatasetFixture {
 }
 
 const datasetPath = path.resolve(
-  __dirname,
+  import.meta.dirname,
   "..",
   "..",
   "..",

@@ -31,7 +31,7 @@ The npm workspaces are exactly:
 
 ## Runtime boundaries
 
-- `apps/web` runs as Cloudflare Worker `zhipanda-v2-web` through OpenNext and calls the canonical API at `https://api.zhipanda.com`; deployed server calls use the `V2_API` service binding.
+- `apps/web` runs as Cloudflare Worker `zhipanda-v2-web` through vinext + Vite + the Cloudflare Vite plugin and calls the canonical API at `https://api.zhipanda.com`; deployed server calls use the `V2_API` service binding.
 - `services/api` runs NestJS/Fastify as Cloudflare Worker `zhipanda-v2-api` and is the only online business API runtime.
 - Supabase PostgreSQL is the sole business-data authority.
 - Supabase Auth is the identity authority.
@@ -40,12 +40,12 @@ The npm workspaces are exactly:
 
 ## Deployment
 
-`apps/web/cloudflare.config.ts` and `services/api/cloudflare.config.ts` are the tracked production deployment topology. `cf` is the operator/deployment CLI; Wrangler is retained only where OpenNext currently requires it during the Web build.
+`apps/web/cloudflare.config.ts` and `services/api/cloudflare.config.ts` are the tracked production deployment topology. `cf` is the operator/deployment CLI; the Web runtime no longer carries an OpenNext or Wrangler deployment path.
 
 Vercel Web/API deployment, the old Worker/D1 projection runtime, FastAPI, `/api/v1`, and FastAPI serverless-closure tooling are retired implementation history, not supported compatibility surfaces.
 
 ## Development
 
-Run Node/Nest/Next commands from the Windows side of the repository. The canonical command catalog is documented in [`docs/development-operations.md`](development-operations.md).
+Run Node/Nest/Vite commands from the Windows side of the repository. Next remains a development-only route-type generation tool for the Web workspace. The canonical command catalog is documented in [`docs/development-operations.md`](development-operations.md).
 
 Offline acquisition and curation Python commands use `tools/panda-data` and `uv` independently of the online API workspace.
