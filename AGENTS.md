@@ -30,6 +30,10 @@ For Matt Pocock workflows in this repository, explicitly read the tracked `.agen
 
 Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. For project-status or next-work questions, use live `main` plus GitHub state as described in `docs/agents/issue-tracker.md`.
 
+### Issue completion
+
+When an issue is merged and closed, stop before starting another issue. Report the completed issue and its verification to the user, then run the repo-local `/retro` against the 10 most recent PandaAtlas coding-agent sessions. Start the next issue only after the user explicitly asks to continue.
+
 ### Web browser tests
 
 When changing Playwright tests, Web fixtures, or a browser-covered product surface, read `apps/web/tests/README.md`.
