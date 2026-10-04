@@ -1,5 +1,7 @@
-import { AdminShellPage } from "./admin-shell-page";
+import { AdminOverview } from "@/features/admin/shell/components/admin-overview";
 
 export const dynamic = "force-dynamic";
 
-export default AdminShellPage;
+export default function AdminPage() {
+  return <AdminOverview />;
+}

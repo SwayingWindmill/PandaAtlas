@@ -14,8 +14,21 @@ const evidence = [
   },
 ];
 
+const auditSession = {
+  accountId: "11111111-1111-4111-8111-111111111111",
+  aal: "aal2",
+  capabilities: ["audit.read"],
+};
+
 test("audit evidence collection renders rows and keeps the supported limit in the URL", async ({ page }) => {
   const requestedLimits: string[] = [];
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(auditSession),
+    });
+  });
   await page.route("**/api/admin/audit/evidence?**", async (route) => {
     requestedLimits.push(new URL(route.request().url()).searchParams.get("limit") ?? "");
     await route.fulfill({
@@ -27,6 +40,8 @@ test("audit evidence collection renders rows and keeps the supported limit in th
 
   await page.goto("/admin/audit/evidence?limit=25", { waitUntil: "domcontentloaded" });
 
+  await expect(page.getByRole("navigation", { name: "Admin navigation" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Audit", exact: true })).toHaveAttribute("href", "/admin/audit");
   await expect(page.getByRole("heading", { level: 1, name: "Audit evidence" })).toBeVisible();
   await expect(page.getByText("publication.release.activated", { exact: true })).toBeVisible();
   expect(requestedLimits).toContain("25");

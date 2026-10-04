@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { AdminProviders } from "@/components/admin/admin-providers";
+import { AdminShell } from "@/features/admin/shell/components/admin-shell";
 
 export const metadata: Metadata = {
   title: { absolute: "ZhiPanda 工作人员控制台" },
@@ -16,5 +17,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!isEnabled(process.env.ADMIN_SHELL_ENABLED)) {
     notFound();
   }
-  return <AdminProviders>{children}</AdminProviders>;
+  return (
+    <AdminProviders>
+      <AdminShell>{children}</AdminShell>
+    </AdminProviders>
+  );
 }
