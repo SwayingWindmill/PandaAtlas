@@ -7,7 +7,7 @@ Branch: `feat/issue-333-production-cutover`
 Draft PR: `#355 V2-11: cut over production and retire legacy runtimes`
 
 This file is the execution evidence for the bounded V2 production cutover defined by
-`docs/runbooks/zhipanda-v2-production-cutover.md`. It records observed production state;
+`docs/deployment/history/zhipanda-v2-production-cutover.md`. It records observed production state;
 it must not claim a cutover step completed before that step has actually been executed and
 validated.
 

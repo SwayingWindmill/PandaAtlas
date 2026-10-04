@@ -86,7 +86,7 @@ const commands = [
   {
     id: "web.build",
     category: "verification",
-    description: "Build the production Next.js application.",
+    description: "Build the production vinext/Vite Web application.",
     command: "npm",
     args: ["run", "build", "-w", "web"],
     requires: ["node_modules"],

@@ -24,7 +24,7 @@ The active scopes are:
 
 There is no separate legacy `worker-api` workspace scope after the V2 production cutover. Cloudflare deployment belongs to the existing `web` and `api` scopes.
 
-`web.*` commands target the Next.js workspace. `api.*` commands target the NestJS workspace and use npm/Node only. Offline Python acquisition and curation run through `tools/panda-data` or bounded scripts under `scripts/curation`.
+`web.*` commands target the vinext/Vite Web workspace (Next remains development-only route-type tooling). `api.*` commands target the NestJS workspace and use npm/Node only. Offline Python acquisition and curation run through `tools/panda-data` or bounded scripts under `scripts/curation`.
 
 ## Verification
 

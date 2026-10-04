@@ -13,6 +13,21 @@ Issues and PRDs for this repository live as GitHub issues in `SwayingWindmill/Pa
 
 Run commands inside this repository so `gh` resolves the repository from the configured Git remote.
 
+## Current project status
+
+Current `main` plus live GitHub issues and pull requests are the status/backlog authority. Dated architecture research, release evidence, migration plans, and historical runbooks explain past decisions but do not define the next task.
+
+For a status or "what next" request, inspect the current checkout and query GitHub live rather than reconstructing backlog state from docs:
+
+```bash
+git status --short --branch
+git log -10 --oneline
+gh pr list --state open
+gh issue list --state open --label ready-for-agent
+```
+
+Follow referenced parent/blocker issues when the result needs dependency context.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.**
