@@ -4,6 +4,8 @@ PandaAtlas uses CodeGraph as an optional local code-intelligence layer for AI co
 
 CodeGraph is a development tool only. Its SQLite index stays under `.codegraph/`, is ignored by Git, and is not required by production builds or CI.
 
+Treat `.codegraph/` as disposable tool-local state. Keep it while CodeGraph is in use; delete and reinitialize it instead of preserving stale copies.
+
 ## Initialize the project graph
 
 From the repository root:
@@ -54,18 +56,12 @@ To use the repository-pinned package instead of a global binary, configure the a
 
 ## Index scope
 
-`codegraph.json` excludes generated TypeScript projections, immutable public-release data, reviewed batch payloads, and static design prototypes. Those files are either generated or evidence artifacts and would add noise to structural and impact queries.
+`codegraph.json` is the committed scope configuration. Inspect it for the exact exclusion globs rather than maintaining a second directory or runtime inventory here.
 
-The graph continues to include:
-
-- Next.js routes, components, libraries, and tests under `apps/web`;
-- FastAPI routes, services, schemas, scripts, and tests under `services/api`;
-- the Cloudflare Worker implementation under `services/worker-api`;
-- release, curation, and repository tooling under `scripts`;
-- database migrations and other supported source files under `infra`.
+Treat the live repository tree plus `npm run codegraph:status` as the index-coverage authority. Use `npm run codegraph:query -- <term>` to verify that a symbol or path is represented before relying on graph relationships. For current runtime topology and workspace ownership, use [`docs/deployment/runtime-status.md`](../deployment/runtime-status.md) and [`docs/monorepo-structure.md`](../monorepo-structure.md).
 
 ## Agent usage policy
 
-When CodeGraph MCP is available, use it first for repository architecture, symbol relationships, callers, callees, route ownership, and change-impact questions. Use normal file reads for exact live content when CodeGraph reports pending synchronization, and continue to use the repository's normal tests, linters, type checks, and release gates as the authority for correctness.
+When CodeGraph MCP is available, use it first for repository architecture, symbol relationships, callers, callees, route ownership, and change-impact questions. Before relying on it in a fresh checkout, run `npm run codegraph:status`; initialize with `npm run codegraph:init` if the project is not initialized. Use normal file reads for exact live content when CodeGraph reports pending synchronization, and continue to use the repository's normal tests, linters, type checks, and release gates as the authority for correctness.
 
 Do not commit `.codegraph/` or treat the graph database as release evidence.
