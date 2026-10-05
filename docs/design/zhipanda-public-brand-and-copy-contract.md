@@ -1,9 +1,8 @@
 # ZhiPanda public brand and copy contract
 
-- **Status:** Accepted public-brand migration contract for #217
+- **Status:** Current public brand and copy reference; the one-time migration inventory and checker are retired
 - **Parent map:** #215
 - **Applies to:** public Web surfaces, shared public communication, public metadata, and user-visible product identity
-- **Machine-readable contract:** `contracts/zhipanda-brand-migration.v1.json`
 
 ## 1. Brand boundary
 
@@ -14,7 +13,7 @@ The sole public product brand is:
 
 `PandaAtlas` and `Panda Atlas` are retired public product names. They must not appear in public navigation, page titles, metadata, authentication and account journeys, Follow, Feed, Inbox, email identity, sharing identity, or primary public feature copy.
 
-The repository may retain legacy identifiers when changing them would break a compatibility contract or rewrite immutable history. Every retained reference must be classified in the machine-readable inventory. Typical retained categories include:
+The repository may retain legacy identifiers when changing them would break a current compatibility contract or rewrite immutable history. Typical retained categories include:
 
 - repository URLs and the current GitHub repository name;
 - API and email compatibility headers;
@@ -22,7 +21,7 @@ The repository may retain legacy identifiers when changing them would break a co
 - crawler and worker User-Agent identities already covered by source review;
 - immutable releases, reviewed batches, evidence, and historical decision records.
 
-Retention is not approval for new use. A new legacy-brand reference is prohibited unless the inventory is deliberately updated with an owner, visibility classification, action, and rationale.
+Retention is not approval for new use. Do not add a new legacy-brand identifier unless a current compatibility contract or immutable historical record requires it.
 
 ## 2. Audience and register
 
@@ -84,34 +83,3 @@ Friendlier copy must not:
 - hide tentative, disputed, superseded, partial, unavailable, or privacy-reduced data;
 - replace source, verification, licensing, attribution, or correction access;
 - use unreviewed, generated, unrelated, or placeholder panda media.
-
-## 6. Inventory categories
-
-Every repository legacy-name reference is classified as one of:
-
-- `public-visible`: user-facing text that must migrate to ZhiPanda;
-- `technical-compatible`: an active internal or external compatibility identifier retained deliberately;
-- `historical`: immutable evidence, releases, reviewed records, or historical decisions that must not be rewritten;
-- `undecided`: temporary triage only and forbidden in an accepted #217 inventory.
-
-The inventory also records user visibility, migration owner, expected action, exact legacy-term counts, and rationale. Counts are intentional: adding or removing a reference makes the inventory stale and forces an explicit review.
-
-## 7. Enforcement
-
-Run:
-
-```bash
-npm run check:zhipanda-brand
-```
-
-The checker fails when:
-
-- a repository text file contains a legacy term but has no inventory entry;
-- an inventoried file gains or loses a legacy reference without an inventory update;
-- an inventory entry is duplicated, malformed, missing from the repository, or classified as `undecided`;
-- a public source path exposes `PandaAtlas`, `Panda Atlas`, or the retired `panda atlas` label outside an explicit non-public exclusion;
-- required brand, tone, and controlled-vocabulary fields are removed from the contract.
-
-The checker intentionally excludes its own source and the inventory file because both must name the legacy terms they enforce.
-
-When #218 or #219 removes already-classified references, maintainers may run `node scripts/brand/check-zhipanda-brand.mjs --refresh-inventory`. Refresh updates counts and removes completed entries, but refuses every newly referenced file; new references require an explicit reviewed classification.
