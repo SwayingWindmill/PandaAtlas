@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { EmailOtpLogin } from "@/features/auth";
+import { EmailOtpLogin } from "@/features/auth/email-otp-login";
 
 export const metadata: Metadata = {
   title: { absolute: "登录吱熊猫 | ZhiPanda sign-in" },

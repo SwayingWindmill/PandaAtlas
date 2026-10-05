@@ -253,5 +253,3 @@ export function EmailOtpLogin() {
     </section>
   );
 }
-
-export { safeNextPath };
