@@ -7,6 +7,10 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApplication } from "../../src/bootstrap.js";
 import { EVIDENCE_PORT, type EvidencePort } from "../../src/modules/evidence/application/evidence.application.js";
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
+import type {
+  PublicationReleaseInspection,
+  PublicationReleasePage,
+} from "../../src/modules/publication/application/publication-inspection.port.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 
 const DATABASE_URL =
@@ -131,6 +135,184 @@ afterAll(async () => {
 });
 
 describe("V2 contribution, review, curation, and moderation", () => {
+  it("exposes operator-readable Publication release inspection through the authenticated V2 contract", async () => {
+    const database = app.get(DatabaseService);
+    const editorToken = await tokenFor(editor);
+    const currentReleaseId = randomUUID();
+    const candidateReleaseId = randomUUID();
+    const sharedPandaId = randomUUID();
+    const newPandaId = randomUUID();
+    const removedPlaceId = randomUUID();
+    const suffix = randomUUID();
+    const previousPointer = await database.db
+      .selectFrom("publication.current_release")
+      .select("release_id")
+      .where("singleton", "=", true)
+      .executeTakeFirst();
+    const currentBuiltAt = new Date(Date.now() - 2_000);
+    const candidateBuiltAt = new Date(Date.now() - 1_000);
+
+    try {
+      await database.db
+        .insertInto("publication.releases")
+        .values([
+          {
+            release_id: currentReleaseId,
+            version: `inspection-current-${suffix}`,
+            projection_schema_version: 1,
+            lifecycle_state: "building",
+            built_at: currentBuiltAt,
+            created_by_account_id: editor.accountId,
+            created_by_system_key: null,
+          },
+          {
+            release_id: candidateReleaseId,
+            version: `inspection-candidate-${suffix}`,
+            projection_schema_version: 1,
+            lifecycle_state: "building",
+            built_at: candidateBuiltAt,
+            created_by_account_id: editor.accountId,
+            created_by_system_key: null,
+          },
+        ])
+        .execute();
+      await database.db
+        .insertInto("publication.release_memberships")
+        .values([
+          {
+            release_id: currentReleaseId,
+            resource_kind: "panda",
+            resource_id: sharedPandaId,
+            source_revision: "1",
+            source_version: "1",
+            source_sha256: "a".repeat(64),
+            projection_sha256: "a".repeat(64),
+          },
+          {
+            release_id: currentReleaseId,
+            resource_kind: "place",
+            resource_id: removedPlaceId,
+            source_revision: "1",
+            source_version: "1",
+            source_sha256: "b".repeat(64),
+            projection_sha256: "b".repeat(64),
+          },
+          {
+            release_id: candidateReleaseId,
+            resource_kind: "panda",
+            resource_id: sharedPandaId,
+            source_revision: "2",
+            source_version: "2",
+            source_sha256: "c".repeat(64),
+            projection_sha256: "c".repeat(64),
+          },
+          {
+            release_id: candidateReleaseId,
+            resource_kind: "panda",
+            resource_id: newPandaId,
+            source_revision: "1",
+            source_version: "1",
+            source_sha256: "d".repeat(64),
+            projection_sha256: "d".repeat(64),
+          },
+        ])
+        .execute();
+      await database.db
+        .updateTable("publication.releases")
+        .set({
+          lifecycle_state: "sealed",
+          sealed_at: currentBuiltAt,
+          content_sha256: "1".repeat(64),
+        })
+        .where("release_id", "=", currentReleaseId)
+        .executeTakeFirstOrThrow();
+      await database.db
+        .updateTable("publication.releases")
+        .set({
+          lifecycle_state: "sealed",
+          sealed_at: candidateBuiltAt,
+          content_sha256: "2".repeat(64),
+        })
+        .where("release_id", "=", candidateReleaseId)
+        .executeTakeFirstOrThrow();
+      await database.db
+        .insertInto("publication.release_transitions")
+        .values({
+          release_id: candidateReleaseId,
+          transition_type: "sealed",
+          actor_account_id: editor.accountId,
+          actor_system_key: null,
+          reason: "Reviewed candidate for control-plane inspection.",
+          occurred_at: candidateBuiltAt,
+        })
+        .execute();
+      await database.db
+        .insertInto("publication.current_release")
+        .values({ singleton: true, release_id: currentReleaseId })
+        .onConflict((conflict) => conflict.column("singleton").doUpdateSet({ release_id: currentReleaseId }))
+        .execute();
+
+      const list = await app.inject({
+        method: "GET",
+        url: "/api/v2/publication/releases?limit=100&offset=0&lifecycleState=sealed",
+        headers: headers(editorToken),
+      });
+      expect(list.statusCode, list.body).toBe(200);
+      const listBody = list.json<PublicationReleasePage>();
+      expect(listBody.currentReleaseId).toBe(currentReleaseId);
+      expect(listBody.currentRelease?.releaseId).toBe(currentReleaseId);
+      expect(listBody.limit).toBe(100);
+      expect(listBody.offset).toBe(0);
+      const currentSummary = listBody.items.find((release) => release.releaseId === currentReleaseId);
+      const candidateSummary = listBody.items.find((release) => release.releaseId === candidateReleaseId);
+      expect(currentSummary?.isCurrent).toBe(true);
+      expect(currentSummary?.counts).toMatchObject({ panda: 1, place: 1 });
+      expect(candidateSummary?.isCurrent).toBe(false);
+      expect(candidateSummary?.counts).toMatchObject({ panda: 2, place: 0 });
+
+      const inspection = await app.inject({
+        method: "GET",
+        url: `/api/v2/publication/releases/${candidateReleaseId}/inspection`,
+        headers: headers(editorToken),
+      });
+      expect(inspection.statusCode, inspection.body).toBe(200);
+      const inspectionBody = inspection.json<PublicationReleaseInspection>();
+      expect(inspectionBody.currentReleaseId).toBe(currentReleaseId);
+      expect(inspectionBody.release.releaseId).toBe(candidateReleaseId);
+      expect(inspectionBody.release.lifecycleState).toBe("sealed");
+      expect(inspectionBody.release.isCurrent).toBe(false);
+      expect(inspectionBody.release.suspended).toBe(false);
+      expect(inspectionBody.release.counts).toMatchObject({ panda: 2, place: 0 });
+      expect(inspectionBody.release.blockers).toEqual([]);
+      expect(inspectionBody.changes.find((change) => change.resourceKind === "panda")).toEqual({
+        resourceKind: "panda",
+        added: 1,
+        changed: 1,
+        removed: 0,
+      });
+      expect(inspectionBody.changes.find((change) => change.resourceKind === "place")).toEqual({
+        resourceKind: "place",
+        added: 0,
+        changed: 0,
+        removed: 1,
+      });
+      expect(inspectionBody.transitions).toHaveLength(1);
+      expect(inspectionBody.transitions[0]?.transitionType).toBe("sealed");
+      expect(inspectionBody.transitions[0]?.actor).toBe(`account:${editor.accountId}`);
+      expect(inspectionBody.transitions[0]?.reason).toBe("Reviewed candidate for control-plane inspection.");
+    } finally {
+      if (previousPointer === undefined) {
+        await database.db.deleteFrom("publication.current_release").where("singleton", "=", true).execute();
+      } else {
+        await database.db
+          .updateTable("publication.current_release")
+          .set({ release_id: previousPointer.release_id })
+          .where("singleton", "=", true)
+          .execute();
+      }
+    }
+  });
+
   it("moves an immutable contribution through Review and Curation before Panda owner applies the fact", async () => {
     const suffix = randomUUID();
     const evidence = app.get<EvidencePort>(EVIDENCE_PORT);

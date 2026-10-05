@@ -17,9 +17,6 @@ type ApplySanctionBody = components["schemas"]["ApplySanctionDto"];
 type RestoreSanctionBody = components["schemas"]["RestoreSanctionDto"];
 type DecideAppealBody = components["schemas"]["DecideAppealDto"];
 type ApproveCurationBody = components["schemas"]["ApproveCurationDto"];
-type BuildReleaseBody = components["schemas"]["BuildPublicReleaseDto"];
-type PublicationReasonBody = components["schemas"]["PublicationReasonDto"];
-type PublicationResourceBody = components["schemas"]["PublicationResourceControlDto"];
 
 interface AdminOperationRequest {
   operation: string;
@@ -175,81 +172,6 @@ export async function POST(request: NextRequest) {
         params: { path: { changeSetId } },
         body: payload as ApproveCurationBody,
       }));
-    }
-    case "publication.getRelease": {
-      const releaseId = requiredResourceId(input.resourceId);
-      if (releaseId instanceof NextResponse) return releaseId;
-      return v2JsonResponse(await api.client.GET("/api/v2/publication/releases/{releaseId}", {
-        headers: api.headers,
-        params: { path: { releaseId } },
-      }));
-    }
-    case "publication.build": {
-      const payload = objectPayload(input.payload);
-      if (payload instanceof NextResponse) return payload;
-      return v2JsonResponse(await api.client.POST("/api/v2/publication/releases", {
-        headers: api.headers,
-        body: payload as BuildReleaseBody,
-      }));
-    }
-    case "publication.seal":
-    case "publication.activate":
-    case "publication.rollback":
-    case "publication.suspend":
-    case "publication.restore": {
-      const releaseId = requiredResourceId(input.resourceId);
-      if (releaseId instanceof NextResponse) return releaseId;
-      const payload = objectPayload(input.payload);
-      if (payload instanceof NextResponse) return payload;
-      const body = payload as PublicationReasonBody;
-      if (input.operation === "publication.seal") {
-        return v2JsonResponse(await api.client.POST("/api/v2/publication/releases/{releaseId}/seal", {
-          headers: api.headers,
-          params: { path: { releaseId } },
-          body,
-        }));
-      }
-      if (input.operation === "publication.activate") {
-        return v2JsonResponse(await api.client.POST("/api/v2/publication/releases/{releaseId}/activate", {
-          headers: api.headers,
-          params: { path: { releaseId } },
-          body,
-        }));
-      }
-      if (input.operation === "publication.rollback") {
-        return v2JsonResponse(await api.client.POST("/api/v2/publication/releases/{releaseId}/rollback", {
-          headers: api.headers,
-          params: { path: { releaseId } },
-          body,
-        }));
-      }
-      if (input.operation === "publication.suspend") {
-        return v2JsonResponse(await api.client.POST("/api/v2/publication/releases/{releaseId}/suspend", {
-          headers: api.headers,
-          params: { path: { releaseId } },
-          body,
-        }));
-      }
-      return v2JsonResponse(await api.client.POST("/api/v2/publication/releases/{releaseId}/restore", {
-        headers: api.headers,
-        params: { path: { releaseId } },
-        body,
-      }));
-    }
-    case "publication.takeDownResource":
-    case "publication.restoreResource": {
-      const payload = objectPayload(input.payload);
-      if (payload instanceof NextResponse) return payload;
-      const body = payload as PublicationResourceBody;
-      return input.operation === "publication.takeDownResource"
-        ? v2JsonResponse(await api.client.POST("/api/v2/publication/resources/takedown", {
-            headers: api.headers,
-            body,
-          }))
-        : v2JsonResponse(await api.client.POST("/api/v2/publication/resources/restore", {
-            headers: api.headers,
-            body,
-          }));
     }
     case "audit.list": {
       const payload = input.payload && typeof input.payload === "object" && !Array.isArray(input.payload)

@@ -17,7 +17,14 @@ import { PandaModule } from "../panda/panda.module.js";
 import { PLACES_PUBLICATION_PORT, type PlacesPublicationPort } from "../places/application/places-publication.application.js";
 import { PlacesModule } from "../places/places.module.js";
 import { PUBLIC_READ_PORT } from "./application/public-read.application.js";
-import { PUBLICATION_CHANGE_PORT } from "./application/publication-change.port.js";
+import {
+  PUBLICATION_CHANGE_PORT,
+  type PublicationChangePort,
+} from "./application/publication-change.port.js";
+import {
+  PUBLICATION_INSPECTION_PORT,
+  type PublicationInspectionPort,
+} from "./application/publication-inspection.port.js";
 import {
   PUBLICATION_COORDINATOR,
   PUBLICATION_PORT,
@@ -29,6 +36,7 @@ import { PublicationController } from "./http/publication.controller.js";
 import { PostgresPublicReadRepository } from "./infrastructure/postgres-public-read.repository.js";
 import { PostgresPublicationChangeQuery } from "./infrastructure/postgres-publication-change.query.js";
 import { PostgresPublicationCoordinator } from "./infrastructure/postgres-publication.coordinator.js";
+import { PostgresPublicationInspectionQuery } from "./infrastructure/postgres-publication-inspection.query.js";
 
 @Module({
   imports: [
@@ -78,6 +86,12 @@ import { PostgresPublicationCoordinator } from "./infrastructure/postgres-public
       inject: [DatabaseService],
     },
     { provide: PUBLICATION_CHANGE_PORT, useFactory: () => new PostgresPublicationChangeQuery() },
+    {
+      provide: PUBLICATION_INSPECTION_PORT,
+      useFactory: (database: DatabaseService, changes: PublicationChangePort): PublicationInspectionPort =>
+        new PostgresPublicationInspectionQuery(database, changes),
+      inject: [DatabaseService, PUBLICATION_CHANGE_PORT],
+    },
   ],
   exports: [PUBLICATION_PORT, PUBLIC_READ_PORT, PUBLICATION_CHANGE_PORT],
 })

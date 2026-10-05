@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req } from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiConflictResponse,
@@ -15,6 +15,10 @@ import { RequestContextService } from "../../../platform/request-context/request
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import {
+  PUBLICATION_INSPECTION_PORT,
+  type PublicationInspectionPort,
+} from "../application/publication-inspection.port.js";
+import {
   PUBLICATION_PORT,
   type PublicRelease,
   type PublicationCommandContext,
@@ -23,6 +27,9 @@ import {
 } from "../application/publication.application.js";
 import {
   BuildPublicReleaseDto,
+  PublicationReleaseInspectionDto,
+  PublicationReleaseListQueryDto,
+  PublicationReleasePageDto,
   PublicationReasonDto,
   PublicationResourceControlDto,
   PublicReleaseDto,
@@ -54,8 +61,34 @@ function publicationRelease(result: PublicationReleaseResult): PublicRelease {
 export class PublicationController {
   public constructor(
     @Inject(PUBLICATION_PORT) private readonly publication: PublicationPort,
+    @Inject(PUBLICATION_INSPECTION_PORT) private readonly inspection: PublicationInspectionPort,
     private readonly requestContext: RequestContextService,
   ) {}
+
+  @Get("releases")
+  @RequireCapabilities("publication.release.manage")
+  @ApiOperation({ operationId: "listPublicationReleases", summary: "List recent V2 public releases for staff inspection" })
+  @ApiOkResponse({ type: PublicationReleasePageDto })
+  public listReleases(@Query() query: PublicationReleaseListQueryDto) {
+    return this.inspection.listReleases({
+      limit: query.limit ?? 10,
+      offset: query.offset ?? 0,
+      ...(query.lifecycleState === undefined ? {} : { lifecycleState: query.lifecycleState }),
+    });
+  }
+
+  @Get("releases/:releaseId/inspection")
+  @RequireCapabilities("publication.release.manage")
+  @ApiOperation({ operationId: "inspectPublicationRelease", summary: "Inspect release counts, changes, blockers, and lifecycle history" })
+  @ApiOkResponse({ type: PublicationReleaseInspectionDto })
+  @ApiNotFoundResponse({ description: "The release does not exist." })
+  public async inspectRelease(@Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string) {
+    const inspection = await this.inspection.inspectRelease(releaseId);
+    if (inspection === undefined) {
+      throw new ProblemException(404, "publication.releaseNotFound", "The public release does not exist.");
+    }
+    return inspection;
+  }
 
   @Get("releases/:releaseId")
   @RequireCapabilities("publication.release.manage")

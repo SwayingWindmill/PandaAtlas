@@ -1641,6 +1641,141 @@
         ]
       }
     },
+    "/api/v2/publication/releases": {
+      "get": {
+        "operationId": "listPublicationReleases",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "lifecycleState",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "building",
+                "sealed"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicationReleasePageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "List recent V2 public releases for staff inspection",
+        "tags": [
+          "Publication"
+        ]
+      },
+      "post": {
+        "operationId": "buildPublicationRelease",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuildPublicReleaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicReleaseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Build a release-scoped public projection",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
+    "/api/v2/publication/releases/{releaseId}/inspection": {
+      "get": {
+        "operationId": "inspectPublicationRelease",
+        "parameters": [
+          {
+            "name": "releaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicationReleaseInspectionDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The release does not exist."
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "Inspect release counts, changes, blockers, and lifecycle history",
+        "tags": [
+          "Publication"
+        ]
+      }
+    },
     "/api/v2/publication/releases/{releaseId}": {
       "get": {
         "operationId": "getPublicationRelease",
@@ -1675,43 +1810,6 @@
           }
         ],
         "summary": "Get a V2 public release lifecycle record",
-        "tags": [
-          "Publication"
-        ]
-      }
-    },
-    "/api/v2/publication/releases": {
-      "post": {
-        "operationId": "buildPublicationRelease",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BuildPublicReleaseDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PublicReleaseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "supabaseJwt": []
-          }
-        ],
-        "summary": "Build a release-scoped public projection",
         "tags": [
           "Publication"
         ]
@@ -4554,6 +4652,242 @@
         "required": [
           "release",
           "stats"
+        ]
+      },
+      "PublicationResourceCountsDto": {
+        "type": "object",
+        "properties": {
+          "panda": {
+            "type": "number"
+          },
+          "institution": {
+            "type": "number"
+          },
+          "place": {
+            "type": "number"
+          },
+          "lineage": {
+            "type": "number"
+          },
+          "residency": {
+            "type": "number"
+          },
+          "lifeEvent": {
+            "type": "number"
+          },
+          "media": {
+            "type": "number"
+          },
+          "evidence": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "panda",
+          "institution",
+          "place",
+          "lineage",
+          "residency",
+          "lifeEvent",
+          "media",
+          "evidence"
+        ]
+      },
+      "PublicationReleaseSummaryDto": {
+        "type": "object",
+        "properties": {
+          "releaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "string"
+          },
+          "projectionSchemaVersion": {
+            "type": "number",
+            "minimum": 1
+          },
+          "lifecycleState": {
+            "type": "string",
+            "enum": [
+              "building",
+              "sealed"
+            ]
+          },
+          "builtAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sealedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contentSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "isCurrent": {
+            "type": "boolean"
+          },
+          "suspended": {
+            "type": "boolean"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/PublicationResourceCountsDto"
+          },
+          "blockers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "releaseId",
+          "version",
+          "projectionSchemaVersion",
+          "lifecycleState",
+          "builtAt",
+          "isCurrent",
+          "suspended",
+          "counts",
+          "blockers"
+        ]
+      },
+      "PublicationReleasePageDto": {
+        "type": "object",
+        "properties": {
+          "currentReleaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "currentRelease": {
+            "$ref": "#/components/schemas/PublicationReleaseSummaryDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicationReleaseSummaryDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "offset": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ]
+      },
+      "PublicationChangeSummaryDto": {
+        "type": "object",
+        "properties": {
+          "resourceKind": {
+            "type": "string",
+            "enum": [
+              "panda",
+              "institution",
+              "place",
+              "lineage",
+              "residency",
+              "life_event",
+              "media",
+              "evidence"
+            ]
+          },
+          "added": {
+            "type": "number"
+          },
+          "changed": {
+            "type": "number"
+          },
+          "removed": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "resourceKind",
+          "added",
+          "changed",
+          "removed"
+        ]
+      },
+      "PublicationTransitionDto": {
+        "type": "object",
+        "properties": {
+          "transitionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "transitionType": {
+            "type": "string",
+            "enum": [
+              "built",
+              "sealed",
+              "activated",
+              "rolled_back",
+              "suspended",
+              "restored"
+            ]
+          },
+          "fromReleaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "transitionId",
+          "transitionType",
+          "actor",
+          "reason",
+          "occurredAt"
+        ]
+      },
+      "PublicationReleaseInspectionDto": {
+        "type": "object",
+        "properties": {
+          "currentReleaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "release": {
+            "$ref": "#/components/schemas/PublicationReleaseSummaryDto"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicationChangeSummaryDto"
+            }
+          },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicationTransitionDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "changes",
+          "transitions"
         ]
       },
       "PublicReleaseDto": {
