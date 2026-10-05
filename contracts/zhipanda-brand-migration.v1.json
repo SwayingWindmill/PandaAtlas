@@ -148,7 +148,7 @@
   },
   "inventory": [
     {
-      "path": "CONTEXT-MAP.md",
+      "path": "GLOSSARY-MAP.md",
       "category": "technical-compatible",
       "user_visibility": "internal",
       "migration_owner": "repository governance",
