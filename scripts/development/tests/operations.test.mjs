@@ -61,11 +61,24 @@ test("command rendering exposes the executable interface", () => {
     renderDevelopmentCommand(getDevelopmentCommand("api.contract")),
     "node scripts/development/check-api-contract.mjs",
   );
+  assert.equal(
+    renderDevelopmentCommand(getDevelopmentCommand("api.db-types")),
+    "node scripts/development/check-api-db-types.mjs",
+  );
 });
 
 test("API client and Supabase foundation changes select the API verification scope", () => {
   assert.deepEqual(classifyDevelopmentScopes(["packages/api-client/src/schema.generated.ts"]), ["api"]);
   assert.deepEqual(classifyDevelopmentScopes(["infra/supabase/migrations/20260101000000_example.sql"]), ["release", "api"]);
+  assert.deepEqual(classifyDevelopmentScopes(["scripts/development/check-api-db-types.mjs"]), ["release", "api"]);
+});
+
+test("changed-path routing stays centralized in the development scope classifier", () => {
+  assert.deepEqual(classifyDevelopmentScopes([".github/workflows/example.yml"]), ["release"]);
+  assert.deepEqual(classifyDevelopmentScopes(["apps/web/app/page.tsx"]), ["web"]);
+  assert.deepEqual(classifyDevelopmentScopes(["services/api/src/main.ts"]), ["api"]);
+  assert.deepEqual(classifyDevelopmentScopes(["tools/panda-data/src/panda_data/cli.py"]), ["curation", "data"]);
+  assert.deepEqual(classifyDevelopmentScopes(["docs/architecture/example.md"]), []);
 });
 
 test("Windows npm and npx commands run through the Node CLI without a shell", () => {

@@ -2,19 +2,13 @@ name: Development Verification
 
 on:
   pull_request:
-    paths:
-      - "services/api/**"
-      - "packages/api-client/**"
-      - "infra/supabase/**"
-      - "scripts/development/**"
-      - "scripts/release/check-repository-hygiene.mjs"
-      - "scripts/release/tests/repository-hygiene.test.mjs"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/development-verification.yml"
 
 permissions:
   contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  UV_VERSION: "0.11.7"
 
 concurrency:
   group: development-verification-${{ github.ref }}
@@ -28,6 +22,8 @@ jobs:
       run_checks: ${{ steps.plan.outputs.run_checks }}
       scopes: ${{ steps.plan.outputs.scopes }}
       requires_node_modules: ${{ steps.plan.outputs.requires_node_modules }}
+      requires_python: ${{ steps.plan.outputs.requires_python }}
+      requires_uv: ${{ steps.plan.outputs.requires_uv }}
     steps:
       - name: Check out candidate
         uses: actions/checkout@v7.0.0
@@ -60,6 +56,16 @@ jobs:
           node-version: "24"
           cache: npm
 
+      - name: Set up Python
+        if: needs.plan.outputs.requires_python == 'true'
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pinned uv
+        if: needs.plan.outputs.requires_uv == 'true'
+        run: python -m pip install uv==${{ env.UV_VERSION }}
+
       - name: Install workspace dependencies
         if: needs.plan.outputs.requires_node_modules == 'true'
         run: npm ci
@@ -87,6 +93,9 @@ jobs:
 
       - name: Start pinned local Supabase foundation
         run: npm run infra:start
+
+      - name: Verify generated Kysely database types
+        run: npm run ops -- run api.db-types
 
       - name: Run real PostgreSQL integration suite
         run: npm run ops -- run api.integration

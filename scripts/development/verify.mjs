@@ -112,6 +112,11 @@ export function classifyDevelopmentScopes(paths) {
     if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");
     if (changedPath.startsWith("services/api/")) addScope(scopes, "api");
     if (changedPath.startsWith("packages/api-client/")) addScope(scopes, "api");
+    if (
+      changedPath === "scripts/development/check-api-contract.mjs" ||
+      changedPath === "scripts/development/check-api-db-types.mjs" ||
+      changedPath === "scripts/development/generated-output-drift.mjs"
+    ) addScope(scopes, "api");
     if (changedPath.startsWith("tools/panda-data/")) { addScope(scopes, "curation"); addScope(scopes, "data"); }
 
     if (changedPath === "docker-compose.yml" || changedPath.startsWith("infra/supabase/")) {
