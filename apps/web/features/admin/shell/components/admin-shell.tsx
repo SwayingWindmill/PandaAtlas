@@ -7,8 +7,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
-import { AdminSessionRequestError } from "@/features/admin/session/api/service";
-import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
+import {
+  adminSessionQueryOptions,
+  AdminSessionRequestError,
+} from "@/features/admin/session/api/queries";
 import {
   adminNavigationItemForPath,
   canAccessAdminNavigationItem,
