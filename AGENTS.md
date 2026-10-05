@@ -50,4 +50,4 @@ PandaAtlas uses a multi-context glossary map. See `docs/agents/domain.md`.
 
 ### Local state
 
-When creating or retaining ignored build, tool, scratch, or acquisition state, follow `docs/development-operations.md#local-state`.
+When creating or retaining ignored build, tool, scratch, or acquisition state, follow `docs/development-operations.md#local-state`. For local Supabase or API integration work, use `docs/development-operations.md`; its Development Operations catalog is authoritative.
