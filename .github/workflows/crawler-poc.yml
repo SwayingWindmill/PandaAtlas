@@ -12,12 +12,11 @@ on:
       - ".github/workflows/crawler-poc.yml"
       - "data/acquisition-sources/**"
       - "docs/data-acquisition/**"
-      - "services/api/app/acquisition/**"
-      - "services/api/tests/acquisition/**"
-      - "services/api/scripts/run_crawler_poc.py"
-      - "services/api/scripts/run_source_adapter.py"
-      - "services/api/pyproject.toml"
-      - "services/api/uv.lock"
+      - "tools/panda-data/src/panda_data/acquisition/**"
+      - "tools/panda-data/src/panda_data/cli.py"
+      - "tools/panda-data/tests/test_source_runtime.py"
+      - "tools/panda-data/pyproject.toml"
+      - "tools/panda-data/uv.lock"
       - "package.json"
   workflow_dispatch:
 
@@ -47,36 +46,31 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "24"
+
       - name: Install pinned uv
         run: python -m pip install uv==${{ env.UV_VERSION }}
 
-      - name: Install locked PoC dependencies
-        working-directory: services/api
-        run: uv sync --frozen --extra dev --extra crawler-poc --python ${{ env.PYTHON_VERSION }}
-
       - name: Install Chromium and runtime dependencies
-        working-directory: services/api
-        run: uv run playwright install --with-deps chromium
+        run: uv run --isolated --directory tools/panda-data --frozen --extra crawler playwright install --with-deps chromium
 
       - name: Install Scrapling browser runtimes
-        working-directory: services/api
-        run: uv run scrapling install
+        run: uv run --isolated --directory tools/panda-data --frozen --extra crawler scrapling install
 
       - name: Run acquisition tests
-        working-directory: services/api
-        run: uv run pytest -q tests/acquisition
+        run: npm run test:crawler-poc
 
       - name: Run acquisition lint
-        working-directory: services/api
-        run: uv run ruff check app/acquisition tests/acquisition scripts/run_crawler_poc.py scripts/run_source_adapter.py
+        run: npm run lint:crawler-poc
 
       - name: Build offline Xi Lun source candidate
-        working-directory: services/api
-        run: uv run python scripts/run_source_adapter.py
+        run: npm run source:xi-lun
 
       - name: Run strict controlled browser and anti-detection lab
-        working-directory: services/api
-        run: uv run python scripts/run_crawler_poc.py --require-browser-lab
+        run: npm run crawler:poc:strict
 
       - name: Verify PoC did not modify tracked files
         run: git diff --exit-code

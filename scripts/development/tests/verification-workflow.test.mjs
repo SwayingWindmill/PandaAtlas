@@ -27,3 +27,24 @@ test("every pull request reaches the shared planner and API scopes run database-
   assert.match(workflow, /if: always\(\)/);
   assert.match(workflow, /npm run infra:stop/);
 });
+
+test("crawler PoC workflow targets the active panda-data runtime", async () => {
+  const workflow = await readFile(
+    path.join(repoRoot, ".github", "workflows", "crawler-poc.yml"),
+    "utf8",
+  );
+
+  assert.match(workflow, /tools\/panda-data\/src\/panda_data\/acquisition\/\*\*/u);
+  assert.match(workflow, /tools\/panda-data\/tests\/test_source_runtime\.py/u);
+  assert.match(workflow, /tools\/panda-data\/pyproject\.toml/u);
+  assert.match(workflow, /tools\/panda-data\/uv\.lock/u);
+  assert.match(workflow, /npm run lint:crawler-poc/u);
+  assert.match(workflow, /npm run test:crawler-poc/u);
+  assert.match(workflow, /npm run source:xi-lun/u);
+  assert.match(workflow, /npm run crawler:poc:strict/u);
+  assert.match(workflow, /uv run --isolated --directory tools\/panda-data --frozen --extra crawler playwright install --with-deps chromium/u);
+  assert.match(workflow, /uv run --isolated --directory tools\/panda-data --frozen --extra crawler scrapling install/u);
+  assert.match(workflow, /git diff --exit-code/u);
+  assert.match(workflow, /path: \.release-gate\//u);
+  assert.doesNotMatch(workflow, /services\/api\//u);
+});
