@@ -7,6 +7,8 @@ export type ModerationSanctionKind =
   | "account_closed_for_abuse";
 
 export type ModerationAppealDecisionOutcome = "upheld" | "modified" | "overturned" | "dismissed";
+export const MODERATION_APPEAL_STATES = ["open", "under_review", "closed"] as const;
+export type ModerationAppealState = (typeof MODERATION_APPEAL_STATES)[number];
 
 export interface ApplySanctionInput {
   accountId: string;
@@ -55,7 +57,7 @@ export interface ModerationAppeal {
   appealCaseId: string;
   accountId: string;
   sanctionId: string;
-  state: "open" | "under_review" | "closed";
+  state: ModerationAppealState;
   version: number;
   userStatement: string;
 }

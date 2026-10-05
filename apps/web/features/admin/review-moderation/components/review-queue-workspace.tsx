@@ -14,50 +14,36 @@ import {
   reviewQueueQueryOptions,
   reviewSurfaceQueryOptions,
 } from "../api/queries";
-import type { ReviewCaseQueueItem, ReviewState } from "../api/types";
+import { REVIEW_STATES, type ReviewCaseQueueItem, type ReviewState } from "../api/types";
+import {
+  ADMIN_QUEUE_PAGE_SIZE,
+  adminStateLabel,
+  formatQueueAge,
+  hasAdminCapability,
+} from "../presentation";
 
-const PAGE_SIZE = 25;
-const reviewStates: readonly ReviewState[] = [
-  "new",
-  "triage",
-  "assigned",
-  "waiting",
-  "decision_ready",
-  "incorporation_recommended",
-  "closed",
-];
 const reviewColumnHelper = createColumnHelper<ReviewCaseQueueItem>();
-
-function formatAge(seconds: number): string {
-  if (seconds < 3600) return `${Math.max(1, Math.round(seconds / 60))}m`;
-  if (seconds < 86_400) return `${Math.round(seconds / 3600)}h`;
-  return `${Math.round(seconds / 86_400)}d`;
-}
-
-function hasCapability(capabilities: readonly string[] | undefined, capability: string): boolean {
-  return capabilities?.includes(capability) ?? false;
-}
-
-function stateLabel(state: string): string {
-  return state.replaceAll("_", " ");
-}
 
 export function ReviewQueueWorkspace() {
   const queryClient = useQueryClient();
   const session = useQuery(adminSessionQueryOptions);
   const capabilities = session.data?.capabilities;
-  const canRead = hasCapability(capabilities, "review.case.read");
-  const canIntake = hasCapability(capabilities, "review.case.intake");
-  const canClaim = hasCapability(capabilities, "review.case.claim");
-  const canVerify = hasCapability(capabilities, "review.case.verify_source");
-  const canDecide = hasCapability(capabilities, "review.case.decide");
-  const canRecommend = hasCapability(capabilities, "review.case.recommend");
+  const canRead = hasAdminCapability(capabilities, "review.case.read");
+  const canIntake = hasAdminCapability(capabilities, "review.case.intake");
+  const canClaim = hasAdminCapability(capabilities, "review.case.claim");
+  const canVerify = hasAdminCapability(capabilities, "review.case.verify_source");
+  const canDecide = hasAdminCapability(capabilities, "review.case.decide");
+  const canRecommend = hasAdminCapability(capabilities, "review.case.recommend");
 
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1).withOptions({ shallow: true }));
   const [state, setState] = useQueryState("state", { shallow: true });
-  const [selectedCaseId, setSelectedCaseId] = useQueryState("case", { shallow: true });
-  const normalizedState = reviewStates.includes(state as ReviewState) ? state as ReviewState : undefined;
-  const queueQuery = { limit: PAGE_SIZE, offset: Math.max(0, page - 1) * PAGE_SIZE, ...(normalizedState ? { state: normalizedState } : {}) };
+  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
+  const normalizedState = REVIEW_STATES.includes(state as ReviewState) ? state as ReviewState : undefined;
+  const queueQuery = {
+    limit: ADMIN_QUEUE_PAGE_SIZE,
+    offset: Math.max(0, page - 1) * ADMIN_QUEUE_PAGE_SIZE,
+    ...(normalizedState ? { state: normalizedState } : {}),
+  };
   const queue = useQuery({ ...reviewQueueQueryOptions(queueQuery), enabled: canRead });
   const effectiveCaseId = selectedCaseId ?? queue.data?.items[0]?.reviewCaseId;
   const surface = useQuery({
@@ -92,8 +78,15 @@ export function ReviewQueueWorkspace() {
     setNotice(null);
   }, [effectiveCaseId]);
 
-  const refreshReview = async () => {
-    await queryClient.invalidateQueries({ queryKey: reviewKeys.all });
+  const refreshQueue = async () => {
+    await queryClient.invalidateQueries({ queryKey: reviewKeys.queues });
+  };
+
+  const refreshCase = async (reviewCaseId: string) => {
+    await Promise.all([
+      refreshQueue(),
+      queryClient.invalidateQueries({ queryKey: reviewKeys.surface(reviewCaseId) }),
+    ]);
   };
 
   const openMutation = useMutation({
@@ -101,39 +94,39 @@ export function ReviewQueueWorkspace() {
     onSuccess: async (reviewCase) => {
       setSubmissionId("");
       setNotice(`Opened review case ${reviewCase.reviewCaseId}.`);
-      await setSelectedCaseId(reviewCase.reviewCaseId);
-      await refreshReview();
+      setSelectedCaseId(reviewCase.reviewCaseId);
+      await refreshQueue();
     },
   });
   const claimMutation = useMutation({
     ...reviewMutationOptions.claim(),
-    onSuccess: async () => {
+    onSuccess: async (_reviewCase, reviewCaseId) => {
       setNotice("Review case claimed.");
-      await refreshReview();
+      await refreshCase(reviewCaseId);
     },
   });
   const verifyMutation = useMutation({
     ...reviewMutationOptions.verifySource(),
-    onSuccess: async () => {
+    onSuccess: async (_result, variables) => {
       setSourceReason("");
       setCanonicalSourceId("");
       setNotice("Source verification recorded.");
-      await refreshReview();
+      await refreshCase(variables.reviewCaseId);
     },
   });
   const decideMutation = useMutation({
     ...reviewMutationOptions.decide(),
-    onSuccess: async () => {
+    onSuccess: async (_result, variables) => {
       setNotice("Review decision recorded.");
-      await refreshReview();
+      await refreshCase(variables.reviewCaseId);
     },
   });
   const recommendMutation = useMutation({
     ...reviewMutationOptions.recommend(),
-    onSuccess: async (recommendation) => {
+    onSuccess: async (recommendation, variables) => {
       setNotice(`Recommended to Curation as change set ${recommendation.changeSetId}.`);
       setRecommendReason("");
-      await refreshReview();
+      await refreshCase(variables.reviewCaseId);
     },
   });
 
@@ -144,7 +137,7 @@ export function ReviewQueueWorkspace() {
         <button
           type="button"
           className="text-left font-semibold text-stone-950 underline decoration-stone-400 underline-offset-4"
-          onClick={() => void setSelectedCaseId(row.original.reviewCaseId)}
+          onClick={() => setSelectedCaseId(row.original.reviewCaseId)}
         >
           {row.original.reviewCaseId.slice(0, 8)}
         </button>
@@ -152,12 +145,12 @@ export function ReviewQueueWorkspace() {
     }),
     reviewColumnHelper.accessor("state", {
       header: "State",
-      cell: ({ getValue }) => <span className="capitalize">{stateLabel(getValue())}</span>,
+      cell: ({ getValue }) => <span className="capitalize">{adminStateLabel(getValue())}</span>,
     }),
     reviewColumnHelper.accessor("riskLevel", { header: "Risk" }),
     reviewColumnHelper.accessor("queueAgeSeconds", {
       header: "Age",
-      cell: ({ getValue }) => formatAge(getValue()),
+      cell: ({ getValue }) => formatQueueAge(getValue()),
     }),
     reviewColumnHelper.accessor("slaOverdue", {
       header: "SLA",
@@ -170,7 +163,7 @@ export function ReviewQueueWorkspace() {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({ data: queue.data?.items ?? [], columns, getCoreRowModel: getCoreRowModel() });
 
-  const totalPages = Math.max(1, Math.ceil((queue.data?.total ?? 0) / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil((queue.data?.total ?? 0) / ADMIN_QUEUE_PAGE_SIZE));
   const selected = surface.data;
   const contribution = selected?.contribution;
   const selectedSource = contribution?.sources.find((item) => item.sourceId === sourceId) ?? contribution?.sources[0];
@@ -209,7 +202,7 @@ export function ReviewQueueWorkspace() {
               className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3 capitalize"
             >
               <option value="all">All</option>
-              {reviewStates.map((value) => <option key={value} value={value}>{stateLabel(value)}</option>)}
+              {REVIEW_STATES.map((value) => <option key={value} value={value}>{adminStateLabel(value)}</option>)}
             </select>
           </label>
         ) : null}
@@ -242,7 +235,7 @@ export function ReviewQueueWorkspace() {
       ) : null}
       {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
+      <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm" aria-labelledby="review-queue-heading">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -278,11 +271,11 @@ export function ReviewQueueWorkspace() {
                 <div className="border-b border-stone-200 bg-stone-950 p-5 text-white">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Selected case</p>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">Selected case</p>
                       <h2 id="review-detail-heading" className="mt-2 text-2xl font-bold">{selected.reviewCase.reviewCaseId.slice(0, 8)}</h2>
                       <p className="mt-1 break-all font-mono text-xs text-stone-400">{selected.reviewCase.reviewCaseId}</p>
                     </div>
-                    <span className="rounded-full border border-stone-600 px-3 py-1 text-xs font-semibold capitalize">{stateLabel(selected.reviewCase.state)}</span>
+                    <span className="rounded-full border border-stone-600 px-3 py-1 text-xs font-semibold capitalize">{adminStateLabel(selected.reviewCase.state)}</span>
                   </div>
                 </div>
                 <div className="grid gap-3 border-b border-stone-200 p-5 sm:grid-cols-3">

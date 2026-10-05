@@ -3246,7 +3246,16 @@
             "minimum": 1
           },
           "state": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "new",
+              "triage",
+              "assigned",
+              "waiting",
+              "decision_ready",
+              "incorporation_recommended",
+              "closed"
+            ]
           },
           "version": {
             "type": "number",
@@ -3281,7 +3290,16 @@
             "minimum": 1
           },
           "state": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "new",
+              "triage",
+              "assigned",
+              "waiting",
+              "decision_ready",
+              "incorporation_recommended",
+              "closed"
+            ]
           },
           "version": {
             "type": "number",

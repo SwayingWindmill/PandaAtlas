@@ -111,7 +111,7 @@ test("review queue replaces the generic runner with typed collection and case ac
     });
   });
 
-  await page.goto(`/admin/reviews?case=${reviewCaseId}`);
+  await page.goto("/admin/reviews");
 
   await expect(page.getByRole("heading", { level: 1, name: "Contribution review queue" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Assertions" })).toBeVisible();
@@ -120,6 +120,7 @@ test("review queue replaces the generic runner with typed collection and case ac
   await expect(page.getByLabel("Source verification reason")).toBeVisible();
   await expect(page.getByLabel("Decision outcome")).toBeVisible();
   await expect(page.getByText("JSON payload")).toHaveCount(0);
+  await expect(page).not.toHaveURL(/\bcase=/);
   expect(requestedOperations).toEqual([]);
 
   await page.getByRole("button", { name: "Claim case" }).click();
@@ -230,12 +231,13 @@ test("moderation shows the appeal queue, account projection, and typed appeal de
     });
   });
 
-  await page.goto(`/admin/moderation?appeal=${appealCaseId}&account=${moderationAccountId}`);
+  await page.goto("/admin/moderation");
 
   await expect(page.getByRole("heading", { level: 1, name: "Account moderation & appeals" })).toBeVisible();
   await expect(page.getByText("Please review the evidence again; I believe this suspension should be reversed.")).toBeVisible();
   await expect(page.getByText("account suspended", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Apply sanction" })).toBeVisible();
+  await expect(page).not.toHaveURL(/\b(?:appeal|account)=/);
   await page.getByLabel("Appeal outcome").selectOption("overturned");
   await page.getByLabel("Appeal internal explanation").fill("The evidence does not support continuing this account suspension.");
   await page.getByLabel("Appeal member explanation").fill("Your appeal was accepted and the account suspension has been removed.");
@@ -279,7 +281,9 @@ test("moderation actions stay capability scoped", async ({ page }) => {
     });
   });
 
-  await page.goto(`/admin/moderation?account=${moderationAccountId}`);
+  await page.goto("/admin/moderation");
+  await page.getByLabel("Account ID").fill(moderationAccountId);
+  await page.getByRole("button", { name: "Load account" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Account moderation & appeals" })).toBeVisible();
   await expect(page.getByText("Your capabilities do not include appeal decisions.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Apply sanction" })).toHaveCount(0);

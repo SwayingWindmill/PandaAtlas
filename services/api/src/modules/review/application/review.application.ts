@@ -7,14 +7,16 @@ import type { EvidencePort } from "../../evidence/application/evidence.applicati
 
 export type ReviewDecisionOutcome = "accepted" | "not_accepted" | "duplicate" | "out_of_scope" | "abuse";
 export type ReviewSourceVerificationOutcome = "verified" | "rejected";
-export type ReviewCaseState =
-  | "new"
-  | "triage"
-  | "assigned"
-  | "waiting"
-  | "decision_ready"
-  | "incorporation_recommended"
-  | "closed";
+export const REVIEW_CASE_STATES = [
+  "new",
+  "triage",
+  "assigned",
+  "waiting",
+  "decision_ready",
+  "incorporation_recommended",
+  "closed",
+] as const;
+export type ReviewCaseState = (typeof REVIEW_CASE_STATES)[number];
 
 export interface ReviewCase {
   reviewCaseId: string;

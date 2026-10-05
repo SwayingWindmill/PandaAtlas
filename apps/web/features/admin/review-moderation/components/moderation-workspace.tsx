@@ -14,32 +14,23 @@ import {
   moderationKeys,
   moderationMutationOptions,
 } from "../api/queries";
-import type {
-  AppealState,
+import {
+  APPEAL_STATES,
+  type AppealState,
   ModerationAppealQueueItem,
   ModerationSanction,
 } from "../api/types";
+import {
+  ADMIN_QUEUE_PAGE_SIZE,
+  adminStateLabel,
+  formatQueueAge,
+  hasAdminCapability,
+} from "../presentation";
 
-const PAGE_SIZE = 25;
-const appealStates: readonly AppealState[] = ["open", "under_review", "closed"];
 const appealColumnHelper = createColumnHelper<ModerationAppealQueueItem>();
 
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
-}
-
-function formatAge(seconds: number): string {
-  if (seconds < 3600) return `${Math.max(1, Math.round(seconds / 60))}m`;
-  if (seconds < 86_400) return `${Math.round(seconds / 3600)}h`;
-  return `${Math.round(seconds / 86_400)}d`;
-}
-
-function hasCapability(capabilities: readonly string[] | undefined, capability: string): boolean {
-  return capabilities?.includes(capability) ?? false;
-}
-
-function stateLabel(value: string): string {
-  return value.replaceAll("_", " ");
 }
 
 function projectionState(active: boolean): { label: string; className: string } {
@@ -52,17 +43,21 @@ export function ModerationWorkspace() {
   const queryClient = useQueryClient();
   const session = useQuery(adminSessionQueryOptions);
   const capabilities = session.data?.capabilities;
-  const canRead = hasCapability(capabilities, "moderation.sanction.read");
-  const canApply = hasCapability(capabilities, "moderation.sanction.apply");
-  const canRestore = hasCapability(capabilities, "moderation.sanction.restore");
-  const canDecideAppeal = hasCapability(capabilities, "moderation.appeal.decide");
+  const canRead = hasAdminCapability(capabilities, "moderation.sanction.read");
+  const canApply = hasAdminCapability(capabilities, "moderation.sanction.apply");
+  const canRestore = hasAdminCapability(capabilities, "moderation.sanction.restore");
+  const canDecideAppeal = hasAdminCapability(capabilities, "moderation.appeal.decide");
 
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1).withOptions({ shallow: true }));
   const [state, setState] = useQueryState("state", { shallow: true });
-  const [selectedAppealId, setSelectedAppealId] = useQueryState("appeal", { shallow: true });
-  const [accountId, setAccountId] = useQueryState("account", { shallow: true });
-  const normalizedState = appealStates.includes(state as AppealState) ? state as AppealState : "open";
-  const appealsQuery = { limit: PAGE_SIZE, offset: Math.max(0, page - 1) * PAGE_SIZE, state: normalizedState };
+  const [selectedAppealId, setSelectedAppealId] = useState<string | null>(null);
+  const [accountId, setAccountId] = useState<string | null>(null);
+  const normalizedState = APPEAL_STATES.includes(state as AppealState) ? state as AppealState : "open";
+  const appealsQuery = {
+    limit: ADMIN_QUEUE_PAGE_SIZE,
+    offset: Math.max(0, page - 1) * ADMIN_QUEUE_PAGE_SIZE,
+    state: normalizedState,
+  };
   const appeals = useQuery({ ...moderationAppealsQueryOptions(appealsQuery), enabled: canDecideAppeal });
   const effectiveAppealId = selectedAppealId ?? appeals.data?.items[0]?.appealCaseId;
   const selectedAppeal = appeals.data?.items.find((item) => item.appealCaseId === effectiveAppealId);
@@ -99,7 +94,7 @@ export function ModerationWorkspace() {
       setSanctionInternal("");
       setSanctionVisible("");
       setSanctionEndsAt("");
-      setNotice(`Applied ${stateLabel(sanction.kind)} sanction.`);
+      setNotice(`Applied ${adminStateLabel(sanction.kind)} sanction.`);
       await refreshAccount(sanction.accountId);
     },
   });
@@ -118,17 +113,18 @@ export function ModerationWorkspace() {
       setAppealInternal("");
       setAppealVisible("");
       setNotice("Appeal decision recorded.");
-      await queryClient.invalidateQueries({ queryKey: moderationKeys.all });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: moderationKeys.appealLists }),
+        refreshAccount(selectedAppeal?.accountId),
+      ]);
     },
   });
 
   const selectAppeal = useCallback(async (appeal: ModerationAppealQueueItem) => {
-    await Promise.all([
-      setSelectedAppealId(appeal.appealCaseId),
-      setAccountId(appeal.accountId),
-    ]);
+    setSelectedAppealId(appeal.appealCaseId);
+    setAccountId(appeal.accountId);
     setNotice(null);
-  }, [setAccountId, setSelectedAppealId]);
+  }, []);
 
   const columns = useMemo(() => [
     appealColumnHelper.accessor("appealCaseId", {
@@ -145,13 +141,13 @@ export function ModerationWorkspace() {
     }),
     appealColumnHelper.accessor("state", {
       header: "State",
-      cell: ({ getValue }) => <span className="capitalize">{stateLabel(getValue())}</span>,
+      cell: ({ getValue }) => <span className="capitalize">{adminStateLabel(getValue())}</span>,
     }),
     appealColumnHelper.accessor("accountId", {
       header: "Account",
       cell: ({ getValue }) => <span className="font-mono text-xs">{getValue().slice(0, 8)}</span>,
     }),
-    appealColumnHelper.accessor("ageSeconds", { header: "Age", cell: ({ getValue }) => formatAge(getValue()) }),
+    appealColumnHelper.accessor("ageSeconds", { header: "Age", cell: ({ getValue }) => formatQueueAge(getValue()) }),
     appealColumnHelper.accessor("slaOverdue", {
       header: "SLA",
       cell: ({ getValue }) => getValue()
@@ -163,7 +159,7 @@ export function ModerationWorkspace() {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({ data: appeals.data?.items ?? [], columns, getCoreRowModel: getCoreRowModel() });
 
-  const totalPages = Math.max(1, Math.ceil((appeals.data?.total ?? 0) / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil((appeals.data?.total ?? 0) / ADMIN_QUEUE_PAGE_SIZE));
   const subject = account.data?.subject;
   const sanctions = account.data?.sanctions ?? [];
   const mutationError = applyMutation.error ?? restoreMutation.error ?? decideAppealMutation.error;
@@ -191,7 +187,7 @@ export function ModerationWorkspace() {
               }}
               className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3 capitalize"
             >
-              {appealStates.map((value) => <option key={value} value={value}>{stateLabel(value)}</option>)}
+              {APPEAL_STATES.map((value) => <option key={value} value={value}>{adminStateLabel(value)}</option>)}
             </select>
           </label>
         ) : null}
@@ -203,7 +199,7 @@ export function ModerationWorkspace() {
           onSubmit={(event) => {
             event.preventDefault();
             if (lookupAccountId.trim()) {
-              void setAccountId(lookupAccountId.trim());
+              setAccountId(lookupAccountId.trim());
               setNotice(null);
             }
           }}
@@ -225,7 +221,7 @@ export function ModerationWorkspace() {
       {mutationError ? <p role="alert" className="mt-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{mutationError.message}</p> : null}
       {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)]">
+      <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm" aria-labelledby="appeal-queue-heading">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -259,7 +255,7 @@ export function ModerationWorkspace() {
             {subject ? (
               <>
                 <div className="border-b border-stone-200 bg-stone-950 p-5 text-white">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">Account projection</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">Account projection</p>
                   <h2 id="account-state-heading" className="mt-2 text-2xl font-bold">{subject.accountId.slice(0, 8)}</h2>
                   <p className="mt-1 break-all font-mono text-xs text-stone-400">{subject.accountId}</p>
                 </div>
@@ -290,7 +286,7 @@ export function ModerationWorkspace() {
                         <li key={sanction.sanctionId} className="rounded-lg border border-stone-200 p-3">
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>
-                              <p className="text-sm font-semibold capitalize">{stateLabel(sanction.kind)}</p>
+                              <p className="text-sm font-semibold capitalize">{adminStateLabel(sanction.kind)}</p>
                               <p className="mt-1 text-xs text-stone-600">{sanction.reasonCode} · {formatDate(sanction.startsAt)}</p>
                               {sanction.endsAt ? <p className="mt-1 text-xs text-stone-500">Ends {formatDate(sanction.endsAt)}</p> : null}
                             </div>
@@ -313,7 +309,7 @@ export function ModerationWorkspace() {
                   <h2 className="mt-1 text-lg font-bold text-stone-950">{selectedAppeal.appealCaseId.slice(0, 8)}</h2>
                 </div>
                 <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${selectedAppeal.slaOverdue ? "bg-red-100 text-red-900" : "bg-stone-100 text-stone-700"}`}>
-                  {selectedAppeal.slaOverdue ? "SLA overdue" : stateLabel(selectedAppeal.state)}
+                  {selectedAppeal.slaOverdue ? "SLA overdue" : adminStateLabel(selectedAppeal.state)}
                 </span>
               </div>
               <blockquote className="mt-4 rounded-lg border-l-4 border-stone-400 bg-stone-50 p-4 text-sm leading-6 text-stone-700">

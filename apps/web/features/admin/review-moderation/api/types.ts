@@ -18,16 +18,20 @@ export type ApplySanctionInput = components["schemas"]["ApplySanctionDto"];
 export type RestoreSanctionInput = components["schemas"]["RestoreSanctionDto"];
 export type DecideAppealInput = components["schemas"]["DecideAppealDto"];
 
-export type ReviewState =
-  | "new"
-  | "triage"
-  | "assigned"
-  | "waiting"
-  | "decision_ready"
-  | "incorporation_recommended"
-  | "closed";
+export type ReviewState = ReviewCaseQueueItem["state"];
+export type AppealState = ModerationAppealQueueItem["state"];
 
-export type AppealState = "open" | "under_review" | "closed";
+export const REVIEW_STATES = [
+  "new",
+  "triage",
+  "assigned",
+  "waiting",
+  "decision_ready",
+  "incorporation_recommended",
+  "closed",
+] as const satisfies readonly ReviewState[];
+
+export const APPEAL_STATES = ["open", "under_review", "closed"] as const satisfies readonly AppealState[];
 
 export interface QueueQuery<TState extends string> {
   state?: TState;

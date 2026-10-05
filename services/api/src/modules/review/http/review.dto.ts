@@ -20,6 +20,7 @@ import type {
   ReviewDecisionOutcome,
   ReviewSourceVerificationOutcome,
 } from "../application/review.application.js";
+import { REVIEW_CASE_STATES } from "../application/review.application.js";
 
 function normalizeText(value: unknown): unknown {
   return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : value;
@@ -32,11 +33,9 @@ export class OpenReviewCaseDto {
 }
 
 export class ReviewCaseListQueryDto {
-  @ApiPropertyOptional({
-    enum: ["new", "triage", "assigned", "waiting", "decision_ready", "incorporation_recommended", "closed"],
-  })
+  @ApiPropertyOptional({ enum: REVIEW_CASE_STATES })
   @IsOptional()
-  @IsIn(["new", "triage", "assigned", "waiting", "decision_ready", "incorporation_recommended", "closed"])
+  @IsIn(REVIEW_CASE_STATES)
   public state?: ReviewCaseState;
 
   @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 25 })
@@ -137,8 +136,8 @@ export class ReviewCaseDto {
   @ApiProperty({ minimum: 1 })
   public declare revisionNumber: number;
 
-  @ApiProperty()
-  public declare state: string;
+  @ApiProperty({ enum: REVIEW_CASE_STATES })
+  public declare state: ReviewCaseState;
 
   @ApiProperty({ minimum: 1 })
   public declare version: number;

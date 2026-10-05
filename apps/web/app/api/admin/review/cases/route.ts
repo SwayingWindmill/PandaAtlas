@@ -6,21 +6,12 @@ import {
   createAuthenticatedV2Client,
   v2JsonResponse,
 } from "@/lib/server/v2-api";
+import { REVIEW_STATES, type ReviewState } from "@/features/admin/review-moderation/api/types";
 
 export const dynamic = "force-dynamic";
 
 type OpenReviewCaseBody = components["schemas"]["OpenReviewCaseDto"];
-type ReviewState = "new" | "triage" | "assigned" | "waiting" | "decision_ready" | "incorporation_recommended" | "closed";
-
-const reviewStates = new Set<ReviewState>([
-  "new",
-  "triage",
-  "assigned",
-  "waiting",
-  "decision_ready",
-  "incorporation_recommended",
-  "closed",
-]);
+const reviewStates = new Set<ReviewState>(REVIEW_STATES);
 
 export async function GET(request: NextRequest) {
   const api = await createAuthenticatedV2Client();

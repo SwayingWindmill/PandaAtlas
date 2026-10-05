@@ -5,11 +5,11 @@ import {
   createAuthenticatedV2Client,
   v2JsonResponse,
 } from "@/lib/server/v2-api";
+import { APPEAL_STATES, type AppealState } from "@/features/admin/review-moderation/api/types";
 
 export const dynamic = "force-dynamic";
 
-type AppealState = "open" | "under_review" | "closed";
-const appealStates = new Set<AppealState>(["open", "under_review", "closed"]);
+const appealStates = new Set<AppealState>(APPEAL_STATES);
 
 export async function GET(request: NextRequest) {
   const api = await createAuthenticatedV2Client();

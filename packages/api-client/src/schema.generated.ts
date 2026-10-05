@@ -1240,7 +1240,8 @@ export interface components {
             /** Format: uuid */
             submissionId: string;
             revisionNumber: number;
-            state: string;
+            /** @enum {string} */
+            state: "new" | "triage" | "assigned" | "waiting" | "decision_ready" | "incorporation_recommended" | "closed";
             version: number;
             /** Format: uuid */
             primaryAssigneeId?: string;
@@ -1251,7 +1252,8 @@ export interface components {
             /** Format: uuid */
             submissionId: string;
             revisionNumber: number;
-            state: string;
+            /** @enum {string} */
+            state: "new" | "triage" | "assigned" | "waiting" | "decision_ready" | "incorporation_recommended" | "closed";
             version: number;
             /** Format: uuid */
             primaryAssigneeId?: string;

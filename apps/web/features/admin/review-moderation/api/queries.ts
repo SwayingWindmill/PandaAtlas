@@ -29,13 +29,16 @@ import type {
 
 export const reviewKeys = {
   all: ["admin", "review"] as const,
-  queue: (query: QueueQuery<ReviewState>) => [...reviewKeys.all, "queue", query] as const,
-  surface: (reviewCaseId: string) => [...reviewKeys.all, "surface", reviewCaseId] as const,
+  queues: ["admin", "review", "queue"] as const,
+  queue: (query: QueueQuery<ReviewState>) => [...reviewKeys.queues, query] as const,
+  surfaces: ["admin", "review", "surface"] as const,
+  surface: (reviewCaseId: string) => [...reviewKeys.surfaces, reviewCaseId] as const,
 };
 
 export const moderationKeys = {
   all: ["admin", "moderation"] as const,
-  appeals: (query: QueueQuery<AppealState>) => [...moderationKeys.all, "appeals", query] as const,
+  appealLists: ["admin", "moderation", "appeals"] as const,
+  appeals: (query: QueueQuery<AppealState>) => [...moderationKeys.appealLists, query] as const,
   account: (accountId: string) => [...moderationKeys.all, "account", accountId] as const,
 };
 

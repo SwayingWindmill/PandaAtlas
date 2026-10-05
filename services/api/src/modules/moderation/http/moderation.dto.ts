@@ -12,7 +12,12 @@ import {
   Min,
   MinLength,
 } from "class-validator";
-import type { ModerationAppealDecisionOutcome, ModerationSanctionKind } from "../application/moderation.application.js";
+import {
+  MODERATION_APPEAL_STATES,
+  type ModerationAppealDecisionOutcome,
+  type ModerationAppealState,
+  type ModerationSanctionKind,
+} from "../application/moderation.application.js";
 
 function normalizeText(value: unknown): unknown {
   return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : value;
@@ -129,10 +134,10 @@ export class DecideAppealDto {
 }
 
 export class ModerationAppealListQueryDto {
-  @ApiPropertyOptional({ enum: ["open", "under_review", "closed"] })
+  @ApiPropertyOptional({ enum: MODERATION_APPEAL_STATES })
   @IsOptional()
-  @IsIn(["open", "under_review", "closed"])
-  public state?: "open" | "under_review" | "closed";
+  @IsIn(MODERATION_APPEAL_STATES)
+  public state?: ModerationAppealState;
 
   @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 25 })
   @IsOptional()
@@ -231,8 +236,8 @@ export class ModerationAppealDto {
   @ApiProperty({ format: "uuid" })
   public declare sanctionId: string;
 
-  @ApiProperty({ enum: ["open", "under_review", "closed"] })
-  public declare state: "open" | "under_review" | "closed";
+  @ApiProperty({ enum: MODERATION_APPEAL_STATES })
+  public declare state: ModerationAppealState;
 
   @ApiProperty({ minimum: 1 })
   public declare version: number;
