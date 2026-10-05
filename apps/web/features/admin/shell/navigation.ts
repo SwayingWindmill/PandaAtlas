@@ -12,7 +12,7 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
   {
     href: "/admin/reviews",
     label: "Review",
-    capabilities: ["review.case.read", "review.case.intake", "review.case.claim", "review.case.decide", "review.case.recommend"],
+    capabilities: ["review.case.read", "review.case.intake", "review.case.claim", "review.case.verify_source", "review.case.decide", "review.case.recommend"],
   },
   {
     href: "/admin/moderation",

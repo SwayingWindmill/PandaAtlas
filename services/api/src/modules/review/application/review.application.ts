@@ -1,17 +1,59 @@
-import type { ContributionReviewPort } from "../../contribution/application/contribution.application.js";
+import type {
+  ContributionReviewPort,
+  ContributionReviewSurface,
+} from "../../contribution/application/contribution.application.js";
 import type { CurationIntakePort } from "../../curation/application/curation.application.js";
 import type { EvidencePort } from "../../evidence/application/evidence.application.js";
 
 export type ReviewDecisionOutcome = "accepted" | "not_accepted" | "duplicate" | "out_of_scope" | "abuse";
 export type ReviewSourceVerificationOutcome = "verified" | "rejected";
+export const REVIEW_CASE_STATES = [
+  "new",
+  "triage",
+  "assigned",
+  "waiting",
+  "decision_ready",
+  "incorporation_recommended",
+  "closed",
+] as const;
+export type ReviewCaseState = (typeof REVIEW_CASE_STATES)[number];
 
 export interface ReviewCase {
   reviewCaseId: string;
   submissionId: string;
   revisionNumber: number;
-  state: string;
+  state: ReviewCaseState;
   version: number;
   primaryAssigneeId?: string;
+}
+
+export interface ReviewCaseQueueItem extends ReviewCase {
+  riskLevel: string;
+  targetPandaId?: string;
+  contributorStatus?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  firstResponseDueAt: Date;
+  slaOverdue: boolean;
+  queueAgeSeconds: number;
+}
+
+export interface ReviewCaseListQuery {
+  state?: ReviewCaseState;
+  limit: number;
+  offset: number;
+}
+
+export interface ReviewCasePage {
+  items: ReviewCaseQueueItem[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface ReviewCaseSurface {
+  reviewCase: ReviewCase;
+  contribution: ContributionReviewSurface;
 }
 
 export interface ReviewSourceVerificationInput {
@@ -44,6 +86,7 @@ export interface ReviewRecommendationBundle {
 
 export interface ReviewRepository {
   openCase(submissionId: string, revisionNumber: number): Promise<ReviewCase>;
+  listCases(query: ReviewCaseListQuery): Promise<ReviewCasePage>;
   getCase(reviewCaseId: string): Promise<ReviewCase | undefined>;
   claim(reviewCaseId: string, actorAccountId: string): Promise<ReviewCase | undefined>;
   verifySource(
@@ -69,7 +112,9 @@ export interface ReviewRepository {
 
 export interface ReviewPort {
   openCase(submissionId: string): Promise<ReviewCase | undefined>;
+  listCases(query: ReviewCaseListQuery): Promise<ReviewCasePage>;
   getCase(reviewCaseId: string): Promise<ReviewCase | undefined>;
+  getSurface(reviewCaseId: string): Promise<ReviewCaseSurface | undefined>;
   claim(reviewCaseId: string, actorAccountId: string): Promise<ReviewCase | undefined>;
   verifySource(
     reviewCaseId: string,
@@ -106,8 +151,19 @@ export class ReviewApplication implements ReviewPort {
     return this.repository.openCase(submissionId, surface.revisionNumber);
   }
 
+  public listCases(query: ReviewCaseListQuery): Promise<ReviewCasePage> {
+    return this.repository.listCases(query);
+  }
+
   public getCase(reviewCaseId: string): Promise<ReviewCase | undefined> {
     return this.repository.getCase(reviewCaseId);
+  }
+
+  public async getSurface(reviewCaseId: string): Promise<ReviewCaseSurface | undefined> {
+    const reviewCase = await this.repository.getCase(reviewCaseId);
+    if (reviewCase === undefined) return undefined;
+    const contribution = await this.contributions.getReviewSurface(reviewCase.submissionId);
+    return contribution === undefined ? undefined : { reviewCase, contribution };
   }
 
   public claim(reviewCaseId: string, actorAccountId: string): Promise<ReviewCase | undefined> {

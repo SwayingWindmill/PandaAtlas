@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
@@ -11,6 +11,9 @@ import {
   RecommendReviewDto,
   RecordReviewDecisionDto,
   ReviewCaseDto,
+  ReviewCaseListQueryDto,
+  ReviewCasePageDto,
+  ReviewCaseSurfaceDto,
   ReviewDecisionResultDto,
   ReviewRecommendationDto,
   ReviewVerificationResultDto,
@@ -45,6 +48,18 @@ export class ReviewController {
     return reviewCase;
   }
 
+  @Get()
+  @RequireCapabilities("review.case.read")
+  @ApiOperation({ operationId: "listReviewCases" })
+  @ApiOkResponse({ type: ReviewCasePageDto })
+  public list(@Query() query: ReviewCaseListQueryDto) {
+    return this.review.listCases({
+      limit: query.limit ?? 25,
+      offset: query.offset ?? 0,
+      ...(query.state === undefined ? {} : { state: query.state }),
+    });
+  }
+
   @Get(":reviewCaseId")
   @RequireCapabilities("review.case.read")
   @ApiOperation({ operationId: "getReviewCase" })
@@ -55,6 +70,18 @@ export class ReviewController {
       throw new ProblemException(404, "review.caseNotFound", "The ReviewCase does not exist.");
     }
     return reviewCase;
+  }
+
+  @Get(":reviewCaseId/surface")
+  @RequireCapabilities("review.case.read")
+  @ApiOperation({ operationId: "getReviewCaseSurface" })
+  @ApiOkResponse({ type: ReviewCaseSurfaceDto })
+  public async surface(@Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string) {
+    const surface = await this.review.getSurface(reviewCaseId);
+    if (surface === undefined) {
+      throw new ProblemException(404, "review.caseNotFound", "The ReviewCase does not exist.");
+    }
+    return surface;
   }
 
   @Post(":reviewCaseId/claim")

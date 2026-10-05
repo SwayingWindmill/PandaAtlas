@@ -409,6 +409,64 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(open.statusCode).toBe(201);
     const reviewCaseId = open.json<{ reviewCaseId: string }>().reviewCaseId;
 
+    const reviewQueue = await app.inject({
+      method: "GET",
+      url: "/api/v2/review/cases?state=new&limit=25&offset=0",
+      headers: headers(reviewerToken),
+    });
+    expect(reviewQueue.statusCode).toBe(200);
+    const reviewQueueBody = reviewQueue.json<{
+      total: number;
+      limit: number;
+      offset: number;
+      items: Array<{
+        reviewCaseId: string;
+        submissionId: string;
+        state: string;
+        riskLevel: string;
+        targetPandaId?: string;
+        slaOverdue: boolean;
+      }>;
+    }>();
+    expect(reviewQueueBody.total).toBeGreaterThanOrEqual(1);
+    expect(reviewQueueBody.limit).toBe(25);
+    expect(reviewQueueBody.offset).toBe(0);
+    expect(reviewQueueBody.items.find((item) => item.reviewCaseId === reviewCaseId)).toMatchObject({
+      reviewCaseId,
+      submissionId,
+      state: "new",
+      riskLevel: "normal",
+      targetPandaId: panda.pandaId,
+      slaOverdue: false,
+    });
+
+    const reviewSurface = await app.inject({
+      method: "GET",
+      url: `/api/v2/review/cases/${reviewCaseId}/surface`,
+      headers: headers(reviewerToken),
+    });
+    expect(reviewSurface.statusCode).toBe(200);
+    const reviewSurfaceBody = reviewSurface.json<{
+      reviewCase: { reviewCaseId: string; submissionId: string; state: string };
+      contribution: {
+        targetPandaId: string;
+        revisionNumber: number;
+        assertions: Array<{ assertionKey: string; fieldKey: string }>;
+        sources: Array<{ sourceId: string; locator: string }>;
+      };
+    }>();
+    expect(reviewSurfaceBody.reviewCase).toMatchObject({ reviewCaseId, submissionId, state: "new" });
+    expect(reviewSurfaceBody.contribution.targetPandaId).toBe(panda.pandaId);
+    expect(reviewSurfaceBody.contribution.revisionNumber).toBe(1);
+    expect(reviewSurfaceBody.contribution.assertions.find((item) => item.assertionKey === "sex-correction")).toMatchObject({
+      assertionKey: "sex-correction",
+      fieldKey: "profile.sex",
+    });
+    expect(reviewSurfaceBody.contribution.sources.find((item) => item.sourceId === submittedSource.source_id)).toMatchObject({
+      sourceId: submittedSource.source_id,
+      locator,
+    });
+
     const claim = await app.inject({
       method: "POST",
       url: `/api/v2/review/cases/${reviewCaseId}/claim`,
@@ -554,6 +612,37 @@ describe("V2 contribution, review, curation, and moderation", () => {
     });
     expect(appeal.statusCode).toBe(201);
     const appealCaseId = appeal.json<{ appealCaseId: string }>().appealCaseId;
+
+    const appealQueue = await app.inject({
+      method: "GET",
+      url: "/api/v2/moderation/appeals?state=open&limit=25&offset=0",
+      headers: headers(moderatorToken),
+    });
+    expect(appealQueue.statusCode).toBe(200);
+    const appealQueueBody = appealQueue.json<{
+      total: number;
+      limit: number;
+      offset: number;
+      items: Array<{
+        appealCaseId: string;
+        accountId: string;
+        sanctionId: string;
+        state: string;
+        userStatement: string;
+        slaOverdue: boolean;
+      }>;
+    }>();
+    expect(appealQueueBody.total).toBeGreaterThanOrEqual(1);
+    expect(appealQueueBody.limit).toBe(25);
+    expect(appealQueueBody.offset).toBe(0);
+    expect(appealQueueBody.items.find((item) => item.appealCaseId === appealCaseId)).toMatchObject({
+      appealCaseId,
+      accountId: moderationTarget.accountId,
+      sanctionId,
+      state: "open",
+      userStatement: "I am appealing this suspension and asking for the evidence to be reviewed again.",
+      slaOverdue: false,
+    });
 
     const overturn = await app.inject({
       method: "POST",

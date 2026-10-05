@@ -1,7 +1,23 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
-import { IsIn, IsISO8601, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
-import type { ModerationAppealDecisionOutcome, ModerationSanctionKind } from "../application/moderation.application.js";
+import { Transform, Type } from "class-transformer";
+import {
+  IsIn,
+  IsInt,
+  IsISO8601,
+  IsOptional,
+  IsString,
+  Matches,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from "class-validator";
+import {
+  MODERATION_APPEAL_STATES,
+  type ModerationAppealDecisionOutcome,
+  type ModerationAppealState,
+  type ModerationSanctionKind,
+} from "../application/moderation.application.js";
 
 function normalizeText(value: unknown): unknown {
   return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : value;
@@ -117,6 +133,28 @@ export class DecideAppealDto {
   public userVisibleExplanation!: string;
 }
 
+export class ModerationAppealListQueryDto {
+  @ApiPropertyOptional({ enum: MODERATION_APPEAL_STATES })
+  @IsOptional()
+  @IsIn(MODERATION_APPEAL_STATES)
+  public state?: ModerationAppealState;
+
+  @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 25 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  public limit?: number;
+
+  @ApiPropertyOptional({ minimum: 0, default: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  public offset?: number;
+}
+
 export class ModerationSanctionDto {
   @ApiProperty({ format: "uuid" })
   public declare sanctionId: string;
@@ -198,14 +236,45 @@ export class ModerationAppealDto {
   @ApiProperty({ format: "uuid" })
   public declare sanctionId: string;
 
-  @ApiProperty({ enum: ["open", "under_review", "closed"] })
-  public declare state: "open" | "under_review" | "closed";
+  @ApiProperty({ enum: MODERATION_APPEAL_STATES })
+  public declare state: ModerationAppealState;
 
   @ApiProperty({ minimum: 1 })
   public declare version: number;
 
   @ApiProperty()
   public declare userStatement: string;
+}
+
+export class ModerationAppealQueueItemDto extends ModerationAppealDto {
+  @ApiProperty({ format: "date-time" })
+  public declare createdAt: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare updatedAt: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare firstResponseDueAt: string;
+
+  @ApiProperty()
+  public declare slaOverdue: boolean;
+
+  @ApiProperty({ minimum: 0 })
+  public declare ageSeconds: number;
+}
+
+export class ModerationAppealPageDto {
+  @ApiProperty({ type: () => ModerationAppealQueueItemDto, isArray: true })
+  public declare items: ModerationAppealQueueItemDto[];
+
+  @ApiProperty({ minimum: 0 })
+  public declare total: number;
+
+  @ApiProperty({ minimum: 1, maximum: 100 })
+  public declare limit: number;
+
+  @ApiProperty({ minimum: 0 })
+  public declare offset: number;
 }
 
 export class ModerationAppealDecisionDto {

@@ -7,6 +7,8 @@ export type ModerationSanctionKind =
   | "account_closed_for_abuse";
 
 export type ModerationAppealDecisionOutcome = "upheld" | "modified" | "overturned" | "dismissed";
+export const MODERATION_APPEAL_STATES = ["open", "under_review", "closed"] as const;
+export type ModerationAppealState = (typeof MODERATION_APPEAL_STATES)[number];
 
 export interface ApplySanctionInput {
   accountId: string;
@@ -55,7 +57,7 @@ export interface ModerationAppeal {
   appealCaseId: string;
   accountId: string;
   sanctionId: string;
-  state: "open" | "under_review" | "closed";
+  state: ModerationAppealState;
   version: number;
   userStatement: string;
 }
@@ -67,9 +69,31 @@ export interface ModerationAppealDecision {
   decidedByAccountId: string;
 }
 
+export interface ModerationAppealQueueItem extends ModerationAppeal {
+  createdAt: Date;
+  updatedAt: Date;
+  firstResponseDueAt: Date;
+  slaOverdue: boolean;
+  ageSeconds: number;
+}
+
+export interface ModerationAppealListQuery {
+  state?: ModerationAppeal["state"];
+  limit: number;
+  offset: number;
+}
+
+export interface ModerationAppealPage {
+  items: ModerationAppealQueueItem[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 export interface ModerationRepository {
   getSubject(accountId: string): Promise<ModerationSubject>;
   listSanctions(accountId: string): Promise<ModerationSanction[]>;
+  listAppeals(query: ModerationAppealListQuery): Promise<ModerationAppealPage>;
   applySanction(input: ApplySanctionInput): Promise<ModerationSanction>;
   restoreSanction(input: RestoreSanctionInput): Promise<boolean>;
   submitAppeal(accountId: string, sanctionId: string, userStatement: string): Promise<ModerationAppeal | undefined>;
@@ -97,6 +121,10 @@ export class ModerationApplication implements ModerationPort {
 
   public listSanctions(accountId: string): Promise<ModerationSanction[]> {
     return this.repository.listSanctions(accountId);
+  }
+
+  public listAppeals(query: ModerationAppealListQuery): Promise<ModerationAppealPage> {
+    return this.repository.listAppeals(query);
   }
 
   public applySanction(input: ApplySanctionInput): Promise<ModerationSanction> {

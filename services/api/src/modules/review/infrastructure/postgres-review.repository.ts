@@ -3,6 +3,9 @@ import type { DatabaseService } from "../../../platform/database/database.servic
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
 import type {
   ReviewCase,
+  ReviewCaseListQuery,
+  ReviewCasePage,
+  ReviewCaseState,
   ReviewDecisionInput,
   ReviewRecommendationBundle,
   ReviewRepository,
@@ -38,6 +41,69 @@ export class PostgresReviewRepository implements ReviewRepository {
       .returningAll()
       .executeTakeFirstOrThrow();
     return this.mapCase(row);
+  }
+
+  public async listCases(query: ReviewCaseListQuery): Promise<ReviewCasePage> {
+    let rowsQuery = this.database.db
+      .selectFrom("review_moderation.review_case_queue")
+      .selectAll()
+      .where("review_case_id", "is not", null);
+    let countQuery = this.database.db
+      .selectFrom("review_moderation.review_case_queue")
+      .select((expression) => expression.fn.countAll<string>().as("count"))
+      .where("review_case_id", "is not", null);
+
+    if (query.state !== undefined) {
+      rowsQuery = rowsQuery.where("state", "=", query.state);
+      countQuery = countQuery.where("state", "=", query.state);
+    }
+
+    const [rows, count] = await Promise.all([
+      rowsQuery
+        .orderBy("sla_overdue", "desc")
+        .orderBy("created_at", "asc")
+        .limit(query.limit)
+        .offset(query.offset)
+        .execute(),
+      countQuery.executeTakeFirstOrThrow(),
+    ]);
+
+    return {
+      items: rows.flatMap((row) => {
+        if (
+          row.review_case_id === null ||
+          row.submission_id === null ||
+          row.active_revision_number === null ||
+          row.state === null ||
+          row.version === null ||
+          row.risk_level === null ||
+          row.created_at === null ||
+          row.updated_at === null ||
+          row.first_response_due_at === null
+        ) {
+          return [];
+        }
+        return [{
+          reviewCaseId: row.review_case_id,
+          submissionId: row.submission_id,
+          revisionNumber: row.active_revision_number,
+          state: row.state,
+          version: row.version,
+          ...(row.primary_assignee_id === null ? {} : { primaryAssigneeId: row.primary_assignee_id }),
+          riskLevel: row.risk_level,
+          ...(row.target_id === null ? {} : { targetPandaId: row.target_id }),
+          ...(row.contributor_status === null ? {} : { contributorStatus: row.contributor_status }),
+          createdAt: row.created_at,
+          updatedAt: row.updated_at,
+          firstResponseDueAt: row.first_response_due_at,
+          slaOverdue: row.sla_overdue ?? false,
+          queueAgeSeconds: Number(row.queue_age_seconds ?? 0),
+        }];
+      }),
+      total: Number(count.count),
+      limit: query.limit,
+      offset: query.offset,
+    };
   }
 
   public async getCase(reviewCaseId: string): Promise<ReviewCase | undefined> {
@@ -262,7 +328,7 @@ export class PostgresReviewRepository implements ReviewRepository {
     review_case_id: string;
     submission_id: string;
     active_revision_number: number;
-    state: string;
+    state: ReviewCaseState;
     version: number;
     primary_assignee_id: string | null;
   }): ReviewCase {

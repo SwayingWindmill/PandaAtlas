@@ -13,8 +13,6 @@ interface AdminCatchAllPageProps {
 }
 
 const retainedDomainPaths: Readonly<Record<string, AdminV2Domain>> = {
-  reviews: "review",
-  moderation: "moderation",
   curation: "curation",
   audit: "audit",
   "audit-logs": "audit",

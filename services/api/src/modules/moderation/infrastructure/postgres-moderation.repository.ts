@@ -6,6 +6,8 @@ import type {
   ModerationAppeal,
   ModerationAppealDecision,
   ModerationAppealDecisionOutcome,
+  ModerationAppealListQuery,
+  ModerationAppealPage,
   ModerationRepository,
   ModerationSanction,
   ModerationSanctionKind,
@@ -54,6 +56,66 @@ export class PostgresModerationRepository implements ModerationRepository {
       .orderBy("created_at", "desc")
       .execute();
     return rows.map((row) => this.mapSanction(row));
+  }
+
+  public async listAppeals(query: ModerationAppealListQuery): Promise<ModerationAppealPage> {
+    let rowsQuery = this.database.db
+      .selectFrom("review_moderation.appeal_queue")
+      .selectAll()
+      .where("appeal_case_id", "is not", null);
+    let countQuery = this.database.db
+      .selectFrom("review_moderation.appeal_queue")
+      .select((expression) => expression.fn.countAll<string>().as("count"))
+      .where("appeal_case_id", "is not", null);
+
+    if (query.state !== undefined) {
+      rowsQuery = rowsQuery.where("state", "=", query.state);
+      countQuery = countQuery.where("state", "=", query.state);
+    }
+
+    const [rows, count] = await Promise.all([
+      rowsQuery
+        .orderBy("appeal_sla_overdue", "desc")
+        .orderBy("created_at", "asc")
+        .limit(query.limit)
+        .offset(query.offset)
+        .execute(),
+      countQuery.executeTakeFirstOrThrow(),
+    ]);
+
+    return {
+      items: rows.flatMap((row) => {
+        if (
+          row.appeal_case_id === null ||
+          row.account_id === null ||
+          row.sanction_id === null ||
+          row.state === null ||
+          row.version === null ||
+          row.user_statement === null ||
+          row.created_at === null ||
+          row.updated_at === null ||
+          row.first_response_due_at === null
+        ) {
+          return [];
+        }
+        return [{
+          appealCaseId: row.appeal_case_id,
+          accountId: row.account_id,
+          sanctionId: row.sanction_id,
+          state: row.state,
+          version: row.version,
+          userStatement: row.user_statement,
+          createdAt: row.created_at,
+          updatedAt: row.updated_at,
+          firstResponseDueAt: row.first_response_due_at,
+          slaOverdue: row.appeal_sla_overdue ?? false,
+          ageSeconds: Number(row.age_seconds ?? 0),
+        }];
+      }),
+      total: Number(count.count),
+      limit: query.limit,
+      offset: query.offset,
+    };
   }
 
   public async applySanction(input: ApplySanctionInput): Promise<ModerationSanction> {
