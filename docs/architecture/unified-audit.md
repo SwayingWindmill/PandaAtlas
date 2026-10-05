@@ -1,4 +1,6 @@
-# Unified Audit projection
+# Unified Audit projection (historical V1 record)
+
+> Historical scope: this document records the pre-V2 FastAPI and React-admin implementation from Issue #199. It is not current runtime or operator guidance. The live API is the NestJS/Fastify V2 service under `services/api/src/modules/audit`, the current staff surface is under `apps/web/features/admin/audit`, and provider/runtime authority lives in the [V2 architecture baseline](zhipanda-v2-architecture-baseline.md) plus [deployment runtime status](../deployment/runtime-status.md).
 
 Issue #199 introduces a private, append-only Audit evidence plane without replacing any bounded context's authoritative audit table.
 
@@ -58,10 +60,4 @@ The API is disabled unless `UNIFIED_AUDIT_ENABLED=true`. Disabling the flag remo
 
 ## Verification
 
-- `npm run infra:reset`
-- `uv run --directory services/api --frozen --extra dev pytest -q tests/integration/test_unified_audit_real_db.py`
-- `uv run --directory services/api --frozen --extra dev pytest -q`
-- `npm run check:api-runtime-boundary`
-- `npm run check:api-serverless-closure`
-- `npm run test:release-gate`
-- `npm run check:delivery-contract`
+The original V1 verification used FastAPI-specific runtime and serverless-closure checks that were retired during the V2 cutover. Do not use this section as a current checklist. Current changes must use the repository's Development Operations verification flow documented in [`docs/development-operations.md`](../development-operations.md).

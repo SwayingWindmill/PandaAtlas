@@ -843,7 +843,7 @@ This baseline supersedes the V2 applicability of:
 - `docs/architecture/zhipanda-v1-architecture-baseline.md` runtime/backend architecture;
 - ADR 0001's FastAPI/Worker/D1 authority and `/api/v1` compatibility model;
 - ADR 0002's FastAPI-specific managed API target and phased FastAPI deployment work;
-- `docs/architecture/api-request-runtime-boundary.md` FastAPI serverless-closure design;
+- the retired FastAPI serverless-closure design and request-runtime contracts;
 - V1 dependency/storage-check documents where they encode the Python module/storage graph;
 - D1/OpenNext-specific publication/deployment architecture;
 - V1 combined module boundaries such as `review_moderation`, `community_curation`, Activity/Feed split, and archive-workbench architecture where replaced by the V2 module map.

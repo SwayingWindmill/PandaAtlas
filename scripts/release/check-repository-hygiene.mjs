@@ -35,6 +35,25 @@ const FORBIDDEN_FILE_SUFFIXES = new Map([
 const COPY_SUFFIX_PATTERN = /(?:^|\/)[^/]+ \(\d+\)(?:\.[^/]+)?$/u;
 const RETIRED_ACQUISITION_IMPORT_PATTERN =
   /(?:^|\n)\s*(?:from|import)\s+app\.acquisition(?:\.|\s|$)/u;
+const CURRENT_AUTHORITY_DOCUMENTS = [
+  "README.md",
+  "contracts/README.md",
+  "docs/architecture/README.md",
+  "docs/architecture/zhipanda-v2-architecture-baseline.md",
+  "docs/deployment/runtime-status.md",
+  "docs/development-operations.md",
+  "docs/monorepo-structure.md",
+];
+const RETIRED_CURRENT_AUTHORITY_REFERENCES = [
+  "contracts/api-request-runtime-boundary.v1.json",
+  "contracts/api-serverless-runtime.v1.json",
+  "services/api/index.py",
+  "check:api-runtime-boundary",
+  "check:api-serverless-closure",
+  "docs/architecture/api-request-runtime-boundary.md",
+  "docs/deployment/vercel-api-phase-2.md",
+];
+const CONTRACT_README_LINK_PATTERN = /\]\(([^)]+\.json)\)/gu;
 
 export function normalizeRepositoryPath(value) {
   return String(value ?? "")
@@ -124,15 +143,74 @@ export function findRetiredRuntimeImports(paths, { cwd = repoRoot } = {}) {
     .sort();
 }
 
+export function findCurrentAuthorityDocumentationViolations({ cwd = repoRoot } = {}) {
+  const violations = [];
+  for (const repositoryPath of CURRENT_AUTHORITY_DOCUMENTS) {
+    const file = path.join(cwd, ...repositoryPath.split("/"));
+    let text;
+    try {
+      text = readFileSync(file, "utf8");
+    } catch {
+      continue;
+    }
+    for (const retiredReference of RETIRED_CURRENT_AUTHORITY_REFERENCES) {
+      if (text.includes(retiredReference)) {
+        violations.push(`${repositoryPath}: ${retiredReference}`);
+      }
+    }
+  }
+  return violations.sort();
+}
+
+export function findBrokenContractReadmeLinks({ cwd = repoRoot } = {}) {
+  const readme = path.join(cwd, "contracts", "README.md");
+  let text;
+  try {
+    text = readFileSync(readme, "utf8");
+  } catch {
+    return [];
+  }
+
+  return [...text.matchAll(CONTRACT_README_LINK_PATTERN)]
+    .map((match) => match[1])
+    .filter((target) => !target.includes("://"))
+    .map((target) => normalizeRepositoryPath(`contracts/${target}`))
+    .filter((repositoryPath) => {
+      const file = path.join(cwd, ...repositoryPath.split("/"));
+      try {
+        readFileSync(file);
+        return false;
+      } catch {
+        return true;
+      }
+    })
+    .sort();
+}
+
 export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
   const paths = collectRepositoryPaths({ cwd });
   const violations = findRepositoryHygieneViolations(paths);
   const retiredRuntimeImports = findRetiredRuntimeImports(paths, { cwd });
+  const authorityDocumentationViolations = findCurrentAuthorityDocumentationViolations({ cwd });
+  const brokenContractReadmeLinks = findBrokenContractReadmeLinks({ cwd });
 
   for (const repositoryPath of retiredRuntimeImports) {
     violations.push({
       path: repositoryPath,
       reason: "retired Python acquisition runtime import; use tools/panda-data",
+    });
+  }
+  for (const violation of authorityDocumentationViolations) {
+    const [repositoryPath, retiredReference] = violation.split(": ", 2);
+    violations.push({
+      path: repositoryPath,
+      reason: `current authority documentation references retired runtime surface: ${retiredReference}`,
+    });
+  }
+  for (const repositoryPath of brokenContractReadmeLinks) {
+    violations.push({
+      path: repositoryPath,
+      reason: "contracts README links to a missing contract",
     });
   }
   violations.sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));

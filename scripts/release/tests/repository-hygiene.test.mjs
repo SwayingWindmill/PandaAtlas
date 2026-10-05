@@ -7,6 +7,8 @@ import test from "node:test";
 
 import {
   checkRepositoryHygiene,
+  findBrokenContractReadmeLinks,
+  findCurrentAuthorityDocumentationViolations,
   findRetiredRuntimeImports,
   findRepositoryHygieneViolations,
   normalizeRepositoryPath,
@@ -123,6 +125,51 @@ test("detects Python imports from the retired API acquisition runtime", async ()
       findRetiredRuntimeImports(["scripts/legacy.py", "scripts/current.py"], { cwd }),
       ["scripts/legacy.py"],
     );
+  } finally {
+    await rm(cwd, { force: true, recursive: true });
+  }
+});
+
+test("current authority documentation does not reference retired FastAPI serverless surfaces", async () => {
+  const cwd = await mkdtemp(path.join(tmpdir(), "panda-current-docs-"));
+  try {
+    await mkdir(path.join(cwd, "docs", "architecture"), { recursive: true });
+    await mkdir(path.join(cwd, "docs", "deployment"), { recursive: true });
+    await mkdir(path.join(cwd, "contracts"), { recursive: true });
+    await writeFile(path.join(cwd, "README.md"), "# Current\n", "utf8");
+    await writeFile(path.join(cwd, "contracts", "README.md"), "# Contracts\n", "utf8");
+    await writeFile(path.join(cwd, "docs", "architecture", "README.md"), "# Architecture\n", "utf8");
+    await writeFile(
+      path.join(cwd, "docs", "architecture", "zhipanda-v2-architecture-baseline.md"),
+      "Retired detail: docs/architecture/api-request-runtime-boundary.md\n",
+      "utf8",
+    );
+    await writeFile(
+      path.join(cwd, "docs", "deployment", "runtime-status.md"),
+      "Current runtime is Cloudflare.\n",
+      "utf8",
+    );
+
+    assert.deepEqual(findCurrentAuthorityDocumentationViolations({ cwd }), [
+      "docs/architecture/zhipanda-v2-architecture-baseline.md: docs/architecture/api-request-runtime-boundary.md",
+    ]);
+  } finally {
+    await rm(cwd, { force: true, recursive: true });
+  }
+});
+
+test("contracts README links only to contract files that exist", async () => {
+  const cwd = await mkdtemp(path.join(tmpdir(), "panda-contract-links-"));
+  try {
+    await mkdir(path.join(cwd, "contracts"), { recursive: true });
+    await writeFile(
+      path.join(cwd, "contracts", "README.md"),
+      "- [existing](existing.v1.json)\n- [missing](missing.v1.json)\n",
+      "utf8",
+    );
+    await writeFile(path.join(cwd, "contracts", "existing.v1.json"), "{}\n", "utf8");
+
+    assert.deepEqual(findBrokenContractReadmeLinks({ cwd }), ["contracts/missing.v1.json"]);
   } finally {
     await rm(cwd, { force: true, recursive: true });
   }
