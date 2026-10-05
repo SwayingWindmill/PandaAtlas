@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
@@ -15,6 +15,8 @@ import {
   ModerationAccountDto,
   ModerationAppealDecisionDto,
   ModerationAppealDto,
+  ModerationAppealListQueryDto,
+  ModerationAppealPageDto,
   ModerationSanctionDto,
   RestoredSanctionDto,
   RestoreSanctionDto,
@@ -46,6 +48,18 @@ export class ModerationController {
       subject: await this.moderation.getSubject(accountId),
       sanctions: await this.moderation.listSanctions(accountId),
     };
+  }
+
+  @Get("appeals")
+  @RequireCapabilities("moderation.appeal.decide")
+  @ApiOperation({ operationId: "listModerationAppeals" })
+  @ApiOkResponse({ type: ModerationAppealPageDto })
+  public listAppeals(@Query() query: ModerationAppealListQueryDto) {
+    return this.moderation.listAppeals({
+      limit: query.limit ?? 25,
+      offset: query.offset ?? 0,
+      ...(query.state === undefined ? {} : { state: query.state }),
+    });
   }
 
   @Post("accounts/:accountId/sanctions")

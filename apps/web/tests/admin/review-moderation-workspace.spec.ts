@@ -1,0 +1,287 @@
+import { expect, test } from "@playwright/test";
+
+const reviewerAccountId = "11111111-1111-4111-8111-111111111111";
+const reviewCaseId = "22222222-2222-4222-8222-222222222222";
+const submissionId = "33333333-3333-4333-8333-333333333333";
+const pandaId = "44444444-4444-4444-8444-444444444444";
+const sourceId = "55555555-5555-4555-8555-555555555555";
+const moderationAccountId = "66666666-6666-4666-8666-666666666666";
+const sanctionId = "77777777-7777-4777-8777-777777777777";
+const appealCaseId = "88888888-8888-4888-8888-888888888888";
+
+const reviewCapabilities = [
+  "review.case.read",
+  "review.case.intake",
+  "review.case.claim",
+  "review.case.verify_source",
+  "review.case.decide",
+  "review.case.recommend",
+];
+
+const moderationCapabilities = [
+  "moderation.sanction.read",
+  "moderation.sanction.apply",
+  "moderation.sanction.restore",
+  "moderation.appeal.decide",
+];
+
+const reviewQueueItem = {
+  reviewCaseId,
+  submissionId,
+  revisionNumber: 1,
+  state: "new",
+  version: 1,
+  riskLevel: "normal",
+  targetPandaId: pandaId,
+  contributorStatus: "submitted",
+  createdAt: "2026-10-05T08:00:00.000Z",
+  updatedAt: "2026-10-05T08:00:00.000Z",
+  firstResponseDueAt: "2026-10-05T20:00:00.000Z",
+  slaOverdue: false,
+  queueAgeSeconds: 1800,
+};
+
+const reviewSurface = {
+  reviewCase: {
+    reviewCaseId,
+    submissionId,
+    revisionNumber: 1,
+    state: "new",
+    version: 1,
+  },
+  contribution: {
+    submissionId,
+    targetPandaId: pandaId,
+    revisionNumber: 1,
+    publicVersionSeen: "2026.10.05.1",
+    assertions: [
+      {
+        assertionKey: "profile.sex",
+        fieldKey: "profile.sex",
+        value: "female",
+        certainty: "confirmed",
+        lastVerifiedOn: "2026-10-05",
+        sourceIds: [sourceId],
+      },
+    ],
+    sources: [
+      {
+        sourceId,
+        sourceKind: "url",
+        title: "Institutional profile",
+        locator: "https://example.org/panda",
+        publisher: "Example Zoo",
+      },
+    ],
+    attachments: [],
+  },
+};
+
+test("review queue replaces the generic runner with typed collection and case actions", async ({ page }) => {
+  const requestedOperations: string[] = [];
+  let queueReads = 0;
+  let surfaceReads = 0;
+  page.on("request", (request) => {
+    if (request.url().includes("/api/admin/operations")) requestedOperations.push(request.url());
+  });
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: reviewCapabilities }),
+    });
+  });
+  await page.route("**/api/admin/review/cases?**", async (route) => {
+    queueReads += 1;
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ items: [reviewQueueItem], total: 1, limit: 25, offset: 0 }),
+    });
+  });
+  await page.route(`**/api/admin/review/cases/${reviewCaseId}/surface`, async (route) => {
+    surfaceReads += 1;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(reviewSurface) });
+  });
+  await page.route(`**/api/admin/review/cases/${reviewCaseId}/claim`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ...reviewSurface.reviewCase, state: "assigned", primaryAssigneeId: reviewerAccountId }),
+    });
+  });
+
+  await page.goto(`/admin/reviews?case=${reviewCaseId}`);
+
+  await expect(page.getByRole("heading", { level: 1, name: "Contribution review queue" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Assertions" })).toBeVisible();
+  await expect(page.getByText("Institutional profile").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Claim case" })).toBeVisible();
+  await expect(page.getByLabel("Source verification reason")).toBeVisible();
+  await expect(page.getByLabel("Decision outcome")).toBeVisible();
+  await expect(page.getByText("JSON payload")).toHaveCount(0);
+  expect(requestedOperations).toEqual([]);
+
+  await page.getByRole("button", { name: "Claim case" }).click();
+  await expect(page.getByRole("status")).toContainText("Review case claimed.");
+  await expect.poll(() => queueReads).toBeGreaterThan(1);
+  await expect.poll(() => surfaceReads).toBeGreaterThan(1);
+});
+
+test("review queue keeps collection state in the URL", async ({ page }) => {
+  const reads: Array<{ state: string | null; offset: string | null }> = [];
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal1", capabilities: reviewCapabilities }),
+    });
+  });
+  await page.route("**/api/admin/review/cases?**", async (route) => {
+    const url = new URL(route.request().url());
+    reads.push({ state: url.searchParams.get("state"), offset: url.searchParams.get("offset") });
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ items: [], total: 60, limit: 25, offset: Number(url.searchParams.get("offset") ?? 0) }),
+    });
+  });
+
+  await page.goto("/admin/reviews");
+  await page.getByLabel("Queue state").selectOption("assigned");
+  await expect(page).toHaveURL(/\/admin\/reviews\?state=assigned$/);
+  await expect.poll(() => reads.at(-1)).toEqual({ state: "assigned", offset: "0" });
+
+  await page.getByRole("button", { name: "Next" }).click();
+  await expect(page).toHaveURL(/\/admin\/reviews\?state=assigned&page=2$/);
+  await expect.poll(() => reads.at(-1)).toEqual({ state: "assigned", offset: "25" });
+});
+
+test("moderation shows the appeal queue, account projection, and typed appeal decision", async ({ page }) => {
+  let appealDecisionBody: unknown;
+  let appealReads = 0;
+  let accountReads = 0;
+  const appealItem = {
+    appealCaseId,
+    accountId: moderationAccountId,
+    sanctionId,
+    state: "open",
+    version: 1,
+    userStatement: "Please review the evidence again; I believe this suspension should be reversed.",
+    createdAt: "2026-10-05T08:00:00.000Z",
+    updatedAt: "2026-10-05T08:00:00.000Z",
+    firstResponseDueAt: "2026-10-05T20:00:00.000Z",
+    slaOverdue: false,
+    ageSeconds: 1800,
+  };
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: moderationCapabilities }),
+    });
+  });
+  await page.route("**/api/admin/moderation/appeals?**", async (route) => {
+    appealReads += 1;
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ items: [appealItem], total: 1, limit: 25, offset: 0 }),
+    });
+  });
+  await page.route(`**/api/admin/moderation/accounts/${moderationAccountId}`, async (route) => {
+    accountReads += 1;
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        subject: {
+          accountId: moderationAccountId,
+          version: 2,
+          submissionRestricted: false,
+          attachmentRestricted: false,
+          notificationRestricted: false,
+          accountSuspended: true,
+          accountClosedForAbuse: false,
+          repeatAbuseCount: 1,
+        },
+        sanctions: [{
+          sanctionId,
+          accountId: moderationAccountId,
+          kind: "account_suspended",
+          reasonCode: "repeat_abuse",
+          startsAt: "2026-10-05T07:30:00.000Z",
+          createdAt: "2026-10-05T07:30:00.000Z",
+        }],
+      }),
+    });
+  });
+  await page.route(`**/api/admin/moderation/appeals/${appealCaseId}/decision`, async (route) => {
+    appealDecisionBody = route.request().postDataJSON();
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        decisionId: "99999999-9999-4999-8999-999999999999",
+        appealCaseId,
+        outcome: "overturned",
+        decidedByAccountId: reviewerAccountId,
+      }),
+    });
+  });
+
+  await page.goto(`/admin/moderation?appeal=${appealCaseId}&account=${moderationAccountId}`);
+
+  await expect(page.getByRole("heading", { level: 1, name: "Account moderation & appeals" })).toBeVisible();
+  await expect(page.getByText("Please review the evidence again; I believe this suspension should be reversed.")).toBeVisible();
+  await expect(page.getByText("account suspended", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Apply sanction" })).toBeVisible();
+  await page.getByLabel("Appeal outcome").selectOption("overturned");
+  await page.getByLabel("Appeal internal explanation").fill("The evidence does not support continuing this account suspension.");
+  await page.getByLabel("Appeal member explanation").fill("Your appeal was accepted and the account suspension has been removed.");
+  await page.getByRole("button", { name: "Record appeal decision" }).click();
+
+  await expect.poll(() => appealDecisionBody).toEqual({
+    outcome: "overturned",
+    internalExplanation: "The evidence does not support continuing this account suspension.",
+    userVisibleExplanation: "Your appeal was accepted and the account suspension has been removed.",
+  });
+  await expect(page.getByRole("status")).toContainText("Appeal decision recorded.");
+  await expect.poll(() => appealReads).toBeGreaterThan(1);
+  await expect.poll(() => accountReads).toBeGreaterThan(1);
+});
+
+test("moderation actions stay capability scoped", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal1", capabilities: ["moderation.sanction.read"] }),
+    });
+  });
+  await page.route(`**/api/admin/moderation/accounts/${moderationAccountId}`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        subject: {
+          accountId: moderationAccountId,
+          version: 1,
+          submissionRestricted: false,
+          attachmentRestricted: false,
+          notificationRestricted: false,
+          accountSuspended: false,
+          accountClosedForAbuse: false,
+          repeatAbuseCount: 0,
+        },
+        sanctions: [],
+      }),
+    });
+  });
+
+  await page.goto(`/admin/moderation?account=${moderationAccountId}`);
+  await expect(page.getByRole("heading", { level: 1, name: "Account moderation & appeals" })).toBeVisible();
+  await expect(page.getByText("Your capabilities do not include appeal decisions.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Apply sanction" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Record appeal decision" })).toHaveCount(0);
+});

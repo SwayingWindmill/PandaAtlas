@@ -171,7 +171,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["listReviewCases"];
         put?: never;
         post: operations["openReviewCase"];
         delete?: never;
@@ -188,6 +188,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getReviewCase"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/review/cases/{reviewCaseId}/surface": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getReviewCaseSurface"];
         put?: never;
         post?: never;
         delete?: never;
@@ -268,6 +284,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["getModerationAccount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/moderation/appeals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listModerationAppeals"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1213,6 +1245,74 @@ export interface components {
             /** Format: uuid */
             primaryAssigneeId?: string;
         };
+        ReviewCaseQueueItemDto: {
+            /** Format: uuid */
+            reviewCaseId: string;
+            /** Format: uuid */
+            submissionId: string;
+            revisionNumber: number;
+            state: string;
+            version: number;
+            /** Format: uuid */
+            primaryAssigneeId?: string;
+            riskLevel: string;
+            /** Format: uuid */
+            targetPandaId?: string;
+            contributorStatus?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            firstResponseDueAt: string;
+            slaOverdue: boolean;
+            queueAgeSeconds: number;
+        };
+        ReviewCasePageDto: {
+            items: components["schemas"]["ReviewCaseQueueItemDto"][];
+            total: number;
+            limit: number;
+            offset: number;
+        };
+        ContributionReviewAssertionDto: {
+            assertionKey: string;
+            fieldKey: string;
+            value: string | number | boolean | unknown[] | {
+                [key: string]: unknown;
+            } | null;
+            /** @enum {string} */
+            certainty: "confirmed" | "provisional";
+            /** Format: date */
+            lastVerifiedOn: string;
+            sourceIds: string[];
+        };
+        ContributionReviewSourceDto: {
+            sourceId: string;
+            /** @enum {string} */
+            sourceKind: "url" | "publication" | "document" | "other";
+            title: string;
+            locator: string;
+            publisher?: string;
+            /** Format: date */
+            publishedOn?: string;
+        };
+        ContributionReviewSurfaceDto: {
+            /** Format: uuid */
+            submissionId: string;
+            /** Format: uuid */
+            contributorAccountId?: string;
+            /** Format: uuid */
+            targetPandaId: string;
+            revisionNumber: number;
+            publicVersionSeen: string;
+            assertions: components["schemas"]["ContributionReviewAssertionDto"][];
+            sources: components["schemas"]["ContributionReviewSourceDto"][];
+            attachments: components["schemas"]["ContributionAttachmentDto"][];
+        };
+        ReviewCaseSurfaceDto: {
+            reviewCase: components["schemas"]["ReviewCaseDto"];
+            contribution: components["schemas"]["ContributionReviewSurfaceDto"];
+        };
         VerifyReviewSourceDto: {
             /** Format: uuid */
             sourceId: string;
@@ -1275,6 +1375,32 @@ export interface components {
         ModerationAccountDto: {
             subject: components["schemas"]["ModerationSubjectDto"];
             sanctions: components["schemas"]["ModerationSanctionDto"][];
+        };
+        ModerationAppealQueueItemDto: {
+            /** Format: uuid */
+            appealCaseId: string;
+            /** Format: uuid */
+            accountId: string;
+            /** Format: uuid */
+            sanctionId: string;
+            /** @enum {string} */
+            state: "open" | "under_review" | "closed";
+            version: number;
+            userStatement: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            firstResponseDueAt: string;
+            slaOverdue: boolean;
+            ageSeconds: number;
+        };
+        ModerationAppealPageDto: {
+            items: components["schemas"]["ModerationAppealQueueItemDto"][];
+            total: number;
+            limit: number;
+            offset: number;
         };
         ApplySanctionDto: {
             /** @enum {string} */
@@ -2078,6 +2204,29 @@ export interface operations {
             };
         };
     };
+    listReviewCases: {
+        parameters: {
+            query?: {
+                state?: "new" | "triage" | "assigned" | "waiting" | "decision_ready" | "incorporation_recommended" | "closed";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewCasePageDto"];
+                };
+            };
+        };
+    };
     openReviewCase: {
         parameters: {
             query?: never;
@@ -2118,6 +2267,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReviewCaseDto"];
+                };
+            };
+        };
+    };
+    getReviewCaseSurface: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reviewCaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewCaseSurfaceDto"];
                 };
             };
         };
@@ -2235,6 +2405,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ModerationAccountDto"];
+                };
+            };
+        };
+    };
+    listModerationAppeals: {
+        parameters: {
+            query?: {
+                state?: "open" | "under_review" | "closed";
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationAppealPageDto"];
                 };
             };
         };

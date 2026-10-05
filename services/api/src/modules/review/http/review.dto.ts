@@ -1,17 +1,22 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
   ArrayUnique,
   IsArray,
+  IsInt,
   IsIn,
   IsOptional,
   IsString,
   IsUUID,
   Matches,
+  Max,
   MaxLength,
+  Min,
   MinLength,
 } from "class-validator";
+import { ContributionReviewSurfaceDto } from "../../contribution/http/contribution.dto.js";
 import type {
+  ReviewCaseState,
   ReviewDecisionOutcome,
   ReviewSourceVerificationOutcome,
 } from "../application/review.application.js";
@@ -24,6 +29,30 @@ export class OpenReviewCaseDto {
   @ApiProperty({ format: "uuid" })
   @IsUUID()
   public submissionId!: string;
+}
+
+export class ReviewCaseListQueryDto {
+  @ApiPropertyOptional({
+    enum: ["new", "triage", "assigned", "waiting", "decision_ready", "incorporation_recommended", "closed"],
+  })
+  @IsOptional()
+  @IsIn(["new", "triage", "assigned", "waiting", "decision_ready", "incorporation_recommended", "closed"])
+  public state?: ReviewCaseState;
+
+  @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 25 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  public limit?: number;
+
+  @ApiPropertyOptional({ minimum: 0, default: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  public offset?: number;
 }
 
 export class VerifyReviewSourceDto {
@@ -116,6 +145,54 @@ export class ReviewCaseDto {
 
   @ApiPropertyOptional({ format: "uuid" })
   public declare primaryAssigneeId?: string;
+}
+
+export class ReviewCaseQueueItemDto extends ReviewCaseDto {
+  @ApiProperty()
+  public declare riskLevel: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  public declare targetPandaId?: string;
+
+  @ApiPropertyOptional()
+  public declare contributorStatus?: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare createdAt: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare updatedAt: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare firstResponseDueAt: string;
+
+  @ApiProperty()
+  public declare slaOverdue: boolean;
+
+  @ApiProperty({ minimum: 0 })
+  public declare queueAgeSeconds: number;
+}
+
+export class ReviewCasePageDto {
+  @ApiProperty({ type: () => ReviewCaseQueueItemDto, isArray: true })
+  public declare items: ReviewCaseQueueItemDto[];
+
+  @ApiProperty({ minimum: 0 })
+  public declare total: number;
+
+  @ApiProperty({ minimum: 1, maximum: 100 })
+  public declare limit: number;
+
+  @ApiProperty({ minimum: 0 })
+  public declare offset: number;
+}
+
+export class ReviewCaseSurfaceDto {
+  @ApiProperty({ type: () => ReviewCaseDto })
+  public declare reviewCase: ReviewCaseDto;
+
+  @ApiProperty({ type: () => ContributionReviewSurfaceDto })
+  public declare contribution: ContributionReviewSurfaceDto;
 }
 
 export class ReviewVerificationResultDto {

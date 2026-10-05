@@ -356,6 +356,65 @@
         "tags": [
           "Review"
         ]
+      },
+      "get": {
+        "operationId": "listReviewCases",
+        "parameters": [
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "new",
+                "triage",
+                "assigned",
+                "waiting",
+                "decision_ready",
+                "incorporation_recommended",
+                "closed"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewCasePageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
       }
     },
     "/api/v2/review/cases/{reviewCaseId}": {
@@ -378,6 +437,37 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ReviewCaseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Review"
+        ]
+      }
+    },
+    "/api/v2/review/cases/{reviewCaseId}/surface": {
+      "get": {
+        "operationId": "getReviewCaseSurface",
+        "parameters": [
+          {
+            "name": "reviewCaseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewCaseSurfaceDto"
                 }
               }
             }
@@ -563,6 +653,63 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ModerationAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Moderation"
+        ]
+      }
+    },
+    "/api/v2/moderation/appeals": {
+      "get": {
+        "operationId": "listModerationAppeals",
+        "parameters": [
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "under_review",
+                "closed"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationAppealPageDto"
                 }
               }
             }
@@ -3118,6 +3265,268 @@
           "version"
         ]
       },
+      "ReviewCaseQueueItemDto": {
+        "type": "object",
+        "properties": {
+          "reviewCaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "submissionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revisionNumber": {
+            "type": "number",
+            "minimum": 1
+          },
+          "state": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number",
+            "minimum": 1
+          },
+          "primaryAssigneeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "riskLevel": {
+            "type": "string"
+          },
+          "targetPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contributorStatus": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "firstResponseDueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "slaOverdue": {
+            "type": "boolean"
+          },
+          "queueAgeSeconds": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "reviewCaseId",
+          "submissionId",
+          "revisionNumber",
+          "state",
+          "version",
+          "riskLevel",
+          "createdAt",
+          "updatedAt",
+          "firstResponseDueAt",
+          "slaOverdue",
+          "queueAgeSeconds"
+        ]
+      },
+      "ReviewCasePageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewCaseQueueItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ]
+      },
+      "ContributionReviewAssertionDto": {
+        "type": "object",
+        "properties": {
+          "assertionKey": {
+            "type": "string"
+          },
+          "fieldKey": {
+            "type": "string"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "certainty": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "provisional"
+            ]
+          },
+          "lastVerifiedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "assertionKey",
+          "fieldKey",
+          "value",
+          "certainty",
+          "lastVerifiedOn",
+          "sourceIds"
+        ]
+      },
+      "ContributionReviewSourceDto": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string"
+          },
+          "sourceKind": {
+            "type": "string",
+            "enum": [
+              "url",
+              "publication",
+              "document",
+              "other"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "locator": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "publishedOn": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "sourceId",
+          "sourceKind",
+          "title",
+          "locator"
+        ]
+      },
+      "ContributionReviewSurfaceDto": {
+        "type": "object",
+        "properties": {
+          "submissionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contributorAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "targetPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revisionNumber": {
+            "type": "number",
+            "minimum": 1
+          },
+          "publicVersionSeen": {
+            "type": "string"
+          },
+          "assertions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributionReviewAssertionDto"
+            }
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributionReviewSourceDto"
+            }
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributionAttachmentDto"
+            }
+          }
+        },
+        "required": [
+          "submissionId",
+          "targetPandaId",
+          "revisionNumber",
+          "publicVersionSeen",
+          "assertions",
+          "sources",
+          "attachments"
+        ]
+      },
+      "ReviewCaseSurfaceDto": {
+        "type": "object",
+        "properties": {
+          "reviewCase": {
+            "$ref": "#/components/schemas/ReviewCaseDto"
+          },
+          "contribution": {
+            "$ref": "#/components/schemas/ContributionReviewSurfaceDto"
+          }
+        },
+        "required": [
+          "reviewCase",
+          "contribution"
+        ]
+      },
       "VerifyReviewSourceDto": {
         "type": "object",
         "properties": {
@@ -3340,6 +3749,100 @@
         "required": [
           "subject",
           "sanctions"
+        ]
+      },
+      "ModerationAppealQueueItemDto": {
+        "type": "object",
+        "properties": {
+          "appealCaseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sanctionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "open",
+              "under_review",
+              "closed"
+            ]
+          },
+          "version": {
+            "type": "number",
+            "minimum": 1
+          },
+          "userStatement": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "firstResponseDueAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "slaOverdue": {
+            "type": "boolean"
+          },
+          "ageSeconds": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "appealCaseId",
+          "accountId",
+          "sanctionId",
+          "state",
+          "version",
+          "userStatement",
+          "createdAt",
+          "updatedAt",
+          "firstResponseDueAt",
+          "slaOverdue",
+          "ageSeconds"
+        ]
+      },
+      "ModerationAppealPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModerationAppealQueueItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "offset": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
         ]
       },
       "ApplySanctionDto": {
