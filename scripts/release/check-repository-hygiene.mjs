@@ -53,6 +53,9 @@ const RETIRED_CURRENT_AUTHORITY_REFERENCES = [
   "docs/architecture/api-request-runtime-boundary.md",
   "docs/deployment/vercel-api-phase-2.md",
 ];
+const ACTIVE_AGENT_NAVIGATION_RETIRED_REFERENCES = new Map([
+  ["docs/agents/codegraph.md", ["FastAPI", "services/worker-api"]],
+]);
 const CONTRACT_README_LINK_PATTERN = /\]\(([^)]+\.json)\)/gu;
 
 export function normalizeRepositoryPath(value) {
@@ -162,6 +165,25 @@ export function findCurrentAuthorityDocumentationViolations({ cwd = repoRoot } =
   return violations.sort();
 }
 
+export function findActiveAgentNavigationViolations({ cwd = repoRoot } = {}) {
+  const violations = [];
+  for (const [repositoryPath, retiredReferences] of ACTIVE_AGENT_NAVIGATION_RETIRED_REFERENCES) {
+    const file = path.join(cwd, ...repositoryPath.split("/"));
+    let text;
+    try {
+      text = readFileSync(file, "utf8");
+    } catch {
+      continue;
+    }
+    for (const retiredReference of retiredReferences) {
+      if (text.includes(retiredReference)) {
+        violations.push(`${repositoryPath}: ${retiredReference}`);
+      }
+    }
+  }
+  return violations.sort();
+}
+
 export function findBrokenContractReadmeLinks({ cwd = repoRoot } = {}) {
   const readme = path.join(cwd, "contracts", "README.md");
   let text;
@@ -192,6 +214,7 @@ export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
   const violations = findRepositoryHygieneViolations(paths);
   const retiredRuntimeImports = findRetiredRuntimeImports(paths, { cwd });
   const authorityDocumentationViolations = findCurrentAuthorityDocumentationViolations({ cwd });
+  const activeAgentNavigationViolations = findActiveAgentNavigationViolations({ cwd });
   const brokenContractReadmeLinks = findBrokenContractReadmeLinks({ cwd });
 
   for (const repositoryPath of retiredRuntimeImports) {
@@ -205,6 +228,13 @@ export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
     violations.push({
       path: repositoryPath,
       reason: `current authority documentation references retired runtime surface: ${retiredReference}`,
+    });
+  }
+  for (const violation of activeAgentNavigationViolations) {
+    const [repositoryPath, retiredReference] = violation.split(": ", 2);
+    violations.push({
+      path: repositoryPath,
+      reason: `active agent navigation references retired runtime surface: ${retiredReference}`,
     });
   }
   for (const repositoryPath of brokenContractReadmeLinks) {

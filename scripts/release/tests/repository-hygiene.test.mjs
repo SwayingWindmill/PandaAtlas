@@ -7,6 +7,7 @@ import test from "node:test";
 
 import {
   checkRepositoryHygiene,
+  findActiveAgentNavigationViolations,
   findBrokenContractReadmeLinks,
   findCurrentAuthorityDocumentationViolations,
   findRetiredRuntimeImports,
@@ -152,6 +153,25 @@ test("current authority documentation does not reference retired FastAPI serverl
 
     assert.deepEqual(findCurrentAuthorityDocumentationViolations({ cwd }), [
       "docs/architecture/zhipanda-v2-architecture-baseline.md: docs/architecture/api-request-runtime-boundary.md",
+    ]);
+  } finally {
+    await rm(cwd, { force: true, recursive: true });
+  }
+});
+
+test("active agent navigation does not point at retired request runtimes", async () => {
+  const cwd = await mkdtemp(path.join(tmpdir(), "panda-agent-navigation-"));
+  try {
+    await mkdir(path.join(cwd, "docs", "agents"), { recursive: true });
+    await writeFile(
+      path.join(cwd, "docs", "agents", "codegraph.md"),
+      "Index FastAPI under services/api and services/worker-api.\n",
+      "utf8",
+    );
+
+    assert.deepEqual(findActiveAgentNavigationViolations({ cwd }), [
+      "docs/agents/codegraph.md: FastAPI",
+      "docs/agents/codegraph.md: services/worker-api",
     ]);
   } finally {
     await rm(cwd, { force: true, recursive: true });
