@@ -20,8 +20,20 @@ test("normalizes repository paths across operating systems", () => {
 test("allows source, evidence, and glossary files", () => {
   assert.equal(repositoryHygieneViolation("apps/web/app/page.tsx"), null);
   assert.equal(repositoryHygieneViolation("data/frontend-evidence/test-results.json"), null);
+  assert.equal(repositoryHygieneViolation("infra/supabase/config.toml"), null);
   assert.equal(repositoryHygieneViolation("GLOSSARY-MAP.md"), null);
   assert.equal(repositoryHygieneViolation("contracts/golden-dataset/GLOSSARY.md"), null);
+});
+
+test("rejects repository-root Supabase CLI state outside the canonical infra project", () => {
+  assert.equal(
+    repositoryHygieneViolation("supabase/.temp/start-secrets"),
+    "non-canonical Supabase project state; use infra/supabase",
+  );
+  assert.equal(
+    repositoryHygieneViolation("supabase/.branches/_current_branch"),
+    "non-canonical Supabase project state; use infra/supabase",
+  );
 });
 
 test("rejects the retired CONTEXT domain documentation convention", () => {

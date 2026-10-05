@@ -44,6 +44,10 @@ export function repositoryHygieneViolation(value) {
   const path = normalizeRepositoryPath(value);
   if (!path) return null;
 
+  if (path === "supabase" || path.startsWith("supabase/")) {
+    return "non-canonical Supabase project state; use infra/supabase";
+  }
+
   if (path === "CONTEXT-MAP.md") {
     return "retired domain documentation filename; use GLOSSARY-MAP.md";
   }

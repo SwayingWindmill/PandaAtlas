@@ -16,6 +16,7 @@ import {
   renderDevelopmentCommand,
   resolveDevelopmentInvocation,
 } from "../operations.mjs";
+import { classifyDevelopmentScopes } from "../verify.mjs";
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -52,6 +53,19 @@ test("command rendering exposes the executable interface", () => {
     renderDevelopmentCommand(getDevelopmentCommand("api.test")),
     "npm run test -w @zhipanda/api",
   );
+  assert.equal(
+    renderDevelopmentCommand(getDevelopmentCommand("api.integration")),
+    "npm run test:integration -w @zhipanda/api",
+  );
+  assert.equal(
+    renderDevelopmentCommand(getDevelopmentCommand("api.contract")),
+    "node scripts/development/check-api-contract.mjs",
+  );
+});
+
+test("API client and Supabase foundation changes select the API verification scope", () => {
+  assert.deepEqual(classifyDevelopmentScopes(["packages/api-client/src/schema.generated.ts"]), ["api"]);
+  assert.deepEqual(classifyDevelopmentScopes(["infra/supabase/migrations/20260101000000_example.sql"]), ["release", "api"]);
 });
 
 test("Windows npm and npx commands run through the Node CLI without a shell", () => {

@@ -38,6 +38,16 @@ npm run check:architecture:v2
 npm run build:v2
 ```
 
+Database-backed API integration uses the same Development Operations catalog as the local foundation:
+
+```powershell
+npm run infra:start
+npm run ops -- run api.integration
+npm run infra:stop
+```
+
+`npm run ops -- run api.contract` regenerates the Nest OpenAPI document and generated TypeScript client, then fails if either generated output changed from its pre-check contents. A failing check leaves the regenerated files in place for review.
+
 Web checks:
 
 ```powershell

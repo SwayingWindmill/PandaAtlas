@@ -59,7 +59,7 @@
     "check:batch-workflow-interface": "node scripts/development/operations.mjs run release.check-batch-workflow-interface",
     "batch:plan": "node scripts/batch/operations.mjs plan",
     "batch:run": "node scripts/batch/operations.mjs run --execute",
-    "test:development-gate": "node --test scripts/release/tests/batch-workflow-interface.test.mjs scripts/release/tests/gate-core.test.mjs scripts/release/tests/repository-hygiene.test.mjs scripts/release/tests/research-script-policy.test.mjs scripts/development/tests/operations.test.mjs",
+    "test:development-gate": "node --test scripts/release/tests/batch-workflow-interface.test.mjs scripts/release/tests/gate-core.test.mjs scripts/release/tests/repository-hygiene.test.mjs scripts/release/tests/research-script-policy.test.mjs scripts/development/tests/operations.test.mjs scripts/development/tests/verification-workflow.test.mjs",
     "verify:dev": "node scripts/development/operations.mjs run verify.dev",
     "verify:dev:list": "node scripts/development/operations.mjs run verify.plan",
     "check:frontend-evidence": "node scripts/release/validate-frontend-evidence.mjs data/frontend-evidence/public-beta-2026.07.18.1.json",
