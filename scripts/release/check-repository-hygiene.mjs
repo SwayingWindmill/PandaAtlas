@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
@@ -31,6 +33,8 @@ const FORBIDDEN_FILE_SUFFIXES = new Map([
 ]);
 
 const COPY_SUFFIX_PATTERN = /(?:^|\/)[^/]+ \(\d+\)(?:\.[^/]+)?$/u;
+const RETIRED_ACQUISITION_IMPORT_PATTERN =
+  /(?:^|\n)\s*(?:from|import)\s+app\.acquisition(?:\.|\s|$)/u;
 
 export function normalizeRepositoryPath(value) {
   return String(value ?? "")
@@ -106,9 +110,32 @@ export function collectRepositoryPaths({ cwd = repoRoot } = {}) {
     .filter(Boolean);
 }
 
+export function findRetiredRuntimeImports(paths, { cwd = repoRoot } = {}) {
+  return paths
+    .filter((repositoryPath) => repositoryPath.endsWith(".py"))
+    .filter((repositoryPath) => {
+      const file = path.join(cwd, ...repositoryPath.split("/"));
+      try {
+        return RETIRED_ACQUISITION_IMPORT_PATTERN.test(readFileSync(file, "utf8"));
+      } catch {
+        return false;
+      }
+    })
+    .sort();
+}
+
 export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
   const paths = collectRepositoryPaths({ cwd });
   const violations = findRepositoryHygieneViolations(paths);
+  const retiredRuntimeImports = findRetiredRuntimeImports(paths, { cwd });
+
+  for (const repositoryPath of retiredRuntimeImports) {
+    violations.push({
+      path: repositoryPath,
+      reason: "retired Python acquisition runtime import; use tools/panda-data",
+    });
+  }
+  violations.sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));
 
   if (violations.length > 0) {
     const details = violations.map(({ path, reason }) => `- ${path}: ${reason}`).join("\n");

@@ -117,9 +117,10 @@ The final implementation:
 
 ## Immutable evidence
 
-- five raw live HTTP fixtures are stored under `services/api/tests/acquisition/fixtures/commons-media-discovery/`;
+- the active Commons discovery implementation now lives at `tools/panda-data/src/panda_data/acquisition/wikimedia_media_discovery.py` after the #330 panda-data extraction;
+- the five raw live HTTP fixtures now live under `tools/panda-data/tests/acquisition/fixtures/commons-media-discovery/`;
 - `commons-first-public-five-results.json` contains the deterministic fixture projection;
-- `commons-first-public-five-results-manifest.json` binds the cohort, source registry, all five fixtures, and result file by byte count and SHA-256;
+- `commons-first-public-five-results-manifest.json` binds the cohort, source registry, all five fixtures, and result file by byte count and SHA-256; its fixture path strings are preserved as historical evidence from the original 2026-07-24 run;
 - every task result records the raw response-body SHA-256;
 - `publication_write_targets` is empty at the cohort, task, result, and manifest levels.
 

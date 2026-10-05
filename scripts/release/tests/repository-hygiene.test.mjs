@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 
 import {
   checkRepositoryHygiene,
+  findRetiredRuntimeImports,
   findRepositoryHygieneViolations,
   normalizeRepositoryPath,
   repositoryHygieneViolation,
@@ -103,6 +104,30 @@ test("deduplicates and sorts violations for stable output", () => {
   ]);
 });
 
+test("detects Python imports from the retired API acquisition runtime", async () => {
+  const cwd = await mkdtemp(path.join(tmpdir(), "panda-retired-runtime-"));
+  try {
+    await mkdir(path.join(cwd, "scripts"), { recursive: true });
+    await writeFile(
+      path.join(cwd, "scripts", "legacy.py"),
+      "from app.acquisition.models import ResponseEnvelope\n",
+      "utf8",
+    );
+    await writeFile(
+      path.join(cwd, "scripts", "current.py"),
+      "from panda_data.acquisition.models import ResponseEnvelope\n",
+      "utf8",
+    );
+
+    assert.deepEqual(
+      findRetiredRuntimeImports(["scripts/legacy.py", "scripts/current.py"], { cwd }),
+      ["scripts/legacy.py"],
+    );
+  } finally {
+    await rm(cwd, { force: true, recursive: true });
+  }
+});
+
 test("checks tracked and unignored paths in a real Git repository", async () => {
   const cwd = await mkdtemp(path.join(tmpdir(), "panda-repository-hygiene-"));
 
@@ -115,6 +140,16 @@ test("checks tracked and unignored paths in a real Git repository", async () => 
     assert.throws(
       () => checkRepositoryHygiene({ cwd, quiet: true }),
       /source \(1\)\.ts: copy-style filename suffix/,
+    );
+
+    await writeFile(
+      path.join(cwd, "legacy.py"),
+      "import app.acquisition.wikimedia_media_discovery\n",
+      "utf8",
+    );
+    assert.throws(
+      () => checkRepositoryHygiene({ cwd, quiet: true }),
+      /legacy\.py: retired Python acquisition runtime import/,
     );
   } finally {
     await rm(cwd, { force: true, recursive: true });
