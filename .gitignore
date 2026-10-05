@@ -56,6 +56,7 @@ htmlcov/
 .codegraph/
 .codex/
 .codex-temp/
+.devspace-local/
 .planning/
 .worktrees/
 
