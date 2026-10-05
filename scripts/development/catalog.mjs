@@ -174,6 +174,15 @@ const commands = [
     effect: "generated-output",
   },
   {
+    id: "api.db-types",
+    category: "verification",
+    description: "Regenerate Kysely database types against local Supabase and fail when tracked outputs drift.",
+    command: "node",
+    args: ["scripts/development/check-api-db-types.mjs"],
+    requires: ["node_modules", "docker"],
+    effect: "generated-output",
+  },
+  {
     id: "api.build",
     category: "build",
     description: "Build the NestJS API locally.",

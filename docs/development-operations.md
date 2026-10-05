@@ -43,10 +43,13 @@ Database-backed API integration uses the same Development Operations catalog as 
 ```powershell
 npm run infra:start
 npm run ops -- run api.integration
+npm run ops -- run api.db-types
 npm run infra:stop
 ```
 
 `npm run ops -- run api.contract` regenerates the Nest OpenAPI document and generated TypeScript client, then fails if either generated output changed from its pre-check contents. A failing check leaves the regenerated files in place for review.
+
+`api.db-types` runs the existing Kysely generator against the pinned local Supabase database and applies the same drift rule to `database.*.generated.ts` outputs.
 
 Web checks:
 
