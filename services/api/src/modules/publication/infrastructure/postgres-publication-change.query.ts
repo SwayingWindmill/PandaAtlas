@@ -26,7 +26,6 @@ export class PostgresPublicationChangeQuery implements PublicationChangePort {
       .selectFrom("publication.releases")
       .select(["release_id", "version"])
       .where("release_id", "=", releaseId)
-      .where("lifecycle_state", "=", "sealed")
       .executeTakeFirstOrThrow();
 
     const current = await this.memberships(transaction, releaseId);

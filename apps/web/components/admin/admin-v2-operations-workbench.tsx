@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-export type AdminV2Domain = "review" | "moderation" | "curation" | "publication" | "audit";
+export type AdminV2Domain = "review" | "moderation" | "curation" | "audit";
 
 interface OperationDefinition {
   value: string;
@@ -85,25 +85,6 @@ const operations: Record<AdminV2Domain, OperationDefinition[]> = {
       payloadTemplate: { reason: "Reviewed and approved for canonical application." },
     },
   ],
-  publication: [
-    { value: "publication.getRelease", label: "Get release", resourceLabel: "Release ID" },
-    { value: "publication.build", label: "Build release", payloadTemplate: { version: "2026.08.28.1" } },
-    { value: "publication.seal", label: "Seal release", resourceLabel: "Release ID", payloadTemplate: { reason: "Release membership reviewed." } },
-    { value: "publication.activate", label: "Activate release", resourceLabel: "Release ID", payloadTemplate: { reason: "Release approved for activation." } },
-    { value: "publication.rollback", label: "Rollback to release", resourceLabel: "Release ID", payloadTemplate: { reason: "Rollback required after verification." } },
-    { value: "publication.suspend", label: "Suspend release", resourceLabel: "Release ID", payloadTemplate: { reason: "Emergency release suspension." } },
-    { value: "publication.restore", label: "Restore release", resourceLabel: "Release ID", payloadTemplate: { reason: "Release suspension cleared." } },
-    {
-      value: "publication.takeDownResource",
-      label: "Take down resource",
-      payloadTemplate: { resourceKind: "panda", resourceId: "", reason: "Emergency resource takedown." },
-    },
-    {
-      value: "publication.restoreResource",
-      label: "Restore resource",
-      payloadTemplate: { resourceKind: "panda", resourceId: "", reason: "Emergency resource restoration." },
-    },
-  ],
   audit: [
     { value: "audit.list", label: "List V2 audit evidence", payloadTemplate: { limit: 50 } },
   ],
@@ -121,10 +102,6 @@ const domainCopy: Record<AdminV2Domain, { title: string; description: string }> 
   curation: {
     title: "Curation",
     description: "Inspect, validate, and approve recommendation-backed canonical change sets.",
-  },
-  publication: {
-    title: "Publication",
-    description: "Build, seal, activate, roll back, suspend, restore, and apply narrow emergency resource controls.",
   },
   audit: {
     title: "Audit",

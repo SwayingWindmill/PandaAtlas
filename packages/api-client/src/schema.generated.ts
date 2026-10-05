@@ -718,6 +718,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/publication/releases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List recent V2 public releases for staff inspection */
+        get: operations["listPublicationReleases"];
+        put?: never;
+        /** Build a release-scoped public projection */
+        post: operations["buildPublicationRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/publication/releases/{releaseId}/inspection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Inspect release counts, changes, blockers, and lifecycle history */
+        get: operations["inspectPublicationRelease"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/publication/releases/{releaseId}": {
         parameters: {
             query?: never;
@@ -729,23 +764,6 @@ export interface paths {
         get: operations["getPublicationRelease"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/publication/releases": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Build a release-scoped public projection */
-        post: operations["buildPublicationRelease"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1618,6 +1636,68 @@ export interface components {
         PublicStatsResponseDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
             stats: components["schemas"]["PublicStatsDto"];
+        };
+        PublicationResourceCountsDto: {
+            panda: number;
+            institution: number;
+            place: number;
+            lineage: number;
+            residency: number;
+            lifeEvent: number;
+            media: number;
+            evidence: number;
+        };
+        PublicationReleaseSummaryDto: {
+            /** Format: uuid */
+            releaseId: string;
+            version: string;
+            projectionSchemaVersion: number;
+            /** @enum {string} */
+            lifecycleState: "building" | "sealed";
+            /** Format: date-time */
+            builtAt: string;
+            /** Format: date-time */
+            sealedAt?: string;
+            contentSha256?: string;
+            isCurrent: boolean;
+            suspended: boolean;
+            counts: components["schemas"]["PublicationResourceCountsDto"];
+            blockers: string[];
+        };
+        PublicationReleasePageDto: {
+            /** Format: uuid */
+            currentReleaseId?: string;
+            currentRelease?: components["schemas"]["PublicationReleaseSummaryDto"];
+            items: components["schemas"]["PublicationReleaseSummaryDto"][];
+            total: number;
+            limit: number;
+            offset: number;
+        };
+        PublicationChangeSummaryDto: {
+            /** @enum {string} */
+            resourceKind: "panda" | "institution" | "place" | "lineage" | "residency" | "life_event" | "media" | "evidence";
+            added: number;
+            changed: number;
+            removed: number;
+        };
+        PublicationTransitionDto: {
+            /** Format: uuid */
+            transitionId: string;
+            /** @enum {string} */
+            transitionType: "built" | "sealed" | "activated" | "rolled_back" | "suspended" | "restored";
+            /** Format: uuid */
+            fromReleaseId?: string;
+            actor: string;
+            reason: string;
+            /** Format: date-time */
+            occurredAt: string;
+        };
+        PublicationReleaseInspectionDto: {
+            /** Format: uuid */
+            currentReleaseId?: string;
+            release: components["schemas"]["PublicationReleaseSummaryDto"];
+            changes: components["schemas"]["PublicationChangeSummaryDto"][];
+            transitions: components["schemas"]["PublicationTransitionDto"][];
         };
         PublicReleaseDto: {
             /** Format: uuid */
@@ -2991,6 +3071,80 @@ export interface operations {
             };
         };
     };
+    listPublicationReleases: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                lifecycleState?: "building" | "sealed";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicationReleasePageDto"];
+                };
+            };
+        };
+    };
+    buildPublicationRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BuildPublicReleaseDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicReleaseDto"];
+                };
+            };
+        };
+    };
+    inspectPublicationRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                releaseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicationReleaseInspectionDto"];
+                };
+            };
+            /** @description The release does not exist. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     getPublicationRelease: {
         parameters: {
             query?: never;
@@ -3016,29 +3170,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    buildPublicationRelease: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BuildPublicReleaseDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PublicReleaseDto"];
-                };
             };
         };
     };
