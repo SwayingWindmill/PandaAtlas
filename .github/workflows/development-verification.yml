@@ -100,6 +100,11 @@ jobs:
       - name: Run real PostgreSQL integration suite
         run: npm run ops -- run api.integration
 
+      - name: Verify committed IAM lifecycle evidence in disposable Supabase
+        env:
+          IAM06_COMMIT_EVIDENCE: "1"
+        run: npm exec -w @zhipanda/api -- vitest run --config vitest.integration.config.ts test/integration/identity-http.integration.spec.ts -t "completes the invited reviewer lifecycle"
+
       - name: Stop local Supabase foundation
         if: always()
         run: npm run infra:stop

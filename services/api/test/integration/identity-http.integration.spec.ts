@@ -5,6 +5,8 @@ import { createServer, type Server } from "node:http";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApplication } from "../../src/bootstrap.js";
+import { EVIDENCE_PORT, type EvidencePort } from "../../src/modules/evidence/application/evidence.application.js";
+import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import type { DatabaseTransaction } from "../../src/platform/database/database.service.js";
 
@@ -459,10 +461,13 @@ describe("Identity HTTP security path", () => {
     expect(current.json<{ capabilities: string[] }>().capabilities).not.toContain("review.case.read");
   });
 
-  it("only activates reviewer authority after the invitee verifies their own Supabase identity", async () => {
+  it("completes the invited reviewer lifecycle across authorization, Review, suspension and audit evidence", async () => {
     const database = app.get(DatabaseService);
     const originalTransaction = database.transaction.bind(database);
     const rollback = new Error("roll back disposable reviewer HTTP test fixtures");
+    // CI's disposable Supabase verifies the events *after COMMIT* using a new connection.
+    // Developer databases always exercise this same journey inside a rolled-back transaction.
+    const committedEvidence = process.env.IAM06_COMMIT_EVIDENCE === "1";
     try {
       await database.db.transaction().execute(async (tx: DatabaseTransaction) => {
         // Isolate this end-to-end HTTP fixture in a single rollback-only transaction.
@@ -470,22 +475,33 @@ describe("Identity HTTP security path", () => {
         Reflect.set(database, "transaction", <T>(work: (transaction: DatabaseTransaction) => Promise<T>) => work(tx));
         const adminId = randomUUID();
         const adminSessionId = randomUUID();
+        const contributorId = randomUUID();
+        const contributorSessionId = randomUUID();
         const reviewerSessionId = randomUUID();
         const adminToken = await signTestToken(adminId, adminSessionId, "aal2");
+        const staleAdminToken = await signTestToken(adminId, adminSessionId, "aal2", 960);
+        const contributorToken = await signTestToken(contributorId, contributorSessionId, "aal1");
         const reviewerToken = await signTestToken(INVITED_ACCOUNT_ID, reviewerSessionId, "aal1");
         const staleReviewerToken = await signTestToken(INVITED_ACCOUNT_ID, randomUUID(), "aal1");
 
         await sql`
           insert into auth.users (id,aud,role,email,email_confirmed_at,created_at,updated_at)
           values (${adminId}::uuid,'authenticated','authenticated','admin-test@example.test',now(),now(),now()),
+                 (${contributorId}::uuid,'authenticated','authenticated','contributor@example.test',now(),now(),now()),
                  (${INVITED_ACCOUNT_ID}::uuid,'authenticated','authenticated','reviewer@example.test',null,now(),now())
         `.execute(tx);
         await sql`
           insert into auth.sessions (id,user_id,created_at,updated_at,aal)
           values (${adminSessionId}::uuid,${adminId}::uuid,now(),now(),'aal2'),
+                 (${contributorSessionId}::uuid,${contributorId}::uuid,now(),now(),'aal1'),
                  (${reviewerSessionId}::uuid,${INVITED_ACCOUNT_ID}::uuid,now(),now(),'aal1')
         `.execute(tx);
         await tx.insertInto("identity.accounts").values({ account_id: adminId, email: null }).execute();
+        await tx.insertInto("identity.accounts").values({ account_id: contributorId, email: null }).execute();
+        await tx.insertInto("identity.role_assignments").values({
+          account_id: contributorId, role_key: "member", reason: "Independent contributor fixture",
+          correlation_id: randomUUID(), idempotency_key: randomUUID(),
+        }).execute();
         await tx.insertInto("identity.role_assignments").values({
           account_id: adminId,
           role_key: "administrator",
@@ -543,6 +559,43 @@ describe("Identity HTTP security path", () => {
           method: "GET", url: "/api/v2/review/cases?limit=1", headers: reviewerHeaders,
         });
         expect(reviewQueue.statusCode).toBe(200);
+        const suffix = randomUUID();
+        const sourceId = `iam06:${suffix}`;
+        const sourceUrl = `https://example.test/iam06/${suffix}`;
+        const evidence = app.get<EvidencePort>(EVIDENCE_PORT);
+        const pandas = app.get<PandaPort>(PANDA_PORT);
+        await evidence.createSource({
+          sourceId, publisher: "IAM-06 test", title: "Reviewer evidence",
+          url: sourceUrl, publishedOn: "2026-10-08", lastVerifiedOn: "2026-10-08",
+          languageTag: "en", accessState: "accessible", evidenceTier: "institutional",
+        });
+        const panda = await pandas.createPanda({
+          canonicalSlug: `iam06-${suffix}`,
+          primaryName: { languageTag: "en", value: `IAM-06 Panda ${suffix}`, sourceIds: [sourceId] },
+        });
+        const contribution = await app.inject({
+          method: "POST", url: "/api/v2/contributions", headers: { authorization: `Bearer ${contributorToken}` },
+          payload: {
+            submissionType: "correction", targetPandaId: panda.pandaId,
+            publicVersionSeen: "iam06-test", assertions: [{
+              assertionKey: "sex-correction", fieldKey: "profile.sex", value: "female",
+              certainty: "confirmed", lastVerifiedOn: "2026-10-08", sourceKeys: ["source"],
+            }], sources: [{ sourceKey: "source", sourceKind: "url", title: "Review source", locator: sourceUrl }],
+          },
+        });
+        expect(contribution.statusCode, contribution.body).toBe(201);
+        const submissionId = contribution.json<{ submissionId: string }>().submissionId;
+        const opened = await app.inject({
+          method: "POST", url: "/api/v2/review/cases", headers: reviewerHeaders,
+          payload: { submissionId },
+        });
+        expect(opened.statusCode, opened.body).toBe(201);
+        const reviewCaseId = opened.json<{ reviewCaseId: string }>().reviewCaseId;
+        const claimed = await app.inject({
+          method: "POST", url: `/api/v2/review/cases/${reviewCaseId}/claim`, headers: reviewerHeaders,
+        });
+        expect(claimed.statusCode, claimed.body).toBe(200);
+        expect(claimed.json()).toMatchObject({ reviewCaseId, primaryAssigneeId: INVITED_ACCOUNT_ID });
         const publicationQueue = await app.inject({
           method: "GET", url: "/api/v2/publication/releases", headers: reviewerHeaders,
         });
@@ -557,20 +610,117 @@ describe("Identity HTTP security path", () => {
           method: "POST", url: "/api/v2/me/staff-invitation/accept", headers: reviewerHeaders,
         });
         expect(replay.statusCode).toBe(201);
+
+        const adminHeaders = { authorization: `Bearer ${adminToken}` };
+        const staffUrl = `/api/v2/staff/accounts/${INVITED_ACCOUNT_ID}`;
+        const reviewUrl = "/api/v2/review/cases?limit=1";
+        const readWithStaleAuth = await app.inject({
+          method: "GET", url: staffUrl, headers: { authorization: `Bearer ${staleAdminToken}` },
+        });
+        expect(readWithStaleAuth.statusCode).toBe(200);
+        const staleMutation = await app.inject({
+          method: "POST", url: `${staffUrl}/roles`, headers: { authorization: `Bearer ${staleAdminToken}` },
+          payload: { roleKey: "audit_reader", reason: "Temporary evidence review", idempotencyKey: randomUUID() },
+        });
+        expect(staleMutation.statusCode).toBe(403);
+        expect(staleMutation.json()).toMatchObject({ code: "auth.recentAuthRequired" });
+
+        const granted = await app.inject({
+          method: "POST", url: `${staffUrl}/roles`, headers: adminHeaders,
+          payload: { roleKey: "audit_reader", reason: "Temporary evidence review", idempotencyKey: randomUUID() },
+        });
+        expect(granted.statusCode, granted.body).toBe(201);
+        const assignmentId = granted.json<{ assignmentId: string }>().assignmentId;
+        expect((await app.inject({ method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
+          .json<{ capabilities: string[] }>().capabilities).toContain("audit.read");
+
+        const revoked = await app.inject({
+          method: "POST", url: `${staffUrl}/roles/${assignmentId}/revoke`, headers: adminHeaders,
+          payload: { reason: "Temporary evidence review completed", idempotencyKey: randomUUID() },
+        });
+        expect(revoked.statusCode, revoked.body).toBe(201);
+        expect((await app.inject({ method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
+          .json<{ capabilities: string[] }>().capabilities).not.toContain("audit.read");
+
+        const suspended = await app.inject({
+          method: "POST", url: `${staffUrl}/state`, headers: adminHeaders,
+          payload: { action: "suspend", reason: "IAM-06 cross-slice access exercise", idempotencyKey: randomUUID() },
+        });
+        expect(suspended.statusCode, suspended.body).toBe(201);
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: reviewerHeaders })).statusCode).toBe(403);
+        expect((await app.inject({ method: "GET", url: "/api/v2/publication/releases", headers: reviewerHeaders })).statusCode).toBe(403);
+        const reinstated = await app.inject({
+          method: "POST", url: `${staffUrl}/state`, headers: adminHeaders,
+          payload: { action: "reinstate", reason: "IAM-06 exercise completed", idempotencyKey: randomUUID() },
+        });
+        expect(reinstated.statusCode, reinstated.body).toBe(201);
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: reviewerHeaders })).statusCode).toBe(200);
+        const restoredCaps = (await app.inject({ method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
+          .json<{ capabilities: string[] }>().capabilities;
+        expect(restoredCaps).toContain("review.case.read");
+        expect(restoredCaps).not.toContain("audit.read");
+        expect(restoredCaps).not.toContain("publication.release.activate");
+
+        const states = await tx.selectFrom("identity.account_state_events")
+          .select(["next_state", "correlation_id"]).where("account_id", "=", INVITED_ACCOUNT_ID).execute();
+        expect(states.map((event) => event.next_state).sort()).toEqual(["active", "suspended"]);
+        const stateAudits = await tx.selectFrom("identity.authorization_audit_events")
+          .select(["event_type", "correlation_id"])
+          .where("subject_account_id", "=", INVITED_ACCOUNT_ID)
+          .where("event_type", "in", ["identity.account-suspended", "identity.account-reinstated"]).execute();
+        const stateOutbox = await sql<{ event_type: string; correlation_id: string }>`
+          select event_type, correlation_id from integration.outbox_events
+          where aggregate_id=${INVITED_ACCOUNT_ID}
+            and event_type in ('identity.account-suspended','identity.account-reinstated')
+        `.execute(tx);
+        expect(stateAudits.map((entry) => entry.event_type).sort())
+          .toEqual(["identity.account-reinstated", "identity.account-suspended"]);
+        expect(stateOutbox.rows.map((entry) => entry.event_type).sort())
+          .toEqual(["identity.account-reinstated", "identity.account-suspended"]);
+        expect(new Set(states.map((entry) => entry.correlation_id)))
+          .toEqual(new Set(stateAudits.map((entry) => entry.correlation_id)));
+        expect(new Set(states.map((entry) => entry.correlation_id)))
+          .toEqual(new Set(stateOutbox.rows.map((entry) => entry.correlation_id)));
         const grants = await tx.selectFrom("identity.role_assignments")
           .select(["role_key"]).where("account_id", "=", INVITED_ACCOUNT_ID).execute();
-        expect(grants.map((grant) => grant.role_key).sort()).toEqual(["member", "reviewer"]);
+        // Revocations are append-only; the historical audit_reader grant stays visible.
+        expect(grants.map((grant) => grant.role_key).sort()).toEqual(["audit_reader", "member", "reviewer"]);
         const audits = await tx.selectFrom("identity.authorization_audit_events")
           .select(["outcome"]).where("subject_account_id", "=", INVITED_ACCOUNT_ID).execute();
-        expect(audits.filter((entry) => entry.outcome === "assigned")).toHaveLength(2);
+        expect(audits.filter((entry) => entry.outcome === "assigned")).toHaveLength(3);
 
-        throw rollback;
+        if (!committedEvidence) throw rollback;
       });
     } catch (error) {
       if (error !== rollback) throw error;
     } finally {
       Reflect.deleteProperty(database, "db");
       Reflect.set(database, "transaction", originalTransaction);
+    }
+    if (committedEvidence) {
+      // A separate, post-COMMIT connection must observe the same events.
+      // This runs only against disposable Supabase in GitHub Actions.
+      const confirmed = await database.db.selectFrom("identity.account_state_events")
+        .select(["next_state", "correlation_id"]).where("account_id", "=", INVITED_ACCOUNT_ID).execute();
+      expect(confirmed.map((entry) => entry.next_state).sort()).toEqual(["active", "suspended"]);
+      const independentAudit = await database.db.selectFrom("identity.authorization_audit_events")
+        .select("correlation_id").where("subject_account_id", "=", INVITED_ACCOUNT_ID)
+        .where("event_type", "in", ["identity.account-suspended", "identity.account-reinstated"]).execute();
+      expect(new Set(independentAudit.map((entry) => entry.correlation_id)))
+        .toEqual(new Set(confirmed.map((entry) => entry.correlation_id)));
+      const independentOutbox = await sql<{ correlation_id: string }>`
+        select correlation_id from integration.outbox_events where aggregate_id=${INVITED_ACCOUNT_ID}
+          and event_type in ('identity.account-suspended','identity.account-reinstated')
+      `.execute(database.db);
+      expect(new Set(independentOutbox.rows.map((entry) => entry.correlation_id)))
+        .toEqual(new Set(confirmed.map((entry) => entry.correlation_id)));
+      const independentCase = await database.db.selectFrom("review_moderation.review_cases")
+        .select("review_case_id").where("primary_assignee_id", "=", INVITED_ACCOUNT_ID).execute();
+      expect(independentCase).toHaveLength(1);
+      const finalAccount = await database.db.selectFrom("identity.accounts")
+        .select("state").where("account_id", "=", INVITED_ACCOUNT_ID).executeTakeFirstOrThrow();
+      expect(finalAccount.state).toBe("active");
+      console.log("IAM-06 committed evidence: 2 account state events, 2 correlated audit events, 2 correlated Outbox events, an assigned Review case, and restored active status verified after COMMIT");
     }
   });
 });
