@@ -2,6 +2,8 @@
 
 The staffed governance console uses **Supabase Auth** for email OTP and authenticator-app TOTP. PandaAtlas never generates or stores TOTP secrets itself. NestJS remains the authority for authorization decisions, including the existing AAL2 + recent-auth + live-session requirements for Identity role/account changes and high-risk archive work.
 
+Local Supabase configuration explicitly enables both `auth.mfa.totp.enroll_enabled` and `auth.mfa.totp.verify_enabled`. After changing them, run `npm run infra:stop` and `npm run infra:start` to recreate local Auth **without resetting the database**. Confirm the running Auth container reports `GOTRUE_MFA_TOTP_ENROLL_ENABLED=true` and `GOTRUE_MFA_TOTP_VERIFY_ENABLED=true`. Before staff MFA is used on managed production, enable TOTP in that Supabase project's authentication MFA settings as well.
+
 ## First-time staff setup
 
 1. Log in normally at `/auth/login?next=%2Fadmin` using the email OTP. Public panda fans are not asked to enroll staff MFA.
