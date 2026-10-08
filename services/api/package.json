@@ -13,7 +13,7 @@
     "lint": "eslint src test",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:integration": "vitest run --config vitest.integration.config.ts && node --test ../../scripts/development/tests/first-admin-bootstrap.test.mjs",
+    "test:integration": "vitest run --config vitest.integration.config.ts && node --test --test-concurrency=1 ../../scripts/development/tests/first-admin-bootstrap.test.mjs ../../scripts/development/tests/production-staff-admin.test.mjs ../../scripts/development/tests/production-staff-admin.integration.test.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "openapi:generate": "nest build && node scripts/generate-openapi.mjs",
