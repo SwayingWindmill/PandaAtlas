@@ -132,6 +132,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/staff/accounts/{accountId}/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["changeStaffAccountState"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/staff/accounts/{accountId}/roles": {
         parameters: {
             query?: never;
@@ -1263,13 +1279,39 @@ export interface components {
             revokedBy: string | null;
             revocationReason: string | null;
         };
+        StaffAccountStateHistoryDto: {
+            /** Format: uuid */
+            eventId: string;
+            previousState: string;
+            nextState: string;
+            actorId: string | null;
+            reason: string;
+            /** Format: date-time */
+            occurredAt: string;
+        };
         StaffAccountDetailDto: {
             /** Format: uuid */
             accountId: string;
             email: string | null;
             state: string;
+            stateReason: string | null;
             assignments: components["schemas"]["StaffAssignmentDto"][];
             capabilities: string[];
+            stateHistory: components["schemas"]["StaffAccountStateHistoryDto"][];
+        };
+        StaffStateChangeDto: {
+            /** @example Reviewed the staff responsibility change with the archive lead */
+            reason: string;
+            /** Format: uuid */
+            idempotencyKey: string;
+            /** @enum {string} */
+            action: "suspend" | "reinstate";
+        };
+        StaffStateChangeResultDto: {
+            /** Format: uuid */
+            accountId: string;
+            /** @enum {string} */
+            state: "active" | "suspended";
         };
         GrantStaffRoleDto: {
             /** @example Reviewed the staff responsibility change with the archive lead */
@@ -2356,6 +2398,31 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StaffAccountDetailDto"];
+                };
+            };
+        };
+    };
+    changeStaffAccountState: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StaffStateChangeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffStateChangeResultDto"];
                 };
             };
         };

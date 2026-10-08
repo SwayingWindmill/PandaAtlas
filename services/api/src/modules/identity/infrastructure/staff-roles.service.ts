@@ -52,7 +52,7 @@ export class StaffRolesService {
 
   public async detail(accountId: string) {
     const account = await this.database.db.selectFrom("identity.accounts")
-      .select(["account_id as accountId", "email", "state"])
+      .select(["account_id as accountId", "email", "state", "state_reason as stateReason"])
       .where("account_id", "=", accountId).executeTakeFirst();
     if (!account) throw new ProblemException(404, "identity.accountMissing", "Staff account not found.");
 
@@ -81,8 +81,13 @@ export class StaffRolesService {
         and (ra.expires_at is null or ra.expires_at > now())
       order by rc.capability_key
     `.execute(this.database.db);
+    const stateHistory = await this.database.db.selectFrom("identity.account_state_events")
+      .select(["event_id as eventId", "previous_state as previousState", "next_state as nextState",
+        "actor_account_id as actorId", "reason", "occurred_at as occurredAt"])
+      .where("account_id", "=", accountId).orderBy("occurred_at", "desc").limit(30).execute();
     return { ...account, assignments: history.rows,
-      capabilities: account.state === "active" ? permissions.rows.map((p) => p.capability_key) : [] };
+      capabilities: account.state === "active" ? permissions.rows.map((p) => p.capability_key) : [],
+      stateHistory };
   }
 
   public async grant(subjectId: string, roleKey: string, reason: string, idempotencyKey: string, actorId: string, correlationId: string) {

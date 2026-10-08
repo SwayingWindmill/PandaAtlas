@@ -18,6 +18,7 @@ import {
   ALLOW_UNPROVISIONED,
   REQUIRED_AAL,
   REQUIRED_CAPABILITIES,
+  REQUIRED_ANY_CAPABILITIES,
   REQUIRE_RECENT_AUTH,
 } from "./access.metadata.js";
 import { setActorContext } from "./request-actor.js";
@@ -115,7 +116,15 @@ export class ApplicationAccessGuard implements CanActivate {
         context.getHandler(),
         context.getClass(),
       ]) ?? [];
-    const policies = capabilityPolicy(requiredCapabilities, snapshot.capabilities);
+    const alternativeCapabilities =
+      this.reflector.getAllAndOverride<string[]>(REQUIRED_ANY_CAPABILITIES, [
+        context.getHandler(), context.getClass(),
+      ]) ?? [];
+    const availableAlternatives = alternativeCapabilities.filter((key) => snapshot.capabilities.has(key));
+    if (alternativeCapabilities.length > 0 && availableAlternatives.length === 0) {
+      throw new ProblemException(403, "authorization.capabilityRequired", "The authenticated account is not allowed to perform this operation.");
+    }
+    const policies = capabilityPolicy([...requiredCapabilities, ...availableAlternatives], snapshot.capabilities);
 
     const routeRecentAuth =
       this.reflector.getAllAndOverride<boolean>(REQUIRE_RECENT_AUTH, [

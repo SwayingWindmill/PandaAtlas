@@ -334,6 +334,108 @@ describe("Identity HTTP security path", () => {
     }
   });
 
+  it("suspends staff immediately and restores only the remaining grants with audited transitions", async () => {
+    const database = app.get(DatabaseService);
+    const originalTransaction = database.transaction.bind(database);
+    const rollback = new Error("roll back disposable account lifecycle fixture");
+    try {
+      await database.db.transaction().execute(async (tx: DatabaseTransaction) => {
+        Object.defineProperty(database, "db", { configurable: true, get: () => tx });
+        Reflect.set(database, "transaction", <T>(work: (transaction: DatabaseTransaction) => Promise<T>) => work(tx));
+        const managerId = randomUUID();
+        const workerId = randomUUID();
+        const managerSession = randomUUID();
+        const workerSession = randomUUID();
+        const managerHeaders = { authorization: `Bearer ${await signTestToken(managerId, managerSession, "aal2")}` };
+        const workerHeaders = { authorization: `Bearer ${await signTestToken(workerId, workerSession, "aal1")}` };
+        const weakHeaders = { authorization: `Bearer ${await signTestToken(managerId, managerSession, "aal1")}` };
+        const staleHeaders = { authorization: `Bearer ${await signTestToken(managerId, managerSession, "aal2", 1000)}` };
+        const deadSessionHeaders = { authorization: `Bearer ${await signTestToken(managerId, randomUUID(), "aal2")}` };
+        const suspendedReason = "Temporary restriction during source-review investigation";
+        const restoredReason = "Investigation complete and access approved";
+        const suspendKey = randomUUID();
+        const restoreKey = randomUUID();
+        await sql`insert into auth.users (id,aud,role,email_confirmed_at,created_at,updated_at)
+          values (${managerId}::uuid,'authenticated','authenticated',now(),now(),now()),
+                 (${workerId}::uuid,'authenticated','authenticated',now(),now(),now())`.execute(tx);
+        await sql`insert into auth.sessions (id,user_id,created_at,updated_at,aal)
+          values (${managerSession}::uuid,${managerId}::uuid,now(),now(),'aal2'),
+                 (${workerSession}::uuid,${workerId}::uuid,now(),now(),'aal1')`.execute(tx);
+        for (const accountId of [managerId, workerId]) {
+          await tx.insertInto("identity.accounts").values({ account_id: accountId, email: null }).execute();
+        }
+        await tx.insertInto("identity.role_assignments").values([
+          { account_id: managerId, role_key: "administrator", reason: "Staff management fixture", correlation_id: randomUUID(), idempotency_key: randomUUID() },
+          { account_id: workerId, role_key: "reviewer", reason: "Evidence review", correlation_id: randomUUID(), idempotency_key: randomUUID() },
+          { account_id: workerId, role_key: "audit_reader", reason: "Audit verification", correlation_id: randomUUID(), idempotency_key: randomUUID() },
+        ]).execute();
+        const statusUrl = `/api/v2/staff/accounts/${workerId}/state`;
+        const reviewUrl = "/api/v2/review/cases?limit=1";
+        const suspendPayload = { action: "suspend", reason: suspendedReason, idempotencyKey: suspendKey };
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(200);
+        expect((await app.inject({ method: "POST", url: statusUrl, headers: workerHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: statusUrl, headers: weakHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: statusUrl, headers: staleHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: statusUrl, headers: deadSessionHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: `/api/v2/staff/accounts/${managerId}/state`, headers: managerHeaders, payload: suspendPayload })).statusCode).toBe(403);
+
+        const suspended = await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders, payload: suspendPayload });
+        expect(suspended.statusCode, suspended.body).toBe(201);
+        expect(suspended.json()).toMatchObject({ accountId: workerId, state: "suspended" });
+        expect((await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders, payload: suspendPayload })).json()).toEqual(suspended.json());
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(403);
+        const inspected = await app.inject({ method: "GET", url: `/api/v2/staff/accounts/${workerId}`, headers: managerHeaders });
+        expect(inspected.json()).toMatchObject({ state: "suspended", stateReason: `staff:${suspendedReason}`, capabilities: [] });
+        expect((await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders,
+          payload: { action: "reinstate", reason: "Other action", idempotencyKey: suspendKey },
+        })).statusCode).toBe(409);
+
+        const auditGrant = await tx.selectFrom("identity.role_assignments")
+          .select("assignment_id").where("account_id", "=", workerId).where("role_key", "=", "audit_reader").executeTakeFirstOrThrow();
+        await tx.insertInto("identity.role_assignment_revocations").values({
+          assignment_id: auditGrant.assignment_id, reason: "Audit job ended", correlation_id: randomUUID(),
+          idempotency_key: randomUUID(), revoked_by_account_id: managerId,
+        }).execute();
+        const restored = await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders,
+          payload: { action: "reinstate", reason: restoredReason, idempotencyKey: restoreKey },
+        });
+        expect(restored.statusCode, restored.body).toBe(201);
+        expect(restored.json()).toMatchObject({ state: "active", accountId: workerId });
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(200);
+        const after = await app.inject({ method: "GET", url: `/api/v2/staff/accounts/${workerId}`, headers: managerHeaders });
+        expect(after.json<{ capabilities: string[] }>().capabilities).toContain("review.case.read");
+        expect(after.json<{ capabilities: string[] }>().capabilities).not.toContain("audit.read");
+        expect(after.json<{ stateHistory: Array<{ reason: string }> }>().stateHistory.map((item) => item.reason).sort())
+          .toEqual([restoredReason, suspendedReason].sort());
+        const facts = await tx.selectFrom("identity.account_state_events")
+          .select("next_state").where("account_id", "=", workerId).execute();
+        expect(facts.map((f) => f.next_state)).toEqual(["suspended", "active"]);
+        const audits = await tx.selectFrom("identity.authorization_audit_events")
+          .select(["event_type", "reason", "actor_account_id"]).where("subject_account_id", "=", workerId)
+          .where("event_type", "in", ["identity.account-suspended", "identity.account-reinstated"]).execute();
+        expect(audits.map((event) => event.event_type).sort()).toEqual(["identity.account-reinstated", "identity.account-suspended"]);
+        expect(audits.every((event) => event.actor_account_id === managerId)).toBe(true);
+        const outbox = await sql<{ event_type: string }>`select event_type from integration.outbox_events
+          where aggregate_id=${workerId} and event_type in ('identity.account-suspended','identity.account-reinstated')`.execute(tx);
+        expect(outbox.rows.map((row) => row.event_type).sort()).toEqual(["identity.account-reinstated", "identity.account-suspended"]);
+
+        await tx.updateTable("identity.accounts")
+          .set({ state: "suspended", state_reason: "moderation:case-123" }).where("account_id", "=", workerId).execute();
+        const crossAuthority = await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders,
+          payload: { action: "reinstate", reason: restoredReason, idempotencyKey: randomUUID() },
+        });
+        expect(crossAuthority.statusCode).toBe(409);
+        expect(crossAuthority.json()).toMatchObject({ code: "identity.suspensionOwnedElsewhere" });
+        throw rollback;
+      });
+    } catch (error) {
+      if (error !== rollback) throw error;
+    } finally {
+      Reflect.deleteProperty(database, "db");
+      Reflect.set(database, "transaction", originalTransaction);
+    }
+  });
+
   it("does not activate review authority without an invitation bound to the signed-in UUID", async () => {
     const response = await app.inject({
       method: "POST",
