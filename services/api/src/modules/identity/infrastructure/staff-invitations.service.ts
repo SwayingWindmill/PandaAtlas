@@ -88,7 +88,7 @@ export class StaffInvitationsService {
     });
   }
 
-  public async accept(accountId: string, correlationId: string): Promise<{ status: "accepted"; accountId: string }> {
+  public async accept(accountId: string, sessionId: string, correlationId: string): Promise<{ status: "accepted"; accountId: string }> {
     return this.database.transaction(async (tx) => {
       const invitation = await tx.selectFrom("identity.staff_invitations")
         .selectAll().where("account_id", "=", accountId).forUpdate().executeTakeFirst();
@@ -97,6 +97,12 @@ export class StaffInvitationsService {
       }
       if (invitation.status === "accepted") return { accountId, status: "accepted" };
 
+      const session = await sql<{ live: boolean }>`
+        select identity.is_live_auth_session(${sessionId}::uuid, ${accountId}::uuid) as live
+      `.execute(tx);
+      if (!session.rows[0]?.live) {
+        throw new ProblemException(403, "auth.liveSessionRequired", "A live Supabase session is required.");
+      }
       const verified = await sql<{ email: string }>`
         select email from auth.users
         where id = ${accountId}::uuid and email_confirmed_at is not null

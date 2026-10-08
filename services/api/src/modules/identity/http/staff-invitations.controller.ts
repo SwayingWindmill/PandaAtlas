@@ -76,11 +76,11 @@ export class AcceptStaffInvitationController {
   @ApiOperation({ operationId: "acceptStaffReviewerInvitation" })
   @ApiCreatedResponse({ type: AcceptedInvitationDto })
   public accept(@Req() request: FastifyRequest) {
-    const accountId = getVerifiedIdentity(request)?.accountId;
+    const verified = getVerifiedIdentity(request);
     const correlationId = this.requests.current?.correlationId;
-    if (!accountId || !correlationId) {
+    if (!verified || !correlationId) {
       throw new ProblemException(500, "system.internal", "The authenticated subject is unavailable.");
     }
-    return this.invitations.accept(accountId, correlationId);
+    return this.invitations.accept(verified.accountId, verified.sessionId, correlationId);
   }
 }

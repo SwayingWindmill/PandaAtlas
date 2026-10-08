@@ -211,6 +211,7 @@ describe("Identity HTTP security path", () => {
         const reviewerSessionId = randomUUID();
         const adminToken = await signTestToken(adminId, adminSessionId, "aal2");
         const reviewerToken = await signTestToken(INVITED_ACCOUNT_ID, reviewerSessionId, "aal1");
+        const staleReviewerToken = await signTestToken(INVITED_ACCOUNT_ID, randomUUID(), "aal1");
 
         await sql`
           insert into auth.users (id,aud,role,email,email_confirmed_at,created_at,updated_at)
@@ -255,6 +256,12 @@ describe("Identity HTTP security path", () => {
         expect(unverified.statusCode).toBe(403);
         await sql`update auth.users set email_confirmed_at=now() where id=${INVITED_ACCOUNT_ID}::uuid`.execute(tx);
 
+        const stale = await app.inject({
+          method: "POST",
+          url: "/api/v2/me/staff-invitation/accept",
+          headers: { authorization: `Bearer ${staleReviewerToken}` },
+        });
+        expect(stale.statusCode).toBe(403);
         const accepted = await app.inject({
           method: "POST",
           url: "/api/v2/me/staff-invitation/accept",
