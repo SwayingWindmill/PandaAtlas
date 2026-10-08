@@ -1,11 +1,11 @@
-import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { FastifyRequest } from "fastify";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import { CURATION_PORT, type CurationPort } from "../application/curation.application.js";
-import { ApproveCurationDto, CurationChangeSetDto } from "./curation.dto.js";
+import { ApproveCurationDto, CurationChangeSetDto, CurationChangeSetPageDto, CurationListQueryDto } from "./curation.dto.js";
 
 function actorAccountId(request: FastifyRequest): string {
   const actor = getActorContext(request);
@@ -19,6 +19,15 @@ function actorAccountId(request: FastifyRequest): string {
 @Controller("curation/change-sets")
 export class CurationController {
   public constructor(@Inject(CURATION_PORT) private readonly curation: CurationPort) {}
+
+  @Get()
+  @RequireCapabilities("curation.change.read")
+  @ApiOperation({ operationId: "listCurationChangeSets" })
+  @ApiOkResponse({ type: CurationChangeSetPageDto })
+  public list(@Query() query: CurationListQueryDto) {
+    return this.curation.list({ limit: query.limit ?? 25, offset: query.offset ?? 0,
+      ...(query.state ? { state: query.state } : {}) });
+  }
 
   @Get(":changeSetId")
   @RequireCapabilities("curation.change.read")

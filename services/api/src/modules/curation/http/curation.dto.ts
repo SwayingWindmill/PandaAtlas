@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min, MinLength } from "class-validator";
 
 function normalizeText(value: unknown): unknown {
   return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : value;
@@ -140,4 +140,39 @@ export class CurationChangeSetDto {
 
   @ApiProperty({ type: () => CurationOwnerChangeDto, isArray: true })
   public declare ownerChanges: CurationOwnerChangeDto[];
+}
+
+export const CURATION_STATES = ["draft", "validated", "approved", "applied", "rejected"] as const;
+
+export class CurationListQueryDto {
+  @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 25 })
+  @IsOptional() @Type(() => Number) @IsInt() @Min(1) @Max(100)
+  public limit?: number;
+
+  @ApiPropertyOptional({ minimum: 0, default: 0 })
+  @IsOptional() @Type(() => Number) @IsInt() @Min(0)
+  public offset?: number;
+
+  @ApiPropertyOptional({ enum: CURATION_STATES })
+  @IsOptional() @IsIn(CURATION_STATES)
+  public state?: (typeof CURATION_STATES)[number];
+}
+
+export class CurationChangeSetSummaryDto {
+  @ApiProperty({ format: "uuid" }) public declare changeSetId: string;
+  @ApiProperty({ enum: ["review", "acquisition"] }) public declare originKind: string;
+  @ApiProperty({ format: "uuid" }) public declare targetPandaId: string;
+  @ApiProperty({ enum: CURATION_STATES }) public declare state: string;
+  @ApiProperty() public declare version: number;
+  @ApiProperty() public declare reason: string;
+  @ApiProperty({ format: "uuid" }) public declare createdByAccountId: string;
+  @ApiProperty({ format: "date-time" }) public declare createdAt: string;
+  @ApiProperty({ minimum: 0 }) public declare changeCount: number;
+}
+
+export class CurationChangeSetPageDto {
+  @ApiProperty({ type: () => [CurationChangeSetSummaryDto] }) public declare items: CurationChangeSetSummaryDto[];
+  @ApiProperty() public declare total: number;
+  @ApiProperty() public declare limit: number;
+  @ApiProperty() public declare offset: number;
 }
