@@ -41,6 +41,14 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
   },
   { href: "/admin/capabilities", label: "权限", description: "查看当前账号的操作能力", group: "治理", icon: "shield-check" },
   {
+    href: "/admin/staff/invitations",
+    label: "工作人员",
+    description: "邀请审核员并追踪激活状态",
+    group: "治理",
+    icon: "shield-check",
+    capabilities: ["identity.account.manage"],
+  },
+  {
     href: "/admin/security/mfa",
     label: "账号安全",
     description: "启用和验证多因素认证",

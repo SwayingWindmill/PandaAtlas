@@ -227,6 +227,7 @@ function runtimeEnvironment(status) {
       PORT: String(API_PORT),
       DATABASE_URL: status.DB_URL,
       SUPABASE_URL: status.API_URL,
+      SUPABASE_SECRET_KEY: status.SECRET_KEY,
       CORS_ALLOW_ORIGINS: WEB_ORIGIN,
       NO_PROXY: noProxy,
       no_proxy: mergeNoProxy(process.env.no_proxy),

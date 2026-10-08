@@ -80,6 +80,12 @@ async function destinationAfterStaffSignIn(destination: string): Promise<string>
   return destination;
 }
 
+async function acceptStaffInvitation(): Promise<boolean> {
+  const response = await fetch("/api/auth/staff-invitation", { method: "POST" });
+  // Existing staff members have no invitation. This is not an error.
+  return response.ok || response.status === 404;
+}
+
 export function EmailOtpLogin() {
   const searchParams = useSearchParams();
   const destination = useMemo(() => safeNextPath(searchParams.get("next")), [searchParams]);
@@ -140,6 +146,11 @@ export function EmailOtpLogin() {
       cleanedUrl.searchParams.delete("code");
       cleanedUrl.hash = "";
       history.replaceState(null, "", `${cleanedUrl.pathname}${cleanedUrl.search}`);
+      if (!(await acceptStaffInvitation())) {
+        setMessage("工作人员邀请尚未激活，请联系管理员。");
+        setMessageKind("error");
+        return;
+      }
       const adminSession = await fetch("/api/admin/session", { cache: "no-store" });
       if (!adminSession.ok) {
         adminAuthRestoreStartedRef.current = false;
@@ -186,6 +197,12 @@ export function EmailOtpLogin() {
       setMessage(t.invalidOtp);
       setMessageKind("error");
       setOtp("");
+      return;
+    }
+    if (destination.startsWith("/admin") && !(await acceptStaffInvitation())) {
+      setBusy(false);
+      setMessage("工作人员邀请尚未激活，请联系管理员。");
+      setMessageKind("error");
       return;
     }
     window.location.replace(await destinationAfterStaffSignIn(destination));
