@@ -255,6 +255,47 @@
         ]
       }
     },
+    "/api/v2/staff/accounts/{accountId}/state": {
+      "post": {
+        "operationId": "changeStaffAccountState",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StaffStateChangeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffStateChangeResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
     "/api/v2/staff/accounts/{accountId}/roles": {
       "post": {
         "operationId": "grantStaffRole",
@@ -3161,6 +3202,42 @@
           "revocationReason"
         ]
       },
+      "StaffAccountStateHistoryDto": {
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "previousState": {
+            "type": "string"
+          },
+          "nextState": {
+            "type": "string"
+          },
+          "actorId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "occurredAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId",
+          "previousState",
+          "nextState",
+          "actorId",
+          "reason",
+          "occurredAt"
+        ]
+      },
       "StaffAccountDetailDto": {
         "type": "object",
         "properties": {
@@ -3177,6 +3254,12 @@
           "state": {
             "type": "string"
           },
+          "stateReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "assignments": {
             "type": "array",
             "items": {
@@ -3188,14 +3271,67 @@
             "items": {
               "type": "string"
             }
+          },
+          "stateHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffAccountStateHistoryDto"
+            }
           }
         },
         "required": [
           "accountId",
           "email",
           "state",
+          "stateReason",
           "assignments",
-          "capabilities"
+          "capabilities",
+          "stateHistory"
+        ]
+      },
+      "StaffStateChangeDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "Reviewed the staff responsibility change with the archive lead"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "suspend",
+              "reinstate"
+            ]
+          }
+        },
+        "required": [
+          "reason",
+          "idempotencyKey",
+          "action"
+        ]
+      },
+      "StaffStateChangeResultDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active",
+              "suspended"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "state"
         ]
       },
       "GrantStaffRoleDto": {

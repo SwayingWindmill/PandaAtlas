@@ -12,6 +12,7 @@ import { IDENTITY_PRIVACY_PORT } from "./application/identity-privacy.port.js";
 import { IDENTITY_PORT } from "./application/identity.port.js";
 import { StaffInvitationsService } from "./infrastructure/staff-invitations.service.js";
 import { StaffRolesService } from "./infrastructure/staff-roles.service.js";
+import { StaffAccountLifecycleService } from "./infrastructure/staff-account-lifecycle.service.js";
 import { ApplicationAccessGuard } from "./http/application-access.guard.js";
 import { MeController } from "./http/me.controller.js";
 import { AcceptStaffInvitationController, StaffInvitationsController } from "./http/staff-invitations.controller.js";
@@ -46,6 +47,7 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
     ApplicationAccessGuard,
     StaffInvitationsService,
     StaffRolesService,
+    StaffAccountLifecycleService,
     {
       provide: APP_GUARD,
       useExisting: SupabaseAuthGuard,

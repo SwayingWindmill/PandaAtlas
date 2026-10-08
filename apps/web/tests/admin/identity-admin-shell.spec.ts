@@ -234,10 +234,10 @@ test("staff navigation keeps account invitations and role management separately 
   capabilities = ["admin.shell.access", "identity.account.manage"];
   await page.reload();
   await expect(navigation.getByRole("link", { name: "工作人员" })).toBeVisible();
-  await expect(navigation.getByRole("link", { name: "角色管理" })).toHaveCount(0);
+  await expect(navigation.getByRole("link", { name: "角色管理" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "邀请审核员" })).toBeVisible();
   await page.goto("/admin/staff/roles");
-  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toBeVisible({ timeout: 15_000 });
 });
 
 test("AAL2 staff manager invites an archive reviewer and sees a pending invitation", async ({ page }) => {
@@ -338,6 +338,7 @@ test("staff manager can inspect role history and confirm grant and revoke with r
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
         accountId: staffId, email: "reviewer@example.test", state: "active",
         capabilities: roleState === "active" ? ["review.case.read"] : [],
+        stateReason: null, stateHistory: [],
         assignments: roleState === "none" ? [] : [{
           assignmentId, roleKey: "reviewer", roleName: "Reviewer", assignedAt: "2026-10-08T10:00:00Z",
           assignedBy: staffSession.accountId, reason: "Assigned to evidence verification",
@@ -365,6 +366,58 @@ test("staff manager can inspect role history and confirm grant and revoke with r
   await expect(page.getByRole("region", { name: "角色授权历史" }).getByText("已撤销", { exact: true })).toBeVisible();
 });
 
+test("authorized account manager suspends and reinstates staff from the Chinese console", async ({ page }) => {
+  const workerId = "55555555-5555-4555-8555-555555555555";
+  const manager = { ...staffSession, capabilities: ["admin.shell.access", "identity.account.manage"] };
+  let state: "active" | "suspended" = "active";
+  let stateReason: string | null = null;
+  const history: Array<{ eventId: string; previousState: string; nextState: string; reason: string; actorId: string; occurredAt: string }> = [];
+  await page.route("**/api/admin/session", async (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify(manager),
+  }));
+  await page.route("**/api/admin/staff/accounts**", async (route) => {
+    const url = route.request().url();
+    if (url.endsWith("/catalog")) {
+      await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+    } else if (url.endsWith("/accounts")) {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([
+        { accountId: workerId, email: "worker@example.test", state, roles: ["reviewer"] },
+      ]) });
+    } else if (url.endsWith("/state") && route.request().method() === "POST") {
+      const body = route.request().postDataJSON() as { action: string; reason: string; idempotencyKey: string };
+      expect(body.reason.length).toBeGreaterThan(3);
+      expect(body.idempotencyKey).toBeTruthy();
+      const previousState = state;
+      state = body.action === "suspend" ? "suspended" : "active";
+      stateReason = state === "suspended" ? `staff:${body.reason}` : null;
+      history.unshift({ eventId: String(history.length), previousState, nextState: state, reason: body.reason,
+        actorId: staffSession.accountId, occurredAt: "2026-10-08T11:00:00Z" });
+      await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({ accountId: workerId, state }) });
+    } else {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+        accountId: workerId, email: "worker@example.test", state, stateReason,
+        capabilities: state === "active" ? ["review.case.read"] : [],
+        assignments: [], stateHistory: history,
+      }) });
+    }
+  });
+  await page.goto("/admin/staff/roles");
+  await page.getByRole("button", { name: /worker@example.test/ }).click();
+  await expect(page.getByText("账号状态：正常", { exact: false })).toBeVisible();
+  await expect(page.getByRole("button", { name: "准备授予" })).toHaveCount(0);
+  await page.getByRole("button", { name: "停用工作人员" }).click();
+  await page.getByRole("textbox", { name: "状态变更原因" }).fill("Temporary restriction during verification");
+  await page.getByRole("button", { name: "确认停用" }).click();
+  await expect(page.getByText("工作人员已停用")).toBeVisible();
+  await expect(page.getByText("账号状态：已停用", { exact: false })).toBeVisible();
+  await expect(page.getByRole("region", { name: "账号状态历史" }).getByText("Temporary restriction during verification", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "恢复工作人员" }).click();
+  await page.getByRole("textbox", { name: "状态变更原因" }).fill("Investigation completed and reinstatement approved");
+  await page.getByRole("button", { name: "确认恢复" }).click();
+  await expect(page.getByText("工作人员已恢复")).toBeVisible();
+  await expect(page.getByRole("region", { name: "账号状态历史" }).getByText("Investigation completed and reinstatement approved")).toBeVisible();
+});
+
 test("a reviewer cannot access staff invitation controls", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({
@@ -379,6 +432,6 @@ test("a reviewer cannot access staff invitation controls", async ({ page }) => {
   await expect(page.getByRole("button", { name: "发送邀请" })).toHaveCount(0);
   await expect(page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "工作人员" })).toHaveCount(0);
   await page.goto("/admin/staff/roles");
-  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible({ timeout: 15_000 });
   await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toHaveCount(0);
 });

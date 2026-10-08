@@ -42,7 +42,7 @@ export class StaffInvitationsController {
   ) {}
 
   @Get()
-  @RequireCapabilities("identity.account.manage")
+  @RequireCapabilities("identity.staff.read")
   @ApiOperation({ operationId: "listStaffInvitations" })
   @ApiOkResponse({ type: StaffInvitationDto, isArray: true })
   public list() {

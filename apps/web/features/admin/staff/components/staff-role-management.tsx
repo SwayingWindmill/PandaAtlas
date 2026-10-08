@@ -14,6 +14,7 @@ type StaffDetail = components["schemas"]["StaffAccountDetailDto"];
 type Role = components["schemas"]["StaffRoleCatalogDto"];
 type Assignment = components["schemas"]["StaffAssignmentDto"];
 type Change = { kind: "grant"; roleKey: string; idempotencyKey: string } | { kind: "revoke"; roleKey: string; assignmentId: string; idempotencyKey: string };
+type AccountStateChange = { action: "suspend" | "reinstate"; idempotencyKey: string };
 
 const roleNames: Record<string, string> = {
   administrator: "管理员",
@@ -55,16 +56,21 @@ async function getStaff<T>(path: string): Promise<T> {
 
 export function StaffRoleManagement() {
   const { data: session } = useQuery(adminSessionQueryOptions);
-  const manager = session?.capabilities.includes("identity.role.manage") ?? false;
+  const roleManager = session?.capabilities.includes("identity.role.manage") ?? false;
+  const accountManager = session?.capabilities.includes("identity.account.manage") ?? false;
+  const manager = roleManager || accountManager;
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState("");
   const [selectedRole, setSelectedRole] = useState("reviewer");
   const [planned, setPlanned] = useState<Change | null>(null);
   const [reason, setReason] = useState("");
   const [message, setMessage] = useState("");
+  const [statePlanned, setStatePlanned] = useState<AccountStateChange | null>(null);
+  const [stateReason, setStateReason] = useState("");
+  const [stateMessage, setStateMessage] = useState("");
 
   const directory = useQuery({ queryKey: ["admin", "staff", "accounts", "directory"], queryFn: () => getStaff<Staff[]>(""), enabled: manager });
-  const catalog = useQuery({ queryKey: ["admin", "staff", "accounts", "catalog"], queryFn: () => getStaff<Role[]>("/catalog"), enabled: manager });
+  const catalog = useQuery({ queryKey: ["admin", "staff", "accounts", "catalog"], queryFn: () => getStaff<Role[]>("/catalog"), enabled: roleManager });
   const detail = useQuery({ queryKey: ["admin", "staff", "accounts", "detail", selectedId], queryFn: () => getStaff<StaffDetail>(`/${selectedId}`), enabled: manager && Boolean(selectedId) });
 
   const change = useMutation({
@@ -90,6 +96,21 @@ export function StaffRoleManagement() {
     },
   });
 
+  const accountChange = useMutation({
+    mutationFn: async ({ action, idempotencyKey }: AccountStateChange) => {
+      return responseJson(await fetch(`/api/admin/staff/accounts/${selectedId}/state`, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action, reason: stateReason.trim(), idempotencyKey }),
+      }));
+    },
+    onSuccess: async () => {
+      setStateMessage(statePlanned?.action === "suspend" ? "工作人员已停用" : "工作人员已恢复");
+      setStatePlanned(null);
+      setStateReason("");
+      await queryClient.invalidateQueries({ queryKey: ["admin", "staff", "accounts"] });
+    },
+  });
+
   if (!manager) return null;
 
   function selectAccount(accountId: string) {
@@ -97,11 +118,14 @@ export function StaffRoleManagement() {
     setPlanned(null);
     setReason("");
     setMessage("");
+    setStatePlanned(null);
+    setStateMessage("");
+    setStateReason("");
   }
 
   const isOwnAccount = selectedId === session?.accountId;
   const grantedRoles = detail.data?.assignments.filter((assignment: Assignment) => assignment.status === "active") ?? [];
-  const canRevoke = (assignment: Assignment) => !isOwnAccount && catalog.data?.some((role) => role.roleKey === assignment.roleKey);
+  const canRevoke = (assignment: Assignment) => roleManager && !isOwnAccount && catalog.data?.some((role) => role.roleKey === assignment.roleKey);
   const candidateRole = catalog.data?.some((role) => role.roleKey === selectedRole) ? selectedRole : (catalog.data?.[0]?.roleKey ?? "");
 
   return (
@@ -139,7 +163,8 @@ export function StaffRoleManagement() {
             <>
               <div className="rounded-xl border border-slate-200 bg-white p-6">
                 <h2 className="text-lg font-bold text-slate-950">{detail.data.email ?? detail.data.accountId}</h2>
-                <p className="mt-1 text-xs text-slate-500">账号状态：{detail.data.state === "active" ? "正常" : "非活动"} · {detail.data.accountId}</p>
+                <p className="mt-1 text-xs text-slate-500">账号状态：{detail.data.state === "active" ? "正常" : detail.data.state === "suspended" ? "已停用" : "不可用"} · {detail.data.accountId}</p>
+                {detail.data.stateReason && <p className="mt-2 text-sm text-rose-700">停用原因：{detail.data.stateReason.replace(/^staff:|^moderation:/, "")}</p>}
                 <h3 className="mt-6 text-sm font-bold text-slate-900">当前角色</h3>
                 <div className="mt-3 space-y-2">
                   {grantedRoles.length === 0 && <p className="text-sm text-slate-500">暂无有效角色。</p>}
@@ -157,7 +182,48 @@ export function StaffRoleManagement() {
                 </div>
               </div>
 
-              {!isOwnAccount && detail.data.state === "active" && (
+              {accountManager && !isOwnAccount && (detail.data.state === "active" || (detail.data.state === "suspended" && detail.data.stateReason?.startsWith("staff:"))) && (
+                <section aria-label="工作人员访问状态" className="rounded-xl border border-slate-200 bg-white p-6">
+                  <h3 className="text-base font-bold text-slate-950">工作人员访问状态</h3>
+                  <p className="mt-2 text-sm text-slate-600">停用将立即阻止已登录工作人员访问所有受保护操作；恢复不会重新授予已经撤销或过期的角色。</p>
+                  <Button className="mt-4" variant="outline" onClick={() => {
+                    setStatePlanned({ action: detail.data.state === "active" ? "suspend" : "reinstate", idempotencyKey: crypto.randomUUID() });
+                    setStateReason(""); setStateMessage("");
+                  }}>{detail.data.state === "active" ? "停用工作人员" : "恢复工作人员"}</Button>
+                </section>
+              )}
+              {statePlanned && (
+                <section aria-label="确认账号状态变更" className="rounded-xl border border-amber-300 bg-amber-50 p-6">
+                  <h3 className="font-bold text-slate-950">确认{statePlanned.action === "suspend" ? "停用" : "恢复"}工作人员</h3>
+                  <p className="mt-2 break-all text-sm text-slate-700">目标账号：{detail.data.email ?? detail.data.accountId}。请核实目标及业务原因。</p>
+                  <label htmlFor="staff-state-reason" className="mt-4 block text-sm font-semibold text-slate-900">状态变更原因</label>
+                  <Input id="staff-state-reason" className="mt-2 bg-white" maxLength={500} value={stateReason} onChange={(event) => setStateReason(event.target.value)} placeholder="注明停用或恢复的核准依据" />
+                  {accountChange.error && <p role="alert" className="mt-3 text-sm text-rose-700">{accountChange.error.message}</p>}
+                  <div className="mt-4 flex gap-3">
+                    <Button disabled={stateReason.trim().length < 4 || accountChange.isPending} onClick={() => accountChange.mutate(statePlanned)}>
+                      {accountChange.isPending ? "正在提交…" : statePlanned.action === "suspend" ? "确认停用" : "确认恢复"}
+                    </Button>
+                    <Button variant="outline" onClick={() => setStatePlanned(null)}>取消</Button>
+                  </div>
+                </section>
+              )}
+              {stateMessage && <p role="status" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-semibold text-teal-900">{stateMessage}</p>}
+
+              <section aria-label="账号状态历史" className="rounded-xl border border-slate-200 bg-white p-6">
+                <h3 className="text-lg font-semibold text-slate-950">账号状态历史</h3>
+                {detail.data.stateHistory.length === 0 && <p className="mt-3 text-sm text-slate-500">暂无状态变更记录。</p>}
+                <ol className="mt-3 divide-y divide-slate-200">
+                  {detail.data.stateHistory.map((event) => (
+                    <li key={event.eventId} className="py-3 text-sm text-slate-700">
+                      <p>{event.previousState === "active" ? "正常" : "已停用"} → {event.nextState === "active" ? "正常" : "已停用"}</p>
+                      <p className="mt-1">{event.reason}</p>
+                      <p className="mt-1 text-xs text-slate-500">{new Date(event.occurredAt).toLocaleString("zh-CN")} · 操作账号：{event.actorId?.slice(0, 8) ?? "系统"}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+
+              {roleManager && !isOwnAccount && detail.data.state === "active" && (
                 <section aria-label="新增岗位授权" className="rounded-xl border border-slate-200 bg-white p-6">
                   <h3 className="text-base font-bold text-slate-950">新增岗位授权</h3>
                   <label htmlFor="staff-role-choice" className="mt-4 block text-sm font-semibold text-slate-900">选择岗位</label>

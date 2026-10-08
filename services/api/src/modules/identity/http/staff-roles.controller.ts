@@ -5,6 +5,7 @@ import type { FastifyRequest } from "fastify";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { StaffRolesService } from "../infrastructure/staff-roles.service.js";
+import { StaffAccountLifecycleService } from "../infrastructure/staff-account-lifecycle.service.js";
 import { RequireCapabilities } from "./access.metadata.js";
 import { getActorContext } from "./request-actor.js";
 
@@ -56,8 +57,19 @@ export class StaffAccountDetailDto {
   @ApiProperty({ format: "uuid" }) public declare accountId: string;
   @ApiProperty({ nullable: true, type: String }) public declare email: string | null;
   @ApiProperty() public declare state: string;
+  @ApiProperty({ nullable: true, type: String }) public declare stateReason: string | null;
   @ApiProperty({ type: [StaffAssignmentDto] }) public declare assignments: StaffAssignmentDto[];
   @ApiProperty({ type: [String] }) public declare capabilities: string[];
+  @ApiProperty({ type: () => [StaffAccountStateHistoryDto] }) public declare stateHistory: StaffAccountStateHistoryDto[];
+}
+
+export class StaffAccountStateHistoryDto {
+  @ApiProperty({ format: "uuid" }) public declare eventId: string;
+  @ApiProperty() public declare previousState: string;
+  @ApiProperty() public declare nextState: string;
+  @ApiProperty({ nullable: true, type: String }) public declare actorId: string | null;
+  @ApiProperty() public declare reason: string;
+  @ApiProperty() public declare occurredAt: Date;
 }
 
 export class StaffRoleChangeResultDto {
@@ -66,28 +78,58 @@ export class StaffRoleChangeResultDto {
   @ApiProperty({ enum: ["active", "revoked"] }) public declare status: "active" | "revoked";
 }
 
+export class StaffStateChangeDto extends RoleChangeDto {
+  @ApiProperty({ enum: ["suspend", "reinstate"] })
+  @IsString() public declare action: "suspend" | "reinstate";
+}
+
+export class StaffStateChangeResultDto {
+  @ApiProperty({ format: "uuid" }) public declare accountId: string;
+  @ApiProperty({ enum: ["active", "suspended"] }) public declare state: "active" | "suspended";
+}
+
 @ApiTags("Staff IAM")
 @Controller("staff/accounts")
 export class StaffRolesController {
-  public constructor(private readonly staff: StaffRolesService, private readonly requests: RequestContextService) {}
+  public constructor(
+    private readonly staff: StaffRolesService,
+    private readonly lifecycle: StaffAccountLifecycleService,
+    private readonly requests: RequestContextService,
+  ) {}
 
   @Get()
-  @RequireCapabilities("identity.role.manage")
+  @RequireCapabilities("identity.staff.read")
   @ApiOperation({ operationId: "listStaffAccounts" })
   @ApiOkResponse({ type: StaffAccountSummaryDto, isArray: true })
   public directory() { return this.staff.directory(); }
 
   @Get("catalog")
-  @RequireCapabilities("identity.role.manage")
+  @RequireCapabilities("identity.staff.read")
   @ApiOperation({ operationId: "listDelegableStaffRoles" })
   @ApiOkResponse({ type: StaffRoleCatalogDto, isArray: true })
   public roles() { return this.staff.roles(); }
 
   @Get(":accountId")
-  @RequireCapabilities("identity.role.manage")
+  @RequireCapabilities("identity.staff.read")
   @ApiOperation({ operationId: "getStaffAccountRoles" })
   @ApiOkResponse({ type: StaffAccountDetailDto })
   public detail(@Param("accountId", new ParseUUIDPipe()) accountId: string) { return this.staff.detail(accountId); }
+
+  @Post(":accountId/state")
+  @RequireCapabilities("identity.account.manage")
+  @ApiOperation({ operationId: "changeStaffAccountState" })
+  @ApiCreatedResponse({ type: StaffStateChangeResultDto })
+  public state(
+    @Req() request: FastifyRequest,
+    @Param("accountId", new ParseUUIDPipe()) accountId: string,
+    @Body(new ValidationPipe({ whitelist: true })) input: StaffStateChangeDto,
+  ) {
+    if (input.action !== "suspend" && input.action !== "reinstate") {
+      throw new ProblemException(400, "identity.invalidAction", "A supported account state action is required.");
+    }
+    const { actorId, correlationId } = this.actor(request);
+    return this.lifecycle.change(accountId, actorId, input.action, input.reason, input.idempotencyKey, correlationId);
+  }
 
   @Post(":accountId/roles")
   @RequireCapabilities("identity.role.manage")
