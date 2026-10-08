@@ -13,6 +13,7 @@
     "dev:api": "node scripts/development/operations.mjs run api.dev",
     "dev:admin": "node scripts/development/operations.mjs run admin.dev",
     "status:admin": "node scripts/development/operations.mjs run admin.status",
+    "bootstrap:admin": "node scripts/development/operations.mjs run admin.bootstrap",
     "stop:admin": "node scripts/development/operations.mjs run admin.stop",
     "lint:v2": "npm run lint -w @zhipanda/api",
     "typecheck:v2": "npm run typecheck -w @zhipanda/api && npm run typecheck -w @zhipanda/api-client",

@@ -138,6 +138,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "admin.bootstrap",
+    category: "runtime",
+    description: "Explicitly provision the first verified administrator in the pinned local Supabase instance.",
+    command: "node",
+    args: ["scripts/development/first-admin-bootstrap.mjs"],
+    requires: ["node_modules", "docker"],
+    effect: "local-state",
+  },
+  {
     id: "admin.stop",
     category: "runtime",
     description: "Stop the local admin Web/API process trees and Supabase foundation.",
