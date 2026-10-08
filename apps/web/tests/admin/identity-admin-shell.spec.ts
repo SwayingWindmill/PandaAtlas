@@ -198,3 +198,82 @@ test("MFA staff settings stay unavailable without admin.shell.access", async ({ 
   await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
   await expect(page.getByRole("heading", { name: "多因素认证" })).toHaveCount(0);
 });
+
+test("AAL2 staff manager invites an archive reviewer and sees a pending invitation", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ...staffSession,
+        capabilities: ["admin.shell.access", "identity.account.manage", "identity.role.manage"],
+      }),
+    });
+  });
+  let invitedEmail = "";
+  await page.route("**/api/admin/staff/invitations", async (route) => {
+    if (route.request().method() === "GET") {
+      await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+      return;
+    }
+    invitedEmail = (route.request().postDataJSON() as { email: string }).email;
+    await route.fulfill({
+      status: 201,
+      contentType: "application/json",
+      body: JSON.stringify({ invitationId: "123", email: invitedEmail, status: "pending" }),
+    });
+  });
+
+  await page.goto("/admin");
+  await page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "工作人员" }).click();
+  await expect(page.getByRole("heading", { name: "邀请审核员" })).toBeVisible();
+  await page.getByRole("textbox", { name: "审核员邮箱" }).fill("reviewer@example.test");
+  await page.getByRole("button", { name: "发送邀请" }).click();
+  await expect(page.getByRole("status")).toContainText("邀请邮件已发送");
+  expect(invitedEmail).toBe("reviewer@example.test");
+});
+
+test("expired recent authentication is distinguished from an incomplete MFA enrollment", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ...staffSession,
+        capabilities: ["admin.shell.access", "identity.account.manage", "identity.role.manage"],
+      }),
+    });
+  });
+  await page.route("**/api/admin/staff/invitations", async (route) => {
+    await route.fulfill({
+      status: 403,
+      contentType: "application/problem+json",
+      body: JSON.stringify({ code: "auth.recentAuthRequired", status: 403 }),
+    });
+  });
+
+  await page.goto("/admin/staff/invitations");
+  await page.getByRole("textbox", { name: "审核员邮箱" }).fill("new-reviewer@example.test");
+  await page.getByRole("button", { name: "发送邀请" }).click();
+  await expect(page.getByRole("status")).toContainText("最近认证已过期");
+  await expect(page.getByRole("status").getByRole("link", { name: "重新登录" })).toHaveAttribute(
+    "href", "/auth/login?next=%2Fadmin%2Fstaff%2Finvitations",
+  );
+  await expect(page.getByRole("region", { name: "审核员邀请记录" }).getByRole("alert")).toContainText("最近认证已过期");
+  await expect(page.getByRole("status")).not.toContainText("在账号安全中完成验证");
+});
+
+test("a reviewer cannot access staff invitation controls", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "review.case.read"] }),
+    });
+  });
+
+  await page.goto("/admin/staff/invitations");
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+  await expect(page.getByRole("button", { name: "发送邀请" })).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "工作人员" })).toHaveCount(0);
+});

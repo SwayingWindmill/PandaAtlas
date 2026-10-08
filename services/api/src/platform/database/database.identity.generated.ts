@@ -121,6 +121,17 @@ export interface IdentityRoles {
   role_key: string;
 }
 
+export interface IdentityStaffInvitations {
+  accepted_at: Timestamp | null;
+  account_id: string;
+  correlation_id: string;
+  created_at: Generated<Timestamp>;
+  email: string;
+  invitation_id: Generated<string>;
+  invited_by_account_id: string;
+  status: Generated<string>;
+}
+
 export interface DB {
   "identity.account_state_events": IdentityAccountStateEvents;
   "identity.accounts": IdentityAccounts;
@@ -131,4 +142,5 @@ export interface DB {
   "identity.role_assignments": IdentityRoleAssignments;
   "identity.role_capabilities": IdentityRoleCapabilities;
   "identity.roles": IdentityRoles;
+  "identity.staff_invitations": IdentityStaffInvitations;
 }

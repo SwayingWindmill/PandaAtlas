@@ -52,6 +52,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/staff/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listStaffInvitations"];
+        put?: never;
+        post: operations["inviteStaffReviewer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/staff-invitation/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["acceptStaffReviewerInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/contributions": {
         parameters: {
             query?: never;
@@ -1103,6 +1135,26 @@ export interface components {
             nickname: string;
             bio: string;
         };
+        StaffInvitationDto: {
+            invitationId: string;
+            email: string;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InviteReviewerDto: {
+            /** @example reviewer@example.com */
+            email: string;
+        };
+        IssuedStaffInvitationDto: {
+            invitationId: string;
+            email: string;
+            status: string;
+        };
+        AcceptedInvitationDto: {
+            accountId: string;
+            status: string;
+        };
         ContributionAssertionDto: {
             assertionKey: string;
             fieldKey: string;
@@ -2047,6 +2099,67 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FanProfileDto"];
+                };
+            };
+        };
+    };
+    listStaffInvitations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffInvitationDto"][];
+                };
+            };
+        };
+    };
+    inviteStaffReviewer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteReviewerDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IssuedStaffInvitationDto"];
+                };
+            };
+        };
+    };
+    acceptStaffReviewerInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcceptedInvitationDto"];
                 };
             };
         };

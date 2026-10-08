@@ -97,6 +97,83 @@
         ]
       }
     },
+    "/api/v2/staff/invitations": {
+      "get": {
+        "operationId": "listStaffInvitations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StaffInvitationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      },
+      "post": {
+        "operationId": "inviteStaffReviewer",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteReviewerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuedStaffInvitationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
+    "/api/v2/me/staff-invitation/accept": {
+      "post": {
+        "operationId": "acceptStaffReviewerInvitation",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptedInvitationDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
     "/api/v2/contributions": {
       "post": {
         "operationId": "submitContribution",
@@ -2725,6 +2802,76 @@
         "required": [
           "nickname",
           "bio"
+        ]
+      },
+      "StaffInvitationDto": {
+        "type": "object",
+        "properties": {
+          "invitationId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "invitationId",
+          "email",
+          "status",
+          "createdAt"
+        ]
+      },
+      "InviteReviewerDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "reviewer@example.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "IssuedStaffInvitationDto": {
+        "type": "object",
+        "properties": {
+          "invitationId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "invitationId",
+          "email",
+          "status"
+        ]
+      },
+      "AcceptedInvitationDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "status"
         ]
       },
       "ContributionAssertionDto": {

@@ -10,13 +10,15 @@ import { IDENTITY_MODERATION_PARTICIPANT } from "./application/identity-moderati
 import { IDENTITY_NOTIFICATION_CONTACT_PORT } from "./application/identity-notification.port.js";
 import { IDENTITY_PRIVACY_PORT } from "./application/identity-privacy.port.js";
 import { IDENTITY_PORT } from "./application/identity.port.js";
+import { StaffInvitationsService } from "./infrastructure/staff-invitations.service.js";
 import { ApplicationAccessGuard } from "./http/application-access.guard.js";
 import { MeController } from "./http/me.controller.js";
+import { AcceptStaffInvitationController, StaffInvitationsController } from "./http/staff-invitations.controller.js";
 import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.repository.js";
 
 @Module({
   imports: [AuthModule, ConfigModule, DatabaseModule, RequestContextModule],
-  controllers: [MeController],
+  controllers: [MeController, StaffInvitationsController, AcceptStaffInvitationController],
   providers: [
     {
       provide: PostgresIdentityRepository,
@@ -40,6 +42,7 @@ import { PostgresIdentityRepository } from "./infrastructure/postgres-identity.r
       useExisting: PostgresIdentityRepository,
     },
     ApplicationAccessGuard,
+    StaffInvitationsService,
     {
       provide: APP_GUARD,
       useExisting: SupabaseAuthGuard,

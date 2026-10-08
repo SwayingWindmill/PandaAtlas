@@ -19,6 +19,7 @@ export interface EnvironmentConfig {
   DB_STATEMENT_TIMEOUT_MS: number;
   DB_IDLE_TRANSACTION_TIMEOUT_MS: number;
   SUPABASE_URL: string | undefined;
+  SUPABASE_SECRET_KEY: string | undefined;
   SUPABASE_JWT_AUDIENCE: string;
   AUTH_RECENT_WINDOW_SECONDS: number;
   AUTH_JWKS_TIMEOUT_MS: number;
@@ -151,6 +152,7 @@ export function validateEnvironment(
       120_000,
     ),
     SUPABASE_URL: supabaseUrl,
+    SUPABASE_SECRET_KEY: optionalString(input.SUPABASE_SECRET_KEY),
     SUPABASE_JWT_AUDIENCE:
       optionalString(input.SUPABASE_JWT_AUDIENCE) ?? "authenticated",
     AUTH_RECENT_WINDOW_SECONDS: parseInteger(
@@ -229,6 +231,10 @@ export class AppConfig {
 
   public get supabaseUrl(): string | undefined {
     return this.config.get("SUPABASE_URL", { infer: true });
+  }
+
+  public get supabaseSecretKey(): string | undefined {
+    return this.config.get("SUPABASE_SECRET_KEY", { infer: true });
   }
 
   public get supabaseJwtIssuer(): string | undefined {
