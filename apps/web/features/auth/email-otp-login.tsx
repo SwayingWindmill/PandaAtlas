@@ -71,6 +71,15 @@ function localeFromPath(path: string): "zh" | "en" {
   return path.startsWith("/en/") ? "en" : "zh";
 }
 
+async function destinationAfterStaffSignIn(destination: string): Promise<string> {
+  if (!destination.startsWith("/admin")) return destination;
+  const { data, error } = await getSupabaseBrowserClient().auth.mfa.getAuthenticatorAssuranceLevel();
+  if (!error && data.currentLevel === "aal1" && data.nextLevel === "aal2") {
+    return `/admin/security/mfa?next=${encodeURIComponent(destination)}`;
+  }
+  return destination;
+}
+
 export function EmailOtpLogin() {
   const searchParams = useSearchParams();
   const destination = useMemo(() => safeNextPath(searchParams.get("next")), [searchParams]);
@@ -138,7 +147,7 @@ export function EmailOtpLogin() {
         setMessageKind("error");
         return;
       }
-      window.location.replace(destination);
+      window.location.replace(await destinationAfterStaffSignIn(destination));
     }
     void restoreMagicLinkSession();
   }, [destination]);
@@ -179,7 +188,7 @@ export function EmailOtpLogin() {
       setOtp("");
       return;
     }
-    window.location.replace(destination);
+    window.location.replace(await destinationAfterStaffSignIn(destination));
   }
 
   return (

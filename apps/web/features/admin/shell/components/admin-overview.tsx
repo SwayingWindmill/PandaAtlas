@@ -45,6 +45,15 @@ export function AdminOverview() {
         </div>
       </section>
 
+      {session.capabilities.includes("admin.shell.access") && session.aal !== "aal2" ? (
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4">
+          <p className="text-sm text-amber-950">当前会话尚未通过多因素认证。敏感操作需要 AAL2 身份验证。</p>
+          <Link href="/admin/security/mfa" className="text-sm font-semibold text-amber-950 underline underline-offset-2">
+            前往账号安全设置
+          </Link>
+        </div>
+      ) : null}
+
       <section aria-labelledby="available-workspaces-heading">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div>

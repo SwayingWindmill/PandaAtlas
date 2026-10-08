@@ -206,3 +206,11 @@ test("root package exposes the current canonical development interface", async (
   assert.equal(packageJson.scripts["check:api-runtime-boundary"], undefined);
   assert.equal(packageJson.scripts["deploy:api:cf"], undefined);
 });
+
+test("local Supabase enables native TOTP enrollment and verification for the staff MFA journey", async () => {
+  const config = await readFile(path.join(repoRoot, "infra", "supabase", "config.toml"), "utf8");
+  const totp = config.match(/^\[auth\.mfa\.totp\]\s*\n([^[]*)/m)?.[1];
+  assert.ok(totp, "Supabase TOTP settings must be explicitly configured");
+  assert.match(totp, /^enroll_enabled\s*=\s*true\s*$/m);
+  assert.match(totp, /^verify_enabled\s*=\s*true\s*$/m);
+});
