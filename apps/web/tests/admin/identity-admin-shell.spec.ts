@@ -199,6 +199,47 @@ test("MFA staff settings stay unavailable without admin.shell.access", async ({ 
   await expect(page.getByRole("heading", { name: "多因素认证" })).toHaveCount(0);
 });
 
+test("staff governance exposes a direct role management sidebar entry", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "identity.account.manage", "identity.role.manage"] }),
+  }));
+
+  await page.goto("/admin");
+  const navigation = page.getByRole("navigation", { name: "后台导航" });
+  await expect(navigation.getByRole("link", { name: "工作人员" })).toHaveAttribute("href", "/admin/staff/invitations");
+  await expect(navigation.getByRole("link", { name: "角色管理" })).toHaveAttribute("href", "/admin/staff/roles");
+  await navigation.getByRole("link", { name: "角色管理" }).click();
+  await expect(page).toHaveURL(/\/admin\/staff\/roles$/);
+  await expect(navigation.getByRole("link", { name: "角色管理" })).toHaveAttribute("aria-current", "page");
+  await expect(navigation.getByRole("link", { name: "工作人员" })).not.toHaveAttribute("aria-current", "page");
+});
+
+test("staff navigation keeps account invitations and role management separately authorized", async ({ page }) => {
+  let capabilities = ["admin.shell.access", "identity.role.manage"];
+  await page.route("**/api/admin/session", async (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities }),
+  }));
+
+  await page.goto("/admin/staff/roles");
+  const navigation = page.getByRole("navigation", { name: "后台导航" });
+  await expect(navigation.getByRole("link", { name: "角色管理" })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "工作人员" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toBeVisible();
+  await page.goto("/admin/staff/invitations");
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+
+  capabilities = ["admin.shell.access", "identity.account.manage"];
+  await page.reload();
+  await expect(navigation.getByRole("link", { name: "工作人员" })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "角色管理" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "邀请审核员" })).toBeVisible();
+  await page.goto("/admin/staff/roles");
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+});
+
 test("AAL2 staff manager invites an archive reviewer and sees a pending invitation", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({

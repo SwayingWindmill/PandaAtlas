@@ -5,7 +5,7 @@ export interface AdminNavigationItem {
   label: string;
   description: string;
   group: "总览" | "运营" | "治理";
-  icon: "layout-dashboard" | "clipboard-check" | "shield-alert" | "database" | "send" | "scroll-text" | "shield-check";
+  icon: "layout-dashboard" | "clipboard-check" | "shield-alert" | "database" | "send" | "scroll-text" | "shield-check" | "users-round";
   capabilities?: readonly string[];
   activePaths?: readonly string[];
 }
@@ -43,11 +43,18 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
   {
     href: "/admin/staff/invitations",
     label: "工作人员",
-    description: "管理邀请、岗位角色与有效权限",
+    description: "邀请审核员并追踪激活状态",
     group: "治理",
     icon: "shield-check",
-    capabilities: ["identity.account.manage", "identity.role.manage"],
-    activePaths: ["/admin/staff/invitations", "/admin/staff/roles"],
+    capabilities: ["identity.account.manage"],
+  },
+  {
+    href: "/admin/staff/roles",
+    label: "角色管理",
+    description: "查看工作人员角色、授权历史并授予或撤销权限",
+    group: "治理",
+    icon: "users-round",
+    capabilities: ["identity.role.manage"],
   },
   {
     href: "/admin/security/mfa",
