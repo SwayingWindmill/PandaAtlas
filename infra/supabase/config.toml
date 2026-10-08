@@ -68,10 +68,12 @@ max_indexes = 1
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
+site_url = "http://127.0.0.1:3400"
 additional_redirect_urls = [
   "http://localhost:3000/**",
   "http://127.0.0.1:3000/**",
+  "http://localhost:3400/**",
+  "http://127.0.0.1:3400/**",
 ]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
@@ -89,6 +91,10 @@ secure_password_change = true
 max_frequency = "1s"
 otp_length = 6
 otp_expiry = 3600
+
+[auth.email.template.magic_link]
+subject = "PandaAtlas 登录验证码"
+content_path = "./supabase/templates/magic_link.html"
 
 [auth.sms]
 enable_signup = false
