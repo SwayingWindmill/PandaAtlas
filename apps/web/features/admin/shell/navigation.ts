@@ -40,6 +40,14 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
     activePaths: ["/admin/audit/evidence", "/admin/audit", "/admin/audit-logs"],
   },
   { href: "/admin/capabilities", label: "权限", description: "查看当前账号的操作能力", group: "治理", icon: "shield-check" },
+  {
+    href: "/admin/security/mfa",
+    label: "账号安全",
+    description: "启用和验证多因素认证",
+    group: "治理",
+    icon: "shield-check",
+    capabilities: ["admin.shell.access"],
+  },
 ] as const;
 
 export function canAccessAdminNavigationItem(session: AdminSession, item: AdminNavigationItem): boolean {

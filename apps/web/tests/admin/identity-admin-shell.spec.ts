@@ -169,3 +169,32 @@ test("admin session 401 redirects to OTP login with the requested admin return p
   await page.goto("/admin/audit");
   await expect(page).toHaveURL(/\/auth\/login\?next=%2Fadmin%2Faudit$/);
 });
+
+test("staff can enter Chinese MFA security settings without expanding business permissions", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ...staffSession, aal: "aal1", capabilities: ["admin.shell.access"] }),
+    });
+  });
+
+  await page.goto("/admin");
+  await page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "账号安全" }).click();
+  await expect(page).toHaveURL(/\/admin\/security\/mfa$/);
+  await expect(page.getByRole("heading", { name: "多因素认证" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "审核" })).toHaveCount(0);
+});
+
+test("MFA staff settings stay unavailable without admin.shell.access", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ...staffSession, capabilities: ["audit.read"] }),
+    });
+  });
+  await page.goto("/admin/security/mfa");
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "多因素认证" })).toHaveCount(0);
+});
