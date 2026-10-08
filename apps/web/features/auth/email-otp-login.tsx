@@ -76,6 +76,10 @@ export function EmailOtpLogin() {
   const destination = useMemo(() => safeNextPath(searchParams.get("next")), [searchParams]);
   const locale = localeFromPath(destination);
   const t = copy[locale];
+  const localInboxUrl = process.env.NODE_ENV === "development"
+    && process.env.NEXT_PUBLIC_SUPABASE_URL === "http://127.0.0.1:54321"
+    ? "http://127.0.0.1:54324"
+    : null;
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [phase, setPhase] = useState<Phase>("email");
@@ -247,6 +251,19 @@ export function EmailOtpLogin() {
             tabIndex={-1}
           >
             {message}
+          </p>
+        ) : null}
+        {phase === "otp" && localInboxUrl ? (
+          <p className="mt-4 text-sm leading-6 text-stone-700">
+            本地开发环境的验证码只投递到测试邮箱，不会发送到真实邮箱。
+            <a
+              href={localInboxUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 font-semibold text-teal-800 underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-teal-700"
+            >
+              打开本地验证码邮箱
+            </a>
           </p>
         ) : null}
       </div>
