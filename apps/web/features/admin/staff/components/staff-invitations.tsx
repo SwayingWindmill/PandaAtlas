@@ -94,6 +94,9 @@ export function StaffInvitations() {
         <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
           邀请协作者核实来源、处理待审记录。受邀者仅获得审核员职责，不能审批策展变更或发布熊猫档案。
         </p>
+        <Link className="mt-4 inline-flex rounded-lg border border-teal-700 px-4 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50" href="/admin/staff/roles">
+          查看工作人员及岗位权限
+        </Link>
       </header>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-bold text-slate-950">发送工作人员邀请</h2>

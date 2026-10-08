@@ -84,6 +84,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/staff/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listStaffAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/staff/accounts/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listDelegableStaffRoles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/staff/accounts/{accountId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getStaffAccountRoles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/staff/accounts/{accountId}/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["grantStaffRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/staff/accounts/{accountId}/roles/{assignmentId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["revokeStaffRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/contributions": {
         parameters: {
             query?: never;
@@ -1155,6 +1235,63 @@ export interface components {
             accountId: string;
             status: string;
         };
+        StaffAccountSummaryDto: {
+            /** Format: uuid */
+            accountId: string;
+            email: string | null;
+            state: string;
+            roles: string[];
+        };
+        StaffRoleCatalogDto: {
+            roleKey: string;
+            displayName: string;
+            description: string;
+        };
+        StaffAssignmentDto: {
+            /** Format: uuid */
+            assignmentId: string;
+            roleKey: string;
+            roleName: string;
+            /** Format: date-time */
+            assignedAt: string;
+            assignedBy: string | null;
+            reason: string;
+            /** @enum {string} */
+            status: "active" | "revoked" | "expired";
+            /** Format: date-time */
+            revokedAt: string | null;
+            revokedBy: string | null;
+            revocationReason: string | null;
+        };
+        StaffAccountDetailDto: {
+            /** Format: uuid */
+            accountId: string;
+            email: string | null;
+            state: string;
+            assignments: components["schemas"]["StaffAssignmentDto"][];
+            capabilities: string[];
+        };
+        GrantStaffRoleDto: {
+            /** @example Reviewed the staff responsibility change with the archive lead */
+            reason: string;
+            /** Format: uuid */
+            idempotencyKey: string;
+            /** @example reviewer */
+            roleKey: string;
+        };
+        StaffRoleChangeResultDto: {
+            /** Format: uuid */
+            assignmentId: string;
+            roleKey: string;
+            /** @enum {string} */
+            status: "active" | "revoked";
+        };
+        RevokeStaffRoleDto: {
+            /** @example Reviewed the staff responsibility change with the archive lead */
+            reason: string;
+            /** Format: uuid */
+            idempotencyKey: string;
+        };
         ContributionAssertionDto: {
             assertionKey: string;
             fieldKey: string;
@@ -2160,6 +2297,116 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AcceptedInvitationDto"];
+                };
+            };
+        };
+    };
+    listStaffAccounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffAccountSummaryDto"][];
+                };
+            };
+        };
+    };
+    listDelegableStaffRoles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffRoleCatalogDto"][];
+                };
+            };
+        };
+    };
+    getStaffAccountRoles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffAccountDetailDto"];
+                };
+            };
+        };
+    };
+    grantStaffRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantStaffRoleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffRoleChangeResultDto"];
+                };
+            };
+        };
+    };
+    revokeStaffRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                accountId: string;
+                assignmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeStaffRoleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffRoleChangeResultDto"];
                 };
             };
         };

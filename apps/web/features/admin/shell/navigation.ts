@@ -5,7 +5,7 @@ export interface AdminNavigationItem {
   label: string;
   description: string;
   group: "总览" | "运营" | "治理";
-  icon: "layout-dashboard" | "clipboard-check" | "shield-alert" | "database" | "send" | "scroll-text" | "shield-check";
+  icon: "layout-dashboard" | "clipboard-check" | "shield-alert" | "database" | "send" | "scroll-text" | "shield-check" | "users-round";
   capabilities?: readonly string[];
   activePaths?: readonly string[];
 }
@@ -47,6 +47,14 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
     group: "治理",
     icon: "shield-check",
     capabilities: ["identity.account.manage"],
+  },
+  {
+    href: "/admin/staff/roles",
+    label: "角色管理",
+    description: "查看工作人员角色、授权历史并授予或撤销权限",
+    group: "治理",
+    icon: "users-round",
+    capabilities: ["identity.role.manage"],
   },
   {
     href: "/admin/security/mfa",
