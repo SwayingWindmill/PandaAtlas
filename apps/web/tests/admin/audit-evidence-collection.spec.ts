@@ -40,13 +40,13 @@ test("audit evidence collection renders rows and keeps the supported limit in th
 
   await page.goto("/admin/audit/evidence?limit=25", { waitUntil: "domcontentloaded" });
 
-  await expect(page.getByRole("navigation", { name: "Admin navigation" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Audit", exact: true })).toHaveAttribute("href", "/admin/audit");
-  await expect(page.getByRole("heading", { level: 1, name: "Audit evidence" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "后台导航" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "审计", exact: true })).toHaveAttribute("href", "/admin/audit/evidence");
+  await expect(page.getByRole("heading", { level: 1, name: "审计证据" })).toBeVisible();
   await expect(page.getByText("publication.release.activated", { exact: true })).toBeVisible();
   expect(requestedLimits).toContain("25");
 
-  await page.getByLabel("Rows").selectOption("50");
+  await page.getByLabel("每页条数").selectOption("50");
   await expect(page).toHaveURL(/\/admin\/audit\/evidence\?limit=50$/);
   await expect.poll(() => requestedLimits.at(-1)).toBe("50");
 });

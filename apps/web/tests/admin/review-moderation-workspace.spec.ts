@@ -113,18 +113,18 @@ test("review queue replaces the generic runner with typed collection and case ac
 
   await page.goto("/admin/reviews");
 
-  await expect(page.getByRole("heading", { level: 1, name: "Contribution review queue" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Assertions" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "贡献审核队列" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "待核验事实" })).toBeVisible();
   await expect(page.getByText("Institutional profile").first()).toBeVisible();
-  await expect(page.getByRole("button", { name: "Claim case" })).toBeVisible();
-  await expect(page.getByLabel("Source verification reason")).toBeVisible();
-  await expect(page.getByLabel("Decision outcome")).toBeVisible();
+  await expect(page.getByRole("button", { name: "领取案件" })).toBeVisible();
+  await expect(page.getByLabel("来源核验原因")).toBeVisible();
+  await expect(page.getByLabel("审核决定类型")).toBeVisible();
   await expect(page.getByText("JSON payload")).toHaveCount(0);
   await expect(page).not.toHaveURL(/\bcase=/);
   expect(requestedOperations).toEqual([]);
 
-  await page.getByRole("button", { name: "Claim case" }).click();
-  await expect(page.getByRole("status")).toContainText("Review case claimed.");
+  await page.getByRole("button", { name: "领取案件" }).click();
+  await expect(page.getByRole("status")).toContainText("案件已领取。");
   await expect.poll(() => queueReads).toBeGreaterThan(1);
   await expect.poll(() => surfaceReads).toBeGreaterThan(1);
 });
@@ -149,11 +149,11 @@ test("review queue keeps collection state in the URL", async ({ page }) => {
   });
 
   await page.goto("/admin/reviews");
-  await page.getByLabel("Queue state").selectOption("assigned");
+  await page.getByLabel("队列状态").selectOption("assigned");
   await expect(page).toHaveURL(/\/admin\/reviews\?state=assigned$/);
   await expect.poll(() => reads.at(-1)).toEqual({ state: "assigned", offset: "0" });
 
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "下一页" }).click();
   await expect(page).toHaveURL(/\/admin\/reviews\?state=assigned&page=2$/);
   await expect.poll(() => reads.at(-1)).toEqual({ state: "assigned", offset: "25" });
 });
@@ -233,22 +233,22 @@ test("moderation shows the appeal queue, account projection, and typed appeal de
 
   await page.goto("/admin/moderation");
 
-  await expect(page.getByRole("heading", { level: 1, name: "Account moderation & appeals" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "账号治理与申诉" })).toBeVisible();
   await expect(page.getByText("Please review the evidence again; I believe this suspension should be reversed.")).toBeVisible();
-  await expect(page.getByText("account suspended", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Apply sanction" })).toBeVisible();
+  await expect(page.getByText("账号已暂停", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "执行限制" })).toBeVisible();
   await expect(page).not.toHaveURL(/\b(?:appeal|account)=/);
-  await page.getByLabel("Appeal outcome").selectOption("overturned");
-  await page.getByLabel("Appeal internal explanation").fill("The evidence does not support continuing this account suspension.");
-  await page.getByLabel("Appeal member explanation").fill("Your appeal was accepted and the account suspension has been removed.");
-  await page.getByRole("button", { name: "Record appeal decision" }).click();
+  await page.getByLabel("申诉处理结果").selectOption("overturned");
+  await page.getByLabel("申诉内部说明").fill("The evidence does not support continuing this account suspension.");
+  await page.getByLabel("申诉用户说明").fill("Your appeal was accepted and the account suspension has been removed.");
+  await page.getByRole("button", { name: "保存申诉决定" }).click();
 
   await expect.poll(() => appealDecisionBody).toEqual({
     outcome: "overturned",
     internalExplanation: "The evidence does not support continuing this account suspension.",
     userVisibleExplanation: "Your appeal was accepted and the account suspension has been removed.",
   });
-  await expect(page.getByRole("status")).toContainText("Appeal decision recorded.");
+  await expect(page.getByRole("status")).toContainText("申诉处理结果已记录。");
   await expect.poll(() => appealReads).toBeGreaterThan(1);
   await expect.poll(() => accountReads).toBeGreaterThan(1);
 });
@@ -282,10 +282,10 @@ test("moderation actions stay capability scoped", async ({ page }) => {
   });
 
   await page.goto("/admin/moderation");
-  await page.getByLabel("Account ID").fill(moderationAccountId);
-  await page.getByRole("button", { name: "Load account" }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Account moderation & appeals" })).toBeVisible();
-  await expect(page.getByText("Your capabilities do not include appeal decisions.")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Apply sanction" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Record appeal decision" })).toHaveCount(0);
+  await page.getByLabel("账号 ID").fill(moderationAccountId);
+  await page.getByRole("button", { name: "查询账号" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "账号治理与申诉" })).toBeVisible();
+  await expect(page.getByText("当前账号没有处理申诉的权限。")).toBeVisible();
+  await expect(page.getByRole("button", { name: "执行限制" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "保存申诉决定" })).toHaveCount(0);
 });

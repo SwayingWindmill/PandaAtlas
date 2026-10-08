@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const staffSession = {
@@ -6,7 +7,7 @@ const staffSession = {
   capabilities: ["audit.read"],
 };
 
-test("current V2 admin shell exposes retained operations without retired V1 surfaces", async ({ page }) => {
+test("Chinese Kiranism admin shell exposes capability-scoped grouped navigation", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({
       status: 200,
@@ -17,12 +18,16 @@ test("current V2 admin shell exposes retained operations without retired V1 surf
 
   await page.goto("/admin");
 
-  await expect(page.getByText("Available operations")).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Admin navigation" }).getByRole("link", { name: "Audit", exact: true })).toHaveAttribute("href", "/admin/audit");
-  await expect(page.getByRole("link", { name: "Review", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Moderation", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Curation", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Publication", exact: true })).toHaveCount(0);
+  await expect(page.getByText("可用工作区")).toBeVisible();
+  const navigation = page.getByRole("navigation", { name: "后台导航" });
+  await expect(page.locator('[data-slot="sidebar-wrapper"]')).toBeVisible();
+  await expect(page.locator('[data-slot="sidebar-inset"]')).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "审计", exact: true })).toHaveAttribute("href", "/admin/audit/evidence");
+  await expect(navigation.getByText("治理", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "审核", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "内容治理", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "策展", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "发布", exact: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Archive/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Game Bank/i })).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
@@ -39,10 +44,60 @@ test("capability navigation stays visible while an unauthorized admin route is w
 
   await page.goto("/admin/publication");
 
-  await expect(page.getByRole("navigation", { name: "Admin navigation" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Audit", exact: true })).toBeVisible();
-  await expect(page.getByText("The current account does not have the capability required for this V2 operation surface.")).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "后台导航" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "审计", exact: true })).toBeVisible();
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: "Publication" })).toHaveCount(0);
+});
+
+test("direct legacy audit URL cannot bypass capability-scoped shell access", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ...staffSession, capabilities: [] }),
+    });
+  });
+
+  await page.goto("/admin/audit");
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "审计" })).toHaveCount(0);
+});
+
+test("sidebar collapse preserves active navigation and keyboard reopening", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(staffSession),
+    });
+  });
+
+  await page.goto("/admin/audit/evidence");
+  const sidebar = page.locator('[data-slot="sidebar"]');
+  const audit = page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "审计" });
+  await expect(audit).toHaveAttribute("aria-current", "page");
+  await page.getByRole("button", { name: "切换侧边栏" }).click();
+  await expect(sidebar).toHaveAttribute("data-state", "collapsed");
+  await page.reload();
+  await expect(sidebar).toHaveAttribute("data-state", "collapsed");
+  await page.keyboard.press("Control+b");
+  await expect(sidebar).toHaveAttribute("data-state", "expanded");
+  await expect(audit).toHaveAttribute("aria-current", "page");
+});
+
+test("Chinese admin workbench passes automated accessibility checks", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(staffSession),
+    });
+  });
+  await page.goto("/admin");
+  await expect(page.getByRole("heading", { level: 1, name: "数据运营工作台" })).toBeVisible();
+  const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(results.violations).toEqual([]);
 });
 
 test("admin navigation remains operable from the keyboard at narrow width", async ({ page }) => {
@@ -57,15 +112,16 @@ test("admin navigation remains operable from the keyboard at narrow width", asyn
 
   await page.goto("/admin");
 
-  const navigation = page.getByRole("navigation", { name: "Admin navigation" });
+  await page.getByRole("button", { name: "展开导航" }).click();
+  const navigation = page.getByRole("navigation", { name: "后台导航" });
   await expect(navigation).toBeVisible();
   await expect(page.locator("body")).toHaveJSProperty("scrollWidth", 320);
 
-  const auditLink = navigation.getByRole("link", { name: "Audit", exact: true });
+  const auditLink = navigation.getByRole("link", { name: "审计", exact: true });
   await auditLink.focus();
   await expect(auditLink).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/admin\/audit$/);
+  await expect(page).toHaveURL(/\/admin\/audit\/evidence$/);
 });
 
 test("admin session denial renders the shared staff access error state", async ({ page }) => {
@@ -79,8 +135,26 @@ test("admin session denial renders the shared staff access error state", async (
 
   await page.goto("/admin");
 
-  await expect(page.getByRole("alert")).toContainText("This account does not have staff access.");
-  await expect(page.getByRole("navigation", { name: "Admin navigation" })).toHaveCount(0);
+  await expect(page.getByRole("alert")).toContainText("当前账号没有后台访问权限。");
+  await expect(page.getByRole("navigation", { name: "后台导航" })).toHaveCount(0);
+});
+
+test("admin session error can be retried without losing the workspace", async ({ page }) => {
+  let attempts = 0;
+  await page.route("**/api/admin/session", async (route) => {
+    attempts += 1;
+    await route.fulfill({
+      status: attempts === 1 ? 500 : 200,
+      contentType: "application/json",
+      body: JSON.stringify(attempts === 1 ? { detail: "Temporary error" } : staffSession),
+    });
+  });
+
+  await page.goto("/admin");
+  await expect(page.getByRole("alert")).toContainText("无法获取当前工作人员会话。");
+  await page.getByRole("button", { name: "重新尝试" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "数据运营工作台" })).toBeVisible();
+  expect(attempts).toBe(2);
 });
 
 test("admin session 401 redirects to OTP login with the requested admin return path", async ({ page }) => {

@@ -13,19 +13,19 @@ interface OperationDefinition {
 
 const operations: Record<AdminV2Domain, OperationDefinition[]> = {
   review: [
-    { value: "review.open", label: "Open review case", payloadTemplate: { submissionId: "" } },
-    { value: "review.get", label: "Get review case", resourceLabel: "Review case ID" },
-    { value: "review.claim", label: "Claim review case", resourceLabel: "Review case ID" },
+    { value: "review.open", label: "创建审核案件", payloadTemplate: { submissionId: "" } },
+    { value: "review.get", label: "查询审核案件", resourceLabel: "审核案件 ID" },
+    { value: "review.claim", label: "领取审核案件", resourceLabel: "审核案件 ID" },
     {
       value: "review.verifySource",
-      label: "Verify source",
-      resourceLabel: "Review case ID",
+      label: "核验来源",
+      resourceLabel: "审核案件 ID",
       payloadTemplate: { sourceId: "", outcome: "verified", reason: "Verified against canonical evidence." },
     },
     {
       value: "review.decide",
-      label: "Record decision",
-      resourceLabel: "Review case ID",
+      label: "保存审核决定",
+      resourceLabel: "审核案件 ID",
       payloadTemplate: {
         outcome: "accepted",
         selectedAssertionKeys: [],
@@ -34,17 +34,17 @@ const operations: Record<AdminV2Domain, OperationDefinition[]> = {
     },
     {
       value: "review.recommend",
-      label: "Recommend for curation",
-      resourceLabel: "Review case ID",
+      label: "推荐策展",
+      resourceLabel: "审核案件 ID",
       payloadTemplate: { reason: "Accepted assertions are ready for curation." },
     },
   ],
   moderation: [
-    { value: "moderation.getAccount", label: "Get moderation account", resourceLabel: "Account ID" },
+    { value: "moderation.getAccount", label: "查询账号治理状态", resourceLabel: "账号 ID" },
     {
       value: "moderation.applySanction",
-      label: "Apply sanction",
-      resourceLabel: "Account ID",
+      label: "执行限制",
+      resourceLabel: "账号 ID",
       payloadTemplate: {
         kind: "warning",
         reasonCode: "policy_warning",
@@ -55,8 +55,8 @@ const operations: Record<AdminV2Domain, OperationDefinition[]> = {
     },
     {
       value: "moderation.restoreSanction",
-      label: "Restore sanction",
-      resourceLabel: "Sanction ID",
+      label: "解除限制",
+      resourceLabel: "限制记录 ID",
       payloadTemplate: {
         reasonCode: "appeal_review",
         internalExplanation: "Sanction restored after review.",
@@ -66,8 +66,8 @@ const operations: Record<AdminV2Domain, OperationDefinition[]> = {
     },
     {
       value: "moderation.decideAppeal",
-      label: "Decide appeal",
-      resourceLabel: "Appeal case ID",
+      label: "处理申诉",
+      resourceLabel: "申诉案件 ID",
       payloadTemplate: {
         outcome: "upheld",
         internalExplanation: "Appeal reviewed against the moderation record.",
@@ -76,36 +76,36 @@ const operations: Record<AdminV2Domain, OperationDefinition[]> = {
     },
   ],
   curation: [
-    { value: "curation.get", label: "Get change set", resourceLabel: "Change set ID" },
-    { value: "curation.validate", label: "Validate change set", resourceLabel: "Change set ID" },
+    { value: "curation.get", label: "查询变更集", resourceLabel: "变更集 ID" },
+    { value: "curation.validate", label: "校验变更集", resourceLabel: "变更集 ID" },
     {
       value: "curation.approve",
-      label: "Approve and apply change set",
-      resourceLabel: "Change set ID",
+      label: "批准并应用变更集",
+      resourceLabel: "变更集 ID",
       payloadTemplate: { reason: "Reviewed and approved for canonical application." },
     },
   ],
   audit: [
-    { value: "audit.list", label: "List V2 audit evidence", payloadTemplate: { limit: 50 } },
+    { value: "audit.list", label: "查看审计证据", payloadTemplate: { limit: 50 } },
   ],
 };
 
 const domainCopy: Record<AdminV2Domain, { title: string; description: string }> = {
   review: {
-    title: "Review",
-    description: "Open, claim, verify, decide, and recommend contribution review cases through canonical V2 commands.",
+    title: "审核",
+    description: "通过 V2 审核接口处理贡献、核验来源和记录决定。",
   },
   moderation: {
-    title: "Moderation",
-    description: "Inspect account moderation state and perform scoped sanction or appeal commands through V2.",
+    title: "内容治理",
+    description: "查询账号限制状态并处理申诉和治理措施。",
   },
   curation: {
-    title: "Curation",
-    description: "Inspect, validate, and approve recommendation-backed canonical change sets.",
+    title: "策展",
+    description: "查看、验证并批准已有证据支持的正式档案变更集。",
   },
   audit: {
-    title: "Audit",
-    description: "Read append-only V2 audit evidence. Export and legacy maintenance operations are intentionally not exposed.",
+    title: "审计",
+    description: "查看仅追加的 V2 审计证据，不提供旧版维护和导出操作。",
   },
 };
 
@@ -147,7 +147,7 @@ export function AdminV2OperationsWorkbench({ domain }: { domain: AdminV2Domain }
     try {
       payload = payloadText.trim() ? JSON.parse(payloadText) : {};
     } catch {
-      setError("Payload must be valid JSON.");
+      setError("请输入有效的 JSON 参数。");
       setBusy(false);
       return;
     }
@@ -173,23 +173,23 @@ export function AdminV2OperationsWorkbench({ domain }: { domain: AdminV2Domain }
       } else {
         setResult({ ok: response.ok });
       }
-      if (!response.ok) setError(`Operation failed with HTTP ${response.status}.`);
+      if (!response.ok) setError(`操作失败，HTTP 状态码：${response.status}。`);
     } catch {
-      setError("Admin V2 operation service is unavailable.");
+      setError("后台操作服务暂时不可用。");
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <p className="text-sm font-semibold text-stone-700">ZhiPanda Administration · V2</p>
+    <div className="mx-auto w-full max-w-5xl px-4 py-8">
+      <p className="text-sm font-semibold text-stone-700">PandaAtlas · 数据运营</p>
       <h1 className="mt-1 text-3xl font-bold text-stone-950">{copy.title}</h1>
       <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">{copy.description}</p>
 
       <section className="mt-8 rounded-xl border border-stone-300 bg-white p-5">
         <label className="grid gap-2 text-sm font-semibold text-stone-900">
-          Operation
+          操作类型
           <select
             className="min-h-11 rounded-md border border-stone-400 bg-white px-3"
             value={operation}
@@ -212,7 +212,7 @@ export function AdminV2OperationsWorkbench({ domain }: { domain: AdminV2Domain }
         ) : null}
 
         <label className="mt-5 grid gap-2 text-sm font-semibold text-stone-900">
-          JSON payload
+          JSON 参数
           <textarea
             className="min-h-48 rounded-md border border-stone-400 p-3 font-mono text-sm"
             value={payloadText}
@@ -227,7 +227,7 @@ export function AdminV2OperationsWorkbench({ domain }: { domain: AdminV2Domain }
           disabled={busy}
           onClick={() => void execute()}
         >
-          {busy ? "Running…" : "Run V2 operation"}
+          {busy ? "正在执行…" : "执行操作"}
         </button>
       </section>
 
@@ -238,6 +238,6 @@ export function AdminV2OperationsWorkbench({ domain }: { domain: AdminV2Domain }
           <pre className="mt-3 overflow-x-auto whitespace-pre-wrap text-sm">{pretty(result)}</pre>
         </section>
       ) : null}
-    </main>
+    </div>
   );
 }

@@ -30,13 +30,13 @@ import {
 const appealColumnHelper = createColumnHelper<ModerationAppealQueueItem>();
 
 function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+  return new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
 function projectionState(active: boolean): { label: string; className: string } {
   return active
-    ? { label: "Restricted", className: "border-red-200 bg-red-50 text-red-900" }
-    : { label: "Clear", className: "border-emerald-200 bg-emerald-50 text-emerald-900" };
+    ? { label: "已限制", className: "border-red-200 bg-red-50 text-red-900" }
+    : { label: "正常", className: "border-emerald-200 bg-emerald-50 text-emerald-900" };
 }
 
 export function ModerationWorkspace() {
@@ -94,7 +94,7 @@ export function ModerationWorkspace() {
       setSanctionInternal("");
       setSanctionVisible("");
       setSanctionEndsAt("");
-      setNotice(`Applied ${adminStateLabel(sanction.kind)} sanction.`);
+      setNotice(`已执行 ${adminStateLabel(sanction.kind)} 处理。`);
       await refreshAccount(sanction.accountId);
     },
   });
@@ -103,7 +103,7 @@ export function ModerationWorkspace() {
     onSuccess: async () => {
       setRestoreInternal("");
       setRestoreVisible("");
-      setNotice("Sanction restored.");
+      setNotice("限制已解除。");
       await refreshAccount(effectiveAccountId);
     },
   });
@@ -112,7 +112,7 @@ export function ModerationWorkspace() {
     onSuccess: async () => {
       setAppealInternal("");
       setAppealVisible("");
-      setNotice("Appeal decision recorded.");
+      setNotice("申诉处理结果已记录。");
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: moderationKeys.appealLists }),
         refreshAccount(selectedAppeal?.accountId),
@@ -128,7 +128,7 @@ export function ModerationWorkspace() {
 
   const columns = useMemo(() => [
     appealColumnHelper.accessor("appealCaseId", {
-      header: "Appeal",
+      header: "申诉",
       cell: ({ row }) => (
         <button
           type="button"
@@ -140,19 +140,19 @@ export function ModerationWorkspace() {
       ),
     }),
     appealColumnHelper.accessor("state", {
-      header: "State",
+      header: "状态",
       cell: ({ getValue }) => <span className="capitalize">{adminStateLabel(getValue())}</span>,
     }),
     appealColumnHelper.accessor("accountId", {
-      header: "Account",
+      header: "账号",
       cell: ({ getValue }) => <span className="font-mono text-xs">{getValue().slice(0, 8)}</span>,
     }),
-    appealColumnHelper.accessor("ageSeconds", { header: "Age", cell: ({ getValue }) => formatQueueAge(getValue()) }),
+    appealColumnHelper.accessor("ageSeconds", { header: "等待时间", cell: ({ getValue }) => formatQueueAge(getValue()) }),
     appealColumnHelper.accessor("slaOverdue", {
       header: "SLA",
       cell: ({ getValue }) => getValue()
-        ? <span className="font-semibold text-red-700">Overdue</span>
-        : <span className="text-stone-600">On track</span>,
+        ? <span className="font-semibold text-red-700">已超时</span>
+        : <span className="text-stone-600">正常</span>,
     }),
   ], [selectAppeal]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
@@ -166,20 +166,20 @@ export function ModerationWorkspace() {
   const busy = applyMutation.isPending || restoreMutation.isPending || decideAppealMutation.isPending;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8">
+    <div className="mx-auto w-full max-w-7xl px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-600">Moderation</p>
-          <h1 className="mt-1 text-3xl font-bold text-stone-950">Account moderation &amp; appeals</h1>
+          <p className="text-sm font-semibold text-stone-600">内容治理</p>
+          <h1 className="mt-1 text-3xl font-bold text-stone-950">账号治理与申诉</h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
-            Inspect the current moderation projection, apply scoped sanctions, restore current sanctions, and decide member appeals through V2.
+            查看账号治理状态、处理限制措施与用户申诉。所有变更均由服务端进行权限校验。
           </p>
         </div>
         {canDecideAppeal ? (
           <label className="text-sm font-semibold text-stone-700">
-            Appeal state
+            申诉状态
             <select
-              aria-label="Appeal state"
+              aria-label="申诉状态"
               value={normalizedState}
               onChange={(event) => {
                 void setState(event.target.value === "open" ? null : event.target.value);
@@ -205,42 +205,42 @@ export function ModerationWorkspace() {
           }}
         >
           <label className="grid min-w-72 flex-1 gap-1 text-sm font-semibold text-stone-800">
-            Inspect account
+            查询账号
             <input
-              aria-label="Account ID"
+              aria-label="账号 ID"
               value={lookupAccountId}
               onChange={(event) => setLookupAccountId(event.target.value)}
-              placeholder="Account UUID"
+              placeholder="输入账号 UUID"
               className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-sm font-normal"
             />
           </label>
-          <Button type="submit" disabled={!lookupAccountId.trim()}>Load account</Button>
+          <Button type="submit" disabled={!lookupAccountId.trim()}>查询账号</Button>
         </form>
       ) : null}
 
       {mutationError ? <p role="alert" className="mt-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{mutationError.message}</p> : null}
       {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm" aria-labelledby="appeal-queue-heading">
+      <div className="mt-6 grid items-start gap-6 xl:grid-cols-2">
+        <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm xl:sticky xl:top-24" aria-labelledby="appeal-queue-heading">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 id="appeal-queue-heading" className="text-xl font-bold text-stone-950">Appeal queue</h2>
-              <p className="mt-1 text-sm text-stone-600">Open member appeals ordered by SLA urgency.</p>
+              <h2 id="appeal-queue-heading" className="text-xl font-bold text-stone-950">申诉队列</h2>
+              <p className="mt-1 text-sm text-stone-600">按处理时限优先展示待办申诉。</p>
             </div>
-            {appeals.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{appeals.data.total} appeals</span> : null}
+            {appeals.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{appeals.data.total} 项申诉</span> : null}
           </div>
-          {!canDecideAppeal ? <p className="mt-5 text-sm text-stone-600">Your capabilities do not include appeal decisions.</p> : null}
-          {appeals.isPending && canDecideAppeal ? <p className="mt-5 text-sm text-stone-600">Loading appeals…</p> : null}
+          {!canDecideAppeal ? <p className="mt-5 text-sm text-stone-600">当前账号没有处理申诉的权限。</p> : null}
+          {appeals.isPending && canDecideAppeal ? <p className="mt-5 text-sm text-stone-600">正在加载申诉…</p> : null}
           {appeals.isError ? <p role="alert" className="mt-5 text-sm text-red-800">{appeals.error.message}</p> : null}
           {appeals.isSuccess ? (
             <>
-              <div className="mt-5"><DataTable table={table} /></div>
+              <div className="mt-5"><DataTable table={table} emptyMessage="当前没有需要处理的申诉。" /></div>
               <div className="mt-4 flex items-center justify-between gap-3 text-sm text-stone-700">
-                <span>Page {page} of {totalPages}</span>
+                <span>第 {page} / {totalPages} 页</span>
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>Previous</Button>
-                  <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>Next</Button>
+                  <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
+                  <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
                 </div>
               </div>
             </>
@@ -249,22 +249,22 @@ export function ModerationWorkspace() {
 
         <div className="min-w-0 space-y-6">
           <section className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm" aria-labelledby="account-state-heading">
-            {account.isPending && effectiveAccountId ? <p className="p-5 text-sm text-stone-600">Loading moderation account…</p> : null}
+            {account.isPending && effectiveAccountId ? <p className="p-5 text-sm text-stone-600">正在加载账号信息…</p> : null}
             {account.isError ? <p role="alert" className="p-5 text-sm text-red-800">{account.error.message}</p> : null}
-            {!effectiveAccountId ? <p className="p-5 text-sm text-stone-600">Select an appeal or load an account ID.</p> : null}
+            {!effectiveAccountId ? <p className="p-5 text-sm text-stone-600">请选择申诉或输入账号 ID。</p> : null}
             {subject ? (
               <>
-                <div className="border-b border-stone-200 bg-stone-950 p-5 text-white">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">Account projection</p>
+                <div className="border-b border-stone-200 bg-slate-900 p-5 text-white">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">账号治理状态</p>
                   <h2 id="account-state-heading" className="mt-2 text-2xl font-bold">{subject.accountId.slice(0, 8)}</h2>
                   <p className="mt-1 break-all font-mono text-xs text-stone-400">{subject.accountId}</p>
                 </div>
                 <div className="grid gap-3 p-5 sm:grid-cols-2">
                   {[
-                    ["Submission", subject.submissionRestricted],
-                    ["Attachment", subject.attachmentRestricted],
-                    ["Notification", subject.notificationRestricted],
-                    ["Account", subject.accountSuspended || subject.accountClosedForAbuse],
+                    ["提交", subject.submissionRestricted],
+                    ["附件", subject.attachmentRestricted],
+                    ["通知", subject.notificationRestricted],
+                    ["账号", subject.accountSuspended || subject.accountClosedForAbuse],
                   ].map(([label, active]) => {
                     const state = projectionState(Boolean(active));
                     return (
@@ -277,8 +277,8 @@ export function ModerationWorkspace() {
                 </div>
                 <div className="border-t border-stone-200 p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-bold text-stone-950">Sanction history</h3>
-                    <span className="text-xs text-stone-500">Repeat abuse {subject.repeatAbuseCount}</span>
+                    <h3 className="font-bold text-stone-950">处理记录</h3>
+                    <span className="text-xs text-stone-500">重复违规 {subject.repeatAbuseCount} 次</span>
                   </div>
                   {sanctions.length ? (
                     <ul className="mt-3 space-y-2">
@@ -287,15 +287,15 @@ export function ModerationWorkspace() {
                           <div className="flex flex-wrap items-start justify-between gap-3">
                             <div>
                               <p className="text-sm font-semibold capitalize">{adminStateLabel(sanction.kind)}</p>
-                              <p className="mt-1 text-xs text-stone-600">{sanction.reasonCode} · {formatDate(sanction.startsAt)}</p>
-                              {sanction.endsAt ? <p className="mt-1 text-xs text-stone-500">Ends {formatDate(sanction.endsAt)}</p> : null}
+                              <p className="mt-1 text-xs text-stone-600">原因：{adminStateLabel(sanction.reasonCode)} · {formatDate(sanction.startsAt)}</p>
+                              {sanction.endsAt ? <p className="mt-1 text-xs text-stone-500">截止于 {formatDate(sanction.endsAt)}</p> : null}
                             </div>
-                            {canRestore ? <Button type="button" size="sm" variant="outline" onClick={() => setRestoreSanctionId(sanction.sanctionId)}>Restore</Button> : null}
+                            {canRestore ? <Button type="button" size="sm" variant="outline" onClick={() => setRestoreSanctionId(sanction.sanctionId)}>解除</Button> : null}
                           </div>
                         </li>
                       ))}
                     </ul>
-                  ) : <p className="mt-3 text-sm text-stone-600">No sanctions recorded for this account.</p>}
+                  ) : <p className="mt-3 text-sm text-stone-600">该账号暂无处理记录。</p>}
                 </div>
               </>
             ) : null}
@@ -305,17 +305,17 @@ export function ModerationWorkspace() {
             <section className="rounded-xl border border-stone-300 bg-white p-5 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Selected appeal</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">当前申诉</p>
                   <h2 className="mt-1 text-lg font-bold text-stone-950">{selectedAppeal.appealCaseId.slice(0, 8)}</h2>
                 </div>
                 <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${selectedAppeal.slaOverdue ? "bg-red-100 text-red-900" : "bg-stone-100 text-stone-700"}`}>
-                  {selectedAppeal.slaOverdue ? "SLA overdue" : adminStateLabel(selectedAppeal.state)}
+                  {selectedAppeal.slaOverdue ? "已超过处理时限" : adminStateLabel(selectedAppeal.state)}
                 </span>
               </div>
               <blockquote className="mt-4 rounded-lg border-l-4 border-stone-400 bg-stone-50 p-4 text-sm leading-6 text-stone-700">
                 {selectedAppeal.userStatement}
               </blockquote>
-              <p className="mt-3 text-xs text-stone-500">Sanction {selectedAppeal.sanctionId.slice(0, 8)} · Due {formatDate(selectedAppeal.firstResponseDueAt)}</p>
+              <p className="mt-3 text-xs text-stone-500">关联限制 {selectedAppeal.sanctionId.slice(0, 8)} · 截止时间 {formatDate(selectedAppeal.firstResponseDueAt)}</p>
             </section>
           ) : null}
 
@@ -338,18 +338,18 @@ export function ModerationWorkspace() {
                 });
               }}
             >
-              <h2 className="text-lg font-bold text-stone-950">Apply sanction</h2>
+              <h2 className="text-lg font-bold text-stone-950">执行限制</h2>
               <div className="mt-4 grid gap-3">
-                <label className="grid gap-1 text-sm font-semibold">Kind
-                  <select aria-label="Sanction kind" value={sanctionKind} onChange={(event) => setSanctionKind(event.target.value as ModerationSanction["kind"])} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
-                    <option value="warning">Warning</option><option value="submission_restricted">Submission restricted</option><option value="attachment_restricted">Attachment restricted</option><option value="notification_restricted">Notification restricted</option><option value="account_suspended">Account suspended</option><option value="account_closed_for_abuse">Account closed for abuse</option>
+                <label className="grid gap-1 text-sm font-semibold">限制类型
+                  <select aria-label="限制类型" value={sanctionKind} onChange={(event) => setSanctionKind(event.target.value as ModerationSanction["kind"])} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
+                    <option value="warning">警告</option><option value="submission_restricted">禁止提交</option><option value="attachment_restricted">禁止附件</option><option value="notification_restricted">限制通知</option><option value="account_suspended">暂停账号</option><option value="account_closed_for_abuse">违规关闭账号</option>
                   </select>
                 </label>
-                <label className="grid gap-1 text-sm font-semibold">Reason code<input aria-label="Sanction reason code" value={sanctionReasonCode} onChange={(event) => setSanctionReasonCode(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-sm font-normal" /></label>
-                <label className="grid gap-1 text-sm font-semibold">Ends at <span className="font-normal text-stone-500">(optional)</span><input aria-label="Sanction ends at" type="datetime-local" value={sanctionEndsAt} onChange={(event) => setSanctionEndsAt(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-normal" /></label>
-                <label className="grid gap-1 text-sm font-semibold">Internal explanation<textarea aria-label="Sanction internal explanation" value={sanctionInternal} onChange={(event) => setSanctionInternal(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <label className="grid gap-1 text-sm font-semibold">Member explanation<textarea aria-label="Sanction member explanation" value={sanctionVisible} onChange={(event) => setSanctionVisible(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <Button type="submit" disabled={busy || !sanctionReasonCode.trim() || !sanctionInternal.trim() || !sanctionVisible.trim()}>Apply sanction</Button>
+                <label className="grid gap-1 text-sm font-semibold">原因代码<input aria-label="限制原因代码" value={sanctionReasonCode} onChange={(event) => setSanctionReasonCode(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-sm font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">截止时间 <span className="font-normal text-stone-500">(可选)</span><input aria-label="限制截止时间" type="datetime-local" value={sanctionEndsAt} onChange={(event) => setSanctionEndsAt(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">内部处理说明<textarea aria-label="限制内部说明" value={sanctionInternal} onChange={(event) => setSanctionInternal(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">告知用户的说明<textarea aria-label="限制用户说明" value={sanctionVisible} onChange={(event) => setSanctionVisible(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <Button type="submit" disabled={busy || !sanctionReasonCode.trim() || !sanctionInternal.trim() || !sanctionVisible.trim()}>执行限制</Button>
               </div>
             </form>
           ) : null}
@@ -371,12 +371,12 @@ export function ModerationWorkspace() {
                 });
               }}
             >
-              <div className="flex items-start justify-between gap-3"><div><h2 className="text-lg font-bold text-stone-950">Restore sanction</h2><p className="mt-1 font-mono text-xs text-stone-500">{restoreSanctionId}</p></div><Button type="button" variant="outline" size="sm" onClick={() => setRestoreSanctionId("")}>Cancel</Button></div>
+              <div className="flex items-start justify-between gap-3"><div><h2 className="text-lg font-bold text-stone-950">解除限制</h2><p className="mt-1 font-mono text-xs text-stone-500">{restoreSanctionId}</p></div><Button type="button" variant="outline" size="sm" onClick={() => setRestoreSanctionId("")}>取消</Button></div>
               <div className="mt-4 grid gap-3">
-                <label className="grid gap-1 text-sm font-semibold">Reason code<input aria-label="Restore reason code" value={restoreReasonCode} onChange={(event) => setRestoreReasonCode(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-sm font-normal" /></label>
-                <label className="grid gap-1 text-sm font-semibold">Internal explanation<textarea aria-label="Restore internal explanation" value={restoreInternal} onChange={(event) => setRestoreInternal(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <label className="grid gap-1 text-sm font-semibold">Member explanation<textarea aria-label="Restore member explanation" value={restoreVisible} onChange={(event) => setRestoreVisible(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <Button type="submit" disabled={busy || !restoreReasonCode.trim() || !restoreInternal.trim() || !restoreVisible.trim()}>Restore sanction</Button>
+                <label className="grid gap-1 text-sm font-semibold">原因代码<input aria-label="解除原因代码" value={restoreReasonCode} onChange={(event) => setRestoreReasonCode(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-sm font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">内部处理说明<textarea aria-label="解除内部说明" value={restoreInternal} onChange={(event) => setRestoreInternal(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">告知用户的说明<textarea aria-label="解除用户说明" value={restoreVisible} onChange={(event) => setRestoreVisible(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <Button type="submit" disabled={busy || !restoreReasonCode.trim() || !restoreInternal.trim() || !restoreVisible.trim()}>解除限制</Button>
               </div>
             </form>
           ) : null}
@@ -397,21 +397,21 @@ export function ModerationWorkspace() {
                 });
               }}
             >
-              <h2 className="text-lg font-bold text-stone-950">Decide appeal</h2>
+              <h2 className="text-lg font-bold text-stone-950">处理申诉</h2>
               <div className="mt-4 grid gap-3">
-                <label className="grid gap-1 text-sm font-semibold">Outcome
-                  <select aria-label="Appeal outcome" value={appealOutcome} onChange={(event) => setAppealOutcome(event.target.value as typeof appealOutcome)} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
-                    <option value="upheld">Upheld</option><option value="modified">Modified</option><option value="overturned">Overturned</option><option value="dismissed">Dismissed</option>
+                <label className="grid gap-1 text-sm font-semibold">处理结果
+                  <select aria-label="申诉处理结果" value={appealOutcome} onChange={(event) => setAppealOutcome(event.target.value as typeof appealOutcome)} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
+                    <option value="upheld">维持原决定</option><option value="modified">调整决定</option><option value="overturned">撤销决定</option><option value="dismissed">驳回申诉</option>
                   </select>
                 </label>
-                <label className="grid gap-1 text-sm font-semibold">Internal explanation<textarea aria-label="Appeal internal explanation" value={appealInternal} onChange={(event) => setAppealInternal(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <label className="grid gap-1 text-sm font-semibold">Member explanation<textarea aria-label="Appeal member explanation" value={appealVisible} onChange={(event) => setAppealVisible(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <Button type="submit" disabled={busy || !appealInternal.trim() || !appealVisible.trim()}>Record appeal decision</Button>
+                <label className="grid gap-1 text-sm font-semibold">内部处理说明<textarea aria-label="申诉内部说明" value={appealInternal} onChange={(event) => setAppealInternal(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">告知用户的说明<textarea aria-label="申诉用户说明" value={appealVisible} onChange={(event) => setAppealVisible(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <Button type="submit" disabled={busy || !appealInternal.trim() || !appealVisible.trim()}>保存申诉决定</Button>
               </div>
             </form>
           ) : null}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -7,15 +7,15 @@ import type { AuditEvidence } from "../api/types";
 export const auditEvidenceColumns: ColumnDef<AuditEvidence>[] = [
   {
     accessorKey: "recordedAt",
-    header: "Recorded",
-    cell: ({ row }) => new Date(row.original.recordedAt).toLocaleString(),
+    header: "记录时间",
+    cell: ({ row }) => new Date(row.original.recordedAt).toLocaleString("zh-CN"),
   },
-  { accessorKey: "sourceContext", header: "Context" },
-  { accessorKey: "eventType", header: "Event" },
+  { accessorKey: "sourceContext", header: "来源领域" },
+  { accessorKey: "eventType", header: "事件类型" },
   {
     id: "aggregate",
-    header: "Aggregate",
+    header: "关联对象",
     cell: ({ row }) => `${row.original.aggregateType}:${row.original.aggregateId}`,
   },
-  { accessorKey: "correlationId", header: "Correlation" },
+  { accessorKey: "correlationId", header: "追踪 ID" },
 ];
