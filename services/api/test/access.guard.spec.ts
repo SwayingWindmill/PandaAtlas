@@ -10,7 +10,6 @@ import type { IdentityPort } from "../src/modules/identity/application/identity.
 import {
   ALLOW_UNPROVISIONED,
   REQUIRED_AAL,
-  REQUIRED_ANY_CAPABILITIES,
   REQUIRED_CAPABILITIES,
   REQUIRE_RECENT_AUTH,
 } from "../src/modules/identity/http/access.metadata.js";
@@ -38,7 +37,6 @@ function createGuard(options: {
   const reflector = {
     getAllAndOverride: (key: symbol) => {
       if (key === REQUIRED_CAPABILITIES) return ["identity.role.manage"];
-      if (key === REQUIRED_ANY_CAPABILITIES) return undefined;
       if (key === REQUIRE_RECENT_AUTH || key === ALLOW_UNPROVISIONED) return false;
       if (key === REQUIRED_AAL) return undefined;
       return false;

@@ -242,7 +242,15 @@ describe("Identity HTTP security path", () => {
         expect((await app.inject({ method: "GET", url: target, headers: staffHeaders })).statusCode).toBe(403);
         expect((await app.inject({ method: "GET", url: "/api/v2/staff/accounts", headers: managerHeaders })).statusCode).toBe(200);
         expect((await app.inject({ method: "GET", url: target, headers: managerHeaders })).statusCode).toBe(200);
-        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${weakManagerToken}` } })).statusCode).toBe(403);
+        // Listing staff and inspecting history must survive the 15-minute step-up window.
+        // Only actual authority mutations still require recent AAL2 authentication.
+        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${weakManagerToken}` } })).statusCode).toBe(200);
+        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await app.inject({ method: "GET", url: "/api/v2/staff/accounts", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await app.inject({ method: "GET", url: "/api/v2/staff/accounts/catalog", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await app.inject({ method: "GET", url: "/api/v2/staff/invitations", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${invalidSessionToken}` } })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: "/api/v2/staff/invitations", headers: { authorization: `Bearer ${expiredManagerToken}` }, payload: { email: "uninvited@example.test" } })).statusCode).toBe(403);
         expect((await app.inject({ method: "POST", url: `${target}/roles`,
           headers: { authorization: `Bearer ${expiredManagerToken}` },
           payload: { roleKey: "reviewer", reason: grantReason, idempotencyKey: grantKey },

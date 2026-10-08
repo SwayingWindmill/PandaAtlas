@@ -6,7 +6,7 @@ import { RequestContextService } from "../../../platform/request-context/request
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { StaffRolesService } from "../infrastructure/staff-roles.service.js";
 import { StaffAccountLifecycleService } from "../infrastructure/staff-account-lifecycle.service.js";
-import { RequireAnyCapabilities, RequireCapabilities } from "./access.metadata.js";
+import { RequireCapabilities } from "./access.metadata.js";
 import { getActorContext } from "./request-actor.js";
 
 class RoleChangeDto {
@@ -98,19 +98,19 @@ export class StaffRolesController {
   ) {}
 
   @Get()
-  @RequireAnyCapabilities("identity.role.manage", "identity.account.manage")
+  @RequireCapabilities("identity.staff.read")
   @ApiOperation({ operationId: "listStaffAccounts" })
   @ApiOkResponse({ type: StaffAccountSummaryDto, isArray: true })
   public directory() { return this.staff.directory(); }
 
   @Get("catalog")
-  @RequireCapabilities("identity.role.manage")
+  @RequireCapabilities("identity.staff.read")
   @ApiOperation({ operationId: "listDelegableStaffRoles" })
   @ApiOkResponse({ type: StaffRoleCatalogDto, isArray: true })
   public roles() { return this.staff.roles(); }
 
   @Get(":accountId")
-  @RequireAnyCapabilities("identity.role.manage", "identity.account.manage")
+  @RequireCapabilities("identity.staff.read")
   @ApiOperation({ operationId: "getStaffAccountRoles" })
   @ApiOkResponse({ type: StaffAccountDetailDto })
   public detail(@Param("accountId", new ParseUUIDPipe()) accountId: string) { return this.staff.detail(accountId); }
