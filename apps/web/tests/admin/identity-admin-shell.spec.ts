@@ -100,6 +100,42 @@ test("Chinese admin workbench passes automated accessibility checks", async ({ p
   expect(results.violations).toEqual([]);
 });
 
+test("IAM staff directory, invitation and role detail remain accessible", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: [
+      "admin.shell.access", "identity.staff.read", "identity.role.manage", "identity.account.manage",
+    ] }),
+  }));
+  await page.route("**/api/admin/staff/invitations", async (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: "[]",
+  }));
+  await page.route("**/api/admin/staff/accounts**", async (route) => {
+    const url = route.request().url();
+    const payload = url.endsWith("/catalog")
+      ? [{ roleKey: "reviewer", displayName: "Reviewer", description: "Review evidence" }]
+      : url.endsWith("/accounts")
+        ? [{ accountId: "55555555-5555-4555-8555-555555555555", email: "reviewer@example.test", state: "active", roles: ["reviewer"] }]
+        : {
+          accountId: "55555555-5555-4555-8555-555555555555", email: "reviewer@example.test",
+          state: "active", stateReason: null, capabilities: ["review.case.read"],
+          assignments: [], stateHistory: [],
+        };
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(payload) });
+  });
+
+  for (const path of ["/admin/staff/invitations", "/admin/staff/roles"]) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    if (path.endsWith("roles")) {
+      await page.getByRole("button", { name: /reviewer@example.test/ }).click();
+      await expect(page.getByRole("region", { name: "工作人员角色详情" })).toBeVisible();
+    }
+    const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+    expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
+  }
+});
+
 test("admin navigation remains operable from the keyboard at narrow width", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 });
   await page.route("**/api/admin/session", async (route) => {
