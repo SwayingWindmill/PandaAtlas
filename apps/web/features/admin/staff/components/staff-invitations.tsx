@@ -11,9 +11,43 @@ import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 
 type Invitation = components["schemas"]["StaffInvitationDto"];
 
+class InvitationRequestError extends Error {
+  public constructor(public readonly code: string, message: string) {
+    super(message);
+  }
+}
+
+async function invitationFailure(response: Response): Promise<InvitationRequestError> {
+  const problem: unknown = await response.json().catch(() => null);
+  const code = problem && typeof problem === "object" && "code" in problem && typeof problem.code === "string"
+    ? problem.code : "";
+  const message = code === "auth.recentAuthRequired"
+    ? "最近认证已过期。请重新使用邮箱验证码登录，并完成 TOTP 双重验证。"
+    : code === "auth.aalRequired"
+      ? "当前会话尚未完成双重身份验证，请前往账号安全验证。"
+      : code === "auth.liveSessionRequired" || response.status === 401
+        ? "当前登录会话已失效，请重新登录。"
+        : response.status === 409
+          ? "该邮箱已注册或已有邀请，请先核对账号。"
+          : response.status === 403
+            ? "当前账号没有执行此操作所需的权限。"
+            : "邀请服务暂时不可用，请稍后重试。";
+  return new InvitationRequestError(code || String(response.status), message);
+}
+
+function InvitationRecovery({ code }: { code: string }) {
+  if (code === "auth.recentAuthRequired" || code === "auth.liveSessionRequired" || code === "401") {
+    return <Link className="font-semibold underline" href="/auth/login?next=%2Fadmin%2Fstaff%2Finvitations">重新登录</Link>;
+  }
+  if (code === "auth.aalRequired") {
+    return <Link className="font-semibold underline" href="/admin/security/mfa">前往账号安全</Link>;
+  }
+  return null;
+}
+
 async function getInvitations(): Promise<Invitation[]> {
   const result = await fetch("/api/admin/staff/invitations", { cache: "no-store" });
-  if (!result.ok) throw new Error(`读取邀请列表失败（${result.status}）`);
+  if (!result.ok) throw await invitationFailure(result);
   return result.json() as Promise<Invitation[]>;
 }
 
@@ -24,17 +58,18 @@ export function StaffInvitations() {
     queryKey: ["admin", "staff", "invitations"],
     queryFn: getInvitations,
     enabled: session?.capabilities.includes("identity.account.manage") ?? false,
+    retry: false,
   });
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<{ message: string; code: string } | null>(null);
 
   if (!session?.capabilities.includes("identity.account.manage")) return null;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
-    setNotice("");
+    setNotice(null);
     const response = await fetch("/api/admin/staff/invitations", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -42,14 +77,11 @@ export function StaffInvitations() {
     });
     setSubmitting(false);
     if (!response.ok) {
-      setNotice(response.status === 403
-        ? "当前操作需要有效的双重身份验证和最近登录。请在账号安全中完成验证。"
-        : response.status === 409
-          ? "该邮箱已注册或已有邀请，请先核对账号。"
-          : "发送邀请失败，请稍后重试。");
+      const failure = await invitationFailure(response);
+      setNotice({ message: failure.message, code: failure.code });
       return;
     }
-    setNotice("邀请邮件已发送。审核员验证邮箱后才能获得审核权限。");
+    setNotice({ message: "邀请邮件已发送。审核员验证邮箱后才能获得审核权限。", code: "" });
     setEmail("");
     await queryClient.invalidateQueries({ queryKey: ["admin", "staff", "invitations"] });
   }
@@ -73,12 +105,21 @@ export function StaffInvitations() {
           </label>
           <Button type="submit" disabled={submitting || !email.trim()}>{submitting ? "正在发送…" : "发送邀请"}</Button>
         </form>
-        {notice && <p role="status" className="mt-4 text-sm text-slate-700">{notice}</p>}
+        {notice && (
+          <p role="status" className="mt-4 flex flex-wrap gap-2 text-sm text-slate-700">
+            {notice.message} <InvitationRecovery code={notice.code} />
+          </p>
+        )}
         <p className="mt-4 text-xs text-slate-500">敏感操作要求 AAL2 与最近认证。<Link className="underline" href="/admin/security/mfa">账号安全设置</Link></p>
       </section>
       <section aria-label="审核员邀请记录">
         <h2 className="mb-3 text-lg font-bold text-slate-950">邀请记录</h2>
-        {error && <p role="alert" className="text-sm text-rose-700">无法读取邀请记录。</p>}
+        {error && (
+          <p role="alert" className="flex flex-wrap gap-2 text-sm text-rose-700">
+            {error instanceof InvitationRequestError ? error.message : "无法读取邀请记录。"}
+            {error instanceof InvitationRequestError && <InvitationRecovery code={error.code} />}
+          </p>
+        )}
         {isPending && <p className="text-sm text-slate-600">正在加载邀请记录…</p>}
         {invitations?.length === 0 && <p className="rounded-xl border border-dashed border-slate-300 p-5 text-sm text-slate-600">尚无审核员邀请。</p>}
         {invitations && invitations.length > 0 && (

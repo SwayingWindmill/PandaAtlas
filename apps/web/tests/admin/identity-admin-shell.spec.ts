@@ -233,6 +233,36 @@ test("AAL2 staff manager invites an archive reviewer and sees a pending invitati
   expect(invitedEmail).toBe("reviewer@example.test");
 });
 
+test("expired recent authentication is distinguished from an incomplete MFA enrollment", async ({ page }) => {
+  await page.route("**/api/admin/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ...staffSession,
+        capabilities: ["admin.shell.access", "identity.account.manage", "identity.role.manage"],
+      }),
+    });
+  });
+  await page.route("**/api/admin/staff/invitations", async (route) => {
+    await route.fulfill({
+      status: 403,
+      contentType: "application/problem+json",
+      body: JSON.stringify({ code: "auth.recentAuthRequired", status: 403 }),
+    });
+  });
+
+  await page.goto("/admin/staff/invitations");
+  await page.getByRole("textbox", { name: "审核员邮箱" }).fill("new-reviewer@example.test");
+  await page.getByRole("button", { name: "发送邀请" }).click();
+  await expect(page.getByRole("status")).toContainText("最近认证已过期");
+  await expect(page.getByRole("status").getByRole("link", { name: "重新登录" })).toHaveAttribute(
+    "href", "/auth/login?next=%2Fadmin%2Fstaff%2Finvitations",
+  );
+  await expect(page.getByRole("region", { name: "审核员邀请记录" }).getByRole("alert")).toContainText("最近认证已过期");
+  await expect(page.getByRole("status")).not.toContainText("在账号安全中完成验证");
+});
+
 test("a reviewer cannot access staff invitation controls", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({
