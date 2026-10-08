@@ -20,19 +20,19 @@ export function AuditEvidenceCollection() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8">
+    <div className="mx-auto w-full max-w-7xl px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-600">Audit</p>
-          <h1 className="mt-1 text-3xl font-bold text-stone-950">Audit evidence</h1>
+          <p className="text-sm font-semibold text-stone-600">审计</p>
+          <h1 className="mt-1 text-3xl font-bold text-stone-950">审计证据</h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
-            Read append-only V2 audit evidence through the canonical Audit contract.
+            通过正式审计接口查看仅追加、不可更改的操作证据记录。
           </p>
         </div>
         <label className="text-sm font-semibold text-stone-700">
-          Rows
+          每页条数
           <select
-            aria-label="Rows"
+            aria-label="每页条数"
             value={String(limit)}
             onChange={(event) => void setLimit(Number(event.target.value))}
             className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3"
@@ -43,10 +43,10 @@ export function AuditEvidenceCollection() {
       </div>
 
       <section className="mt-6" aria-live="polite">
-        {evidence.isPending ? <p className="text-sm text-stone-600">Loading audit evidence…</p> : null}
+        {evidence.isPending ? <p className="text-sm text-stone-600">正在加载审计证据…</p> : null}
         {evidence.isError ? <p role="alert" className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{evidence.error.message}</p> : null}
-        {evidence.isSuccess ? <DataTable table={table} /> : null}
+        {evidence.isSuccess ? <DataTable table={table} emptyMessage="尚无可查看的审计证据记录。" /> : null}
       </section>
-    </main>
+    </div>
   );
 }

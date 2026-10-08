@@ -115,20 +115,20 @@ test("publication control plane shows releases, counts, diff, history, and typed
 
   await page.goto(`/admin/publication?release=${candidateReleaseId}`);
 
-  await expect(page.getByRole("heading", { level: 1, name: "Publication control plane" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "发布管理" })).toBeVisible();
   await expect(page.getByRole("button", { name: "2026.10.05.1" })).toBeVisible();
   await expect(page.getByRole("button", { name: "2026.10.05.2" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "2026.10.05.2" })).toBeVisible();
-  await expect(page.getByText("Pandas").first()).toBeVisible();
+  await expect(page.getByText("熊猫").first()).toBeVisible();
   await expect(page.getByText("13", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Residencies").first()).toBeVisible();
-  await expect(page.getByText("Life events").first()).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Changes vs current release" })).toBeVisible();
-  await expect(page.getByText("1 added · 2 changed · 0 removed")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Transition history" })).toBeVisible();
+  await expect(page.getByText("居住史").first()).toBeVisible();
+  await expect(page.getByText("生命事件").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "与当前版本的差异" })).toBeVisible();
+  await expect(page.getByText("新增 1 · 更新 2 · 移除 0")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "状态变更记录" })).toBeVisible();
   await expect(page.getByText("Reviewed for release.")).toBeVisible();
-  await expect(page.getByLabel("Reason")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Activate release" })).toBeVisible();
+  await expect(page.getByLabel("操作原因")).toBeVisible();
+  await expect(page.getByRole("button", { name: "启用版本" })).toBeVisible();
   await expect(page.getByLabel("JSON payload")).toHaveCount(0);
 });
 
@@ -257,12 +257,12 @@ test("publication activation uses a typed reason and refreshes the release inspe
   });
 
   await page.goto(`/admin/publication?release=${candidateReleaseId}`);
-  await page.getByLabel("Reason").fill("Promote reviewed candidate.");
-  await page.getByRole("button", { name: "Activate release" }).click();
+  await page.getByLabel("操作原因").fill("Promote reviewed candidate.");
+  await page.getByRole("button", { name: "启用版本" }).click();
 
   await expect.poll(() => actionBody).toEqual({ action: "activate", reason: "Promote reviewed candidate." });
-  await expect(page.getByRole("status")).toContainText("Activated 2026.10.05.2.");
-  await expect(page.getByText("Current · sealed")).toBeVisible();
+  await expect(page.getByRole("status")).toContainText("已启用 2026.10.05.2。");
+  await expect(page.getByText("当前版本 · 已封存")).toBeVisible();
   expect(listReads).toBeGreaterThan(1);
   expect(inspectionReads).toBeGreaterThan(1);
 });
@@ -340,9 +340,9 @@ test("publication lifecycle controls stay capability scoped", async ({ page }) =
 
   await page.goto(`/admin/publication?release=${candidateReleaseId}`);
 
-  await expect(page.getByRole("button", { name: "Activate release" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Suspend release" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Build release" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "启用版本" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "暂停版本" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "构建版本" })).toBeVisible();
 });
 
 test("publication collection keeps lifecycle filtering and pagination in the URL", async ({ page }) => {
@@ -365,13 +365,13 @@ test("publication collection keeps lifecycle filtering and pagination in the URL
   });
 
   await page.goto("/admin/publication");
-  await expect(page.getByText("Page 1 of 3 · 25 releases")).toBeVisible();
+  await expect(page.getByText("第 1 / 3 页 · 共 25 个版本")).toBeVisible();
 
-  await page.getByLabel("Lifecycle").selectOption("sealed");
+  await page.getByLabel("生命周期").selectOption("sealed");
   await expect(page).toHaveURL(/\/admin\/publication\?state=sealed$/);
   await expect.poll(() => requests.at(-1)).toEqual({ limit: "10", offset: "0", lifecycleState: "sealed" });
 
-  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("button", { name: "下一页" }).click();
   await expect(page).toHaveURL(/\/admin\/publication\?state=sealed&page=2$/);
   await expect.poll(() => requests.at(-1)).toEqual({ limit: "10", offset: "10", lifecycleState: "sealed" });
 });

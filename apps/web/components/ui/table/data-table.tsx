@@ -2,7 +2,7 @@ import { flexRender, type Table as TanStackTable } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export function DataTable<TData>({ table }: { table: TanStackTable<TData> }) {
+export function DataTable<TData>({ table, emptyMessage = "No results." }: { table: TanStackTable<TData>; emptyMessage?: string }) {
   return (
     <div className="overflow-hidden rounded-xl border border-stone-300 bg-white">
       <Table>
@@ -29,7 +29,7 @@ export function DataTable<TData>({ table }: { table: TanStackTable<TData> }) {
           ) : (
             <TableRow>
               <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center text-stone-600">
-                No results.
+                {emptyMessage}
               </TableCell>
             </TableRow>
           )}

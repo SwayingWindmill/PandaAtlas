@@ -93,7 +93,7 @@ export function ReviewQueueWorkspace() {
     ...reviewMutationOptions.open(),
     onSuccess: async (reviewCase) => {
       setSubmissionId("");
-      setNotice(`Opened review case ${reviewCase.reviewCaseId}.`);
+      setNotice(`已建立审核案件 ${reviewCase.reviewCaseId}。`);
       setSelectedCaseId(reviewCase.reviewCaseId);
       await refreshQueue();
     },
@@ -101,7 +101,7 @@ export function ReviewQueueWorkspace() {
   const claimMutation = useMutation({
     ...reviewMutationOptions.claim(),
     onSuccess: async (_reviewCase, reviewCaseId) => {
-      setNotice("Review case claimed.");
+      setNotice("案件已领取。");
       await refreshCase(reviewCaseId);
     },
   });
@@ -110,21 +110,21 @@ export function ReviewQueueWorkspace() {
     onSuccess: async (_result, variables) => {
       setSourceReason("");
       setCanonicalSourceId("");
-      setNotice("Source verification recorded.");
+      setNotice("来源核验结果已记录。");
       await refreshCase(variables.reviewCaseId);
     },
   });
   const decideMutation = useMutation({
     ...reviewMutationOptions.decide(),
     onSuccess: async (_result, variables) => {
-      setNotice("Review decision recorded.");
+      setNotice("审核决定已记录。");
       await refreshCase(variables.reviewCaseId);
     },
   });
   const recommendMutation = useMutation({
     ...reviewMutationOptions.recommend(),
     onSuccess: async (recommendation, variables) => {
-      setNotice(`Recommended to Curation as change set ${recommendation.changeSetId}.`);
+      setNotice(`已提交策展变更集 ${recommendation.changeSetId}。`);
       setRecommendReason("");
       await refreshCase(variables.reviewCaseId);
     },
@@ -132,7 +132,7 @@ export function ReviewQueueWorkspace() {
 
   const columns = useMemo(() => [
     reviewColumnHelper.accessor("reviewCaseId", {
-      header: "Case",
+      header: "案件",
       cell: ({ row }) => (
         <button
           type="button"
@@ -144,19 +144,19 @@ export function ReviewQueueWorkspace() {
       ),
     }),
     reviewColumnHelper.accessor("state", {
-      header: "State",
+      header: "状态",
       cell: ({ getValue }) => <span className="capitalize">{adminStateLabel(getValue())}</span>,
     }),
-    reviewColumnHelper.accessor("riskLevel", { header: "Risk" }),
+    reviewColumnHelper.accessor("riskLevel", { header: "风险", cell: ({ getValue }) => adminStateLabel(getValue()) }),
     reviewColumnHelper.accessor("queueAgeSeconds", {
-      header: "Age",
+      header: "等待时间",
       cell: ({ getValue }) => formatQueueAge(getValue()),
     }),
     reviewColumnHelper.accessor("slaOverdue", {
       header: "SLA",
       cell: ({ getValue }) => getValue()
-        ? <span className="font-semibold text-red-700">Overdue</span>
-        : <span className="text-stone-600">On track</span>,
+        ? <span className="font-semibold text-red-700">已超时</span>
+        : <span className="text-stone-600">正常</span>,
     }),
   ], [setSelectedCaseId]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
@@ -179,20 +179,20 @@ export function ReviewQueueWorkspace() {
     || recommendMutation.isPending;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8">
+    <div className="mx-auto w-full max-w-7xl px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-600">Review</p>
-          <h1 className="mt-1 text-3xl font-bold text-stone-950">Contribution review queue</h1>
+          <p className="text-sm font-semibold text-stone-600">审核</p>
+          <h1 className="mt-1 text-3xl font-bold text-stone-950">贡献审核队列</h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
-            Triage submitted evidence, verify canonical sources, record a bounded decision, and hand accepted assertions to Curation.
+            核对贡献证据、验证来源、记录审核决定，并将通过的资料交接给策展工作区。
           </p>
         </div>
         {canRead ? (
           <label className="text-sm font-semibold text-stone-700">
-            Queue state
+            队列状态
             <select
-              aria-label="Queue state"
+              aria-label="队列状态"
               value={normalizedState ?? "all"}
               onChange={(event) => {
                 const value = event.target.value;
@@ -201,7 +201,7 @@ export function ReviewQueueWorkspace() {
               }}
               className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3 capitalize"
             >
-              <option value="all">All</option>
+              <option value="all">全部</option>
               {REVIEW_STATES.map((value) => <option key={value} value={value}>{adminStateLabel(value)}</option>)}
             </select>
           </label>
@@ -217,16 +217,16 @@ export function ReviewQueueWorkspace() {
           }}
         >
           <label className="grid min-w-72 flex-1 gap-1 text-sm font-semibold text-stone-800">
-            Open submitted contribution
+            录入待审核贡献
             <input
-              aria-label="Submission ID"
+              aria-label="贡献提交 ID"
               value={submissionId}
               onChange={(event) => setSubmissionId(event.target.value)}
-              placeholder="Submission UUID"
+              placeholder="输入贡献提交 UUID"
               className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-sm font-normal"
             />
           </label>
-          <Button type="submit" disabled={busy || !submissionId.trim()}>Open review case</Button>
+          <Button type="submit" disabled={busy || !submissionId.trim()}>创建审核案件</Button>
         </form>
       ) : null}
 
@@ -235,26 +235,26 @@ export function ReviewQueueWorkspace() {
       ) : null}
       {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
 
-      <div className="mt-6 grid gap-6 xl:grid-cols-2">
-        <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm" aria-labelledby="review-queue-heading">
+      <div className="mt-6 grid items-start gap-6 xl:grid-cols-2">
+        <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm xl:sticky xl:top-24" aria-labelledby="review-queue-heading">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 id="review-queue-heading" className="text-xl font-bold text-stone-950">Queue</h2>
-              <p className="mt-1 text-sm text-stone-600">SLA-overdue cases are surfaced first.</p>
+              <h2 id="review-queue-heading" className="text-xl font-bold text-stone-950">待办队列</h2>
+              <p className="mt-1 text-sm text-stone-600">优先显示超过响应时限的案件。</p>
             </div>
-            {queue.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{queue.data.total} cases</span> : null}
+            {queue.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{queue.data.total} 件</span> : null}
           </div>
-          {!canRead ? <p className="mt-5 text-sm text-stone-600">Your capabilities do not include Review queue access.</p> : null}
-          {queue.isPending && canRead ? <p className="mt-5 text-sm text-stone-600">Loading review queue…</p> : null}
+          {!canRead ? <p className="mt-5 text-sm text-stone-600">当前账号没有查看审核队列的权限。</p> : null}
+          {queue.isPending && canRead ? <p className="mt-5 text-sm text-stone-600">正在加载审核队列…</p> : null}
           {queue.isError ? <p role="alert" className="mt-5 text-sm text-red-800">{queue.error.message}</p> : null}
           {queue.isSuccess ? (
             <>
-              <div className="mt-5"><DataTable table={table} /></div>
+              <div className="mt-5"><DataTable table={table} emptyMessage="当前筛选条件下没有待审核案件。" /></div>
               <div className="mt-4 flex items-center justify-between gap-3 text-sm text-stone-700">
-                <span>Page {page} of {totalPages}</span>
+                <span>第 {page} / {totalPages} 页</span>
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>Previous</Button>
-                  <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>Next</Button>
+                  <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
+                  <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
                 </div>
               </div>
             </>
@@ -263,15 +263,15 @@ export function ReviewQueueWorkspace() {
 
         <div className="min-w-0 space-y-6">
           <section className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm" aria-labelledby="review-detail-heading">
-            {surface.isPending && effectiveCaseId ? <p className="p-5 text-sm text-stone-600">Loading case detail…</p> : null}
+            {surface.isPending && effectiveCaseId ? <p className="p-5 text-sm text-stone-600">正在加载案件详情…</p> : null}
             {surface.isError ? <p role="alert" className="p-5 text-sm text-red-800">{surface.error.message}</p> : null}
-            {!effectiveCaseId && queue.isSuccess ? <p className="p-5 text-sm text-stone-600">Select a ReviewCase from the queue.</p> : null}
+            {!effectiveCaseId && queue.isSuccess ? <p className="p-5 text-sm text-stone-600">请从队列中选择审核案件。</p> : null}
             {selected ? (
               <>
-                <div className="border-b border-stone-200 bg-stone-950 p-5 text-white">
+                <div className="border-b border-stone-200 bg-slate-900 p-5 text-white">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">Selected case</p>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">当前案件</p>
                       <h2 id="review-detail-heading" className="mt-2 text-2xl font-bold">{selected.reviewCase.reviewCaseId.slice(0, 8)}</h2>
                       <p className="mt-1 break-all font-mono text-xs text-stone-400">{selected.reviewCase.reviewCaseId}</p>
                     </div>
@@ -279,24 +279,24 @@ export function ReviewQueueWorkspace() {
                   </div>
                 </div>
                 <div className="grid gap-3 border-b border-stone-200 p-5 sm:grid-cols-3">
-                  <div><p className="text-xs font-semibold uppercase text-stone-500">Target panda</p><p className="mt-1 break-all text-sm font-semibold">{contribution?.targetPandaId ?? "—"}</p></div>
-                  <div><p className="text-xs font-semibold uppercase text-stone-500">Revision</p><p className="mt-1 text-sm font-semibold">{selected.reviewCase.revisionNumber}</p></div>
-                  <div><p className="text-xs font-semibold uppercase text-stone-500">Assignee</p><p className="mt-1 break-all text-sm font-semibold">{selected.reviewCase.primaryAssigneeId?.slice(0, 8) ?? "Unassigned"}</p></div>
+                  <div><p className="text-xs font-semibold uppercase text-stone-500">目标熊猫</p><p className="mt-1 break-all text-sm font-semibold">{contribution?.targetPandaId ?? "—"}</p></div>
+                  <div><p className="text-xs font-semibold uppercase text-stone-500">修订版本</p><p className="mt-1 text-sm font-semibold">{selected.reviewCase.revisionNumber}</p></div>
+                  <div><p className="text-xs font-semibold uppercase text-stone-500">负责人</p><p className="mt-1 break-all text-sm font-semibold">{selected.reviewCase.primaryAssigneeId?.slice(0, 8) ?? "未分配"}</p></div>
                 </div>
                 <div className="space-y-5 p-5">
                   <div>
-                    <div className="flex items-center justify-between gap-3"><h3 className="font-bold text-stone-950">Assertions</h3><span className="text-xs text-stone-500">{contribution?.assertions.length ?? 0}</span></div>
+                    <div className="flex items-center justify-between gap-3"><h3 className="font-bold text-stone-950">待核验事实</h3><span className="text-xs text-stone-500">{contribution?.assertions.length ?? 0}</span></div>
                     <ul className="mt-3 space-y-2">
                       {contribution?.assertions.map((assertion) => (
                         <li key={assertion.assertionKey} className="rounded-lg border border-stone-200 bg-stone-50 p-3">
-                          <div className="flex items-start justify-between gap-3"><strong className="text-sm">{assertion.fieldKey}</strong><span className="text-xs font-semibold capitalize text-stone-500">{assertion.certainty}</span></div>
+                          <div className="flex items-start justify-between gap-3"><strong className="text-sm">{assertion.fieldKey}</strong><span className="text-xs font-semibold text-stone-500">{adminStateLabel(assertion.certainty)}</span></div>
                           <p className="mt-1 break-words text-sm text-stone-700">{JSON.stringify(assertion.value)}</p>
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <div className="flex items-center justify-between gap-3"><h3 className="font-bold text-stone-950">Sources</h3><span className="text-xs text-stone-500">{contribution?.sources.length ?? 0}</span></div>
+                    <div className="flex items-center justify-between gap-3"><h3 className="font-bold text-stone-950">证据来源</h3><span className="text-xs text-stone-500">{contribution?.sources.length ?? 0}</span></div>
                     <ul className="mt-3 space-y-2">
                       {contribution?.sources.map((source) => (
                         <li key={source.sourceId} className="rounded-lg border border-stone-200 p-3">
@@ -312,7 +312,7 @@ export function ReviewQueueWorkspace() {
                       disabled={busy || selected.reviewCase.state === "closed" || selected.reviewCase.state === "incorporation_recommended"}
                       onClick={() => claimMutation.mutate(selected.reviewCase.reviewCaseId)}
                     >
-                      Claim case
+                      领取案件
                     </Button>
                   ) : null}
                 </div>
@@ -338,26 +338,26 @@ export function ReviewQueueWorkspace() {
                 });
               }}
             >
-              <h2 className="text-lg font-bold text-stone-950">Verify source</h2>
+              <h2 className="text-lg font-bold text-stone-950">核验来源</h2>
               <div className="mt-4 grid gap-3">
-                <label className="grid gap-1 text-sm font-semibold">Source
-                  <select aria-label="Source" value={selectedSource?.sourceId ?? ""} onChange={(event) => setSourceId(event.target.value)} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
+                <label className="grid gap-1 text-sm font-semibold">来源
+                  <select aria-label="证据来源" value={selectedSource?.sourceId ?? ""} onChange={(event) => setSourceId(event.target.value)} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
                     {contribution.sources.map((source) => <option key={source.sourceId} value={source.sourceId}>{source.title}</option>)}
                   </select>
                 </label>
-                <label className="grid gap-1 text-sm font-semibold">Outcome
-                  <select aria-label="Source outcome" value={sourceOutcome} onChange={(event) => setSourceOutcome(event.target.value as "verified" | "rejected")} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
-                    <option value="verified">Verified</option><option value="rejected">Rejected</option>
+                <label className="grid gap-1 text-sm font-semibold">核验结果
+                  <select aria-label="来源核验结果" value={sourceOutcome} onChange={(event) => setSourceOutcome(event.target.value as "verified" | "rejected")} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
+                    <option value="verified">已核验</option><option value="rejected">已驳回</option>
                   </select>
                 </label>
                 {sourceOutcome === "verified" ? (
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <label className="grid gap-1 text-sm font-semibold">Normalized locator<input aria-label="Normalized locator" value={normalizedLocator} onChange={(event) => setNormalizedLocator(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-normal" /></label>
-                    <label className="grid gap-1 text-sm font-semibold">Canonical source ID<input aria-label="Canonical source ID" value={canonicalSourceId} onChange={(event) => setCanonicalSourceId(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-xs font-normal" /></label>
+                    <label className="grid gap-1 text-sm font-semibold">规范化来源地址<input aria-label="规范化来源地址" value={normalizedLocator} onChange={(event) => setNormalizedLocator(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-normal" /></label>
+                    <label className="grid gap-1 text-sm font-semibold">正式来源 ID<input aria-label="正式来源 ID" value={canonicalSourceId} onChange={(event) => setCanonicalSourceId(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-xs font-normal" /></label>
                   </div>
                 ) : null}
-                <label className="grid gap-1 text-sm font-semibold">Reason<textarea aria-label="Source verification reason" value={sourceReason} onChange={(event) => setSourceReason(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <Button type="submit" disabled={busy || !sourceReason.trim()}>Record verification</Button>
+                <label className="grid gap-1 text-sm font-semibold">原因<textarea aria-label="来源核验原因" value={sourceReason} onChange={(event) => setSourceReason(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <Button type="submit" disabled={busy || !sourceReason.trim()}>保存核验结果</Button>
               </div>
             </form>
           ) : null}
@@ -380,15 +380,15 @@ export function ReviewQueueWorkspace() {
                 });
               }}
             >
-              <h2 className="text-lg font-bold text-stone-950">Decision</h2>
+              <h2 className="text-lg font-bold text-stone-950">审核决定</h2>
               <div className="mt-4 grid gap-3">
-                <label className="grid gap-1 text-sm font-semibold">Outcome
-                  <select aria-label="Decision outcome" value={decisionOutcome} onChange={(event) => setDecisionOutcome(event.target.value as typeof decisionOutcome)} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
-                    <option value="accepted">Accepted</option><option value="not_accepted">Not accepted</option><option value="duplicate">Duplicate</option><option value="out_of_scope">Out of scope</option><option value="abuse">Abuse</option>
+                <label className="grid gap-1 text-sm font-semibold">审核结果
+                  <select aria-label="审核决定类型" value={decisionOutcome} onChange={(event) => setDecisionOutcome(event.target.value as typeof decisionOutcome)} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
+                    <option value="accepted">接受</option><option value="not_accepted">不接受</option><option value="duplicate">重复</option><option value="out_of_scope">超出范围</option><option value="abuse">滥用</option>
                   </select>
                 </label>
                 <fieldset>
-                  <legend className="text-sm font-semibold">Selected assertions</legend>
+                  <legend className="text-sm font-semibold">纳入本次审核的事实</legend>
                   <div className="mt-2 grid gap-2">
                     {contribution.assertions.map((assertion) => (
                       <label key={assertion.assertionKey} className="flex items-start gap-2 rounded-md border border-stone-200 p-3 text-sm">
@@ -402,10 +402,10 @@ export function ReviewQueueWorkspace() {
                     ))}
                   </div>
                 </fieldset>
-                {decisionOutcome === "duplicate" ? <label className="grid gap-1 text-sm font-semibold">Duplicate case ID<input aria-label="Duplicate case ID" value={duplicateOfReviewCaseId} onChange={(event) => setDuplicateOfReviewCaseId(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-xs font-normal" /></label> : null}
-                <label className="grid gap-1 text-sm font-semibold">Contributor explanation<textarea aria-label="Contributor explanation" value={userVisibleExplanation} onChange={(event) => setUserVisibleExplanation(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <label className="grid gap-1 text-sm font-semibold">Internal reason<textarea aria-label="Internal reason" value={internalReason} onChange={(event) => setInternalReason(event.target.value)} className="min-h-20 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-                <Button type="submit" disabled={busy || !userVisibleExplanation.trim()}>Record decision</Button>
+                {decisionOutcome === "duplicate" ? <label className="grid gap-1 text-sm font-semibold">重复案件 ID<input aria-label="重复案件 ID" value={duplicateOfReviewCaseId} onChange={(event) => setDuplicateOfReviewCaseId(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-xs font-normal" /></label> : null}
+                <label className="grid gap-1 text-sm font-semibold">给贡献者的说明<textarea aria-label="给贡献者的说明" value={userVisibleExplanation} onChange={(event) => setUserVisibleExplanation(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <label className="grid gap-1 text-sm font-semibold">内部处理原因<textarea aria-label="内部处理原因" value={internalReason} onChange={(event) => setInternalReason(event.target.value)} className="min-h-20 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+                <Button type="submit" disabled={busy || !userVisibleExplanation.trim()}>保存审核决定</Button>
               </div>
             </form>
           ) : null}
@@ -419,14 +419,14 @@ export function ReviewQueueWorkspace() {
                 recommendMutation.mutate({ reviewCaseId: selected.reviewCase.reviewCaseId, input: { reason: recommendReason.trim() } });
               }}
             >
-              <h2 className="text-lg font-bold text-stone-950">Curation handoff</h2>
-              <p className="mt-1 text-sm text-stone-600">Only accepted assertions backed by verified canonical Evidence can be recommended.</p>
-              <label className="mt-4 grid gap-1 text-sm font-semibold">Recommendation reason<textarea aria-label="Recommendation reason" value={recommendReason} onChange={(event) => setRecommendReason(event.target.value)} className="min-h-20 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
-              <Button type="submit" className="mt-3" disabled={busy || !recommendReason.trim()}>Recommend to Curation</Button>
+              <h2 className="text-lg font-bold text-stone-950">策展交接</h2>
+              <p className="mt-1 text-sm text-stone-600">仅可推荐已有可信来源支持且审核通过的事实。</p>
+              <label className="mt-4 grid gap-1 text-sm font-semibold">推荐理由<textarea aria-label="推荐理由" value={recommendReason} onChange={(event) => setRecommendReason(event.target.value)} className="min-h-20 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
+              <Button type="submit" className="mt-3" disabled={busy || !recommendReason.trim()}>提交策展</Button>
             </form>
           ) : null}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

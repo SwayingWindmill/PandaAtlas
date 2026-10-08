@@ -21,45 +21,45 @@ import {
 const PAGE_SIZE = 10;
 
 const countCards: Array<{ key: keyof PublicationReleaseSummary["counts"]; label: string }> = [
-  { key: "panda", label: "Pandas" },
-  { key: "place", label: "Places" },
-  { key: "lineage", label: "Lineage" },
-  { key: "residency", label: "Residencies" },
-  { key: "lifeEvent", label: "Life events" },
-  { key: "media", label: "Media" },
-  { key: "evidence", label: "Evidence" },
+  { key: "panda", label: "熊猫" },
+  { key: "place", label: "地点" },
+  { key: "lineage", label: "谱系" },
+  { key: "residency", label: "居住史" },
+  { key: "lifeEvent", label: "生命事件" },
+  { key: "media", label: "媒体" },
+  { key: "evidence", label: "证据" },
 ];
 
 const changeLabels: Record<string, string> = {
-  panda: "Panda",
-  institution: "Institution",
-  place: "Place",
-  lineage: "Lineage",
-  residency: "Residency",
-  life_event: "Life event",
-  media: "Media",
-  evidence: "Evidence",
+  panda: "熊猫",
+  institution: "机构",
+  place: "地点",
+  lineage: "谱系",
+  residency: "居住史",
+  life_event: "生命事件",
+  media: "媒体",
+  evidence: "证据",
 };
 
 const transitionLabels: Record<string, string> = {
-  built: "Built",
-  sealed: "Sealed",
-  activated: "Activated",
-  rolled_back: "Rolled back",
-  suspended: "Suspended",
-  restored: "Restored",
+  built: "已构建",
+  sealed: "已封存",
+  activated: "已启用",
+  rolled_back: "已回滚",
+  suspended: "已暂停",
+  restored: "已恢复",
 };
 
 const actionSuccessLabels: Record<PublicationAction, string> = {
-  seal: "Sealed",
-  activate: "Activated",
-  rollback: "Rolled back to",
-  suspend: "Suspended",
-  restore: "Restored",
+  seal: "已封存",
+  activate: "已启用",
+  rollback: "已回滚至",
+  suspend: "已暂停",
+  restore: "已恢复",
 };
 
 function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+  return new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
 function capability(capabilities: readonly string[] | undefined, value: string): boolean {
@@ -96,7 +96,7 @@ export function PublicationControlPlane() {
     mutationFn: () => buildPublicationRelease(version.trim()),
     onSuccess: async (release) => {
       setVersion("");
-      setMessage(`Built release ${release.version}.`);
+      setMessage(`已构建版本 ${release.version}。`);
       await setReleaseId(release.releaseId);
       await invalidatePublication();
     },
@@ -106,7 +106,7 @@ export function PublicationControlPlane() {
       runPublicationAction(target, action, reason.trim()),
     onSuccess: async (release, input) => {
       setReason("");
-      setMessage(`${actionSuccessLabels[input.action]} ${release.version}.`);
+      setMessage(`${actionSuccessLabels[input.action]} ${release.version}。`);
       await invalidatePublication();
     },
   });
@@ -121,29 +121,29 @@ export function PublicationControlPlane() {
     if (!selected) return [] as Array<{ action: PublicationAction; label: string }>;
     const available: Array<{ action: PublicationAction; label: string }> = [];
     if (selected.lifecycleState === "building" && canManage) {
-      available.push({ action: "seal", label: "Seal release" });
+      available.push({ action: "seal", label: "封存版本" });
       return available;
     }
     if (selected.lifecycleState !== "sealed") return available;
     if (selected.suspended) {
-      if (canEmergency) available.push({ action: "restore", label: "Restore release" });
+      if (canEmergency) available.push({ action: "restore", label: "恢复版本" });
       return available;
     }
     if (!selected.isCurrent && canActivate) {
       if (!current || new Date(selected.builtAt) > new Date(current.builtAt)) {
-        available.push({ action: "activate", label: "Activate release" });
+        available.push({ action: "activate", label: "启用版本" });
       } else if (selected.projectionSchemaVersion === current.projectionSchemaVersion) {
-        available.push({ action: "rollback", label: "Rollback to release" });
+        available.push({ action: "rollback", label: "回滚至此版本" });
       }
     }
-    if (canEmergency) available.push({ action: "suspend", label: "Suspend release" });
+    if (canEmergency) available.push({ action: "suspend", label: "暂停版本" });
     return available;
   }, [canActivate, canEmergency, canManage, current, selected]);
 
   const columnHelper = createColumnHelper<PublicationReleaseSummary>();
   const columns = useMemo(() => [
     columnHelper.accessor("version", {
-      header: "Version",
+      header: "版本",
       cell: (context) => (
         <button
           type="button"
@@ -154,15 +154,15 @@ export function PublicationControlPlane() {
         </button>
       ),
     }),
-    columnHelper.accessor("lifecycleState", { header: "Lifecycle" }),
+    columnHelper.accessor("lifecycleState", { header: "生命周期", cell: ({ getValue }) => transitionLabels[getValue()] ?? getValue() }),
     columnHelper.display({
       id: "delivery",
-      header: "Delivery",
+      header: "发布状态",
       cell: ({ row }) => row.original.isCurrent
-        ? (row.original.suspended ? "Current · suspended" : "Current")
-        : (row.original.suspended ? "Suspended" : "Candidate"),
+        ? (row.original.suspended ? "当前版本 · 已暂停" : "当前版本")
+        : (row.original.suspended ? "已暂停" : "候选版本"),
     }),
-    columnHelper.accessor("builtAt", { header: "Built", cell: (context) => formatDate(context.getValue()) }),
+    columnHelper.accessor("builtAt", { header: "构建时间", cell: (context) => formatDate(context.getValue()) }),
   ], [columnHelper, setReleaseId]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -177,19 +177,19 @@ export function PublicationControlPlane() {
   const mutationError = buildMutation.error ?? actionMutation.error;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8">
+    <div className="mx-auto w-full max-w-7xl px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-600">Publication</p>
-          <h1 className="mt-1 text-3xl font-bold text-stone-950">Publication control plane</h1>
+          <p className="text-sm font-semibold text-stone-600">发布</p>
+          <h1 className="mt-1 text-3xl font-bold text-stone-950">发布管理</h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
-            Inspect immutable public releases, compare candidates with the current release, and run capability-scoped lifecycle controls.
+            检查不可变的公开版本、对比候选变更，并按权限执行发布、暂停和回滚操作。
           </p>
         </div>
         <label className="text-sm font-semibold text-stone-700">
-          Lifecycle
+          生命周期
           <select
-            aria-label="Lifecycle"
+            aria-label="生命周期"
             value={normalizedState ?? "all"}
             onChange={(event) => {
               const value = event.target.value;
@@ -198,9 +198,9 @@ export function PublicationControlPlane() {
             }}
             className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3"
           >
-            <option value="all">All</option>
-            <option value="building">Building</option>
-            <option value="sealed">Sealed</option>
+            <option value="all">全部</option>
+            <option value="building">构建中</option>
+            <option value="sealed">已封存</option>
           </select>
         </label>
       </div>
@@ -214,7 +214,7 @@ export function PublicationControlPlane() {
           }}
         >
           <label className="grid min-w-64 flex-1 gap-1 text-sm font-semibold text-stone-800">
-            New release version
+            新版本号
             <input
               value={version}
               onChange={(event) => setVersion(event.target.value)}
@@ -222,22 +222,22 @@ export function PublicationControlPlane() {
               maxLength={80}
             />
           </label>
-          <Button type="submit" disabled={busy || !version.trim()}>Build release</Button>
+          <Button type="submit" disabled={busy || !version.trim()}>构建版本</Button>
         </form>
       ) : null}
 
       <section className="mt-6" aria-live="polite">
-        {releases.isPending ? <p className="text-sm text-stone-600">Loading releases…</p> : null}
+        {releases.isPending ? <p className="text-sm text-stone-600">正在加载版本列表…</p> : null}
         {releases.isError ? <p role="alert" className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{releases.error.message}</p> : null}
         {releases.isSuccess ? (
           <>
             {releases.data.currentRelease ? (
-              <div className="mb-4 rounded-xl border border-stone-300 bg-stone-950 p-5 text-white">
-                <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Current public release</p>
+              <div className="mb-4 rounded-xl border border-stone-300 bg-slate-900 p-5 text-white">
+                <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">当前公开版本</p>
                 <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
                   <div>
                     <h2 className="text-2xl font-bold">{releases.data.currentRelease.version}</h2>
-                    <p className="mt-1 text-sm text-stone-300">Built {formatDate(releases.data.currentRelease.builtAt)}</p>
+                    <p className="mt-1 text-sm text-stone-300">构建于 {formatDate(releases.data.currentRelease.builtAt)}</p>
                   </div>
                   <Button
                     type="button"
@@ -245,36 +245,36 @@ export function PublicationControlPlane() {
                     className="border-stone-500 bg-transparent text-white hover:bg-stone-800"
                     onClick={() => void setReleaseId(releases.data.currentRelease?.releaseId ?? null)}
                   >
-                    Inspect current
+                    查看当前版本
                   </Button>
                 </div>
               </div>
             ) : null}
-            <DataTable table={table} />
+            <DataTable table={table} emptyMessage="当前筛选条件下没有版本记录。" />
             <div className="mt-3 flex items-center justify-between gap-3 text-sm text-stone-700">
-              <span>Page {page} of {totalPages} · {releases.data.total} releases</span>
+              <span>第 {page} / {totalPages} 页 · 共 {releases.data.total} 个版本</span>
               <div className="flex gap-2">
-                <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>Previous</Button>
-                <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>Next</Button>
+                <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
+                <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
               </div>
             </div>
           </>
         ) : null}
       </section>
 
-      {inspection.isPending && effectiveReleaseId ? <p className="mt-8 text-sm text-stone-600">Loading release inspection…</p> : null}
+      {inspection.isPending && effectiveReleaseId ? <p className="mt-8 text-sm text-stone-600">正在加载版本详情…</p> : null}
       {inspection.isError ? <p role="alert" className="mt-8 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{inspection.error.message}</p> : null}
       {inspection.data ? (
         <div className="mt-8 grid gap-6">
           <section className="rounded-xl border border-stone-300 bg-white p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Selected release</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">所选版本</p>
                 <h2 className="mt-1 text-2xl font-bold text-stone-950">{inspection.data.release.version}</h2>
                 <p className="mt-1 text-sm text-stone-600">{inspection.data.release.releaseId}</p>
               </div>
               <span className="rounded-full border border-stone-300 px-3 py-1 text-sm font-semibold">
-                {inspection.data.release.isCurrent ? "Current" : "Candidate"} · {inspection.data.release.lifecycleState}
+                {inspection.data.release.isCurrent ? "当前版本" : "候选版本"} · {transitionLabels[inspection.data.release.lifecycleState] ?? inspection.data.release.lifecycleState}
               </span>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -287,32 +287,32 @@ export function PublicationControlPlane() {
             </div>
             {inspection.data.release.blockers.length ? (
               <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4">
-                <h3 className="font-semibold text-amber-950">Blockers</h3>
+                <h3 className="font-semibold text-amber-950">发布阻塞项</h3>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-950">
-                  {inspection.data.release.blockers.map((blocker) => <li key={blocker}>{blocker}</li>)}
+                  {inspection.data.release.blockers.map((blocker) => <li key={blocker}>{blocker === "This is the current public release." ? "当前公开版本不可执行此操作。" : blocker}</li>)}
                 </ul>
               </div>
             ) : null}
           </section>
 
           <section className="rounded-xl border border-stone-300 bg-white p-5">
-            <h2 className="text-xl font-bold text-stone-950">Changes vs current release</h2>
+            <h2 className="text-xl font-bold text-stone-950">与当前版本的差异</h2>
             {inspection.data.release.isCurrent ? (
-              <p className="mt-3 text-sm text-stone-600">This is the current public release.</p>
+              <p className="mt-3 text-sm text-stone-600">当前展示的是已发布版本。</p>
             ) : inspection.data.changes.length ? (
               <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {inspection.data.changes.map((change) => (
                   <li key={change.resourceKind} className="rounded-lg border border-stone-200 p-4">
                     <strong>{changeLabels[change.resourceKind] ?? change.resourceKind}</strong>
-                    <p className="mt-1 text-sm text-stone-700">{change.added} added · {change.changed} changed · {change.removed} removed</p>
+                    <p className="mt-1 text-sm text-stone-700">新增 {change.added} · 更新 {change.changed} · 移除 {change.removed}</p>
                   </li>
                 ))}
               </ul>
-            ) : <p className="mt-3 text-sm text-stone-600">No membership changes from the current release.</p>}
+            ) : <p className="mt-3 text-sm text-stone-600">相比当前版本没有资源成员变更。</p>}
           </section>
 
           <section className="rounded-xl border border-stone-300 bg-white p-5">
-            <h2 className="text-xl font-bold text-stone-950">Transition history</h2>
+            <h2 className="text-xl font-bold text-stone-950">状态变更记录</h2>
             {inspection.data.transitions.length ? (
               <ol className="mt-4 divide-y divide-stone-200">
                 {inspection.data.transitions.map((transition) => (
@@ -326,16 +326,16 @@ export function PublicationControlPlane() {
                   </li>
                 ))}
               </ol>
-            ) : <p className="mt-3 text-sm text-stone-600">No transition history is recorded.</p>}
+            ) : <p className="mt-3 text-sm text-stone-600">暂无版本状态变更记录。</p>}
           </section>
 
           {actions.length ? (
             <section className="rounded-xl border border-stone-300 bg-white p-5">
-              <h2 className="text-xl font-bold text-stone-950">Lifecycle controls</h2>
+              <h2 className="text-xl font-bold text-stone-950">版本操作</h2>
               <label className="mt-4 grid gap-1 text-sm font-semibold text-stone-800">
-                Reason
+                操作原因
                 <textarea
-                  aria-label="Reason"
+                  aria-label="操作原因"
                   value={reason}
                   onChange={(event) => setReason(event.target.value)}
                   className="min-h-24 rounded-md border border-stone-400 p-3 font-normal"
@@ -362,6 +362,6 @@ export function PublicationControlPlane() {
 
       {message ? <p className="mt-5 rounded-md border border-green-300 bg-green-50 p-4 text-sm text-green-900" role="status">{message}</p> : null}
       {mutationError ? <p className="mt-5 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">{mutationError.message}</p> : null}
-    </main>
+    </div>
   );
 }
