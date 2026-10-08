@@ -174,6 +174,177 @@
         ]
       }
     },
+    "/api/v2/staff/accounts": {
+      "get": {
+        "operationId": "listStaffAccounts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StaffAccountSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
+    "/api/v2/staff/accounts/catalog": {
+      "get": {
+        "operationId": "listDelegableStaffRoles",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StaffRoleCatalogDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
+    "/api/v2/staff/accounts/{accountId}": {
+      "get": {
+        "operationId": "getStaffAccountRoles",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffAccountDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
+    "/api/v2/staff/accounts/{accountId}/roles": {
+      "post": {
+        "operationId": "grantStaffRole",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrantStaffRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffRoleChangeResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
+    "/api/v2/staff/accounts/{accountId}/roles/{assignmentId}/revoke": {
+      "post": {
+        "operationId": "revokeStaffRole",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "assignmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeStaffRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffRoleChangeResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Staff IAM"
+        ]
+      }
+    },
     "/api/v2/contributions": {
       "post": {
         "operationId": "submitContribution",
@@ -2872,6 +3043,222 @@
         "required": [
           "accountId",
           "status"
+        ]
+      },
+      "StaffAccountSummaryDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "accountId",
+          "email",
+          "state",
+          "roles"
+        ]
+      },
+      "StaffRoleCatalogDto": {
+        "type": "object",
+        "properties": {
+          "roleKey": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "roleKey",
+          "displayName",
+          "description"
+        ]
+      },
+      "StaffAssignmentDto": {
+        "type": "object",
+        "properties": {
+          "assignmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roleKey": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "assignedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "assignedBy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "revoked",
+              "expired"
+            ]
+          },
+          "revokedAt": {
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revokedBy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revocationReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "assignmentId",
+          "roleKey",
+          "roleName",
+          "assignedAt",
+          "assignedBy",
+          "reason",
+          "status",
+          "revokedAt",
+          "revokedBy",
+          "revocationReason"
+        ]
+      },
+      "StaffAccountDetailDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "state": {
+            "type": "string"
+          },
+          "assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffAssignmentDto"
+            }
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "accountId",
+          "email",
+          "state",
+          "assignments",
+          "capabilities"
+        ]
+      },
+      "GrantStaffRoleDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "Reviewed the staff responsibility change with the archive lead"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roleKey": {
+            "type": "string",
+            "example": "reviewer"
+          }
+        },
+        "required": [
+          "reason",
+          "idempotencyKey",
+          "roleKey"
+        ]
+      },
+      "StaffRoleChangeResultDto": {
+        "type": "object",
+        "properties": {
+          "assignmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roleKey": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "revoked"
+            ]
+          }
+        },
+        "required": [
+          "assignmentId",
+          "roleKey",
+          "status"
+        ]
+      },
+      "RevokeStaffRoleDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "example": "Reviewed the staff responsibility change with the archive lead"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "reason",
+          "idempotencyKey"
         ]
       },
       "ContributionAssertionDto": {

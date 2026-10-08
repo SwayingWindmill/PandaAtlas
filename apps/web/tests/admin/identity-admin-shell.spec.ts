@@ -263,6 +263,67 @@ test("expired recent authentication is distinguished from an incomplete MFA enro
   await expect(page.getByRole("status")).not.toContainText("在账号安全中完成验证");
 });
 
+test("staff manager can inspect role history and confirm grant and revoke with reasons", async ({ page }) => {
+  const staffId = "55555555-5555-4555-8555-555555555555";
+  const assignmentId = "66666666-6666-4666-8666-666666666666";
+  let roleState: "none" | "active" | "revoked" = "none";
+  await page.route("**/api/admin/session", async (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "identity.role.manage", "identity.account.manage"] }),
+  }));
+  await page.route("**/api/admin/staff/accounts**", async (route) => {
+    const url = route.request().url();
+    const method = route.request().method();
+    if (url.endsWith("/catalog")) {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([
+        { roleKey: "reviewer", displayName: "Reviewer", description: "Review evidence" },
+      ]) });
+    } else if (url.endsWith("/accounts")) {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([
+        { accountId: staffId, email: "reviewer@example.test", state: "active", roles: roleState === "active" ? ["reviewer"] : [] },
+      ]) });
+    } else if (method === "POST") {
+      const input = route.request().postDataJSON() as { reason: string; roleKey?: string };
+      expect(input.reason.length).toBeGreaterThan(3);
+      if (url.endsWith("/revoke")) {
+        roleState = "revoked";
+        await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({ assignmentId, roleKey: "reviewer", status: "revoked" }) });
+      } else {
+        expect(input.roleKey).toBe("reviewer");
+        roleState = "active";
+        await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({ assignmentId, roleKey: "reviewer", status: "active" }) });
+      }
+    } else {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+        accountId: staffId, email: "reviewer@example.test", state: "active",
+        capabilities: roleState === "active" ? ["review.case.read"] : [],
+        assignments: roleState === "none" ? [] : [{
+          assignmentId, roleKey: "reviewer", roleName: "Reviewer", assignedAt: "2026-10-08T10:00:00Z",
+          assignedBy: staffSession.accountId, reason: "Assigned to evidence verification",
+          status: roleState, revokedAt: roleState === "revoked" ? "2026-10-08T11:00:00Z" : null,
+          revokedBy: roleState === "revoked" ? staffSession.accountId : null,
+          revocationReason: roleState === "revoked" ? "Assignment completed" : null,
+        }],
+      }) });
+    }
+  });
+
+  await page.goto("/admin/staff/roles");
+  await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toBeVisible();
+  await page.getByRole("button", { name: /reviewer@example.test/ }).click();
+  await expect(page.getByText("当前权限")).toBeVisible();
+  await page.getByRole("button", { name: "准备授予" }).click();
+  await page.getByRole("textbox", { name: "变更原因" }).fill("Assigned to evidence verification");
+  await page.getByRole("button", { name: "确认授予" }).click();
+  await expect(page.getByText("角色已授予")).toBeVisible();
+  await expect(page.getByText("review.case.read")).toBeVisible();
+  await page.getByRole("button", { name: "撤销 审核员" }).click();
+  await page.getByRole("textbox", { name: "变更原因" }).fill("Assignment completed");
+  await page.getByRole("button", { name: "确认撤销" }).click();
+  await expect(page.getByText("角色已撤销")).toBeVisible();
+  await expect(page.getByRole("region", { name: "角色授权历史" }).getByText("已撤销", { exact: true })).toBeVisible();
+});
+
 test("a reviewer cannot access staff invitation controls", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({
@@ -276,4 +337,7 @@ test("a reviewer cannot access staff invitation controls", async ({ page }) => {
   await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
   await expect(page.getByRole("button", { name: "发送邀请" })).toHaveCount(0);
   await expect(page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "工作人员" })).toHaveCount(0);
+  await page.goto("/admin/staff/roles");
+  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toHaveCount(0);
 });

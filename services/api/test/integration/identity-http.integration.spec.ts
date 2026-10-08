@@ -16,7 +16,7 @@ const SESSION_ID = "66666666-6666-4666-8666-666666666666";
 let app: NestFastifyApplication;
 let jwksServer: Server;
 let token: string;
-let signTestToken: (accountId: string, sessionId: string, aal: "aal1" | "aal2") => Promise<string>;
+let signTestToken: (accountId: string, sessionId: string, aal: "aal1" | "aal2", authenticationAgeSeconds?: number) => Promise<string>;
 const INVITED_ACCOUNT_ID = randomUUID();
 
 beforeAll(async () => {
@@ -52,14 +52,14 @@ beforeAll(async () => {
   process.env.SUPABASE_URL = supabaseUrl;
   process.env.SUPABASE_SECRET_KEY = "test-server-only-key";
 
-  signTestToken = (accountId, sessionId, aal) => {
+  signTestToken = (accountId, sessionId, aal, authenticationAgeSeconds = 10) => {
     const timestamp = Math.floor(Date.now() / 1_000);
     return new SignJWT({
       role: "authenticated",
       aal,
       session_id: sessionId,
       is_anonymous: false,
-      amr: [{ method: aal === "aal2" ? "totp" : "otp", timestamp: timestamp - 10 }],
+      amr: [{ method: aal === "aal2" ? "totp" : "otp", timestamp: timestamp - authenticationAgeSeconds }],
     })
       .setProtectedHeader({ alg: "ES256", kid: "identity-http" })
       .setIssuer(issuer)
@@ -180,6 +180,158 @@ describe("Identity HTTP security path", () => {
       headers: { authorization: `Bearer ${token}` },
     });
     expect(response.statusCode).toBe(403);
+  });
+
+  it("does not disclose the staff role directory to an ordinary member", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v2/staff/accounts",
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(response.statusCode).toBe(403);
+  });
+
+  it("changes reviewer rights immediately with audited, idempotent grant and revoke commands", async () => {
+    const database = app.get(DatabaseService);
+    const originalTransaction = database.transaction.bind(database);
+    const rollback = new Error("roll back disposable staff roles HTTP fixture");
+    try {
+      await database.db.transaction().execute(async (tx: DatabaseTransaction) => {
+        Object.defineProperty(database, "db", { configurable: true, get: () => tx });
+        Reflect.set(database, "transaction", <T>(work: (transaction: DatabaseTransaction) => Promise<T>) => work(tx));
+        const managerId = randomUUID();
+        const staffId = randomUUID();
+        const managerSessionId = randomUUID();
+        const staffSessionId = randomUUID();
+        const managerToken = await signTestToken(managerId, managerSessionId, "aal2");
+        const weakManagerToken = await signTestToken(managerId, managerSessionId, "aal1");
+        const expiredManagerToken = await signTestToken(managerId, managerSessionId, "aal2", 960);
+        const invalidSessionToken = await signTestToken(managerId, randomUUID(), "aal2");
+        const staffToken = await signTestToken(staffId, staffSessionId, "aal1");
+        const grantKey = randomUUID();
+        const revokeKey = randomUUID();
+        const grantReason = "Assigned to independently verify panda source records";
+        const revokeReason = "Reviewer duties moved to another staff member";
+        await sql`
+          insert into auth.users (id, aud, role, email_confirmed_at, created_at, updated_at)
+          values (${managerId}::uuid, 'authenticated', 'authenticated', now(), now(), now()),
+                 (${staffId}::uuid, 'authenticated', 'authenticated', now(), now(), now())
+        `.execute(tx);
+        await sql`
+          insert into auth.sessions (id, user_id, created_at, updated_at, aal)
+          values (${managerSessionId}::uuid, ${managerId}::uuid, now(), now(), 'aal2'),
+                 (${staffSessionId}::uuid, ${staffId}::uuid, now(), now(), 'aal1')
+        `.execute(tx);
+        for (const accountId of [managerId, staffId]) {
+          await tx.insertInto("identity.accounts").values({ account_id: accountId, email: null }).execute();
+        }
+        await tx.insertInto("identity.role_assignments").values({
+          account_id: managerId, role_key: "administrator", reason: "Authorized test staff manager",
+          correlation_id: randomUUID(), idempotency_key: randomUUID(),
+        }).execute();
+        await tx.insertInto("identity.role_assignments").values({
+          account_id: staffId, role_key: "member", reason: "Verified user fixture",
+          correlation_id: randomUUID(), idempotency_key: randomUUID(),
+        }).execute();
+        const managerHeaders = { authorization: `Bearer ${managerToken}` };
+        const staffHeaders = { authorization: `Bearer ${staffToken}` };
+        const target = `/api/v2/staff/accounts/${staffId}`;
+        const reviewUrl = "/api/v2/review/cases?limit=1";
+
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(403);
+        expect((await app.inject({ method: "GET", url: target, headers: staffHeaders })).statusCode).toBe(403);
+        expect((await app.inject({ method: "GET", url: "/api/v2/staff/accounts", headers: managerHeaders })).statusCode).toBe(200);
+        expect((await app.inject({ method: "GET", url: target, headers: managerHeaders })).statusCode).toBe(200);
+        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${weakManagerToken}` } })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: `${target}/roles`,
+          headers: { authorization: `Bearer ${expiredManagerToken}` },
+          payload: { roleKey: "reviewer", reason: grantReason, idempotencyKey: grantKey },
+        })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: `${target}/roles`,
+          headers: { authorization: `Bearer ${invalidSessionToken}` },
+          payload: { roleKey: "reviewer", reason: grantReason, idempotencyKey: grantKey },
+        })).statusCode).toBe(403);
+
+        const payload = { roleKey: "reviewer", reason: grantReason, idempotencyKey: grantKey };
+        const selfGrant = await app.inject({ method: "POST", url: `/api/v2/staff/accounts/${managerId}/roles`, headers: managerHeaders, payload });
+        expect(selfGrant.statusCode).toBe(403);
+        const forbidden = await app.inject({ method: "POST", url: `${target}/roles`, headers: staffHeaders, payload });
+        expect(forbidden.statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+          payload: { ...payload, reason: " " },
+        })).statusCode).toBe(400);
+        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+          payload: { ...payload, roleKey: "administrator" },
+        })).statusCode).toBe(403);
+        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+          payload: { ...payload, roleKey: "community_scanner" },
+        })).statusCode).toBe(403);
+        await sql`update auth.users set email_confirmed_at=null where id=${staffId}::uuid`.execute(tx);
+        const unverifiedGrant = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
+        expect(unverifiedGrant.statusCode).toBe(409);
+        expect(unverifiedGrant.json()).toMatchObject({ code: "identity.emailUnverified" });
+        await sql`update auth.users set email_confirmed_at=now() where id=${staffId}::uuid`.execute(tx);
+        const grant = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
+        expect(grant.statusCode, grant.body).toBe(201);
+        const { assignmentId } = grant.json<{ assignmentId: string }>();
+        const replay = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
+        expect(replay.statusCode).toBe(201);
+        expect(replay.json()).toEqual(grant.json());
+        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+          payload: { ...payload, reason: "Changed request", idempotencyKey: grantKey } })).statusCode).toBe(409);
+
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(200);
+        const detail = await app.inject({ method: "GET", url: target, headers: managerHeaders });
+        expect(detail.json<{ capabilities: string[] }>().capabilities).toContain("review.case.read");
+        expect(detail.json<{ assignments: Array<{ assignmentId: string; status: string }> }>().assignments)
+          .toContainEqual(expect.objectContaining({ assignmentId, status: "active" }));
+        const conflict = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+          payload: { ...payload, roleKey: "senior_archive_editor", idempotencyKey: randomUUID() },
+        });
+        expect(conflict.statusCode).toBe(409);
+        expect(conflict.json()).toMatchObject({ code: "identity.dutiesConflict" });
+
+        const revokeUrl = `${target}/roles/${assignmentId}/revoke`;
+        const revokePayload = { reason: revokeReason, idempotencyKey: revokeKey };
+        await sql`update auth.users set email_confirmed_at=null where id=${staffId}::uuid`.execute(tx);
+        const revoked = await app.inject({ method: "POST", url: revokeUrl, headers: managerHeaders, payload: revokePayload });
+        expect(revoked.statusCode, revoked.body).toBe(201);
+        expect(revoked.json()).toMatchObject({ assignmentId, status: "revoked" });
+        expect((await app.inject({ method: "POST", url: revokeUrl, headers: managerHeaders, payload: revokePayload })).json()).toEqual(revoked.json());
+        expect((await app.inject({ method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(403);
+        expect((await app.inject({ method: "GET", url: target, headers: managerHeaders })).json<{ capabilities: string[] }>().capabilities)
+          .not.toContain("review.case.read");
+        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload })).statusCode).toBe(409);
+
+        await tx.insertInto("identity.role_assignments").values({
+          account_id: staffId, role_key: "senior_archive_editor",
+          reason: "Expired historical duty", assigned_at: new Date(Date.now() - 86_400_000),
+          expires_at: new Date(Date.now() - 3_600_000),
+          correlation_id: randomUUID(), idempotency_key: randomUUID(),
+        }).execute();
+        const afterExpiry = await app.inject({ method: "GET", url: target, headers: managerHeaders });
+        expect(afterExpiry.json<{ assignments: Array<{ roleKey: string; status: string }> }>().assignments)
+          .toContainEqual(expect.objectContaining({ roleKey: "senior_archive_editor", status: "expired" }));
+        expect(afterExpiry.json<{ capabilities: string[] }>().capabilities).not.toContain("publication.release.activate");
+
+        const audits = await tx.selectFrom("identity.authorization_audit_events")
+          .select(["event_type", "reason"]).where("subject_account_id", "=", staffId)
+          .where("event_type", "in", ["identity.role-assigned", "identity.role-revoked"]).execute();
+        expect(audits.map((a) => a.event_type).sort()).toEqual(["identity.role-assigned", "identity.role-revoked"]);
+        expect(audits.map((a) => a.reason).sort()).toEqual([grantReason, revokeReason].sort());
+        const events = await sql<{ event_type: string }>`
+          select event_type from integration.outbox_events where aggregate_id=${staffId}
+            and event_type in ('identity.role-assigned', 'identity.role-revoked')
+        `.execute(tx);
+        expect(events.rows.map((e) => e.event_type).sort()).toEqual(["identity.role-assigned", "identity.role-revoked"]);
+        throw rollback;
+      });
+    } catch (error) {
+      if (error !== rollback) throw error;
+    } finally {
+      Reflect.deleteProperty(database, "db");
+      Reflect.set(database, "transaction", originalTransaction);
+    }
   });
 
   it("does not activate review authority without an invitation bound to the signed-in UUID", async () => {

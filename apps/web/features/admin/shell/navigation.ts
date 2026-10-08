@@ -43,10 +43,11 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
   {
     href: "/admin/staff/invitations",
     label: "工作人员",
-    description: "邀请审核员并追踪激活状态",
+    description: "管理邀请、岗位角色与有效权限",
     group: "治理",
     icon: "shield-check",
-    capabilities: ["identity.account.manage"],
+    capabilities: ["identity.account.manage", "identity.role.manage"],
+    activePaths: ["/admin/staff/invitations", "/admin/staff/roles"],
   },
   {
     href: "/admin/security/mfa",
