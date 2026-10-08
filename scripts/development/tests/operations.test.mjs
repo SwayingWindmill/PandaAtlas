@@ -132,6 +132,7 @@ test("operations CLI lists and describes catalog commands", () => {
   assert.match(listed.stdout, /admin\.dev/);
   assert.match(listed.stdout, /admin\.status/);
   assert.match(listed.stdout, /admin\.stop/);
+  assert.match(listed.stdout, /admin\.bootstrap/);
   assert.doesNotMatch(listed.stdout, /worker\./);
 
   const described = spawnSync(process.execPath, [cliPath, "describe", "verify.dev", "--json"], {
@@ -173,6 +174,10 @@ test("root package exposes the current canonical development interface", async (
   assert.equal(
     packageJson.scripts["stop:admin"],
     "node scripts/development/operations.mjs run admin.stop",
+  );
+  assert.equal(
+    packageJson.scripts["bootstrap:admin"],
+    "node scripts/development/operations.mjs run admin.bootstrap",
   );
   assert.equal(
     packageJson.scripts["verify:dev"],
