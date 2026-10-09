@@ -145,17 +145,6 @@ export async function POST(request: NextRequest) {
         body: payload as DecideAppealBody,
       }));
     }
-    case "audit.list": {
-      const payload = input.payload && typeof input.payload === "object" && !Array.isArray(input.payload)
-        ? input.payload as { limit?: unknown }
-        : {};
-      const rawLimit = typeof payload.limit === "number" ? payload.limit : 50;
-      const limit = Math.max(1, Math.min(200, Math.trunc(rawLimit)));
-      return v2JsonResponse(await api.client.GET("/api/v2/audit/evidence", {
-        headers: api.headers,
-        params: { query: { limit } },
-      }));
-    }
     default:
       return NextResponse.json({ detail: "Unsupported admin V2 operation" }, { status: 404 });
   }
