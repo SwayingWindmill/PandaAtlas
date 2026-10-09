@@ -353,6 +353,7 @@ test("moderation actions stay capability scoped", async ({ page }) => {
   });
 
   await page.goto("/admin/moderation");
+  await page.getByText("通过账号编号查询", { exact: true }).click();
   await page.getByLabel("账号 ID").fill(moderationAccountId);
   await page.getByRole("button", { name: "查询账号" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "账号治理与申诉" })).toBeVisible();
@@ -391,6 +392,7 @@ test("looking up another account cannot leave an unrelated appeal actionable", a
 
   await page.goto("/admin/moderation");
   await expect(page.getByText("Only the suspended account filed this appeal.")).toBeVisible();
+  await page.getByText("通过账号编号查询", { exact: true }).click();
   await page.getByLabel("账号 ID").fill(otherAccountId);
   await page.getByRole("button", { name: "查询账号" }).click();
   await expect(page.getByText("账号编号 aaaaaaaa")).toBeVisible();
@@ -430,6 +432,7 @@ test("suspending an account requires an explicit confirmation with the account i
   });
 
   await page.goto("/admin/moderation");
+  await page.getByText("通过账号编号查询", { exact: true }).click();
   await page.getByLabel("账号 ID").fill(moderationAccountId);
   await page.getByRole("button", { name: "查询账号" }).click();
   await page.getByLabel("限制类型").selectOption("account_suspended");

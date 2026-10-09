@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useCallback, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -154,7 +155,8 @@ export function ModerationWorkspace() {
       cell: ({ row }) => (
         <button
           type="button"
-          className="text-left font-semibold text-stone-950 underline decoration-stone-400 underline-offset-4"
+          aria-pressed={effectiveAppealId === row.original.appealCaseId}
+          className="rounded-md text-left font-semibold text-slate-950 underline decoration-slate-400 underline-offset-4 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
           onClick={() => void selectAppeal(row.original)}
         >
           <span className="block">账号 {row.original.accountId.slice(0, 8)}</span>
@@ -170,7 +172,7 @@ export function ModerationWorkspace() {
       header: "等待情况",
       cell: ({ row, getValue }) => <span className={row.original.slaOverdue ? "font-semibold text-red-700" : "text-stone-700"}>{formatQueueAge(getValue())}{row.original.slaOverdue ? " · 已超时" : ""}</span>,
     }),
-  ], [selectAppeal]);
+  ], [selectAppeal, effectiveAppealId]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({ data: appeals.data?.items ?? [], columns, getCoreRowModel: getCoreRowModel() });
@@ -182,17 +184,16 @@ export function ModerationWorkspace() {
   const busy = applyMutation.isPending || restoreMutation.isPending || decideAppealMutation.isPending;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8">
+    <div className="mx-auto w-full max-w-7xl px-5 pb-12 pt-7 md:px-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-600">内容治理</p>
-          <h1 className="mt-1 text-3xl font-bold text-stone-950">账号治理与申诉</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-950">账号治理与申诉</h1>
+          <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
             查看账号治理状态、处理限制措施与用户申诉。所有变更均由服务端进行权限校验。
           </p>
         </div>
         {canReadAppeals ? (
-          <label className="text-sm font-semibold text-stone-700">
+          <label className="flex items-center gap-3 text-sm font-medium text-slate-700">
             申诉状态
             <select
               aria-label="申诉状态"
@@ -201,7 +202,7 @@ export function ModerationWorkspace() {
                 void setState(event.target.value === "open" ? null : event.target.value);
                 void setPage(1);
               }}
-              className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3 capitalize"
+              className="min-h-10 min-w-36 rounded-lg border border-slate-300 bg-white px-3 text-sm font-normal text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
             >
               {APPEAL_STATES.map((value) => <option key={value} value={value}>{adminStateLabel(value)}</option>)}
             </select>
@@ -210,8 +211,13 @@ export function ModerationWorkspace() {
       </div>
 
       {canRead ? (
+        <details className="group mt-5 rounded-xl border border-slate-200 bg-white">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-5 text-sm font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+            通过账号编号查询
+            <ChevronDown size={17} className="transition-transform group-open:rotate-180" aria-hidden="true" />
+          </summary>
         <form
-          className="mt-6 flex flex-wrap items-end gap-3 rounded-xl border border-stone-300 bg-white p-4 shadow-sm"
+          className="flex flex-wrap items-end gap-3 border-t border-slate-100 px-5 py-4"
           onSubmit={(event) => {
             event.preventDefault();
             if (lookupAccountId.trim()) {
@@ -221,43 +227,44 @@ export function ModerationWorkspace() {
             }
           }}
         >
-          <label className="grid min-w-72 flex-1 gap-1 text-sm font-semibold text-stone-800">
+          <label className="grid min-w-72 flex-1 gap-1 text-sm font-semibold text-slate-800">
             查询账号
             <input
               aria-label="账号 ID"
               value={lookupAccountId}
               onChange={(event) => setLookupAccountId(event.target.value)}
               placeholder="输入账号 UUID"
-              className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-sm font-normal"
+              className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 font-mono text-sm font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
             />
           </label>
           <Button type="submit" disabled={!lookupAccountId.trim()}>查询账号</Button>
         </form>
+        </details>
       ) : null}
 
       {mutationError ? <p role="alert" className="mt-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{mutationError.message}</p> : null}
       {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
 
-      <div className="mt-6 grid items-start gap-5 xl:grid-cols-[minmax(23rem,0.8fr)_minmax(0,1.5fr)]">
-        <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm xl:sticky xl:top-24" aria-labelledby="appeal-queue-heading">
+      <div className="mt-5 grid items-start gap-5 xl:grid-cols-[minmax(20rem,0.8fr)_minmax(0,1.5fr)]">
+        <section className="min-w-0 rounded-xl border border-slate-200 bg-white p-5 xl:sticky xl:top-24" aria-labelledby="appeal-queue-heading">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 id="appeal-queue-heading" className="text-xl font-bold text-stone-950">申诉队列</h2>
-              <p className="mt-1 text-sm text-stone-600">选择申诉，核对账号当前的限制及申诉理由。</p>
+              <h2 id="appeal-queue-heading" className="text-base font-semibold text-slate-950">申诉队列</h2>
+              <p className="mt-1 text-xs text-slate-600">选择申诉，核对账号限制及申诉理由</p>
             </div>
-            {appeals.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{appeals.data.total} 项申诉</span> : null}
+            {appeals.data ? <Badge variant="outline" className="bg-white text-slate-700">{appeals.data.total} 项申诉</Badge> : null}
           </div>
           {!canReadAppeals ? <p className="mt-5 text-sm text-stone-600">当前账号没有查看申诉的权限。</p> : null}
           {appeals.isPending && canReadAppeals ? <p className="mt-5 text-sm text-stone-600">正在加载申诉…</p> : null}
           {appeals.isError ? <p role="alert" className="mt-5 text-sm text-red-800">{appeals.error.message}</p> : null}
           {appeals.isSuccess ? (
             <>
-              <div className="mt-5"><DataTable table={table} emptyMessage="当前没有需要处理的申诉。" /></div>
-              <div className="mt-4 flex items-center justify-between gap-3 text-sm text-stone-700">
+              <div className="mt-4"><DataTable table={table} emptyMessage="当前没有需要处理的申诉。" /></div>
+              <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-600">
                 <span>第 {page} / {totalPages} 页</span>
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
-                  <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
+                  <Button type="button" variant="outline" size="sm" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
+                  <Button type="button" variant="outline" size="sm" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
                 </div>
               </div>
             </>
@@ -265,7 +272,7 @@ export function ModerationWorkspace() {
         </section>
 
         <div className="min-w-0 space-y-6">
-          <section className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-sm" aria-labelledby="account-state-heading">
+          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white" aria-labelledby="account-state-heading">
             {account.isPending && effectiveAccountId ? <p className="p-5 text-sm text-stone-600">正在加载账号信息…</p> : null}
             {account.isError ? <p role="alert" className="p-5 text-sm text-red-800">{account.error.message}</p> : null}
             {!effectiveAccountId ? <p className="p-5 text-sm text-stone-600">请选择申诉或输入账号 ID。</p> : null}
@@ -330,7 +337,7 @@ export function ModerationWorkspace() {
                 </div>
                 <Badge variant="outline" className={selectedAppeal.slaOverdue ? "border-red-200 bg-red-50 text-red-900" : "border-stone-200 bg-stone-50 text-stone-700"}>{selectedAppeal.slaOverdue ? "已超过处理时限" : adminStateLabel(selectedAppeal.state)}</Badge>
               </div>
-              <blockquote className="mt-4 rounded-lg border-l-4 border-stone-400 bg-stone-50 p-4 text-sm leading-6 text-stone-700">
+              <blockquote className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
                 {selectedAppeal.userStatement}
               </blockquote>
               <p className="mt-3 text-xs text-stone-500">关联限制 {selectedAppeal.sanctionId.slice(0, 8)} · 截止时间 {formatDate(selectedAppeal.firstResponseDueAt)}</p>

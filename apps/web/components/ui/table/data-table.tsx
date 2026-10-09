@@ -4,9 +4,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export function DataTable<TData>({ table, emptyMessage = "No results." }: { table: TanStackTable<TData>; emptyMessage?: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-stone-300 bg-white">
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
       <Table>
-        <TableHeader className="bg-stone-100 text-stone-700">
+        <TableHeader className="bg-slate-50 text-slate-700">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
@@ -28,7 +28,7 @@ export function DataTable<TData>({ table, emptyMessage = "No results." }: { tabl
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center text-stone-600">
+              <TableCell colSpan={table.getAllColumns().length} className="h-24 px-5 text-center leading-6 text-slate-600">
                 {emptyMessage}
               </TableCell>
             </TableRow>
