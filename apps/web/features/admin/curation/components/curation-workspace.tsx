@@ -5,11 +5,11 @@ import { useForm } from "@tanstack/react-form";
 import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
+import { FolderCheck } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -92,16 +92,20 @@ export function CurationWorkspace() {
   });
 
   const columns = useMemo(() => [
-    column.accessor("reason", { header: "变更说明" }),
+    column.accessor("reason", { header: "变更事项", cell: ({ row }) => (
+      <div className="min-w-0">
+        <p className="max-w-60 truncate font-medium text-slate-950" title={row.original.reason}>{row.original.reason}</p>
+        <p className="mt-1 text-xs text-slate-600">{row.original.changeCount} 项 · 熊猫 {row.original.targetPandaId.slice(0, 8)}</p>
+      </div>
+    ) }),
     column.accessor("state", { header: "处理状态", cell: (cell) => <Badge variant="outline" className="bg-slate-50 text-slate-800">{stateLabels[cell.getValue() as CurationState]}</Badge> }),
-    column.accessor("changeCount", { header: "变更项数" }),
     column.display({ id: "view", header: "操作", cell: ({ row }) => (
-      <Button type="button" variant="outline" onClick={() => {
+      <Button type="button" size="sm" variant="outline" aria-label={`查看变更：${row.original.reason}`} className={selectedId === row.original.changeSetId ? "border-teal-300 bg-teal-50 text-teal-900" : undefined} aria-pressed={selectedId === row.original.changeSetId} onClick={() => {
         void setSelectedId(row.original.changeSetId);
         setMessage(""); approvalForm.reset();
       }}>查看变更</Button>
     ) }),
-  ], [approvalForm, setSelectedId]);
+  ], [approvalForm, selectedId, setSelectedId]);
   // TanStack Table deliberately exposes non-memoizable helpers.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({ data: listing.data?.items ?? [], columns, getCoreRowModel: getCoreRowModel() });
@@ -110,111 +114,120 @@ export function CurationWorkspace() {
   const pages = Math.max(1, Math.ceil((listing.data?.total ?? 0) / PAGE_SIZE));
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="mx-auto w-full max-w-7xl px-5 pb-12 pt-7 md:px-8">
+      <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-600">运营 · 档案核验</p>
-          <h1 className="mt-1 text-3xl font-bold text-stone-950">策展变更集</h1>
-          <p className="mt-3 max-w-3xl text-sm text-stone-700">按证据核验档案变更，独立审批后一次性应用到内部档案。公开发布需另外批准。</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-950">策展变更集</h1>
+          <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">核验建议变更与来源，由另一位工作人员独立审批；公开发布另行处理。</p>
         </div>
-        <label className="text-sm font-semibold text-stone-800">
-          筛选状态
+      </header>
+
+      <div className="mt-6 grid items-start gap-5 xl:grid-cols-[minmax(21rem,0.9fr)_minmax(0,1.5fr)]">
+      <section className="min-w-0 xl:sticky xl:top-24" aria-label="策展待办">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
+          <div><h2 className="text-base font-semibold text-slate-950">变更队列</h2><p className="mt-1 text-xs text-slate-600">选择一项，右侧同步展示变更证据</p></div>
+          {listing.data && <Badge variant="outline" className="text-slate-700">{listing.data.total} 项</Badge>}
+        </div>
+        <label className="mb-3 flex items-center justify-between gap-3 text-sm font-medium text-slate-700">
+          处理状态
           <select aria-label="筛选状态" value={filter ?? "all"}
-            onChange={(event) => { void setState(event.target.value === "all" ? null : event.target.value); void setPage(1); }}
-            className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3">
-            <option value="all">全部</option>
+            onChange={(event) => { void setState(event.target.value === "all" ? null : event.target.value); void setPage(1); void setSelectedId(null); }}
+            className="min-h-10 min-w-40 rounded-lg border border-slate-300 bg-white px-3 text-sm font-normal text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+            <option value="all">全部状态</option>
             {states.map((value) => <option key={value} value={value}>{stateLabels[value]}</option>)}
           </select>
         </label>
-      </div>
-
-      <section className="mt-6" aria-label="策展变更集列表" aria-live="polite">
-        {listing.isPending && <p>正在加载变更集…</p>}
-        {listing.isError && <p role="alert" className="text-red-800">{listing.error.message}</p>}
+        {listing.isPending && <p role="status" className="py-5 text-sm text-slate-600">正在加载变更队列…</p>}
+        {listing.isError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{listing.error.message}</p>}
         {listing.isSuccess && <>
-          <DataTable table={table} emptyMessage="当前筛选条件下没有策展变更集。" />
-          <div className="mt-3 flex items-center justify-between gap-3 text-sm text-stone-700">
-            <span>第 {page} / {pages} 页 · 共 {listing.data.total} 个变更集</span>
+          <DataTable table={table} emptyMessage="当前筛选下没有变更集。可切换状态查看其他记录。" />
+          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-600">
+            <span>第 {page} / {pages} 页</span>
             <div className="flex gap-2">
-              <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(page - 1)}>上一页</Button>
-              <Button type="button" variant="outline" disabled={page >= pages} onClick={() => void setPage(page + 1)}>下一页</Button>
+              <Button type="button" variant="outline" size="sm" disabled={page <= 1} onClick={() => { void setPage(page - 1); void setSelectedId(null); }}>上一页</Button>
+              <Button type="button" variant="outline" size="sm" disabled={page >= pages} onClick={() => { void setPage(page + 1); void setSelectedId(null); }}>下一页</Button>
             </div>
           </div>
         </>}
       </section>
 
-      {selectedId && <section className="mt-8 rounded-xl border border-stone-300 bg-white p-6" aria-label="策展变更详情" aria-live="polite">
-        <h2 className="text-xl font-bold text-stone-950">待确认的档案变更</h2>
-        {detail.isPending && <p className="mt-3">正在加载变更详情…</p>}
-        {detail.isError && <p role="alert" className="mt-3 text-red-800">{detail.error.message}</p>}
+      <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-label="策展变更详情">
+        {!selectedId && <div className="flex min-h-72 flex-col items-center justify-center px-8 py-12 text-center">
+          <FolderCheck aria-hidden="true" className="size-9 text-slate-400" strokeWidth={1.5} />
+          <h2 className="mt-4 text-base font-semibold text-slate-900">选择一项策展变更</h2>
+          <p className="mt-2 max-w-sm text-sm leading-6 text-slate-600">在左侧队列选择记录后，可在这里查看建议事实、证据来源与下一步审批操作。</p>
+        </div>}
+        {selectedId && <>
+        {message && <p role="status" className="m-5 rounded-lg border border-teal-200 bg-teal-50 p-4 text-sm text-teal-950">{message}</p>}
+        {error && <p role="alert" className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error.message}</p>}
+        {detail.isPending && <p role="status" className="p-5 text-sm text-slate-600">正在加载变更详情…</p>}
+        {detail.isError && <p role="alert" className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">{detail.error.message}</p>}
         {detail.data && <>
-          <Card className="mt-3 gap-1 border-slate-200 bg-slate-50 py-3 shadow-none">
-            <CardHeader>
-              <CardTitle className="text-base text-slate-950">{detail.data.reason}</CardTitle>
-              <p className="text-sm text-slate-700">关联熊猫编号 {detail.data.targetPandaId.slice(0, 8)} · {detail.data.originKind === "review" ? "来自贡献审核" : "来自资料采集"}</p>
-            </CardHeader>
-            <CardContent className="space-y-2 text-sm text-slate-700">
-              <Badge variant="outline" className="bg-white text-slate-700">{stateLabels[detail.data.state as CurationState]}</Badge>
-              <details>
-                <summary className="cursor-pointer font-medium text-teal-800">查看完整编号和追溯信息</summary>
-                <div className="mt-2 space-y-1 break-all font-mono text-xs">
-                  <p>熊猫 ID：{detail.data.targetPandaId}</p>
-                  <p>创建人 ID：{detail.data.createdByAccountId}</p>
-                  <p>变更版本：{detail.data.version}</p>
-                  {detail.data.reviewCaseId && <p>审核案件：{detail.data.reviewCaseId}</p>}
-                  {detail.data.acquisitionBundleId && <p>采集批次：{detail.data.acquisitionBundleId}</p>}
-                </div>
-              </details>
-            </CardContent>
-          </Card>
-          <h3 className="mt-5 font-bold text-stone-950">事实变更与来源</h3>
-          {detail.data.changes.length > 0 && <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">以下为拟应用的事实及佐证。当前档案值尚未提供，不能据此判断是否替换现有事实。</p>}
-          {detail.data.changes.length === 0 && <p className="mt-2 text-sm text-stone-600">此变更集不包含直接事实变更。</p>}
-          <ul className="mt-3 grid gap-3 md:grid-cols-2">
-            {detail.data.changes.map((change) => <li key={change.changeId}>
-              <Card className="h-full gap-3 border-slate-200 py-4 shadow-none">
-                <CardHeader className="flex flex-row items-center justify-between gap-3">
-                  <CardTitle className="text-base text-slate-950">{factLabels[change.fieldKey] ?? `原始字段：${change.fieldKey}`}</CardTitle>
+          <div className="border-b border-slate-200 bg-slate-50 px-5 py-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-lg font-semibold leading-6 text-slate-950">{detail.data.reason}</h2>
+                <p className="mt-1.5 text-sm text-slate-600">关联熊猫 {detail.data.targetPandaId.slice(0, 8)} · {detail.data.originKind === "review" ? "来自贡献审核" : "来自资料采集"}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="bg-white text-slate-800">{stateLabels[detail.data.state as CurationState]}</Badge>
+                <Button type="button" variant="outline" size="sm" onClick={() => { void setSelectedId(null); approvalForm.reset(); }}>关闭详情</Button>
+              </div>
+            </div>
+            <details className="mt-3 text-xs text-slate-600">
+              <summary className="cursor-pointer font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2">查看完整编号和追溯信息</summary>
+              <div className="mt-2 space-y-1 break-all font-mono">
+                <p>熊猫 ID：{detail.data.targetPandaId}</p>
+                <p>创建人 ID：{detail.data.createdByAccountId}</p>
+                <p>变更版本：{detail.data.version}</p>
+                {detail.data.reviewCaseId && <p>审核案件：{detail.data.reviewCaseId}</p>}
+                {detail.data.acquisitionBundleId && <p>采集批次：{detail.data.acquisitionBundleId}</p>}
+              </div>
+            </details>
+          </div>
+          <div className="space-y-5 px-5 py-5">
+            <div className="flex items-center justify-between gap-3"><h3 className="text-sm font-semibold text-slate-950">事实变更与来源</h3><span className="text-xs tabular-nums text-slate-600">{detail.data.changes.length} 项</span></div>
+            {detail.data.changes.length > 0 && <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">以下为拟应用的事实及佐证。当前档案值尚未提供，不能据此判断是否替换现有事实。</p>}
+            {detail.data.changes.length === 0 && <p className="text-sm text-slate-600">此变更集不包含直接事实变更。</p>}
+            {detail.data.changes.length > 0 && <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+              {detail.data.changes.map((change) => <li key={change.changeId} className="px-4 py-3">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div><p className="text-xs text-slate-600">{factLabels[change.fieldKey] ?? `原始字段：${change.fieldKey}`}</p><p className="mt-1 break-words text-base font-semibold text-slate-950">{displayValue(change.value, change.fieldKey)}</p></div>
                   <Badge variant="outline" className="bg-slate-50 text-slate-700">{change.certainty === "confirmed" ? "已确认" : "待证实"}</Badge>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-slate-700">
-                  <p className="text-xs font-medium text-slate-600">建议记录的内容</p>
-                  <p className="break-words text-lg font-semibold text-slate-950">{displayValue(change.value, change.fieldKey)}</p>
-                  <p>证据核验日期：{change.lastVerifiedOn}</p>
-                  <details><summary className="cursor-pointer font-medium text-teal-800">查看来源标识</summary><p className="mt-2 break-all font-mono text-xs">{change.sourceIds.join("、")}</p>{change.appliedAssertionId && <p className="mt-1 break-all font-mono text-xs">已应用事实：{change.appliedAssertionId}</p>}</details>
-                </CardContent>
-              </Card>
-            </li>)}
-          </ul>
-          {detail.data.ownerChanges.length > 0 && <>
-            <h3 className="mt-6 font-bold text-stone-950">领域变更与来源</h3>
-            <ul className="mt-3 grid gap-3 md:grid-cols-2">
-              {detail.data.ownerChanges.map((change) => <li key={change.changeId}>
-                <Card className="h-full gap-3 border-slate-200 py-4 shadow-none">
-                  <CardHeader><CardTitle className="text-base text-slate-950">{ownerModuleLabels[change.ownerModule] ?? change.ownerModule} · {operationLabels[change.operation] ?? `原始操作：${change.operation}`}</CardTitle></CardHeader>
-                  <CardContent className="space-y-2 text-sm text-slate-700">
-                    <p>证据核验日期：{change.lastVerifiedOn}</p>
-                    <details><summary className="cursor-pointer font-medium text-teal-800">查看结构化变更字段</summary>
-                      <dl className="mt-2 space-y-1">{Object.entries(change.payload).map(([key, value]) => <div key={key}><dt className="text-xs text-slate-600">原始字段：{key}</dt><dd className="break-all">{displayValue(value)}</dd></div>)}</dl>
-                    </details>
-                    <details><summary className="cursor-pointer font-medium text-teal-800">查看来源标识（{change.sourceIds.length}）</summary><p className="mt-2 break-all font-mono text-xs">{change.sourceIds.join("、")}</p></details>
-                  </CardContent>
-                </Card>
+                </div>
+                <p className="mt-2 text-xs text-slate-600">证据核验：{change.lastVerifiedOn} · 来源 {change.sourceIds.length} 项</p>
+                <details className="mt-2 text-xs"><summary className="cursor-pointer font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2">查看来源标识</summary><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p>{change.appliedAssertionId && <p className="mt-1 break-all font-mono text-slate-700">已应用事实：{change.appliedAssertionId}</p>}</details>
               </li>)}
-            </ul>
-          </>}
-          {canManage && detail.data.state === "draft" && <Button type="button" disabled={busy} className="mt-5"
-            onClick={() => { setMessage(""); validate.mutate(selectedId); }}>核验变更集</Button>}
-          {canApprove && detail.data.state === "validated" && <form className="mt-6 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-5" onSubmit={(event) => {
+            </ul>}
+            {detail.data.ownerChanges.length > 0 && <>
+              <div className="flex items-center justify-between gap-3"><h3 className="text-sm font-semibold text-slate-950">领域变更与来源</h3><span className="text-xs text-slate-600">{detail.data.ownerChanges.length} 项</span></div>
+              <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+                {detail.data.ownerChanges.map((change) => <li key={change.changeId} className="px-4 py-3">
+                  <p className="text-sm font-semibold text-slate-950">{ownerModuleLabels[change.ownerModule] ?? change.ownerModule} · {operationLabels[change.operation] ?? `原始操作：${change.operation}`}</p>
+                  <p className="mt-1 text-xs text-slate-600">证据核验：{change.lastVerifiedOn} · 来源 {change.sourceIds.length} 项</p>
+                  <details className="mt-2 text-xs"><summary className="cursor-pointer font-medium text-teal-800">查看结构化变更字段</summary>
+                    <dl className="mt-2 space-y-1">{Object.entries(change.payload).map(([key, value]) => <div key={key}><dt className="text-slate-600">原始字段：{key}</dt><dd className="break-all text-slate-900">{displayValue(value)}</dd></div>)}</dl>
+                  </details>
+                  <details className="mt-2 text-xs"><summary className="cursor-pointer font-medium text-teal-800">查看来源标识（{change.sourceIds.length}）</summary><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p></details>
+                </li>)}
+              </ul>
+            </>}
+          </div>
+          {canManage && detail.data.state === "draft" && <div className="border-t border-slate-200 bg-slate-50 px-5 py-4">
+            <h3 className="text-sm font-semibold text-slate-950">下一步：确认来源与事实</h3>
+            <p className="mt-1 text-sm text-slate-600">检查上方拟应用内容后进行核验；最终应用需要其他工作人员独立审批。</p>
+            <Button type="button" disabled={busy} className="mt-3" onClick={() => { setMessage(""); validate.mutate(selectedId); }}>核验变更集</Button>
+          </div>}
+          {canApprove && detail.data.state === "validated" && <form className="space-y-3 border-t border-slate-200 bg-slate-50 px-5 py-5" onSubmit={(event) => {
             event.preventDefault(); event.stopPropagation(); void approvalForm.handleSubmit();
           }}>
-            <h3 className="font-bold text-stone-950">下一步：独立审批</h3>
+            <h3 className="text-sm font-semibold text-slate-950">下一步：独立审批</h3>
             {isCreator ? <p className="text-sm text-amber-900">创建人不能审批自己提出的变更集，请由其他具备审批权限的工作人员处理。</p> :
               <p className="text-sm text-stone-700">审批通过将立即应用到内部档案，公开发布仍需单独处理。请先阅读上方全部事实和来源，再填写依据。</p>}
             <approvalForm.Field name="reason">{(field) => (
               <label className="block text-sm font-semibold text-stone-800">
                 审批原因
-                <textarea aria-label="审批原因" className="mt-2 block min-h-24 w-full rounded-md border border-stone-400 p-3 font-normal"
+                <textarea aria-label="审批原因" className="mt-2 block min-h-24 w-full rounded-lg border border-slate-300 bg-white p-3 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
                   value={field.state.value} onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur} minLength={3} maxLength={2000} required />
               </label>
@@ -226,7 +239,9 @@ export function CurationWorkspace() {
             </approvalForm.Subscribe>
           </form>}
         </>}
-      </section>}
+        </>}
+      </section>
+      </div>
       <AlertDialog open={confirmApproval} onOpenChange={setConfirmApproval}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -242,8 +257,6 @@ export function CurationWorkspace() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      {message && <p role="status" className="mt-5 rounded-md border border-teal-300 bg-teal-50 p-4 text-sm text-teal-950">{message}</p>}
-      {error && <p role="alert" className="mt-5 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{error.message}</p>}
     </div>
   );
 }
