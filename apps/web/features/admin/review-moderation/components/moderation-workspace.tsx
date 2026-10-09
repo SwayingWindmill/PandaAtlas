@@ -7,6 +7,16 @@ import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { DataTable } from "@/components/ui/table/data-table";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import {
@@ -40,6 +50,15 @@ function projectionState(active: boolean): { label: string; className: string } 
     : { label: "正常", className: "border-emerald-200 bg-emerald-50 text-emerald-900" };
 }
 
+const sanctionActionLabels: Record<ModerationSanction["kind"], string> = {
+  warning: "发送警告",
+  submission_restricted: "禁止提交",
+  attachment_restricted: "禁止附件",
+  notification_restricted: "限制通知",
+  account_suspended: "暂停账号",
+  account_closed_for_abuse: "违规关闭账号",
+};
+
 export function ModerationWorkspace() {
   const queryClient = useQueryClient();
   const session = useQuery(adminSessionQueryOptions);
@@ -60,7 +79,7 @@ export function ModerationWorkspace() {
     state: normalizedState,
   };
   const appeals = useQuery({ ...moderationAppealsQueryOptions(appealsQuery), enabled: canDecideAppeal });
-  const effectiveAppealId = selectedAppealId ?? appeals.data?.items[0]?.appealCaseId;
+  const effectiveAppealId = selectedAppealId ?? (accountId ? undefined : appeals.data?.items[0]?.appealCaseId);
   const selectedAppeal = appeals.data?.items.find((item) => item.appealCaseId === effectiveAppealId);
   const effectiveAccountId = accountId ?? selectedAppeal?.accountId;
   const account = useQuery({
@@ -74,6 +93,7 @@ export function ModerationWorkspace() {
   const [sanctionInternal, setSanctionInternal] = useState("");
   const [sanctionVisible, setSanctionVisible] = useState("");
   const [sanctionEndsAt, setSanctionEndsAt] = useState("");
+  const [confirmSanction, setConfirmSanction] = useState(false);
   const [restoreSanctionId, setRestoreSanctionId] = useState("");
   const [restoreReasonCode, setRestoreReasonCode] = useState("review_complete");
   const [restoreInternal, setRestoreInternal] = useState("");
@@ -194,6 +214,7 @@ export function ModerationWorkspace() {
           onSubmit={(event) => {
             event.preventDefault();
             if (lookupAccountId.trim()) {
+              setSelectedAppealId(null);
               setAccountId(lookupAccountId.trim());
               setNotice(null);
             }
@@ -321,17 +342,7 @@ export function ModerationWorkspace() {
               onSubmit={(event) => {
                 event.preventDefault();
                 if (!effectiveAccountId || !sanctionInternal.trim() || !sanctionVisible.trim()) return;
-                applyMutation.mutate({
-                  accountId: effectiveAccountId,
-                  input: {
-                    kind: sanctionKind,
-                    reasonCode: sanctionReasonCode.trim(),
-                    internalExplanation: sanctionInternal.trim(),
-                    userVisibleExplanation: sanctionVisible.trim(),
-                    idempotencyKey: crypto.randomUUID(),
-                    ...(sanctionEndsAt ? { endsAt: new Date(sanctionEndsAt).toISOString() } : {}),
-                  },
-                });
+                setConfirmSanction(true);
               }}
             >
               <h2 className="text-lg font-bold text-stone-950">执行限制</h2>
@@ -350,6 +361,42 @@ export function ModerationWorkspace() {
               </div>
             </form>
           ) : null}
+
+          <AlertDialog open={confirmSanction} onOpenChange={setConfirmSanction}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>确认{sanctionActionLabels[sanctionKind]}？</AlertDialogTitle>
+                <AlertDialogDescription>
+                  此操作会对以下账号记录处理措施，并可能立即改变其使用权限。请核对账号 ID 和限制类型后再确认。
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="space-y-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-950">
+                <p>账号 ID：<span className="break-all font-mono">{effectiveAccountId}</span></p>
+                <p>措施：{sanctionActionLabels[sanctionKind]}</p>
+                <p>截止时间：{sanctionEndsAt ? formatDate(new Date(sanctionEndsAt).toISOString()) : "未设置"}</p>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>取消</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-700 text-white hover:bg-red-800"
+                  onClick={() => {
+                    if (!effectiveAccountId) return;
+                    applyMutation.mutate({
+                      accountId: effectiveAccountId,
+                      input: {
+                        kind: sanctionKind,
+                        reasonCode: sanctionReasonCode.trim(),
+                        internalExplanation: sanctionInternal.trim(),
+                        userVisibleExplanation: sanctionVisible.trim(),
+                        idempotencyKey: crypto.randomUUID(),
+                        ...(sanctionEndsAt ? { endsAt: new Date(sanctionEndsAt).toISOString() } : {}),
+                      },
+                    });
+                  }}
+                >确认{sanctionActionLabels[sanctionKind]}</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           {subject && canRestore && restoreSanctionId ? (
             <form

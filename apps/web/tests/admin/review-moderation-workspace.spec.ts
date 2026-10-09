@@ -324,3 +324,99 @@ test("moderation actions stay capability scoped", async ({ page }) => {
   await expect(page.getByRole("button", { name: "执行限制" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "保存申诉决定" })).toHaveCount(0);
 });
+
+test("looking up another account cannot leave an unrelated appeal actionable", async ({ page }) => {
+  const otherAccountId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: moderationCapabilities }),
+  }));
+  await page.route("**/api/admin/moderation/appeals?**", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({
+      items: [{
+        appealCaseId, accountId: moderationAccountId, sanctionId, state: "open", version: 1,
+        userStatement: "Only the suspended account filed this appeal.",
+        createdAt: "2026-10-05T08:00:00.000Z", updatedAt: "2026-10-05T08:00:00.000Z",
+        firstResponseDueAt: "2026-10-05T20:00:00.000Z", slaOverdue: false, ageSeconds: 1800,
+      }], total: 1, limit: 25, offset: 0,
+    }),
+  }));
+  await page.route("**/api/admin/moderation/accounts/*", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({
+      subject: {
+        accountId: route.request().url().split("/").at(-1), version: 1,
+        submissionRestricted: false, attachmentRestricted: false, notificationRestricted: false,
+        accountSuspended: false, accountClosedForAbuse: false, repeatAbuseCount: 0,
+      }, sanctions: [],
+    }),
+  }));
+
+  await page.goto("/admin/moderation");
+  await expect(page.getByText("Only the suspended account filed this appeal.")).toBeVisible();
+  await page.getByLabel("账号 ID").fill(otherAccountId);
+  await page.getByRole("button", { name: "查询账号" }).click();
+  await expect(page.getByText("账号编号 aaaaaaaa")).toBeVisible();
+  await expect(page.getByText("Only the suspended account filed this appeal.")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "保存申诉决定" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: /账号 66666666/ }).click();
+  await expect(page.getByText("账号编号 66666666")).toBeVisible();
+  await expect(page.getByText("Only the suspended account filed this appeal.")).toBeVisible();
+});
+
+test("suspending an account requires an explicit confirmation with the account identity", async ({ page }) => {
+  let sanctionPosts = 0;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: moderationCapabilities }),
+  }));
+  await page.route("**/api/admin/moderation/appeals?**", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ items: [], total: 0, limit: 25, offset: 0 }),
+  }));
+  await page.route(`**/api/admin/moderation/accounts/${moderationAccountId}`, (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({
+      subject: {
+        accountId: moderationAccountId, version: 1, submissionRestricted: false,
+        attachmentRestricted: false, notificationRestricted: false, accountSuspended: false,
+        accountClosedForAbuse: false, repeatAbuseCount: 0,
+      }, sanctions: [],
+    }),
+  }));
+  await page.route(`**/api/admin/moderation/accounts/${moderationAccountId}/sanctions`, (route) => {
+    sanctionPosts += 1;
+    return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+      sanctionId, accountId: moderationAccountId, kind: "account_suspended",
+    }) });
+  });
+
+  await page.goto("/admin/moderation");
+  await page.getByLabel("账号 ID").fill(moderationAccountId);
+  await page.getByRole("button", { name: "查询账号" }).click();
+  await page.getByLabel("限制类型").selectOption("account_suspended");
+  await page.getByLabel("限制内部说明").fill("Repeated, verified violations");
+  await page.getByLabel("限制用户说明").fill("Your account access is temporarily suspended.");
+  await page.getByRole("button", { name: "执行限制" }).click();
+
+  const confirmation = page.getByRole("alertdialog");
+  await expect(confirmation).toBeVisible();
+  await expect(confirmation).toContainText(moderationAccountId);
+  expect(sanctionPosts).toBe(0);
+  await page.keyboard.press("Escape");
+  await expect(confirmation).toHaveCount(0);
+  expect(sanctionPosts).toBe(0);
+  await page.getByRole("button", { name: "执行限制" }).click();
+  await expect(confirmation).toBeVisible();
+  const accessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(accessibility.violations).toEqual([]);
+  await confirmation.getByRole("button", { name: "取消" }).click();
+  await expect(confirmation).toHaveCount(0);
+  expect(sanctionPosts).toBe(0);
+
+  await page.getByRole("button", { name: "执行限制" }).click();
+  await confirmation.getByRole("button", { name: "确认暂停账号" }).click();
+  await expect.poll(() => sanctionPosts).toBe(1);
+});

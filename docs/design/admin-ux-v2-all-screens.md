@@ -47,4 +47,11 @@ The local 1440px capture `.release-gate/admin-moderation-ux/moderation-after-144
 
 The V2 contract currently permits account lookup by UUID only, so the search form continues to request the authoritative account ID rather than pretending to support email/name search. No sanctions, restores or appeal decisions are executed by these screenshots. Existing moderation appeal decision and read-only capability Playwright scenarios must continue to pass.
 
+### Moderation follow-up: safe account context and sanction confirmation
+
+- An operator's manual UUID lookup now exits the selected-appeal context. The account projection cannot be paired with, or used to decide, an appeal belonging to a different account. Selecting a queue row explicitly returns to that appeal and its account.
+- Creating a sanction first opens the CLI-installed shadcn `AlertDialog` with the **complete target account ID**, the named restriction and its recorded deadline. Escape and Cancel return to the form **without** calling the V2 sanction endpoint. The final red confirmation is the only action that submits the original typed API mutation.
+- The generated dialog needed an explicit opaque white surface rather than the absent `bg-background` token. The inspected 1440px synthetic-data capture is `.release-gate/admin-moderation-ux/sanction-confirmation-1440.jpg` (locally ignored). The original transparent capture was rejected; the corrected modal is legible and visually aligned with the light Kiranism shell.
+- Browser-boundary Playwright tests cover both mistaken account context and confirm/cancel/Escape plus the dialog's axe accessibility. These tests do not execute real sanctions or substitute for sign-off of all Moderation states.
+
 **Unfinished:** the remaining deeper lifecycle and exceptional states of Review/Moderation still require operator visual sign-off. Full UX acceptance for the other routes remains open in #446/#447; these two screens' snapshots and tests do not constitute sign-off for the whole Admin.
