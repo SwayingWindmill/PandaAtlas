@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,7 @@ import { DataTable } from "@/components/ui/table/data-table";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import {
   buildPublicationRelease,
+  PublicationAuthenticationError,
   type PublicationAction,
   publicationKeys,
   publicationReleaseInspectionQueryOptions,
@@ -399,7 +401,18 @@ export function PublicationControlPlane() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      {mutationError ? <p className="mt-5 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">{mutationError.message}</p> : null}
+      {mutationError ? (
+        <p className="mt-5 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">
+          {mutationError.message}{" "}
+          {mutationError instanceof PublicationAuthenticationError && (
+            <Link className="font-semibold underline underline-offset-2" href={mutationError.code === "auth.aalRequired"
+              ? "/admin/security/mfa?next=%2Fadmin%2Fpublication"
+              : "/auth/login?next=%2Fadmin%2Fpublication"}>
+              {mutationError.code === "auth.aalRequired" ? "前往双重验证" : "重新登录"}
+            </Link>
+          )}
+        </p>
+      ) : null}
     </div>
   );
 }
