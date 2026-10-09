@@ -5,7 +5,7 @@ This slice changes **human staff role assignments**, not Supabase identities or 
 ## Operator journey
 
 1. Sign in to the Chinese admin console as an authorized role manager. Viewing the restricted staff directory and role history requires `identity.staff.read` and an active Supabase session, but not a fresh AAL2 verification. For **changes**, complete TOTP MFA for **AAL2** and ensure interactive authentication is within the 15-minute recent-authentication window.
-2. Navigate to **治理 → 工作人员 → 查看工作人员及岗位权限**, or open `/admin/staff/roles` directly. The directory shows staff accounts and their current roles. Select an identity to view its role assignments, active capabilities, and assignment history, including revoked or expired records.
+2. Navigate to **治理 → 人员管理 → 人员与权限**, or open `/admin/staff/roles` directly. The adjacent **邀请记录** view handles onboarding without exposing role mutations to unauthorized staff. The directory shows staff accounts and their current roles. Select an identity to view its role assignments, active capabilities, and assignment history, including revoked or expired records.
 3. Select one of the delegable human roles and choose **准备授予**. Review the subject and role, enter an explicit reason, then **确认授予**. Privileges are effective only if the subject's verified Auth identity and application account are active.
 4. To revoke an active delegable role, select **撤销**, supply a reason, and confirm. The next protected request queries PostgreSQL anew. No JWT claim or frontend navigation state can preserve revoked rights.
 5. Verify from a separate staff session: authorized Review access succeeds after the reviewer grant and is rejected after revocation. Do not use the administrator's own session to prove the reviewer restriction.
