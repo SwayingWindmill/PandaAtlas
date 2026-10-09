@@ -23,8 +23,19 @@ test("staff dashboard prioritizes real review and curation work over internal se
       items: [], total: search.get("state") === "validated" ? 2 : 0, limit: 1, offset: 0,
     }) });
   });
+  await page.route("**/api/admin/audit/evidence?**", (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify([{
+      sourceEventId: "00000000-0000-4000-8000-000000000101", sourceContext: "publication",
+      eventType: "publication.release.activated", aggregateType: "public_release",
+      aggregateId: "00000000-0000-4000-8000-000000000201",
+      correlationId: "00000000-0000-4000-8000-000000000301",
+      occurredAt: "2026-10-09T08:00:00.000Z", recordedAt: "2026-10-09T08:00:01.000Z",
+      payloadSha256: "a".repeat(64),
+    }]),
+  }));
 
   await page.goto("/admin");
+  await expect(page.getByText("待分派审核案件")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: "数据运营工作台" })).toBeVisible();
   const work = page.getByRole("region", { name: "待处理的工作" });
   await expect(work.getByText("待分派审核案件")).toBeVisible();
@@ -33,6 +44,10 @@ test("staff dashboard prioritizes real review and curation work over internal se
   await expect(work.getByText("等待独立审批的变更")).toBeVisible();
   await expect(work.getByText("2", { exact: true })).toBeVisible();
   await expect(work.getByRole("link", { name: "进入策展变更" })).toHaveAttribute("href", "/admin/curation?state=validated");
+  const activity = page.getByRole("region", { name: "最近操作" });
+  await expect(activity.getByText("已启用公开版本")).toBeVisible();
+  await expect(activity.getByRole("link", { name: "查看审计记录" })).toHaveAttribute("href", "/admin/audit/evidence");
+  await expect(page.getByText("publication.release.activated", { exact: true })).toHaveCount(0);
   await work.getByRole("link", { name: "进入审核队列" }).focus();
   await expect(work.getByRole("link", { name: "进入审核队列" })).toBeFocused();
   await expect(page.getByText("可用工作区")).toBeVisible();

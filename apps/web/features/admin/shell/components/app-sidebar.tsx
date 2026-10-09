@@ -87,7 +87,7 @@ export function AppSidebar({ session, onSignOut }: { session: AdminSession; onSi
           <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-900">工</span>
           <div className={expanded ? "min-w-0 flex-1" : "md:sr-only"}>
             <p className="truncate text-xs font-semibold text-slate-950">工作人员</p>
-            <p className="truncate font-mono text-[11px] text-slate-600">{session.accountId.slice(0, 8)}</p>
+            <p className="truncate text-[11px] text-slate-600">已登录后台</p>
           </div>
         </div>
         <button type="button" onClick={onSignOut} title="退出登录" className="mt-2 flex min-h-10 w-full items-center gap-3 rounded-lg px-3 text-left text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-teal-700">
