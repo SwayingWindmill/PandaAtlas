@@ -158,7 +158,7 @@ export function CurationWorkspace() {
           <p className="mt-2 max-w-sm text-sm leading-6 text-slate-600">在左侧队列选择记录后，可在这里查看建议事实、证据来源与下一步审批操作。</p>
         </div>}
         {selectedId && <>
-        {message && <p role="status" className="m-5 rounded-lg border border-teal-200 bg-teal-50 p-4 text-sm text-teal-950">{message}</p>}
+        <p role="status" className={message ? "m-5 rounded-lg border border-teal-200 bg-teal-50 p-4 text-sm text-teal-950" : "sr-only"}>{message}</p>
         {error && <p role="alert" className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error.message}</p>}
         {detail.isPending && <p role="status" className="p-5 text-sm text-slate-600">正在加载变更详情…</p>}
         {detail.isError && <p role="alert" className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">{detail.error.message}</p>}
