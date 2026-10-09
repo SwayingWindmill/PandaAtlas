@@ -143,6 +143,40 @@ test("IAM staff directory, invitation and role detail remain accessible", async 
   }
 });
 
+test("staff directory readers can inspect people and invitation progress without gaining mutation controls", async ({ page }) => {
+  const accountId = "55555555-5555-4555-8555-555555555555";
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "identity.staff.read"] }),
+  }));
+  await page.route("**/api/admin/staff/invitations", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify([{ invitationId: "invite-1", email: "pending@example.test", status: "pending" }]),
+  }));
+  await page.route("**/api/admin/staff/accounts**", (route) => {
+    const url = route.request().url();
+    const data = url.endsWith("/catalog") ? [] : url.endsWith("/accounts")
+      ? [{ accountId, email: "reader@example.test", state: "active", roles: ["reviewer"] }]
+      : { accountId, email: "reader@example.test", state: "active", stateReason: null,
+          capabilities: ["review.case.read", "audit.read"], assignments: [], stateHistory: [] };
+    return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(data) });
+  });
+
+  await page.goto("/admin/staff/invitations");
+  await expect(page.getByText("pending@example.test")).toBeVisible();
+  await expect(page.getByRole("button", { name: "发送邀请" })).toHaveCount(0);
+  await expect(page.getByText("等待对方验证邮箱", { exact: true })).toBeVisible();
+  await page.goto("/admin/staff/roles");
+  await page.getByRole("button", { name: /reader@example.test/ }).click();
+  await expect(page.getByText("审核 · 1 项")).toBeVisible();
+  await expect(page.getByText("审计 · 1 项")).toBeVisible();
+  await expect(page.getByText("review.case.read", { exact: true })).not.toBeVisible();
+  await page.getByText("查看原始权限代码").click();
+  await expect(page.getByText("review.case.read", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "准备授予" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "停用工作人员" })).toHaveCount(0);
+});
+
 test("admin navigation remains operable from the keyboard at narrow width", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 720 });
   await page.route("**/api/admin/session", async (route) => {
@@ -278,7 +312,7 @@ test("staff navigation keeps account invitations and role management separately 
   await page.reload();
   await expect(navigation.getByRole("link", { name: "工作人员" })).toBeVisible();
   await expect(navigation.getByRole("link", { name: "角色管理" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "邀请审核员" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "工作人员邀请", level: 1 })).toBeVisible();
   await page.goto("/admin/staff/roles");
   await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toBeVisible({ timeout: 15_000 });
 });
@@ -310,7 +344,7 @@ test("AAL2 staff manager invites an archive reviewer and sees a pending invitati
 
   await page.goto("/admin");
   await page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "工作人员" }).click();
-  await expect(page.getByRole("heading", { name: "邀请审核员" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "工作人员邀请", level: 1 })).toBeVisible();
   await page.getByRole("textbox", { name: "审核员邮箱" }).fill("reviewer@example.test");
   await page.getByRole("button", { name: "发送邀请" }).click();
   await expect(page.getByRole("status")).toContainText("邀请邮件已发送");
@@ -401,6 +435,7 @@ test("staff manager can inspect role history and confirm grant and revoke with r
   await page.getByRole("textbox", { name: "变更原因" }).fill("Assigned to evidence verification");
   await page.getByRole("button", { name: "确认授予" }).click();
   await expect(page.getByText("角色已授予")).toBeVisible();
+  await page.getByText("查看原始权限代码").click();
   await expect(page.getByText("review.case.read")).toBeVisible();
   await page.getByRole("button", { name: "撤销 审核员" }).click();
   await page.getByRole("textbox", { name: "变更原因" }).fill("Assignment completed");
