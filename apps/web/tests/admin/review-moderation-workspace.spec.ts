@@ -269,6 +269,8 @@ test("moderation shows the appeal queue, account projection, and typed appeal de
   await expect(page.getByRole("heading", { level: 1, name: "账号治理与申诉" })).toBeVisible();
   await expect(page.getByText("Please review the evidence again; I believe this suspension should be reversed.")).toBeVisible();
   await expect(page.getByText("账号已暂停", { exact: true })).toBeVisible();
+  await expect(page.getByText("账号当前处于暂停状态，请在处理申诉前核对限制原因与时间。")).toBeVisible();
+  await expect(page.getByRole("button", { name: /账号 66666666/ })).toBeVisible();
   await expect(page.getByRole("button", { name: "执行限制" })).toBeVisible();
   await expect(page).not.toHaveURL(/\b(?:appeal|account)=/);
   await page.getByLabel("申诉处理结果").selectOption("overturned");
