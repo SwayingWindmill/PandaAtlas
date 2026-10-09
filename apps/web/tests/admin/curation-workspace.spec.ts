@@ -39,9 +39,18 @@ test("Curation uses a typed paginated collection and approves a reviewed change 
 
   await page.goto("/admin/curation?state=draft");
   await expect(page.getByRole("heading", { name: "策展变更集", level: 1 })).toBeVisible();
-  await expect(page.getByRole("cell", { name: "来源机构的事实更正" })).toBeVisible();
+  await expect(page.getByText("来源机构的事实更正", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /查看变更：来源机构的事实更正/ })).toBeVisible();
   await page.getByRole("button", { name: "查看变更" }).click();
   await expect(page.getByText("性别", { exact: true })).toBeVisible();
+  const queue = page.getByRole("region", { name: "策展待办" });
+  const details = page.getByRole("region", { name: "策展变更详情" });
+  await expect(queue).toBeVisible();
+  await expect(details).toBeVisible();
+  const queueBounds = await queue.boundingBox();
+  const detailBounds = await details.boundingBox();
+  expect(queueBounds && detailBounds && queueBounds.x + queueBounds.width <= detailBounds.x).toBe(true);
+  await expect(page.getByRole("button", { name: "查看变更", pressed: true })).toBeVisible();
   await expect(page.getByText("雌性", { exact: true })).toBeVisible();
   await expect(page.getByText("当前档案值尚未提供，不能据此判断是否替换现有事实。")).toBeVisible();
   await page.getByText("查看来源标识").click();
@@ -66,6 +75,9 @@ test("Curation uses a typed paginated collection and approves a reviewed change 
   await expect(page.getByRole("textbox", { name: "JSON" })).toHaveCount(0);
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(axe.violations).toEqual([]);
+  await page.getByRole("button", { name: "关闭详情" }).click();
+  await expect(page.getByRole("heading", { name: "选择一项策展变更" })).toBeVisible();
+  await expect(page).not.toHaveURL(/changeSet=/);
 });
 
 test("Curation never offers self-approval, even if the creator has the approval capability", async ({ page }) => {
