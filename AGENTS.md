@@ -26,6 +26,8 @@
 
 For Matt Pocock workflows in this repository, explicitly read the tracked `.agents/skills/<skill>/SKILL.md`; user-global duplicate skills are not PandaAtlas authority.
 
+For frontend UX/UI work, also read the user-global `jakubkrehel/skills` instructions under `~/.agents/skills/`. Use `better-interface` with its six domain skills (`better-accessibility`, `better-layout`, `better-writing`, `better-typography`, `better-colors`, `better-ui`) when designing or auditing a complete operator flow. For visual changes, use the `interface-review` skill as a separate change-scoped review alongside Matt's Standards/Spec code review. Global availability is a developer-workstation prerequisite, not an app dependency; do not vendor these skills or introduce new build/runtime dependencies. Product facts, security/capabilities, existing PandaAtlas design contracts and accessibility take precedence over aesthetic suggestions. An automated test pass is not visual sign-off: inspect the rendered desktop page, its real-data semantics and its loading/empty/error states before claiming UI acceptance.
+
 ### Issue tracker
 
 Work is tracked in GitHub Issues for `SwayingWindmill/PandaAtlas`. For project-status or next-work questions, use live `main` plus GitHub state as described in `docs/agents/issue-tracker.md`.

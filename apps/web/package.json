@@ -38,6 +38,7 @@
     "@zhipanda/api-client": "0.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cn": "^0.4.0",
     "lucide-react": "^0.460.0",
     "maplibre-gl": "^5.0.0",
     "nuqs": "^2.8.9",
