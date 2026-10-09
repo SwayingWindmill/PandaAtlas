@@ -102,7 +102,33 @@ export interface CurationChangeSet {
   ownerChanges: CurationOwnerChange[];
 }
 
+export interface CurationChangeSetSummary {
+  changeSetId: string;
+  originKind: CurationChangeSet["originKind"];
+  targetPandaId: string;
+  state: CurationChangeSet["state"];
+  version: number;
+  reason: string;
+  createdByAccountId: string;
+  createdAt: string;
+  changeCount: number;
+}
+
+export interface CurationChangeSetListQuery {
+  limit: number;
+  offset: number;
+  state?: CurationChangeSet["state"];
+}
+
+export interface CurationChangeSetPage {
+  items: CurationChangeSetSummary[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 export interface CurationRepository {
+  list(query: CurationChangeSetListQuery): Promise<CurationChangeSetPage>;
   createFromReview(input: ReviewCurationRecommendationInput): Promise<CurationChangeSet>;
   createFromAcquisition(input: AcquisitionCurationRecommendationInput): Promise<CurationChangeSet>;
   get(changeSetId: string): Promise<CurationChangeSet | undefined>;
@@ -125,6 +151,7 @@ export interface CurationIntakePort {
 }
 
 export interface CurationPort extends CurationIntakePort {
+  list(query: CurationChangeSetListQuery): Promise<CurationChangeSetPage>;
   get(changeSetId: string): Promise<CurationChangeSet | undefined>;
   validate(changeSetId: string, actorAccountId: string): Promise<CurationValidationResult>;
   approveAndApply(changeSetId: string, actorAccountId: string, reason: string): Promise<CurationApplyResult>;
@@ -182,6 +209,10 @@ export class CurationApplication implements CurationPort {
 
   public get(changeSetId: string): Promise<CurationChangeSet | undefined> {
     return this.repository.get(changeSetId);
+  }
+
+  public list(query: CurationChangeSetListQuery): Promise<CurationChangeSetPage> {
+    return this.repository.list(query);
   }
 
   public async validate(changeSetId: string, actorAccountId: string): Promise<CurationValidationResult> {

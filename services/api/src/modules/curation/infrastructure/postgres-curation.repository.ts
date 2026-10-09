@@ -6,6 +6,8 @@ import type {
 import type {
   AcquisitionCurationRecommendationInput,
   CurationChangeSet,
+  CurationChangeSetListQuery,
+  CurationChangeSetPage,
   CurationJsonValue,
   CurationOwnerChange,
   CurationOwnerModule,
@@ -66,6 +68,33 @@ function ownerOperation(value: string): CurationOwnerOperation {
 
 export class PostgresCurationRepository implements CurationRepository {
   public constructor(private readonly database: DatabaseService) {}
+
+  public async list(query: CurationChangeSetListQuery): Promise<CurationChangeSetPage> {
+    const base = this.database.db.selectFrom("curation.change_sets");
+    const filtered = query.state ? base.where("state", "=", query.state) : base;
+    const [totalRow, rows] = await Promise.all([
+      filtered.select(({ fn }) => fn.countAll<number>().as("count")).executeTakeFirstOrThrow(),
+      filtered.select([
+        "change_set_id", "origin_kind", "target_panda_id", "state", "version",
+        "reason", "created_by_account_id", "created_at",
+        sql<number>`(
+          select count(*)::int from curation.panda_fact_changes f where f.change_set_id = curation.change_sets.change_set_id
+        ) + (
+          select count(*)::int from curation.owner_changes o where o.change_set_id = curation.change_sets.change_set_id
+        )`.as("change_count"),
+      ]).orderBy("created_at", "desc").orderBy("change_set_id", "desc")
+        .limit(query.limit).offset(query.offset).execute(),
+    ]);
+    return {
+      total: Number(totalRow.count), limit: query.limit, offset: query.offset,
+      items: rows.map((row) => ({
+        changeSetId: row.change_set_id, originKind: originKind(row.origin_kind),
+        targetPandaId: row.target_panda_id, state: state(row.state), version: row.version,
+        reason: row.reason, createdByAccountId: row.created_by_account_id,
+        createdAt: row.created_at.toISOString(), changeCount: Number(row.change_count),
+      })),
+    };
+  }
 
   public async createFromReview(input: ReviewCurationRecommendationInput): Promise<CurationChangeSet> {
     return this.database.transaction(async (transaction) => {

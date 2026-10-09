@@ -16,7 +16,6 @@ type ReviewRecommendBody = components["schemas"]["RecommendReviewDto"];
 type ApplySanctionBody = components["schemas"]["ApplySanctionDto"];
 type RestoreSanctionBody = components["schemas"]["RestoreSanctionDto"];
 type DecideAppealBody = components["schemas"]["DecideAppealDto"];
-type ApproveCurationBody = components["schemas"]["ApproveCurationDto"];
 
 interface AdminOperationRequest {
   operation: string;
@@ -144,33 +143,6 @@ export async function POST(request: NextRequest) {
         headers: api.headers,
         params: { path: { appealCaseId } },
         body: payload as DecideAppealBody,
-      }));
-    }
-    case "curation.get": {
-      const changeSetId = requiredResourceId(input.resourceId);
-      if (changeSetId instanceof NextResponse) return changeSetId;
-      return v2JsonResponse(await api.client.GET("/api/v2/curation/change-sets/{changeSetId}", {
-        headers: api.headers,
-        params: { path: { changeSetId } },
-      }));
-    }
-    case "curation.validate": {
-      const changeSetId = requiredResourceId(input.resourceId);
-      if (changeSetId instanceof NextResponse) return changeSetId;
-      return v2JsonResponse(await api.client.POST("/api/v2/curation/change-sets/{changeSetId}/validate", {
-        headers: api.headers,
-        params: { path: { changeSetId } },
-      }));
-    }
-    case "curation.approve": {
-      const changeSetId = requiredResourceId(input.resourceId);
-      if (changeSetId instanceof NextResponse) return changeSetId;
-      const payload = objectPayload(input.payload);
-      if (payload instanceof NextResponse) return payload;
-      return v2JsonResponse(await api.client.POST("/api/v2/curation/change-sets/{changeSetId}/approve", {
-        headers: api.headers,
-        params: { path: { changeSetId } },
-        body: payload as ApproveCurationBody,
       }));
     }
     case "audit.list": {

@@ -244,6 +244,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/curation/change-sets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listCurationChangeSets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/curation/change-sets/{changeSetId}": {
         parameters: {
             query?: never;
@@ -1396,6 +1412,29 @@ export interface components {
             mediaType: string;
             byteSize: number;
             state: string;
+        };
+        CurationChangeSetSummaryDto: {
+            /** Format: uuid */
+            changeSetId: string;
+            /** @enum {string} */
+            originKind: "review" | "acquisition";
+            /** Format: uuid */
+            targetPandaId: string;
+            /** @enum {string} */
+            state: "draft" | "validated" | "approved" | "applied" | "rejected";
+            version: number;
+            reason: string;
+            /** Format: uuid */
+            createdByAccountId: string;
+            /** Format: date-time */
+            createdAt: string;
+            changeCount: number;
+        };
+        CurationChangeSetPageDto: {
+            items: components["schemas"]["CurationChangeSetSummaryDto"][];
+            total: number;
+            limit: number;
+            offset: number;
         };
         CurationChangeDto: {
             /** Format: uuid */
@@ -2562,6 +2601,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ContributionAttachmentDto"];
+                };
+            };
+        };
+    };
+    listCurationChangeSets: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+                state?: "draft" | "validated" | "approved" | "applied" | "rejected";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurationChangeSetPageDto"];
                 };
             };
         };

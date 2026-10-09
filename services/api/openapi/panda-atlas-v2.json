@@ -512,6 +512,65 @@
         ]
       }
     },
+    "/api/v2/curation/change-sets": {
+      "get": {
+        "operationId": "listCurationChangeSets",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "validated",
+                "approved",
+                "applied",
+                "rejected"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurationChangeSetPageDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Curation"
+        ]
+      }
+    },
     "/api/v2/curation/change-sets/{changeSetId}": {
       "get": {
         "operationId": "getCurationChangeSet",
@@ -3651,6 +3710,91 @@
           "mediaType",
           "byteSize",
           "state"
+        ]
+      },
+      "CurationChangeSetSummaryDto": {
+        "type": "object",
+        "properties": {
+          "changeSetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "originKind": {
+            "type": "string",
+            "enum": [
+              "review",
+              "acquisition"
+            ]
+          },
+          "targetPandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "validated",
+              "approved",
+              "applied",
+              "rejected"
+            ]
+          },
+          "version": {
+            "type": "number"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "createdByAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "changeCount": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "changeSetId",
+          "originKind",
+          "targetPandaId",
+          "state",
+          "version",
+          "reason",
+          "createdByAccountId",
+          "createdAt",
+          "changeCount"
+        ]
+      },
+      "CurationChangeSetPageDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurationChangeSetSummaryDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "offset": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
         ]
       },
       "CurationChangeDto": {

@@ -524,6 +524,29 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(recommend.statusCode).toBe(200);
     const changeSetId = recommend.json<{ changeSetId: string }>().changeSetId;
 
+    const pendingCollection = await app.inject({
+      method: "GET",
+      url: "/api/v2/curation/change-sets?state=draft&limit=10&offset=0",
+      headers: headers(editorToken),
+    });
+    expect(pendingCollection.statusCode).toBe(200);
+    const pendingPage = pendingCollection.json<{
+      items: Array<{ changeSetId: string; state: string; targetPandaId: string; changeCount: number }>;
+      total: number; limit: number; offset: number;
+    }>();
+    expect(pendingPage.limit).toBe(10);
+    expect(pendingPage.offset).toBe(0);
+    expect(pendingPage.total).toBeGreaterThanOrEqual(1);
+    expect(pendingPage.items.find((item) => item.changeSetId === changeSetId)).toMatchObject({
+      changeSetId, state: "draft", targetPandaId: panda.pandaId, changeCount: 1,
+    });
+    expect((await app.inject({
+      method: "GET", url: "/api/v2/curation/change-sets?state=invalid", headers: headers(editorToken),
+    })).statusCode).toBe(400);
+    expect((await app.inject({
+      method: "GET", url: "/api/v2/curation/change-sets?limit=10", headers: headers(contributorToken),
+    })).statusCode).toBe(403);
+
     const beforeApproval = await pandas.getPanda(panda.pandaId);
     expect(beforeApproval?.conclusions.some((item) => item.fieldKey === "profile.sex")).toBe(false);
 
