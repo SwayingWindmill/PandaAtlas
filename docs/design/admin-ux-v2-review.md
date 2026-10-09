@@ -17,6 +17,12 @@ Matt Pocock's repository-local `implement` / `tdd` / `code-review` process owns 
 - **Honest states**: a loading indicator is not `0`; an unavailable API is not `0`; an empty queue explains there is nothing awaiting action. Don't fetch unauthorized queues.
 - **No new backend contracts**: reuse the existing authenticated feature BFFs and TanStack Query. NestJS remains the final capability/operation authority.
 
+### Kiranism alignment and shadcn CLI
+
+Follow the established [Kiranism dashboard](https://github.com/Kiranism/next-shadcn-dashboard-starter) visual structure—light sidebar, quiet sticky header, compact metric cards and subordinate workspace links—rather than building custom panels. `npx shadcn@latest add card badge skeleton -y` was run from `apps/web` against the repository's existing `components.json`. The resulting `Card`, `Badge` and `Skeleton` are composed in the overview alongside the existing `Button` and Sidebar. The separate Radix aggregate package brought by the CLI was removed in favor of the already-installed `@radix-ui/react-slot` for Badge composition. The CLI's current `cn` dependency remains with the generated primitives. No Clerk, Base UI, demo charts or made-up metrics were imported from Kiranism; the existing auth/queries remain authoritative.
+
+The Admin shell's existing sidebar colors were aligned to Kiranism's restrained **light** navigation theme while preserving its current permission-based navigation, keyboard shortcut and collapsed-state behavior. The sidebar implementation itself was not replaced in this slice; switching it to a new primitive family would change a global interaction seam and requires separate justification and tests.
+
 ## Six-domain interface audit (scope: `/admin` only)
 
 | Owner | What changed / what to inspect |
