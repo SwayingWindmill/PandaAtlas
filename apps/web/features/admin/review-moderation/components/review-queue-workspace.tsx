@@ -187,7 +187,7 @@ export function ReviewQueueWorkspace() {
           </p>
         </div>
         {canRead ? (
-          <label className="text-sm font-semibold text-stone-700">
+          <label className="flex items-center gap-3 text-sm font-medium text-slate-700">
             队列状态
             <select
               aria-label="队列状态"
@@ -197,7 +197,7 @@ export function ReviewQueueWorkspace() {
                 void setState(value === "all" ? null : value);
                 void setPage(1);
               }}
-              className="ml-2 min-h-10 rounded-md border border-stone-400 bg-white px-3 capitalize"
+              className="min-h-10 min-w-36 rounded-lg border border-slate-300 bg-white px-3 text-sm font-normal text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
             >
               <option value="all">全部</option>
               {REVIEW_STATES.map((value) => <option key={value} value={value}>{adminStateLabel(value)}</option>)}
@@ -244,21 +244,21 @@ export function ReviewQueueWorkspace() {
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 id="review-queue-heading" className="text-base font-semibold text-slate-950">待办队列</h2>
-              <p className="mt-1 text-sm text-stone-600">选择案件查看资料、证据和处理进度。</p>
+              <p className="mt-1 text-xs text-slate-600">选择案件查看资料、证据和处理进度</p>
             </div>
-            {queue.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{queue.data.total} 件</span> : null}
+            {queue.data ? <Badge variant="outline" className="bg-white text-slate-700">{queue.data.total} 件</Badge> : null}
           </div>
           {!canRead ? <p className="mt-5 text-sm text-stone-600">当前账号没有查看审核队列的权限。</p> : null}
           {queue.isPending && canRead ? <p className="mt-5 text-sm text-stone-600">正在加载审核队列…</p> : null}
           {queue.isError ? <p role="alert" className="mt-5 text-sm text-red-800">{queue.error.message}</p> : null}
           {queue.isSuccess ? (
             <>
-              <div className="mt-5"><DataTable table={table} emptyMessage="当前筛选条件下没有待审核案件。" /></div>
-              <div className="mt-4 flex items-center justify-between gap-3 text-sm text-stone-700">
+              <div className="mt-4"><DataTable table={table} emptyMessage="当前筛选条件下没有待审核案件。" /></div>
+              <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-600">
                 <span>第 {page} / {totalPages} 页</span>
                 <div className="flex gap-2">
-                  <Button type="button" variant="outline" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
-                  <Button type="button" variant="outline" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
+                  <Button type="button" variant="outline" size="sm" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
+                  <Button type="button" variant="outline" size="sm" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
                 </div>
               </div>
             </>

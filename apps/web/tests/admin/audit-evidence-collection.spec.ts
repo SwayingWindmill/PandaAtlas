@@ -46,12 +46,17 @@ test("audit evidence collection renders rows and keeps the supported limit in th
   await expect(page.getByRole("heading", { level: 1, name: "审计记录" })).toBeVisible();
   await expect(page.getByText("已启用公开版本", { exact: true })).toBeVisible();
   await expect(page.getByText("publication.release.activated", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("公开版本", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("公开版本 · 发布", { exact: true })).toBeVisible();
   expect(requestedLimits).toContain("25");
 
-  await page.getByRole("button", { name: "查看审计详情" }).click();
+  await page.getByRole("button", { name: /查看审计详情：已启用公开版本/ }).click();
   const details = page.getByRole("region", { name: "审计事件详情" });
   await expect(details.getByRole("heading", { name: "已启用公开版本" })).toBeVisible();
+  const queue = page.getByRole("region", { name: "审计记录列表" });
+  const queueBounds = await queue.boundingBox();
+  const detailBounds = await details.boundingBox();
+  expect(queueBounds && detailBounds && queueBounds.x + queueBounds.width <= detailBounds.x).toBe(true);
+  await expect(page.getByRole("button", { name: /查看审计详情：已启用公开版本/, pressed: true })).toBeVisible();
   await expect(details.getByText("操作人信息未由此审计接口提供。")).toBeVisible();
   await expect(details.getByText(evidence[0].sourceEventId, { exact: true })).not.toBeVisible();
   await details.getByText("技术追溯信息").click();
@@ -78,7 +83,7 @@ test("audit records never expose invented object links and use only supported li
     status: 200, contentType: "application/json", body: JSON.stringify(reviewEvidence),
   }));
   await page.goto("/admin/audit/evidence?limit=25");
-  await page.getByRole("button", { name: "查看审计详情" }).click();
+  await page.getByRole("button", { name: /查看审计详情：/ }).click();
   const details = page.getByRole("region", { name: "审计事件详情" });
   await expect(details.getByText("已建议将审核结果纳入档案")).toBeVisible();
   await details.getByText("技术追溯信息").click();
