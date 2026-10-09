@@ -134,6 +134,7 @@ test("publication control plane shows releases, counts, diff, history, and typed
 
 test("publication activation uses a typed reason and refreshes the release inspection", async ({ page }) => {
   let activated = false;
+  let recentAuthExpired = true;
   let actionBody: unknown;
   let listReads = 0;
   let inspectionReads = 0;
@@ -239,6 +240,14 @@ test("publication activation uses a typed reason and refreshes the release inspe
     });
   });
   await page.route(`**/api/admin/publication/releases/${candidateReleaseId}/actions`, async (route) => {
+    if (recentAuthExpired) {
+      recentAuthExpired = false;
+      return route.fulfill({
+        status: 403,
+        contentType: "application/json",
+        body: JSON.stringify({ code: "auth.recentAuthRequired", detail: "Recent interactive authentication is required." }),
+      });
+    }
     actionBody = route.request().postDataJSON();
     activated = true;
     await route.fulfill({
@@ -258,6 +267,10 @@ test("publication activation uses a typed reason and refreshes the release inspe
 
   await page.goto(`/admin/publication?release=${candidateReleaseId}`);
   await page.getByLabel("操作原因").fill("Promote reviewed candidate.");
+  await page.getByRole("button", { name: "启用版本" }).click();
+  await expect(page.getByRole("alert")).toContainText("此敏感操作的近期身份验证已过期");
+  await expect(page.getByRole("link", { name: "重新登录" })).toHaveAttribute("href", "/auth/login?next=%2Fadmin%2Fpublication");
+  expect(actionBody).toBeUndefined();
   await page.getByRole("button", { name: "启用版本" }).click();
 
   await expect.poll(() => actionBody).toEqual({ action: "activate", reason: "Promote reviewed candidate." });

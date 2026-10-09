@@ -132,6 +132,39 @@ describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
     });
   });
 
+  it("keeps routine staff workflows usable after recent authentication expires while protecting high-impact actions", async () => {
+    const routine = [
+      "review.case.intake", "review.case.read", "review.case.claim", "review.case.decide", "review.case.verify_source",
+      "review.case.recommend", "review.case.triage", "review.case.reopen", "review.case.request_information",
+      "review.case.metrics", "moderation.sanction.read", "moderation.appeal.read", "moderation.metrics",
+      "curation.change.read", "curation.change.manage", "publication.release.manage", "audit.read",
+    ];
+    const highImpact = [
+      "identity.account.manage", "identity.role.manage", "curation.change.approve",
+      "moderation.sanction.apply", "moderation.sanction.restore", "moderation.appeal.decide",
+      "publication.release.activate", "publication.emergency", "audit.export",
+    ];
+
+    const policies = await database.db
+      .selectFrom("identity.capabilities")
+      .select(["capability_key", "requires_recent_auth", "minimum_aal", "requires_live_session"])
+      .where("capability_key", "in", [...routine, ...highImpact])
+      .execute();
+    const byKey = new Map(policies.map((policy) => [policy.capability_key, policy]));
+    for (const key of routine) {
+      expect(byKey.get(key), `${key} needs normal logged-in staff access, not a 15-minute step-up`).toMatchObject({
+        requires_recent_auth: false,
+      });
+    }
+    for (const key of highImpact) {
+      expect(byKey.get(key), `${key} must retain stronger authentication`).toMatchObject({
+        requires_recent_auth: true,
+        minimum_aal: "aal2",
+        requires_live_session: true,
+      });
+    }
+  });
+
   it("commits and rolls back Outbox plus PGMQ as one PostgreSQL transaction", async () => {
     const committedIdempotency = `integration-${randomUUID()}`;
     let committedEventId = "";
