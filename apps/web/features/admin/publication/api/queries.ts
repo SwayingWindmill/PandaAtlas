@@ -12,6 +12,12 @@ interface PublicationReleaseListParams {
   lifecycleState?: "building" | "sealed";
 }
 
+export class PublicationAuthenticationError extends Error {
+  public constructor(public readonly code: string, message: string) {
+    super(message);
+  }
+}
+
 export const publicationKeys = {
   all: ["admin", "publication"] as const,
   releases: () => [...publicationKeys.all, "releases"] as const,
@@ -21,7 +27,16 @@ export const publicationKeys = {
 
 async function responseJson<T>(response: Response, fallback: string): Promise<T> {
   if (!response.ok) {
-    const body = await response.json().catch(() => null) as { detail?: string } | null;
+    const body = await response.json().catch(() => null) as { code?: string; detail?: string } | null;
+    if (body?.code === "auth.recentAuthRequired") {
+      throw new PublicationAuthenticationError(body.code, "此敏感操作的近期身份验证已过期，请重新登录并验证后重试。");
+    }
+    if (body?.code === "auth.aalRequired") {
+      throw new PublicationAuthenticationError(body.code, "此敏感操作需要完成双重验证，请先前往账号安全页面。");
+    }
+    if (body?.code === "auth.liveSessionRequired") {
+      throw new PublicationAuthenticationError(body.code, "当前登录会话已失效，请重新登录后重试。");
+    }
     throw new Error(body?.detail ?? `${fallback} (${response.status})`);
   }
   return response.json() as Promise<T>;
