@@ -7,11 +7,10 @@ export interface AdminNavigationItem {
   group: "总览" | "运营" | "治理";
   icon: "layout-dashboard" | "clipboard-check" | "shield-alert" | "database" | "send" | "scroll-text" | "shield-check" | "users-round";
   capabilities?: readonly string[];
-  activePaths?: readonly string[];
 }
 
 export const adminNavigationItems: readonly AdminNavigationItem[] = [
-  { href: "/admin", label: "工作台", description: "我的可用工作区及账号权限", group: "总览", icon: "layout-dashboard", activePaths: ["/admin"] },
+  { href: "/admin", label: "工作台", description: "我的可用工作区及账号权限", group: "总览", icon: "layout-dashboard" },
   {
     href: "/admin/reviews",
     label: "审核", description: "核验贡献证据与待审事项", group: "运营", icon: "clipboard-check",
@@ -36,8 +35,6 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
     href: "/admin/audit/evidence",
     label: "审计", description: "追踪操作与证据记录", group: "治理", icon: "scroll-text",
     capabilities: ["audit.read"],
-    // Until #370 removes the generic catch-all, gate its still-reachable URLs too.
-    activePaths: ["/admin/audit/evidence", "/admin/audit", "/admin/audit-logs"],
   },
   { href: "/admin/capabilities", label: "权限", description: "查看当前账号的操作能力", group: "治理", icon: "shield-check" },
   {
@@ -76,10 +73,9 @@ export function visibleAdminNavigationItems(session: AdminSession): AdminNavigat
 }
 
 export function adminNavigationItemForPath(pathname: string): AdminNavigationItem | undefined {
-  return adminNavigationItems.find((item) => {
-    const activePaths = item.activePaths ?? [item.href];
-    return activePaths.some((path) => pathname === path || (path !== "/admin" && pathname.startsWith(`${path}/`)));
-  });
+  return adminNavigationItems.find((item) =>
+    pathname === item.href || (item.href !== "/admin" && pathname.startsWith(`${item.href}/`)),
+  );
 }
 
 export function isAdminNavigationItemActive(item: AdminNavigationItem, pathname: string): boolean {

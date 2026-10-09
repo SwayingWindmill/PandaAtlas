@@ -5,6 +5,8 @@ const webRoot = resolve(import.meta.dirname, "..");
 
 const forbiddenRouteFiles = [
   "app/[locale]/prototype/panda-fans/page.tsx",
+  "app/admin/[...path]/page.tsx",
+  "app/api/admin/operations/route.ts",
   "app/admin/imports/page.tsx",
   "app/api/admin/import-jobs/route.ts",
   "app/api/admin/import-jobs/[jobId]/route.ts",

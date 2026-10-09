@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { AdminProviders } from "@/components/admin/admin-providers";
+import { AdminProviders } from "@/features/admin/shell/components/admin-providers";
 import { AdminShell } from "@/features/admin/shell/components/admin-shell";
 
 export const metadata: Metadata = {
