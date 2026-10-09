@@ -29,6 +29,7 @@
     "deploy:cloudflare": "npm run build:cloudflare && cf deploy --prebuilt --mode production"
   },
   "dependencies": {
+    "@radix-ui/react-alert-dialog": "^1.1.24",
     "@radix-ui/react-slot": "^1.1.0",
     "@supabase/ssr": "0.12.3",
     "@supabase/supabase-js": "2.110.9",
@@ -38,6 +39,7 @@
     "@zhipanda/api-client": "0.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cn": "^0.4.0",
     "lucide-react": "^0.460.0",
     "maplibre-gl": "^5.0.0",
     "nuqs": "^2.8.9",
