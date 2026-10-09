@@ -6,6 +6,7 @@ import { parseAsInteger, useQueryState } from "nuqs";
 import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/ui/table/data-table";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import {
@@ -135,7 +136,8 @@ export function ModerationWorkspace() {
           className="text-left font-semibold text-stone-950 underline decoration-stone-400 underline-offset-4"
           onClick={() => void selectAppeal(row.original)}
         >
-          {row.original.appealCaseId.slice(0, 8)}
+          <span className="block">账号 {row.original.accountId.slice(0, 8)}</span>
+          <span className="mt-1 block text-xs font-normal text-stone-600">申诉 {row.original.appealCaseId.slice(0, 8)}</span>
         </button>
       ),
     }),
@@ -143,16 +145,9 @@ export function ModerationWorkspace() {
       header: "状态",
       cell: ({ getValue }) => <span className="capitalize">{adminStateLabel(getValue())}</span>,
     }),
-    appealColumnHelper.accessor("accountId", {
-      header: "账号",
-      cell: ({ getValue }) => <span className="font-mono text-xs">{getValue().slice(0, 8)}</span>,
-    }),
-    appealColumnHelper.accessor("ageSeconds", { header: "等待时间", cell: ({ getValue }) => formatQueueAge(getValue()) }),
-    appealColumnHelper.accessor("slaOverdue", {
-      header: "SLA",
-      cell: ({ getValue }) => getValue()
-        ? <span className="font-semibold text-red-700">已超时</span>
-        : <span className="text-stone-600">正常</span>,
+    appealColumnHelper.accessor("ageSeconds", {
+      header: "等待情况",
+      cell: ({ row, getValue }) => <span className={row.original.slaOverdue ? "font-semibold text-red-700" : "text-stone-700"}>{formatQueueAge(getValue())}{row.original.slaOverdue ? " · 已超时" : ""}</span>,
     }),
   ], [selectAppeal]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
@@ -221,12 +216,12 @@ export function ModerationWorkspace() {
       {mutationError ? <p role="alert" className="mt-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{mutationError.message}</p> : null}
       {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
 
-      <div className="mt-6 grid items-start gap-6 xl:grid-cols-2">
+      <div className="mt-6 grid items-start gap-5 xl:grid-cols-[minmax(23rem,0.8fr)_minmax(0,1.5fr)]">
         <section className="min-w-0 rounded-xl border border-stone-300 bg-white p-5 shadow-sm xl:sticky xl:top-24" aria-labelledby="appeal-queue-heading">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 id="appeal-queue-heading" className="text-xl font-bold text-stone-950">申诉队列</h2>
-              <p className="mt-1 text-sm text-stone-600">按处理时限优先展示待办申诉。</p>
+              <p className="mt-1 text-sm text-stone-600">选择申诉，核对账号当前的限制及申诉理由。</p>
             </div>
             {appeals.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{appeals.data.total} 项申诉</span> : null}
           </div>
@@ -254,11 +249,13 @@ export function ModerationWorkspace() {
             {!effectiveAccountId ? <p className="p-5 text-sm text-stone-600">请选择申诉或输入账号 ID。</p> : null}
             {subject ? (
               <>
-                <div className="border-b border-stone-200 bg-slate-900 p-5 text-white">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">账号治理状态</p>
-                  <h2 id="account-state-heading" className="mt-2 text-2xl font-bold">{subject.accountId.slice(0, 8)}</h2>
-                  <p className="mt-1 break-all font-mono text-xs text-stone-400">{subject.accountId}</p>
+                <div className="border-b border-slate-200 bg-slate-50 p-5">
+                  <p className="text-xs font-semibold text-teal-800">当前账号</p>
+                  <h2 id="account-state-heading" className="mt-2 text-xl font-semibold text-slate-950">账号治理状态</h2>
+                  <p className="mt-1 text-sm text-slate-700">账号编号 {subject.accountId.slice(0, 8)}</p>
+                  <details className="mt-2 text-xs text-slate-600"><summary className="cursor-pointer font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2">查看完整账号 ID</summary><p className="mt-2 break-all font-mono">{subject.accountId}</p></details>
                 </div>
+                {subject.accountSuspended && <p className="mx-5 mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">账号当前处于暂停状态，请在处理申诉前核对限制原因与时间。</p>}
                 <div className="grid gap-3 p-5 sm:grid-cols-2">
                   {[
                     ["提交", subject.submissionRestricted],
@@ -306,11 +303,10 @@ export function ModerationWorkspace() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">当前申诉</p>
-                  <h2 className="mt-1 text-lg font-bold text-stone-950">{selectedAppeal.appealCaseId.slice(0, 8)}</h2>
+                  <h2 className="mt-1 text-lg font-bold text-stone-950">用户申诉内容</h2>
+                  <p className="mt-1 text-xs text-stone-600">申诉编号 {selectedAppeal.appealCaseId.slice(0, 8)}</p>
                 </div>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${selectedAppeal.slaOverdue ? "bg-red-100 text-red-900" : "bg-stone-100 text-stone-700"}`}>
-                  {selectedAppeal.slaOverdue ? "已超过处理时限" : adminStateLabel(selectedAppeal.state)}
-                </span>
+                <Badge variant="outline" className={selectedAppeal.slaOverdue ? "border-red-200 bg-red-50 text-red-900" : "border-stone-200 bg-stone-50 text-stone-700"}>{selectedAppeal.slaOverdue ? "已超过处理时限" : adminStateLabel(selectedAppeal.state)}</Badge>
               </div>
               <blockquote className="mt-4 rounded-lg border-l-4 border-stone-400 bg-stone-50 p-4 text-sm leading-6 text-stone-700">
                 {selectedAppeal.userStatement}
@@ -339,6 +335,7 @@ export function ModerationWorkspace() {
               }}
             >
               <h2 className="text-lg font-bold text-stone-950">执行限制</h2>
+              <p className="mt-2 text-sm leading-6 text-stone-600">此操作会改变账号的实际使用权限。请先核对处理记录，再填写对用户可见的解释与内部依据。</p>
               <div className="mt-4 grid gap-3">
                 <label className="grid gap-1 text-sm font-semibold">限制类型
                   <select aria-label="限制类型" value={sanctionKind} onChange={(event) => setSanctionKind(event.target.value as ModerationSanction["kind"])} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">

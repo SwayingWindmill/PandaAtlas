@@ -41,4 +41,10 @@ The local desktop review uses `.release-gate/admin-visual-review/review-viewport
 - `better-colors`: replaces the incongruous dark case header with the existing light shadcn/Kiranism visual language; status uses a neutral Badge.
 - **Backend parity**: evidence verification requires both canonical source ID and normalized locator when approved; UI no longer invites invalid empty submissions. A review decision requires the current assignee: the button stays disabled without ownership. No authorization logic was moved out of NestJS.
 
-**Unfinished:** moderation remains within #445. Full lifecycle and error-state UX of other routes is still open in #446/#447; the screenshots and tests for this Review first slice are not acceptance of those surfaces.
+### Moderation first-slice inspection (#445)
+
+The local 1440px capture `.release-gate/admin-moderation-ux/moderation-after-1440.jpg` uses a synthetic open appeal with one suspended account. The UX now leads with the appellant's account reference and the waiting/overdue state rather than only an appeal UUID and separate SLA column; the right-hand case evidence gets more width. The full account ID remains expandable. A factual warning explains a current account suspension before asking the operator to decide the appeal, and the existing shadcn `Badge` distinguishes appeal state. The sanction form explicitly warns that applying a restriction changes real access rights and requires a user-visible explanation and internal reason.
+
+The V2 contract currently permits account lookup by UUID only, so the search form continues to request the authoritative account ID rather than pretending to support email/name search. No sanctions, restores or appeal decisions are executed by these screenshots. Existing moderation appeal decision and read-only capability Playwright scenarios must continue to pass.
+
+**Unfinished:** the remaining deeper lifecycle and exceptional states of Review/Moderation still require operator visual sign-off. Full UX acceptance for the other routes remains open in #446/#447; these two screens' snapshots and tests do not constitute sign-off for the whole Admin.
