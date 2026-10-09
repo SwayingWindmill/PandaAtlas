@@ -143,6 +143,8 @@ test("review queue replaces the generic runner with typed collection and case ac
 
   await page.goto("/admin/reviews");
 
+  await expect(page.getByText("Institutional profile").first()).toBeVisible();
+
   await expect(page.getByRole("heading", { level: 1, name: "贡献审核队列" })).toBeVisible();
   await expect(page.getByRole("button", { name: /熊猫编号 44444444/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "待核验事实" })).toBeVisible();
@@ -155,10 +157,14 @@ test("review queue replaces the generic runner with typed collection and case ac
   const accessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(accessibility.violations).toEqual([]);
   await expect(page.getByRole("button", { name: "领取案件" })).toBeVisible();
+  await expect(page.getByLabel("来源核验原因")).not.toBeVisible();
+  await expect(page.getByLabel("审核决定类型")).not.toBeVisible();
+  await page.getByText("核验来源", { exact: true }).click();
   await expect(page.getByLabel("来源核验原因")).toBeVisible();
+  await expect(page.getByText("核验通过时，请填写正式来源 ID 和规范化地址。")).toBeVisible();
+  await page.getByText("审核决定", { exact: true }).click();
   await expect(page.getByLabel("审核决定类型")).toBeVisible();
   await expect(page.getByRole("button", { name: "保存审核决定" })).toBeDisabled();
-  await expect(page.getByText("核验通过时，需要提供正式来源及其规范化地址。")).toBeVisible();
   await expect(page.getByText("JSON payload")).toHaveCount(0);
   await expect(page).not.toHaveURL(/\bcase=/);
   expect(requestedOperations).toEqual([]);
@@ -186,6 +192,7 @@ test("assigned review explains ownership instead of offering a misleading claim 
   await expect(page.getByText("此案件由你负责，请继续核验来源并作出审核决定。")).toBeVisible();
   await expect(page.getByRole("button", { name: "领取案件" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "证据来源" })).toBeVisible();
+  await page.getByText("审核决定", { exact: true }).click();
   await expect(page.getByLabel("审核决定类型")).toBeVisible();
   await page.getByLabel("给贡献者的说明").fill("已核实档案资料，接受修改。");
   await expect(page.getByRole("button", { name: "保存审核决定" })).toBeEnabled();
