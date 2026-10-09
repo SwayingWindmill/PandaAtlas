@@ -7,15 +7,14 @@ import { auditDomainName, auditEventName, auditObjectName } from "../presentatio
 
 export const auditEvidenceColumns: ColumnDef<AuditEvidence>[] = [
   {
-    accessorKey: "occurredAt",
-    header: "发生时间",
-    cell: ({ row }) => <time dateTime={row.original.occurredAt} className="whitespace-nowrap tabular-nums text-slate-700">{new Date(row.original.occurredAt).toLocaleString("zh-CN")}</time>,
+    accessorKey: "eventType",
+    header: "事件与影响对象",
+    cell: ({ row }) => (
+      <div className="min-w-0 space-y-1 py-0.5">
+        <p className="text-sm font-semibold leading-5 text-slate-950">{auditEventName(row.original.eventType)}</p>
+        <p className="text-xs text-slate-600">{auditObjectName(row.original.aggregateType)} · {auditDomainName(row.original.sourceContext)}</p>
+        <time dateTime={row.original.occurredAt} className="block text-xs tabular-nums text-slate-600">{new Date(row.original.occurredAt).toLocaleString("zh-CN")}</time>
+      </div>
+    ),
   },
-  { accessorKey: "eventType", header: "发生的操作", cell: ({ row }) => <span className="font-medium text-slate-950">{auditEventName(row.original.eventType)}</span> },
-  {
-    id: "aggregate",
-    header: "影响对象",
-    cell: ({ row }) => <span className="text-slate-700">{auditObjectName(row.original.aggregateType)}</span>,
-  },
-  { accessorKey: "sourceContext", header: "业务领域", cell: ({ row }) => auditDomainName(row.original.sourceContext) },
 ];
