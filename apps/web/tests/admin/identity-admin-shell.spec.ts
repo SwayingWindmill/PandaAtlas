@@ -50,18 +50,25 @@ test("capability navigation stays visible while an unauthorized admin route is w
   await expect(page.getByRole("heading", { level: 1, name: "Publication" })).toHaveCount(0);
 });
 
-test("direct legacy audit URL cannot bypass capability-scoped shell access", async ({ page }) => {
+test("retired generic admin URLs are absent while the staff capabilities page remains available", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ ...staffSession, capabilities: [] }),
+      body: JSON.stringify(staffSession),
     });
   });
 
-  await page.goto("/admin/audit");
-  await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1, name: "审计" })).toHaveCount(0);
+  await page.goto("/admin/capabilities");
+  await expect(page.getByRole("heading", { level: 1, name: "我的权限" })).toBeVisible();
+  await expect(page.getByText("audit.read", { exact: true })).toBeVisible();
+
+  const oldAuditPage = await page.goto("/admin/audit");
+  expect(oldAuditPage?.status()).toBe(404);
+  const oldOperationStatus = await page.evaluate(async () => (
+    await fetch("/api/admin/operations", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ operation: "audit.list" }) })
+  ).status);
+  expect(oldOperationStatus).toBe(404);
 });
 
 test("sidebar collapse preserves active navigation and keyboard reopening", async ({ page }) => {
@@ -202,8 +209,8 @@ test("admin session 401 redirects to OTP login with the requested admin return p
     });
   });
 
-  await page.goto("/admin/audit");
-  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fadmin%2Faudit$/);
+  await page.goto("/admin/audit/evidence");
+  await expect(page).toHaveURL(/\/auth\/login\?next=%2Fadmin%2Faudit%2Fevidence$/);
 });
 
 test("staff can enter Chinese MFA security settings without expanding business permissions", async ({ page }) => {
