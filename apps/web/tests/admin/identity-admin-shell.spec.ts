@@ -61,7 +61,12 @@ test("retired generic admin URLs are absent while the staff capabilities page re
 
   await page.goto("/admin/capabilities");
   await expect(page.getByRole("heading", { level: 1, name: "我的权限" })).toBeVisible();
+  await expect(page.getByText("查看审计记录", { exact: true })).toBeVisible();
+  await expect(page.getByText("audit.read", { exact: true })).not.toBeVisible();
+  await page.getByText("查看权限代码").click();
   await expect(page.getByText("audit.read", { exact: true })).toBeVisible();
+  const accountAccessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(accountAccessibility.violations).toEqual([]);
 
   const oldAuditPage = await page.goto("/admin/audit");
   expect(oldAuditPage?.status()).toBe(404);
@@ -257,8 +262,10 @@ test("staff can enter Chinese MFA security settings without expanding business p
   });
 
   await page.goto("/admin");
-  await page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "账号安全" }).click();
+  await page.getByRole("link", { name: "我的账号" }).click();
+  await page.getByRole("navigation", { name: "我的账号页面" }).getByRole("link", { name: "双重验证" }).click();
   await expect(page).toHaveURL(/\/admin\/security\/mfa$/);
+  await expect(page.getByRole("navigation", { name: "当前位置" }).getByRole("link", { name: "我的账号" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "多因素认证" })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "审核" })).toHaveCount(0);
 });
@@ -285,12 +292,22 @@ test("staff governance exposes a direct role management sidebar entry", async ({
 
   await page.goto("/admin");
   const navigation = page.getByRole("navigation", { name: "后台导航" });
-  await expect(navigation.getByRole("link", { name: "工作人员" })).toHaveAttribute("href", "/admin/staff/invitations");
-  await expect(navigation.getByRole("link", { name: "角色管理" })).toHaveAttribute("href", "/admin/staff/roles");
-  await navigation.getByRole("link", { name: "角色管理" }).click();
+  await expect(navigation.getByRole("link", { name: "人员管理" })).toHaveAttribute("href", "/admin/staff/roles");
+  await expect(navigation.getByRole("link", { name: "我的权限" })).toHaveCount(0);
+  await expect(navigation.getByRole("link", { name: "账号安全" })).toHaveCount(0);
+  await expect(navigation.getByRole("link", { name: "角色管理" })).toHaveCount(0);
+  await expect(navigation.getByRole("link", { name: "工作人员" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "我的账号" })).toHaveAttribute("href", "/admin/capabilities");
+  await navigation.getByRole("link", { name: "人员管理" }).click();
+  await expect(page.getByRole("navigation", { name: "人员管理页面" }).getByRole("link", { name: "邀请记录" })).toBeVisible();
+  await page.getByRole("navigation", { name: "人员管理页面" }).getByRole("link", { name: "邀请记录" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/admin\/staff\/invitations$/);
+  await expect(page.getByRole("navigation", { name: "当前位置" }).getByRole("link", { name: "人员管理" })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "人员管理" })).toHaveAttribute("aria-current", "page");
+  await page.getByRole("navigation", { name: "人员管理页面" }).getByRole("link", { name: "人员与权限" }).click();
   await expect(page).toHaveURL(/\/admin\/staff\/roles$/);
-  await expect(navigation.getByRole("link", { name: "角色管理" })).toHaveAttribute("aria-current", "page");
-  await expect(navigation.getByRole("link", { name: "工作人员" })).not.toHaveAttribute("aria-current", "page");
+  await expect(navigation.getByRole("link", { name: "人员管理" })).toHaveAttribute("aria-current", "page");
 });
 
 test("staff navigation keeps account invitations and role management separately authorized", async ({ page }) => {
@@ -302,16 +319,15 @@ test("staff navigation keeps account invitations and role management separately 
 
   await page.goto("/admin/staff/roles");
   const navigation = page.getByRole("navigation", { name: "后台导航" });
-  await expect(navigation.getByRole("link", { name: "角色管理" })).toBeVisible();
-  await expect(navigation.getByRole("link", { name: "工作人员" })).toHaveCount(0);
+  await expect(navigation.getByRole("link", { name: "人员管理" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "人员管理页面" }).getByRole("link", { name: "邀请记录" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toBeVisible();
   await page.goto("/admin/staff/invitations");
   await expect(page.getByText("当前账号没有访问此工作区所需的权限。")).toBeVisible();
 
   capabilities = ["admin.shell.access", "identity.account.manage"];
   await page.reload();
-  await expect(navigation.getByRole("link", { name: "工作人员" })).toBeVisible();
-  await expect(navigation.getByRole("link", { name: "角色管理" })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "人员管理" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "工作人员邀请", level: 1 })).toBeVisible();
   await page.goto("/admin/staff/roles");
   await expect(page.getByRole("heading", { name: "工作人员权限管理" })).toBeVisible({ timeout: 15_000 });
@@ -343,7 +359,8 @@ test("AAL2 staff manager invites an archive reviewer and sees a pending invitati
   });
 
   await page.goto("/admin");
-  await page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "工作人员" }).click();
+  await page.getByRole("navigation", { name: "后台导航" }).getByRole("link", { name: "人员管理" }).click();
+  await page.getByRole("navigation", { name: "人员管理页面" }).getByRole("link", { name: "邀请记录" }).click();
   await expect(page.getByRole("heading", { name: "工作人员邀请", level: 1 })).toBeVisible();
   await page.getByRole("textbox", { name: "审核员邮箱" }).fill("reviewer@example.test");
   await page.getByRole("button", { name: "发送邀请" }).click();

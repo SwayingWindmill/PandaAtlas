@@ -35,6 +35,11 @@ function AdminShellState({ children, tone }: { children: React.ReactNode; tone: 
 function AdminHeader({ pathname }: { pathname: string }) {
   const { setMobileOpen } = useSidebar();
   const item = adminNavigationItemForPath(pathname);
+  const parent = pathname === "/admin/staff/invitations"
+    ? { href: "/admin/staff/roles", label: "人员管理" }
+    : pathname === "/admin/security/mfa"
+      ? { href: "/admin/capabilities", label: "我的账号" }
+      : null;
   return (
     <header className="sticky top-0 z-20 flex min-h-[4.5rem] items-center justify-between gap-4 border-b border-slate-200/90 bg-white/95 px-4 backdrop-blur-md md:px-8">
       <div className="flex min-w-0 items-center gap-3">
@@ -50,6 +55,7 @@ function AdminHeader({ pathname }: { pathname: string }) {
         <span className="hidden h-5 w-px bg-slate-200 md:block" />
         <nav aria-label="当前位置" className="flex min-w-0 items-center gap-2 text-sm">
           <Link href="/admin" className="shrink-0 text-slate-500 hover:text-teal-800">数据运营</Link>
+          {parent && <><ChevronRight size={15} className="shrink-0 text-slate-400" aria-hidden="true" /><Link href={parent.href as Route} className="shrink-0 text-slate-600 hover:text-teal-800">{parent.label}</Link></>}
           {item?.href !== "/admin" && item ? (
             <>
               <ChevronRight size={15} className="shrink-0 text-slate-400" />
@@ -59,7 +65,7 @@ function AdminHeader({ pathname }: { pathname: string }) {
         </nav>
       </div>
       <Link href="/admin/capabilities" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:inline-flex">
-        <ShieldCheck size={16} aria-hidden="true" />我的权限
+        <ShieldCheck size={16} aria-hidden="true" />我的账号
       </Link>
     </header>
   );

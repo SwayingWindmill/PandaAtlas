@@ -9,6 +9,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
+import { AdminAccountNavigation } from "@/features/admin/shell/components/admin-account-navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 type Step = "loading" | "setup" | "enrolling" | "challenge" | "ready";
@@ -103,11 +104,11 @@ export function StaffMfa() {
 
   return (
     <main className="mx-auto w-full max-w-4xl px-5 py-8 md:px-8 md:py-10">
-      <p className="text-xs font-semibold tracking-widest text-teal-700">PANDAATLAS · 身份安全</p>
-      <h1 className="mt-2 text-3xl font-bold text-slate-950">多因素认证</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-slate-950">多因素认证</h1>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
         使用验证器应用生成动态验证码，确保工作人员能够安全执行涉及熊猫档案审核、策展与发布的敏感操作。
       </p>
+      <AdminAccountNavigation current="mfa" canUseMfa />
       <section className="mt-8 max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" aria-label="多因素认证设置">
         {step === "loading" && <p role="status" className="text-sm text-slate-600">正在检查登录安全级别…</p>}
 
