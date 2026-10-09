@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const reviewerAccountId = "11111111-1111-4111-8111-111111111111";
@@ -114,11 +115,21 @@ test("review queue replaces the generic runner with typed collection and case ac
   await page.goto("/admin/reviews");
 
   await expect(page.getByRole("heading", { level: 1, name: "贡献审核队列" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /熊猫编号 44444444/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "待核验事实" })).toBeVisible();
+  await expect(page.getByText("性别", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("雌性", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Institutional profile").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "查看机构原文" })).toHaveAttribute("href", "https://example.org/panda");
+  await page.getByRole("link", { name: "查看机构原文" }).focus();
+  await expect(page.getByRole("link", { name: "查看机构原文" })).toBeFocused();
+  const accessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(accessibility.violations).toEqual([]);
   await expect(page.getByRole("button", { name: "领取案件" })).toBeVisible();
   await expect(page.getByLabel("来源核验原因")).toBeVisible();
   await expect(page.getByLabel("审核决定类型")).toBeVisible();
+  await expect(page.getByRole("button", { name: "保存审核决定" })).toBeDisabled();
+  await expect(page.getByText("核验通过时，需要提供正式来源及其规范化地址。")).toBeVisible();
   await expect(page.getByText("JSON payload")).toHaveCount(0);
   await expect(page).not.toHaveURL(/\bcase=/);
   expect(requestedOperations).toEqual([]);
@@ -127,6 +138,28 @@ test("review queue replaces the generic runner with typed collection and case ac
   await expect(page.getByRole("status")).toContainText("案件已领取。");
   await expect.poll(() => queueReads).toBeGreaterThan(1);
   await expect.poll(() => surfaceReads).toBeGreaterThan(1);
+});
+
+test("assigned review explains ownership instead of offering a misleading claim action", async ({ page }) => {
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: reviewCapabilities }),
+  }));
+  await page.route("**/api/admin/review/cases?**", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ items: [{ ...reviewQueueItem, state: "assigned" }], total: 1, limit: 25, offset: 0 }),
+  }));
+  await page.route(`**/api/admin/review/cases/${reviewCaseId}/surface`, (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ reviewCase: { ...reviewSurface.reviewCase, state: "assigned", primaryAssigneeId: reviewerAccountId }, contribution: reviewSurface.contribution }),
+  }));
+  await page.goto("/admin/reviews");
+  await expect(page.getByText("此案件由你负责，请继续核验来源并作出审核决定。")).toBeVisible();
+  await expect(page.getByRole("button", { name: "领取案件" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "证据来源" })).toBeVisible();
+  await expect(page.getByLabel("审核决定类型")).toBeVisible();
+  await page.getByLabel("给贡献者的说明").fill("已核实档案资料，接受修改。");
+  await expect(page.getByRole("button", { name: "保存审核决定" })).toBeEnabled();
 });
 
 test("review queue keeps collection state in the URL", async ({ page }) => {
