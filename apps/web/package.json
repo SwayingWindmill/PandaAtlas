@@ -29,6 +29,7 @@
     "deploy:cloudflare": "npm run build:cloudflare && cf deploy --prebuilt --mode production"
   },
   "dependencies": {
+    "@radix-ui/react-alert-dialog": "^1.1.24",
     "@radix-ui/react-slot": "^1.1.0",
     "@supabase/ssr": "0.12.3",
     "@supabase/supabase-js": "2.110.9",
