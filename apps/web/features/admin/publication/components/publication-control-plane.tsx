@@ -355,9 +355,9 @@ export function PublicationControlPlane() {
               </label>
               <div className="mt-4 flex flex-wrap gap-2">
                 {actions.map(({ action, label }) => (
-                  <Button key={action} type="button" variant={action === "suspend" ? "outline" : "default"}
+                  <Button key={action} type="button" variant={action === "suspend" || action === "rollback" ? "outline" : "default"}
                     disabled={busy || reason.trim().length < 3}
-                    className={action === "suspend" ? "border-red-300 text-red-800 hover:bg-red-50" : undefined}
+                    className={action === "suspend" || action === "rollback" ? "border-red-300 text-red-800 hover:bg-red-50" : undefined}
                     onClick={() => setPendingAction({ releaseId: inspection.data.release.releaseId, version: inspection.data.release.version, action, reason: reason.trim() })}>
                     {label}
                   </Button>
