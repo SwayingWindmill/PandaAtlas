@@ -134,6 +134,7 @@ test("publication control plane shows releases, counts, diff, history, and typed
 
 test("publication activation uses a typed reason and refreshes the release inspection", async ({ page }) => {
   let activated = false;
+  let recentAuthExpired = true;
   let actionBody: unknown;
   let listReads = 0;
   let inspectionReads = 0;
@@ -239,6 +240,14 @@ test("publication activation uses a typed reason and refreshes the release inspe
     });
   });
   await page.route(`**/api/admin/publication/releases/${candidateReleaseId}/actions`, async (route) => {
+    if (recentAuthExpired) {
+      recentAuthExpired = false;
+      return route.fulfill({
+        status: 403,
+        contentType: "application/json",
+        body: JSON.stringify({ code: "auth.recentAuthRequired", detail: "Recent interactive authentication is required." }),
+      });
+    }
     actionBody = route.request().postDataJSON();
     activated = true;
     await route.fulfill({
@@ -259,6 +268,19 @@ test("publication activation uses a typed reason and refreshes the release inspe
   await page.goto(`/admin/publication?release=${candidateReleaseId}`);
   await page.getByLabel("操作原因").fill("Promote reviewed candidate.");
   await page.getByRole("button", { name: "启用版本" }).click();
+  const confirmation = page.getByRole("alertdialog");
+  await expect(confirmation).toContainText("2026.10.05.2");
+  await expect(confirmation).toContainText("2026.10.05.1");
+  expect(actionBody).toBeUndefined();
+  await confirmation.getByRole("button", { name: "取消" }).click();
+  expect(actionBody).toBeUndefined();
+  await page.getByRole("button", { name: "启用版本" }).click();
+  await confirmation.getByRole("button", { name: "确认启用版本" }).click();
+  await expect(page.getByRole("alert")).toContainText("此敏感操作的近期身份验证已过期");
+  await expect(page.getByRole("link", { name: "重新登录" })).toHaveAttribute("href", "/auth/login?next=%2Fadmin%2Fpublication");
+  expect(actionBody).toBeUndefined();
+  await page.getByRole("button", { name: "启用版本" }).click();
+  await confirmation.getByRole("button", { name: "确认启用版本" }).click();
 
   await expect.poll(() => actionBody).toEqual({ action: "activate", reason: "Promote reviewed candidate." });
   await expect(page.getByRole("status")).toContainText("已启用 2026.10.05.2。");
@@ -342,6 +364,7 @@ test("publication lifecycle controls stay capability scoped", async ({ page }) =
 
   await expect(page.getByRole("button", { name: "启用版本" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "暂停版本" })).toHaveCount(0);
+  await page.getByText("构建新候选版本（按需展开）").click();
   await expect(page.getByRole("button", { name: "构建版本" })).toBeVisible();
 });
 

@@ -32,3 +32,21 @@ export function adminStateLabel(value: string): string {
   };
   return labels[value] ?? value;
 }
+
+export function reviewFieldLabel(fieldKey: string): string {
+  const fields: Record<string, string> = {
+    "profile.sex": "性别",
+    "profile.birth_date": "出生日期",
+    "profile.death_date": "死亡日期",
+    "profile.name": "名称",
+  };
+  return fields[fieldKey] ?? fieldKey;
+}
+
+export function reviewDisplayValue(fieldKey: string, value: unknown): string {
+  if (fieldKey === "profile.sex" && typeof value === "string") {
+    return ({ male: "雄性", female: "雌性", unknown: "未知" } as Record<string, string>)[value] ?? value;
+  }
+  if (typeof value === "string") return value;
+  return JSON.stringify(value);
+}

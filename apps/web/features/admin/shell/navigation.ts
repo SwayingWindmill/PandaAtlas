@@ -19,7 +19,7 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
   {
     href: "/admin/moderation",
     label: "内容治理", description: "处理申诉和账号限制", group: "运营", icon: "shield-alert",
-    capabilities: ["moderation.sanction.read", "moderation.sanction.apply", "moderation.sanction.restore", "moderation.appeal.decide"],
+    capabilities: ["moderation.sanction.read", "moderation.appeal.read", "moderation.sanction.apply", "moderation.sanction.restore", "moderation.appeal.decide"],
   },
   {
     href: "/admin/curation",
@@ -43,7 +43,7 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
     description: "邀请审核员并追踪激活状态",
     group: "治理",
     icon: "shield-check",
-    capabilities: ["identity.account.manage"],
+    capabilities: ["identity.staff.read", "identity.account.manage"],
   },
   {
     href: "/admin/staff/roles",
@@ -51,7 +51,7 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
     description: "查看工作人员岗位权限与账号状态",
     group: "治理",
     icon: "users-round",
-    capabilities: ["identity.role.manage", "identity.account.manage"],
+    capabilities: ["identity.staff.read", "identity.role.manage", "identity.account.manage"],
   },
   {
     href: "/admin/security/mfa",

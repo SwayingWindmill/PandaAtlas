@@ -6,6 +6,7 @@ const pandaId = "66666666-6666-4666-8666-666666666666";
 
 test("Curation uses a typed paginated collection and approves a reviewed change without JSON operations", async ({ page }) => {
   let state: "draft" | "validated" | "applied" = "draft";
+  let approvals = 0;
   const actor = "11111111-1111-4111-8111-111111111111";
   await page.route("**/api/admin/session", (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
     accountId: actor, aal: "aal2", capabilities: ["curation.change.read", "curation.change.manage", "curation.change.approve"],
@@ -15,6 +16,7 @@ test("Curation uses a typed paginated collection and approves a reviewed change 
     const action = url.pathname.endsWith("/validate") ? "validate" : url.pathname.endsWith("/approve") ? "approve" : "";
     if (route.request().method() === "POST") {
       if (action === "approve") {
+        approvals += 1;
         const input = route.request().postDataJSON() as { reason: string };
         expect(input.reason).toBe("机构来源和独立核验均已确认");
         state = "applied";
@@ -39,12 +41,27 @@ test("Curation uses a typed paginated collection and approves a reviewed change 
   await expect(page.getByRole("heading", { name: "策展变更集", level: 1 })).toBeVisible();
   await expect(page.getByRole("cell", { name: "来源机构的事实更正" })).toBeVisible();
   await page.getByRole("button", { name: "查看变更" }).click();
-  await expect(page.getByText("profile.sex")).toBeVisible();
+  await expect(page.getByText("性别", { exact: true })).toBeVisible();
+  await expect(page.getByText("雌性", { exact: true })).toBeVisible();
+  await expect(page.getByText("当前档案值尚未提供，不能据此判断是否替换现有事实。")).toBeVisible();
+  await page.getByText("查看来源标识").click();
   await expect(page.getByText("institution-1")).toBeVisible();
   await page.getByRole("button", { name: "核验变更集" }).click();
   await expect(page.getByRole("region", { name: "策展变更详情" }).getByText("已核验", { exact: true })).toBeVisible();
   await page.getByRole("textbox", { name: "审批原因" }).fill("机构来源和独立核验均已确认");
   await page.getByRole("button", { name: "审批并应用" }).click();
+  const confirmation = page.getByRole("alertdialog");
+  await expect(confirmation).toBeVisible();
+  await expect(confirmation).toContainText("公开发布仍需单独处理");
+  expect(approvals).toBe(0);
+  await confirmation.getByRole("button", { name: "取消" }).click();
+  expect(approvals).toBe(0);
+  await page.getByRole("button", { name: "审批并应用" }).click();
+  await expect(confirmation).toBeVisible();
+  const modalAxe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(modalAxe.violations).toEqual([]);
+  await confirmation.getByRole("button", { name: "确认审批并应用" }).click();
+  await expect.poll(() => approvals).toBe(1);
   await expect(page.getByRole("status")).toContainText("已审批并应用");
   await expect(page.getByRole("textbox", { name: "JSON" })).toHaveCount(0);
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();

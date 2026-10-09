@@ -53,18 +53,20 @@ async function getInvitations(): Promise<Invitation[]> {
 
 export function StaffInvitations() {
   const { data: session } = useQuery(adminSessionQueryOptions);
+  const canInvite = session?.capabilities.includes("identity.account.manage") ?? false;
+  const canInspect = session?.capabilities.includes("identity.staff.read") || canInvite;
   const queryClient = useQueryClient();
   const { data: invitations, isPending, error } = useQuery({
     queryKey: ["admin", "staff", "invitations"],
     queryFn: getInvitations,
-    enabled: session?.capabilities.includes("identity.account.manage") ?? false,
+    enabled: canInspect,
     retry: false,
   });
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<{ message: string; code: string } | null>(null);
 
-  if (!session?.capabilities.includes("identity.account.manage")) return null;
+  if (!canInspect) return null;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -89,17 +91,17 @@ export function StaffInvitations() {
   return (
     <main className="mx-auto w-full max-w-5xl space-y-8 px-5 py-8 md:px-8 md:py-10">
       <header>
-        <p className="text-xs font-semibold tracking-widest text-teal-700">PANDAATLAS · 工作人员管理</p>
-        <h1 className="mt-2 text-3xl font-bold text-slate-950">邀请审核员</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-          邀请协作者核实来源、处理待审记录。受邀者仅获得审核员职责，不能审批策展变更或发布熊猫档案。
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+          跟踪审核员邀请的验证进度。邀请授予的是审核职责，不包含策展终审或公开发布权限。
         </p>
         <Link className="mt-4 inline-flex rounded-lg border border-teal-700 px-4 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50" href="/admin/staff/roles">
           查看工作人员及岗位权限
         </Link>
       </header>
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      {canInvite && <section className="rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-lg font-bold text-slate-950">发送工作人员邀请</h2>
+        <p className="mt-1 text-sm text-slate-600">发出邀请后，对方需要打开邀请邮件并验证邮箱，才能获得审核员岗位。</p>
         <form onSubmit={(event) => void submit(event)} className="mt-4 flex flex-wrap items-end gap-3">
           <label className="min-w-64 flex-1 text-sm font-semibold text-slate-900">
             审核员邮箱
@@ -113,8 +115,8 @@ export function StaffInvitations() {
             {notice.message} <InvitationRecovery code={notice.code} />
           </p>
         )}
-        <p className="mt-4 text-xs text-slate-500">敏感操作要求 AAL2 与最近认证。<Link className="underline" href="/admin/security/mfa">账号安全设置</Link></p>
-      </section>
+        <p className="mt-4 text-xs text-slate-600">邀请属于敏感授权操作，需完成高级身份验证。<Link className="underline" href="/admin/security/mfa">账号安全设置</Link></p>
+      </section>}
       <section aria-label="审核员邀请记录">
         <h2 className="mb-3 text-lg font-bold text-slate-950">邀请记录</h2>
         {error && (
@@ -130,7 +132,7 @@ export function StaffInvitations() {
             {invitations.map((invite) => (
               <li key={invite.invitationId} className="flex items-center justify-between gap-3 p-4 text-sm">
                 <span className="break-all text-slate-900">{invite.email}</span>
-                <span className="shrink-0 font-semibold text-slate-700">{invite.status === "accepted" ? "已激活" : "等待验证"}</span>
+                <span className="shrink-0 font-semibold text-slate-700">{invite.status === "accepted" ? "已激活" : invite.status === "pending" ? "等待对方验证邮箱" : "状态待核对"}</span>
               </li>
             ))}
           </ul>

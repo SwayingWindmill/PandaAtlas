@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Menu } from "lucide-react";
+import { ChevronRight, Menu, ShieldCheck } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -58,10 +58,9 @@ function AdminHeader({ pathname }: { pathname: string }) {
           ) : null}
         </nav>
       </div>
-      <div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex">
-        <span className="size-2 rounded-full bg-emerald-500" aria-hidden="true" />
-        后台工作区
-      </div>
+      <Link href="/admin/capabilities" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:inline-flex">
+        <ShieldCheck size={16} aria-hidden="true" />我的权限
+      </Link>
     </header>
   );
 }
