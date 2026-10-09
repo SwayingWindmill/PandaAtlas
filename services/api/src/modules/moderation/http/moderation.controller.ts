@@ -51,7 +51,7 @@ export class ModerationController {
   }
 
   @Get("appeals")
-  @RequireCapabilities("moderation.appeal.decide")
+  @RequireCapabilities("moderation.appeal.read")
   @ApiOperation({ operationId: "listModerationAppeals" })
   @ApiOkResponse({ type: ModerationAppealPageDto })
   public listAppeals(@Query() query: ModerationAppealListQueryDto) {
