@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const currentReleaseId = "11111111-1111-4111-8111-111111111111";
@@ -114,6 +115,15 @@ test("publication control plane shows releases, counts, diff, history, and typed
   });
 
   await page.goto(`/admin/publication?release=${candidateReleaseId}`);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(page.getByRole("heading", { level: 2, name: "2026.10.05.2" })).toBeVisible();
+  const queue = page.getByRole("region", { name: "版本队列" });
+  const inspection = page.getByRole("region", { name: "所选版本检查" });
+  await expect(queue).toBeVisible();
+  await expect(inspection).toBeVisible();
+  const queuePosition = await queue.boundingBox();
+  const inspectionPosition = await inspection.boundingBox();
+  expect(queuePosition && inspectionPosition && queuePosition.x + queuePosition.width <= inspectionPosition.x).toBe(true);
 
   await expect(page.getByRole("heading", { level: 1, name: "发布管理" })).toBeVisible();
   await expect(page.getByRole("button", { name: "2026.10.05.1" })).toBeVisible();
@@ -130,6 +140,12 @@ test("publication control plane shows releases, counts, diff, history, and typed
   await expect(page.getByLabel("操作原因")).toBeVisible();
   await expect(page.getByRole("button", { name: "启用版本" })).toBeVisible();
   await expect(page.getByLabel("JSON payload")).toHaveCount(0);
+  const candidate = page.getByRole("button", { name: "查看版本 2026.10.05.2" });
+  await candidate.focus();
+  await expect(candidate).toBeFocused();
+  await expect(candidate).toHaveAttribute("aria-pressed", "true");
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(axe.violations).toEqual([]);
 });
 
 test("publication activation uses a typed reason and refreshes the release inspection", async ({ page }) => {
@@ -276,7 +292,7 @@ test("publication activation uses a typed reason and refreshes the release inspe
   expect(actionBody).toBeUndefined();
   await page.getByRole("button", { name: "启用版本" }).click();
   await confirmation.getByRole("button", { name: "确认启用版本" }).click();
-  await expect(page.getByRole("alert")).toContainText("此敏感操作的近期身份验证已过期");
+  await expect(page.getByRole("region", { name: "所选版本检查" }).getByRole("alert")).toContainText("此敏感操作的近期身份验证已过期");
   await expect(page.getByRole("link", { name: "重新登录" })).toHaveAttribute("href", "/auth/login?next=%2Fadmin%2Fpublication");
   expect(actionBody).toBeUndefined();
   await page.getByRole("button", { name: "启用版本" }).click();
