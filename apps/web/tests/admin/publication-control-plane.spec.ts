@@ -259,6 +259,14 @@ test("publication activation uses a typed reason and refreshes the release inspe
   await page.goto(`/admin/publication?release=${candidateReleaseId}`);
   await page.getByLabel("操作原因").fill("Promote reviewed candidate.");
   await page.getByRole("button", { name: "启用版本" }).click();
+  const confirmation = page.getByRole("alertdialog");
+  await expect(confirmation).toContainText("2026.10.05.2");
+  await expect(confirmation).toContainText("2026.10.05.1");
+  expect(actionBody).toBeUndefined();
+  await confirmation.getByRole("button", { name: "取消" }).click();
+  expect(actionBody).toBeUndefined();
+  await page.getByRole("button", { name: "启用版本" }).click();
+  await confirmation.getByRole("button", { name: "确认启用版本" }).click();
 
   await expect.poll(() => actionBody).toEqual({ action: "activate", reason: "Promote reviewed candidate." });
   await expect(page.getByRole("status")).toContainText("已启用 2026.10.05.2。");
@@ -342,6 +350,7 @@ test("publication lifecycle controls stay capability scoped", async ({ page }) =
 
   await expect(page.getByRole("button", { name: "启用版本" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "暂停版本" })).toHaveCount(0);
+  await page.getByText("构建新候选版本（按需展开）").click();
   await expect(page.getByRole("button", { name: "构建版本" })).toBeVisible();
 });
 

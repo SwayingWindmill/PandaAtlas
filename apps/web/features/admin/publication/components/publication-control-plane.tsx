@@ -6,6 +6,12 @@ import { parseAsInteger, useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { DataTable } from "@/components/ui/table/data-table";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import {
@@ -57,6 +63,16 @@ const actionSuccessLabels: Record<PublicationAction, string> = {
   suspend: "已暂停",
   restore: "已恢复",
 };
+const actionLabels: Record<PublicationAction, string> = {
+  seal: "封存版本", activate: "启用版本", rollback: "回滚至此版本", suspend: "暂停版本", restore: "恢复版本",
+};
+const actionEffects: Record<PublicationAction, string> = {
+  seal: "该候选版本将被封存，后续可在符合要求时启用。",
+  activate: "所选版本会成为新的当前公开版本，替换现有公开版本。",
+  rollback: "公开内容将切换回较早的版本，现有公开版本不再是当前版本。",
+  suspend: "所选版本将暂停对外提供内容。请先核对影响范围。",
+  restore: "所选版本将解除暂停限制。请先核对原暂停原因。",
+};
 
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
@@ -87,6 +103,7 @@ export function PublicationControlPlane() {
   const [version, setVersion] = useState("");
   const [reason, setReason] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<{ releaseId: string; version: string; action: PublicationAction; reason: string } | null>(null);
 
   const invalidatePublication = async () => {
     await queryClient.invalidateQueries({ queryKey: publicationKeys.all });
@@ -102,8 +119,8 @@ export function PublicationControlPlane() {
     },
   });
   const actionMutation = useMutation({
-    mutationFn: ({ releaseId: target, action }: { releaseId: string; action: PublicationAction }) =>
-      runPublicationAction(target, action, reason.trim()),
+    mutationFn: ({ releaseId: target, action, reason: actionReason }: { releaseId: string; action: PublicationAction; reason: string }) =>
+      runPublicationAction(target, action, actionReason),
     onSuccess: async (release, input) => {
       setReason("");
       setMessage(`${actionSuccessLabels[input.action]} ${release.version}。`);
@@ -148,7 +165,7 @@ export function PublicationControlPlane() {
         <button
           type="button"
           className="font-semibold text-stone-950 underline decoration-stone-400 underline-offset-4"
-          onClick={() => void setReleaseId(context.row.original.releaseId)}
+          onClick={() => { setReason(""); setMessage(null); void setReleaseId(context.row.original.releaseId); }}
         >
           {context.getValue()}
         </button>
@@ -205,51 +222,34 @@ export function PublicationControlPlane() {
         </label>
       </div>
 
-      {canManage ? (
-        <form
-          className="mt-6 flex flex-wrap items-end gap-3 rounded-xl border border-stone-300 bg-white p-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (version.trim()) buildMutation.mutate();
-          }}
-        >
-          <label className="grid min-w-64 flex-1 gap-1 text-sm font-semibold text-stone-800">
-            新版本号
-            <input
-              value={version}
-              onChange={(event) => setVersion(event.target.value)}
-              className="min-h-10 rounded-md border border-stone-400 px-3 font-normal"
-              maxLength={80}
-            />
-          </label>
-          <Button type="submit" disabled={busy || !version.trim()}>构建版本</Button>
-        </form>
-      ) : null}
-
       <section className="mt-6" aria-live="polite">
         {releases.isPending ? <p className="text-sm text-stone-600">正在加载版本列表…</p> : null}
         {releases.isError ? <p role="alert" className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{releases.error.message}</p> : null}
         {releases.isSuccess ? (
           <>
-            {releases.data.currentRelease ? (
-              <div className="mb-4 rounded-xl border border-stone-300 bg-slate-900 p-5 text-white">
-                <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">当前公开版本</p>
-                <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+            {current ? (
+              <Card className="mb-4 gap-1 border-slate-200 bg-slate-50 py-3 shadow-none">
+                <CardHeader><CardTitle className="text-base text-slate-950">当前公开版本</CardTitle></CardHeader>
+                <CardContent>
+                <div className="flex flex-wrap items-end justify-between gap-3">
                   <div>
-                    <h2 className="text-2xl font-bold">{releases.data.currentRelease.version}</h2>
-                    <p className="mt-1 text-sm text-stone-300">构建于 {formatDate(releases.data.currentRelease.builtAt)}</p>
+                    <h2 className="text-2xl font-semibold text-slate-950">{current.version}</h2>
+                    <p className="mt-1 text-sm text-slate-600">构建于 {formatDate(current.builtAt)}</p>
+                    <Badge variant="outline" className="mt-2 bg-white text-slate-800">{current.suspended ? "已暂停对外提供" : "当前对外使用"}</Badge>
                   </div>
                   <Button
                     type="button"
                     variant="outline"
-                    className="border-stone-500 bg-transparent text-white hover:bg-stone-800"
-                    onClick={() => void setReleaseId(releases.data.currentRelease?.releaseId ?? null)}
+                    className="border-slate-300 bg-white text-slate-900"
+                    onClick={() => { setReason(""); setMessage(null); void setReleaseId(current.releaseId); }}
                   >
                     查看当前版本
                   </Button>
                 </div>
-              </div>
+                </CardContent>
+              </Card>
             ) : null}
+            {!current && <p className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">当前列表未提供公开版本详情，请先检查下方版本记录。</p>}
             <DataTable table={table} emptyMessage="当前筛选条件下没有版本记录。" />
             <div className="mt-3 flex items-center justify-between gap-3 text-sm text-stone-700">
               <span>第 {page} / {totalPages} 页 · 共 {releases.data.total} 个版本</span>
@@ -262,6 +262,21 @@ export function PublicationControlPlane() {
         ) : null}
       </section>
 
+      {canManage ? (
+        <details className="mt-4 rounded-xl border border-slate-200 bg-white px-5 py-3">
+          <summary className="cursor-pointer text-sm font-semibold text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">构建新候选版本（按需展开）</summary>
+          <p className="mt-3 text-sm text-slate-600">构建只创建候选，不会立即改变公开内容。请先检查当前公开版本和已有候选。</p>
+          <form className="mt-4 flex flex-wrap items-end gap-3"
+            onSubmit={(event) => { event.preventDefault(); if (version.trim()) buildMutation.mutate(); }}>
+            <label className="grid min-w-64 flex-1 gap-1 text-sm font-semibold text-slate-800">新版本号
+              <input value={version} onChange={(event) => setVersion(event.target.value)}
+                className="min-h-10 rounded-md border border-slate-300 px-3 font-normal" maxLength={80} />
+            </label>
+            <Button type="submit" variant="outline" disabled={busy || !version.trim()}>构建版本</Button>
+          </form>
+        </details>
+      ) : null}
+
       {inspection.isPending && effectiveReleaseId ? <p className="mt-8 text-sm text-stone-600">正在加载版本详情…</p> : null}
       {inspection.isError ? <p role="alert" className="mt-8 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{inspection.error.message}</p> : null}
       {inspection.data ? (
@@ -271,17 +286,17 @@ export function PublicationControlPlane() {
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">所选版本</p>
                 <h2 className="mt-1 text-2xl font-bold text-stone-950">{inspection.data.release.version}</h2>
-                <p className="mt-1 text-sm text-stone-600">{inspection.data.release.releaseId}</p>
+                <details className="mt-2 text-xs text-slate-600"><summary className="cursor-pointer font-medium text-teal-800">查看完整版本 ID</summary><p className="mt-1 break-all font-mono">{inspection.data.release.releaseId}</p></details>
               </div>
-              <span className="rounded-full border border-stone-300 px-3 py-1 text-sm font-semibold">
+              <Badge variant="outline" className="bg-slate-50 text-slate-800">
                 {inspection.data.release.isCurrent ? "当前版本" : "候选版本"} · {transitionLabels[inspection.data.release.lifecycleState] ?? inspection.data.release.lifecycleState}
-              </span>
+              </Badge>
             </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {countCards.map(({ key, label }) => (
-                <div key={key} className="rounded-lg bg-stone-100 p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wide text-stone-500">{label}</div>
-                  <div className="mt-1 text-2xl font-bold text-stone-950">{inspection.data.release.counts[key]}</div>
+                <div key={key} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                  <span className="text-sm text-slate-600">{label}</span>
+                  <strong className="text-lg font-semibold tabular-nums text-slate-950">{inspection.data.release.counts[key]}</strong>
                 </div>
               ))}
             </div>
@@ -331,7 +346,8 @@ export function PublicationControlPlane() {
 
           {actions.length ? (
             <section className="rounded-xl border border-stone-300 bg-white p-5">
-              <h2 className="text-xl font-bold text-stone-950">版本操作</h2>
+              <h2 className="text-xl font-bold text-stone-950">下一步：版本操作</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-700">正在操作版本 {selected?.version}，当前公开版本为 {current?.version ?? "未提供"}。请先查看上方资源差异和阻塞项，提交操作前还会再次确认。</p>
               <label className="mt-4 grid gap-1 text-sm font-semibold text-stone-800">
                 操作原因
                 <textarea
@@ -349,7 +365,8 @@ export function PublicationControlPlane() {
                     type="button"
                     variant={action === "suspend" ? "outline" : "default"}
                     disabled={busy || reason.trim().length < 3}
-                    onClick={() => actionMutation.mutate({ releaseId: inspection.data.release.releaseId, action })}
+                    className={action === "suspend" ? "border-red-300 text-red-800 hover:bg-red-50" : undefined}
+                    onClick={() => setPendingAction({ releaseId: inspection.data.release.releaseId, version: inspection.data.release.version, action, reason: reason.trim() })}
                   >
                     {label}
                   </Button>
@@ -361,6 +378,27 @@ export function PublicationControlPlane() {
       ) : null}
 
       {message ? <p className="mt-5 rounded-md border border-green-300 bg-green-50 p-4 text-sm text-green-900" role="status">{message}</p> : null}
+      <AlertDialog open={Boolean(pendingAction)} onOpenChange={(open) => { if (!open) setPendingAction(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认{pendingAction ? actionLabels[pendingAction.action] : "版本操作"}？</AlertDialogTitle>
+            <AlertDialogDescription>{pendingAction ? actionEffects[pendingAction.action] : "请核对版本后继续。"} 本次操作会记录在审计历史中。</AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800">
+            <p>所选版本：<strong>{pendingAction?.version}</strong></p>
+            <p>当前公开版本：<strong>{current?.version ?? "未提供"}</strong></p>
+            <p className="break-words">操作依据：{pendingAction?.reason}</p>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction
+              className={pendingAction?.action === "suspend" || pendingAction?.action === "rollback" ? "bg-red-700 text-white hover:bg-red-800" : undefined}
+              disabled={busy || !pendingAction}
+              onClick={() => { if (pendingAction) actionMutation.mutate(pendingAction); }}
+            >确认{pendingAction ? actionLabels[pendingAction.action] : "操作"}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {mutationError ? <p className="mt-5 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">{mutationError.message}</p> : null}
     </div>
   );
