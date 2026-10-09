@@ -21,10 +21,39 @@ const reviewCapabilities = [
 
 const moderationCapabilities = [
   "moderation.sanction.read",
+  "moderation.appeal.read",
   "moderation.sanction.apply",
   "moderation.sanction.restore",
   "moderation.appeal.decide",
 ];
+
+test("appeal reader can inspect the queue without being allowed to decide an appeal", async ({ page }) => {
+  let queueReads = 0;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal1", capabilities: ["moderation.appeal.read"] }),
+  }));
+  await page.route("**/api/admin/moderation/appeals?**", (route) => {
+    queueReads += 1;
+    return route.fulfill({
+      status: 200, contentType: "application/json",
+      body: JSON.stringify({
+        items: [{
+          appealCaseId, accountId: moderationAccountId, sanctionId, state: "open", version: 1,
+          userStatement: "Review the moderation evidence.", createdAt: "2026-10-05T08:00:00.000Z",
+          updatedAt: "2026-10-05T08:00:00.000Z", firstResponseDueAt: "2026-10-05T20:00:00.000Z",
+          slaOverdue: false, ageSeconds: 1800,
+        }], total: 1, limit: 25, offset: 0,
+      }),
+    });
+  });
+
+  await page.goto("/admin/moderation");
+  await expect(page.getByRole("heading", { name: "申诉队列" })).toBeVisible();
+  await expect(page.getByText("Review the moderation evidence.")).toBeVisible();
+  expect(queueReads).toBe(1);
+  await expect(page.getByRole("button", { name: "保存申诉决定" })).toHaveCount(0);
+});
 
 const reviewQueueItem = {
   reviewCaseId,
@@ -320,7 +349,7 @@ test("moderation actions stay capability scoped", async ({ page }) => {
   await page.getByLabel("账号 ID").fill(moderationAccountId);
   await page.getByRole("button", { name: "查询账号" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "账号治理与申诉" })).toBeVisible();
-  await expect(page.getByText("当前账号没有处理申诉的权限。")).toBeVisible();
+  await expect(page.getByText("当前账号没有查看申诉的权限。")).toBeVisible();
   await expect(page.getByRole("button", { name: "执行限制" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "保存申诉决定" })).toHaveCount(0);
 });

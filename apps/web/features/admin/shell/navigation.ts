@@ -19,7 +19,7 @@ export const adminNavigationItems: readonly AdminNavigationItem[] = [
   {
     href: "/admin/moderation",
     label: "内容治理", description: "处理申诉和账号限制", group: "运营", icon: "shield-alert",
-    capabilities: ["moderation.sanction.read", "moderation.sanction.apply", "moderation.sanction.restore", "moderation.appeal.decide"],
+    capabilities: ["moderation.sanction.read", "moderation.appeal.read", "moderation.sanction.apply", "moderation.sanction.restore", "moderation.appeal.decide"],
   },
   {
     href: "/admin/curation",

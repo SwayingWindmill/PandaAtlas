@@ -66,6 +66,7 @@ export function ModerationWorkspace() {
   const canRead = hasAdminCapability(capabilities, "moderation.sanction.read");
   const canApply = hasAdminCapability(capabilities, "moderation.sanction.apply");
   const canRestore = hasAdminCapability(capabilities, "moderation.sanction.restore");
+  const canReadAppeals = hasAdminCapability(capabilities, "moderation.appeal.read");
   const canDecideAppeal = hasAdminCapability(capabilities, "moderation.appeal.decide");
 
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1).withOptions({ shallow: true }));
@@ -78,7 +79,7 @@ export function ModerationWorkspace() {
     offset: Math.max(0, page - 1) * ADMIN_QUEUE_PAGE_SIZE,
     state: normalizedState,
   };
-  const appeals = useQuery({ ...moderationAppealsQueryOptions(appealsQuery), enabled: canDecideAppeal });
+  const appeals = useQuery({ ...moderationAppealsQueryOptions(appealsQuery), enabled: canReadAppeals });
   const effectiveAppealId = selectedAppealId ?? (accountId ? undefined : appeals.data?.items[0]?.appealCaseId);
   const selectedAppeal = appeals.data?.items.find((item) => item.appealCaseId === effectiveAppealId);
   const effectiveAccountId = accountId ?? selectedAppeal?.accountId;
@@ -190,7 +191,7 @@ export function ModerationWorkspace() {
             查看账号治理状态、处理限制措施与用户申诉。所有变更均由服务端进行权限校验。
           </p>
         </div>
-        {canDecideAppeal ? (
+        {canReadAppeals ? (
           <label className="text-sm font-semibold text-stone-700">
             申诉状态
             <select
@@ -246,8 +247,8 @@ export function ModerationWorkspace() {
             </div>
             {appeals.data ? <span className="rounded-full bg-stone-100 px-3 py-1 text-sm font-semibold text-stone-700">{appeals.data.total} 项申诉</span> : null}
           </div>
-          {!canDecideAppeal ? <p className="mt-5 text-sm text-stone-600">当前账号没有处理申诉的权限。</p> : null}
-          {appeals.isPending && canDecideAppeal ? <p className="mt-5 text-sm text-stone-600">正在加载申诉…</p> : null}
+          {!canReadAppeals ? <p className="mt-5 text-sm text-stone-600">当前账号没有查看申诉的权限。</p> : null}
+          {appeals.isPending && canReadAppeals ? <p className="mt-5 text-sm text-stone-600">正在加载申诉…</p> : null}
           {appeals.isError ? <p role="alert" className="mt-5 text-sm text-red-800">{appeals.error.message}</p> : null}
           {appeals.isSuccess ? (
             <>
