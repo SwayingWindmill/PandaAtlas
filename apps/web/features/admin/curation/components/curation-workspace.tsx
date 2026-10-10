@@ -5,13 +5,18 @@ import { useForm } from "@tanstack/react-form";
 import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
-import { FolderCheck } from "lucide-react";
+import { ChevronDown, FolderCheck } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -95,18 +100,18 @@ export function CurationWorkspace() {
 
   const columns = useMemo(() => [
     column.accessor("reason", { header: "变更事项", cell: ({ row }) => (
-      <div className="min-w-0">
-        <p className="max-w-60 truncate font-medium text-slate-950" title={row.original.reason}>{row.original.reason}</p>
-        <p className="mt-1 text-xs text-slate-600">{row.original.changeCount} 项 · 熊猫 {row.original.targetPandaId.slice(0, 8)}</p>
-      </div>
+      <Button type="button" variant="ghost" size="sm"
+        aria-label={`查看变更：${row.original.reason}`}
+        aria-pressed={selectedId === row.original.changeSetId}
+        onClick={() => { void setSelectedId(row.original.changeSetId); setMessage(""); approvalForm.reset(); }}
+        className={`h-auto min-w-0 max-w-full flex-col items-start gap-1 whitespace-normal px-1 py-1.5 text-left hover:bg-slate-50 ${selectedId === row.original.changeSetId ? "bg-teal-50 text-teal-900" : ""}`}
+      >
+        <span className="max-w-full break-words text-[13px] font-semibold text-slate-950" title={row.original.reason}>{row.original.reason}</span>
+        <span className="text-xs font-normal text-slate-600">{row.original.changeCount} 项 · 熊猫 {row.original.targetPandaId.slice(0, 8)}</span>
+        <span className="text-xs font-semibold text-teal-800 underline underline-offset-2">查看变更</span>
+      </Button>
     ) }),
     column.accessor("state", { header: "处理状态", cell: (cell) => <Badge variant="outline" className="bg-slate-50 text-slate-800">{stateLabels[cell.getValue() as CurationState]}</Badge> }),
-    column.display({ id: "view", header: "操作", cell: ({ row }) => (
-      <Button type="button" size="sm" variant="outline" aria-label={`查看变更：${row.original.reason}`} className={selectedId === row.original.changeSetId ? "border-teal-300 bg-teal-50 text-teal-900" : undefined} aria-pressed={selectedId === row.original.changeSetId} onClick={() => {
-        void setSelectedId(row.original.changeSetId);
-        setMessage(""); approvalForm.reset();
-      }}>查看变更</Button>
-    ) }),
   ], [approvalForm, selectedId, setSelectedId]);
   // TanStack Table deliberately exposes non-memoizable helpers.
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -116,17 +121,17 @@ export function CurationWorkspace() {
   const pages = Math.max(1, Math.ceil((listing.data?.total ?? 0) / PAGE_SIZE));
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 pb-12 pt-7 md:px-8">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+    <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-9 md:px-9">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-950">策展变更集</h1>
+          <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">策展变更集</h1>
           <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">核验建议变更与来源，由另一位工作人员独立审批；公开发布另行处理。</p>
         </div>
       </header>
 
       <ResizablePanelGroup orientation="horizontal" className="mt-6 min-h-[660px] items-stretch">
       <ResizablePanel defaultSize="39%" minSize="30%" maxSize="55%" className="min-w-0">
-      <section className="min-w-0" aria-label="策展待办">
+      <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs" aria-label="策展待办">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
           <div><h2 className="text-base font-semibold text-slate-950">变更队列</h2><p className="mt-1 text-xs text-slate-600">选择一项，右侧同步展示变更证据</p></div>
           {listing.data && <Badge variant="outline" className="text-slate-700">{listing.data.total} 项</Badge>}
@@ -140,10 +145,12 @@ export function CurationWorkspace() {
             {states.map((value) => <NativeSelectOption key={value} value={value}>{stateLabels[value]}</NativeSelectOption>)}
           </NativeSelect>
         </label>
-        {listing.isPending && <p role="status" className="py-5 text-sm text-slate-600">正在加载变更队列…</p>}
-        {listing.isError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{listing.error.message}</p>}
+        {listing.isPending && <div role="status" aria-label="正在加载变更队列" className="space-y-3 pt-3"><Skeleton className="h-10 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div>}
+        {listing.isError && <div role="alert" className="space-y-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><p>{listing.error.message}</p><Button variant="outline" size="sm" onClick={() => void listing.refetch()}>重试加载变更队列</Button></div>}
         {listing.isSuccess && <>
-          <DataTable table={table} emptyMessage="当前筛选下没有变更集。可切换状态查看其他记录。" />
+          <ScrollArea className={listing.data.items.length > 7 ? "h-[min(60vh,720px)] rounded-xl" : "rounded-xl"}>
+            <DataTable table={table} emptyMessage="当前筛选下没有变更集。可切换状态查看其他记录。" />
+          </ScrollArea>
           <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-600">
             <span>第 {page} / {pages} 页</span>
             <div className="flex gap-2">
@@ -156,17 +163,19 @@ export function CurationWorkspace() {
       </ResizablePanel>
       <ResizableHandle withHandle aria-label="调整队列与详情宽度" className="mx-2 w-1 rounded-full bg-slate-200 transition-colors hover:bg-teal-400 focus-visible:bg-teal-400 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
       <ResizablePanel defaultSize="61%" minSize="45%" className="min-w-0">
-      <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-label="策展变更详情">
-        {!selectedId && <div className="flex min-h-72 flex-col items-center justify-center px-8 py-12 text-center">
-          <FolderCheck aria-hidden="true" className="size-9 text-slate-400" strokeWidth={1.5} />
-          <h2 className="mt-4 text-base font-semibold text-slate-900">选择一项策展变更</h2>
-          <p className="mt-2 max-w-sm text-sm leading-6 text-slate-600">在左侧队列选择记录后，可在这里查看建议事实、证据来源与下一步审批操作。</p>
-        </div>}
+      <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs" aria-label="策展变更详情">
+        {!selectedId && <Empty className="min-h-[540px]">
+          <EmptyHeader>
+            <EmptyMedia variant="icon"><FolderCheck aria-hidden="true" /></EmptyMedia>
+            <EmptyTitle className="text-base"><h2>选择一项策展变更</h2></EmptyTitle>
+            <EmptyDescription>在左侧队列选择记录后，可在这里查看建议事实、证据来源与下一步审批操作。</EmptyDescription>
+          </EmptyHeader>
+        </Empty>}
         {selectedId && <>
         <p role="status" className={message ? "m-5 rounded-lg border border-teal-200 bg-teal-50 p-4 text-sm text-teal-950" : "sr-only"}>{message}</p>
         {error && <p role="alert" className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error.message}</p>}
-        {detail.isPending && <p role="status" className="p-5 text-sm text-slate-600">正在加载变更详情…</p>}
-        {detail.isError && <p role="alert" className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">{detail.error.message}</p>}
+        {detail.isPending && <div role="status" aria-label="正在加载变更详情" className="space-y-4 p-6"><Skeleton className="h-7 w-2/3" /><Skeleton className="h-20 w-full" /><Skeleton className="h-24 w-full" /></div>}
+        {detail.isError && <div role="alert" className="m-5 space-y-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"><p>{detail.error.message}</p><Button variant="outline" size="sm" onClick={() => void detail.refetch()}>重新加载变更详情</Button></div>}
         {detail.data && <>
           <div className="border-b border-slate-200 bg-slate-50 px-5 py-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -179,16 +188,18 @@ export function CurationWorkspace() {
                 <Button type="button" variant="outline" size="sm" onClick={() => { void setSelectedId(null); approvalForm.reset(); }}>关闭详情</Button>
               </div>
             </div>
-            <details className="mt-3 text-xs text-slate-600">
-              <summary className="cursor-pointer font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2">查看完整编号和追溯信息</summary>
-              <div className="mt-2 space-y-1 break-all font-mono">
+            <Collapsible className="group mt-3 text-xs text-slate-600">
+              <CollapsibleTrigger className="inline-flex min-h-8 items-center gap-2 font-medium text-teal-800 focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2">
+                查看完整编号和追溯信息 <ChevronDown size={14} aria-hidden="true" className="group-data-[state=open]:rotate-180" />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2 space-y-1 break-all font-mono">
                 <p>熊猫 ID：{detail.data.targetPandaId}</p>
                 <p>创建人 ID：{detail.data.createdByAccountId}</p>
                 <p>变更版本：{detail.data.version}</p>
                 {detail.data.reviewCaseId && <p>审核案件：{detail.data.reviewCaseId}</p>}
                 {detail.data.acquisitionBundleId && <p>采集批次：{detail.data.acquisitionBundleId}</p>}
-              </div>
-            </details>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
           <div className="space-y-5 px-5 py-5">
             <div className="flex items-center justify-between gap-3"><h3 className="text-sm font-semibold text-slate-950">事实变更与来源</h3><span className="text-xs tabular-nums text-slate-600">{detail.data.changes.length} 项</span></div>
@@ -201,7 +212,7 @@ export function CurationWorkspace() {
                   <Badge variant="outline" className="bg-slate-50 text-slate-700">{change.certainty === "confirmed" ? "已确认" : "待证实"}</Badge>
                 </div>
                 <p className="mt-2 text-xs text-slate-600">证据核验：{change.lastVerifiedOn} · 来源 {change.sourceIds.length} 项</p>
-                <details className="mt-2 text-xs"><summary className="cursor-pointer font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2">查看来源标识</summary><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p>{change.appliedAssertionId && <p className="mt-1 break-all font-mono text-slate-700">已应用事实：{change.appliedAssertionId}</p>}</details>
+                <Collapsible className="mt-2 text-xs"><CollapsibleTrigger className="min-h-8 font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2">查看来源标识</CollapsibleTrigger><CollapsibleContent><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p>{change.appliedAssertionId && <p className="mt-1 break-all font-mono text-slate-700">已应用事实：{change.appliedAssertionId}</p>}</CollapsibleContent></Collapsible>
               </li>)}
             </ul>}
             {detail.data.ownerChanges.length > 0 && <>
@@ -210,10 +221,10 @@ export function CurationWorkspace() {
                 {detail.data.ownerChanges.map((change) => <li key={change.changeId} className="px-4 py-3">
                   <p className="text-sm font-semibold text-slate-950">{ownerModuleLabels[change.ownerModule] ?? change.ownerModule} · {operationLabels[change.operation] ?? `原始操作：${change.operation}`}</p>
                   <p className="mt-1 text-xs text-slate-600">证据核验：{change.lastVerifiedOn} · 来源 {change.sourceIds.length} 项</p>
-                  <details className="mt-2 text-xs"><summary className="cursor-pointer font-medium text-teal-800">查看结构化变更字段</summary>
-                    <dl className="mt-2 space-y-1">{Object.entries(change.payload).map(([key, value]) => <div key={key}><dt className="text-slate-600">原始字段：{key}</dt><dd className="break-all text-slate-900">{displayValue(value)}</dd></div>)}</dl>
-                  </details>
-                  <details className="mt-2 text-xs"><summary className="cursor-pointer font-medium text-teal-800">查看来源标识（{change.sourceIds.length}）</summary><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p></details>
+                  <Collapsible className="mt-2 text-xs"><CollapsibleTrigger className="min-h-8 font-medium text-teal-800">查看结构化变更字段</CollapsibleTrigger>
+                    <CollapsibleContent><dl className="mt-2 space-y-1">{Object.entries(change.payload).map(([key, value]) => <div key={key}><dt className="text-slate-600">原始字段：{key}</dt><dd className="break-all text-slate-900">{displayValue(value)}</dd></div>)}</dl></CollapsibleContent>
+                  </Collapsible>
+                  <Collapsible className="mt-2 text-xs"><CollapsibleTrigger className="min-h-8 font-medium text-teal-800">查看来源标识（{change.sourceIds.length}）</CollapsibleTrigger><CollapsibleContent><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p></CollapsibleContent></Collapsible>
                 </li>)}
               </ul>
             </>}
@@ -232,7 +243,7 @@ export function CurationWorkspace() {
             <approvalForm.Field name="reason">{(field) => (
               <label className="block text-sm font-semibold text-stone-800">
                 审批原因
-                <textarea aria-label="审批原因" className="mt-2 block min-h-24 w-full rounded-lg border border-slate-300 bg-white p-3 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                <Textarea aria-label="审批原因" className="mt-2 min-h-24 bg-white font-normal"
                   value={field.state.value} onChange={(event) => field.handleChange(event.target.value)}
                   onBlur={field.handleBlur} minLength={3} maxLength={2000} required />
               </label>

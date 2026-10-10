@@ -108,3 +108,21 @@ test("Curation never offers self-approval, even if the creator has the approval 
   await page.getByRole("textbox", { name: "审批原因" }).fill("已核对所有证据");
   await expect(page.getByRole("button", { name: "审批并应用" })).toBeDisabled();
 });
+
+test("Curation queue can retry a failed server read without resetting page state", async ({ page }) => {
+  let unavailable = true;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: "11111111-1111-4111-8111-111111111111", aal: "aal2", capabilities: ["admin.shell.access", "curation.change.read"] }),
+  }));
+  await page.route("**/api/admin/curation/change-sets?**", (route) => route.fulfill(unavailable
+    ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "策展队列暂时不可用" }) }
+    : { status: 200, contentType: "application/json", body: JSON.stringify({ items: [], total: 0, limit: 10, offset: 0 }) }));
+  await page.goto("/admin/curation?state=validated");
+  const retry = page.getByRole("button", { name: "重试加载变更队列" });
+  await expect(retry).toBeVisible({ timeout: 30_000 });
+  unavailable = false;
+  await retry.click();
+  await expect(page.getByText("当前筛选下没有变更集。可切换状态查看其他记录。")).toBeVisible();
+  await expect(page).toHaveURL(/state=validated/);
+});
