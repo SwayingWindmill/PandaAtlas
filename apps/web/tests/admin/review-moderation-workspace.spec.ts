@@ -178,6 +178,10 @@ test("review queue replaces the generic runner with typed collection and case ac
   await page.getByRole("tab", { name: "审核决定" }).click();
   await expect(page.getByLabel("来源核验原因")).not.toBeVisible();
   await expect(page.getByLabel("审核决定类型")).toBeVisible();
+  const assertionSelection = page.getByRole("checkbox", { name: "性别" });
+  await assertionSelection.focus();
+  await page.keyboard.press("Space");
+  await expect(assertionSelection).toBeChecked();
   await expect(page.getByRole("button", { name: "保存审核决定" })).toBeDisabled();
   const actionAccessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(actionAccessibility.violations).toEqual([]);
@@ -278,6 +282,24 @@ test("review queue keeps collection state in the URL", async ({ page }) => {
   await page.getByRole("button", { name: "下一页" }).click();
   await expect(page).toHaveURL(/\/admin\/reviews\?state=assigned&page=2$/);
   await expect.poll(() => reads.at(-1)).toEqual({ state: "assigned", offset: "25" });
+});
+
+test("review queue offers an explicit retry after the server recovers", async ({ page }) => {
+  let unavailable = true;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: ["admin.shell.access", "review.case.read"] }),
+  }));
+  await page.route("**/api/admin/review/cases?**", (route) => route.fulfill(unavailable
+    ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "审核队列暂时不可用" }) }
+    : { status: 200, contentType: "application/json", body: JSON.stringify({ items: [], total: 0, limit: 25, offset: 0 }) }));
+  await page.goto("/admin/reviews");
+  const retry = page.getByRole("button", { name: "重试加载队列" });
+  await expect(retry).toBeVisible({ timeout: 30_000 });
+  unavailable = false;
+  await retry.click();
+  await expect(page.getByText("当前筛选条件下没有待审核案件。")).toBeVisible();
+  await expect(retry).toHaveCount(0);
 });
 
 test("moderation shows the appeal queue, account projection, and typed appeal decision", async ({ page }) => {
