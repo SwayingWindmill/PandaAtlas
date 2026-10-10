@@ -225,11 +225,17 @@ test("switching review cases returns to evidence and clears the previous case dr
   await expect(page.getByText("Institutional profile").first()).toBeVisible();
   await page.getByRole("tab", { name: "核验来源" }).click();
   await page.getByLabel("来源核验原因").fill("Draft for original case");
+  await page.getByLabel("来源核验结果").selectOption("rejected");
+  await page.getByRole("tab", { name: "审核决定" }).click();
+  await page.getByLabel("审核决定类型").selectOption("duplicate");
   await page.getByRole("button", { name: /熊猫编号 88888888/ }).click();
   await expect(page.getByRole("tab", { name: "查看证据", selected: true })).toBeVisible();
   await expect(page.getByText("New case institution").first()).toBeVisible();
   await page.getByRole("tab", { name: "核验来源" }).click();
   await expect(page.getByLabel("来源核验原因")).toHaveValue("");
+  await expect(page.getByLabel("来源核验结果")).toHaveValue("verified");
+  await page.getByRole("tab", { name: "审核决定" }).click();
+  await expect(page.getByLabel("审核决定类型")).toHaveValue("accepted");
 });
 
 test("assigned review explains ownership instead of offering a misleading claim action", async ({ page }) => {
