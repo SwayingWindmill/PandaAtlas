@@ -2,7 +2,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { components } from "@zhipanda/api-client";
-import { Search } from "lucide-react";
+import { Inbox, Search } from "lucide-react";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 
@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import { StaffWorkspaceNavigation } from "./staff-workspace-navigation";
 
@@ -135,9 +138,9 @@ export function StaffInvitations() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-6 px-5 pb-12 pt-7 md:px-8">
+    <main className="mx-auto w-full max-w-[1480px] space-y-6 px-6 pb-12 pt-9 md:px-9">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
+        <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
         <p className="mt-2 text-sm leading-6 text-slate-600">
           邀请新审核员，查看他们是否已接受邀请。审核员不具备策展终审或公开发布权限。
         </p>
@@ -190,13 +193,13 @@ export function StaffInvitations() {
             </label>
             <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
               <span className="sr-only">邀请状态</span>
-              <select aria-label="邀请状态" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as InvitationFilter)}
-                className="h-9 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
-                <option value="all">全部状态</option>
-                <option value="pending">待接受</option>
-                <option value="accepted">已接受</option>
-                <option value="other">其他状态</option>
-              </select>
+              <NativeSelect aria-label="邀请状态" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as InvitationFilter)}
+                className="h-9 min-w-32 border-slate-200 bg-white text-slate-900">
+                <NativeSelectOption value="all">全部状态</NativeSelectOption>
+                <NativeSelectOption value="pending">待接受</NativeSelectOption>
+                <NativeSelectOption value="accepted">已接受</NativeSelectOption>
+                <NativeSelectOption value="other">其他状态</NativeSelectOption>
+              </NativeSelect>
             </label>
           </div>
         </div>
@@ -215,9 +218,13 @@ export function StaffInvitations() {
           </div>
         )}
         {invitations?.length === 0 && (
-          <p className="rounded-xl border border-dashed border-slate-300 p-6 text-sm leading-6 text-slate-600">
-            尚无邀请记录。{canInvite ? "在上方输入邮箱，即可邀请第一位审核员。" : "需要邀请新审核员时，请联系具备人员邀请权限的同事。"}
-          </p>
+          <Empty className="min-h-60 rounded-2xl border border-slate-200 bg-white">
+            <EmptyHeader>
+              <EmptyMedia variant="icon"><Inbox aria-hidden="true" /></EmptyMedia>
+              <EmptyTitle>尚无邀请记录。</EmptyTitle>
+              <EmptyDescription>{canInvite ? "在上方输入邮箱，即可邀请第一位审核员。" : "需要邀请新审核员时，请联系具备人员邀请权限的同事。"}</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
         {invitations && invitations.length > 0 && matched.length === 0 && (
           <div className="rounded-xl border border-dashed border-slate-300 p-6">
@@ -227,22 +234,24 @@ export function StaffInvitations() {
           </div>
         )}
         {matched.length > 0 && (
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 border-b border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-medium text-slate-600 md:grid-cols-[minmax(0,1fr)_minmax(11rem,auto)_auto]">
-              <span>邮箱</span><span className="hidden md:block">邀请时间</span><span>进度</span>
-            </div>
-            <ul className="divide-y divide-slate-100">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
+            <Table>
+              <TableHeader className="bg-slate-50">
+                <TableRow><TableHead>邮箱</TableHead><TableHead>邀请时间</TableHead><TableHead>进度</TableHead></TableRow>
+              </TableHeader>
+              <TableBody>
               {matched.map((invite) => {
                 const status = invitationStatus(invite.status);
                 return (
-                  <li key={invite.invitationId} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 text-sm md:grid-cols-[minmax(0,1fr)_minmax(11rem,auto)_auto]">
-                    <span className="min-w-0 break-all font-medium text-slate-900">{invite.email}</span>
-                    <span className="hidden whitespace-nowrap text-slate-600 md:block">{createdAtLabel(invite.createdAt)}</span>
-                    <Badge variant={status.variant}>{status.label}</Badge>
-                  </li>
+                  <TableRow key={invite.invitationId}>
+                    <TableCell className="break-all font-semibold text-slate-950">{invite.email}</TableCell>
+                    <TableCell className="whitespace-nowrap text-slate-600">{createdAtLabel(invite.createdAt)}</TableCell>
+                    <TableCell><Badge variant={status.variant}>{status.label}</Badge></TableCell>
+                  </TableRow>
                 );
               })}
-            </ul>
+              </TableBody>
+            </Table>
           </div>
         )}
         {matched.some((invite) => invitationState(invite.status) === "pending") && (

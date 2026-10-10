@@ -201,6 +201,14 @@ test("staff directory search and status filter narrow the people list without ch
 
   await page.goto("/admin/staff/roles");
   await expect(page.getByRole("button", { name: /alice@example.test/ })).toBeVisible();
+  await expect(page.getByRole("region", { name: "工作人员目录" }).getByRole("table")).toBeVisible();
+  const directoryRegion = page.getByRole("region", { name: "工作人员目录" });
+  const widthBefore = (await directoryRegion.boundingBox())?.width ?? 0;
+  const resizeHandle = page.getByRole("separator", { name: "调整工作人员目录与详情宽度" });
+  await resizeHandle.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(async () => (await directoryRegion.boundingBox())?.width ?? 0).toBeGreaterThan(widthBefore);
   await page.getByRole("searchbox", { name: "搜索工作人员" }).fill("bob");
   await expect(page.getByRole("button", { name: /bob@example.test/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /alice@example.test/ })).toHaveCount(0);
@@ -454,6 +462,7 @@ test("staff invitations support searchable status tracking without inventing lif
   await page.goto("/admin/staff/invitations");
   await expect(page.getByRole("button", { name: "发送邀请" })).toHaveCount(0);
   await expect(page.getByText("3 条邀请", { exact: false })).toBeVisible();
+  await expect(page.getByRole("region", { name: "审核员邀请记录" }).getByRole("table")).toBeVisible();
   await page.getByRole("searchbox", { name: "搜索邀请邮箱" }).fill("accepted");
   await expect(page.getByText("accepted@example.test")).toBeVisible();
   await expect(page.getByText("pending@example.test")).toHaveCount(0);

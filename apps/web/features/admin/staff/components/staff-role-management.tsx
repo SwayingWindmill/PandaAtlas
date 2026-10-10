@@ -2,12 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { components } from "@zhipanda/api-client";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, UsersRound } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import { capabilityDescription, capabilityGroups } from "@/features/admin/session/capability-presentation";
 import { StaffWorkspaceNavigation } from "./staff-workspace-navigation";
@@ -142,61 +147,99 @@ export function StaffRoleManagement() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-6 px-5 pb-12 pt-7 md:px-8">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-950">工作人员权限管理</h1>
+    <main className="mx-auto w-full max-w-[1480px] space-y-6 px-6 pb-12 pt-9 md:px-9">
+      <header className="space-y-2 border-b border-slate-200 pb-5">
+        <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">工作人员权限管理</h1>
         <p className="text-sm leading-6 text-slate-600">选择一位工作人员，查看其岗位与权限。授权、撤销和账号状态变更只对具备相应管理资格的人员开放。</p>
       </header>
       {session && <StaffWorkspaceNavigation current="directory" session={session} />}
 
-      <div className="grid items-start gap-5 xl:grid-cols-[minmax(19rem,0.85fr)_minmax(0,1.6fr)]">
-        <section aria-label="工作人员目录" className="min-w-0 xl:sticky xl:top-24">
+      <ResizablePanelGroup orientation="horizontal" className="min-h-[720px] items-stretch">
+        <ResizablePanel defaultSize="39%" minSize="31%" maxSize="55%" className="min-w-0">
+        <section aria-label="工作人员目录" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h2 className="text-base font-semibold text-slate-950">工作人员目录</h2>
             {directory.data && <span role="status" aria-live="polite" className="shrink-0 text-xs tabular-nums text-slate-600">{filteredStaff.length} / {directory.data.length} 位工作人员</span>}
           </div>
-          <div className="mb-3 grid gap-3 rounded-xl border border-slate-200 bg-white p-4">
-            <label htmlFor="staff-directory-search" className="grid gap-1.5 text-sm font-medium text-slate-700">
+          <div className="mb-4 flex items-end gap-2.5 border-b border-slate-100 pb-5">
+            <label htmlFor="staff-directory-search" className="grid min-w-0 flex-1 gap-1.5 text-xs font-semibold text-slate-600">
               搜索工作人员
-              <Input id="staff-directory-search" type="search" value={search} placeholder="邮箱、账号编号或岗位"
+              <Input id="staff-directory-search" type="search" value={search} placeholder="邮箱、账号编号或岗位" className="h-10 bg-white"
                 onChange={(event) => { setSearch(event.target.value); selectAccount(""); }} />
             </label>
-            <label htmlFor="staff-directory-state" className="grid gap-1.5 text-sm font-medium text-slate-700">
+            <label htmlFor="staff-directory-state" className="grid shrink-0 gap-1.5 text-xs font-semibold text-slate-600">
               人员状态
-              <select id="staff-directory-state" value={stateFilter}
+              <NativeSelect id="staff-directory-state" value={stateFilter}
                 onChange={(event) => { setStateFilter(event.target.value); selectAccount(""); }}
-                className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
-                <option value="all">全部状态</option>
-                <option value="active">正常</option>
-                <option value="suspended">已停用</option>
-              </select>
+                className="h-10 min-w-32 border-slate-200 bg-white text-slate-900">
+                <NativeSelectOption value="all">全部状态</NativeSelectOption>
+                <NativeSelectOption value="active">正常</NativeSelectOption>
+                <NativeSelectOption value="suspended">已停用</NativeSelectOption>
+              </NativeSelect>
             </label>
           </div>
           {directory.isPending && <p className="mt-4 text-sm text-slate-500">正在加载工作人员…</p>}
           {directory.error && <p role="alert" className="mt-4 text-sm text-rose-700">{directory.error.message}</p>}
-          {directory.data?.length === 0 && <p className="mt-4 text-sm text-slate-600">尚无工作人员。</p>}
-          {directory.data && directory.data.length > 0 && filteredStaff.length === 0 && (
-            <p className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600">没有匹配的工作人员。请调整搜索词或人员状态。</p>
+          {directory.data?.length === 0 && (
+            <Empty className="min-h-60 rounded-xl bg-slate-50">
+              <EmptyHeader>
+                <EmptyMedia variant="icon"><UsersRound aria-hidden="true" /></EmptyMedia>
+                <EmptyTitle className="text-base">尚无工作人员。</EmptyTitle>
+                <EmptyDescription>邀请审核员后，可以在这里查看岗位和账号状态。</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
-          <div className="space-y-2">
-            {filteredStaff.map((staff) => (
-              <button key={staff.accountId} type="button" onClick={() => selectAccount(staff.accountId)}
-                aria-pressed={selectedId === staff.accountId}
-                className={`w-full rounded-lg border p-3.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${selectedId === staff.accountId ? "border-teal-700 bg-teal-50" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}>
-                <span className="flex items-start justify-between gap-2">
-                  <span className="min-w-0 break-all text-sm font-semibold text-slate-900">{staff.email ?? staff.accountId.slice(0, 8)}</span>
-                  <Badge variant="outline" className={staff.state === "active" ? "shrink-0 border-teal-200 bg-teal-50 text-teal-800" : "shrink-0 border-slate-300 bg-slate-100 text-slate-700"}>
-                    {staff.state === "active" ? "正常" : staff.state === "suspended" ? "已停用" : "其他状态"}
-                  </Badge>
-                </span>
-                <span className="mt-1.5 block text-xs text-slate-600">{staff.roles.map(roleName).join("、") || "等待授权"}</span>
-              </button>
-            ))}
-          </div>
+          {directory.data && directory.data.length > 0 && filteredStaff.length === 0 && (
+            <Empty className="min-h-52 rounded-xl bg-slate-50">
+              <EmptyHeader>
+                <EmptyTitle className="text-base">没有匹配的工作人员。</EmptyTitle>
+                <EmptyDescription>请调整搜索词或人员状态。</EmptyDescription>
+              </EmptyHeader>
+              <Button variant="outline" size="sm" onClick={() => { setSearch(""); setStateFilter("all"); }}>清除筛选</Button>
+            </Empty>
+          )}
+          {filteredStaff.length > 0 && <div className="max-h-[min(62vh,760px)] overflow-auto rounded-xl border border-slate-200">
+            <Table>
+              <TableHeader className="sticky top-0 z-10 bg-slate-50">
+                <TableRow><TableHead>工作人员 / 岗位</TableHead><TableHead className="w-20 text-right">状态</TableHead></TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredStaff.map((staff) => (
+                  <TableRow key={staff.accountId} data-state={selectedId === staff.accountId ? "selected" : undefined}>
+                    <TableCell className="min-w-0 py-2">
+                      <Button type="button" variant="ghost" size="sm" aria-pressed={selectedId === staff.accountId}
+                        onClick={() => selectAccount(staff.accountId)}
+                        className="h-auto max-w-full flex-col items-start gap-1 whitespace-normal px-1 py-1.5 text-left hover:bg-transparent">
+                        <span className="max-w-full break-all text-[13px] font-semibold text-slate-950">{staff.email ?? staff.accountId.slice(0, 8)}</span>
+                        <span className="text-xs font-normal text-slate-500">{staff.roles.map(roleName).join("、") || "等待授权"}</span>
+                      </Button>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Badge variant="outline" className={staff.state === "active" ? "border-teal-200 bg-teal-50 text-teal-800" : "border-slate-300 bg-slate-100 text-slate-700"}>
+                        {staff.state === "active" ? "正常" : staff.state === "suspended" ? "已停用" : "其他状态"}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>}
         </section>
+        </ResizablePanel>
+        <ResizableHandle withHandle aria-label="调整工作人员目录与详情宽度"
+          className="mx-2 w-1 rounded-full bg-slate-200 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
+        <ResizablePanel defaultSize="61%" minSize="45%" className="min-w-0">
 
-        <section aria-label="工作人员角色详情" className="space-y-6">
-          {!selectedId && <p className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-sm text-slate-600">从左侧选择工作人员，查看岗位角色、有效权限和授权历史。</p>}
+        <section aria-label="工作人员角色详情" className="min-w-0 space-y-5">
+          {!selectedId && (
+            <Empty className="min-h-[520px] rounded-2xl border border-slate-200 bg-white shadow-xs">
+              <EmptyHeader>
+                <EmptyMedia variant="icon"><UsersRound aria-hidden="true" /></EmptyMedia>
+                <EmptyTitle>选择工作人员</EmptyTitle>
+                <EmptyDescription>从左侧选择工作人员，查看岗位角色、有效权限和授权历史。</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          )}
           {selectedId && detail.isPending && <p className="text-sm text-slate-600">正在加载角色详情…</p>}
           {selectedId && detail.error && <p role="alert" className="text-sm text-rose-700">{detail.error.message}</p>}
           {detail.data && (
@@ -204,7 +247,7 @@ export function StaffRoleManagement() {
               <div className="rounded-xl border border-slate-200 bg-white p-6">
                 <h2 className="text-lg font-bold text-slate-950">{detail.data.email ?? detail.data.accountId}</h2>
                 <p className="mt-1 text-sm text-slate-600">账号状态：{detail.data.state === "active" ? "正常" : detail.data.state === "suspended" ? "已停用" : "不可用"}</p>
-                <details className="mt-2 text-xs text-slate-600"><summary className="cursor-pointer font-medium text-teal-800">查看账号编号</summary><p className="mt-1 break-all font-mono">{detail.data.accountId}</p></details>
+                <Collapsible className="mt-2 text-xs text-slate-600"><CollapsibleTrigger className="cursor-pointer font-medium text-teal-800">查看账号编号</CollapsibleTrigger><CollapsibleContent className="mt-1 break-all font-mono">{detail.data.accountId}</CollapsibleContent></Collapsible>
                 {detail.data.stateReason && <p className="mt-2 text-sm text-rose-700">停用原因：{detail.data.stateReason.replace(/^staff:|^moderation:/, "")}</p>}
                 <h3 className="mt-6 text-sm font-bold text-slate-900">当前角色</h3>
                 <div className="mt-3 space-y-2">
@@ -227,9 +270,9 @@ export function StaffRoleManagement() {
                         </li>
                       ))}
                     </ul>
-                    <details className="mt-3 text-sm text-slate-700"><summary className="cursor-pointer font-medium text-teal-800">查看原始权限代码</summary>
-                      <ul className="mt-2 space-y-1 rounded-lg bg-slate-50 p-3">{detail.data.capabilities.map((key) => <li key={key} className="break-all font-mono text-xs">{key}</li>)}</ul>
-                    </details>
+                    <Collapsible className="mt-3 text-sm text-slate-700"><CollapsibleTrigger className="cursor-pointer font-medium text-teal-800">查看原始权限代码</CollapsibleTrigger>
+                      <CollapsibleContent><ul className="mt-2 space-y-1 rounded-lg bg-slate-50 p-3">{detail.data.capabilities.map((key) => <li key={key} className="break-all font-mono text-xs">{key}</li>)}</ul></CollapsibleContent>
+                    </Collapsible>
                   </>
                 )}
               </div>
@@ -262,11 +305,11 @@ export function StaffRoleManagement() {
               {stateMessage && <p role="status" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-semibold text-teal-900">{stateMessage}</p>}
 
               <section aria-label="账号状态历史" className="rounded-xl border border-slate-200 bg-white">
-                <details className="group">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 py-3 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
-                  <span>账号状态历史</span><span className="inline-flex items-center gap-2 text-xs font-normal text-slate-600">{detail.data.stateHistory.length} 条 <ChevronDown size={16} aria-hidden="true" className="transition-transform group-open:rotate-180" /></span>
-                </summary>
-                <div className="border-t border-slate-100 px-5 pb-4">
+                <Collapsible className="group">
+                <CollapsibleTrigger className="flex min-h-12 w-full cursor-pointer items-center justify-between px-5 py-3 text-left text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                  <span>账号状态历史</span><span className="inline-flex items-center gap-2 text-xs font-normal text-slate-600">{detail.data.stateHistory.length} 条 <ChevronDown size={16} aria-hidden="true" className="transition-transform group-data-[state=open]:rotate-180" /></span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="border-t border-slate-100 px-5 pb-4">
                 {detail.data.stateHistory.length === 0 && <p className="mt-3 text-sm text-slate-500">暂无状态变更记录。</p>}
                 <ol className="mt-3 divide-y divide-slate-200">
                   {detail.data.stateHistory.map((event) => (
@@ -277,18 +320,18 @@ export function StaffRoleManagement() {
                     </li>
                   ))}
                 </ol>
-                </div>
-                </details>
+                </CollapsibleContent>
+                </Collapsible>
               </section>
 
               {roleManager && !isOwnAccount && detail.data.state === "active" && (
                 <section aria-label="新增岗位授权" className="rounded-xl border border-slate-200 bg-white p-6">
                   <h3 className="text-base font-bold text-slate-950">新增岗位授权</h3>
                   <label htmlFor="staff-role-choice" className="mt-4 block text-sm font-semibold text-slate-900">选择岗位</label>
-                  <select id="staff-role-choice" value={candidateRole} onChange={(event) => setSelectedRole(event.target.value)}
+                  <NativeSelect id="staff-role-choice" value={candidateRole} onChange={(event) => setSelectedRole(event.target.value)}
                     className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus-visible:outline-2 focus-visible:outline-teal-600">
-                    {catalog.data?.map((role) => <option key={role.roleKey} value={role.roleKey}>{roleName(role.roleKey)}</option>)}
-                  </select>
+                    {catalog.data?.map((role) => <NativeSelectOption key={role.roleKey} value={role.roleKey}>{roleName(role.roleKey)}</NativeSelectOption>)}
+                  </NativeSelect>
                   <Button className="mt-4" disabled={!candidateRole || grantedRoles.some((assignment) => assignment.roleKey === candidateRole)} onClick={() => {
                     setPlanned({ kind: "grant", roleKey: candidateRole, idempotencyKey: crypto.randomUUID() }); setReason(""); setMessage("");
                   }}>准备授予</Button>
@@ -313,11 +356,11 @@ export function StaffRoleManagement() {
               {message && <p role="status" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-semibold text-teal-900">{message}</p>}
 
               <section aria-label="角色授权历史" className="rounded-xl border border-slate-200 bg-white">
-                <details className="group">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 py-3 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
-                  <span>角色授权历史</span><span className="inline-flex items-center gap-2 text-xs font-normal text-slate-600">{detail.data.assignments.length} 条 <ChevronDown size={16} aria-hidden="true" className="transition-transform group-open:rotate-180" /></span>
-                </summary>
-                <div className="border-t border-slate-100 px-5 pb-4">
+                <Collapsible className="group">
+                <CollapsibleTrigger className="flex min-h-12 w-full cursor-pointer items-center justify-between px-5 py-3 text-left text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                  <span>角色授权历史</span><span className="inline-flex items-center gap-2 text-xs font-normal text-slate-600">{detail.data.assignments.length} 条 <ChevronDown size={16} aria-hidden="true" className="transition-transform group-data-[state=open]:rotate-180" /></span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="border-t border-slate-100 px-5 pb-4">
                 {detail.data.assignments.length === 0 && <p className="mt-3 text-sm text-slate-500">暂无授权记录。</p>}
                 <ol className="mt-4 divide-y divide-slate-200">
                   {detail.data.assignments.map((assignment: Assignment) => (
@@ -332,13 +375,14 @@ export function StaffRoleManagement() {
                     </li>
                   ))}
                 </ol>
-                </div>
-                </details>
+                </CollapsibleContent>
+                </Collapsible>
               </section>
             </>
           )}
         </section>
-      </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </main>
   );
 }
