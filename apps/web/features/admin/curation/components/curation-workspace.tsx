@@ -11,6 +11,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -123,8 +124,9 @@ export function CurationWorkspace() {
         </div>
       </header>
 
-      <div className="mt-6 grid items-start gap-5 xl:grid-cols-[minmax(21rem,0.9fr)_minmax(0,1.5fr)]">
-      <section className="min-w-0 xl:sticky xl:top-24" aria-label="策展待办">
+      <ResizablePanelGroup orientation="horizontal" className="mt-6 min-h-[660px] items-stretch">
+      <ResizablePanel defaultSize="39%" minSize="30%" maxSize="55%" className="min-w-0">
+      <section className="min-w-0" aria-label="策展待办">
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
           <div><h2 className="text-base font-semibold text-slate-950">变更队列</h2><p className="mt-1 text-xs text-slate-600">选择一项，右侧同步展示变更证据</p></div>
           {listing.data && <Badge variant="outline" className="text-slate-700">{listing.data.total} 项</Badge>}
@@ -151,7 +153,9 @@ export function CurationWorkspace() {
           </div>
         </>}
       </section>
-
+      </ResizablePanel>
+      <ResizableHandle withHandle aria-label="调整队列与详情宽度" className="mx-2 w-1 rounded-full bg-slate-200 transition-colors hover:bg-teal-400 focus-visible:bg-teal-400 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
+      <ResizablePanel defaultSize="61%" minSize="45%" className="min-w-0">
       <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-label="策展变更详情">
         {!selectedId && <div className="flex min-h-72 flex-col items-center justify-center px-8 py-12 text-center">
           <FolderCheck aria-hidden="true" className="size-9 text-slate-400" strokeWidth={1.5} />
@@ -242,7 +246,8 @@ export function CurationWorkspace() {
         </>}
         </>}
       </section>
-      </div>
+      </ResizablePanel>
+      </ResizablePanelGroup>
       <AlertDialog open={confirmApproval} onOpenChange={setConfirmApproval}>
         <AlertDialogContent>
           <AlertDialogHeader>
