@@ -27,6 +27,7 @@ import {
 } from "../presentation";
 
 const reviewColumnHelper = createColumnHelper<ReviewCaseQueueItem>();
+type ReviewPanel = "evidence" | "verify" | "decide" | "recommend";
 
 export function ReviewQueueWorkspace() {
   const queryClient = useQueryClient();
@@ -42,6 +43,7 @@ export function ReviewQueueWorkspace() {
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1).withOptions({ shallow: true }));
   const [state, setState] = useQueryState("state", { shallow: true });
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
+  const [panel, setPanel] = useState<ReviewPanel>("evidence");
   const normalizedState = REVIEW_STATES.includes(state as ReviewState) ? state as ReviewState : undefined;
   const queueQuery = {
     limit: ADMIN_QUEUE_PAGE_SIZE,
@@ -70,6 +72,7 @@ export function ReviewQueueWorkspace() {
   const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
+    setPanel("evidence");
     setSourceId("");
     setNormalizedLocator("");
     setCanonicalSourceId("");
@@ -275,8 +278,8 @@ export function ReviewQueueWorkspace() {
                 <div className="border-b border-slate-200 bg-slate-50 p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h2 id="review-detail-heading" className="text-lg font-semibold text-slate-950">事实与证据</h2>
-                      <p className="mt-1 text-sm text-slate-600">先核对提交事实与原始资料，再决定是否接受。</p>
+                      <h2 id="review-detail-heading" className="text-lg font-semibold text-slate-950">{panel === "evidence" ? "事实与证据" : "案件处理"}</h2>
+                      <p className="mt-1 text-sm text-slate-600">{panel === "evidence" ? "先核对提交事实与原始资料，再决定是否接受。" : "一次只处理一项操作，切换操作不会清空当前输入。"}</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
                       <Badge variant="outline" className="border-slate-300 bg-white text-slate-800">{adminStateLabel(selected.reviewCase.state)}</Badge>
@@ -291,6 +294,27 @@ export function ReviewQueueWorkspace() {
                   <div><p className="text-xs font-semibold uppercase text-stone-500">修订版本</p><p className="mt-1 text-sm font-semibold">{selected.reviewCase.revisionNumber}</p></div>
                   <div><p className="text-xs font-semibold text-stone-600">审核负责人</p><p className="mt-1 break-all text-sm font-semibold">{selected.reviewCase.primaryAssigneeId === session.data?.accountId ? "我" : selected.reviewCase.primaryAssigneeId ? "其他工作人员" : "待领取"}</p></div>
                 </div>
+                <div role="group" aria-label="案件查看与操作" className="flex flex-wrap gap-2 border-b border-slate-200 px-5 py-3">
+                  {([
+                    { id: "evidence", label: "查看证据", enabled: true },
+                    { id: "verify", label: "核验来源", enabled: canVerify && Boolean(contribution?.sources.length) },
+                    { id: "decide", label: "审核决定", enabled: canDecide && Boolean(contribution) },
+                    { id: "recommend", label: "策展交接", enabled: canRecommend },
+                  ] as const).filter((item) => item.enabled).map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      aria-pressed={panel === item.id}
+                      onClick={() => setPanel(item.id)}
+                      className={`min-h-10 rounded-lg px-4 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${
+                        panel === item.id ? "bg-teal-800 text-white" : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                {panel === "evidence" ? (
                 <div className="space-y-5 p-5">
                   <div>
                     <div className="flex items-center justify-between gap-3"><h3 className="text-sm font-semibold text-slate-950">待核验事实</h3><span className="text-xs text-slate-600">{contribution?.assertions.length ?? 0} 项</span></div>
@@ -342,22 +366,24 @@ export function ReviewQueueWorkspace() {
                     </dl>
                   </details>
                 </div>
-              </>
-            ) : null}
-          </section>
-
-          {selected && (canVerify || canDecide || canRecommend) ? (
-          <section aria-labelledby="review-actions-heading" className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-            <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
-              <h2 id="review-actions-heading" className="text-base font-semibold text-slate-950">处理案件</h2>
-              <p className="mt-1 text-sm text-slate-600">证据保持在上方，展开需要执行的操作。各步骤的保存互不替代。</p>
-            </div>
-          {selected && canVerify && contribution?.sources.length ? (
-            <details key={`${effectiveCaseId}-verify`} className="group border-b border-slate-200 last:border-b-0">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
-                <div><span className="text-sm font-semibold text-slate-950">核验来源</span><p className="mt-1 text-xs text-slate-600">核实机构原文与提交事实是否一致</p></div>
-                <ChevronDown size={18} className="shrink-0 text-slate-600 transition-transform group-open:rotate-180" aria-hidden="true" />
-              </summary>
+                ) : (
+                <div aria-label="案件操作" role="region" className="p-5">
+                  <div className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                      <h3 className="text-base font-semibold text-slate-950">处理案件</h3>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">
+                        本案件包含 {contribution?.assertions.length ?? 0} 项提交事实、{contribution?.sources.length ?? 0} 个证据来源。不同操作分别保存，不会自动完成后续步骤。
+                      </p>
+                    </div>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setPanel("evidence")}>返回查看证据</Button>
+                  </div>
+                  {selected.reviewCase.primaryAssigneeId && !ownsSelectedCase ? (
+                    <p className="mb-4 text-sm text-slate-600">当前案件由其他工作人员负责。审核决定只能由当前负责人保存。</p>
+                  ) : null}
+          {panel === "verify" && canVerify && contribution?.sources.length ? (
+            <div>
+              <h4 className="mb-1 text-sm font-semibold text-slate-950">核验来源</h4>
+              <p className="mb-4 text-xs text-slate-600">核实机构原文与提交事实是否一致</p>
             <form
               className="space-y-3 border-t border-slate-100 px-5 pb-5 pt-4"
               onSubmit={(event) => {
@@ -397,15 +423,13 @@ export function ReviewQueueWorkspace() {
                 <Button type="submit" disabled={busy || !sourceReason.trim() || (sourceOutcome === "verified" && (!normalizedLocator.trim() || !canonicalSourceId.trim()))}>保存核验结果</Button>
               </div>
             </form>
-            </details>
+            </div>
           ) : null}
 
-          {selected && canDecide && contribution ? (
-            <details key={`${effectiveCaseId}-decision`} className="group border-b border-slate-200 last:border-b-0">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
-                <div><span className="text-sm font-semibold text-slate-950">审核决定</span><p className="mt-1 text-xs text-slate-600">选择审核结果，并向贡献者说明理由</p></div>
-                <ChevronDown size={18} className="shrink-0 text-slate-600 transition-transform group-open:rotate-180" aria-hidden="true" />
-              </summary>
+          {panel === "decide" && canDecide && contribution ? (
+            <div>
+              <h4 className="mb-1 text-sm font-semibold text-slate-950">审核决定</h4>
+              <p className="mb-4 text-xs text-slate-600">选择审核结果，并向贡献者说明理由</p>
             <form
               className="space-y-3 border-t border-slate-100 px-5 pb-5 pt-4"
               onSubmit={(event) => {
@@ -424,7 +448,8 @@ export function ReviewQueueWorkspace() {
               }}
             >
               <p className="text-sm leading-6 text-slate-600">只有当前负责人可以保存决定；请根据上方事实与来源核验结果填写。</p>
-              <div className="grid gap-3">
+              <div className="grid gap-4 lg:grid-cols-2">
+                <div className="space-y-3">
                 <label className="grid gap-1 text-sm font-semibold">审核结果
                   <select aria-label="审核决定类型" value={decisionOutcome} onChange={(event) => setDecisionOutcome(event.target.value as typeof decisionOutcome)} className="min-h-10 rounded-md border border-stone-400 bg-white px-3 font-normal">
                     <option value="accepted">接受</option><option value="not_accepted">不接受</option><option value="duplicate">重复</option><option value="out_of_scope">超出范围</option><option value="abuse">滥用</option>
@@ -432,7 +457,12 @@ export function ReviewQueueWorkspace() {
                 </label>
                 <fieldset>
                   <legend className="text-sm font-semibold">纳入本次审核的事实</legend>
-                  <div className="mt-2 grid gap-2">
+                  {contribution.assertions.length > 4 ? <p className="mt-1 text-xs font-normal text-slate-600">可在下方列表内滚动，逐项选择需要纳入的事实。</p> : null}
+                  <div
+                    tabIndex={contribution.assertions.length > 4 ? 0 : undefined}
+                    aria-label={contribution.assertions.length > 4 ? "可滚动的审核事实列表" : undefined}
+                    className="mt-2 grid max-h-80 gap-2 overflow-y-auto pr-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+                  >
                     {contribution.assertions.map((assertion) => (
                       <label key={assertion.assertionKey} className="flex items-start gap-2 rounded-md border border-stone-200 p-3 text-sm">
                         <input
@@ -445,21 +475,22 @@ export function ReviewQueueWorkspace() {
                     ))}
                   </div>
                 </fieldset>
+                </div>
+                <div className="space-y-3">
                 {decisionOutcome === "duplicate" ? <label className="grid gap-1 text-sm font-semibold">重复案件 ID<input aria-label="重复案件 ID" value={duplicateOfReviewCaseId} onChange={(event) => setDuplicateOfReviewCaseId(event.target.value)} className="min-h-10 rounded-md border border-stone-400 px-3 font-mono text-xs font-normal" /></label> : null}
                 <label className="grid gap-1 text-sm font-semibold">给贡献者的说明<textarea aria-label="给贡献者的说明" value={userVisibleExplanation} onChange={(event) => setUserVisibleExplanation(event.target.value)} className="min-h-24 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
                 <label className="grid gap-1 text-sm font-semibold">内部处理原因<textarea aria-label="内部处理原因" value={internalReason} onChange={(event) => setInternalReason(event.target.value)} className="min-h-20 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
                 <Button type="submit" disabled={busy || !ownsSelectedCase || !userVisibleExplanation.trim()}>保存审核决定</Button>
+                </div>
               </div>
             </form>
-            </details>
+            </div>
           ) : null}
 
-          {selected && canRecommend ? (
-            <details key={`${effectiveCaseId}-recommend`} className="group border-b border-slate-200 last:border-b-0">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
-                <div><span className="text-sm font-semibold text-slate-950">策展交接</span><p className="mt-1 text-xs text-slate-600">将已通过且有可信来源支持的事实推荐给策展人员</p></div>
-                <ChevronDown size={18} className="shrink-0 text-slate-600 transition-transform group-open:rotate-180" aria-hidden="true" />
-              </summary>
+          {panel === "recommend" && canRecommend ? (
+            <div>
+              <h4 className="mb-1 text-sm font-semibold text-slate-950">策展交接</h4>
+              <p className="mb-4 text-xs text-slate-600">将已通过且有可信来源支持的事实推荐给策展人员</p>
             <form
               className="space-y-3 border-t border-slate-100 px-5 pb-5 pt-4"
               onSubmit={(event) => {
@@ -472,10 +503,13 @@ export function ReviewQueueWorkspace() {
               <label className="mt-4 grid gap-1 text-sm font-semibold">推荐理由<textarea aria-label="推荐理由" value={recommendReason} onChange={(event) => setRecommendReason(event.target.value)} className="min-h-20 rounded-md border border-stone-400 px-3 py-2 font-normal" /></label>
               <Button type="submit" className="mt-3" disabled={busy || !recommendReason.trim()}>提交策展</Button>
             </form>
-            </details>
+            </div>
           ) : null}
+                </div>
+                )}
+              </>
+            ) : null}
           </section>
-          ) : null}
         </div>
       </div>
     </div>
