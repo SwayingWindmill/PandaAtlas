@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -130,12 +131,12 @@ export function CurationWorkspace() {
         </div>
         <label className="mb-3 flex items-center justify-between gap-3 text-sm font-medium text-slate-700">
           处理状态
-          <select aria-label="筛选状态" value={filter ?? "all"}
+          <NativeSelect aria-label="筛选状态" value={filter ?? "all"}
             onChange={(event) => { void setState(event.target.value === "all" ? null : event.target.value); void setPage(1); void setSelectedId(null); }}
-            className="min-h-10 min-w-40 rounded-lg border border-slate-300 bg-white px-3 text-sm font-normal text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
-            <option value="all">全部状态</option>
-            {states.map((value) => <option key={value} value={value}>{stateLabels[value]}</option>)}
-          </select>
+            className="min-h-10 min-w-40 border-slate-300 bg-white text-slate-900">
+            <NativeSelectOption value="all">全部状态</NativeSelectOption>
+            {states.map((value) => <NativeSelectOption key={value} value={value}>{stateLabels[value]}</NativeSelectOption>)}
+          </NativeSelect>
         </label>
         {listing.isPending && <p role="status" className="py-5 text-sm text-slate-600">正在加载变更队列…</p>}
         {listing.isError && <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{listing.error.message}</p>}
