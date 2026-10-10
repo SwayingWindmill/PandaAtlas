@@ -206,7 +206,7 @@ test("staff directory readers can inspect people and invitation progress without
   await page.goto("/admin/staff/invitations");
   await expect(page.getByText("pending@example.test")).toBeVisible();
   await expect(page.getByRole("button", { name: "发送邀请" })).toHaveCount(0);
-  await expect(page.getByText("等待对方验证邮箱", { exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "审核员邀请记录" }).locator('[data-slot="badge"]')).toHaveText("待接受");
   await page.goto("/admin/staff/roles");
   await page.getByRole("button", { name: /reader@example.test/ }).click();
   await expect(page.getByText("审核 · 1 项")).toBeVisible();
@@ -400,8 +400,64 @@ test("AAL2 staff manager invites an archive reviewer and sees a pending invitati
   await expect(page.getByRole("heading", { name: "工作人员邀请", level: 1 })).toBeVisible();
   await page.getByRole("textbox", { name: "审核员邮箱" }).fill("reviewer@example.test");
   await page.getByRole("button", { name: "发送邀请" }).click();
-  await expect(page.getByRole("status")).toContainText("邀请邮件已发送");
+  await expect(page.getByRole("status")).toContainText("已向 reviewer@example.test 发送邀请");
   expect(invitedEmail).toBe("reviewer@example.test");
+});
+
+test("staff invitations support searchable status tracking without inventing lifecycle actions", async ({ page }) => {
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "identity.staff.read"] }),
+  }));
+  await page.route("**/api/admin/staff/invitations", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify([
+      { invitationId: "one", email: "pending@example.test", status: "pending", createdAt: "2026-10-08T12:00:00Z" },
+      { invitationId: "two", email: "accepted@example.test", status: "accepted", createdAt: "2026-10-09T12:00:00Z" },
+      { invitationId: "three", email: "unknown@example.test", status: "unfamiliar", createdAt: "2026-10-10T12:00:00Z" },
+    ]),
+  }));
+  await page.goto("/admin/staff/invitations");
+  await expect(page.getByRole("button", { name: "发送邀请" })).toHaveCount(0);
+  await expect(page.getByText("3 条邀请", { exact: false })).toBeVisible();
+  await page.getByRole("searchbox", { name: "搜索邀请邮箱" }).fill("accepted");
+  await expect(page.getByText("accepted@example.test")).toBeVisible();
+  await expect(page.getByText("pending@example.test")).toHaveCount(0);
+  await page.getByRole("combobox", { name: "邀请状态" }).selectOption("pending");
+  await expect(page.getByText("没有匹配的邀请记录")).toBeVisible();
+  await page.getByRole("searchbox", { name: "搜索邀请邮箱" }).fill("");
+  await expect(page.getByText("pending@example.test")).toBeVisible();
+  await expect(page.getByText("accepted@example.test")).toHaveCount(0);
+  await page.getByRole("combobox", { name: "邀请状态" }).selectOption("other");
+  await expect(page.getByText("unknown@example.test")).toBeVisible();
+  await expect(page.getByText("状态待核对")).toBeVisible();
+  await expect(page.getByRole("button", { name: /撤销|重发|删除/ })).toHaveCount(0);
+  const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(result.violations).toEqual([]);
+});
+
+test("staff invitation submission recovers from transient errors and displays the invited email", async ({ page }) => {
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "identity.account.manage"] }),
+  }));
+  let attempts = 0;
+  await page.route("**/api/admin/staff/invitations", (route) => {
+    if (route.request().method() === "GET") return route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
+    attempts += 1;
+    return route.fulfill(attempts === 1
+      ? { status: 503, contentType: "application/problem+json", body: '{}' }
+      : { status: 201, contentType: "application/json", body: JSON.stringify({ invitationId: "sent", email: "reviewer@example.test", status: "pending" }) });
+  });
+  await page.goto("/admin/staff/invitations");
+  await page.getByRole("textbox", { name: "审核员邮箱" }).fill("reviewer@example.test");
+  await page.getByRole("button", { name: "发送邀请" }).click();
+  await expect(page.getByRole("alert")).toContainText("邀请服务暂时不可用");
+  await expect(page.getByRole("textbox", { name: "审核员邮箱" })).toHaveValue("reviewer@example.test");
+  await page.getByRole("button", { name: "发送邀请" }).click();
+  await expect(page.getByRole("status")).toContainText("reviewer@example.test");
+  await expect(page.getByRole("textbox", { name: "审核员邮箱" })).toHaveValue("");
+  expect(attempts).toBe(2);
 });
 
 test("expired recent authentication is distinguished from an incomplete MFA enrollment", async ({ page }) => {
@@ -426,12 +482,13 @@ test("expired recent authentication is distinguished from an incomplete MFA enro
   await page.goto("/admin/staff/invitations");
   await page.getByRole("textbox", { name: "审核员邮箱" }).fill("new-reviewer@example.test");
   await page.getByRole("button", { name: "发送邀请" }).click();
-  await expect(page.getByRole("status")).toContainText("最近认证已过期");
-  await expect(page.getByRole("status").getByRole("link", { name: "重新登录" })).toHaveAttribute(
+  const invitationError = page.getByRole("region", { name: "邀请审核员" }).getByRole("alert");
+  await expect(invitationError).toContainText("最近认证已过期");
+  await expect(invitationError.getByRole("link", { name: "重新登录" })).toHaveAttribute(
     "href", "/auth/login?next=%2Fadmin%2Fstaff%2Finvitations",
   );
   await expect(page.getByRole("region", { name: "审核员邀请记录" }).getByRole("alert")).toContainText("最近认证已过期");
-  await expect(page.getByRole("status")).not.toContainText("在账号安全中完成验证");
+  await expect(invitationError).not.toContainText("在账号安全中完成验证");
 });
 
 test("staff manager can inspect role history and confirm grant and revoke with reasons", async ({ page }) => {
