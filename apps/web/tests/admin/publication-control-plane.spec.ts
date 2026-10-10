@@ -21,6 +21,50 @@ const counts = {
   evidence: 9,
 };
 
+test("publication release list can retry a failed read without losing lifecycle filter", async ({ page }) => {
+  let fail = true;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify(publicationSession),
+  }));
+  await page.route("**/api/admin/publication/releases?**", (route) => route.fulfill(fail
+    ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "发布列表暂时不可用" }) }
+    : { status: 200, contentType: "application/json", body: JSON.stringify({
+      items: [], total: 0, limit: 10, offset: 0, currentReleaseId: null, currentRelease: null,
+    }) }));
+  await page.goto("/admin/publication?state=sealed");
+  const retry = page.getByRole("button", { name: "重试加载版本列表" });
+  await expect(retry).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole("button", { name: "启用版本", exact: true })).toHaveCount(0);
+  fail = false;
+  await retry.click();
+  await expect(page.getByText("当前筛选条件下没有版本记录；可选择其他生命周期查看。")).toBeVisible();
+  await expect(page).toHaveURL(/state=sealed/);
+});
+
+test("a direct release URL cannot offer activation while current release status is unknown", async ({ page }) => {
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify(publicationSession),
+  }));
+  await page.route("**/api/admin/publication/releases?**", (route) => route.fulfill({
+    status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "当前版本列表不可用" }),
+  }));
+  await page.route(`**/api/admin/publication/releases/${candidateReleaseId}*`, (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify({
+      release: {
+        releaseId: candidateReleaseId, version: "2026.10.05.2", lifecycleState: "sealed", isCurrent: false,
+        suspended: false, projectionSchemaVersion: 1, builtAt: "2026-10-10T08:00:00Z", blockers: [], counts,
+      },
+      currentReleaseId: null, changes: [], changeTotal: 0, changeOffset: 0, changeItems: [], transitions: [],
+    }),
+  }));
+  await page.goto(`/admin/publication?release=${candidateReleaseId}`);
+  await expect(page.getByRole("heading", { name: "2026.10.05.2" })).toBeVisible();
+  await expect(page.getByText("无法确认当前公开版本。", { exact: false })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole("button", { name: "启用版本", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "回滚至此版本" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "暂停版本" })).toHaveCount(0);
+});
+
 test("publication control plane shows releases, counts, diff, history, and typed lifecycle controls", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(publicationSession) });
@@ -132,6 +176,11 @@ test("publication control plane shows releases, counts, diff, history, and typed
   const queuePosition = await queue.boundingBox();
   const inspectionPosition = await inspection.boundingBox();
   expect(queuePosition && inspectionPosition && queuePosition.x + queuePosition.width <= inspectionPosition.x).toBe(true);
+  const divider = page.getByRole("separator", { name: "调整版本队列与检查详情宽度" });
+  const widthBefore = queuePosition?.width ?? 0;
+  await divider.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(async () => (await queue.boundingBox())?.width ?? 0).toBeGreaterThan(widthBefore);
 
   await expect(page.getByRole("heading", { level: 1, name: "发布管理" })).toBeVisible();
   await expect(page.getByRole("button", { name: "2026.10.05.1" })).toBeVisible();

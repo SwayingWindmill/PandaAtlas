@@ -151,14 +151,16 @@ export function ReviewQueueWorkspace() {
     reviewColumnHelper.accessor("reviewCaseId", {
       header: "案件",
       cell: ({ row }) => (
-        <button
+        <Button
           type="button"
-          className="text-left font-semibold text-stone-950 underline decoration-stone-400 underline-offset-4"
+          variant="ghost"
+          size="sm"
+          className="h-auto max-w-full flex-col items-start gap-1 whitespace-normal px-2 py-1.5 text-left font-semibold text-slate-950 underline decoration-slate-400 underline-offset-4 hover:text-teal-800"
           onClick={() => setSelectedCaseId(row.original.reviewCaseId)}
         >
           <span className="block">{row.original.targetPandaId ? `熊猫编号 ${row.original.targetPandaId.slice(0, 8)}` : "尚未关联熊猫"}</span>
           <span className="mt-1 block text-xs font-normal text-stone-600">案件 {row.original.reviewCaseId.slice(0, 8)}</span>
-        </button>
+        </Button>
       ),
     }),
     reviewColumnHelper.accessor("state", {

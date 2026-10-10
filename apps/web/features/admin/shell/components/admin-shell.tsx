@@ -119,13 +119,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           : (
             <>
               无法获取当前工作人员会话。
-              <button
+              <Button
                 type="button"
-                className="ml-3 rounded-md border border-rose-300 bg-white px-3 py-1.5 font-semibold hover:bg-rose-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700"
+                variant="outline"
+                size="sm"
+                className="ml-3 border-rose-300 bg-white text-rose-900 hover:bg-rose-100"
                 onClick={() => void sessionQuery.refetch()}
               >
                 重新尝试
-              </button>
+              </Button>
             </>
           )}
       </AdminShellState>
