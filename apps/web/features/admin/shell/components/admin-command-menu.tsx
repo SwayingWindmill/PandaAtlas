@@ -4,6 +4,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput,
@@ -38,16 +39,17 @@ export function AdminCommandMenu({ session }: { session: AdminSession }) {
 
   return (
     <>
-      <button
+      <Button
         type="button"
+        variant="outline"
         onClick={() => setOpen(true)}
         aria-label="搜索工作区"
         aria-keyshortcuts="Control+K Meta+K"
-        className="group flex h-9 min-w-9 items-center justify-center gap-3 rounded-lg border border-slate-200 bg-white px-2.5 text-sm text-slate-600 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:min-w-56 sm:justify-between sm:px-3"
+        className="group h-9 min-w-9 justify-center gap-3 border-slate-200 bg-white px-2.5 text-sm font-normal text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 sm:min-w-56 sm:justify-between sm:px-3"
       >
         <span className="flex items-center gap-2.5"><Search size={16} aria-hidden="true" /><span className="hidden sm:inline">搜索工作区…</span></span>
         <kbd className="hidden rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[11px] text-slate-600 sm:inline">Ctrl K</kbd>
-      </button>
+      </Button>
       <CommandDialog
         open={open}
         onOpenChange={setOpen}

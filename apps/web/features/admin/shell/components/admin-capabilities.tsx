@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import { capabilityDescription, capabilityGroups } from "@/features/admin/session/capability-presentation";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AdminAccountNavigation } from "./admin-account-navigation";
 
 export function AdminCapabilities() {
@@ -27,12 +28,14 @@ export function AdminCapabilities() {
             </li>
           ))}
         </ul>
-        {session.capabilities.length > 0 && <details className="mt-5 text-sm text-slate-600">
-          <summary className="cursor-pointer font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">查看权限代码</summary>
+        {session.capabilities.length > 0 && <Collapsible className="mt-5 text-sm text-slate-600">
+          <CollapsibleTrigger className="min-h-9 font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">查看权限代码</CollapsibleTrigger>
+          <CollapsibleContent>
           <ul className="mt-3 grid gap-2 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-2">
             {session.capabilities.map((capability) => <li key={capability} className="break-all font-mono text-xs text-slate-700">{capability}</li>)}
           </ul>
-        </details>}
+          </CollapsibleContent>
+        </Collapsible>}
       </section>
     </div>
   );

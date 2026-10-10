@@ -9,6 +9,14 @@ import { GitCompareArrows, History, PackageCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -152,7 +160,9 @@ export function PublicationControlPlane() {
   const canEmergency = capability(session.data?.capabilities, "publication.emergency");
 
   const actions = useMemo(() => {
-    if (!selected) return [] as Array<{ action: PublicationAction; label: string }>;
+    // A direct release URL can still render its detail when the collection is unavailable.
+    // Do not infer there is no current release from a failed collection read.
+    if (!selected || !releases.isSuccess) return [] as Array<{ action: PublicationAction; label: string }>;
     const available: Array<{ action: PublicationAction; label: string }> = [];
     if (selected.lifecycleState === "building" && canManage) {
       available.push({ action: "seal", label: "封存版本" });
@@ -172,32 +182,27 @@ export function PublicationControlPlane() {
     }
     if (canEmergency) available.push({ action: "suspend", label: "暂停版本" });
     return available;
-  }, [canActivate, canEmergency, canManage, current, selected]);
+  }, [canActivate, canEmergency, canManage, current, releases.isSuccess, selected]);
 
   const columnHelper = createColumnHelper<PublicationReleaseSummary>();
   const columns = useMemo(() => [
     columnHelper.accessor("version", {
       header: "版本",
       cell: (context) => (
-        <button
+        <Button
           type="button"
           aria-pressed={effectiveReleaseId === context.row.original.releaseId}
           aria-label={`查看版本 ${context.getValue()}`}
-          className={effectiveReleaseId === context.row.original.releaseId ? "rounded-md bg-teal-50 px-2 py-1 font-semibold text-teal-900 underline decoration-teal-500 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" : "rounded-md px-2 py-1 font-semibold text-slate-900 underline decoration-slate-400 underline-offset-4 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"}
+          variant="ghost"
+          className={`h-auto min-w-0 max-w-full flex-col items-start gap-1 px-2 py-2 text-left text-sm font-semibold underline underline-offset-4 ${effectiveReleaseId === context.row.original.releaseId ? "bg-teal-50 text-teal-900" : "text-slate-900"}`}
           onClick={() => { setReason(""); setMessage(null); void setDiffPage(1); void setReleaseId(context.row.original.releaseId); }}
         >
-          {context.getValue()}
-        </button>
+          <span>{context.getValue()}</span>
+          <span className="text-xs font-normal no-underline text-slate-600">{context.row.original.isCurrent ? "当前公开" : "候选版本"}{context.row.original.suspended ? " · 已暂停" : ""}</span>
+        </Button>
       ),
     }),
     columnHelper.accessor("lifecycleState", { header: "生命周期", cell: ({ getValue }) => transitionLabels[getValue()] ?? getValue() }),
-    columnHelper.display({
-      id: "delivery",
-      header: "发布状态",
-      cell: ({ row }) => row.original.isCurrent
-        ? (row.original.suspended ? "当前版本 · 已暂停" : "当前版本")
-        : (row.original.suspended ? "已暂停" : "候选版本"),
-    }),
   ], [columnHelper, setReleaseId, setDiffPage, effectiveReleaseId]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -212,10 +217,10 @@ export function PublicationControlPlane() {
   const mutationError = buildMutation.error ?? actionMutation.error;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 pb-12 pt-7 md:px-8">
-      <header className="space-y-1.5">
+    <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-9 md:px-9">
+      <header className="space-y-1.5 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-950">发布管理</h1>
+          <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">发布管理</h1>
           <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
             对照当前公开版本检查候选内容，确认差异与影响后，再执行启用、回滚或暂停。
           </p>
@@ -236,15 +241,16 @@ export function PublicationControlPlane() {
         </>}
       </section>
 
-      <div className="mt-5 grid items-start gap-5 xl:grid-cols-[minmax(19rem,0.9fr)_minmax(0,1.6fr)]">
-      <section aria-label="版本队列" className="min-w-0 xl:sticky xl:top-24">
+      <ResizablePanelGroup orientation="horizontal" className="mt-5 min-h-[720px] items-stretch">
+      <ResizablePanel defaultSize="38%" minSize="29%" maxSize="55%" className="min-w-0">
+      <section aria-label="版本队列" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div><h2 className="text-base font-semibold text-slate-950">版本队列</h2><p className="mt-1 text-xs text-slate-600">选择版本，右侧检查内容和执行操作</p></div>
           {releases.data && <Badge variant="outline" className="bg-white text-slate-700">{releases.data.total} 个版本</Badge>}
         </div>
         <label className="mb-3 flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
           生命周期
-          <select
+          <NativeSelect
             aria-label="生命周期"
             value={normalizedState ?? "all"}
             onChange={(event) => {
@@ -252,18 +258,18 @@ export function PublicationControlPlane() {
               void setLifecycleState(value === "all" ? null : value);
               void setPage(1);
             }}
-            className="min-h-10 min-w-36 rounded-lg border border-slate-300 bg-white px-3 text-sm font-normal text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+            className="min-h-10 min-w-36 border-slate-200 bg-white text-slate-900"
           >
-            <option value="all">全部</option>
-            <option value="building">构建中</option>
-            <option value="sealed">已封存</option>
-          </select>
+            <NativeSelectOption value="all">全部</NativeSelectOption>
+            <NativeSelectOption value="building">构建中</NativeSelectOption>
+            <NativeSelectOption value="sealed">已封存</NativeSelectOption>
+          </NativeSelect>
         </label>
 
 
       <div aria-live="polite">
-        {releases.isPending ? <p role="status" className="rounded-lg border border-slate-200 bg-white p-5 text-sm text-slate-600">正在加载版本列表…</p> : null}
-        {releases.isError ? <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">{releases.error.message}</p> : null}
+        {releases.isPending ? <div role="status" aria-label="正在加载版本列表" className="space-y-3"><Skeleton className="h-10 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div> : null}
+        {releases.isError ? <div role="alert" className="space-y-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900"><p>{releases.error.message}</p><Button variant="outline" size="sm" onClick={() => void releases.refetch()}>重试加载版本列表</Button></div> : null}
         {releases.isSuccess ? (
           <>
             <DataTable table={table} emptyMessage="当前筛选条件下没有版本记录；可选择其他生命周期查看。" />
@@ -279,22 +285,27 @@ export function PublicationControlPlane() {
       </div>
 
       {canManage ? (
-        <details className="group mt-5 rounded-xl border border-slate-200 bg-white px-4 py-3">
-          <summary className="cursor-pointer text-sm font-semibold text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">构建新候选版本（按需展开）</summary>
+        <Collapsible className="group mt-5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+          <CollapsibleTrigger className="min-h-9 text-left text-sm font-semibold text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">构建新候选版本（按需展开）</CollapsibleTrigger>
+          <CollapsibleContent>
           <p className="mt-3 text-sm text-slate-600">构建只创建候选，不会立即改变公开内容。请先检查当前公开版本和已有候选。</p>
           <form className="mt-4 flex flex-wrap items-end gap-3"
             onSubmit={(event) => { event.preventDefault(); if (version.trim()) buildMutation.mutate(); }}>
             <label className="grid min-w-0 flex-1 gap-1 text-sm font-semibold text-slate-800">新版本号
-              <input value={version} onChange={(event) => setVersion(event.target.value)}
-                className="min-h-10 rounded-md border border-slate-300 px-3 font-normal" maxLength={80} />
+              <Input value={version} onChange={(event) => setVersion(event.target.value)}
+                className="h-10 bg-white font-normal" maxLength={80} />
             </label>
             <Button type="submit" variant="outline" disabled={busy || !version.trim()}>构建版本</Button>
           </form>
-        </details>
+          </CollapsibleContent>
+        </Collapsible>
       ) : null}
       </section>
 
-      <section aria-label="所选版本检查" className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      </ResizablePanel>
+      <ResizableHandle withHandle aria-label="调整版本队列与检查详情宽度" className="mx-2 w-1 rounded-full bg-slate-200 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
+      <ResizablePanel defaultSize="62%" minSize="45%" className="min-w-0">
+      <section aria-label="所选版本检查" className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
       <p role="status" className={message ? "m-5 rounded-lg border border-teal-200 bg-teal-50 p-4 text-sm text-teal-950" : "sr-only"}>{message}</p>
       {mutationError ? (
         <p className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
@@ -308,9 +319,9 @@ export function PublicationControlPlane() {
           )}
         </p>
       ) : null}
-      {!effectiveReleaseId && <div className="flex min-h-64 flex-col items-center justify-center px-6 py-10 text-center"><PackageCheck className="size-9 text-slate-400" aria-hidden="true"/><h2 className="mt-3 font-semibold text-slate-950">选择一个版本</h2><p className="mt-2 text-sm text-slate-600">在左侧版本队列选择记录，以检查差异和可执行的操作。</p></div>}
+      {!effectiveReleaseId && <Empty className="min-h-[520px]"><EmptyHeader><EmptyMedia variant="icon"><PackageCheck aria-hidden="true" /></EmptyMedia><EmptyTitle><h2>选择一个版本</h2></EmptyTitle><EmptyDescription>在左侧版本队列选择记录，以检查差异和可执行的操作。</EmptyDescription></EmptyHeader></Empty>}
 
-      {inspection.isPending && effectiveReleaseId ? <p role="status" className="p-5 text-sm text-slate-600">正在加载版本详情…</p> : null}
+      {inspection.isPending && effectiveReleaseId ? <div role="status" aria-label="正在加载版本详情" className="space-y-4 p-6"><Skeleton className="h-7 w-2/3" /><Skeleton className="h-20 w-full" /><Skeleton className="h-24 w-full" /></div> : null}
       {inspection.isError ? (
         <div role="alert" className="m-5 flex flex-wrap items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">
           <span>{inspection.error.message}</span>
@@ -324,7 +335,7 @@ export function PublicationControlPlane() {
               <div>
                 <p className="text-xs font-medium text-slate-600">所选版本 · {inspection.data.release.isCurrent ? "当前公开" : "候选"}</p>
                 <h2 className="mt-1 text-lg font-semibold text-slate-950">{inspection.data.release.version}</h2>
-                <details className="mt-2 text-xs text-slate-600"><summary className="cursor-pointer font-medium text-teal-800">查看完整版本 ID</summary><p className="mt-1 break-all font-mono">{inspection.data.release.releaseId}</p></details>
+                <Collapsible className="mt-2 text-xs text-slate-600"><CollapsibleTrigger className="min-h-8 font-medium text-teal-800">查看完整版本 ID</CollapsibleTrigger><CollapsibleContent><p className="mt-1 break-all font-mono">{inspection.data.release.releaseId}</p></CollapsibleContent></Collapsible>
               </div>
               <Badge variant="outline" className="bg-slate-50 text-slate-800">
                 {inspection.data.release.isCurrent ? "当前版本" : "候选版本"} · {transitionLabels[inspection.data.release.lifecycleState] ?? inspection.data.release.lifecycleState}
@@ -391,21 +402,23 @@ export function PublicationControlPlane() {
                       {inspection.data.changeOffset + 1}–{Math.min(inspection.data.changeOffset + inspection.data.changeItems.length, inspection.data.changeTotal)} / {inspection.data.changeTotal}
                     </span>
                   </div>
-                  <div className="mt-3 overflow-hidden rounded-lg border border-slate-200">
-                    <div className="grid grid-cols-[minmax(0,1fr)_7rem] gap-3 border-b border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700">
-                      <span>受影响资源</span><span className="text-right">变更类型</span>
-                    </div>
-                    <ul className="divide-y divide-slate-100">
+                  <div className="mt-3 overflow-hidden rounded-xl border border-slate-200">
+                    <Table>
+                      <TableHeader className="bg-slate-50">
+                        <TableRow><TableHead>受影响资源</TableHead><TableHead className="w-36 text-right">变更类型</TableHead></TableRow>
+                      </TableHeader>
+                      <TableBody>
                       {inspection.data.changeItems.map((item) => (
-                        <li key={`${item.resourceKind}:${item.resourceId}`} className="grid grid-cols-[minmax(0,1fr)_7rem] items-center gap-3 px-4 py-2.5 text-sm">
-                          <div className="min-w-0">
+                        <TableRow key={`${item.resourceKind}:${item.resourceId}`}>
+                          <TableCell className="min-w-0">
                             <span className="block text-xs text-slate-600">{changeLabels[item.resourceKind] ?? item.resourceKind}</span>
                             <code className="mt-1 block break-all font-mono text-xs text-slate-900">{item.resourceId}</code>
-                          </div>
-                          <span className={`text-right text-xs font-medium ${item.changeType === "removed" ? "text-amber-900" : "text-slate-700"}`}>{changeKindLabels[item.changeType] ?? item.changeType}</span>
-                        </li>
+                          </TableCell>
+                          <TableCell className={`text-right text-xs font-medium ${item.changeType === "removed" ? "text-amber-900" : "text-slate-700"}`}>{changeKindLabels[item.changeType] ?? item.changeType}</TableCell>
+                        </TableRow>
                       ))}
-                    </ul>
+                      </TableBody>
+                    </Table>
                   </div>
                   {inspection.isPlaceholderData && <p role="status" className="mt-2 text-xs text-slate-600">正在更新本页资源明细…</p>}
                   {diffPages > 1 && (
@@ -422,14 +435,19 @@ export function PublicationControlPlane() {
             ) : <p className="text-sm text-slate-600">与当前公开版本相比，没有检测到资源成员的新增、快照变化或移除；不等于已验证所有业务字段。</p>}
           </section>
 
+          {releases.isError && (
+            <p role="status" className="mx-5 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+              无法确认当前公开版本。仍可查看所选版本详情，但在版本列表恢复之前不能执行发布操作。
+            </p>
+          )}
           {actions.length ? (
             <section className="bg-slate-50 px-5 py-5">
               <h2 className="text-base font-semibold text-slate-950">下一步：版本操作</h2>
               <p className="mt-2 text-sm leading-6 text-slate-700">正在操作版本 {selected?.version}，当前公开版本为 {current?.version ?? "未提供"}。请先查看上方资源差异和阻塞项，提交操作前还会再次确认。</p>
               <label className="mt-4 grid gap-1 text-sm font-semibold text-slate-800">
                 操作原因
-                <textarea aria-label="操作原因" value={reason} onChange={(event) => setReason(event.target.value)}
-                  className="min-h-24 rounded-lg border border-slate-300 bg-white p-3 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" maxLength={2000} />
+                <Textarea aria-label="操作原因" value={reason} onChange={(event) => setReason(event.target.value)}
+                  className="min-h-24 bg-white font-normal" maxLength={2000} />
               </label>
               <div className="mt-4 flex flex-wrap gap-2">
                 {actions.map(({ action, label }) => (
@@ -454,7 +472,7 @@ export function PublicationControlPlane() {
                     <time className="text-sm text-stone-600">{formatDate(transition.occurredAt)}</time>
                     <div>
                       <p className="text-sm text-stone-800">{transition.reason}</p>
-                      <details className="mt-1 text-xs text-slate-600"><summary className="cursor-pointer text-teal-800">查看操作账号</summary><p className="mt-1 break-all font-mono">{transition.actor}</p></details>
+                      <Collapsible className="mt-1 text-xs text-slate-600"><CollapsibleTrigger className="min-h-8 text-teal-800">查看操作账号</CollapsibleTrigger><CollapsibleContent><p className="mt-1 break-all font-mono">{transition.actor}</p></CollapsibleContent></Collapsible>
                     </div>
                   </li>
                 ))}
@@ -465,7 +483,8 @@ export function PublicationControlPlane() {
         </div>
       ) : null}
       </section>
-      </div>
+      </ResizablePanel>
+      </ResizablePanelGroup>
 
       <AlertDialog open={Boolean(pendingAction)} onOpenChange={(open) => { if (!open) setPendingAction(null); }}>
         <AlertDialogContent>
