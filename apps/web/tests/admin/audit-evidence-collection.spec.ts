@@ -56,6 +56,11 @@ test("audit evidence collection renders rows and keeps the supported limit in th
   const queueBounds = await queue.boundingBox();
   const detailBounds = await details.boundingBox();
   expect(queueBounds && detailBounds && queueBounds.x + queueBounds.width <= detailBounds.x).toBe(true);
+  const divider = page.getByRole("separator", { name: "调整审计列表与事件详情宽度" });
+  const widthBefore = queueBounds?.width ?? 0;
+  await divider.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(async () => (await queue.boundingBox())?.width ?? 0).toBeGreaterThan(widthBefore);
   await expect(page.getByRole("button", { name: /查看审计详情：已启用公开版本/, pressed: true })).toBeVisible();
   await expect(details.getByText("操作人信息未由此审计接口提供。")).toBeVisible();
   await expect(details.getByText(evidence[0].sourceEventId, { exact: true })).not.toBeVisible();
@@ -71,6 +76,23 @@ test("audit evidence collection renders rows and keeps the supported limit in th
   await expect.poll(() => requestedLimits.at(-1)).toBe("50");
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(axe.violations).toEqual([]);
+});
+
+test("audit evidence list offers retry after transient read failure", async ({ page }) => {
+  let fail = true;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json", body: JSON.stringify(auditSession),
+  }));
+  await page.route("**/api/admin/audit/evidence?**", (route) => route.fulfill(fail
+    ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "审计服务暂时不可用" }) }
+    : { status: 200, contentType: "application/json", body: JSON.stringify(evidence) }));
+  await page.goto("/admin/audit/evidence?limit=50");
+  const retry = page.getByRole("button", { name: "重试加载审计记录" });
+  await expect(retry).toBeVisible({ timeout: 30_000 });
+  fail = false;
+  await retry.click();
+  await expect(page.getByText("已启用公开版本", { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/limit=50/);
 });
 
 test("audit records never expose invented object links and use only supported limit URL state", async ({ page }) => {
