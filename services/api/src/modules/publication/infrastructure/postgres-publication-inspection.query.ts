@@ -8,6 +8,7 @@ import {
   type PublicationReleasePage,
   type PublicationReleaseSummary,
   type PublicationResourceCounts,
+  pagePublicationChanges,
   summarizePublicationChanges,
 } from "../application/publication-inspection.port.js";
 import type { PublicRelease, ReleaseLifecycleState } from "../application/publication.application.js";
@@ -112,7 +113,10 @@ export class PostgresPublicationInspectionQuery implements PublicationInspection
     };
   }
 
-  public async inspectRelease(releaseId: string): Promise<PublicationReleaseInspection | undefined> {
+  public async inspectRelease(
+    releaseId: string,
+    query: { changeLimit: number; changeOffset: number } = { changeLimit: 10, changeOffset: 0 },
+  ): Promise<PublicationReleaseInspection | undefined> {
     const row = await this.database.db
       .selectFrom("publication.releases")
       .select([
@@ -157,6 +161,7 @@ export class PostgresPublicationInspectionQuery implements PublicationInspection
       ...(currentReleaseId === undefined ? {} : { currentReleaseId }),
       release,
       changes: changeSet === undefined ? [] : summarizePublicationChanges(changeSet.changes),
+      ...pagePublicationChanges(changeSet?.changes ?? [], query),
       transitions: transitions.map((transition) => ({
         transitionId: transition.transition_id,
         transitionType: transition.transition_type,

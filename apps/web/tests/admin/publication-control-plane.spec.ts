@@ -101,6 +101,14 @@ test("publication control plane shows releases, counts, diff, history, and typed
           { resourceKind: "panda", added: 1, changed: 2, removed: 0 },
           { resourceKind: "media", added: 1, changed: 0, removed: 0 },
         ],
+        changeTotal: 4,
+        changeOffset: 0,
+        changeItems: [
+          { resourceKind: "panda", resourceId: "panda-added-01", changeType: "added" },
+          { resourceKind: "panda", resourceId: "panda-changed-01", changeType: "changed" },
+          { resourceKind: "panda", resourceId: "panda-changed-02", changeType: "changed" },
+          { resourceKind: "media", resourceId: "media-added-01", changeType: "added" },
+        ],
         transitions: [
           {
             transitionId: "44444444-4444-4444-8444-444444444444",
@@ -130,6 +138,7 @@ test("publication control plane shows releases, counts, diff, history, and typed
   await expect(page.getByRole("button", { name: "2026.10.05.2" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "2026.10.05.2" })).toBeVisible();
   await expect(page.getByText("熊猫").first()).toBeVisible();
+  await expect(page.getByText("机构").first()).toBeVisible();
   await expect(page.getByText("13", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("居住史").first()).toBeVisible();
   await expect(page.getByText("生命事件").first()).toBeVisible();
@@ -146,6 +155,76 @@ test("publication control plane shows releases, counts, diff, history, and typed
   await expect(candidate).toHaveAttribute("aria-pressed", "true");
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(axe.violations).toEqual([]);
+});
+
+test("publication inspection exposes concrete changed resource IDs with safe paging and impact context", async ({ page }) => {
+  const requestedOffsets: number[] = [];
+  const changedResources = Array.from({ length: 23 }, (_, index) => ({
+    resourceKind: index < 12 ? "panda" : "media",
+    resourceId: `resource-${String(index + 1).padStart(3, "0")}`,
+    changeType: index < 12 ? "changed" : "removed",
+  }));
+  await page.route("**/api/admin/session", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(publicationSession) }));
+  await page.route("**/api/admin/publication/releases?**", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+    currentReleaseId,
+    currentRelease: { releaseId: currentReleaseId, version: "2026.10.05.1", lifecycleState: "sealed", builtAt: "2026-10-05T08:00:00.000Z", isCurrent: true, suspended: false, projectionSchemaVersion: 1, counts, blockers: [] },
+    total: 1, limit: 10, offset: 0,
+    items: [{ releaseId: candidateReleaseId, version: "2026.10.05.2", lifecycleState: "sealed", builtAt: "2026-10-05T09:00:00.000Z", isCurrent: false, suspended: false, projectionSchemaVersion: 1, counts, blockers: [] }],
+  }) }));
+  await page.route(`**/api/admin/publication/releases/${candidateReleaseId}*`, route => {
+    const url = new URL(route.request().url());
+    const offset = Number(url.searchParams.get("changeOffset") ?? "0");
+    requestedOffsets.push(offset);
+    return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+      currentReleaseId,
+      release: { releaseId: candidateReleaseId, version: "2026.10.05.2", lifecycleState: "sealed", builtAt: "2026-10-05T09:00:00.000Z", isCurrent: false, suspended: false, projectionSchemaVersion: 1, counts, blockers: [] },
+      changes: [{ resourceKind: "panda", added: 0, changed: 12, removed: 0 }, { resourceKind: "media", added: 0, changed: 0, removed: 11 }],
+      changeTotal: changedResources.length, changeOffset: offset, changeItems: changedResources.slice(offset, offset + 10), transitions: [],
+    }) });
+  });
+  await page.goto(`/admin/publication?release=${candidateReleaseId}`);
+  await expect(page.getByRole("heading", { name: "受影响资源明细" })).toBeVisible();
+  await expect(page.getByText("23 条资源成员变更")).toBeVisible();
+  await expect(page.getByText("resource-001", { exact: true })).toBeVisible();
+  await expect(page.getByText("resource-011", { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/不代表字段级差异/)).toBeVisible();
+  await page.getByText("resource-008", { exact: true }).scrollIntoViewIfNeeded();
+  await page.getByRole("button", { name: "下一页差异" }).click();
+  await expect(page.getByText("resource-011", { exact: true })).toBeVisible();
+  await expect(page.getByText("resource-001", { exact: true })).toHaveCount(0);
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(250);
+  await expect.poll(() => requestedOffsets).toContain(10);
+  await page.getByLabel("操作原因").fill("Review candidate impact.");
+  await page.getByRole("button", { name: "启用版本" }).click();
+  await expect(page.getByRole("alertdialog")).toContainText("23 条资源成员变更");
+  await expect(page.getByRole("alertdialog")).toContainText("11 条移除");
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(axe.violations).toEqual([]);
+});
+
+test("publication inspection failure gives a retry without losing the chosen version", async ({ page }) => {
+  let attempts = 0;
+  await page.route("**/api/admin/session", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(publicationSession) }));
+  await page.route("**/api/admin/publication/releases?**", route => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+    currentReleaseId, total: 1, limit: 10, offset: 0,
+    currentRelease: { releaseId: currentReleaseId, version: "2026.10.05.1", lifecycleState: "sealed", builtAt: "2026-10-05T08:00:00Z", projectionSchemaVersion: 1, isCurrent: true, suspended: false, counts, blockers: [] },
+    items: [{ releaseId: candidateReleaseId, version: "2026.10.05.2", lifecycleState: "sealed", builtAt: "2026-10-05T09:00:00Z", projectionSchemaVersion: 1, isCurrent: false, suspended: false, counts, blockers: [] }],
+  }) }));
+  await page.route(`**/api/admin/publication/releases/${candidateReleaseId}*`, route => {
+    attempts += 1;
+    return route.fulfill(attempts === 1
+      ? { status: 503, contentType: "application/json", body: JSON.stringify({ detail: "暂时无法读取版本详情" }) }
+      : { status: 200, contentType: "application/json", body: JSON.stringify({
+        currentReleaseId, release: { releaseId: candidateReleaseId, version: "2026.10.05.2", lifecycleState: "sealed", builtAt: "2026-10-05T09:00:00Z", projectionSchemaVersion: 1, isCurrent: false, suspended: false, counts, blockers: [] },
+        changes: [], changeTotal: 0, changeOffset: 0, changeItems: [], transitions: [],
+      }) });
+  });
+  await page.goto(`/admin/publication?release=${candidateReleaseId}`);
+  await expect(page.getByRole("region", { name: "所选版本检查" }).getByRole("alert")).toContainText("暂时无法读取版本详情");
+  await page.getByRole("button", { name: "重新加载版本详情" }).click();
+  await expect(page.getByText(/没有检测到资源成员的新增/)).toBeVisible();
+  expect(attempts).toBe(2);
+  await expect(page).toHaveURL(new RegExp(`release=${candidateReleaseId}`));
 });
 
 test("publication activation uses a typed reason and refreshes the release inspection", async ({ page }) => {
@@ -245,6 +324,8 @@ test("publication activation uses a typed reason and refreshes the release inspe
           blockers: activated ? ["This is the current public release."] : [],
         },
         changes: activated ? [] : [{ resourceKind: "panda", added: 1, changed: 0, removed: 0 }],
+        changeTotal: activated ? 0 : 1, changeOffset: 0,
+        changeItems: activated ? [] : [{ resourceKind: "panda", resourceId: "panda-new", changeType: "added" }],
         transitions: activated ? [{
           transitionId: "55555555-5555-4555-8555-555555555555",
           transitionType: "activated",
@@ -370,7 +451,7 @@ test("publication lifecycle controls stay capability scoped", async ({ page }) =
           counts,
           blockers: [],
         },
-        changes: [],
+        changes: [], changeTotal: 0, changeOffset: 0, changeItems: [],
         transitions: [],
       }),
     });
