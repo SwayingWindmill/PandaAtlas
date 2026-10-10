@@ -3,6 +3,8 @@ import { defineConfig } from "vite";
 import vinext from "vinext";
 
 export default defineConfig({
+  // Vinext's client prebundling breaks the React hook context for this registry dependency.
+  optimizeDeps: { exclude: ["react-resizable-panels"] },
   plugins: [
     vinext(),
     cloudflare({
