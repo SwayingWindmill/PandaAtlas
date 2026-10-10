@@ -57,11 +57,12 @@ export function publicationReleaseListQueryOptions(params: PublicationReleaseLis
   });
 }
 
-export function publicationReleaseInspectionQueryOptions(releaseId: string) {
+export function publicationReleaseInspectionQueryOptions(releaseId: string, changeOffset = 0) {
   return queryOptions({
-    queryKey: publicationKeys.inspection(releaseId),
+    queryKey: [...publicationKeys.inspection(releaseId), changeOffset],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/publication/releases/${encodeURIComponent(releaseId)}`, {
+      const search = changeOffset > 0 ? `?changeOffset=${changeOffset}&changeLimit=10` : "";
+      const response = await fetch(`/api/admin/publication/releases/${encodeURIComponent(releaseId)}${search}`, {
         cache: "no-store",
         credentials: "same-origin",
       });

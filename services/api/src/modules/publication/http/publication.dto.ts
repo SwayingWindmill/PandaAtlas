@@ -112,6 +112,30 @@ export class PublicationChangeSummaryDto {
   @ApiProperty() public declare removed: number;
 }
 
+export class PublicationChangeDetailDto {
+  @ApiProperty({ enum: ["panda", "institution", "place", "lineage", "residency", "life_event", "media", "evidence"] })
+  public declare resourceKind: string;
+  @ApiProperty() public declare resourceId: string;
+  @ApiProperty({ enum: ["added", "changed", "removed"] }) public declare changeType: "added" | "changed" | "removed";
+}
+
+export class PublicationChangePageQueryDto {
+  @ApiPropertyOptional({ minimum: 1, maximum: 50, default: 10 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(50)
+  public changeLimit?: number;
+
+  @ApiPropertyOptional({ minimum: 0, default: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  public changeOffset?: number;
+}
+
 export class PublicationTransitionDto {
   @ApiProperty({ format: "uuid" }) public declare transitionId: string;
   @ApiProperty({ enum: ["built", "sealed", "activated", "rolled_back", "suspended", "restored"] })
@@ -129,6 +153,10 @@ export class PublicationReleaseInspectionDto {
   public declare release: PublicationReleaseSummaryDto;
   @ApiProperty({ type: () => PublicationChangeSummaryDto, isArray: true })
   public declare changes: PublicationChangeSummaryDto[];
+  @ApiProperty() public declare changeTotal: number;
+  @ApiProperty() public declare changeOffset: number;
+  @ApiProperty({ type: () => PublicationChangeDetailDto, isArray: true })
+  public declare changeItems: PublicationChangeDetailDto[];
   @ApiProperty({ type: () => PublicationTransitionDto, isArray: true })
   public declare transitions: PublicationTransitionDto[];
 }

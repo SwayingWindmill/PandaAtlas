@@ -2078,6 +2078,13 @@ export interface components {
             changed: number;
             removed: number;
         };
+        PublicationChangeDetailDto: {
+            /** @enum {string} */
+            resourceKind: "panda" | "institution" | "place" | "lineage" | "residency" | "life_event" | "media" | "evidence";
+            resourceId: string;
+            /** @enum {string} */
+            changeType: "added" | "changed" | "removed";
+        };
         PublicationTransitionDto: {
             /** Format: uuid */
             transitionId: string;
@@ -2095,6 +2102,9 @@ export interface components {
             currentReleaseId?: string;
             release: components["schemas"]["PublicationReleaseSummaryDto"];
             changes: components["schemas"]["PublicationChangeSummaryDto"][];
+            changeTotal: number;
+            changeOffset: number;
+            changeItems: components["schemas"]["PublicationChangeDetailDto"][];
             transitions: components["schemas"]["PublicationTransitionDto"][];
         };
         PublicReleaseDto: {
@@ -3803,7 +3813,10 @@ export interface operations {
     };
     inspectPublicationRelease: {
         parameters: {
-            query?: never;
+            query?: {
+                changeLimit?: number;
+                changeOffset?: number;
+            };
             header?: never;
             path: {
                 releaseId: string;
