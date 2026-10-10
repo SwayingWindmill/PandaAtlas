@@ -384,6 +384,8 @@ test("moderation shows the appeal queue, account projection, and typed appeal de
   await expect(page.getByRole("button", { name: /账号 66666666/ })).toBeVisible();
   await expect(page.getByRole("button", { name: "执行限制" })).toBeVisible();
   await expect(page).not.toHaveURL(/\b(?:appeal|account)=/);
+  await page.getByRole("link", { name: "处理这项申诉" }).click();
+  await expect(page).toHaveURL(/#moderation-appeal-decision$/);
   await page.getByLabel("申诉处理结果").selectOption("overturned");
   await page.getByLabel("申诉内部说明").fill("The evidence does not support continuing this account suspension.");
   await page.getByLabel("申诉用户说明").fill("Your appeal was accepted and the account suspension has been removed.");
@@ -467,20 +469,26 @@ test("looking up another account cannot leave an unrelated appeal actionable", a
 
   await page.goto("/admin/moderation");
   await expect(page.getByText("Only the suspended account filed this appeal.")).toBeVisible();
+  await page.getByLabel("限制内部说明").fill("Draft for the first account only");
+  await page.getByLabel("限制用户说明").fill("Do not carry over this draft");
   await page.getByText("通过账号编号查询", { exact: true }).click();
   await page.getByLabel("账号 ID").fill(otherAccountId);
   await page.getByRole("button", { name: "查询账号" }).click();
   await expect(page.getByText("账号编号 aaaaaaaa")).toBeVisible();
+  await expect(page.getByLabel("限制内部说明")).toHaveValue("");
+  await expect(page.getByLabel("限制用户说明")).toHaveValue("");
   await expect(page.getByText("Only the suspended account filed this appeal.")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "保存申诉决定" })).toHaveCount(0);
 
   await page.getByRole("button", { name: /账号 66666666/ }).click();
   await expect(page.getByText("账号编号 66666666")).toBeVisible();
   await expect(page.getByText("Only the suspended account filed this appeal.")).toBeVisible();
+  await expect(page.getByLabel("限制内部说明")).toHaveValue("");
 });
 
 test("suspending an account requires an explicit confirmation with the account identity", async ({ page }) => {
   let sanctionPosts = 0;
+  let sanctionPayload: Record<string, unknown> | undefined;
   await page.route("**/api/admin/session", (route) => route.fulfill({
     status: 200, contentType: "application/json",
     body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: moderationCapabilities }),
@@ -501,6 +509,7 @@ test("suspending an account requires an explicit confirmation with the account i
   }));
   await page.route(`**/api/admin/moderation/accounts/${moderationAccountId}/sanctions`, (route) => {
     sanctionPosts += 1;
+    sanctionPayload = route.request().postDataJSON() as Record<string, unknown>;
     return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
       sanctionId, accountId: moderationAccountId, kind: "account_suspended",
     }) });
@@ -518,6 +527,7 @@ test("suspending an account requires an explicit confirmation with the account i
   const confirmation = page.getByRole("alertdialog");
   await expect(confirmation).toBeVisible();
   await expect(confirmation).toContainText(moderationAccountId);
+  await expect(confirmation).toContainText("Your account access is temporarily suspended.");
   expect(sanctionPosts).toBe(0);
   await page.keyboard.press("Escape");
   await expect(confirmation).toHaveCount(0);
@@ -533,4 +543,54 @@ test("suspending an account requires an explicit confirmation with the account i
   await page.getByRole("button", { name: "执行限制" }).click();
   await confirmation.getByRole("button", { name: "确认暂停账号" }).click();
   await expect.poll(() => sanctionPosts).toBe(1);
+  expect(sanctionPayload).toMatchObject({
+    kind: "account_suspended", reasonCode: "policy_violation",
+    internalExplanation: "Repeated, verified violations",
+    userVisibleExplanation: "Your account access is temporarily suspended.",
+  });
+});
+
+test("moderation appeal queue recovers after server error without clearing its filter", async ({ page }) => {
+  let unavailable = true;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: ["moderation.appeal.read"] }),
+  }));
+  await page.route("**/api/admin/moderation/appeals?**", (route) => route.fulfill(unavailable
+    ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "申诉队列暂时不可用" }) }
+    : { status: 200, contentType: "application/json", body: JSON.stringify({ items: [], total: 0, limit: 25, offset: 0 }) }));
+  await page.goto("/admin/moderation?state=under_review");
+  const retry = page.getByRole("button", { name: "重试加载申诉队列" });
+  await expect(retry).toBeVisible({ timeout: 30_000 });
+  unavailable = false;
+  await retry.click();
+  await expect(page.getByText("当前没有需要处理的申诉。")).toBeVisible();
+  await expect(page).toHaveURL(/state=under_review/);
+});
+
+test("moderation account lookup retries an unavailable account projection", async ({ page }) => {
+  let unavailable = true;
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: ["moderation.sanction.read"] }),
+  }));
+  await page.route(`**/api/admin/moderation/accounts/${moderationAccountId}`, (route) => route.fulfill(unavailable
+    ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "账号读取暂时不可用" }) }
+    : { status: 200, contentType: "application/json", body: JSON.stringify({
+      subject: {
+        accountId: moderationAccountId, version: 1, submissionRestricted: false,
+        attachmentRestricted: false, notificationRestricted: false,
+        accountSuspended: false, accountClosedForAbuse: false, repeatAbuseCount: 0,
+      }, sanctions: [],
+    }) }));
+  await page.goto("/admin/moderation");
+  await page.getByText("通过账号编号查询", { exact: true }).click();
+  await page.getByLabel("账号 ID").fill(moderationAccountId);
+  await page.getByRole("button", { name: "查询账号" }).click();
+  const retry = page.getByRole("button", { name: "重新加载账号信息" });
+  await expect(retry).toBeVisible({ timeout: 30_000 });
+  unavailable = false;
+  await retry.click();
+  await expect(page.getByText("账号编号 " + moderationAccountId.slice(0, 8))).toBeVisible();
+  await expect(page.getByRole("button", { name: "执行限制" })).toHaveCount(0);
 });
