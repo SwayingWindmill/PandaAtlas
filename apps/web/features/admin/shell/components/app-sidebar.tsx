@@ -5,95 +5,116 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ClipboardCheck, Database, LayoutDashboard, LogOut, ScrollText,
-  Send, ShieldAlert, ShieldCheck, Sprout, UsersRound,
+  Send, ShieldAlert, ShieldCheck, Sprout, UsersRound, ChevronsUpDown,
 } from "lucide-react";
 
 import {
-  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel,
-  SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent,
+  SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton,
+  SidebarMenuItem, SidebarSeparator, useSidebar,
 } from "@/components/ui/sidebar";
 import type { AdminSession } from "@/features/admin/session/api/types";
 import {
-  isAdminNavigationItemActive,
-  visibleAdminNavigationItems,
+  isAdminNavigationItemActive, visibleAdminNavigationItems,
   type AdminNavigationItem,
 } from "@/features/admin/shell/navigation";
 
 const icons = {
-  "layout-dashboard": LayoutDashboard,
-  "clipboard-check": ClipboardCheck,
-  "shield-alert": ShieldAlert,
-  database: Database,
-  send: Send,
-  "scroll-text": ScrollText,
-  "shield-check": ShieldCheck,
-  "users-round": UsersRound,
+  "layout-dashboard": LayoutDashboard, "clipboard-check": ClipboardCheck,
+  "shield-alert": ShieldAlert, database: Database, send: Send,
+  "scroll-text": ScrollText, "shield-check": ShieldCheck, "users-round": UsersRound,
 } as const;
 
 export function AppSidebar({ session, onSignOut }: { session: AdminSession; onSignOut: () => void }) {
   const pathname = usePathname();
-  const { expanded, setMobileOpen } = useSidebar();
+  const { setOpenMobile } = useSidebar();
   const navigation = visibleAdminNavigationItems(session);
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <Link href="/admin" onClick={() => setMobileOpen(false)} title="PandaAtlas 数据运营中心" className="flex min-h-12 items-center gap-3 rounded-lg px-2 text-slate-950 outline-offset-4 focus-visible:outline-2 focus-visible:outline-teal-700">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-800 ring-1 ring-teal-100"><Sprout size={23} strokeWidth={1.8} /></span>
-          <span className={expanded ? "min-w-0" : "md:sr-only"}>
-            <strong className="block truncate text-base font-bold tracking-tight">PandaAtlas</strong>
-            <span className="block truncate text-[11px] tracking-widest text-slate-600">数据运营中心</span>
-          </span>
-        </Link>
+    <Sidebar collapsible="icon" variant="inset" className="text-sm">
+      <SidebarHeader className="px-3 pb-4 pt-5">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild size="lg" tooltip="PandaAtlas 数据运营中心" className="h-14 gap-3 rounded-xl px-2 hover:bg-sidebar-accent">
+              <Link href="/admin" onClick={() => setOpenMobile(false)}>
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#186b59] text-white shadow-[0_3px_10px_rgb(24_107_89_/_0.14)]">
+                  <Sprout className="size-5" strokeWidth={1.9} aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1 truncate">
+                  <strong className="block truncate text-[15px] font-bold tracking-[-0.03em] text-slate-950">PandaAtlas</strong>
+                  <span className="mt-0.5 block text-[11px] font-medium text-slate-500">DATA OPERATIONS</span>
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
-
-      <SidebarContent>
+      <SidebarSeparator className="mx-4 opacity-75" />
+      <SidebarContent className="gap-3 px-2 py-5">
         <nav aria-label="后台导航">
           {(["总览", "运营", "治理"] as const).map((group) => {
             const items = navigation.filter((item) => item.group === group);
             if (!items.length) return null;
             return (
-              <SidebarGroup key={group}>
-                <SidebarGroupLabel>{group}</SidebarGroupLabel>
-                <SidebarMenu>
-                  {items.map((item: AdminNavigationItem) => {
-                    const Icon = icons[item.icon];
-                    const active = isAdminNavigationItemActive(item, pathname);
-                    return (
-                      <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton isActive={active}>
-                          <Link
-                            href={item.href as Route}
-                            title={item.label}
-                            aria-current={active ? "page" : undefined}
-                            onClick={() => setMobileOpen(false)}
+              <SidebarGroup key={group} className="gap-1 px-2 pb-2">
+                <SidebarGroupLabel className="h-8 px-3 text-[11px] font-semibold tracking-[0.08em] text-slate-500">{group}</SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu className="gap-1">
+                    {items.map((item: AdminNavigationItem) => {
+                      const Icon = icons[item.icon];
+                      const active = isAdminNavigationItemActive(item, pathname);
+                      return (
+                        <SidebarMenuItem key={item.href}>
+                          <SidebarMenuButton
+                            asChild isActive={active} tooltip={item.label}
+                            className="h-10 gap-3 rounded-lg px-3 text-[13px] font-medium text-slate-600 hover:text-slate-950 data-[active=true]:bg-[#e9f5f1] data-[active=true]:font-semibold data-[active=true]:text-[#145b4a]"
                           >
-                            <Icon size={18} strokeWidth={active ? 2.1 : 1.8} className={active ? "shrink-0 text-teal-800" : "shrink-0 text-slate-600"} />
-                            <span className={expanded ? "truncate" : "md:sr-only"}>{item.label}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
+                            <Link href={item.href as Route} aria-current={active ? "page" : undefined} onClick={() => setOpenMobile(false)}>
+                              <Icon className="size-[18px] shrink-0" strokeWidth={active ? 2 : 1.7} aria-hidden="true" />
+                              <span>{item.label}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      );
+                    })}
+                  </SidebarMenu>
+                </SidebarGroupContent>
               </SidebarGroup>
             );
           })}
         </nav>
       </SidebarContent>
-
-      <SidebarFooter>
-        <div className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5">
-          <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-900">工</span>
-          <div className={expanded ? "min-w-0 flex-1" : "md:sr-only"}>
-            <p className="truncate text-xs font-semibold text-slate-950">工作人员</p>
-            <p className="truncate text-[11px] text-slate-600">已登录后台</p>
-          </div>
-        </div>
-        <button type="button" onClick={onSignOut} title="退出登录" className="mt-2 flex min-h-10 w-full items-center gap-3 rounded-lg px-3 text-left text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-teal-700">
-          <LogOut size={18} className="shrink-0" />
-          <span className={expanded ? "" : "md:sr-only"}>退出登录</span>
-        </button>
+      <SidebarFooter className="gap-2 border-t border-sidebar-border px-3 py-3">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton size="lg" className="h-13 gap-3 rounded-xl border border-slate-200 bg-slate-50 px-2 hover:bg-slate-100">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-xs font-bold text-emerald-900">工</span>
+                  <span className="min-w-0 flex-1 truncate text-left">
+                    <span className="block truncate text-xs font-semibold text-slate-950">工作人员</span>
+                    <span className="block truncate text-[11px] text-slate-500">账号与安全设置</span>
+                  </span>
+                  <ChevronsUpDown className="size-4 text-slate-500" aria-hidden="true" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" align="start" className="w-56 rounded-xl border-slate-200 bg-white p-1.5 text-slate-900 shadow-lg">
+                <DropdownMenuLabel className="px-3 py-2 text-xs text-slate-500">我的后台账号</DropdownMenuLabel>
+                <DropdownMenuItem asChild className="min-h-10 cursor-pointer rounded-lg">
+                  <Link href="/admin/capabilities" onClick={() => setOpenMobile(false)}><ShieldCheck aria-hidden="true" /> 我的账号</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={onSignOut} className="min-h-10 cursor-pointer rounded-lg text-rose-700 focus:text-rose-700">
+                  <LogOut aria-hidden="true" /> 退出登录
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

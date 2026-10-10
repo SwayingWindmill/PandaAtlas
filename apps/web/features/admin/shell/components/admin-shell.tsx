@@ -1,13 +1,18 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Menu, ShieldCheck } from "lucide-react";
+import { CircleUserRound } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   adminSessionQueryOptions,
   AdminSessionRequestError,
@@ -35,7 +40,6 @@ function AdminShellState({ children, tone }: { children: React.ReactNode; tone: 
 }
 
 function AdminHeader({ pathname, session }: { pathname: string; session: AdminSession }) {
-  const { setMobileOpen } = useSidebar();
   const item = adminNavigationItemForPath(pathname);
   const parent = pathname === "/admin/staff/invitations"
     ? { href: "/admin/staff/roles", label: "人员管理" }
@@ -43,33 +47,38 @@ function AdminHeader({ pathname, session }: { pathname: string; session: AdminSe
       ? { href: "/admin/capabilities", label: "我的账号" }
       : null;
   return (
-    <header className="sticky top-0 z-20 flex min-h-[4.5rem] items-center justify-between gap-4 border-b border-slate-200/90 bg-white/95 px-4 backdrop-blur-md md:px-8">
-      <div className="flex min-w-0 items-center gap-3">
-        <button
-          type="button"
-          className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-teal-600 md:hidden"
-          aria-label="展开导航"
-          onClick={() => setMobileOpen(true)}
-        >
-          <Menu size={20} />
-        </button>
-        <SidebarTrigger className="hidden md:inline-flex" />
-        <span className="hidden h-5 w-px bg-slate-200 md:block" />
-        <AdminCommandMenu session={session} />
-        <nav aria-label="当前位置" className="flex min-w-0 items-center gap-2 text-sm">
-          <Link href="/admin" className="shrink-0 text-slate-500 hover:text-teal-800">数据运营</Link>
-          {parent && <><ChevronRight size={15} className="shrink-0 text-slate-400" aria-hidden="true" /><Link href={parent.href as Route} className="shrink-0 text-slate-600 hover:text-teal-800">{parent.label}</Link></>}
-          {item?.href !== "/admin" && item ? (
-            <>
-              <ChevronRight size={15} className="shrink-0 text-slate-400" />
-              <span className="truncate font-semibold text-slate-900">{item.label}</span>
-            </>
-          ) : null}
-        </nav>
+    <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-5 backdrop-blur-md md:px-7">
+      <div className="flex min-w-0 items-center gap-4">
+        <SidebarTrigger aria-label="切换侧边栏" title="切换侧边栏（Ctrl+B）" className="hidden size-9 rounded-lg text-slate-500 hover:bg-slate-100 md:inline-flex" />
+        <SidebarTrigger aria-label="展开导航" className="size-9 rounded-lg text-slate-600 md:hidden" />
+        <Separator orientation="vertical" className="hidden h-5 bg-slate-200 md:block" />
+        <Breadcrumb aria-label="当前位置">
+          <BreadcrumbList className="flex-nowrap gap-2 text-[13px]">
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild><Link href="/admin">数据运营</Link></BreadcrumbLink>
+            </BreadcrumbItem>
+            {parent && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbLink asChild><Link href={parent.href as Route}>{parent.label}</Link></BreadcrumbLink></BreadcrumbItem>
+              </>
+            )}
+            {item?.href !== "/admin" && item && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><span aria-current="page" className="max-w-36 truncate font-semibold text-slate-900">{item.label}</span></BreadcrumbItem>
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
-      <Link href="/admin/capabilities" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 sm:inline-flex">
-        <ShieldCheck size={16} aria-hidden="true" />我的账号
-      </Link>
+      <div className="flex items-center gap-3">
+        <AdminCommandMenu session={session} />
+        <Separator orientation="vertical" className="hidden h-5 bg-slate-200 md:block" />
+        <Button asChild variant="ghost" size="icon" title="我的账号" className="rounded-full text-slate-500 hover:text-emerald-800">
+          <Link href="/admin/capabilities" aria-label="我的账号"><CircleUserRound size={21} aria-hidden="true" /></Link>
+        </Button>
+      </div>
     </header>
   );
 }
@@ -79,6 +88,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const sessionQuery = useQuery(adminSessionQueryOptions);
   const sessionError = sessionQuery.error instanceof AdminSessionRequestError ? sessionQuery.error : null;
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    const stored = document.cookie.split("; ").find((entry) => entry.startsWith("sidebar_state="));
+    // Restore the registry sidebar's persisted state once browser cookies are available.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (stored) setSidebarOpen(stored.split("=")[1] !== "false");
+  }, []);
 
   useEffect(() => {
     if (sessionError?.status === 401) {
@@ -120,14 +137,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const accessDenied = requestedItem ? !canAccessAdminNavigationItem(session, requestedItem) : false;
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="pa-admin-shell" open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <AppSidebar session={session} onSignOut={() => void signOut()} />
-      <SidebarInset>
+      <SidebarInset className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-[#f8fafc] shadow-[0_2px_20px_rgb(20_48_43_/_0.03)] md:my-2 md:mr-2">
         <AdminHeader pathname={pathname} session={session} />
         {accessDenied ? (
           <AdminShellState tone="warning">当前账号没有访问此工作区所需的权限。</AdminShellState>
         ) : (
-          <div className="min-w-0 pb-10">{children}</div>
+          <div className="min-w-0 flex-1 pb-10">{children}</div>
         )}
       </SidebarInset>
     </SidebarProvider>
