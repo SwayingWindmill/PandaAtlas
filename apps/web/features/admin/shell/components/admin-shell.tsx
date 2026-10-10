@@ -18,6 +18,8 @@ import {
 } from "@/features/admin/shell/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { AppSidebar } from "./app-sidebar";
+import { AdminCommandMenu } from "./admin-command-menu";
+import type { AdminSession } from "@/features/admin/session/api/types";
 
 function AdminShellState({ children, tone }: { children: React.ReactNode; tone: "loading" | "error" | "warning" }) {
   const toneClass = tone === "error"
@@ -32,7 +34,7 @@ function AdminShellState({ children, tone }: { children: React.ReactNode; tone: 
   );
 }
 
-function AdminHeader({ pathname }: { pathname: string }) {
+function AdminHeader({ pathname, session }: { pathname: string; session: AdminSession }) {
   const { setMobileOpen } = useSidebar();
   const item = adminNavigationItemForPath(pathname);
   const parent = pathname === "/admin/staff/invitations"
@@ -53,6 +55,7 @@ function AdminHeader({ pathname }: { pathname: string }) {
         </button>
         <SidebarTrigger className="hidden md:inline-flex" />
         <span className="hidden h-5 w-px bg-slate-200 md:block" />
+        <AdminCommandMenu session={session} />
         <nav aria-label="当前位置" className="flex min-w-0 items-center gap-2 text-sm">
           <Link href="/admin" className="shrink-0 text-slate-500 hover:text-teal-800">数据运营</Link>
           {parent && <><ChevronRight size={15} className="shrink-0 text-slate-400" aria-hidden="true" /><Link href={parent.href as Route} className="shrink-0 text-slate-600 hover:text-teal-800">{parent.label}</Link></>}
@@ -120,7 +123,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <AppSidebar session={session} onSignOut={() => void signOut()} />
       <SidebarInset>
-        <AdminHeader pathname={pathname} />
+        <AdminHeader pathname={pathname} session={session} />
         {accessDenied ? (
           <AdminShellState tone="warning">当前账号没有访问此工作区所需的权限。</AdminShellState>
         ) : (
