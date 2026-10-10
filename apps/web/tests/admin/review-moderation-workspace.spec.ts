@@ -159,12 +159,22 @@ test("review queue replaces the generic runner with typed collection and case ac
   await expect(page.getByRole("button", { name: "领取案件" })).toBeVisible();
   await expect(page.getByLabel("来源核验原因")).not.toBeVisible();
   await expect(page.getByLabel("审核决定类型")).not.toBeVisible();
-  await page.getByText("核验来源", { exact: true }).click();
+  await expect(page.getByRole("button", { name: "查看证据", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "核验来源" }).click();
   await expect(page.getByLabel("来源核验原因")).toBeVisible();
+  await expect(page.getByRole("button", { name: "核验来源" })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("核验通过时，请填写正式来源 ID 和规范化地址。")).toBeVisible();
-  await page.getByText("审核决定", { exact: true }).click();
+  await page.getByLabel("来源核验原因").fill("核对原始来源");
+  await page.getByRole("button", { name: "审核决定" }).click();
+  await expect(page.getByLabel("来源核验原因")).not.toBeVisible();
   await expect(page.getByLabel("审核决定类型")).toBeVisible();
   await expect(page.getByRole("button", { name: "保存审核决定" })).toBeDisabled();
+  const actionAccessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(actionAccessibility.violations).toEqual([]);
+  await page.getByRole("button", { name: "核验来源" }).click();
+  await expect(page.getByLabel("来源核验原因")).toHaveValue("核对原始来源");
+  await page.getByRole("button", { name: "查看证据", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "证据来源" })).toBeVisible();
   await expect(page.getByText("JSON payload")).toHaveCount(0);
   await expect(page).not.toHaveURL(/\bcase=/);
   expect(requestedOperations).toEqual([]);
@@ -173,6 +183,39 @@ test("review queue replaces the generic runner with typed collection and case ac
   await expect(page.getByRole("status")).toContainText("案件已领取。");
   await expect.poll(() => queueReads).toBeGreaterThan(1);
   await expect.poll(() => surfaceReads).toBeGreaterThan(1);
+});
+
+test("switching review cases returns to evidence and clears the previous case draft", async ({ page }) => {
+  const nextCaseId = "99999999-9999-4999-8999-999999999999";
+  const nextPandaId = "88888888-8888-4888-8888-888888888888";
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: reviewCapabilities }),
+  }));
+  await page.route("**/api/admin/review/cases?**", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ items: [reviewQueueItem, { ...reviewQueueItem, reviewCaseId: nextCaseId, targetPandaId: nextPandaId }], total: 2, limit: 25, offset: 0 }),
+  }));
+  await page.route("**/api/admin/review/cases/*/surface", (route) => {
+    const next = route.request().url().includes(nextCaseId);
+    return route.fulfill({
+      status: 200, contentType: "application/json",
+      body: JSON.stringify(next
+        ? { reviewCase: { ...reviewSurface.reviewCase, reviewCaseId: nextCaseId, primaryAssigneeId: reviewerAccountId }, contribution: {
+          ...reviewSurface.contribution, targetPandaId: nextPandaId, sources: [{ ...reviewSurface.contribution.sources[0], title: "New case institution" }],
+        } }
+        : reviewSurface),
+    });
+  });
+  await page.goto("/admin/reviews");
+  await expect(page.getByText("Institutional profile").first()).toBeVisible();
+  await page.getByRole("button", { name: "核验来源" }).click();
+  await page.getByLabel("来源核验原因").fill("Draft for original case");
+  await page.getByRole("button", { name: /熊猫编号 88888888/ }).click();
+  await expect(page.getByRole("button", { name: "查看证据", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("New case institution").first()).toBeVisible();
+  await page.getByRole("button", { name: "核验来源" }).click();
+  await expect(page.getByLabel("来源核验原因")).toHaveValue("");
 });
 
 test("assigned review explains ownership instead of offering a misleading claim action", async ({ page }) => {
@@ -192,7 +235,7 @@ test("assigned review explains ownership instead of offering a misleading claim 
   await expect(page.getByText("此案件由你负责，请继续核验来源并作出审核决定。")).toBeVisible();
   await expect(page.getByRole("button", { name: "领取案件" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "证据来源" })).toBeVisible();
-  await page.getByText("审核决定", { exact: true }).click();
+  await page.getByRole("button", { name: "审核决定" }).click();
   await expect(page.getByLabel("审核决定类型")).toBeVisible();
   await page.getByLabel("给贡献者的说明").fill("已核实档案资料，接受修改。");
   await expect(page.getByRole("button", { name: "保存审核决定" })).toBeEnabled();
