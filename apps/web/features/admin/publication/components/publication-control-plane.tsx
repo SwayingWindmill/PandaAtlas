@@ -27,9 +27,11 @@ import {
 } from "../api/queries";
 
 const PAGE_SIZE = 10;
+const DIFF_PAGE_SIZE = 10;
 
 const countCards: Array<{ key: keyof PublicationReleaseSummary["counts"]; label: string }> = [
   { key: "panda", label: "熊猫" },
+  { key: "institution", label: "机构" },
   { key: "place", label: "地点" },
   { key: "lineage", label: "谱系" },
   { key: "residency", label: "居住史" },
@@ -47,6 +49,10 @@ const changeLabels: Record<string, string> = {
   life_event: "生命事件",
   media: "媒体",
   evidence: "证据",
+};
+
+const changeKindLabels: Record<string, string> = {
+  added: "目标版本新增", changed: "成员快照变化", removed: "目标版本不再包含",
 };
 
 const transitionLabels: Record<string, string> = {
@@ -90,6 +96,7 @@ export function PublicationControlPlane() {
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1).withOptions({ shallow: true }));
   const [lifecycleState, setLifecycleState] = useQueryState("state", { shallow: true });
   const [releaseId, setReleaseId] = useQueryState("release", { shallow: true });
+  const [diffPage, setDiffPage] = useQueryState("diffPage", parseAsInteger.withDefault(1).withOptions({ shallow: true }));
   const normalizedState = lifecycleState === "building" || lifecycleState === "sealed" ? lifecycleState : undefined;
   const offset = Math.max(0, page - 1) * PAGE_SIZE;
   const releases = useQuery(publicationReleaseListQueryOptions({
@@ -99,8 +106,10 @@ export function PublicationControlPlane() {
   }));
   const effectiveReleaseId = releaseId ?? releases.data?.currentReleaseId ?? releases.data?.items[0]?.releaseId;
   const inspection = useQuery({
-    ...publicationReleaseInspectionQueryOptions(effectiveReleaseId ?? ""),
+    ...publicationReleaseInspectionQueryOptions(effectiveReleaseId ?? "", Math.max(0, diffPage - 1) * DIFF_PAGE_SIZE),
     enabled: Boolean(effectiveReleaseId),
+    retry: false,
+    placeholderData: (previous, previousQuery) => previousQuery?.queryKey[3] === effectiveReleaseId ? previous : undefined,
   });
   const [version, setVersion] = useState("");
   const [reason, setReason] = useState("");
@@ -132,6 +141,12 @@ export function PublicationControlPlane() {
 
   const selected = inspection.data?.release;
   const current = releases.data?.currentRelease ?? releases.data?.items.find((release) => release.isCurrent);
+  const changeSummary = inspection.data?.changes.reduce((acc, change) => ({
+    added: acc.added + change.added,
+    changed: acc.changed + change.changed,
+    removed: acc.removed + change.removed,
+  }), { added: 0, changed: 0, removed: 0 }) ?? { added: 0, changed: 0, removed: 0 };
+  const diffPages = Math.max(1, Math.ceil((inspection.data?.changeTotal ?? 0) / DIFF_PAGE_SIZE));
   const canManage = capability(session.data?.capabilities, "publication.release.manage");
   const canActivate = capability(session.data?.capabilities, "publication.release.activate");
   const canEmergency = capability(session.data?.capabilities, "publication.emergency");
@@ -169,7 +184,7 @@ export function PublicationControlPlane() {
           aria-pressed={effectiveReleaseId === context.row.original.releaseId}
           aria-label={`查看版本 ${context.getValue()}`}
           className={effectiveReleaseId === context.row.original.releaseId ? "rounded-md bg-teal-50 px-2 py-1 font-semibold text-teal-900 underline decoration-teal-500 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" : "rounded-md px-2 py-1 font-semibold text-slate-900 underline decoration-slate-400 underline-offset-4 hover:text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"}
-          onClick={() => { setReason(""); setMessage(null); void setReleaseId(context.row.original.releaseId); }}
+          onClick={() => { setReason(""); setMessage(null); void setDiffPage(1); void setReleaseId(context.row.original.releaseId); }}
         >
           {context.getValue()}
         </button>
@@ -183,7 +198,7 @@ export function PublicationControlPlane() {
         ? (row.original.suspended ? "当前版本 · 已暂停" : "当前版本")
         : (row.original.suspended ? "已暂停" : "候选版本"),
     }),
-  ], [columnHelper, setReleaseId, effectiveReleaseId]);
+  ], [columnHelper, setReleaseId, setDiffPage, effectiveReleaseId]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -217,7 +232,7 @@ export function PublicationControlPlane() {
         {current && <>
           <Badge variant="outline" className="border-slate-200 text-slate-800">{current.suspended ? "已暂停对外提供" : "当前对外使用"}</Badge>
           <span className="text-xs text-slate-600">构建于 {formatDate(current.builtAt)}</span>
-          <Button type="button" size="sm" variant="outline" onClick={() => { setReason(""); setMessage(null); void setReleaseId(current.releaseId); }}>查看当前版本</Button>
+          <Button type="button" size="sm" variant="outline" onClick={() => { setReason(""); setMessage(null); void setDiffPage(1); void setReleaseId(current.releaseId); }}>查看当前版本</Button>
         </>}
       </section>
 
@@ -296,7 +311,12 @@ export function PublicationControlPlane() {
       {!effectiveReleaseId && <div className="flex min-h-64 flex-col items-center justify-center px-6 py-10 text-center"><PackageCheck className="size-9 text-slate-400" aria-hidden="true"/><h2 className="mt-3 font-semibold text-slate-950">选择一个版本</h2><p className="mt-2 text-sm text-slate-600">在左侧版本队列选择记录，以检查差异和可执行的操作。</p></div>}
 
       {inspection.isPending && effectiveReleaseId ? <p role="status" className="p-5 text-sm text-slate-600">正在加载版本详情…</p> : null}
-      {inspection.isError ? <p role="alert" className="m-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">{inspection.error.message}</p> : null}
+      {inspection.isError ? (
+        <div role="alert" className="m-5 flex flex-wrap items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+          <span>{inspection.error.message}</span>
+          <Button type="button" variant="outline" size="sm" disabled={inspection.isFetching} onClick={() => void inspection.refetch()}>重新加载版本详情</Button>
+        </div>
+      ) : null}
       {inspection.data ? (
         <div className="divide-y divide-slate-200">
           <div className="px-5 py-5">
@@ -332,16 +352,74 @@ export function PublicationControlPlane() {
             <div className="mb-3 flex items-center gap-2"><GitCompareArrows size={17} className="text-teal-800" aria-hidden="true" /><h2 className="text-base font-semibold text-slate-950">与当前版本的差异</h2></div>
             {inspection.data.release.isCurrent ? (
               <p className="text-sm text-slate-600">当前展示的是已发布版本。</p>
+            ) : !inspection.data.currentReleaseId ? (
+              <p className="text-sm text-slate-600">目前没有公开版本可供对比；不能据此认定候选版本没有变化。</p>
             ) : inspection.data.changes.length ? (
-              <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
-                {inspection.data.changes.map((change) => (
-                  <li key={change.resourceKind} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-                    <strong className="text-sm text-slate-950">{changeLabels[change.resourceKind] ?? change.resourceKind}</strong>
-                    <p className="text-sm tabular-nums text-slate-700">新增 {change.added} · 更新 {change.changed} · 移除 {change.removed}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : <p className="text-sm text-slate-600">相比当前版本没有资源成员变更。</p>}
+              <>
+                <p className="mb-3 flex flex-wrap items-baseline gap-2 text-sm leading-6 text-slate-700">
+                  <strong className="text-slate-950">{inspection.data.changeTotal} 条资源成员变更</strong>
+                  <span> · 当前版本 {current?.version ?? "版本号未提供"} → 目标版本 {inspection.data.release.version}</span>
+                  <a href="#publication-resource-changes-heading" className="font-medium text-teal-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">查看具体资源</a>
+                </p>
+                <div className="grid grid-cols-3 divide-x divide-slate-200 rounded-lg border border-slate-200 bg-slate-50 py-3 text-center">
+                  <div><strong className="block text-lg font-semibold tabular-nums text-slate-950">{changeSummary.added}</strong><span className="text-xs text-slate-600">新增</span></div>
+                  <div><strong className="block text-lg font-semibold tabular-nums text-slate-950">{changeSummary.changed}</strong><span className="text-xs text-slate-600">快照变更</span></div>
+                  <div><strong className={`block text-lg font-semibold tabular-nums ${changeSummary.removed ? "text-amber-900" : "text-slate-950"}`}>{changeSummary.removed}</strong><span className="text-xs text-slate-600">移除</span></div>
+                </div>
+                {changeSummary.removed > 0 && (
+                  <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-950">
+                    {changeSummary.removed} 条移除：这些资源不再属于目标公开版本。这里不表示数据库记录已被删除。
+                  </p>
+                )}
+                <ul className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
+                  {inspection.data.changes.map((change) => (
+                    <li key={change.resourceKind} className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5">
+                      <strong className="text-sm text-slate-950">{changeLabels[change.resourceKind] ?? change.resourceKind}</strong>
+                      <p className="text-sm tabular-nums text-slate-700">新增 {change.added} · 更新 {change.changed} · 移除 {change.removed}</p>
+                    </li>
+                  ))}
+                </ul>
+                <section aria-labelledby="publication-resource-changes-heading" className="mt-5">
+                  <div className="flex flex-wrap items-end justify-between gap-2">
+                    <div>
+                      <h3 id="publication-resource-changes-heading" className="text-sm font-semibold text-slate-950">受影响资源明细</h3>
+                      <p className="mt-1 text-xs leading-5 text-slate-600">
+                        具体资源 ID 和变化类型来自版本快照比较，不代表字段级差异；无法从这里判断哪个属性发生了变化。
+                      </p>
+                    </div>
+                    <span className="text-xs tabular-nums text-slate-600">
+                      {inspection.data.changeOffset + 1}–{Math.min(inspection.data.changeOffset + inspection.data.changeItems.length, inspection.data.changeTotal)} / {inspection.data.changeTotal}
+                    </span>
+                  </div>
+                  <div className="mt-3 overflow-hidden rounded-lg border border-slate-200">
+                    <div className="grid grid-cols-[minmax(0,1fr)_7rem] gap-3 border-b border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700">
+                      <span>受影响资源</span><span className="text-right">变更类型</span>
+                    </div>
+                    <ul className="divide-y divide-slate-100">
+                      {inspection.data.changeItems.map((item) => (
+                        <li key={`${item.resourceKind}:${item.resourceId}`} className="grid grid-cols-[minmax(0,1fr)_7rem] items-center gap-3 px-4 py-2.5 text-sm">
+                          <div className="min-w-0">
+                            <span className="block text-xs text-slate-600">{changeLabels[item.resourceKind] ?? item.resourceKind}</span>
+                            <code className="mt-1 block break-all font-mono text-xs text-slate-900">{item.resourceId}</code>
+                          </div>
+                          <span className={`text-right text-xs font-medium ${item.changeType === "removed" ? "text-amber-900" : "text-slate-700"}`}>{changeKindLabels[item.changeType] ?? item.changeType}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {inspection.isPlaceholderData && <p role="status" className="mt-2 text-xs text-slate-600">正在更新本页资源明细…</p>}
+                  {diffPages > 1 && (
+                    <div className="mt-3 flex items-center justify-between gap-3">
+                      <span className="text-xs tabular-nums text-slate-600">第 {diffPage} / {diffPages} 页</span>
+                      <div className="flex gap-2">
+                        <Button type="button" size="sm" variant="outline" disabled={diffPage <= 1 || inspection.isPlaceholderData} onClick={() => void setDiffPage(diffPage - 1)}>上一页差异</Button>
+                        <Button type="button" size="sm" variant="outline" disabled={diffPage >= diffPages || inspection.isPlaceholderData} onClick={() => void setDiffPage(diffPage + 1)}>下一页差异</Button>
+                      </div>
+                    </div>
+                  )}
+                </section>
+              </>
+            ) : <p className="text-sm text-slate-600">与当前公开版本相比，没有检测到资源成员的新增、快照变化或移除；不等于已验证所有业务字段。</p>}
           </section>
 
           {actions.length ? (
@@ -356,7 +434,7 @@ export function PublicationControlPlane() {
               <div className="mt-4 flex flex-wrap gap-2">
                 {actions.map(({ action, label }) => (
                   <Button key={action} type="button" variant={action === "suspend" || action === "rollback" ? "outline" : "default"}
-                    disabled={busy || reason.trim().length < 3}
+                    disabled={busy || inspection.isPlaceholderData || reason.trim().length < 3}
                     className={action === "suspend" || action === "rollback" ? "border-red-300 text-red-800 hover:bg-red-50" : undefined}
                     onClick={() => setPendingAction({ releaseId: inspection.data.release.releaseId, version: inspection.data.release.version, action, reason: reason.trim() })}>
                     {label}
@@ -398,6 +476,12 @@ export function PublicationControlPlane() {
           <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800">
             <p>所选版本：<strong>{pendingAction?.version}</strong></p>
             <p>当前公开版本：<strong>{current?.version ?? "未提供"}</strong></p>
+            {pendingAction && (pendingAction.action === "activate" || pendingAction.action === "rollback") && inspection.data && (
+              <p>本次快照对比：<strong>{inspection.data.changeTotal} 条资源成员变更</strong>
+                （{changeSummary.added} 条新增、{changeSummary.changed} 条快照变化、{changeSummary.removed} 条移除）。
+                明细不代表字段级差异。
+              </p>
+            )}
             <p className="break-words">操作依据：{pendingAction?.reason}</p>
           </div>
           <AlertDialogFooter>

@@ -1,5 +1,5 @@
 import type { PublicRelease } from "./publication.application.js";
-import type { PublicationMemberKind, PublicationChangeType } from "./publication-change.port.js";
+import type { PublicationChange, PublicationMemberKind, PublicationChangeType } from "./publication-change.port.js";
 
 export interface PublicationResourceCounts {
   panda: number;
@@ -54,12 +54,15 @@ export interface PublicationReleaseInspection {
   currentReleaseId?: string;
   release: PublicationReleaseSummary;
   changes: PublicationChangeSummary[];
+  changeTotal: number;
+  changeOffset: number;
+  changeItems: PublicationChange[];
   transitions: PublicationTransition[];
 }
 
 export interface PublicationInspectionPort {
   listReleases(query: PublicationReleaseListQuery): Promise<PublicationReleasePage>;
-  inspectRelease(releaseId: string): Promise<PublicationReleaseInspection | undefined>;
+  inspectRelease(releaseId: string, query?: { changeLimit: number; changeOffset: number }): Promise<PublicationReleaseInspection | undefined>;
 }
 
 export const PUBLICATION_INSPECTION_PORT = Symbol("PUBLICATION_INSPECTION_PORT");
@@ -79,4 +82,15 @@ export function summarizePublicationChanges(
     grouped.set(change.resourceKind, summary);
   }
   return [...grouped.values()].sort((left, right) => left.resourceKind.localeCompare(right.resourceKind));
+}
+
+export function pagePublicationChanges(
+  changes: readonly PublicationChange[],
+  query: { changeLimit: number; changeOffset: number },
+) {
+  return {
+    changeTotal: changes.length,
+    changeOffset: query.changeOffset,
+    changeItems: changes.slice(query.changeOffset, query.changeOffset + query.changeLimit),
+  };
 }
