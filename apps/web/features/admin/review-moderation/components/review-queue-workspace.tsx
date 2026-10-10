@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ChevronDown, ClipboardCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -45,15 +45,11 @@ export function ReviewQueueWorkspace() {
   const capabilities = session.data?.capabilities;
   const canRead = hasAdminCapability(capabilities, "review.case.read");
   const canIntake = hasAdminCapability(capabilities, "review.case.intake");
-  const canClaim = hasAdminCapability(capabilities, "review.case.claim");
-  const canVerify = hasAdminCapability(capabilities, "review.case.verify_source");
-  const canDecide = hasAdminCapability(capabilities, "review.case.decide");
-  const canRecommend = hasAdminCapability(capabilities, "review.case.recommend");
-
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1).withOptions({ shallow: true }));
   const [state, setState] = useQueryState("state", { shallow: true });
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
-  const [panel, setPanel] = useState<ReviewPanel>("evidence");
+  const [submissionId, setSubmissionId] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
   const normalizedState = REVIEW_STATES.includes(state as ReviewState) ? state as ReviewState : undefined;
   const queueQuery = {
     limit: ADMIN_QUEUE_PAGE_SIZE,
@@ -62,12 +58,178 @@ export function ReviewQueueWorkspace() {
   };
   const queue = useQuery({ ...reviewQueueQueryOptions(queueQuery), enabled: canRead });
   const effectiveCaseId = selectedCaseId ?? queue.data?.items[0]?.reviewCaseId;
-  const surface = useQuery({
-    ...reviewSurfaceQueryOptions(effectiveCaseId ?? ""),
-    enabled: canRead && Boolean(effectiveCaseId),
+  const openMutation = useMutation({
+    ...reviewMutationOptions.open(),
+    onSuccess: async (reviewCase) => {
+      setSubmissionId("");
+      setNotice(`已建立审核案件 ${reviewCase.reviewCaseId}。`);
+      setSelectedCaseId(reviewCase.reviewCaseId);
+      await queryClient.invalidateQueries({ queryKey: reviewKeys.queues });
+    },
   });
+  const columns = useMemo(() => [
+    reviewColumnHelper.accessor("reviewCaseId", {
+      header: "案件",
+      cell: ({ row }) => (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          aria-current={effectiveCaseId === row.original.reviewCaseId ? "true" : undefined}
+          className={`h-auto max-w-full flex-col items-start gap-1 whitespace-normal px-2 py-1.5 text-left font-semibold text-slate-950 underline decoration-slate-400 underline-offset-4 hover:text-teal-800 ${effectiveCaseId === row.original.reviewCaseId ? "bg-teal-50 text-teal-950" : ""}`}
+          onClick={() => { setNotice(null); setSelectedCaseId(row.original.reviewCaseId); }}
+        >
+          <span className="block">{row.original.targetPandaId ? `熊猫编号 ${row.original.targetPandaId.slice(0, 8)}` : "尚未关联熊猫"}</span>
+          <span className="mt-1 block text-xs font-normal text-stone-600">案件 {row.original.reviewCaseId.slice(0, 8)}</span>
+        </Button>
+      ),
+    }),
+    reviewColumnHelper.accessor("state", {
+      header: "状态与等待",
+      cell: ({ row, getValue }) => (
+        <div className="space-y-1">
+          <span className="block text-sm font-medium">{adminStateLabel(getValue())}</span>
+          <span className={`block text-xs ${row.original.slaOverdue ? "font-semibold text-red-700" : "text-slate-600"}`}>
+            {formatQueueAge(row.original.queueAgeSeconds)}{row.original.slaOverdue ? " · 已超时" : ""}
+          </span>
+        </div>
+      ),
+    }),
+  ], [effectiveCaseId]);
+  // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const table = useReactTable({ data: queue.data?.items ?? [], columns, getCoreRowModel: getCoreRowModel() });
+  const totalPages = Math.max(1, Math.ceil((queue.data?.total ?? 0) / ADMIN_QUEUE_PAGE_SIZE));
+  return (
+    <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-9 md:px-9">
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+          <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">贡献审核队列</h1>
+          <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
+            核对贡献证据、验证来源、记录审核决定，并将通过的资料交接给策展工作区。
+          </p>
+        </div>
+        {canRead ? (
+          <label className="flex items-center gap-3 text-sm font-medium text-slate-700">
+            队列状态
+            <NativeSelect
+              aria-label="队列状态"
+              value={normalizedState ?? "all"}
+              onChange={(event) => {
+                const value = event.target.value;
+                setSelectedCaseId(null);
+                setNotice(null);
+                void setState(value === "all" ? null : value);
+                void setPage(1);
+              }}
+              className="min-h-10 min-w-36 border-slate-300 bg-white text-slate-900"
+            >
+              <NativeSelectOption value="all">全部</NativeSelectOption>
+              {REVIEW_STATES.map((value) => <NativeSelectOption key={value} value={value}>{adminStateLabel(value)}</NativeSelectOption>)}
+            </NativeSelect>
+          </label>
+        ) : null}
+      </div>
 
-  const [submissionId, setSubmissionId] = useState("");
+      {canIntake ? (
+        <Collapsible className="group mt-5 rounded-xl border border-slate-200 bg-white">
+          <CollapsibleTrigger className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 px-5 text-left text-sm font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+            通过提交编号创建审核案件
+            <ChevronDown size={17} aria-hidden="true" className="transition-transform group-data-[state=open]:rotate-180" />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <form
+              className="flex flex-wrap items-end gap-3 border-t border-slate-100 px-5 py-4"
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (submissionId.trim()) openMutation.mutate({ submissionId: submissionId.trim() });
+              }}
+            >
+              <label className="grid min-w-72 flex-1 gap-1 text-sm font-semibold text-stone-800">
+                录入待审核贡献
+                <Input
+                  aria-label="贡献提交 ID"
+                  value={submissionId}
+                  onChange={(event) => setSubmissionId(event.target.value)}
+                  placeholder="输入贡献提交 UUID"
+                  className="h-10 bg-white font-mono text-sm font-normal"
+                />
+              </label>
+              <Button type="submit" disabled={openMutation.isPending || !submissionId.trim()}>创建审核案件</Button>
+            </form>
+          </CollapsibleContent>
+        </Collapsible>
+      ) : null}
+
+      {openMutation.error ? (
+        <p role="alert" className="mt-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{openMutation.error.message}</p>
+      ) : null}
+      {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
+
+      <ResizablePanelGroup orientation="horizontal" className="mt-5 min-h-[680px] items-stretch">
+        <ResizablePanel defaultSize="36%" minSize="28%" maxSize="55%" className="min-w-0">
+        <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs" aria-labelledby="review-queue-heading">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 id="review-queue-heading" className="text-base font-semibold text-slate-950">待办队列</h2>
+              <p className="mt-1 text-xs text-slate-600">选择案件查看资料、证据和处理进度</p>
+            </div>
+            {queue.data ? <Badge variant="outline" className="bg-white text-slate-700">{queue.data.total} 件</Badge> : null}
+          </div>
+          {!canRead ? <p className="mt-5 text-sm text-stone-600">当前账号没有查看审核队列的权限。</p> : null}
+          {queue.isPending && canRead ? <div role="status" aria-label="正在加载审核队列" className="mt-5 space-y-3"><Skeleton className="h-10 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div> : null}
+          {queue.isError ? <div role="alert" className="mt-5 space-y-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"><p>{queue.error.message}</p><Button variant="outline" size="sm" onClick={() => void queue.refetch()}>重试加载队列</Button></div> : null}
+          {queue.isSuccess ? (
+            <>
+              <ScrollArea className={queue.data.items.length > 7 ? "mt-4 h-[min(60vh,720px)] rounded-xl" : "mt-4 rounded-xl"}><DataTable table={table} emptyMessage="当前筛选条件下没有待审核案件。" /></ScrollArea>
+              <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-600">
+                <span>第 {page} / {totalPages} 页</span>
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" size="sm" disabled={page <= 1} onClick={() => { setSelectedCaseId(null); setNotice(null); void setPage(Math.max(1, page - 1)); }}>上一页</Button>
+                  <Button type="button" variant="outline" size="sm" disabled={page >= totalPages} onClick={() => { setSelectedCaseId(null); setNotice(null); void setPage(Math.min(totalPages, page + 1)); }}>下一页</Button>
+                </div>
+              </div>
+            </>
+          ) : null}
+        </section>
+        </ResizablePanel>
+        <ResizableHandle withHandle aria-label="调整队列与详情宽度" className="mx-2 w-1 rounded-full bg-slate-200 transition-colors hover:bg-teal-400 focus-visible:bg-teal-400 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
+
+        <ResizablePanel defaultSize="64%" minSize="45%" className="min-w-0">
+          <ReviewCaseDetail
+            key={effectiveCaseId ?? "empty"}
+            reviewCaseId={effectiveCaseId}
+            queueIsSuccess={queue.isSuccess}
+            intakeBusy={openMutation.isPending}
+          />
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  );
+}
+
+// A case-local business workflow: its key resets verification/decision drafts
+// when the selected case changes, without manual reset effects.
+function ReviewCaseDetail({
+  reviewCaseId, queueIsSuccess, intakeBusy,
+}: {
+  reviewCaseId?: string;
+  queueIsSuccess: boolean;
+  intakeBusy: boolean;
+}) {
+  const queryClient = useQueryClient();
+  const session = useQuery(adminSessionQueryOptions);
+  const capabilities = session.data?.capabilities;
+  const canRead = hasAdminCapability(capabilities, "review.case.read");
+  const canClaim = hasAdminCapability(capabilities, "review.case.claim");
+  const canVerify = hasAdminCapability(capabilities, "review.case.verify_source");
+  const canDecide = hasAdminCapability(capabilities, "review.case.decide");
+  const canRecommend = hasAdminCapability(capabilities, "review.case.recommend");
+  const surface = useQuery({
+    ...reviewSurfaceQueryOptions(reviewCaseId ?? ""),
+    enabled: canRead && Boolean(reviewCaseId),
+  });
+  const [panel, setPanel] = useState<ReviewPanel>("evidence");
   const [sourceId, setSourceId] = useState("");
   const [sourceOutcome, setSourceOutcome] = useState<"verified" | "rejected">("verified");
   const [normalizedLocator, setNormalizedLocator] = useState("");
@@ -80,41 +242,12 @@ export function ReviewQueueWorkspace() {
   const [duplicateOfReviewCaseId, setDuplicateOfReviewCaseId] = useState("");
   const [recommendReason, setRecommendReason] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
-
-  useEffect(() => {
-    setPanel("evidence");
-    setSourceId("");
-    setNormalizedLocator("");
-    setCanonicalSourceId("");
-    setSourceReason("");
-    setSelectedAssertionKeys([]);
-    setUserVisibleExplanation("");
-    setInternalReason("");
-    setDuplicateOfReviewCaseId("");
-    setRecommendReason("");
-    setNotice(null);
-  }, [effectiveCaseId]);
-
-  const refreshQueue = async () => {
-    await queryClient.invalidateQueries({ queryKey: reviewKeys.queues });
-  };
-
-  const refreshCase = async (reviewCaseId: string) => {
+  const refreshCase = async (id: string) => {
     await Promise.all([
-      refreshQueue(),
-      queryClient.invalidateQueries({ queryKey: reviewKeys.surface(reviewCaseId) }),
+      queryClient.invalidateQueries({ queryKey: reviewKeys.queues }),
+      queryClient.invalidateQueries({ queryKey: reviewKeys.surface(id) }),
     ]);
   };
-
-  const openMutation = useMutation({
-    ...reviewMutationOptions.open(),
-    onSuccess: async (reviewCase) => {
-      setSubmissionId("");
-      setNotice(`已建立审核案件 ${reviewCase.reviewCaseId}。`);
-      setSelectedCaseId(reviewCase.reviewCaseId);
-      await refreshQueue();
-    },
-  });
   const claimMutation = useMutation({
     ...reviewMutationOptions.claim(),
     onSuccess: async (_reviewCase, reviewCaseId) => {
@@ -147,147 +280,23 @@ export function ReviewQueueWorkspace() {
     },
   });
 
-  const columns = useMemo(() => [
-    reviewColumnHelper.accessor("reviewCaseId", {
-      header: "案件",
-      cell: ({ row }) => (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-auto max-w-full flex-col items-start gap-1 whitespace-normal px-2 py-1.5 text-left font-semibold text-slate-950 underline decoration-slate-400 underline-offset-4 hover:text-teal-800"
-          onClick={() => setSelectedCaseId(row.original.reviewCaseId)}
-        >
-          <span className="block">{row.original.targetPandaId ? `熊猫编号 ${row.original.targetPandaId.slice(0, 8)}` : "尚未关联熊猫"}</span>
-          <span className="mt-1 block text-xs font-normal text-stone-600">案件 {row.original.reviewCaseId.slice(0, 8)}</span>
-        </Button>
-      ),
-    }),
-    reviewColumnHelper.accessor("state", {
-      header: "状态",
-      cell: ({ getValue }) => <span className="capitalize">{adminStateLabel(getValue())}</span>,
-    }),
-    reviewColumnHelper.accessor("queueAgeSeconds", {
-      header: "等待情况",
-      cell: ({ row, getValue }) => <span className={row.original.slaOverdue ? "font-semibold text-red-700" : "text-stone-700"}>{formatQueueAge(getValue())}{row.original.slaOverdue ? " · 已超时" : ""}</span>,
-    }),
-  ], [setSelectedCaseId]);
-  // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const table = useReactTable({ data: queue.data?.items ?? [], columns, getCoreRowModel: getCoreRowModel() });
 
-  const totalPages = Math.max(1, Math.ceil((queue.data?.total ?? 0) / ADMIN_QUEUE_PAGE_SIZE));
   const selected = surface.data;
   const contribution = selected?.contribution;
   const ownsSelectedCase = selected?.reviewCase.primaryAssigneeId === session.data?.accountId;
   const selectedSource = contribution?.sources.find((item) => item.sourceId === sourceId) ?? contribution?.sources[0];
-  const mutationError = openMutation.error
-    ?? claimMutation.error
-    ?? verifyMutation.error
-    ?? decideMutation.error
-    ?? recommendMutation.error;
-  const busy = openMutation.isPending
-    || claimMutation.isPending
-    || verifyMutation.isPending
-    || decideMutation.isPending
-    || recommendMutation.isPending;
+  const mutationError = claimMutation.error ?? verifyMutation.error ?? decideMutation.error ?? recommendMutation.error;
+  const busy = intakeBusy || claimMutation.isPending || verifyMutation.isPending || decideMutation.isPending || recommendMutation.isPending;
 
   return (
-    <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-9 md:px-9">
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
-        <div>
-          <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">贡献审核队列</h1>
-          <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
-            核对贡献证据、验证来源、记录审核决定，并将通过的资料交接给策展工作区。
-          </p>
-        </div>
-        {canRead ? (
-          <label className="flex items-center gap-3 text-sm font-medium text-slate-700">
-            队列状态
-            <NativeSelect
-              aria-label="队列状态"
-              value={normalizedState ?? "all"}
-              onChange={(event) => {
-                const value = event.target.value;
-                void setState(value === "all" ? null : value);
-                void setPage(1);
-              }}
-              className="min-h-10 min-w-36 border-slate-300 bg-white text-slate-900"
-            >
-              <NativeSelectOption value="all">全部</NativeSelectOption>
-              {REVIEW_STATES.map((value) => <NativeSelectOption key={value} value={value}>{adminStateLabel(value)}</NativeSelectOption>)}
-            </NativeSelect>
-          </label>
-        ) : null}
-      </div>
-
-      {canIntake ? (
-        <Collapsible className="group mt-5 rounded-xl border border-slate-200 bg-white">
-          <CollapsibleTrigger className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 px-5 text-left text-sm font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
-            通过提交编号创建审核案件
-            <ChevronDown size={17} aria-hidden="true" className="transition-transform group-data-[state=open]:rotate-180" />
-          </CollapsibleTrigger>
-        <CollapsibleContent><form
-          className="flex flex-wrap items-end gap-3 border-t border-slate-100 px-5 py-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (submissionId.trim()) openMutation.mutate({ submissionId: submissionId.trim() });
-          }}
-        >
-          <label className="grid min-w-72 flex-1 gap-1 text-sm font-semibold text-stone-800">
-            录入待审核贡献
-            <Input
-              aria-label="贡献提交 ID"
-              value={submissionId}
-              onChange={(event) => setSubmissionId(event.target.value)}
-              placeholder="输入贡献提交 UUID"
-              className="h-10 bg-white font-mono text-sm font-normal"
-            />
-          </label>
-          <Button type="submit" disabled={busy || !submissionId.trim()}>创建审核案件</Button>
-        </form></CollapsibleContent>
-        </Collapsible>
-      ) : null}
-
-      {mutationError ? (
-        <p role="alert" className="mt-4 rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{mutationError.message}</p>
-      ) : null}
-      {notice ? <p role="status" className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
-
-      <ResizablePanelGroup orientation="horizontal" className="mt-5 min-h-[680px] items-stretch">
-        <ResizablePanel defaultSize="36%" minSize="28%" maxSize="55%" className="min-w-0">
-        <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs" aria-label="待办队列" aria-labelledby="review-queue-heading">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h2 id="review-queue-heading" className="text-base font-semibold text-slate-950">待办队列</h2>
-              <p className="mt-1 text-xs text-slate-600">选择案件查看资料、证据和处理进度</p>
-            </div>
-            {queue.data ? <Badge variant="outline" className="bg-white text-slate-700">{queue.data.total} 件</Badge> : null}
-          </div>
-          {!canRead ? <p className="mt-5 text-sm text-stone-600">当前账号没有查看审核队列的权限。</p> : null}
-          {queue.isPending && canRead ? <div role="status" aria-label="正在加载审核队列" className="mt-5 space-y-3"><Skeleton className="h-10 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div> : null}
-          {queue.isError ? <div role="alert" className="mt-5 space-y-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"><p>{queue.error.message}</p><Button variant="outline" size="sm" onClick={() => void queue.refetch()}>重试加载队列</Button></div> : null}
-          {queue.isSuccess ? (
-            <>
-              <ScrollArea className={queue.data.items.length > 7 ? "mt-4 h-[min(60vh,720px)] rounded-xl" : "mt-4 rounded-xl"}><DataTable table={table} emptyMessage="当前筛选条件下没有待审核案件。" /></ScrollArea>
-              <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-600">
-                <span>第 {page} / {totalPages} 页</span>
-                <div className="flex gap-2">
-                  <Button type="button" variant="outline" size="sm" disabled={page <= 1} onClick={() => void setPage(Math.max(1, page - 1))}>上一页</Button>
-                  <Button type="button" variant="outline" size="sm" disabled={page >= totalPages} onClick={() => void setPage(Math.min(totalPages, page + 1))}>下一页</Button>
-                </div>
-              </div>
-            </>
-          ) : null}
-        </section>
-        </ResizablePanel>
-        <ResizableHandle withHandle aria-label="调整队列与详情宽度" className="mx-2 w-1 rounded-full bg-slate-200 transition-colors hover:bg-teal-400 focus-visible:bg-teal-400 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
-        <ResizablePanel defaultSize="64%" minSize="45%" className="min-w-0">
-        <div className="min-w-0 space-y-6">
+    <div className="min-w-0 space-y-6">
+          {mutationError ? <p role="alert" className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{mutationError.message}</p> : null}
+          {notice ? <p role="status" className="rounded-md border border-emerald-300 bg-emerald-50 p-4 text-sm text-emerald-950">{notice}</p> : null}
           <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs" aria-label="审核案件详情">
-            {surface.isPending && effectiveCaseId ? <div role="status" aria-label="正在加载案件详情" className="space-y-4 p-6"><Skeleton className="h-7 w-2/3" /><Skeleton className="h-20 w-full" /><Skeleton className="h-24 w-full" /></div> : null}
+            {!canRead ? <Empty className="min-h-[540px]"><EmptyHeader><EmptyTitle>无权查看案件详情</EmptyTitle><EmptyDescription>当前账号没有审核队列的查看权限。</EmptyDescription></EmptyHeader></Empty> : null}
+            {surface.isPending && reviewCaseId ? <div role="status" aria-label="正在加载案件详情" className="space-y-4 p-6"><Skeleton className="h-7 w-2/3" /><Skeleton className="h-20 w-full" /><Skeleton className="h-24 w-full" /></div> : null}
             {surface.isError ? <div role="alert" className="space-y-3 p-5 text-sm text-red-800"><p>{surface.error.message}</p><Button variant="outline" size="sm" onClick={() => void surface.refetch()}>重新加载案件详情</Button></div> : null}
-            {!effectiveCaseId && queue.isSuccess ? <Empty className="min-h-[540px]"><EmptyHeader><EmptyMedia variant="icon"><ClipboardCheck aria-hidden="true" /></EmptyMedia><EmptyTitle><h2>请选择审核案件</h2></EmptyTitle><EmptyDescription>从左侧队列选择案件，查看事实、证据和需要完成的核验操作。</EmptyDescription></EmptyHeader></Empty> : null}
+            {!reviewCaseId && queueIsSuccess ? <Empty className="min-h-[540px]"><EmptyHeader><EmptyMedia variant="icon"><ClipboardCheck aria-hidden="true" /></EmptyMedia><EmptyTitle><h2>请选择审核案件</h2></EmptyTitle><EmptyDescription>从左侧队列选择案件，查看事实、证据和需要完成的核验操作。</EmptyDescription></EmptyHeader></Empty> : null}
             {selected ? (
               <>
                 <div className="border-b border-slate-200 bg-slate-50 p-5">
@@ -382,7 +391,7 @@ export function ReviewQueueWorkspace() {
               <h4 className="mb-1 text-sm font-semibold text-slate-950">核验来源</h4>
               <p className="mb-4 text-xs text-slate-600">核实机构原文与提交事实是否一致</p>
             <form
-              className="space-y-3 border-t border-slate-100 px-5 pb-5 pt-4"
+              className="space-y-4 border-t border-slate-100 pt-4"
               onSubmit={(event) => {
                 event.preventDefault();
                 if (!selectedSource || !sourceReason.trim()) return;
@@ -401,7 +410,7 @@ export function ReviewQueueWorkspace() {
               <p className="text-sm leading-6 text-slate-600">核验通过时，请填写正式来源 ID 和规范化地址。</p>
               <div className="grid gap-3">
                 <label className="grid gap-1 text-sm font-semibold">来源
-                  <NativeSelect aria-label="证据来源" value={selectedSource?.sourceId ?? ""} onChange={(event) => setSourceId(event.target.value)} className="min-h-10 bg-white font-normal">
+                  <NativeSelect aria-label="证据来源" value={selectedSource?.sourceId ?? ""} onChange={(event) => { setSourceId(event.target.value); setSourceOutcome("verified"); setNormalizedLocator(""); setCanonicalSourceId(""); setSourceReason(""); }} className="min-h-10 bg-white font-normal">
                     {contribution.sources.map((source) => <NativeSelectOption key={source.sourceId} value={source.sourceId}>{source.title}</NativeSelectOption>)}
                   </NativeSelect>
                 </label>
@@ -431,7 +440,7 @@ export function ReviewQueueWorkspace() {
               <h4 className="mb-1 text-sm font-semibold text-slate-950">审核决定</h4>
               <p className="mb-4 text-xs text-slate-600">选择审核结果，并向贡献者说明理由</p>
             <form
-              className="space-y-3 border-t border-slate-100 px-5 pb-5 pt-4"
+              className="space-y-4 border-t border-slate-100 pt-4"
               onSubmit={(event) => {
                 event.preventDefault();
                 if (!userVisibleExplanation.trim()) return;
@@ -492,7 +501,7 @@ export function ReviewQueueWorkspace() {
               <h4 className="mb-1 text-sm font-semibold text-slate-950">策展交接</h4>
               <p className="mb-4 text-xs text-slate-600">将已通过且有可信来源支持的事实推荐给策展人员</p>
             <form
-              className="space-y-3 border-t border-slate-100 px-5 pb-5 pt-4"
+              className="space-y-4 border-t border-slate-100 pt-4"
               onSubmit={(event) => {
                 event.preventDefault();
                 if (!recommendReason.trim()) return;
@@ -509,9 +518,6 @@ export function ReviewQueueWorkspace() {
               </>
             ) : null}
           </section>
-        </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
     </div>
   );
 }
