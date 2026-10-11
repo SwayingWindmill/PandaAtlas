@@ -31,12 +31,11 @@ export function AuditEvidenceCollection() {
         <Button type="button" size="sm" variant="ghost"
           aria-label={`查看审计详情：${auditEventName(row.original.eventType)}，${new Date(row.original.occurredAt).toLocaleString("zh-CN")}`}
           aria-pressed={selectedId === row.original.sourceEventId}
-          className={`h-auto w-full flex-col items-start gap-1 whitespace-normal px-2 py-2 text-left ${selectedId === row.original.sourceEventId ? "bg-teal-50 text-teal-900" : "text-slate-900"}`}
+          className={`h-auto w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-slate-900 hover:bg-slate-100 ${selectedId === row.original.sourceEventId ? "bg-slate-100" : ""}`}
           onClick={() => setSelectedId(row.original.sourceEventId)}>
-          <span className="text-sm font-semibold">{auditEventName(row.original.eventType)}</span>
+          <span className="text-sm font-medium">{auditEventName(row.original.eventType)}</span>
           <span className="text-xs font-normal text-slate-600">{auditObjectName(row.original.aggregateType)} · {auditDomainName(row.original.sourceContext)}</span>
           <time dateTime={row.original.occurredAt} className="text-xs font-normal tabular-nums text-slate-600">{new Date(row.original.occurredAt).toLocaleString("zh-CN")}</time>
-          <span className="text-xs font-medium text-teal-800 underline underline-offset-2">查看审计详情</span>
         </Button>
       ),
     },
@@ -50,47 +49,47 @@ export function AuditEvidenceCollection() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-9 md:px-9">
+    <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-8 md:px-9">
       <header className="border-b border-slate-200 pb-5">
-        <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">审计记录</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-950">审计记录</h1>
         <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
           按发生时间查看操作及影响对象。仅展示最近记录，不等于完整历史导出。
         </p>
       </header>
 
-      <ResizablePanelGroup orientation="horizontal" className="mt-5 min-h-[720px] items-stretch">
-      <ResizablePanel defaultSize="38%" minSize="29%" maxSize="55%" className="min-w-0">
-      <section aria-label="审计记录列表" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
+      <ResizablePanelGroup orientation="horizontal" className="mt-5 min-h-[720px] items-stretch overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <ResizablePanel defaultSize="38%" minSize="29%" maxSize="55%" className="min-w-0 bg-slate-50/40">
+      <section aria-label="审计记录列表" className="min-w-0 p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <div><h2 className="text-base font-semibold text-slate-950">最近记录</h2><p className="mt-1 text-xs text-slate-600">选择一项记录，在右侧查看追溯信息</p></div>
-          {evidence.data && <span className="text-xs text-slate-600">已加载 {evidence.data.length} 项</span>}
+          <div><h2 className="text-sm font-semibold text-slate-950">最近记录</h2><p className="mt-1 text-xs text-slate-600">选择一项查看事件详情</p></div>
+          {evidence.data && <span className="text-xs tabular-nums text-slate-600">已加载 {evidence.data.length} 项</span>}
         </div>
-        <label className="mb-3 flex items-center justify-between gap-3 text-sm font-medium text-slate-700">
+        <label className="mb-3 flex items-center justify-between gap-3 text-xs font-medium text-slate-700">
           最近记录数
           <NativeSelect
             aria-label="最近记录数"
             value={String(limit)}
-            onChange={(event) => void setLimit(Number(event.target.value))}
-            className="min-h-10 min-w-32 border-slate-200 bg-white text-slate-900"
+            onChange={(event) => { setSelectedId(null); void setLimit(Number(event.target.value)); }}
+            className="min-h-9 min-w-32 border-slate-200 bg-white text-sm text-slate-900"
           >
             {[25, 50, 100, 200].map((value) => <NativeSelectOption key={value} value={value}>{value}</NativeSelectOption>)}
           </NativeSelect>
         </label>
         {evidence.isPending ? <div role="status" aria-label="正在加载审计记录" className="space-y-3"><Skeleton className="h-10 w-full" /><Skeleton className="h-16 w-full" /><Skeleton className="h-16 w-full" /></div> : null}
         {evidence.isError ? <div role="alert" className="space-y-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900"><p>{evidence.error.message}</p><Button variant="outline" size="sm" onClick={() => void evidence.refetch()}>重试加载审计记录</Button></div> : null}
-        {evidence.isSuccess ? <div className="max-h-[min(65vh,760px)] overflow-auto rounded-xl"><DataTable table={table} emptyMessage="当前范围内没有可查看的审计记录。可扩大上方最近记录数。" /></div> : null}
+        {evidence.isSuccess ? <div className="max-h-[min(65vh,760px)] overflow-auto"><DataTable table={table} emptyMessage="当前范围内没有可查看的审计记录。可扩大上方最近记录数。" /></div> : null}
       </section>
 
       </ResizablePanel>
-      <ResizableHandle withHandle aria-label="调整审计列表与事件详情宽度" className="mx-2 w-1 rounded-full bg-slate-200 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
+      <ResizableHandle withHandle aria-label="调整审计列表与事件详情宽度" className="w-1 bg-slate-200 transition-colors hover:bg-slate-400 focus-visible:bg-slate-500 [&>div]:h-10 [&>div]:w-3 [&>div]:rounded-full [&>div]:border-slate-300 [&>div]:bg-white" />
       <ResizablePanel defaultSize="62%" minSize="45%" className="min-w-0">
-      <section aria-label="审计事件详情" className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
-      {!selected && <Empty className="min-h-[540px]"><EmptyHeader><EmptyMedia variant="icon"><ScrollText aria-hidden="true" /></EmptyMedia><EmptyTitle><h2>选择一条审计记录</h2></EmptyTitle><EmptyDescription>在左侧选择记录，可在这里检查事件、发生时间和技术追溯信息。</EmptyDescription></EmptyHeader></Empty>}
+      <section aria-label="审计事件详情" className="min-w-0 bg-white">
+      {!selected && <Empty className="min-h-[540px]"><EmptyHeader><EmptyMedia variant="icon"><ScrollText aria-hidden="true" /></EmptyMedia><EmptyTitle><h2>{evidence.isError ? "暂时无法读取审计记录" : "选择一条审计记录"}</h2></EmptyTitle><EmptyDescription>{evidence.isError ? "请使用左侧的“重试加载审计记录”恢复列表，再选择事件查看追溯信息。" : "在左侧选择记录，可在这里检查事件、发生时间和技术追溯信息。"}</EmptyDescription></EmptyHeader></Empty>}
       {selected && (
-        <div className="p-5">
+        <div className="px-6 py-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-teal-800">{auditDomainName(selected.sourceContext)}</p>
+              <p className="text-xs font-medium text-slate-600">{auditDomainName(selected.sourceContext)}</p>
               <h2 className="mt-1 text-lg font-semibold text-slate-950">{auditEventName(selected.eventType)}</h2>
             </div>
             <Button type="button" variant="outline" onClick={() => setSelectedId(null)}>关闭详情</Button>
@@ -100,8 +99,8 @@ export function AuditEvidenceCollection() {
             <div><dt className="text-slate-600">实际发生时间</dt><dd className="mt-1 tabular-nums font-semibold text-slate-950">{new Date(selected.occurredAt).toLocaleString("zh-CN")}</dd></div>
           </dl>
           <p className="mt-4 text-sm text-slate-600">操作人信息未由此审计接口提供。</p>
-          <Collapsible className="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-            <CollapsibleTrigger className="min-h-9 font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">技术追溯信息</CollapsibleTrigger>
+          <Collapsible className="mt-5 border-t border-slate-200 pt-4 text-sm">
+            <CollapsibleTrigger className="min-h-9 font-medium text-slate-700 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700">技术追溯信息</CollapsibleTrigger>
             <CollapsibleContent>
             <p className="mt-3 text-slate-600">下方 SHA-256 仅为载荷摘要，不代表页面已完成完整性验证。</p>
             <dl className="mt-3 grid gap-3 md:grid-cols-2">
@@ -121,13 +120,13 @@ export function AuditEvidenceCollection() {
             </CollapsibleContent>
           </Collapsible>
           {selected.aggregateType === "public_release" && selected.sourceContext === "publication" && (
-            <Link className="mt-5 inline-block text-sm font-semibold text-teal-800 underline underline-offset-2"
+            <Link className="mt-5 inline-block text-sm font-medium text-slate-900 underline underline-offset-4"
               href={`/admin/publication?release=${encodeURIComponent(selected.aggregateId)}`}>
               查看关联发布版本
             </Link>
           )}
           {selected.aggregateType === "review_case" && selected.sourceContext === "review" && (
-            <Link className="mt-5 inline-block text-sm font-semibold text-teal-800 underline underline-offset-2"
+            <Link className="mt-5 inline-block text-sm font-medium text-slate-900 underline underline-offset-4"
               href="/admin/reviews">
               前往审核队列
             </Link>
