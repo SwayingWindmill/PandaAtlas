@@ -51,6 +51,8 @@ test("appeal reader can inspect the queue without being allowed to decide an app
   await page.goto("/admin/moderation");
   await expect(page.getByRole("heading", { name: "申诉队列" })).toBeVisible();
   await expect(page.getByText("Review the moderation evidence.")).toBeVisible();
+  await expect(page.getByText("当前账号治理信息需要额外的查看权限；你仍可查看下方申诉内容。")).toBeVisible();
+  await expect(page.getByRole("status", { name: "正在加载账号信息" })).toHaveCount(0);
   expect(queueReads).toBe(1);
   await expect(page.getByRole("button", { name: "保存申诉决定" })).toHaveCount(0);
 });
@@ -496,6 +498,44 @@ test("looking up another account cannot leave an unrelated appeal actionable", a
   await expect(page.getByLabel("限制内部说明")).toHaveValue("");
 });
 
+test("changing the appeal filter discards the previous account's sanction draft", async ({ page }) => {
+  const nextAccountId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+  const nextAppealId = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+  const appealFor = (state: string) => ({
+    appealCaseId: state === "under_review" ? nextAppealId : appealCaseId,
+    accountId: state === "under_review" ? nextAccountId : moderationAccountId,
+    sanctionId, state, version: 1, userStatement: "This appeal belongs to the current filter.",
+    createdAt: "2026-10-05T08:00:00.000Z", updatedAt: "2026-10-05T08:00:00.000Z",
+    firstResponseDueAt: "2026-10-05T20:00:00.000Z", slaOverdue: false, ageSeconds: 1800,
+  });
+  await page.route("**/api/admin/session", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ accountId: reviewerAccountId, aal: "aal2", capabilities: moderationCapabilities }),
+  }));
+  await page.route("**/api/admin/moderation/appeals?**", route => {
+    const state = new URL(route.request().url()).searchParams.get("state") ?? "open";
+    return route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify({ items: [appealFor(state)], total: 1, limit: 25, offset: 0 }) });
+  });
+  await page.route("**/api/admin/moderation/accounts/*", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ subject: {
+      accountId: route.request().url().split("/").at(-1), version: 1,
+      submissionRestricted: false, attachmentRestricted: false,
+      notificationRestricted: false, accountSuspended: false,
+      accountClosedForAbuse: false, repeatAbuseCount: 0,
+    }, sanctions: [] }),
+  }));
+  await page.goto("/admin/moderation");
+  await expect(page.getByText("账号编号 66666666")).toBeVisible();
+  await page.getByLabel("限制内部说明").fill("Only for the old filter");
+  await page.getByLabel("申诉状态").selectOption("under_review");
+  await expect(page).toHaveURL(/state=under_review/);
+  await expect(page.getByText("账号编号 aaaaaaaa")).toBeVisible();
+  await expect(page.getByLabel("限制内部说明")).toHaveValue("");
+  await expect(page.getByRole("button", { name: /账号 aaaaaaaa/ })).toHaveAttribute("aria-pressed", "true");
+});
+
 test("suspending an account requires an explicit confirmation with the account identity", async ({ page }) => {
   let sanctionPosts = 0;
   let sanctionPayload: Record<string, unknown> | undefined;
@@ -572,6 +612,7 @@ test("moderation appeal queue recovers after server error without clearing its f
   await page.goto("/admin/moderation?state=under_review");
   const retry = page.getByRole("button", { name: "重试加载申诉队列" });
   await expect(retry).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole("heading", { name: "暂时无法读取申诉队列" })).toBeVisible();
   unavailable = false;
   await retry.click();
   await expect(page.getByText("当前没有需要处理的申诉。")).toBeVisible();
