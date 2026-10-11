@@ -155,6 +155,7 @@ test("review queue replaces the generic runner with typed collection and case ac
   await page.keyboard.press("ArrowRight");
   await expect.poll(async () => (await queuePane.boundingBox())?.width ?? 0).toBeGreaterThan(originalQueueWidth);
   await expect(page.getByRole("button", { name: /熊猫编号 44444444/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /熊猫编号 44444444/ })).toHaveAttribute("aria-current", "true");
   await expect(page.getByRole("heading", { name: "待核验事实" })).toBeVisible();
   await expect(page.getByText("性别", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("雌性", { exact: true }).first()).toBeVisible();
@@ -229,6 +230,8 @@ test("switching review cases returns to evidence and clears the previous case dr
   await page.getByRole("tab", { name: "审核决定" }).click();
   await page.getByLabel("审核决定类型").selectOption("duplicate");
   await page.getByRole("button", { name: /熊猫编号 88888888/ }).click();
+  await expect(page.getByRole("button", { name: /熊猫编号 88888888/ })).toHaveAttribute("aria-current", "true");
+  await expect(page.getByRole("button", { name: /熊猫编号 44444444/ })).not.toHaveAttribute("aria-current", "true");
   await expect(page.getByRole("tab", { name: "查看证据", selected: true })).toBeVisible();
   await expect(page.getByText("New case institution").first()).toBeVisible();
   await page.getByRole("tab", { name: "核验来源" }).click();
@@ -302,6 +305,7 @@ test("review queue offers an explicit retry after the server recovers", async ({
   await page.goto("/admin/reviews");
   const retry = page.getByRole("button", { name: "重试加载队列" });
   await expect(retry).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole("heading", { name: "暂时无法读取审核队列" })).toBeVisible();
   unavailable = false;
   await retry.click();
   await expect(page.getByText("当前筛选条件下没有待审核案件。")).toBeVisible();
