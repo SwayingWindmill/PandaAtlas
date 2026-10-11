@@ -138,19 +138,19 @@ export function StaffInvitations() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-[1480px] space-y-6 px-6 pb-12 pt-9 md:px-9">
-      <header>
-        <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
-        <p className="mt-2 text-sm leading-6 text-slate-600">
+    <main className="mx-auto w-full max-w-[1480px] space-y-5 px-6 pb-12 pt-8 md:px-9">
+      <header className="border-b border-slate-200 pb-5">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
+        <p className="mt-1.5 text-sm leading-6 text-slate-600">
           邀请新审核员，查看他们是否已接受邀请。审核员不具备策展终审或公开发布权限。
         </p>
       </header>
       {session && <StaffWorkspaceNavigation current="invitations" session={session} />}
 
       {canInvite && (
-        <section aria-labelledby="send-staff-invitation" className="rounded-xl border border-slate-200 bg-white p-5 md:p-6">
+        <section aria-labelledby="send-staff-invitation" className="border-b border-slate-200 pb-5">
           <div className="mb-4">
-            <h2 id="send-staff-invitation" className="text-base font-semibold text-slate-950">邀请审核员</h2>
+            <h2 id="send-staff-invitation" className="text-sm font-semibold text-slate-950">邀请审核员</h2>
             <p className="mt-1 text-sm leading-6 text-slate-600">输入工作邮箱发送邀请。需要高级身份验证，对方接受邀请后才会获得岗位。</p>
           </div>
           <form onSubmit={(event) => void submit(event)} className="flex flex-wrap items-end gap-3">
@@ -179,7 +179,7 @@ export function StaffInvitations() {
       <section aria-label="审核员邀请记录" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-slate-950">邀请记录</h2>
+            <h2 className="text-base font-semibold text-slate-950">邀请记录</h2>
             {invitations && <p className="mt-1 text-sm text-slate-600" aria-live="polite">{matched.length} / {invitations.length} 条邀请</p>}
           </div>
           <div className="flex flex-wrap items-end gap-3">
@@ -234,7 +234,7 @@ export function StaffInvitations() {
           </div>
         )}
         {matched.length > 0 && (
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <Table>
               <TableHeader className="bg-slate-50">
                 <TableRow><TableHead>邮箱</TableHead><TableHead>邀请时间</TableHead><TableHead>进度</TableHead></TableRow>
