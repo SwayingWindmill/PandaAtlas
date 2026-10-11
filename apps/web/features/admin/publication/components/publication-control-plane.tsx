@@ -33,11 +33,12 @@ import {
   type PublicationReleaseSummary,
   runPublicationAction,
 } from "../api/queries";
+import { availablePublicationActions } from "../available-actions";
 
 const PAGE_SIZE = 10;
 const DIFF_PAGE_SIZE = 10;
 
-const countCards: Array<{ key: keyof PublicationReleaseSummary["counts"]; label: string }> = [
+const countFields: Array<{ key: keyof PublicationReleaseSummary["counts"]; label: string }> = [
   { key: "panda", label: "熊猫" },
   { key: "institution", label: "机构" },
   { key: "place", label: "地点" },
@@ -97,6 +98,8 @@ function formatDate(value: string): string {
 function capability(capabilities: readonly string[] | undefined, value: string): boolean {
   return capabilities?.includes(value) ?? false;
 }
+
+const releaseColumnHelper = createColumnHelper<PublicationReleaseSummary>();
 
 export function PublicationControlPlane() {
   const queryClient = useQueryClient();
@@ -159,34 +162,16 @@ export function PublicationControlPlane() {
   const canActivate = capability(session.data?.capabilities, "publication.release.activate");
   const canEmergency = capability(session.data?.capabilities, "publication.emergency");
 
-  const actions = useMemo(() => {
-    // A direct release URL can still render its detail when the collection is unavailable.
-    // Do not infer there is no current release from a failed collection read.
-    if (!selected || !releases.isSuccess) return [] as Array<{ action: PublicationAction; label: string }>;
-    const available: Array<{ action: PublicationAction; label: string }> = [];
-    if (selected.lifecycleState === "building" && canManage) {
-      available.push({ action: "seal", label: "封存版本" });
-      return available;
-    }
-    if (selected.lifecycleState !== "sealed") return available;
-    if (selected.suspended) {
-      if (canEmergency) available.push({ action: "restore", label: "恢复版本" });
-      return available;
-    }
-    if (!selected.isCurrent && canActivate) {
-      if (!current || new Date(selected.builtAt) > new Date(current.builtAt)) {
-        available.push({ action: "activate", label: "启用版本" });
-      } else if (selected.projectionSchemaVersion === current.projectionSchemaVersion) {
-        available.push({ action: "rollback", label: "回滚至此版本" });
-      }
-    }
-    if (canEmergency) available.push({ action: "suspend", label: "暂停版本" });
-    return available;
-  }, [canActivate, canEmergency, canManage, current, releases.isSuccess, selected]);
-
-  const columnHelper = createColumnHelper<PublicationReleaseSummary>();
+  const actions = availablePublicationActions({
+    selected,
+    current,
+    releasesReady: releases.isSuccess,
+    canManage,
+    canActivate,
+    canEmergency,
+  });
   const columns = useMemo(() => [
-    columnHelper.accessor("version", {
+    releaseColumnHelper.accessor("version", {
       header: "版本",
       cell: (context) => (
         <Button
@@ -202,8 +187,8 @@ export function PublicationControlPlane() {
         </Button>
       ),
     }),
-    columnHelper.accessor("lifecycleState", { header: "生命周期", cell: ({ getValue }) => transitionLabels[getValue()] ?? getValue() }),
-  ], [columnHelper, setReleaseId, setDiffPage, effectiveReleaseId]);
+    releaseColumnHelper.accessor("lifecycleState", { header: "生命周期", cell: ({ getValue }) => transitionLabels[getValue()] ?? getValue() }),
+  ], [setReleaseId, setDiffPage, effectiveReleaseId]);
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -219,14 +204,12 @@ export function PublicationControlPlane() {
   return (
     <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-9 md:px-9">
       <header className="space-y-1.5 border-b border-slate-200 pb-5">
-        <div>
-          <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">发布管理</h1>
-          <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
-            对照当前公开版本检查候选内容，确认差异与影响后，再执行启用、回滚或暂停。
-          </p>
-        </div>
+        <h1 className="text-[28px] font-semibold tracking-tight text-slate-950">发布管理</h1>
+        <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
+          对照当前公开版本检查候选内容，确认差异与影响后，再执行启用、回滚或暂停。
+        </p>
       </header>
-      <section aria-label="当前公开版本" className="mt-5 flex flex-wrap items-center gap-4 rounded-xl border border-slate-200 bg-white px-5 py-4">
+      <section aria-label="当前公开版本" className="flex flex-wrap items-center gap-4 border-b border-slate-200 py-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <PackageCheck className="size-5 shrink-0 text-teal-800" aria-hidden="true" />
           <div className="min-w-0">
@@ -285,7 +268,7 @@ export function PublicationControlPlane() {
       </div>
 
       {canManage ? (
-        <Collapsible className="group mt-5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+        <Collapsible className="group mt-5 border-t border-slate-200 pt-4">
           <CollapsibleTrigger className="min-h-9 text-left text-sm font-semibold text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">构建新候选版本（按需展开）</CollapsibleTrigger>
           <CollapsibleContent>
           <p className="mt-3 text-sm text-slate-600">构建只创建候选，不会立即改变公开内容。请先检查当前公开版本和已有候选。</p>
@@ -329,7 +312,7 @@ export function PublicationControlPlane() {
         </div>
       ) : null}
       {inspection.data ? (
-        <div className="divide-y divide-slate-200">
+        <>
           <div className="px-5 py-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -341,14 +324,14 @@ export function PublicationControlPlane() {
                 {inspection.data.release.isCurrent ? "当前版本" : "候选版本"} · {transitionLabels[inspection.data.release.lifecycleState] ?? inspection.data.release.lifecycleState}
               </Badge>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 rounded-lg border border-slate-200 bg-slate-50 p-4 md:grid-cols-4">
-              {countCards.map(({ key, label }) => (
+            <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-slate-100 pt-4 md:grid-cols-4">
+              {countFields.map(({ key, label }) => (
                 <div key={key} className="flex items-baseline justify-between gap-2">
-                  <span className="text-xs text-slate-600">{label}</span>
-                  <strong className="text-sm font-semibold tabular-nums text-slate-950">{inspection.data.release.counts[key]}</strong>
+                  <dt className="text-xs text-slate-600">{label}</dt>
+                  <dd className="text-sm font-semibold tabular-nums text-slate-950">{inspection.data.release.counts[key]}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
             {inspection.data.release.blockers.length ? (
               <div className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4">
                 <h3 className="font-semibold text-amber-950">{inspection.data.release.isCurrent ? "当前版本操作提示" : "发布阻塞项"}</h3>
@@ -359,7 +342,7 @@ export function PublicationControlPlane() {
             ) : null}
           </div>
 
-          <section className="px-5 py-5">
+          <section className="border-t border-slate-200 px-5 py-5">
             <div className="mb-3 flex items-center gap-2"><GitCompareArrows size={17} className="text-teal-800" aria-hidden="true" /><h2 className="text-base font-semibold text-slate-950">与当前版本的差异</h2></div>
             {inspection.data.release.isCurrent ? (
               <p className="text-sm text-slate-600">当前展示的是已发布版本。</p>
@@ -372,17 +355,15 @@ export function PublicationControlPlane() {
                   <span> · 当前版本 {current?.version ?? "版本号未提供"} → 目标版本 {inspection.data.release.version}</span>
                   <a href="#publication-resource-changes-heading" className="font-medium text-teal-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">查看具体资源</a>
                 </p>
-                <div className="grid grid-cols-3 divide-x divide-slate-200 rounded-lg border border-slate-200 bg-slate-50 py-3 text-center">
-                  <div><strong className="block text-lg font-semibold tabular-nums text-slate-950">{changeSummary.added}</strong><span className="text-xs text-slate-600">新增</span></div>
-                  <div><strong className="block text-lg font-semibold tabular-nums text-slate-950">{changeSummary.changed}</strong><span className="text-xs text-slate-600">快照变更</span></div>
-                  <div><strong className={`block text-lg font-semibold tabular-nums ${changeSummary.removed ? "text-amber-900" : "text-slate-950"}`}>{changeSummary.removed}</strong><span className="text-xs text-slate-600">移除</span></div>
-                </div>
+                <p className="text-sm tabular-nums text-slate-700">
+                  新增 {changeSummary.added} · 快照变化 {changeSummary.changed} · 移除 {changeSummary.removed}
+                </p>
                 {changeSummary.removed > 0 && (
                   <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-950">
                     {changeSummary.removed} 条移除：这些资源不再属于目标公开版本。这里不表示数据库记录已被删除。
                   </p>
                 )}
-                <ul className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
+                <ul className="mt-3 divide-y divide-slate-100 border-y border-slate-200">
                   {inspection.data.changes.map((change) => (
                     <li key={change.resourceKind} className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5">
                       <strong className="text-sm text-slate-950">{changeLabels[change.resourceKind] ?? change.resourceKind}</strong>
@@ -402,8 +383,7 @@ export function PublicationControlPlane() {
                       {inspection.data.changeOffset + 1}–{Math.min(inspection.data.changeOffset + inspection.data.changeItems.length, inspection.data.changeTotal)} / {inspection.data.changeTotal}
                     </span>
                   </div>
-                  <div className="mt-3 overflow-hidden rounded-xl border border-slate-200">
-                    <Table>
+                    <Table className="mt-3">
                       <TableHeader className="bg-slate-50">
                         <TableRow><TableHead>受影响资源</TableHead><TableHead className="w-36 text-right">变更类型</TableHead></TableRow>
                       </TableHeader>
@@ -419,7 +399,6 @@ export function PublicationControlPlane() {
                       ))}
                       </TableBody>
                     </Table>
-                  </div>
                   {inspection.isPlaceholderData && <p role="status" className="mt-2 text-xs text-slate-600">正在更新本页资源明细…</p>}
                   {diffPages > 1 && (
                     <div className="mt-3 flex items-center justify-between gap-3">
@@ -441,7 +420,7 @@ export function PublicationControlPlane() {
             </p>
           )}
           {actions.length ? (
-            <section className="bg-slate-50 px-5 py-5">
+            <section className="border-t border-slate-200 bg-slate-50 px-5 py-5">
               <h2 className="text-base font-semibold text-slate-950">下一步：版本操作</h2>
               <p className="mt-2 text-sm leading-6 text-slate-700">正在操作版本 {selected?.version}，当前公开版本为 {current?.version ?? "未提供"}。请先查看上方资源差异和阻塞项，提交操作前还会再次确认。</p>
               <label className="mt-4 grid gap-1 text-sm font-semibold text-slate-800">
@@ -450,19 +429,19 @@ export function PublicationControlPlane() {
                   className="min-h-24 bg-white font-normal" maxLength={2000} />
               </label>
               <div className="mt-4 flex flex-wrap gap-2">
-                {actions.map(({ action, label }) => (
+                {actions.map((action) => (
                   <Button key={action} type="button" variant={action === "suspend" || action === "rollback" ? "outline" : "default"}
                     disabled={busy || inspection.isPlaceholderData || reason.trim().length < 3}
                     className={action === "suspend" || action === "rollback" ? "border-red-300 text-red-800 hover:bg-red-50" : undefined}
                     onClick={() => setPendingAction({ releaseId: inspection.data.release.releaseId, version: inspection.data.release.version, action, reason: reason.trim() })}>
-                    {label}
+                    {actionLabels[action]}
                   </Button>
                 ))}
               </div>
             </section>
           ) : null}
 
-          <section className="px-5 py-5">
+          <section className="border-t border-slate-200 px-5 py-5">
             <div className="flex items-center gap-2"><History size={17} className="text-slate-600" aria-hidden="true" /><h2 className="text-base font-semibold text-slate-950">状态变更记录</h2></div>
             {inspection.data.transitions.length ? (
               <ol className="mt-3 divide-y divide-slate-200">
@@ -480,7 +459,7 @@ export function PublicationControlPlane() {
             ) : <p className="mt-3 text-sm text-stone-600">暂无版本状态变更记录。</p>}
           </section>
 
-        </div>
+        </>
       ) : null}
       </section>
       </ResizablePanel>
