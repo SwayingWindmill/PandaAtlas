@@ -109,6 +109,48 @@ test("Curation never offers self-approval, even if the creator has the approval 
   await expect(page.getByRole("button", { name: "审批并应用" })).toBeDisabled();
 });
 
+test("Curation read-only staff can inspect sourced facts without governance actions", async ({ page }) => {
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({
+      accountId: "11111111-1111-4111-8111-111111111111",
+      aal: "aal1", capabilities: ["curation.change.read"],
+    }),
+  }));
+  await page.route("**/api/admin/curation/change-sets**", (route) => {
+    const url = new URL(route.request().url());
+    return route.fulfill({
+      status: 200, contentType: "application/json",
+      body: JSON.stringify(url.pathname.endsWith("/change-sets") ? {
+        items: [{
+          changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
+          originKind: "review", reason: "只读证据核对", changeCount: 1,
+          createdByAccountId: "22222222-2222-4222-8222-222222222222",
+          createdAt: "2026-10-08T08:30:00.000Z",
+        }], total: 1, limit: 10, offset: 0,
+      } : {
+        changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
+        originKind: "review", reason: "只读证据核对",
+        createdByAccountId: "22222222-2222-4222-8222-222222222222",
+        changes: [{
+          changeId: "77777777-7777-4777-8777-777777777777",
+          fieldKey: "profile.sex", value: "female", certainty: "confirmed",
+          lastVerifiedOn: "2026-08-26", sourceIds: ["official-source-01"],
+        }], ownerChanges: [],
+      }),
+    });
+  });
+  await page.goto("/admin/curation");
+  await page.getByRole("button", { name: "查看变更：只读证据核对" }).click();
+  await expect(page.getByText("雌性", { exact: true })).toBeVisible();
+  await page.getByText("查看来源标识").click();
+  await expect(page.getByText("official-source-01")).toBeVisible();
+  await expect(page.getByRole("button", { name: "核验变更集" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "审批并应用" })).toHaveCount(0);
+  const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(axe.violations).toEqual([]);
+});
+
 test("Curation queue can retry a failed server read without resetting page state", async ({ page }) => {
   let unavailable = true;
   await page.route("**/api/admin/session", (route) => route.fulfill({
