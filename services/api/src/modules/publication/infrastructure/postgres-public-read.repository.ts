@@ -15,7 +15,18 @@ import type {
   PublicResidencySummary,
   PublicStats,
 } from "../application/public-read.application.js";
+import { LISTING_FACT_KEYS } from "../application/public-read.application.js";
 import { familyCircleIds } from "../application/family-circle.js";
+
+// Filters `facts` in Postgres so list reads never transfer curation facts.
+const listingFactsPath = `$[*] ? (${LISTING_FACT_KEYS.map((key) => `@.fieldKey == "${key}"`).join(" || ")})`;
+const listingPandaColumns = [
+  "panda_id",
+  "canonical_slug",
+  "legacy_slugs",
+  "names",
+  sql<unknown>`jsonb_path_query_array(facts, ${listingFactsPath}::jsonpath)`.as("facts"),
+] as const;
 
 interface DeliveryControls {
   panda: Set<string>;
@@ -40,7 +51,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     const controls = await this.loadDeliveryControls(this.database.db);
     const rows = await this.database.db
       .selectFrom("public_read.pandas")
-      .selectAll()
+      .select(listingPandaColumns)
       .where("release_id", "=", release.releaseId)
       .orderBy("canonical_slug")
       .execute();
@@ -87,7 +98,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
         ? []
         : await this.database.db
             .selectFrom("public_read.pandas")
-            .selectAll()
+            .select(listingPandaColumns)
             .where("release_id", "=", release.releaseId)
             .where("panda_id", "in", relativeIds)
             .orderBy("canonical_slug")

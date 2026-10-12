@@ -88,24 +88,29 @@ describe("V2 publication and release-scoped public reads", () => {
       canonicalSlug: `publication-panda-${suffix}`,
       primaryName: { languageTag: "en", value: `Release Panda ${suffix}`, sourceIds: [sourceId] },
     });
-    const assertionId = `publication-fact:${suffix}`;
-    await pandas.recordFactAssertion({
-      assertionId,
-      pandaId: panda.pandaId,
-      fieldKey: "birth.date",
-      value: "2026-08-27",
-      certainty: "confirmed",
-      lastVerifiedOn: "2026-08-27",
-      sourceIds: [sourceId],
-    });
-    await pandas.setFactConclusion({
-      pandaId: panda.pandaId,
-      fieldKey: "birth.date",
-      value: "2026-08-27",
-      status: "confirmed",
-      lastVerifiedOn: "2026-08-27",
-      assertionIds: [assertionId],
-    });
+    // `sex` is a listing fact; `birth.date` is a detail-only fact.
+    const facts = [
+      { pandaId: panda.pandaId, fieldKey: "birth.date", value: "2026-08-27" },
+      { pandaId: panda.pandaId, fieldKey: "sex", value: "female" },
+      { pandaId: father.pandaId, fieldKey: "birth.date", value: "2010-08-27" },
+      { pandaId: father.pandaId, fieldKey: "sex", value: "male" },
+    ];
+    for (const [index, fact] of facts.entries()) {
+      const assertionId = `publication-fact-${index}:${suffix}`;
+      await pandas.recordFactAssertion({
+        assertionId,
+        ...fact,
+        certainty: "confirmed",
+        lastVerifiedOn: "2026-08-27",
+        sourceIds: [sourceId],
+      });
+      await pandas.setFactConclusion({
+        ...fact,
+        status: "confirmed",
+        lastVerifiedOn: "2026-08-27",
+        assertionIds: [assertionId],
+      });
+    }
 
     const institution = await places.createInstitution({
       slug: `publication-institution-${suffix}`,
@@ -184,6 +189,13 @@ describe("V2 publication and release-scoped public reads", () => {
     expect(firstBody.lineage).toContainEqual(expect.objectContaining({ parentId: father.pandaId }));
     expect(firstBody.relatives).toContainEqual(expect.objectContaining({ pandaId: father.pandaId }));
     expect(firstBody.relatives).not.toContainEqual(expect.objectContaining({ pandaId: panda.pandaId }));
+    const factKeys = (item: { facts: Array<{ fieldKey: string }> }) => item.facts.map((fact) => fact.fieldKey).sort();
+    expect(factKeys(firstBody.panda)).toEqual(["birth.date", "sex"]);
+    expect(factKeys(firstBody.relatives.find((item) => item.pandaId === father.pandaId)!)).toEqual(["sex"]);
+    const list = await injectHttp(app, { method: "GET", url: "/api/v2/pandas" });
+    expect(list.statusCode, list.body).toBe(200);
+    const listed = list.json<{ items: PublicPandaDetail["relatives"] }>().items;
+    expect(listed.filter((item) => [panda.pandaId, father.pandaId].includes(item.pandaId)).map(factKeys)).toEqual([["sex"], ["sex"]]);
     const byId = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.pandaId}` });
     expect(byId.statusCode, byId.body).toBe(200);
     expect(byId.json<PublicPandaDetail>().panda.canonicalSlug).toBe(panda.canonicalSlug);
