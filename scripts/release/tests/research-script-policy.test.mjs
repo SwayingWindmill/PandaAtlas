@@ -144,6 +144,15 @@ test("checks tracked and unignored research inputs in a real Git repository", as
       () => checkResearchScriptPolicy({ cwd, quiet: true }),
       /Research script policy failed/,
     );
+
+    const localExcludes = path.join(cwd, "local-excludes");
+    await writeFile(localExcludes, "/scripts/research/*.py\n", "utf8");
+    execFileSync("git", ["config", "core.excludesFile", localExcludes], { cwd });
+    await writeFile(path.join(cwd, ".git", "info", "exclude"), "/scripts/research/*.py\n", "utf8");
+    assert.throws(
+      () => checkResearchScriptPolicy({ cwd, quiet: true }),
+      (error) => error.violations.some((violation) => violation.includes("build_subject_round12.py")),
+    );
   } finally {
     await rm(cwd, { force: true, recursive: true });
   }

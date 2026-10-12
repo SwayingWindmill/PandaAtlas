@@ -1,8 +1,9 @@
-import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+
+import { listRepositoryPaths } from "./repository-paths.mjs";
 
 export const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 
@@ -168,27 +169,11 @@ export function validateResearchBatchManifest({ manifestPath, manifest, contract
 }
 
 export function collectResearchPolicyPaths({ cwd = repoRoot } = {}) {
-  const result = spawnSync(
-    "git",
-    [
-      "ls-files",
-      "--cached",
-      "--others",
-      "--exclude-standard",
-      "--",
-      "scripts/research",
-      "data/research-batches",
-      CONTRACT_PATH,
-    ],
-    { cwd, encoding: "utf8", windowsHide: true },
-  );
-
-  if (result.error) throw new Error(`Unable to inspect research policy paths: ${result.error.message}`);
-  if (result.status !== 0) {
-    throw new Error(`git ls-files failed with code ${result.status}: ${result.stderr.trim()}`);
-  }
-
-  return [...new Set(result.stdout.split(/\r?\n/).map(normalizeRepositoryPath).filter(Boolean))].sort();
+  const paths = listRepositoryPaths({
+    cwd,
+    pathspecs: ["scripts/research", "data/research-batches", CONTRACT_PATH],
+  });
+  return [...new Set(paths.map(normalizeRepositoryPath).filter(Boolean))].sort();
 }
 
 export function checkResearchScriptPolicy({ cwd = repoRoot, quiet = false, logger = console } = {}) {

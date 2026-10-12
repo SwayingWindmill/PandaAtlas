@@ -222,3 +222,29 @@ test("checks tracked and unignored paths in a real Git repository", async () => 
     await rm(cwd, { force: true, recursive: true });
   }
 });
+
+test("local excludes cannot hide working-tree files while tracked .gitignore rules still apply", async () => {
+  const cwd = await mkdtemp(path.join(tmpdir(), "panda-repository-hygiene-excludes-"));
+
+  try {
+    execFileSync("git", ["init", "--quiet"], { cwd });
+    await writeFile(path.join(cwd, ".gitignore"), "node_modules/\n", "utf8");
+    await mkdir(path.join(cwd, "node_modules"), { recursive: true });
+    await writeFile(path.join(cwd, "node_modules", "index.js"), "module.exports = 1;\n", "utf8");
+    assert.doesNotThrow(() => checkRepositoryHygiene({ cwd, quiet: true }));
+
+    const localExcludes = path.join(cwd, "local-excludes.txt");
+    await writeFile(localExcludes, "/hidden (1).ts\n", "utf8");
+    execFileSync("git", ["config", "core.excludesFile", localExcludes], { cwd });
+    await writeFile(path.join(cwd, ".git", "info", "exclude"), "/private (1).ts\n", "utf8");
+    await writeFile(path.join(cwd, "hidden (1).ts"), "export const value = 1;\n", "utf8");
+    await writeFile(path.join(cwd, "private (1).ts"), "export const value = 2;\n", "utf8");
+
+    assert.throws(
+      () => checkRepositoryHygiene({ cwd, quiet: true }),
+      (error) => /hidden \(1\)\.ts/.test(error.message) && /private \(1\)\.ts/.test(error.message),
+    );
+  } finally {
+    await rm(cwd, { force: true, recursive: true });
+  }
+});

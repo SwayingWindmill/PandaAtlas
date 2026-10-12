@@ -1,8 +1,9 @@
-import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+
+import { listRepositoryPaths } from "./repository-paths.mjs";
 
 export const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 
@@ -106,30 +107,7 @@ export function findRepositoryHygieneViolations(paths) {
 }
 
 export function collectRepositoryPaths({ cwd = repoRoot } = {}) {
-  const result = spawnSync(
-    "git",
-    ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
-    {
-      cwd,
-      encoding: "utf8",
-      maxBuffer: 20 * 1024 * 1024,
-      windowsHide: true,
-    },
-  );
-
-  if (result.error) {
-    throw new Error(`Unable to inspect repository paths: ${result.error.message}`);
-  }
-  if (result.status !== 0) {
-    throw new Error(
-      `git ls-files failed with code ${result.status}: ${(result.stderr ?? "").trim()}`,
-    );
-  }
-
-  return String(result.stdout ?? "")
-    .split("\0")
-    .map(normalizeRepositoryPath)
-    .filter(Boolean);
+  return listRepositoryPaths({ cwd }).map(normalizeRepositoryPath).filter(Boolean);
 }
 
 export function findRetiredRuntimeImports(paths, { cwd = repoRoot } = {}) {
