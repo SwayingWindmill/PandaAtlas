@@ -18,6 +18,7 @@
     "lint": "npm run check:design-policy && npm run check:architecture && eslint .",
     "typecheck": "next typegen && tsc --noEmit",
     "smoke": "playwright test",
+    "test:worker": "node --test --test-timeout=20000 worker/media.test.mjs",
     "smoke:matrix": "node scripts/run-browser-matrix.mjs",
     "smoke:production": "playwright test",
     "test:accessibility": "playwright test --config playwright.accessibility.config.ts",
