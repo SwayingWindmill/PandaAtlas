@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Post, Put, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
@@ -27,7 +27,7 @@ export class MeController {
   @AllowUnprovisioned()
   @ApiOperation({ operationId: "provisionCurrentAccount" })
   @ApiCreatedResponse({ type: ProvisionedAccountDto })
-  public async provisionAccount(@Req() request: FastifyRequest): Promise<{
+  public async provisionAccount(@Req() request: HttpRequest): Promise<{
     accountId: string;
     state: "active";
     capabilities: string[];
@@ -61,7 +61,7 @@ export class MeController {
   @RequireCapabilities("account.session.read")
   @ApiOperation({ operationId: "getCurrentAccount" })
   @ApiOkResponse({ type: CurrentAccountDto })
-  public getCurrentAccount(@Req() request: FastifyRequest): {
+  public getCurrentAccount(@Req() request: HttpRequest): {
     accountId: string;
     aal: "aal1" | "aal2";
     capabilities: string[];
@@ -81,7 +81,7 @@ export class MeController {
   @RequireCapabilities("account.profile.read")
   @ApiOperation({ operationId: "getCurrentProfile" })
   @ApiOkResponse({ type: FanProfileDto })
-  public async getProfile(@Req() request: FastifyRequest) {
+  public async getProfile(@Req() request: HttpRequest) {
     const actor = getActorContext(request);
     if (actor === undefined) {
       throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
@@ -93,7 +93,7 @@ export class MeController {
   @RequireCapabilities("account.profile.manage")
   @ApiOperation({ operationId: "replaceCurrentProfile" })
   @ApiOkResponse({ type: FanProfileDto })
-  public async replaceProfile(@Req() request: FastifyRequest, @Body() input: ReplaceProfileDto) {
+  public async replaceProfile(@Req() request: HttpRequest, @Body() input: ReplaceProfileDto) {
     const actor = getActorContext(request);
     if (actor === undefined) {
       throw new ProblemException(500, "system.internal", "The actor context is unavailable.");

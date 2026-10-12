@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApplication } from "../../src/bootstrap.js";
@@ -12,7 +12,7 @@ import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/applicati
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 let evidence: EvidencePort;
 let pandas: PandaPort;
 let places: PlacesPort;

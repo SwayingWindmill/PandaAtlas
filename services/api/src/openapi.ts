@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule, type OpenAPIObject } from "@nestjs/swagger";
 import { AuditModule } from "./modules/audit/audit.module.js";
 import { ContributionModule } from "./modules/contribution/contribution.module.js";
@@ -37,7 +37,7 @@ function normalizeOpenApi31Nullable(value: unknown): void {
   for (const nested of Object.values(record)) normalizeOpenApi31Nullable(nested);
 }
 
-export function createV2OpenApiDocument(app: NestFastifyApplication): OpenAPIObject {
+export function createV2OpenApiDocument(app: INestApplication): OpenAPIObject {
   const config = new DocumentBuilder()
     .setTitle("PandaAtlas V2 API")
     .setDescription("Canonical NestJS V2 HTTP contract for PandaAtlas product and administration APIs.")

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import {
@@ -23,7 +23,7 @@ import {
   SubmitAppealDto,
 } from "./moderation.dto.js";
 
-function actorAccountId(request: FastifyRequest): string {
+function actorAccountId(request: HttpRequest): string {
   const actor = getActorContext(request);
   if (actor === undefined) {
     throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
@@ -67,7 +67,7 @@ export class ModerationController {
   @ApiOperation({ operationId: "applyModerationSanction" })
   @ApiCreatedResponse({ type: ModerationSanctionDto })
   public async applySanction(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("accountId", ParseUUIDPipe) accountId: string,
     @Body() input: ApplySanctionDto,
   ) {
@@ -91,7 +91,7 @@ export class ModerationController {
   @ApiOperation({ operationId: "restoreModerationSanction" })
   @ApiOkResponse({ type: RestoredSanctionDto })
   public async restoreSanction(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("sanctionId", ParseUUIDPipe) sanctionId: string,
     @Body() input: RestoreSanctionDto,
   ) {
@@ -116,7 +116,7 @@ export class ModerationController {
   @ApiOperation({ operationId: "decideModerationAppeal" })
   @ApiOkResponse({ type: ModerationAppealDecisionDto })
   public async decideAppeal(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("appealCaseId", ParseUUIDPipe) appealCaseId: string,
     @Body() input: DecideAppealDto,
   ) {
@@ -153,7 +153,7 @@ export class OwnModerationController {
   @RequireCapabilities("moderation.appeal.submit")
   @ApiOperation({ operationId: "submitModerationAppeal" })
   @ApiCreatedResponse({ type: ModerationAppealDto })
-  public async submitAppeal(@Req() request: FastifyRequest, @Body() input: SubmitAppealDto) {
+  public async submitAppeal(@Req() request: HttpRequest, @Body() input: SubmitAppealDto) {
     const appeal = await this.moderation.submitAppeal(
       actorAccountId(request),
       input.sanctionId,

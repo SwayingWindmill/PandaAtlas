@@ -12,7 +12,7 @@ import {
   Req,
 } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
@@ -35,7 +35,7 @@ import {
   UnfavoriteDto,
 } from "./engagement.dto.js";
 
-function accountId(request: FastifyRequest): string {
+function accountId(request: HttpRequest): string {
   const actor = getActorContext(request);
   if (actor === undefined) {
     throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
@@ -56,7 +56,7 @@ export class EngagementController {
   @RequireCapabilities("engagement.read")
   @ApiOperation({ operationId: "listFavorites" })
   @ApiOkResponse({ type: FavoriteListDto })
-  public async listFavorites(@Req() request: FastifyRequest) {
+  public async listFavorites(@Req() request: HttpRequest) {
     return { items: await this.engagement.listFavorites(accountId(request)) };
   }
 
@@ -65,7 +65,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "favoritePanda" })
   @ApiCreatedResponse({ type: FavoriteDto })
   public favorite(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("pandaId", ParseUUIDPipe) pandaId: string,
   ) {
     return this.engagement.favorite(accountId(request), pandaId);
@@ -76,7 +76,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "unfavoritePanda" })
   @ApiOkResponse({ type: UnfavoriteDto })
   public async unfavorite(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("pandaId", ParseUUIDPipe) pandaId: string,
   ) {
     await this.engagement.unfavorite(accountId(request), pandaId);
@@ -87,7 +87,7 @@ export class EngagementController {
   @RequireCapabilities("engagement.read")
   @ApiOperation({ operationId: "listCollections" })
   @ApiOkResponse({ type: CollectionListDto })
-  public async listCollections(@Req() request: FastifyRequest) {
+  public async listCollections(@Req() request: HttpRequest) {
     return { items: await this.engagement.listCollections(accountId(request)) };
   }
 
@@ -95,7 +95,7 @@ export class EngagementController {
   @RequireCapabilities("engagement.manage")
   @ApiOperation({ operationId: "createCollection" })
   @ApiCreatedResponse({ type: CollectionDto })
-  public createCollection(@Req() request: FastifyRequest, @Body() input: CollectionNameDto) {
+  public createCollection(@Req() request: HttpRequest, @Body() input: CollectionNameDto) {
     return this.engagement.createCollection(accountId(request), input.name);
   }
 
@@ -104,7 +104,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "renameCollection" })
   @ApiOkResponse({ type: CollectionDto })
   public async renameCollection(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("collectionId", ParseUUIDPipe) collectionId: string,
     @Body() input: CollectionNameDto,
   ) {
@@ -119,7 +119,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "deleteCollection" })
   @ApiOkResponse({ type: DeletedCollectionDto })
   public async deleteCollection(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("collectionId", ParseUUIDPipe) collectionId: string,
   ) {
     if (!(await this.engagement.deleteCollection(accountId(request), collectionId))) {
@@ -133,7 +133,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "addPandaToCollection" })
   @ApiCreatedResponse({ type: CollectionDto })
   public async addPandaToCollection(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("collectionId", ParseUUIDPipe) collectionId: string,
     @Param("pandaId", ParseUUIDPipe) pandaId: string,
   ) {
@@ -148,7 +148,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "removePandaFromCollection" })
   @ApiOkResponse({ type: CollectionDto })
   public async removePandaFromCollection(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("collectionId", ParseUUIDPipe) collectionId: string,
     @Param("pandaId", ParseUUIDPipe) pandaId: string,
   ) {
@@ -162,7 +162,7 @@ export class EngagementController {
   @RequireCapabilities("engagement.read")
   @ApiOperation({ operationId: "listCheckins" })
   @ApiOkResponse({ type: CheckinListDto })
-  public async listCheckins(@Req() request: FastifyRequest) {
+  public async listCheckins(@Req() request: HttpRequest) {
     return { items: await this.engagement.listCheckins(accountId(request)) };
   }
 
@@ -170,7 +170,7 @@ export class EngagementController {
   @RequireCapabilities("engagement.manage")
   @ApiOperation({ operationId: "createCheckin" })
   @ApiCreatedResponse({ type: CheckinDto })
-  public createCheckin(@Req() request: FastifyRequest, @Body() input: CreateCheckinDto) {
+  public createCheckin(@Req() request: HttpRequest, @Body() input: CreateCheckinDto) {
     return this.engagement.createCheckin(accountId(request), {
       placeId: input.placeId,
       visitedOn: input.visitedOn,
@@ -183,7 +183,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "deleteCheckin" })
   @ApiOkResponse({ type: DeletedCheckinDto })
   public async deleteCheckin(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("checkinId", ParseUUIDPipe) checkinId: string,
   ) {
     if (!(await this.engagement.deleteCheckin(accountId(request), checkinId))) {
@@ -196,7 +196,7 @@ export class EngagementController {
   @RequireCapabilities("engagement.read")
   @ApiOperation({ operationId: "listSeenPandas" })
   @ApiOkResponse({ type: SeenPandaListDto })
-  public async listSeenPandas(@Req() request: FastifyRequest) {
+  public async listSeenPandas(@Req() request: HttpRequest) {
     return { items: await this.engagement.listSeenPandas(accountId(request)) };
   }
 
@@ -205,7 +205,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "getSeenPanda" })
   @ApiOkResponse({ type: SeenPandaDto })
   public async getSeenPanda(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("pandaId", ParseUUIDPipe) pandaId: string,
   ) {
     const seen = await this.engagement.getSeenPanda(accountId(request), pandaId);
@@ -220,7 +220,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "saveSeenPanda" })
   @ApiOkResponse({ type: SeenPandaDto })
   public saveSeenPanda(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("pandaId", ParseUUIDPipe) pandaId: string,
     @Body() input: SaveSeenPandaDto,
   ) {
@@ -237,7 +237,7 @@ export class EngagementController {
   @ApiOperation({ operationId: "deleteSeenPanda" })
   @ApiOkResponse({ type: DeletedSeenPandaDto })
   public async deleteSeenPanda(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("pandaId", ParseUUIDPipe) pandaId: string,
   ) {
     if (!(await this.engagement.deleteSeenPanda(accountId(request), pandaId))) {

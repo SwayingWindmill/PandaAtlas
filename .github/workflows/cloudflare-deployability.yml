@@ -47,3 +47,6 @@ jobs:
 
       - name: Build current Cloudflare Web and API artifacts
         run: npm run build:cloudflare
+
+      - name: Boot the built API Worker in workerd
+        run: npm run check:worker-boot -w @zhipanda/api

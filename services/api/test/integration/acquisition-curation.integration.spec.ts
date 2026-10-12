@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -26,7 +26,7 @@ import { DatabaseService } from "../../src/platform/database/database.service.js
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 let curationIntake: CurationIntakePort;
 let curation: CurationPort;
 let evidence: EvidencePort;

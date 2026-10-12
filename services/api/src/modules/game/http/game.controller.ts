@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Inject, Post, Query, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { Public } from "../../../platform/auth/public.decorator.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
@@ -16,7 +16,7 @@ import {
   SavedGameAttemptDto,
 } from "./game.dto.js";
 
-function accountId(request: FastifyRequest): string {
+function accountId(request: HttpRequest): string {
   const actor = getActorContext(request);
   if (actor === undefined) {
     throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
@@ -81,7 +81,7 @@ export class GameAttemptController {
   @RequireCapabilities("game.attempt.read")
   @ApiOperation({ operationId: "listGameAttempts" })
   @ApiOkResponse({ type: GameAttemptListDto })
-  public async listAttempts(@Req() request: FastifyRequest) {
+  public async listAttempts(@Req() request: HttpRequest) {
     return { items: await this.game.listAttempts(accountId(request)) };
   }
 
@@ -89,7 +89,7 @@ export class GameAttemptController {
   @RequireCapabilities("game.attempt.manage")
   @ApiOperation({ operationId: "saveGameAttempt" })
   @ApiCreatedResponse({ type: SavedGameAttemptDto })
-  public async saveAttempt(@Req() request: FastifyRequest, @Body() input: GuessAnswerDto) {
+  public async saveAttempt(@Req() request: HttpRequest, @Body() input: GuessAnswerDto) {
     const result = await this.game.saveAttempt(accountId(request), input.questionId, input.selectedPandaId);
     if (result.kind !== "saved") gameProblem(result.kind);
     return { attempt: result.attempt, answer: result.answer };

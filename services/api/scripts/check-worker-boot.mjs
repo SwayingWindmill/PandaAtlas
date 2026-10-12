@@ -1,0 +1,63 @@
+// Boots the built API Worker (.cloudflare/output) in local workerd and requires the application's
+// own /health response. Catches Workers-only startup failures such as an unsettled top-level await,
+// which unit tests running on Node cannot see (#524).
+import { spawn, spawnSync } from "node:child_process";
+import path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
+
+const apiRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const port = Number(process.env.WORKER_BOOT_PORT ?? 8799);
+const deadline = Date.now() + 90_000;
+const failurePattern = /unsettled|ERR_RUNTIME_FAILURE|Uncaught Error/u;
+
+const viteCli = path.join(path.dirname(fileURLToPath(import.meta.resolve("vite"))), "../../bin/vite.js");
+const preview = spawn(process.execPath, [viteCli, "preview", "--host", "127.0.0.1", "--port", String(port), "--strictPort"], {
+  cwd: apiRoot,
+  detached: process.platform !== "win32",
+  windowsHide: true,
+  env: {
+    ...process.env,
+    // Startup must not need the database; any unreachable URL satisfies the Hyperdrive binding.
+    CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: "postgresql://boot:boot@127.0.0.1:1/boot",
+    PUBLIC_REVALIDATION_AUTH: "boot-check",
+  },
+});
+
+let output = "";
+preview.stdout.on("data", (chunk) => { output += chunk; });
+preview.stderr.on("data", (chunk) => { output += chunk; });
+
+function stopPreview() {
+  if (preview.exitCode !== null) return;
+  if (process.platform === "win32") spawnSync("taskkill", ["/PID", String(preview.pid), "/T", "/F"], { stdio: "ignore" });
+  else process.kill(-preview.pid, "SIGTERM");
+}
+
+async function check() {
+  while (Date.now() < deadline) {
+    if (failurePattern.test(output)) throw new Error("API Worker failed to boot in workerd.");
+    if (preview.exitCode !== null) throw new Error(`vite preview exited with code ${preview.exitCode}.`);
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/health`);
+      const body = await response.text();
+      if (response.status === 200 && body === JSON.stringify({ status: "ok" })) return body;
+      throw new Error(`Unexpected /health response ${response.status}: ${body.slice(0, 200)}`);
+    } catch (error) {
+      if (error instanceof Error && error.message.startsWith("Unexpected /health")) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1_000));
+    }
+  }
+  throw new Error("Timed out waiting for the API Worker to serve /health.");
+}
+
+try {
+  const body = await check();
+  console.log(`[worker-boot] API Worker booted in workerd; /health -> ${body}`);
+} catch (error) {
+  console.error(`[worker-boot] ${error instanceof Error ? error.message : String(error)}`);
+  console.error(output.slice(-4_000));
+  process.exitCode = 1;
+} finally {
+  stopPreview();
+}

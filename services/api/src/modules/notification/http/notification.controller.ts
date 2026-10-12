@@ -1,6 +1,6 @@
 import { Body, Controller, DefaultValuePipe, Get, Inject, Param, ParseIntPipe, ParseUUIDPipe, Patch, Put, Query, Req } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
@@ -12,7 +12,7 @@ import {
   NotificationPreferenceInputDto,
 } from "./notification.dto.js";
 
-function accountId(request: FastifyRequest): string {
+function accountId(request: HttpRequest): string {
   const actor = getActorContext(request);
   if (actor === undefined) {
     throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
@@ -32,7 +32,7 @@ export class NotificationController {
   @ApiQuery({ name: "limit", required: false, type: Number, minimum: 1, maximum: 100 })
   @ApiOkResponse({ type: NotificationMessageDto, isArray: true })
   public list(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Query("limit", new DefaultValuePipe(50), ParseIntPipe) limit: number,
   ) {
     return this.notifications.listMessages(accountId(request), limit);
@@ -43,7 +43,7 @@ export class NotificationController {
   @ApiOperation({ operationId: "markMyNotificationRead", summary: "Mark one inbox item read" })
   @ApiOkResponse({ type: NotificationMessageDto })
   public async markRead(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("messageId", ParseUUIDPipe) messageId: string,
   ) {
     const message = await this.notifications.markRead(accountId(request), messageId);
@@ -57,7 +57,7 @@ export class NotificationController {
   @RequireCapabilities("notification.manage")
   @ApiOperation({ operationId: "markAllMyNotificationsRead", summary: "Mark every unread inbox item read" })
   @ApiOkResponse({ type: NotificationBulkReadResultDto })
-  public async markAllRead(@Req() request: FastifyRequest) {
+  public async markAllRead(@Req() request: HttpRequest) {
     return { updatedCount: await this.notifications.markAllRead(accountId(request)) };
   }
 
@@ -65,7 +65,7 @@ export class NotificationController {
   @RequireCapabilities("notification.read")
   @ApiOperation({ operationId: "listMyNotificationPreferences", summary: "List effective notification preferences" })
   @ApiOkResponse({ type: NotificationPreferenceDto, isArray: true })
-  public preferences(@Req() request: FastifyRequest) {
+  public preferences(@Req() request: HttpRequest) {
     return this.notifications.listPreferences(accountId(request));
   }
 
@@ -73,7 +73,7 @@ export class NotificationController {
   @RequireCapabilities("notification.manage")
   @ApiOperation({ operationId: "setMyNotificationPreference", summary: "Set one notification channel preference" })
   @ApiOkResponse({ type: NotificationPreferenceDto })
-  public setPreference(@Req() request: FastifyRequest, @Body() input: NotificationPreferenceInputDto) {
+  public setPreference(@Req() request: HttpRequest, @Body() input: NotificationPreferenceInputDto) {
     return this.notifications.setPreference(accountId(request), input.category, input.channel, input.enabled);
   }
 }

@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -7,13 +7,14 @@ import { PostgresIdentityRepository } from "../../src/modules/identity/infrastru
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { IntegrationOutboxService } from "../../src/platform/integration/integration-outbox.service.js";
 import { PgmqService } from "../../src/platform/integration/pgmq.service.js";
+import { injectHttp } from "../inject-http.js";
 
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 const ACCOUNT_ID = "11111111-1111-4111-8111-111111111111";
 const SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 let database: DatabaseService;
 let identity: PostgresIdentityRepository;
 const outbox = new IntegrationOutboxService();
@@ -47,10 +48,10 @@ afterAll(async () => {
 
 describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
   it("serves readiness from the real database while public health ignores auth availability", async () => {
-    const health = await app.inject({ method: "GET", url: "/health" });
-    const ready = await app.inject({ method: "GET", url: "/ready" });
-    const protectedWithoutToken = await app.inject({ method: "GET", url: "/api/v2/me" });
-    const protectedWithUnverifiableToken = await app.inject({
+    const health = await injectHttp(app, { method: "GET", url: "/health" });
+    const ready = await injectHttp(app, { method: "GET", url: "/ready" });
+    const protectedWithoutToken = await injectHttp(app, { method: "GET", url: "/api/v2/me" });
+    const protectedWithUnverifiableToken = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/me",
       headers: { authorization: "Bearer not-a-real-token" },
