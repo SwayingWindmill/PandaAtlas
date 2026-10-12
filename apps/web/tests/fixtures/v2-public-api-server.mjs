@@ -171,12 +171,28 @@ function sendJson(response, status, body) {
   response.end(JSON.stringify(body));
 }
 
+// Mirrors the API's family circle: parents, children, siblings and grandparents.
+function relativesOf(pandaId) {
+  const parentsOf = (id) => lineage.filter((item) => item.childId === id).map((item) => item.parentId);
+  const childrenOf = (id) => lineage.filter((item) => item.parentId === id).map((item) => item.childId);
+  const ids = new Set(childrenOf(pandaId));
+  for (const parentId of parentsOf(pandaId)) {
+    ids.add(parentId);
+    for (const siblingId of childrenOf(parentId)) ids.add(siblingId);
+    for (const grandparentId of parentsOf(parentId)) ids.add(grandparentId);
+  }
+  ids.delete(pandaId);
+  return pandas.filter((item) => ids.has(item.pandaId));
+}
+
 function pandaDetail(reference) {
-  const panda = pandas.find((item) => item.canonicalSlug === reference || item.pandaId === reference);
+  const panda = pandas.find((item) =>
+    item.canonicalSlug === reference || item.pandaId === reference || item.legacySlugs.includes(reference));
   if (!panda) return null;
   return {
     release,
     panda,
+    relatives: relativesOf(panda.pandaId),
     lineage: lineage.filter((item) => item.childId === panda.pandaId || item.parentId === panda.pandaId),
     residencies: residencies.filter((item) => item.pandaId === panda.pandaId),
     events: lifeEvents.filter((item) => item.participantIds.includes(panda.pandaId)),

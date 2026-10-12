@@ -1,11 +1,7 @@
 import type { Metadata, Route } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { loadPublicPandaActivity } from "@/features/feed/feed-api";
-import {
-  loadV2PublicAtlasDataset,
-  loadV2PublicPandaProfile,
-  resolveV2PublicPandaReference,
-} from "@/features/public-content/public-v2";
+import { loadV2PublicPandaProfile } from "@/features/public-content/public-v2";
 import { buildTrustedProfilePageViewModel } from "@/features/profile/profile-page-view-model";
 import { TrustedProfilePage } from "@/features/profile/trusted-profile-page";
 import { parsePublicLocale } from "@/foundation/content/locales";
@@ -47,16 +43,15 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
 
-  const reference = await resolveV2PublicPandaReference(slug);
-  if (!reference) notFound();
-  if (slug !== reference.slug) {
+  // The API resolves canonical slugs, legacy slugs and panda IDs; redirect to the canonical URL.
+  const envelope = await loadV2PublicPandaProfile(slug, locale);
+  if (!envelope) notFound();
+  const canonicalSlug = envelope.data.panda.slug;
+  if (slug !== canonicalSlug) {
     permanentRedirect(
-      localizedPublicDestination(locale, `/pandas/${reference.slug}`, query) as Route,
+      localizedPublicDestination(locale, `/pandas/${canonicalSlug}`, query) as Route,
     );
   }
-
-  const envelope = await loadV2PublicPandaProfile(reference.slug, locale);
-  if (!envelope) notFound();
 
   const profile = buildTrustedProfilePageViewModel(envelope.data, locale);
   const rawActivityCursor = query.activity_cursor;
@@ -64,8 +59,6 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
     ? rawActivityCursor[0]
     : rawActivityCursor;
   const activityResult = await loadPublicPandaActivity(profile.stableId, activityCursor);
-  const atlas = await loadV2PublicAtlasDataset(locale);
-  if (!atlas) notFound();
 
   return (
     <TrustedProfilePage
@@ -74,7 +67,7 @@ export default async function LocalizedPandaPage({ params, searchParams }: Local
       envelope={envelope}
       activity={activityResult.state === "ready" ? activityResult.page : undefined}
       activityUnavailable={activityResult.state === "unavailable"}
-      activityPandas={atlas.data.pandas}
+      activityPandas={envelope.data.lineage.nodes}
     />
   );
 }

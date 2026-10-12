@@ -422,6 +422,13 @@ export class PublicPandaDetailDto {
   @ApiProperty({ type: () => PublicPandaSummaryDto })
   public declare panda: PublicPandaSummaryDto;
 
+  @ApiProperty({
+    type: () => PublicPandaSummaryDto,
+    isArray: true,
+    description: "Parents, children, siblings and grandparents of the panda, for profile family sections.",
+  })
+  public declare relatives: PublicPandaSummaryDto[];
+
   @ApiProperty({ type: () => PublicLineageSummaryDto, isArray: true })
   public declare lineage: PublicLineageSummaryDto[];
 

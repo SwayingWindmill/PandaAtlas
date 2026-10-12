@@ -5763,6 +5763,13 @@
           "panda": {
             "$ref": "#/components/schemas/PublicPandaSummaryDto"
           },
+          "relatives": {
+            "description": "Parents, children, siblings and grandparents of the panda, for profile family sections.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPandaSummaryDto"
+            }
+          },
           "lineage": {
             "type": "array",
             "items": {
@@ -5797,6 +5804,7 @@
         "required": [
           "release",
           "panda",
+          "relatives",
           "lineage",
           "residencies",
           "events",

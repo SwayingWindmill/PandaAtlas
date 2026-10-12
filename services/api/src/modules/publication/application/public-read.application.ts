@@ -115,6 +115,8 @@ export interface PublicStats {
 export interface PublicPandaDetail {
   release: PublicReadRelease;
   panda: PublicPandaSummary;
+  /** Parents, children, siblings and grandparents of `panda`, for profile family sections. */
+  relatives: PublicPandaSummary[];
   lineage: PublicLineageSummary[];
   residencies: PublicResidencySummary[];
   events: PublicLifeEventSummary[];

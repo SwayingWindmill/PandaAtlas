@@ -4,12 +4,12 @@ import { AlertTriangle, History, Pin, RotateCcw, Sparkles } from "lucide-react";
 
 import type { PublicLocale } from "@/foundation/content/locales";
 import type { ActivityItem, FeedAttribution } from "@/features/feed/types";
-import type { PandaDetail } from "@/lib/types";
+import type { PandaListItem } from "@/lib/types";
 
 interface ActivityCardProps {
   locale: PublicLocale;
   activity: ActivityItem;
-  pandas: PandaDetail[];
+  pandas: PandaListItem[];
   attribution?: FeedAttribution;
   isPinned?: boolean;
   isNew?: boolean;

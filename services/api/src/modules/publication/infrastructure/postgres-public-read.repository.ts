@@ -15,6 +15,7 @@ import type {
   PublicResidencySummary,
   PublicStats,
 } from "../application/public-read.application.js";
+import { familyCircleIds } from "../application/family-circle.js";
 
 interface DeliveryControls {
   panda: Set<string>;
@@ -64,10 +65,33 @@ export class PostgresPublicReadRepository implements PublicReadPort {
         expression.or([
           expression("canonical_slug", "=", slug),
           sql<boolean>`${slug} = any(legacy_slugs)`,
+          sql<boolean>`panda_id::text = ${slug}`,
         ]),
       )
       .executeTakeFirst();
     if (pandaRow === undefined || controls.panda.has(pandaRow.panda_id)) return { kind: "not_found" };
+
+    const parentageRows = await this.database.db
+      .selectFrom("public_read.lineage")
+      .select(["parent_id", "child_id"])
+      .where("release_id", "=", release.releaseId)
+      .execute();
+    const relativeIds = familyCircleIds(
+      pandaRow.panda_id,
+      parentageRows
+        .filter((row) => !controls.panda.has(row.parent_id) && !controls.panda.has(row.child_id))
+        .map((row) => ({ parentId: row.parent_id, childId: row.child_id })),
+    );
+    const relativeRows =
+      relativeIds.length === 0
+        ? []
+        : await this.database.db
+            .selectFrom("public_read.pandas")
+            .selectAll()
+            .where("release_id", "=", release.releaseId)
+            .where("panda_id", "in", relativeIds)
+            .orderBy("canonical_slug")
+            .execute();
 
     const lineageRows = await this.database.db
       .selectFrom("public_read.lineage")
@@ -148,6 +172,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       value: {
         release,
         panda: this.mapPanda(pandaRow),
+        relatives: relativeRows.map((row) => this.mapPanda(row)),
         lineage,
         residencies,
         events,

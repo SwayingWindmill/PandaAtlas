@@ -514,30 +514,21 @@ export async function searchV2PublicPandas(query: string, locale: PublicLocale):
   );
 }
 
-export async function resolveV2PublicPandaReference(input: string): Promise<{ id: string; slug: string } | null> {
-  const client = createServerV2Client();
-  const result = await client.GET("/api/v2/pandas");
-  if (!result.data) return null;
-  const normalized = input.trim();
-  const panda = result.data.items.find((item) =>
-    item.pandaId === normalized || item.canonicalSlug === normalized || item.legacySlugs.includes(normalized),
-  );
-  return panda ? { id: panda.pandaId, slug: panda.canonicalSlug } : null;
-}
-
 export async function loadV2PublicPandaProfile(
   input: string,
   locale: PublicLocale,
 ): Promise<PublicContentEnvelope<PublicProfileRecord> | null> {
+  // Panda-scoped reads only: the detail resolves canonical/legacy slugs and IDs, and carries the
+  // relatives the family sections need, so the full panda list is never loaded here (#531).
   const client = createServerV2Client();
-  const [detailResult, pandasResult, placesResult, lineageResult] = await Promise.all([
-    client.GET("/api/v2/pandas/{slug}", { params: { path: { slug: input } } }),
-    client.GET("/api/v2/pandas"),
+  const [detailResult, placesResult, lineageResult] = await Promise.all([
+    client.GET("/api/v2/pandas/{slug}", { params: { path: { slug: input.trim() } } }),
     client.GET("/api/v2/places"),
     client.GET("/api/v2/lineage"),
   ]);
-  if (!detailResult.data || !pandasResult.data || !placesResult.data || !lineageResult.data) return null;
+  if (!detailResult.data || !placesResult.data || !lineageResult.data) return null;
   const detail: V2PandaDetail = detailResult.data;
+  const familyPandas = [detail.panda, ...detail.relatives];
   const placesById = new Map(placesResult.data.items.map((place) => [place.placeId, place]));
   const panda = buildPanda(
     detail.panda,
@@ -549,7 +540,7 @@ export async function loadV2PublicPandaProfile(
     detail.media,
     detail.evidence,
   );
-  const allNodes = pandasResult.data.items.map((item) => buildPanda(
+  const allNodes = familyPandas.map((item) => buildPanda(
     item,
     placesById,
     [],
@@ -576,7 +567,7 @@ export async function loadV2PublicPandaProfile(
       parentageAssertions: parentageAssertions(lineageResult.data.items),
     },
     detail.release,
-    pandasResult.data.items,
+    familyPandas,
     { state: "complete", scope: "canonical V2 public panda profile, lineage, residencies, life events, media, and evidence" },
     locale,
     sources,

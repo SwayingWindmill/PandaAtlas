@@ -1977,6 +1977,8 @@ export interface components {
         PublicPandaDetailDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
             panda: components["schemas"]["PublicPandaSummaryDto"];
+            /** @description Parents, children, siblings and grandparents of the panda, for profile family sections. */
+            relatives: components["schemas"]["PublicPandaSummaryDto"][];
             lineage: components["schemas"]["PublicLineageSummaryDto"][];
             residencies: components["schemas"]["PublicResidencySummaryDto"][];
             events: components["schemas"]["PublicLifeEventSummaryDto"][];
