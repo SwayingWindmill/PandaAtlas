@@ -598,6 +598,45 @@ test("staff manager can inspect role history and confirm grant and revoke with r
   await expect(page.getByRole("region", { name: "角色授权历史" }).getByText("已撤销", { exact: true })).toBeVisible();
 });
 
+test("staff directory and selected role detail expose working retry actions", async ({ page }) => {
+  const staffId = "55555555-5555-4555-8555-555555555555";
+  let directoryAttempts = 0;
+  let detailAttempts = 0;
+  await page.route("**/api/admin/session", route => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "identity.staff.read"] }),
+  }));
+  await page.route("**/api/admin/staff/accounts**", route => {
+    const url = route.request().url();
+    if (url.endsWith("/accounts")) {
+      directoryAttempts++;
+      return route.fulfill(directoryAttempts === 1
+        ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "人员目录暂时不可用" }) }
+        : { status: 200, contentType: "application/json", body: JSON.stringify([
+          { accountId: staffId, email: "reader@example.test", state: "active", roles: ["reviewer"] },
+        ]) });
+    }
+    detailAttempts++;
+    return route.fulfill(detailAttempts === 1
+      ? { status: 503, contentType: "application/problem+json", body: JSON.stringify({ detail: "角色详情暂时不可用" }) }
+      : { status: 200, contentType: "application/json", body: JSON.stringify({
+        accountId: staffId, email: "reader@example.test", state: "active", stateReason: null,
+        capabilities: ["review.case.read"], assignments: [], stateHistory: [],
+      }) });
+  });
+  await page.goto("/admin/staff/roles");
+  await expect(page.getByRole("button", { name: "重新加载工作人员目录" })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText("暂时无法读取工作人员目录")).toBeVisible();
+  await page.getByRole("button", { name: "重新加载工作人员目录" }).click();
+  await page.getByRole("button", { name: /reader@example.test/ }).click();
+  await expect(page.getByRole("button", { name: "重新加载角色详情" })).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: "重新加载角色详情" }).click();
+  await expect(page.getByRole("heading", { name: "reader@example.test" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "准备授予" })).toHaveCount(0);
+  expect(directoryAttempts).toBeGreaterThan(1);
+  expect(detailAttempts).toBeGreaterThan(1);
+});
+
 test("authorized account manager suspends and reinstates staff from the Chinese console", async ({ page }) => {
   const workerId = "55555555-5555-4555-8555-555555555555";
   const manager = { ...staffSession, capabilities: ["admin.shell.access", "identity.account.manage"] };
