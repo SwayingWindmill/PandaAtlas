@@ -17,6 +17,11 @@ test("production Workers are reachable only through zhipanda.com custom domains"
   }
 });
 
+test("the production API runs next to its Supabase database region", () => {
+  assert.deepEqual(workers.api.placement, { region: "aws:ap-northeast-1" });
+  assert.equal(workers.web.placement, undefined);
+});
+
 test("production API CORS allows only the custom-domain Web origins", () => {
   const binding = workers.api.env.CORS_ALLOW_ORIGINS;
   assert.equal(binding.type, "text");
