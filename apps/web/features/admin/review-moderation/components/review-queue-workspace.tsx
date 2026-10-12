@@ -76,7 +76,7 @@ export function ReviewQueueWorkspace() {
           variant="ghost"
           size="sm"
           aria-current={effectiveCaseId === row.original.reviewCaseId ? "true" : undefined}
-          className={`h-auto max-w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-sm font-medium text-slate-950 hover:bg-slate-100 ${effectiveCaseId === row.original.reviewCaseId ? "bg-slate-100 text-slate-950" : ""}`}
+          className={`h-auto max-w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-sm font-medium text-slate-950 hover:bg-slate-100 ${effectiveCaseId === row.original.reviewCaseId ? "bg-slate-100 text-slate-950 shadow-[inset_3px_0_0_var(--color-slate-900)]" : ""}`}
           onClick={() => { setNotice(null); setSelectedCaseId(row.original.reviewCaseId); }}
         >
           <span className="block">{row.original.targetPandaId ? `熊猫编号 ${row.original.targetPandaId.slice(0, 8)}` : "尚未关联熊猫"}</span>

@@ -178,7 +178,7 @@ export function ModerationWorkspace() {
           type="button"
           aria-pressed={effectiveAppealId === row.original.appealCaseId}
           variant="ghost"
-          className={`h-auto w-full min-w-0 flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-sm font-medium hover:bg-slate-100 ${effectiveAppealId === row.original.appealCaseId ? "bg-slate-100 text-slate-950" : "text-slate-950"}`}
+          className={`h-auto w-full min-w-0 flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-sm font-medium hover:bg-slate-100 ${effectiveAppealId === row.original.appealCaseId ? "bg-slate-100 text-slate-950 shadow-[inset_3px_0_0_var(--color-slate-900)]" : "text-slate-950"}`}
           onClick={() => void selectAppeal(row.original)}
         >
           <span>账号 {row.original.accountId.slice(0, 8)}</span>
