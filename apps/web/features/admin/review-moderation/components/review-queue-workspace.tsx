@@ -8,6 +8,7 @@ import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { DataTable } from "@/components/ui/table/data-table";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import {
@@ -192,7 +193,7 @@ export function ReviewQueueWorkspace() {
         {canRead ? (
           <label className="flex items-center gap-3 text-sm font-medium text-slate-700">
             队列状态
-            <select
+            <NativeSelect
               aria-label="队列状态"
               value={normalizedState ?? "all"}
               onChange={(event) => {
@@ -200,11 +201,11 @@ export function ReviewQueueWorkspace() {
                 void setState(value === "all" ? null : value);
                 void setPage(1);
               }}
-              className="min-h-10 min-w-36 rounded-lg border border-slate-300 bg-white px-3 text-sm font-normal text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
+              className="min-h-10 min-w-36 border-slate-300 bg-white text-slate-900"
             >
-              <option value="all">全部</option>
-              {REVIEW_STATES.map((value) => <option key={value} value={value}>{adminStateLabel(value)}</option>)}
-            </select>
+              <NativeSelectOption value="all">全部</NativeSelectOption>
+              {REVIEW_STATES.map((value) => <NativeSelectOption key={value} value={value}>{adminStateLabel(value)}</NativeSelectOption>)}
+            </NativeSelect>
           </label>
         ) : null}
       </div>
