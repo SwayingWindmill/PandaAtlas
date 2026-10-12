@@ -19,7 +19,7 @@ This page is the current deployment source of truth. Historical migration, Verce
 | Public media | Cloudflare R2 (private bucket); allowlisted full photo GETs are kept in the Workers edge cache, ranges/HEAD/videos read R2 | Web Worker `HOME_MEDIA` binding, `apps/web/worker/media.mjs`, and reviewed media publication inputs |
 | Web incremental cache | No dedicated R2/DO topology; the current Web application has no positive ISR/tag/data-cache contract | `apps/web/cloudflare.config.ts`, `docs/research/vinext-cloudflare-web-runtime-2026-10-03.md` |
 | DNS/custom domains | Cloudflare; production is served only through these custom domains (`workersDev: false`), so zone WAF, rate-limit and HTTPS rules cover every public request | Web domains `zhipanda.com` / `www.zhipanda.com`; API domain `api.zhipanda.com`; enforced by `scripts/release/tests/cloudflare-production-surface.test.mjs` |
-| Short async trigger | Cloudflare Cron Trigger (`*/5 * * * *`) on `zhipanda-v2-api` runs one bounded Nest downstream cycle in the Worker `scheduled` handler | `services/api/cloudflare.config.ts`, `services/api/worker/index.mjs` |
+| Short async trigger | Cloudflare Cron Trigger (`*/5 * * * *`) on `zhipanda-v2-api` runs one bounded Nest downstream cycle in the Worker `scheduled` handler. Not yet live: the Cron Trigger build cannot deploy (#524), so production still runs the previous API Worker driven by the temporary GitHub Actions bridge | `services/api/cloudflare.config.ts`, `services/api/worker/index.mjs`, `.github/workflows/v2-async-downstream.yml` (bridge) |
 | Long/heavy data work | GitHub Actions and independent `tools/panda-data` Python runtime | repository workflows and `tools/panda-data` |
 
 ## Verified live resources
