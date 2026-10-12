@@ -5,6 +5,10 @@ export interface PublicReadRelease {
   version: string;
 }
 
+// The facts a panda carries in the public list and in profile relatives. The panda detail
+// carries every published fact.
+export const LISTING_FACT_KEYS = ["sex", "life_status", "birth_date", "death_date"] as const;
+
 export interface PublicPandaSummary {
   pandaId: string;
   canonicalSlug: string;
@@ -115,7 +119,7 @@ export interface PublicStats {
 export interface PublicPandaDetail {
   release: PublicReadRelease;
   panda: PublicPandaSummary;
-  /** Parents, children, siblings and grandparents of `panda`, for profile family sections. */
+  /** Parents, children, siblings and grandparents of `panda`, with listing facts only. */
   relatives: PublicPandaSummary[];
   lineage: PublicLineageSummary[];
   residencies: PublicResidencySummary[];

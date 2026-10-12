@@ -1897,6 +1897,7 @@ export interface components {
         };
         PublicPandaListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
+            /** @description Facts are limited to sex, life_status, birth_date and death_date; the panda detail carries every fact. */
             items: components["schemas"]["PublicPandaSummaryDto"][];
         };
         PublicLineageSummaryDto: {
@@ -1977,7 +1978,7 @@ export interface components {
         PublicPandaDetailDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
             panda: components["schemas"]["PublicPandaSummaryDto"];
-            /** @description Parents, children, siblings and grandparents of the panda, for profile family sections. */
+            /** @description Parents, children, siblings and grandparents of the panda, for profile family sections. Facts are limited to sex, life_status, birth_date and death_date. */
             relatives: components["schemas"]["PublicPandaSummaryDto"][];
             lineage: components["schemas"]["PublicLineageSummaryDto"][];
             residencies: components["schemas"]["PublicResidencySummaryDto"][];

@@ -26,10 +26,17 @@ function names(zh, en) {
 
 function facts(birthDate, sex, status = "alive") {
   return [
-    { fieldKey: "identity.birth_date", value: birthDate, status: "confirmed", lastVerifiedOn: "2026-08-12", conclusionVersion: 1 },
-    { fieldKey: "identity.sex", value: sex, status: "confirmed", lastVerifiedOn: "2026-08-12", conclusionVersion: 1 },
+    { fieldKey: "birth_date", value: birthDate, status: "confirmed", lastVerifiedOn: "2026-08-12", conclusionVersion: 1 },
+    { fieldKey: "sex", value: sex, status: "confirmed", lastVerifiedOn: "2026-08-12", conclusionVersion: 1 },
     { fieldKey: "life_status", value: status, status: "confirmed", lastVerifiedOn: "2026-08-12", conclusionVersion: 1 },
+    { fieldKey: "data_quality", value: "reviewed", status: "confirmed", lastVerifiedOn: "2026-08-12", conclusionVersion: 1 },
   ];
+}
+
+// Mirrors the API: the list and profile relatives carry listing facts only.
+const listingFactKeys = new Set(["sex", "life_status", "birth_date", "death_date"]);
+function listing(panda) {
+  return { ...panda, facts: panda.facts.filter((fact) => listingFactKeys.has(fact.fieldKey)) };
 }
 
 const pandas = [
@@ -182,7 +189,7 @@ function relativesOf(pandaId) {
     for (const grandparentId of parentsOf(parentId)) ids.add(grandparentId);
   }
   ids.delete(pandaId);
-  return pandas.filter((item) => ids.has(item.pandaId));
+  return pandas.filter((item) => ids.has(item.pandaId)).map(listing);
 }
 
 function pandaDetail(reference) {
@@ -214,7 +221,7 @@ const server = http.createServer((request, response) => {
     return;
   }
   if (url.pathname === "/api/v2/pandas") {
-    sendJson(response, 200, { release, items: pandas });
+    sendJson(response, 200, { release, items: pandas.map(listing) });
     return;
   }
   if (url.pathname === "/api/v2/places") {

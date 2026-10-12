@@ -5495,6 +5495,7 @@
             "$ref": "#/components/schemas/PublicReadReleaseDto"
           },
           "items": {
+            "description": "Facts are limited to sex, life_status, birth_date and death_date; the panda detail carries every fact.",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PublicPandaSummaryDto"
@@ -5764,7 +5765,7 @@
             "$ref": "#/components/schemas/PublicPandaSummaryDto"
           },
           "relatives": {
-            "description": "Parents, children, siblings and grandparents of the panda, for profile family sections.",
+            "description": "Parents, children, siblings and grandparents of the panda, for profile family sections. Facts are limited to sex, life_status, birth_date and death_date.",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PublicPandaSummaryDto"

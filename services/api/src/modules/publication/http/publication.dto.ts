@@ -425,7 +425,8 @@ export class PublicPandaDetailDto {
   @ApiProperty({
     type: () => PublicPandaSummaryDto,
     isArray: true,
-    description: "Parents, children, siblings and grandparents of the panda, for profile family sections.",
+    description:
+      "Parents, children, siblings and grandparents of the panda, for profile family sections. Facts are limited to sex, life_status, birth_date and death_date.",
   })
   public declare relatives: PublicPandaSummaryDto[];
 
@@ -449,7 +450,11 @@ export class PublicPandaListDto {
   @ApiProperty({ type: () => PublicReadReleaseDto })
   public declare release: PublicReadReleaseDto;
 
-  @ApiProperty({ type: () => PublicPandaSummaryDto, isArray: true })
+  @ApiProperty({
+    type: () => PublicPandaSummaryDto,
+    isArray: true,
+    description: "Facts are limited to sex, life_status, birth_date and death_date; the panda detail carries every fact.",
+  })
   public declare items: PublicPandaSummaryDto[];
 }
 
