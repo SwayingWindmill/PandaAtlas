@@ -1,4 +1,4 @@
-import { bindings, defineConfig } from "cf/config";
+import { bindings, defineConfig, exports } from "cf/config";
 
 export default defineConfig(({ mode }) => ({
   accountId: "b391ffba7f4fb602b01e0c1e8f893baa",
@@ -10,6 +10,11 @@ export default defineConfig(({ mode }) => ({
     compatibilityDate: "2026-10-01",
     compatibilityFlags: ["nodejs_compat"],
     observability: { enabled: true, redactQueryString: true },
+    // Retire the OpenNext cache Durable Objects that production still provisions; vinext has no ISR/tag cache.
+    exports: {
+      DOQueueHandler: exports.durableObject({ state: "deleted" }),
+      DOShardedTagCache: exports.durableObject({ state: "deleted" }),
+    },
     env: {
       ASSETS: bindings.assets(),
       HOME_MEDIA: bindings.r2({ name: "panda-atlas-media" }),
