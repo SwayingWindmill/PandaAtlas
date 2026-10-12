@@ -1,11 +1,11 @@
 import type { PublicLocale } from "@/foundation/content/locales";
 import { ActivityCard } from "@/features/feed/activity-card";
 import type { ActivityItem, FeedItemData } from "@/features/feed/types";
-import type { PandaDetail } from "@/lib/types";
+import type { PandaListItem } from "@/lib/types";
 
 interface ActivityTimelineProps {
   locale: PublicLocale;
-  pandas: PandaDetail[];
+  pandas: PandaListItem[];
   activities?: ActivityItem[];
   feedItems?: FeedItemData[];
   emptyTitle?: string;

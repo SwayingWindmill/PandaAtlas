@@ -4,12 +4,12 @@ import Link from "next/link";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { ActivityTimeline } from "@/features/feed/activity-timeline";
 import type { ActivityPageData } from "@/features/feed/types";
-import type { PandaDetail } from "@/lib/types";
+import type { PandaDetail, PandaListItem } from "@/lib/types";
 
 interface PublicPandaActivityProps {
   locale: PublicLocale;
   panda: PandaDetail;
-  pandas: PandaDetail[];
+  pandas: PandaListItem[];
   activity?: ActivityPageData;
   unavailable?: boolean;
 }

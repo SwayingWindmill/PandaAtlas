@@ -182,6 +182,11 @@ describe("V2 publication and release-scoped public reads", () => {
     expect(firstBody.release.releaseId).toBe(first.releaseId);
     expect(firstBody.panda.pandaId).toBe(panda.pandaId);
     expect(firstBody.lineage).toContainEqual(expect.objectContaining({ parentId: father.pandaId }));
+    expect(firstBody.relatives).toContainEqual(expect.objectContaining({ pandaId: father.pandaId }));
+    expect(firstBody.relatives).not.toContainEqual(expect.objectContaining({ pandaId: panda.pandaId }));
+    const byId = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.pandaId}` });
+    expect(byId.statusCode, byId.body).toBe(200);
+    expect(byId.json<PublicPandaDetail>().panda.canonicalSlug).toBe(panda.canonicalSlug);
     expect(firstBody.residencies).toContainEqual(expect.objectContaining({ placeId: place.placeId }));
     expect(firstBody.events).toContainEqual(expect.objectContaining({ eventType: "public_debut" }));
     expect(firstBody.media).toContainEqual(expect.objectContaining({ assetId: asset.assetId, objectKey: `public/${suffix}.jpg` }));

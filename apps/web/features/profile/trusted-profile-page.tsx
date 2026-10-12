@@ -17,7 +17,7 @@ import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-noti
 import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
 import { buildPandaStructuredData, serializeStructuredData } from "@/foundation/metadata/panda-structured-data";
-import type { PandaDetail } from "@/lib/types";
+import type { PandaListItem } from "@/lib/types";
 import type {
   ProfileModuleState,
   TrustedProfileFactViewModel,
@@ -33,7 +33,7 @@ interface TrustedProfilePageProps {
   envelope: PublicContentEnvelope<PublicProfileRecord>;
   activity?: ActivityPageData;
   activityUnavailable?: boolean;
-  activityPandas?: PandaDetail[];
+  activityPandas?: PandaListItem[];
 }
 
 const copy = {
