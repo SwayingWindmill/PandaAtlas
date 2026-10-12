@@ -1,4 +1,4 @@
-import { bindings, defineConfig } from "cf/config";
+import { bindings, defineConfig, triggers } from "cf/config";
 
 export default defineConfig(() => ({
     accountId: "b391ffba7f4fb602b01e0c1e8f893baa",
@@ -6,6 +6,7 @@ export default defineConfig(() => ({
       name: "zhipanda-v2-api",
       entrypoint: "./worker/index.mjs",
       domains: ["api.zhipanda.com"],
+      triggers: [triggers.scheduled({ schedule: "*/5 * * * *" })],
       workersDev: false,
       compatibilityDate: "2026-10-01",
       compatibilityFlags: ["nodejs_compat", "enable_nodejs_http_server_modules"],
@@ -20,7 +21,6 @@ export default defineConfig(() => ({
         HYPERDRIVE: bindings.hyperdrive({ id: "988de17966ba42dd81bca021c134925a" }),
         PUBLIC_WEB_BASE_URL: bindings.text("https://zhipanda.com"),
         PUBLIC_REVALIDATION_AUTH: bindings.secret(),
-        CRON_SECRET: bindings.secret(),
       },
     },
   }));

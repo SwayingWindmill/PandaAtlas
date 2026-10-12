@@ -23,6 +23,11 @@ test("production API CORS allows only the custom-domain Web origins", () => {
   assert.deepEqual(binding.value.split(","), ["https://zhipanda.com", "https://www.zhipanda.com"]);
 });
 
+test("the production API runs async downstream from a five-minute Cron Trigger", () => {
+  assert.deepEqual(workers.api.triggers, [{ type: "scheduled", schedule: "*/5 * * * *" }]);
+  assert.equal("CRON_SECRET" in workers.api.env, false);
+});
+
 test("no production text binding points at a workers.dev origin", () => {
   for (const [name, worker] of Object.entries(workers)) {
     for (const [key, binding] of Object.entries(worker.env)) {

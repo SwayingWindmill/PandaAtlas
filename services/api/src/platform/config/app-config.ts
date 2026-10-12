@@ -27,7 +27,6 @@ export interface EnvironmentConfig {
   OTEL_SERVICE_NAME: string;
   RESEND_API_KEY: string | undefined;
   RESEND_FROM_EMAIL: string | undefined;
-  CRON_SECRET: string | undefined;
 }
 
 const APP_ENVIRONMENTS = new Set<AppEnvironment>([
@@ -173,7 +172,6 @@ export function validateEnvironment(
     OTEL_SERVICE_NAME: optionalString(input.OTEL_SERVICE_NAME) ?? "zhipanda-api",
     RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
-    CRON_SECRET: optionalString(input.CRON_SECRET),
   };
 }
 
@@ -273,9 +271,5 @@ export class AppConfig {
 
   public get resendFromEmail(): string | undefined {
     return this.config.get("RESEND_FROM_EMAIL", { infer: true });
-  }
-
-  public get cronSecret(): string | undefined {
-    return this.config.get("CRON_SECRET", { infer: true });
   }
 }
