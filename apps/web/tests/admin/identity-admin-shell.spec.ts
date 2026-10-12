@@ -148,6 +148,42 @@ test("IAM staff directory, invitation and role detail remain accessible", async 
   }
 });
 
+test("staff directory search and status filter narrow the people list without changing permissions", async ({ page }) => {
+  const staff = [
+    { accountId: "11111111-1111-4111-8111-111111111111", email: "alice@example.test", state: "active", roles: ["reviewer"] },
+    { accountId: "22222222-2222-4222-8222-222222222222", email: "bob@example.test", state: "suspended", roles: ["moderator"] },
+    { accountId: "33333333-3333-4333-8333-333333333333", email: "chen@example.test", state: "active", roles: ["reviewer"] },
+  ];
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ ...staffSession, capabilities: ["admin.shell.access", "identity.staff.read"] }),
+  }));
+  await page.route("**/api/admin/staff/accounts**", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify(route.request().url().endsWith("/accounts") ? staff : {
+      ...staff[0], capabilities: ["review.case.read"], assignments: [], stateHistory: [], stateReason: null,
+    }),
+  }));
+
+  await page.goto("/admin/staff/roles");
+  await expect(page.getByRole("button", { name: /alice@example.test/ })).toBeVisible();
+  await page.getByRole("searchbox", { name: "搜索工作人员" }).fill("bob");
+  await expect(page.getByRole("button", { name: /bob@example.test/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /alice@example.test/ })).toHaveCount(0);
+  await expect(page.getByText("1 / 3 位工作人员")).toBeVisible();
+  await page.getByRole("combobox", { name: "人员状态" }).selectOption("active");
+  await expect(page.getByText("没有匹配的工作人员")).toBeVisible();
+  await page.getByRole("searchbox", { name: "搜索工作人员" }).fill("");
+  await expect(page.getByRole("button", { name: /alice@example.test/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /bob@example.test/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /chen@example.test/ })).toBeVisible();
+  await page.getByRole("button", { name: /alice@example.test/ }).click();
+  await expect(page.getByRole("region", { name: "工作人员角色详情" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "alice@example.test" })).toBeVisible();
+  const accessibility = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  expect(accessibility.violations).toEqual([]);
+});
+
 test("staff directory readers can inspect people and invitation progress without gaining mutation controls", async ({ page }) => {
   const accountId = "55555555-5555-4555-8555-555555555555";
   await page.route("**/api/admin/session", (route) => route.fulfill({
@@ -458,6 +494,7 @@ test("staff manager can inspect role history and confirm grant and revoke with r
   await page.getByRole("textbox", { name: "变更原因" }).fill("Assignment completed");
   await page.getByRole("button", { name: "确认撤销" }).click();
   await expect(page.getByText("角色已撤销")).toBeVisible();
+  await page.getByRole("region", { name: "角色授权历史" }).getByText("角色授权历史").click();
   await expect(page.getByRole("region", { name: "角色授权历史" }).getByText("已撤销", { exact: true })).toBeVisible();
 });
 
@@ -505,6 +542,7 @@ test("authorized account manager suspends and reinstates staff from the Chinese 
   await page.getByRole("button", { name: "确认停用" }).click();
   await expect(page.getByText("工作人员已停用")).toBeVisible();
   await expect(page.getByText("账号状态：已停用", { exact: false })).toBeVisible();
+  await page.getByRole("region", { name: "账号状态历史" }).getByText("账号状态历史").click();
   await expect(page.getByRole("region", { name: "账号状态历史" }).getByText("Temporary restriction during verification", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "恢复工作人员" }).click();
   await page.getByRole("textbox", { name: "状态变更原因" }).fill("Investigation completed and reinstatement approved");

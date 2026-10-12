@@ -2,9 +2,11 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { components } from "@zhipanda/api-client";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import { capabilityDescription, capabilityGroups } from "@/features/admin/session/capability-presentation";
@@ -71,6 +73,8 @@ export function StaffRoleManagement() {
   const [statePlanned, setStatePlanned] = useState<AccountStateChange | null>(null);
   const [stateReason, setStateReason] = useState("");
   const [stateMessage, setStateMessage] = useState("");
+  const [search, setSearch] = useState("");
+  const [stateFilter, setStateFilter] = useState("all");
 
   const directory = useQuery({ queryKey: ["admin", "staff", "accounts", "directory"], queryFn: () => getStaff<Staff[]>(""), enabled: canInspect });
   const catalog = useQuery({ queryKey: ["admin", "staff", "accounts", "catalog"], queryFn: () => getStaff<Role[]>("/catalog"), enabled: roleManager });
@@ -130,6 +134,12 @@ export function StaffRoleManagement() {
   const grantedRoles = detail.data?.assignments.filter((assignment: Assignment) => assignment.status === "active") ?? [];
   const canRevoke = (assignment: Assignment) => roleManager && !isOwnAccount && catalog.data?.some((role) => role.roleKey === assignment.roleKey);
   const candidateRole = catalog.data?.some((role) => role.roleKey === selectedRole) ? selectedRole : (catalog.data?.[0]?.roleKey ?? "");
+  const searchTerm = search.trim().toLocaleLowerCase();
+  const filteredStaff = (directory.data ?? []).filter((staff) =>
+    (stateFilter === "all" || staff.state === stateFilter)
+    && (!searchTerm || [staff.email ?? "", staff.accountId, ...staff.roles, ...staff.roles.map(roleName)]
+      .some((value) => value.toLocaleLowerCase().includes(searchTerm))),
+  );
 
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 px-5 pb-12 pt-7 md:px-8">
@@ -139,19 +149,47 @@ export function StaffRoleManagement() {
       </header>
       {session && <StaffWorkspaceNavigation current="directory" session={session} />}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(220px,1fr)_minmax(0,2fr)]">
-        <section aria-label="工作人员目录" className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="text-lg font-semibold text-slate-950">工作人员目录</h2>
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(19rem,0.85fr)_minmax(0,1.6fr)]">
+        <section aria-label="工作人员目录" className="min-w-0 xl:sticky xl:top-24">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2 className="text-base font-semibold text-slate-950">工作人员目录</h2>
+            {directory.data && <span role="status" aria-live="polite" className="shrink-0 text-xs tabular-nums text-slate-600">{filteredStaff.length} / {directory.data.length} 位工作人员</span>}
+          </div>
+          <div className="mb-3 grid gap-3 rounded-xl border border-slate-200 bg-white p-4">
+            <label htmlFor="staff-directory-search" className="grid gap-1.5 text-sm font-medium text-slate-700">
+              搜索工作人员
+              <Input id="staff-directory-search" type="search" value={search} placeholder="邮箱、账号编号或岗位"
+                onChange={(event) => { setSearch(event.target.value); selectAccount(""); }} />
+            </label>
+            <label htmlFor="staff-directory-state" className="grid gap-1.5 text-sm font-medium text-slate-700">
+              人员状态
+              <select id="staff-directory-state" value={stateFilter}
+                onChange={(event) => { setStateFilter(event.target.value); selectAccount(""); }}
+                className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+                <option value="all">全部状态</option>
+                <option value="active">正常</option>
+                <option value="suspended">已停用</option>
+              </select>
+            </label>
+          </div>
           {directory.isPending && <p className="mt-4 text-sm text-slate-500">正在加载工作人员…</p>}
           {directory.error && <p role="alert" className="mt-4 text-sm text-rose-700">{directory.error.message}</p>}
           {directory.data?.length === 0 && <p className="mt-4 text-sm text-slate-600">尚无工作人员。</p>}
-          <div className="mt-4 space-y-2">
-            {directory.data?.map((staff) => (
+          {directory.data && directory.data.length > 0 && filteredStaff.length === 0 && (
+            <p className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600">没有匹配的工作人员。请调整搜索词或人员状态。</p>
+          )}
+          <div className="space-y-2">
+            {filteredStaff.map((staff) => (
               <button key={staff.accountId} type="button" onClick={() => selectAccount(staff.accountId)}
                 aria-pressed={selectedId === staff.accountId}
-                className={`w-full rounded-lg border p-3 text-left transition-colors ${selectedId === staff.accountId ? "border-teal-700 bg-teal-50" : "border-slate-200 hover:bg-slate-50"}`}>
-                <span className="block break-all text-sm font-semibold text-slate-900">{staff.email ?? staff.accountId.slice(0, 8)}</span>
-                <span className="mt-1 block text-xs text-slate-600">{staff.roles.map(roleName).join("、") || "等待授权"}</span>
+                className={`w-full rounded-lg border p-3.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 ${selectedId === staff.accountId ? "border-teal-700 bg-teal-50" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}>
+                <span className="flex items-start justify-between gap-2">
+                  <span className="min-w-0 break-all text-sm font-semibold text-slate-900">{staff.email ?? staff.accountId.slice(0, 8)}</span>
+                  <Badge variant="outline" className={staff.state === "active" ? "shrink-0 border-teal-200 bg-teal-50 text-teal-800" : "shrink-0 border-slate-300 bg-slate-100 text-slate-700"}>
+                    {staff.state === "active" ? "正常" : staff.state === "suspended" ? "已停用" : "其他状态"}
+                  </Badge>
+                </span>
+                <span className="mt-1.5 block text-xs text-slate-600">{staff.roles.map(roleName).join("、") || "等待授权"}</span>
               </button>
             ))}
           </div>
@@ -181,11 +219,11 @@ export function StaffRoleManagement() {
                 <h3 className="mt-6 text-sm font-bold text-slate-900">当前权限</h3>
                 {detail.data.capabilities.length === 0 ? <p className="mt-3 text-sm text-slate-600">暂无有效权限。</p> : (
                   <>
-                    <ul className="mt-3 grid gap-3 md:grid-cols-2">
+                    <ul className="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
                       {capabilityGroups(detail.data.capabilities).map(([group, keys]) => (
-                        <li key={group} className="rounded-lg border border-slate-200 px-4 py-3">
+                        <li key={group} className="grid gap-1 px-4 py-3 md:grid-cols-[8rem_minmax(0,1fr)] md:gap-3">
                           <h4 className="text-sm font-semibold text-slate-950">{group} · {keys.length} 项</h4>
-                          <ul className="mt-2 space-y-1 text-sm text-slate-700">{keys.map((key) => <li key={key}>{capabilityDescription(key)}</li>)}</ul>
+                          <ul className="space-y-1 text-sm text-slate-700">{keys.map((key) => <li key={key}>{capabilityDescription(key)}</li>)}</ul>
                         </li>
                       ))}
                     </ul>
@@ -223,8 +261,12 @@ export function StaffRoleManagement() {
               )}
               {stateMessage && <p role="status" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-semibold text-teal-900">{stateMessage}</p>}
 
-              <section aria-label="账号状态历史" className="rounded-xl border border-slate-200 bg-white p-6">
-                <h3 className="text-lg font-semibold text-slate-950">账号状态历史</h3>
+              <section aria-label="账号状态历史" className="rounded-xl border border-slate-200 bg-white">
+                <details className="group">
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 py-3 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+                  <span>账号状态历史</span><span className="inline-flex items-center gap-2 text-xs font-normal text-slate-600">{detail.data.stateHistory.length} 条 <ChevronDown size={16} aria-hidden="true" className="transition-transform group-open:rotate-180" /></span>
+                </summary>
+                <div className="border-t border-slate-100 px-5 pb-4">
                 {detail.data.stateHistory.length === 0 && <p className="mt-3 text-sm text-slate-500">暂无状态变更记录。</p>}
                 <ol className="mt-3 divide-y divide-slate-200">
                   {detail.data.stateHistory.map((event) => (
@@ -235,6 +277,8 @@ export function StaffRoleManagement() {
                     </li>
                   ))}
                 </ol>
+                </div>
+                </details>
               </section>
 
               {roleManager && !isOwnAccount && detail.data.state === "active" && (
@@ -268,8 +312,12 @@ export function StaffRoleManagement() {
               )}
               {message && <p role="status" className="rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-semibold text-teal-900">{message}</p>}
 
-              <section aria-label="角色授权历史" className="rounded-xl border border-slate-200 bg-white p-6">
-                <h3 className="text-lg font-semibold text-slate-950">角色授权历史</h3>
+              <section aria-label="角色授权历史" className="rounded-xl border border-slate-200 bg-white">
+                <details className="group">
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-5 py-3 text-sm font-semibold text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+                  <span>角色授权历史</span><span className="inline-flex items-center gap-2 text-xs font-normal text-slate-600">{detail.data.assignments.length} 条 <ChevronDown size={16} aria-hidden="true" className="transition-transform group-open:rotate-180" /></span>
+                </summary>
+                <div className="border-t border-slate-100 px-5 pb-4">
                 {detail.data.assignments.length === 0 && <p className="mt-3 text-sm text-slate-500">暂无授权记录。</p>}
                 <ol className="mt-4 divide-y divide-slate-200">
                   {detail.data.assignments.map((assignment: Assignment) => (
@@ -284,6 +332,8 @@ export function StaffRoleManagement() {
                     </li>
                   ))}
                 </ol>
+                </div>
+                </details>
               </section>
             </>
           )}
