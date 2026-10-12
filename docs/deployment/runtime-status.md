@@ -26,7 +26,7 @@ This page is the current deployment source of truth. Historical migration, Verce
 
 The Cloudflare account currently serves:
 
-- `zhipanda-v2-web`, compatibility date `2026-10-01`, with `nodejs_compat`, the `HOME_MEDIA` R2 binding, and a `V2_API` service binding to `zhipanda-v2-api`; the retired OpenNext cache R2/DO/self bindings are absent;
+- `zhipanda-v2-web`, compatibility date `2026-10-01`, with `nodejs_compat`, the `HOME_MEDIA` R2 binding, and a `V2_API` service binding to `zhipanda-v2-api`; the retired OpenNext cache R2/self bindings are absent, and the OpenNext `DOQueueHandler` / `DOShardedTagCache` Durable Object namespaces are retired by `state: "deleted"` exports in `apps/web/cloudflare.config.ts`;
 - `zhipanda-v2-api`, compatibility date `2026-10-01`, with `nodejs_compat`, `enable_nodejs_http_server_modules`, Hyperdrive, and a service binding to `zhipanda-v2-web`.
 
 `https://zhipanda.com/zh` is served by the vinext-based `zhipanda-v2-web` Worker. `https://api.zhipanda.com/health` is served through Cloudflare. The former stable Vercel Web/API URLs return `DEPLOYMENT_DISABLED` and are not production fallbacks.
