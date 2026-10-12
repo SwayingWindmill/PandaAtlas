@@ -99,6 +99,8 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith("scripts/batch/") ||
       changedPath.startsWith("scripts/research/") ||
       changedPath === "contracts/batch-operations.v1.json" ||
+      changedPath === "apps/web/cloudflare.config.ts" ||
+      changedPath === "services/api/cloudflare.config.ts" ||
       changedPath.startsWith("data/beta-launch/") ||
       changedPath.startsWith("data/research-batches/") ||
       changedPath.startsWith("data/frontend-evidence/") ||
