@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { exportJWK, generateKeyPair, SignJWT } from "jose";
 import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
@@ -12,11 +12,12 @@ import type {
   PublicationReleasePage,
 } from "../../src/modules/publication/application/publication-inspection.port.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
+import { injectHttp } from "../inject-http.js";
 
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 let jwksServer: Server;
 let privateKey: Awaited<ReturnType<typeof generateKeyPair>>["privateKey"];
 let issuer: string;
@@ -252,7 +253,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
         .onConflict((conflict) => conflict.column("singleton").doUpdateSet({ release_id: currentReleaseId }))
         .execute();
 
-      const list = await app.inject({
+      const list = await injectHttp(app, {
         method: "GET",
         url: "/api/v2/publication/releases?limit=100&offset=0&lifecycleState=sealed",
         headers: headers(editorToken),
@@ -270,7 +271,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
       expect(candidateSummary?.isCurrent).toBe(false);
       expect(candidateSummary?.counts).toMatchObject({ panda: 2, place: 0 });
 
-      const inspection = await app.inject({
+      const inspection = await injectHttp(app, {
         method: "GET",
         url: `/api/v2/publication/releases/${candidateReleaseId}/inspection`,
         headers: headers(editorToken),
@@ -358,7 +359,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     const editorToken = await tokenFor(editor);
     const seniorEditorToken = await tokenFor(seniorEditor);
 
-    const submit = await app.inject({
+    const submit = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/contributions",
       headers: headers(contributorToken),
@@ -400,7 +401,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
       throw new Error("Governance contribution sources were not persisted");
     }
 
-    const open = await app.inject({
+    const open = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/review/cases",
       headers: headers(reviewerToken),
@@ -409,7 +410,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(open.statusCode).toBe(201);
     const reviewCaseId = open.json<{ reviewCaseId: string }>().reviewCaseId;
 
-    const reviewQueue = await app.inject({
+    const reviewQueue = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/review/cases?state=new&limit=25&offset=0",
       headers: headers(reviewerToken),
@@ -440,7 +441,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
       slaOverdue: false,
     });
 
-    const reviewSurface = await app.inject({
+    const reviewSurface = await injectHttp(app, {
       method: "GET",
       url: `/api/v2/review/cases/${reviewCaseId}/surface`,
       headers: headers(reviewerToken),
@@ -467,14 +468,14 @@ describe("V2 contribution, review, curation, and moderation", () => {
       locator,
     });
 
-    const claim = await app.inject({
+    const claim = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/review/cases/${reviewCaseId}/claim`,
       headers: headers(reviewerToken),
     });
     expect(claim.statusCode).toBe(200);
 
-    const verify = await app.inject({
+    const verify = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/review/cases/${reviewCaseId}/source-verifications`,
       headers: headers(reviewerToken),
@@ -488,7 +489,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     });
     expect(verify.statusCode).toBe(201);
 
-    const verifySecondary = await app.inject({
+    const verifySecondary = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/review/cases/${reviewCaseId}/source-verifications`,
       headers: headers(reviewerToken),
@@ -502,7 +503,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     });
     expect(verifySecondary.statusCode).toBe(201);
 
-    const decision = await app.inject({
+    const decision = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/review/cases/${reviewCaseId}/decision`,
       headers: headers(reviewerToken),
@@ -515,7 +516,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     });
     expect(decision.statusCode).toBe(200);
 
-    const recommend = await app.inject({
+    const recommend = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/review/cases/${reviewCaseId}/recommend`,
       headers: headers(reviewerToken),
@@ -524,7 +525,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(recommend.statusCode).toBe(200);
     const changeSetId = recommend.json<{ changeSetId: string }>().changeSetId;
 
-    const pendingCollection = await app.inject({
+    const pendingCollection = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/curation/change-sets?state=draft&limit=10&offset=0",
       headers: headers(editorToken),
@@ -540,17 +541,17 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(pendingPage.items.find((item) => item.changeSetId === changeSetId)).toMatchObject({
       changeSetId, state: "draft", targetPandaId: panda.pandaId, changeCount: 1,
     });
-    expect((await app.inject({
+    expect((await injectHttp(app, {
       method: "GET", url: "/api/v2/curation/change-sets?state=invalid", headers: headers(editorToken),
     })).statusCode).toBe(400);
-    expect((await app.inject({
+    expect((await injectHttp(app, {
       method: "GET", url: "/api/v2/curation/change-sets?limit=10", headers: headers(contributorToken),
     })).statusCode).toBe(403);
 
     const beforeApproval = await pandas.getPanda(panda.pandaId);
     expect(beforeApproval?.conclusions.some((item) => item.fieldKey === "profile.sex")).toBe(false);
 
-    const validate = await app.inject({
+    const validate = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/curation/change-sets/${changeSetId}/validate`,
       headers: headers(editorToken),
@@ -566,7 +567,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     const stillBeforeApproval = await pandas.getPanda(panda.pandaId);
     expect(stillBeforeApproval?.conclusions.some((item) => item.fieldKey === "profile.sex")).toBe(false);
 
-    const approve = await app.inject({
+    const approve = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/curation/change-sets/${changeSetId}/approve`,
       headers: headers(seniorEditorToken),
@@ -601,7 +602,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     const moderatorToken = await tokenFor(moderator);
     const targetToken = await tokenFor(moderationTarget);
 
-    const sanction = await app.inject({
+    const sanction = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/moderation/accounts/${moderationTarget.accountId}/sanctions`,
       headers: headers(moderatorToken),
@@ -617,14 +618,14 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(sanction.statusCode).toBe(201);
     const sanctionId = sanction.json<{ sanctionId: string }>().sanctionId;
 
-    const blockedProfile = await app.inject({
+    const blockedProfile = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/me/profile",
       headers: headers(targetToken),
     });
     expect(blockedProfile.statusCode).toBe(403);
 
-    const appeal = await app.inject({
+    const appeal = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/me/moderation/appeals",
       headers: headers(targetToken),
@@ -636,7 +637,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(appeal.statusCode).toBe(201);
     const appealCaseId = appeal.json<{ appealCaseId: string }>().appealCaseId;
 
-    const appealQueue = await app.inject({
+    const appealQueue = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/moderation/appeals?state=open&limit=25&offset=0",
       headers: headers(moderatorToken),
@@ -667,7 +668,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
       slaOverdue: false,
     });
 
-    const overturn = await app.inject({
+    const overturn = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/moderation/appeals/${appealCaseId}/decision`,
       headers: headers(moderatorToken),
@@ -680,14 +681,14 @@ describe("V2 contribution, review, curation, and moderation", () => {
     expect(overturn.statusCode).toBe(200);
     expect(overturn.json()).toMatchObject({ appealCaseId, outcome: "overturned" });
 
-    const restoredProfile = await app.inject({
+    const restoredProfile = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/me/profile",
       headers: headers(targetToken),
     });
     expect(restoredProfile.statusCode).toBe(200);
 
-    const moderationState = await app.inject({
+    const moderationState = await injectHttp(app, {
       method: "GET",
       url: `/api/v2/moderation/accounts/${moderationTarget.accountId}`,
       headers: headers(moderatorToken),

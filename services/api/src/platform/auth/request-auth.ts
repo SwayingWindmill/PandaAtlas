@@ -1,19 +1,19 @@
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import type { VerifiedSupabaseIdentity } from "./auth.types.js";
 
 const VERIFIED_IDENTITY = Symbol("verified-supabase-identity");
 
-export type AuthenticatedRequest = FastifyRequest & {
+export type AuthenticatedRequest = HttpRequest & {
   [VERIFIED_IDENTITY]?: VerifiedSupabaseIdentity;
 };
 
 export function setVerifiedIdentity(
-  request: FastifyRequest,
+  request: HttpRequest,
   identity: VerifiedSupabaseIdentity,
 ): void {
   (request as AuthenticatedRequest)[VERIFIED_IDENTITY] = identity;
 }
 
-export function getVerifiedIdentity(request: FastifyRequest): VerifiedSupabaseIdentity | undefined {
+export function getVerifiedIdentity(request: HttpRequest): VerifiedSupabaseIdentity | undefined {
   return (request as AuthenticatedRequest)[VERIFIED_IDENTITY];
 }

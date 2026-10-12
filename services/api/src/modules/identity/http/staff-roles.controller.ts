@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Req, ValidationPipe } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiProperty, ApiTags } from "@nestjs/swagger";
 import { IsString, IsUUID, MaxLength, MinLength } from "class-validator";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { StaffRolesService } from "../infrastructure/staff-roles.service.js";
@@ -120,7 +120,7 @@ export class StaffRolesController {
   @ApiOperation({ operationId: "changeStaffAccountState" })
   @ApiCreatedResponse({ type: StaffStateChangeResultDto })
   public state(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("accountId", new ParseUUIDPipe()) accountId: string,
     @Body(new ValidationPipe({ whitelist: true })) input: StaffStateChangeDto,
   ) {
@@ -136,7 +136,7 @@ export class StaffRolesController {
   @ApiOperation({ operationId: "grantStaffRole" })
   @ApiCreatedResponse({ type: StaffRoleChangeResultDto })
   public grant(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("accountId", new ParseUUIDPipe()) accountId: string,
     @Body(new ValidationPipe({ whitelist: true })) input: GrantStaffRoleDto,
   ) {
@@ -149,7 +149,7 @@ export class StaffRolesController {
   @ApiOperation({ operationId: "revokeStaffRole" })
   @ApiCreatedResponse({ type: StaffRoleChangeResultDto })
   public revoke(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("accountId", new ParseUUIDPipe()) accountId: string,
     @Param("assignmentId", new ParseUUIDPipe()) assignmentId: string,
     @Body(new ValidationPipe({ whitelist: true })) input: RevokeStaffRoleDto,
@@ -158,7 +158,7 @@ export class StaffRolesController {
     return this.staff.revoke(accountId, assignmentId, input.reason, input.idempotencyKey, actorId, correlationId);
   }
 
-  private actor(request: FastifyRequest) {
+  private actor(request: HttpRequest) {
     const actor = getActorContext(request);
     const correlationId = this.requests.current?.correlationId;
     if (!actor || !correlationId) throw new ProblemException(500, "system.internal", "Authorized staff context unavailable.");

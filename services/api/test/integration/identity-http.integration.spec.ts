@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { exportJWK, generateKeyPair, SignJWT } from "jose";
 import { sql } from "kysely";
 import { createServer, type Server } from "node:http";
@@ -9,13 +9,14 @@ import { EVIDENCE_PORT, type EvidencePort } from "../../src/modules/evidence/app
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import type { DatabaseTransaction } from "../../src/platform/database/database.service.js";
+import { injectHttp } from "../inject-http.js";
 
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 const ACCOUNT_ID = "55555555-5555-4555-8555-555555555555";
 const SESSION_ID = "66666666-6666-4666-8666-666666666666";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 let jwksServer: Server;
 let token: string;
 let signTestToken: (accountId: string, sessionId: string, aal: "aal1" | "aal2", authenticationAgeSeconds?: number) => Promise<string>;
@@ -112,12 +113,12 @@ afterAll(async () => {
 describe("Identity HTTP security path", () => {
   it("provisions an authenticated Supabase user and then serves the protected account view", async () => {
     const headers = { authorization: `Bearer ${token}` };
-    const provision = await app.inject({
+    const provision = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/me/account",
       headers,
     });
-    const current = await app.inject({
+    const current = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/me",
       headers,
@@ -166,7 +167,7 @@ describe("Identity HTTP security path", () => {
   });
 
   it("does not let an ordinary member invite an archive reviewer", async () => {
-    const response = await app.inject({
+    const response = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/staff/invitations",
       headers: { authorization: `Bearer ${token}` },
@@ -176,7 +177,7 @@ describe("Identity HTTP security path", () => {
   });
 
   it("does not disclose staff invitations to an ordinary member", async () => {
-    const response = await app.inject({
+    const response = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/staff/invitations",
       headers: { authorization: `Bearer ${token}` },
@@ -185,7 +186,7 @@ describe("Identity HTTP security path", () => {
   });
 
   it("does not disclose the staff role directory to an ordinary member", async () => {
-    const response = await app.inject({
+    const response = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/staff/accounts",
       headers: { authorization: `Bearer ${token}` },
@@ -240,62 +241,62 @@ describe("Identity HTTP security path", () => {
         const target = `/api/v2/staff/accounts/${staffId}`;
         const reviewUrl = "/api/v2/review/cases?limit=1";
 
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(403);
-        expect((await app.inject({ method: "GET", url: target, headers: staffHeaders })).statusCode).toBe(403);
-        expect((await app.inject({ method: "GET", url: "/api/v2/staff/accounts", headers: managerHeaders })).statusCode).toBe(200);
-        expect((await app.inject({ method: "GET", url: target, headers: managerHeaders })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "GET", url: target, headers: staffHeaders })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "GET", url: "/api/v2/staff/accounts", headers: managerHeaders })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "GET", url: target, headers: managerHeaders })).statusCode).toBe(200);
         // Listing staff and inspecting history must survive the 15-minute step-up window.
         // Only actual authority mutations still require recent AAL2 authentication.
-        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${weakManagerToken}` } })).statusCode).toBe(200);
-        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
-        expect((await app.inject({ method: "GET", url: "/api/v2/staff/accounts", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
-        expect((await app.inject({ method: "GET", url: "/api/v2/staff/accounts/catalog", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
-        expect((await app.inject({ method: "GET", url: "/api/v2/staff/invitations", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
-        expect((await app.inject({ method: "GET", url: target, headers: { authorization: `Bearer ${invalidSessionToken}` } })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: "/api/v2/staff/invitations", headers: { authorization: `Bearer ${expiredManagerToken}` }, payload: { email: "uninvited@example.test" } })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: `${target}/roles`,
+        expect((await injectHttp(app, { method: "GET", url: target, headers: { authorization: `Bearer ${weakManagerToken}` } })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "GET", url: target, headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "GET", url: "/api/v2/staff/accounts", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "GET", url: "/api/v2/staff/accounts/catalog", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "GET", url: "/api/v2/staff/invitations", headers: { authorization: `Bearer ${expiredManagerToken}` } })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "GET", url: target, headers: { authorization: `Bearer ${invalidSessionToken}` } })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "POST", url: "/api/v2/staff/invitations", headers: { authorization: `Bearer ${expiredManagerToken}` }, payload: { email: "uninvited@example.test" } })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`,
           headers: { authorization: `Bearer ${expiredManagerToken}` },
           payload: { roleKey: "reviewer", reason: grantReason, idempotencyKey: grantKey },
         })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: `${target}/roles`,
+        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`,
           headers: { authorization: `Bearer ${invalidSessionToken}` },
           payload: { roleKey: "reviewer", reason: grantReason, idempotencyKey: grantKey },
         })).statusCode).toBe(403);
 
         const payload = { roleKey: "reviewer", reason: grantReason, idempotencyKey: grantKey };
-        const selfGrant = await app.inject({ method: "POST", url: `/api/v2/staff/accounts/${managerId}/roles`, headers: managerHeaders, payload });
+        const selfGrant = await injectHttp(app, { method: "POST", url: `/api/v2/staff/accounts/${managerId}/roles`, headers: managerHeaders, payload });
         expect(selfGrant.statusCode).toBe(403);
-        const forbidden = await app.inject({ method: "POST", url: `${target}/roles`, headers: staffHeaders, payload });
+        const forbidden = await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: staffHeaders, payload });
         expect(forbidden.statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders,
           payload: { ...payload, reason: " " },
         })).statusCode).toBe(400);
-        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders,
           payload: { ...payload, roleKey: "administrator" },
         })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders,
           payload: { ...payload, roleKey: "community_scanner" },
         })).statusCode).toBe(403);
         await sql`update auth.users set email_confirmed_at=null where id=${staffId}::uuid`.execute(tx);
-        const unverifiedGrant = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
+        const unverifiedGrant = await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
         expect(unverifiedGrant.statusCode).toBe(409);
         expect(unverifiedGrant.json()).toMatchObject({ code: "identity.emailUnverified" });
         await sql`update auth.users set email_confirmed_at=now() where id=${staffId}::uuid`.execute(tx);
-        const grant = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
+        const grant = await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
         expect(grant.statusCode, grant.body).toBe(201);
         const { assignmentId } = grant.json<{ assignmentId: string }>();
-        const replay = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
+        const replay = await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
         expect(replay.statusCode).toBe(201);
         expect(replay.json()).toEqual(grant.json());
-        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders,
           payload: { ...payload, reason: "Changed request", idempotencyKey: grantKey } })).statusCode).toBe(409);
 
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(200);
-        const detail = await app.inject({ method: "GET", url: target, headers: managerHeaders });
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(200);
+        const detail = await injectHttp(app, { method: "GET", url: target, headers: managerHeaders });
         expect(detail.json<{ capabilities: string[] }>().capabilities).toContain("review.case.read");
         expect(detail.json<{ assignments: Array<{ assignmentId: string; status: string }> }>().assignments)
           .toContainEqual(expect.objectContaining({ assignmentId, status: "active" }));
-        const conflict = await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders,
+        const conflict = await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders,
           payload: { ...payload, roleKey: "senior_archive_editor", idempotencyKey: randomUUID() },
         });
         expect(conflict.statusCode).toBe(409);
@@ -304,14 +305,14 @@ describe("Identity HTTP security path", () => {
         const revokeUrl = `${target}/roles/${assignmentId}/revoke`;
         const revokePayload = { reason: revokeReason, idempotencyKey: revokeKey };
         await sql`update auth.users set email_confirmed_at=null where id=${staffId}::uuid`.execute(tx);
-        const revoked = await app.inject({ method: "POST", url: revokeUrl, headers: managerHeaders, payload: revokePayload });
+        const revoked = await injectHttp(app, { method: "POST", url: revokeUrl, headers: managerHeaders, payload: revokePayload });
         expect(revoked.statusCode, revoked.body).toBe(201);
         expect(revoked.json()).toMatchObject({ assignmentId, status: "revoked" });
-        expect((await app.inject({ method: "POST", url: revokeUrl, headers: managerHeaders, payload: revokePayload })).json()).toEqual(revoked.json());
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(403);
-        expect((await app.inject({ method: "GET", url: target, headers: managerHeaders })).json<{ capabilities: string[] }>().capabilities)
+        expect((await injectHttp(app, { method: "POST", url: revokeUrl, headers: managerHeaders, payload: revokePayload })).json()).toEqual(revoked.json());
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: staffHeaders })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "GET", url: target, headers: managerHeaders })).json<{ capabilities: string[] }>().capabilities)
           .not.toContain("review.case.read");
-        expect((await app.inject({ method: "POST", url: `${target}/roles`, headers: managerHeaders, payload })).statusCode).toBe(409);
+        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders, payload })).statusCode).toBe(409);
 
         await tx.insertInto("identity.role_assignments").values({
           account_id: staffId, role_key: "senior_archive_editor",
@@ -319,7 +320,7 @@ describe("Identity HTTP security path", () => {
           expires_at: new Date(Date.now() - 3_600_000),
           correlation_id: randomUUID(), idempotency_key: randomUUID(),
         }).execute();
-        const afterExpiry = await app.inject({ method: "GET", url: target, headers: managerHeaders });
+        const afterExpiry = await injectHttp(app, { method: "GET", url: target, headers: managerHeaders });
         expect(afterExpiry.json<{ assignments: Array<{ roleKey: string; status: string }> }>().assignments)
           .toContainEqual(expect.objectContaining({ roleKey: "senior_archive_editor", status: "expired" }));
         expect(afterExpiry.json<{ capabilities: string[] }>().capabilities).not.toContain("publication.release.activate");
@@ -382,21 +383,21 @@ describe("Identity HTTP security path", () => {
         const statusUrl = `/api/v2/staff/accounts/${workerId}/state`;
         const reviewUrl = "/api/v2/review/cases?limit=1";
         const suspendPayload = { action: "suspend", reason: suspendedReason, idempotencyKey: suspendKey };
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(200);
-        expect((await app.inject({ method: "POST", url: statusUrl, headers: workerHeaders, payload: suspendPayload })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: statusUrl, headers: weakHeaders, payload: suspendPayload })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: statusUrl, headers: staleHeaders, payload: suspendPayload })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: statusUrl, headers: deadSessionHeaders, payload: suspendPayload })).statusCode).toBe(403);
-        expect((await app.inject({ method: "POST", url: `/api/v2/staff/accounts/${managerId}/state`, headers: managerHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(200);
+        expect((await injectHttp(app, { method: "POST", url: statusUrl, headers: workerHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "POST", url: statusUrl, headers: weakHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "POST", url: statusUrl, headers: staleHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "POST", url: statusUrl, headers: deadSessionHeaders, payload: suspendPayload })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "POST", url: `/api/v2/staff/accounts/${managerId}/state`, headers: managerHeaders, payload: suspendPayload })).statusCode).toBe(403);
 
-        const suspended = await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders, payload: suspendPayload });
+        const suspended = await injectHttp(app, { method: "POST", url: statusUrl, headers: managerHeaders, payload: suspendPayload });
         expect(suspended.statusCode, suspended.body).toBe(201);
         expect(suspended.json()).toMatchObject({ accountId: workerId, state: "suspended" });
-        expect((await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders, payload: suspendPayload })).json()).toEqual(suspended.json());
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(403);
-        const inspected = await app.inject({ method: "GET", url: `/api/v2/staff/accounts/${workerId}`, headers: managerHeaders });
+        expect((await injectHttp(app, { method: "POST", url: statusUrl, headers: managerHeaders, payload: suspendPayload })).json()).toEqual(suspended.json());
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(403);
+        const inspected = await injectHttp(app, { method: "GET", url: `/api/v2/staff/accounts/${workerId}`, headers: managerHeaders });
         expect(inspected.json()).toMatchObject({ state: "suspended", stateReason: `staff:${suspendedReason}`, capabilities: [] });
-        expect((await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders,
+        expect((await injectHttp(app, { method: "POST", url: statusUrl, headers: managerHeaders,
           payload: { action: "reinstate", reason: "Other action", idempotencyKey: suspendKey },
         })).statusCode).toBe(409);
 
@@ -406,13 +407,13 @@ describe("Identity HTTP security path", () => {
           assignment_id: auditGrant.assignment_id, reason: "Audit job ended", correlation_id: randomUUID(),
           idempotency_key: randomUUID(), revoked_by_account_id: managerId,
         }).execute();
-        const restored = await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders,
+        const restored = await injectHttp(app, { method: "POST", url: statusUrl, headers: managerHeaders,
           payload: { action: "reinstate", reason: restoredReason, idempotencyKey: restoreKey },
         });
         expect(restored.statusCode, restored.body).toBe(201);
         expect(restored.json()).toMatchObject({ state: "active", accountId: workerId });
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(200);
-        const after = await app.inject({ method: "GET", url: `/api/v2/staff/accounts/${workerId}`, headers: managerHeaders });
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: workerHeaders })).statusCode).toBe(200);
+        const after = await injectHttp(app, { method: "GET", url: `/api/v2/staff/accounts/${workerId}`, headers: managerHeaders });
         expect(after.json<{ capabilities: string[] }>().capabilities).toContain("review.case.read");
         expect(after.json<{ capabilities: string[] }>().capabilities).not.toContain("audit.read");
         expect(after.json<{ stateHistory: Array<{ reason: string }> }>().stateHistory.map((item) => item.reason).sort())
@@ -431,7 +432,7 @@ describe("Identity HTTP security path", () => {
 
         await tx.updateTable("identity.accounts")
           .set({ state: "suspended", state_reason: "moderation:case-123" }).where("account_id", "=", workerId).execute();
-        const crossAuthority = await app.inject({ method: "POST", url: statusUrl, headers: managerHeaders,
+        const crossAuthority = await injectHttp(app, { method: "POST", url: statusUrl, headers: managerHeaders,
           payload: { action: "reinstate", reason: restoredReason, idempotencyKey: randomUUID() },
         });
         expect(crossAuthority.statusCode).toBe(409);
@@ -447,13 +448,13 @@ describe("Identity HTTP security path", () => {
   });
 
   it("does not activate review authority without an invitation bound to the signed-in UUID", async () => {
-    const response = await app.inject({
+    const response = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/me/staff-invitation/accept",
       headers: { authorization: `Bearer ${token}` },
     });
     expect(response.statusCode).toBe(404);
-    const current = await app.inject({
+    const current = await injectHttp(app, {
       method: "GET",
       url: "/api/v2/me",
       headers: { authorization: `Bearer ${token}` },
@@ -510,7 +511,7 @@ describe("Identity HTTP security path", () => {
           idempotency_key: randomUUID(),
         }).execute();
 
-        const invite = await app.inject({
+        const invite = await injectHttp(app, {
           method: "POST",
           url: "/api/v2/staff/invitations",
           headers: { authorization: `Bearer ${adminToken}` },
@@ -518,7 +519,7 @@ describe("Identity HTTP security path", () => {
         });
         expect(invite.statusCode).toBe(201);
         expect(invite.json()).toMatchObject({ email: "reviewer@example.test", status: "pending" });
-        const repeatedInvite = await app.inject({
+        const repeatedInvite = await injectHttp(app, {
           method: "POST",
           url: "/api/v2/staff/invitations",
           headers: { authorization: `Bearer ${adminToken}` },
@@ -526,7 +527,7 @@ describe("Identity HTTP security path", () => {
         });
         expect(repeatedInvite.statusCode).toBe(409);
 
-        const unverified = await app.inject({
+        const unverified = await injectHttp(app, {
           method: "POST",
           url: "/api/v2/me/staff-invitation/accept",
           headers: { authorization: `Bearer ${reviewerToken}` },
@@ -534,13 +535,13 @@ describe("Identity HTTP security path", () => {
         expect(unverified.statusCode).toBe(403);
         await sql`update auth.users set email_confirmed_at=now() where id=${INVITED_ACCOUNT_ID}::uuid`.execute(tx);
 
-        const stale = await app.inject({
+        const stale = await injectHttp(app, {
           method: "POST",
           url: "/api/v2/me/staff-invitation/accept",
           headers: { authorization: `Bearer ${staleReviewerToken}` },
         });
         expect(stale.statusCode).toBe(403);
-        const accepted = await app.inject({
+        const accepted = await injectHttp(app, {
           method: "POST",
           url: "/api/v2/me/staff-invitation/accept",
           headers: { authorization: `Bearer ${reviewerToken}` },
@@ -549,13 +550,13 @@ describe("Identity HTTP security path", () => {
         expect(accepted.json()).toMatchObject({ accountId: INVITED_ACCOUNT_ID, status: "accepted" });
 
         const reviewerHeaders = { authorization: `Bearer ${reviewerToken}` };
-        const me = await app.inject({ method: "GET", url: "/api/v2/me", headers: reviewerHeaders });
+        const me = await injectHttp(app, { method: "GET", url: "/api/v2/me", headers: reviewerHeaders });
         expect(me.statusCode).toBe(200);
         const currentCapabilities = me.json<{ capabilities: string[] }>().capabilities;
         expect(currentCapabilities).toContain("review.case.read");
         expect(currentCapabilities).not.toContain("identity.role.manage");
         expect(currentCapabilities).not.toContain("publication.release.activate");
-        const reviewQueue = await app.inject({
+        const reviewQueue = await injectHttp(app, {
           method: "GET", url: "/api/v2/review/cases?limit=1", headers: reviewerHeaders,
         });
         expect(reviewQueue.statusCode).toBe(200);
@@ -573,7 +574,7 @@ describe("Identity HTTP security path", () => {
           canonicalSlug: `iam06-${suffix}`,
           primaryName: { languageTag: "en", value: `IAM-06 Panda ${suffix}`, sourceIds: [sourceId] },
         });
-        const contribution = await app.inject({
+        const contribution = await injectHttp(app, {
           method: "POST", url: "/api/v2/contributions", headers: { authorization: `Bearer ${contributorToken}` },
           payload: {
             submissionType: "correction", targetPandaId: panda.pandaId,
@@ -585,28 +586,28 @@ describe("Identity HTTP security path", () => {
         });
         expect(contribution.statusCode, contribution.body).toBe(201);
         const submissionId = contribution.json<{ submissionId: string }>().submissionId;
-        const opened = await app.inject({
+        const opened = await injectHttp(app, {
           method: "POST", url: "/api/v2/review/cases", headers: reviewerHeaders,
           payload: { submissionId },
         });
         expect(opened.statusCode, opened.body).toBe(201);
         const reviewCaseId = opened.json<{ reviewCaseId: string }>().reviewCaseId;
-        const claimed = await app.inject({
+        const claimed = await injectHttp(app, {
           method: "POST", url: `/api/v2/review/cases/${reviewCaseId}/claim`, headers: reviewerHeaders,
         });
         expect(claimed.statusCode, claimed.body).toBe(200);
         expect(claimed.json()).toMatchObject({ reviewCaseId, primaryAssigneeId: INVITED_ACCOUNT_ID });
-        const publicationQueue = await app.inject({
+        const publicationQueue = await injectHttp(app, {
           method: "GET", url: "/api/v2/publication/releases", headers: reviewerHeaders,
         });
         expect(publicationQueue.statusCode).toBe(403);
-        const forbiddenInvite = await app.inject({
+        const forbiddenInvite = await injectHttp(app, {
           method: "POST", url: "/api/v2/staff/invitations",
           headers: reviewerHeaders, payload: { email: "another@example.test" },
         });
         expect(forbiddenInvite.statusCode).toBe(403);
 
-        const replay = await app.inject({
+        const replay = await injectHttp(app, {
           method: "POST", url: "/api/v2/me/staff-invitation/accept", headers: reviewerHeaders,
         });
         expect(replay.statusCode).toBe(201);
@@ -614,48 +615,48 @@ describe("Identity HTTP security path", () => {
         const adminHeaders = { authorization: `Bearer ${adminToken}` };
         const staffUrl = `/api/v2/staff/accounts/${INVITED_ACCOUNT_ID}`;
         const reviewUrl = "/api/v2/review/cases?limit=1";
-        const readWithStaleAuth = await app.inject({
+        const readWithStaleAuth = await injectHttp(app, {
           method: "GET", url: staffUrl, headers: { authorization: `Bearer ${staleAdminToken}` },
         });
         expect(readWithStaleAuth.statusCode).toBe(200);
-        const staleMutation = await app.inject({
+        const staleMutation = await injectHttp(app, {
           method: "POST", url: `${staffUrl}/roles`, headers: { authorization: `Bearer ${staleAdminToken}` },
           payload: { roleKey: "audit_reader", reason: "Temporary evidence review", idempotencyKey: randomUUID() },
         });
         expect(staleMutation.statusCode).toBe(403);
         expect(staleMutation.json()).toMatchObject({ code: "auth.recentAuthRequired" });
 
-        const granted = await app.inject({
+        const granted = await injectHttp(app, {
           method: "POST", url: `${staffUrl}/roles`, headers: adminHeaders,
           payload: { roleKey: "audit_reader", reason: "Temporary evidence review", idempotencyKey: randomUUID() },
         });
         expect(granted.statusCode, granted.body).toBe(201);
         const assignmentId = granted.json<{ assignmentId: string }>().assignmentId;
-        expect((await app.inject({ method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
+        expect((await injectHttp(app, { method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
           .json<{ capabilities: string[] }>().capabilities).toContain("audit.read");
 
-        const revoked = await app.inject({
+        const revoked = await injectHttp(app, {
           method: "POST", url: `${staffUrl}/roles/${assignmentId}/revoke`, headers: adminHeaders,
           payload: { reason: "Temporary evidence review completed", idempotencyKey: randomUUID() },
         });
         expect(revoked.statusCode, revoked.body).toBe(201);
-        expect((await app.inject({ method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
+        expect((await injectHttp(app, { method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
           .json<{ capabilities: string[] }>().capabilities).not.toContain("audit.read");
 
-        const suspended = await app.inject({
+        const suspended = await injectHttp(app, {
           method: "POST", url: `${staffUrl}/state`, headers: adminHeaders,
           payload: { action: "suspend", reason: "IAM-06 cross-slice access exercise", idempotencyKey: randomUUID() },
         });
         expect(suspended.statusCode, suspended.body).toBe(201);
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: reviewerHeaders })).statusCode).toBe(403);
-        expect((await app.inject({ method: "GET", url: "/api/v2/publication/releases", headers: reviewerHeaders })).statusCode).toBe(403);
-        const reinstated = await app.inject({
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: reviewerHeaders })).statusCode).toBe(403);
+        expect((await injectHttp(app, { method: "GET", url: "/api/v2/publication/releases", headers: reviewerHeaders })).statusCode).toBe(403);
+        const reinstated = await injectHttp(app, {
           method: "POST", url: `${staffUrl}/state`, headers: adminHeaders,
           payload: { action: "reinstate", reason: "IAM-06 exercise completed", idempotencyKey: randomUUID() },
         });
         expect(reinstated.statusCode, reinstated.body).toBe(201);
-        expect((await app.inject({ method: "GET", url: reviewUrl, headers: reviewerHeaders })).statusCode).toBe(200);
-        const restoredCaps = (await app.inject({ method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
+        expect((await injectHttp(app, { method: "GET", url: reviewUrl, headers: reviewerHeaders })).statusCode).toBe(200);
+        const restoredCaps = (await injectHttp(app, { method: "GET", url: "/api/v2/me", headers: reviewerHeaders }))
           .json<{ capabilities: string[] }>().capabilities;
         expect(restoredCaps).toContain("review.case.read");
         expect(restoredCaps).not.toContain("audit.read");

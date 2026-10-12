@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, ValidationPipe } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiProperty, ApiTags } from "@nestjs/swagger";
 import { IsEmail } from "class-validator";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { getVerifiedIdentity } from "../../../platform/auth/request-auth.js";
@@ -53,7 +53,7 @@ export class StaffInvitationsController {
   @RequireCapabilities("identity.account.manage", "identity.role.manage")
   @ApiOperation({ operationId: "inviteStaffReviewer" })
   @ApiCreatedResponse({ type: IssuedStaffInvitationDto })
-  public invite(@Req() request: FastifyRequest, @Body(new ValidationPipe({ transform: true, whitelist: true })) input: InviteReviewerDto) {
+  public invite(@Req() request: HttpRequest, @Body(new ValidationPipe({ transform: true, whitelist: true })) input: InviteReviewerDto) {
     const actor = getActorContext(request);
     const correlationId = this.requests.current?.correlationId;
     if (!actor || !correlationId) {
@@ -75,7 +75,7 @@ export class AcceptStaffInvitationController {
   @AllowUnprovisioned()
   @ApiOperation({ operationId: "acceptStaffReviewerInvitation" })
   @ApiCreatedResponse({ type: AcceptedInvitationDto })
-  public accept(@Req() request: FastifyRequest) {
+  public accept(@Req() request: HttpRequest) {
     const verified = getVerifiedIdentity(request);
     const correlationId = this.requests.current?.correlationId;
     if (!verified || !correlationId) {

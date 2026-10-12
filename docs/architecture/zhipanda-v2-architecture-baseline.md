@@ -107,7 +107,7 @@ Do not create generic `shared`, `common`, `utils`, `types`, `domain`, `config`, 
 
 - Node.js 24 LTS.
 - NestJS 11.
-- Fastify 5 via `@nestjs/platform-fastify`.
+- Express via `@nestjs/platform-express`, served on Cloudflare Workers through `httpServerHandler`. Fastify was replaced (#524) because Workers forbid `new Function` and provide no timers outside a request, both of which Fastify's boot needs.
 - Strict TypeScript.
 - `module` / `moduleResolution`: NodeNext for the API.
 - One conventional composition root: `src/main.ts` + `AppModule`.
@@ -596,7 +596,7 @@ Vitest
 unplugin-swc / @swc/core
 V8 coverage
 @nestjs/testing only where DI/module wiring is the thing under test
-Fastify app.inject() for HTTP contract tests
+light-my-request in-process injection (`test/inject-http.ts`) for HTTP contract tests
 real PostgreSQL/PostGIS/PGMQ for persistence integration
 ```
 
@@ -656,7 +656,7 @@ PR CI is risk-scoped with simple path filtering.
 Examples:
 
 - domain/application change -> lint, typecheck, architecture, relevant Vitest;
-- HTTP change -> plus Fastify contract/OpenAPI-client drift;
+- HTTP change -> plus HTTP contract/OpenAPI-client drift;
 - DB change -> plus migration replay and relevant real-DB integration;
 - schema change -> Python + Ajv strict validation;
 - Web change -> Web lint/typecheck/build + relevant critical journey;

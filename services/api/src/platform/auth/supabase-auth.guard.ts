@@ -1,6 +1,6 @@
 import { type CanActivate, type ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../http/problem.exception.js";
 import { RequestContextService } from "../request-context/request-context.service.js";
 import { IS_PUBLIC } from "./public.decorator.js";
@@ -11,7 +11,7 @@ import {
   SupabaseJwtVerifier,
 } from "./supabase-jwt.verifier.js";
 
-function bearerToken(request: FastifyRequest): string | undefined {
+function bearerToken(request: HttpRequest): string | undefined {
   const authorization = request.headers.authorization;
   if (typeof authorization !== "string") {
     return undefined;
@@ -37,7 +37,7 @@ export class SupabaseAuthGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<FastifyRequest>();
+    const request = context.switchToHttp().getRequest<HttpRequest>();
     const token = bearerToken(request);
     if (token === undefined) {
       throw new ProblemException(401, "auth.invalidToken", "A valid bearer token is required.");

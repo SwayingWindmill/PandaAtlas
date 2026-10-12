@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -32,11 +32,12 @@ import { DatabaseService } from "../../src/platform/database/database.service.js
 import { IntegrationOutboxService } from "../../src/platform/integration/integration-outbox.service.js";
 import { OutboxDispatcherService } from "../../src/platform/integration/outbox-dispatcher.service.js";
 import { PgmqService } from "../../src/platform/integration/pgmq.service.js";
+import { injectHttp } from "../inject-http.js";
 
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 
 beforeAll(async () => {
   process.env.APP_ENV = "test";
@@ -212,7 +213,7 @@ describe("V2 async downstream and compliance", () => {
       .select(({ fn }) => fn.countAll().as("count"))
       .where("correlation_id", "=", publicationContext.correlationId)
       .executeTakeFirstOrThrow();
-    const updatesRead = await app.inject({ method: "GET", url: "/api/v2/updates" });
+    const updatesRead = await injectHttp(app, { method: "GET", url: "/api/v2/updates" });
     expect(updatesRead.statusCode, updatesRead.body).toBe(200);
     const auditCountAfterRead = await database.db
       .selectFrom("audit.evidence_events")

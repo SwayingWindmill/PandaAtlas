@@ -9,7 +9,7 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
@@ -114,7 +114,7 @@ export class PublicationController {
   @RequireCapabilities("publication.release.manage")
   @ApiOperation({ operationId: "buildPublicationRelease", summary: "Build a release-scoped public projection" })
   @ApiCreatedResponse({ type: PublicReleaseDto })
-  public build(@Req() request: FastifyRequest, @Body() input: BuildPublicReleaseDto) {
+  public build(@Req() request: HttpRequest, @Body() input: BuildPublicReleaseDto) {
     return this.publication.build(input.version, this.commandContext(request));
   }
 
@@ -126,7 +126,7 @@ export class PublicationController {
   @ApiNotFoundResponse({ description: "The release does not exist." })
   @ApiConflictResponse({ description: "The release has no publishable membership yet." })
   public async seal(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
@@ -140,7 +140,7 @@ export class PublicationController {
   @ApiOkResponse({ type: PublicReleaseDto })
   @ApiConflictResponse({ description: "The release is not a valid forward activation target." })
   public async activate(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
@@ -154,7 +154,7 @@ export class PublicationController {
   @ApiOkResponse({ type: PublicReleaseDto })
   @ApiConflictResponse({ description: "The release is not a valid rollback target." })
   public async rollback(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
@@ -167,7 +167,7 @@ export class PublicationController {
   @ApiOperation({ operationId: "suspendPublicationRelease", summary: "Apply emergency whole-release suspension" })
   @ApiOkResponse({ type: PublicReleaseDto })
   public async suspend(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
@@ -182,7 +182,7 @@ export class PublicationController {
   @ApiOperation({ operationId: "restorePublicationRelease", summary: "Restore a suspended release" })
   @ApiOkResponse({ type: PublicReleaseDto })
   public async restore(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
     @Body() input: PublicationReasonDto,
   ) {
@@ -197,7 +197,7 @@ export class PublicationController {
   @ApiOperation({ operationId: "takeDownPublicationResource", summary: "Apply a narrow emergency resource takedown" })
   @ApiNoContentResponse()
   public async takeDownResource(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Body() input: PublicationResourceControlDto,
   ): Promise<void> {
     await this.publication.setResourceTakedown(
@@ -215,7 +215,7 @@ export class PublicationController {
   @ApiOperation({ operationId: "restorePublicationResource", summary: "Restore an emergency-taken-down resource" })
   @ApiNoContentResponse()
   public async restoreResource(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Body() input: PublicationResourceControlDto,
   ): Promise<void> {
     await this.publication.setResourceTakedown(
@@ -227,7 +227,7 @@ export class PublicationController {
     );
   }
 
-  private commandContext(request: FastifyRequest): PublicationCommandContext {
+  private commandContext(request: HttpRequest): PublicationCommandContext {
     const actor = getActorContext(request);
     const correlationId = this.requestContext.current?.correlationId;
     if (actor === undefined || correlationId === undefined) {

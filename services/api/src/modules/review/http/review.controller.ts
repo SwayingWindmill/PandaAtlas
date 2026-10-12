@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, Inject, Param, ParseUUIDPipe, Post, Query, Req } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
@@ -20,7 +20,7 @@ import {
   VerifyReviewSourceDto,
 } from "./review.dto.js";
 
-function actorAccountId(request: FastifyRequest): string {
+function actorAccountId(request: HttpRequest): string {
   const actor = getActorContext(request);
   if (actor === undefined) {
     throw new ProblemException(500, "system.internal", "The actor context is unavailable.");
@@ -90,7 +90,7 @@ export class ReviewController {
   @ApiOperation({ operationId: "claimReviewCase" })
   @ApiOkResponse({ type: ReviewCaseDto })
   public async claim(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
   ) {
     const reviewCase = await this.review.claim(reviewCaseId, actorAccountId(request));
@@ -105,7 +105,7 @@ export class ReviewController {
   @ApiOperation({ operationId: "verifyReviewSource" })
   @ApiCreatedResponse({ type: ReviewVerificationResultDto })
   public async verifySource(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
     @Body() input: VerifyReviewSourceDto,
   ) {
@@ -132,7 +132,7 @@ export class ReviewController {
   @ApiOperation({ operationId: "decideReviewCase" })
   @ApiOkResponse({ type: ReviewDecisionResultDto })
   public async decide(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
     @Body() input: RecordReviewDecisionDto,
   ) {
@@ -152,7 +152,7 @@ export class ReviewController {
   @ApiOperation({ operationId: "recommendReviewCase" })
   @ApiOkResponse({ type: ReviewRecommendationDto })
   public async recommend(
-    @Req() request: FastifyRequest,
+    @Req() request: HttpRequest,
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
     @Body() input: RecommendReviewDto,
   ) {

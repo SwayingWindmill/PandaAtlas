@@ -5,7 +5,7 @@
 ## Runtime
 
 - Node.js 24
-- NestJS 11 + Fastify 5
+- NestJS 11 on the Express adapter (`@nestjs/platform-express`)
 - Cloudflare Worker `zhipanda-v2-api`
 - Supabase PostgreSQL as the sole business-data authority
 - Supabase Auth UUID identity
@@ -30,7 +30,7 @@ npm run build:v2
 
 ## Production deployment
 
-Cloudflare owns the online API runtime. `cloudflare.config.ts` declares the Worker, `api.zhipanda.com`, Hyperdrive, service bindings, and compatibility flags. `worker/index.mjs` bridges the existing Nest/Fastify application into the Cloudflare Node HTTP runtime.
+Cloudflare owns the online API runtime. `cloudflare.config.ts` declares the Worker, `api.zhipanda.com`, Hyperdrive, service bindings, and compatibility flags. `worker/index.mjs` bridges the Nest Express application into the Cloudflare Node HTTP runtime with `httpServerHandler`. Express is required: Fastify's boot uses `new Function` and timers outside a request, which Workers forbid. `npm run check:worker-boot` boots the built Worker in local workerd and requires the application's own `/health` response.
 
 Build the deployable artifact with `npm run build:cloudflare -w @zhipanda/api`. Deployment uses `cf` through `npm run deploy:cloudflare -w @zhipanda/api`.
 

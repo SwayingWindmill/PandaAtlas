@@ -1,6 +1,6 @@
 import type { ExecutionContext } from "@nestjs/common";
 import type { Reflector } from "@nestjs/core";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { describe, expect, it } from "vitest";
 import type { AppConfig } from "../src/platform/config/app-config.js";
 import { ProblemException } from "../src/platform/http/problem.exception.js";
@@ -24,7 +24,7 @@ function createGuard(options: {
   liveSession: boolean;
   routine?: boolean;
 }): { guard: ApplicationAccessGuard; context: ExecutionContext } {
-  const request = { headers: {} } as FastifyRequest;
+  const request = { headers: {} } as HttpRequest;
   setVerifiedIdentity(request, {
     accountId: ACCOUNT_ID,
     sessionId: SESSION_ID,

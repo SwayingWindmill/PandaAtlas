@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -12,11 +12,12 @@ import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/applicati
 import { PUBLICATION_PORT, type PublicationPort } from "../../src/modules/publication/application/publication.application.js";
 import type { PublicPandaDetail, PublicReadRelease } from "../../src/modules/publication/application/public-read.application.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
+import { injectHttp } from "../inject-http.js";
 
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 
 beforeAll(async () => {
   process.env.APP_ENV = "test";
@@ -175,7 +176,7 @@ describe("V2 publication and release-scoped public reads", () => {
     const firstActivation = await publication.activate(first.releaseId, context, "Activate the first integration release");
     expect(firstActivation.kind).toBe("ok");
 
-    const firstRead = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
+    const firstRead = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(firstRead.statusCode, firstRead.body).toBe(200);
     const firstBody = firstRead.json<PublicPandaDetail>();
     expect(firstBody.release.releaseId).toBe(first.releaseId);
@@ -217,7 +218,7 @@ describe("V2 publication and release-scoped public reads", () => {
       sourceIds: [sourceId],
     });
 
-    const stillFirst = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
+    const stillFirst = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(stillFirst.statusCode).toBe(200);
     expect(JSON.stringify(stillFirst.json())).not.toContain("Second Release Alias");
     expect(JSON.stringify(stillFirst.json())).not.toContain("Second-release public summary");
@@ -228,34 +229,34 @@ describe("V2 publication and release-scoped public reads", () => {
     const secondActivation = await publication.activate(second.releaseId, context, "Activate the second integration release");
     expect(secondActivation.kind).toBe("ok");
 
-    const secondRead = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
+    const secondRead = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(secondRead.statusCode).toBe(200);
     expect(secondRead.json<PublicPandaDetail>().release.releaseId).toBe(second.releaseId);
     expect(JSON.stringify(secondRead.json())).toContain("Second Release Alias");
     expect(JSON.stringify(secondRead.json())).toContain("Second-release public summary");
 
     await publication.setResourceTakedown("panda", panda.pandaId, true, context, "Emergency panda takedown");
-    const takenDown = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
+    const takenDown = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(takenDown.statusCode).toBe(404);
 
     const rollback = await publication.rollback(first.releaseId, context, "Roll back to the first compatible release");
     expect(rollback.kind).toBe("ok");
-    const stillTakenDownAfterRollback = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
+    const stillTakenDownAfterRollback = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(stillTakenDownAfterRollback.statusCode).toBe(404);
 
     await publication.setResourceTakedown("panda", panda.pandaId, false, context, "Restore panda delivery");
-    const restoredPanda = await app.inject({ method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
+    const restoredPanda = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(restoredPanda.statusCode).toBe(200);
     expect(restoredPanda.json<PublicPandaDetail>().release.releaseId).toBe(first.releaseId);
     expect(JSON.stringify(restoredPanda.json())).not.toContain("Second Release Alias");
 
     const suspended = await publication.setReleaseSuspension(first.releaseId, true, context, "Emergency release suspension");
     expect(suspended.kind).toBe("ok");
-    const unavailable = await app.inject({ method: "GET", url: "/api/v2/release" });
+    const unavailable = await injectHttp(app, { method: "GET", url: "/api/v2/release" });
     expect(unavailable.statusCode).toBe(503);
     const restored = await publication.setReleaseSuspension(first.releaseId, false, context, "Restore release delivery");
     expect(restored.kind).toBe("ok");
-    const availableAgain = await app.inject({ method: "GET", url: "/api/v2/release" });
+    const availableAgain = await injectHttp(app, { method: "GET", url: "/api/v2/release" });
     expect(availableAgain.statusCode).toBe(200);
     expect(availableAgain.json<PublicReadRelease>().releaseId).toBe(first.releaseId);
 

@@ -5,7 +5,7 @@ import {
   Injectable,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import type { FastifyRequest } from "fastify";
+import type { IncomingMessage as HttpRequest } from "node:http";
 import { AppConfig } from "../../../platform/config/app-config.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
@@ -62,7 +62,7 @@ export class ApplicationAccessGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest<FastifyRequest>();
+    const request = context.switchToHttp().getRequest<HttpRequest>();
     const verifiedIdentity = getVerifiedIdentity(request);
     if (verifiedIdentity === undefined) {
       throw new ProblemException(401, "auth.invalidToken", "A valid bearer token is required.");

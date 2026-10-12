@@ -1,22 +1,22 @@
 import { RequestMethod, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { FastifyAdapter, type NestFastifyApplication } from "@nestjs/platform-fastify";
+import { ExpressAdapter, type NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./app.module.js";
 import { AppConfig } from "./platform/config/app-config.js";
 import { PinoLoggerService } from "./platform/observability/pino-logger.service.js";
 
-const BODY_LIMIT_BYTES = 1_048_576;
+const BODY_LIMIT = "1mb";
 
-export function createHttpAdapter(): FastifyAdapter {
-  return new FastifyAdapter({ bodyLimit: BODY_LIMIT_BYTES });
-}
-
+// Express, not Fastify: the Workers runtime forbids `new Function` and has no timers outside a
+// request, both of which Fastify's boot relies on (#524).
 export async function configureApplication(
-  app: NestFastifyApplication,
-): Promise<NestFastifyApplication> {
+  app: NestExpressApplication,
+): Promise<NestExpressApplication> {
   app.useLogger(app.get(PinoLoggerService));
   const config = app.get(AppConfig);
 
+  app.disable("x-powered-by");
+  app.useBodyParser("json", { limit: BODY_LIMIT });
   app.setGlobalPrefix("api", {
     exclude: [
       { path: "health", method: RequestMethod.GET },
@@ -36,8 +36,8 @@ export async function configureApplication(
   return app;
 }
 
-export async function createApplication(): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, createHttpAdapter(), {
+export async function createApplication(): Promise<NestExpressApplication> {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), {
     bufferLogs: true,
   });
   return configureApplication(app);

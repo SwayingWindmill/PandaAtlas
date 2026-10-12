@@ -1,4 +1,4 @@
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestExpressApplication } from "@nestjs/platform-express";
 import { exportJWK, generateKeyPair, SignJWT } from "jose";
 import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
@@ -10,13 +10,14 @@ import { MEDIA_PORT, type MediaPort } from "../../src/modules/media/application/
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
 import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/application/places.application.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
+import { injectHttp } from "../inject-http.js";
 
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 const ACCOUNT_ID = "75555555-5555-4555-8555-555555555555";
 const SESSION_ID = "76666666-6666-4666-8666-666666666666";
 
-let app: NestFastifyApplication;
+let app: NestExpressApplication;
 let jwksServer: Server;
 let token: string;
 let questionId: string;
@@ -160,7 +161,7 @@ afterAll(async () => {
 describe("V2 fan identity, engagement, and games", () => {
   it("persists one signed-in fan journey through real ES256/JWKS HTTP and PostgreSQL", async () => {
     const headers = { authorization: `Bearer ${token}` };
-    const provision = await app.inject({ method: "POST", url: "/api/v2/me/account", headers });
+    const provision = await injectHttp(app, { method: "POST", url: "/api/v2/me/account", headers });
     expect(provision.statusCode).toBe(201);
     const provisionBody = responseBody<{ capabilities: string[] }>(provision);
     expect(provisionBody.capabilities).toEqual(
@@ -174,7 +175,7 @@ describe("V2 fan identity, engagement, and games", () => {
       ]),
     );
 
-    const updateProfile = await app.inject({
+    const updateProfile = await injectHttp(app, {
       method: "PUT",
       url: "/api/v2/me/profile",
       headers,
@@ -183,10 +184,10 @@ describe("V2 fan identity, engagement, and games", () => {
     expect(updateProfile.statusCode).toBe(200);
     expect(updateProfile.json()).toMatchObject({ nickname: "Panda Fan", bio: "Loves panda history" });
 
-    const favorite = await app.inject({ method: "POST", url: `/api/v2/me/favorites/${answerPandaId}`, headers });
+    const favorite = await injectHttp(app, { method: "POST", url: `/api/v2/me/favorites/${answerPandaId}`, headers });
     expect(favorite.statusCode).toBe(201);
 
-    const createCollection = await app.inject({
+    const createCollection = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/me/collections",
       headers,
@@ -194,7 +195,7 @@ describe("V2 fan identity, engagement, and games", () => {
     });
     expect(createCollection.statusCode).toBe(201);
     const collectionId = responseBody<{ collectionId: string }>(createCollection).collectionId;
-    const addToCollection = await app.inject({
+    const addToCollection = await injectHttp(app, {
       method: "POST",
       url: `/api/v2/me/collections/${collectionId}/pandas/${answerPandaId}`,
       headers,
@@ -202,7 +203,7 @@ describe("V2 fan identity, engagement, and games", () => {
     expect(addToCollection.statusCode).toBe(201);
     expect(responseBody<{ pandaIds: string[] }>(addToCollection).pandaIds).toContain(answerPandaId);
 
-    const checkin = await app.inject({
+    const checkin = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/me/checkins",
       headers,
@@ -210,7 +211,7 @@ describe("V2 fan identity, engagement, and games", () => {
     });
     expect(checkin.statusCode).toBe(201);
 
-    const seen = await app.inject({
+    const seen = await injectHttp(app, {
       method: "PUT",
       url: `/api/v2/me/seen-pandas/${answerPandaId}`,
       headers,
@@ -219,7 +220,7 @@ describe("V2 fan identity, engagement, and games", () => {
     expect(seen.statusCode).toBe(200);
     expect(seen.json()).toMatchObject({ pandaId: answerPandaId, placeId, seenOn: "2026-08-26" });
 
-    const attempt = await app.inject({
+    const attempt = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/me/game-attempts",
       headers,
@@ -231,12 +232,12 @@ describe("V2 fan identity, engagement, and games", () => {
       answer: { correct: true, answerPandaId },
     });
 
-    const profile = await app.inject({ method: "GET", url: "/api/v2/me/profile", headers });
-    const favorites = await app.inject({ method: "GET", url: "/api/v2/me/favorites", headers });
-    const collections = await app.inject({ method: "GET", url: "/api/v2/me/collections", headers });
-    const checkins = await app.inject({ method: "GET", url: "/api/v2/me/checkins", headers });
-    const seenPandas = await app.inject({ method: "GET", url: "/api/v2/me/seen-pandas", headers });
-    const attempts = await app.inject({ method: "GET", url: "/api/v2/me/game-attempts", headers });
+    const profile = await injectHttp(app, { method: "GET", url: "/api/v2/me/profile", headers });
+    const favorites = await injectHttp(app, { method: "GET", url: "/api/v2/me/favorites", headers });
+    const collections = await injectHttp(app, { method: "GET", url: "/api/v2/me/collections", headers });
+    const checkins = await injectHttp(app, { method: "GET", url: "/api/v2/me/checkins", headers });
+    const seenPandas = await injectHttp(app, { method: "GET", url: "/api/v2/me/seen-pandas", headers });
+    const attempts = await injectHttp(app, { method: "GET", url: "/api/v2/me/game-attempts", headers });
 
     const profileBody = responseBody<{ nickname: string }>(profile);
     const favoritesBody = responseBody<{ items: Array<{ pandaId: string }> }>(favorites);
@@ -260,11 +261,11 @@ describe("V2 fan identity, engagement, and games", () => {
       .where("account_id", "=", ACCOUNT_ID)
       .executeTakeFirstOrThrow();
 
-    const randomPanda = await app.inject({ method: "GET", url: "/api/v2/games/random-panda" });
+    const randomPanda = await injectHttp(app, { method: "GET", url: "/api/v2/games/random-panda" });
     expect(randomPanda.statusCode).toBe(200);
     expect(responseBody<{ pandaId: string }>(randomPanda).pandaId).toEqual(expect.any(String));
 
-    const question = await app.inject({ method: "GET", url: "/api/v2/games/guess/question?difficulty=easy" });
+    const question = await injectHttp(app, { method: "GET", url: "/api/v2/games/guess/question?difficulty=easy" });
     expect(question.statusCode).toBe(200);
     const questionBody = responseBody<{
       questionId: string;
@@ -275,7 +276,7 @@ describe("V2 fan identity, engagement, and games", () => {
     expect(questionBody.optionPandaIds).toHaveLength(4);
     expect(questionBody).not.toHaveProperty("targetPandaId");
 
-    const answer = await app.inject({
+    const answer = await injectHttp(app, {
       method: "POST",
       url: "/api/v2/games/guess/answer",
       payload: { questionId: questionBody.questionId, selectedPandaId: questionBody.optionPandaIds[0] },
