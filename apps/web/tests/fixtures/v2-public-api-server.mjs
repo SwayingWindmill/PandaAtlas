@@ -50,7 +50,7 @@ const pandas = [
   {
     pandaId: ids.meiXiang,
     canonicalSlug: "mei-xiang",
-    legacySlugs: [],
+    legacySlugs: ["meixiang"],
     names: names("美香", "Mei Xiang"),
     facts: facts("1998-07-22", "female"),
   },

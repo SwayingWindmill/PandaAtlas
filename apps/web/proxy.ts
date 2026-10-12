@@ -1,15 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { TRUSTED_PANDA_REFERENCES } from "@/lib/generated/trusted-identity-aliases";
 import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
 import { refreshSupabaseSession } from "@/lib/supabase/middleware";
-
-function decodePathSegment(value: string): string | null {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return null;
-  }
-}
 
 function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   const { pathname } = request.nextUrl;
@@ -42,26 +33,15 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   const localizedPassportAlias = pathname.match(/^\/(zh|en)\/my-pandas$/);
   if (localizedPassportAlias) return redirect(`/${localizedPassportAlias[1]}/me`);
 
+  // Localized pages resolve legacy slugs through the API, or return 404.
   const unlocalizedProfile = pathname.match(/^\/(?:atlas|pandas)\/([^/]+)$/);
-  if (unlocalizedProfile) {
-    const decodedSlug = decodePathSegment(unlocalizedProfile[1]);
-    if (!decodedSlug) return null;
-    const reference = TRUSTED_PANDA_REFERENCES[decodedSlug];
-    if (!reference) return null;
-    return redirect(`/${preferredLocale}/pandas/${reference.slug}`);
-  }
+  if (unlocalizedProfile) return redirect(`/${preferredLocale}/pandas/${unlocalizedProfile[1]}`);
 
-  const localizedProfile = pathname.match(/^\/(zh|en)\/(atlas|pandas)\/([^/]+)$/);
-  if (localizedProfile) {
-    const [, locale, family, rawSlug] = localizedProfile;
-    const decodedSlug = decodePathSegment(rawSlug);
-    if (!decodedSlug) return null;
-    const reference = TRUSTED_PANDA_REFERENCES[decodedSlug];
-    if (!reference) return null;
-    if (family === "atlas" || reference.slug !== decodedSlug) {
-      return redirect(`/${locale}/pandas/${reference.slug}`);
-    }
-  }
+  const localizedAtlasProfile = pathname.match(/^\/(zh|en)\/atlas\/([^/]+)$/);
+  if (localizedAtlasProfile) return redirect(`/${localizedAtlasProfile[1]}/pandas/${localizedAtlasProfile[2]}`);
+
+  const unlocalizedEntity = pathname.match(/^\/(places|institutions)\/([^/]+)$/);
+  if (unlocalizedEntity) return redirect(`/${preferredLocale}/${unlocalizedEntity[1]}/${unlocalizedEntity[2]}`);
   return null;
 }
 

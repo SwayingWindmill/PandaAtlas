@@ -10,7 +10,7 @@ import {
   familyStoriesForPanda,
   getProfileCohortState,
   localizedEditorial,
-} from "@/features/public-experiences/data";
+} from "@/features/public-experiences/stories";
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
 import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";

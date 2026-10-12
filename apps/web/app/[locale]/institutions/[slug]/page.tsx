@@ -5,7 +5,7 @@ import { buildInstitutionPageViewModel } from "@/features/institutions/instituti
 import {
   loadPublishedInstitution,
   resolvePublishedInstitutionReference,
-} from "@/features/public-content/public-release";
+} from "@/features/institutions/published-institution";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 import {

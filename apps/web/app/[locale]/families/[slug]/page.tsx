@@ -7,11 +7,13 @@ import {
   familyStoryEvents,
   familyStoryMembers,
   familyStorySources,
+} from "@/features/public-experiences/data";
+import {
   getFamilyStory,
   listFamilyStories,
   localizedEditorial,
   publicExperienceRelease,
-} from "@/features/public-experiences/data";
+} from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import { parsePublicLocale, PUBLIC_LOCALES } from "@/foundation/content/locales";
 import type { PandaDetail, PublicFamilyStoryRecord } from "@/lib/types";
