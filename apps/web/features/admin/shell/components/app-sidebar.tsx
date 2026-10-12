@@ -38,11 +38,11 @@ export function AppSidebar({ session, onSignOut }: { session: AdminSession; onSi
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/admin" onClick={() => setMobileOpen(false)} title="PandaAtlas 数据运营中心" className="flex min-h-12 items-center gap-3 rounded-lg px-2 text-white outline-offset-4 focus-visible:outline-2 focus-visible:outline-white">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-teal-400/15 text-teal-300 ring-1 ring-teal-300/20"><Sprout size={23} strokeWidth={1.8} /></span>
+        <Link href="/admin" onClick={() => setMobileOpen(false)} title="PandaAtlas 数据运营中心" className="flex min-h-12 items-center gap-3 rounded-lg px-2 text-slate-950 outline-offset-4 focus-visible:outline-2 focus-visible:outline-teal-700">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-800 ring-1 ring-teal-100"><Sprout size={23} strokeWidth={1.8} /></span>
           <span className={expanded ? "min-w-0" : "md:sr-only"}>
             <strong className="block truncate text-base font-bold tracking-tight">PandaAtlas</strong>
-            <span className="block truncate text-[11px] tracking-widest text-slate-400">数据运营中心</span>
+            <span className="block truncate text-[11px] tracking-widest text-slate-600">数据运营中心</span>
           </span>
         </Link>
       </SidebarHeader>
@@ -68,7 +68,7 @@ export function AppSidebar({ session, onSignOut }: { session: AdminSession; onSi
                             aria-current={active ? "page" : undefined}
                             onClick={() => setMobileOpen(false)}
                           >
-                            <Icon size={18} strokeWidth={active ? 2.1 : 1.8} className={active ? "shrink-0 text-teal-300" : "shrink-0 text-slate-400"} />
+                            <Icon size={18} strokeWidth={active ? 2.1 : 1.8} className={active ? "shrink-0 text-teal-800" : "shrink-0 text-slate-600"} />
                             <span className={expanded ? "truncate" : "md:sr-only"}>{item.label}</span>
                           </Link>
                         </SidebarMenuButton>
@@ -83,14 +83,14 @@ export function AppSidebar({ session, onSignOut }: { session: AdminSession; onSi
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="flex min-w-0 items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-2.5">
-          <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-300/20 text-xs font-bold text-teal-100">工</span>
+        <div className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+          <span aria-hidden="true" className="flex size-9 shrink-0 items-center justify-center rounded-full bg-teal-100 text-xs font-bold text-teal-900">工</span>
           <div className={expanded ? "min-w-0 flex-1" : "md:sr-only"}>
-            <p className="truncate text-xs font-semibold text-white">工作人员</p>
-            <p className="truncate font-mono text-[11px] text-slate-400">{session.accountId.slice(0, 8)}</p>
+            <p className="truncate text-xs font-semibold text-slate-950">工作人员</p>
+            <p className="truncate text-[11px] text-slate-600">已登录后台</p>
           </div>
         </div>
-        <button type="button" onClick={onSignOut} title="退出登录" className="mt-2 flex min-h-10 w-full items-center gap-3 rounded-lg px-3 text-left text-sm text-slate-300 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-teal-300">
+        <button type="button" onClick={onSignOut} title="退出登录" className="mt-2 flex min-h-10 w-full items-center gap-3 rounded-lg px-3 text-left text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-teal-700">
           <LogOut size={18} className="shrink-0" />
           <span className={expanded ? "" : "md:sr-only"}>退出登录</span>
         </button>

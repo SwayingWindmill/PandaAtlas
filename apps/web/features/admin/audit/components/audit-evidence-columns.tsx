@@ -3,19 +3,19 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
 import type { AuditEvidence } from "../api/types";
+import { auditDomainName, auditEventName, auditObjectName } from "../presentation";
 
 export const auditEvidenceColumns: ColumnDef<AuditEvidence>[] = [
   {
-    accessorKey: "recordedAt",
-    header: "记录时间",
-    cell: ({ row }) => new Date(row.original.recordedAt).toLocaleString("zh-CN"),
+    accessorKey: "occurredAt",
+    header: "发生时间",
+    cell: ({ row }) => <time dateTime={row.original.occurredAt} className="whitespace-nowrap tabular-nums text-slate-700">{new Date(row.original.occurredAt).toLocaleString("zh-CN")}</time>,
   },
-  { accessorKey: "sourceContext", header: "来源领域" },
-  { accessorKey: "eventType", header: "事件类型" },
+  { accessorKey: "eventType", header: "发生的操作", cell: ({ row }) => <span className="font-medium text-slate-950">{auditEventName(row.original.eventType)}</span> },
   {
     id: "aggregate",
-    header: "关联对象",
-    cell: ({ row }) => `${row.original.aggregateType}:${row.original.aggregateId}`,
+    header: "影响对象",
+    cell: ({ row }) => <span className="text-slate-700">{auditObjectName(row.original.aggregateType)}</span>,
   },
-  { accessorKey: "correlationId", header: "追踪 ID" },
+  { accessorKey: "sourceContext", header: "业务领域", cell: ({ row }) => auditDomainName(row.original.sourceContext) },
 ];

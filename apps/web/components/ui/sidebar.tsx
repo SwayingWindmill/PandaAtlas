@@ -77,14 +77,14 @@ export function Sidebar({ children, className }: React.PropsWithChildren<{ class
         data-slot="sidebar"
         data-state={expanded ? "expanded" : "collapsed"}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#111d2b] text-slate-200 shadow-2xl transition-transform duration-200 md:sticky md:z-auto md:h-svh md:shrink-0 md:translate-x-0 md:shadow-none",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white text-slate-950 shadow-2xl transition-transform duration-200 md:sticky md:z-auto md:h-svh md:shrink-0 md:translate-x-0 md:shadow-none",
           expanded ? "md:w-64" : "md:w-[4.5rem]",
           mobileOpen ? "visible translate-x-0" : "invisible -translate-x-full md:visible",
           className,
         )}
       >
         <div className="absolute right-3 top-3 md:hidden">
-          <button type="button" aria-label="关闭导航" onClick={() => setMobileOpen(false)} className="rounded-md p-2 text-slate-300 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"><X size={18} /></button>
+          <button type="button" aria-label="关闭导航" onClick={() => setMobileOpen(false)} className="rounded-md p-2 text-slate-600 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"><X size={18} /></button>
         </div>
         {children}
       </aside>
@@ -93,7 +93,7 @@ export function Sidebar({ children, className }: React.PropsWithChildren<{ class
 }
 
 export function SidebarHeader({ children, className }: React.PropsWithChildren<{ className?: string }>) {
-  return <div data-slot="sidebar-header" className={cn("shrink-0 border-b border-white/10 px-3 py-5", className)}>{children}</div>;
+  return <div data-slot="sidebar-header" className={cn("shrink-0 border-b border-slate-200 px-3 py-5", className)}>{children}</div>;
 }
 
 export function SidebarContent({ children, className }: React.PropsWithChildren<{ className?: string }>) {
@@ -101,7 +101,7 @@ export function SidebarContent({ children, className }: React.PropsWithChildren<
 }
 
 export function SidebarFooter({ children, className }: React.PropsWithChildren<{ className?: string }>) {
-  return <div data-slot="sidebar-footer" className={cn("shrink-0 border-t border-white/10 px-3 py-4", className)}>{children}</div>;
+  return <div data-slot="sidebar-footer" className={cn("shrink-0 border-t border-slate-200 px-3 py-4", className)}>{children}</div>;
 }
 
 export function SidebarGroup({ children, className }: React.PropsWithChildren<{ className?: string }>) {
@@ -110,7 +110,7 @@ export function SidebarGroup({ children, className }: React.PropsWithChildren<{ 
 
 export function SidebarGroupLabel({ children }: React.PropsWithChildren) {
   const { expanded } = useSidebar();
-  return <p data-slot="sidebar-group-label" className={cn("mb-2 px-3 text-[11px] font-semibold tracking-[.12em] text-slate-400", !expanded && "md:sr-only")}>{children}</p>;
+  return <p data-slot="sidebar-group-label" className={cn("mb-2 px-3 text-[11px] font-semibold tracking-[.12em] text-slate-600", !expanded && "md:sr-only")}>{children}</p>;
 }
 
 export function SidebarMenu({ children }: React.PropsWithChildren) {
@@ -133,10 +133,10 @@ export function SidebarMenuButton({
       data-slot="sidebar-menu-button"
       data-active={isActive || undefined}
       className={cn(
-        "flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors outline-offset-2 focus-visible:outline-2 focus-visible:outline-teal-300",
+        "flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors outline-offset-2 focus-visible:outline-2 focus-visible:outline-teal-700",
         isActive
-          ? "bg-teal-300/15 text-teal-100 ring-1 ring-inset ring-teal-300/20"
-          : "text-slate-300 hover:bg-white/10 hover:text-white",
+          ? "bg-teal-50 text-teal-900 ring-1 ring-inset ring-teal-200"
+          : "text-slate-700 hover:bg-slate-100 hover:text-slate-950",
       )}
     >
       {children}

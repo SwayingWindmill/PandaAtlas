@@ -22,6 +22,7 @@ function createGuard(options: {
   authenticatedAt: Date | undefined;
   aal: "aal1" | "aal2";
   liveSession: boolean;
+  routine?: boolean;
 }): { guard: ApplicationAccessGuard; context: ExecutionContext } {
   const request = { headers: {} } as FastifyRequest;
   setVerifiedIdentity(request, {
@@ -36,7 +37,7 @@ function createGuard(options: {
 
   const reflector = {
     getAllAndOverride: (key: symbol) => {
-      if (key === REQUIRED_CAPABILITIES) return ["identity.role.manage"];
+      if (key === REQUIRED_CAPABILITIES) return [options.routine ? "review.case.read" : "identity.role.manage"];
       if (key === REQUIRE_RECENT_AUTH || key === ALLOW_UNPROVISIONED) return false;
       if (key === REQUIRED_AAL) return undefined;
       return false;
@@ -49,12 +50,12 @@ function createGuard(options: {
         accountState: "active",
         capabilities: new Map([
           [
-            "identity.role.manage",
+            options.routine ? "review.case.read" : "identity.role.manage",
             {
-              key: "identity.role.manage",
-              requiresRecentAuth: true,
-              minimumAal: "aal2",
-              requiresLiveSession: true,
+              key: options.routine ? "review.case.read" : "identity.role.manage",
+              requiresRecentAuth: !options.routine,
+              minimumAal: options.routine ? "aal1" : "aal2",
+              requiresLiveSession: !options.routine,
             },
           ],
         ]),
@@ -89,6 +90,16 @@ function createGuard(options: {
 }
 
 describe("ApplicationAccessGuard sensitive policy", () => {
+  it("allows authorized routine review after recent-auth expiry without requiring a new login", async () => {
+    const { guard, context } = createGuard({
+      authenticatedAt: new Date(Date.now() - 86_400_000),
+      aal: "aal1",
+      liveSession: false,
+      routine: true,
+    });
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+  });
+
   it.each([
     {
       name: "requires recent interactive auth",

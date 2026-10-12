@@ -61,7 +61,7 @@ test("staff follows a Review audit event from the dashboard into the governed Re
   await navigation.getByRole("link", { name: "审计" }).click();
   await expect(page).toHaveURL(/\/admin\/audit\/evidence$/);
   await expect(navigation.getByRole("link", { name: "审计" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByText(eventType, { exact: true })).toBeVisible();
+  await expect(page.getByText("已建议将审核结果纳入档案", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "查看审计详情" }).click();
   await page.getByRole("region", { name: "审计事件详情" })

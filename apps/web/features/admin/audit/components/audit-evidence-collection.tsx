@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/table/data-table";
 import { auditEvidenceQueryOptions } from "../api/queries";
 import type { AuditEvidence } from "../api/types";
+import { auditDomainName, auditEventName, auditObjectName } from "../presentation";
 import { auditEvidenceColumns } from "./audit-evidence-columns";
 
 export function AuditEvidenceCollection() {
@@ -41,10 +42,9 @@ export function AuditEvidenceCollection() {
     <div className="mx-auto w-full max-w-7xl px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-stone-600">审计</p>
-          <h1 className="mt-1 text-3xl font-bold text-stone-950">审计证据</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
-            查看最近的只追加审计证据，追踪操作对象、关联事件及内容摘要。列表不代表完整历史导出。
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-950">审计记录</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            按发生时间查看操作及影响对象。这里展示最近的审计记录，不是完整历史导出。
           </p>
         </div>
         <label className="text-sm font-semibold text-stone-700">
@@ -61,33 +61,43 @@ export function AuditEvidenceCollection() {
       </div>
 
       <section className="mt-6" aria-live="polite">
-        {evidence.isPending ? <p className="text-sm text-stone-600">正在加载审计证据…</p> : null}
+        {evidence.isPending ? <p role="status" className="text-sm text-slate-600">正在加载审计记录…</p> : null}
         {evidence.isError ? <p role="alert" className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">{evidence.error.message}</p> : null}
-        {evidence.isSuccess ? <DataTable table={table} emptyMessage="尚无可查看的审计证据记录。" /> : null}
+        {evidence.isSuccess ? <DataTable table={table} emptyMessage="当前范围内没有可查看的审计记录。可扩大上方最近记录数。" /> : null}
       </section>
 
       {selected && (
-        <section aria-label="审计事件详情" className="mt-6 rounded-xl border border-stone-300 bg-white p-6">
-          <h2 className="text-xl font-bold text-stone-950">审计事件详情</h2>
-          <p className="mt-2 text-sm text-stone-700">记录为只读证据元数据；SHA-256 是载荷摘要，不表示已在此界面完成完整性验证。</p>
-          <dl className="mt-4 grid gap-4 text-sm md:grid-cols-2">
-            {([
-              ["事件标识", selected.sourceEventId],
-              ["事件类型", selected.eventType],
-              ["来源领域", selected.sourceContext],
-              ["对象类型", selected.aggregateType],
-              ["对象 ID", selected.aggregateId],
-              ["关联追踪 ID", selected.correlationId],
-              ["实际发生时间", new Date(selected.occurredAt).toLocaleString("zh-CN")],
-              ["审计记录时间", new Date(selected.recordedAt).toLocaleString("zh-CN")],
-              ["SHA-256 载荷摘要", selected.payloadSha256],
-            ] as const).map(([label, value]) => (
-              <div key={label}>
-                <dt className="font-semibold text-stone-700">{label}</dt>
-                <dd className="mt-1 break-all font-mono text-stone-950">{value}</dd>
-              </div>
-            ))}
+        <section aria-label="审计事件详情" className="mt-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-teal-800">{auditDomainName(selected.sourceContext)}</p>
+              <h2 className="mt-1 text-xl font-semibold text-slate-950">{auditEventName(selected.eventType)}</h2>
+            </div>
+            <Button type="button" variant="outline" onClick={() => setSelectedId(null)}>关闭详情</Button>
+          </div>
+          <dl className="mt-5 grid gap-4 border-t border-slate-200 pt-5 text-sm md:grid-cols-2">
+            <div><dt className="text-slate-600">影响对象</dt><dd className="mt-1 font-semibold text-slate-950">{auditObjectName(selected.aggregateType)}</dd></div>
+            <div><dt className="text-slate-600">实际发生时间</dt><dd className="mt-1 tabular-nums font-semibold text-slate-950">{new Date(selected.occurredAt).toLocaleString("zh-CN")}</dd></div>
           </dl>
+          <p className="mt-4 text-sm text-slate-600">操作人信息未由此审计接口提供。</p>
+          <details className="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+            <summary className="cursor-pointer font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">技术追溯信息</summary>
+            <p className="mt-3 text-slate-600">下方 SHA-256 仅为载荷摘要，不代表页面已完成完整性验证。</p>
+            <dl className="mt-3 grid gap-3 md:grid-cols-2">
+              {([
+                ["事件标识", selected.sourceEventId],
+                ["原始事件代码", selected.eventType],
+                ["来源代码", selected.sourceContext],
+                ["对象类型代码", selected.aggregateType],
+                ["对象 ID", selected.aggregateId],
+                ["关联追踪 ID", selected.correlationId],
+                ["审计记录时间", new Date(selected.recordedAt).toLocaleString("zh-CN")],
+                ["SHA-256 载荷摘要", selected.payloadSha256],
+              ] as const).map(([label, value]) => (
+                <div key={label}><dt className="text-slate-600">{label}</dt><dd className="mt-1 break-all font-mono text-xs text-slate-950">{value}</dd></div>
+              ))}
+            </dl>
+          </details>
           {selected.aggregateType === "public_release" && selected.sourceContext === "publication" && (
             <Link className="mt-5 inline-block text-sm font-semibold text-teal-800 underline underline-offset-2"
               href={`/admin/publication?release=${encodeURIComponent(selected.aggregateId)}`}>

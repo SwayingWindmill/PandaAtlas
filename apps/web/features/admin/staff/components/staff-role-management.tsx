@@ -33,6 +33,28 @@ const roleNames: Record<string, string> = {
 
 function roleName(value: string) { return roleNames[value] ?? value; }
 
+const capabilityDomains: Record<string, string> = {
+  account: "个人资料", admin: "后台", audit: "审计", curation: "策展", identity: "工作人员",
+  moderation: "内容治理", publication: "发布", review: "审核", privacy: "隐私",
+};
+const capabilityDescriptions: Record<string, string> = {
+  "review.case.read": "查看审核案件", "review.case.claim": "领取审核案件", "review.case.decide": "处理审核案件",
+  "audit.read": "查看审计记录", "audit.export": "导出审计记录", "identity.staff.read": "查看工作人员",
+  "identity.role.manage": "管理岗位授权", "identity.account.manage": "管理工作人员账号",
+  "curation.change.read": "查看策展变更", "curation.change.manage": "核验策展变更",
+  "curation.change.approve": "独立审批策展变更", "publication.release.manage": "管理候选发布版本",
+  "publication.release.activate": "启用与回滚公开版本", "publication.emergency": "紧急管理公开内容",
+};
+
+function capabilityGroups(capabilities: readonly string[]) {
+  const groups = new Map<string, string[]>();
+  for (const capability of capabilities) {
+    const domain = capabilityDomains[capability.split(".")[0] ?? ""] ?? "其他权限";
+    groups.set(domain, [...(groups.get(domain) ?? []), capability]);
+  }
+  return [...groups.entries()];
+}
+
 async function responseJson<T>(response: Response): Promise<T> {
   const body = await response.json();
   if (!response.ok) {
@@ -59,6 +81,7 @@ export function StaffRoleManagement() {
   const roleManager = session?.capabilities.includes("identity.role.manage") ?? false;
   const accountManager = session?.capabilities.includes("identity.account.manage") ?? false;
   const manager = roleManager || accountManager;
+  const canInspect = session?.capabilities.includes("identity.staff.read") || manager;
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState("");
   const [selectedRole, setSelectedRole] = useState("reviewer");
@@ -69,9 +92,9 @@ export function StaffRoleManagement() {
   const [stateReason, setStateReason] = useState("");
   const [stateMessage, setStateMessage] = useState("");
 
-  const directory = useQuery({ queryKey: ["admin", "staff", "accounts", "directory"], queryFn: () => getStaff<Staff[]>(""), enabled: manager });
+  const directory = useQuery({ queryKey: ["admin", "staff", "accounts", "directory"], queryFn: () => getStaff<Staff[]>(""), enabled: canInspect });
   const catalog = useQuery({ queryKey: ["admin", "staff", "accounts", "catalog"], queryFn: () => getStaff<Role[]>("/catalog"), enabled: roleManager });
-  const detail = useQuery({ queryKey: ["admin", "staff", "accounts", "detail", selectedId], queryFn: () => getStaff<StaffDetail>(`/${selectedId}`), enabled: manager && Boolean(selectedId) });
+  const detail = useQuery({ queryKey: ["admin", "staff", "accounts", "detail", selectedId], queryFn: () => getStaff<StaffDetail>(`/${selectedId}`), enabled: canInspect && Boolean(selectedId) });
 
   const change = useMutation({
     mutationFn: async ({ action, reason: explanation }: { action: Change; reason: string }) => {
@@ -111,7 +134,7 @@ export function StaffRoleManagement() {
     },
   });
 
-  if (!manager) return null;
+  if (!canInspect) return null;
 
   function selectAccount(accountId: string) {
     setSelectedId(accountId);
@@ -131,10 +154,9 @@ export function StaffRoleManagement() {
   return (
     <main className="mx-auto w-full max-w-6xl space-y-7 px-5 py-8 md:px-8 md:py-10">
       <header className="space-y-3">
-        <p className="text-xs font-bold tracking-widest text-teal-700">PANDAATLAS · 身份与岗位治理</p>
-        <h1 className="text-3xl font-bold text-slate-950">工作人员权限管理</h1>
-        <p className="text-sm leading-6 text-slate-600">角色在数据库中独立授权。每次授予或撤销均要求明确原因、最近登录和双重验证，并留下不可修改的审计记录。</p>
-        <Link className="inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-slate-50" href="/admin/staff/invitations">返回审核员邀请</Link>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">工作人员权限管理</h1>
+        <p className="text-sm leading-6 text-slate-600">选择一位工作人员，查看其岗位与权限。授权、撤销和账号状态变更只对具备相应管理资格的人员开放。</p>
+        <Link className="inline-flex rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-slate-50" href="/admin/staff/invitations">查看工作人员邀请</Link>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(220px,1fr)_minmax(0,2fr)]">
@@ -163,7 +185,8 @@ export function StaffRoleManagement() {
             <>
               <div className="rounded-xl border border-slate-200 bg-white p-6">
                 <h2 className="text-lg font-bold text-slate-950">{detail.data.email ?? detail.data.accountId}</h2>
-                <p className="mt-1 text-xs text-slate-500">账号状态：{detail.data.state === "active" ? "正常" : detail.data.state === "suspended" ? "已停用" : "不可用"} · {detail.data.accountId}</p>
+                <p className="mt-1 text-sm text-slate-600">账号状态：{detail.data.state === "active" ? "正常" : detail.data.state === "suspended" ? "已停用" : "不可用"}</p>
+                <details className="mt-2 text-xs text-slate-600"><summary className="cursor-pointer font-medium text-teal-800">查看账号编号</summary><p className="mt-1 break-all font-mono">{detail.data.accountId}</p></details>
                 {detail.data.stateReason && <p className="mt-2 text-sm text-rose-700">停用原因：{detail.data.stateReason.replace(/^staff:|^moderation:/, "")}</p>}
                 <h3 className="mt-6 text-sm font-bold text-slate-900">当前角色</h3>
                 <div className="mt-3 space-y-2">
@@ -176,10 +199,21 @@ export function StaffRoleManagement() {
                   ))}
                 </div>
                 <h3 className="mt-6 text-sm font-bold text-slate-900">当前权限</h3>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {detail.data.capabilities.length === 0 && <span className="text-sm text-slate-500">暂无有效权限。</span>}
-                  {detail.data.capabilities.map((capability) => <span key={capability} className="rounded-md bg-slate-100 px-2.5 py-1 text-xs text-slate-700">{capability}</span>)}
-                </div>
+                {detail.data.capabilities.length === 0 ? <p className="mt-3 text-sm text-slate-600">暂无有效权限。</p> : (
+                  <>
+                    <ul className="mt-3 grid gap-3 md:grid-cols-2">
+                      {capabilityGroups(detail.data.capabilities).map(([group, keys]) => (
+                        <li key={group} className="rounded-lg border border-slate-200 px-4 py-3">
+                          <h4 className="text-sm font-semibold text-slate-950">{group} · {keys.length} 项</h4>
+                          <ul className="mt-2 space-y-1 text-sm text-slate-700">{keys.map((key) => <li key={key}>{capabilityDescriptions[key] ?? "其他授权（详情见权限代码）"}</li>)}</ul>
+                        </li>
+                      ))}
+                    </ul>
+                    <details className="mt-3 text-sm text-slate-700"><summary className="cursor-pointer font-medium text-teal-800">查看原始权限代码</summary>
+                      <ul className="mt-2 space-y-1 rounded-lg bg-slate-50 p-3">{detail.data.capabilities.map((key) => <li key={key} className="break-all font-mono text-xs">{key}</li>)}</ul>
+                    </details>
+                  </>
+                )}
               </div>
 
               {accountManager && !isOwnAccount && (detail.data.state === "active" || (detail.data.state === "suspended" && detail.data.stateReason?.startsWith("staff:"))) && (
