@@ -12,11 +12,9 @@ import { ConfigModule } from "../platform/config/config.module.js";
 import { IntegrationModule } from "../platform/integration/integration.module.js";
 import { OutboxDispatcherService } from "../platform/integration/outbox-dispatcher.service.js";
 import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.js";
-import { AsyncJobsController } from "./async-jobs.controller.js";
 
 @Module({
   imports: [ConfigModule, IntegrationModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule],
-  controllers: [AsyncJobsController],
   providers: [
     {
       provide: AsyncDownstreamRunnerService,
