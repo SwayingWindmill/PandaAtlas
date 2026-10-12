@@ -27,6 +27,7 @@ import {
 } from "../application/publication.application.js";
 import {
   BuildPublicReleaseDto,
+  PublicationChangePageQueryDto,
   PublicationReleaseInspectionDto,
   PublicationReleaseListQueryDto,
   PublicationReleasePageDto,
@@ -82,8 +83,14 @@ export class PublicationController {
   @ApiOperation({ operationId: "inspectPublicationRelease", summary: "Inspect release counts, changes, blockers, and lifecycle history" })
   @ApiOkResponse({ type: PublicationReleaseInspectionDto })
   @ApiNotFoundResponse({ description: "The release does not exist." })
-  public async inspectRelease(@Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string) {
-    const inspection = await this.inspection.inspectRelease(releaseId);
+  public async inspectRelease(
+    @Param("releaseId", new ParseUUIDPipe({ version: "4" })) releaseId: string,
+    @Query() query: PublicationChangePageQueryDto,
+  ) {
+    const inspection = await this.inspection.inspectRelease(releaseId, {
+      changeLimit: query.changeLimit ?? 10,
+      changeOffset: query.changeOffset ?? 0,
+    });
     if (inspection === undefined) {
       throw new ProblemException(404, "publication.releaseNotFound", "The public release does not exist.");
     }

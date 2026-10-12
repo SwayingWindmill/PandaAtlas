@@ -2243,6 +2243,27 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "changeLimit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "changeOffset",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -6155,6 +6176,40 @@
           "removed"
         ]
       },
+      "PublicationChangeDetailDto": {
+        "type": "object",
+        "properties": {
+          "resourceKind": {
+            "type": "string",
+            "enum": [
+              "panda",
+              "institution",
+              "place",
+              "lineage",
+              "residency",
+              "life_event",
+              "media",
+              "evidence"
+            ]
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "changeType": {
+            "type": "string",
+            "enum": [
+              "added",
+              "changed",
+              "removed"
+            ]
+          }
+        },
+        "required": [
+          "resourceKind",
+          "resourceId",
+          "changeType"
+        ]
+      },
       "PublicationTransitionDto": {
         "type": "object",
         "properties": {
@@ -6212,6 +6267,18 @@
               "$ref": "#/components/schemas/PublicationChangeSummaryDto"
             }
           },
+          "changeTotal": {
+            "type": "number"
+          },
+          "changeOffset": {
+            "type": "number"
+          },
+          "changeItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicationChangeDetailDto"
+            }
+          },
           "transitions": {
             "type": "array",
             "items": {
@@ -6222,6 +6289,9 @@
         "required": [
           "release",
           "changes",
+          "changeTotal",
+          "changeOffset",
+          "changeItems",
           "transitions"
         ]
       },
