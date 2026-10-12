@@ -16,7 +16,7 @@ This page is the current deployment source of truth. Historical migration, Verce
 | API -> database | Cloudflare Hyperdrive -> Supabase PostgreSQL/PostGIS | `services/api/cloudflare.config.ts`, `services/api/src/platform/database/database.service.ts` |
 | API -> Web transport | Cloudflare service binding `PUBLIC_WEB` | `services/api/cloudflare.config.ts` |
 | Identity | Supabase Auth | Nest Identity/auth modules and Supabase configuration |
-| Public media | Cloudflare R2 | Web Worker `HOME_MEDIA` binding and reviewed media publication inputs |
+| Public media | Cloudflare R2 (private bucket); allowlisted full photo GETs are kept in the Workers edge cache, ranges/HEAD/videos read R2 | Web Worker `HOME_MEDIA` binding, `apps/web/worker/media.mjs`, and reviewed media publication inputs |
 | Web incremental cache | No dedicated R2/DO topology; the current Web application has no positive ISR/tag/data-cache contract | `apps/web/cloudflare.config.ts`, `docs/research/vinext-cloudflare-web-runtime-2026-10-03.md` |
 | DNS/custom domains | Cloudflare | Web domains `zhipanda.com` / `www.zhipanda.com`; API domain `api.zhipanda.com` |
 | Short async trigger | GitHub Actions invokes the authenticated bounded Nest internal job endpoint | `.github/workflows/v2-async-downstream.yml` |
