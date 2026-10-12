@@ -6,7 +6,7 @@ For every new or redesigned UI control, **actively search and compare maintained
 
 Pages still require domain-specific query state, typed API integration, and composition. Those are not permission to copy a component's internal interaction or build a second design system.
 
-This rule is also recorded in root `AGENTS.md` for future coding agents.
+The standing policy now lives in [`ui-component-sourcing-policy.md`](ui-component-sourcing-policy.md), which root `AGENTS.md` points to.
 
 ## Current repository inventory and decisions
 
