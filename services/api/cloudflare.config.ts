@@ -8,6 +8,8 @@ export default defineConfig(() => ({
       domains: ["api.zhipanda.com"],
       triggers: [triggers.scheduled({ schedule: "*/5 * * * *" })],
       workersDev: false,
+      // Run next to the only back end: Supabase Postgres in AWS ap-northeast-1 (Tokyo).
+      placement: { region: "aws:ap-northeast-1" },
       compatibilityDate: "2026-10-01",
       compatibilityFlags: ["nodejs_compat", "enable_nodejs_http_server_modules"],
       observability: { enabled: true, redactQueryString: true },
