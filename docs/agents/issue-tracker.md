@@ -10,6 +10,7 @@ Issues and PRDs for this repository live as GitHub issues in `SwayingWindmill/Pa
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
 - **Apply or remove labels**: `gh issue edit <number> --add-label "..."` or `--remove-label "..."`
 - **Close an issue**: `gh issue close <number> --comment "..."`
+- **Stack at most one PR deep**: a PR may target `main` or one open parent PR that targets `main`; merge the parent before building further. The `Pull Request Stack Depth` check enforces this.
 
 Run commands inside this repository so `gh` resolves the repository from the configured Git remote.
 
