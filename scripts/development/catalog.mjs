@@ -138,6 +138,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "dev.processes",
+    category: "runtime",
+    description: "List running PandaAtlas node/workerd processes with ports, start time and memory.",
+    command: "node",
+    args: ["scripts/development/list-dev-processes.mjs"],
+    requires: ["node"],
+    effect: "read-only",
+  },
+  {
     id: "admin.bootstrap",
     category: "runtime",
     description: "Explicitly provision the first verified administrator in the pinned local Supabase instance.",
@@ -329,6 +338,7 @@ const commands = [
       "scripts/release/tests/pr-stack-depth.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
       "scripts/release/tests/research-script-policy.test.mjs",
+      "scripts/development/tests/dev-processes.test.mjs",
       "scripts/development/tests/operations.test.mjs",
       "scripts/development/tests/verification-workflow.test.mjs",
     ],

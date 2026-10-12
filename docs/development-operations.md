@@ -68,6 +68,14 @@ npm run stop:admin
 
 Ctrl+C normally stops the foreground Web/API process group. `stop:admin` is the canonical cleanup command and is safe to run after a terminal, tool session, or parent process was interrupted; it uses the runtime state recorded by `admin.dev` instead of relying on ad-hoc port/process commands.
 
+`status:admin` probes only the stack that `admin.dev` recorded. To find any PandaAtlas node/workerd process still running (an earlier session's dev server, a leftover workerd), with its ports, start time and memory, run:
+
+```powershell
+npm run ops -- run dev.processes
+```
+
+Reuse or stop what it lists deliberately before starting another runtime; a stale dev server can hold more than a gigabyte. Builds need no `NODE_OPTIONS` heap override: `npm run build:cloudflare` peaks at about 1.5 GB in one process, below Node's default limit, and caps at or under 1.5 GB have caused heap out-of-memory failures.
+
 `web.dev`, `api.dev`, and the `foundation.*` commands remain available when a task intentionally needs only one layer. Routine admin UI work should use `admin.dev` so Web, API, Auth, and database configuration cannot drift apart.
 
 ## Verification
