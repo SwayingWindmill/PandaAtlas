@@ -98,6 +98,40 @@ test("sidebar collapse preserves active navigation and keyboard reopening", asyn
   await expect(audit).toHaveAttribute("aria-current", "page");
 });
 
+test("the command palette finds authorized workspaces and keyboard selection navigates", async ({ page }) => {
+  await page.route("**/api/admin/session", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({
+      accountId: "11111111-1111-4111-8111-111111111111", aal: "aal2",
+      capabilities: ["admin.shell.access", "review.case.read"],
+    }),
+  }));
+  await page.route("**/api/admin/review/cases?**", (route) => route.fulfill({
+    status: 200, contentType: "application/json",
+    body: JSON.stringify({ items: [], total: 0, limit: 25, offset: 0 }),
+  }));
+  await page.goto("/admin");
+  await page.getByRole("button", { name: "搜索工作区" }).click();
+  const palette = page.getByRole("dialog", { name: "快速进入工作区" });
+  await expect(palette).toBeVisible();
+  await expect(palette.getByRole("option", { name: /审核/ })).toBeVisible();
+  await expect(palette.getByRole("option", { name: /发布/ })).toHaveCount(0);
+  await expect(palette.getByRole("option", { name: /人员管理/ })).toHaveCount(0);
+  await palette.getByRole("combobox").fill("审核");
+  await expect(palette.getByRole("option", { name: /审核/ })).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/admin\/reviews/);
+  await expect(palette).toHaveCount(0);
+  await page.keyboard.press("Control+k");
+  await expect(palette).toBeVisible();
+  await palette.getByRole("combobox").fill("发布");
+  await expect(palette.getByText("没有匹配的工作区")).toBeVisible();
+  const result = await new AxeBuilder({ page }).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
+  expect(result.violations).toEqual([]);
+  await page.keyboard.press("Escape");
+  await expect(palette).toHaveCount(0);
+});
+
 test("Chinese admin workbench passes automated accessibility checks", async ({ page }) => {
   await page.route("**/api/admin/session", async (route) => {
     await route.fulfill({
