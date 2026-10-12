@@ -50,6 +50,13 @@ test("Curation uses a typed paginated collection and approves a reviewed change 
   const queueBounds = await queue.boundingBox();
   const detailBounds = await details.boundingBox();
   expect(queueBounds && detailBounds && queueBounds.x + queueBounds.width <= detailBounds.x).toBe(true);
+  const divider = page.getByRole("separator", { name: "调整队列与详情宽度" });
+  await expect(divider).toBeVisible();
+  const widthBefore = (await queue.boundingBox())?.width ?? 0;
+  await divider.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(async () => (await queue.boundingBox())?.width ?? 0).toBeGreaterThan(widthBefore);
   await expect(page.getByRole("button", { name: "查看变更", pressed: true })).toBeVisible();
   await expect(page.getByText("雌性", { exact: true })).toBeVisible();
   await expect(page.getByText("当前档案值尚未提供，不能据此判断是否替换现有事实。")).toBeVisible();
