@@ -31,11 +31,12 @@ test("audit evidence collection renders rows and keeps the supported limit in th
     });
   });
   await page.route("**/api/admin/audit/evidence?**", async (route) => {
-    requestedLimits.push(new URL(route.request().url()).searchParams.get("limit") ?? "");
+    const limit = new URL(route.request().url()).searchParams.get("limit") ?? "";
+    requestedLimits.push(limit);
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(evidence),
+      body: JSON.stringify(limit === "100" ? [] : evidence),
     });
   });
 
@@ -73,8 +74,13 @@ test("audit evidence collection renders rows and keeps the supported limit in th
 
   await page.getByLabel("最近记录数").selectOption("50");
   await expect(page).toHaveURL(/\/admin\/audit\/evidence\?limit=50$/);
-  await expect(details.getByRole("heading", { name: "选择一条审计记录" })).toBeVisible();
   await expect.poll(() => requestedLimits.at(-1)).toBe("50");
+  await expect(details.getByRole("heading", { name: "已启用公开版本" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /查看审计详情：已启用公开版本/, pressed: true })).toBeVisible();
+
+  await page.getByLabel("最近记录数").selectOption("100");
+  await expect.poll(() => requestedLimits.at(-1)).toBe("100");
+  await expect(details.getByRole("heading", { name: "选择一条审计记录" })).toBeVisible();
   const axe = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(axe.violations).toEqual([]);
 });

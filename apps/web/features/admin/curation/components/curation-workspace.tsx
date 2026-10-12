@@ -104,7 +104,7 @@ export function CurationWorkspace() {
         aria-label={`查看变更：${row.original.reason}`}
         aria-pressed={selectedId === row.original.changeSetId}
         onClick={() => { void setSelectedId(row.original.changeSetId); setMessage(""); approvalForm.reset(); }}
-        className={`h-auto min-w-0 max-w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left hover:bg-slate-100 ${selectedId === row.original.changeSetId ? "bg-slate-100 text-slate-950" : ""}`}
+        className={`h-auto min-w-0 max-w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left hover:bg-slate-100 ${selectedId === row.original.changeSetId ? "bg-slate-100 text-slate-950 shadow-[inset_3px_0_0_var(--color-slate-900)]" : ""}`}
       >
         <span className="max-w-full break-words text-sm font-medium text-slate-950" title={row.original.reason}>{row.original.reason}</span>
         <span className="text-xs font-normal text-slate-600">{row.original.changeCount} 项 · 熊猫 {row.original.targetPandaId.slice(0, 8)}</span>

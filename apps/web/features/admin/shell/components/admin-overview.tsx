@@ -139,8 +139,8 @@ export function AdminOverview() {
             </CardHeader>
             <CardContent className="min-h-48 px-0">
               {canAudit ? (
-                audit.isPending ? <p role="status" className="px-6 py-8 text-sm text-slate-600">正在读取最近操作…</p>
-                  : audit.isError ? <p role="status" className="px-6 py-8 text-sm text-slate-600">审计记录暂时不可用，可前往审计工作区查看。</p>
+                audit.isPending ? <p role="status" className="px-5 py-8 text-sm text-slate-600">正在读取最近操作…</p>
+                  : audit.isError ? <p role="status" className="px-5 py-8 text-sm text-slate-600">审计记录暂时不可用，可前往审计工作区查看。</p>
                     : audit.data?.length ? (
                       <ul className="divide-y divide-slate-100">
                         {audit.data.slice(0, 4).map((event) => (
@@ -153,9 +153,9 @@ export function AdminOverview() {
                           </li>
                         ))}
                       </ul>
-                    ) : <p className="px-6 py-8 text-sm text-slate-600">目前没有可显示的最近审计记录。</p>
+                    ) : <p className="px-5 py-8 text-sm text-slate-600">目前没有可显示的最近审计记录。</p>
               ) : (
-                <div className="space-y-2 px-6 py-7">
+                <div className="space-y-2 px-5 py-7">
                   <p className="text-sm font-medium text-slate-900">最近操作需要审计查看权限</p>
                   <p className="text-sm leading-6 text-slate-600">你的日常工作区仍可正常使用，查看审计记录无需取得发布或授权管理资格。</p>
                 </div>
@@ -185,7 +185,7 @@ export function AdminOverview() {
                     </Link>
                   ))}
                 </div>
-              ) : <p className="px-6 py-8 text-sm text-slate-600">所有已授权的任务入口都已显示在上方。</p>}
+              ) : <p className="px-5 py-8 text-sm text-slate-600">所有已授权的任务入口都已显示在上方。</p>}
             </CardContent>
           </Card>
         </section>

@@ -31,7 +31,7 @@ export function AuditEvidenceCollection() {
         <Button type="button" size="sm" variant="ghost"
           aria-label={`查看审计详情：${auditEventName(row.original.eventType)}，${new Date(row.original.occurredAt).toLocaleString("zh-CN")}`}
           aria-pressed={selectedId === row.original.sourceEventId}
-          className={`h-auto w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-slate-900 hover:bg-slate-100 ${selectedId === row.original.sourceEventId ? "bg-slate-100" : ""}`}
+          className={`h-auto w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-slate-900 hover:bg-slate-100 ${selectedId === row.original.sourceEventId ? "bg-slate-100 shadow-[inset_3px_0_0_var(--color-slate-900)]" : ""}`}
           onClick={() => setSelectedId(row.original.sourceEventId)}>
           <span className="text-sm font-medium">{auditEventName(row.original.eventType)}</span>
           <span className="text-xs font-normal text-slate-600">{auditObjectName(row.original.aggregateType)} · {auditDomainName(row.original.sourceContext)}</span>
@@ -69,7 +69,7 @@ export function AuditEvidenceCollection() {
           <NativeSelect
             aria-label="最近记录数"
             value={String(limit)}
-            onChange={(event) => { setSelectedId(null); void setLimit(Number(event.target.value)); }}
+            onChange={(event) => void setLimit(Number(event.target.value))}
             className="min-h-9 min-w-32 border-slate-200 bg-white text-sm text-slate-900"
           >
             {[25, 50, 100, 200].map((value) => <NativeSelectOption key={value} value={value}>{value}</NativeSelectOption>)}

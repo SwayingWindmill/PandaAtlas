@@ -212,7 +212,7 @@ export function StaffRoleManagement() {
                     <TableCell className="min-w-0 py-2">
                       <Button type="button" variant="ghost" size="sm" aria-pressed={selectedId === staff.accountId}
                         onClick={() => selectAccount(staff.accountId)}
-                        className={`h-auto max-w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-sm hover:bg-slate-100 ${selectedId === staff.accountId ? "bg-slate-100" : ""}`}>
+                        className={`h-auto max-w-full flex-col items-start gap-1 whitespace-normal rounded-md px-2 py-2 text-left text-sm hover:bg-slate-100 ${selectedId === staff.accountId ? "bg-slate-100 shadow-[inset_3px_0_0_var(--color-slate-900)]" : ""}`}>
                         <span className="max-w-full break-all text-sm font-medium text-slate-950">{staff.email ?? staff.accountId.slice(0, 8)}</span>
                         <span className="text-xs font-normal text-slate-700">{staff.roles.map(roleName).join("、") || "等待授权"}</span>
                       </Button>
