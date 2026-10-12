@@ -8,6 +8,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
+import { StaffWorkspaceNavigation } from "./staff-workspace-navigation";
 
 type Invitation = components["schemas"]["StaffInvitationDto"];
 
@@ -89,16 +90,14 @@ export function StaffInvitations() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-8 px-5 py-8 md:px-8 md:py-10">
+    <main className="mx-auto w-full max-w-6xl space-y-6 px-5 pb-12 pt-7 md:px-8">
       <header>
-        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
           跟踪审核员邀请的验证进度。邀请授予的是审核职责，不包含策展终审或公开发布权限。
         </p>
-        <Link className="mt-4 inline-flex rounded-lg border border-teal-700 px-4 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50" href="/admin/staff/roles">
-          查看工作人员及岗位权限
-        </Link>
       </header>
+      {session && <StaffWorkspaceNavigation current="invitations" session={session} />}
       {canInvite && <section className="rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-lg font-bold text-slate-950">发送工作人员邀请</h2>
         <p className="mt-1 text-sm text-slate-600">发出邀请后，对方需要打开邀请邮件并验证邮箱，才能获得审核员岗位。</p>
