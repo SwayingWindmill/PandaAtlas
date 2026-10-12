@@ -16,7 +16,8 @@ export default {
       bridge.fetch(request, bindings, context),
     );
   },
-  scheduled(_controller, bindings) {
-    return runScheduledCycle(database, runner, bindings.HYPERDRIVE.connectionString);
+  scheduled(_controller, bindings, context) {
+    // waitUntil records a failed cycle as the Cron Trigger invocation status.
+    context.waitUntil(runScheduledCycle(database, runner, bindings.HYPERDRIVE.connectionString));
   },
 };
