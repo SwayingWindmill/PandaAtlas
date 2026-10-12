@@ -18,7 +18,7 @@ This page is the current deployment source of truth. Historical migration, Verce
 | Identity | Supabase Auth | Nest Identity/auth modules and Supabase configuration |
 | Public media | Cloudflare R2 | Web Worker `HOME_MEDIA` binding and reviewed media publication inputs |
 | Web incremental cache | No dedicated R2/DO topology; the current Web application has no positive ISR/tag/data-cache contract | `apps/web/cloudflare.config.ts`, `docs/research/vinext-cloudflare-web-runtime-2026-10-03.md` |
-| DNS/custom domains | Cloudflare | Web domains `zhipanda.com` / `www.zhipanda.com`; API domain `api.zhipanda.com` |
+| DNS/custom domains | Cloudflare; production is served only through these custom domains (`workersDev: false`), so zone WAF, rate-limit and HTTPS rules cover every public request | Web domains `zhipanda.com` / `www.zhipanda.com`; API domain `api.zhipanda.com`; enforced by `scripts/release/tests/cloudflare-production-surface.test.mjs` |
 | Short async trigger | GitHub Actions invokes the authenticated bounded Nest internal job endpoint | `.github/workflows/v2-async-downstream.yml` |
 | Long/heavy data work | GitHub Actions and independent `tools/panda-data` Python runtime | repository workflows and `tools/panda-data` |
 

@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => ({
     name: "zhipanda-v2-web",
     entrypoint: "./worker/index.mjs",
     domains: ["zhipanda.com", "www.zhipanda.com"],
-    workersDev: true,
+    workersDev: false,
     compatibilityDate: "2026-10-01",
     compatibilityFlags: ["nodejs_compat"],
     observability: { enabled: true, redactQueryString: true },

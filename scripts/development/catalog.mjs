@@ -334,6 +334,7 @@ const commands = [
     args: [
       "--test",
       "scripts/release/tests/batch-workflow-interface.test.mjs",
+      "scripts/release/tests/cloudflare-production-surface.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
       "scripts/release/tests/pr-stack-depth.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",
