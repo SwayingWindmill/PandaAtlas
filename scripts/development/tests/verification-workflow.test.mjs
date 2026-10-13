@@ -66,6 +66,10 @@ test("production deploys only from main, after approval, API before Web", async 
   const webDeploy = deploy.indexOf("working-directory: apps/web");
   assert.ok(apiDeploy !== -1 && webDeploy > apiDeploy, "the API Worker deploys before the Web Worker");
   assert.match(deploy, /cf deploy --prebuilt --mode production --tag/u);
+  assert.match(deploy, /if: github\.ref == 'refs\/heads\/main'/u);
+  assert.match(deploy, /npm ci --ignore-scripts/u);
+  // .cloudflare is a hidden directory, which upload-artifact skips by default.
+  assert.match(build, /include-hidden-files: true/u);
 });
 
 test("no workspace keeps a workstation production deploy script", async () => {

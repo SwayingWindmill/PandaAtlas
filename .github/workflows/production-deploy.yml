@@ -50,7 +50,8 @@ jobs:
         with:
           name: cloudflare-build-output
           include-hidden-files: true
-          retention-days: 7
+          # Approvals can wait up to 30 days; the output must outlive them.
+          retention-days: 30
           path: |
             services/api/.cloudflare/output
             apps/web/.cloudflare/output
@@ -58,6 +59,8 @@ jobs:
   deploy:
     name: Deploy API then Web
     needs: build
+    # A manual dispatch from another ref may build, but only main deploys.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -70,8 +73,9 @@ jobs:
           node-version: "24"
           cache: npm
 
+      # The job that receives secrets runs no dependency install scripts; cf needs none.
       - name: Install the pinned cf CLI
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Restore the approved build output
         uses: actions/download-artifact@v8.0.2
@@ -94,4 +98,4 @@ jobs:
         run: |
           curl --fail --silent --show-error --max-time 20 --retry 3 --retry-all-errors https://api.zhipanda.com/health
           curl --fail --silent --show-error --max-time 20 --retry 3 --retry-all-errors https://api.zhipanda.com/ready
-          curl --fail --silent --show-error --max-time 30 --retry 3 --retry-all-errors --output /dev/null "https://zhipanda.com/zh?deploy=${GITHUB_RUN_ID}"
+          curl --fail --silent --show-error --max-time 30 --retry 3 --retry-all-errors --output /dev/null "https://www.zhipanda.com/zh?deploy=${GITHUB_RUN_ID}"

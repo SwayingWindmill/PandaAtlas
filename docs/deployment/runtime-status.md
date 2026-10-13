@@ -45,7 +45,7 @@ From a clean checkout, the deployable Cloudflare artifacts are built with:
 npm run build:cloudflare
 ```
 
-This builds the Nest API Worker artifact and the vinext + Vite Web Worker artifact without deploying them. `.github/workflows/cloudflare-deployability.yml` runs this one deployment seam for relevant pull requests; it does not duplicate lint, typecheck, browser, accessibility, or release-gate suites.
+This builds the Nest API Worker artifact and the vinext + Vite Web Worker artifact without deploying them. `.github/workflows/cloudflare-deployability.yml` checks this deployment seam, with the Web browser suites, for relevant pull requests; it does not duplicate lint, typecheck, browser, accessibility, or release-gate suites.
 
 `cf` is the primary Cloudflare operator/deployment CLI for resource discovery, deployment inspection, and deployment actions. The Web workspace no longer carries Wrangler or OpenNext as deployment dependencies.
 
@@ -54,7 +54,7 @@ Production is deployed only by `.github/workflows/production-deploy.yml`:
 1. A push to `main` that touches the Web, API, API client or root manifests (or a manual dispatch) builds both Workers once on Linux and boots the API Worker in workerd.
 2. The `deploy` job waits for approval on the GitHub `production` Environment, whose reviewers the owner configures; its `CLOUDFLARE_API_TOKEN` secret is available only after approval.
 3. It deploys the approved build output with `cf deploy --prebuilt`, the API Worker first and then the Web Worker. The Web Worker's `V2_API` binding targets the API. Each Worker version is tagged with the commit (`--tag`/`--message`).
-4. It probes `api.zhipanda.com/health`, `/ready` and an uncached `zhipanda.com/zh`.
+4. It probes `api.zhipanda.com/health`, `/ready` and an uncached `www.zhipanda.com/zh`.
 
 Pull requests never deploy, and there is no workstation deploy script. Rolling back means deploying the previous Worker version with `cf`; [Production release and rollback](../runbooks/production-release.md) covers the procedure.
 
