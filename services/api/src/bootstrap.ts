@@ -13,6 +13,7 @@ const SECURITY_HEADERS = {
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "no-referrer",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
   "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
   "X-Frame-Options": "DENY",
 };

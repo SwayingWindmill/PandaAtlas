@@ -113,6 +113,7 @@ describe("NestJS V2 runtime", () => {
         "strict-transport-security": "max-age=31536000; includeSubDomains",
         "x-content-type-options": "nosniff",
         "referrer-policy": "no-referrer",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
         "content-security-policy": "default-src 'none'; frame-ancestors 'none'",
         "x-frame-options": "DENY",
       });
