@@ -81,7 +81,7 @@ async function destinationAfterStaffSignIn(destination: string): Promise<string>
 }
 
 async function acceptStaffInvitation(): Promise<boolean> {
-  const response = await fetch("/api/admin/staff-invitation", { method: "POST" });
+  const response = await fetch("/api/admin/staff/invitations/accept", { method: "POST" });
   // Existing staff members have no invitation. This is not an error.
   return response.ok || response.status === 404;
 }
