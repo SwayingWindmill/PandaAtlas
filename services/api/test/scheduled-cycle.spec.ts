@@ -4,6 +4,16 @@ import { runScheduledCycle } from "../src/jobs/scheduled-cycle.js";
 
 const effects = { publicCache: { purge: () => Promise.resolve() } };
 
+function recordingLogger() {
+  const entries: Array<{ level: string; message: string; fields: Record<string, unknown> | undefined }> = [];
+  return {
+    entries,
+    write: (level: string, message: string, fields?: Record<string, unknown>) => {
+      entries.push({ level, message, fields });
+    },
+  };
+}
+
 describe("runScheduledCycle", () => {
   it("runs one runner cycle with the invocation's effects inside the request-scoped database context", async () => {
     const calls: string[] = [];
@@ -24,8 +34,13 @@ describe("runScheduledCycle", () => {
       },
     };
 
-    await expect(runScheduledCycle(database, runner, "postgres://hyperdrive", effects)).resolves.toEqual({ audit: 1 });
+    const logger = recordingLogger();
+
+    await expect(runScheduledCycle(database, runner, "postgres://hyperdrive", effects, logger)).resolves.toEqual({ audit: 1 });
     expect(calls).toEqual(["open:postgres://hyperdrive", "cycle", "close"]);
+    expect(logger.entries).toEqual([
+      { level: "info", message: "Async downstream cycle completed", fields: { stages: { audit: 1 } } },
+    ]);
   });
 
   it("propagates a failed cycle so the scheduled invocation fails", async () => {
@@ -36,6 +51,11 @@ describe("runScheduledCycle", () => {
       runCycle: () => Promise.reject(new Error("outbox unavailable")),
     };
 
-    await expect(runScheduledCycle(database, runner, "postgres://hyperdrive", effects)).rejects.toThrow("outbox unavailable");
+    const logger = recordingLogger();
+
+    await expect(runScheduledCycle(database, runner, "postgres://hyperdrive", effects, logger)).rejects.toThrow("outbox unavailable");
+    expect(logger.entries).toMatchObject([
+      { level: "error", message: "Async downstream cycle failed", fields: { error: { name: "Error", message: "outbox unavailable" } } },
+    ]);
   });
 });

@@ -1,5 +1,5 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApplication } from "../src/bootstrap.js";
 import { injectHttp } from "./inject-http.js";
 
@@ -13,6 +13,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
+  vi.restoreAllMocks();
   if (app !== undefined) {
     await app.close();
     app = undefined;
@@ -54,6 +55,36 @@ describe("NestJS V2 runtime", () => {
       code: "request.notFound",
     });
     expect(response.headers["x-request-id"]).toBe(body.requestId);
+  });
+
+  it("logs one structured error entry for an unexpected failure", async () => {
+    const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    app = await createApplication();
+
+    // No database is configured, so the public release read fails unexpectedly.
+    const response = await injectHttp(app, { method: "GET", url: "/api/v2/release?locale=zh" });
+
+    expect(response.statusCode).toBe(500);
+    expect(errors).toHaveBeenCalledTimes(1);
+    expect(errors.mock.calls[0]?.[0]).toMatchObject({
+      level: "error",
+      message: "Request failed",
+      requestId: response.headers["x-request-id"],
+      method: "GET",
+      path: "/api/v2/release",
+      status: 500,
+      error: { name: "Error", message: "DATABASE_URL is not configured" },
+    });
+  });
+
+  it("does not log an expected client error", async () => {
+    const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    app = await createApplication();
+
+    const response = await injectHttp(app, { method: "GET", url: "/api/v2/missing" });
+
+    expect(response.statusCode).toBe(404);
+    expect(errors).not.toHaveBeenCalled();
   });
 
   it("exposes no HTTP trigger for async jobs; the Worker Cron Trigger runs them", async () => {
