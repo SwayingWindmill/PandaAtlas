@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Param } from "@nestjs/common";
+import { Controller, Get, Inject, Param, Query } from "@nestjs/common";
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -14,9 +14,11 @@ import {
   type PublicReadResult,
 } from "../application/public-read.application.js";
 import {
+  PandaCoversQueryDto,
   PublicEvidenceDetailDto,
   PublicLifeEventListDto,
   PublicLineageListDto,
+  PublicPandaCoverListDto,
   PublicPandaDetailDto,
   PublicPandaListDto,
   PublicPlaceDetailDto,
@@ -71,6 +73,15 @@ export class PublicReadController {
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
   public async getPanda(@Param("slug") slug: string) {
     return publicResult(await this.publicRead.getPanda(slug), "The public panda does not exist.");
+  }
+
+  @Get("panda-covers")
+  @Public()
+  @ApiOperation({ operationId: "listPublicPandaCovers", summary: "Get the cover photo of each requested panda" })
+  @ApiOkResponse({ type: PublicPandaCoverListDto })
+  @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
+  public async listPandaCovers(@Query() query: PandaCoversQueryDto) {
+    return publicResult(await this.publicRead.listPandaCovers(query.ids), "The public panda covers do not exist.");
   }
 
   @Get("places")

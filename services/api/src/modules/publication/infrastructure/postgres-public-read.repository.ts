@@ -64,6 +64,30 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     };
   }
 
+  public async listPandaCovers(
+    pandaIds: readonly string[],
+  ): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicMediaSummary[] }>> {
+    const release = await this.resolveCurrentRelease(this.database.db);
+    if (release === undefined) return { kind: "unavailable" };
+    const controls = await this.loadDeliveryControls(this.database.db);
+    const rows = await this.database.db
+      .selectFrom("public_read.media")
+      .selectAll()
+      .where("release_id", "=", release.releaseId)
+      .where("panda_id", "in", [...pandaIds])
+      .where("media_type", "like", "image/%")
+      .orderBy("panda_id")
+      .orderBy("display_order")
+      .orderBy("asset_id")
+      .execute();
+    const covers = new Map<string, PublicMediaSummary>();
+    for (const row of rows) {
+      if (covers.has(row.panda_id) || controls.panda.has(row.panda_id) || controls.media.has(row.asset_id)) continue;
+      covers.set(row.panda_id, this.mapMedia(row));
+    }
+    return { kind: "ok", value: { release, items: [...covers.values()] } };
+  }
+
   public async getPanda(slug: string): Promise<PublicReadResult<PublicPandaDetail>> {
     const release = await this.resolveCurrentRelease(this.database.db);
     if (release === undefined) return { kind: "unavailable" };

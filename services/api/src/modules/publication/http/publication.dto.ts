@@ -1,6 +1,6 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsIn, IsInt, IsOptional, IsString, Length, Max, Min } from "class-validator";
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsIn, IsInt, IsOptional, IsString, IsUUID, Length, Max, Min } from "class-validator";
 
 export class BuildPublicReleaseDto {
   @ApiProperty({ example: "2026.08.27.1", minLength: 1, maxLength: 80 })
@@ -332,6 +332,29 @@ export class PublicMediaSummaryDto {
 
   @ApiPropertyOptional({ format: "date-time" })
   public declare takenAt?: string;
+}
+
+export class PandaCoversQueryDto {
+  @ApiProperty({ description: "Comma-separated panda IDs, at most 50.", example: "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6" })
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === "string" ? value.split(",").map((id) => id.trim()).filter(Boolean) : value)
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(50)
+  @IsUUID("all", { each: true })
+  public declare ids: string[];
+}
+
+export class PublicPandaCoverListDto {
+  @ApiProperty({ type: () => PublicReadReleaseDto })
+  public declare release: PublicReadReleaseDto;
+
+  @ApiProperty({
+    type: () => PublicMediaSummaryDto,
+    isArray: true,
+    description: "The first deliverable image of each requested panda, in display order; pandas without one are omitted.",
+  })
+  public declare items: PublicMediaSummaryDto[];
 }
 
 export class PublicLineageSummaryDto {
