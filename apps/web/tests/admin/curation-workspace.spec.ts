@@ -24,14 +24,14 @@ test("Curation uses a typed paginated collection and approves a reviewed change 
     }
     const detail = {
       changeSetId, targetPandaId: pandaId, state, version: state === "draft" ? 1 : 2,
-      originKind: "review", reason: "来源机构的事实更正", createdByAccountId: "22222222-2222-4222-8222-222222222222",
-      changes: [{ changeId: "77777777-7777-4777-8777-777777777777", fieldKey: "profile.sex", assertionKey: "sex-correction", value: "female", certainty: "confirmed", lastVerifiedOn: "2026-08-26", sourceIds: ["institution-1"] }], ownerChanges: [],
+      reason: "来源机构的事实更正", createdByAccountId: "22222222-2222-4222-8222-222222222222",
+      changes: [{ changeId: "77777777-7777-4777-8777-777777777777", fieldKey: "profile.sex", assertionKey: "sex-correction", value: "female", certainty: "confirmed", lastVerifiedOn: "2026-08-26", sourceIds: ["institution-1"] }],
     };
     if (url.pathname.endsWith("/change-sets")) {
       expect(url.searchParams.get("state")).toBe("draft");
       expect(url.searchParams.get("limit")).toBe("10");
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ items: [{
-        changeSetId, targetPandaId: pandaId, state: "draft", originKind: "review", version: 1,
+        changeSetId, targetPandaId: pandaId, state: "draft", version: 1,
         reason: detail.reason, createdByAccountId: detail.createdByAccountId, createdAt: "2026-10-08T08:30:00.000Z", changeCount: 1,
       }], total: 1, limit: 10, offset: 0 }) });
     } else await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(detail) });
@@ -95,10 +95,10 @@ test("Curation never offers self-approval, even if the creator has the approval 
   await page.route("**/api/admin/curation/change-sets**", (route) => {
     const url = new URL(route.request().url());
     const data = url.pathname.endsWith("/change-sets")
-      ? { items: [{ changeSetId, targetPandaId: pandaId, state: "validated", originKind: "review", version: 2,
+      ? { items: [{ changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
         reason: "待独立审批", createdByAccountId: actor, createdAt: "2026-10-08T08:30:00.000Z", changeCount: 1 }], total: 1, limit: 10, offset: 0 }
-      : { changeSetId, targetPandaId: pandaId, state: "validated", originKind: "review", version: 2,
-        reason: "待独立审批", createdByAccountId: actor, changes: [], ownerChanges: [] };
+      : { changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
+        reason: "待独立审批", createdByAccountId: actor, changes: [] };
     return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(data) });
   });
   await page.goto("/admin/curation");
@@ -124,19 +124,19 @@ test("Curation read-only staff can inspect sourced facts without governance acti
       body: JSON.stringify(url.pathname.endsWith("/change-sets") ? {
         items: [{
           changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
-          originKind: "review", reason: "只读证据核对", changeCount: 1,
+          reason: "只读证据核对", changeCount: 1,
           createdByAccountId: "22222222-2222-4222-8222-222222222222",
           createdAt: "2026-10-08T08:30:00.000Z",
         }], total: 1, limit: 10, offset: 0,
       } : {
         changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
-        originKind: "review", reason: "只读证据核对",
+        reason: "只读证据核对",
         createdByAccountId: "22222222-2222-4222-8222-222222222222",
         changes: [{
           changeId: "77777777-7777-4777-8777-777777777777",
           fieldKey: "profile.sex", value: "female", certainty: "confirmed",
           lastVerifiedOn: "2026-08-26", sourceIds: ["official-source-01"],
-        }], ownerChanges: [],
+        }],
       }),
     });
   });

@@ -25,12 +25,6 @@ const ACCESS_PATTERNS: Array<[RegExp, Privilege]> = [
   [/\b([a-z_]+\.[a-z_]+)\(/gu, "execute"],
 ];
 
-// Access the application role deliberately lacks, each with the issue that resolves it.
-const KNOWN_GAPS = new Set([
-  "select pipeline.artifacts", // unrouted acquisition curation path, #576
-  "select pipeline.jobs", // unrouted acquisition curation path, #576
-]);
-
 function sourceFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const absolute = path.join(directory, entry.name);
@@ -85,10 +79,7 @@ describe("application role grants", () => {
       order by 1
     `.execute(database);
 
-    const missing = result.rows.filter((row) => !row.granted && !KNOWN_GAPS.has(row.entry)).map((row) => row.entry);
+    const missing = result.rows.filter((row) => !row.granted).map((row) => row.entry);
     expect(missing).toEqual([]);
-
-    const resolvedGaps = result.rows.filter((row) => row.granted && KNOWN_GAPS.has(row.entry)).map((row) => row.entry);
-    expect(resolvedGaps).toEqual([]);
   });
 });

@@ -32,15 +32,6 @@ const stateLabels: Record<CurationState, string> = {
   draft: "待核验", validated: "已核验", approved: "已批准", applied: "已应用", rejected: "已拒绝",
 };
 const states: readonly CurationState[] = ["draft", "validated", "approved", "applied", "rejected"];
-const ownerModuleLabels: Record<string, string> = {
-  panda: "熊猫档案", lineage: "谱系关系", life_history: "生活史",
-};
-const operationLabels: Record<string, string> = {
-  "fact.propose": "提出事实", "fact.corroborate": "补充事实佐证", "fact.dispute": "提出事实争议",
-  "name.add": "新增名称", "name.corroborate": "核验名称",
-  "external_identifier.add": "新增外部标识", "external_identifier.corroborate": "核验外部标识",
-  "parentage.create": "建立亲子关系", "residency.create": "新增居住记录", "event.create": "新增生命事件",
-};
 const factLabels: Record<string, string> = {
   "profile.sex": "性别", "profile.name": "名称", "profile.birth_date": "出生日期", "profile.death_date": "死亡日期",
 };
@@ -179,7 +170,7 @@ export function CurationWorkspace() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h2 className="text-lg font-semibold leading-6 text-slate-950">{detail.data.reason}</h2>
-                <p className="mt-1.5 text-sm text-slate-600">关联熊猫 {detail.data.targetPandaId.slice(0, 8)} · {detail.data.originKind === "review" ? "来自贡献审核" : "来自资料采集"}</p>
+                <p className="mt-1.5 text-sm text-slate-600">关联熊猫 {detail.data.targetPandaId.slice(0, 8)} · 来自贡献审核</p>
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="bg-white font-normal text-slate-700">{stateLabels[detail.data.state as CurationState]}</Badge>
@@ -194,8 +185,7 @@ export function CurationWorkspace() {
                 <p>熊猫 ID：{detail.data.targetPandaId}</p>
                 <p>创建人 ID：{detail.data.createdByAccountId}</p>
                 <p>变更版本：{detail.data.version}</p>
-                {detail.data.reviewCaseId && <p>审核案件：{detail.data.reviewCaseId}</p>}
-                {detail.data.acquisitionBundleId && <p>采集批次：{detail.data.acquisitionBundleId}</p>}
+                <p>审核案件：{detail.data.reviewCaseId}</p>
               </CollapsibleContent>
             </Collapsible>
           </div>
@@ -213,19 +203,6 @@ export function CurationWorkspace() {
                 <Collapsible className="mt-2 text-xs"><CollapsibleTrigger className="min-h-8 font-medium text-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2">查看来源标识</CollapsibleTrigger><CollapsibleContent><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p>{change.appliedAssertionId && <p className="mt-1 break-all font-mono text-slate-700">已应用事实：{change.appliedAssertionId}</p>}</CollapsibleContent></Collapsible>
               </li>)}
             </ul>}
-            {detail.data.ownerChanges.length > 0 && <>
-              <div className="flex items-center justify-between gap-3"><h3 className="text-sm font-semibold text-slate-950">领域变更与来源</h3><span className="text-xs text-slate-600">{detail.data.ownerChanges.length} 项</span></div>
-              <ul className="divide-y divide-slate-100 border-y border-slate-200">
-                {detail.data.ownerChanges.map((change) => <li key={change.changeId} className="py-3">
-                  <p className="text-sm font-semibold text-slate-950">{ownerModuleLabels[change.ownerModule] ?? change.ownerModule} · {operationLabels[change.operation] ?? `原始操作：${change.operation}`}</p>
-                  <p className="mt-1 text-xs text-slate-600">证据核验：{change.lastVerifiedOn} · 来源 {change.sourceIds.length} 项</p>
-                  <Collapsible className="mt-2 text-xs"><CollapsibleTrigger className="min-h-8 font-medium text-teal-800">查看结构化变更字段</CollapsibleTrigger>
-                    <CollapsibleContent><dl className="mt-2 space-y-1">{Object.entries(change.payload).map(([key, value]) => <div key={key}><dt className="text-slate-600">原始字段：{key}</dt><dd className="break-all text-slate-900">{displayValue(value)}</dd></div>)}</dl></CollapsibleContent>
-                  </Collapsible>
-                  <Collapsible className="mt-2 text-xs"><CollapsibleTrigger className="min-h-8 font-medium text-teal-800">查看来源标识（{change.sourceIds.length}）</CollapsibleTrigger><CollapsibleContent><p className="mt-2 break-all font-mono text-slate-700">{change.sourceIds.join("、")}</p></CollapsibleContent></Collapsible>
-                </li>)}
-              </ul>
-            </>}
           </div>
           {canManage && detail.data.state === "draft" && <div className="border-t border-slate-200 bg-slate-50/50 px-6 py-5">
             <h3 className="text-sm font-semibold text-slate-950">下一步：确认来源与事实</h3>
@@ -263,7 +240,7 @@ export function CurationWorkspace() {
             <AlertDialogTitle>确认审批并应用档案变更？</AlertDialogTitle>
             <AlertDialogDescription>此次操作会将所选变更立即应用至内部档案；公开发布仍需单独处理。请确认不是由变更创建人自行审批。</AlertDialogDescription>
           </AlertDialogHeader>
-          <p className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800">{detail.data?.reason} · {detail.data ? detail.data.changes.length + detail.data.ownerChanges.length : 0} 项变更</p>
+          <p className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800">{detail.data?.reason} · {detail.data ? detail.data.changes.length : 0} 项变更</p>
           <AlertDialogFooter>
             <AlertDialogCancel>取消</AlertDialogCancel>
             <AlertDialogAction disabled={busy || isCreator || !selectedId} onClick={() => {

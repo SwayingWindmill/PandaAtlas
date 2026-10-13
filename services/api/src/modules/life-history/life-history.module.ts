@@ -7,13 +7,11 @@ import { PLACE_REFERENCE_PORT, type PlaceReferencePort } from "../places/applica
 import { PlacesModule } from "../places/places.module.js";
 import { LIFE_HISTORY_PUBLICATION_PORT } from "./application/life-history-publication.application.js";
 import {
-  LIFE_HISTORY_CURATION_PARTICIPANT,
   LIFE_HISTORY_PORT,
   LIFE_HISTORY_REPOSITORY,
   LifeHistoryApplication,
   type LifeHistoryRepository,
 } from "./application/life-history.application.js";
-import { PostgresLifeHistoryCurationParticipant } from "./infrastructure/postgres-life-history-curation.participant.js";
 import { PostgresLifeHistoryPublicationQuery } from "./infrastructure/postgres-life-history-publication.query.js";
 import { PostgresLifeHistoryRepository } from "./infrastructure/postgres-life-history.repository.js";
 
@@ -35,14 +33,10 @@ import { PostgresLifeHistoryRepository } from "./infrastructure/postgres-life-hi
       inject: [LIFE_HISTORY_REPOSITORY, PANDA_REFERENCE_PORT, PLACE_REFERENCE_PORT],
     },
     {
-      provide: LIFE_HISTORY_CURATION_PARTICIPANT,
-      useClass: PostgresLifeHistoryCurationParticipant,
-    },
-    {
       provide: LIFE_HISTORY_PUBLICATION_PORT,
       useFactory: () => new PostgresLifeHistoryPublicationQuery(),
     },
   ],
-  exports: [LIFE_HISTORY_PORT, LIFE_HISTORY_CURATION_PARTICIPANT, LIFE_HISTORY_PUBLICATION_PORT],
+  exports: [LIFE_HISTORY_PORT, LIFE_HISTORY_PUBLICATION_PORT],
 })
 export class LifeHistoryModule {}
