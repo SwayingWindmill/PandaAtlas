@@ -16,7 +16,8 @@ This page is the current deployment source of truth. Historical migration, Verce
 | API -> database | Cloudflare Hyperdrive -> Supabase PostgreSQL/PostGIS (AWS `ap-northeast-1`); the API Worker uses `placement.region: "aws:ap-northeast-1"` so its sequential queries stay near the database | `services/api/cloudflare.config.ts`, `services/api/src/platform/database/database.service.ts` |
 | API -> Web transport | Cloudflare service binding `PUBLIC_WEB` | `services/api/cloudflare.config.ts` |
 | Identity | Supabase Auth | Nest Identity/auth modules and Supabase configuration |
-| Public media | Cloudflare R2 (private bucket); allowlisted full photo GETs are kept in the Workers edge cache, ranges/HEAD/videos read R2 | Web Worker `HOME_MEDIA` binding, `apps/web/worker/media.mjs`, and reviewed media publication inputs |
+| Public media | Cloudflare R2 (private bucket); allowlisted photos (immutable) and home videos are served through Workers Cache, which also answers conditional and range requests | Web Worker `HOME_MEDIA` binding, `apps/web/worker/media.mjs`, and reviewed media publication inputs |
+| Public page cache | Workers Cache on the Web Worker: successful public page and RSC renders, `robots.txt` and `sitemap.xml` carry `Cloudflare-CDN-Cache-Control: public, max-age=600, stale-while-revalidate=86400`; every other response is `private, no-store`; each deploy starts a cold cache | `cache.enabled` in `apps/web/cloudflare.config.ts`, `apps/web/worker/edge-cache.mjs` |
 | Web incremental cache | No dedicated R2/DO topology; the current Web application has no positive ISR/tag/data-cache contract | `apps/web/cloudflare.config.ts`, `docs/research/vinext-cloudflare-web-runtime-2026-10-03.md` |
 | DNS/custom domains | Cloudflare; production is served only through these custom domains (`workersDev: false`), so zone WAF, rate-limit and HTTPS rules cover every public request | Web domains `zhipanda.com` / `www.zhipanda.com`; API domain `api.zhipanda.com`; enforced by `scripts/release/tests/cloudflare-production-surface.test.mjs` |
 | Short async trigger | Cloudflare Cron Trigger (`*/5 * * * *`) on `zhipanda-v2-api` runs one bounded Nest downstream cycle in the Worker `scheduled` handler | `services/api/cloudflare.config.ts`, `services/api/worker/index.mjs` |
@@ -26,7 +27,7 @@ This page is the current deployment source of truth. Historical migration, Verce
 
 The Cloudflare account currently serves:
 
-- `zhipanda-v2-web`, compatibility date `2026-10-01`, with `nodejs_compat`, the `HOME_MEDIA` R2 binding, and a `V2_API` service binding to `zhipanda-v2-api`; the retired OpenNext cache R2/self bindings are absent, and the OpenNext `DOQueueHandler` / `DOShardedTagCache` Durable Object namespaces are retired by `state: "deleted"` exports in `apps/web/cloudflare.config.ts`;
+- `zhipanda-v2-web`, compatibility date `2026-10-01`, with `nodejs_compat`, Workers Cache enabled, the `HOME_MEDIA` R2 binding, and a `V2_API` service binding to `zhipanda-v2-api`; the retired OpenNext cache R2/self bindings are absent, and the OpenNext `DOQueueHandler` / `DOShardedTagCache` Durable Object namespaces are retired by `state: "deleted"` exports in `apps/web/cloudflare.config.ts`;
 - `zhipanda-v2-api`, compatibility date `2026-10-01`, with `nodejs_compat`, `enable_nodejs_http_server_modules`, Hyperdrive, and a service binding to `zhipanda-v2-web`.
 
 `https://zhipanda.com/zh` is served by the vinext-based `zhipanda-v2-web` Worker. `https://api.zhipanda.com/health` is served through Cloudflare. The former stable Vercel Web/API URLs return `DEPLOYMENT_DISABLED` and are not production fallbacks.

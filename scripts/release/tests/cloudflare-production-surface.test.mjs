@@ -17,6 +17,10 @@ test("production Workers are reachable only through zhipanda.com custom domains"
   }
 });
 
+test("the production Web Worker serves cacheable responses from Workers Cache", () => {
+  assert.deepEqual(workers.web.cache, { enabled: true });
+});
+
 test("the production API runs next to its Supabase database region", () => {
   assert.deepEqual(workers.api.placement, { region: "aws:ap-northeast-1" });
   assert.equal(workers.web.placement, undefined);

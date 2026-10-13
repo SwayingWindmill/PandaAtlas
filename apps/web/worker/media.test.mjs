@@ -36,80 +36,41 @@ function fakeBucket() {
   };
 }
 
-// Like the Workers Cache API, every match returns a fresh Response rather than a tee of a stored one.
-function fakeCache() {
-  const store = new Map();
-  const calls = [];
-  return {
-    calls,
-    async match(request) {
-      calls.push(`match:${request.url}`);
-      const entry = store.get(request.url);
-      return entry && new Response(entry.body, { status: entry.status, headers: entry.headers });
-    },
-    async put(request, response) {
-      calls.push(`put:${request.url}`);
-      store.set(request.url, {
-        body: await response.arrayBuffer(),
-        status: response.status,
-        headers: [...response.headers],
-      });
-    },
-  };
-}
-
 function setup() {
   const bucket = fakeBucket();
-  const cache = fakeCache();
-  const pending = [];
-  const context = { waitUntil: (promise) => pending.push(promise) };
-  const serve = async (path, init) => {
-    const response = await serveMedia(new Request(`https://zhipanda.com${path}`, init), { HOME_MEDIA: bucket }, context, {
-      cache,
-      photos: new Set([PHOTO_KEY]),
-      videos: new Set(["clip.webm"]),
-    });
-    await Promise.all(pending.splice(0));
-    return response;
-  };
-  return { bucket, cache, serve };
+  const serve = (path, init) => serveMedia(new Request(`https://zhipanda.com${path}`, init), { HOME_MEDIA: bucket }, {
+    photos: new Set([PHOTO_KEY]),
+    videos: new Set(["clip.webm"]),
+  });
+  return { bucket, serve };
 }
 
-test("a published photo is read from R2 once and then served from the edge cache", async () => {
-  const { bucket, cache, serve } = setup();
-
-  const first = await serve(`/media/${PHOTO_KEY}`);
-  assert.equal(first.status, 200);
-  assert.equal(await first.text(), "0123456789");
-  assert.equal(first.headers.get("Cache-Control"), "public, max-age=31536000, immutable");
-
-  const second = await serve(`/media/${PHOTO_KEY}?utm=1`);
-  assert.equal(second.status, 200);
-  assert.equal(await second.text(), "0123456789");
+test("a published photo is immutable so Workers Cache keeps it at the edge", async () => {
+  const { bucket, serve } = setup();
+  const response = await serve(`/media/${PHOTO_KEY}`);
+  assert.equal(response.status, 200);
+  assert.equal(await response.text(), "0123456789");
+  assert.equal(response.headers.get("Cache-Control"), "public, max-age=31536000, immutable");
+  assert.equal(response.headers.get("ETag"), '"etag-1"');
   assert.deepEqual(bucket.calls, [`get:${PHOTO_KEY}`]);
-  assert.deepEqual(cache.calls.filter((call) => call.startsWith("put")), [`put:https://zhipanda.com/media/${PHOTO_KEY}`]);
 });
 
-test("a matching If-None-Match on a cached photo returns 304 without reading R2", async () => {
-  const { bucket, serve } = setup();
-  await serve(`/media/${PHOTO_KEY}`);
-
+test("a matching If-None-Match returns 304", async () => {
+  const { serve } = setup();
   const conditional = await serve(`/media/${PHOTO_KEY}`, { headers: { "If-None-Match": '"etag-1"' } });
   assert.equal(conditional.status, 304);
   assert.equal(conditional.headers.get("ETag"), '"etag-1"');
-  assert.equal(bucket.calls.length, 1);
 });
 
-test("an unpublished key is 404 and never touches the cache or R2", async () => {
-  const { bucket, cache, serve } = setup();
+test("an unpublished key is 404 and never touches R2", async () => {
+  const { bucket, serve } = setup();
   const response = await serve("/media/pandas/photos/unpublished.webp");
   assert.equal(response.status, 404);
   assert.deepEqual(bucket.calls, []);
-  assert.deepEqual(cache.calls, []);
 });
 
-test("range, HEAD and video requests bypass the cache with unchanged responses", async () => {
-  const { bucket, cache, serve } = setup();
+test("range, HEAD and video requests read R2 directly", async () => {
+  const { bucket, serve } = setup();
 
   const partial = await serve(`/media/${PHOTO_KEY}`, { headers: { Range: "bytes=2-5" } });
   assert.equal(partial.status, 206);
@@ -125,7 +86,6 @@ test("range, HEAD and video requests bypass the cache with unchanged responses",
   assert.equal(video.status, 200);
   assert.equal(video.headers.get("Cache-Control"), "public, max-age=3600");
 
-  assert.deepEqual(cache.calls, []);
   assert.deepEqual(bucket.calls, [`get:${PHOTO_KEY}`, `head:${PHOTO_KEY}`, `get:${VIDEO_KEY}`]);
 });
 
