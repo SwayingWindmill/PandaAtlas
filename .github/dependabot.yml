@@ -1,0 +1,44 @@
+# Version updates as reviewable pull requests (#573). Groups keep packages that must move together in
+# one pull request; runtime-status records why the Cloudflare toolchain is on prereleases.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 6
+    groups:
+      cloudflare-toolchain:
+        patterns: ["cf", "@cloudflare/*", "vinext", "vite", "@vitejs/*", "wrangler", "workerd", "miniflare"]
+      tailwind:
+        # The Linux native binaries pinned in apps/web optionalDependencies must match tailwindcss.
+        patterns: ["tailwindcss", "@tailwindcss/*", "lightningcss*"]
+      nestjs:
+        patterns: ["@nestjs/*", "reflect-metadata", "rxjs", "class-transformer", "class-validator"]
+      react-next:
+        patterns: ["react", "react-dom", "react-server-dom-webpack", "next", "eslint-config-next", "@types/react", "@types/react-dom"]
+      supabase:
+        patterns: ["@supabase/*", "supabase"]
+      testing:
+        patterns: ["vitest", "@vitest/*", "@playwright/test", "@axe-core/*", "light-my-request"]
+      lint-and-types:
+        patterns: ["eslint", "@eslint/*", "typescript", "typescript-eslint", "@types/*", "globals", "dependency-cruiser"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  - package-ecosystem: uv
+    directory: "/tools/panda-data"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      panda-data:
+        patterns: ["*"]
