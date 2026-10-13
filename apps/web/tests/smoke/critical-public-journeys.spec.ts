@@ -34,7 +34,17 @@ test("redirects the legacy global distribution route into the localized structur
 });
 
 test("does not expose the staff console or its API while the admin shell is disabled", async ({ request }) => {
-  for (const path of ["/admin", "/admin/reviews", "/api/admin/session", "/api/admin/review/cases"]) {
+  const paths = [
+    "/admin",
+    "/admin/reviews",
+    "/api/admin/session",
+    "/api/admin/review/cases",
+    // The router decodes and collapses slashes before matching, so these reach the same routes.
+    "/%61dmin",
+    "/api/%61dmin/session",
+    "/api//admin/session",
+  ];
+  for (const path of paths) {
     const response = await request.get(path, { maxRedirects: 0 });
 
     expect(response.status(), path).toBe(404);

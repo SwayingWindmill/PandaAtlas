@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
+import { isAdminPath, isAdminShellEnabled } from "@/lib/server/admin-shell";
 import { refreshSupabaseSession } from "@/lib/supabase/middleware";
 
 function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
@@ -45,16 +46,6 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   return null;
 }
 
-// The staff console and its API exist only where the admin shell is explicitly enabled.
-function isAdminPath(pathname: string): boolean {
-  return pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin/");
-}
-
-function isAdminShellEnabled(): boolean {
-  const value = process.env.ADMIN_SHELL_ENABLED?.trim().toLowerCase();
-  return value === "true" || value === "1";
-}
-
 export async function proxy(request: NextRequest) {
   if (isAdminPath(request.nextUrl.pathname) && !isAdminShellEnabled()) {
     return new NextResponse("Not found", { status: 404, headers: { "Cache-Control": "no-store, private" } });
@@ -78,7 +69,7 @@ export async function proxy(request: NextRequest) {
     refreshedResponse.headers.set("Pragma", "no-cache");
     refreshedResponse.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
   }
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+  if (isAdminPath(pathname)) {
     refreshedResponse.headers.set(
       "Cache-Control",
       "no-store, no-cache, private, max-age=0, must-revalidate",
