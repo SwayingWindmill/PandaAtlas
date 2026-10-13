@@ -4,16 +4,6 @@ import { DatabaseService } from "../../platform/database/database.service.js";
 import { EvidenceModule } from "../evidence/evidence.module.js";
 import { EVIDENCE_PORT, type EvidencePort } from "../evidence/application/evidence.application.js";
 import {
-  LIFE_HISTORY_CURATION_PARTICIPANT,
-  type LifeHistoryCurationParticipant,
-} from "../life-history/application/life-history.application.js";
-import { LifeHistoryModule } from "../life-history/life-history.module.js";
-import {
-  LINEAGE_CURATION_PARTICIPANT,
-  type LineageCurationParticipant,
-} from "../lineage/application/lineage.application.js";
-import { LineageModule } from "../lineage/lineage.module.js";
-import {
   PANDA_CURATION_PARTICIPANT,
   PANDA_REFERENCE_PORT,
   type PandaCurationParticipant,
@@ -34,7 +24,7 @@ import { PostgresCurationApplyCoordinator } from "./infrastructure/postgres-cura
 import { PostgresCurationRepository } from "./infrastructure/postgres-curation.repository.js";
 
 @Module({
-  imports: [DatabaseModule, EvidenceModule, PandaModule, LineageModule, LifeHistoryModule],
+  imports: [DatabaseModule, EvidenceModule, PandaModule],
   controllers: [CurationController],
   providers: [
     {
@@ -49,16 +39,8 @@ import { PostgresCurationRepository } from "./infrastructure/postgres-curation.r
         database: DatabaseService,
         repository: PostgresCurationRepository,
         pandas: PandaCurationParticipant,
-        lineage: LineageCurationParticipant,
-        lifeHistory: LifeHistoryCurationParticipant,
-      ) => new PostgresCurationApplyCoordinator(database, repository, pandas, lineage, lifeHistory),
-      inject: [
-        DatabaseService,
-        PostgresCurationRepository,
-        PANDA_CURATION_PARTICIPANT,
-        LINEAGE_CURATION_PARTICIPANT,
-        LIFE_HISTORY_CURATION_PARTICIPANT,
-      ],
+      ) => new PostgresCurationApplyCoordinator(database, repository, pandas),
+      inject: [DatabaseService, PostgresCurationRepository, PANDA_CURATION_PARTICIPANT],
     },
     { provide: CURATION_APPLY_COORDINATOR, useExisting: PostgresCurationApplyCoordinator },
     {

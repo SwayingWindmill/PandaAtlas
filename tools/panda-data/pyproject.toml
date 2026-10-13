@@ -17,14 +17,14 @@ dependencies = [
 
 [project.optional-dependencies]
 crawler = [
-  "scrapling[fetchers]==0.4.8",
-  "scrapy==2.17.0",
+  "scrapling[fetchers]==0.4.15",
+  "scrapy==2.19.0",
 ]
 media = [
   "pillow>=12,<13",
 ]
 dev = [
-  "pytest>=8.4,<9",
+  "pytest>=8.4,<10",
   "ruff>=0.12,<1",
 ]
 
