@@ -21,8 +21,7 @@
     "db:verify-v1-retirement": "node scripts/migration/verify-v1-retirement.mjs",
     "check:architecture": "npm run check:architecture:v2 --prefix ../..",
     "build:cloudflare": "npm run build:local && vite build --mode production",
-    "check:worker-boot": "node scripts/check-worker-boot.mjs",
-    "deploy:cloudflare": "npm run build:cloudflare && cf deploy --prebuilt --mode production"
+    "check:worker-boot": "node scripts/check-worker-boot.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
