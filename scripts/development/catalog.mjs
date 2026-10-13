@@ -343,7 +343,8 @@ const commands = [
       "scripts/development/tests/operations.test.mjs",
       "scripts/development/tests/verification-workflow.test.mjs",
     ],
-    requires: ["node"],
+    // cloudflare-production-surface loads both cloudflare.config.ts files, which import cf.
+    requires: ["node", "node_modules"],
     effect: "generated-output",
   },
   {

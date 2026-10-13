@@ -118,6 +118,8 @@ npm run verify:dev:list
 npm run verify:dev
 ```
 
+CI runs the same planner: a pull request verifies the scopes it changed (`--base origin/main`), and every push to `main` verifies all scopes (`--all`), and runs the API integration suite against local Supabase; a push to `main` that touches the Web, API, API client or root manifests also repeats the Cloudflare deployability build with the browser suites. A merge result is therefore verified as a whole, and runs on `main` are never cancelled by a later push.
+
 Repository hygiene and research policy remain explicit checks:
 
 ```powershell
