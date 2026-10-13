@@ -25,7 +25,8 @@ test("every pull request reaches the shared planner and API scopes run database-
   assert.match(workflow, /requires_python: \$\{\{ steps\.plan\.outputs\.requires_python \}\}/);
   assert.match(workflow, /requires_uv: \$\{\{ steps\.plan\.outputs\.requires_uv \}\}/);
   assert.match(workflow, /if: needs\.plan\.outputs\.requires_python == 'true'/);
-  assert.match(workflow, /actions\/setup-python@v6\.3\.0/);
+  // An exact release pin; Dependabot moves the version.
+  assert.match(workflow, /actions\/setup-python@v\d+\.\d+\.\d+\b/u);
   assert.match(workflow, /if: needs\.plan\.outputs\.requires_uv == 'true'/);
   assert.match(workflow, /python -m pip install uv==\$\{\{ env\.UV_VERSION \}\}/);
   assert.match(workflow, /npm run infra:start/);
