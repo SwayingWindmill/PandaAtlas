@@ -36,7 +36,7 @@ const factLabels: Record<string, string> = {
   "profile.sex": "性别", "profile.name": "名称", "profile.birth_date": "出生日期", "profile.death_date": "死亡日期",
 };
 
-function displayValue(value: unknown, fieldKey?: string): string {
+function displayValue(value: unknown, fieldKey: string): string {
   if (fieldKey === "profile.sex" && typeof value === "string") {
     return ({ male: "雄性", female: "雌性", unknown: "未知" } as Record<string, string>)[value] ?? value;
   }

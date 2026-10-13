@@ -3,6 +3,13 @@ import { expect, test } from "@playwright/test";
 
 const changeSetId = "55555555-5555-4555-8555-555555555555";
 const pandaId = "66666666-6666-4666-8666-666666666666";
+// Every curation change set comes from a contributor review.
+const reviewOrigin = {
+  reviewCaseId: "99999999-9999-4999-8999-999999999999",
+  decisionId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  submissionId: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+  revisionNumber: 1,
+};
 
 test("Curation uses a typed paginated collection and approves a reviewed change without JSON operations", async ({ page }) => {
   let state: "draft" | "validated" | "applied" = "draft";
@@ -23,7 +30,7 @@ test("Curation uses a typed paginated collection and approves a reviewed change 
       } else if (action === "validate") state = "validated";
     }
     const detail = {
-      changeSetId, targetPandaId: pandaId, state, version: state === "draft" ? 1 : 2,
+      changeSetId, targetPandaId: pandaId, state, version: state === "draft" ? 1 : 2, ...reviewOrigin,
       reason: "来源机构的事实更正", createdByAccountId: "22222222-2222-4222-8222-222222222222",
       changes: [{ changeId: "77777777-7777-4777-8777-777777777777", fieldKey: "profile.sex", assertionKey: "sex-correction", value: "female", certainty: "confirmed", lastVerifiedOn: "2026-08-26", sourceIds: ["institution-1"] }],
     };
@@ -97,7 +104,7 @@ test("Curation never offers self-approval, even if the creator has the approval 
     const data = url.pathname.endsWith("/change-sets")
       ? { items: [{ changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
         reason: "待独立审批", createdByAccountId: actor, createdAt: "2026-10-08T08:30:00.000Z", changeCount: 1 }], total: 1, limit: 10, offset: 0 }
-      : { changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
+      : { changeSetId, targetPandaId: pandaId, state: "validated", version: 2, ...reviewOrigin,
         reason: "待独立审批", createdByAccountId: actor, changes: [] };
     return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(data) });
   });
@@ -129,7 +136,7 @@ test("Curation read-only staff can inspect sourced facts without governance acti
           createdAt: "2026-10-08T08:30:00.000Z",
         }], total: 1, limit: 10, offset: 0,
       } : {
-        changeSetId, targetPandaId: pandaId, state: "validated", version: 2,
+        changeSetId, targetPandaId: pandaId, state: "validated", version: 2, ...reviewOrigin,
         reason: "只读证据核对",
         createdByAccountId: "22222222-2222-4222-8222-222222222222",
         changes: [{
