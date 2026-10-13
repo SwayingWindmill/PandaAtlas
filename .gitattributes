@@ -1,1 +1,2 @@
 data/public-releases/** text eol=lf
+apps/web/public/_headers text eol=lf
