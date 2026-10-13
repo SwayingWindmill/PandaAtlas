@@ -103,9 +103,8 @@ export class StaffInvitationsService {
       if (!session.rows[0]?.live) {
         throw new ProblemException(403, "auth.liveSessionRequired", "A live Supabase session is required.");
       }
-      const verified = await sql<{ email: string }>`
-        select email from auth.users
-        where id = ${accountId}::uuid and email_confirmed_at is not null
+      const verified = await sql<{ email: string | null }>`
+        select email from identity.auth_email_status(${accountId}::uuid) where email_confirmed
       `.execute(tx);
       if (verified.rows[0]?.email?.toLowerCase() !== invitation.email) {
         throw new ProblemException(403, "identity.invitationNotVerified", "Verify the invited email address first.");

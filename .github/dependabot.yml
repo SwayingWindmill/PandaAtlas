@@ -1,0 +1,57 @@
+# Version updates as reviewable pull requests (#573). Groups keep packages that must move together in
+# one pull request; runtime-status records why the Cloudflare toolchain is on prereleases.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    ignore:
+      # Its 2.0 betas are named by commit hash, so semver order is not release order and an update could
+      # move backwards. Only the first stable 2.x is proposed; until then it is updated by hand.
+      - dependency-name: "@cloudflare/vite-plugin"
+        versions: ["< 2.0.0"]
+      # Pinned with the local Supabase stack; the operations catalog runs the same version by name.
+      - dependency-name: "supabase"
+      # Must equal the lightningcss version @tailwindcss/node pins, which is not the newest release.
+      - dependency-name: "lightningcss-linux-x64-gnu"
+    groups:
+      cloudflare-toolchain:
+        patterns: ["cf", "@cloudflare/*", "vinext", "vite", "@vitejs/*"]
+      tailwind:
+        # Includes the Linux oxide binary pinned in apps/web optionalDependencies, which tracks tailwindcss.
+        patterns: ["tailwindcss", "@tailwindcss/*"]
+      nestjs:
+        patterns: ["@nestjs/*", "reflect-metadata", "rxjs", "class-transformer", "class-validator"]
+      react-next:
+        patterns: ["react", "react-dom", "react-server-dom-webpack", "next", "eslint-config-next", "@types/react", "@types/react-dom"]
+      supabase:
+        patterns: ["@supabase/*", "supabase"]
+      testing:
+        patterns: ["vitest", "@vitest/*", "@playwright/test", "@axe-core/*", "light-my-request"]
+      lint-and-types:
+        patterns: ["eslint", "@eslint/*", "typescript", "typescript-eslint", "@types/*", "globals", "dependency-cruiser"]
+      # Everything else: one pull request for minor and patch updates; majors stay individual.
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  - package-ecosystem: uv
+    directory: "/tools/panda-data"
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      panda-data:
+        patterns: ["*"]

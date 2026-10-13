@@ -16,7 +16,7 @@ import {
   renderDevelopmentCommand,
   resolveDevelopmentInvocation,
 } from "../operations.mjs";
-import { classifyDevelopmentScopes } from "../verify.mjs";
+import { classifyDevelopmentScopes, createPlanForScopes, developmentPlanOutputs } from "../verify.mjs";
 
 const repoRoot = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -213,4 +213,9 @@ test("local Supabase enables native TOTP enrollment and verification for the sta
   assert.ok(totp, "Supabase TOTP settings must be explicitly configured");
   assert.match(totp, /^enroll_enabled\s*=\s*true\s*$/m);
   assert.match(totp, /^verify_enabled\s*=\s*true\s*$/m);
+});
+
+test("the release scope installs workspace dependencies, because its tests load cloudflare.config.ts", () => {
+  // A workflow-only pull request plans only the release scope (#572).
+  assert.equal(developmentPlanOutputs(createPlanForScopes(["release"])).requires_node_modules, "true");
 });
