@@ -25,8 +25,8 @@ export class HealthController {
   public async ready(): Promise<{ status: "ok" }> {
     try {
       await this.readiness.check();
-    } catch {
-      throw new ServiceUnavailableException("A required dependency is unavailable");
+    } catch (cause) {
+      throw new ServiceUnavailableException("A required dependency is unavailable", { cause });
     }
     return { status: "ok" };
   }

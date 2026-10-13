@@ -24,7 +24,6 @@ export interface EnvironmentConfig {
   AUTH_RECENT_WINDOW_SECONDS: number;
   AUTH_JWKS_TIMEOUT_MS: number;
   LOG_LEVEL: LogLevel;
-  OTEL_SERVICE_NAME: string;
   RESEND_API_KEY: string | undefined;
   RESEND_FROM_EMAIL: string | undefined;
 }
@@ -169,7 +168,6 @@ export function validateEnvironment(
       30_000,
     ),
     LOG_LEVEL: rawLogLevel as LogLevel,
-    OTEL_SERVICE_NAME: optionalString(input.OTEL_SERVICE_NAME) ?? "zhipanda-api",
     RESEND_API_KEY: optionalString(input.RESEND_API_KEY),
     RESEND_FROM_EMAIL: optionalString(input.RESEND_FROM_EMAIL),
   };
@@ -259,10 +257,6 @@ export class AppConfig {
 
   public get logLevel(): LogLevel {
     return this.config.get("LOG_LEVEL", { infer: true });
-  }
-
-  public get otelServiceName(): string {
-    return this.config.get("OTEL_SERVICE_NAME", { infer: true });
   }
 
   public get resendApiKey(): string | undefined {

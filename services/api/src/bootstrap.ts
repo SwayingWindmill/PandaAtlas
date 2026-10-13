@@ -3,7 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { ExpressAdapter, type NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./app.module.js";
 import { AppConfig } from "./platform/config/app-config.js";
-import { PinoLoggerService } from "./platform/observability/pino-logger.service.js";
+import { StructuredLoggerService } from "./platform/observability/structured-logger.service.js";
 
 const BODY_LIMIT = "1mb";
 
@@ -12,7 +12,7 @@ const BODY_LIMIT = "1mb";
 export async function configureApplication(
   app: NestExpressApplication,
 ): Promise<NestExpressApplication> {
-  app.useLogger(app.get(PinoLoggerService));
+  app.useLogger(app.get(StructuredLoggerService));
   const config = app.get(AppConfig);
 
   app.disable("x-powered-by");

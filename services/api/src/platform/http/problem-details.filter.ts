@@ -5,7 +5,8 @@ import {
   type ExceptionFilter,
 } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
-import { STATUS_CODES } from "node:http";
+import { STATUS_CODES, type IncomingMessage } from "node:http";
+import { serializeError, StructuredLoggerService } from "../observability/structured-logger.service.js";
 import { RequestContextService } from "../request-context/request-context.service.js";
 import { ProblemException } from "./problem.exception.js";
 
@@ -72,11 +73,22 @@ export class ProblemDetailsFilter implements ExceptionFilter {
   public constructor(
     private readonly context: RequestContextService,
     private readonly adapterHost: HttpAdapterHost,
+    private readonly logger: StructuredLoggerService,
   ) {}
 
   public catch(exception: unknown, host: ArgumentsHost): void {
-    const response = host.switchToHttp().getResponse<unknown>();
+    const http = host.switchToHttp();
+    const response = http.getResponse<unknown>();
     const status = exception instanceof HttpException ? exception.getStatus() : 500;
+    if (status >= 500) {
+      const request = http.getRequest<IncomingMessage>();
+      this.logger.write("error", "Request failed", {
+        method: request.method,
+        path: (request.url ?? "").split("?", 1)[0],
+        status,
+        error: serializeError(exception),
+      });
+    }
     const requestId = this.context.current?.requestId ?? "unavailable";
     const errors = validationErrors(exception);
     const problem: ProblemDetails = {

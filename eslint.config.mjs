@@ -42,7 +42,6 @@ export default tseslint.config(
             "fastify",
             "kysely",
             "pg",
-            "pino",
             "@sentry/*",
             "@opentelemetry/*",
             "../../../platform/*",
@@ -63,7 +62,6 @@ export default tseslint.config(
             "fastify",
             "kysely",
             "pg",
-            "pino",
             "@sentry/*",
             "@opentelemetry/*"
           ],
