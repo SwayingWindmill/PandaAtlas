@@ -12,9 +12,13 @@ test("every pull request reaches the shared planner and API scopes run database-
     "utf8",
   );
 
-  assert.match(workflow, /on:\s*\n\s*pull_request:\s*\n/u);
-  assert.doesNotMatch(workflow, /pull_request:\s*\n\s*paths:/u);
-  assert.match(workflow, /npm run verify:dev -- --base origin\/\$\{\{ github\.base_ref \}\}/);
+  assert.match(workflow, /on:\s*\r?\n\s*pull_request:\s*\r?\n/u);
+  assert.doesNotMatch(workflow, /pull_request:\s*\r?\n\s*paths:/u);
+  // Pull requests verify their changed scopes; every merge to main verifies all scopes.
+  assert.match(workflow, /push:\s*\r?\n\s*branches: \[main\]/u);
+  assert.match(workflow, /VERIFY_SELECTION: \$\{\{ github\.event_name == 'pull_request' && format\('--base origin\/\{0\}', github\.base_ref\) \|\| '--all' \}\}/u);
+  assert.match(workflow, /verify\.mjs --list \$\{\{ env\.VERIFY_SELECTION \}\} --github-output/u);
+  assert.match(workflow, /npm run verify:dev -- \$\{\{ env\.VERIFY_SELECTION \}\}/u);
   assert.match(workflow, /requires_python: \$\{\{ steps\.plan\.outputs\.requires_python \}\}/);
   assert.match(workflow, /requires_uv: \$\{\{ steps\.plan\.outputs\.requires_uv \}\}/);
   assert.match(workflow, /if: needs\.plan\.outputs\.requires_python == 'true'/);
@@ -47,4 +51,15 @@ test("crawler PoC workflow targets the active panda-data runtime", async () => {
   assert.match(workflow, /git diff --exit-code/u);
   assert.match(workflow, /path: \.release-gate\//u);
   assert.doesNotMatch(workflow, /services\/api\//u);
+});
+
+test("the Cloudflare deployability build also verifies main and reuses cached Playwright browsers", async () => {
+  const workflow = await readFile(
+    path.join(repoRoot, ".github", "workflows", "cloudflare-deployability.yml"),
+    "utf8",
+  );
+
+  assert.match(workflow, /on:\s*\r?\n\s*push:\s*\r?\n\s*branches: \[main\]/u);
+  assert.match(workflow, /path: ~\/\.cache\/ms-playwright\s*\r?\n\s*key: playwright-\$\{\{ runner\.os \}\}-\$\{\{ steps\.playwright\.outputs\.version \}\}/u);
+  assert.match(workflow, /if: steps\.playwright-cache\.outputs\.cache-hit != 'true'\s*\r?\n\s*run: npx playwright install --with-deps chromium/u);
 });

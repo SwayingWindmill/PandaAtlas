@@ -2,6 +2,9 @@ name: Development Verification
 
 on:
   pull_request:
+  # A merge result is verified as a whole: every scope, not just the scopes the pull request changed.
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -9,6 +12,7 @@ permissions:
 env:
   PYTHON_VERSION: "3.12"
   UV_VERSION: "0.11.7"
+  VERIFY_SELECTION: ${{ github.event_name == 'pull_request' && format('--base origin/{0}', github.base_ref) || '--all' }}
 
 concurrency:
   group: development-verification-${{ github.ref }}
@@ -28,7 +32,8 @@ jobs:
       - name: Check out candidate
         uses: actions/checkout@v7.0.0
         with:
-          fetch-depth: 0
+          # Only a pull request diffs against its base.
+          fetch-depth: ${{ github.event_name == 'pull_request' && 0 || 1 }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v6.4.0
@@ -37,7 +42,7 @@ jobs:
 
       - name: Resolve changed scopes
         id: plan
-        run: node scripts/development/verify.mjs --list --base origin/${{ github.base_ref }} --github-output
+        run: node scripts/development/verify.mjs --list ${{ env.VERIFY_SELECTION }} --github-output
 
   verify:
     name: Verify changed development scopes
@@ -48,7 +53,8 @@ jobs:
       - name: Check out candidate
         uses: actions/checkout@v7.0.0
         with:
-          fetch-depth: 0
+          # Only a pull request diffs against its base.
+          fetch-depth: ${{ github.event_name == 'pull_request' && 0 || 1 }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v6.4.0
@@ -71,7 +77,7 @@ jobs:
         run: npm ci
 
       - name: Run changed-scope verification
-        run: npm run verify:dev -- --base origin/${{ github.base_ref }}
+        run: npm run verify:dev -- ${{ env.VERIFY_SELECTION }}
 
   api-integration:
     name: Run API integration against local Supabase

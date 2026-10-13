@@ -45,7 +45,7 @@ From a clean checkout, the deployable Cloudflare artifacts are built with:
 npm run build:cloudflare
 ```
 
-This builds the Nest API Worker artifact and the vinext + Vite Web Worker artifact without deploying them. `.github/workflows/cloudflare-deployability.yml` runs this one deployment seam for relevant pull requests; it does not duplicate lint, typecheck, browser, accessibility, or release-gate suites.
+This builds the Nest API Worker artifact and the vinext + Vite Web Worker artifact without deploying them. `.github/workflows/cloudflare-deployability.yml` runs this one deployment seam for relevant pull requests and for every push to `main` that touches them; it does not duplicate lint, typecheck, browser, accessibility, or release-gate suites.
 
 `cf` is the primary Cloudflare operator/deployment CLI for resource discovery, deployment inspection, and deployment actions. The Web workspace no longer carries Wrangler or OpenNext as deployment dependencies.
 
