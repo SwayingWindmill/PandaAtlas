@@ -80,7 +80,7 @@ test("only pull requests fetch full history, because only they diff against a ba
   for (const depth of depths) assert.equal(depth, "${{ github.event_name != 'pull_request' && 1 || 0 }}");
 });
 
-test("production deploys only from main, after approval, API before Web", async () => {
+test("production deploys only from main, after approval: migrations, then API, then Web", async () => {
   const workflow = await readFile(
     path.join(repoRoot, ".github", "workflows", "production-deploy.yml"),
     "utf8",
@@ -93,9 +93,12 @@ test("production deploys only from main, after approval, API before Web", async 
   const [build, deploy] = workflow.split(/\n  deploy:\r?\n/u);
   assert.ok(deploy !== undefined);
   assert.doesNotMatch(build, /secrets\./u);
+  const migrate = deploy.indexOf('supabase db push --yes --db-url "$SUPABASE_DB_URL" --workdir infra');
   const apiDeploy = deploy.indexOf("working-directory: services/api");
   const webDeploy = deploy.indexOf("working-directory: apps/web");
-  assert.ok(apiDeploy !== -1 && webDeploy > apiDeploy, "the API Worker deploys before the Web Worker");
+  assert.ok(migrate !== -1 && apiDeploy > migrate, "pending migrations apply before the API Worker deploys");
+  assert.ok(webDeploy > apiDeploy, "the API Worker deploys before the Web Worker");
+  assert.match(workflow, /- "infra\/supabase\/migrations\/\*\*"/u);
   assert.match(deploy, /cf deploy --prebuilt --mode production --tag/u);
   assert.match(deploy, /if: github\.ref == 'refs\/heads\/main'/u);
   assert.match(deploy, /npm ci --ignore-scripts/u);

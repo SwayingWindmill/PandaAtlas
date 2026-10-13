@@ -52,9 +52,9 @@ This builds the Nest API Worker artifact and the vinext + Vite Web Worker artifa
 
 Production is deployed only by `.github/workflows/production-deploy.yml`:
 
-1. A push to `main` that touches the Web, API, API client or root manifests (or a manual dispatch) builds both Workers once on Linux and boots the API Worker in workerd.
-2. The `deploy` job waits for approval on the GitHub `production` Environment, whose reviewers the owner configures; its `CLOUDFLARE_API_TOKEN` secret is available only after approval.
-3. It deploys the approved build output with `cf deploy --prebuilt`, the API Worker first and then the Web Worker. The Web Worker's `V2_API` binding targets the API. Each Worker version is tagged with the commit (`--tag`/`--message`).
+1. A push to `main` that touches the Web, API, API client, migrations or root manifests (or a manual dispatch) builds both Workers once on Linux and boots the API Worker in workerd.
+2. The `deploy` job, which runs only for `main`, waits for approval on the GitHub `production` Environment, whose reviewers the owner configures; its `CLOUDFLARE_API_TOKEN` and `SUPABASE_DB_URL` secrets are available only after approval.
+3. It applies pending Supabase migrations with `supabase db push` (expand-first, so the running API keeps working), then deploys the approved build output with `cf deploy --prebuilt`, the API Worker first and then the Web Worker. The Web Worker's `V2_API` binding targets the API. Each Worker version is tagged with the commit (`--tag`/`--message`).
 4. It probes `api.zhipanda.com/health`, `/ready` and an uncached `www.zhipanda.com/zh`.
 
 Pull requests never deploy, and there is no workstation deploy script. Rolling back means deploying the previous Worker version with `cf`; [Production release and rollback](../runbooks/production-release.md) covers the procedure.

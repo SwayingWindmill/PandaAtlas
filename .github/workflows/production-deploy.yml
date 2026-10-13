@@ -1,8 +1,9 @@
 name: Production Deploy
 
-# The only production release path (#504). A push to main that changes a deployable surface builds
-# both Workers once, then waits for approval on the production Environment; after approval it deploys
-# the API before the Web Worker (the Web Worker's V2_API binding targets the API) and probes both.
+# The only production release path (#504). A push to main that changes a deployable surface or a
+# migration builds both Workers once, then waits for approval on the production Environment; after
+# approval it applies pending migrations (#574), deploys the API before the Web Worker (the Web
+# Worker's V2_API binding targets the API) and probes both.
 on:
   push:
     branches: [main]
@@ -10,6 +11,7 @@ on:
       - "apps/web/**"
       - "services/api/**"
       - "packages/api-client/**"
+      - "infra/supabase/migrations/**"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/production-deploy.yml"
@@ -73,14 +75,20 @@ jobs:
           node-version: "24"
           cache: npm
 
-      # The job that receives secrets runs no dependency install scripts; cf needs none.
-      - name: Install the pinned cf CLI
+      # The job that receives secrets runs no dependency install scripts; cf and the Supabase CLI need none.
+      - name: Install the pinned cf and Supabase CLIs
         run: npm ci --ignore-scripts
 
       - name: Restore the approved build output
         uses: actions/download-artifact@v8.0.2
         with:
           name: cloudflare-build-output
+
+      # Migrations are expand-first, so the API still serving traffic keeps working on the new schema.
+      - name: Apply pending database migrations
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npx supabase db push --yes --db-url "$SUPABASE_DB_URL" --workdir infra
 
       - name: Deploy the API Worker
         working-directory: services/api
