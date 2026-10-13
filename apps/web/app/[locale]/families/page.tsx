@@ -8,12 +8,12 @@ import {
   
   type PublicCoverage,
 } from "@/features/public-content/public-v2";
+import { familyStoryMembers } from "@/features/public-experiences/data";
 import {
-  familyStoryMembers,
   listFamilyStories,
   localizedEditorial,
   publicExperienceRelease,
-} from "@/features/public-experiences/data";
+} from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import {
   familyLineageHref,

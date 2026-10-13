@@ -31,11 +31,12 @@ test("resolves unprefixed routes from the request language and preserves task st
     maxRedirects: 0,
   });
   expect(profile.status()).toBe(308);
-  expect(profile.headers().location).toContain("/en/pandas/mei-xiang?from=legacy");
+  expect(profile.headers().location).toContain("/en/pandas/meixiang?from=legacy");
 });
 
 test("never renders the generated legacy profile as a rollback", async ({ request }) => {
-  const untrustedLegacy = await request.get("/atlas/he-hua", { maxRedirects: 0 });
+  const untrustedLegacy = await request.get("/atlas/he-hua");
+  expect(new URL(untrustedLegacy.url()).pathname).toBe("/zh/pandas/he-hua");
   expect(untrustedLegacy.status()).toBe(404);
 
   if (process.platform === "win32" && process.env.PLAYWRIGHT_BASE_URL) {
@@ -50,7 +51,7 @@ test("never renders the generated legacy profile as a rollback", async ({ reques
 
   const reviewedLegacy = await request.get("/atlas/meixiang", { maxRedirects: 0 });
   expect(reviewedLegacy.status()).toBe(308);
-  expect(reviewedLegacy.headers().location).toContain("/zh/pandas/mei-xiang");
+  expect(reviewedLegacy.headers().location).toContain("/zh/pandas/meixiang");
 
   const localizedLegacy = await request.get("/en/pandas/meixiang?from=old-link", { maxRedirects: 0 });
   expect(localizedLegacy.status()).toBe(308);

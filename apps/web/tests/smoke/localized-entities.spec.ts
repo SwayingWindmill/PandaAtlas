@@ -9,7 +9,8 @@ test("unlocalized institution routes resolve request language", async ({ request
   });
 
   expect(institution.status()).toBe(308);
-  expect(institution.headers().location).toBe(`/en/institutions/${INSTITUTION_SLUG}?from=map`);
+  const location = new URL(institution.headers().location, "http://localhost");
+  expect(`${location.pathname}${location.search}`).toBe(`/en/institutions/${INSTITUTION_SLUG}?from=map`);
 });
 
 test("does not publish a canonical page for an unsupported compatibility facility", async ({ request }) => {

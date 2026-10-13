@@ -4,12 +4,8 @@ import { notFound } from "next/navigation";
 
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { PandaCalendarPage } from "@/features/calendar/panda-calendar-page";
-import {
-  
-  
-  type PublicExperienceLocale,
-  type PublicMomentOccurrence,
-} from "@/features/public-experiences/data";
+import type { PublicMomentOccurrence } from "@/features/public-experiences/data";
+import type { PublicExperienceLocale } from "@/features/public-experiences/stories";
 import { filterV2PublicMoments, loadV2PublicMomentDataset } from "@/features/public-content/public-v2";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import { parsePublicLocale } from "@/foundation/content/locales";
