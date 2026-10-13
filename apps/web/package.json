@@ -23,8 +23,7 @@
     "test:admin-shell": "node scripts/run-admin-shell-tests.mjs",
     "test:map-viewport": "node scripts/test-map-viewport.mjs",
     "prebuild:cloudflare": "node scripts/sync-maplibre-worker.mjs",
-    "build:cloudflare": "node scripts/build-cloudflare.mjs",
-    "deploy:cloudflare": "npm run build:cloudflare && cf deploy --prebuilt --mode production"
+    "build:cloudflare": "node scripts/build-cloudflare.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

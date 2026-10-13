@@ -32,7 +32,7 @@ npm run build:v2
 
 Cloudflare owns the online API runtime. `cloudflare.config.ts` declares the Worker, `api.zhipanda.com`, Hyperdrive, service bindings, and compatibility flags. `worker/index.mjs` bridges the Nest Express application into the Cloudflare Node HTTP runtime with `httpServerHandler`. Express is required: Fastify's boot uses `new Function` and timers outside a request, which Workers forbid. `npm run check:worker-boot` boots the built Worker in local workerd and requires the application's own `/health` response.
 
-Build the deployable artifact with `npm run build:cloudflare -w @zhipanda/api`. Deployment uses `cf` through `npm run deploy:cloudflare -w @zhipanda/api`.
+Build the deployable artifact with `npm run build:cloudflare -w @zhipanda/api`. Production deploys only through the approved `Production Deploy` workflow (`.github/workflows/production-deploy.yml`), which runs `cf deploy --prebuilt`.
 
 Production runtime configuration includes:
 
