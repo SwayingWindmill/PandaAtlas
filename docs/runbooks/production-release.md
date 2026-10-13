@@ -4,13 +4,22 @@ Production changes reach Cloudflare only through the `Production Deploy` workflo
 
 ## Release
 
-1. Merge the pull request into `main`. If it touches the Web app, the API, the API client or the root manifests, the workflow starts automatically; otherwise run it with **Run workflow** on `main`.
+1. Merge the pull request into `main`. If it touches the Web app, the API, the API client, a migration or the root manifests, the workflow starts automatically; otherwise run it with **Run workflow** on `main`.
 2. Wait for the `build` job. It builds both Workers from that commit and boots the API Worker in workerd.
-3. Database migrations: until the deploy job applies them (#574), push any pending migration in `infra/supabase/migrations` to production with `supabase db push` **before** approving. A migration must keep the currently deployed API working (expand first, remove in a later release).
-4. Approve the `production` Environment deployment in the workflow run. The job deploys the API Worker, then the Web Worker, each version tagged with the first 12 characters of the commit, and then probes `api.zhipanda.com/health`, `/ready` and `www.zhipanda.com/zh`.
-5. Run the `Production Probe` workflow once by hand and confirm it passes.
+3. Approve the `production` Environment deployment in the workflow run. The job:
+   1. applies every pending migration in `infra/supabase/migrations` with `supabase db push`;
+   2. deploys the API Worker, then the Web Worker, each version tagged with the first 12 characters of the commit;
+   3. probes `api.zhipanda.com/health`, `/ready` and `www.zhipanda.com/zh`.
+4. Run the `Production Probe` workflow once by hand and confirm it passes.
 
-A failed step stops the later ones. A failure after the API deployed but before the Web deployed leaves the new API serving the previous Web Worker; both are backward compatible by the expand-first rule, so re-run the job once the cause is fixed, or roll the API back.
+A failed step stops the later ones. Migrations run while the previous API still serves traffic, and the new API may briefly serve the previous Web Worker, which is why both directions must stay compatible (below). Re-run the job once the cause is fixed, or roll the Worker back.
+
+## Migration rules
+
+- **Expand first.** A migration must keep the currently deployed API working: add tables, columns, grants and functions; do not rename, drop or tighten what the running API uses. Remove the old shape in a later release, after no deployed code uses it.
+- **Grant what the API uses.** The app-role grants test (`app-role-grants.integration.spec.ts`) derives the privileges from the API source and fails when a migration forgets one.
+- **Forward only.** Never edit, renumber or delete a migration that has reached production; correct it with a new migration. Number a new migration after the highest one on `main`.
+- **Destructive changes need the owner.** A migration that drops data runs only after the owner approves it in its issue, as in #575.
 
 ## Roll back a Worker
 
@@ -30,4 +39,7 @@ After a rollback, revert the offending commit on `main` so the next release does
 
 ## Credentials
 
-The workflow's `CLOUDFLARE_API_TOKEN` is a `production` Environment secret, available only to the approved deploy job. Locally, `cf` prefers a `CLOUDFLARE_API_TOKEN` environment variable over the OAuth login (`cf auth whoami` shows which is in use); remove a stale variable rather than overriding it per command.
+The workflow's secrets exist only in the `production` Environment, so only the approved deploy job can read them:
+
+- `CLOUDFLARE_API_TOKEN`: deploys the Workers.
+- `SUPABASE_DB_URL`: the **Session pooler** connection string for the `postgres` role, copied from the Supabase dashboard (Connect → Session pooler; `postgresql://postgres.<project-ref>:<password>@<region pooler host>:5432/postgres`, password percent-encoded). Migrations need the schema owner, and GitHub runners have no IPv6 route to the direct `db.<project-ref>.supabase.co` host. Locally, `cf` prefers a `CLOUDFLARE_API_TOKEN` environment variable over the OAuth login (`cf auth whoami` shows which is in use); remove a stale variable rather than overriding it per command.
