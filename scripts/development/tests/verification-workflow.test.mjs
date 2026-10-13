@@ -48,3 +48,29 @@ test("crawler PoC workflow targets the active panda-data runtime", async () => {
   assert.match(workflow, /path: \.release-gate\//u);
   assert.doesNotMatch(workflow, /services\/api\//u);
 });
+
+test("production deploys only from main, after approval, API before Web", async () => {
+  const workflow = await readFile(
+    path.join(repoRoot, ".github", "workflows", "production-deploy.yml"),
+    "utf8",
+  );
+
+  assert.match(workflow, /on:\s*\r?\n\s*push:\s*\r?\n\s*branches: \[main\]/u);
+  assert.doesNotMatch(workflow, /pull_request/u);
+  assert.match(workflow, /environment: production/u);
+  // The Cloudflare token exists only in the approved deploy job.
+  const [build, deploy] = workflow.split(/\n  deploy:\r?\n/u);
+  assert.ok(deploy !== undefined);
+  assert.doesNotMatch(build, /secrets\./u);
+  const apiDeploy = deploy.indexOf("working-directory: services/api");
+  const webDeploy = deploy.indexOf("working-directory: apps/web");
+  assert.ok(apiDeploy !== -1 && webDeploy > apiDeploy, "the API Worker deploys before the Web Worker");
+  assert.match(deploy, /cf deploy --prebuilt --mode production --tag/u);
+});
+
+test("no workspace keeps a workstation production deploy script", async () => {
+  for (const workspace of ["apps/web", "services/api"]) {
+    const manifest = JSON.parse(await readFile(path.join(repoRoot, workspace, "package.json"), "utf8"));
+    assert.equal(Object.values(manifest.scripts).some((script) => /\bcf deploy\b/u.test(script)), false, workspace);
+  }
+});

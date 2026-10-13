@@ -49,14 +49,14 @@ This builds the Nest API Worker artifact and the vinext + Vite Web Worker artifa
 
 `cf` is the primary Cloudflare operator/deployment CLI for resource discovery, deployment inspection, and deployment actions. The Web workspace no longer carries Wrangler or OpenNext as deployment dependencies.
 
-Production deploy commands remain workspace-scoped and explicit:
+Production is deployed only by `.github/workflows/production-deploy.yml`:
 
-```powershell
-npm run deploy:cloudflare -w @zhipanda/api
-npm run deploy:cloudflare -w web
-```
+1. A push to `main` that touches the Web, API, API client or root manifests (or a manual dispatch) builds both Workers once on Linux and boots the API Worker in workerd.
+2. The `deploy` job waits for approval on the GitHub `production` Environment, whose reviewers the owner configures; its `CLOUDFLARE_API_TOKEN` secret is available only after approval.
+3. It deploys the approved build output with `cf deploy --prebuilt`, the API Worker first and then the Web Worker. The Web Worker's `V2_API` binding targets the API. Each Worker version is tagged with the commit (`--tag`/`--message`).
+4. It probes `api.zhipanda.com/health`, `/ready` and an uncached `zhipanda.com/zh`.
 
-The repository does not auto-deploy production from the pull-request validation workflow.
+Pull requests never deploy, and there is no workstation deploy script. Rolling back means deploying the previous Worker version with `cf`; [Production release and rollback](../runbooks/production-release.md) covers the procedure.
 
 ## Retired runtime paths
 
