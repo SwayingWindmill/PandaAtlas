@@ -49,4 +49,8 @@ test("does not expose the staff console or its API while the admin shell is disa
 
     expect(response.status(), path).toBe(404);
   }
+  // The gate's no-store header shows the 404 came from the admin-shell gate, not a missing route.
+  const invitation = await request.post("/api/admin/staff/invitations/accept", { maxRedirects: 0 });
+  expect(invitation.status(), "staff invitation acceptance").toBe(404);
+  expect(invitation.headers()["cache-control"]).toBe("no-store, private");
 });
