@@ -2,12 +2,7 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
-import {
-  familyStoryAssertions,
-  familyStoryEvents,
-  familyStoryMembers,
-  familyStorySources,
-} from "@/features/public-experiences/data";
+import { loadV2FamilyStory } from "@/features/public-content/public-v2";
 import {
   getFamilyStory,
   listFamilyStories,
@@ -16,7 +11,7 @@ import {
 } from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import { parsePublicLocale, PUBLIC_LOCALES } from "@/foundation/content/locales";
-import type { PandaDetail, PublicFamilyStoryRecord } from "@/lib/types";
+import type { PandaDetail, PublicParentageAssertionSummary } from "@/lib/types";
 
 interface FamilyStoryPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -73,11 +68,11 @@ function displayName(locale: "zh" | "en", panda: PandaDetail): string {
 
 function relationshipLabel(
   locale: "zh" | "en",
-  story: PublicFamilyStoryRecord,
+  assertions: PublicParentageAssertionSummary[],
   assertionId: string,
   members: PandaDetail[],
 ): string {
-  const assertion = familyStoryAssertions(story).find((item) => item.id === assertionId);
+  const assertion = assertions.find((item) => item.id === assertionId);
   if (!assertion) return assertionId;
   const child = members.find((item) => item.id === assertion.child_id);
   const parent = members.find((item) => item.id === assertion.parent_id);
@@ -108,10 +103,9 @@ export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) 
   const story = getFamilyStory(slug);
   if (!locale || !story) notFound();
   const content = localizedEditorial(story.localized_content, locale);
-  const members = familyStoryMembers(story);
-  const assertions = familyStoryAssertions(story);
-  const events = familyStoryEvents(story);
-  const sources = familyStorySources(story);
+  const record = await loadV2FamilyStory(story);
+  if (!record) notFound();
+  const { members, assertions, events, sources } = record;
   const t = copy[locale];
   const alternateLocale = locale === "zh" ? "en" : "zh";
   const confirmedCount = assertions.filter((item) => item.status === "confirmed").length;
@@ -216,7 +210,7 @@ export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) 
                     {assertions.map((assertion) => (
                       <div key={assertion.id} style={{ display: "contents" }}>
                         <dt>{assertion.status}</dt>
-                        <dd>{relationshipLabel(locale, story, assertion.id, members)}<br /><code>{assertion.id}</code></dd>
+                        <dd>{relationshipLabel(locale, assertions, assertion.id, members)}<br /><code>{assertion.id}</code></dd>
                       </div>
                     ))}
                   </dl>

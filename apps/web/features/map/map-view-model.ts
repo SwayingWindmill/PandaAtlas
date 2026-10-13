@@ -173,7 +173,7 @@ function buildInstitutionResults(
       sources,
       sourceLabel: locale === "zh" ? "机构、地点与熊猫居住记录" : "Institution, place, and panda residency records",
       profileHref: null,
-      entityHref: institution ? `/${locale}/institutions/${institution.canonical_slug}` : null,
+      entityHref: null,
       visualizationKey: facility.id,
       searchText: normalized([
         name,

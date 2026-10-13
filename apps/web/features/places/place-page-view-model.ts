@@ -29,7 +29,7 @@ export function buildPlacePageViewModel(
   envelope: PublicContentEnvelope<PublicPlaceRecord>,
   locale: PublicLocale,
 ): PublicEntityPageViewModel {
-  const { place, institutions, pandas } = envelope.data;
+  const { place, pandas } = envelope.data;
   const name = localizedName(place.names, locale);
   const facilityIds = new Set(place.facility_ids);
   const currentPandas = pandas.filter((panda) =>
@@ -105,15 +105,7 @@ export function buildPlacePageViewModel(
       { label: locale === "zh" ? "公开精度" : "Published precision", value: place.precision },
       { label: locale === "zh" ? "最后核实" : "Last verified", value: place.last_verified_at ?? "—" },
     ],
-    relatedEntities: institutions.map((institution) => {
-      const institutionName = localizedName(institution.names, locale);
-      return {
-        id: institution.id,
-        name: institutionName.display,
-        href: `/${locale}/institutions/${institution.canonical_slug}`,
-        detail: institution.institution_type ?? "—",
-      };
-    }),
+    relatedEntities: [],
     currentPandas: currentPandas.map((panda) => pandaLink(panda, true)),
     historicalPandas: historicalPandas.map((panda) => pandaLink(panda, false)),
     migrations,

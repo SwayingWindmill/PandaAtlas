@@ -495,8 +495,8 @@ export function buildEditorialHomeViewModel(
           primaryLabel: t.explorations.places.primaryLabel,
           primaryHref: `/${locale}/map?mode=institutions&snapshot=${encodeURIComponent(envelope.release.id)}`,
           secondaryLinks: [
-            { label: t.explorations.places.institution, href: `/${locale}/institutions/smithsonian-national-zoo` },
-            { label: t.explorations.places.place, href: `/${locale}/places/wolong-shenshuping-base` },
+            { label: t.explorations.places.institution, href: `/${locale}/places/smithsonian-national-zoo` },
+            { label: t.explorations.places.place, href: `/${locale}/places/ccrcgp-wolong-shenshuping-base` },
           ],
         },
       ],

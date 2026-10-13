@@ -32,8 +32,6 @@
     "smoke:web": "node scripts/development/operations.mjs run web.smoke",
     "smoke:web:matrix": "node scripts/development/operations.mjs run web.smoke-matrix",
     "check:golden-dataset": "node scripts/golden-dataset/validate.mjs",
-    "generate:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs",
-    "check:trusted-identity-aliases": "node scripts/golden-dataset/generate-web-identity-aliases.mjs --check",
     "generate:public-experiences": "node scripts/golden-dataset/generate-web-public-experiences.mjs",
     "check:public-experiences": "node scripts/golden-dataset/generate-web-public-experiences.mjs --check",
     "test:golden-dataset": "node --test scripts/golden-dataset/tests/*.test.mjs",
