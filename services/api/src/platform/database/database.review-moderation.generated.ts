@@ -83,29 +83,6 @@ export interface ReviewModerationAppealQueue {
   version: number | null;
 }
 
-export interface ReviewModerationAuditEvents {
-  actor_account_id: string | null;
-  audit_event_id: Generated<string>;
-  correlation_id: string;
-  details: Generated<Json>;
-  event_type: string;
-  idempotency_key: string | null;
-  occurred_at: Generated<Timestamp>;
-  outcome: string;
-  reason: string | null;
-  review_case_id: string | null;
-  submission_id: string | null;
-}
-
-export interface ReviewModerationCommandReceipts {
-  actor_account_id: string;
-  command_name: string;
-  created_at: Generated<Timestamp>;
-  idempotency_key: string;
-  receipt_id: Generated<string>;
-  review_case_id: string | null;
-}
-
 export interface ReviewModerationCurationRecommendations {
   assertion_key: string;
   decision_id: string;
@@ -140,37 +117,6 @@ export interface ReviewModerationInformationRequests {
   user_visible_message: string;
 }
 
-export interface ReviewModerationModerationAlerts {
-  alert_type: string | null;
-  subject_id: string | null;
-}
-
-export interface ReviewModerationModerationAuditEvents {
-  account_id: string | null;
-  actor_account_id: string | null;
-  appeal_case_id: string | null;
-  audit_event_id: Generated<string>;
-  correlation_id: string;
-  details: Generated<Json>;
-  event_type: string;
-  idempotency_key: string | null;
-  occurred_at: Generated<Timestamp>;
-  outcome: string;
-  reason: string | null;
-  sanction_id: string | null;
-}
-
-export interface ReviewModerationModerationCommandReceipts {
-  actor_account_id: string;
-  command_name: string;
-  created_at: Generated<Timestamp>;
-  idempotency_key: string;
-  receipt_id: Generated<string>;
-  request_fingerprint: string;
-  result_id: string;
-  result_type: string;
-}
-
 export interface ReviewModerationModerationSubjects {
   account_closed_for_abuse: Generated<boolean>;
   account_id: string;
@@ -191,36 +137,6 @@ export interface ReviewModerationModerationSubjects {
   submission_sanction_id: string | null;
   updated_at: Generated<Timestamp>;
   version: Generated<number>;
-  warning_sanction_id: string | null;
-}
-
-export interface ReviewModerationModerationSubjectStatus {
-  account_closed_for_abuse: boolean | null;
-  account_id: string | null;
-  account_restricted_until: Timestamp | null;
-  account_sanction_id: string | null;
-  account_state: string | null;
-  account_suspended: boolean | null;
-  attachment_restricted: boolean | null;
-  attachment_restricted_until: Timestamp | null;
-  attachment_sanction_id: string | null;
-  created_at: Timestamp | null;
-  effective_account_suspended: boolean | null;
-  effective_attachment_restricted: boolean | null;
-  effective_notification_restricted: boolean | null;
-  effective_submission_restricted: boolean | null;
-  expired_restriction_projected: boolean | null;
-  inconsistent_account_state: boolean | null;
-  latest_warning_at: Timestamp | null;
-  notification_restricted: boolean | null;
-  notification_restricted_until: Timestamp | null;
-  notification_sanction_id: string | null;
-  repeat_abuse_count: number | null;
-  submission_restricted: boolean | null;
-  submission_restricted_until: Timestamp | null;
-  submission_sanction_id: string | null;
-  updated_at: Timestamp | null;
-  version: number | null;
   warning_sanction_id: string | null;
 }
 
@@ -298,29 +214,6 @@ export interface ReviewModerationSanctions {
   user_visible_explanation: string;
 }
 
-export interface ReviewModerationSlaAlerts {
-  active_revision_number: number | null;
-  closed_at: Timestamp | null;
-  contributor_status: CommunityIntakeContributorStatus | null;
-  created_at: Timestamp | null;
-  duplicate_of_review_case_id: string | null;
-  first_responded_at: Timestamp | null;
-  first_response_due_at: Timestamp | null;
-  opened_revision_number: number | null;
-  primary_assignee_id: string | null;
-  queue_age_seconds: Int8 | null;
-  reopened_from_review_case_id: string | null;
-  review_case_id: string | null;
-  risk_level: string | null;
-  sla_overdue: boolean | null;
-  state: ReviewModerationReviewCaseState | null;
-  submission_id: string | null;
-  target_id: string | null;
-  target_type: CommunityIntakeTargetType | null;
-  updated_at: Timestamp | null;
-  version: number | null;
-}
-
 export interface ReviewModerationSourceVerifications {
   active_revision_number: number;
   canonical_source_id: string | null;
@@ -338,20 +231,13 @@ export interface DB {
   "review_moderation.appeal_cases": ReviewModerationAppealCases;
   "review_moderation.appeal_decisions": ReviewModerationAppealDecisions;
   "review_moderation.appeal_queue": ReviewModerationAppealQueue;
-  "review_moderation.audit_events": ReviewModerationAuditEvents;
-  "review_moderation.command_receipts": ReviewModerationCommandReceipts;
   "review_moderation.curation_recommendations": ReviewModerationCurationRecommendations;
   "review_moderation.decisions": ReviewModerationDecisions;
   "review_moderation.information_requests": ReviewModerationInformationRequests;
-  "review_moderation.moderation_alerts": ReviewModerationModerationAlerts;
-  "review_moderation.moderation_audit_events": ReviewModerationModerationAuditEvents;
-  "review_moderation.moderation_command_receipts": ReviewModerationModerationCommandReceipts;
-  "review_moderation.moderation_subject_status": ReviewModerationModerationSubjectStatus;
   "review_moderation.moderation_subjects": ReviewModerationModerationSubjects;
   "review_moderation.restoration_events": ReviewModerationRestorationEvents;
   "review_moderation.review_case_queue": ReviewModerationReviewCaseQueue;
   "review_moderation.review_cases": ReviewModerationReviewCases;
   "review_moderation.sanctions": ReviewModerationSanctions;
-  "review_moderation.sla_alerts": ReviewModerationSlaAlerts;
   "review_moderation.source_verifications": ReviewModerationSourceVerifications;
 }

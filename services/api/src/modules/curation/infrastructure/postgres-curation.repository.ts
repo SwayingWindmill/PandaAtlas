@@ -219,18 +219,6 @@ export class PostgresCurationRepository implements CurationRepository {
       ...(change.applied_assertion_id === null ? {} : { appliedAssertionId: change.applied_assertion_id }),
     }));
 
-    if (set.origin_kind !== "review") {
-      throw new Error(`Curation change set ${changeSetId} has unsupported origin ${set.origin_kind}`);
-    }
-    if (
-      set.origin_review_case_id === null ||
-      set.origin_decision_id === null ||
-      set.origin_submission_id === null ||
-      set.origin_revision_number === null
-    ) {
-      throw new Error(`Review-origin Curation change set ${changeSetId} has incomplete provenance`);
-    }
-
     return {
       changeSetId: set.change_set_id,
       reviewCaseId: set.origin_review_case_id,

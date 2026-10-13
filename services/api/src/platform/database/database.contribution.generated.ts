@@ -62,35 +62,6 @@ export interface CommunityIntakeAttachments {
   upload_completed_at: Timestamp | null;
 }
 
-export interface CommunityIntakeAttachmentScanEvents {
-  attachment_id: string;
-  attempt_number: number;
-  correlation_id: string;
-  metadata_stripped: Generated<boolean>;
-  outcome: CommunityIntakeAttachmentState;
-  preview_object_key: string | null;
-  result_code: string;
-  scan_event_id: Generated<string>;
-  scanned_at: Generated<Timestamp>;
-  scanner_name: string;
-  scanner_version: string | null;
-}
-
-export interface CommunityIntakeAuditEvents {
-  actor_subject_hash: string;
-  audit_event_id: Generated<string>;
-  correlation_id: string;
-  details: Generated<Json>;
-  event_type: string;
-  idempotency_key: string;
-  occurred_at: Generated<Timestamp>;
-  outcome: string;
-  reason: string | null;
-  submission_id: string | null;
-  target_id: string;
-  target_type: string;
-}
-
 export interface CommunityIntakeContributorAssertionResults {
   assertion_key: string;
   created_at: Generated<Timestamp>;
@@ -101,17 +72,6 @@ export interface CommunityIntakeContributorAssertionResults {
   revision_number: number;
   status_event_id: string;
   submission_id: string;
-}
-
-export interface CommunityIntakeContributorJourneyEvents {
-  contributor_subject_hash: string;
-  correlation_id: string;
-  details: Generated<Json>;
-  event_type: string;
-  journey_event_id: Generated<string>;
-  locale: string | null;
-  occurred_at: Generated<Timestamp>;
-  submission_id: string | null;
 }
 
 export interface CommunityIntakeContributorStatusEvents {
@@ -128,30 +88,6 @@ export interface CommunityIntakeContributorStatusEvents {
   submission_id: string;
   target_redirect_id: string | null;
   user_visible_reason: string | null;
-}
-
-export interface CommunityIntakeRetentionEvents {
-  action: string;
-  contributor_subject_hash: string;
-  correlation_id: string;
-  details: Generated<Json>;
-  occurred_at: Generated<Timestamp>;
-  reason: string;
-  retention_event_id: Generated<string>;
-  submission_id: string | null;
-}
-
-export interface CommunityIntakeSensitiveReadEvents {
-  actor_subject_hash: string;
-  attachment_id: string;
-  correlation_id: string;
-  denial_reason: string | null;
-  outcome: string;
-  purpose: string;
-  read_at: Generated<Timestamp>;
-  read_event_id: Generated<string>;
-  reference_expires_at: Timestamp | null;
-  reference_jti_hash: string | null;
 }
 
 export interface CommunityIntakeSubmissionRevisions {
@@ -203,14 +139,9 @@ export interface CommunityIntakeSubmittedSources {
 }
 
 export interface DB {
-  "community_intake.attachment_scan_events": CommunityIntakeAttachmentScanEvents;
   "community_intake.attachments": CommunityIntakeAttachments;
-  "community_intake.audit_events": CommunityIntakeAuditEvents;
   "community_intake.contributor_assertion_results": CommunityIntakeContributorAssertionResults;
-  "community_intake.contributor_journey_events": CommunityIntakeContributorJourneyEvents;
   "community_intake.contributor_status_events": CommunityIntakeContributorStatusEvents;
-  "community_intake.retention_events": CommunityIntakeRetentionEvents;
-  "community_intake.sensitive_read_events": CommunityIntakeSensitiveReadEvents;
   "community_intake.submission_revisions": CommunityIntakeSubmissionRevisions;
   "community_intake.submissions": CommunityIntakeSubmissions;
   "community_intake.submitted_sources": CommunityIntakeSubmittedSources;
