@@ -1,0 +1,17 @@
+# ZhiPanda public panda encyclopedia.
+# Content signals (https://contentsignals.org/): search indexing is allowed; AI training is not.
+
+User-agent: *
+Content-Signal: search=yes, ai-train=no
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /auth/
+Disallow: /zh/me
+Disallow: /en/me
+Disallow: /zh/my-pandas
+Disallow: /en/my-pandas
+Disallow: /zh/contribute
+Disallow: /en/contribute
+
+Sitemap: https://www.zhipanda.com/sitemap.xml

@@ -3,7 +3,7 @@
 // and served without running the Worker. Every other response is explicitly uncacheable, so
 // Cloudflare's heuristic freshness never caches a redirect, error or private response.
 const PUBLIC_PAGE = /^\/(?:zh|en)(?:\/(?:pandas|families|moments|map|places|games)(?:\/[^/]+)*)?$/u;
-const PUBLIC_FILES = new Set(["/robots.txt", "/sitemap.xml"]);
+const PUBLIC_FILES = new Set(["/sitemap.xml"]);
 const PAGE_CONTENT = /^text\/(?:html|x-component)\b/u;
 
 // Edge-only freshness; the Worker version is part of the cache key, so each deploy starts cold.
