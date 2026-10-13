@@ -7,10 +7,13 @@ const SEVERITY: Record<LogLevel, number> = { trace: 10, debug: 20, info: 30, war
 export type LogFields = Record<string, unknown>;
 
 export function serializeError(error: unknown): LogFields {
-  if (error instanceof Error) {
-    return { name: error.name, message: error.message, stack: error.stack };
-  }
-  return { name: "NonError", message: String(error) };
+  if (!(error instanceof Error)) return { name: "NonError", message: String(error) };
+  return {
+    name: error.name,
+    message: error.message,
+    stack: error.stack,
+    ...(error.cause === undefined ? {} : { cause: serializeError(error.cause) }),
+  };
 }
 
 // Workers Logs indexes the fields of objects passed to console, so every entry is one plain object.
@@ -26,6 +29,7 @@ export class StructuredLoggerService implements LoggerService {
     this.threshold = SEVERITY[config.logLevel];
   }
 
+  // The structured entry point; Nest's LoggerService methods below cannot carry fields.
   public write(level: LogLevel, message: string, fields: LogFields = {}): void {
     if (SEVERITY[level] < this.threshold) return;
     const current = this.requestContext.current;

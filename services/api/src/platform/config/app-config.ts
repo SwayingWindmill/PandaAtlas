@@ -259,7 +259,6 @@ export class AppConfig {
     return this.config.get("LOG_LEVEL", { infer: true });
   }
 
-
   public get resendApiKey(): string | undefined {
     return this.config.get("RESEND_API_KEY", { infer: true });
   }

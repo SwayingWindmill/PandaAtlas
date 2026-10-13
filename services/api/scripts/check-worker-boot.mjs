@@ -60,17 +60,18 @@ async function checkFailureLogged() {
     throw new Error(`Unexpected /ready response ${response.status} (request id ${requestId}).`);
   }
   while (Date.now() < deadline) {
-    if (output.includes(requestId) && output.includes("Request failed")) return requestId;
+    // workerd prints console objects by key, which a pre-serialized string log would not produce.
+    if (output.includes(`requestId: '${requestId}'`) && output.includes("path: '/ready'")) return requestId;
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  throw new Error(`The failed /ready request ${requestId} was not logged to the Worker console.`);
+  throw new Error(`The failed /ready request ${requestId} was not logged to the Worker console as a structured entry.`);
 }
 
 try {
   const body = await check();
   console.log(`[worker-boot] API Worker booted in workerd; /health -> ${body}`);
   const requestId = await checkFailureLogged();
-  console.log(`[worker-boot] failed /ready request ${requestId} was logged to the Worker console`);
+  console.log(`[worker-boot] failed /ready request ${requestId} was logged to the Worker console as a structured entry`);
 } catch (error) {
   console.error(`[worker-boot] ${error instanceof Error ? error.message : String(error)}`);
   console.error(output.slice(-4_000));

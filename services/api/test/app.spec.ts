@@ -75,6 +75,22 @@ describe("NestJS V2 runtime", () => {
       status: 500,
       error: { name: "Error", message: "DATABASE_URL is not configured" },
     });
+    expect(errors.mock.calls[0]?.[0]).toHaveProperty("error.stack");
+    expect(response.json()).toMatchObject({ status: 500, detail: "The service could not complete the request." });
+  });
+
+  it("logs the dependency failure behind an unready response", async () => {
+    const errors = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    app = await createApplication();
+
+    const response = await injectHttp(app, { method: "GET", url: "/ready" });
+
+    expect(response.statusCode).toBe(503);
+    expect(errors.mock.calls[0]?.[0]).toMatchObject({
+      path: "/ready",
+      status: 503,
+      error: { cause: { name: "Error", message: "DATABASE_URL is not configured" } },
+    });
   });
 
   it("does not log an expected client error", async () => {
