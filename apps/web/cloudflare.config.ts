@@ -30,7 +30,8 @@ export default defineConfig(({ mode }) => ({
       NEXT_PUBLIC_SITE_URL: bindings.text("https://www.zhipanda.com"),
       NEXT_PUBLIC_SUPABASE_URL: bindings.text(mode === "production" ? "https://gsnpkwlezpdkdupizjdb.supabase.co" : (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://127.0.0.1:65534")),
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: bindings.text(mode === "production" ? "sb_publishable_-JoUNsIVaSHreJXJ0hrd2g_6Skn9Dmm" : (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "test-publishable-key")),
-      ADMIN_SHELL_ENABLED: bindings.text(process.env.ADMIN_SHELL_ENABLED ?? "false"),
+      // Production never serves the staff console; local and admin test runtimes opt in explicitly.
+      ADMIN_SHELL_ENABLED: bindings.text(mode === "production" ? "false" : (process.env.ADMIN_SHELL_ENABLED ?? "false")),
     },
   },
 }));

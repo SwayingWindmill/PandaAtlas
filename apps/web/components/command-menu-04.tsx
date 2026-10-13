@@ -75,7 +75,7 @@ export function ArchiveSearch({
         className={cn(
           "border-0 bg-transparent text-[var(--pa-color-ink)] hover:bg-[var(--pa-color-surface-subtle)]",
           compact
-            ? "h-9 min-w-9 gap-1.5 px-1.5 !text-[13px]"
+            ? "h-9 min-w-9 gap-1.5 px-1.5 text-[13px]"
             : "h-11 min-w-11 gap-2 px-2",
         )}
         aria-label={triggerLabel}
