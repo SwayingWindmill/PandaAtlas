@@ -34,11 +34,13 @@ describe("public cache purge consumer", () => {
 
     const eventIds = await database.transaction(async (transaction) =>
       Promise.all(
-        (["publication.resource.taken_down", "publication.release.activated"] as const).map((eventType) =>
+        // Suspension events route only to this consumer and audit, so the synthetic events never reach
+        // consumers that resolve real releases or resources.
+        (["publication.release.suspended", "publication.release.restored"] as const).map((eventType) =>
           outbox.append(transaction, {
             eventType,
             sourceContext: "publication",
-            aggregateType: "panda",
+            aggregateType: "public_release",
             aggregateId: randomUUID(),
             idempotencyKey: `public-cache-purge:${randomUUID()}`,
             correlationId: randomUUID(),

@@ -28,8 +28,8 @@ async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentN
 }
 
 const coreJourneys = [
-  { name: "Chinese Editorial Home", path: "/zh" },
-  { name: "English Editorial Home", path: "/en" },
+  { name: "Chinese Home", path: "/zh" },
+  { name: "English Home", path: "/en" },
   { name: "Chinese My Pandas", path: "/zh/me" },
   { name: "English My Pandas", path: "/en/me" },
   { name: "Chinese Atlas discovery", path: "/zh/pandas?status=alive&sort=name" },
@@ -181,7 +181,7 @@ test("bilingual profiles tolerate a simulated 200-percent text-only resize", asy
   }
 });
 
-test("bilingual Editorial Home tolerates a simulated 200-percent text-only resize", async ({ page }) => {
+test("bilingual Home tolerates a simulated 200-percent text-only resize", async ({ page }) => {
   for (const path of ["/zh", "/en"]) {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(path);
@@ -197,7 +197,16 @@ test("bilingual Editorial Home tolerates a simulated 200-percent text-only resiz
       });
     });
 
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    // Rails scroll or clip horizontally by design; their off-screen cards do not overflow the page.
     const overflowing = await page.locator("*").evaluateAll((elements) => elements
+      .filter((element) => {
+        if (element.closest("[data-panda-rail-track], [data-slot='carousel-content']")) return false;
+        for (let parent = element.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
+          if (["auto", "scroll"].includes(getComputedStyle(parent).overflowX)) return false;
+        }
+        return true;
+      })
       .map((element) => {
         const rect = element.getBoundingClientRect();
         return {
@@ -210,7 +219,7 @@ test("bilingual Editorial Home tolerates a simulated 200-percent text-only resiz
       })
       .filter((item) => item.left < -1 || item.right > innerWidth + 1));
     expect(overflowing).toEqual([]);
-    await expect(page.getByTestId("archive-method")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   }
 });
 

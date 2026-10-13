@@ -193,6 +193,25 @@ const evidence = [
   },
 ];
 
+// One licensed cover per fixture panda, served from this fixture so browser tests stay offline.
+const coverImage = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+  "base64",
+);
+const covers = pandas.map((panda, index) => ({
+  assetId: `00000000-0000-4000-8000-0000000003${String(index + 1).padStart(2, "0")}`,
+  pandaId: panda.pandaId,
+  usageRole: "cover",
+  displayOrder: 0,
+  objectKey: `http://${host}:${port}/media/pandas/photos/${panda.canonicalSlug}.png`,
+  contentSha256: "a".repeat(64),
+  mediaType: "image/png",
+  title: `${panda.names[1].value} at rest`,
+  creator: "Fixture Photographer",
+  license: "CC-BY-4.0",
+  attributionText: "Fixture Photographer / CC BY 4.0",
+}));
+
 function sendJson(response, status, body) {
   response.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
@@ -261,6 +280,20 @@ const server = http.createServer((request, response) => {
   }
   if (url.pathname === "/api/v2/lineage") {
     sendJson(response, 200, { release, items: lineage });
+    return;
+  }
+  if (url.pathname === "/api/v2/panda-covers") {
+    const ids = new Set((url.searchParams.get("ids") ?? "").split(",").filter(Boolean));
+    if (ids.size === 0) {
+      sendJson(response, 400, { title: "Bad Request", status: 400 });
+      return;
+    }
+    sendJson(response, 200, { release, items: covers.filter((cover) => ids.has(cover.pandaId)) });
+    return;
+  }
+  if (url.pathname.startsWith("/media/pandas/photos/")) {
+    response.writeHead(200, { "content-type": "image/png", "content-length": coverImage.length });
+    response.end(coverImage);
     return;
   }
   if (url.pathname.startsWith("/api/v2/evidence/")) {

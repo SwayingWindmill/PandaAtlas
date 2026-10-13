@@ -775,6 +775,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/panda-covers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the cover photo of each requested panda */
+        get: operations["listPublicPandaCovers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/places": {
         parameters: {
             query?: never;
@@ -1985,6 +2002,11 @@ export interface components {
             events: components["schemas"]["PublicLifeEventSummaryDto"][];
             media: components["schemas"]["PublicMediaSummaryDto"][];
             evidence: components["schemas"]["PublicEvidenceSummaryDto"][];
+        };
+        PublicPandaCoverListDto: {
+            release: components["schemas"]["PublicReadReleaseDto"];
+            /** @description The first deliverable image of each requested panda, in display order; pandas without one are omitted. */
+            items: components["schemas"]["PublicMediaSummaryDto"][];
         };
         PublicPlaceSummaryDto: {
             /** Format: uuid */
@@ -3558,6 +3580,35 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description No active deliverable release is available. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPublicPandaCovers: {
+        parameters: {
+            query: {
+                /** @description Comma-separated panda IDs, at most 50. */
+                ids: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicPandaCoverListDto"];
+                };
             };
             /** @description No active deliverable release is available. */
             503: {

@@ -1,0 +1,131 @@
+.railShell {
+  position: relative;
+}
+
+.viewport {
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: pandaRailMarquee var(--panda-rail-duration, 90s) linear infinite;
+}
+
+.group {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.railShell:hover .track,
+.railShell:focus-within .track {
+  animation-play-state: paused;
+}
+
+.card {
+  position: relative;
+  flex: 0 0 15.9rem;
+  min-width: 0;
+  height: 21.9rem;
+  overflow: hidden;
+  border-radius: var(--zp-radius-card, 1.5rem);
+  color: var(--zp-brand-ivory, #fffff2);
+  text-decoration: none;
+  transform: translateZ(0);
+  transition: transform 260ms cubic-bezier(.16,1,.3,1);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+  transition: transform 500ms cubic-bezier(.16,1,.3,1);
+}
+
+.card:hover img {
+  transform: scale(1.045);
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 37, 38, .9), rgba(0, 37, 38, .04) 62%);
+}
+
+.copy {
+  position: absolute;
+  z-index: 1;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  display: grid;
+  gap: .25rem;
+}
+
+.copy strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 760;
+  letter-spacing: -.025em;
+}
+
+.copy span {
+  color: rgba(255, 255, 242, .76);
+  font-size: .76rem;
+}
+
+@keyframes pandaRailMarquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (max-width: 767px) {
+  .group {
+    gap: 1rem;
+    padding-right: 1rem;
+  }
+
+  .card {
+    flex-basis: 17.8rem;
+    height: 22.5rem;
+    border-radius: 1rem;
+  }
+}
+
+@media (max-width: 359px) {
+  .card {
+    flex-basis: 16.2rem;
+    height: 20.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+
+  .card,
+  .card img {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:hover img {
+    transform: none;
+  }
+}

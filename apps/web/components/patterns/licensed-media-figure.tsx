@@ -10,7 +10,7 @@ import type { PublicLocale } from "@/foundation/content/locales";
 
 interface LicensedMediaFigureProps {
   locale: PublicLocale;
-  variant: "home" | "profile" | "card";
+  variant: "profile";
   src: string | null;
   srcSet?: string;
   sizes: string;

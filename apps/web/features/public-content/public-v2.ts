@@ -472,6 +472,16 @@ export async function loadV2PublicMapDataset(locale: PublicLocale): Promise<Publ
   return loadV2PublicAtlasDataset(locale);
 }
 
+// The first published photo of each panda, for pages that show a handful of pandas from the list.
+export async function loadV2PandaCovers(pandaIds: readonly string[]): Promise<Map<string, PandaDetail["media"][number]>> {
+  if (pandaIds.length === 0) return new Map();
+  const result = await createServerV2Client().GET("/api/v2/panda-covers", {
+    params: { query: { ids: [...pandaIds].join(",") } },
+  });
+  if (!result.data) return new Map();
+  return new Map(result.data.items.map((media) => [media.pandaId, mapMedia(media, new Map())]));
+}
+
 export async function loadV2PublicLineageDataset(locale: PublicLocale): Promise<PublicContentEnvelope<PublicLineageDataset> | null> {
   const core = await loadCore();
   if (!core) return null;
