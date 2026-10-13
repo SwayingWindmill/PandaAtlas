@@ -49,4 +49,6 @@ test("does not expose the staff console or its API while the admin shell is disa
 
     expect(response.status(), path).toBe(404);
   }
+  const invitation = await request.post("/api/admin/staff-invitation", { maxRedirects: 0 });
+  expect(invitation.status(), "staff invitation acceptance").toBe(404);
 });
