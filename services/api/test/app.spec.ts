@@ -103,6 +103,22 @@ describe("NestJS V2 runtime", () => {
     expect(errors).not.toHaveBeenCalled();
   });
 
+  it("sends the baseline security headers on success and error responses", async () => {
+    app = await createApplication();
+
+    for (const url of ["/health", "/api/v2/missing"]) {
+      const response = await injectHttp(app, { method: "GET", url });
+
+      expect(response.headers, url).toMatchObject({
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "no-referrer",
+        "content-security-policy": "default-src 'none'; frame-ancestors 'none'",
+        "x-frame-options": "DENY",
+      });
+    }
+  });
+
   it("exposes no HTTP trigger for async jobs; the Worker Cron Trigger runs them", async () => {
     app = await createApplication();
 
