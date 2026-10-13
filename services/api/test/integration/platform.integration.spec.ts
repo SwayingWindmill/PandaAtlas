@@ -3,6 +3,7 @@ import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApplication } from "../../src/bootstrap.js";
+import { AsyncDownstreamRunnerService } from "../../src/jobs/async-downstream-runner.service.js";
 import { PostgresIdentityRepository } from "../../src/modules/identity/infrastructure/postgres-identity.repository.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { IntegrationOutboxService } from "../../src/platform/integration/integration-outbox.service.js";
@@ -229,30 +230,22 @@ describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
     expect(rolledBackQueue.rows[0]?.count).toBe("0");
   });
 
-  it("reports async downstream stalled only while due work has waited past the threshold", async () => {
-    const healthy = await injectHttp(app, { method: "GET", url: "/health/async" });
-    expect(healthy.statusCode).toBe(200);
+  it("reports async downstream stalled until a cycle completes every stage again", async () => {
+    const grants = await sql<{ readable: boolean; writable: boolean }>`
+      select
+        has_table_privilege('zhipanda_app', 'integration.async_downstream_heartbeat', 'select') as readable,
+        has_table_privilege('zhipanda_app', 'integration.async_downstream_heartbeat', 'update') as writable
+    `.execute(database.db);
+    expect(grants.rows[0]).toEqual({ readable: true, writable: true });
 
-    const msgId = await database.transaction((transaction) =>
-      pgmq.sendMessage(transaction, "integration_audit", { eventId: randomUUID() }),
-    );
-    try {
-      // A deferred message is invisible until its backoff ends, so it is not stalled work.
-      await sql`
-        update pgmq.q_integration_audit
-        set enqueued_at = now() - interval '30 minutes', vt = now() + interval '10 minutes'
-        where msg_id = ${msgId}::bigint
-      `.execute(database.db);
-      expect((await injectHttp(app, { method: "GET", url: "/health/async" })).statusCode).toBe(200);
+    expect((await injectHttp(app, { method: "GET", url: "/health/async" })).statusCode).toBe(200);
 
-      await sql`update pgmq.q_integration_audit set vt = now() where msg_id = ${msgId}::bigint`.execute(database.db);
-      const stalled = await injectHttp(app, { method: "GET", url: "/health/async" });
-      expect(stalled.statusCode).toBe(503);
-      expect(stalled.json()).toMatchObject({ status: 503, code: "system.dependencyUnavailable" });
-    } finally {
-      await sql`select pgmq.delete('integration_audit', ${msgId}::bigint)`.execute(database.db);
-    }
+    await sql`update integration.async_downstream_heartbeat set last_succeeded_at = now() - interval '30 minutes'`.execute(database.db);
+    const stalled = await injectHttp(app, { method: "GET", url: "/health/async" });
+    expect(stalled.statusCode).toBe(503);
+    expect(stalled.json()).toMatchObject({ status: 503, code: "system.dependencyUnavailable" });
 
+    await app.get(AsyncDownstreamRunnerService).runCycle({ publicCache: { purge: () => Promise.resolve() } });
     expect((await injectHttp(app, { method: "GET", url: "/health/async" })).statusCode).toBe(200);
   });
 });

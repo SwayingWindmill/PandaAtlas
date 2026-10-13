@@ -11,6 +11,7 @@ import { PublicationModule } from "../modules/publication/publication.module.js"
 import { UpdatesEventConsumerService } from "../modules/updates/infrastructure/updates-event-consumer.service.js";
 import { UpdatesModule } from "../modules/updates/updates.module.js";
 import { ConfigModule } from "../platform/config/config.module.js";
+import { AsyncDownstreamHeartbeat } from "../platform/integration/async-downstream-heartbeat.js";
 import { IntegrationModule } from "../platform/integration/integration.module.js";
 import { OutboxDispatcherService } from "../platform/integration/outbox-dispatcher.service.js";
 import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.js";
@@ -28,7 +29,8 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         provider: NotificationProviderWorkerService,
         audit: AuditEventConsumerService,
         publicCache: PublicCacheConsumerService,
-      ) => new AsyncDownstreamRunnerService(dispatcher, updates, notification, privacy, provider, audit, publicCache),
+        heartbeat: AsyncDownstreamHeartbeat,
+      ) => new AsyncDownstreamRunnerService(dispatcher, updates, notification, privacy, provider, audit, publicCache, heartbeat),
       inject: [
         OutboxDispatcherService,
         UpdatesEventConsumerService,
@@ -37,6 +39,7 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         NotificationProviderWorkerService,
         AuditEventConsumerService,
         PublicCacheConsumerService,
+        AsyncDownstreamHeartbeat,
       ],
     },
   ],
