@@ -300,15 +300,6 @@ const commands = [
     shell: true,
   },
   {
-    id: "data.check-identities",
-    category: "verification",
-    description: "Check generated trusted identity aliases.",
-    command: "node",
-    args: ["scripts/golden-dataset/generate-web-identity-aliases.mjs", "--check"],
-    requires: ["node"],
-    effect: "read-only",
-  },
-  {
     id: "release.check-repository-hygiene",
     category: "verification",
     description: "Reject generated output and accidental duplicate paths from repository input.",
@@ -425,7 +416,7 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   web: ["web.lint", "web.typecheck", "web.test-worker"],
   api: ["api.lint", "api.typecheck", "api.client-typecheck", "api.test", "api.contract"],
   curation: ["curation.test", "curation.check", "curation.media-test"],
-  data: ["data.test", "data.check", "data.check-identities"],
+  data: ["data.test", "data.check"],
 });
 
 function copyCommand(command) {

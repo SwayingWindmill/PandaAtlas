@@ -89,12 +89,6 @@ export interface PublicProfileRecord {
   parentageAssertions: PublicParentageAssertionSummary[];
 }
 
-export interface PublicInstitutionRecord {
-  institution: PublicInstitutionSummary;
-  places: PublicPlaceSummary[];
-  pandas: PandaDetail[];
-}
-
 export interface PublicPlaceRecord {
   place: PublicPlaceSummary;
   institutions: PublicInstitutionSummary[];

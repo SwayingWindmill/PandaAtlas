@@ -2,7 +2,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 
-import type { PublicMomentOccurrence } from "@/features/public-experiences/data";
+import type { PublicMomentOccurrence } from "@/features/public-experiences/moments";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 interface PandaCalendarPageProps {

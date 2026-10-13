@@ -14,13 +14,14 @@ import type {
   PublicPlaceRecord,
   PublicProfileRecord,
 } from "@/features/public-content/public-release";
-import type { MomentQuery, PublicMomentOccurrence } from "@/features/public-experiences/data";
+import type { MomentQuery, PublicMomentOccurrence } from "@/features/public-experiences/moments";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { publicMediaUrl } from "@/lib/media/public-media";
 import { createServerV2Client } from "@/lib/server/v2-api";
 import type {
   PandaDetail,
   PandaLineageRelationship,
+  PublicFamilyStoryRecord,
   PandaLineageResponse,
   PublicFacilitySummary,
   PublicInstitutionSummary,
@@ -440,9 +441,10 @@ async function loadCore(): Promise<V2CoreDataset | null> {
   };
 }
 
-function buildCorePandas(core: V2CoreDataset): PandaDetail[] {
+function buildCorePandas(core: V2CoreDataset, pandaIds?: ReadonlySet<string>): PandaDetail[] {
   const placesById = new Map(core.places.map((place) => [place.placeId, place]));
-  return core.pandas.map((panda) => buildPanda(
+  const pandas = pandaIds ? core.pandas.filter((panda) => pandaIds.has(panda.pandaId)) : core.pandas;
+  return pandas.map((panda) => buildPanda(
     panda,
     placesById,
     core.residencies,
@@ -656,6 +658,57 @@ export async function loadV2PublicMomentDataset(): Promise<V2MomentDataset | nul
     pandas,
     places: core.places.map(mapPlace),
     sourceEvents: [...eventMap.values()].map((event) => sourceOccurrence(event, pandasById)),
+  };
+}
+
+export interface V2FamilyStoryRecord {
+  members: PandaDetail[];
+  events: PublicMomentOccurrence[];
+  assertions: PublicParentageAssertionSummary[];
+  sources: PublicSourceSummary[];
+}
+
+// Curated family stories reference V2 pandas, events, parentage assertions and evidence by ID;
+// a reference the active release does not publish is left out.
+export async function loadV2FamilyStoryMembers(
+  stories: PublicFamilyStoryRecord[],
+): Promise<Map<string, PandaDetail[]> | null> {
+  const core = await loadCore();
+  if (!core) return null;
+  const pandasById = new Map(
+    buildCorePandas(core, new Set(stories.flatMap((story) => story.member_ids))).map((panda) => [panda.id, panda]),
+  );
+  return new Map(stories.map((story) => [
+    story.id,
+    story.member_ids.flatMap((id) => pandasById.get(id) ?? []),
+  ]));
+}
+
+export async function loadV2FamilyStory(story: PublicFamilyStoryRecord): Promise<V2FamilyStoryRecord | null> {
+  const client = createServerV2Client();
+  const [core, evidence] = await Promise.all([
+    loadCore(),
+    Promise.all(story.source_ids.map((sourceId) =>
+      client.GET("/api/v2/evidence/{sourceId}", { params: { path: { sourceId } } }))),
+  ]);
+  if (!core) return null;
+  const eventIds = new Set(story.chapters.flatMap((chapter) => chapter.event_ids));
+  const pandaIds = new Set([
+    ...story.member_ids,
+    ...core.events.filter((event) => eventIds.has(event.eventId)).flatMap((event) => event.participantIds),
+  ]);
+  const pandas = buildCorePandas(core, pandaIds);
+  const pandasById = new Map(pandas.map((panda) => [panda.id, panda]));
+  const events = new Map<string, PandaDetail["events"][number]>();
+  for (const panda of pandas) for (const event of panda.events) if (eventIds.has(event.id)) events.set(event.id, event);
+  const assertionIds = new Set(story.relationship_assertion_ids);
+  return {
+    members: story.member_ids.flatMap((id) => pandasById.get(id) ?? []),
+    events: [...events.values()]
+      .map((event) => sourceOccurrence(event, pandasById))
+      .sort((left, right) => left.occurrenceDate.localeCompare(right.occurrenceDate)),
+    assertions: parentageAssertions(core.lineage.filter((item) => assertionIds.has(item.assertionId))),
+    sources: evidence.flatMap((result) => (result.data ? [mapSource(result.data.source)] : [])),
   };
 }
 

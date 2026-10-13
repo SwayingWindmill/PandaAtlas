@@ -10,7 +10,7 @@ const release = {
 
 const ids = {
   xiLun: "00000000-0000-4000-8000-000000000101",
-  meiXiang: "00000000-0000-4000-8000-000000000102",
+  meiXiang: "2939c16f-1938-5629-928c-b36b1d5cd6ed",
   riRi: "57c0a1bd-cc44-5a08-ba48-f224e9956064",
   atlanta: "00000000-0000-4000-8000-000000000201",
   washington: "00000000-0000-4000-8000-000000000202",
@@ -166,9 +166,32 @@ const lifeEvents = [
     participantIds: [ids.riRi],
     sourceIds: [],
   },
+  // Referenced by the curated "smithsonian-generations" family story.
+  {
+    eventId: "event-smithsonian-departure-2023",
+    eventType: "transfer",
+    eventStatus: "completed",
+    occurredOn: "2023-11-08",
+    occurredPrecision: "day",
+    fromPlaceId: ids.washington,
+    participantIds: [ids.meiXiang],
+    sourceIds: ["src_smithsonian_history"],
+  },
 ];
 
 const lineage = [];
+
+const evidence = [
+  {
+    sourceId: "src_smithsonian_history",
+    publisher: "Smithsonian National Zoo and Conservation Biology Institute",
+    title: "History of Giant Pandas at the Smithsonian's National Zoo",
+    url: "https://nationalzoo.si.edu/animals/history-giant-pandas-zoo",
+    lastVerifiedOn: "2026-07-23",
+    languageTag: "en",
+    accessState: "accessible",
+  },
+];
 
 function sendJson(response, status, body) {
   response.writeHead(status, {
@@ -238,6 +261,13 @@ const server = http.createServer((request, response) => {
   }
   if (url.pathname === "/api/v2/lineage") {
     sendJson(response, 200, { release, items: lineage });
+    return;
+  }
+  if (url.pathname.startsWith("/api/v2/evidence/")) {
+    const sourceId = decodeURIComponent(url.pathname.slice("/api/v2/evidence/".length));
+    const source = evidence.find((item) => item.sourceId === sourceId);
+    if (source) sendJson(response, 200, { release, source });
+    else sendJson(response, 404, { title: "Not Found", status: 404 });
     return;
   }
   if (url.pathname.startsWith("/api/v2/pandas/")) {

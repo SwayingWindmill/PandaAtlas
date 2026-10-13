@@ -4,11 +4,10 @@ import { notFound, permanentRedirect } from "next/navigation";
 
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import {
+  loadV2FamilyStoryMembers,
   loadV2PublicLineageDataset,
-  
   type PublicCoverage,
 } from "@/features/public-content/public-v2";
-import { familyStoryMembers } from "@/features/public-experiences/data";
 import {
   listFamilyStories,
   localizedEditorial,
@@ -144,6 +143,8 @@ export default async function FamiliesPage({ params, searchParams }: FamiliesPag
   }
 
   const stories = listFamilyStories();
+  const membersByStory = await loadV2FamilyStoryMembers(stories);
+  if (!membersByStory) notFound();
   const t = copy[locale];
   const alternateLocale = locale === "zh" ? "en" : "zh";
 
@@ -174,7 +175,7 @@ export default async function FamiliesPage({ params, searchParams }: FamiliesPag
               <div className={styles.members}>
                 {stories.map((story) => {
                   const content = localizedEditorial(story.localized_content, locale);
-                  const members = familyStoryMembers(story);
+                  const members = membersByStory.get(story.id) ?? [];
                   return (
                     <article className={styles.member} key={story.id}>
                       <p className={styles.eyebrow}>{story.scope.coverage_state === "partial" ? t.partial : t.complete}</p>

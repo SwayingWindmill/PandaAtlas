@@ -14,60 +14,32 @@ export const publicExperienceApiPath = path.resolve(
   PUBLIC_EXPERIENCE_RELEASE_VERSION,
   "api.json",
 );
-const generatedDir = path.resolve(scriptDir, "..", "..", "apps", "web", "lib", "generated");
+export const generatedPublicExperiencesPath = path.resolve(
+  scriptDir,
+  "..",
+  "..",
+  "apps",
+  "web",
+  "lib",
+  "generated",
+  "public-experiences.ts",
+);
 
 export function normalizeGeneratedModule(value) {
   return value.replace(/\r\n/g, "\n");
 }
 
-// Two modules, so pages that only need stories and the profile cohort never load the large
-// event and source lists.
-export function renderPublicExperienceModules(api) {
-  const events = (api.events ?? []).map((event) => ({
-    event_date_precision: "day",
-    from_facility_id: null,
-    from_coarse_location: null,
-    to_facility_id: null,
-    to_coarse_location: null,
-    ...event,
-  }));
+// Curated family stories and the profile cohort. Stories reference V2 pandas, events, parentage
+// assertions and evidence by ID; the Web resolves those through the V2 API.
+export function renderPublicExperiencesModule(api) {
   const familyStories = api.family_stories ?? [];
-  const sources = api.sources ?? [];
   const cohort = api.profile_cohort ?? [];
-  const header = `// Generated from Public Release ${api.release.dataset_release_version}.
-`
-    + `// Run npm run generate:public-experiences after changing the release projection.
-
-`;
-  return [
-    {
-      path: path.join(generatedDir, "public-experiences.ts"),
-      content: header
-        + `import type { PublicFamilyStoryRecord, PublicProfileCohortRecord } from \"@/lib/types\";
-
-`
-        + `export const PUBLIC_EXPERIENCE_RELEASE = ${JSON.stringify(api.release, null, 2)} as const;
-
-`
-        + `export const TRUSTED_FAMILY_STORIES: PublicFamilyStoryRecord[] = ${JSON.stringify(familyStories, null, 2)};
-
-`
-        + `export const TRUSTED_PROFILE_COHORT: PublicProfileCohortRecord[] = ${JSON.stringify(cohort, null, 2)};
-`,
-    },
-    {
-      path: path.join(generatedDir, "public-experience-evidence.ts"),
-      content: header
-        + `import type { PandaDomainEventSummary, PublicSourceSummary } from \"@/lib/types\";
-
-`
-        + `export const TRUSTED_PUBLIC_EVENTS: PandaDomainEventSummary[] = ${JSON.stringify(events, null, 2)};
-
-`
-        + `export const TRUSTED_PUBLIC_SOURCES: PublicSourceSummary[] = ${JSON.stringify(sources, null, 2)};
-`,
-    },
-  ];
+  return `// Generated from Public Release ${api.release.dataset_release_version}.\n`
+    + `// Run npm run generate:public-experiences after changing the release projection.\n\n`
+    + `import type { PublicFamilyStoryRecord, PublicProfileCohortRecord } from "@/lib/types";\n\n`
+    + `export const PUBLIC_EXPERIENCE_RELEASE = ${JSON.stringify(api.release, null, 2)} as const;\n\n`
+    + `export const TRUSTED_FAMILY_STORIES: PublicFamilyStoryRecord[] = ${JSON.stringify(familyStories, null, 2)};\n\n`
+    + `export const TRUSTED_PROFILE_COHORT: PublicProfileCohortRecord[] = ${JSON.stringify(cohort, null, 2)};\n`;
 }
 
 export async function readPublicExperienceApi() {
@@ -75,24 +47,21 @@ export async function readPublicExperienceApi() {
 }
 
 async function main() {
-  const modules = renderPublicExperienceModules(await readPublicExperienceApi());
+  const api = await readPublicExperienceApi();
+  const expected = renderPublicExperiencesModule(api);
   if (process.argv.includes("--check")) {
-    for (const module of modules) {
-      const actual = await readFile(module.path, "utf8").catch(() => "");
-      if (normalizeGeneratedModule(actual) !== normalizeGeneratedModule(module.content)) {
-        throw new Error(
-          "Generated public experiences drifted. Run npm run generate:public-experiences.",
-        );
-      }
+    const actual = await readFile(generatedPublicExperiencesPath, "utf8").catch(() => "");
+    if (normalizeGeneratedModule(actual) !== normalizeGeneratedModule(expected)) {
+      throw new Error(
+        "Generated public experiences drifted. Run npm run generate:public-experiences.",
+      );
     }
     console.log("Generated public experiences are current.");
     return;
   }
-  await mkdir(generatedDir, { recursive: true });
-  for (const module of modules) {
-    await writeFile(module.path, module.content, "utf8");
-    console.log(`Generated ${module.path}`);
-  }
+  await mkdir(path.dirname(generatedPublicExperiencesPath), { recursive: true });
+  await writeFile(generatedPublicExperiencesPath, expected, "utf8");
+  console.log(`Generated ${generatedPublicExperiencesPath}`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

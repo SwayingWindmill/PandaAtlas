@@ -38,8 +38,6 @@ const coreJourneys = [
   { name: "English trusted profile", path: "/en/pandas/mei-xiang" },
   { name: "Chinese structured map journey", path: "/zh/map?mode=institutions&snapshot=2026.08.12.1" },
   { name: "English structured map journey", path: "/en/map?mode=wild&snapshot=2026.08.12.1" },
-  { name: "Chinese institution entity", path: "/zh/institutions/smithsonian-national-zoo" },
-  { name: "English institution entity", path: "/en/institutions/smithsonian-national-zoo" },
   { name: "Chinese place entity", path: "/zh/places/wolong-shenshuping-base" },
   { name: "English place entity", path: "/en/places/wolong-shenshuping-base" },
   {
