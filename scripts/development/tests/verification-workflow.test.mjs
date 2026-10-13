@@ -17,8 +17,11 @@ test("every pull request reaches the shared planner and API scopes run database-
   // Pull requests verify their changed scopes; every merge to main verifies all scopes.
   assert.match(workflow, /push:\s*\r?\n\s*branches: \[main\]/u);
   assert.match(workflow, /VERIFY_SELECTION: \$\{\{ github\.event_name == 'pull_request' && format\('--base origin\/\{0\}', github\.base_ref\) \|\| '--all' \}\}/u);
-  assert.match(workflow, /verify\.mjs --list \$\{\{ env\.VERIFY_SELECTION \}\} --github-output/u);
-  assert.match(workflow, /npm run verify:dev -- \$\{\{ env\.VERIFY_SELECTION \}\}/u);
+  assert.match(workflow, /verify\.mjs --list \$VERIFY_SELECTION --github-output/u);
+  // The verify job runs exactly the scopes the plan selected.
+  assert.match(workflow, /SCOPES: \$\{\{ needs\.plan\.outputs\.scopes \}\}/u);
+  assert.match(workflow, /args\+=\(--scope "\$scope"\)/u);
+  assert.match(workflow, /cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \}\}/u);
   assert.match(workflow, /requires_python: \$\{\{ steps\.plan\.outputs\.requires_python \}\}/);
   assert.match(workflow, /requires_uv: \$\{\{ steps\.plan\.outputs\.requires_uv \}\}/);
   assert.match(workflow, /if: needs\.plan\.outputs\.requires_python == 'true'/);
