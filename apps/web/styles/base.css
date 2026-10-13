@@ -31,10 +31,6 @@ main {
   box-sizing: border-box;
 }
 
-.pa-public-register a {
-  color: inherit;
-}
-
 .pa-public-register :where(a, button, input):focus-visible {
   outline: none;
   box-shadow: var(--pa-focus-ring);

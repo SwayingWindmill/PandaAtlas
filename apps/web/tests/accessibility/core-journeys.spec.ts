@@ -121,11 +121,10 @@ for (const { locale, path, buttonName, pressedButtonName } of [
         }),
       });
     });
+    await page.route("**/api/engagement/favorites", async (route) => {
+      await route.fulfill({ status: 200, contentType: "application/json", body: '{"items":[]}' });
+    });
     await page.route("**/api/engagement/favorites/**", async (route) => {
-      if (route.request().method() === "GET") {
-        await route.fulfill({ status: 404, contentType: "application/json", body: '{"detail":"Not found"}' });
-        return;
-      }
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -295,10 +294,14 @@ test("activated map visualization remains keyboard-equivalent and accessible", a
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/en/map?mode=institutions&snapshot=2026.08.12.1");
-  await page.getByTestId("activate-map-visualization").click();
-
   const island = page.getByTestId("map-visualization-island");
   const failure = page.getByTestId("map-visualization-failure");
+  const activate = page.getByTestId("activate-map-visualization");
+  // The server-rendered button only responds once the page hydrates.
+  await expect(async () => {
+    if (await activate.isVisible()) await activate.click();
+    await expect(activate).toBeHidden({ timeout: 1_000 });
+  }).toPass({ timeout: 15_000 });
   await expect.poll(async () => {
     if (await island.isVisible()) return "island";
     if (await failure.isVisible()) return "failure";
