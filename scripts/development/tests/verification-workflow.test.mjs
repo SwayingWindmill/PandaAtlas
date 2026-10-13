@@ -63,3 +63,15 @@ test("the Cloudflare deployability build also verifies main and reuses cached Pl
   assert.match(workflow, /path: ~\/\.cache\/ms-playwright\s*\r?\n\s*key: playwright-\$\{\{ runner\.os \}\}-\$\{\{ steps\.playwright\.outputs\.version \}\}/u);
   assert.match(workflow, /if: steps\.playwright-cache\.outputs\.cache-hit != 'true'\s*\r?\n\s*run: npx playwright install --with-deps chromium/u);
 });
+
+test("only pull requests fetch full history, because only they diff against a base", async () => {
+  const workflow = await readFile(
+    path.join(repoRoot, ".github", "workflows", "development-verification.yml"),
+    "utf8",
+  );
+
+  // 0 is falsy in GitHub expressions, so the full-history value must be the fallback, not the && branch.
+  const depths = [...workflow.matchAll(/fetch-depth: (.+)/gu)].map((match) => match[1].trim());
+  assert.ok(depths.length > 0);
+  for (const depth of depths) assert.equal(depth, "${{ github.event_name != 'pull_request' && 1 || 0 }}");
+});
