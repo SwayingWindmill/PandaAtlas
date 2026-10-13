@@ -17,22 +17,30 @@ updates:
       - dependency-name: "supabase"
       # Must equal the lightningcss version @tailwindcss/node pins, which is not the newest release.
       - dependency-name: "lightningcss-linux-x64-gnu"
+    # Groups take minor and patch updates; each major arrives as its own pull request to evaluate.
     groups:
       cloudflare-toolchain:
         patterns: ["cf", "@cloudflare/*", "vinext", "vite", "@vitejs/*"]
+        update-types: ["minor", "patch"]
       tailwind:
         # Includes the Linux oxide binary pinned in apps/web optionalDependencies, which tracks tailwindcss.
         patterns: ["tailwindcss", "@tailwindcss/*"]
+        update-types: ["minor", "patch"]
       nestjs:
         patterns: ["@nestjs/*", "reflect-metadata", "rxjs", "class-transformer", "class-validator"]
+        update-types: ["minor", "patch"]
       react-next:
         patterns: ["react", "react-dom", "react-server-dom-webpack", "next", "eslint-config-next", "@types/react", "@types/react-dom"]
+        update-types: ["minor", "patch"]
       supabase:
         patterns: ["@supabase/*", "supabase"]
+        update-types: ["minor", "patch"]
       testing:
         patterns: ["vitest", "@vitest/*", "@playwright/test", "@axe-core/*", "light-my-request"]
+        update-types: ["minor", "patch"]
       lint-and-types:
         patterns: ["eslint", "@eslint/*", "typescript", "typescript-eslint", "@types/*", "globals", "dependency-cruiser"]
+        update-types: ["minor", "patch"]
       # Everything else: one pull request for minor and patch updates; majors stay individual.
       minor-and-patch:
         patterns: ["*"]
