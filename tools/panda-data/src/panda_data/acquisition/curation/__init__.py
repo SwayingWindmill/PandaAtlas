@@ -44,12 +44,6 @@ from .models import (
     ReviewSummary,
     ReviewSummaryGroup,
 )
-from .v2_recommendation import (
-    AcquisitionCurationChange,
-    AcquisitionCurationRecommendation,
-    V2CurationResolutionContext,
-    build_acquisition_curation_recommendations,
-)
 from .workflow import (
     export_curation_patch,
     record_decision,
@@ -67,8 +61,6 @@ __all__ = [
     "DECISION_SCHEMA_VERSION",
     "PATCH_SCHEMA_VERSION",
     "SUMMARY_SCHEMA_VERSION",
-    "AcquisitionCurationChange",
-    "AcquisitionCurationRecommendation",
     "BatchReviewGroup",
     "BatchReviewPlan",
     "CollectionDecisionPolicySummary",
@@ -84,8 +76,6 @@ __all__ = [
     "ReviewLane",
     "ReviewSummary",
     "ReviewSummaryGroup",
-    "V2CurationResolutionContext",
-    "build_acquisition_curation_recommendations",
     "build_batch_review_plan",
     "build_collection_decision_log",
     "collection_policy_decision",

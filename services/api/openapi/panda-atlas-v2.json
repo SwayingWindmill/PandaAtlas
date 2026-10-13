@@ -3776,13 +3776,6 @@
             "type": "string",
             "format": "uuid"
           },
-          "originKind": {
-            "type": "string",
-            "enum": [
-              "review",
-              "acquisition"
-            ]
-          },
           "targetPandaId": {
             "type": "string",
             "format": "uuid"
@@ -3818,7 +3811,6 @@
         },
         "required": [
           "changeSetId",
-          "originKind",
           "targetPandaId",
           "state",
           "version",
@@ -3922,80 +3914,12 @@
           "sourceIds"
         ]
       },
-      "CurationOwnerChangeDto": {
-        "type": "object",
-        "properties": {
-          "changeId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "candidateId": {
-            "type": "string"
-          },
-          "ownerModule": {
-            "type": "string",
-            "enum": [
-              "panda",
-              "lineage",
-              "life_history"
-            ]
-          },
-          "operation": {
-            "type": "string",
-            "enum": [
-              "fact.propose",
-              "fact.corroborate",
-              "fact.dispute",
-              "name.add",
-              "name.corroborate",
-              "external_identifier.add",
-              "external_identifier.corroborate",
-              "parentage.create",
-              "residency.create",
-              "event.create"
-            ]
-          },
-          "payload": {
-            "type": "object",
-            "additionalProperties": true
-          },
-          "lastVerifiedOn": {
-            "type": "string",
-            "format": "date"
-          },
-          "sourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "appliedReference": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "changeId",
-          "candidateId",
-          "ownerModule",
-          "operation",
-          "payload",
-          "lastVerifiedOn",
-          "sourceIds"
-        ]
-      },
       "CurationChangeSetDto": {
         "type": "object",
         "properties": {
           "changeSetId": {
             "type": "string",
             "format": "uuid"
-          },
-          "originKind": {
-            "type": "string",
-            "enum": [
-              "review",
-              "acquisition"
-            ]
           },
           "reviewCaseId": {
             "type": "string",
@@ -4012,13 +3936,6 @@
           "revisionNumber": {
             "type": "number",
             "minimum": 1
-          },
-          "acquisitionBundleId": {
-            "type": "string"
-          },
-          "pipelineArtifactId": {
-            "type": "string",
-            "format": "uuid"
           },
           "targetPandaId": {
             "type": "string",
@@ -4058,24 +3975,20 @@
             "items": {
               "$ref": "#/components/schemas/CurationChangeDto"
             }
-          },
-          "ownerChanges": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CurationOwnerChangeDto"
-            }
           }
         },
         "required": [
           "changeSetId",
-          "originKind",
+          "reviewCaseId",
+          "decisionId",
+          "submissionId",
+          "revisionNumber",
           "targetPandaId",
           "state",
           "version",
           "reason",
           "createdByAccountId",
-          "changes",
-          "ownerChanges"
+          "changes"
         ]
       },
       "ApproveCurationDto": {

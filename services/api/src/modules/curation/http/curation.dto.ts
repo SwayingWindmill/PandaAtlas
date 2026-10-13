@@ -50,69 +50,21 @@ export class CurationChangeDto {
   public declare appliedAssertionId?: string;
 }
 
-export class CurationOwnerChangeDto {
-  @ApiProperty({ format: "uuid" })
-  public declare changeId: string;
-
-  @ApiProperty()
-  public declare candidateId: string;
-
-  @ApiProperty({ enum: ["panda", "lineage", "life_history"] })
-  public declare ownerModule: "panda" | "lineage" | "life_history";
-
-  @ApiProperty({
-    enum: [
-      "fact.propose",
-      "fact.corroborate",
-      "fact.dispute",
-      "name.add",
-      "name.corroborate",
-      "external_identifier.add",
-      "external_identifier.corroborate",
-      "parentage.create",
-      "residency.create",
-      "event.create",
-    ],
-  })
-  public declare operation: string;
-
-  @ApiProperty({ type: "object", additionalProperties: true })
-  public declare payload: Record<string, unknown>;
-
-  @ApiProperty({ format: "date" })
-  public declare lastVerifiedOn: string;
-
-  @ApiProperty({ type: String, isArray: true })
-  public declare sourceIds: string[];
-
-  @ApiPropertyOptional()
-  public declare appliedReference?: string;
-}
-
 export class CurationChangeSetDto {
   @ApiProperty({ format: "uuid" })
   public declare changeSetId: string;
 
-  @ApiProperty({ enum: ["review", "acquisition"] })
-  public declare originKind: "review" | "acquisition";
+  @ApiProperty({ format: "uuid" })
+  public declare reviewCaseId: string;
 
-  @ApiPropertyOptional({ format: "uuid" })
-  public declare reviewCaseId?: string;
+  @ApiProperty({ format: "uuid" })
+  public declare decisionId: string;
 
-  @ApiPropertyOptional({ format: "uuid" })
-  public declare decisionId?: string;
+  @ApiProperty({ format: "uuid" })
+  public declare submissionId: string;
 
-  @ApiPropertyOptional({ format: "uuid" })
-  public declare submissionId?: string;
-
-  @ApiPropertyOptional({ minimum: 1 })
-  public declare revisionNumber?: number;
-
-  @ApiPropertyOptional()
-  public declare acquisitionBundleId?: string;
-
-  @ApiPropertyOptional({ format: "uuid" })
-  public declare pipelineArtifactId?: string;
+  @ApiProperty({ minimum: 1 })
+  public declare revisionNumber: number;
 
   @ApiProperty({ format: "uuid" })
   public declare targetPandaId: string;
@@ -137,9 +89,6 @@ export class CurationChangeSetDto {
 
   @ApiProperty({ type: () => CurationChangeDto, isArray: true })
   public declare changes: CurationChangeDto[];
-
-  @ApiProperty({ type: () => CurationOwnerChangeDto, isArray: true })
-  public declare ownerChanges: CurationOwnerChangeDto[];
 }
 
 export const CURATION_STATES = ["draft", "validated", "approved", "applied", "rejected"] as const;
@@ -160,7 +109,6 @@ export class CurationListQueryDto {
 
 export class CurationChangeSetSummaryDto {
   @ApiProperty({ format: "uuid" }) public declare changeSetId: string;
-  @ApiProperty({ enum: ["review", "acquisition"] }) public declare originKind: string;
   @ApiProperty({ format: "uuid" }) public declare targetPandaId: string;
   @ApiProperty({ enum: CURATION_STATES }) public declare state: string;
   @ApiProperty() public declare version: number;
