@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @import "../styles/tokens.css";
+@import "../styles/brand.css";
 @import "../styles/base.css";
 @import "../styles/typography.css";
 @import "../styles/motion.css";
@@ -9,7 +10,6 @@
 @import "../styles/licensed-media.css";
 @import "../styles/admin-console.css";
 @import "../styles/trusted-profile.css";
-@import "../styles/editorial-home.css";
 @import "../styles/my-pandas.css";
 @import "../styles/community-contribution.css";
 @import "../styles/atlas-discovery.css";
