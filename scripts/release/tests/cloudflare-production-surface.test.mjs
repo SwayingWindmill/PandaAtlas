@@ -30,10 +30,16 @@ test("the API authorizes Web public-cache purges through its service binding pro
 test("robots.txt is a static asset that allows search, forbids AI training and hides private paths", () => {
   const robots = readFileSync(new URL("../../../apps/web/public/robots.txt", import.meta.url), "utf8");
   assert.match(robots, /^Content-Signal: search=yes, ai-train=no$/mu);
+  const disallowed = new Set(robots.split(/\r?\n/u).filter((line) => line.startsWith("Disallow: ")).map((line) => line.slice("Disallow: ".length)));
   for (const path of ["/admin", "/api/", "/auth/", "/zh/me", "/en/me", "/zh/contribute", "/en/contribute"]) {
-    assert.match(robots, new RegExp(`^Disallow: ${path}$`, "mu"), path);
+    assert.ok(disallowed.has(path), path);
   }
-  assert.doesNotMatch(robots, /^Disallow: \/me$/mu, "a bare /me prefix would also block /media");
+  // Filter query variants are crawl traps; the faceted pages themselves stay crawlable.
+  for (const page of ["/zh/moments", "/en/moments", "/zh/pandas", "/en/pandas"]) {
+    assert.ok(disallowed.has(`${page}?`), `${page}?`);
+    assert.ok(!disallowed.has(page), page);
+  }
+  assert.ok(!disallowed.has("/me"), "a bare /me prefix would also block /media");
   assert.match(robots, new RegExp(`^Sitemap: ${workers.web.env.SITE_URL.value}/sitemap.xml$`, "mu"));
 });
 

@@ -13,5 +13,10 @@ Disallow: /zh/my-pandas
 Disallow: /en/my-pandas
 Disallow: /zh/contribute
 Disallow: /en/contribute
+# Filter and search query variants of faceted pages; the pages themselves stay crawlable.
+Disallow: /zh/moments?
+Disallow: /en/moments?
+Disallow: /zh/pandas?
+Disallow: /en/pandas?
 
 Sitemap: https://www.zhipanda.com/sitemap.xml
