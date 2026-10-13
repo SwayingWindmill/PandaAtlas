@@ -3594,7 +3594,7 @@ export interface operations {
         parameters: {
             query: {
                 /** @description Comma-separated panda IDs, at most 50. */
-                ids: string[];
+                ids: string;
             };
             header?: never;
             path?: never;

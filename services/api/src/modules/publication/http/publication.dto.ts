@@ -335,7 +335,7 @@ export class PublicMediaSummaryDto {
 }
 
 export class PandaCoversQueryDto {
-  @ApiProperty({ description: "Comma-separated panda IDs, at most 50.", example: "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6" })
+  @ApiProperty({ type: String, description: "Comma-separated panda IDs, at most 50.", example: "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6" })
   @Transform(({ value }: { value: unknown }) =>
     typeof value === "string" ? value.split(",").map((id) => id.trim()).filter(Boolean) : value)
   @IsArray()
