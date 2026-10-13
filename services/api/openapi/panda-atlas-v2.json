@@ -1937,6 +1937,42 @@
         ]
       }
     },
+    "/api/v2/panda-covers": {
+      "get": {
+        "operationId": "listPublicPandaCovers",
+        "parameters": [
+          {
+            "name": "ids",
+            "required": true,
+            "in": "query",
+            "description": "Comma-separated panda IDs, at most 50.",
+            "schema": {
+              "example": "7cf4e916-4801-5b2e-b49b-4e33bb50d5d6",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPandaCoverListDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "Get the cover photo of each requested panda",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
     "/api/v2/places": {
       "get": {
         "operationId": "listPublicPlaces",
@@ -5811,6 +5847,25 @@
           "events",
           "media",
           "evidence"
+        ]
+      },
+      "PublicPandaCoverListDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "items": {
+            "description": "The first deliverable image of each requested panda, in display order; pandas without one are omitted.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicMediaSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "items"
         ]
       },
       "PublicPlaceSummaryDto": {

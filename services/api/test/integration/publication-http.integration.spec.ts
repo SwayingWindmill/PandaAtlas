@@ -173,6 +173,24 @@ describe("V2 publication and release-scoped public reads", () => {
       metadata: { privateWorkflow: "PRIVATE-media-metadata" },
     });
     await media.attachToPanda(panda.pandaId, asset.assetId, "cover", 0);
+    // A video sharing the cover's position, and a later photo, must not become the cover.
+    for (const [index, mediaType, displayOrder] of [[1, "video/mp4", 0], [2, "image/jpeg", 1]] as const) {
+      const extra = await media.createAsset({
+        sourceId,
+        storageBucket: "PRIVATE-bucket",
+        storageKey: `public/${suffix}-${index}`,
+        objectVersion: "PRIVATE-object-version",
+        storageEtag: "PRIVATE-etag",
+        contentSha256: String(index).repeat(64),
+        mediaType,
+        byteSize: 2048,
+        title: `Extra ${index}`,
+        rightsStatus: "cleared",
+        eligibilityStatus: "eligible",
+        metadata: {},
+      });
+      await media.attachToPanda(panda.pandaId, extra.assetId, "gallery", displayOrder);
+    }
 
     const first = await publication.build(`publication-${suffix}-1`, context);
     const firstSeal = await publication.seal(first.releaseId, context, "Seal the first integration release");
@@ -203,6 +221,16 @@ describe("V2 publication and release-scoped public reads", () => {
     expect(firstBody.events).toContainEqual(expect.objectContaining({ eventType: "public_debut" }));
     expect(firstBody.media).toContainEqual(expect.objectContaining({ assetId: asset.assetId, objectKey: `public/${suffix}.jpg` }));
     expect(firstBody.evidence).toContainEqual(expect.objectContaining({ sourceId, publicSummary: "Initial public summary." }));
+    const coversUrl = (...ids: string[]) => `/api/v2/panda-covers?ids=${ids.join(",")}`;
+    const covers = await injectHttp(app, { method: "GET", url: coversUrl(panda.pandaId, father.pandaId, randomUUID()) });
+    expect(covers.statusCode, covers.body).toBe(200);
+    expect(covers.json<{ items: unknown[] }>().items).toEqual([
+      expect.objectContaining({ pandaId: panda.pandaId, assetId: asset.assetId, objectKey: `public/${suffix}.jpg`, license: "CC-BY-4.0" }),
+    ]);
+    expect(JSON.stringify(covers.json())).not.toContain("PRIVATE");
+    for (const invalid of ["/api/v2/panda-covers", "/api/v2/panda-covers?ids=", "/api/v2/panda-covers?ids=not-a-uuid"]) {
+      expect((await injectHttp(app, { method: "GET", url: invalid })).statusCode, invalid).toBe(400);
+    }
     const serializedFirst = JSON.stringify(firstBody);
     expect(serializedFirst).not.toContain("PRIVATE evidence note");
     expect(serializedFirst).not.toContain("PRIVATE-bucket");
@@ -255,6 +283,8 @@ describe("V2 publication and release-scoped public reads", () => {
     await publication.setResourceTakedown("panda", panda.pandaId, true, context, "Emergency panda takedown");
     const takenDown = await injectHttp(app, { method: "GET", url: `/api/v2/pandas/${panda.canonicalSlug}` });
     expect(takenDown.statusCode).toBe(404);
+    const takenDownCovers = await injectHttp(app, { method: "GET", url: coversUrl(panda.pandaId) });
+    expect(takenDownCovers.json<{ items: unknown[] }>().items).toEqual([]);
 
     const rollback = await publication.rollback(first.releaseId, context, "Roll back to the first compatible release");
     expect(rollback.kind).toBe("ok");

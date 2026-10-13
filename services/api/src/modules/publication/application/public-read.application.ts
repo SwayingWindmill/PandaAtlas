@@ -137,6 +137,8 @@ export interface PublicReadPort {
   currentRelease(): Promise<PublicReadResult<PublicReadRelease>>;
   listPandas(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicPandaSummary[] }>>;
   getPanda(slug: string): Promise<PublicReadResult<PublicPandaDetail>>;
+  /** The first deliverable image of each requested panda, in display order. */
+  listPandaCovers(pandaIds: readonly string[]): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicMediaSummary[] }>>;
   listPlaces(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicPlaceSummary[] }>>;
   getPlace(slug: string): Promise<PublicReadResult<{ release: PublicReadRelease; place: PublicPlaceSummary }>>;
   listLineage(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicLineageSummary[] }>>;
