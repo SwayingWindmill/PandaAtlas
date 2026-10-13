@@ -304,7 +304,7 @@ The Web imports the generated client package; it never imports Nest DTO/domain s
 ### V2 wire conventions
 
 - business routes: `/api/v2/...`;
-- infrastructure routes: `/health`, `/ready`;
+- infrastructure routes: `/health`, `/ready`, `/health/async`;
 - JSON/query field names: camelCase;
 - path segments: lower-case/kebab-case;
 - stable lowerCamel operation IDs;
@@ -685,6 +685,8 @@ Colocate API and Supabase region where practical.
 `GET /health` proves the Nest process is alive and does not call remote dependencies.
 
 `GET /ready` performs a bounded DB readiness probe through the real request connection path and returns 503 when the DB dependency is unavailable.
+
+`GET /health/async` reads the async downstream heartbeat and returns 503 once no Cron Trigger cycle has completed every stage for more than 20 minutes. It is separate from `/ready` because a stalled background cycle does not stop the API serving requests; it exists for the external production probe.
 
 Publication suspension is not infrastructure un-readiness.
 

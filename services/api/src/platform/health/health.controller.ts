@@ -42,14 +42,16 @@ export class HealthController {
   @Get("health/async")
   @Version(VERSION_NEUTRAL)
   public async asyncDownstreamHealth(): Promise<{ status: "ok" }> {
-    let cause: unknown;
+    let seconds: number;
     try {
-      const seconds = await this.heartbeat.secondsSinceSuccess();
-      if (seconds <= ASYNC_DOWNSTREAM_STALL_SECONDS) return { status: "ok" };
-      cause = new Error(`The last async downstream cycle completed ${seconds}s ago`);
-    } catch (error) {
-      cause = error;
+      seconds = await this.heartbeat.secondsSinceSuccess();
+    } catch (cause) {
+      throw new ServiceUnavailableException("A required dependency is unavailable", { cause });
     }
-    throw new ServiceUnavailableException("Async downstream work is stalled or unavailable", { cause });
+    if (seconds > ASYNC_DOWNSTREAM_STALL_SECONDS) {
+      const cause = new Error(`The last async downstream cycle completed ${seconds}s ago`);
+      throw new ServiceUnavailableException("Async downstream work is stalled", { cause });
+    }
+    return { status: "ok" };
   }
 }
