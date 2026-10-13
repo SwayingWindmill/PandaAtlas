@@ -88,7 +88,8 @@ jobs:
       - name: Apply pending database migrations
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: npx supabase db push --yes --db-url "$SUPABASE_DB_URL" --workdir infra
+        # The installed CLI directly: npx/npm exec can echo their full command line, connection string included.
+        run: ./node_modules/.bin/supabase db push --yes --db-url "$SUPABASE_DB_URL" --workdir infra
 
       - name: Deploy the API Worker
         working-directory: services/api

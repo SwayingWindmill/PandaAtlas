@@ -19,6 +19,7 @@ A failed step stops the later ones. Migrations run while the previous API still 
 - **Expand first.** A migration must keep the currently deployed API working: add tables, columns, grants and functions; do not rename, drop or tighten what the running API uses. Remove the old shape in a later release, after no deployed code uses it.
 - **Grant what the API uses.** The app-role grants test (`app-role-grants.integration.spec.ts`) derives the privileges from the API source and fails when a migration forgets one.
 - **Forward only.** Never edit, renumber or delete a migration that has reached production; correct it with a new migration. Number a new migration after the highest one on `main`.
+- **Only this workflow migrates production.** Do not apply migrations with the Supabase dashboard, the Supabase MCP `apply_migration` tool or a local `supabase db push`: they record migrations under different versions, and the next deploy's `db push` then refuses with "Remote migration versions not found". Fixing that means repairing `supabase_migrations.schema_migrations` by hand (done once on 2026-10-13 for 0054–0058).
 - **Destructive changes need the owner.** A migration that drops data runs only after the owner approves it in its issue, as in #575.
 
 ## Roll back a Worker
