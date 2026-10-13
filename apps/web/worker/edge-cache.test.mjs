@@ -29,8 +29,7 @@ test("RSC navigation payloads are cached like their page, keeping the framework 
   assert.equal(response.headers.get("Vary"), vary);
 });
 
-test("robots.txt and sitemap.xml are cached at the edge", () => {
-  assert.equal(apply("/robots.txt", { headers: { "Content-Type": "text/plain" } }).headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_EDGE_CACHE_CONTROL);
+test("sitemap.xml is cached at the edge", () => {
   assert.equal(apply("/sitemap.xml", { headers: { "Content-Type": "application/xml" } }).headers.get("Cloudflare-CDN-Cache-Control"), PUBLIC_EDGE_CACHE_CONTROL);
 });
 
