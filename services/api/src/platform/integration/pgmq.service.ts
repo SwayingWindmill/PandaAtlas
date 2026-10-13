@@ -4,7 +4,8 @@ import type { DatabaseTransaction } from "../database/database.service.js";
 export type IntegrationConsumerQueue =
   | "integration_updates"
   | "integration_notification"
-  | "integration_audit";
+  | "integration_audit"
+  | "integration_public_cache";
 
 export type NotificationProviderQueue = "notification_provider" | "notification_provider_dlq";
 export type PgmqQueue = IntegrationConsumerQueue | NotificationProviderQueue;

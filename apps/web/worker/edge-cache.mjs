@@ -31,3 +31,19 @@ export function withEdgeCachePolicy(request, response) {
   }
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
+
+// The API purges after any delivery change, over a service binding whose ctx.props carry
+// publicCachePurge. Only someone who can deploy the API can set those props, so internet requests
+// can never reach this. Purging runs in the default entrypoint, which owns the page cache.
+export function isPublicCachePurge(context) {
+  return context.props?.publicCachePurge === true;
+}
+
+export async function purgePublicCache(request, context) {
+  if (request.method !== "POST" || new URL(request.url).pathname !== "/__public-cache/purge") {
+    return new Response("Not found", { status: 404, headers: { "Cache-Control": UNCACHEABLE } });
+  }
+  const result = await context.cache.purge({ purgeEverything: true });
+  if (result.success) return new Response(null, { status: 204, headers: { "Cache-Control": UNCACHEABLE } });
+  return Response.json({ errors: result.errors }, { status: 502, headers: { "Cache-Control": UNCACHEABLE } });
+}

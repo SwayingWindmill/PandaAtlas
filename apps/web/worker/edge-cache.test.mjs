@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { PUBLIC_EDGE_CACHE_CONTROL, withEdgeCachePolicy } from "./edge-cache.mjs";
+import { isPublicCachePurge, PUBLIC_EDGE_CACHE_CONTROL, purgePublicCache, withEdgeCachePolicy } from "./edge-cache.mjs";
 
 const VINEXT_DYNAMIC = "private, no-cache, no-store, max-age=0, must-revalidate";
 
@@ -64,4 +64,42 @@ test("responses that already declare their own caching pass through unchanged", 
   const photo = apply("/media/pandas/photos/lun-lun/1.webp", { headers: { "Content-Type": "image/webp", "Cache-Control": "public, max-age=31536000, immutable" } });
   assert.equal(photo.headers.get("Cache-Control"), "public, max-age=31536000, immutable");
   assert.equal(photo.headers.get("Cloudflare-CDN-Cache-Control"), null);
+});
+
+function purgeContext(result = { success: true, errors: [] }) {
+  const calls = [];
+  return { calls, props: { publicCachePurge: true }, cache: { purge: async (options) => { calls.push(options); return result; } } };
+}
+
+test("only an invocation carrying the API binding's props may purge", () => {
+  assert.equal(isPublicCachePurge(purgeContext()), true);
+  assert.equal(isPublicCachePurge({}), false);
+  assert.equal(isPublicCachePurge({ props: {} }), false);
+  assert.equal(isPublicCachePurge({ props: { publicCachePurge: "true" } }), false);
+});
+
+test("a purge request clears every cached response of the default entrypoint", async () => {
+  const context = purgeContext();
+  const response = await purgePublicCache(new Request("https://zhipanda.com/__public-cache/purge", { method: "POST" }), context);
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get("Cache-Control"), "private, no-store");
+  assert.deepEqual(context.calls, [{ purgeEverything: true }]);
+});
+
+test("a rejected purge is reported so the API retries it", async () => {
+  const context = purgeContext({ success: false, errors: [{ code: 1134, message: "rate limited" }] });
+  const response = await purgePublicCache(new Request("https://zhipanda.com/__public-cache/purge", { method: "POST" }), context);
+  assert.equal(response.status, 502);
+  assert.deepEqual(await response.json(), { errors: [{ code: 1134, message: "rate limited" }] });
+});
+
+test("other requests over the purge binding do nothing", async () => {
+  const context = purgeContext();
+  for (const request of [
+    new Request("https://zhipanda.com/__public-cache/purge"),
+    new Request("https://zhipanda.com/zh", { method: "POST" }),
+  ]) {
+    assert.equal((await purgePublicCache(request, context)).status, 404);
+  }
+  assert.deepEqual(context.calls, []);
 });

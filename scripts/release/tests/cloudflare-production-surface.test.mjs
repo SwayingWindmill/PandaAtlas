@@ -22,6 +22,11 @@ test("the production Web Worker serves cacheable responses from Workers Cache", 
   assert.deepEqual(workers.web.cache, { enabled: true });
 });
 
+test("the API authorizes Web public-cache purges through its service binding props, not a secret", () => {
+  assert.deepEqual(workers.api.env.PUBLIC_WEB, { type: "worker", worker: "zhipanda-v2-web", props: { publicCachePurge: true } });
+  for (const key of ["PUBLIC_REVALIDATION_AUTH", "PUBLIC_WEB_BASE_URL"]) assert.equal(key in workers.api.env, false, key);
+});
+
 test("robots.txt is a static asset that allows search, forbids AI training and hides private paths", () => {
   const robots = readFileSync(new URL("../../../apps/web/public/robots.txt", import.meta.url), "utf8");
   assert.match(robots, /^Content-Signal: search=yes, ai-train=no$/mu);
