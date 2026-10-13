@@ -1,0 +1,31 @@
+name: Production Probe
+
+# Fails when production is down or async downstream has stalled. GitHub notifies the account that
+# last changed this schedule when a scheduled run fails (#560).
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    name: Probe production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: API serves traffic
+        run: curl --fail --silent --show-error --max-time 20 --retry 2 --retry-all-errors https://api.zhipanda.com/ready
+
+      - name: Async downstream is not stalled
+        run: curl --fail --silent --show-error --max-time 20 --retry 2 --retry-all-errors https://api.zhipanda.com/health/async
+
+      # A unique query string misses the edge page cache, so the Web Worker itself must render.
+      - name: Web renders the home page
+        run: curl --fail --silent --show-error --max-time 30 --retry 2 --retry-all-errors --output /dev/null "https://www.zhipanda.com/zh?probe=${{ github.run_id }}"

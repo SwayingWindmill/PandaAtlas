@@ -21,11 +21,12 @@ afterEach(async () => {
 });
 
 describe("NestJS V2 runtime", () => {
-  it("serves version-neutral health and readiness endpoints", async () => {
+  it("serves version-neutral health, readiness and async-downstream endpoints", async () => {
     app = await createApplication();
 
     const health = await injectHttp(app, { method: "GET", url: "/health" });
     const ready = await injectHttp(app, { method: "GET", url: "/ready" });
+    const asyncDownstream = await injectHttp(app, { method: "GET", url: "/health/async" });
 
     expect(health.statusCode).toBe(200);
     expect(health.json()).toEqual({ status: "ok" });
@@ -34,6 +35,8 @@ describe("NestJS V2 runtime", () => {
       status: 503,
       code: "system.dependencyUnavailable",
     });
+    expect(asyncDownstream.statusCode).toBe(503);
+    expect(asyncDownstream.json()).toMatchObject({ status: 503, code: "system.dependencyUnavailable" });
   });
 
   it("returns RFC 9457 problem details with the request id", async () => {
