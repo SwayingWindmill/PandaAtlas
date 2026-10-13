@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { resolvePreferredPublicLocale } from "@/foundation/content/locales";
+import { isAdminPath, isAdminShellEnabled } from "@/lib/server/admin-shell";
 import { refreshSupabaseSession } from "@/lib/supabase/middleware";
 
 function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
@@ -46,6 +47,9 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
 }
 
 export async function proxy(request: NextRequest) {
+  if (isAdminPath(request.nextUrl.pathname) && !isAdminShellEnabled()) {
+    return new NextResponse("Not found", { status: 404, headers: { "Cache-Control": "no-store, private" } });
+  }
   const redirect = redirectToCanonicalRoute(request);
   if (redirect) return redirect;
   const requestHeaders = new Headers(request.headers);
@@ -65,7 +69,7 @@ export async function proxy(request: NextRequest) {
     refreshedResponse.headers.set("Pragma", "no-cache");
     refreshedResponse.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
   }
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+  if (isAdminPath(pathname)) {
     refreshedResponse.headers.set(
       "Cache-Control",
       "no-store, no-cache, private, max-age=0, must-revalidate",
