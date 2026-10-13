@@ -16,28 +16,15 @@ function notModified(request, headers) {
   return request.headers.get("If-None-Match") === headers.get("ETag");
 }
 
-// Serves allowlisted media from the private HOME_MEDIA bucket. Full published-photo GETs are
-// immutable, so they are kept in the Workers edge cache; ranges, HEADs and videos read R2 directly.
-export async function serveMedia(request, env, context, { cache, photos = publicPhotos, videos = homeVideos } = {}) {
+// Serves allowlisted media from the private HOME_MEDIA bucket. Responses are cacheable, so Workers
+// Cache keeps them at the edge and serves conditional and range requests without running the Worker.
+export async function serveMedia(request, env, { photos = publicPhotos, videos = homeVideos } = {}) {
   const url = new URL(request.url);
   const isPhoto = url.pathname.startsWith("/media/pandas/photos/");
   const key = url.pathname.slice("/media/".length);
   if (isPhoto ? !photos.has(key) : !videos.has(key.slice("home-official/".length))) return new Response("Not found", { status: 404 });
   if (request.method !== "GET" && request.method !== "HEAD") {
     return new Response(null, { status: 405, headers: { Allow: "GET, HEAD" } });
-  }
-
-  const cacheable = isPhoto && request.method === "GET" && !request.headers.has("Range");
-  const cacheKey = new Request(`${url.origin}${url.pathname}`);
-  if (cacheable) {
-    const cached = await cache.match(cacheKey);
-    if (cached) {
-      if (notModified(request, cached.headers)) {
-        await cached.body?.cancel();
-        return new Response(null, { status: 304, headers: cached.headers });
-      }
-      return cached;
-    }
   }
 
   const object = request.method === "HEAD"
@@ -58,7 +45,5 @@ export async function serveMedia(request, env, context, { cache, photos = public
     && range && "offset" in range && range.length !== undefined;
   headers.set("Content-Length", String(partial ? range.length : object.size));
   if (partial) headers.set("Content-Range", `bytes ${range.offset}-${range.offset + range.length - 1}/${object.size}`);
-  const response = new Response(request.method === "HEAD" ? null : object.body, { status: partial ? 206 : 200, headers });
-  if (cacheable) context.waitUntil(cache.put(cacheKey, response.clone()));
-  return response;
+  return new Response(request.method === "HEAD" ? null : object.body, { status: partial ? 206 : 200, headers });
 }

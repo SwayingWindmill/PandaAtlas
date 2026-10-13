@@ -10,6 +10,9 @@ export default defineConfig(({ mode }) => ({
     compatibilityDate: "2026-10-01",
     compatibilityFlags: ["nodejs_compat"],
     observability: { enabled: true, redactQueryString: true },
+    // Workers Cache serves public pages and media without running the Worker; worker/edge-cache.mjs
+    // decides which responses are cacheable.
+    cache: { enabled: true },
     // Retire the OpenNext cache Durable Objects that production still provisions; vinext has no ISR/tag cache.
     exports: {
       DOQueueHandler: exports.durableObject({ state: "deleted" }),
