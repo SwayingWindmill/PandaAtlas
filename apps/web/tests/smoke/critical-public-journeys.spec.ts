@@ -33,8 +33,10 @@ test("redirects the legacy global distribution route into the localized structur
   await expect(page.getByTestId("structured-map-page")).toBeVisible();
 });
 
-test("does not expose the retired local admin proxy route", async ({ request }) => {
-  const response = await request.get("/api/admin/import-sources");
+test("does not expose the staff console or its API while the admin shell is disabled", async ({ request }) => {
+  for (const path of ["/admin", "/admin/reviews", "/api/admin/session", "/api/admin/review/cases"]) {
+    const response = await request.get(path, { maxRedirects: 0 });
 
-  expect(response.status()).toBe(404);
+    expect(response.status(), path).toBe(404);
+  }
 });

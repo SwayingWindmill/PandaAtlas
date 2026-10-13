@@ -67,3 +67,14 @@ test("no production text binding points at a workers.dev origin", () => {
     }
   }
 });
+
+test("the production Web Worker keeps the admin shell off whatever the deployer's environment says", () => {
+  const previous = process.env.ADMIN_SHELL_ENABLED;
+  process.env.ADMIN_SHELL_ENABLED = "true";
+  try {
+    assert.deepEqual(webConfig(production).worker.env.ADMIN_SHELL_ENABLED, { type: "text", value: "false" });
+  } finally {
+    if (previous === undefined) delete process.env.ADMIN_SHELL_ENABLED;
+    else process.env.ADMIN_SHELL_ENABLED = previous;
+  }
+});

@@ -45,7 +45,20 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   return null;
 }
 
+// The staff console and its API exist only where the admin shell is explicitly enabled.
+function isAdminPath(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin/");
+}
+
+function isAdminShellEnabled(): boolean {
+  const value = process.env.ADMIN_SHELL_ENABLED?.trim().toLowerCase();
+  return value === "true" || value === "1";
+}
+
 export async function proxy(request: NextRequest) {
+  if (isAdminPath(request.nextUrl.pathname) && !isAdminShellEnabled()) {
+    return new NextResponse("Not found", { status: 404, headers: { "Cache-Control": "no-store, private" } });
+  }
   const redirect = redirectToCanonicalRoute(request);
   if (redirect) return redirect;
   const requestHeaders = new Headers(request.headers);
