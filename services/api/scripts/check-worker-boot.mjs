@@ -20,7 +20,6 @@ const preview = spawn(process.execPath, [viteCli, "preview", "--host", "127.0.0.
     ...process.env,
     // Startup must not need the database; any unreachable URL satisfies the Hyperdrive binding.
     CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: "postgresql://boot:boot@127.0.0.1:1/boot",
-    PUBLIC_REVALIDATION_AUTH: "boot-check",
   },
 });
 

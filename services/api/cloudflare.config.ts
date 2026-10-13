@@ -19,10 +19,9 @@ export default defineConfig(() => ({
         LOG_LEVEL: bindings.text("info"),
         CORS_ALLOW_ORIGINS: bindings.text("https://zhipanda.com,https://www.zhipanda.com"),
         SUPABASE_URL: bindings.text("https://gsnpkwlezpdkdupizjdb.supabase.co"),
-        PUBLIC_WEB: bindings.worker({ worker: "zhipanda-v2-web" }),
+        // ctx.props on this binding is what authorizes the Web Worker to purge its public page cache.
+        PUBLIC_WEB: bindings.worker({ worker: "zhipanda-v2-web", props: { publicCachePurge: true } }),
         HYPERDRIVE: bindings.hyperdrive({ id: "988de17966ba42dd81bca021c134925a" }),
-        PUBLIC_WEB_BASE_URL: bindings.text("https://zhipanda.com"),
-        PUBLIC_REVALIDATION_AUTH: bindings.secret(),
       },
     },
   }));

@@ -6,6 +6,8 @@ import { NotificationProviderWorkerService } from "../modules/notification/infra
 import { NotificationModule } from "../modules/notification/notification.module.js";
 import { PrivacyRequestProcessorService } from "../modules/privacy/infrastructure/privacy-request-processor.service.js";
 import { PrivacyModule } from "../modules/privacy/privacy.module.js";
+import { PublicCacheConsumerService } from "../modules/publication/infrastructure/public-cache-consumer.service.js";
+import { PublicationModule } from "../modules/publication/publication.module.js";
 import { UpdatesEventConsumerService } from "../modules/updates/infrastructure/updates-event-consumer.service.js";
 import { UpdatesModule } from "../modules/updates/updates.module.js";
 import { ConfigModule } from "../platform/config/config.module.js";
@@ -14,7 +16,7 @@ import { OutboxDispatcherService } from "../platform/integration/outbox-dispatch
 import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.js";
 
 @Module({
-  imports: [ConfigModule, IntegrationModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule],
+  imports: [ConfigModule, IntegrationModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule, PublicationModule],
   providers: [
     {
       provide: AsyncDownstreamRunnerService,
@@ -25,7 +27,8 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         privacy: PrivacyRequestProcessorService,
         provider: NotificationProviderWorkerService,
         audit: AuditEventConsumerService,
-      ) => new AsyncDownstreamRunnerService(dispatcher, updates, notification, privacy, provider, audit),
+        publicCache: PublicCacheConsumerService,
+      ) => new AsyncDownstreamRunnerService(dispatcher, updates, notification, privacy, provider, audit, publicCache),
       inject: [
         OutboxDispatcherService,
         UpdatesEventConsumerService,
@@ -33,6 +36,7 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         PrivacyRequestProcessorService,
         NotificationProviderWorkerService,
         AuditEventConsumerService,
+        PublicCacheConsumerService,
       ],
     },
   ],

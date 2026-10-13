@@ -3,6 +3,7 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
 import { IntegrationOutboxService } from "../../platform/integration/integration-outbox.service.js";
+import { PgmqService } from "../../platform/integration/pgmq.service.js";
 import { RequestContextModule } from "../../platform/request-context/request-context.module.js";
 import { EVIDENCE_PUBLICATION_PORT, type EvidencePublicationPort } from "../evidence/application/evidence-publication.application.js";
 import { EvidenceModule } from "../evidence/evidence.module.js";
@@ -37,6 +38,7 @@ import { PostgresPublicReadRepository } from "./infrastructure/postgres-public-r
 import { PostgresPublicationChangeQuery } from "./infrastructure/postgres-publication-change.query.js";
 import { PostgresPublicationCoordinator } from "./infrastructure/postgres-publication.coordinator.js";
 import { PostgresPublicationInspectionQuery } from "./infrastructure/postgres-publication-inspection.query.js";
+import { PublicCacheConsumerService } from "./infrastructure/public-cache-consumer.service.js";
 
 @Module({
   imports: [
@@ -92,7 +94,12 @@ import { PostgresPublicationInspectionQuery } from "./infrastructure/postgres-pu
         new PostgresPublicationInspectionQuery(database, changes),
       inject: [DatabaseService, PUBLICATION_CHANGE_PORT],
     },
+    {
+      provide: PublicCacheConsumerService,
+      useFactory: (database: DatabaseService, pgmq: PgmqService) => new PublicCacheConsumerService(database, pgmq),
+      inject: [DatabaseService, PgmqService],
+    },
   ],
-  exports: [PUBLICATION_PORT, PUBLIC_READ_PORT, PUBLICATION_CHANGE_PORT],
+  exports: [PUBLICATION_PORT, PUBLIC_READ_PORT, PUBLICATION_CHANGE_PORT, PublicCacheConsumerService],
 })
 export class PublicationModule {}

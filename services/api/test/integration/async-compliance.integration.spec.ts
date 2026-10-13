@@ -80,6 +80,7 @@ describe("V2 async downstream and compliance", () => {
     const notifications = app.get<NotificationPort>(NOTIFICATION_PORT);
     const privacy = app.get<PrivacyPort>(PRIVACY_PORT);
     const runner = app.get(AsyncDownstreamRunnerService);
+    const effects = { publicCache: { purge: () => Promise.resolve() } };
     const dispatcher = app.get(OutboxDispatcherService);
     const updatesConsumer = app.get(UpdatesEventConsumerService);
     const notificationConsumer = app.get(NotificationEventConsumerService);
@@ -147,7 +148,7 @@ describe("V2 async downstream and compliance", () => {
       | { update_id: string; source_event_id: string; release_id: string }
       | undefined;
     for (let cycle = 0; cycle < 4 && update === undefined; cycle += 1) {
-      await runner.runCycle();
+      await runner.runCycle(effects);
       update = await database.db
         .selectFrom("updates.items")
         .select(["update_id", "source_event_id", "release_id"])
@@ -231,7 +232,7 @@ describe("V2 async downstream and compliance", () => {
     expect(privacyRequest.state).toBe("pending");
     let completedPrivacy = await privacy.get(accountId, privacyRequest.requestId);
     for (let cycle = 0; cycle < 4 && completedPrivacy?.state !== "completed"; cycle += 1) {
-      await runner.runCycle();
+      await runner.runCycle(effects);
       completedPrivacy = await privacy.get(accountId, privacyRequest.requestId);
     }
     expect(completedPrivacy?.state).toBe("completed");
