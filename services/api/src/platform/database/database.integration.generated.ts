@@ -25,6 +25,11 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface IntegrationAsyncDownstreamHeartbeat {
+  last_succeeded_at: Timestamp;
+  singleton: Generated<boolean>;
+}
+
 export interface IntegrationConsumerReceipts {
   consumer_key: string;
   event_id: string;
@@ -61,6 +66,7 @@ export interface IntegrationOutboxEvents {
 }
 
 export interface DB {
+  "integration.async_downstream_heartbeat": IntegrationAsyncDownstreamHeartbeat;
   "integration.consumer_receipts": IntegrationConsumerReceipts;
   "integration.outbox_events": IntegrationOutboxEvents;
 }

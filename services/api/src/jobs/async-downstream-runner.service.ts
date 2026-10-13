@@ -5,6 +5,7 @@ import type { PublicCachePort } from "../modules/publication/application/public-
 import type { PublicCacheConsumerService } from "../modules/publication/infrastructure/public-cache-consumer.service.js";
 import type { PrivacyRequestProcessorService } from "../modules/privacy/infrastructure/privacy-request-processor.service.js";
 import type { UpdatesEventConsumerService } from "../modules/updates/infrastructure/updates-event-consumer.service.js";
+import type { AsyncDownstreamHeartbeat } from "../platform/integration/async-downstream-heartbeat.js";
 import type { OutboxDispatcherService } from "../platform/integration/outbox-dispatcher.service.js";
 
 // Effects that live outside the API and its database, bound per Worker invocation.
@@ -21,6 +22,7 @@ export class AsyncDownstreamRunnerService {
     private readonly provider: NotificationProviderWorkerService,
     private readonly audit: AuditEventConsumerService,
     private readonly publicCache: PublicCacheConsumerService,
+    private readonly heartbeat: AsyncDownstreamHeartbeat,
   ) {}
 
   public async runCycle(effects: AsyncDownstreamEffects) {
@@ -33,6 +35,7 @@ export class AsyncDownstreamRunnerService {
     const provider = await this.provider.processBatch(10);
     const dispatchFinal = await this.dispatcher.dispatchBatch(50);
     const audit = await this.audit.processBatch(50);
+    await this.heartbeat.recordSuccess();
     return {
       dispatchInitial,
       publicCache,
