@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { Button } from "@/components/ui/button";
 import type { StructuredMapQueryState } from "@/features/map/map-query";
 import type { MapVisualizationModel } from "@/features/map/visualization/map-visual-model";
 import { MapVisualizationErrorBoundary } from "@/features/map/visualization/map-visualization-error-boundary";
@@ -52,23 +53,26 @@ const copy = {
 const MAP_VISUALIZATION_LOAD_TIMEOUT_MS = 10_000;
 type MapVisualizationLoadState = "idle" | "loading" | "mounted" | "failed";
 
+function subscribeToConnectivity(onChange: () => void) {
+  window.addEventListener("online", onChange);
+  window.addEventListener("offline", onChange);
+  return () => {
+    window.removeEventListener("online", onChange);
+    window.removeEventListener("offline", onChange);
+  };
+}
+
+const readConnectivity = () => navigator.onLine;
+// The server cannot know connectivity, and server-rendered controls have no
+// handlers until hydration, so they stay disabled until the client snapshot.
+const readServerConnectivity = () => null;
+
 export function MapVisualizationEnhancement({ locale, state, model }: MapVisualizationEnhancementProps) {
   const t = copy[locale];
   const [active, setActive] = useState(false);
   const [loadState, setLoadState] = useState<MapVisualizationLoadState>("idle");
-  const [online, setOnline] = useState(true);
   const [resetKey, setResetKey] = useState(0);
-
-  useEffect(() => {
-    const update = () => setOnline(navigator.onLine);
-    update();
-    window.addEventListener("online", update);
-    window.addEventListener("offline", update);
-    return () => {
-      window.removeEventListener("online", update);
-      window.removeEventListener("offline", update);
-    };
-  }, []);
+  const online = useSyncExternalStore(subscribeToConnectivity, readConnectivity, readServerConnectivity);
 
   const activate = useCallback(() => {
     setLoadState("loading");
@@ -96,7 +100,7 @@ export function MapVisualizationEnhancement({ locale, state, model }: MapVisuali
   const failurePanel = (
     <div className="pa-map-visualization-failure" role="status" data-testid="map-visualization-failure">
       <p>{t.failed}</p>
-      <button type="button" onClick={retry} disabled={!online}>{t.retry}</button>
+      <Button type="button" onClick={retry} disabled={online !== true}>{t.retry}</Button>
     </div>
   );
 
@@ -138,16 +142,16 @@ export function MapVisualizationEnhancement({ locale, state, model }: MapVisuali
       {!active && loadState !== "failed" ? (
         <div className="pa-map-visualization-activation">
           {model.visualizedCount > 0 ? (
-            <button
+            <Button
               type="button"
               onClick={activate}
-              disabled={!online}
+              disabled={online !== true}
               data-testid="activate-map-visualization"
             >
               {t.activate}
-            </button>
+            </Button>
           ) : <p>{t.unavailable}</p>}
-          {!online ? <p role="status">{t.offline}</p> : null}
+          {online === false ? <p role="status">{t.offline}</p> : null}
         </div>
       ) : renderMapContent()}
 
