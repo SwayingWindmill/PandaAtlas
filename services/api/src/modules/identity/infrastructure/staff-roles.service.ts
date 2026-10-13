@@ -191,7 +191,7 @@ export class StaffRolesService {
     const account = await this.lockSubject(tx, subjectId);
     if (account.state !== "active") throw new ProblemException(409, "identity.accountInactive", "Only active accounts can receive roles.");
     const verified = await sql<{ confirmed: boolean }>`
-      select (email_confirmed_at is not null) as confirmed from auth.users where id=${subjectId}::uuid
+      select email_confirmed as confirmed from identity.auth_email_status(${subjectId}::uuid)
     `.execute(tx);
     if (!verified.rows[0]?.confirmed) {
       throw new ProblemException(409, "identity.emailUnverified", "The staff identity must verify its email before receiving a role.");

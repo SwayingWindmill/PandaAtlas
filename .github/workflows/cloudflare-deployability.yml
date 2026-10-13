@@ -1,6 +1,15 @@
 name: Cloudflare Deployability
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "services/api/**"
+      - "packages/api-client/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/cloudflare-deployability.yml"
   pull_request:
     paths:
       - "apps/web/**"
@@ -35,8 +44,24 @@ jobs:
       - name: Install workspace dependencies
         run: npm ci
 
+      - name: Resolve Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
       - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       - name: Run current Web browser acceptance
         env:
