@@ -1,4 +1,5 @@
 import type { PandaReferencePort } from "../../panda/application/panda.application.js";
+import { DomainError } from "../../../platform/errors/domain-error.js";
 
 export type ParentRole = "father" | "mother";
 export type ParentageStatus = "confirmed" | "tentative" | "disputed" | "superseded";
@@ -39,16 +40,16 @@ export class LineageApplication implements LineagePort {
 
   public async createAssertion(input: ParentageAssertion): Promise<ParentageAssertion> {
     if (input.childId === input.parentId) {
-      throw new Error("A panda cannot be its own parent");
+      throw new DomainError("invalid", "lineage.selfParent", "A panda cannot be its own parent.");
     }
     if (!(await this.pandas.exists(input.childId))) {
-      throw new Error(`Unknown child panda ${input.childId}`);
+      throw new DomainError("not_found", "lineage.pandaNotFound", `Unknown child panda ${input.childId}.`);
     }
     if (!(await this.pandas.exists(input.parentId))) {
-      throw new Error(`Unknown parent panda ${input.parentId}`);
+      throw new DomainError("not_found", "lineage.pandaNotFound", `Unknown parent panda ${input.parentId}.`);
     }
     if (input.sourceIds.length === 0) {
-      throw new Error("Parentage assertions require at least one evidence source");
+      throw new DomainError("invalid", "lineage.evidenceRequired", "Parentage assertions require at least one evidence source.");
     }
     return this.repository.createAssertion(input);
   }
@@ -63,7 +64,7 @@ export class LineageApplication implements LineagePort {
 
   public async getFamily(pandaId: string): Promise<LineageFamily> {
     if (!(await this.pandas.exists(pandaId))) {
-      throw new Error(`Unknown panda ${pandaId}`);
+      throw new DomainError("not_found", "lineage.pandaNotFound", `Unknown panda ${pandaId}.`);
     }
     return this.repository.getFamily(pandaId);
   }

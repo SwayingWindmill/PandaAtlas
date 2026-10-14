@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { sql } from "kysely";
 import { DatabaseService } from "../../../platform/database/database.service.js";
-import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { DomainError } from "../../../platform/errors/domain-error.js";
 
 type Action = "suspend" | "reinstate";
 
@@ -11,22 +11,22 @@ export class StaffAccountLifecycleService {
 
   public async change(accountId: string, actorId: string, action: Action, reason: string, idempotencyKey: string, correlationId: string) {
     if (accountId === actorId) {
-      throw new ProblemException(403, "identity.selfSuspensionForbidden", "Staff cannot suspend or reinstate themselves.");
+      throw new DomainError("forbidden", "identity.selfSuspensionForbidden", "Staff cannot suspend or reinstate themselves.");
     }
-    if (!reason.trim()) throw new ProblemException(400, "identity.reasonRequired", "Account state changes require a reason.");
+    if (!reason.trim()) throw new DomainError("invalid", "identity.reasonRequired", "Account state changes require a reason.");
     const target = action === "suspend" ? "suspended" : "active";
     const source = action === "suspend" ? "active" : "suspended";
     return this.database.transaction(async (tx) => {
       const account = await tx.selectFrom("identity.accounts")
         .select("state").where("account_id", "=", accountId).forUpdate().executeTakeFirst();
-      if (!account) throw new ProblemException(404, "identity.accountMissing", "Staff account not found.");
+      if (!account) throw new DomainError("not_found", "identity.accountMissing", "Staff account not found.");
 
       const replay = await tx.selectFrom("identity.account_state_events")
         .selectAll().where("idempotency_key", "=", idempotencyKey).executeTakeFirst();
       if (replay) {
         if (replay.account_id !== accountId || replay.actor_account_id !== actorId || replay.next_state !== target ||
           replay.reason !== reason.trim() || account.state !== target) {
-          throw new ProblemException(409, "identity.idempotencyConflict", "The request key was used for a different or superseded transition.");
+          throw new DomainError("conflict", "identity.idempotencyConflict", "The request key was used for a different or superseded transition.");
         }
         return { accountId, state: target };
       }
@@ -38,10 +38,10 @@ export class StaffAccountLifecycleService {
           where ra.account_id=${accountId}::uuid)
       ) as exists`.execute(tx);
       if (!staff.rows[0]?.exists) {
-        throw new ProblemException(403, "identity.notStaff", "Only staff identities can be managed here.");
+        throw new DomainError("forbidden", "identity.notStaff", "Only staff identities can be managed here.");
       }
       if (account.state !== source) {
-        throw new ProblemException(409, "identity.accountStateConflict", "The account is not in the expected state.");
+        throw new DomainError("conflict", "identity.accountStateConflict", "The account is not in the expected state.");
       }
       if (action === "suspend") {
         // Serialize administrator suspensions so two concurrent operators cannot disable the last admin.
@@ -63,7 +63,7 @@ export class StaffAccountLifecycleService {
               and (ra.expires_at is null or ra.expires_at>now())
           `.execute(tx);
           if (Number(admins.rows[0]?.count) <= 1) {
-            throw new ProblemException(409, "identity.lastAdministrator", "The last active administrator cannot be suspended.");
+            throw new DomainError("conflict", "identity.lastAdministrator", "The last active administrator cannot be suspended.");
           }
         }
       }

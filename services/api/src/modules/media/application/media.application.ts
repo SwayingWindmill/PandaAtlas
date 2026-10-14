@@ -1,3 +1,4 @@
+import { DomainError } from "../../../platform/errors/domain-error.js";
 export type MediaRightsStatus = "cleared" | "restricted" | "unknown";
 export type MediaEligibilityStatus = "eligible" | "restricted" | "pending";
 export type MediaUsageRole = "cover" | "gallery" | "historical" | "evidence";
@@ -84,7 +85,7 @@ export class MediaApplication implements MediaPort {
     kind: MediaDerivativeKind,
   ): Promise<void> {
     if (parentAssetId === derivativeAssetId) {
-      throw new Error("A media asset cannot be its own derivative");
+      throw new DomainError("invalid", "media.selfDerivative", "A media asset cannot be its own derivative.");
     }
     return this.repository.addDerivative(parentAssetId, derivativeAssetId, kind);
   }
@@ -94,7 +95,7 @@ export class MediaApplication implements MediaPort {
     eligibilityStatus: MediaEligibilityStatus,
   ): void {
     if (eligibilityStatus === "eligible" && rightsStatus !== "cleared") {
-      throw new Error("Only rights-cleared media may be marked eligible");
+      throw new DomainError("invalid", "media.rightsNotCleared", "Only rights-cleared media may be marked eligible.");
     }
   }
 }
