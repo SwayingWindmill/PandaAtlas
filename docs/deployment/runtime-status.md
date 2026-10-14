@@ -1,8 +1,8 @@
 # Deployment runtime status
 
-- Status date: 2026-10-04
+- Status date: 2026-10-14
 - Application architecture: [ZhiPanda V2 Architecture Baseline](../architecture/zhipanda-v2-architecture-baseline.md)
-- Historical managed-cloud decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
+- Managed-only principle: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 
 This page is the current deployment source of truth for the live provider/runtime topology.
 
@@ -10,7 +10,7 @@ This page is the current deployment source of truth for the live provider/runtim
 
 | Responsibility | Current production | Repository source of truth |
 |---|---|---|
-| Public Web | Cloudflare Worker `zhipanda-v2-web`; Next.js 16-compatible source through vinext 1.0 + Vite + the Cloudflare Vite plugin | `apps/web/cloudflare.config.ts`, `apps/web/vite.config.ts`, `apps/web/worker/index.mjs` |
+| Public Web | Cloudflare Worker `zhipanda-v2-web`; Next.js 16-compatible source through vinext 1.1 + Vite + the Cloudflare Vite plugin | `apps/web/cloudflare.config.ts`, `apps/web/vite.config.ts`, `apps/web/worker/index.mjs` |
 | Business/public API | Cloudflare Worker `zhipanda-v2-api`; NestJS 11 on the Express adapter, served through `httpServerHandler` (Fastify cannot boot on Workers: it relies on `new Function` and on timers outside a request, both unavailable; #524). `npm run check:worker-boot -w @zhipanda/api` boots the built Worker in workerd in CI | `services/api/cloudflare.config.ts`, `services/api/worker/index.mjs` |
 | Web -> API transport | Cloudflare service binding `V2_API`; canonical external origin `https://api.zhipanda.com` remains the build/browser API origin | `apps/web/cloudflare.config.ts`, `apps/web/lib/server/v2-api.ts` |
 | API -> database | Cloudflare Hyperdrive -> Supabase PostgreSQL/PostGIS (AWS `ap-northeast-1`); the API Worker uses `placement.region: "aws:ap-northeast-1"` so its sequential queries stay near the database. Hyperdrive config `zhipanda-v2-postgres` (`988de17966ba42dd81bca021c134925a`) has **query caching disabled** (verified 2026-10-13 with `cf hyperdrive get`; origin connection limit 5) and keeps only connection pooling: identity, permission, suspension and post-write admin reads must be fresh, and a cached read could re-store an old release in the Web page cache right after a delivery-change purge. Public reads are cached at the edge by Workers Cache instead. Keep caching disabled on this config; a read that could tolerate staleness would need a separate cached config, not a change here | `services/api/cloudflare.config.ts`, `services/api/src/platform/database/database.service.ts` |
@@ -37,7 +37,7 @@ The Cloudflare account currently serves:
 - `zhipanda-v2-web`, compatibility date `2026-10-01`, with `nodejs_compat`, Workers Cache enabled, the `HOME_MEDIA` R2 binding, and a `V2_API` service binding to `zhipanda-v2-api`; the retired OpenNext cache R2/self bindings are absent, and the OpenNext `DOQueueHandler` / `DOShardedTagCache` Durable Object namespaces are retired by `state: "deleted"` exports in `apps/web/cloudflare.config.ts`;
 - `zhipanda-v2-api`, compatibility date `2026-10-01`, with `nodejs_compat`, `enable_nodejs_http_server_modules`, Hyperdrive, and a service binding to `zhipanda-v2-web`.
 
-`https://zhipanda.com/zh` is served by the vinext-based `zhipanda-v2-web` Worker. `https://api.zhipanda.com/health` is served through Cloudflare. The former stable Vercel Web/API URLs return `DEPLOYMENT_DISABLED` and are not production fallbacks.
+`https://zhipanda.com/zh` is served by the vinext-based `zhipanda-v2-web` Worker and `https://api.zhipanda.com/health` by `zhipanda-v2-api`.
 
 ## Build and deployment ownership
 
@@ -60,21 +60,8 @@ Production is deployed only by `.github/workflows/production-deploy.yml`:
 
 Pull requests never deploy, and there is no workstation deploy script. Rolling back means deploying the previous Worker version with `cf`; [Production release and rollback](../runbooks/production-release.md) covers the procedure.
 
-## Retired runtime paths
-
-The following are historical, not supported compatibility surfaces:
-
-- Vercel Web/API deployment and Vercel acceptance CI;
-- Vercel-specific Nest instrumentation, serverless entrypoint, database-pool adapter, and deployment configuration;
-- FastAPI and `/api/v1`;
-- the old `services/worker-api` / D1 projection runtime;
-- OpenNext Web adapter/configuration, generated-worker delegation, and its R2/Durable Object cache topology;
-- V1 Worker/D1 authority and rollback paths.
-
-Historical Vercel contracts, research, release reports, and cutover evidence stay in Git as history. Do not reactivate them through new compatibility code.
-
 ## Vinext Web runtime
 
-Issue #385 evaluated vinext and #388 executed the migration. The Web repository now has one production adapter: vinext + Vite + the Cloudflare Vite plugin. `HOME_MEDIA` remains a custom public R2 request seam, while application server calls reach the API through the native `V2_API` Cloudflare binding. OpenNext is not retained as a fallback.
+The Web has one production adapter: vinext + Vite + the Cloudflare Vite plugin. `HOME_MEDIA` is the R2 media seam; application server calls reach the API through the `V2_API` binding.
 
 `vinext check` is 97% compatible on the migrated tree: 18 supported, one partial (`typedRoutes`), and zero production-code issues. Next remains a development-only route type-generation dependency so the existing typed-link contract is preserved; it does not serve requests or build a production artifact.

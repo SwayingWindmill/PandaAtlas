@@ -9,10 +9,11 @@ PandaAtlas powers ZhiPanda, a panda-fan product for exploring individual pandas,
 - Business data and identity: Supabase PostgreSQL/PostGIS and Supabase Auth.
 - Production database transport: Cloudflare Hyperdrive.
 - Public media: Cloudflare R2.
-- Bounded recurring async execution: GitHub Actions calling the authenticated NestJS internal job endpoint.
+- Recurring async work: the API Worker's Cron Trigger, every 5 minutes.
+- Production release: the approval-gated Production Deploy workflow; see [Production release and rollback](docs/runbooks/production-release.md).
 - Offline acquisition and curation: `tools/panda-data` plus bounded curation scripts; these are not online request runtimes.
 
-For actual provider names, bindings, domains, and retirement state, use [Deployment runtime status](docs/deployment/runtime-status.md).
+For actual provider names, bindings and domains, use [Deployment runtime status](docs/deployment/runtime-status.md).
 
 ## Development
 
@@ -28,7 +29,7 @@ For Web browser acceptance, use `npm run smoke:web`. For deployable Cloudflare a
 
 ## Current work
 
-Live `main` plus GitHub issues and pull requests are the project-status source of truth. Use [Issue tracker guidance](docs/agents/issue-tracker.md) when deciding what is current or what to do next; dated research, release evidence, and migration plans are supporting records rather than backlog state.
+Live `main` plus GitHub issues and pull requests are the project-status source of truth. Use [Issue tracker guidance](docs/agents/issue-tracker.md) when deciding what is current or what to do next.
 
 ## Repository map
 

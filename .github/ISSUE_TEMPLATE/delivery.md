@@ -1,6 +1,6 @@
 ---
 name: Governed delivery
-description: Define one bounded implementation outcome for one branch, worktree, and pull request.
+description: Define one bounded implementation outcome for one branch and pull request.
 title: ""
 labels: []
 assignees: []

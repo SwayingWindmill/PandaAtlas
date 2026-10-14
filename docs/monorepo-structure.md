@@ -1,21 +1,20 @@
 # ZhiPanda Monorepo Structure
 
-The active repository layout after the V2 production cutover is:
-
 ```text
 PandaAtlas/
   apps/
-    web/                    # Next-compatible V2 app; vinext/Vite Cloudflare runtime
+    web/                    # Next.js app router on vinext + Vite, Cloudflare Worker
   services/
-    api/                    # NestJS/Fastify V2 API runtime
+    api/                    # NestJS (Express) API, Cloudflare Worker
   packages/
-    api-client/             # generated/typed API client workspace
+    api-client/             # generated, typed API client
   tools/
-    panda-data/             # offline Python acquisition/curation/data runtime
+    panda-data/             # offline Python acquisition/curation/media tooling (uv)
   infra/
-    supabase/               # canonical PostgreSQL migrations and local Supabase config
-  scripts/                  # bounded repository, release, curation, and research tooling
-  contracts/                # active data/process contracts
+    supabase/               # PostgreSQL migrations, seeds and local Supabase config
+  scripts/                  # development operations, release checks, curation and research tooling
+  contracts/                # data and process contracts that code reads
+  data/                     # curated inputs, reviewed batches and public release data
   docs/
 ```
 
@@ -27,25 +26,18 @@ The npm workspaces are exactly:
 - `services/api`
 - `packages/api-client`
 
-`services/worker-api` is not a workspace and no longer exists after the V2 cutover.
-
 ## Runtime boundaries
 
-- `apps/web` runs as Cloudflare Worker `zhipanda-v2-web` through vinext + Vite + the Cloudflare Vite plugin and calls the canonical API at `https://api.zhipanda.com`; deployed server calls use the `V2_API` service binding.
-- `services/api` runs NestJS/Fastify as Cloudflare Worker `zhipanda-v2-api` and is the only online business API runtime.
-- Supabase PostgreSQL is the sole business-data authority.
-- Supabase Auth is the identity authority.
-- Cloudflare Hyperdrive supplies production request-scoped PostgreSQL connectivity; Cloudflare also owns DNS and R2 media storage.
-- `tools/panda-data` is offline data tooling and is not imported into the online request runtime.
+- `apps/web` runs as Cloudflare Worker `zhipanda-v2-web` and calls the API through the `V2_API` service binding; browsers use `https://api.zhipanda.com`.
+- `services/api` runs NestJS on Express as Cloudflare Worker `zhipanda-v2-api` and is the only online business API.
+- Supabase PostgreSQL is the sole business-data authority, reached through Cloudflare Hyperdrive; Supabase Auth is the identity authority.
+- Cloudflare owns DNS and R2 media storage.
+- `tools/panda-data` is offline tooling and is never imported into the online runtime.
 
 ## Deployment
 
-`apps/web/cloudflare.config.ts` and `services/api/cloudflare.config.ts` are the tracked production deployment topology. `cf` is the operator/deployment CLI; the Web runtime no longer carries an OpenNext or Wrangler deployment path.
-
-Vercel Web/API deployment, the old Worker/D1 projection runtime, FastAPI, `/api/v1`, and FastAPI serverless-closure tooling are retired implementation history, not supported compatibility surfaces.
+`apps/web/cloudflare.config.ts` and `services/api/cloudflare.config.ts` are the tracked production topology, and `cf` is the deployment CLI. Production deploys only through `.github/workflows/production-deploy.yml`; see [deployment runtime status](deployment/runtime-status.md).
 
 ## Development
 
-Run Node/Nest/Vite commands from the Windows side of the repository. Next remains a development-only route-type generation tool for the Web workspace. The canonical command catalog is documented in [`docs/development-operations.md`](development-operations.md).
-
-Offline acquisition and curation Python commands use `tools/panda-data` and `uv` independently of the online API workspace.
+Run Node/Nest/Vite commands from the Windows side of the repository. Next remains a development-only route-type generation tool for the Web workspace. The command catalog is [Development Operations](development-operations.md); offline Python commands use `tools/panda-data` and `uv`.

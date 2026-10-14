@@ -25,7 +25,7 @@ The active scopes are:
 - `curation`
 - `data`
 
-There is no separate legacy `worker-api` workspace scope after the V2 production cutover. Cloudflare deployment belongs to the existing `web` and `api` scopes.
+Cloudflare deployment belongs to the `web` and `api` scopes.
 
 `web.*` commands target the vinext/Vite Web workspace (Next remains development-only route-type tooling). `api.*` commands target the NestJS workspace and use npm/Node only. Offline Python acquisition and curation run through `tools/panda-data` or bounded scripts under `scripts/curation`.
 
@@ -142,9 +142,8 @@ npm run check:batch-workflow-interface
 - identity: Supabase Auth
 - database transport: Cloudflare Hyperdrive
 - DNS and media storage: Cloudflare DNS/R2
-- recurring V2 async trigger: GitHub Actions calling the authenticated Nest internal job endpoint
-
-FastAPI request-closure checks, Vercel Web/API deployment paths, the old Worker/D1 projection runtime, OpenNext, and V1 repository/deployment contracts are retired.
+- recurring async work: the API Worker's Cron Trigger, every 5 minutes
+- production release: the approval-gated Production Deploy workflow ([runbook](runbooks/production-release.md))
 
 ## Local state
 

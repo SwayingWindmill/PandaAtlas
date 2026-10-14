@@ -1,8 +1,5 @@
 # Infrastructure boundary
 
-`infra/` contains declarative infrastructure inputs used for local verification, current transitional runtimes, migration, and recovery.
+[`supabase`](supabase/) contains the forward-only PostgreSQL migrations, seed inputs and local Supabase configuration. Only the approval-gated Production Deploy workflow applies migrations to production.
 
-- [`cloudflare`](cloudflare/) supports the current transitional Worker, D1, and related rollback paths.
-- [`supabase`](supabase/) contains forward-only migrations, seed inputs, and local managed-platform configuration.
-
-Infrastructure files do not by themselves prove a production cutover. Current, target, transitional, and local-only responsibilities are authoritative in the [deployment status page](../docs/deployment/runtime-status.md).
+Cloudflare Worker configuration lives with each Worker: `apps/web/cloudflare.config.ts` and `services/api/cloudflare.config.ts`. The live topology is in the [deployment status page](../docs/deployment/runtime-status.md).
