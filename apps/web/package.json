@@ -56,10 +56,10 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.12.1",
+    "@axe-core/playwright": "^4.13.0",
     "@cloudflare/vite-plugin": "2.0.0-beta.sha-52b0dc0e9",
     "@eslint/eslintrc": "^3.3.7",
-    "@playwright/test": "^1.54.1",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^22.8.0",
