@@ -392,7 +392,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           })
           .execute();
 
-        return this.mapRelease(release as ReleaseRow);
+        return this.mapRelease(release);
       });
   }
 
@@ -441,7 +441,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           occurred_at: sealedAt,
         })
         .execute();
-      return { kind: "ok", release: this.mapRelease(sealed as ReleaseRow) };
+      return { kind: "ok", release: this.mapRelease(sealed) };
     });
   }
 
@@ -552,7 +552,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
       .selectAll()
       .where("release_id", "=", releaseId)
       .executeTakeFirst();
-    return row === undefined ? undefined : this.mapRelease(row as ReleaseRow);
+    return row === undefined ? undefined : this.mapRelease(row);
   }
 
   private async switchCurrent(
@@ -583,7 +583,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           .selectFrom("publication.releases")
           .selectAll()
           .where("release_id", "=", pointer.release_id)
-          .executeTakeFirst()) as ReleaseRow | undefined;
+          .executeTakeFirst());
       }
 
       if (transitionType === "rolled_back") {
@@ -650,7 +650,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
       .selectAll()
       .where("release_id", "=", releaseId)
       .forUpdate()
-      .executeTakeFirst()) as ReleaseRow | undefined;
+      .executeTakeFirst());
   }
 
   private async isReleaseSuspended(transaction: DatabaseTransaction, releaseId: string): Promise<boolean> {

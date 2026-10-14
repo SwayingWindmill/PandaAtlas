@@ -1,5 +1,5 @@
 import type { DatabaseService } from "../../../platform/database/database.service.js";
-import type { JsonValue, PandaCurationParticipant } from "../../panda/application/panda.application.js";
+import type { PandaCurationParticipant } from "../../panda/application/panda.application.js";
 import type { CurationApplyCoordinator, CurationChangeSet } from "../application/curation.application.js";
 import type { PostgresCurationRepository } from "./postgres-curation.repository.js";
 
@@ -32,7 +32,7 @@ export class PostgresCurationApplyCoordinator implements CurationApplyCoordinato
           assertionId,
           pandaId: changeSet.targetPandaId,
           fieldKey: change.fieldKey,
-          value: change.value as JsonValue,
+          value: change.value,
           certainty: change.certainty,
           lastVerifiedOn: change.lastVerifiedOn,
           sourceIds: change.sourceIds,
