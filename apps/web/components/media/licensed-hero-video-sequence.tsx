@@ -1,7 +1,7 @@
 "use client";
 
 import { Pause, Play } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -63,9 +63,7 @@ export function LicensedHeroVideoSequence({
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(false);
 
-  const slot0Ref = useRef<HTMLVideoElement>(null);
-  const slot1Ref = useRef<HTMLVideoElement>(null);
-  const refs = useMemo(() => [slot0Ref, slot1Ref] as const, []);
+  const videosRef = useRef<[HTMLVideoElement | null, HTMLVideoElement | null]>([null, null]);
 
   const slotIndicesRef = useRef<[number, number]>(initialSlots);
   const activeSlotRef = useRef<Slot>(0);
@@ -101,7 +99,7 @@ export function LicensedHeroVideoSequence({
     items[slotIndicesRef.current[slot]] ?? null;
 
   const cancelFrameWatch = (slot: Slot) => {
-    const video = refs[slot].current;
+    const video = videosRef.current[slot];
     const watch = frameWatchRef.current[slot];
     if (!watch) return;
 
@@ -123,7 +121,7 @@ export function LicensedHeroVideoSequence({
   };
 
   const playSlot = async (slot: Slot) => {
-    const video = refs[slot].current;
+    const video = videosRef.current[slot];
     if (!video || pausedRef.current) return;
 
     try {
@@ -138,7 +136,7 @@ export function LicensedHeroVideoSequence({
 
     const oldActive = activeSlotRef.current;
     const nextActive: Slot = oldActive === 0 ? 1 : 0;
-    const oldVideo = refs[oldActive].current;
+    const oldVideo = videosRef.current[oldActive];
 
     if (!readySlotsRef.current[nextActive]) {
       pendingAdvanceRef.current = true;
@@ -174,20 +172,20 @@ export function LicensedHeroVideoSequence({
     const next = !pausedRef.current;
     pausedRef.current = next;
     setPaused(next);
-    if (next) refs[activeSlotRef.current].current?.pause();
+    if (next) videosRef.current[activeSlotRef.current]?.pause();
     else void playSlot(activeSlotRef.current);
   };
 
   const stopAtBoundary = (slot: Slot) => {
     if (slot !== activeSlotRef.current || switchingRef.current) return;
-    refs[slot].current?.pause();
+    videosRef.current[slot]?.pause();
     switchToStandby();
   };
 
   const startFrameWatch = (slot: Slot, item: LicensedHeroSequenceItem) => {
     cancelFrameWatch(slot);
 
-    const video = refs[slot].current;
+    const video = videosRef.current[slot];
     if (!video) return;
 
     const threshold = Math.max(item.startAt, item.endAt - END_GUARD_SECONDS);
@@ -248,7 +246,7 @@ export function LicensedHeroVideoSequence({
   };
 
   const prepareSlot = (slot: Slot) => {
-    const video = refs[slot].current;
+    const video = videosRef.current[slot];
     const item = itemForSlot(slot);
     if (!video || !item || !Number.isFinite(video.duration)) return;
 
@@ -271,7 +269,7 @@ export function LicensedHeroVideoSequence({
   };
 
   const confirmPreparedSlot = (slot: Slot) => {
-    const video = refs[slot].current;
+    const video = videosRef.current[slot];
     const item = itemForSlot(slot);
     if (!video || !item || video.readyState < 2) return;
 
@@ -299,9 +297,40 @@ export function LicensedHeroVideoSequence({
       cancelFrameWatch(0);
       cancelFrameWatch(1);
     };
-    // refs is stable for the component lifetime.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Each media event names its slot through data-hero-video-slot, so these handlers live outside the
+  // per-slot render and serve both videos.
+  const slotOf = (event: SyntheticEvent<HTMLVideoElement>) =>
+    Number(event.currentTarget.dataset.heroVideoSlot) as Slot;
+
+  const handleLoadedMetadata = (event: SyntheticEvent<HTMLVideoElement>) => {
+    prepareSlot(slotOf(event));
+  };
+
+  const handleSlotPositioned = (event: SyntheticEvent<HTMLVideoElement>) => {
+    confirmPreparedSlot(slotOf(event));
+  };
+
+  const handlePlaying = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const slot = slotOf(event);
+    const item = itemForSlot(slot);
+    if (item && slot === activeSlotRef.current) startFrameWatch(slot, item);
+  };
+
+  const handleTimeUpdate = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const slot = slotOf(event);
+    const item = itemForSlot(slot);
+    if (!item || slot !== activeSlotRef.current) return;
+    if (event.currentTarget.currentTime >= item.endAt - END_GUARD_SECONDS) {
+      stopAtBoundary(slot);
+    }
+  };
+
+  const handleActiveSlotStopped = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const slot = slotOf(event);
+    if (slot === activeSlotRef.current) stopAtBoundary(slot);
+  };
 
   if (!current) {
     return poster ? (
@@ -339,7 +368,9 @@ export function LicensedHeroVideoSequence({
             return (
               <video
                 key={`${slot}:${item.id}`}
-                ref={refs[slot]}
+                ref={(element) => {
+                  videosRef.current[slot] = element;
+                }}
                 data-hero-video-slot={slot}
                 data-hero-video-active={isActive ? "true" : "false"}
                 data-hero-video-item={item.id}
@@ -356,29 +387,13 @@ export function LicensedHeroVideoSequence({
                 preload="auto"
                 aria-hidden="true"
                 tabIndex={-1}
-                onLoadedMetadata={() => prepareSlot(slot)}
-                onSeeked={() => confirmPreparedSlot(slot)}
-                onCanPlay={() => confirmPreparedSlot(slot)}
-                onPlaying={() => {
-                  if (slot === activeSlotRef.current) {
-                    startFrameWatch(slot, item);
-                  }
-                }}
-                onTimeUpdate={(event) => {
-                  if (slot !== activeSlotRef.current) return;
-                  if (
-                    event.currentTarget.currentTime >=
-                    item.endAt - END_GUARD_SECONDS
-                  ) {
-                    stopAtBoundary(slot);
-                  }
-                }}
-                onEnded={() => {
-                  if (slot === activeSlotRef.current) stopAtBoundary(slot);
-                }}
-                onError={() => {
-                  if (slot === activeSlotRef.current) stopAtBoundary(slot);
-                }}
+                onLoadedMetadata={handleLoadedMetadata}
+                onSeeked={handleSlotPositioned}
+                onCanPlay={handleSlotPositioned}
+                onPlaying={handlePlaying}
+                onTimeUpdate={handleTimeUpdate}
+                onEnded={handleActiveSlotStopped}
+                onError={handleActiveSlotStopped}
               >
                 <source
                   src={item.playbackSrc}
