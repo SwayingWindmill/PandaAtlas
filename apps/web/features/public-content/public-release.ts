@@ -44,23 +44,6 @@ export interface PublicContentEnvelope<T> {
   sources: PublicSourceSummary[];
 }
 
-export interface PublicAtlasResult {
-  id: string;
-  slug: string;
-  nameZh: string;
-  nameEn: string | null;
-  nameEnTranslation: PublicTranslationState;
-  status: PandaDetail["status"];
-  birthDate: string | null;
-  currentLocation: string | null;
-}
-
-export interface PublicAtlasSearch {
-  query: string;
-  results: PublicAtlasResult[];
-  totalPublished: number;
-}
-
 export interface PublicAtlasDataset {
   pandas: PandaDetail[];
   facilities: PublicFacilitySummary[];

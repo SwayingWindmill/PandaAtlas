@@ -1,9 +1,30 @@
-import type {
-  OfficialPandaVideoCandidate,
-  OfficialPandaVideoSegment,
-} from "./official-video-candidates";
+interface OfficialPandaVideoSegment {
+  id: string;
+  start: number;
+  end: number;
+  label: string;
+  use: "hero" | "action" | "close" | "environment" | "transition";
+  sourceShotStart: number;
+  sourceShotEnd: number;
+}
 
-export interface OfficialPandaVideoShotPoolCandidate extends OfficialPandaVideoCandidate {
+interface OfficialPandaVideoCandidate {
+  id: string;
+  institution: string;
+  title: string;
+  youtubeId: string;
+  duration: number;
+  subjects: string;
+  sourceUrl: string;
+  recommendation: "hero" | "secondary";
+  sourceStatus: string;
+  localPlaybackSrc?: string;
+  mediaType?: "video/webm" | "video/mp4";
+  cutPoints: number[];
+  segments: OfficialPandaVideoSegment[];
+}
+
+interface OfficialPandaVideoShotPoolCandidate extends OfficialPandaVideoCandidate {
   acceptedSourceShots: Array<[number, number]>;
 }
 
@@ -219,21 +240,6 @@ export const OFFICIAL_PANDA_VIDEO_SHOT_POOL: OfficialPandaVideoShotPoolCandidate
     ],
   }),
 ];
-
-export const OFFICIAL_PANDA_VIDEO_SHOT_POOL_SOURCE_COUNT =
-  OFFICIAL_PANDA_VIDEO_SHOT_POOL.length;
-
-export const OFFICIAL_PANDA_VIDEO_SHOT_POOL_SOURCE_SHOT_COUNT =
-  OFFICIAL_PANDA_VIDEO_SHOT_POOL.reduce(
-    (total, candidate) => total + candidate.acceptedSourceShots.length,
-    0,
-  );
-
-export const OFFICIAL_PANDA_VIDEO_SHOT_POOL_SEGMENT_COUNT =
-  OFFICIAL_PANDA_VIDEO_SHOT_POOL.reduce(
-    (total, candidate) => total + candidate.segments.length,
-    0,
-  );
 
 export interface OfficialPandaHeroPlaylistItem {
   id: string;
