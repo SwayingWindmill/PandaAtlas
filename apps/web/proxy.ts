@@ -17,6 +17,7 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   if (pathname === "/me" || pathname === "/me/passport" || pathname === "/my-pandas") {
     return redirect(`/${preferredLocale}/me`);
   }
+  if (pathname === "/map" || pathname === "/global-distribution") return redirect(`/${preferredLocale}/map`);
   if (pathname === "/contribute") return redirect(`/${preferredLocale}/contribute`);
   if (pathname === "/me/submissions") {
     return redirect(`/${preferredLocale}/me/submissions`);
@@ -31,7 +32,7 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   const localizedCollection = pathname.match(/^\/(zh|en)\/atlas$/);
   if (localizedCollection) return redirect(`/${localizedCollection[1]}/pandas`);
 
-  const localizedPassportAlias = pathname.match(/^\/(zh|en)\/my-pandas$/);
+  const localizedPassportAlias = pathname.match(/^\/(zh|en)\/(?:my-pandas|me\/passport)$/);
   if (localizedPassportAlias) return redirect(`/${localizedPassportAlias[1]}/me`);
 
   // Localized pages resolve legacy slugs through the API, or return 404.
