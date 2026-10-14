@@ -1,7 +1,6 @@
 {
   "exclude": [
     "apps/web/lib/generated/**",
-    "data/public-releases/**",
-    "data/reviewed-batches/**"
+    "data/public-releases/**"
   ]
 }
