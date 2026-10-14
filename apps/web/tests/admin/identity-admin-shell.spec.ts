@@ -25,8 +25,6 @@ test("Chinese Kiranism admin shell exposes capability-scoped grouped navigation"
   await expect(navigation.getByRole("link", { name: "审计", exact: true })).toHaveAttribute("href", "/admin/audit/evidence");
   await expect(navigation.getByText("治理", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "审核", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "内容治理", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "策展", exact: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "发布", exact: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Archive/i })).toHaveCount(0);
   await expect(page.getByRole("link", { name: /Game Bank/i })).toHaveCount(0);

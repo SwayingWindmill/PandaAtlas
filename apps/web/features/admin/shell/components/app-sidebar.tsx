@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ClipboardCheck, LayoutDashboard, LogOut, ScrollText,
-  Send, ShieldAlert, ShieldCheck, Sprout, UsersRound, ChevronsUpDown,
+  Send, ShieldCheck, Sprout, UsersRound, ChevronsUpDown,
 } from "lucide-react";
 
 import {
@@ -25,7 +25,7 @@ import {
 
 const icons = {
   "layout-dashboard": LayoutDashboard, "clipboard-check": ClipboardCheck,
-  "shield-alert": ShieldAlert, send: Send,
+  send: Send,
   "scroll-text": ScrollText, "shield-check": ShieldCheck, "users-round": UsersRound,
 } as const;
 

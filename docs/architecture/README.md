@@ -6,7 +6,7 @@ ZhiPanda records cross-cutting architecture choices as Architecture Decision Rec
 
 [ZhiPanda V2 Architecture Baseline](zhipanda-v2-architecture-baseline.md) is the governing architecture: a NestJS 11 API on Express (Node 24) organized as a business-capability modular monolith, Supabase PostgreSQL/PostGIS/Auth as the single authoritative data platform, and Cloudflare Workers, R2 and Hyperdrive for the online runtime. Use [deployment runtime status](../deployment/runtime-status.md) for the live provider and runtime topology.
 
-The product priority is **panda fan experience first**. Archive, provenance, review, moderation, audit and publication capabilities support the product and must not displace the fan-facing loops.
+The product priority is **panda fan experience first**. Archive, provenance, review, audit and publication capabilities support the product and must not displace the fan-facing loops.
 
 ## Decision records
 

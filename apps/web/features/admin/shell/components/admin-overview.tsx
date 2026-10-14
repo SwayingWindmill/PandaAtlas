@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auditEvidenceQueryOptions } from "@/features/admin/audit/api/queries";
 import { auditEventName, auditObjectName } from "@/features/admin/audit/presentation";
-import { reviewQueueQueryOptions } from "@/features/admin/review-moderation/api/queries";
+import { reviewQueueQueryOptions } from "@/features/admin/review/api/queries";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import { visibleAdminNavigationItems } from "@/features/admin/shell/navigation";
 

@@ -430,13 +430,6 @@ describe("Identity HTTP security path", () => {
           where aggregate_id=${workerId} and event_type in ('identity.account-suspended','identity.account-reinstated')`.execute(tx);
         expect(outbox.rows.map((row) => row.event_type).sort()).toEqual(["identity.account-reinstated", "identity.account-suspended"]);
 
-        await tx.updateTable("identity.accounts")
-          .set({ state: "suspended", state_reason: "moderation:case-123" }).where("account_id", "=", workerId).execute();
-        const crossAuthority = await injectHttp(app, { method: "POST", url: statusUrl, headers: managerHeaders,
-          payload: { action: "reinstate", reason: restoredReason, idempotencyKey: randomUUID() },
-        });
-        expect(crossAuthority.statusCode).toBe(409);
-        expect(crossAuthority.json()).toMatchObject({ code: "identity.suspensionOwnedElsewhere" });
         throw rollback;
       });
     } catch (error) {

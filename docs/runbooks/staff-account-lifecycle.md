@@ -12,7 +12,7 @@
 ## Authority boundaries
 
 - A worker cannot change their own state. Suspension of the last active administrator is disallowed; administrator suspension is serialized in the database to prevent concurrent lockout. IAM-05 owns controlled production recovery.
-- `staff:` marks suspension owned by this staff lifecycle. Moderation-owned (`moderation:`), privacy and other externally owned states cannot be reinstated through the staff workflow.
+- `staff:` prefixes the reason of a suspension made through this lifecycle; it is the only way an account becomes suspended.
 - Identity API guards read PostgreSQL account state for **every protected request**, independent of the unmodified Supabase JWT. Suspension does not delete credentials, previously assigned roles, or audit history.
 - Account and role managers receive `identity.staff.read` to inspect the restricted staff directory, role catalog, invitation status and history with a live authenticated session. These GET requests do not require a recent AAL2 step-up. State changes still need `identity.account.manage`, while role mutations still need `identity.role.manage`, both with recent AAL2 verification.
 - Migration `0055_staff_directory_read_capability.sql` adds the read-only capability and grants it to existing role/account managers. It does not change existing role assignments, account states, or the sensitive mutation policies.

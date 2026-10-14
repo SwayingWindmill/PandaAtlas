@@ -1,13 +1,6 @@
 import type {
-  AppealState,
-  ApplySanctionInput,
-  DecideAppealInput,
-  ModerationAccount,
-  ModerationAppealPage,
-  ModerationSanction,
   OpenReviewCaseInput,
   QueueQuery,
-  RestoreSanctionInput,
   ReviewCase,
   ReviewCasePage,
   ReviewCaseSurface,
@@ -64,38 +57,6 @@ export function verifyReviewSource(reviewCaseId: string, input: VerifyReviewSour
 
 export function decideReviewCase(reviewCaseId: string, input: ReviewDecisionInput): Promise<{ decided: true }> {
   return requestJson(`/api/admin/review/cases/${reviewCaseId}/decision`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
-}
-
-export function listModerationAppeals(query: QueueQuery<AppealState>): Promise<ModerationAppealPage> {
-  return requestJson(`/api/admin/moderation/appeals?${queueSearch(query)}`);
-}
-
-export function getModerationAccount(accountId: string): Promise<ModerationAccount> {
-  return requestJson(`/api/admin/moderation/accounts/${accountId}`);
-}
-
-export function applyModerationSanction(
-  accountId: string,
-  input: ApplySanctionInput,
-): Promise<ModerationSanction> {
-  return requestJson(`/api/admin/moderation/accounts/${accountId}/sanctions`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
-}
-
-export function restoreModerationSanction(sanctionId: string, input: RestoreSanctionInput): Promise<{ restored: true }> {
-  return requestJson(`/api/admin/moderation/sanctions/${sanctionId}/restore`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
-}
-
-export function decideModerationAppeal(appealCaseId: string, input: DecideAppealInput) {
-  return requestJson(`/api/admin/moderation/appeals/${appealCaseId}/decision`, {
     method: "POST",
     body: JSON.stringify(input),
   });

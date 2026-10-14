@@ -369,7 +369,6 @@ async function runAdminRuntime() {
     console.log("\n[admin:dev] Local admin runtime is ready.");
     console.log(`[admin:dev] 后台首页: ${WEB_ORIGIN}/admin`);
     console.log(`[admin:dev] 审核: ${WEB_ORIGIN}/admin/reviews`);
-    console.log(`[admin:dev] 内容治理: ${WEB_ORIGIN}/admin/moderation`);
     console.log(`[admin:dev] API health: ${API_ORIGIN}/health`);
     console.log("[admin:dev] Ctrl+C stops Web/API; use `npm run stop:admin` to stop the complete stack.\n");
 

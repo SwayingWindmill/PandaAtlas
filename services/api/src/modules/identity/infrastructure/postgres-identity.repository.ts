@@ -9,10 +9,6 @@ import type {
 import { AccountProvisioningBlockedError } from "../application/identity.errors.js";
 import type { IdentityNotificationContactPort } from "../application/identity-notification.port.js";
 import type { IdentityPrivacyPort } from "../application/identity-privacy.port.js";
-import type {
-  IdentityModerationParticipant,
-  ModerationAccountStateInput,
-} from "../application/identity-moderation.port.js";
 import type { FanProfile, IdentityPort, UpdateFanProfileInput } from "../application/identity.port.js";
 
 interface AuthorizationRow {
@@ -29,7 +25,7 @@ function assuranceLevel(value: string | null): AssuranceLevel {
 }
 
 export class PostgresIdentityRepository
-  implements IdentityPort, IdentityModerationParticipant, IdentityNotificationContactPort, IdentityPrivacyPort
+  implements IdentityPort, IdentityNotificationContactPort, IdentityPrivacyPort
 {
   public constructor(private readonly database: DatabaseService) {}
 
@@ -144,63 +140,6 @@ export class PostgresIdentityRepository
         idempotency_key: `privacy:${requestId}`,
       })
       .onConflict((conflict) => conflict.column("idempotency_key").doNothing())
-      .execute();
-  }
-
-  public async setModerationSuspension(
-    transaction: DatabaseTransaction,
-    input: ModerationAccountStateInput,
-  ): Promise<void> {
-    const account = await transaction
-      .selectFrom("identity.accounts")
-      .select(["state", "state_reason"])
-      .where("account_id", "=", input.accountId)
-      .forUpdate()
-      .executeTakeFirst();
-    if (account === undefined) throw new Error("Moderation target account does not exist");
-
-    const nextState = input.suspended ? "suspended" : "active";
-    if (account.state === nextState) {
-      if (
-        input.suspended &&
-        (account.state_reason === null || !account.state_reason.startsWith("moderation:"))
-      ) {
-        throw new Error("Identity account is suspended outside Moderation authority");
-      }
-      return;
-    }
-    if (input.suspended && account.state !== "active") {
-      throw new Error(`Identity account cannot be moderation-suspended from ${account.state}`);
-    }
-    if (
-      !input.suspended &&
-      (account.state !== "suspended" ||
-        account.state_reason === null ||
-        !account.state_reason.startsWith("moderation:"))
-    ) {
-      throw new Error("Identity account suspension is not owned by Moderation");
-    }
-
-    await transaction
-      .updateTable("identity.accounts")
-      .set({
-        state: nextState,
-        state_reason: input.suspended ? `moderation:${input.reason}` : null,
-        state_changed_at: new Date(),
-      })
-      .where("account_id", "=", input.accountId)
-      .executeTakeFirstOrThrow();
-    await transaction
-      .insertInto("identity.account_state_events")
-      .values({
-        account_id: input.accountId,
-        previous_state: account.state,
-        next_state: nextState,
-        actor_account_id: input.actorAccountId,
-        reason: input.reason,
-        correlation_id: input.correlationId,
-        idempotency_key: input.idempotencyKey,
-      })
       .execute();
   }
 

@@ -5,7 +5,6 @@ import { ContributionModule } from "./modules/contribution/contribution.module.j
 import { EngagementModule } from "./modules/engagement/engagement.module.js";
 import { GameModule } from "./modules/game/game.module.js";
 import { IdentityModule } from "./modules/identity/identity.module.js";
-import { ModerationModule } from "./modules/moderation/moderation.module.js";
 import { NotificationModule } from "./modules/notification/notification.module.js";
 import { PrivacyModule } from "./modules/privacy/privacy.module.js";
 import { PublicationModule } from "./modules/publication/publication.module.js";
@@ -49,7 +48,6 @@ export function createV2OpenApiDocument(app: INestApplication): OpenAPIObject {
       IdentityModule,
       ContributionModule,
       ReviewModule,
-      ModerationModule,
       EngagementModule,
       GameModule,
       PublicationModule,

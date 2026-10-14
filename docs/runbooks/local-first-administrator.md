@@ -13,7 +13,7 @@ PandaAtlas keeps authentication in Supabase and all application roles in the pri
    npm run bootstrap:admin -- --account-id <verified-supabase-user-uuid>
    ```
 
-   For an isolated **developer workstation** that needs to inspect Review, Moderation, Publication and Audit, the operator may instead explicitly opt into:
+   For an isolated **developer workstation** that needs to inspect Review, Publication and Audit, the operator may instead explicitly opt into:
 
    ```powershell
    npm run bootstrap:admin -- --account-id <verified-supabase-user-uuid> --workspace-access
