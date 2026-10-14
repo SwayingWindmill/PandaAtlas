@@ -64,7 +64,7 @@ Curated records should move through these layers:
 1. `data/curation/pandas/*.csv` for source-backed working data.
 2. Reviewed PostgreSQL records and publication workflow.
 3. Immutable Public Release projection and media processing.
-4. D1/API, CSV/JSON snapshots, and the public frontend.
+4. The public API, CSV/JSON snapshots, and the public frontend.
 
 ## Source Priority
 

@@ -11,7 +11,7 @@
 - media processing and offline artifact construction
 - technical pipeline job/attempt/artifact bookkeeping
 
-The extracted data code lives under `src/panda_data` and must not import `services/api/app` or any FastAPI module.
+The code lives under `src/panda_data` and never imports the NestJS API.
 
 ## Authority boundary
 
@@ -35,17 +35,19 @@ Pydantic classes inside this project are implementation representations, not a s
 uv sync --directory tools/panda-data --all-extras
 uv run --directory tools/panda-data panda-data contracts check
 uv run --directory tools/panda-data panda-data source run
+uv run --directory tools/panda-data panda-data crawler compare
+uv run --directory tools/panda-data panda-data curation validate
+uv run --directory tools/panda-data panda-data media process
+uv run --directory tools/panda-data panda-data artifact manifest --bucket <bucket> --artifact-kind <kind> --job-id <id>
 ```
+
+The root scripts `npm run check:panda-curation`, `npm run process:panda-media` and `npm run test:panda-data` wrap the common ones.
 
 Database-backed commands use `PANDA_DATA_DATABASE_URL`, whose login should be a member of `zhipanda_pipeline`. R2 artifact producers use immutable object keys derived from content SHA-256; replacing an object at an existing artifact key is not a supported workflow.
 
-## Deliberately not migrated
+## Out of scope
 
-- FastAPI routes, request auth, or an HTTP server
-- activity/notification/privacy/audit business workers now owned by NestJS
-- publication/public-read projection builders or D1/Worker release replay
-- V1 recovery drills and legacy server-management scripts
+- HTTP routes, request auth or an HTTP server
+- activity, notification, privacy, audit and publication work, which NestJS owns
 - a shared Python/TypeScript domain-model package
 - pickle/joblib or an ad-hoc database protocol
-
-Legacy V1 code remains only where the bounded migration still needs it; V2 data jobs should enter through this project.
