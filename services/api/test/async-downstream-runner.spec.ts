@@ -19,6 +19,7 @@ function stage(name: string, calls: string[], fail = false) {
 
 function runner(failing: string | undefined) {
   const calls: string[] = [];
+  const logs: Array<{ level: string; message: string; fields?: Record<string, unknown> }> = [];
   let heartbeats = 0;
   const service = new AsyncDownstreamRunnerService(
     stage("dispatch", calls) as never,
@@ -29,8 +30,9 @@ function runner(failing: string | undefined) {
     stage("audit", calls, failing === "audit") as never,
     stage("publicCache", calls, failing === "publicCache") as never,
     { recordSuccess: () => { heartbeats += 1; return Promise.resolve(); } } as never,
+    { write: (level: string, message: string, fields?: Record<string, unknown>) => { logs.push({ level, message, fields }); } },
   );
-  return { service, calls, heartbeats: () => heartbeats };
+  return { service, calls, logs, heartbeats: () => heartbeats };
 }
 
 describe("AsyncDownstreamRunnerService", () => {
@@ -44,10 +46,17 @@ describe("AsyncDownstreamRunnerService", () => {
   });
 
   it("runs every later stage when one fails, then fails the cycle without recording the heartbeat", async () => {
-    const { service, calls, heartbeats } = runner("publicCache");
+    const { service, calls, logs, heartbeats } = runner("publicCache");
     await expect(service.runCycle(effects)).rejects.toThrow("Async downstream stages failed: publicCache: publicCache unavailable");
     expect(calls).toEqual([
       "dispatch", "publicCache", "updates", "dispatch", "notification", "privacy", "provider", "dispatch", "audit",
+    ]);
+    expect(logs).toMatchObject([
+      {
+        level: "error",
+        message: "Async downstream stage failed",
+        fields: { stage: "publicCache", error: { message: "publicCache unavailable" } },
+      },
     ]);
     expect(heartbeats()).toBe(0);
   });

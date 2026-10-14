@@ -370,7 +370,7 @@ State the guarantee as:
 
 Consumers use durable receipt/idempotency records or domain uniqueness as appropriate.
 
-Retries are bounded and only used for replay-safe transient failures. Poison/permanent messages must move to a dead-letter path rather than block a queue. Integration-event consumers share `IntegrationEventConsumer`: each message is delivered in its own transaction, a failing one is retried on a later cycle and dead-lettered to `integration.dead_letters` after five reads. The notification provider queue keeps its own policy (`notification_provider_dlq`). The cycle runs every stage even when one fails.
+Retries are bounded and only used for replay-safe transient failures. Poison/permanent messages must move to a dead-letter path rather than block a queue. The Updates, Notification and Audit consumers share `IntegrationEventConsumer`: each message is delivered in its own transaction, a failing one is retried on a later cycle and dead-lettered to `integration.dead_letters` after five reads, and a message naming no existing event is dead-lettered at once. The public cache consumer purges once per batch and archives its messages after the purge succeeds. The notification provider queue keeps its own policy (`notification_provider_dlq`). The cycle runs every stage even when one fails.
 
 ### Worker execution
 

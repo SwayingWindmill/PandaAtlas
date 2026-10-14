@@ -15,7 +15,6 @@ export class UpdatesEventConsumerService {
   private readonly definition: IntegrationEventConsumerDefinition = {
     consumerKey: "updates.projector",
     queue: "integration_updates",
-    visibilityTimeoutSeconds: 60,
     handle: (transaction, event) => this.project(transaction, event),
   };
 

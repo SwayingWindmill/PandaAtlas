@@ -16,6 +16,14 @@ export interface PgmqMessage {
   message: Record<string, unknown>;
 }
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
+
+// The outbox event an integration-event message names, when it names a well-formed one.
+export function queuedEventId(message: PgmqMessage): string | undefined {
+  const eventId = message.message.eventId;
+  return typeof eventId === "string" && UUID_PATTERN.test(eventId) ? eventId : undefined;
+}
+
 export class PgmqService {
   public async sendEvent(
     transaction: DatabaseTransaction,

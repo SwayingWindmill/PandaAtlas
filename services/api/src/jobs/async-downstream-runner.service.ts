@@ -7,6 +7,7 @@ import type { PrivacyRequestProcessorService } from "../modules/privacy/infrastr
 import type { UpdatesEventConsumerService } from "../modules/updates/infrastructure/updates-event-consumer.service.js";
 import type { AsyncDownstreamHeartbeat } from "../platform/integration/async-downstream-heartbeat.js";
 import type { OutboxDispatcherService } from "../platform/integration/outbox-dispatcher.service.js";
+import { serializeError, type StructuredLoggerService } from "../platform/observability/structured-logger.service.js";
 
 // Effects that live outside the API and its database, bound per Worker invocation.
 export interface AsyncDownstreamEffects {
@@ -23,6 +24,7 @@ export class AsyncDownstreamRunnerService {
     private readonly audit: AuditEventConsumerService,
     private readonly publicCache: PublicCacheConsumerService,
     private readonly heartbeat: AsyncDownstreamHeartbeat,
+    private readonly logger: Pick<StructuredLoggerService, "write">,
   ) {}
 
   // Runs every stage even when an earlier one fails, so one broken stage cannot hold back the others.
@@ -33,6 +35,7 @@ export class AsyncDownstreamRunnerService {
       try {
         return await work();
       } catch (error) {
+        this.logger.write("error", "Async downstream stage failed", { stage, error: serializeError(error) });
         failures.push({ stage, error });
         return undefined;
       }

@@ -42,6 +42,7 @@ export interface IntegrationDeadLetters {
   dead_letter_id: Generated<string>;
   dead_lettered_at: Generated<Timestamp>;
   error: string;
+  event_id: string | null;
   message: Json;
   msg_id: Int8;
   queue_name: string;

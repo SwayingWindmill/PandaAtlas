@@ -3,19 +3,27 @@ import { sql } from "kysely";
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createApplication } from "../../src/bootstrap.js";
-import { AuditEventConsumerService } from "../../src/modules/audit/infrastructure/audit-event-consumer.service.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { AsyncDownstreamHeartbeat } from "../../src/platform/integration/async-downstream-heartbeat.js";
+import {
+  IntegrationEventConsumer,
+  type IntegrationEventConsumerDefinition,
+} from "../../src/platform/integration/integration-event-consumer.js";
 import { IntegrationOutboxService } from "../../src/platform/integration/integration-outbox.service.js";
 import { PgmqService } from "../../src/platform/integration/pgmq.service.js";
 import { injectHttp } from "../inject-http.js";
 
 const DATABASE_URL =
   process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
-const QUEUE = "integration_audit" as const;
+// A queue of its own, so other suites' messages never reach these consumers.
+const QUEUE = "integration_test_consumer";
 
 let app: NestExpressApplication;
-const deadLetterMessageIds: string[] = [];
+let database: DatabaseService;
+let outbox: IntegrationOutboxService;
+let pgmq: PgmqService;
+let consumer: IntegrationEventConsumer;
+const logs: Array<{ level: string; message: string; fields?: Record<string, unknown> }> = [];
 
 beforeAll(async () => {
   process.env.APP_ENV = "test";
@@ -23,94 +31,170 @@ beforeAll(async () => {
   process.env.DATABASE_URL = DATABASE_URL;
   delete process.env.SUPABASE_URL;
   app = await createApplication();
+  database = app.get(DatabaseService);
+  outbox = app.get(IntegrationOutboxService);
+  pgmq = app.get(PgmqService);
+  consumer = new IntegrationEventConsumer(database, outbox, pgmq, {
+    write: (level, message, fields) => logs.push({ level, message, fields }),
+  });
+  await sql`select pgmq.create(${QUEUE})`.execute(database.db);
 });
 
 afterAll(async () => {
   // Dead letters keep /health/async unhealthy; leave none behind for other suites.
-  if (deadLetterMessageIds.length > 0) {
-    await app.get(DatabaseService).db
-      .deleteFrom("integration.dead_letters")
-      .where("queue_name", "=", QUEUE)
-      .where("msg_id", "in", deadLetterMessageIds)
-      .execute();
-  }
+  await database.db.deleteFrom("integration.dead_letters").where("queue_name", "=", QUEUE).execute();
+  await sql`select pgmq.drop_queue(${QUEUE})`.execute(database.db);
   await app.close();
 });
 
-describe("integration event dead letters", () => {
-  it("retries a failing message, dead-letters it after five reads, and keeps delivering the messages behind it", async () => {
-    const database = app.get(DatabaseService);
-    const outbox = app.get(IntegrationOutboxService);
-    const pgmq = app.get(PgmqService);
-    const audit = app.get(AuditEventConsumerService);
+function definition(handle: IntegrationEventConsumerDefinition["handle"]): IntegrationEventConsumerDefinition {
+  return { consumerKey: `integration-test.${randomUUID()}`, queue: QUEUE as never, handle };
+}
 
-    const validEventId = await database.transaction((transaction) =>
-      outbox.append(transaction, {
-        eventType: "platform.integration-test.dead-letter",
+function processBatch(consumerDefinition: IntegrationEventConsumerDefinition) {
+  return consumer.processBatch(consumerDefinition, 100);
+}
+
+function appendEvent(): Promise<string> {
+  return database.transaction((transaction) =>
+    outbox.append(transaction, {
+      eventType: "platform.integration-test.delivery",
+      sourceContext: "platform",
+      aggregateType: "integration_test",
+      aggregateId: randomUUID(),
+      idempotencyKey: `delivery-${randomUUID()}`,
+      correlationId: randomUUID(),
+      occurredAt: new Date(),
+      payload: {},
+    }),
+  );
+}
+
+function enqueue(message: Record<string, unknown>): Promise<string> {
+  return database.transaction((transaction) => pgmq.sendMessage(transaction, QUEUE as never, message));
+}
+
+function makeVisible(msgId: string): Promise<void> {
+  return database.transaction((transaction) => pgmq.setVisibility(transaction, QUEUE as never, msgId, 0));
+}
+
+function deadLetter(msgId: string) {
+  return database.db
+    .selectFrom("integration.dead_letters")
+    .select(["event_id", "read_count", "message", "error"])
+    .where("queue_name", "=", QUEUE)
+    .where("msg_id", "=", msgId)
+    .executeTakeFirst();
+}
+
+async function queued(msgId: string): Promise<boolean> {
+  const rows = await sql<{ msg_id: string }>`
+    select msg_id::text from pgmq.q_integration_test_consumer where msg_id = ${msgId}::bigint
+  `.execute(database.db);
+  return rows.rows.length > 0;
+}
+
+describe("integration event delivery", () => {
+  it("dead-letters an undeliverable message at once and delivers the message behind it", async () => {
+    const delivered: string[] = [];
+    const consumerDefinition = definition((_transaction, event) => {
+      delivered.push(event.eventId);
+      return Promise.resolve({ outcome: "processed" });
+    });
+    const missingEventId = randomUUID();
+    const validEventId = await appendEvent();
+    const missingMsgId = await enqueue({ eventId: missingEventId });
+    await enqueue({ eventId: validEventId });
+
+    expect(await processBatch(consumerDefinition)).toMatchObject({
+      received: 2,
+      processed: 1,
+      deadLettered: 1,
+      failed: 0,
+    });
+    expect(delivered).toEqual([validEventId]);
+    expect(await deadLetter(missingMsgId)).toEqual({
+      event_id: missingEventId,
+      read_count: 1,
+      message: { eventId: missingEventId },
+      error: `Outbox event ${missingEventId} does not exist`,
+    });
+    expect(await queued(missingMsgId)).toBe(false);
+  });
+
+  it("rolls back a failing delivery, retries it, and dead-letters it after five reads", async () => {
+    const eventId = await appendEvent();
+    const sideEffectKey = `side-effect-${randomUUID()}`;
+    const consumerDefinition = definition(async (transaction, event) => {
+      await outbox.append(transaction, {
+        eventType: "platform.integration-test.side-effect",
         sourceContext: "platform",
         aggregateType: "integration_test",
-        aggregateId: randomUUID(),
-        idempotencyKey: `dead-letter-${randomUUID()}`,
-        correlationId: randomUUID(),
+        aggregateId: event.eventId,
+        idempotencyKey: sideEffectKey,
+        correlationId: event.correlationId,
         occurredAt: new Date(),
         payload: {},
-      }),
-    );
-    const missingEventId = randomUUID();
-    const [poisonMsgId, validMsgId] = await database.transaction(async (transaction) => [
-      await pgmq.sendEvent(transaction, QUEUE, missingEventId),
-      await pgmq.sendEvent(transaction, QUEUE, validEventId),
-    ]);
-    if (poisonMsgId === undefined || validMsgId === undefined) throw new Error("PGMQ did not accept the test messages");
-    deadLetterMessageIds.push(poisonMsgId);
+      });
+      throw new Error("projection unavailable");
+    });
+    const msgId = await enqueue({ eventId });
+    logs.length = 0;
 
-    const deadLetters = () =>
-      database.db
-        .selectFrom("integration.dead_letters")
-        .select(["consumer_key", "read_count", "message", "error"])
-        .where("queue_name", "=", QUEUE)
-        .where("msg_id", "=", poisonMsgId)
-        .execute();
-
-    const first = await audit.processBatch(100);
-    expect(first.failed).toBeGreaterThanOrEqual(1);
-    const projected = await database.db
-      .selectFrom("audit.evidence_events")
-      .select("source_event_id")
-      .where("source_event_id", "=", validEventId)
-      .execute();
-    expect(projected).toHaveLength(1);
-    expect(await deadLetters()).toEqual([]);
-
-    for (let read = 2; read <= 5; read += 1) {
-      await database.transaction((transaction) => pgmq.setVisibility(transaction, QUEUE, poisonMsgId, 0));
-      await audit.processBatch(100);
+    for (let read = 1; read <= 4; read += 1) {
+      expect(await processBatch(consumerDefinition)).toMatchObject({ failed: 1, deadLettered: 0 });
+      expect(await deadLetter(msgId)).toBeUndefined();
+      await makeVisible(msgId);
     }
+    expect(await processBatch(consumerDefinition)).toMatchObject({ failed: 0, deadLettered: 1 });
 
-    expect(await deadLetters()).toEqual([
-      {
-        consumer_key: "audit.projector",
-        read_count: 5,
-        message: { eventId: missingEventId },
-        error: `Outbox event ${missingEventId} does not exist`,
-      },
-    ]);
-    const stillQueued = await sql<{ msg_id: string }>`
-      select msg_id::text from pgmq.q_integration_audit where msg_id = ${poisonMsgId}::bigint
-    `.execute(database.db);
-    expect(stillQueued.rows).toEqual([]);
-
-    // The heartbeat is fresh, so only the dead letter makes async downstream unhealthy.
-    await app.get(AsyncDownstreamHeartbeat).recordSuccess();
-    const unhealthy = await injectHttp(app, { method: "GET", url: "/health/async" });
-    expect(unhealthy.statusCode).toBe(503);
-
-    await database.db
-      .deleteFrom("integration.dead_letters")
-      .where("queue_name", "=", QUEUE)
-      .where("msg_id", "=", poisonMsgId)
+    const sideEffects = await database.db
+      .selectFrom("integration.outbox_events")
+      .select("event_id")
+      .where("idempotency_key", "=", sideEffectKey)
       .execute();
-    const healthy = await injectHttp(app, { method: "GET", url: "/health/async" });
-    expect(healthy.statusCode).toBe(200);
+    expect(sideEffects).toEqual([]);
+    expect(await deadLetter(msgId)).toEqual({
+      event_id: eventId,
+      read_count: 5,
+      message: { eventId },
+      error: "projection unavailable",
+    });
+    expect(await queued(msgId)).toBe(false);
+    expect(logs.map((entry) => [entry.level, entry.message, entry.fields?.readCount])).toEqual([
+      ["warn", "Integration event delivery failed; it will be retried", 1],
+      ["warn", "Integration event delivery failed; it will be retried", 2],
+      ["warn", "Integration event delivery failed; it will be retried", 3],
+      ["warn", "Integration event delivery failed; it will be retried", 4],
+      ["error", "Integration event dead-lettered", 5],
+    ]);
+
+    // The heartbeat is fresh, so only the dead letters make async downstream unhealthy.
+    await app.get(AsyncDownstreamHeartbeat).recordSuccess();
+    expect((await injectHttp(app, { method: "GET", url: "/health/async" })).statusCode).toBe(503);
+    await database.db.deleteFrom("integration.dead_letters").where("queue_name", "=", QUEUE).execute();
+    expect((await injectHttp(app, { method: "GET", url: "/health/async" })).statusCode).toBe(200);
+  });
+
+  it("archives a redelivered event as a duplicate without handling it again", async () => {
+    const handled: string[] = [];
+    const consumerDefinition = definition((_transaction, event) => {
+      handled.push(event.eventId);
+      return Promise.resolve({ outcome: "ignored" });
+    });
+    const eventId = await appendEvent();
+    await enqueue({ eventId });
+    const redelivery = await enqueue({ eventId });
+
+    expect(await processBatch(consumerDefinition)).toMatchObject({ ignored: 1, duplicates: 1 });
+    expect(handled).toEqual([eventId]);
+    expect(await queued(redelivery)).toBe(false);
+    const receipt = await database.db
+      .selectFrom("integration.consumer_receipts")
+      .select("outcome")
+      .where("consumer_key", "=", consumerDefinition.consumerKey)
+      .where("event_id", "=", eventId)
+      .executeTakeFirstOrThrow();
+    expect(receipt.outcome).toBe("ignored");
   });
 });

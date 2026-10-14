@@ -12,7 +12,6 @@ export class AuditEventConsumerService {
   private readonly definition: IntegrationEventConsumerDefinition = {
     consumerKey: "audit.projector",
     queue: "integration_audit",
-    visibilityTimeoutSeconds: 60,
     handle: (transaction, event) => this.project(transaction, event),
   };
 

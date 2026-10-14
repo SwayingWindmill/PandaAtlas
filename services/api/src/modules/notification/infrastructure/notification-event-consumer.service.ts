@@ -23,7 +23,6 @@ export class NotificationEventConsumerService {
   private readonly definition: IntegrationEventConsumerDefinition = {
     consumerKey: "notification.projector",
     queue: "integration_notification",
-    visibilityTimeoutSeconds: 60,
     handle: (transaction, event) => this.project(transaction, event),
   };
 

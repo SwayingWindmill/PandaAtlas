@@ -1,4 +1,5 @@
--- Queue messages an integration-event consumer gave up on after repeated failed deliveries (#629).
+-- Queue messages an integration-event consumer gave up on: undeliverable at once, or after repeated
+-- failed deliveries (#629).
 -- The message is archived from its queue and kept here with the last error until an operator replays
 -- or discards it; /health/async reports unhealthy while any row exists.
 create table integration.dead_letters (
@@ -6,6 +7,8 @@ create table integration.dead_letters (
   consumer_key text not null check (consumer_key ~ '^[a-z][a-z0-9_.-]{2,127}$'),
   queue_name text not null check (length(trim(queue_name)) > 0),
   msg_id bigint not null,
+  -- The outbox event the message names, when it names one; the event itself may not exist.
+  event_id uuid,
   read_count integer not null check (read_count >= 1),
   message jsonb not null,
   error text not null check (length(trim(error)) > 0),

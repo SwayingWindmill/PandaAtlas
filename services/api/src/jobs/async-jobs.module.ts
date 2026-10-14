@@ -14,10 +14,12 @@ import { ConfigModule } from "../platform/config/config.module.js";
 import { AsyncDownstreamHeartbeat } from "../platform/integration/async-downstream-heartbeat.js";
 import { IntegrationModule } from "../platform/integration/integration.module.js";
 import { OutboxDispatcherService } from "../platform/integration/outbox-dispatcher.service.js";
+import { ObservabilityModule } from "../platform/observability/observability.module.js";
+import { StructuredLoggerService } from "../platform/observability/structured-logger.service.js";
 import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.js";
 
 @Module({
-  imports: [ConfigModule, IntegrationModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule, PublicationModule],
+  imports: [ConfigModule, IntegrationModule, ObservabilityModule, UpdatesModule, NotificationModule, PrivacyModule, AuditModule, PublicationModule],
   providers: [
     {
       provide: AsyncDownstreamRunnerService,
@@ -30,7 +32,19 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         audit: AuditEventConsumerService,
         publicCache: PublicCacheConsumerService,
         heartbeat: AsyncDownstreamHeartbeat,
-      ) => new AsyncDownstreamRunnerService(dispatcher, updates, notification, privacy, provider, audit, publicCache, heartbeat),
+        logger: StructuredLoggerService,
+      ) =>
+        new AsyncDownstreamRunnerService(
+          dispatcher,
+          updates,
+          notification,
+          privacy,
+          provider,
+          audit,
+          publicCache,
+          heartbeat,
+          logger,
+        ),
       inject: [
         OutboxDispatcherService,
         UpdatesEventConsumerService,
@@ -40,6 +54,7 @@ import { AsyncDownstreamRunnerService } from "./async-downstream-runner.service.
         AuditEventConsumerService,
         PublicCacheConsumerService,
         AsyncDownstreamHeartbeat,
+        StructuredLoggerService,
       ],
     },
   ],
