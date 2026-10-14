@@ -6,7 +6,6 @@ export type { PublicCoverage } from "@/features/public-content/public-release";
 
 import type {
   PublicAtlasDataset,
-  PublicAtlasSearch,
   PublicContentEnvelope,
   PublicCoverage,
   PublicLineageDataset,
@@ -56,24 +55,10 @@ export interface V2MomentDataset {
   sourceEvents: PublicMomentOccurrence[];
 }
 
-export interface V2MomentResult {
-  release: V2Release;
-  pandas: PandaDetail[];
-  items: PublicMomentOccurrence[];
-}
-
 export interface V2MomentQuery extends MomentQuery {
   location?: string;
 }
 
-function normalizeSearchTerm(value: string): string {
-  return value
-    .normalize("NFKD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLocaleLowerCase()
-    .replace(/[\s_\-:]+/g, "")
-    .trim();
-}
 
 function factFor(panda: V2Panda, ...fieldKeys: string[]) {
   const wanted = new Set(fieldKeys);
@@ -495,37 +480,6 @@ export async function loadV2PublicLineageDataset(locale: PublicLocale): Promise<
   );
 }
 
-export async function searchV2PublicPandas(query: string, locale: PublicLocale): Promise<PublicContentEnvelope<PublicAtlasSearch> | null> {
-  const core = await loadCore();
-  if (!core) return null;
-  const pandas = buildCorePandas(core);
-  const normalizedQuery = normalizeSearchTerm(query);
-  const matches = normalizedQuery
-    ? pandas.filter((panda) => [panda.slug, panda.name_zh, panda.name_en ?? "", ...(panda.search_terms ?? [])]
-        .some((term) => normalizeSearchTerm(term).includes(normalizedQuery)))
-    : [];
-  return v2Envelope(
-    {
-      query,
-      results: matches.map((panda) => ({
-        id: panda.id,
-        slug: panda.slug,
-        nameZh: panda.name_zh,
-        nameEn: panda.name_en,
-        nameEnTranslation: panda.name_en ? "reviewed" : "missing",
-        status: panda.status,
-        birthDate: panda.birth_date,
-        currentLocation: panda.current_place?.coarse_location ?? panda.current_location,
-      })),
-      totalPublished: pandas.length,
-    },
-    core.release,
-    core.pandas,
-    { state: normalizedQuery ? "complete" : "none", scope: "canonical V2 public panda identities" },
-    locale,
-  );
-}
-
 export async function loadV2PublicPandaProfile(
   input: string,
   locale: PublicLocale,
@@ -767,12 +721,3 @@ export function filterV2PublicMoments(
   return items;
 }
 
-export async function listV2PublicMoments(query: V2MomentQuery = {}): Promise<V2MomentResult | null> {
-  const dataset = await loadV2PublicMomentDataset();
-  if (!dataset) return null;
-  return {
-    release: dataset.release,
-    pandas: dataset.pandas,
-    items: filterV2PublicMoments(dataset, query),
-  };
-}

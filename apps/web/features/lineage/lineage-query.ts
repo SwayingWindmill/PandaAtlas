@@ -1,5 +1,4 @@
 export const DEFAULT_LINEAGE_DEPTH = 2;
-export const MAX_LINEAGE_DEPTH = 4;
 
 export interface LineageFocusReference {
   id: string;

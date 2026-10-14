@@ -1,5 +1,3 @@
-import type { AuditEvidence } from "./api/types";
-
 const eventNames: Record<string, string> = {
   "publication.release.activated": "已启用公开版本",
   "publication.release.rolled_back": "已回滚公开版本",
@@ -26,8 +24,4 @@ export function auditDomainName(sourceContext: string): string {
 
 export function auditObjectName(aggregateType: string): string {
   return objectNames[aggregateType] ?? "其他对象";
-}
-
-export function auditEventDescription(event: AuditEvidence): string {
-  return `${auditDomainName(event.sourceContext)} · ${auditObjectName(event.aggregateType)}`;
 }

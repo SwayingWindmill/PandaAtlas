@@ -1,5 +1,4 @@
 export type PandaStatus = "alive" | "deceased" | "unknown";
-export type DistributionLayer = "wild" | "captive" | "protected_area" | "corridor";
 
 export interface PandaListItem {
   id: string;
@@ -124,8 +123,6 @@ export type PublicFacilitySummary = PublicInstitutionSummary & {
   locality: string | null;
   facility_type: string | null;
 };
-
-export type PublicFacilityName = PublicEntityName;
 
 export interface LocalizedPublicContent {
   locale: string;
@@ -314,15 +311,6 @@ export interface PandaLineageResponse {
   };
 }
 
-export interface PaginatedPandasResponse {
-  items: PandaListItem[];
-  meta: {
-    page: number;
-    page_size: number;
-    total: number;
-  };
-}
-
 export interface GeoJsonGeometry {
   type: string;
   coordinates: unknown;
@@ -353,82 +341,11 @@ export type CompleteGeoJsonFeatureCollection<
   meta: FeatureCollectionMeta;
 };
 
-export interface DistributionFeatureProperties extends Record<string, unknown> {
-  layer?: DistributionLayer;
-  density?: number | null;
-  cell_code?: string;
-  snapshot_date?: string | null;
-}
-
 export interface HabitatFeatureProperties extends Record<string, unknown> {
   name?: string;
   province?: string | null;
   level?: string | null;
 }
 
-export interface DistributionSnapshot {
-  snapshot_date: string;
-  version: string;
-  notes: string | null;
-}
 
-export interface DistributionSnapshotList {
-  items: DistributionSnapshot[];
-}
 
-export interface OverviewStats {
-  total_pandas: number;
-  active_habitats: number;
-  latest_snapshot_date: string;
-  wild_distribution_cells: number;
-  featured_pandas: number;
-}
-
-export interface PublicReleaseMetadata {
-  dataset_release_version: string;
-  public_schema_version: string;
-  database_migration_version: string;
-  publication_batch_id: string;
-  projection_code_version: string;
-  released_at: string;
-  licenses: Record<string, string>;
-}
-
-export interface PublicPandaRelease {
-  release: PublicReleaseMetadata;
-  records: Array<Record<string, unknown>>;
-}
-
-export type ImportJobStatus = "queued" | "running" | "succeeded" | "failed";
-
-export interface ImportSourceOption {
-  name: string;
-  label: string;
-  source_path: string;
-}
-
-export interface ImportSourceList {
-  items: ImportSourceOption[];
-}
-
-export interface ImportJobSummary {
-  rows_total: number;
-  rows_success: number;
-  rows_failed: number;
-  source_name: string;
-  source_path: string;
-  mode: string;
-  failure_reason: string | null;
-}
-
-export interface ImportJob {
-  id: string;
-  source_name: string;
-  source_uri: string | null;
-  status: ImportJobStatus;
-  summary: ImportJobSummary;
-  error_log: string | null;
-  started_at: string | null;
-  finished_at: string | null;
-  created_at: string;
-}

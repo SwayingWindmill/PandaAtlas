@@ -134,14 +134,6 @@ export function recordRecentProfile(
   writeRecent(recent);
 }
 
-export function removeRecentProfile(
-  id: string,
-  references: readonly ProfilePreferenceReference[] = [],
-): void {
-  const snapshot = readProfilePreferences(references);
-  writeRecent(snapshot.recent.filter((entry) => entry.id !== id));
-}
-
 export function clearRecentProfiles(): void {
   writeRecent([]);
 }
