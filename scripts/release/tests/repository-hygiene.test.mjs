@@ -8,7 +8,6 @@ import test from "node:test";
 import {
   checkRepositoryHygiene,
   findActiveAgentNavigationViolations,
-  findBrokenContractReadmeLinks,
   findCurrentAuthorityDocumentationViolations,
   findRetiredRuntimeImports,
   findRepositoryHygieneViolations,
@@ -173,23 +172,6 @@ test("active agent navigation does not point at retired request runtimes", async
       "docs/agents/codegraph.md: FastAPI",
       "docs/agents/codegraph.md: services/worker-api",
     ]);
-  } finally {
-    await rm(cwd, { force: true, recursive: true });
-  }
-});
-
-test("contracts README links only to contract files that exist", async () => {
-  const cwd = await mkdtemp(path.join(tmpdir(), "panda-contract-links-"));
-  try {
-    await mkdir(path.join(cwd, "contracts"), { recursive: true });
-    await writeFile(
-      path.join(cwd, "contracts", "README.md"),
-      "- [existing](existing.v1.json)\n- [missing](missing.v1.json)\n",
-      "utf8",
-    );
-    await writeFile(path.join(cwd, "contracts", "existing.v1.json"), "{}\n", "utf8");
-
-    assert.deepEqual(findBrokenContractReadmeLinks({ cwd }), ["contracts/missing.v1.json"]);
   } finally {
     await rm(cwd, { force: true, recursive: true });
   }

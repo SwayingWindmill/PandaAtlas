@@ -77,7 +77,11 @@ export function classifyDevelopmentScopes(paths) {
       addScope(scopes, "release");
       continue;
     }
-    if (isDocumentationPath(changedPath)) continue;
+    // Documents and ignore rules can break documentation references, which release verification checks.
+    if (isDocumentationPath(changedPath) || changedPath === ".gitignore" || changedPath.endsWith("/.gitignore")) {
+      addScope(scopes, "release");
+      continue;
+    }
 
     if (changedPath === "package.json") {
       addScope(scopes, "release");
@@ -334,6 +338,9 @@ export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
     }
     return plan;
   }
+  // Loaded here, not at the top: planning (--list) runs before CI installs dependencies.
+  const { checkDocReferences } = await import("../release/check-doc-references.mjs");
+  checkDocReferences();
   await runPlan(plan);
   console.log("\n[verify:dev] all selected development scopes passed");
   return plan;

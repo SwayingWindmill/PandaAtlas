@@ -112,3 +112,21 @@ test("no workspace keeps a workstation production deploy script", async () => {
     assert.equal(Object.values(manifest.scripts).some((script) => /\bcf deploy\b/u.test(script)), false, workspace);
   }
 });
+
+// The plan job runs verify.mjs --list before installing npm dependencies, so everything verify.mjs
+// imports statically must resolve with Node built-ins alone.
+test("the planner loads without npm dependencies", async () => {
+  const seen = new Set();
+  const bare = [];
+  const visit = async (file) => {
+    if (seen.has(file)) return;
+    seen.add(file);
+    const source = await readFile(file, "utf8");
+    for (const [, specifier] of source.matchAll(/^import[^'"]*["']([^"']+)["'];?$/gmu)) {
+      if (specifier.startsWith(".")) await visit(path.resolve(path.dirname(file), specifier));
+      else if (!specifier.startsWith("node:")) bare.push(`${path.relative(repoRoot, file)} -> ${specifier}`);
+    }
+  };
+  await visit(path.join(repoRoot, "scripts", "development", "verify.mjs"));
+  assert.deepEqual(bare, []);
+});
