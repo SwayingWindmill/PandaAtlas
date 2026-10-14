@@ -7,7 +7,6 @@ import {
   DEVELOPMENT_SCOPE_ORDER,
   commandsForDevelopmentScope,
 } from "./catalog.mjs";
-import { checkDocReferences } from "../release/check-doc-references.mjs";
 import { checkRepositoryHygiene } from "../release/check-repository-hygiene.mjs";
 import { repoRoot, runCommand } from "./command-runner.mjs";
 
@@ -78,7 +77,11 @@ export function classifyDevelopmentScopes(paths) {
       addScope(scopes, "release");
       continue;
     }
-    if (isDocumentationPath(changedPath)) continue;
+    // Documents and ignore rules can break documentation references, which release verification checks.
+    if (isDocumentationPath(changedPath) || changedPath === ".gitignore" || changedPath.endsWith("/.gitignore")) {
+      addScope(scopes, "release");
+      continue;
+    }
 
     if (changedPath === "package.json") {
       addScope(scopes, "release");
@@ -312,7 +315,6 @@ async function runPlan(plan) {
 export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   checkRepositoryHygiene({ quiet: options.githubOutput });
-  checkDocReferences({ quiet: options.githubOutput });
   let plan;
   let metadata = {};
   if (options.all) plan = createPlanForScopes(DEVELOPMENT_SCOPE_ORDER);
@@ -336,6 +338,9 @@ export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
     }
     return plan;
   }
+  // Loaded here, not at the top: planning (--list) runs before CI installs dependencies.
+  const { checkDocReferences } = await import("../release/check-doc-references.mjs");
+  checkDocReferences();
   await runPlan(plan);
   console.log("\n[verify:dev] all selected development scopes passed");
   return plan;

@@ -79,7 +79,10 @@ test("changed-path routing stays centralized in the development scope classifier
   assert.deepEqual(classifyDevelopmentScopes(["services/api/src/main.ts"]), ["api"]);
   assert.deepEqual(classifyDevelopmentScopes(["tools/panda-data/src/panda_data/cli.py"]), ["curation", "data"]);
   assert.deepEqual(classifyDevelopmentScopes(["contracts/panda-data/pipeline-job.v1.schema.json"]), ["curation", "data"]);
-  assert.deepEqual(classifyDevelopmentScopes(["docs/architecture/example.md"]), []);
+  // Documentation and ignore-rule changes run the release scope, whose verification checks doc references.
+  assert.deepEqual(classifyDevelopmentScopes(["docs/architecture/example.md"]), ["release"]);
+  assert.deepEqual(classifyDevelopmentScopes(["README.md"]), ["release"]);
+  assert.deepEqual(classifyDevelopmentScopes(["services/api/.gitignore"]), ["release"]);
 });
 
 test("Windows npm and npx commands run through the Node CLI without a shell", () => {
