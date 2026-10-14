@@ -1,14 +1,13 @@
 # ZhiPanda V2 Architecture Baseline
 
 - Status: **Governing architecture; V2 is live**
-- Date: 2026-08-26 (deployment, observability and cutover sections updated 2026-10-14)
+- Date: 2026-08-26; updated to the live system 2026-10-14
 - Planning source: Wayfinder map #309 and decisions #310-#321
 - Product priority: panda fan experience first
-- Live provider/runtime detail: `docs/deployment/runtime-status.md`
 
 ## 1. Purpose
 
-This document is the canonical application/domain architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas. Current deployment-provider facts live in `docs/deployment/runtime-status.md`.
+This document is the canonical application/domain architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas.
 
 The core migration rule is:
 
@@ -43,47 +42,19 @@ Cloudflare DNS (custom domains only)
         -> API Worker (NestJS on Express)
               +-> Hyperdrive -> Supabase PostgreSQL/PostGIS
               +-> Supabase Auth JWKS
-              +-> Cron Trigger (every 5 minutes): Outbox/PGMQ downstream cycle
+              +-> Cron Trigger: Outbox/PGMQ downstream cycle
 
 GitHub Actions
   +-> Production Deploy: approval-gated migrations, then API, then Web
-  +-> Production Probe: health and async-heartbeat checks every 15 minutes
+  +-> Production Probe: scheduled health and async-heartbeat checks
   +-> batch operations and Python panda-data jobs
 ```
 
+Bindings, schedules, domains and versions live in `docs/deployment/runtime-status.md`.
+
 ## 4. Repository layout
 
-```text
-PandaAtlas/
-├─ apps/
-│  └─ web/                     # Next.js app router on vinext + Vite, Cloudflare Worker
-├─ services/
-│  └─ api/                     # NestJS modular monolith, Cloudflare Worker
-├─ packages/
-│  └─ api-client/              # generated private HTTP client
-├─ tools/
-│  └─ panda-data/              # Python + uv
-├─ contracts/                  # golden dataset, panda-data pipeline schemas, batch/research contracts
-├─ infra/
-│  └─ supabase/
-├─ docs/
-├─ .github/workflows/
-├─ tsconfig.base.json
-├─ eslint.config.mjs
-├─ dependency-cruiser.config.mjs
-├─ package.json
-└─ package-lock.json
-```
-
-JavaScript workspaces are explicit:
-
-```text
-packages/api-client
-apps/web
-services/api
-```
-
-Use npm workspaces only. Do not add Turborepo, Nx, Lerna, Changesets, pnpm migration, project-reference graphs, or shared-config packages without a measured problem they solve.
+The layout and the three npm workspaces are listed in `docs/monorepo-structure.md`. Use npm workspaces only. Do not add Turborepo, Nx, Lerna, Changesets, pnpm migration, project-reference graphs, or shared-config packages without a measured problem they solve.
 
 The only initial shared npm package is `api-client`.
 
@@ -412,7 +383,7 @@ Retries are bounded and only used for replay-safe transient failures. Poison/per
 ### Worker execution
 
 - no polling during API startup;
-- the Cron Trigger runs one bounded downstream cycle every 5 minutes (Outbox dispatch, then each consumer queue);
+- the Cron Trigger runs one bounded downstream cycle per tick (Outbox dispatch, then each consumer queue);
 - long/heavy work runs through GitHub Actions;
 - external side effects happen after durable intent is committed;
 - `waitUntil()` is only for harmless best-effort work, not durable publication/notification/audit/privacy execution.
@@ -522,7 +493,7 @@ Updates and Notifications react asynchronously to publication events rather than
 
 Cloudflare R2 is the media store. The bucket is private: the Web Worker serves only allowlisted panda photos and homepage videos at `/media/*` on the site's own domain, and Workers Cache keeps them at the edge.
 
-Contribution attachments register metadata through the Contribution module; there is no browser upload path yet. When one is added, the browser uploads to R2 directly through a short-lived presigned URL authorized by Nest, and Nest verifies the object on finalize; normal large uploads never stream through Nest.
+Contribution attachments register metadata through the Contribution module; the API offers no upload endpoint. Browser uploads go to R2 directly through a short-lived presigned URL that Nest authorizes and then verifies on finalize; large uploads never stream through Nest.
 
 Deletion or takedown of a public object must also purge it from the edge cache when it has to disappear immediately.
 
@@ -538,7 +509,7 @@ Do not create a second logging-specific request context.
 
 ### Tracing, error aggregation and metrics
 
-There is no tracing or error-aggregation service and no metrics collector. Signals come from Workers Logs, Cloudflare and Supabase platform metrics, and the Production Probe workflow, which checks `/ready` and `/health/async` (the async downstream heartbeat) every 15 minutes and fails, notifying the owner, when either is down. Add tracing or aggregation only for a measured need, and never trace raw SQL text or bind values by default.
+There is no tracing or error-aggregation service and no metrics collector. Signals come from Workers Logs, Cloudflare and Supabase platform metrics, and the Production Probe workflow (described in `docs/deployment/runtime-status.md`). Add tracing or aggregation only for a measured need, and never trace raw SQL text or bind values by default.
 
 ### Error taxonomy
 
@@ -647,13 +618,9 @@ Application startup never runs migrations. Only the approval-gated Production De
 
 Rollback is V2-to-V2: redeploy a previous Worker version, or fix forward (`docs/runbooks/production-release.md`). Expand-first migrations keep the previous deployment a valid rollback target. Database restore/PITR is disaster recovery for actual data corruption, not deployment rollback.
 
-## 21. No legacy runtime
+## 21. HTTP contract break from V1
 
-V1 (FastAPI, the Worker/D1 public API, OpenNext) is retired and its storage dropped. Do not reintroduce a V1 runtime, compatibility path or `legacy/` copy.
-
-## 22. Intentional V1 breaking changes
-
-V2 does not preserve:
+The V2 HTTP contract deliberately does not carry:
 
 ```text
 /api/v1
@@ -669,11 +636,9 @@ manual V1 OpenAPI/checklist contracts
 D1 publication activation APIs/scripts
 ```
 
-The V2 Web migrates to the generated V2 client as part of the product migration.
+A breaking change to `/api/v2` requires an explicit API-version decision.
 
-Once `/api/v2` is production, future breaking HTTP changes require an explicit later API-version decision; the lack of V1 compatibility is not permission for careless V2 breakage.
-
-## 23. Proportional engineering rule
+## 22. Proportional engineering rule
 
 The following are explicitly **not** quality goals:
 
@@ -702,22 +667,9 @@ managed platform primitives
 
 Avoid catch-log-rethrow templates, duplicate exists-before-insert checks when a uniqueness constraint is authoritative, blanket repository retries, mock fallbacks in production, runtime fallback to V1, or generic Result/base/wrapper layers without boundary value.
 
-## 24. Superseded architecture and retained product truths
+## 23. Product truths
 
-### Superseded for V2 implementation
-
-This baseline supersedes the V2 applicability of:
-
-- the V1 runtime/backend architecture;
-- ADR 0001's FastAPI/Worker/D1 authority and `/api/v1` compatibility model;
-- ADR 0002's FastAPI-specific managed API target and phased FastAPI deployment work;
-- the retired FastAPI serverless-closure design and request-runtime contracts;
-- V1 dependency/storage-check documents where they encode the Python module/storage graph;
-- D1/OpenNext-specific publication/deployment architecture;
-- V1 combined module boundaries such as `review_moderation`, `community_curation`, Activity/Feed split, and archive-workbench architecture where replaced by the V2 module map.
-### Product/business truths retained
-
-The following V1 truths remain unless a later product decision changes them:
+These hold unless a later product decision changes them:
 
 - panda fan experience first;
 - one stable panda identity across product surfaces;
@@ -729,11 +681,7 @@ The following V1 truths remain unless a later product decision changes them:
 - Check-in does not imply a panda was seen and vice versa;
 - provenance/review/moderation/privacy/audit/publication support the product rather than becoming the public product hierarchy.
 
-### Operational documents
-
-`docs/deployment/runtime-status.md` describes the live V2 production topology.
-
-## 25. Changing the architecture
+## 24. Changing the architecture
 
 A delivery ticket may refine code-level details inside its accepted architecture boundary. It may not reopen settled architecture merely because a V1 file suggests a different structure.
 

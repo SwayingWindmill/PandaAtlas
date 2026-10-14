@@ -218,7 +218,7 @@ uv run --directory tools/panda-data panda-data source run \
   --fixture tests/acquisition/fixtures/smithsonian-panda-pages.manifest.json
 ```
 
-There is no dedicated reconciliation test in `tools/panda-data`; the matching and conflict cases above are not covered by an automated test today.
+No automated test in `tools/panda-data` covers the matching and conflict cases above.
 
 ## Out of scope
 

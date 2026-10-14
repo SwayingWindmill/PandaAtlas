@@ -136,14 +136,7 @@ npm run check:batch-workflow-interface
 
 ## Production ownership
 
-- Web runtime: Cloudflare Worker `zhipanda-v2-web` via vinext + Vite + the Cloudflare Vite plugin
-- API runtime: Cloudflare Worker `zhipanda-v2-api` via the Cloudflare Vite plugin
-- business database: Supabase PostgreSQL
-- identity: Supabase Auth
-- database transport: Cloudflare Hyperdrive
-- DNS and media storage: Cloudflare DNS/R2
-- recurring async work: the API Worker's Cron Trigger, every 5 minutes
-- production release: the approval-gated Production Deploy workflow ([runbook](runbooks/production-release.md))
+[Deployment runtime status](deployment/runtime-status.md) owns the production topology; [Production release and rollback](runbooks/production-release.md) owns releases.
 
 ## Local state
 

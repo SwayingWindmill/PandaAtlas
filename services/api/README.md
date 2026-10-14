@@ -40,7 +40,7 @@ The Worker does not carry a production `DATABASE_URL`; each request receives its
 
 ## API and jobs
 
-The public/admin API is implemented under `src/modules`. The bounded asynchronous downstream cycle has no HTTP endpoint: the Worker's `scheduled` handler runs one `AsyncDownstreamRunnerService.runCycle()` per Cloudflare Cron Trigger (every five minutes, declared in `cloudflare.config.ts`) inside the request-scoped Hyperdrive pool.
+The public/admin API is implemented under `src/modules`. The bounded asynchronous downstream cycle has no HTTP endpoint: the Worker's `scheduled` handler runs one `AsyncDownstreamRunnerService.runCycle()` per Cloudflare Cron Trigger tick (schedule declared in `cloudflare.config.ts`) inside the request-scoped Hyperdrive pool.
 
 OpenAPI is generated from the Nest application:
 

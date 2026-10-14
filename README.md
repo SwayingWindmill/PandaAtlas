@@ -9,7 +9,7 @@ PandaAtlas powers ZhiPanda, a panda-fan product for exploring individual pandas,
 - Business data and identity: Supabase PostgreSQL/PostGIS and Supabase Auth.
 - Production database transport: Cloudflare Hyperdrive.
 - Public media: Cloudflare R2.
-- Recurring async work: the API Worker's Cron Trigger, every 5 minutes.
+- Recurring async work: the API Worker's Cron Trigger.
 - Production release: the approval-gated Production Deploy workflow; see [Production release and rollback](docs/runbooks/production-release.md).
 - Offline acquisition and curation: `tools/panda-data` plus bounded curation scripts; these are not online request runtimes.
 

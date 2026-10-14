@@ -1,6 +1,6 @@
 # ADR 0003: Single accountable Archive approver governance
 
-- Status: Principle stands; implementation superseded. One accountable approver decides publication, with no four-eyes step; #611 applies this to V2 contribution approval. The V1 compatibility migration below (migration `0018`, the feature flag, the governance inventory contract and its check) was retired with V1 storage (migration `0051`) and no longer exists.
+- Status: Principle stands; implementation superseded. One accountable approver decides publication, with no four-eyes step; #611 applies this to V2 contribution approval. The V1 compatibility migration below (migration `0018`, the feature flag, the governance inventory contract and its check) was retired with V1 storage (migration `0051`).
 - Date: 2026-07-30
 - Owners: Trusted Archive / Curation
 - Supersedes: the implicit four-eyes publication assumptions introduced by migration `0005`
