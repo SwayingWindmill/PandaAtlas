@@ -1,6 +1,6 @@
 # ADR 0002: Managed-cloud deployment target
 
-- Status: Accepted
+- Status: Principle stands; provider choice superseded. ZhiPanda runs only on managed services. The Vercel placement and phased plan below were not adopted: production runs on Cloudflare Workers with Supabase (see `docs/deployment/runtime-status.md`).
 - Date: 2026-08-01
 - Supersedes: none
 - Related: [ADR 0001](adr-0001-single-source-api-boundary.md)

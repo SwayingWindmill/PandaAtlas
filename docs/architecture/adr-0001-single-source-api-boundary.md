@@ -1,6 +1,6 @@
 # ADR 0001: Single authoritative API boundary
 
-- Status: Accepted
+- Status: Principle stands; implementation superseded. One API owns domain rules and writes; today that is the NestJS V2 API. The FastAPI and Worker/D1 runtimes, `/api/v1`, and the checks named below (`check:public-api-boundary`, `typecheck:api:cf`, the public API contract) were retired.
 - Date: 2026-07-13
 - Issue: #4
 
