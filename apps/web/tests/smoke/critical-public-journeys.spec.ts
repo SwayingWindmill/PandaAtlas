@@ -39,13 +39,14 @@ test("does not expose the staff console or its API while the admin shell is disa
     "/admin/reviews",
     "/api/admin/session",
     "/api/admin/review/cases",
-    // The router decodes and collapses slashes before matching, so these reach the same routes.
+    // The router decodes these, and either collapses the slashes or redirects to the collapsed path,
+    // so each reaches the same routes.
     "/%61dmin",
     "/api/%61dmin/session",
     "/api//admin/session",
   ];
   for (const path of paths) {
-    const response = await request.get(path, { maxRedirects: 0 });
+    const response = await request.get(path);
 
     expect(response.status(), path).toBe(404);
   }
