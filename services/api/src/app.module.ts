@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { AsyncJobsModule } from "./jobs/async-jobs.module.js";
 import { AuditModule } from "./modules/audit/audit.module.js";
 import { ContributionModule } from "./modules/contribution/contribution.module.js";
-import { CurationModule } from "./modules/curation/curation.module.js";
 import { EvidenceModule } from "./modules/evidence/evidence.module.js";
 import { EngagementModule } from "./modules/engagement/engagement.module.js";
 import { GameModule } from "./modules/game/game.module.js";
@@ -29,7 +28,6 @@ import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
     HealthModule,
     IdentityModule,
     ContributionModule,
-    CurationModule,
     ReviewModule,
     ModerationModule,
     EngagementModule,

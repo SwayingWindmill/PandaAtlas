@@ -5,6 +5,7 @@ import { RequestContextModule } from "../../platform/request-context/request-con
 import {
   CONTRIBUTION_PORT,
   CONTRIBUTION_REPOSITORY,
+  CONTRIBUTION_REVIEW_PARTICIPANT,
   CONTRIBUTION_REVIEW_PORT,
   ContributionApplication,
   type ContributionRepository,
@@ -28,7 +29,8 @@ import { PostgresContributionRepository } from "./infrastructure/postgres-contri
     },
     { provide: CONTRIBUTION_PORT, useExisting: ContributionApplication },
     { provide: CONTRIBUTION_REVIEW_PORT, useExisting: ContributionApplication },
+    { provide: CONTRIBUTION_REVIEW_PARTICIPANT, useExisting: CONTRIBUTION_REPOSITORY },
   ],
-  exports: [CONTRIBUTION_PORT, CONTRIBUTION_REVIEW_PORT],
+  exports: [CONTRIBUTION_PORT, CONTRIBUTION_REVIEW_PORT, CONTRIBUTION_REVIEW_PARTICIPANT],
 })
 export class ContributionModule {}

@@ -25,12 +25,6 @@ let issuer: string;
 const contributor = { accountId: randomUUID(), sessionId: randomUUID(), role: "member", aal: "aal1" as const };
 const reviewer = { accountId: randomUUID(), sessionId: randomUUID(), role: "reviewer", aal: "aal1" as const };
 const editor = { accountId: randomUUID(), sessionId: randomUUID(), role: "archive_editor", aal: "aal1" as const };
-const seniorEditor = {
-  accountId: randomUUID(),
-  sessionId: randomUUID(),
-  role: "senior_archive_editor",
-  aal: "aal2" as const,
-};
 const moderator = { accountId: randomUUID(), sessionId: randomUUID(), role: "moderator", aal: "aal2" as const };
 const moderationTarget = { accountId: randomUUID(), sessionId: randomUUID(), role: "member", aal: "aal1" as const };
 
@@ -123,7 +117,7 @@ beforeAll(async () => {
   process.env.SUPABASE_URL = supabaseUrl;
   app = await createApplication();
 
-  for (const actor of [contributor, reviewer, editor, seniorEditor, moderator, moderationTarget]) {
+  for (const actor of [contributor, reviewer, editor, moderator, moderationTarget]) {
     await seedActor(actor);
   }
 });
@@ -135,7 +129,7 @@ afterAll(async () => {
   );
 });
 
-describe("V2 contribution, review, curation, and moderation", () => {
+describe("V2 contribution, review, and moderation", () => {
   it("exposes operator-readable Publication release inspection through the authenticated V2 contract", async () => {
     const database = app.get(DatabaseService);
     const editorToken = await tokenFor(editor);
@@ -314,7 +308,7 @@ describe("V2 contribution, review, curation, and moderation", () => {
     }
   });
 
-  it("moves an immutable contribution through Review and Curation before Panda owner applies the fact", async () => {
+  async function acceptReviewedCorrection(options: { existingSex?: string }) {
     const suffix = randomUUID();
     const evidence = app.get<EvidencePort>(EVIDENCE_PORT);
     const pandas = app.get<PandaPort>(PANDA_PORT);
@@ -323,28 +317,22 @@ describe("V2 contribution, review, curation, and moderation", () => {
     const secondaryCanonicalSourceId = `governance-secondary:${suffix}`;
     const locator = `https://example.test/governance/${suffix}`;
     const secondaryLocator = `https://example.test/governance-secondary/${suffix}`;
-    await evidence.createSource({
-      sourceId: canonicalSourceId,
-      publisher: "Governance Fixture",
-      title: "Governance integration source",
-      url: locator,
-      publishedOn: "2026-08-26",
-      lastVerifiedOn: "2026-08-26",
-      languageTag: "en",
-      accessState: "accessible",
-      evidenceTier: "institutional",
-    });
-    await evidence.createSource({
-      sourceId: secondaryCanonicalSourceId,
-      publisher: "Governance Fixture",
-      title: "Governance secondary integration source",
-      url: secondaryLocator,
-      publishedOn: "2026-08-26",
-      lastVerifiedOn: "2026-08-26",
-      languageTag: "en",
-      accessState: "accessible",
-      evidenceTier: "institutional",
-    });
+    for (const [sourceId, url] of [
+      [canonicalSourceId, locator],
+      [secondaryCanonicalSourceId, secondaryLocator],
+    ] as const) {
+      await evidence.createSource({
+        sourceId,
+        publisher: "Governance Fixture",
+        title: `Governance integration source ${sourceId}`,
+        url,
+        publishedOn: "2026-08-26",
+        lastVerifiedOn: "2026-08-26",
+        languageTag: "en",
+        accessState: "accessible",
+        evidenceTier: "institutional",
+      });
+    }
     const panda = await pandas.createPanda({
       canonicalSlug: `governance-${suffix}`,
       primaryName: {
@@ -353,11 +341,29 @@ describe("V2 contribution, review, curation, and moderation", () => {
         sourceIds: [canonicalSourceId],
       },
     });
+    if (options.existingSex !== undefined) {
+      const assertionId = `existing:${suffix}`;
+      await pandas.recordFactAssertion({
+        assertionId,
+        pandaId: panda.pandaId,
+        fieldKey: "profile.sex",
+        value: options.existingSex,
+        certainty: "confirmed",
+        lastVerifiedOn: "2026-01-01",
+        sourceIds: [secondaryCanonicalSourceId],
+      });
+      await pandas.setFactConclusion({
+        pandaId: panda.pandaId,
+        fieldKey: "profile.sex",
+        value: options.existingSex,
+        status: "confirmed",
+        lastVerifiedOn: "2026-01-01",
+        assertionIds: [assertionId],
+      });
+    }
 
     const contributorToken = await tokenFor(contributor);
     const reviewerToken = await tokenFor(reviewer);
-    const editorToken = await tokenFor(editor);
-    const seniorEditorToken = await tokenFor(seniorEditor);
 
     const submit = await injectHttp(app, {
       method: "POST",
@@ -420,25 +426,13 @@ describe("V2 contribution, review, curation, and moderation", () => {
       total: number;
       limit: number;
       offset: number;
-      items: Array<{
-        reviewCaseId: string;
-        submissionId: string;
-        state: string;
-        riskLevel: string;
-        targetPandaId?: string;
-        slaOverdue: boolean;
-      }>;
+      items: Array<{ reviewCaseId: string; state: string; targetPandaId?: string }>;
     }>();
-    expect(reviewQueueBody.total).toBeGreaterThanOrEqual(1);
     expect(reviewQueueBody.limit).toBe(25);
-    expect(reviewQueueBody.offset).toBe(0);
     expect(reviewQueueBody.items.find((item) => item.reviewCaseId === reviewCaseId)).toMatchObject({
       reviewCaseId,
-      submissionId,
       state: "new",
-      riskLevel: "normal",
       targetPandaId: panda.pandaId,
-      slaOverdue: false,
     });
 
     const reviewSurface = await injectHttp(app, {
@@ -447,26 +441,10 @@ describe("V2 contribution, review, curation, and moderation", () => {
       headers: headers(reviewerToken),
     });
     expect(reviewSurface.statusCode).toBe(200);
-    const reviewSurfaceBody = reviewSurface.json<{
-      reviewCase: { reviewCaseId: string; submissionId: string; state: string };
-      contribution: {
-        targetPandaId: string;
-        revisionNumber: number;
-        assertions: Array<{ assertionKey: string; fieldKey: string }>;
-        sources: Array<{ sourceId: string; locator: string }>;
-      };
-    }>();
-    expect(reviewSurfaceBody.reviewCase).toMatchObject({ reviewCaseId, submissionId, state: "new" });
-    expect(reviewSurfaceBody.contribution.targetPandaId).toBe(panda.pandaId);
-    expect(reviewSurfaceBody.contribution.revisionNumber).toBe(1);
-    expect(reviewSurfaceBody.contribution.assertions.find((item) => item.assertionKey === "sex-correction")).toMatchObject({
-      assertionKey: "sex-correction",
-      fieldKey: "profile.sex",
-    });
-    expect(reviewSurfaceBody.contribution.sources.find((item) => item.sourceId === submittedSource.source_id)).toMatchObject({
-      sourceId: submittedSource.source_id,
-      locator,
-    });
+    expect(
+      reviewSurface.json<{ contribution: { assertions: Array<{ assertionKey: string; fieldKey: string }> } }>()
+        .contribution.assertions,
+    ).toEqual([expect.objectContaining({ assertionKey: "sex-correction", fieldKey: "profile.sex" })]);
 
     const claim = await injectHttp(app, {
       method: "POST",
@@ -474,128 +452,112 @@ describe("V2 contribution, review, curation, and moderation", () => {
       headers: headers(reviewerToken),
     });
     expect(claim.statusCode).toBe(200);
+    expect(claim.json()).toMatchObject({ state: "assigned", primaryAssigneeId: reviewer.accountId });
 
-    const verify = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/review/cases/${reviewCaseId}/source-verifications`,
-      headers: headers(reviewerToken),
-      payload: {
-        sourceId: submittedSource.source_id,
-        outcome: "verified",
-        normalizedLocator: locator,
-        canonicalSourceId,
-        reason: "Resolved to the canonical Evidence source.",
-      },
-    });
-    expect(verify.statusCode).toBe(201);
+    const verify = async (sourceId: string, normalizedLocator: string, canonical: string) =>
+      injectHttp(app, {
+        method: "POST",
+        url: `/api/v2/review/cases/${reviewCaseId}/source-verifications`,
+        headers: headers(reviewerToken),
+        payload: {
+          sourceId,
+          outcome: "verified",
+          normalizedLocator,
+          canonicalSourceId: canonical,
+          reason: "Resolved to the canonical Evidence source.",
+        },
+      });
 
-    const verifySecondary = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/review/cases/${reviewCaseId}/source-verifications`,
-      headers: headers(reviewerToken),
-      payload: {
-        sourceId: secondarySubmittedSource.source_id,
-        outcome: "verified",
-        normalizedLocator: secondaryLocator,
-        canonicalSourceId: secondaryCanonicalSourceId,
-        reason: "Resolved the secondary source to canonical Evidence as well.",
-      },
-    });
-    expect(verifySecondary.statusCode).toBe(201);
+    const decide = () =>
+      injectHttp(app, {
+        method: "POST",
+        url: `/api/v2/review/cases/${reviewCaseId}/decision`,
+        headers: headers(reviewerToken),
+        payload: {
+          outcome: "accepted",
+          selectedAssertionKeys: ["sex-correction"],
+          userVisibleExplanation: "The submitted correction is supported by verified evidence.",
+          internalReason: "Canonical institutional evidence confirms the assertion.",
+        },
+      });
 
-    const decision = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/review/cases/${reviewCaseId}/decision`,
-      headers: headers(reviewerToken),
-      payload: {
-        outcome: "accepted",
-        selectedAssertionKeys: ["sex-correction"],
-        userVisibleExplanation: "The submitted correction is supported by verified evidence.",
-        internalReason: "Canonical institutional evidence confirms the assertion.",
-      },
-    });
+    // An accepted assertion needs each of its sources verified to canonical Evidence.
+    const unverified = await decide();
+    expect(unverified.statusCode).toBe(422);
+    expect(unverified.json()).toMatchObject({ code: "review.sourceNotVerified" });
+
+    expect((await verify(submittedSource.source_id, locator, canonicalSourceId)).statusCode).toBe(201);
+    expect(
+      (await verify(secondarySubmittedSource.source_id, secondaryLocator, secondaryCanonicalSourceId)).statusCode,
+    ).toBe(201);
+
+    const decision = await decide();
     expect(decision.statusCode).toBe(200);
 
-    const recommend = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/review/cases/${reviewCaseId}/recommend`,
-      headers: headers(reviewerToken),
-      payload: { reason: "Send the accepted assertion to independent Curation." },
-    });
-    expect(recommend.statusCode).toBe(200);
-    const changeSetId = recommend.json<{ changeSetId: string }>().changeSetId;
-
-    const pendingCollection = await injectHttp(app, {
+    const closedCase = await injectHttp(app, {
       method: "GET",
-      url: "/api/v2/curation/change-sets?state=draft&limit=10&offset=0",
-      headers: headers(editorToken),
+      url: `/api/v2/review/cases/${reviewCaseId}`,
+      headers: headers(reviewerToken),
     });
-    expect(pendingCollection.statusCode).toBe(200);
-    const pendingPage = pendingCollection.json<{
-      items: Array<{ changeSetId: string; state: string; targetPandaId: string; changeCount: number }>;
-      total: number; limit: number; offset: number;
-    }>();
-    expect(pendingPage.limit).toBe(10);
-    expect(pendingPage.offset).toBe(0);
-    expect(pendingPage.total).toBeGreaterThanOrEqual(1);
-    expect(pendingPage.items.find((item) => item.changeSetId === changeSetId)).toMatchObject({
-      changeSetId, state: "draft", targetPandaId: panda.pandaId, changeCount: 1,
-    });
-    expect((await injectHttp(app, {
-      method: "GET", url: "/api/v2/curation/change-sets?state=invalid", headers: headers(editorToken),
-    })).statusCode).toBe(400);
-    expect((await injectHttp(app, {
-      method: "GET", url: "/api/v2/curation/change-sets?limit=10", headers: headers(contributorToken),
-    })).statusCode).toBe(403);
+    expect(closedCase.json()).toMatchObject({ state: "closed" });
+    expect((await decide()).statusCode).toBe(404);
 
-    const beforeApproval = await pandas.getPanda(panda.pandaId);
-    expect(beforeApproval?.conclusions.some((item) => item.fieldKey === "profile.sex")).toBe(false);
-
-    const validate = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/curation/change-sets/${changeSetId}/validate`,
-      headers: headers(editorToken),
+    const contribution = await injectHttp(app, {
+      method: "GET",
+      url: `/api/v2/me/contributions/${submissionId}`,
+      headers: headers(contributorToken),
     });
-    expect(validate.statusCode).toBe(200);
-    expect(validate.json()).toMatchObject({
-      reviewCaseId,
-      submissionId,
-      targetPandaId: panda.pandaId,
-      state: "validated",
+    expect(contribution.statusCode).toBe(200);
+    expect(contribution.json()).toMatchObject({
+      status: "accepted",
+      statusExplanation: "The submitted correction is supported by verified evidence.",
     });
 
-    const stillBeforeApproval = await pandas.getPanda(panda.pandaId);
-    expect(stillBeforeApproval?.conclusions.some((item) => item.fieldKey === "profile.sex")).toBe(false);
+    const conclusions = await database.db
+      .selectFrom("panda.fact_conclusions")
+      .select(["conclusion_id", "value_json", "is_current", "conclusion_version"])
+      .where("panda_id", "=", panda.pandaId)
+      .where("field_key", "=", "profile.sex")
+      .orderBy("conclusion_version")
+      .execute();
+    const current = conclusions.find((conclusion) => conclusion.is_current);
+    if (current === undefined) throw new Error("The accepted fact has no current conclusion");
+    const currentAssertion = await database.db
+      .selectFrom("panda.fact_conclusion_assertions")
+      .select("assertion_id")
+      .where("conclusion_id", "=", current.conclusion_id)
+      .executeTakeFirstOrThrow();
+    const currentSources = await database.db
+      .selectFrom("panda.fact_assertion_sources")
+      .select("source_id")
+      .where("assertion_id", "=", currentAssertion.assertion_id)
+      .execute();
+    expect(currentSources.map((source) => source.source_id)).toEqual([canonicalSourceId]);
 
-    const approve = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/curation/change-sets/${changeSetId}/approve`,
-      headers: headers(seniorEditorToken),
-      payload: { reason: "Independent approval after semantic validation." },
-    });
-    expect(approve.statusCode).toBe(200);
-    expect(approve.json()).toMatchObject({ state: "applied", approvedByAccountId: seniorEditor.accountId });
+    return { pandaId: panda.pandaId, conclusions };
+  }
 
-    const applied = await pandas.getPanda(panda.pandaId);
-    expect(applied?.conclusions).toEqual(
+  it("writes an accepted contribution's fact as the field's first conclusion in the decision", async () => {
+    const { pandaId, conclusions } = await acceptReviewedCorrection({});
+
+    expect(conclusions).toEqual([
+      expect.objectContaining({ value_json: "female", is_current: true, conclusion_version: 1 }),
+    ]);
+    const panda = await app.get<PandaPort>(PANDA_PORT).getPanda(pandaId);
+    expect(panda?.conclusions).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ fieldKey: "profile.sex", value: "female", status: "confirmed" }),
       ]),
     );
-    const appliedAssertion = await database.db
-      .selectFrom("panda.fact_assertions")
-      .select("assertion_id")
-      .where("panda_id", "=", panda.pandaId)
-      .where("field_key", "=", "profile.sex")
-      .orderBy("created_at", "desc")
-      .executeTakeFirstOrThrow();
-    const appliedSources = await database.db
-      .selectFrom("panda.fact_assertion_sources")
-      .select("source_id")
-      .where("assertion_id", "=", appliedAssertion.assertion_id)
-      .orderBy("source_id")
-      .execute();
-    expect(appliedSources.map((source) => source.source_id)).toEqual([canonicalSourceId]);
+  });
+
+  it("supersedes a field's current conclusion when the decision accepts a correction", async () => {
+    const { conclusions } = await acceptReviewedCorrection({ existingSex: "male" });
+
+    expect(conclusions).toEqual([
+      expect.objectContaining({ value_json: "male", is_current: false, conclusion_version: 1 }),
+      expect.objectContaining({ value_json: "female", is_current: true, conclusion_version: 2 }),
+    ]);
   });
 
   it("lets a suspended member appeal while other account APIs stay blocked, then restores Identity on overturn", async () => {

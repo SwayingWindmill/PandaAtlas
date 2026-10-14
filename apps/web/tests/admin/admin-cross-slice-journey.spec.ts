@@ -5,7 +5,7 @@ test("staff follows a Review audit event from the dashboard into the governed Re
   const submissionId = "33333333-3333-4333-8333-333333333333";
   const pandaId = "44444444-4444-4444-8444-444444444444";
   const sourceId = "55555555-5555-4555-8555-555555555555";
-  const eventType = "review.incorporation-recommended";
+  const eventType = "review.decision.recorded";
   const requests: string[] = [];
 
   page.on("request", (request) => {
@@ -33,8 +33,8 @@ test("staff follows a Review audit event from the dashboard into the governed Re
   await page.route("**/api/admin/review/cases?**", (route) => route.fulfill({
     status: 200, contentType: "application/json",
     body: JSON.stringify({ items: [{
-      reviewCaseId, submissionId, revisionNumber: 1, state: "incorporation_recommended", version: 2,
-      riskLevel: "normal", targetPandaId: pandaId, contributorStatus: "submitted",
+      reviewCaseId, submissionId, revisionNumber: 1, state: "closed", version: 3,
+      riskLevel: "normal", targetPandaId: pandaId, contributorStatus: "accepted",
       createdAt: "2026-10-08T09:00:00.000Z", updatedAt: "2026-10-08T09:00:00.000Z",
       firstResponseDueAt: "2026-10-09T09:00:00.000Z", slaOverdue: false, queueAgeSeconds: 1800,
     }], total: 1, limit: 25, offset: 0 }),
@@ -42,7 +42,7 @@ test("staff follows a Review audit event from the dashboard into the governed Re
   await page.route(`**/api/admin/review/cases/${reviewCaseId}/surface`, (route) => route.fulfill({
     status: 200, contentType: "application/json",
     body: JSON.stringify({
-      reviewCase: { reviewCaseId, submissionId, revisionNumber: 1, state: "incorporation_recommended", version: 2 },
+      reviewCase: { reviewCaseId, submissionId, revisionNumber: 1, state: "closed", version: 3 },
       contribution: {
         submissionId, revisionNumber: 1, targetPandaId: pandaId,
         assertions: [{ assertionKey: "profile.sex", fieldKey: "profile.sex", value: "female",
@@ -57,11 +57,10 @@ test("staff follows a Review audit event from the dashboard into the governed Re
   await page.goto("/admin");
   await expect(page.getByRole("heading", { level: 1, name: "数据运营工作台" })).toBeVisible();
   const navigation = page.getByRole("navigation", { name: "后台导航" });
-  await expect(navigation.getByRole("link", { name: "策展" })).toHaveCount(0);
   await navigation.getByRole("link", { name: "审计" }).click();
   await expect(page).toHaveURL(/\/admin\/audit\/evidence$/);
   await expect(navigation.getByRole("link", { name: "审计" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByText("已建议将审核结果纳入档案", { exact: true })).toBeVisible();
+  await expect(page.getByText("已记录审核决定", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "查看审计详情" }).click();
   await page.getByRole("region", { name: "审计事件详情" })

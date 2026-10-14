@@ -1,7 +1,7 @@
 import type { IntegrationConsumerQueue } from "./pgmq.service.js";
 
 const ROUTES = new Map<string, readonly IntegrationConsumerQueue[]>([
-  ["review.incorporation-recommended", ["integration_audit"]],
+  ["review.decision.recorded", ["integration_audit"]],
   ["publication.release.activated", ["integration_updates", "integration_public_cache", "integration_audit"]],
   ["publication.release.rolled_back", ["integration_updates", "integration_public_cache", "integration_audit"]],
   ["publication.release.suspended", ["integration_public_cache", "integration_audit"]],

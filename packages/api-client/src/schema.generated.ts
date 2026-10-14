@@ -244,70 +244,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/curation/change-sets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listCurationChangeSets"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/curation/change-sets/{changeSetId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getCurationChangeSet"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/curation/change-sets/{changeSetId}/validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["validateCurationChangeSet"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/curation/change-sets/{changeSetId}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["approveCurationChangeSet"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v2/review/cases": {
         parameters: {
             query?: never;
@@ -398,22 +334,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["decideReviewCase"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/review/cases/{reviewCaseId}/recommend": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["recommendReviewCase"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1408,6 +1328,8 @@ export interface components {
             publicVersionSeen: string;
             revisionNumber: number;
             status: string;
+            /** @description The reviewer's explanation of the status. */
+            statusExplanation?: string;
             /** Format: date-time */
             submittedAt: string;
         };
@@ -1430,69 +1352,6 @@ export interface components {
             byteSize: number;
             state: string;
         };
-        CurationChangeSetSummaryDto: {
-            /** Format: uuid */
-            changeSetId: string;
-            /** Format: uuid */
-            targetPandaId: string;
-            /** @enum {string} */
-            state: "draft" | "validated" | "approved" | "applied" | "rejected";
-            version: number;
-            reason: string;
-            /** Format: uuid */
-            createdByAccountId: string;
-            /** Format: date-time */
-            createdAt: string;
-            changeCount: number;
-        };
-        CurationChangeSetPageDto: {
-            items: components["schemas"]["CurationChangeSetSummaryDto"][];
-            total: number;
-            limit: number;
-            offset: number;
-        };
-        CurationChangeDto: {
-            /** Format: uuid */
-            changeId: string;
-            assertionKey: string;
-            fieldKey: string;
-            value: string | number | boolean | unknown[] | {
-                [key: string]: unknown;
-            } | null;
-            /** @enum {string} */
-            certainty: "confirmed" | "provisional";
-            /** Format: date */
-            lastVerifiedOn: string;
-            sourceIds: string[];
-            appliedAssertionId?: string;
-        };
-        CurationChangeSetDto: {
-            /** Format: uuid */
-            changeSetId: string;
-            /** Format: uuid */
-            reviewCaseId: string;
-            /** Format: uuid */
-            decisionId: string;
-            /** Format: uuid */
-            submissionId: string;
-            revisionNumber: number;
-            /** Format: uuid */
-            targetPandaId: string;
-            /** @enum {string} */
-            state: "draft" | "validated" | "approved" | "applied" | "rejected";
-            version: number;
-            reason: string;
-            /** Format: uuid */
-            createdByAccountId: string;
-            /** Format: uuid */
-            validatedByAccountId?: string;
-            /** Format: uuid */
-            approvedByAccountId?: string;
-            changes: components["schemas"]["CurationChangeDto"][];
-        };
-        ApproveCurationDto: {
-            reason: string;
-        };
         OpenReviewCaseDto: {
             /** Format: uuid */
             submissionId: string;
@@ -1504,7 +1363,7 @@ export interface components {
             submissionId: string;
             revisionNumber: number;
             /** @enum {string} */
-            state: "new" | "triage" | "assigned" | "waiting" | "decision_ready" | "incorporation_recommended" | "closed";
+            state: "new" | "assigned" | "closed";
             version: number;
             /** Format: uuid */
             primaryAssigneeId?: string;
@@ -1516,7 +1375,7 @@ export interface components {
             submissionId: string;
             revisionNumber: number;
             /** @enum {string} */
-            state: "new" | "triage" | "assigned" | "waiting" | "decision_ready" | "incorporation_recommended" | "closed";
+            state: "new" | "assigned" | "closed";
             version: number;
             /** Format: uuid */
             primaryAssigneeId?: string;
@@ -1594,6 +1453,7 @@ export interface components {
         RecordReviewDecisionDto: {
             /** @enum {string} */
             outcome: "accepted" | "not_accepted" | "duplicate" | "out_of_scope" | "abuse";
+            /** @description Assertions of the active revision that an accepted decision writes to the Panda. */
             selectedAssertionKeys: string[];
             userVisibleExplanation: string;
             internalReason?: string;
@@ -1603,13 +1463,6 @@ export interface components {
         ReviewDecisionResultDto: {
             /** @enum {boolean} */
             decided: true;
-        };
-        RecommendReviewDto: {
-            reason: string;
-        };
-        ReviewRecommendationDto: {
-            /** Format: uuid */
-            changeSetId: string;
         };
         ModerationSubjectDto: {
             /** Format: uuid */
@@ -2616,100 +2469,10 @@ export interface operations {
             };
         };
     };
-    listCurationChangeSets: {
-        parameters: {
-            query?: {
-                limit?: number;
-                offset?: number;
-                state?: "draft" | "validated" | "approved" | "applied" | "rejected";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurationChangeSetPageDto"];
-                };
-            };
-        };
-    };
-    getCurationChangeSet: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                changeSetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurationChangeSetDto"];
-                };
-            };
-        };
-    };
-    validateCurationChangeSet: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                changeSetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurationChangeSetDto"];
-                };
-            };
-        };
-    };
-    approveCurationChangeSet: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                changeSetId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApproveCurationDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurationChangeSetDto"];
-                };
-            };
-        };
-    };
     listReviewCases: {
         parameters: {
             query?: {
-                state?: "new" | "triage" | "assigned" | "waiting" | "decision_ready" | "incorporation_recommended" | "closed";
+                state?: "new" | "assigned" | "closed";
                 limit?: number;
                 offset?: number;
             };
@@ -2861,31 +2624,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ReviewDecisionResultDto"];
-                };
-            };
-        };
-    };
-    recommendReviewCase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                reviewCaseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RecommendReviewDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReviewRecommendationDto"];
                 };
             };
         };

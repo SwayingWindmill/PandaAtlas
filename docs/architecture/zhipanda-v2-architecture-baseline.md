@@ -101,7 +101,7 @@ A mature module may contain `domain`, `application`, `infrastructure`, and `http
 
 ## 6. Business module map
 
-V2 has 18 business modules.
+V2 has 17 business modules.
 
 ### Knowledge / panda world
 
@@ -115,23 +115,22 @@ V2 has 18 business modules.
 ### Editorial governance
 
 7. **Contribution** — submissions, immutable revisions, attachment metadata/policy.
-8. **Review** — review cases, assignments, triage, evidence verification, requests for information, decisions, incorporation recommendations.
+8. **Review** — review cases, claims, source verification against canonical Evidence, decisions. Accepting a decision writes the selected facts to their Panda, as the field's new current conclusion, in the decision's transaction.
 9. **Moderation** — warnings, restrictions, sanctions, restoration, appeals.
-10. **Curation** — editorial changes, validation, approval, provenance.
-11. **Publication** — immutable release lifecycle, membership, sealing, activation, rollback, withdrawal/takedown control.
+10. **Publication** — immutable release lifecycle, membership, sealing, activation, rollback, withdrawal/takedown control.
 
 ### Fan experience
 
-12. **Identity** — application account state, roles, capabilities, revocations, security policy; Supabase Auth remains external authentication authority.
-13. **Engagement** — Favorite, Collection, LocationCheckin, SeenPanda.
-14. **Game** — Random Panda, Guess Panda, question/rule data, attempts.
-15. **Updates** — public-safe updates/announcements, personalized eligibility/read state/cursors; replaces V1 Activity + Feed split.
-16. **Notification** — preferences/consent, notification intent, inbox, delivery attempts/receipts, delivery policy.
+11. **Identity** — application account state, roles, capabilities, revocations, security policy; Supabase Auth remains external authentication authority.
+12. **Engagement** — Favorite, Collection, LocationCheckin, SeenPanda.
+13. **Game** — Random Panda, Guess Panda, question/rule data, attempts.
+14. **Updates** — public-safe updates/announcements, personalized eligibility/read state/cursors; replaces V1 Activity + Feed split.
+15. **Notification** — preferences/consent, notification intent, inbox, delivery attempts/receipts, delivery policy.
 
 ### Compliance / evidence
 
-17. **Privacy** — privacy-request state, execution, exports, retention/holds/deletion tombstones through narrow module ports.
-18. **Audit** — append-only downstream evidence projection; never a business state source.
+16. **Privacy** — privacy-request state, execution, exports, retention/holds/deletion tombstones through narrow module ports.
+17. **Audit** — append-only downstream evidence projection; never a business state source.
 
 Forbidden V2 business modules include generic `api`, `schemas`, `services`, `integration`, `projection`, `admin_content`, `admin_media`, `archive_*`, `community_curation`, combined `review_moderation`, and generic `shared/common/utils` domains.
 
@@ -145,10 +144,9 @@ Approved examples:
 Lineage -> Panda
 LifeHistory -> Panda, Places
 Engagement -> Panda / Places
-Review -> Contribution
+Review -> Contribution, Evidence, Panda (facts written in the decision's transaction)
 Moderation -> Identity
-Curation -> owning fact modules
-Publication -> Curation
+Publication -> fact-owning modules (reads to build a release)
 Updates -> Engagement for current eligibility
 Privacy -> narrow export/delete/privacy ports
 ```
@@ -159,7 +157,6 @@ Durable asynchronous reactions are used when the caller remains correct without 
 published knowledge -> Updates
 Updates / publication -> Notification
 all relevant contexts -> Audit
-Review incorporation -> Curation when immediate consistency is unnecessary
 Review abuse -> Moderation
 lagging projections / analytics
 ```
@@ -198,7 +195,6 @@ media.*
 contribution.*
 review.*
 moderation.*
-curation.*
 publication.*
 identity.*
 engagement.*

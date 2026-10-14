@@ -1,25 +1,35 @@
 import { sql } from "kysely";
+import type { ReviewModerationReviewCaseState } from "../../../platform/database/database.review-moderation.generated.js";
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
-import type {
-  ReviewCase,
-  ReviewCaseListQuery,
-  ReviewCasePage,
-  ReviewCaseState,
-  ReviewDecisionInput,
-  ReviewRecommendationBundle,
-  ReviewRepository,
-  ReviewSourceVerificationInput,
+import type { ContributionReviewParticipant } from "../../contribution/application/contribution.application.js";
+import type { PandaFactParticipant } from "../../panda/application/panda.application.js";
+import {
+  REVIEW_CASE_STATES,
+  type ReviewCase,
+  type ReviewCaseListQuery,
+  type ReviewCasePage,
+  type ReviewCaseState,
+  type ReviewDecisionRecord,
+  type ReviewRepository,
+  type ReviewSourceVerificationInput,
+  type ReviewVerifiedSource,
 } from "../application/review.application.js";
 
-function stringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+// The column's enum still lists states the review flow no longer uses; no row holds one.
+function caseState(state: ReviewModerationReviewCaseState): ReviewCaseState {
+  if (!(REVIEW_CASE_STATES as readonly string[]).includes(state)) {
+    throw new Error(`Review case is in a retired state: ${state}`);
+  }
+  return state as ReviewCaseState;
 }
 
 export class PostgresReviewRepository implements ReviewRepository {
   public constructor(
     private readonly database: DatabaseService,
     private readonly outbox: IntegrationOutboxService,
+    private readonly pandas: PandaFactParticipant,
+    private readonly contributions: ContributionReviewParticipant,
   ) {}
 
   public async openCase(submissionId: string, revisionNumber: number): Promise<ReviewCase> {
@@ -87,7 +97,7 @@ export class PostgresReviewRepository implements ReviewRepository {
           reviewCaseId: row.review_case_id,
           submissionId: row.submission_id,
           revisionNumber: row.active_revision_number,
-          state: row.state,
+          state: caseState(row.state),
           version: row.version,
           ...(row.primary_assignee_id === null ? {} : { primaryAssigneeId: row.primary_assignee_id }),
           riskLevel: row.risk_level,
@@ -125,7 +135,7 @@ export class PostgresReviewRepository implements ReviewRepository {
         version: sql`version + 1`,
       })
       .where("review_case_id", "=", reviewCaseId)
-      .where("state", "in", ["new", "triage", "waiting", "assigned"])
+      .where("state", "in", ["new", "assigned"])
       .where((expression) =>
         expression.or([
           expression("primary_assignee_id", "is", null),
@@ -160,167 +170,110 @@ export class PostgresReviewRepository implements ReviewRepository {
     return row !== undefined;
   }
 
-  public async recordDecision(
-    reviewCaseId: string,
-    actorAccountId: string,
-    revisionNumber: number,
-    input: ReviewDecisionInput,
-  ): Promise<string | undefined> {
-    return this.database.transaction(async (transaction) => {
-      const reviewCase = await transaction
-        .selectFrom("review_moderation.review_cases")
-        .select(["state", "primary_assignee_id"])
-        .where("review_case_id", "=", reviewCaseId)
-        .forUpdate()
-        .executeTakeFirst();
-      if (
-        reviewCase === undefined ||
-        reviewCase.primary_assignee_id !== actorAccountId ||
-        !["assigned", "waiting", "decision_ready"].includes(reviewCase.state)
-      ) {
-        return undefined;
-      }
-
-      if (reviewCase.state !== "decision_ready") {
-        await transaction
-          .updateTable("review_moderation.review_cases")
-          .set({ state: "decision_ready", version: sql`version + 1` })
-          .where("review_case_id", "=", reviewCaseId)
-          .executeTakeFirstOrThrow();
-      }
-
-      const decision = await transaction
-        .insertInto("review_moderation.decisions")
-        .values({
-          review_case_id: reviewCaseId,
-          active_revision_number: revisionNumber,
-          outcome: input.outcome,
-          user_visible_explanation: input.userVisibleExplanation,
-          internal_reason: input.internalReason ?? null,
-          selected_assertion_keys: sql`${JSON.stringify(input.selectedAssertionKeys)}::jsonb`,
-          duplicate_of_review_case_id: input.duplicateOfReviewCaseId ?? null,
-          decided_by_account_id: actorAccountId,
-        })
-        .returning("decision_id")
-        .executeTakeFirstOrThrow();
-      return decision.decision_id;
-    });
-  }
-
-  public async getRecommendationBundle(reviewCaseId: string): Promise<ReviewRecommendationBundle | undefined> {
-    const reviewCaseRow = await this.database.db
-      .selectFrom("review_moderation.review_cases")
-      .selectAll()
-      .where("review_case_id", "=", reviewCaseId)
-      .executeTakeFirst();
-    if (reviewCaseRow === undefined) return undefined;
-
-    const decision = await this.database.db
-      .selectFrom("review_moderation.decisions")
-      .select(["decision_id", "selected_assertion_keys"])
-      .where("review_case_id", "=", reviewCaseId)
-      .where("active_revision_number", "=", reviewCaseRow.active_revision_number)
-      .where("outcome", "=", "accepted")
-      .orderBy("decided_at", "desc")
-      .orderBy("decision_id", "desc")
-      .executeTakeFirst();
-    if (decision === undefined) return undefined;
-
-    const verificationRows = await this.database.db
+  public async listVerifiedSources(reviewCaseId: string, revisionNumber: number): Promise<ReviewVerifiedSource[]> {
+    const rows = await this.database.db
       .selectFrom("review_moderation.source_verifications")
       .select(["source_id", "canonical_source_id", "outcome"])
       .where("review_case_id", "=", reviewCaseId)
-      .where("active_revision_number", "=", reviewCaseRow.active_revision_number)
+      .where("active_revision_number", "=", revisionNumber)
       .orderBy("source_id")
       .orderBy("verified_at", "desc")
       .orderBy("source_verification_id", "desc")
       .execute();
-    const latestVerificationBySource = new Map<string, (typeof verificationRows)[number]>();
-    for (const verification of verificationRows) {
-      if (!latestVerificationBySource.has(verification.source_id)) {
-        latestVerificationBySource.set(verification.source_id, verification);
-      }
+    const latestBySource = new Map<string, (typeof rows)[number]>();
+    for (const row of rows) {
+      if (!latestBySource.has(row.source_id)) latestBySource.set(row.source_id, row);
     }
-    const verifiedSources = [...latestVerificationBySource.values()].flatMap((verification) =>
-      verification.outcome === "verified" && verification.canonical_source_id !== null
-        ? [
-            {
-              submittedSourceId: verification.source_id,
-              canonicalSourceId: verification.canonical_source_id,
-            },
-          ]
+    return [...latestBySource.values()].flatMap((row) =>
+      row.outcome === "verified" && row.canonical_source_id !== null
+        ? [{ submittedSourceId: row.source_id, canonicalSourceId: row.canonical_source_id }]
         : [],
     );
-
-    return {
-      reviewCase: this.mapCase(reviewCaseRow),
-      decisionId: decision.decision_id,
-      selectedAssertionKeys: stringArray(decision.selected_assertion_keys),
-      verifiedSources,
-    };
   }
 
-  public async recordRecommendation(
-    bundle: ReviewRecommendationBundle,
-    actorAccountId: string,
-    reason: string,
-    correlationId: string,
-  ): Promise<ReviewRecommendationBundle | undefined> {
+  public async recordDecision(record: ReviewDecisionRecord): Promise<string | undefined> {
     return this.database.transaction(async (transaction) => {
       const reviewCase = await transaction
         .selectFrom("review_moderation.review_cases")
         .select(["state", "primary_assignee_id", "version"])
-        .where("review_case_id", "=", bundle.reviewCase.reviewCaseId)
+        .where("review_case_id", "=", record.reviewCaseId)
         .forUpdate()
         .executeTakeFirst();
-      if (reviewCase === undefined || reviewCase.primary_assignee_id !== actorAccountId) return undefined;
-      if (reviewCase.state === "incorporation_recommended") return bundle;
-      if (reviewCase.state !== "decision_ready") return undefined;
+      if (
+        reviewCase === undefined ||
+        reviewCase.state !== "assigned" ||
+        reviewCase.primary_assignee_id !== record.actorAccountId
+      ) {
+        return undefined;
+      }
 
-      await transaction
-        .insertInto("review_moderation.curation_recommendations")
-        .values(
-          bundle.selectedAssertionKeys.map((assertionKey) => ({
-            review_case_id: bundle.reviewCase.reviewCaseId,
-            decision_id: bundle.decisionId,
-            assertion_key: assertionKey,
-            recommended_by_account_id: actorAccountId,
-            reason,
-          })),
-        )
-        .onConflict((conflict) =>
-          conflict.columns(["review_case_id", "decision_id", "assertion_key"]).doNothing(),
-        )
-        .execute();
+      const { decision_id: decisionId } = await transaction
+        .insertInto("review_moderation.decisions")
+        .values({
+          review_case_id: record.reviewCaseId,
+          active_revision_number: record.revisionNumber,
+          outcome: record.decision.outcome,
+          user_visible_explanation: record.decision.userVisibleExplanation,
+          internal_reason: record.decision.internalReason ?? null,
+          selected_assertion_keys: sql`${JSON.stringify(record.decision.selectedAssertionKeys)}::jsonb`,
+          duplicate_of_review_case_id: record.decision.duplicateOfReviewCaseId ?? null,
+          decided_by_account_id: record.actorAccountId,
+        })
+        .returning("decision_id")
+        .executeTakeFirstOrThrow();
+
+      for (const fact of record.acceptedFacts) {
+        await this.pandas.applyReviewedFact(transaction, {
+          assertionId: `review:${decisionId}:${fact.assertionKey}`,
+          pandaId: record.targetPandaId,
+          fieldKey: fact.fieldKey,
+          value: fact.value,
+          certainty: fact.certainty,
+          lastVerifiedOn: fact.lastVerifiedOn,
+          sourceIds: fact.sourceIds,
+        });
+      }
+
+      await this.contributions.recordReviewOutcome(transaction, {
+        submissionId: record.submissionId,
+        revisionNumber: record.revisionNumber,
+        status: record.contributorStatus,
+        explanation: record.decision.userVisibleExplanation,
+        decisionId,
+        actorAccountId: record.actorAccountId,
+        correlationId: record.correlationId,
+      });
 
       await transaction
         .updateTable("review_moderation.review_cases")
-        .set({ state: "incorporation_recommended", version: sql`version + 1` })
-        .where("review_case_id", "=", bundle.reviewCase.reviewCaseId)
+        .set({ state: "closed", closed_at: new Date(), version: sql`version + 1` })
+        .where("review_case_id", "=", record.reviewCaseId)
         .executeTakeFirstOrThrow();
 
       await this.outbox.append(transaction, {
-        eventType: "review.incorporation-recommended",
+        eventType: "review.decision.recorded",
         sourceContext: "review",
         aggregateType: "review_case",
-        aggregateId: bundle.reviewCase.reviewCaseId,
+        aggregateId: record.reviewCaseId,
         aggregateVersion: reviewCase.version + 1,
-        idempotencyKey: `review-incorporation:${bundle.reviewCase.reviewCaseId}:${bundle.decisionId}`,
-        correlationId,
+        idempotencyKey: `review-decision:${decisionId}`,
+        correlationId: record.correlationId,
         occurredAt: new Date(),
         payload: {
-          reviewCaseId: bundle.reviewCase.reviewCaseId,
-          decisionId: bundle.decisionId,
-          submissionId: bundle.reviewCase.submissionId,
-          revisionNumber: bundle.reviewCase.revisionNumber,
-          selectedAssertionKeys: bundle.selectedAssertionKeys,
-          verifiedSources: bundle.verifiedSources.map((source) => ({
-            submittedSourceId: source.submittedSourceId,
-            canonicalSourceId: source.canonicalSourceId,
+          reviewCaseId: record.reviewCaseId,
+          decisionId,
+          submissionId: record.submissionId,
+          revisionNumber: record.revisionNumber,
+          outcome: record.decision.outcome,
+          targetPandaId: record.targetPandaId,
+          appliedFacts: record.acceptedFacts.map((fact) => ({
+            assertionKey: fact.assertionKey,
+            fieldKey: fact.fieldKey,
+            sourceIds: fact.sourceIds,
           })),
         },
       });
-      return bundle;
+      return decisionId;
     });
   }
 
@@ -328,7 +281,7 @@ export class PostgresReviewRepository implements ReviewRepository {
     review_case_id: string;
     submission_id: string;
     active_revision_number: number;
-    state: ReviewCaseState;
+    state: ReviewModerationReviewCaseState;
     version: number;
     primary_assignee_id: string | null;
   }): ReviewCase {
@@ -336,7 +289,7 @@ export class PostgresReviewRepository implements ReviewRepository {
       reviewCaseId: row.review_case_id,
       submissionId: row.submission_id,
       revisionNumber: row.active_revision_number,
-      state: row.state,
+      state: caseState(row.state),
       version: row.version,
       ...(row.primary_assignee_id === null ? {} : { primaryAssigneeId: row.primary_assignee_id }),
     };

@@ -2,7 +2,6 @@ import type { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule, type OpenAPIObject } from "@nestjs/swagger";
 import { AuditModule } from "./modules/audit/audit.module.js";
 import { ContributionModule } from "./modules/contribution/contribution.module.js";
-import { CurationModule } from "./modules/curation/curation.module.js";
 import { EngagementModule } from "./modules/engagement/engagement.module.js";
 import { GameModule } from "./modules/game/game.module.js";
 import { IdentityModule } from "./modules/identity/identity.module.js";
@@ -49,7 +48,6 @@ export function createV2OpenApiDocument(app: INestApplication): OpenAPIObject {
     include: [
       IdentityModule,
       ContributionModule,
-      CurationModule,
       ReviewModule,
       ModerationModule,
       EngagementModule,

@@ -48,6 +48,7 @@ const copy = {
     unavailable: "当前公开版本不可用，暂时无法提交。",
     detailTitle: "提交详情",
     status: "状态",
+    statusExplanation: "审核说明",
     target: "目标熊猫",
     revision: "修订",
     release: "提交时公开版本",
@@ -86,6 +87,7 @@ const copy = {
     unavailable: "The current public release is unavailable, so contributions cannot be submitted right now.",
     detailTitle: "Submission details",
     status: "Status",
+    statusExplanation: "Reviewer's note",
     target: "Target panda",
     revision: "Revision",
     release: "Public version at submission",
@@ -214,6 +216,7 @@ export function ContributionEditor({
               </div>
               <dl>
                 <div><dt>{t.status}</dt><dd>{record.status}</dd></div>
+                {record.statusExplanation ? <div><dt>{t.statusExplanation}</dt><dd>{record.statusExplanation}</dd></div> : null}
                 <div><dt>{t.target}</dt><dd>{record.targetPandaId}</dd></div>
                 <div><dt>{t.revision}</dt><dd>{record.revisionNumber}</dd></div>
                 <div><dt>{t.release}</dt><dd>{record.publicVersionSeen}</dd></div>

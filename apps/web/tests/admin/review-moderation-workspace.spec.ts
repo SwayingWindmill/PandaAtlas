@@ -16,7 +16,6 @@ const reviewCapabilities = [
   "review.case.claim",
   "review.case.verify_source",
   "review.case.decide",
-  "review.case.recommend",
 ];
 
 const moderationCapabilities = [
@@ -263,6 +262,9 @@ test("assigned review explains ownership instead of offering a misleading claim 
   await page.getByRole("tab", { name: "审核决定" }).click();
   await expect(page.getByLabel("审核决定类型")).toBeVisible();
   await page.getByLabel("给贡献者的说明").fill("已核实档案资料，接受修改。");
+  // Accepting writes the selected facts, so it needs at least one.
+  await expect(page.getByRole("button", { name: "保存审核决定" })).toBeDisabled();
+  await page.getByRole("checkbox", { name: "性别" }).check();
   await expect(page.getByRole("button", { name: "保存审核决定" })).toBeEnabled();
 });
 

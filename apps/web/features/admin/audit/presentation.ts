@@ -1,11 +1,11 @@
 const eventNames: Record<string, string> = {
   "publication.release.activated": "已启用公开版本",
   "publication.release.rolled_back": "已回滚公开版本",
-  "review.incorporation-recommended": "已建议将审核结果纳入档案",
+  "review.decision.recorded": "已记录审核决定",
 };
 
 const domainNames: Record<string, string> = {
-  publication: "发布", review: "审核", curation: "策展", moderation: "内容治理",
+  publication: "发布", review: "审核", moderation: "内容治理",
   identity: "工作人员", audit: "审计",
 };
 

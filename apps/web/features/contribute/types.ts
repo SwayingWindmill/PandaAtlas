@@ -53,6 +53,7 @@ export interface V2ContributionRecord {
   publicVersionSeen: string;
   revisionNumber: number;
   status: string;
+  statusExplanation?: string;
   submittedAt: string;
 }
 

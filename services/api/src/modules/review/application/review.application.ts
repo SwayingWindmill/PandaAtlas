@@ -1,22 +1,24 @@
 import type {
+  ContributionCertainty,
+  ContributionJsonValue,
   ContributionReviewPort,
+  ContributionReviewStatus,
   ContributionReviewSurface,
 } from "../../contribution/application/contribution.application.js";
-import type { CurationIntakePort } from "../../curation/application/curation.application.js";
 import type { EvidencePort } from "../../evidence/application/evidence.application.js";
 
 export type ReviewDecisionOutcome = "accepted" | "not_accepted" | "duplicate" | "out_of_scope" | "abuse";
 export type ReviewSourceVerificationOutcome = "verified" | "rejected";
-export const REVIEW_CASE_STATES = [
-  "new",
-  "triage",
-  "assigned",
-  "waiting",
-  "decision_ready",
-  "incorporation_recommended",
-  "closed",
-] as const;
+export const REVIEW_CASE_STATES = ["new", "assigned", "closed"] as const;
 export type ReviewCaseState = (typeof REVIEW_CASE_STATES)[number];
+
+const CONTRIBUTOR_STATUS_BY_OUTCOME: Record<ReviewDecisionOutcome, ContributionReviewStatus> = {
+  accepted: "accepted",
+  not_accepted: "not_accepted",
+  duplicate: "duplicate",
+  out_of_scope: "out_of_scope",
+  abuse: "not_accepted",
+};
 
 export interface ReviewCase {
   reviewCaseId: string;
@@ -77,12 +79,29 @@ export interface ReviewVerifiedSource {
   canonicalSourceId: string;
 }
 
-export interface ReviewRecommendationBundle {
-  reviewCase: ReviewCase;
-  decisionId: string;
-  selectedAssertionKeys: string[];
-  verifiedSources: ReviewVerifiedSource[];
+// An accepted assertion, cited by canonical Evidence sources, that the decision writes to its Panda.
+export interface ReviewAcceptedFact {
+  assertionKey: string;
+  fieldKey: string;
+  value: ContributionJsonValue;
+  certainty: ContributionCertainty;
+  lastVerifiedOn: string;
+  sourceIds: string[];
 }
+
+export interface ReviewDecisionRecord {
+  reviewCaseId: string;
+  actorAccountId: string;
+  submissionId: string;
+  revisionNumber: number;
+  targetPandaId: string;
+  decision: ReviewDecisionInput;
+  contributorStatus: ContributionReviewStatus;
+  acceptedFacts: ReviewAcceptedFact[];
+  correlationId: string;
+}
+
+export type ReviewDecisionResult = "decided" | "case_not_found" | "invalid_assertion" | "source_not_verified";
 
 export interface ReviewRepository {
   openCase(submissionId: string, revisionNumber: number): Promise<ReviewCase>;
@@ -95,19 +114,11 @@ export interface ReviewRepository {
     revisionNumber: number,
     input: ReviewSourceVerificationInput,
   ): Promise<boolean>;
-  recordDecision(
-    reviewCaseId: string,
-    actorAccountId: string,
-    revisionNumber: number,
-    input: ReviewDecisionInput,
-  ): Promise<string | undefined>;
-  getRecommendationBundle(reviewCaseId: string): Promise<ReviewRecommendationBundle | undefined>;
-  recordRecommendation(
-    bundle: ReviewRecommendationBundle,
-    actorAccountId: string,
-    reason: string,
-    correlationId: string,
-  ): Promise<ReviewRecommendationBundle | undefined>;
+  // The latest verification of each submitted source, when it resolved to canonical Evidence.
+  listVerifiedSources(reviewCaseId: string, revisionNumber: number): Promise<ReviewVerifiedSource[]>;
+  // Records the decision, writes its accepted facts and the contributor's outcome, and closes the case,
+  // all in one transaction. Returns undefined when the actor does not hold the open case.
+  recordDecision(record: ReviewDecisionRecord): Promise<string | undefined>;
 }
 
 export interface ReviewPort {
@@ -125,13 +136,8 @@ export interface ReviewPort {
     reviewCaseId: string,
     actorAccountId: string,
     input: ReviewDecisionInput,
-  ): Promise<"decided" | "case_not_found" | "invalid_assertion">;
-  recommend(
-    reviewCaseId: string,
-    actorAccountId: string,
-    reason: string,
     correlationId: string,
-  ): Promise<{ changeSetId: string } | undefined>;
+  ): Promise<ReviewDecisionResult>;
 }
 
 export const REVIEW_REPOSITORY = Symbol("REVIEW_REPOSITORY");
@@ -141,7 +147,6 @@ export class ReviewApplication implements ReviewPort {
   public constructor(
     private readonly repository: ReviewRepository,
     private readonly contributions: ContributionReviewPort,
-    private readonly curation: CurationIntakePort,
     private readonly evidence: EvidencePort,
   ) {}
 
@@ -198,77 +203,54 @@ export class ReviewApplication implements ReviewPort {
     reviewCaseId: string,
     actorAccountId: string,
     input: ReviewDecisionInput,
-  ): Promise<"decided" | "case_not_found" | "invalid_assertion"> {
+    correlationId: string,
+  ): Promise<ReviewDecisionResult> {
     const reviewCase = await this.repository.getCase(reviewCaseId);
     if (reviewCase === undefined) return "case_not_found";
     const surface = await this.contributions.getReviewSurface(reviewCase.submissionId);
     if (surface === undefined) return "case_not_found";
-    const assertionKeys = new Set(surface.assertions.map((assertion) => assertion.assertionKey));
-    if (input.selectedAssertionKeys.some((key) => !assertionKeys.has(key))) return "invalid_assertion";
-    const decisionId = await this.repository.recordDecision(
-      reviewCaseId,
-      actorAccountId,
-      surface.revisionNumber,
-      input,
-    );
-    return decisionId === undefined ? "case_not_found" : "decided";
-  }
-
-  public async recommend(
-    reviewCaseId: string,
-    actorAccountId: string,
-    reason: string,
-    correlationId: string,
-  ): Promise<{ changeSetId: string } | undefined> {
-    const bundle = await this.repository.getRecommendationBundle(reviewCaseId);
-    if (bundle === undefined || bundle.selectedAssertionKeys.length === 0) return undefined;
-    const surface = await this.contributions.getReviewSurface(bundle.reviewCase.submissionId);
-    if (surface === undefined) return undefined;
     const selected = surface.assertions.filter((assertion) =>
-      bundle.selectedAssertionKeys.includes(assertion.assertionKey),
+      input.selectedAssertionKeys.includes(assertion.assertionKey),
     );
-    if (selected.length !== bundle.selectedAssertionKeys.length) return undefined;
+    if (selected.length !== new Set(input.selectedAssertionKeys).size) return "invalid_assertion";
 
-    const canonicalSourceBySubmittedId = new Map(
-      bundle.verifiedSources.map((source) => [source.submittedSourceId, source.canonicalSourceId]),
-    );
-    const curatedAssertions = selected.map((assertion) => ({
-      assertionKey: assertion.assertionKey,
-      fieldKey: assertion.fieldKey,
-      value: assertion.value,
-      certainty: assertion.certainty,
-      lastVerifiedOn: assertion.lastVerifiedOn,
-      sourceIds: assertion.sourceIds.flatMap((sourceId) => {
-        const canonicalSourceId = canonicalSourceBySubmittedId.get(sourceId);
-        return canonicalSourceId === undefined ? [] : [canonicalSourceId];
-      }),
-    }));
-    if (
-      curatedAssertions.some(
-        (assertion, index) => assertion.sourceIds.length !== selected[index]?.sourceIds.length,
-      )
-    ) {
-      return undefined;
+    let acceptedFacts: ReviewAcceptedFact[] = [];
+    if (input.outcome === "accepted") {
+      if (selected.length === 0) return "invalid_assertion";
+      const canonicalSourceBySubmittedId = new Map(
+        (await this.repository.listVerifiedSources(reviewCaseId, surface.revisionNumber)).map((source) => [
+          source.submittedSourceId,
+          source.canonicalSourceId,
+        ]),
+      );
+      if (
+        selected.some((assertion) =>
+          assertion.sourceIds.some((sourceId) => !canonicalSourceBySubmittedId.has(sourceId)),
+        )
+      ) {
+        return "source_not_verified";
+      }
+      acceptedFacts = selected.map((assertion) => ({
+        assertionKey: assertion.assertionKey,
+        fieldKey: assertion.fieldKey,
+        value: assertion.value,
+        certainty: assertion.certainty,
+        lastVerifiedOn: assertion.lastVerifiedOn,
+        sourceIds: assertion.sourceIds.map((sourceId) => canonicalSourceBySubmittedId.get(sourceId)!),
+      }));
     }
 
-    const recorded = await this.repository.recordRecommendation(
-      bundle,
-      actorAccountId,
-      reason,
-      correlationId,
-    );
-    if (recorded === undefined) return undefined;
-
-    const changeSet = await this.curation.acceptReviewRecommendation({
+    const decisionId = await this.repository.recordDecision({
       reviewCaseId,
-      decisionId: recorded.decisionId,
+      actorAccountId,
       submissionId: surface.submissionId,
       revisionNumber: surface.revisionNumber,
       targetPandaId: surface.targetPandaId,
-      recommendedByAccountId: actorAccountId,
-      reason,
-      assertions: curatedAssertions,
+      decision: input,
+      contributorStatus: CONTRIBUTOR_STATUS_BY_OUTCOME[input.outcome],
+      acceptedFacts,
+      correlationId,
     });
-    return { changeSetId: changeSet.changeSetId };
+    return decisionId === undefined ? "case_not_found" : "decided";
   }
 }

@@ -12,8 +12,6 @@ import type {
   ReviewCasePage,
   ReviewCaseSurface,
   ReviewDecisionInput,
-  ReviewRecommendation,
-  ReviewRecommendationInput,
   ReviewState,
   VerifyReviewSourceInput,
 } from "./types";
@@ -66,16 +64,6 @@ export function verifyReviewSource(reviewCaseId: string, input: VerifyReviewSour
 
 export function decideReviewCase(reviewCaseId: string, input: ReviewDecisionInput): Promise<{ decided: true }> {
   return requestJson(`/api/admin/review/cases/${reviewCaseId}/decision`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
-}
-
-export function recommendReviewCase(
-  reviewCaseId: string,
-  input: ReviewRecommendationInput,
-): Promise<ReviewRecommendation> {
-  return requestJson(`/api/admin/review/cases/${reviewCaseId}/recommend`, {
     method: "POST",
     body: JSON.stringify(input),
   });

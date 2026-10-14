@@ -100,7 +100,8 @@ export interface SetFactConclusionInput {
   assertionIds: string[];
 }
 
-export interface CuratedPandaFactInput {
+// A fact that a Review decision accepted, written in the decision's transaction.
+export interface ReviewedPandaFactInput {
   assertionId: string;
   pandaId: string;
   fieldKey: string;
@@ -110,8 +111,8 @@ export interface CuratedPandaFactInput {
   sourceIds: string[];
 }
 
-export interface PandaCurationParticipant {
-  applyCuratedFact(transaction: DatabaseTransaction, input: CuratedPandaFactInput): Promise<string>;
+export interface PandaFactParticipant {
+  applyReviewedFact(transaction: DatabaseTransaction, input: ReviewedPandaFactInput): Promise<void>;
 }
 
 export interface PandaRepository {
@@ -133,7 +134,7 @@ export interface PandaReferencePort {
 export const PANDA_REPOSITORY = Symbol("PANDA_REPOSITORY");
 export const PANDA_PORT = Symbol("PANDA_PORT");
 export const PANDA_REFERENCE_PORT = Symbol("PANDA_REFERENCE_PORT");
-export const PANDA_CURATION_PARTICIPANT = Symbol("PANDA_CURATION_PARTICIPANT");
+export const PANDA_FACT_PARTICIPANT = Symbol("PANDA_FACT_PARTICIPANT");
 
 export function normalizeIdentityTerm(value: string): string {
   return value

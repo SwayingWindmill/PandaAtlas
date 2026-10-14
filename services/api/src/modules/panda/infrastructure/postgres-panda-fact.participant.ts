@@ -1,21 +1,10 @@
 import { sql } from "kysely";
 import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
-import type { CuratedPandaFactInput, PandaCurationParticipant } from "../application/panda.application.js";
+import type { PandaFactParticipant, ReviewedPandaFactInput } from "../application/panda.application.js";
 
-export class PostgresPandaCurationParticipant implements PandaCurationParticipant {
-  // A curated fact becomes the field's first conclusion; replacing a current conclusion is not supported.
-  public async applyCuratedFact(transaction: DatabaseTransaction, input: CuratedPandaFactInput): Promise<string> {
-    const current = await transaction
-      .selectFrom("panda.fact_conclusions")
-      .select("conclusion_id")
-      .where("panda_id", "=", input.pandaId)
-      .where("field_key", "=", input.fieldKey)
-      .where("is_current", "=", true)
-      .executeTakeFirst();
-    if (current !== undefined) {
-      throw new Error(`Fact proposal requires no current Panda conclusion for ${input.fieldKey}`);
-    }
-
+export class PostgresPandaFactParticipant implements PandaFactParticipant {
+  // The reviewed fact becomes the field's current conclusion; an earlier conclusion stays as history.
+  public async applyReviewedFact(transaction: DatabaseTransaction, input: ReviewedPandaFactInput): Promise<void> {
     await transaction.insertInto("panda.fact_assertions").values({
       assertion_id: input.assertionId,
       panda_id: input.pandaId,
@@ -31,11 +20,14 @@ export class PostgresPandaCurationParticipant implements PandaCurationParticipan
         stance: "supports",
       })),
     ).execute();
-    await this.addConclusion(transaction, input);
-    return input.assertionId;
-  }
 
-  private async addConclusion(transaction: DatabaseTransaction, input: CuratedPandaFactInput): Promise<void> {
+    await transaction
+      .updateTable("panda.fact_conclusions")
+      .set({ is_current: false })
+      .where("panda_id", "=", input.pandaId)
+      .where("field_key", "=", input.fieldKey)
+      .where("is_current", "=", true)
+      .execute();
     const latest = await transaction
       .selectFrom("panda.fact_conclusions")
       .select(({ fn }) => fn.max<number>("conclusion_version").as("version"))
