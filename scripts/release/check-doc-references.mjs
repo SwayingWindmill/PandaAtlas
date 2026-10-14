@@ -32,9 +32,9 @@ function git(cwd, args, input) {
 }
 
 // A documented local-state location (a Git-ignored directory such as a media inbox) is not broken.
-function gitIgnoredPaths(cwd, repositoryPaths) {
-  if (repositoryPaths.length === 0) return new Set();
-  const queries = repositoryPaths.flatMap((repositoryPath) => [repositoryPath, `${repositoryPath}/`]);
+// A reference written with a trailing slash names a directory, so it is asked about as one.
+function gitIgnoredPaths(cwd, queries) {
+  if (queries.length === 0) return new Set();
   return new Set(git(cwd, ["check-ignore", "--no-index", "--stdin", "-z"], queries.join("\0")));
 }
 
@@ -79,15 +79,15 @@ export function findBrokenDocReferences({ cwd = repoRoot, trackedFiles, isIgnore
       });
   }
 
-  const missing = candidates.filter(({ absolute }) => !existsSync(absolute));
-  const ignored = isIgnored
-    ? null
-    : gitIgnoredPaths(cwd, [...new Set(missing.map(({ absolute }) => toRepositoryPath(absolute, cwd)))]);
+  const missing = candidates
+    .filter(({ absolute }) => !existsSync(absolute))
+    .map((candidate) => ({
+      ...candidate,
+      query: toRepositoryPath(candidate.absolute, cwd) + (candidate.reference.endsWith("/") ? "/" : ""),
+    }));
+  const ignored = isIgnored ? null : gitIgnoredPaths(cwd, [...new Set(missing.map(({ query }) => query))]);
   return missing
-    .filter(({ absolute }) => {
-      const repositoryPath = toRepositoryPath(absolute, cwd).replace(/\/$/u, "");
-      return isIgnored ? !isIgnored(repositoryPath) : !ignored.has(repositoryPath) && !ignored.has(`${repositoryPath}/`);
-    })
+    .filter(({ query }) => (isIgnored ? !isIgnored(query) : !ignored.has(query)))
     .map(({ file, line, reference }) => ({ file, line, reference }));
 }
 

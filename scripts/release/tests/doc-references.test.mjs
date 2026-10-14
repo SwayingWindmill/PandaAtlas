@@ -94,6 +94,18 @@ test("asks Git which missing paths are ignored, including directory rules", asyn
   );
 });
 
+test("a directory-only ignore rule never hides a missing file", async () => {
+  await withRepository(
+    { ".gitignore": "missing.md/\n", "README.md": "See [layout](docs/missing.md).\n", "docs/a.md": "" },
+    async (cwd, trackedFiles) => {
+      execFileSync("git", ["init", "--quiet"], { cwd });
+      assert.deepEqual(findBrokenDocReferences({ cwd, trackedFiles }), [
+        { file: "README.md", line: 1, reference: "docs/missing.md" },
+      ]);
+    },
+  );
+});
+
 test("checks links but not backticked paths in ADRs, which record past decisions", async () => {
   await withRepository(
     {
