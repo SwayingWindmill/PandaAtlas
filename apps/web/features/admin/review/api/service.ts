@@ -1,18 +1,10 @@
 import type {
-  AppealState,
-  ApplySanctionInput,
-  DecideAppealInput,
-  ModerationAccount,
-  ModerationAppealPage,
-  ModerationSanction,
   OpenReviewCaseInput,
-  QueueQuery,
-  RestoreSanctionInput,
   ReviewCase,
   ReviewCasePage,
   ReviewCaseSurface,
   ReviewDecisionInput,
-  ReviewState,
+  ReviewQueueQuery,
   VerifyReviewSourceInput,
 } from "./types";
 
@@ -33,14 +25,10 @@ async function requestJson<T>(input: RequestInfo | URL, init?: RequestInit): Pro
   return response.json() as Promise<T>;
 }
 
-function queueSearch<TState extends string>(query: QueueQuery<TState>): string {
+export function listReviewCases(query: ReviewQueueQuery): Promise<ReviewCasePage> {
   const params = new URLSearchParams({ limit: String(query.limit), offset: String(query.offset) });
   if (query.state) params.set("state", query.state);
-  return params.toString();
-}
-
-export function listReviewCases(query: QueueQuery<ReviewState>): Promise<ReviewCasePage> {
-  return requestJson(`/api/admin/review/cases?${queueSearch(query)}`);
+  return requestJson(`/api/admin/review/cases?${params.toString()}`);
 }
 
 export function getReviewCaseSurface(reviewCaseId: string): Promise<ReviewCaseSurface> {
@@ -64,38 +52,6 @@ export function verifyReviewSource(reviewCaseId: string, input: VerifyReviewSour
 
 export function decideReviewCase(reviewCaseId: string, input: ReviewDecisionInput): Promise<{ decided: true }> {
   return requestJson(`/api/admin/review/cases/${reviewCaseId}/decision`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
-}
-
-export function listModerationAppeals(query: QueueQuery<AppealState>): Promise<ModerationAppealPage> {
-  return requestJson(`/api/admin/moderation/appeals?${queueSearch(query)}`);
-}
-
-export function getModerationAccount(accountId: string): Promise<ModerationAccount> {
-  return requestJson(`/api/admin/moderation/accounts/${accountId}`);
-}
-
-export function applyModerationSanction(
-  accountId: string,
-  input: ApplySanctionInput,
-): Promise<ModerationSanction> {
-  return requestJson(`/api/admin/moderation/accounts/${accountId}/sanctions`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
-}
-
-export function restoreModerationSanction(sanctionId: string, input: RestoreSanctionInput): Promise<{ restored: true }> {
-  return requestJson(`/api/admin/moderation/sanctions/${sanctionId}/restore`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
-}
-
-export function decideModerationAppeal(appealCaseId: string, input: DecideAppealInput) {
-  return requestJson(`/api/admin/moderation/appeals/${appealCaseId}/decision`, {
     method: "POST",
     body: JSON.stringify(input),
   });

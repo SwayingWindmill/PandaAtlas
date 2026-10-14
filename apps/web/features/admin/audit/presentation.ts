@@ -5,7 +5,7 @@ const eventNames: Record<string, string> = {
 };
 
 const domainNames: Record<string, string> = {
-  publication: "发布", review: "审核", moderation: "内容治理",
+  publication: "发布", review: "审核",
   identity: "工作人员", audit: "审计",
 };
 

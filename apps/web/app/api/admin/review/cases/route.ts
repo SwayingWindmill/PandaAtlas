@@ -6,7 +6,7 @@ import {
   createAuthenticatedV2Client,
   v2JsonResponse,
 } from "@/lib/server/v2-api";
-import { REVIEW_STATES, type ReviewState } from "@/features/admin/review-moderation/api/types";
+import { REVIEW_STATES, type ReviewState } from "@/features/admin/review/api/types";
 
 export const dynamic = "force-dynamic";
 

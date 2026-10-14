@@ -1,6 +1,6 @@
 const capabilityDomains: Record<string, string> = {
   account: "个人资料", admin: "后台", audit: "审计", identity: "工作人员",
-  moderation: "内容治理", publication: "发布", review: "审核", privacy: "隐私",
+  publication: "发布", review: "审核", privacy: "隐私",
 };
 
 const capabilityDescriptions: Record<string, string> = {

@@ -254,7 +254,7 @@ export function StaffRoleManagement() {
                 <h2 className="text-lg font-semibold text-slate-950">{detail.data.email ?? detail.data.accountId}</h2>
                 <p className="mt-1 text-sm text-slate-600">账号状态：{detail.data.state === "active" ? "正常" : detail.data.state === "suspended" ? "已停用" : "不可用"}</p>
                 <Collapsible className="mt-2 text-xs text-slate-600"><CollapsibleTrigger className="cursor-pointer font-medium text-slate-700 underline underline-offset-4">查看账号编号</CollapsibleTrigger><CollapsibleContent className="mt-1 break-all font-mono">{detail.data.accountId}</CollapsibleContent></Collapsible>
-                {detail.data.stateReason && <p className="mt-2 text-sm text-rose-700">停用原因：{detail.data.stateReason.replace(/^staff:|^moderation:/, "")}</p>}
+                {detail.data.stateReason && <p className="mt-2 text-sm text-rose-700">停用原因：{detail.data.stateReason.replace(/^staff:/, "")}</p>}
                 <h3 className="mt-6 text-sm font-semibold text-slate-950">当前角色</h3>
                 <div className="mt-3 divide-y divide-slate-100 border-y border-slate-200">
                   {grantedRoles.length === 0 && <p className="text-sm text-slate-500">暂无有效角色。</p>}
@@ -283,7 +283,7 @@ export function StaffRoleManagement() {
                 )}
               </div>
 
-              {accountManager && !isOwnAccount && (detail.data.state === "active" || (detail.data.state === "suspended" && detail.data.stateReason?.startsWith("staff:"))) && (
+              {accountManager && !isOwnAccount && (detail.data.state === "active" || detail.data.state === "suspended") && (
                 <section aria-label="工作人员访问状态" className="border-t border-slate-200 px-6 py-5">
                   <h3 className="text-sm font-semibold text-slate-950">工作人员访问状态</h3>
                   <p className="mt-2 text-sm text-slate-600">停用将立即阻止已登录工作人员访问所有受保护操作；恢复不会重新授予已经撤销或过期的角色。</p>

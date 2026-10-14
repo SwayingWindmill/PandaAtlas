@@ -1,4 +1,4 @@
-import { ReviewQueueWorkspace } from "@/features/admin/review-moderation/components/review-queue-workspace";
+import { ReviewQueueWorkspace } from "@/features/admin/review/components/review-queue-workspace";
 
 export const dynamic = "force-dynamic";
 

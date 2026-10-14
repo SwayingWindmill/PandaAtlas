@@ -9,7 +9,6 @@ import { IdentityModule } from "./modules/identity/identity.module.js";
 import { LifeHistoryModule } from "./modules/life-history/life-history.module.js";
 import { LineageModule } from "./modules/lineage/lineage.module.js";
 import { MediaModule } from "./modules/media/media.module.js";
-import { ModerationModule } from "./modules/moderation/moderation.module.js";
 import { NotificationModule } from "./modules/notification/notification.module.js";
 import { PandaModule } from "./modules/panda/panda.module.js";
 import { PlacesModule } from "./modules/places/places.module.js";
@@ -29,7 +28,6 @@ import { HttpPlatformModule } from "./platform/http/http-platform.module.js";
     IdentityModule,
     ContributionModule,
     ReviewModule,
-    ModerationModule,
     EngagementModule,
     GameModule,
     EvidenceModule,

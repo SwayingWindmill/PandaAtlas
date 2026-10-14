@@ -25,8 +25,6 @@ let issuer: string;
 const contributor = { accountId: randomUUID(), sessionId: randomUUID(), role: "member", aal: "aal1" as const };
 const reviewer = { accountId: randomUUID(), sessionId: randomUUID(), role: "reviewer", aal: "aal1" as const };
 const editor = { accountId: randomUUID(), sessionId: randomUUID(), role: "archive_editor", aal: "aal1" as const };
-const moderator = { accountId: randomUUID(), sessionId: randomUUID(), role: "moderator", aal: "aal2" as const };
-const moderationTarget = { accountId: randomUUID(), sessionId: randomUUID(), role: "member", aal: "aal1" as const };
 
 async function seedActor(actor: {
   accountId: string;
@@ -117,7 +115,7 @@ beforeAll(async () => {
   process.env.SUPABASE_URL = supabaseUrl;
   app = await createApplication();
 
-  for (const actor of [contributor, reviewer, editor, moderator, moderationTarget]) {
+  for (const actor of [contributor, reviewer, editor]) {
     await seedActor(actor);
   }
 });
@@ -129,7 +127,7 @@ afterAll(async () => {
   );
 });
 
-describe("V2 contribution, review, and moderation", () => {
+describe("V2 contribution and review", () => {
   it("exposes operator-readable Publication release inspection through the authenticated V2 contract", async () => {
     const database = app.get(DatabaseService);
     const editorToken = await tokenFor(editor);
@@ -563,106 +561,5 @@ describe("V2 contribution, review, and moderation", () => {
         conclusion_version: 2,
       }),
     ]);
-  });
-
-  it("lets a suspended member appeal while other account APIs stay blocked, then restores Identity on overturn", async () => {
-    const moderatorToken = await tokenFor(moderator);
-    const targetToken = await tokenFor(moderationTarget);
-
-    const sanction = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/moderation/accounts/${moderationTarget.accountId}/sanctions`,
-      headers: headers(moderatorToken),
-      payload: {
-        kind: "account_suspended",
-        reasonCode: "repeat_abuse",
-        internalExplanation: "Integration fixture suspension with enough internal detail.",
-        userVisibleExplanation: "Your account is suspended while this moderation action is reviewed.",
-        endsAt: new Date(Date.now() + 86_400_000).toISOString(),
-        idempotencyKey: `suspend-${randomUUID()}`,
-      },
-    });
-    expect(sanction.statusCode).toBe(201);
-    const sanctionId = sanction.json<{ sanctionId: string }>().sanctionId;
-
-    const blockedProfile = await injectHttp(app, {
-      method: "GET",
-      url: "/api/v2/me/profile",
-      headers: headers(targetToken),
-    });
-    expect(blockedProfile.statusCode).toBe(403);
-
-    const appeal = await injectHttp(app, {
-      method: "POST",
-      url: "/api/v2/me/moderation/appeals",
-      headers: headers(targetToken),
-      payload: {
-        sanctionId,
-        userStatement: "I am appealing this suspension and asking for the evidence to be reviewed again.",
-      },
-    });
-    expect(appeal.statusCode).toBe(201);
-    const appealCaseId = appeal.json<{ appealCaseId: string }>().appealCaseId;
-
-    const appealQueue = await injectHttp(app, {
-      method: "GET",
-      url: "/api/v2/moderation/appeals?state=open&limit=25&offset=0",
-      headers: headers(moderatorToken),
-    });
-    expect(appealQueue.statusCode).toBe(200);
-    const appealQueueBody = appealQueue.json<{
-      total: number;
-      limit: number;
-      offset: number;
-      items: Array<{
-        appealCaseId: string;
-        accountId: string;
-        sanctionId: string;
-        state: string;
-        userStatement: string;
-        slaOverdue: boolean;
-      }>;
-    }>();
-    expect(appealQueueBody.total).toBeGreaterThanOrEqual(1);
-    expect(appealQueueBody.limit).toBe(25);
-    expect(appealQueueBody.offset).toBe(0);
-    expect(appealQueueBody.items.find((item) => item.appealCaseId === appealCaseId)).toMatchObject({
-      appealCaseId,
-      accountId: moderationTarget.accountId,
-      sanctionId,
-      state: "open",
-      userStatement: "I am appealing this suspension and asking for the evidence to be reviewed again.",
-      slaOverdue: false,
-    });
-
-    const overturn = await injectHttp(app, {
-      method: "POST",
-      url: `/api/v2/moderation/appeals/${appealCaseId}/decision`,
-      headers: headers(moderatorToken),
-      payload: {
-        outcome: "overturned",
-        internalExplanation: "Re-review found the account suspension should be fully reversed.",
-        userVisibleExplanation: "Your appeal was accepted and the account suspension has been removed.",
-      },
-    });
-    expect(overturn.statusCode).toBe(200);
-    expect(overturn.json()).toMatchObject({ appealCaseId, outcome: "overturned" });
-
-    const restoredProfile = await injectHttp(app, {
-      method: "GET",
-      url: "/api/v2/me/profile",
-      headers: headers(targetToken),
-    });
-    expect(restoredProfile.statusCode).toBe(200);
-
-    const moderationState = await injectHttp(app, {
-      method: "GET",
-      url: `/api/v2/moderation/accounts/${moderationTarget.accountId}`,
-      headers: headers(moderatorToken),
-    });
-    expect(moderationState.statusCode).toBe(200);
-    expect(moderationState.json()).toMatchObject({
-      subject: { accountSuspended: false, accountClosedForAbuse: false },
-    });
   });
 });

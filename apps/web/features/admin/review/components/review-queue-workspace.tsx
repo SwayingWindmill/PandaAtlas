@@ -28,8 +28,8 @@ import {
 } from "../api/queries";
 import { REVIEW_STATES, type ReviewCaseQueueItem, type ReviewState } from "../api/types";
 import {
-  ADMIN_QUEUE_PAGE_SIZE,
-  adminStateLabel,
+  REVIEW_QUEUE_PAGE_SIZE,
+  reviewStateLabel,
   formatQueueAge,
   hasAdminCapability,
   reviewDisplayValue,
@@ -52,8 +52,8 @@ export function ReviewQueueWorkspace() {
   const [notice, setNotice] = useState<string | null>(null);
   const normalizedState = REVIEW_STATES.includes(state as ReviewState) ? state as ReviewState : undefined;
   const queueQuery = {
-    limit: ADMIN_QUEUE_PAGE_SIZE,
-    offset: Math.max(0, page - 1) * ADMIN_QUEUE_PAGE_SIZE,
+    limit: REVIEW_QUEUE_PAGE_SIZE,
+    offset: Math.max(0, page - 1) * REVIEW_QUEUE_PAGE_SIZE,
     ...(normalizedState ? { state: normalizedState } : {}),
   };
   const queue = useQuery({ ...reviewQueueQueryOptions(queueQuery), enabled: canRead });
@@ -88,7 +88,7 @@ export function ReviewQueueWorkspace() {
       header: "状态与等待",
       cell: ({ row, getValue }) => (
         <div className="space-y-1">
-          <span className="block text-sm font-medium">{adminStateLabel(getValue())}</span>
+          <span className="block text-sm font-medium">{reviewStateLabel(getValue())}</span>
           <span className={`block text-xs ${row.original.slaOverdue ? "font-semibold text-red-700" : "text-slate-600"}`}>
             {formatQueueAge(row.original.queueAgeSeconds)}{row.original.slaOverdue ? " · 已超时" : ""}
           </span>
@@ -99,7 +99,7 @@ export function ReviewQueueWorkspace() {
   // TanStack Table intentionally exposes non-memoizable helpers; React Compiler skips this hook safely.
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({ data: queue.data?.items ?? [], columns, getCoreRowModel: getCoreRowModel() });
-  const totalPages = Math.max(1, Math.ceil((queue.data?.total ?? 0) / ADMIN_QUEUE_PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil((queue.data?.total ?? 0) / REVIEW_QUEUE_PAGE_SIZE));
   return (
     <div className="mx-auto w-full max-w-[1480px] px-6 pb-12 pt-8 md:px-9">
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
@@ -125,7 +125,7 @@ export function ReviewQueueWorkspace() {
               className="min-h-9 min-w-36 border-slate-200 bg-white text-sm text-slate-900"
             >
               <NativeSelectOption value="all">全部</NativeSelectOption>
-              {REVIEW_STATES.map((value) => <NativeSelectOption key={value} value={value}>{adminStateLabel(value)}</NativeSelectOption>)}
+              {REVIEW_STATES.map((value) => <NativeSelectOption key={value} value={value}>{reviewStateLabel(value)}</NativeSelectOption>)}
             </NativeSelect>
           </label>
         ) : null}
@@ -298,7 +298,7 @@ function ReviewCaseDetail({
                       <p className="mt-1 text-sm text-slate-600">{panel === "evidence" ? "先核对提交事实与原始资料，再决定是否接受。" : "一次只处理一项操作，切换操作不会清空当前输入。"}</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
-                      <Badge variant="outline" className="bg-white font-normal text-slate-700">{adminStateLabel(selected.reviewCase.state)}</Badge>
+                      <Badge variant="outline" className="bg-white font-normal text-slate-700">{reviewStateLabel(selected.reviewCase.state)}</Badge>
                       {canClaim && !selected.reviewCase.primaryAssigneeId && selected.reviewCase.state === "new" ? (
                         <Button type="button" size="sm" disabled={busy} onClick={() => claimMutation.mutate(selected.reviewCase.reviewCaseId)}>领取案件</Button>
                       ) : null}
@@ -336,7 +336,7 @@ function ReviewCaseDetail({
                             <p className="text-xs text-slate-600">{reviewFieldLabel(assertion.fieldKey)}</p>
                             <p className="mt-1 break-words text-sm font-semibold text-slate-950">{reviewDisplayValue(assertion.fieldKey, assertion.value)}</p>
                           </div>
-                          <div className="flex items-center gap-2"><span className="text-xs text-slate-600">来源 {assertion.sourceIds.length} 项</span><Badge variant="outline" className="bg-white font-normal text-slate-700">{adminStateLabel(assertion.certainty)}</Badge></div>
+                          <div className="flex items-center gap-2"><span className="text-xs text-slate-600">来源 {assertion.sourceIds.length} 项</span><Badge variant="outline" className="bg-white font-normal text-slate-700">{reviewStateLabel(assertion.certainty)}</Badge></div>
                         </li>
                       ))}
                     </ul>

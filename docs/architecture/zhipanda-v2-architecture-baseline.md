@@ -101,7 +101,7 @@ A mature module may contain `domain`, `application`, `infrastructure`, and `http
 
 ## 6. Business module map
 
-V2 has 17 business modules.
+V2 has 16 business modules.
 
 ### Knowledge / panda world
 
@@ -116,21 +116,20 @@ V2 has 17 business modules.
 
 7. **Contribution** — submissions, immutable revisions, attachment metadata/policy.
 8. **Review** — review cases, claims, source verification against canonical Evidence, decisions. Accepting a decision writes the selected facts to their Panda, as the field's new current conclusion, in the decision's transaction.
-9. **Moderation** — warnings, restrictions, sanctions, restoration, appeals.
-10. **Publication** — immutable release lifecycle, membership, sealing, activation, rollback, withdrawal/takedown control.
+9. **Publication** — immutable release lifecycle, membership, sealing, activation, rollback, withdrawal/takedown control.
 
 ### Fan experience
 
-11. **Identity** — application account state, roles, capabilities, revocations, security policy; Supabase Auth remains external authentication authority.
-12. **Engagement** — Favorite, Collection, LocationCheckin, SeenPanda.
-13. **Game** — Random Panda, Guess Panda, question/rule data, attempts.
-14. **Updates** — public-safe updates/announcements, personalized eligibility/read state/cursors; replaces V1 Activity + Feed split.
-15. **Notification** — preferences/consent, notification intent, inbox, delivery attempts/receipts, delivery policy.
+10. **Identity** — application account state, roles, capabilities, revocations, security policy; Supabase Auth remains external authentication authority.
+11. **Engagement** — Favorite, Collection, LocationCheckin, SeenPanda.
+12. **Game** — Random Panda, Guess Panda, question/rule data, attempts.
+13. **Updates** — public-safe updates/announcements, personalized eligibility/read state/cursors; replaces V1 Activity + Feed split.
+14. **Notification** — preferences/consent, notification intent, inbox, delivery attempts/receipts, delivery policy.
 
 ### Compliance / evidence
 
-16. **Privacy** — privacy-request state, execution, exports, retention/holds/deletion tombstones through narrow module ports.
-17. **Audit** — append-only downstream evidence projection; never a business state source.
+15. **Privacy** — privacy-request state, execution, exports, retention/holds/deletion tombstones through narrow module ports.
+16. **Audit** — append-only downstream evidence projection; never a business state source.
 
 Forbidden V2 business modules include generic `api`, `schemas`, `services`, `integration`, `projection`, `admin_content`, `admin_media`, `archive_*`, `community_curation`, combined `review_moderation`, and generic `shared/common/utils` domains.
 
@@ -145,7 +144,6 @@ Lineage -> Panda
 LifeHistory -> Panda, Places
 Engagement -> Panda / Places
 Review -> Contribution, Evidence, Panda (facts written in the decision's transaction)
-Moderation -> Identity
 Publication -> fact-owning modules (reads to build a release)
 Updates -> Engagement for current eligibility
 Privacy -> narrow export/delete/privacy ports
@@ -157,7 +155,6 @@ Durable asynchronous reactions are used when the caller remains correct without 
 published knowledge -> Updates
 Updates / publication -> Notification
 all relevant contexts -> Audit
-Review abuse -> Moderation
 lagging projections / analytics
 ```
 
@@ -194,7 +191,6 @@ life_history.*
 media.*
 contribution.*
 review.*
-moderation.*
 publication.*
 identity.*
 engagement.*
@@ -672,7 +668,7 @@ These hold unless a later product decision changes them:
 - Favorite is the single saved-panda relationship;
 - Collection, LocationCheckin, SeenPanda, Notification consent, and GameAttempt remain distinct concepts;
 - Check-in does not imply a panda was seen and vice versa;
-- provenance/review/moderation/privacy/audit/publication support the product rather than becoming the public product hierarchy.
+- provenance/review/privacy/audit/publication support the product rather than becoming the public product hierarchy.
 
 ## 24. Changing the architecture
 

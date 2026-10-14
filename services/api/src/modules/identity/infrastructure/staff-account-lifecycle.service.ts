@@ -18,7 +18,7 @@ export class StaffAccountLifecycleService {
     const source = action === "suspend" ? "active" : "suspended";
     return this.database.transaction(async (tx) => {
       const account = await tx.selectFrom("identity.accounts")
-        .select(["state", "state_reason"]).where("account_id", "=", accountId).forUpdate().executeTakeFirst();
+        .select("state").where("account_id", "=", accountId).forUpdate().executeTakeFirst();
       if (!account) throw new ProblemException(404, "identity.accountMissing", "Staff account not found.");
 
       const replay = await tx.selectFrom("identity.account_state_events")
@@ -42,9 +42,6 @@ export class StaffAccountLifecycleService {
       }
       if (account.state !== source) {
         throw new ProblemException(409, "identity.accountStateConflict", "The account is not in the expected state.");
-      }
-      if (action === "reinstate" && !account.state_reason?.startsWith("staff:")) {
-        throw new ProblemException(409, "identity.suspensionOwnedElsewhere", "This suspension belongs to another authority.");
       }
       if (action === "suspend") {
         // Serialize administrator suspensions so two concurrent operators cannot disable the last admin.
