@@ -10,7 +10,6 @@ import type { DB as EngagementDatabase } from "./database.engagement.generated.j
 import type { DB as GameDatabase } from "./database.game.generated.js";
 import type { DB as ContributionDatabase } from "./database.contribution.generated.js";
 import type { DB as ReviewModerationDatabase } from "./database.review-moderation.generated.js";
-import type { DB as CurationDatabase } from "./database.curation.generated.js";
 import type { DB as PublicationDatabase } from "./database.publication.generated.js";
 import type { DB as PublicReadDatabase } from "./database.public-read.generated.js";
 import type { DB as UpdatesDatabase } from "./database.updates.generated.js";
@@ -30,7 +29,6 @@ export type Database = IdentityDatabase &
   GameDatabase &
   ContributionDatabase &
   ReviewModerationDatabase &
-  CurationDatabase &
   PublicationDatabase &
   PublicReadDatabase &
   UpdatesDatabase &

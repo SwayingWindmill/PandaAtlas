@@ -1,28 +1,18 @@
 import { sql } from "kysely";
-import type { ReviewModerationReviewCaseState } from "../../../platform/database/database.review-moderation.generated.js";
 import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
 import type { ContributionReviewParticipant } from "../../contribution/application/contribution.application.js";
 import type { PandaFactParticipant } from "../../panda/application/panda.application.js";
-import {
-  REVIEW_CASE_STATES,
-  type ReviewCase,
-  type ReviewCaseListQuery,
-  type ReviewCasePage,
-  type ReviewCaseState,
-  type ReviewDecisionRecord,
-  type ReviewRepository,
-  type ReviewSourceVerificationInput,
-  type ReviewVerifiedSource,
+import type {
+  ReviewCase,
+  ReviewCaseListQuery,
+  ReviewCasePage,
+  ReviewCaseState,
+  ReviewDecisionRecord,
+  ReviewRepository,
+  ReviewSourceVerificationInput,
+  ReviewVerifiedSource,
 } from "../application/review.application.js";
-
-// The column's enum is wider than the states the review flow writes; reading any other state is a fault.
-function caseState(state: ReviewModerationReviewCaseState): ReviewCaseState {
-  if (!(REVIEW_CASE_STATES as readonly string[]).includes(state)) {
-    throw new Error(`Review case is in a retired state: ${state}`);
-  }
-  return state as ReviewCaseState;
-}
 
 export class PostgresReviewRepository implements ReviewRepository {
   public constructor(
@@ -97,7 +87,7 @@ export class PostgresReviewRepository implements ReviewRepository {
           reviewCaseId: row.review_case_id,
           submissionId: row.submission_id,
           revisionNumber: row.active_revision_number,
-          state: caseState(row.state),
+          state: row.state,
           version: row.version,
           ...(row.primary_assignee_id === null ? {} : { primaryAssigneeId: row.primary_assignee_id }),
           riskLevel: row.risk_level,
@@ -281,7 +271,7 @@ export class PostgresReviewRepository implements ReviewRepository {
     review_case_id: string;
     submission_id: string;
     active_revision_number: number;
-    state: ReviewModerationReviewCaseState;
+    state: ReviewCaseState;
     version: number;
     primary_assignee_id: string | null;
   }): ReviewCase {
@@ -289,7 +279,7 @@ export class PostgresReviewRepository implements ReviewRepository {
       reviewCaseId: row.review_case_id,
       submissionId: row.submission_id,
       revisionNumber: row.active_revision_number,
-      state: caseState(row.state),
+      state: row.state,
       version: row.version,
       ...(row.primary_assignee_id === null ? {} : { primaryAssigneeId: row.primary_assignee_id }),
     };
