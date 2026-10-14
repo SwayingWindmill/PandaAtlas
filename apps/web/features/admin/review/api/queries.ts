@@ -10,21 +10,20 @@ import {
 } from "./service";
 import type {
   OpenReviewCaseInput,
-  QueueQuery,
   ReviewDecisionInput,
-  ReviewState,
+  ReviewQueueQuery,
   VerifyReviewSourceInput,
 } from "./types";
 
 export const reviewKeys = {
   all: ["admin", "review"] as const,
   queues: ["admin", "review", "queue"] as const,
-  queue: (query: QueueQuery<ReviewState>) => [...reviewKeys.queues, query] as const,
+  queue: (query: ReviewQueueQuery) => [...reviewKeys.queues, query] as const,
   surfaces: ["admin", "review", "surface"] as const,
   surface: (reviewCaseId: string) => [...reviewKeys.surfaces, reviewCaseId] as const,
 };
 
-export function reviewQueueQueryOptions(query: QueueQuery<ReviewState>) {
+export function reviewQueueQueryOptions(query: ReviewQueueQuery) {
   return queryOptions({ queryKey: reviewKeys.queue(query), queryFn: () => listReviewCases(query) });
 }
 

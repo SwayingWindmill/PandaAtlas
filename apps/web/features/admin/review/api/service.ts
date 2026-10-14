@@ -1,11 +1,10 @@
 import type {
   OpenReviewCaseInput,
-  QueueQuery,
   ReviewCase,
   ReviewCasePage,
   ReviewCaseSurface,
   ReviewDecisionInput,
-  ReviewState,
+  ReviewQueueQuery,
   VerifyReviewSourceInput,
 } from "./types";
 
@@ -26,14 +25,10 @@ async function requestJson<T>(input: RequestInfo | URL, init?: RequestInit): Pro
   return response.json() as Promise<T>;
 }
 
-function queueSearch<TState extends string>(query: QueueQuery<TState>): string {
+export function listReviewCases(query: ReviewQueueQuery): Promise<ReviewCasePage> {
   const params = new URLSearchParams({ limit: String(query.limit), offset: String(query.offset) });
   if (query.state) params.set("state", query.state);
-  return params.toString();
-}
-
-export function listReviewCases(query: QueueQuery<ReviewState>): Promise<ReviewCasePage> {
-  return requestJson(`/api/admin/review/cases?${queueSearch(query)}`);
+  return requestJson(`/api/admin/review/cases?${params.toString()}`);
 }
 
 export function getReviewCaseSurface(reviewCaseId: string): Promise<ReviewCaseSurface> {

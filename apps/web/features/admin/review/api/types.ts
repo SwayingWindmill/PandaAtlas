@@ -12,8 +12,8 @@ export type ReviewState = ReviewCaseQueueItem["state"];
 
 export const REVIEW_STATES = ["new", "assigned", "closed"] as const satisfies readonly ReviewState[];
 
-export interface QueueQuery<TState extends string> {
-  state?: TState;
+export interface ReviewQueueQuery {
+  state?: ReviewState;
   limit: number;
   offset: number;
 }

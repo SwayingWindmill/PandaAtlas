@@ -1,4 +1,4 @@
-export const ADMIN_QUEUE_PAGE_SIZE = 25;
+export const REVIEW_QUEUE_PAGE_SIZE = 25;
 
 export function formatQueueAge(seconds: number): string {
   if (seconds < 3600) return `${Math.max(1, Math.round(seconds / 60))} 分钟`;
@@ -10,7 +10,7 @@ export function hasAdminCapability(capabilities: readonly string[] | undefined, 
   return capabilities?.includes(capability) ?? false;
 }
 
-export function adminStateLabel(value: string): string {
+export function reviewStateLabel(value: string): string {
   const labels: Record<string, string> = {
     new: "新建", assigned: "已分配", closed: "已关闭",
     confirmed: "已确认", provisional: "待证实",

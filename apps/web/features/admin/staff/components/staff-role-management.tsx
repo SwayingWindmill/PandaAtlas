@@ -283,7 +283,7 @@ export function StaffRoleManagement() {
                 )}
               </div>
 
-              {accountManager && !isOwnAccount && (detail.data.state === "active" || (detail.data.state === "suspended" && detail.data.stateReason?.startsWith("staff:"))) && (
+              {accountManager && !isOwnAccount && (detail.data.state === "active" || detail.data.state === "suspended") && (
                 <section aria-label="工作人员访问状态" className="border-t border-slate-200 px-6 py-5">
                   <h3 className="text-sm font-semibold text-slate-950">工作人员访问状态</h3>
                   <p className="mt-2 text-sm text-slate-600">停用将立即阻止已登录工作人员访问所有受保护操作；恢复不会重新授予已经撤销或过期的角色。</p>

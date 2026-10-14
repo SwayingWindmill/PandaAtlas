@@ -5,7 +5,7 @@
 ## Operator procedure
 
 1. Sign in to the Chinese staff console using an account with `identity.account.manage`. Authorized `identity.staff.read` users can inspect staff records without renewing AAL2 every 15 minutes. To **change** staff access, complete AAL2 TOTP and recent authentication (15-minute window); a live Supabase session is always required.
-2. Open **治理 → 角色管理**, choose the target staff member, inspect the active/suspended state and current authority. The `工作人员访问状态` section offers `停用工作人员` for active accounts and `恢复工作人员` only for staff-owned suspensions.
+2. Open **治理 → 角色管理**, choose the target staff member, inspect the active/suspended state and current authority. The `工作人员访问状态` section offers `停用工作人员` for active accounts and `恢复工作人员` for suspended ones.
 3. Confirm the exact target and enter a specific reason. A new idempotency UUID is created for the intended transition; retrying the same intent reuses the key. The database records actor, subject, reason, source and correlation, plus an immutable state event, authorization audit event, and integration Outbox event in one transaction.
 4. From the worker's separate already-authenticated browser session, verify Review is immediately denied after suspension. Reinstatement restores the worker's previously active roles, but cannot resurrect revoked or expired grants. Inspect the account-state timeline from the operator view.
 
