@@ -105,7 +105,6 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith("data/research-batches/") ||
       changedPath.startsWith("data/frontend-evidence/") ||
       changedPath.startsWith("data/frontend-system/") ||
-      changedPath.startsWith("data/frontend-withdrawals/") ||
       changedPath === "contracts/research-batch.v1.json" ||
       changedPath.startsWith("contracts/beta-hard-gates") ||
       changedPath.startsWith("contracts/frontend-")
