@@ -1,94 +1,96 @@
-import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
+import ignore from "ignore";
+import { fromMarkdown } from "mdast-util-from-markdown";
+
+import { listTrackedPaths } from "./repository-paths.mjs";
+
 export const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 // Vendored agent skills describe other repositories' layouts.
 const UNCHECKED_PREFIXES = [".agents/"];
-// ADRs record decisions as of their date, so their inline paths may name retired files.
+// ADRs record decisions as of their date, so their inline paths may name retired files; their
+// links are still checked.
 const ADR_PATTERN = /(^|\/)adr-\d{4}-[^/]+\.md$/u;
-const LINK_PATTERN = /\]\(([^)\s]+)\)/gu;
-const INLINE_CODE_PATTERN = /`([^`\s]+)`/gu;
-const PLACEHOLDER_PATTERN = /[<>{}*$]/u;
+const PLACEHOLDER_PATTERN = /[<>{}*$\s]/u;
 
-function isExternal(href) {
-  return /^[a-z][a-z0-9+.-]*:/iu.test(href) || href.startsWith("#") || href.startsWith("//");
-}
-
-function toRepositoryPath(absolute, cwd) {
-  return path.relative(cwd, absolute).split(path.sep).join("/");
-}
-
-function git(cwd, args, input) {
-  const result = spawnSync("git", args, { cwd, encoding: "utf8", input, maxBuffer: 20 * 1024 * 1024, windowsHide: true });
-  // check-ignore exits 1 when nothing is ignored.
-  if (result.error || (result.status !== 0 && result.status !== 1)) {
-    throw new Error(`git ${args[0]} failed: ${result.error?.message ?? result.stderr}`);
+function decode(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
   }
-  return String(result.stdout ?? "").split("\0").filter(Boolean);
 }
 
-// A documented local-state location (a Git-ignored directory such as a media inbox) is not broken.
-// A reference written with a trailing slash names a directory, so it is asked about as one.
-function gitIgnoredPaths(cwd, queries) {
-  if (queries.length === 0) return new Set();
-  return new Set(git(cwd, ["check-ignore", "--no-index", "--stdin", "-z"], queries.join("\0")));
+function isExternal(url) {
+  return /^[a-z][a-z0-9+.-]*:/iu.test(url) || url.startsWith("#") || url.startsWith("//");
+}
+
+// A tracked .gitignore governs the paths below its own directory. Local excludes do not count.
+function ignoreMatcher(cwd, trackedFiles) {
+  const rules = trackedFiles
+    .filter((file) => file === ".gitignore" || file.endsWith("/.gitignore"))
+    .map((file) => ({
+      base: path.posix.dirname(file) === "." ? "" : `${path.posix.dirname(file)}/`,
+      matcher: ignore().add(readFileSync(path.join(cwd, file), "utf8")),
+    }));
+  return (repositoryPath) =>
+    rules.some(
+      ({ base, matcher }) => repositoryPath.startsWith(base) && matcher.ignores(repositoryPath.slice(base.length)),
+    );
+}
+
+function visit(node, callback) {
+  callback(node);
+  for (const child of node.children ?? []) visit(child, callback);
 }
 
 /**
- * Finds Markdown references to repository paths that do not exist: relative links, and inline
- * code spans that start with a tracked top-level directory. Returns `{ file, line, reference }`.
+ * Finds Markdown references to repository paths that do not exist: link, image and definition
+ * targets, and inline code that starts with a tracked top-level directory. Returns
+ * `{ file, line, reference }` for each.
  */
-export function findBrokenDocReferences({ cwd = repoRoot, trackedFiles, isIgnored } = {}) {
-  const files = trackedFiles ?? git(cwd, ["ls-files", "-z"]);
-  const topLevel = new Set(files.filter((file) => file.includes("/")).map((file) => file.split("/")[0]));
-  const markdown = files.filter(
+export function findBrokenDocReferences({ cwd = repoRoot, trackedFiles = listTrackedPaths({ cwd }) } = {}) {
+  const ignored = ignoreMatcher(cwd, trackedFiles);
+  const topLevel = new Set(trackedFiles.filter((file) => file.includes("/")).map((file) => file.split("/")[0]));
+  const markdown = trackedFiles.filter(
     (file) => file.endsWith(".md") && !UNCHECKED_PREFIXES.some((prefix) => file.startsWith(prefix)),
   );
 
-  const candidates = [];
+  const broken = [];
+  const check = (file, line, reference, absolute) => {
+    if (existsSync(absolute)) return;
+    const repositoryPath = path.relative(cwd, absolute).split(path.sep).join("/");
+    // A reference written with a trailing slash names a directory.
+    if (ignored(repositoryPath + (reference.endsWith("/") ? "/" : ""))) return;
+    broken.push({ file, line, reference });
+  };
+
   for (const file of markdown) {
     const absoluteFile = path.join(cwd, file);
     if (!existsSync(absoluteFile)) continue;
     const checkInlinePaths = !ADR_PATTERN.test(file);
-    let fenced = false;
-    readFileSync(absoluteFile, "utf8")
-      .split(/\r?\n/u)
-      .forEach((text, index) => {
-        if (/^\s*(```|~~~)/u.test(text)) {
-          fenced = !fenced;
-          return;
-        }
-        if (fenced) return;
-        for (const [, href] of text.matchAll(LINK_PATTERN)) {
-          if (isExternal(href)) continue;
-          const target = decodeURI(href.split("#")[0]);
-          const absolute = path.resolve(path.dirname(absoluteFile), target);
-          candidates.push({ file, line: index + 1, reference: href.split("#")[0], absolute });
-        }
-        if (!checkInlinePaths) return;
-        for (const [, raw] of text.matchAll(INLINE_CODE_PATTERN)) {
-          const token = raw.split("#")[0].replace(/[,.;:]+$/u, "");
-          if (!token.includes("/") || PLACEHOLDER_PATTERN.test(token)) continue;
-          if (!topLevel.has(token.split("/")[0])) continue;
-          candidates.push({ file, line: index + 1, reference: token, absolute: path.join(cwd, token) });
-        }
-      });
+    visit(fromMarkdown(readFileSync(absoluteFile, "utf8")), (node) => {
+      const line = node.position?.start.line;
+      if ((node.type === "link" || node.type === "image" || node.type === "definition") && !isExternal(node.url)) {
+        const target = decode(node.url.split(/[?#]/u)[0]);
+        if (!target) return;
+        const absolute = target.startsWith("/")
+          ? path.join(cwd, target)
+          : path.resolve(path.dirname(absoluteFile), target);
+        check(file, line, target, absolute);
+      } else if (node.type === "inlineCode" && checkInlinePaths) {
+        const token = node.value.split("#")[0].replace(/(:\d+)+$/u, "").replace(/[,.;:]+$/u, "");
+        if (!token.includes("/") || PLACEHOLDER_PATTERN.test(token)) return;
+        if (!topLevel.has(token.split("/")[0])) return;
+        check(file, line, token, path.join(cwd, token));
+      }
+    });
   }
-
-  const missing = candidates
-    .filter(({ absolute }) => !existsSync(absolute))
-    .map((candidate) => ({
-      ...candidate,
-      query: toRepositoryPath(candidate.absolute, cwd) + (candidate.reference.endsWith("/") ? "/" : ""),
-    }));
-  const ignored = isIgnored ? null : gitIgnoredPaths(cwd, [...new Set(missing.map(({ query }) => query))]);
-  return missing
-    .filter(({ query }) => (isIgnored ? !isIgnored(query) : !ignored.has(query)))
-    .map(({ file, line, reference }) => ({ file, line, reference }));
+  return broken;
 }
 
 export function checkDocReferences({ cwd = repoRoot, quiet = false } = {}) {
@@ -98,7 +100,6 @@ export function checkDocReferences({ cwd = repoRoot, quiet = false } = {}) {
     throw new Error(`Documentation references missing repository paths:\n${details}`);
   }
   if (!quiet) console.log("[doc-references] passed");
-  return broken;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

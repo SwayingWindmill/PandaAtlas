@@ -1,25 +1,12 @@
 import { spawnSync } from "node:child_process";
 
-// Repository checks judge the working tree by the repository's own tracked .gitignore files.
-// Local excludes (core.excludesFile, .git/info/exclude) must not hide files from them.
-export function listRepositoryPaths({ cwd, pathspecs = [] }) {
-  const result = spawnSync(
-    "git",
-    [
-      "ls-files",
-      "--cached",
-      "--others",
-      "--exclude-per-directory=.gitignore",
-      "-z",
-      ...(pathspecs.length > 0 ? ["--", ...pathspecs] : []),
-    ],
-    {
-      cwd,
-      encoding: "utf8",
-      maxBuffer: 20 * 1024 * 1024,
-      windowsHide: true,
-    },
-  );
+function gitLsFiles(cwd, args) {
+  const result = spawnSync("git", ["ls-files", ...args], {
+    cwd,
+    encoding: "utf8",
+    maxBuffer: 20 * 1024 * 1024,
+    windowsHide: true,
+  });
 
   if (result.error) {
     throw new Error(`Unable to inspect repository paths: ${result.error.message}`);
@@ -31,4 +18,21 @@ export function listRepositoryPaths({ cwd, pathspecs = [] }) {
   }
 
   return String(result.stdout ?? "").split("\0").filter(Boolean);
+}
+
+// Repository checks judge the working tree by the repository's own tracked .gitignore files.
+// Local excludes (core.excludesFile, .git/info/exclude) must not hide files from them.
+export function listRepositoryPaths({ cwd, pathspecs = [] }) {
+  return gitLsFiles(cwd, [
+    "--cached",
+    "--others",
+    "--exclude-per-directory=.gitignore",
+    "-z",
+    ...(pathspecs.length > 0 ? ["--", ...pathspecs] : []),
+  ]);
+}
+
+// Committed files only, as CI sees them.
+export function listTrackedPaths({ cwd }) {
+  return gitLsFiles(cwd, ["--cached", "-z"]);
 }

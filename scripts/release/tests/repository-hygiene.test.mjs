@@ -177,7 +177,6 @@ test("active agent navigation does not point at retired request runtimes", async
   }
 });
 
-
 test("checks tracked and unignored paths in a real Git repository", async () => {
   const cwd = await mkdtemp(path.join(tmpdir(), "panda-repository-hygiene-"));
 

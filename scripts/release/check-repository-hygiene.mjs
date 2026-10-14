@@ -160,7 +160,6 @@ export function findActiveAgentNavigationViolations({ cwd = repoRoot } = {}) {
   return violations.sort();
 }
 
-
 export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
   const paths = collectRepositoryPaths({ cwd });
   const violations = findRepositoryHygieneViolations(paths);

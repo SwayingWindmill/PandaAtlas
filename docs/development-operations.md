@@ -120,11 +120,11 @@ npm run verify:dev
 
 CI runs the same planner: a pull request verifies the scopes it changed (`--base origin/main`), and every push to `main` verifies all scopes (`--all`), and runs the API integration suite against local Supabase; a push to `main` that touches the Web, API, API client or root manifests also repeats the Cloudflare deployability build with the browser suites. A merge result is therefore verified as a whole, and runs on `main` are never cancelled by a later push.
 
-Every `verify:dev` run first checks repository hygiene and documentation references: a Markdown link, or an inline path that starts with a tracked top-level directory, must point at an existing file (Git-ignored local-state locations, `.agents/` skills and ADR inline paths excepted). Run them alone with:
+Every `verify:dev` run first checks repository hygiene and documentation references: in committed Markdown, a link, image or link definition, or an inline path that starts with a tracked top-level directory, must point at an existing file (paths the tracked `.gitignore` files ignore, `.agents/` skills and ADR inline paths excepted). Run them alone with:
 
 ```powershell
 npm run check:repository-hygiene
-npm run ops -- run release.check-doc-references
+npm run check:doc-references
 npm run check:research-script-policy
 ```
 
