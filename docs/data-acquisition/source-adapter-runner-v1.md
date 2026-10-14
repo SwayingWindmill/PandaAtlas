@@ -20,26 +20,26 @@ An adapter owns only its request plan and deterministic parser. It cannot create
 
 ## Command
 
-The existing Xi Lun command remains a compatible fixture-mode default:
+With no arguments, the command runs the Xi Lun Commons adapter in fixture mode:
 
 ```bash
-uv run --project services/api python services/api/scripts/run_source_adapter.py
+uv run --directory tools/panda-data panda-data source run
 ```
 
 The parameterized form is:
 
 ```bash
-uv run --project services/api python services/api/scripts/run_source_adapter.py \
+uv run --directory tools/panda-data panda-data source run \
   --source-id wikimedia-commons-action-api \
   --adapter-id wikimedia-commons-xi-lun \
   --mode fixture \
   --cohort xi-lun-reviewed-media \
-  --fixture services/api/tests/acquisition/fixtures/commons-xi-lun-imageinfo.json \
+  --fixture tests/acquisition/fixtures/commons-xi-lun-imageinfo.json \
   --output-bundle examples/xi-lun.json \
   --overwrite
 ```
 
-`--live` remains an alias for `--mode live`. It does not bypass the registry. The runner still requires an approved, unexpired source with `live_fetch=true`, a structured request policy, and an adapter allowlist entry.
+`--mode live` does not bypass the registry. The runner still requires an approved, unexpired source with `live_fetch=true`, a structured request policy, and an adapter allowlist entry.
 
 Output paths are resolved below:
 
@@ -219,5 +219,5 @@ The runner and reconciliation modules still do not implement:
 - curator decisions or curation-patch export;
 - scheduled runs;
 - trusted database writes;
-- Public Release, D1, R2, or frontend publication;
+- Public Release, R2, or frontend publication;
 - broad tests, Release Gate, browser or accessibility validation, or cross-platform CI.

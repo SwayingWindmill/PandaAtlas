@@ -8,19 +8,19 @@ PandaAtlas uses a hybrid acquisition boundary:
 
 - **Scrapy is the primary orchestrator** for source scheduling, duplicate filtering, robots enforcement, rate limiting, retry policy, persistent jobs, and deterministic extraction.
 - **Scrapling is a specialized adapter** for browser-rendered sources, browser-consistent HTTP/TLS identity, authorized session persistence, source-reviewed browser-stealth sessions, and evidence-only adaptive selector suggestions.
-- Both engines emit the same candidate and evidence schema. Neither engine writes to PostgreSQL, Public Release, D1, R2, or the public frontend.
+- Both engines emit the same candidate and evidence schema. Neither engine writes to PostgreSQL, Public Release, R2, or the public frontend.
 - Every acquired record remains a candidate until a curator reviews the source, facts, relationships, media rights, attribution, and bilingual content.
 
 This decision is not based on repository popularity. It follows the existing Python 3.11+ review pipeline, the measured selector behavior below, dependency isolation, and the operational difference between deterministic scheduling and browser-oriented acquisition.
 
 ## Dependency boundary
 
-The locked dependencies live in the `crawler-poc` optional extra:
+The locked dependencies live in the `crawler` optional extra of `tools/panda-data/pyproject.toml`:
 
-- `scrapy==2.17.0`
-- `scrapling[fetchers]==0.4.8`
+- `scrapy==2.19.0`
+- `scrapling[fetchers]==0.4.15`
 
-They are not API production dependencies. The default FastAPI and Release Gate dependency sync continues to install only the existing runtime and `dev` extras. A dedicated Linux/Windows workflow installs the PoC extra and browser runtimes.
+They are an optional `crawler` extra of `tools/panda-data`, never an online runtime dependency. The `crawler-poc.yml` workflow installs the extra and its browser runtimes.
 
 ## Shared evidence contract
 

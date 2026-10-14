@@ -6,7 +6,7 @@ Issue: [Define the acquisition run, evidence snapshot, and field-candidate contr
 
 The acquisition contract is the boundary between reviewed source access and curator-owned conclusions. A source adapter may capture evidence and propose field-level candidates, but it cannot write Trusted Archive or Public Projection data.
 
-The machine-readable schema is [`contracts/acquisition-bundle.v1.json`](../../contracts/acquisition-bundle.v1.json). Python producers use `app.acquisition.contracts` and write bundles through `app.acquisition.bundles.write_local_bundle`.
+The contract is defined by the Python models in `panda_data.acquisition.contracts` (schema version `panda-atlas-acquisition-bundle/v1`), and producers write bundles through `panda_data.acquisition.bundles.write_local_bundle`.
 
 ## Bundle boundary
 
@@ -241,7 +241,7 @@ bundle = AcquisitionBundle(
 write_local_bundle(bundle)
 ```
 
-This example writes only a local candidate bundle. It does not modify curation CSV files, PostgreSQL, Public Release, D1, R2, or frontend data.
+This example writes only a local candidate bundle. It does not modify curation CSV files, PostgreSQL, Public Release, R2, or frontend data.
 
 ## Ownership of later work
 

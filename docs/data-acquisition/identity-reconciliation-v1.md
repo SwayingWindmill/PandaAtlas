@@ -37,7 +37,7 @@ The current snapshot contains all 809 curation panda rows. The golden dataset su
 
 Each input contributes its repository path, byte count, row count where applicable, and SHA-256 to a deterministic reconciliation snapshot ID. Snapshot indexes and summary counts are exposed as immutable mappings. Running the same candidates against unchanged inputs produces the same normalized values, identity states, current values, comparison states, candidate identities, and reconciliation summary.
 
-No PostgreSQL, Public Release, D1, R2, frontend, or curation write target is opened.
+No PostgreSQL, Public Release, R2, frontend, or curation write target is opened.
 
 ## Reviewed identity links
 
@@ -207,23 +207,18 @@ The run notes record the reconciliation schema, snapshot ID, identity-state coun
 
 If reconciliation fails because its read-only inputs are invalid, the runner writes a failed evidence-only terminal bundle and emits no candidates.
 
-## Deterministic sanity command
+## Running it
 
-The focused local check is:
+Reconciliation runs inside every adapter run; the Smithsonian fixture run exercises it end to end and prints the identity and conflict state counts:
 
 ```bash
-uv run --project services/api python services/api/scripts/check_acquisition_reconciliation.py
+uv run --directory tools/panda-data panda-data source run \
+  --source-id smithsonian-national-zoo-panda-pages \
+  --adapter-id smithsonian-panda-profiles \
+  --fixture tests/acquisition/fixtures/smithsonian-panda-pages.manifest.json
 ```
 
-It covers:
-
-- unique exact-name matching inside the Smithsonian cohort despite global duplicate names;
-- explicit ambiguous external identifiers;
-- unmatched subjects;
-- `new`, `unchanged`, `enrichment`, `contradiction`, and `missing-current-value`;
-- name-only parent references remaining `not-compared`;
-- preservation of raw date text beside normalized date precision;
-- repeated-output equality.
+There is no dedicated reconciliation test in `tools/panda-data`; the matching and conflict cases above are not covered by an automated test today.
 
 ## Out of scope
 

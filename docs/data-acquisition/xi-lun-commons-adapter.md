@@ -10,7 +10,7 @@ The adapter does not:
 
 - download the original image;
 - write curation CSV files;
-- write PostgreSQL, D1, R2, Public Release, API, snapshot, or frontend data;
+- write PostgreSQL, R2, Public Release, API, snapshot, or frontend data;
 - approve identity or license metadata without curator review;
 - use browser User-Agent impersonation against Wikimedia;
 - switch identities, proxies, cookies, or User-Agents after a block or rate limit.
@@ -47,7 +47,7 @@ npm run source:xi-lun:live
 Equivalent parameterized fixture command:
 
 ```bash
-uv run --project services/api python services/api/scripts/run_source_adapter.py \
+uv run --directory tools/panda-data panda-data source run \
   --source-id wikimedia-commons-action-api \
   --adapter-id wikimedia-commons-xi-lun \
   --mode fixture \
