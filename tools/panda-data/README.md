@@ -4,10 +4,8 @@
 
 ## What belongs here
 
-- reviewed source acquisition and crawler adapters
-- research/discovery helpers
-- identity-resolution assistance
-- enrichment and curation assistance
+- reviewed source acquisition adapters, identity reconciliation and the crawler comparison lab
+- curation CSV validation
 - media processing and offline artifact construction
 - technical pipeline job/attempt/artifact bookkeeping
 
