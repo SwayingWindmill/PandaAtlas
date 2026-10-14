@@ -2,7 +2,7 @@ import type { PublicLocale } from "@/foundation/content/locales";
 
 export type PublicSearchParams = Record<string, string | string[] | undefined>;
 
-export function serializePublicSearchParams(searchParams: PublicSearchParams): string {
+function serializePublicSearchParams(searchParams: PublicSearchParams): string {
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(searchParams)) {
     if (Array.isArray(value)) {
