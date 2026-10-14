@@ -309,6 +309,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "release.check-doc-references",
+    category: "verification",
+    description: "Reject Markdown links and inline repository paths that point at missing files.",
+    command: "node",
+    args: ["scripts/release/check-doc-references.mjs"],
+    requires: ["git", "node"],
+    effect: "read-only",
+  },
+  {
     id: "release.check-research-script-policy",
     category: "verification",
     description: "Enforce reusable research modules and declarative batch manifests.",
@@ -335,6 +344,7 @@ const commands = [
       "--test",
       "scripts/release/tests/batch-workflow-interface.test.mjs",
       "scripts/release/tests/cloudflare-production-surface.test.mjs",
+      "scripts/release/tests/doc-references.test.mjs",
       "scripts/release/tests/gate-core.test.mjs",
       "scripts/release/tests/pr-stack-depth.test.mjs",
       "scripts/release/tests/repository-hygiene.test.mjs",

@@ -7,6 +7,7 @@ import {
   DEVELOPMENT_SCOPE_ORDER,
   commandsForDevelopmentScope,
 } from "./catalog.mjs";
+import { checkDocReferences } from "../release/check-doc-references.mjs";
 import { checkRepositoryHygiene } from "../release/check-repository-hygiene.mjs";
 import { repoRoot, runCommand } from "./command-runner.mjs";
 
@@ -311,6 +312,7 @@ async function runPlan(plan) {
 export async function runDevelopmentVerification(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   checkRepositoryHygiene({ quiet: options.githubOutput });
+  checkDocReferences({ quiet: options.githubOutput });
   let plan;
   let metadata = {};
   if (options.all) plan = createPlanForScopes(DEVELOPMENT_SCOPE_ORDER);

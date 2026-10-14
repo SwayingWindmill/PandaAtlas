@@ -56,7 +56,6 @@ const RETIRED_CURRENT_AUTHORITY_REFERENCES = [
 const ACTIVE_AGENT_NAVIGATION_RETIRED_REFERENCES = new Map([
   ["docs/agents/codegraph.md", ["FastAPI", "services/worker-api"]],
 ]);
-const CONTRACT_README_LINK_PATTERN = /\]\(([^)]+\.json)\)/gu;
 
 export function normalizeRepositoryPath(value) {
   return String(value ?? "")
@@ -161,30 +160,6 @@ export function findActiveAgentNavigationViolations({ cwd = repoRoot } = {}) {
   return violations.sort();
 }
 
-export function findBrokenContractReadmeLinks({ cwd = repoRoot } = {}) {
-  const readme = path.join(cwd, "contracts", "README.md");
-  let text;
-  try {
-    text = readFileSync(readme, "utf8");
-  } catch {
-    return [];
-  }
-
-  return [...text.matchAll(CONTRACT_README_LINK_PATTERN)]
-    .map((match) => match[1])
-    .filter((target) => !target.includes("://"))
-    .map((target) => normalizeRepositoryPath(`contracts/${target}`))
-    .filter((repositoryPath) => {
-      const file = path.join(cwd, ...repositoryPath.split("/"));
-      try {
-        readFileSync(file);
-        return false;
-      } catch {
-        return true;
-      }
-    })
-    .sort();
-}
 
 export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
   const paths = collectRepositoryPaths({ cwd });
@@ -192,7 +167,6 @@ export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
   const retiredRuntimeImports = findRetiredRuntimeImports(paths, { cwd });
   const authorityDocumentationViolations = findCurrentAuthorityDocumentationViolations({ cwd });
   const activeAgentNavigationViolations = findActiveAgentNavigationViolations({ cwd });
-  const brokenContractReadmeLinks = findBrokenContractReadmeLinks({ cwd });
 
   for (const repositoryPath of retiredRuntimeImports) {
     violations.push({
@@ -212,12 +186,6 @@ export function checkRepositoryHygiene({ cwd = repoRoot, quiet = false } = {}) {
     violations.push({
       path: repositoryPath,
       reason: `active agent navigation references retired runtime surface: ${retiredReference}`,
-    });
-  }
-  for (const repositoryPath of brokenContractReadmeLinks) {
-    violations.push({
-      path: repositoryPath,
-      reason: "contracts README links to a missing contract",
     });
   }
   violations.sort((left, right) => (left.path < right.path ? -1 : left.path > right.path ? 1 : 0));
