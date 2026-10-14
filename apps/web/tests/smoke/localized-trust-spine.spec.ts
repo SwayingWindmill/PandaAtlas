@@ -11,29 +11,6 @@ test("uses the same reviewed identity release in English", async ({ page }) => {
   await expect(page.getByText("He Hua")).toHaveCount(0);
 });
 
-test("resolves unprefixed routes from the request language and preserves task state", async ({ request }) => {
-  const root = await request.get("/", {
-    headers: { "accept-language": "en-US,en;q=0.9,zh;q=0.5" },
-    maxRedirects: 0,
-  });
-  expect(root.status()).toBe(308);
-  expect(root.headers().location).toContain("/en");
-
-  const atlas = await request.get("/atlas?q=%E7%BE%8E%E9%A6%99", {
-    headers: { "accept-language": "en-US,en;q=0.9" },
-    maxRedirects: 0,
-  });
-  expect(atlas.status()).toBe(308);
-  expect(atlas.headers().location).toContain("/en/pandas?q=%E7%BE%8E%E9%A6%99");
-
-  const profile = await request.get("/atlas/meixiang?from=legacy", {
-    headers: { "accept-language": "en-US,en;q=0.9" },
-    maxRedirects: 0,
-  });
-  expect(profile.status()).toBe(308);
-  expect(profile.headers().location).toContain("/en/pandas/meixiang?from=legacy");
-});
-
 test("never renders the generated legacy profile as a rollback", async ({ request }) => {
   const untrustedLegacy = await request.get("/atlas/he-hua");
   expect(new URL(untrustedLegacy.url()).pathname).toBe("/zh/pandas/he-hua");

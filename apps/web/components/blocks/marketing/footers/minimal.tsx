@@ -20,7 +20,6 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
       links: [
         { title: zh ? "我的熊猫" : "My Pandas", href: `/${locale}/me` },
         { title: zh ? "我的动态" : "My Feed", href: `/${locale}/me/feed` },
-        { title: zh ? "熊猫护照" : "Panda Passport", href: `/${locale}/me/passport` },
       ],
     },
     {

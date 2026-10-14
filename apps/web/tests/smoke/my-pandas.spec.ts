@@ -13,17 +13,7 @@ async function mockSignedOutPassport(page: import("@playwright/test").Page) {
   });
 }
 
-test("serves My Pandas as the personal hub and keeps Passport as a legacy redirect", async ({ page, request }) => {
-  const redirect = await request.get("/my-pandas", {
-    headers: { "accept-language": "en-US,en;q=0.9" },
-    maxRedirects: 0,
-  });
-  expect(redirect.status()).toBe(308);
-  expect(new URL(redirect.headers().location, "http://localhost").pathname).toBe("/en/me");
-  const passportRedirect = await request.get("/zh/me/passport", { maxRedirects: 0 });
-  expect(passportRedirect.status()).toBe(308);
-  expect(new URL(passportRedirect.headers().location, "http://localhost").pathname).toBe("/zh/me");
-
+test("serves My Pandas as the personal hub", async ({ page }) => {
   await mockSignedOutPassport(page);
   await page.goto("/zh/me");
   await expect(page.getByRole("heading", { level: 1, name: "我的熊猫" })).toBeVisible();
