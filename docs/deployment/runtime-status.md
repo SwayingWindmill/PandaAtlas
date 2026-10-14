@@ -4,7 +4,7 @@
 - Application architecture: [ZhiPanda V2 Architecture Baseline](../architecture/zhipanda-v2-architecture-baseline.md)
 - Historical managed-cloud decision: [ADR 0002](../architecture/adr-0002-managed-cloud-deployment-target.md)
 
-This page is the current deployment source of truth. Historical migration, Vercel, V1 Worker/D1, and cutover documents remain evidence of earlier states; they do not override this page for the live provider/runtime topology.
+This page is the current deployment source of truth for the live provider/runtime topology.
 
 ## Current production topology
 

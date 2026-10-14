@@ -43,4 +43,4 @@ Do not add a parallel framework-comparison, Vercel, OpenNext, or legacy Worker/D
 
 ## Other checks
 
-Repository policy checks, such as repository hygiene, are exposed through Development Operations. Historical release evidence lives in Git history. Use [deployment runtime status](../deployment/runtime-status.md) for current production topology.
+Repository policy checks, such as repository hygiene, are exposed through Development Operations. Use [deployment runtime status](../deployment/runtime-status.md) for current production topology.

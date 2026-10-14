@@ -2,7 +2,7 @@
 
 Issues: #89, #98
 
-This document supersedes `source-review-2026-07-21.md` as the review document bound by `data/acquisition-sources/registry.json`. Earlier decisions are retained below, followed by the first official institutional panda-profile cohort review.
+This is the review document bound by `data/acquisition-sources/registry.json`. Earlier decisions are retained below, followed by the first official institutional panda-profile cohort review.
 
 ## Wikimedia Commons Action API
 

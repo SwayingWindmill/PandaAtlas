@@ -12,7 +12,7 @@ PandaAtlas powers ZhiPanda, a panda-fan product for exploring individual pandas,
 - Bounded recurring async execution: GitHub Actions calling the authenticated NestJS internal job endpoint.
 - Offline acquisition and curation: `tools/panda-data` plus bounded curation scripts; these are not online request runtimes.
 
-For actual provider names, bindings, domains, and retirement state, use [Deployment runtime status](docs/deployment/runtime-status.md). Historical V1, Vercel, FastAPI, D1, and OpenNext documents were deleted; Git history keeps them.
+For actual provider names, bindings, domains, and retirement state, use [Deployment runtime status](docs/deployment/runtime-status.md).
 
 ## Development
 

@@ -836,7 +836,7 @@ managed platform primitives
 
 Avoid catch-log-rethrow templates, duplicate exists-before-insert checks when a uniqueness constraint is authoritative, blanket repository retries, mock fallbacks in production, runtime fallback to V1, or generic Result/base/wrapper layers without boundary value.
 
-## 24. Superseded and retained architecture documents
+## 24. Superseded architecture and retained product truths
 
 ### Superseded for V2 implementation
 
@@ -849,9 +849,6 @@ This baseline supersedes the V2 applicability of:
 - V1 dependency/storage-check documents where they encode the Python module/storage graph;
 - D1/OpenNext-specific publication/deployment architecture;
 - V1 combined module boundaries such as `review_moderation`, `community_curation`, Activity/Feed split, and archive-workbench architecture where replaced by the V2 module map.
-
-Their documents were deleted (#608); Git history keeps them.
-
 ### Product/business truths retained
 
 The following V1 truths remain unless a later product decision changes them:
@@ -868,16 +865,10 @@ The following V1 truths remain unless a later product decision changes them:
 
 ### Operational documents
 
-`docs/deployment/runtime-status.md` continues to describe **current production** until actual cutover. It must not be rewritten to claim V2 is live merely because implementation starts.
+`docs/deployment/runtime-status.md` describes the live V2 production topology.
 
-After the V2 commit point, operational docs/ADRs must be updated to describe only the real V2 production topology and mark V1 deployment phases superseded.
-
-## 25. Implementation authority
+## 25. Changing the architecture
 
 A delivery ticket may refine code-level details inside its accepted architecture boundary. It may not reopen settled architecture merely because a V1 file suggests a different structure.
 
 Reopen an architecture decision only when implementation discovers material evidence that an accepted baseline cannot satisfy correctness, security, operability, or product requirements.
-
-## 26. Source decision records
-
-The 2026-08-26 research notes behind decisions #310-#322 were deleted (#608); Git history keeps them. This baseline is the governing V2 statement.
