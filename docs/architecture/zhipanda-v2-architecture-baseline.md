@@ -390,17 +390,14 @@ Retries are bounded and only used for replay-safe transient failures. Poison/per
 
 ## 12. Python `panda-data` boundary
 
-Python remains valuable for:
+Python owns:
 
 ```text
-acquisition
-crawling
-enrichment
-identity-resolution assistance
-curation assistance
+reviewed source acquisition and identity reconciliation
+the crawler comparison lab
+curation CSV validation
 media processing
-release/export artifact building
-research
+offline artifact manifests and pipeline job bookkeeping
 ```
 
 It becomes an independent project under `tools/panda-data`, managed by `uv`.
