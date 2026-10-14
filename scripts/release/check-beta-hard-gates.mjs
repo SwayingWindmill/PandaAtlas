@@ -124,47 +124,6 @@ function parseCsv(content) {
   return rows;
 }
 
-function parseD1Release(d1) {
-  const matches = [
-    ...d1.matchAll(/insert into public_releases\s*\([^)]*\)\s*values\s*\(\s*'([^']*)',\s*'([^']*)',\s*'([^']*)'/g),
-  ];
-  requireCondition(matches.length === 1, `d1.sql must define exactly one public release; got ${matches.length}`);
-  return {
-    dataset_release_version: matches[0][1],
-    public_schema_version: matches[0][2],
-    database_migration_version: matches[0][3],
-  };
-}
-
-function parseD1Records(d1) {
-  const prefix = "insert into public_release_records ";
-  const declaredRecordCount = d1.match(/\bpublic_release_records\b/gi)?.length ?? 0;
-  const records = d1
-    .split(/\r?\n/)
-    .filter((line) => line.startsWith(prefix))
-    .map((line, index) => {
-      const match = line.match(/values \('([^']*)', '([^']*)', '([^']*)', '((?:''|[^'])*)'\);$/);
-      requireCondition(match, `d1.sql public release record ${index + 1} is malformed`);
-      let publicValue;
-      try {
-        publicValue = JSON.parse(match[4].replaceAll("''", "'"));
-      } catch (error) {
-        throw new Error(`d1.sql public release record ${match[3]} has invalid JSON: ${String(error)}`);
-      }
-      return {
-        dataset_release_version: match[1],
-        entity_type: match[2],
-        entity_id: match[3],
-        public: publicValue,
-      };
-    });
-  requireCondition(
-    records.length === declaredRecordCount,
-    `d1.sql contains ${declaredRecordCount - records.length} non-canonical public release record insert(s)`,
-  );
-  return records;
-}
-
 function coordinatePositions(value) {
   if (!Array.isArray(value)) return [];
   if (value.length >= 2 && value.slice(0, 2).every((item) => typeof item === "number")) {
@@ -319,23 +278,12 @@ async function assertReleaseIntegrity(root, dataset, contract) {
       throw new Error(`pandas.csv row ${index + 2} has invalid public_json: ${String(error)}`);
     }
   }
-  const d1 = await readFile(path.join(releaseDir, "d1.sql"), "utf8");
-  requireSameRelease(parseD1Release(d1), expected, "d1.sql release registry");
-  const d1Records = parseD1Records(d1);
-  requireCondition(d1Records.length > 0, "d1.sql contains no public release records");
-  for (const record of d1Records) {
-    requireCondition(
-      record.dataset_release_version === expected.dataset_release_version,
-      `d1.sql ${record.entity_type}/${record.entity_id} dataset release drifted`,
-    );
-  }
   return {
     releaseDir,
     manifest,
     api,
     pandas,
     csvPublicValues,
-    d1Records,
     trackedReleaseVersions,
   };
 }
@@ -345,9 +293,6 @@ async function assertPublicDataBoundary(release, contract) {
   walkPublicValue(release.pandas, contract, "pandas.json");
   release.csvPublicValues.forEach((value, index) =>
     walkPublicValue(value, contract, `pandas.csv[${index + 2}].public_json`),
-  );
-  release.d1Records.forEach((record) =>
-    walkPublicValue(record.public, contract, `d1.sql.${record.entity_type}.${record.entity_id}`),
   );
   const serializedFiles = await Promise.all(
     (await listFiles(release.releaseDir)).map((filename) => readFile(filename, "utf8")),
@@ -361,9 +306,6 @@ async function assertPublicDataBoundary(release, contract) {
     "public release contains a personal email address",
   );
   (release.api.distribution?.features ?? []).forEach((feature) => assertSafeWildFeature(feature, "api.json"));
-  release.d1Records
-    .filter((record) => record.entity_type === "api_distribution")
-    .forEach((record) => assertSafeWildFeature(record.public, "d1.sql"));
 }
 
 function assertReviewedSource(source, allowedStates, label) {

@@ -100,7 +100,7 @@ test("missing manifest descriptors fail release integrity", async () => {
     await copyFixture(directory);
     const manifestPath = path.join(directory, "data/public-releases/2026.07.18.1/manifest.json");
     const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
-    delete manifest.files["d1.sql"];
+    delete manifest.files["pandas.csv"];
     await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 
     assertFailedCheck(await runFixture(directory), "release-integrity", /manifest file set drifted/);
@@ -240,51 +240,15 @@ test("each CSV row must carry the exact release version", async () => {
   });
 });
 
-test("D1 release registry must carry the exact release version", async () => {
+test("precise wild geometry fails the public data boundary", async () => {
   await withTempDirectory(async (directory) => {
     await copyFixture(directory);
-    const d1Path = path.join(directory, "data/public-releases/2026.07.18.1/d1.sql");
-    const d1 = await readFile(d1Path, "utf8");
-    await writeFile(d1Path, d1.replace("'2026.07.18.1', '1.1.0', '0007'", "'2025.01.01.1', '1.1.0', '0007'"), "utf8");
-    await updateManifestFile(directory, "d1.sql");
-
-    assertFailedCheck(
-      await runFixture(directory),
-      "release-integrity",
-      /d1\.sql release registry dataset_release_version drifted/,
-    );
-  });
-});
-
-test("non-canonical D1 record inserts cannot bypass structured validation", async () => {
-  await withTempDirectory(async (directory) => {
-    await copyFixture(directory);
-    const d1Path = path.join(directory, "data/public-releases/2026.07.18.1/d1.sql");
-    const d1 = await readFile(d1Path, "utf8");
-    const unsafe = d1.replace(
-      "insert into public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2026.07.18.1', 'events'",
-      "insert\ninto public_release_records (dataset_release_version, entity_type, entity_id, public_json) values ('2025.01.01.1', 'events'",
-    );
-    assert.notEqual(unsafe, d1);
-    await writeFile(d1Path, unsafe, "utf8");
-    await updateManifestFile(directory, "d1.sql");
-
-    assertFailedCheck(await runFixture(directory), "release-integrity", /non-canonical public release record insert/);
-  });
-});
-
-test("precise D1 wild geometry fails the public data boundary", async () => {
-  await withTempDirectory(async (directory) => {
-    await copyFixture(directory);
-    const d1Path = path.join(directory, "data/public-releases/2026.07.18.1/d1.sql");
-    const d1 = await readFile(d1Path, "utf8");
-    const unsafe = d1.replace(
-      "[[[[103.5,31.2],[103.9,31.2],[103.9,31.6],[103.5,31.6],[103.5,31.2]]]]",
-      "[[[[103.5,31.2],[103.501,31.2],[103.501,31.201],[103.5,31.201],[103.5,31.2]]]]",
-    );
-    assert.notEqual(unsafe, d1);
-    await writeFile(d1Path, unsafe, "utf8");
-    await updateManifestFile(directory, "d1.sql");
+    const apiPath = path.join(directory, "data/public-releases/2026.07.18.1/api.json");
+    const api = JSON.parse(await readFile(apiPath, "utf8"));
+    const wild = api.distribution.features.find((feature) => feature.properties.layer === "wild");
+    wild.geometry.coordinates = [[[[103.5, 31.2], [103.501, 31.2], [103.501, 31.201], [103.5, 31.201], [103.5, 31.2]]]];
+    await writeFile(apiPath, `${JSON.stringify(api, null, 2)}\n`, "utf8");
+    await updateManifestFile(directory, "api.json");
 
     assertFailedCheck(await runFixture(directory), "public-data-boundary", /too precise for publication/);
   });

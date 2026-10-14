@@ -6,10 +6,6 @@
       "bytes": 148654,
       "sha256": "4291908657a9ed3fec4e11409519957646bdb7d2093da57d8b8d07d514bbca09"
     },
-    "d1.sql": {
-      "bytes": 203865,
-      "sha256": "0b259cfb1d0e77cabb8895fc8a58ff61a38e55e3a66d51c3d43e166c200aca50"
-    },
     "pandas.csv": {
       "bytes": 34081,
       "sha256": "18865924d898ca681590cf004c43fdf7f29d01739dcf3d1358890a5d001888c9"

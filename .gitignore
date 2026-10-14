@@ -48,7 +48,6 @@ htmlcov/
 # Environment
 .env
 .env.*
-!.env.example
 
 # Local agent/planning state
 .claude/
