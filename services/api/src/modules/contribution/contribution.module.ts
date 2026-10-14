@@ -11,6 +11,7 @@ import {
   type ContributionRepository,
 } from "./application/contribution.application.js";
 import { ContributionController } from "./http/contribution.controller.js";
+import { PostgresContributionReviewParticipant } from "./infrastructure/postgres-contribution-review.participant.js";
 import { PostgresContributionRepository } from "./infrastructure/postgres-contribution.repository.js";
 
 @Module({
@@ -29,7 +30,7 @@ import { PostgresContributionRepository } from "./infrastructure/postgres-contri
     },
     { provide: CONTRIBUTION_PORT, useExisting: ContributionApplication },
     { provide: CONTRIBUTION_REVIEW_PORT, useExisting: ContributionApplication },
-    { provide: CONTRIBUTION_REVIEW_PARTICIPANT, useExisting: CONTRIBUTION_REPOSITORY },
+    { provide: CONTRIBUTION_REVIEW_PARTICIPANT, useClass: PostgresContributionReviewParticipant },
   ],
   exports: [CONTRIBUTION_PORT, CONTRIBUTION_REVIEW_PORT, CONTRIBUTION_REVIEW_PARTICIPANT],
 })

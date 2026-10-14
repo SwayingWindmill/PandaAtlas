@@ -515,7 +515,7 @@ describe("V2 contribution, review, and moderation", () => {
 
     const conclusions = await database.db
       .selectFrom("panda.fact_conclusions")
-      .select(["conclusion_id", "value_json", "is_current", "conclusion_version"])
+      .select(["conclusion_id", "value_json", "superseded_values_json", "is_current", "conclusion_version"])
       .where("panda_id", "=", panda.pandaId)
       .where("field_key", "=", "profile.sex")
       .orderBy("conclusion_version")
@@ -541,7 +541,7 @@ describe("V2 contribution, review, and moderation", () => {
     const { pandaId, conclusions } = await acceptReviewedCorrection({});
 
     expect(conclusions).toEqual([
-      expect.objectContaining({ value_json: "female", is_current: true, conclusion_version: 1 }),
+      expect.objectContaining({ value_json: "female", superseded_values_json: [], is_current: true, conclusion_version: 1 }),
     ]);
     const panda = await app.get<PandaPort>(PANDA_PORT).getPanda(pandaId);
     expect(panda?.conclusions).toEqual(
@@ -556,7 +556,12 @@ describe("V2 contribution, review, and moderation", () => {
 
     expect(conclusions).toEqual([
       expect.objectContaining({ value_json: "male", is_current: false, conclusion_version: 1 }),
-      expect.objectContaining({ value_json: "female", is_current: true, conclusion_version: 2 }),
+      expect.objectContaining({
+        value_json: "female",
+        superseded_values_json: ["male"],
+        is_current: true,
+        conclusion_version: 2,
+      }),
     ]);
   });
 

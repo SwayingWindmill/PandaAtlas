@@ -146,7 +146,7 @@ export class ReviewController {
       throw new ProblemException(
         422,
         "review.invalidAssertion",
-        "Select assertions from the active revision; accepting requires at least one.",
+        "Select assertions from the active revision; accepting requires at least one, and one per field.",
       );
     }
     if (result === "source_not_verified") {

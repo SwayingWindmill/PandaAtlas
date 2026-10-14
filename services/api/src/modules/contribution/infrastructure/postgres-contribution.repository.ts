@@ -1,12 +1,10 @@
 import { createHash, randomUUID } from "node:crypto";
 import { sql } from "kysely";
-import type { DatabaseService, DatabaseTransaction } from "../../../platform/database/database.service.js";
+import type { DatabaseService } from "../../../platform/database/database.service.js";
 import type {
   ContributionAttachmentRecord,
   ContributionRecord,
   ContributionRepository,
-  ContributionReviewOutcomeInput,
-  ContributionReviewParticipant,
   ContributionReviewAssertion,
   ContributionReviewSurface,
   ContributionSourceRecord,
@@ -24,7 +22,7 @@ function assertionsFromContent(value: unknown): ContributionReviewAssertion[] {
   return Array.isArray(assertions) ? (assertions as ContributionReviewAssertion[]) : [];
 }
 
-export class PostgresContributionRepository implements ContributionRepository, ContributionReviewParticipant {
+export class PostgresContributionRepository implements ContributionRepository {
   public constructor(private readonly database: DatabaseService) {}
 
   public async submit(input: SubmitContributionInput): Promise<ContributionRecord> {
@@ -135,37 +133,6 @@ export class PostgresContributionRepository implements ContributionRepository, C
       .executeTakeFirst();
     if (row === undefined || row.submitted_at === null || row.latest_revision_number === 0) return undefined;
     return this.mapOwn(row);
-  }
-
-  public async recordReviewOutcome(
-    transaction: DatabaseTransaction,
-    input: ContributionReviewOutcomeInput,
-  ): Promise<void> {
-    const status = await transaction
-      .insertInto("community_intake.contributor_status_events")
-      .values({
-        submission_id: input.submissionId,
-        status: input.status,
-        active_revision_number: input.revisionNumber,
-        user_visible_reason: input.explanation,
-        source_context: "review",
-        source_event_id: input.decisionId,
-        actor_subject_hash: sha256(input.actorAccountId),
-        correlation_id: input.correlationId,
-        idempotency_key: `v2-review-decision:${input.decisionId}`,
-      })
-      .returning(["status_event_id", "occurred_at"])
-      .executeTakeFirstOrThrow();
-    await transaction
-      .updateTable("community_intake.submissions")
-      .set({
-        contributor_status: input.status,
-        contributor_status_updated_at: status.occurred_at,
-        current_status_event_id: status.status_event_id,
-        updated_at: status.occurred_at,
-      })
-      .where("submission_id", "=", input.submissionId)
-      .executeTakeFirstOrThrow();
   }
 
   public async getReviewSurface(submissionId: string): Promise<ContributionReviewSurface | undefined> {

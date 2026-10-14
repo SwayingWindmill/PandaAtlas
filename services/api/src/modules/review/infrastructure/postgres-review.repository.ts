@@ -16,7 +16,7 @@ import {
   type ReviewVerifiedSource,
 } from "../application/review.application.js";
 
-// The column's enum still lists states the review flow no longer uses; no row holds one.
+// The column's enum is wider than the states the review flow writes; reading any other state is a fault.
 function caseState(state: ReviewModerationReviewCaseState): ReviewCaseState {
   if (!(REVIEW_CASE_STATES as readonly string[]).includes(state)) {
     throw new Error(`Review case is in a retired state: ${state}`);

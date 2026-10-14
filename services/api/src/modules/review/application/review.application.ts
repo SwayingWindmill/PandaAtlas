@@ -216,7 +216,9 @@ export class ReviewApplication implements ReviewPort {
 
     let acceptedFacts: ReviewAcceptedFact[] = [];
     if (input.outcome === "accepted") {
-      if (selected.length === 0) return "invalid_assertion";
+      // Each accepted assertion becomes its field's current conclusion, so one decision accepts a field once.
+      const fieldKeys = selected.map((assertion) => assertion.fieldKey);
+      if (selected.length === 0 || new Set(fieldKeys).size !== fieldKeys.length) return "invalid_assertion";
       const canonicalSourceBySubmittedId = new Map(
         (await this.repository.listVerifiedSources(reviewCaseId, surface.revisionNumber)).map((source) => [
           source.submittedSourceId,
