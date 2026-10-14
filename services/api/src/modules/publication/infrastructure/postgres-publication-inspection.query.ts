@@ -98,7 +98,7 @@ export class PostgresPublicationInspectionQuery implements PublicationInspection
           .executeTakeFirst();
     const rowsToSummarize = [...rows as ReleaseRow[]];
     if (currentReleaseRow !== undefined && !rowsToSummarize.some((row) => row.release_id === currentReleaseId)) {
-      rowsToSummarize.push(currentReleaseRow as ReleaseRow);
+      rowsToSummarize.push(currentReleaseRow);
     }
     const summaries = await this.summarize(rowsToSummarize, currentReleaseId);
     const summaryById = new Map(summaries.map((summary) => [summary.releaseId, summary]));
@@ -133,7 +133,7 @@ export class PostgresPublicationInspectionQuery implements PublicationInspection
     if (row === undefined) return undefined;
 
     const currentReleaseId = await this.currentReleaseId();
-    const release = (await this.summarize([row as ReleaseRow], currentReleaseId))[0];
+    const release = (await this.summarize([row], currentReleaseId))[0];
     if (release === undefined) return undefined;
     const transitions = await this.database.db
       .selectFrom("publication.release_transitions")

@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { createRemoteJWKSet, errors, jwtVerify, type JWTPayload } from "jose";
 import { AppConfig } from "../config/app-config.js";
-import type { AssuranceLevel } from "../request-context/request-context.service.js";
 import type { VerifiedSupabaseIdentity } from "./auth.types.js";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -126,7 +125,7 @@ export class SupabaseJwtVerifier {
     return {
       accountId: payload.sub,
       sessionId,
-      aal: payload.aal as AssuranceLevel,
+      aal: payload.aal,
       issuedAt,
       expiresAt,
       authenticatedAt: reference.authenticatedAt,

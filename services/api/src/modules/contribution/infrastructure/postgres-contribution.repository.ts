@@ -137,7 +137,7 @@ export class PostgresContributionRepository implements ContributionRepository {
       .execute();
     return rows.map((row) => ({
       submissionId: row.submission_id,
-      submissionType: row.submission_type as ContributionRecord["submissionType"],
+      submissionType: row.submission_type,
       targetPandaId: row.target_id,
       publicVersionSeen: row.public_version_seen,
       revisionNumber: row.latest_revision_number,
@@ -164,7 +164,7 @@ export class PostgresContributionRepository implements ContributionRepository {
     if (row === undefined || row.submitted_at === null || row.latest_revision_number === 0) return undefined;
     return {
       submissionId: row.submission_id,
-      submissionType: row.submission_type as ContributionRecord["submissionType"],
+      submissionType: row.submission_type,
       targetPandaId: row.target_id,
       publicVersionSeen: row.public_version_seen,
       revisionNumber: row.latest_revision_number,
