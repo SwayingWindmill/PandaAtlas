@@ -246,7 +246,7 @@ The only hand-authored HTTP truth is the Nest HTTP boundary: controllers + concr
 Generate one OpenAPI 3.1 artifact:
 
 ```text
-contracts/http/openapi.v2.json
+services/api/openapi/panda-atlas-v2.json
 ```
 
 Generate the private TypeScript client using:
@@ -493,7 +493,7 @@ Updates and Notifications react asynchronously to publication events rather than
 
 Cloudflare R2 is the media store. The bucket is private: the Web Worker serves only allowlisted panda photos and homepage videos at `/media/*` on the site's own domain, and Workers Cache keeps them at the edge.
 
-Contribution attachments register metadata through the Contribution module; the API offers no upload endpoint. Browser uploads go to R2 directly through a short-lived presigned URL that Nest authorizes and then verifies on finalize; large uploads never stream through Nest.
+Contribution attachments register metadata through the Contribution module; the API offers no upload endpoint. A browser upload path, when built, must upload to R2 directly through a short-lived presigned URL that Nest authorizes and then verifies on finalize, so large uploads never stream through Nest.
 
 Deletion or takedown of a public object must also purge it from the edge cache when it has to disappear immediately.
 

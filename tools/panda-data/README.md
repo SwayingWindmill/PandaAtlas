@@ -38,7 +38,7 @@ uv run --directory tools/panda-data panda-data source run
 uv run --directory tools/panda-data panda-data crawler compare
 uv run --directory tools/panda-data panda-data curation validate
 uv run --directory tools/panda-data panda-data media process
-uv run --directory tools/panda-data panda-data artifact manifest --bucket <bucket> --artifact-kind <kind> --job-id <id>
+uv run --directory tools/panda-data panda-data artifact manifest <path> --bucket <bucket> --artifact-kind <kind> --job-id <id>
 ```
 
 The root scripts `npm run check:panda-curation`, `npm run process:panda-media` and `npm run test:panda-data` wrap the common ones.

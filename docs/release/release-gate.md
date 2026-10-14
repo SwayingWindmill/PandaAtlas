@@ -32,7 +32,7 @@ Web-only production Build Output can also be checked with the Web workspace's `b
 
 ## Pull-request deployability gate
 
-`.github/workflows/cloudflare-deployability.yml` is the single deployability workflow for Web/API runtime changes. It runs on pull requests and pushes to `main` that touch the paths it declares, and:
+`.github/workflows/cloudflare-deployability.yml` is the single deployability workflow for Web/API runtime changes. It runs on pull requests and pushes to `main` that touch the paths it declares, or on manual dispatch, and:
 
 1. installs the locked npm workspace;
 2. installs (or restores from cache) Playwright Chromium;
