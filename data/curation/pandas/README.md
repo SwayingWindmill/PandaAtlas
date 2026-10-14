@@ -28,7 +28,8 @@ Only panda rows with `evidence_status=verified` and `review_status=approved` may
 - identity: `slug`, `name_zh`, `name_en`, `gender` and `status`;
 - trust fields: a birth date (or birth text), the current location, primary source IDs and an intro;
 - a current location that comes from a reviewed residency and carries a last-verified date;
-- parentage only from reviewed assertions, and unknown or disputed values stated explicitly rather than guessed (never inferred from photo captions);
+- parentage only from reviewed assertions, and unknown or disputed values stated explicitly rather than guessed;
+- no fact inferred from a photo caption;
 - at least three approved verified events and at least one approved photo of this panda.
 
 ## Minimum Photo Record
@@ -45,7 +46,7 @@ The human-entered fields in `media.csv` are intentionally small:
 - `review_status`
 - optional `notes`
 
-Approved photos require all fields except `notes`. The pipeline, not the curator, owns media IDs, hashes, dimensions, MIME types, and derivatives.
+Approved photos require all fields except `notes`, and a photo with unknown rights cannot be approved. The pipeline, not the curator, owns media IDs, hashes, dimensions, MIME types, and derivatives.
 
 Place local reviewed files below `media-inbox/`, then run:
 

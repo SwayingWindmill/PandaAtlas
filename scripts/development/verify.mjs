@@ -101,10 +101,8 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "contracts/batch-operations.v1.json" ||
       changedPath === "apps/web/cloudflare.config.ts" ||
       changedPath === "services/api/cloudflare.config.ts" ||
-      changedPath.startsWith("data/beta-launch/") ||
       changedPath.startsWith("data/research-batches/") ||
-      changedPath === "contracts/research-batch.v1.json" ||
-      changedPath.startsWith("contracts/beta-hard-gates")
+      changedPath === "contracts/research-batch.v1.json"
     ) addScope(scopes, "release");
 
     if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");
@@ -115,7 +113,10 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "scripts/development/check-api-db-types.mjs" ||
       changedPath === "scripts/development/generated-output-drift.mjs"
     ) addScope(scopes, "api");
-    if (changedPath.startsWith("tools/panda-data/")) { addScope(scopes, "curation"); addScope(scopes, "data"); }
+    if (changedPath.startsWith("tools/panda-data/") || changedPath.startsWith("contracts/panda-data/")) {
+      addScope(scopes, "curation");
+      addScope(scopes, "data");
+    }
 
     if (changedPath.startsWith("infra/supabase/")) {
       addScope(scopes, "release");
@@ -136,8 +137,6 @@ export function classifyDevelopmentScopes(paths) {
       changedPath.startsWith("scripts/golden-dataset/") ||
       changedPath.startsWith("contracts/golden-dataset/")
     ) addScope(scopes, "data");
-
-    if (changedPath.startsWith("contracts/panda-")) addScope(scopes, "api");
   }
 
   return DEVELOPMENT_SCOPE_ORDER.filter((scope) => scopes.has(scope));

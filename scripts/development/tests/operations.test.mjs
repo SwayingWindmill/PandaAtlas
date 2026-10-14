@@ -78,6 +78,7 @@ test("changed-path routing stays centralized in the development scope classifier
   assert.deepEqual(classifyDevelopmentScopes(["apps/web/app/page.tsx"]), ["web"]);
   assert.deepEqual(classifyDevelopmentScopes(["services/api/src/main.ts"]), ["api"]);
   assert.deepEqual(classifyDevelopmentScopes(["tools/panda-data/src/panda_data/cli.py"]), ["curation", "data"]);
+  assert.deepEqual(classifyDevelopmentScopes(["contracts/panda-data/pipeline-job.v1.schema.json"]), ["curation", "data"]);
   assert.deepEqual(classifyDevelopmentScopes(["docs/architecture/example.md"]), []);
 });
 
