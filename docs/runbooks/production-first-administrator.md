@@ -70,7 +70,7 @@ Using the same trusted read-only database connection, verify:
 - Each new grant has its own matching `identity.role-assigned` Outbox fact. Any retry with the *same* approved request produces no duplicate grants, audits or Outbox records.
 - The selected verified staff member can log in through ordinary Supabase email OTP, enter `/admin`, enroll/verify Supabase TOTP, and upgrade the **real session** to AAL2 before sensitive Identity commands. Do not bypass MFA with JWT claims.
 
-Never test a genuine production revocation merely to demonstrate recovery. Use local/CI transaction tests and a controlled staging exercise.
+Never test a genuine production revocation merely to demonstrate recovery. Use local and CI transaction tests; there is no staging environment.
 
 ## 5. Recovery and incident response
 
