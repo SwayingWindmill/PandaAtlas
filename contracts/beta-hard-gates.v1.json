@@ -12,7 +12,7 @@
     "parent-xiao-qi-ji-mother"
   ],
   "allowed_reviewed_source_states": ["accessible", "redirected", "archived"],
-  "required_release_files": ["api.json", "d1.sql", "pandas.csv", "pandas.json"],
+  "required_release_files": ["api.json", "pandas.csv", "pandas.json"],
   "allowed_public_keys": [
     "access_state", "active_habitats", "aliases", "alt_en", "alt_zh", "assertion_ids", "birth_date", "birthplace", "bytes",
     "candidate_values", "canonical_slug", "cell_code", "changes_current_residency", "child_id",

@@ -121,7 +121,7 @@ export function classifyDevelopmentScopes(paths) {
     ) addScope(scopes, "api");
     if (changedPath.startsWith("tools/panda-data/")) { addScope(scopes, "curation"); addScope(scopes, "data"); }
 
-    if (changedPath === "docker-compose.yml" || changedPath.startsWith("infra/supabase/")) {
+    if (changedPath.startsWith("infra/supabase/")) {
       addScope(scopes, "release");
       addScope(scopes, "api");
     }

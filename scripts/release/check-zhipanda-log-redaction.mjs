@@ -14,7 +14,7 @@ export const defaultScanRoots = [
   "apps/web/components",
   "apps/web/features",
   "apps/web/lib",
-  "services/api/app",
+  "services/api/src",
   "services/api/scripts",
   "scripts/release",
 ];
