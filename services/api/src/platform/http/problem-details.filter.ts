@@ -22,7 +22,7 @@ interface ProblemDetails {
 }
 
 const STATUS_BY_KIND: Record<DomainErrorKind, number> = {
-  invalid: 422,
+  invalid: 400,
   not_found: 404,
   conflict: 409,
   forbidden: 403,
@@ -105,17 +105,15 @@ export class ProblemDetailsFilter implements ExceptionFilter {
     }
     const requestId = this.context.current?.requestId ?? "unavailable";
     const errors = validationErrors(exception);
+    const described = exception instanceof ProblemException || exception instanceof DomainError ? exception : undefined;
     const problem: ProblemDetails = {
       type: "about:blank",
       title: STATUS_CODES[status] ?? "Request failed",
       status,
-      detail:
-        exception instanceof ProblemException || exception instanceof DomainError
-          ? exception.detail
-          : safeDetail(status, exception),
+      detail: described?.detail ?? safeDetail(status, exception),
       code:
-        exception instanceof ProblemException || exception instanceof DomainError
-          ? exception.code
+        described !== undefined
+          ? described.code
           : errors === undefined
             ? codeForStatus(status)
             : "request.validationFailed",

@@ -609,7 +609,7 @@ describe("V2 contribution and review", () => {
       });
 
     const undeclared = await submit(panda.pandaId, ["undeclared"]);
-    expect(undeclared.statusCode).toBe(422);
+    expect(undeclared.statusCode).toBe(400);
     expect(undeclared.json()).toMatchObject({ code: "contribution.unknownSource" });
 
     const unknownPanda = await submit(randomUUID(), ["declared"]);

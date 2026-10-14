@@ -27,7 +27,7 @@ function render(exception: unknown) {
 
 describe("ProblemDetailsFilter", () => {
   it.each<[DomainErrorKind, number]>([
-    ["invalid", 422],
+    ["invalid", 400],
     ["not_found", 404],
     ["conflict", 409],
     ["forbidden", 403],

@@ -95,7 +95,7 @@ export class MediaApplication implements MediaPort {
     eligibilityStatus: MediaEligibilityStatus,
   ): void {
     if (eligibilityStatus === "eligible" && rightsStatus !== "cleared") {
-      throw new DomainError("conflict", "media.rightsNotCleared", "Only rights-cleared media may be marked eligible.");
+      throw new DomainError("invalid", "media.rightsNotCleared", "Only rights-cleared media may be marked eligible.");
     }
   }
 }
