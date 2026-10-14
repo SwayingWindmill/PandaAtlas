@@ -43,6 +43,4 @@ Do not add a parallel framework-comparison, Vercel, OpenNext, or legacy Worker/D
 
 ## Other checks
 
-Release/data policy checks remain individually callable where their owning feature still uses them, for example `npm run check:beta-hard-gates` and the repository hygiene checks exposed through Development Operations. Their existence does not recreate the retired V1 release pipeline.
-
-Historical release evidence under `docs/release/`, `docs/deployment/history/`, and Git history describes the runtime that produced that evidence. Use [deployment runtime status](../deployment/runtime-status.md) for current production topology.
+Repository policy checks, such as repository hygiene, are exposed through Development Operations. Historical release evidence lives in Git history. Use [deployment runtime status](../deployment/runtime-status.md) for current production topology.

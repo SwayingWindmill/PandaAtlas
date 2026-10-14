@@ -842,7 +842,7 @@ Avoid catch-log-rethrow templates, duplicate exists-before-insert checks when a 
 
 This baseline supersedes the V2 applicability of:
 
-- `docs/architecture/zhipanda-v1-architecture-baseline.md` runtime/backend architecture;
+- the V1 runtime/backend architecture;
 - ADR 0001's FastAPI/Worker/D1 authority and `/api/v1` compatibility model;
 - ADR 0002's FastAPI-specific managed API target and phased FastAPI deployment work;
 - the retired FastAPI serverless-closure design and request-runtime contracts;
@@ -850,7 +850,7 @@ This baseline supersedes the V2 applicability of:
 - D1/OpenNext-specific publication/deployment architecture;
 - V1 combined module boundaries such as `review_moderation`, `community_curation`, Activity/Feed split, and archive-workbench architecture where replaced by the V2 module map.
 
-These files may remain as historical records until repository cleanup, but they are not V2 implementation authority.
+Their documents were deleted (#608); Git history keeps them.
 
 ### Product/business truths retained
 
@@ -874,29 +874,10 @@ After the V2 commit point, operational docs/ADRs must be updated to describe onl
 
 ## 25. Implementation authority
 
-Implementation work must follow the delivery graph in:
-
-`docs/implementation/nestjs-v2-implementation-map.md`
-
 A delivery ticket may refine code-level details inside its accepted architecture boundary. It may not reopen settled architecture merely because a V1 file suggests a different structure.
 
 Reopen an architecture decision only when implementation discovers material evidence that an accepted baseline cannot satisfy correctness, security, operability, or product requirements.
 
 ## 26. Source decision records
 
-The detailed research/decision assets remain useful supporting evidence:
-
-- `docs/research/nestjs-v2-domain-module-map-2026-08-26.md`
-- `docs/research/nestjs-v2-runtime-foundation-2026-08-26.md`
-- `docs/research/nestjs-v2-postgresql-transaction-architecture-2026-08-26.md`
-- `docs/research/nestjs-v2-http-openapi-client-strategy-2026-08-26.md`
-- `docs/research/nestjs-v2-identity-authorization-security-2026-08-26.md`
-- `docs/research/nestjs-v2-events-outbox-background-execution-2026-08-26.md`
-- `docs/research/nestjs-v2-python-pipeline-boundary-2026-08-26.md`
-- `docs/research/nestjs-v2-publication-public-read-architecture-2026-08-26.md`
-- `docs/research/nestjs-v2-managed-deployment-architecture-2026-08-26.md`
-- `docs/research/nestjs-v2-observability-testing-enforcement-2026-08-26.md`
-- `docs/research/nestjs-v2-monorepo-layout-build-tooling-2026-08-26.md`
-- `docs/research/nestjs-v2-migration-cutover-retirement-2026-08-26.md`
-
-When this baseline and a research note appear to differ, this synthesis is the governing V2 statement unless the difference is an implementation detail explicitly deferred here.
+The 2026-08-26 research notes behind decisions #310-#322 were deleted (#608); Git history keeps them. This baseline is the governing V2 statement.

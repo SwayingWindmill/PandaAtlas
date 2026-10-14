@@ -63,8 +63,7 @@ function isDeliveryMetadataPath(changedPath) {
   return (
     changedPath === ".github/README.md" ||
     changedPath === ".github/PULL_REQUEST_TEMPLATE.md" ||
-    changedPath.startsWith(".github/ISSUE_TEMPLATE/") ||
-    changedPath === "docs/development-delivery.md"
+    changedPath.startsWith(".github/ISSUE_TEMPLATE/")
   );
 }
 

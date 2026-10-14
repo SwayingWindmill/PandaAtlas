@@ -1,6 +1,6 @@
 # UI component sourcing — owner requirement
 
-This is the standing policy for authoring, replacing or restyling any UI component or interactive control. Root `AGENTS.md` points here. The #475 record (`admin-ux-component-sourcing-policy-475.md`) keeps the original decision context and inventory.
+This is the standing policy for authoring, replacing or restyling any UI component or interactive control. Root `AGENTS.md` points here. The decision came from #475.
 
 **Do not author a new UI component or interactive control when an appropriate
 maintained component already exists.** **First actively search and compare**
