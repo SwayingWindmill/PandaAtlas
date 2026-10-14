@@ -126,8 +126,6 @@ export function classifyDevelopmentScopes(paths) {
     if (
       changedPath.startsWith("scripts/curation/") ||
       changedPath.startsWith("data/curation/") ||
-      changedPath.startsWith("data/media-library/") ||
-      changedPath.startsWith("data/reviewed-batches/") ||
       changedPath.startsWith("data/public-releases/") ||
       changedPath.startsWith("data/acquisition-sources/")
     ) addScope(scopes, "curation");
