@@ -23,7 +23,7 @@ test("normalizes repository paths across operating systems", () => {
 
 test("allows source, evidence, and glossary files", () => {
   assert.equal(repositoryHygieneViolation("apps/web/app/page.tsx"), null);
-  assert.equal(repositoryHygieneViolation("data/frontend-evidence/test-results.json"), null);
+  assert.equal(repositoryHygieneViolation("data/public-releases/2026.08.12.1/manifest.json"), null);
   assert.equal(repositoryHygieneViolation("infra/supabase/config.toml"), null);
   assert.equal(repositoryHygieneViolation("GLOSSARY-MAP.md"), null);
   assert.equal(repositoryHygieneViolation("contracts/golden-dataset/GLOSSARY.md"), null);

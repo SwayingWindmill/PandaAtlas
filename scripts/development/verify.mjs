@@ -101,13 +101,8 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "contracts/batch-operations.v1.json" ||
       changedPath === "apps/web/cloudflare.config.ts" ||
       changedPath === "services/api/cloudflare.config.ts" ||
-      changedPath.startsWith("data/beta-launch/") ||
       changedPath.startsWith("data/research-batches/") ||
-      changedPath.startsWith("data/frontend-evidence/") ||
-      changedPath.startsWith("data/frontend-system/") ||
-      changedPath === "contracts/research-batch.v1.json" ||
-      changedPath.startsWith("contracts/beta-hard-gates") ||
-      changedPath.startsWith("contracts/frontend-")
+      changedPath === "contracts/research-batch.v1.json"
     ) addScope(scopes, "release");
 
     if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");
@@ -118,7 +113,10 @@ export function classifyDevelopmentScopes(paths) {
       changedPath === "scripts/development/check-api-db-types.mjs" ||
       changedPath === "scripts/development/generated-output-drift.mjs"
     ) addScope(scopes, "api");
-    if (changedPath.startsWith("tools/panda-data/")) { addScope(scopes, "curation"); addScope(scopes, "data"); }
+    if (changedPath.startsWith("tools/panda-data/") || changedPath.startsWith("contracts/panda-data/")) {
+      addScope(scopes, "curation");
+      addScope(scopes, "data");
+    }
 
     if (changedPath.startsWith("infra/supabase/")) {
       addScope(scopes, "release");
@@ -137,22 +135,8 @@ export function classifyDevelopmentScopes(paths) {
 
     if (
       changedPath.startsWith("scripts/golden-dataset/") ||
-      changedPath.startsWith("contracts/golden-dataset/") ||
-      changedPath === "contracts/panda-expansion.v1.json" ||
-      changedPath === "contracts/panda-knowledge.v1.json"
+      changedPath.startsWith("contracts/golden-dataset/")
     ) addScope(scopes, "data");
-
-    if (
-      changedPath.startsWith("contracts/panda-") ||
-      changedPath === "contracts/acquisition-bundle.v1.json" ||
-      changedPath === "contracts/curation-patch.v1.json" ||
-      changedPath === "contracts/curator-decisions.v1.json" ||
-      changedPath === "contracts/integration-event.v1.json"
-    ) addScope(scopes, "api");
-
-    if (changedPath === "contracts/recovery-drill-environments.v1.json") {
-      addScope(scopes, "release");
-    }
   }
 
   return DEVELOPMENT_SCOPE_ORDER.filter((scope) => scopes.has(scope));
