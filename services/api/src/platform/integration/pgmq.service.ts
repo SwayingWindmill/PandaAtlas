@@ -16,6 +16,14 @@ export interface PgmqMessage {
   message: Record<string, unknown>;
 }
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
+
+// The outbox event an integration-event message names, when it names a well-formed one.
+export function queuedEventId(message: PgmqMessage): string | undefined {
+  const eventId = message.message.eventId;
+  return typeof eventId === "string" && UUID_PATTERN.test(eventId) ? eventId : undefined;
+}
+
 export class PgmqService {
   public async sendEvent(
     transaction: DatabaseTransaction,
@@ -73,6 +81,16 @@ export class PgmqService {
     visibilityTimeoutSeconds: number,
   ): Promise<void> {
     await sql`select pgmq.set_vt(${queue}::text, ${msgId}::bigint, ${visibilityTimeoutSeconds}::integer)`.execute(transaction);
+  }
+
+  public async hasReceipt(transaction: DatabaseTransaction, consumerKey: string, eventId: string): Promise<boolean> {
+    const receipt = await transaction
+      .selectFrom("integration.consumer_receipts")
+      .select("event_id")
+      .where("consumer_key", "=", consumerKey)
+      .where("event_id", "=", eventId)
+      .executeTakeFirst();
+    return receipt !== undefined;
   }
 
   public async claimReceipt(

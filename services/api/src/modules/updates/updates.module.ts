@@ -2,8 +2,8 @@ import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
+import { IntegrationEventConsumer } from "../../platform/integration/integration-event-consumer.js";
 import { IntegrationOutboxService } from "../../platform/integration/integration-outbox.service.js";
-import { PgmqService } from "../../platform/integration/pgmq.service.js";
 import {
   PUBLICATION_CHANGE_PORT,
   type PublicationChangePort,
@@ -36,12 +36,11 @@ import { UpdatesEventConsumerService } from "./infrastructure/updates-event-cons
     {
       provide: UpdatesEventConsumerService,
       useFactory: (
-        database: DatabaseService,
+        consumer: IntegrationEventConsumer,
         outbox: IntegrationOutboxService,
-        pgmq: PgmqService,
         publicationChanges: PublicationChangePort,
-      ) => new UpdatesEventConsumerService(database, outbox, pgmq, publicationChanges),
-      inject: [DatabaseService, IntegrationOutboxService, PgmqService, PUBLICATION_CHANGE_PORT],
+      ) => new UpdatesEventConsumerService(consumer, outbox, publicationChanges),
+      inject: [IntegrationEventConsumer, IntegrationOutboxService, PUBLICATION_CHANGE_PORT],
     },
   ],
   exports: [UPDATES_PORT, UpdatesEventConsumerService],

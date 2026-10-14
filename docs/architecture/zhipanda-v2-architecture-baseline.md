@@ -370,7 +370,7 @@ State the guarantee as:
 
 Consumers use durable receipt/idempotency records or domain uniqueness as appropriate.
 
-Retries are bounded and only used for replay-safe transient failures. Poison/permanent messages must move to a dead-letter path rather than block a queue. Today only the notification provider queue has one (`notification_provider_dlq`); a failing message on any other queue fails the cycle until it is fixed, which `GET /health/async` reports.
+Retries are bounded and only used for replay-safe transient failures. Poison/permanent messages must move to a dead-letter path rather than block a queue. The Updates, Notification and Audit consumers share `IntegrationEventConsumer`: each message is delivered in its own transaction, a failing one is retried on a later cycle and dead-lettered to `integration.dead_letters` after five reads, and a message naming no existing event is dead-lettered at once. The public cache consumer purges once per batch and archives its messages after the purge succeeds. The notification provider queue keeps its own policy (`notification_provider_dlq`). The cycle runs every stage even when one fails.
 
 ### Worker execution
 
@@ -595,7 +595,7 @@ Two Workers are deployed units: the Web Worker (`apps/web`) and the API Worker (
 
 `GET /ready` performs a bounded DB readiness probe through the real request connection path and returns 503 when the DB dependency is unavailable.
 
-`GET /health/async` reads the async downstream heartbeat and returns 503 once no Cron Trigger cycle has completed every stage for more than 20 minutes. It is separate from `/ready` because a stalled background cycle does not stop the API serving requests; it exists for the external production probe.
+`GET /health/async` reads the async downstream heartbeat and returns 503 once no Cron Trigger cycle has completed every stage for more than 20 minutes, or while a dead-lettered message waits for an operator. It is separate from `/ready` because a stalled background cycle does not stop the API serving requests; it exists for the external production probe.
 
 Publication suspension is not infrastructure un-readiness.
 

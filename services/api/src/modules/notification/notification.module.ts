@@ -4,6 +4,7 @@ import { ConfigModule } from "../../platform/config/config.module.js";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
+import { IntegrationEventConsumer } from "../../platform/integration/integration-event-consumer.js";
 import { IntegrationOutboxService } from "../../platform/integration/integration-outbox.service.js";
 import { PgmqService } from "../../platform/integration/pgmq.service.js";
 import {
@@ -56,14 +57,14 @@ import { ResendNotificationProvider } from "./infrastructure/resend-notification
     {
       provide: NotificationEventConsumerService,
       useFactory: (
-        database: DatabaseService,
+        consumer: IntegrationEventConsumer,
         outbox: IntegrationOutboxService,
         pgmq: PgmqService,
         audience: EngagementNotificationAudiencePort,
         contacts: IdentityNotificationContactPort,
-      ) => new NotificationEventConsumerService(database, outbox, pgmq, audience, contacts),
+      ) => new NotificationEventConsumerService(consumer, outbox, pgmq, audience, contacts),
       inject: [
-        DatabaseService,
+        IntegrationEventConsumer,
         IntegrationOutboxService,
         PgmqService,
         ENGAGEMENT_NOTIFICATION_AUDIENCE_PORT,

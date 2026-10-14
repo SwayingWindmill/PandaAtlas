@@ -2,8 +2,7 @@ import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { IntegrationModule } from "../../platform/integration/integration.module.js";
-import { IntegrationOutboxService } from "../../platform/integration/integration-outbox.service.js";
-import { PgmqService } from "../../platform/integration/pgmq.service.js";
+import { IntegrationEventConsumer } from "../../platform/integration/integration-event-consumer.js";
 import {
   AUDIT_PORT,
   AUDIT_REPOSITORY,
@@ -30,9 +29,8 @@ import { PostgresAuditRepository } from "./infrastructure/postgres-audit.reposit
     },
     {
       provide: AuditEventConsumerService,
-      useFactory: (database: DatabaseService, outbox: IntegrationOutboxService, pgmq: PgmqService) =>
-        new AuditEventConsumerService(database, outbox, pgmq),
-      inject: [DatabaseService, IntegrationOutboxService, PgmqService],
+      useFactory: (consumer: IntegrationEventConsumer) => new AuditEventConsumerService(consumer),
+      inject: [IntegrationEventConsumer],
     },
   ],
   exports: [AUDIT_PORT, AuditEventConsumerService],

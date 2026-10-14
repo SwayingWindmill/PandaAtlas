@@ -1,60 +1,40 @@
-import type { DatabaseService } from "../../../platform/database/database.service.js";
+import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
 import { sha256Content } from "../../../platform/integrity/content-digest.js";
-import type { IntegrationOutboxService } from "../../../platform/integration/integration-outbox.service.js";
-import type { PgmqMessage, PgmqService } from "../../../platform/integration/pgmq.service.js";
-
-const CONSUMER_KEY = "audit.projector";
-const QUEUE = "integration_audit" as const;
-
-export interface AuditConsumerResult {
-  received: number;
-  processed: number;
-  duplicates: number;
-}
+import type {
+  IntegrationEventBatchResult,
+  IntegrationEventConsumer,
+  IntegrationEventConsumerDefinition,
+  IntegrationEventHandled,
+} from "../../../platform/integration/integration-event-consumer.js";
+import type { IntegrationEvent } from "../../../platform/integration/integration-event.types.js";
 
 export class AuditEventConsumerService {
-  public constructor(
-    private readonly database: DatabaseService,
-    private readonly outbox: IntegrationOutboxService,
-    private readonly pgmq: PgmqService,
-  ) {}
+  private readonly definition: IntegrationEventConsumerDefinition = {
+    consumerKey: "audit.projector",
+    queue: "integration_audit",
+    handle: (transaction, event) => this.project(transaction, event),
+  };
 
-  public async processBatch(limit = 50): Promise<AuditConsumerResult> {
-    const messages = await this.database.transaction((transaction) => this.pgmq.read(transaction, QUEUE, 60, limit));
-    const result: AuditConsumerResult = { received: messages.length, processed: 0, duplicates: 0 };
-    for (const message of messages) {
-      const outcome = await this.processMessage(message);
-      result[outcome] += 1;
-    }
-    return result;
+  public constructor(private readonly consumer: IntegrationEventConsumer) {}
+
+  public processBatch(limit = 50): Promise<IntegrationEventBatchResult> {
+    return this.consumer.processBatch(this.definition, limit);
   }
 
-  private async processMessage(message: PgmqMessage): Promise<"processed" | "duplicates"> {
-    const eventId = message.message.eventId;
-    if (typeof eventId !== "string") throw new Error("Audit queue message is missing eventId");
-    return this.database.transaction(async (transaction) => {
-      const event = await this.outbox.load(transaction, eventId);
-      if (event === undefined) throw new Error(`Outbox event ${eventId} does not exist`);
-      const claimed = await this.pgmq.claimReceipt(transaction, CONSUMER_KEY, eventId);
-      if (!claimed) {
-        await this.pgmq.archive(transaction, QUEUE, message.msgId);
-        return "duplicates";
-      }
-      await transaction
-        .insertInto("audit.evidence_events")
-        .values({
-          source_event_id: event.eventId,
-          source_context: event.sourceContext,
-          event_type: event.eventType,
-          aggregate_type: event.aggregateType,
-          aggregate_id: event.aggregateId,
-          correlation_id: event.correlationId,
-          occurred_at: event.occurredAt,
-          payload_sha256: sha256Content(event.payload),
-        })
-        .execute();
-      await this.pgmq.archive(transaction, QUEUE, message.msgId);
-      return "processed";
-    });
+  private async project(transaction: DatabaseTransaction, event: IntegrationEvent): Promise<IntegrationEventHandled> {
+    await transaction
+      .insertInto("audit.evidence_events")
+      .values({
+        source_event_id: event.eventId,
+        source_context: event.sourceContext,
+        event_type: event.eventType,
+        aggregate_type: event.aggregateType,
+        aggregate_id: event.aggregateId,
+        correlation_id: event.correlationId,
+        occurred_at: event.occurredAt,
+        payload_sha256: sha256Content(event.payload),
+      })
+      .execute();
+    return { outcome: "processed" };
   }
 }
