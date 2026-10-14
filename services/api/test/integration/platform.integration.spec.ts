@@ -137,12 +137,10 @@ describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
   it("keeps routine staff workflows usable after recent authentication expires while protecting high-impact actions", async () => {
     const routine = [
       "review.case.intake", "review.case.read", "review.case.claim", "review.case.decide", "review.case.verify_source",
-      "moderation.sanction.read", "moderation.appeal.read", "moderation.metrics",
       "publication.release.manage", "audit.read",
     ];
     const highImpact = [
       "identity.account.manage", "identity.role.manage",
-      "moderation.sanction.apply", "moderation.sanction.restore", "moderation.appeal.decide",
       "publication.release.activate", "publication.emergency", "audit.export",
     ];
 
