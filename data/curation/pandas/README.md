@@ -23,7 +23,13 @@ The Python entry point is available at `scripts/curation/validate_panda_curation
 - `partial`: the row has a reliable source but still misses at least one database-critical field, such as exact birth date, current facility, or parent identity.
 - `needs_primary_source`: the row is only supported by secondary reporting or needs a stronger source before promotion.
 
-Only panda rows with `evidence_status=verified` and `review_status=approved` may be treated as public-ready. An approved panda must also have the trusted identity and current-location fields required by `contracts/panda-expansion.v1.json`, at least three approved verified events, and at least one approved photo.
+Only panda rows with `evidence_status=verified` and `review_status=approved` may be treated as public-ready. An approved panda must also have:
+
+- identity: `slug`, `name_zh`, `name_en`, `gender` and `status`;
+- trust fields: a birth date (or birth text), the current location, primary source IDs and an intro;
+- a current location that comes from a reviewed residency and carries a last-verified date;
+- parentage only from reviewed assertions, and unknown or disputed values stated explicitly rather than guessed (never inferred from photo captions);
+- at least three approved verified events and at least one approved photo of this panda.
 
 ## Minimum Photo Record
 
