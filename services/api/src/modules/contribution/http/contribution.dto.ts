@@ -198,6 +198,9 @@ export class ContributionRecordDto {
   @ApiProperty()
   public declare status: string;
 
+  @ApiPropertyOptional({ description: "The reviewer's explanation of the status." })
+  public declare statusExplanation?: string;
+
   @ApiProperty({ format: "date-time" })
   public declare submittedAt: string;
 }

@@ -106,7 +106,7 @@ export function StaffMfa() {
     <main className="mx-auto w-full max-w-4xl px-5 py-8 md:px-8 md:py-10">
       <h1 className="text-2xl font-semibold tracking-tight text-slate-950">多因素认证</h1>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-        使用验证器应用生成动态验证码，确保工作人员能够安全执行涉及熊猫档案审核、策展与发布的敏感操作。
+        使用验证器应用生成动态验证码，确保工作人员能够安全执行涉及熊猫档案审核与发布的敏感操作。
       </p>
       <AdminAccountNavigation current="mfa" canUseMfa />
       <section className="mt-8 max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" aria-label="多因素认证设置">

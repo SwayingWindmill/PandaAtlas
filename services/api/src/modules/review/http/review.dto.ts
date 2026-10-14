@@ -90,7 +90,11 @@ export class RecordReviewDecisionDto {
   @IsIn(["accepted", "not_accepted", "duplicate", "out_of_scope", "abuse"])
   public outcome!: ReviewDecisionOutcome;
 
-  @ApiProperty({ type: String, isArray: true })
+  @ApiProperty({
+    type: String,
+    isArray: true,
+    description: "Assertions of the active revision that an accepted decision writes to the Panda.",
+  })
   @IsArray()
   @ArrayUnique()
   @Matches(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/, { each: true })
@@ -115,15 +119,6 @@ export class RecordReviewDecisionDto {
   @IsOptional()
   @IsUUID()
   public duplicateOfReviewCaseId?: string;
-}
-
-export class RecommendReviewDto {
-  @ApiProperty()
-  @Transform(({ value }) => normalizeText(value))
-  @IsString()
-  @MinLength(3)
-  @MaxLength(2000)
-  public reason!: string;
 }
 
 export class ReviewCaseDto {
@@ -202,9 +197,4 @@ export class ReviewVerificationResultDto {
 export class ReviewDecisionResultDto {
   @ApiProperty({ enum: [true] })
   public declare decided: true;
-}
-
-export class ReviewRecommendationDto {
-  @ApiProperty({ format: "uuid" })
-  public declare changeSetId: string;
 }

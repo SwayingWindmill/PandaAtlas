@@ -227,7 +227,7 @@ export class StaffRolesService {
       .select("capability_key").where("role_key", "in", roles).execute();
     const keys = new Set(capabilities.map((row) => row.capability_key));
     if (keys.has("review.case.decide") &&
-      (keys.has("curation.change.approve") || keys.has("publication.release.activate"))) {
+      keys.has("publication.release.activate")) {
       throw new ProblemException(409, "identity.dutiesConflict", "Review and final approval duties must stay separate.");
     }
   }

@@ -105,7 +105,7 @@ test("audit evidence list offers retry after transient read failure", async ({ p
 
 test("audit records never expose invented object links and use only supported limit URL state", async ({ page }) => {
   const reviewEvidence = [{ ...evidence[0], sourceContext: "review", aggregateType: "review_case",
-    eventType: "review.incorporation-recommended" }];
+    eventType: "review.decision.recorded" }];
   await page.route("**/api/admin/session", (route) => route.fulfill({
     status: 200, contentType: "application/json", body: JSON.stringify(auditSession),
   }));
@@ -115,7 +115,7 @@ test("audit records never expose invented object links and use only supported li
   await page.goto("/admin/audit/evidence?limit=25");
   await page.getByRole("button", { name: /查看审计详情：/ }).click();
   const details = page.getByRole("region", { name: "审计事件详情" });
-  await expect(details.getByText("已建议将审核结果纳入档案")).toBeVisible();
+  await expect(details.getByText("已记录审核决定")).toBeVisible();
   await details.getByText("技术追溯信息").click();
   await expect(details.getByText(reviewEvidence[0].aggregateId, { exact: true })).toBeVisible();
   await expect(details.getByRole("link", { name: "前往审核队列" })).toHaveAttribute("href", "/admin/reviews");

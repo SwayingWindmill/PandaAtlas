@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
-  ArrowRight, ArrowUpRight, ClipboardCheck, Database, LockKeyhole,
+  ArrowRight, ArrowUpRight, ClipboardCheck, LockKeyhole,
   ShieldCheck, Activity, CircleArrowRight,
 } from "lucide-react";
 import type { Route } from "next";
@@ -15,7 +15,6 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auditEvidenceQueryOptions } from "@/features/admin/audit/api/queries";
 import { auditEventName, auditObjectName } from "@/features/admin/audit/presentation";
-import { curationListQueryOptions } from "@/features/admin/curation/api/queries";
 import { reviewQueueQueryOptions } from "@/features/admin/review-moderation/api/queries";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import { visibleAdminNavigationItems } from "@/features/admin/shell/navigation";
@@ -29,15 +28,10 @@ function QueueValue({ count, loading, error }: { count?: number; loading: boolea
 export function AdminOverview() {
   const { data: session } = useQuery(adminSessionQueryOptions);
   const canReview = session?.capabilities.includes("review.case.read") ?? false;
-  const canCurate = session?.capabilities.includes("curation.change.read") ?? false;
   const canAudit = session?.capabilities.includes("audit.read") ?? false;
   const review = useQuery({
     ...reviewQueueQueryOptions({ state: "new", limit: 1, offset: 0 }),
     enabled: canReview, retry: false,
-  });
-  const curation = useQuery({
-    ...curationListQueryOptions({ state: "validated", limit: 1, offset: 0 }),
-    enabled: canCurate, retry: false,
   });
   const audit = useQuery({ ...auditEvidenceQueryOptions(5), enabled: canAudit, retry: false });
 
@@ -46,7 +40,6 @@ export function AdminOverview() {
   const workspaces = visibleAdminNavigationItems(session).filter((item) => ![
     "/admin", "/admin/capabilities", "/admin/security/mfa",
     ...(canReview ? ["/admin/reviews"] : []),
-    ...(canCurate ? ["/admin/curation"] : []),
   ].includes(item.href));
 
   return (
@@ -74,9 +67,9 @@ export function AdminOverview() {
             <h2 className="text-base font-semibold tracking-tight text-slate-950">待处理的工作</h2>
             <p className="mt-1 text-xs text-slate-500">当前队列中的待办事项，不代表今日新增</p>
           </div>
-          {(canReview || canCurate) && <Badge variant="outline" className="border-slate-200 bg-white font-normal text-slate-600">当前队列</Badge>}
+          {canReview && <Badge variant="outline" className="border-slate-200 bg-white font-normal text-slate-600">当前队列</Badge>}
         </div>
-        {canReview || canCurate ? (
+        {canReview ? (
           <div className="grid gap-3 md:grid-cols-2">
             {canReview && (
               <Card className="group gap-0 overflow-hidden rounded-xl border-slate-200 bg-white py-0 shadow-none">
@@ -96,25 +89,6 @@ export function AdminOverview() {
                 <Separator className="bg-slate-100" />
                 <Link href="/admin/reviews?state=new" aria-label="进入审核队列" className="flex min-h-11 items-center justify-between px-5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px]">
                   进入审核队列 <ArrowRight size={17} aria-hidden="true" />
-                </Link>
-              </Card>
-            )}
-            {canCurate && (
-              <Card className="group gap-0 overflow-hidden rounded-xl border-slate-200 bg-white py-0 shadow-none">
-                <CardHeader className="flex flex-row items-center justify-between px-5 pb-1 pt-5">
-                  <span className="flex size-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700"><Database size={18} aria-hidden="true" /></span>
-                  <Badge variant="outline" className="border-slate-200 text-xs font-normal text-slate-600">档案策展</Badge>
-                </CardHeader>
-                <CardContent className="space-y-3 px-5 pb-4 pt-3">
-                  <div className="space-y-2">
-                    <CardDescription className="text-sm font-medium text-slate-600">等待独立审批的变更</CardDescription>
-                    <div aria-live="polite"><QueueValue count={curation.data?.total} loading={curation.isPending} error={curation.isError} /></div>
-                  </div>
-                  <p className="min-h-5 text-xs leading-5 text-slate-600">{curation.isError ? "可以进入策展页面检查并重试" : curation.data?.total === 0 ? "目前没有等待审批的变更" : "已核验的档案变更，等待独立审批"}</p>
-                </CardContent>
-                <Separator className="bg-slate-100" />
-                <Link href="/admin/curation?state=validated" aria-label="进入策展变更" className="flex min-h-11 items-center justify-between px-5 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px]">
-                  进入策展变更 <ArrowRight size={17} aria-hidden="true" />
                 </Link>
               </Card>
             )}

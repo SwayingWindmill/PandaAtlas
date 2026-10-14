@@ -10,7 +10,7 @@ Staff identities are authenticated by **Supabase Auth** and authorized by the pr
 2. In the Chinese admin console, visit **治理 → 工作人员**, enter the colleague's email and select **发送邀请**.
 3. The NestJS server uses the **Supabase Auth Admin SDK**, not an application password or a browser token, to create an *unconfirmed* Supabase identity and deliver its invitation email. The server securely stores a pending invitation bound to the returned **Supabase user UUID**; a pending invite confers **no reviewer role**.
 4. Only after the invited individual verifies that address by following the invitation link does the login flow call the Web route `POST /api/admin/staff/invitations/accept`, which forwards to the API's `POST /api/v2/me/staff-invitation/accept`. NestJS matches the JWT UUID to the invited UUID and the verified Auth email, and atomically records the `member` and `reviewer` grants, append-only authorization audit, outbox events and accepted invitation status.
-5. The reviewer reaches the existing review queue. They cannot access publishing, Curation approval, privacy operations or Identity management APIs. Application authorization is checked from PostgreSQL on every protected request.
+5. The reviewer reaches the existing review queue. Accepting a contribution writes its facts to the archive; the public site changes only when a publisher activates a release. Reviewers cannot access publishing, privacy operations or Identity management APIs. Application authorization is checked from PostgreSQL on every protected request.
 
 ## Managed runtime configuration
 

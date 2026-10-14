@@ -8,14 +8,12 @@ import { getActorContext } from "../../identity/http/request-actor.js";
 import { REVIEW_PORT, type ReviewPort } from "../application/review.application.js";
 import {
   OpenReviewCaseDto,
-  RecommendReviewDto,
   RecordReviewDecisionDto,
   ReviewCaseDto,
   ReviewCaseListQueryDto,
   ReviewCasePageDto,
   ReviewCaseSurfaceDto,
   ReviewDecisionResultDto,
-  ReviewRecommendationDto,
   ReviewVerificationResultDto,
   VerifyReviewSourceDto,
 } from "./review.dto.js";
@@ -136,43 +134,28 @@ export class ReviewController {
     @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
     @Body() input: RecordReviewDecisionDto,
   ) {
-    const result = await this.review.decide(reviewCaseId, actorAccountId(request), input);
-    if (result === "case_not_found") {
-      throw new ProblemException(404, "review.caseNotFound", "The ReviewCase does not exist or is not decidable.");
-    }
-    if (result === "invalid_assertion") {
-      throw new ProblemException(422, "review.invalidAssertion", "A selected assertion is not in the active revision.");
-    }
-    return { decided: true as const };
-  }
-
-  @Post(":reviewCaseId/recommend")
-  @HttpCode(200)
-  @RequireCapabilities("review.case.recommend")
-  @ApiOperation({ operationId: "recommendReviewCase" })
-  @ApiOkResponse({ type: ReviewRecommendationDto })
-  public async recommend(
-    @Req() request: HttpRequest,
-    @Param("reviewCaseId", ParseUUIDPipe) reviewCaseId: string,
-    @Body() input: RecommendReviewDto,
-  ) {
     const correlationId = this.requestContext.current?.correlationId;
     if (correlationId === undefined) {
       throw new ProblemException(500, "system.internal", "The request context is unavailable.");
     }
-    const result = await this.review.recommend(
-      reviewCaseId,
-      actorAccountId(request),
-      input.reason,
-      correlationId,
-    );
-    if (result === undefined) {
+    const result = await this.review.decide(reviewCaseId, actorAccountId(request), input, correlationId);
+    if (result === "case_not_found") {
+      throw new ProblemException(404, "review.caseNotFound", "The ReviewCase does not exist or is not decidable.");
+    }
+    if (result === "invalid_assertion") {
       throw new ProblemException(
-        409,
-        "review.notRecommendable",
-        "The ReviewCase is missing an accepted decision or verified canonical evidence.",
+        422,
+        "review.invalidAssertion",
+        "Select assertions from the active revision; accepting requires at least one, and one per field.",
       );
     }
-    return result;
+    if (result === "source_not_verified") {
+      throw new ProblemException(
+        422,
+        "review.sourceNotVerified",
+        "Verify each source of the accepted assertions to canonical Evidence first.",
+      );
+    }
+    return { decided: true as const };
   }
 }

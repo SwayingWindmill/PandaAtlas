@@ -3,14 +3,14 @@ import { DatabaseModule } from "../../platform/database/database.module.js";
 import { DatabaseService } from "../../platform/database/database.service.js";
 import { PANDA_PUBLICATION_PORT } from "./application/panda-publication.application.js";
 import {
-  PANDA_CURATION_PARTICIPANT,
+  PANDA_FACT_PARTICIPANT,
   PANDA_PORT,
   PANDA_REFERENCE_PORT,
   PANDA_REPOSITORY,
   PandaApplication,
   type PandaRepository,
 } from "./application/panda.application.js";
-import { PostgresPandaCurationParticipant } from "./infrastructure/postgres-panda-curation.participant.js";
+import { PostgresPandaFactParticipant } from "./infrastructure/postgres-panda-fact.participant.js";
 import { PostgresPandaPublicationQuery } from "./infrastructure/postgres-panda-publication.query.js";
 import { PostgresPandaRepository } from "./infrastructure/postgres-panda.repository.js";
 
@@ -27,15 +27,15 @@ import { PostgresPandaRepository } from "./infrastructure/postgres-panda.reposit
       useFactory: (repository: PandaRepository) => new PandaApplication(repository),
       inject: [PANDA_REPOSITORY],
     },
-    { provide: PostgresPandaCurationParticipant, useClass: PostgresPandaCurationParticipant },
+    { provide: PostgresPandaFactParticipant, useClass: PostgresPandaFactParticipant },
     {
       provide: PANDA_PUBLICATION_PORT,
       useFactory: () => new PostgresPandaPublicationQuery(),
     },
     { provide: PANDA_PORT, useExisting: PandaApplication },
     { provide: PANDA_REFERENCE_PORT, useExisting: PandaApplication },
-    { provide: PANDA_CURATION_PARTICIPANT, useExisting: PostgresPandaCurationParticipant },
+    { provide: PANDA_FACT_PARTICIPANT, useExisting: PostgresPandaFactParticipant },
   ],
-  exports: [PANDA_PORT, PANDA_REFERENCE_PORT, PANDA_CURATION_PARTICIPANT, PANDA_PUBLICATION_PORT],
+  exports: [PANDA_PORT, PANDA_REFERENCE_PORT, PANDA_FACT_PARTICIPANT, PANDA_PUBLICATION_PORT],
 })
 export class PandaModule {}

@@ -1,3 +1,5 @@
+import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
+
 export type ContributionSubmissionType = "correction" | "sourced_information";
 export type ContributionSourceKind = "url" | "publication" | "document" | "other";
 export type ContributionCertainty = "confirmed" | "provisional";
@@ -54,6 +56,7 @@ export interface ContributionRecord {
   publicVersionSeen: string;
   revisionNumber: number;
   status: string;
+  statusExplanation?: string;
   submittedAt: Date;
 }
 
@@ -102,11 +105,29 @@ export interface ContributionReviewPort {
   getReviewSurface(submissionId: string): Promise<ContributionReviewSurface | undefined>;
 }
 
+export type ContributionReviewStatus = "accepted" | "not_accepted" | "duplicate" | "out_of_scope";
+
+export interface ContributionReviewOutcomeInput {
+  submissionId: string;
+  revisionNumber: number;
+  status: ContributionReviewStatus;
+  explanation: string;
+  decisionId: string;
+  actorAccountId: string;
+  correlationId: string;
+}
+
+// Records a Review decision's contributor-visible outcome in the decision's transaction.
+export interface ContributionReviewParticipant {
+  recordReviewOutcome(transaction: DatabaseTransaction, input: ContributionReviewOutcomeInput): Promise<void>;
+}
+
 export type ContributionPort = ContributionRepository;
 
 export const CONTRIBUTION_REPOSITORY = Symbol("CONTRIBUTION_REPOSITORY");
 export const CONTRIBUTION_PORT = Symbol("CONTRIBUTION_PORT");
 export const CONTRIBUTION_REVIEW_PORT = Symbol("CONTRIBUTION_REVIEW_PORT");
+export const CONTRIBUTION_REVIEW_PARTICIPANT = Symbol("CONTRIBUTION_REVIEW_PARTICIPANT");
 
 export class ContributionApplication implements ContributionPort, ContributionReviewPort {
   public constructor(private readonly repository: ContributionRepository) {}

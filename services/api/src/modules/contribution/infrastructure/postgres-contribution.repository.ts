@@ -118,59 +118,21 @@ export class PostgresContributionRepository implements ContributionRepository {
   }
 
   public async listOwn(accountId: string): Promise<ContributionRecord[]> {
-    const rows = await this.database.db
-      .selectFrom("community_intake.submissions")
-      .select([
-        "submission_id",
-        "submission_type",
-        "target_id",
-        "public_version_seen",
-        "latest_revision_number",
-        "contributor_status",
-        "submitted_at",
-      ])
-      .where("account_id", "=", accountId)
-      .where("submitted_at", "is not", null)
-      .where("latest_revision_number", ">", 0)
-      .orderBy("submitted_at", "desc")
+    const rows = await this.ownContributions(accountId)
+      .where("submission.submitted_at", "is not", null)
+      .where("submission.latest_revision_number", ">", 0)
+      .orderBy("submission.submitted_at", "desc")
       .limit(100)
       .execute();
-    return rows.map((row) => ({
-      submissionId: row.submission_id,
-      submissionType: row.submission_type,
-      targetPandaId: row.target_id,
-      publicVersionSeen: row.public_version_seen,
-      revisionNumber: row.latest_revision_number,
-      status: row.contributor_status,
-      submittedAt: row.submitted_at!,
-    }));
+    return rows.map((row) => this.mapOwn(row));
   }
 
   public async getOwn(accountId: string, submissionId: string): Promise<ContributionRecord | undefined> {
-    const row = await this.database.db
-      .selectFrom("community_intake.submissions")
-      .select([
-        "submission_id",
-        "submission_type",
-        "target_id",
-        "public_version_seen",
-        "latest_revision_number",
-        "contributor_status",
-        "submitted_at",
-      ])
-      .where("submission_id", "=", submissionId)
-      .where("account_id", "=", accountId)
+    const row = await this.ownContributions(accountId)
+      .where("submission.submission_id", "=", submissionId)
       .executeTakeFirst();
     if (row === undefined || row.submitted_at === null || row.latest_revision_number === 0) return undefined;
-    return {
-      submissionId: row.submission_id,
-      submissionType: row.submission_type,
-      targetPandaId: row.target_id,
-      publicVersionSeen: row.public_version_seen,
-      revisionNumber: row.latest_revision_number,
-      status: row.contributor_status,
-      submittedAt: row.submitted_at,
-    };
+    return this.mapOwn(row);
   }
 
   public async getReviewSurface(submissionId: string): Promise<ContributionReviewSurface | undefined> {
@@ -270,6 +232,49 @@ export class PostgresContributionRepository implements ContributionRepository {
       mediaType: row.media_type,
       byteSize: Number(row.byte_size),
       state: row.state,
+    };
+  }
+
+  private ownContributions(accountId: string) {
+    return this.database.db
+      .selectFrom("community_intake.submissions as submission")
+      .leftJoin(
+        "community_intake.contributor_status_events as status",
+        "status.status_event_id",
+        "submission.current_status_event_id",
+      )
+      .select([
+        "submission.submission_id",
+        "submission.submission_type",
+        "submission.target_id",
+        "submission.public_version_seen",
+        "submission.latest_revision_number",
+        "submission.contributor_status",
+        "submission.submitted_at",
+        "status.user_visible_reason",
+      ])
+      .where("submission.account_id", "=", accountId);
+  }
+
+  private mapOwn(row: {
+    submission_id: string;
+    submission_type: ContributionRecord["submissionType"];
+    target_id: string;
+    public_version_seen: string;
+    latest_revision_number: number;
+    contributor_status: string;
+    submitted_at: Date | null;
+    user_visible_reason: string | null;
+  }): ContributionRecord {
+    return {
+      submissionId: row.submission_id,
+      submissionType: row.submission_type,
+      targetPandaId: row.target_id,
+      publicVersionSeen: row.public_version_seen,
+      revisionNumber: row.latest_revision_number,
+      status: row.contributor_status,
+      ...(row.user_visible_reason === null ? {} : { statusExplanation: row.user_visible_reason }),
+      submittedAt: row.submitted_at!,
     };
   }
 }

@@ -42,5 +42,5 @@ Owns authenticated structured contribution drafts, immutable SubmissionRevisions
 - Public Activity consumes explicit public-safe events from published Archive Releases or authorized editorial commands; projection failure never rolls back Archive publication.
 - Personalized Feed reads Public Activity and current Follow state, but never mutates either source while serving a query.
 - Notification Orchestration consumes Public Activity events and contributor-visible Community Intake status events, while retaining ownership of preferences, channels, Inbox state, and delivery.
-- Community Intake accepts authenticated structured contributions and private evidence; later Review & Moderation and Curation contexts consume only explicit accepted outputs.
+- Community Intake accepts authenticated structured contributions and private evidence; a Review decision that accepts a contribution writes its selected facts to the Trusted Archive.
 - The golden dataset is the shared acceptance fixture spanning the archive and projection contexts; it is not a replacement for production data.

@@ -7,15 +7,14 @@ import { RequestContextModule } from "../../platform/request-context/request-con
 import { EVIDENCE_PORT, type EvidencePort } from "../evidence/application/evidence.application.js";
 import { EvidenceModule } from "../evidence/evidence.module.js";
 import {
+  CONTRIBUTION_REVIEW_PARTICIPANT,
   CONTRIBUTION_REVIEW_PORT,
+  type ContributionReviewParticipant,
   type ContributionReviewPort,
 } from "../contribution/application/contribution.application.js";
 import { ContributionModule } from "../contribution/contribution.module.js";
-import {
-  CURATION_INTAKE_PORT,
-  type CurationIntakePort,
-} from "../curation/application/curation.application.js";
-import { CurationModule } from "../curation/curation.module.js";
+import { PANDA_FACT_PARTICIPANT, type PandaFactParticipant } from "../panda/application/panda.application.js";
+import { PandaModule } from "../panda/panda.module.js";
 import {
   REVIEW_PORT,
   REVIEW_REPOSITORY,
@@ -31,26 +30,26 @@ import { PostgresReviewRepository } from "./infrastructure/postgres-review.repos
     IntegrationModule,
     RequestContextModule,
     ContributionModule,
-    CurationModule,
     EvidenceModule,
+    PandaModule,
   ],
   controllers: [ReviewController],
   providers: [
     {
       provide: REVIEW_REPOSITORY,
-      useFactory: (database: DatabaseService, outbox: IntegrationOutboxService) =>
-        new PostgresReviewRepository(database, outbox),
-      inject: [DatabaseService, IntegrationOutboxService],
+      useFactory: (
+        database: DatabaseService,
+        outbox: IntegrationOutboxService,
+        pandas: PandaFactParticipant,
+        contributions: ContributionReviewParticipant,
+      ) => new PostgresReviewRepository(database, outbox, pandas, contributions),
+      inject: [DatabaseService, IntegrationOutboxService, PANDA_FACT_PARTICIPANT, CONTRIBUTION_REVIEW_PARTICIPANT],
     },
     {
       provide: ReviewApplication,
-      useFactory: (
-        repository: ReviewRepository,
-        contributions: ContributionReviewPort,
-        curation: CurationIntakePort,
-        evidence: EvidencePort,
-      ) => new ReviewApplication(repository, contributions, curation, evidence),
-      inject: [REVIEW_REPOSITORY, CONTRIBUTION_REVIEW_PORT, CURATION_INTAKE_PORT, EVIDENCE_PORT],
+      useFactory: (repository: ReviewRepository, contributions: ContributionReviewPort, evidence: EvidencePort) =>
+        new ReviewApplication(repository, contributions, evidence),
+      inject: [REVIEW_REPOSITORY, CONTRIBUTION_REVIEW_PORT, EVIDENCE_PORT],
     },
     { provide: REVIEW_PORT, useExisting: ReviewApplication },
   ],

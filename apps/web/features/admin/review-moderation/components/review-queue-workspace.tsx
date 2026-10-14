@@ -37,7 +37,7 @@ import {
 } from "../presentation";
 
 const reviewColumnHelper = createColumnHelper<ReviewCaseQueueItem>();
-type ReviewPanel = "evidence" | "verify" | "decide" | "recommend";
+type ReviewPanel = "evidence" | "verify" | "decide";
 
 export function ReviewQueueWorkspace() {
   const queryClient = useQueryClient();
@@ -106,7 +106,7 @@ export function ReviewQueueWorkspace() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-950">贡献审核队列</h1>
           <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
-            核对事实与来源，记录审核结果，再将通过的资料交接给策展。
+            核对事实与来源，记录审核结果；接受的事实直接写入熊猫档案。
           </p>
         </div>
         {canRead ? (
@@ -226,7 +226,6 @@ function ReviewCaseDetail({
   const canClaim = hasAdminCapability(capabilities, "review.case.claim");
   const canVerify = hasAdminCapability(capabilities, "review.case.verify_source");
   const canDecide = hasAdminCapability(capabilities, "review.case.decide");
-  const canRecommend = hasAdminCapability(capabilities, "review.case.recommend");
   const surface = useQuery({
     ...reviewSurfaceQueryOptions(reviewCaseId ?? ""),
     enabled: canRead && Boolean(reviewCaseId),
@@ -242,7 +241,6 @@ function ReviewCaseDetail({
   const [userVisibleExplanation, setUserVisibleExplanation] = useState("");
   const [internalReason, setInternalReason] = useState("");
   const [duplicateOfReviewCaseId, setDuplicateOfReviewCaseId] = useState("");
-  const [recommendReason, setRecommendReason] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
   const refreshCase = async (id: string) => {
     await Promise.all([
@@ -269,26 +267,18 @@ function ReviewCaseDetail({
   const decideMutation = useMutation({
     ...reviewMutationOptions.decide(),
     onSuccess: async (_result, variables) => {
-      setNotice("审核决定已记录。");
+      setNotice(variables.input.outcome === "accepted" ? "已接受，所选事实已写入熊猫档案。" : "审核决定已记录，案件已关闭。");
       await refreshCase(variables.reviewCaseId);
     },
   });
-  const recommendMutation = useMutation({
-    ...reviewMutationOptions.recommend(),
-    onSuccess: async (recommendation, variables) => {
-      setNotice(`已提交策展变更集 ${recommendation.changeSetId}。`);
-      setRecommendReason("");
-      await refreshCase(variables.reviewCaseId);
-    },
-  });
-
 
   const selected = surface.data;
   const contribution = selected?.contribution;
   const ownsSelectedCase = selected?.reviewCase.primaryAssigneeId === session.data?.accountId;
   const selectedSource = contribution?.sources.find((item) => item.sourceId === sourceId) ?? contribution?.sources[0];
-  const mutationError = claimMutation.error ?? verifyMutation.error ?? decideMutation.error ?? recommendMutation.error;
-  const busy = intakeBusy || claimMutation.isPending || verifyMutation.isPending || decideMutation.isPending || recommendMutation.isPending;
+  const mutationError = claimMutation.error ?? verifyMutation.error ?? decideMutation.error;
+  const busy = intakeBusy || claimMutation.isPending || verifyMutation.isPending || decideMutation.isPending;
+  const caseOpen = selected?.reviewCase.state !== "closed";
 
   return (
           <section className="min-w-0 bg-white" aria-label="审核案件详情">
@@ -309,7 +299,7 @@ function ReviewCaseDetail({
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
                       <Badge variant="outline" className="bg-white font-normal text-slate-700">{adminStateLabel(selected.reviewCase.state)}</Badge>
-                      {canClaim && !selected.reviewCase.primaryAssigneeId && ["new", "triage", "waiting"].includes(selected.reviewCase.state) ? (
+                      {canClaim && !selected.reviewCase.primaryAssigneeId && selected.reviewCase.state === "new" ? (
                         <Button type="button" size="sm" disabled={busy} onClick={() => claimMutation.mutate(selected.reviewCase.reviewCaseId)}>领取案件</Button>
                       ) : null}
                     </div>
@@ -326,7 +316,6 @@ function ReviewCaseDetail({
                     { id: "evidence", label: "查看证据", enabled: true },
                     { id: "verify", label: "核验来源", enabled: canVerify && Boolean(contribution?.sources.length) },
                     { id: "decide", label: "审核决定", enabled: canDecide && Boolean(contribution) },
-                    { id: "recommend", label: "策展交接", enabled: canRecommend },
                   ] as const).filter((item) => item.enabled).map((item) => (
                     <TabsTrigger
                       key={item.id}
@@ -440,7 +429,7 @@ function ReviewCaseDetail({
                 <p className="mb-4 text-sm text-slate-600">当前案件由其他工作人员负责。审核决定只能由当前负责人保存。</p>
               )}
               <h4 className="mb-1 text-sm font-semibold text-slate-950">审核决定</h4>
-              <p className="mb-4 text-xs text-slate-600">选择审核结果，并向贡献者说明理由</p>
+              <p className="mb-4 text-xs text-slate-600">选择审核结果，并向贡献者说明理由。保存后案件关闭。</p>
             <form
               className="space-y-4 pt-2"
               onSubmit={(event) => {
@@ -458,7 +447,7 @@ function ReviewCaseDetail({
                 });
               }}
             >
-              <p className="text-sm leading-6 text-slate-600">只有当前负责人可以保存决定；请根据上方事实与来源核验结果填写。</p>
+              <p className="text-sm leading-6 text-slate-600">{caseOpen ? "只有当前负责人可以保存决定。接受时，所选事实会立即写入熊猫档案并替换该字段的当前结论，每个事实的来源都须先核验；公开页面在下一次发布后更新。" : "案件已关闭，审核决定已保存。"}</p>
               <div className="grid gap-4 lg:grid-cols-2">
                 <div className="space-y-3">
                 <label className="grid gap-1 text-sm font-semibold">审核结果
@@ -467,7 +456,7 @@ function ReviewCaseDetail({
                   </NativeSelect>
                 </label>
                 <fieldset>
-                  <legend className="text-sm font-semibold">纳入本次审核的事实</legend>
+                  <legend className="text-sm font-semibold">接受并写入档案的事实</legend>
                   {contribution.assertions.length > 4 ? <p className="mt-1 text-xs font-normal text-slate-600">可在下方列表内滚动，逐项选择需要纳入的事实。</p> : null}
                   <ScrollArea
                     tabIndex={contribution.assertions.length > 4 ? 0 : undefined}
@@ -491,31 +480,13 @@ function ReviewCaseDetail({
                 {decisionOutcome === "duplicate" ? <label className="grid gap-1 text-sm font-semibold">重复案件 ID<Input aria-label="重复案件 ID" value={duplicateOfReviewCaseId} onChange={(event) => setDuplicateOfReviewCaseId(event.target.value)} className="h-10 bg-white font-mono text-xs font-normal" /></label> : null}
                 <label className="grid gap-1 text-sm font-semibold">给贡献者的说明<Textarea aria-label="给贡献者的说明" value={userVisibleExplanation} onChange={(event) => setUserVisibleExplanation(event.target.value)} className="min-h-24 bg-white font-normal" /></label>
                 <label className="grid gap-1 text-sm font-semibold">内部处理原因<Textarea aria-label="内部处理原因" value={internalReason} onChange={(event) => setInternalReason(event.target.value)} className="min-h-20 bg-white font-normal" /></label>
-                <Button type="submit" disabled={busy || !ownsSelectedCase || !userVisibleExplanation.trim()}>保存审核决定</Button>
+                <Button type="submit" disabled={busy || !caseOpen || !ownsSelectedCase || !userVisibleExplanation.trim() || (decisionOutcome === "accepted" && selectedAssertionKeys.length === 0)}>保存审核决定</Button>
                 </div>
               </div>
             </form>
             </TabsContent>
           ) : null}
 
-          {canRecommend ? (
-            <TabsContent value="recommend" className="px-6 py-5">
-              <h4 className="mb-1 text-sm font-semibold text-slate-950">策展交接</h4>
-              <p className="mb-4 text-xs text-slate-600">将已通过且有可信来源支持的事实推荐给策展人员</p>
-            <form
-              className="space-y-4 pt-2"
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (!recommendReason.trim()) return;
-                recommendMutation.mutate({ reviewCaseId: selected.reviewCase.reviewCaseId, input: { reason: recommendReason.trim() } });
-              }}
-            >
-              <p className="text-sm text-slate-600">仅可推荐有可信来源支持且审核通过的事实。</p>
-              <label className="mt-4 grid gap-1 text-sm font-semibold">推荐理由<Textarea aria-label="推荐理由" value={recommendReason} onChange={(event) => setRecommendReason(event.target.value)} className="min-h-20 bg-white font-normal" /></label>
-              <Button type="submit" className="mt-3" disabled={busy || !recommendReason.trim()}>提交策展</Button>
-            </form>
-            </TabsContent>
-          ) : null}
                 </Tabs>
               </>
             ) : null}

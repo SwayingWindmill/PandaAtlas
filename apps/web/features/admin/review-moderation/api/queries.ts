@@ -10,7 +10,6 @@ import {
   listModerationAppeals,
   listReviewCases,
   openReviewCase,
-  recommendReviewCase,
   restoreModerationSanction,
   verifyReviewSource,
 } from "./service";
@@ -22,7 +21,6 @@ import type {
   QueueQuery,
   RestoreSanctionInput,
   ReviewDecisionInput,
-  ReviewRecommendationInput,
   ReviewState,
   VerifyReviewSourceInput,
 } from "./types";
@@ -68,10 +66,6 @@ export const reviewMutationOptions = {
   decide: () => mutationOptions({
     mutationFn: ({ reviewCaseId, input }: { reviewCaseId: string; input: ReviewDecisionInput }) =>
       decideReviewCase(reviewCaseId, input),
-  }),
-  recommend: () => mutationOptions({
-    mutationFn: ({ reviewCaseId, input }: { reviewCaseId: string; input: ReviewRecommendationInput }) =>
-      recommendReviewCase(reviewCaseId, input),
   }),
 };
 

@@ -12,12 +12,11 @@ export function hasAdminCapability(capabilities: readonly string[] | undefined, 
 
 export function adminStateLabel(value: string): string {
   const labels: Record<string, string> = {
-    new: "新建", open: "待处理", triage: "初步审核",
-    assigned: "已分配", waiting: "等待补充资料",
-    decision_ready: "待做决定", under_review: "处理中",
+    new: "新建", open: "待处理",
+    assigned: "已分配", under_review: "处理中",
     in_review: "审核中",
     source_verification: "来源核验中", verification_pending: "待核验",
-    incorporation_recommended: "已推荐策展", accepted: "已接受",
+    accepted: "已接受",
     not_accepted: "未接受", duplicate: "重复", out_of_scope: "超出范围",
     abuse: "滥用", closed: "已关闭", upheld: "维持决定",
     modified: "已调整", overturned: "已撤销", dismissed: "已驳回",
