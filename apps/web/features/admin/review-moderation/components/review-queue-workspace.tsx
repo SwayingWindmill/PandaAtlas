@@ -106,7 +106,7 @@ export function ReviewQueueWorkspace() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-slate-950">贡献审核队列</h1>
           <p className="mt-1.5 max-w-3xl text-sm leading-6 text-slate-600">
-            核对事实与来源，记录审核结果，再将通过的资料交接给策展。
+            核对事实与来源，记录审核结果；接受的事实直接写入熊猫档案。
           </p>
         </div>
         {canRead ? (

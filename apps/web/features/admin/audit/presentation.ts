@@ -10,7 +10,7 @@ const domainNames: Record<string, string> = {
 };
 
 const objectNames: Record<string, string> = {
-  public_release: "公开版本", review_case: "审核案件", change_set: "策展变更",
+  public_release: "公开版本", review_case: "审核案件",
   account: "工作人员账号", panda: "熊猫档案",
 };
 

@@ -142,7 +142,7 @@ export function StaffInvitations() {
       <header className="border-b border-slate-200 pb-5">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-950">工作人员邀请</h1>
         <p className="mt-1.5 text-sm leading-6 text-slate-600">
-          邀请新审核员，查看他们是否已接受邀请。审核员不具备策展终审或公开发布权限。
+          邀请新审核员，查看他们是否已接受邀请。审核员不具备公开发布权限。
         </p>
       </header>
       {session && <StaffWorkspaceNavigation current="invitations" session={session} />}
