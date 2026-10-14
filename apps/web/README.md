@@ -37,6 +37,6 @@ npm run build
 
 Cloudflare owns the online Web runtime. `cloudflare.config.ts` declares the production Worker name, domains, bindings, and compatibility settings. `vite.config.ts` composes vinext with the Cloudflare Vite plugin and produces Cloudflare Build Output directly.
 
-Build the deployable artifact with `npm run build:cloudflare -w web`. Production deploys only through the approved `Production Deploy` workflow (`.github/workflows/production-deploy.yml`), which runs `cf deploy --prebuilt`; the Web workspace does not require Wrangler or OpenNext.
+Build the deployable artifact with `npm run build:cloudflare -w web`. Production deploys only through the approved `Production Deploy` workflow (`.github/workflows/production-deploy.yml`), which runs `cf deploy --prebuilt`.
 
 The Production `NEXT_PUBLIC_API_BASE_URL` is `https://api.zhipanda.com`. Cloudflare binding access stays at the server/runtime boundary rather than leaking into client features.

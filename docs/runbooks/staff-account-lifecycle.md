@@ -1,5 +1,7 @@
 # Staff account suspension and reinstatement — IAM-04
 
+> Scope: the staff console is not served in production (`ADMIN_SHELL_ENABLED` is fixed to `false`; see `docs/deployment/runtime-status.md`). This procedure applies where the admin shell is enabled, such as the local admin stack (`npm run dev:admin`).
+
 ## Operator procedure
 
 1. Sign in to the Chinese staff console using an account with `identity.account.manage`. Authorized `identity.staff.read` users can inspect staff records without renewing AAL2 every 15 minutes. To **change** staff access, complete AAL2 TOTP and recent authentication (15-minute window); a live Supabase session is always required.

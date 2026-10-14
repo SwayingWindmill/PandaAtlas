@@ -1,6 +1,6 @@
 # Panda photo intake and processing
 
-This workflow turns an approved minimum photo record into a controlled internal media build. It does not publish files to D1, R2, the API, or the frontend; that delivery boundary is owned by the next Public Release slice.
+This workflow turns processable photo records (`approved` or `collection_only`) into a controlled internal media build. It does not upload to R2 or publish anything; publication owns delivery.
 
 ## Curator input
 
@@ -16,7 +16,7 @@ Curators maintain only these fields in `data/curation/pandas/media.csv`:
 - `review_status`
 - optional `notes`
 
-The related panda must continue to satisfy `contracts/panda-expansion.v1.json`. An approved photo never compensates for incomplete or unverified panda facts.
+A photo never compensates for incomplete or unverified panda facts.
 
 ## Asset intake
 
@@ -36,7 +36,7 @@ The processor rejects:
 - unsupported or invalid images;
 - animated images;
 - images above the pixel safety limit;
-- curation records that fail the trusted panda and minimum photo contract.
+- curation data that fails `npm run check:panda-curation`.
 
 ## Processing
 
@@ -77,19 +77,15 @@ The default output is `.media-work/` at the repository root:
 └── derivatives/
 ```
 
-For each approved photo, the processor generates:
+For each processable photo, the processor generates:
 
 - a deterministic media ID;
 - an exact internal archived original with SHA-256, MIME type, dimensions, and byte size;
 - WebP derivatives at widths up to 480 and 1200 pixels without upscaling and without inherited EXIF metadata;
 - an internal manifest containing the curator-entered source, rights, credit, bilingual alt text, and system-generated technical metadata.
 
-Pillow is pinned through `services/api/uv.lock`, and the processing tests run in both Linux and Windows Release Gates. Cross-platform byte identity is not assumed; each generated file carries its own SHA-256.
+Pillow is pinned through `tools/panda-data/uv.lock`, and the processing tests run in the curation verification scope. Cross-platform byte identity is not assumed; each generated file carries its own SHA-256.
 
 ## Publication boundary
 
-The generated manifest is an internal build artifact. Public Release projection, R2 upload, D1/API fields, frontend rendering, cache behavior, and withdrawal delivery are intentionally handled separately. Historical Public Releases must never be rewritten when a photo is replaced or withdrawn.
-
-The Release Gate revalidates media after reviewed-batch construction rather than trusting the curation CSV alone. For each published available image it verifies the published panda and reviewed sources, rights, credit, bilingual alt text, HTTPS source page, system-generated media identity, WebP MIME, positive dimensions and byte counts, SHA-256 values, required 480/1200 derivatives, immutable object URLs, unique derivative keys, and exact `api.json` projection. Media inherited from any tracked reviewed ancestor keeps its original immutable release URL; it is not copied into the newer release namespace. The ancestor manifest identity and every declared file byte count and SHA-256 must still verify before that release version is accepted as a media origin.
-
-A `withdrawn` or `unavailable` record retains its rights, credit, bilingual alt text, source page, source IDs, panda identity, and audit ID, but must not contain an image URL, derivative list, MIME type, dimensions, byte count, or hash. Such a record cannot satisfy the minimum-photo requirement and cannot appear in the API media collection or as `cover_image_url`. An approved photo also cannot compensate for an expansion profile whose `record_tier` has fallen below `complete_first_pass`.
+The generated manifest is an internal build artifact. R2 upload, publication, frontend rendering and cache behavior are handled separately. A published release is never rewritten when a photo is replaced or withdrawn; `withdrawn` and `rejected` records are not processed.

@@ -1,29 +1,20 @@
 # Architecture decisions
 
-ZhiPanda records accepted cross-cutting architecture choices as Architecture Decision Records (ADRs) and governing architecture baselines.
+ZhiPanda records cross-cutting architecture choices as Architecture Decision Records (ADRs) and one governing baseline.
 
-## V2 target implementation architecture
+## Governing architecture
 
-The governing target for all new backend migration work is [ZhiPanda V2 Architecture Baseline](zhipanda-v2-architecture-baseline.md).
+[ZhiPanda V2 Architecture Baseline](zhipanda-v2-architecture-baseline.md) is the governing architecture: a NestJS 11 API on Express (Node 24) organized as a business-capability modular monolith, Supabase PostgreSQL/PostGIS/Auth as the single authoritative data platform, and Cloudflare Workers, R2 and Hyperdrive for the online runtime. Use [deployment runtime status](../deployment/runtime-status.md) for the live provider and runtime topology.
 
-The live V2 target is NestJS 11 + Fastify 5 on Node 24, a business-capability modular monolith, Supabase PostgreSQL/PostGIS/Auth as the single authoritative managed data platform, Cloudflare Workers/DNS/R2/Hyperdrive for the online runtime boundary, and GitHub Actions for bounded long/heavy work.
+The product priority is **panda fan experience first**. Archive, provenance, review, moderation, audit and publication capabilities support the product and must not displace the fan-facing loops.
 
-The V2 baseline intentionally does not preserve FastAPI package architecture, `/api/v1` transport compatibility, or the old Worker/D1 public-read architecture. The current Web runtime uses vinext + Vite on Cloudflare Workers; use [deployment runtime status](../deployment/runtime-status.md) for provider/runtime details.
+## Decision records
 
-## Current production is V2
-
-The governing product priority remains **panda fan experience first**. Archive, provenance, review, moderation, audit, and publication capabilities support the product and must not displace the fan-facing loops.
-
-Use [deployment runtime status](../deployment/runtime-status.md) as the single source of truth for the actual production provider/runtime topology.
-
-## ADR disposition
-
-| Decision | V2 status | Meaning |
+| Decision | Status | What still applies |
 |---|---|---|
-| [ADR 0001](adr-0001-single-source-api-boundary.md) | Superseded for V2 runtime design | Its single-authority principle remains; FastAPI/Worker/D1 and `/api/v1` compatibility do not. |
-| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Superseded for deployment provider | Its managed-only principle remains; Vercel placement is historical. Current Web/API runtime is Cloudflare Workers with Supabase and GitHub Actions. |
-| [V2 Architecture Baseline](zhipanda-v2-architecture-baseline.md) | Governing target | Canonical architecture for V2 implementation. |
+| [ADR 0001](adr-0001-single-source-api-boundary.md) | Principle stands; implementation superseded | One API owns domain rules and writes: the NestJS V2 API. |
+| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Principle stands; provider superseded | Managed services only; production is Cloudflare Workers with Supabase. |
+| [ADR 0003](adr-0003-single-accountable-archive-approver.md) | Principle stands; implementation superseded | One accountable approver decides publication, with no four-eyes step. |
+| [Batch workflow interfaces](batch-workflow-interfaces.md) | Current | The bounded batch control plane. |
 
-## V2 planning record
-
-Wayfinder #309 resolved the V2 architecture through decisions #310-#322; the V2 baseline is the governing synthesis. Implementation refines only code-level details inside the accepted architecture. Reopen architecture only when implementation produces material correctness, security, product, managed-platform, or operability evidence that the baseline cannot satisfy.
+Wayfinder #309 resolved the V2 architecture through decisions #310-#322; the baseline is their synthesis. Implementation refines code-level details inside it. Reopen architecture only when implementation produces material correctness, security, product, managed-platform or operability evidence that the baseline cannot satisfy.

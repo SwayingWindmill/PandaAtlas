@@ -1,16 +1,13 @@
 # ZhiPanda V2 Architecture Baseline
 
-- Status: **Application/domain architecture baseline; deployment-provider sections superseded**
-- Date: 2026-08-26
+- Status: **Governing architecture; V2 is live**
+- Date: 2026-08-26; updated to the live system 2026-10-14
 - Planning source: Wayfinder map #309 and decisions #310-#321
 - Product priority: panda fan experience first
-- Current production topology: see `docs/deployment/runtime-status.md`
-
-> **Deployment update (2026-10-03):** V2 is live on Cloudflare Workers. `docs/deployment/runtime-status.md` is authoritative for current provider/runtime topology. References below to Vercel placement/cutover, Vercel OTel/Cron, or retiring OpenNext are historical planning decisions and are superseded. The business-capability, database-authority, module-boundary, security, testing, and data-contract rules in this baseline remain governing.
 
 ## 1. Purpose
 
-This document is the canonical application/domain architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas. Current deployment-provider facts live in `docs/deployment/runtime-status.md`.
+This document is the canonical application/domain architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas.
 
 The core migration rule is:
 
@@ -31,73 +28,33 @@ V2 is a replacement architecture, not a TypeScript translation of the Python pac
 9. Test each risk at the cheapest sufficient layer; do not duplicate the same assertion mechanically through every test layer.
 10. Keep deployment managed-only: no persistent self-managed production server.
 
-## 3. Target production topology
+## 3. Production topology
 
 ```text
-Cloudflare DNS
+Cloudflare DNS (custom domains only)
   |
   +-- zhipanda.com / www.zhipanda.com
-  |     -> Vercel Next.js
+  |     -> Web Worker (vinext + Vite, Workers Cache)
+  |           +-> R2 media bucket (/media/*)
+  |           +-> V2_API service binding -> API Worker
   |
   +-- api.zhipanda.com
-  |     -> Vercel NestJS / Fastify
-  |           |
-  |           +-> Supabase PostgreSQL/PostGIS
-  |           +-> Supabase Auth/JWKS
-  |           +-> PGMQ / Outbox-backed jobs
-  |
-  +-- media.zhipanda.com
-        -> Cloudflare R2
+        -> API Worker (NestJS on Express)
+              +-> Hyperdrive -> Supabase PostgreSQL/PostGIS
+              +-> Supabase Auth JWKS
+              +-> Cron Trigger: Outbox/PGMQ downstream cycle
 
 GitHub Actions
-  +-> protected SQL migrations
-  +-> Python panda-data jobs
-  +-> long/heavy batch jobs
-  +-> staging/cutover workflows
-
-Vercel Cron
-  +-> short bounded Outbox/PGMQ pumps
+  +-> Production Deploy: approval-gated migrations, then API, then Web
+  +-> Production Probe: scheduled health and async-heartbeat checks
+  +-> batch operations and Python panda-data jobs
 ```
 
-Cloudflare remains for DNS and R2. D1, the public API Worker, and OpenNext are transitional V1 infrastructure and are not part of the V2 target.
+Bindings, schedules, domains and versions live in `docs/deployment/runtime-status.md`.
 
-## 4. Target repository layout
+## 4. Repository layout
 
-```text
-PandaAtlas/
-├─ apps/
-│  └─ web/                     # Next.js
-├─ services/
-│  └─ api/                     # NestJS modular monolith
-├─ packages/
-│  └─ api-client/              # generated private HTTP client
-├─ tools/
-│  └─ panda-data/              # Python + uv
-├─ contracts/
-│  ├─ http/
-│  ├─ integration/
-│  ├─ pipeline/
-│  └─ fixtures/
-├─ infra/
-│  └─ supabase/
-├─ docs/
-├─ .github/workflows/
-├─ tsconfig.base.json
-├─ eslint.config.mjs
-├─ dependency-cruiser.config.mjs
-├─ package.json
-└─ package-lock.json
-```
-
-JavaScript workspaces are explicit:
-
-```text
-packages/api-client
-apps/web
-services/api
-```
-
-Use npm workspaces only. Do not add Turborepo, Nx, Lerna, Changesets, pnpm migration, project-reference graphs, or shared-config packages without a measured problem they solve.
+The layout and the three npm workspaces are listed in `docs/monorepo-structure.md`. Use npm workspaces only. Do not add Turborepo, Nx, Lerna, Changesets, pnpm migration, project-reference graphs, or shared-config packages without a measured problem they solve.
 
 The only initial shared npm package is `api-client`.
 
@@ -110,31 +67,32 @@ Do not create generic `shared`, `common`, `utils`, `types`, `domain`, `config`, 
 - Express via `@nestjs/platform-express`, served on Cloudflare Workers through `httpServerHandler`. Fastify was replaced (#524) because Workers forbid `new Function` and provide no timers outside a request, both of which Fastify's boot needs.
 - Strict TypeScript.
 - `module` / `moduleResolution`: NodeNext for the API.
-- One conventional composition root: `src/main.ts` + `AppModule`.
+- One composition root: `src/bootstrap.ts` + `AppModule`, mounted by the Worker entry `worker/index.mjs`.
 - No Nest microservice transport in the authoritative API.
-- No Express runtime/types in the API baseline.
 - Singleton DI by default.
 - No business `forwardRef()` cycles.
 - No request-scoped providers unless a concrete need is proven.
 - Native `AsyncLocalStorage` is the one request-context mechanism.
 - Constructors and init hooks do not perform remote side effects, migrations, polling, or durable work.
-- No `setInterval` worker loops inside the Vercel API runtime.
+- No `setInterval` worker loops inside the Worker runtime; recurring work runs from the Cron Trigger.
 
 Conceptual API tree:
 
 ```text
 services/api/src/
-├─ main.ts
+├─ bootstrap.ts
 ├─ app.module.ts
+├─ jobs/                       # scheduled downstream cycle run by the Cron Trigger
 ├─ platform/
+│  ├─ auth/
 │  ├─ config/
 │  ├─ database/
+│  ├─ health/
 │  ├─ http/
-│  ├─ request-context/
-│  ├─ auth/
+│  ├─ integration/             # Outbox, PGMQ dispatch, async heartbeat
+│  ├─ integrity/
 │  ├─ observability/
-│  ├─ outbox/
-│  └─ storage/
+│  └─ request-context/
 └─ modules/
    └─ <business capability>/
 ```
@@ -214,7 +172,7 @@ Rules:
 - DB foreign keys may enforce integrity but are not application APIs;
 - module public surfaces export narrow application/query ports, not repositories/entities/DTO internals;
 - domain is framework-free;
-- application is framework-neutral and does not import Nest, Fastify, Kysely, pg, Pino, Sentry, or OTel;
+- application is framework-neutral and does not import Nest, Express, Kysely or pg;
 - infrastructure owns provider/database adapters;
 - controllers invoke application commands/queries.
 
@@ -269,18 +227,17 @@ public_read.*
 
 ### Connections
 
-Request/serverless traffic uses Supavisor transaction mode.
+Request and Cron traffic reach Supabase through Cloudflare Hyperdrive, with query caching disabled so permission and release reads are never stale (`docs/deployment/runtime-status.md`).
 
 Baseline:
 
 ```text
 one singleton Kysely per warm runtime
-one bounded pg.Pool
-pool max = 1 initially
+one bounded pg.Pool (max from DB_POOL_MAX)
 no named prepared statements
 ```
 
-Migration/session-sensitive operations use a separate direct/session-capable connection path.
+Migrations use a separate migration credential in the Production Deploy workflow, never the request path.
 
 ## 9. HTTP and client contract
 
@@ -289,7 +246,7 @@ The only hand-authored HTTP truth is the Nest HTTP boundary: controllers + concr
 Generate one OpenAPI 3.1 artifact:
 
 ```text
-contracts/http/openapi.v2.json
+services/api/openapi/panda-atlas-v2.json
 ```
 
 Generate the private TypeScript client using:
@@ -421,12 +378,12 @@ State the guarantee as:
 
 Consumers use durable receipt/idempotency records or domain uniqueness as appropriate.
 
-Retries are bounded and only used for replay-safe transient failures. Poison/permanent messages move to a dead-letter path rather than blocking a queue.
+Retries are bounded and only used for replay-safe transient failures. Poison/permanent messages must move to a dead-letter path rather than block a queue. Today only the notification provider queue has one (`notification_provider_dlq`); a failing message on any other queue fails the cycle until it is fixed, which `GET /health/async` reports.
 
 ### Worker execution
 
 - no polling during API startup;
-- short bounded pumps may run through Vercel Cron/invocation;
+- the Cron Trigger runs one bounded downstream cycle per tick (Outbox dispatch, then each consumer queue);
 - long/heavy work runs through GitHub Actions;
 - external side effects happen after durable intent is committed;
 - `waitUntil()` is only for harmless best-effort work, not durable publication/notification/audit/privacy execution.
@@ -534,52 +491,25 @@ Updates and Notifications react asynchronously to publication events rather than
 
 ## 14. Media
 
-Cloudflare R2 remains the public-media/object store.
+Cloudflare R2 is the media store. The bucket is private: the Web Worker serves only allowlisted panda photos and homepage videos at `/media/*` on the site's own domain, and Workers Cache keeps them at the edge.
 
-Browser upload flow:
+Contribution attachments register metadata through the Contribution module; the API offers no upload endpoint. A browser upload path, when built, must upload to R2 directly through a short-lived presigned URL that Nest authorizes and then verifies on finalize, so large uploads never stream through Nest.
 
-```text
-Browser -> Nest authorization
-Browser <- short-lived presigned PUT
-Browser -> R2 directly
-Nest <- finalize/verify metadata
-```
-
-Do not stream normal large uploads through Nest.
-
-Public media should use an R2 custom domain such as `media.zhipanda.com`, not `r2.dev`.
-
-Deletion/takedown must account for CDN cache purge when a public cached object must disappear immediately.
-
-A narrow permanent redirect may preserve already-published legacy `/media/releases/...` asset URLs if external URL stability requires it. This is an asset-URL concern, not `/api/v1` API compatibility.
+Deletion or takedown of a public object must also purge it from the edge cache when it has to disappear immediately.
 
 ## 15. Observability and errors
 
 ### Logging
 
-Use one DI-managed Pino-based Nest `LoggerService` and JSON stdout to Vercel Runtime Logs.
+Use the one DI-managed structured logger (`platform/observability`). It writes each entry as a single plain object through `console`, so Workers Logs indexes its fields. Unexpected 5xx failures and every Cron cycle result are logged.
 
 Request logs use normalized route templates, one completion event, strict redaction, and identifiers from native ALS request context.
 
 Do not create a second logging-specific request context.
 
-### Tracing
+### Tracing, error aggregation and metrics
 
-Use `@vercel/otel` as the OpenTelemetry bootstrap and Fastify-maintained instrumentation where useful.
-
-Use explicit low-cardinality application/worker spans.
-
-Do not enable raw SQL text/bind-value tracing by default.
-
-### Error aggregation
-
-Use `@sentry/nestjs` for unexpected error aggregation/source maps with its own OTel setup disabled so Vercel OTel remains the trace owner.
-
-### Metrics
-
-Initial baseline does not deploy Prometheus/Grafana/custom metrics collectors.
-
-Use Vercel platform signals, Supabase DB/resource signals, and low-cardinality structured completion measurements for queue lag, pool wait, publication build, delivery, etc.
+There is no tracing or error-aggregation service and no metrics collector. Signals come from Workers Logs, Cloudflare and Supabase platform metrics, and the Production Probe workflow (described in `docs/deployment/runtime-status.md`). Add tracing or aggregation only for a measured need, and never trace raw SQL text or bind values by default.
 
 ### Error taxonomy
 
@@ -646,9 +576,9 @@ No hidden migration/codegen/architecture work in `postinstall`, `prebuild`, `pre
 Generated artifacts are explicit and checked for drift:
 
 ```text
-contracts/http/openapi.v2.json
-packages/api-client/src/generated/schema.d.ts
-services/api/src/platform/database/generated/database.ts
+services/api/openapi/panda-atlas-v2.json
+packages/api-client/src/schema.generated.ts
+services/api/src/platform/database/database.<schema>.generated.ts
 ```
 
 PR CI is risk-scoped with simple path filtering.
@@ -662,23 +592,13 @@ Examples:
 - Web change -> Web lint/typecheck/build + relevant critical journey;
 - Python change -> Ruff/type/tests for the affected scope.
 
-Full managed staging, broader DB/browser, load, and recovery evidence belongs at main/staging/release/cutover boundaries where it is useful.
+There is no staging environment. Every push to `main` runs the full development verification and the Cloudflare deployability build, and production releases go through the approval-gated Production Deploy workflow.
 
 ## 19. Managed deployment
 
-### Vercel projects
+### Cloudflare Workers
 
-Use separate projects/deployment units:
-
-```text
-Web production/preview -> apps/web
-Nest production        -> services/api
-Nest stable staging    -> services/api
-```
-
-The Nest app deploys conventionally as one Vercel Fluid Compute function; do not build a FastAPI-style handler/closure wrapper.
-
-Colocate API and Supabase region where practical.
+Two Workers are deployed units: the Web Worker (`apps/web`) and the API Worker (`services/api`). The API Worker mounts the Nest application through `httpServerHandler` and runs the Cron Trigger; the Web Worker reaches it through the `V2_API` service binding. Both are reachable only on their custom domains. Hyperdrive connects the API Worker to Supabase.
 
 ### Health
 
@@ -692,102 +612,15 @@ Publication suspension is not infrastructure un-readiness.
 
 ### Migrations
 
-Application startup never runs migrations.
+Application startup never runs migrations. Only the approval-gated Production Deploy workflow migrates production, using a migration credential separate from the request-runtime role; migrations are expand-first so the previous deployment keeps working. See `docs/runbooks/production-release.md`.
 
-Protected GitHub Actions/controlled operator workflows use migration credentials separate from request-runtime DB credentials.
+## 20. Rollback
 
-## 20. Migration and cutover
+Rollback is V2-to-V2: redeploy a previous Worker version, or fix forward (`docs/runbooks/production-release.md`). Expand-first migrations keep the previous deployment a valid rollback target. Database restore/PITR is disaster recovery for actual data corruption, not deployment rollback.
 
-V2 uses a bounded replacement migration, not long-running dual operation.
+## 21. HTTP contract break from V1
 
-### Before cutover
-
-- build V2 off canonical production traffic;
-- add V2 schemas additively while V1 remains authoritative;
-- move surviving Python to `tools/panda-data`;
-- rehearse deterministic V1->V2 migration;
-- prepare V2 Web/API deployments, R2 domain, backup evidence, and one sealed candidate release;
-- keep V1 tables/runtime working until its rollback window closes.
-
-### Final freeze
-
-Pause V1 business writes/publication/jobs and do not accept V2 production writes yet.
-
-Run a final deterministic full backfill when rehearsal proves it fits the cutover window. Only introduce a one-time delta pass if measurement proves a full rebuild cannot fit.
-
-D1 is never a V2 migration source.
-
-### Routing sequence
-
-1. V2 Web temporarily calls the stable Vercel API project hostname.
-2. Move `zhipanda.com` / `www.zhipanda.com` to Vercel Web while canonical `api.zhipanda.com` remains legacy.
-3. Validate and close the legacy Web rollback window.
-4. Move canonical `api.zhipanda.com` to Nest while V2 Web still calls the stable project hostname.
-5. Validate Nest production.
-6. Declare the explicit **V2 commit point**.
-7. Close Worker/D1/FastAPI runtime rollback **before** V2 authoritative writes reopen.
-8. Reopen V2 writes/publication/workers.
-9. Reconfigure Web to canonical `https://api.zhipanda.com`.
-10. Begin legacy cleanup immediately.
-
-There is no period where V1 and V2 both own writes.
-
-Do not add dual-write, triggers, CDC, reverse sync, V1 Nest controllers, or percentage canary routing between incompatible V1/V2 contracts.
-
-### Post-commit rollback
-
-After V2 begins accepting production writes, rollback is V2-to-V2 via a previous Vercel deployment or forward fix.
-
-Database restore/PITR is disaster recovery for actual data corruption, not normal app deployment rollback.
-
-Normal V2 DB evolution uses bounded expand/contract discipline so a previous known-good V2 deployment can remain a short-term rollback candidate.
-
-## 21. Legacy retirement
-
-After the respective rollback window closes, delete rather than indefinitely preserve:
-
-### Web legacy
-
-```text
-OpenNext
-apps/web/open-next.config.ts
-wrangler Web configs
-Cloudflare Web runtime glue/deploy scripts
-Cloudflare Web Worker resources
-```
-
-### API projection legacy
-
-```text
-services/worker-api/**
-D1 schema/migrations/databases
-Worker API deployment/release tooling
-D1 release activation/rollback machinery
-Worker parity/compatibility tests
-```
-
-### FastAPI legacy
-
-```text
-services/api/app/**
-index.py
-FastAPI pyproject/uv.lock under services/api
-SQLAlchemy/Pydantic HTTP runtime
-manual V1 OpenAPI fragments
-FastAPI Vercel closure tooling
-FastAPI-specific Web proxies
-FastAPI API tests
-```
-
-Surviving Python capabilities must already live in `tools/panda-data`.
-
-Use Git history/tagging for forensic access to the final V1 source; do not create a permanent `legacy/fastapi` museum inside the V2 repository.
-
-Old V1 DB tables are removed through later forward SQL cleanup when no V2/runtime/tool dependency remains.
-
-## 22. Intentional V1 breaking changes
-
-V2 does not preserve:
+The V2 HTTP contract deliberately does not carry:
 
 ```text
 /api/v1
@@ -803,11 +636,9 @@ manual V1 OpenAPI/checklist contracts
 D1 publication activation APIs/scripts
 ```
 
-The V2 Web migrates to the generated V2 client as part of the product migration.
+A breaking change to `/api/v2` requires an explicit API-version decision.
 
-Once `/api/v2` is production, future breaking HTTP changes require an explicit later API-version decision; the lack of V1 compatibility is not permission for careless V2 breakage.
-
-## 23. Proportional engineering rule
+## 22. Proportional engineering rule
 
 The following are explicitly **not** quality goals:
 
@@ -836,22 +667,9 @@ managed platform primitives
 
 Avoid catch-log-rethrow templates, duplicate exists-before-insert checks when a uniqueness constraint is authoritative, blanket repository retries, mock fallbacks in production, runtime fallback to V1, or generic Result/base/wrapper layers without boundary value.
 
-## 24. Superseded architecture and retained product truths
+## 23. Product truths
 
-### Superseded for V2 implementation
-
-This baseline supersedes the V2 applicability of:
-
-- the V1 runtime/backend architecture;
-- ADR 0001's FastAPI/Worker/D1 authority and `/api/v1` compatibility model;
-- ADR 0002's FastAPI-specific managed API target and phased FastAPI deployment work;
-- the retired FastAPI serverless-closure design and request-runtime contracts;
-- V1 dependency/storage-check documents where they encode the Python module/storage graph;
-- D1/OpenNext-specific publication/deployment architecture;
-- V1 combined module boundaries such as `review_moderation`, `community_curation`, Activity/Feed split, and archive-workbench architecture where replaced by the V2 module map.
-### Product/business truths retained
-
-The following V1 truths remain unless a later product decision changes them:
+These hold unless a later product decision changes them:
 
 - panda fan experience first;
 - one stable panda identity across product surfaces;
@@ -863,11 +681,7 @@ The following V1 truths remain unless a later product decision changes them:
 - Check-in does not imply a panda was seen and vice versa;
 - provenance/review/moderation/privacy/audit/publication support the product rather than becoming the public product hierarchy.
 
-### Operational documents
-
-`docs/deployment/runtime-status.md` describes the live V2 production topology.
-
-## 25. Changing the architecture
+## 24. Changing the architecture
 
 A delivery ticket may refine code-level details inside its accepted architecture boundary. It may not reopen settled architecture merely because a V1 file suggests a different structure.
 

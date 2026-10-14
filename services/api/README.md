@@ -34,19 +34,13 @@ Cloudflare owns the online API runtime. `cloudflare.config.ts` declares the Work
 
 Build the deployable artifact with `npm run build:cloudflare -w @zhipanda/api`. Production deploys only through the approved `Production Deploy` workflow (`.github/workflows/production-deploy.yml`), which runs `cf deploy --prebuilt`.
 
-Production runtime configuration includes:
+`cloudflare.config.ts` sets the production configuration: `APP_ENV=production`, `DATABASE_CONNECTION_MODE=hyperdrive`, `LOG_LEVEL`, `CORS_ALLOW_ORIGINS`, `SUPABASE_URL`, the `HYPERDRIVE` binding and the `PUBLIC_WEB` service binding used to purge the Web page cache.
 
-- `APP_ENV=production`
-- `DATABASE_CONNECTION_MODE=hyperdrive`
-- `CORS_ALLOW_ORIGINS`
-- Supabase Auth configuration
-- observability/provider credentials where enabled
-
-The Worker does not carry a production `DATABASE_URL`; each request receives its PostgreSQL connection string from the Hyperdrive binding. Migration-only direct grants remain outside the request runtime.
+The Worker does not carry a production `DATABASE_URL`; each request receives its PostgreSQL connection string from the Hyperdrive binding. Migrations run only in the Production Deploy workflow with a separate credential.
 
 ## API and jobs
 
-The public/admin API is implemented under `src/modules`. The bounded asynchronous downstream cycle has no HTTP endpoint: the Worker's `scheduled` handler runs one `AsyncDownstreamRunnerService.runCycle()` per Cloudflare Cron Trigger (every five minutes, declared in `cloudflare.config.ts`) inside the request-scoped Hyperdrive pool.
+The public/admin API is implemented under `src/modules`. The bounded asynchronous downstream cycle has no HTTP endpoint: the Worker's `scheduled` handler runs one `AsyncDownstreamRunnerService.runCycle()` per Cloudflare Cron Trigger tick (schedule declared in `cloudflare.config.ts`) inside the request-scoped Hyperdrive pool.
 
 OpenAPI is generated from the Nest application:
 
@@ -55,7 +49,3 @@ npm run openapi:generate -w @zhipanda/api
 ```
 
 The generated V2 contract is `openapi/panda-atlas-v2.json`.
-
-## Legacy retirement
-
-FastAPI, `/api/v1`, the Python ASGI entrypoint, the FastAPI/Vercel closure, the Vercel Nest runtime, and the old `services/worker-api`/D1 projection runtime are retired. They are not compatibility targets and must not be reintroduced. The current Cloudflare Nest Worker and OpenNext Web Worker are V2 production runtime, not legacy compatibility paths.

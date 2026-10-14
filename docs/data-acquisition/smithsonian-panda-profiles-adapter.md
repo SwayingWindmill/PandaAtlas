@@ -31,7 +31,7 @@ The adapter never constructs or follows links outside those three exact registry
 
 ## Parser architecture
 
-`services/api/app/acquisition/smithsonian_pandas.py` uses the Python standard-library `HTMLParser` to build a small semantic tree. No browser or third-party DOM engine is required.
+`tools/panda-data/src/panda_data/acquisition/smithsonian_pandas.py` uses the Python standard-library `HTMLParser` to build a small semantic tree. No browser or third-party DOM engine is required.
 
 The parser validates before extraction:
 
@@ -165,24 +165,16 @@ They contain only the semantic headings, FAQ structure, and factual sentence fra
 
 The manifest uses the shared multi-request fixture contract. The parser trusts the runner's fixture mode—not a response header—when exempting the intentionally small offline pages from the reviewed live-body-size floor.
 
-## Focused sanity command
+## Running the fixture
 
 ```bash
-uv run --project services/api python services/api/scripts/check_smithsonian_panda_profiles.py
+uv run --directory tools/panda-data panda-data source run \
+  --source-id smithsonian-national-zoo-panda-pages \
+  --adapter-id smithsonian-panda-profiles \
+  --fixture tests/acquisition/fixtures/smithsonian-panda-pages.manifest.json
 ```
 
-The focused check verifies:
-
-- three evidence snapshots;
-- 74 deterministic candidates over repeated runs;
-- exactly 13 matched curation identities;
-- no ambiguous, unmatched, or contradiction state;
-- preserved CSS provenance, response hashes, parser identity, and raw values;
-- parent name-only safety;
-- explicit absence safety;
-- timeline date reconstruction and ISO normalization;
-- structured-location enrichment;
-- zero trusted and publication write targets.
+The run makes three fixture requests and prints the bundle summary. The adapter has no dedicated automated test in `tools/panda-data`; the expected result is recorded below.
 
 The reviewed current HTML was also parsed locally through the same runner path. Its 74-candidate semantic projection matches the committed fixtures exactly; the full HTML remains under the ignored `.acquisition/` directory.
 
@@ -216,5 +208,5 @@ This adapter does not:
 - crawl Smithsonian links or news pages;
 - execute JavaScript;
 - bypass access controls or challenges;
-- write PostgreSQL, curation CSV, Public Release, D1, R2, or frontend data;
+- write PostgreSQL, curation CSV, Public Release, R2, or frontend data;
 - run broad tests, Release Gate, cross-platform CI, browser, accessibility, Staging, publication, hash, or rollback verification.

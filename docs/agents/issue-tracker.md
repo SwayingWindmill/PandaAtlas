@@ -66,6 +66,6 @@ Implementation maps use one deferred-verification closing ticket:
 - Make it depend on every implementation child issue in the map.
 - Mark its PR with the `delivery:map-close` label.
 - Every earlier child issue and PR must state `Verification: deferred to the map-closing ticket`.
-- Earlier child tickets do not own broad tests, Release Gate, Linux/Windows CI, browser or accessibility suites, Staging or publication evidence, immutable hashes, rollback/withdrawal drills, or cross-page frontend work.
+- Earlier child tickets do not own broad tests, full-scope CI, browser or accessibility suites, publication evidence, immutable hashes, rollback/withdrawal drills, or cross-page frontend work.
 - The closing ticket performs those deferred activities once, fixes integration failures across the completed slices, and supplies the map's final acceptance evidence.
 - Do not close the parent map until the map-closing ticket has passed.

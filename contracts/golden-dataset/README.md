@@ -37,14 +37,6 @@ npm run check:golden-dataset
 npm run test:golden-dataset
 ```
 
-FastAPI adapter tests run with the normal Windows release environment:
-
-```powershell
-cd services/api
-uv sync --frozen --extra dev --python 3.12
-uv run --frozen --extra dev --no-sync pytest -q tests/contracts/test_golden_dataset_contract.py
-```
-
 ## Validation report codes
 
 The validator returns stable diagnostics with `code`, `path`, and `message`. Required hard failures include:
@@ -58,7 +50,8 @@ Additional structural errors cover duplicate IDs, missing public/restricted enve
 
 ## Consumer adapters
 
-- Node/domain, projection, snapshot, and browser tests: `scripts/golden-dataset/lib.mjs`
-- FastAPI tests: `services/api/tests/support/golden_dataset.py`
+- Node validation and public-experience generation: `scripts/golden-dataset/lib.mjs`
+- Web browser fixtures: `apps/web/tests/fixtures/golden-dataset.ts`
+- panda-data identity reconciliation: `tools/panda-data/src/panda_data/acquisition/reconciliation.py`
 
-Both adapters read the same JSON file. Derived fixtures may change shape for their test layer, but must not copy or re-author the underlying business truth.
+Every adapter reads the same JSON file. Derived fixtures may change shape for their test layer, but must not copy or re-author the underlying business truth.

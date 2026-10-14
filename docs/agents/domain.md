@@ -8,10 +8,7 @@ Read the root `GLOSSARY-MAP.md` when it exists. It identifies the bounded contex
 
 Read the context documents relevant to the work being performed.
 
-Also inspect:
-
-- `docs/architecture/` for system-wide architectural decisions
-- context-specific architecture documents linked by the root context map
+Also inspect `docs/architecture/` for system-wide architectural decisions.
 
 Missing files should not block work or produce warnings. The `domain-modeling`, `grill-with-docs`, and `improve-codebase-architecture` skills create domain documentation lazily when terminology or architectural decisions are resolved.
 
@@ -33,7 +30,7 @@ The primary contexts are:
 
 - **Trusted Archive** — stable identities, sourced assertions, relationships, residencies, domain events, publication readiness, and the golden dataset
 - **Curation Intake** — incomplete or contradictory working records awaiting review
-- **Public Projection** — reviewed, versioned, public-safe data consumed by APIs, D1, snapshots, and browser experiences
+- **Public Projection** — reviewed, versioned, public-safe data consumed by the public API, snapshots, and browser experiences
 
 The root `GLOSSARY-MAP.md` should describe relationships and ownership boundaries between these contexts.
 

@@ -1,5 +1,7 @@
 # Staff reviewer invitations — PandaAtlas IAM-02
 
+> Scope: the staff console is not served in production (`ADMIN_SHELL_ENABLED` is fixed to `false`; see `docs/deployment/runtime-status.md`). This procedure applies where the admin shell is enabled, such as the local admin stack (`npm run dev:admin`).
+
 Staff identities are authenticated by **Supabase Auth** and authorized by the private PostgreSQL `identity` schema behind NestJS; an email address or JWT metadata is never a role grant. This vertical slice deliberately invites one **reviewer** role, not a configurable administrator/publisher.
 
 ## Invite a reviewer
@@ -7,7 +9,7 @@ Staff identities are authenticated by **Supabase Auth** and authorized by the pr
 1. A verified staff administrator signs in to PandaAtlas, completes TOTP step-up to AAL2 and has recent interactive authentication. The server requires both `identity.account.manage` and `identity.role.manage`, plus a live Supabase session.
 2. In the Chinese admin console, visit **治理 → 工作人员**, enter the colleague's email and select **发送邀请**.
 3. The NestJS server uses the **Supabase Auth Admin SDK**, not an application password or a browser token, to create an *unconfirmed* Supabase identity and deliver its invitation email. The server securely stores a pending invitation bound to the returned **Supabase user UUID**; a pending invite confers **no reviewer role**.
-4. Only after the invited individual verifies that address by following the invitation link does the login flow call `POST /api/v2/me/staff-invitation/accept` through the authenticated Next.js proxy. NestJS matches the JWT UUID to the invited UUID and the verified Auth email, and atomically records the `member` and `reviewer` grants, append-only authorization audit, outbox events and accepted invitation status.
+4. Only after the invited individual verifies that address by following the invitation link does the login flow call the Web route `POST /api/admin/staff/invitations/accept`, which forwards to the API's `POST /api/v2/me/staff-invitation/accept`. NestJS matches the JWT UUID to the invited UUID and the verified Auth email, and atomically records the `member` and `reviewer` grants, append-only authorization audit, outbox events and accepted invitation status.
 5. The reviewer reaches the existing review queue. They cannot access publishing, Curation approval, privacy operations or Identity management APIs. Application authorization is checked from PostgreSQL on every protected request.
 
 ## Managed runtime configuration

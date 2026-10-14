@@ -1,17 +1,16 @@
-## Issue
-
 Closes #ISSUE_NUMBER
-
-Worktree: `.worktrees/issue-ISSUE_NUMBER-delivery-slug`
 
 ## Summary
 
-- Describe the bounded change delivered by this pull request.
+<diagram, diff-sketch, or tree of the change>
 
-## Verification
+## Evidence
 
-- List the commands and acceptance checks that passed.
+- **Before:** <failing test, output or screenshot>
+  **After:** <passing test, output or screenshot>
 
-## Safety
+## Merge Danger
 
-- State explicitly which production, data, secret, deployment, DNS, or release actions were not performed.
+**Door:** <one-way or two-way>
+
+**Blast Radius:** <one word, then any ramifications>

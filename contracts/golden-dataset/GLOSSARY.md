@@ -30,7 +30,7 @@ A source-linked identity key assigned by an institution, studbook, or external c
 
 ## Public Fields
 
-Fields approved for public projection. Public fields may appear in APIs, D1, snapshots, and browser fixtures when their record is published.
+Fields approved for public projection. Public fields may appear in the public API, snapshots, and browser fixtures when their record is published.
 
 ## Restricted Fields
 

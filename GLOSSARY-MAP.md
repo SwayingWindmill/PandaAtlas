@@ -14,7 +14,7 @@ Working area: `data/curation/`
 
 ## Public Projection
 
-Owns the reviewed, versioned, public-safe representation consumed by APIs, Worker/D1, downloadable snapshots, and browser experiences. It does not own professional or restricted truth.
+Owns the reviewed, versioned, public-safe representation consumed by the public API, downloadable snapshots, and browser experiences. It does not own professional or restricted truth.
 
 Architecture decision: [`docs/architecture/adr-0001-single-source-api-boundary.md`](docs/architecture/adr-0001-single-source-api-boundary.md)
 

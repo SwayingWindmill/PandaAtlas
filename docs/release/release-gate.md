@@ -1,6 +1,6 @@
 # Current verification and deployability gate
 
-PandaAtlas no longer has the V1 monolithic `release:default` / `release:extended` gate. Current verification is split by ownership and the repository-owned Cloudflare PR workflow is the deployability gate for online Web/API changes.
+Verification is split by ownership, and the Cloudflare deployability workflow is the deployability gate for online Web/API changes.
 
 ## Local verification
 
@@ -32,14 +32,14 @@ Web-only production Build Output can also be checked with the Web workspace's `b
 
 ## Pull-request deployability gate
 
-`.github/workflows/cloudflare-deployability.yml` is the single repository-owned deployability workflow for Web/API runtime changes. It runs on the runtime/workspace paths declared by that workflow and:
+`.github/workflows/cloudflare-deployability.yml` is the single deployability workflow for Web/API runtime changes. It runs on pull requests and pushes to `main` that touch the paths it declares, or on manual dispatch, and:
 
 1. installs the locked npm workspace;
-2. installs Playwright Chromium;
-3. runs the current Web smoke suite and Admin shell browser suite;
-4. builds the current Cloudflare Web and API artifacts.
+2. installs (or restores from cache) Playwright Chromium;
+3. runs the Web smoke suite and the Admin shell browser suite;
+4. builds the Cloudflare Web and API artifacts and boots the API Worker in workerd.
 
-Do not add a parallel framework-comparison, Vercel, OpenNext, or legacy Worker/D1 gate. A runtime change extends this workflow when it needs additional deployability proof.
+A runtime change that needs more deployability proof extends this workflow rather than adding a parallel gate.
 
 ## Other checks
 

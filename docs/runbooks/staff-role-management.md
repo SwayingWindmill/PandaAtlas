@@ -1,5 +1,7 @@
 # Staff role management — PandaAtlas IAM-03
 
+> Scope: the staff console is not served in production (`ADMIN_SHELL_ENABLED` is fixed to `false`; see `docs/deployment/runtime-status.md`). This procedure applies where the admin shell is enabled, such as the local admin stack (`npm run dev:admin`).
+
 This slice changes **human staff role assignments**, not Supabase identities or public member rights. Supabase Auth verifies the caller; NestJS performs authorization against private PostgreSQL `identity` records. It does not alter the review, curation, or publication approval commands.
 
 ## Operator journey

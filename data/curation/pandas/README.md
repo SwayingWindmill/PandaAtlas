@@ -23,14 +23,7 @@ The Python entry point is available at `scripts/curation/validate_panda_curation
 - `partial`: the row has a reliable source but still misses at least one database-critical field, such as exact birth date, current facility, or parent identity.
 - `needs_primary_source`: the row is only supported by secondary reporting or needs a stronger source before promotion.
 
-Only panda rows with `evidence_status=verified` and `review_status=approved` may be treated as public-ready. An approved panda must also have:
-
-- identity: `slug`, `name_zh`, `name_en`, `gender` and `status`;
-- trust fields: a birth date (or birth text), the current location, primary source IDs and an intro;
-- a current location that comes from a reviewed residency and carries a last-verified date;
-- parentage only from reviewed assertions, and unknown or disputed values stated explicitly rather than guessed;
-- no fact inferred from a photo caption;
-- at least three approved verified events and at least one approved photo of this panda.
+The collection uses one release policy ([collection release mode](../../../docs/release/private-collection-mode.md)): the validator checks structure, enums, dates and references, not publication completeness. Editorial practice still applies: take parentage only from reviewed assertions, state unknown or disputed values explicitly rather than guessing, and never infer a fact from a photo caption.
 
 ## Minimum Photo Record
 
@@ -46,7 +39,7 @@ The human-entered fields in `media.csv` are intentionally small:
 - `review_status`
 - optional `notes`
 
-Approved photos require all fields except `notes`, and a photo with unknown rights cannot be approved. The pipeline, not the curator, owns media IDs, hashes, dimensions, MIME types, and derivatives.
+`approved` and `collection_only` photos are processed and need an `asset`; rights, credit and alt text are recorded for reference rather than enforced. The pipeline, not the curator, owns media IDs, hashes, dimensions, MIME types, and derivatives.
 
 Place local reviewed files below `media-inbox/`, then run:
 
@@ -64,7 +57,7 @@ Curated records should move through these layers:
 1. `data/curation/pandas/*.csv` for source-backed working data.
 2. Reviewed PostgreSQL records and publication workflow.
 3. Immutable Public Release projection and media processing.
-4. D1/API, CSV/JSON snapshots, and the public frontend.
+4. The public API, CSV/JSON snapshots, and the public frontend.
 
 ## Source Priority
 
