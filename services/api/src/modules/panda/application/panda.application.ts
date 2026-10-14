@@ -1,4 +1,5 @@
 import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
+import { DomainError } from "../../../platform/errors/domain-error.js";
 
 export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
 export type JsonPrimitive = string | number | boolean | null;
@@ -150,7 +151,7 @@ export class PandaApplication implements PandaPort, PandaReferencePort {
 
   public createPanda(input: CreatePandaInput): Promise<PandaRecord> {
     if (input.primaryName.sourceIds.length === 0) {
-      throw new Error("A Panda primary name requires at least one evidence source");
+      throw new DomainError("invalid", "panda.evidenceRequired", "A Panda primary name requires at least one evidence source.");
     }
     return this.repository.createPanda(input);
   }
@@ -169,31 +170,31 @@ export class PandaApplication implements PandaPort, PandaReferencePort {
 
   public addName(input: AddPandaNameInput): Promise<PandaName> {
     if (input.sourceIds.length === 0) {
-      throw new Error("Panda names require at least one evidence source");
+      throw new DomainError("invalid", "panda.evidenceRequired", "Panda names require at least one evidence source.");
     }
     return this.repository.addName(input);
   }
 
   public addExternalIdentifier(input: AddExternalIdentifierInput): Promise<PandaExternalIdentifier> {
     if (input.sourceIds.length === 0) {
-      throw new Error("Panda external identifiers require at least one evidence source");
+      throw new DomainError("invalid", "panda.evidenceRequired", "Panda external identifiers require at least one evidence source.");
     }
     return this.repository.addExternalIdentifier(input);
   }
 
   public recordFactAssertion(input: RecordFactAssertionInput): Promise<void> {
     if (input.sourceIds.length === 0) {
-      throw new Error("Panda fact assertions require at least one evidence source");
+      throw new DomainError("invalid", "panda.evidenceRequired", "Panda fact assertions require at least one evidence source.");
     }
     return this.repository.recordFactAssertion(input);
   }
 
   public setFactConclusion(input: SetFactConclusionInput): Promise<PandaFactConclusion> {
     if (input.assertionIds.length === 0) {
-      throw new Error("Panda fact conclusions require at least one assertion");
+      throw new DomainError("invalid", "panda.assertionRequired", "Panda fact conclusions require at least one assertion.");
     }
     if (input.status === "disputed" && input.value !== undefined) {
-      throw new Error("Disputed panda fact conclusions must not choose a single value");
+      throw new DomainError("invalid", "panda.disputedConclusionValue", "Disputed panda fact conclusions must not choose a single value.");
     }
     return this.repository.setFactConclusion(input);
   }

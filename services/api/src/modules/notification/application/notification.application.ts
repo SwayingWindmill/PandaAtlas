@@ -1,3 +1,4 @@
+import { DomainError } from "../../../platform/errors/domain-error.js";
 export type NotificationCategory = "knowledge_update" | "correction";
 export type NotificationChannel = "station" | "email";
 
@@ -40,7 +41,7 @@ export class NotificationApplication implements NotificationPort {
 
   public listMessages(accountId: string, limit = 50): Promise<NotificationMessage[]> {
     if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
-      throw new Error("Notification limit must be an integer between 1 and 100");
+      throw new DomainError("invalid", "notification.limitOutOfRange", "Notification limit must be an integer between 1 and 100.");
     }
     return this.repository.listMessages(accountId, limit);
   }

@@ -10,12 +10,14 @@ import {
   ContributionApplication,
   type ContributionRepository,
 } from "./application/contribution.application.js";
+import { PANDA_REFERENCE_PORT, type PandaReferencePort } from "../panda/application/panda.application.js";
+import { PandaModule } from "../panda/panda.module.js";
 import { ContributionController } from "./http/contribution.controller.js";
 import { PostgresContributionReviewParticipant } from "./infrastructure/postgres-contribution-review.participant.js";
 import { PostgresContributionRepository } from "./infrastructure/postgres-contribution.repository.js";
 
 @Module({
-  imports: [DatabaseModule, RequestContextModule],
+  imports: [DatabaseModule, RequestContextModule, PandaModule],
   controllers: [ContributionController],
   providers: [
     {
@@ -25,8 +27,9 @@ import { PostgresContributionRepository } from "./infrastructure/postgres-contri
     },
     {
       provide: ContributionApplication,
-      useFactory: (repository: ContributionRepository) => new ContributionApplication(repository),
-      inject: [CONTRIBUTION_REPOSITORY],
+      useFactory: (repository: ContributionRepository, pandas: PandaReferencePort) =>
+        new ContributionApplication(repository, pandas),
+      inject: [CONTRIBUTION_REPOSITORY, PANDA_REFERENCE_PORT],
     },
     { provide: CONTRIBUTION_PORT, useExisting: ContributionApplication },
     { provide: CONTRIBUTION_REVIEW_PORT, useExisting: ContributionApplication },

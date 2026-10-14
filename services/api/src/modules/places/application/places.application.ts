@@ -1,3 +1,4 @@
+import { DomainError } from "../../../platform/errors/domain-error.js";
 export type PlaceType = "facility" | "habitat" | "protected_area" | "distribution_area" | "coarse_location";
 
 export interface InstitutionRecord {
@@ -91,7 +92,7 @@ export class PlacesApplication implements PlacesPort, PlaceReferencePort {
 
   private assertInstitutionBoundary(input: CreatePlaceInput): void {
     if (input.placeType !== "facility" && input.institutionId !== undefined) {
-      throw new Error("Only facility places may belong to an institution");
+      throw new DomainError("invalid", "places.institutionRequiresFacility", "Only facility places may belong to an institution.");
     }
   }
 }

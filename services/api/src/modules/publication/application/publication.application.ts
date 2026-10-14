@@ -1,3 +1,4 @@
+import { DomainError } from "../../../platform/errors/domain-error.js";
 export type ReleaseLifecycleState = "building" | "sealed";
 export type PublicationResourceKind = "panda" | "place" | "media" | "evidence";
 
@@ -61,7 +62,7 @@ export class PublicationApplication implements PublicationPort {
 
   public build(version: string, context: PublicationCommandContext): Promise<PublicRelease> {
     const normalized = version.trim();
-    if (normalized.length === 0) throw new Error("A public release version is required");
+    if (normalized.length === 0) throw new DomainError("invalid", "publication.versionRequired", "A public release version is required.");
     return this.coordinator.build(normalized, context);
   }
 
@@ -105,7 +106,7 @@ export class PublicationApplication implements PublicationPort {
     context: PublicationCommandContext,
     reason: string,
   ): Promise<void> {
-    if (resourceId.trim().length === 0) throw new Error("A publication resource ID is required");
+    if (resourceId.trim().length === 0) throw new DomainError("invalid", "publication.resourceRequired", "A publication resource ID is required.");
     return this.coordinator.setResourceTakedown(resourceKind, resourceId, takenDown, context, this.reason(reason));
   }
 
@@ -115,7 +116,7 @@ export class PublicationApplication implements PublicationPort {
 
   private reason(value: string): string {
     const reason = value.trim();
-    if (reason.length < 3) throw new Error("A publication reason must contain at least three characters");
+    if (reason.length < 3) throw new DomainError("invalid", "publication.reasonTooShort", "A publication reason must contain at least three characters.");
     return reason;
   }
 }

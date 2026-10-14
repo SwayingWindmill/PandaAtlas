@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
 import { STATUS_CODES, type IncomingMessage } from "node:http";
+import { DomainError, type DomainErrorKind } from "../errors/domain-error.js";
 import { serializeError, StructuredLoggerService } from "../observability/structured-logger.service.js";
 import { RequestContextService } from "../request-context/request-context.service.js";
 import { ProblemException } from "./problem.exception.js";
@@ -18,6 +19,19 @@ interface ProblemDetails {
   code: string;
   requestId: string;
   errors?: Array<{ message: string }>;
+}
+
+const STATUS_BY_KIND: Record<DomainErrorKind, number> = {
+  invalid: 422,
+  not_found: 404,
+  conflict: 409,
+  forbidden: 403,
+  unavailable: 503,
+};
+
+function statusOf(exception: unknown): number {
+  if (exception instanceof DomainError) return STATUS_BY_KIND[exception.kind];
+  return exception instanceof HttpException ? exception.getStatus() : 500;
 }
 
 function codeForStatus(status: number): string {
@@ -79,7 +93,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
   public catch(exception: unknown, host: ArgumentsHost): void {
     const http = host.switchToHttp();
     const response = http.getResponse<unknown>();
-    const status = exception instanceof HttpException ? exception.getStatus() : 500;
+    const status = statusOf(exception);
     if (status >= 500) {
       const request = http.getRequest<IncomingMessage>();
       this.logger.write("error", "Request failed", {
@@ -96,9 +110,11 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       title: STATUS_CODES[status] ?? "Request failed",
       status,
       detail:
-        exception instanceof ProblemException ? exception.detail : safeDetail(status, exception),
+        exception instanceof ProblemException || exception instanceof DomainError
+          ? exception.detail
+          : safeDetail(status, exception),
       code:
-        exception instanceof ProblemException
+        exception instanceof ProblemException || exception instanceof DomainError
           ? exception.code
           : errors === undefined
             ? codeForStatus(status)

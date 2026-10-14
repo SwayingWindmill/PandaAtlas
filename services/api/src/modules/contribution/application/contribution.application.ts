@@ -1,4 +1,6 @@
 import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
+import { DomainError } from "../../../platform/errors/domain-error.js";
+import type { PandaReferencePort } from "../../panda/application/panda.application.js";
 
 export type ContributionSubmissionType = "correction" | "sourced_information";
 export type ContributionSourceKind = "url" | "publication" | "document" | "other";
@@ -130,22 +132,33 @@ export const CONTRIBUTION_REVIEW_PORT = Symbol("CONTRIBUTION_REVIEW_PORT");
 export const CONTRIBUTION_REVIEW_PARTICIPANT = Symbol("CONTRIBUTION_REVIEW_PARTICIPANT");
 
 export class ContributionApplication implements ContributionPort, ContributionReviewPort {
-  public constructor(private readonly repository: ContributionRepository) {}
+  public constructor(
+    private readonly repository: ContributionRepository,
+    private readonly pandas: PandaReferencePort,
+  ) {}
 
-  public submit(input: SubmitContributionInput): Promise<ContributionRecord> {
+  public async submit(input: SubmitContributionInput): Promise<ContributionRecord> {
     if (input.assertions.length === 0) {
-      throw new Error("A contribution requires at least one assertion");
+      throw new DomainError("invalid", "contribution.assertionsRequired", "A contribution requires at least one assertion.");
     }
     if (input.sources.length === 0) {
-      throw new Error("A contribution requires at least one source");
+      throw new DomainError("invalid", "contribution.sourcesRequired", "A contribution requires at least one source.");
     }
     const keys = input.assertions.map((assertion) => assertion.assertionKey);
     if (new Set(keys).size !== keys.length) {
-      throw new Error("Contribution assertion keys must be unique within a revision");
+      throw new DomainError(
+        "invalid",
+        "contribution.duplicateAssertionKey",
+        "Contribution assertion keys must be unique within a revision.",
+      );
     }
     const sourceKeys = input.sources.map((source) => source.sourceKey);
     if (new Set(sourceKeys).size !== sourceKeys.length) {
-      throw new Error("Contribution source keys must be unique within a revision");
+      throw new DomainError(
+        "invalid",
+        "contribution.duplicateSourceKey",
+        "Contribution source keys must be unique within a revision.",
+      );
     }
     const knownSourceKeys = new Set(sourceKeys);
     if (
@@ -155,7 +168,14 @@ export class ContributionApplication implements ContributionPort, ContributionRe
           assertion.sourceKeys.some((sourceKey) => !knownSourceKeys.has(sourceKey)),
       )
     ) {
-      throw new Error("Every contribution assertion must reference known sources");
+      throw new DomainError(
+        "invalid",
+        "contribution.unknownSource",
+        "Every contribution assertion must cite at least one of the contribution's sources.",
+      );
+    }
+    if (!(await this.pandas.exists(input.targetPandaId))) {
+      throw new DomainError("not_found", "contribution.targetNotFound", "The contributed panda does not exist.");
     }
     return this.repository.submit(input);
   }

@@ -1,3 +1,4 @@
+import { DomainError } from "../../../platform/errors/domain-error.js";
 export interface AuditEvidence {
   sourceEventId: string;
   sourceContext: string;
@@ -23,7 +24,7 @@ export class AuditApplication implements AuditPort {
 
   public list(limit = 50): Promise<AuditEvidence[]> {
     if (!Number.isInteger(limit) || limit < 1 || limit > 200) {
-      throw new Error("Audit limit must be an integer between 1 and 200");
+      throw new DomainError("invalid", "audit.limitOutOfRange", "Audit limit must be an integer between 1 and 200.");
     }
     return this.repository.list(limit);
   }

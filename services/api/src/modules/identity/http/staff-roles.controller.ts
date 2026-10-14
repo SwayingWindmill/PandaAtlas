@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Req, ValidationPipe } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiProperty, ApiTags } from "@nestjs/swagger";
-import { IsString, IsUUID, MaxLength, MinLength } from "class-validator";
+import { IsString, IsUUID, Matches, MaxLength, MinLength } from "class-validator";
 import type { IncomingMessage as HttpRequest } from "node:http";
 import { RequestContextService } from "../../../platform/request-context/request-context.service.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
@@ -11,7 +11,7 @@ import { getActorContext } from "./request-actor.js";
 
 class RoleChangeDto {
   @ApiProperty({ example: "Reviewed the staff responsibility change with the archive lead" })
-  @IsString() @MinLength(1) @MaxLength(500)
+  @IsString() @MinLength(1) @MaxLength(500) @Matches(/\S/u, { message: "reason must not be blank" })
   public declare reason: string;
 
   @ApiProperty({ format: "uuid" })

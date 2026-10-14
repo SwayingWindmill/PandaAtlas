@@ -1,5 +1,6 @@
 import type { PandaReferencePort } from "../../panda/application/panda.application.js";
 import type { PlaceReferencePort } from "../../places/application/places.application.js";
+import { DomainError } from "../../../platform/errors/domain-error.js";
 
 export type DatePrecision = "day" | "month" | "year" | "unknown";
 export type ResidencyType = "primary" | "temporary" | "transit" | "quarantine";
@@ -82,13 +83,13 @@ export class LifeHistoryApplication implements LifeHistoryPort {
 
   public async createResidency(input: CreateResidencyInput): Promise<ResidencyRecord> {
     if (!(await this.pandas.exists(input.pandaId))) {
-      throw new Error(`Unknown panda ${input.pandaId}`);
+      throw new DomainError("not_found", "lifeHistory.pandaNotFound", `Unknown panda ${input.pandaId}.`);
     }
     if (!(await this.places.exists(input.placeId))) {
-      throw new Error(`Unknown place ${input.placeId}`);
+      throw new DomainError("not_found", "lifeHistory.placeNotFound", `Unknown place ${input.placeId}.`);
     }
     if (input.sourceIds.length === 0) {
-      throw new Error("Residencies require at least one evidence source");
+      throw new DomainError("invalid", "lifeHistory.evidenceRequired", "Residencies require at least one evidence source.");
     }
     return this.repository.createResidency(input);
   }
@@ -104,19 +105,19 @@ export class LifeHistoryApplication implements LifeHistoryPort {
 
   public async createEvent(input: CreateLifeEventInput): Promise<LifeEventRecord> {
     if (input.participantIds.length === 0) {
-      throw new Error("Life events require at least one panda participant");
+      throw new DomainError("invalid", "lifeHistory.participantRequired", "Life events require at least one panda participant.");
     }
     if (input.sourceIds.length === 0) {
-      throw new Error("Life events require at least one evidence source");
+      throw new DomainError("invalid", "lifeHistory.evidenceRequired", "Life events require at least one evidence source.");
     }
     for (const pandaId of new Set(input.participantIds)) {
       if (!(await this.pandas.exists(pandaId))) {
-        throw new Error(`Unknown panda ${pandaId}`);
+        throw new DomainError("not_found", "lifeHistory.pandaNotFound", `Unknown panda ${pandaId}.`);
       }
     }
     for (const placeId of [input.fromPlaceId, input.toPlaceId]) {
       if (placeId !== undefined && !(await this.places.exists(placeId))) {
-        throw new Error(`Unknown place ${placeId}`);
+        throw new DomainError("not_found", "lifeHistory.placeNotFound", `Unknown place ${placeId}.`);
       }
     }
     return this.repository.createEvent(input);
@@ -128,7 +129,7 @@ export class LifeHistoryApplication implements LifeHistoryPort {
 
   public async getForPanda(pandaId: string): Promise<LifeHistoryRecord> {
     if (!(await this.pandas.exists(pandaId))) {
-      throw new Error(`Unknown panda ${pandaId}`);
+      throw new DomainError("not_found", "lifeHistory.pandaNotFound", `Unknown panda ${pandaId}.`);
     }
     return this.repository.getForPanda(pandaId);
   }

@@ -3,7 +3,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { sql } from "kysely";
 import { AppConfig } from "../../../platform/config/app-config.js";
 import { DatabaseService } from "../../../platform/database/database.service.js";
-import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { DomainError } from "../../../platform/errors/domain-error.js";
 
 @Injectable()
 export class StaffInvitationsService {
@@ -46,13 +46,13 @@ export class StaffInvitationsService {
     status: "pending";
   }> {
     if (!this.auth) {
-      throw new ProblemException(503, "system.dependencyUnavailable", "Staff invitations are not configured.");
+      throw new DomainError("unavailable", "system.dependencyUnavailable", "Staff invitations are not configured.");
     }
     const normalized = email.trim().toLowerCase();
     const existing = await this.database.db.selectFrom("identity.staff_invitations")
       .select("invitation_id").where("email", "=", normalized).executeTakeFirst();
     if (existing) {
-      throw new ProblemException(409, "identity.invitationConflict", "This email has already been invited.");
+      throw new DomainError("conflict", "identity.invitationConflict", "This email has already been invited.");
     }
 
     // Supabase refuses a confirmed existing user. No email ever confers a role.
@@ -62,9 +62,9 @@ export class StaffInvitationsService {
     if (error) {
       if (error.code === "email_exists" || error.code === "user_already_exists"
         || error.status === 422 || error.status === 409) {
-        throw new ProblemException(409, "identity.invitationConflict", "The account has already been registered or invited.");
+        throw new DomainError("conflict", "identity.invitationConflict", "The account has already been registered or invited.");
       }
-      throw new ProblemException(503, "system.dependencyUnavailable", "The invitation could not be delivered.");
+      throw new DomainError("unavailable", "system.dependencyUnavailable", "The invitation could not be delivered.");
     }
     const subjectId = data.user.id;
     return this.database.transaction(async (tx) => {
@@ -93,7 +93,7 @@ export class StaffInvitationsService {
       const invitation = await tx.selectFrom("identity.staff_invitations")
         .selectAll().where("account_id", "=", accountId).forUpdate().executeTakeFirst();
       if (!invitation) {
-        throw new ProblemException(404, "identity.invitationMissing", "No staff invitation exists for this account.");
+        throw new DomainError("not_found", "identity.invitationMissing", "No staff invitation exists for this account.");
       }
       if (invitation.status === "accepted") return { accountId, status: "accepted" };
 
@@ -101,18 +101,18 @@ export class StaffInvitationsService {
         select identity.is_live_auth_session(${sessionId}::uuid, ${accountId}::uuid) as live
       `.execute(tx);
       if (!session.rows[0]?.live) {
-        throw new ProblemException(403, "auth.liveSessionRequired", "A live Supabase session is required.");
+        throw new DomainError("forbidden", "auth.liveSessionRequired", "A live Supabase session is required.");
       }
       const verified = await sql<{ email: string | null }>`
         select email from identity.auth_email_status(${accountId}::uuid) where email_confirmed
       `.execute(tx);
       if (verified.rows[0]?.email?.toLowerCase() !== invitation.email) {
-        throw new ProblemException(403, "identity.invitationNotVerified", "Verify the invited email address first.");
+        throw new DomainError("forbidden", "identity.invitationNotVerified", "Verify the invited email address first.");
       }
       const account = await tx.selectFrom("identity.accounts")
         .select("state").where("account_id", "=", accountId).forUpdate().executeTakeFirst();
       if (account?.state !== "active") {
-        throw new ProblemException(403, "authorization.accountInactive", "This account is not active.");
+        throw new DomainError("forbidden", "authorization.accountInactive", "This account is not active.");
       }
       const staffAssignments = await sql<{ role_key: string }>`
         select grant_role.role_key from identity.role_assignments grant_role
@@ -124,7 +124,7 @@ export class StaffInvitationsService {
           and (grant_role.expires_at is null or grant_role.expires_at > now())
       `.execute(tx);
       if (staffAssignments.rows.length) {
-        throw new ProblemException(409, "identity.invitationConflict", "This account already has staff roles.");
+        throw new DomainError("conflict", "identity.invitationConflict", "This account already has staff roles.");
       }
 
       for (const roleKey of ["member", "reviewer"]) {

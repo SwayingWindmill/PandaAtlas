@@ -502,7 +502,7 @@ There is no tracing or error-aggregation service and no metrics collector. Signa
 
 ### Error taxonomy
 
-Domain/application errors map centrally to stable `<namespace>.<condition>` codes and RFC 9457 categories.
+Domain/application errors map centrally to stable `<namespace>.<condition>` codes and RFC 9457 categories. Code below the HTTP layer throws `DomainError(kind, code, detail)` (`services/api/src/platform/errors/domain-error.ts`) for a failure the caller can act on, and never builds an HTTP exception. `ProblemDetailsFilter` alone maps each kind to a status: `invalid` 422, `not_found` 404, `conflict` 409, `forbidden` 403, `unavailable` 503. Controllers may still answer with a `ProblemException` when the HTTP contract itself decides the status.
 
 Unknown failures become safe `system.internal` responses; internal diagnostics stay in observability, not client responses.
 

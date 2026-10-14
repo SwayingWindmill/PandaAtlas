@@ -562,4 +562,58 @@ describe("V2 contribution and review", () => {
       }),
     ]);
   });
+
+  it("rejects a contribution citing an undeclared source or naming an unknown panda", async () => {
+    const suffix = randomUUID();
+    const evidence = app.get<EvidencePort>(EVIDENCE_PORT);
+    const sourceId = `governance-rejects:${suffix}`;
+    await evidence.createSource({
+      sourceId,
+      publisher: "Governance Fixture",
+      title: "Governance rejection source",
+      url: `https://example.test/governance-rejects/${suffix}`,
+      publishedOn: "2026-08-26",
+      lastVerifiedOn: "2026-08-26",
+      languageTag: "en",
+      accessState: "accessible",
+      evidenceTier: "institutional",
+    });
+    const panda = await app.get<PandaPort>(PANDA_PORT).createPanda({
+      canonicalSlug: `governance-rejects-${suffix}`,
+      primaryName: { languageTag: "en", value: `Governance Rejects ${suffix}`, sourceIds: [sourceId] },
+    });
+    const contributorToken = await tokenFor(contributor);
+    const submit = (targetPandaId: string, sourceKeys: string[]) =>
+      injectHttp(app, {
+        method: "POST",
+        url: "/api/v2/contributions",
+        headers: headers(contributorToken),
+        payload: {
+          submissionType: "correction",
+          targetPandaId,
+          publicVersionSeen: "integration-release",
+          assertions: [
+            {
+              assertionKey: "sex-correction",
+              fieldKey: "profile.sex",
+              value: "female",
+              certainty: "confirmed",
+              lastVerifiedOn: "2026-08-26",
+              sourceKeys,
+            },
+          ],
+          sources: [
+            { sourceKey: "declared", sourceKind: "url", title: "Declared source", locator: "https://example.test/declared" },
+          ],
+        },
+      });
+
+    const undeclared = await submit(panda.pandaId, ["undeclared"]);
+    expect(undeclared.statusCode).toBe(422);
+    expect(undeclared.json()).toMatchObject({ code: "contribution.unknownSource" });
+
+    const unknownPanda = await submit(randomUUID(), ["declared"]);
+    expect(unknownPanda.statusCode).toBe(404);
+    expect(unknownPanda.json()).toMatchObject({ code: "contribution.targetNotFound" });
+  });
 });

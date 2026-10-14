@@ -1,3 +1,4 @@
+import { DomainError } from "../../../platform/errors/domain-error.js";
 export type UpdateType = "release_activated" | "release_rolled_back";
 export type UpdateChangeType = "added" | "changed" | "removed";
 
@@ -31,7 +32,7 @@ export class UpdatesApplication implements UpdatesPort {
 
   public list(limit = 30): Promise<UpdateItem[]> {
     if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
-      throw new Error("Updates limit must be an integer between 1 and 100");
+      throw new DomainError("invalid", "updates.limitOutOfRange", "Updates limit must be an integer between 1 and 100.");
     }
     return this.repository.list(limit);
   }

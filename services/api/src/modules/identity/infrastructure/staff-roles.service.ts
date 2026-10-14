@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { sql } from "kysely";
 import { DatabaseService, type DatabaseTransaction } from "../../../platform/database/database.service.js";
-import { ProblemException } from "../../../platform/http/problem.exception.js";
+import { DomainError } from "../../../platform/errors/domain-error.js";
 
 const NON_DELEGABLE_ROLES = ["administrator", "community_scanner"];
 
@@ -54,7 +54,7 @@ export class StaffRolesService {
     const account = await this.database.db.selectFrom("identity.accounts")
       .select(["account_id as accountId", "email", "state", "state_reason as stateReason"])
       .where("account_id", "=", accountId).executeTakeFirst();
-    if (!account) throw new ProblemException(404, "identity.accountMissing", "Staff account not found.");
+    if (!account) throw new DomainError("not_found", "identity.accountMissing", "Staff account not found.");
 
     const history = await sql<StaffRoleAssignment>`
       select ra.assignment_id as "assignmentId", ra.role_key as "roleKey",
@@ -99,18 +99,18 @@ export class StaffRolesService {
         .selectAll().where("account_id", "=", subjectId).where("idempotency_key", "=", idempotencyKey).executeTakeFirst();
       if (replay) {
         if (replay.role_key !== roleKey || replay.reason !== reason.trim() || replay.assigned_by_account_id !== actorId) {
-          throw new ProblemException(409, "identity.idempotencyConflict", "This request key was used for a different grant.");
+          throw new DomainError("conflict", "identity.idempotencyConflict", "This request key was used for a different grant.");
         }
         const revoked = await tx.selectFrom("identity.role_assignment_revocations")
           .select("revocation_id").where("assignment_id", "=", replay.assignment_id).executeTakeFirst();
         if (revoked || (replay.expires_at && replay.expires_at <= new Date())) {
-          throw new ProblemException(409, "identity.roleConflict", "A previous grant cannot be resurrected.");
+          throw new DomainError("conflict", "identity.roleConflict", "A previous grant cannot be resurrected.");
         }
         return { assignmentId: replay.assignment_id, roleKey, status: "active" as const };
       }
       const active = await this.activeRoles(tx, subjectId);
       if (active.some((assignment) => assignment.role_key === roleKey)) {
-        throw new ProblemException(409, "identity.roleConflict", "The subject already has this role.");
+        throw new DomainError("conflict", "identity.roleConflict", "The subject already has this role.");
       }
       await this.assertSeparatedDuties(tx, [...active.map((assignment) => assignment.role_key), roleKey]);
       const grant = await tx.insertInto("identity.role_assignments").values({
@@ -143,23 +143,23 @@ export class StaffRolesService {
       const assignment = await tx.selectFrom("identity.role_assignments")
         .selectAll().where("account_id", "=", subjectId)
         .where("assignment_id", "=", assignmentId).executeTakeFirst();
-      if (!assignment) throw new ProblemException(404, "identity.roleMissing", "Role assignment not found.");
+      if (!assignment) throw new DomainError("not_found", "identity.roleMissing", "Role assignment not found.");
       await this.validateRole(tx, assignment.role_key);
       const keyOwner = await tx.selectFrom("identity.role_assignment_revocations")
         .select("assignment_id").where("idempotency_key", "=", idempotencyKey).executeTakeFirst();
       if (keyOwner && keyOwner.assignment_id !== assignmentId) {
-        throw new ProblemException(409, "identity.idempotencyConflict", "This request key belongs to another revocation.");
+        throw new DomainError("conflict", "identity.idempotencyConflict", "This request key belongs to another revocation.");
       }
       const previous = await tx.selectFrom("identity.role_assignment_revocations")
         .selectAll().where("assignment_id", "=", assignmentId).executeTakeFirst();
       if (previous) {
         if (previous.idempotency_key !== idempotencyKey || previous.reason !== reason.trim() || previous.revoked_by_account_id !== actorId) {
-          throw new ProblemException(409, "identity.roleConflict", "This assignment is already revoked.");
+          throw new DomainError("conflict", "identity.roleConflict", "This assignment is already revoked.");
         }
         return { assignmentId, roleKey: assignment.role_key, status: "revoked" as const };
       }
       if (assignment.expires_at && assignment.expires_at <= new Date()) {
-        throw new ProblemException(409, "identity.roleConflict", "The role assignment has expired.");
+        throw new DomainError("conflict", "identity.roleConflict", "The role assignment has expired.");
       }
       await tx.insertInto("identity.role_assignment_revocations").values({
         assignment_id: assignmentId, revoked_by_account_id: actorId, reason: reason.trim(),
@@ -183,25 +183,25 @@ export class StaffRolesService {
   }
 
   private validateChange(subjectId: string, actorId: string, reason: string) {
-    if (subjectId === actorId) throw new ProblemException(403, "identity.selfGrantForbidden", "Staff cannot change their own roles.");
-    if (!reason.trim()) throw new ProblemException(400, "identity.reasonRequired", "A role change needs a reason.");
+    if (subjectId === actorId) throw new DomainError("forbidden", "identity.selfGrantForbidden", "Staff cannot change their own roles.");
+    if (!reason.trim()) throw new DomainError("invalid", "identity.reasonRequired", "A role change needs a reason.");
   }
 
   private async lockActiveSubject(tx: DatabaseTransaction, subjectId: string) {
     const account = await this.lockSubject(tx, subjectId);
-    if (account.state !== "active") throw new ProblemException(409, "identity.accountInactive", "Only active accounts can receive roles.");
+    if (account.state !== "active") throw new DomainError("conflict", "identity.accountInactive", "Only active accounts can receive roles.");
     const verified = await sql<{ confirmed: boolean }>`
       select email_confirmed as confirmed from identity.auth_email_status(${subjectId}::uuid)
     `.execute(tx);
     if (!verified.rows[0]?.confirmed) {
-      throw new ProblemException(409, "identity.emailUnverified", "The staff identity must verify its email before receiving a role.");
+      throw new DomainError("conflict", "identity.emailUnverified", "The staff identity must verify its email before receiving a role.");
     }
   }
 
   private async lockSubject(tx: DatabaseTransaction, subjectId: string) {
     const account = await tx.selectFrom("identity.accounts")
       .select("state").where("account_id", "=", subjectId).forUpdate().executeTakeFirst();
-    if (!account) throw new ProblemException(404, "identity.accountMissing", "Staff account not found.");
+    if (!account) throw new DomainError("not_found", "identity.accountMissing", "Staff account not found.");
     return account;
   }
 
@@ -209,7 +209,7 @@ export class StaffRolesService {
     const role = await tx.selectFrom("identity.roles")
       .select("is_staff").where("role_key", "=", roleKey).executeTakeFirst();
     if (!role?.is_staff || NON_DELEGABLE_ROLES.includes(roleKey)) {
-      throw new ProblemException(403, "identity.roleNotDelegable", "This role is not delegated by staff managers.");
+      throw new DomainError("forbidden", "identity.roleNotDelegable", "This role is not delegated by staff managers.");
     }
   }
 
@@ -228,7 +228,7 @@ export class StaffRolesService {
     const keys = new Set(capabilities.map((row) => row.capability_key));
     if (keys.has("review.case.decide") &&
       keys.has("publication.release.activate")) {
-      throw new ProblemException(409, "identity.dutiesConflict", "Review and final approval duties must stay separate.");
+      throw new DomainError("conflict", "identity.dutiesConflict", "Review and final approval duties must stay separate.");
     }
   }
 }
