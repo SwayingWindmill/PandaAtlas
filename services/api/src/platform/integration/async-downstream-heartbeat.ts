@@ -1,8 +1,9 @@
 import { sql } from "kysely";
 import type { DatabaseService } from "../database/database.service.js";
 
-// When the Cron Trigger's async downstream cycle last completed every stage. A failing stage, a
-// poison message or a dead trigger all leave it ageing; an idle system keeps it fresh (#560).
+// When the Cron Trigger's async downstream cycle last completed every stage. A failing stage or a
+// dead trigger leaves it ageing; an idle system keeps it fresh (#560). A message that keeps failing is
+// dead-lettered instead (#629).
 export class AsyncDownstreamHeartbeat {
   public constructor(private readonly database: DatabaseService) {}
 

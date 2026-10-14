@@ -25,27 +25,37 @@ export class AsyncDownstreamRunnerService {
     private readonly heartbeat: AsyncDownstreamHeartbeat,
   ) {}
 
+  // Runs every stage even when an earlier one fails, so one broken stage cannot hold back the others.
+  // The heartbeat records only a cycle in which every stage completed; a failed stage fails the cycle.
   public async runCycle(effects: AsyncDownstreamEffects) {
-    const dispatchInitial = await this.dispatcher.dispatchBatch(50);
-    const publicCache = await this.publicCache.processBatch(effects.publicCache);
-    const updates = await this.updates.processBatch(25);
-    const dispatchAfterUpdates = await this.dispatcher.dispatchBatch(50);
-    const notification = await this.notification.processBatch(25);
-    const privacy = await this.privacy.processBatch(5);
-    const provider = await this.provider.processBatch(10);
-    const dispatchFinal = await this.dispatcher.dispatchBatch(50);
-    const audit = await this.audit.processBatch(50);
-    await this.heartbeat.recordSuccess();
-    return {
-      dispatchInitial,
-      publicCache,
-      updates,
-      dispatchAfterUpdates,
-      notification,
-      privacy,
-      provider,
-      dispatchFinal,
-      audit,
+    const failures: Array<{ stage: string; error: unknown }> = [];
+    const run = async <T>(stage: string, work: () => Promise<T>): Promise<T | undefined> => {
+      try {
+        return await work();
+      } catch (error) {
+        failures.push({ stage, error });
+        return undefined;
+      }
     };
+
+    const stages = {
+      dispatchInitial: await run("dispatchInitial", () => this.dispatcher.dispatchBatch(50)),
+      publicCache: await run("publicCache", () => this.publicCache.processBatch(effects.publicCache)),
+      updates: await run("updates", () => this.updates.processBatch(25)),
+      dispatchAfterUpdates: await run("dispatchAfterUpdates", () => this.dispatcher.dispatchBatch(50)),
+      notification: await run("notification", () => this.notification.processBatch(25)),
+      privacy: await run("privacy", () => this.privacy.processBatch(5)),
+      provider: await run("provider", () => this.provider.processBatch(10)),
+      dispatchFinal: await run("dispatchFinal", () => this.dispatcher.dispatchBatch(50)),
+      audit: await run("audit", () => this.audit.processBatch(50)),
+    };
+    if (failures.length > 0) {
+      const summary = failures
+        .map(({ stage, error }) => `${stage}: ${error instanceof Error ? error.message : String(error)}`)
+        .join("; ");
+      throw new Error(`Async downstream stages failed: ${summary}`, { cause: failures[0]?.error });
+    }
+    await this.heartbeat.recordSuccess();
+    return stages;
   }
 }

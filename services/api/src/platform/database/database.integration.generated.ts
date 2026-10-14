@@ -37,6 +37,17 @@ export interface IntegrationConsumerReceipts {
   processed_at: Generated<Timestamp>;
 }
 
+export interface IntegrationDeadLetters {
+  consumer_key: string;
+  dead_letter_id: Generated<string>;
+  dead_lettered_at: Generated<Timestamp>;
+  error: string;
+  message: Json;
+  msg_id: Int8;
+  queue_name: string;
+  read_count: number;
+}
+
 export interface IntegrationOutboxEvents {
   aggregate_id: string;
   aggregate_type: string;
@@ -68,5 +79,6 @@ export interface IntegrationOutboxEvents {
 export interface DB {
   "integration.async_downstream_heartbeat": IntegrationAsyncDownstreamHeartbeat;
   "integration.consumer_receipts": IntegrationConsumerReceipts;
+  "integration.dead_letters": IntegrationDeadLetters;
   "integration.outbox_events": IntegrationOutboxEvents;
 }

@@ -75,6 +75,16 @@ export class PgmqService {
     await sql`select pgmq.set_vt(${queue}::text, ${msgId}::bigint, ${visibilityTimeoutSeconds}::integer)`.execute(transaction);
   }
 
+  public async hasReceipt(transaction: DatabaseTransaction, consumerKey: string, eventId: string): Promise<boolean> {
+    const receipt = await transaction
+      .selectFrom("integration.consumer_receipts")
+      .select("event_id")
+      .where("consumer_key", "=", consumerKey)
+      .where("event_id", "=", eventId)
+      .executeTakeFirst();
+    return receipt !== undefined;
+  }
+
   public async claimReceipt(
     transaction: DatabaseTransaction,
     consumerKey: string,
