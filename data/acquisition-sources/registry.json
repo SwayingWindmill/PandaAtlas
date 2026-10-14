@@ -15,8 +15,7 @@
         "/w/api.php"
       ],
       "allowed_adapter_ids": [
-        "wikimedia-commons-xi-lun",
-        "wikimedia-commons-media-discovery"
+        "wikimedia-commons-xi-lun"
       ],
       "capability": "public-http",
       "live_fetch": true,

@@ -173,7 +173,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="panda-data",
         description=(
-            "Independent PandaAtlas acquisition, enrichment, curation, and artifact runtime."
+            "Independent PandaAtlas acquisition, curation validation, media, and artifact runtime."
         ),
     )
     commands = parser.add_subparsers(dest="command", required=True)
