@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "review_document": "docs/data-acquisition/source-review-2026-07-22.md",
-  "review_document_sha256": "6b2e4cee6985a5da4bcead033b4d83475210cb6b03f732aa41ad62b93b217d1a",
+  "review_document_sha256": "42cdb7df608d91116cd8b34b6e19ac7aeb75f0552eeaaf09df0595aecc302fc9",
   "sources": [
     {
       "source_id": "wikimedia-commons-action-api",

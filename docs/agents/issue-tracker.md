@@ -16,7 +16,7 @@ Run commands inside this repository so `gh` resolves the repository from the con
 
 ## Current project status
 
-Current `main` plus live GitHub issues and pull requests are the status/backlog authority. Dated architecture research, release evidence, migration plans, and historical runbooks explain past decisions but do not define the next task.
+Current `main` plus live GitHub issues and pull requests are the status/backlog authority.
 
 For a status or "what next" request, inspect the current checkout and query GitHub live rather than reconstructing backlog state from docs:
 

@@ -52,7 +52,6 @@ const RETIRED_CURRENT_AUTHORITY_REFERENCES = [
   "check:api-runtime-boundary",
   "check:api-serverless-closure",
   "docs/architecture/api-request-runtime-boundary.md",
-  "docs/deployment/vercel-api-phase-2.md",
 ];
 const ACTIVE_AGENT_NAVIGATION_RETIRED_REFERENCES = new Map([
   ["docs/agents/codegraph.md", ["FastAPI", "services/worker-api"]],

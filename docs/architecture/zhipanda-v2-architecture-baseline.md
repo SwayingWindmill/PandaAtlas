@@ -836,22 +836,19 @@ managed platform primitives
 
 Avoid catch-log-rethrow templates, duplicate exists-before-insert checks when a uniqueness constraint is authoritative, blanket repository retries, mock fallbacks in production, runtime fallback to V1, or generic Result/base/wrapper layers without boundary value.
 
-## 24. Superseded and retained architecture documents
+## 24. Superseded architecture and retained product truths
 
 ### Superseded for V2 implementation
 
 This baseline supersedes the V2 applicability of:
 
-- `docs/architecture/zhipanda-v1-architecture-baseline.md` runtime/backend architecture;
+- the V1 runtime/backend architecture;
 - ADR 0001's FastAPI/Worker/D1 authority and `/api/v1` compatibility model;
 - ADR 0002's FastAPI-specific managed API target and phased FastAPI deployment work;
 - the retired FastAPI serverless-closure design and request-runtime contracts;
 - V1 dependency/storage-check documents where they encode the Python module/storage graph;
 - D1/OpenNext-specific publication/deployment architecture;
 - V1 combined module boundaries such as `review_moderation`, `community_curation`, Activity/Feed split, and archive-workbench architecture where replaced by the V2 module map.
-
-These files may remain as historical records until repository cleanup, but they are not V2 implementation authority.
-
 ### Product/business truths retained
 
 The following V1 truths remain unless a later product decision changes them:
@@ -868,35 +865,10 @@ The following V1 truths remain unless a later product decision changes them:
 
 ### Operational documents
 
-`docs/deployment/runtime-status.md` continues to describe **current production** until actual cutover. It must not be rewritten to claim V2 is live merely because implementation starts.
+`docs/deployment/runtime-status.md` describes the live V2 production topology.
 
-After the V2 commit point, operational docs/ADRs must be updated to describe only the real V2 production topology and mark V1 deployment phases superseded.
-
-## 25. Implementation authority
-
-Implementation work must follow the delivery graph in:
-
-`docs/implementation/nestjs-v2-implementation-map.md`
+## 25. Changing the architecture
 
 A delivery ticket may refine code-level details inside its accepted architecture boundary. It may not reopen settled architecture merely because a V1 file suggests a different structure.
 
 Reopen an architecture decision only when implementation discovers material evidence that an accepted baseline cannot satisfy correctness, security, operability, or product requirements.
-
-## 26. Source decision records
-
-The detailed research/decision assets remain useful supporting evidence:
-
-- `docs/research/nestjs-v2-domain-module-map-2026-08-26.md`
-- `docs/research/nestjs-v2-runtime-foundation-2026-08-26.md`
-- `docs/research/nestjs-v2-postgresql-transaction-architecture-2026-08-26.md`
-- `docs/research/nestjs-v2-http-openapi-client-strategy-2026-08-26.md`
-- `docs/research/nestjs-v2-identity-authorization-security-2026-08-26.md`
-- `docs/research/nestjs-v2-events-outbox-background-execution-2026-08-26.md`
-- `docs/research/nestjs-v2-python-pipeline-boundary-2026-08-26.md`
-- `docs/research/nestjs-v2-publication-public-read-architecture-2026-08-26.md`
-- `docs/research/nestjs-v2-managed-deployment-architecture-2026-08-26.md`
-- `docs/research/nestjs-v2-observability-testing-enforcement-2026-08-26.md`
-- `docs/research/nestjs-v2-monorepo-layout-build-tooling-2026-08-26.md`
-- `docs/research/nestjs-v2-migration-cutover-retirement-2026-08-26.md`
-
-When this baseline and a research note appear to differ, this synthesis is the governing V2 statement unless the difference is an implementation detail explicitly deferred here.
