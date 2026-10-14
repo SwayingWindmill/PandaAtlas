@@ -1,14 +1,14 @@
 # Bounded batch workflow interfaces
 
-- Status: Phase 3 control-plane foundation
-- Governing deployment decision: [ADR 0002](adr-0002-managed-cloud-deployment-target.md)
+- Status: Current; three operations are ready, the rest planned
+- Managed-only principle: [ADR 0002](adr-0002-managed-cloud-deployment-target.md)
 - Operation catalog: [`contracts/batch-operations.v1.json`](../../contracts/batch-operations.v1.json)
 - Manual workflow: [`.github/workflows/batch-operations.yml`](../../.github/workflows/batch-operations.yml)
 - Local interface: `npm run batch:plan -- --operation <id>`
 
 ## Purpose
 
-Crawler, research, curation, media, release, and recovery work must not run inside FastAPI request handlers or through unrelated one-off GitHub Actions files. The bounded batch interface provides one reviewed control plane for these tasks while the repository migrates toward GitHub Actions as its managed batch runtime.
+Crawler, research, curation, media, release, and recovery work must not run inside the API request runtime or through unrelated one-off GitHub Actions files. The bounded batch interface is the one reviewed control plane for these tasks, with GitHub Actions as the managed batch runtime.
 
 The workflow is manual-only. Its default behavior is to validate the catalog and write a dry-run plan. It has `contents: read`, does not push commits, does not create or merge pull requests, does not run on schedules or repository events, and does not cancel an in-progress operation with the same concurrency identity.
 
@@ -55,7 +55,7 @@ The first ready adapters intentionally have bounded effects:
 - `curation.validate` validates reviewed curation records;
 - `media.process` creates isolated local media derivatives with network access disabled by default.
 
-The interface does not expose cohort-specific curation apply scripts, source-specific media upload scripts, D1 release activation, managed production publication, or environment-specific recovery commands as generic operations.
+The interface does not expose cohort-specific curation apply scripts, source-specific media upload scripts, managed production publication, or environment-specific recovery commands as generic operations.
 
 ## Enabling a planned operation
 
@@ -80,4 +80,4 @@ node --test scripts/release/tests/batch-workflow-interface.test.mjs
 npm run batch:plan -- --operation research.validate --json
 ```
 
-Changes to the workflow, catalog, runner, or checker select the `release` development scope. This foundation does not declare ADR 0002 Phase 3 complete; generic build, apply, publish, and recovery adapters remain separate reviewed work.
+Changes to the workflow, catalog, runner, or checker select the `release` development scope. Generic build, apply, publish and recovery adapters remain separate reviewed work.
