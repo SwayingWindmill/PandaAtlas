@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "zhipanda-panda-data"
 version = "0.1.0"
-description = "Independent PandaAtlas acquisition, enrichment, identity-resolution, curation, and offline artifact runtime."
+description = "Independent PandaAtlas acquisition, curation validation, media and offline artifact runtime."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

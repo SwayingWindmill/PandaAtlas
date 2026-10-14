@@ -305,10 +305,7 @@ def _validate_wikimedia_source(source: ReviewedSource) -> None:
         raise ValueError("Wikimedia source host allowlist drifted")
     if source.allowed_paths != ("/w/api.php",):
         raise ValueError("Wikimedia source path allowlist drifted")
-    if source.allowed_adapter_ids != (
-        "wikimedia-commons-xi-lun",
-        "wikimedia-commons-media-discovery",
-    ):
+    if source.allowed_adapter_ids != ("wikimedia-commons-xi-lun",):
         raise ValueError("Wikimedia adapter allowlist drifted")
     if source.capability != "public-http":
         raise ValueError("Wikimedia source must use public-http")
