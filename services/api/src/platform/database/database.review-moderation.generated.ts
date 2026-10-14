@@ -31,7 +31,7 @@ export type ReviewModerationAppealDecisionOutcome = "dismissed" | "modified" | "
 
 export type ReviewModerationAppealState = "closed" | "open" | "under_review";
 
-export type ReviewModerationReviewCaseState = "assigned" | "closed" | "decision_ready" | "incorporation_recommended" | "new" | "triage" | "waiting";
+export type ReviewModerationReviewCaseState = "assigned" | "closed" | "new";
 
 export type ReviewModerationReviewDecisionOutcome = "abuse" | "accepted" | "duplicate" | "not_accepted" | "out_of_scope";
 
@@ -83,16 +83,6 @@ export interface ReviewModerationAppealQueue {
   version: number | null;
 }
 
-export interface ReviewModerationCurationRecommendations {
-  assertion_key: string;
-  decision_id: string;
-  reason: string;
-  recommendation_id: Generated<string>;
-  recommended_at: Generated<Timestamp>;
-  recommended_by_account_id: string;
-  review_case_id: string;
-}
-
 export interface ReviewModerationDecisions {
   active_revision_number: number;
   decided_at: Generated<Timestamp>;
@@ -104,17 +94,6 @@ export interface ReviewModerationDecisions {
   review_case_id: string;
   selected_assertion_keys: Generated<Json>;
   user_visible_explanation: string;
-}
-
-export interface ReviewModerationInformationRequests {
-  active_revision_number: number;
-  created_at: Generated<Timestamp>;
-  information_request_id: Generated<string>;
-  internal_note: string | null;
-  requested_by_account_id: string;
-  requested_fields: Json;
-  review_case_id: string;
-  user_visible_message: string;
 }
 
 export interface ReviewModerationModerationSubjects {
@@ -231,9 +210,7 @@ export interface DB {
   "review_moderation.appeal_cases": ReviewModerationAppealCases;
   "review_moderation.appeal_decisions": ReviewModerationAppealDecisions;
   "review_moderation.appeal_queue": ReviewModerationAppealQueue;
-  "review_moderation.curation_recommendations": ReviewModerationCurationRecommendations;
   "review_moderation.decisions": ReviewModerationDecisions;
-  "review_moderation.information_requests": ReviewModerationInformationRequests;
   "review_moderation.moderation_subjects": ReviewModerationModerationSubjects;
   "review_moderation.restoration_events": ReviewModerationRestorationEvents;
   "review_moderation.review_case_queue": ReviewModerationReviewCaseQueue;

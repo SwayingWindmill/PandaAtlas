@@ -84,7 +84,7 @@ test("full local workspace mode uses explicitly named business roles and stays i
     );
     const capabilities = new Set(granted.rows.map(x => x.capability_key));
     for (const capability of ["admin.shell.access","review.case.read","moderation.sanction.read",
-      "curation.change.approve","publication.release.activate","audit.read"]) {
+      "review.case.decide","publication.release.activate","audit.read"]) {
       assert.equal(capabilities.has(capability), true, capability);
     }
     const repeated = await bootstrapFirstAdministrator(client, id, { workspaceAccess: true });
