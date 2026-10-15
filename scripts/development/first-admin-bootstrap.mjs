@@ -8,7 +8,7 @@ import { resolveDevelopmentInvocation } from "./operations.mjs";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const BASE_ROLES = ["administrator", "member"];
-const WORKSPACE_ROLES = ["moderator", "senior_archive_editor"];
+const WORKSPACE_ROLES = ["reviewer", "senior_archive_editor"];
 const BOOTSTRAP_SOURCE = "local_first_admin";
 
 // SQL runs in one transaction, including the append-only audit/outbox facts.

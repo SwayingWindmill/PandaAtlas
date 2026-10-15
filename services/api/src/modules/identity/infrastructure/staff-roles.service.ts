@@ -3,7 +3,7 @@ import { sql } from "kysely";
 import { DatabaseService, type DatabaseTransaction } from "../../../platform/database/database.service.js";
 import { DomainError } from "../../../platform/errors/domain-error.js";
 
-const NON_DELEGABLE_ROLES = ["administrator", "community_scanner"];
+const NON_DELEGABLE_ROLES = ["administrator"];
 
 export interface StaffRoleAssignment {
   assignmentId: string;

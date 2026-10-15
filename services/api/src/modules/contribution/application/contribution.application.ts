@@ -57,7 +57,7 @@ export interface ContributionRecord {
   targetPandaId: string;
   publicVersionSeen: string;
   revisionNumber: number;
-  status: string;
+  status: ContributorStatus;
   statusExplanation?: string;
   submittedAt: Date;
 }
@@ -107,7 +107,10 @@ export interface ContributionReviewPort {
   getReviewSurface(submissionId: string): Promise<ContributionReviewSurface | undefined>;
 }
 
-export type ContributionReviewStatus = "accepted" | "not_accepted" | "duplicate" | "out_of_scope";
+// A contribution is submitted, then carries one review outcome.
+export const CONTRIBUTOR_STATUSES = ["submitted", "accepted", "not_accepted", "duplicate", "out_of_scope"] as const;
+export type ContributorStatus = (typeof CONTRIBUTOR_STATUSES)[number];
+export type ContributionReviewStatus = Exclude<ContributorStatus, "submitted">;
 
 export interface ContributionReviewOutcomeInput {
   submissionId: string;

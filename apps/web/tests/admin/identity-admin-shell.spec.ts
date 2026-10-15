@@ -183,7 +183,7 @@ test("IAM staff directory, invitation and role detail remain accessible", async 
 test("staff directory search and status filter narrow the people list without changing permissions", async ({ page }) => {
   const staff = [
     { accountId: "11111111-1111-4111-8111-111111111111", email: "alice@example.test", state: "active", roles: ["reviewer"] },
-    { accountId: "22222222-2222-4222-8222-222222222222", email: "bob@example.test", state: "suspended", roles: ["moderator"] },
+    { accountId: "22222222-2222-4222-8222-222222222222", email: "bob@example.test", state: "suspended", roles: ["reviewer"] },
     { accountId: "33333333-3333-4333-8333-333333333333", email: "chen@example.test", state: "active", roles: ["reviewer"] },
   ];
   await page.route("**/api/admin/session", (route) => route.fulfill({

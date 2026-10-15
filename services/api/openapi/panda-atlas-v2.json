@@ -3223,7 +3223,14 @@
             "minimum": 1
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "submitted",
+              "accepted",
+              "not_accepted",
+              "duplicate",
+              "out_of_scope"
+            ]
           },
           "statusExplanation": {
             "type": "string",

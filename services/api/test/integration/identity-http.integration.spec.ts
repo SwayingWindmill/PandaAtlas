@@ -272,9 +272,6 @@ describe("Identity HTTP security path", () => {
         expect((await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders,
           payload: { ...payload, roleKey: "administrator" },
         })).statusCode).toBe(403);
-        expect((await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders,
-          payload: { ...payload, roleKey: "community_scanner" },
-        })).statusCode).toBe(403);
         await sql`update auth.users set email_confirmed_at=null where id=${staffId}::uuid`.execute(tx);
         const unverifiedGrant = await injectHttp(app, { method: "POST", url: `${target}/roles`, headers: managerHeaders, payload });
         expect(unverifiedGrant.statusCode).toBe(409);

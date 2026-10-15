@@ -448,21 +448,13 @@
   font-weight: 750;
 }
 
-.contribution-status--action_required {
-  background: color-mix(in srgb, #f59e0b 14%, var(--surface));
-  color: #92400e;
-}
-
-.contribution-status--incorporated_full,
-.contribution-status--incorporated_partial,
 .contribution-status--accepted {
   background: color-mix(in srgb, #22c55e 12%, var(--surface));
   color: #166534;
 }
 
 .contribution-status--not_accepted,
-.contribution-status--out_of_scope,
-.contribution-status--target_unpublished {
+.contribution-status--out_of_scope {
   background: color-mix(in srgb, #ef4444 10%, var(--surface));
   color: #991b1b;
 }

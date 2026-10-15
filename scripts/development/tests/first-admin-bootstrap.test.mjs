@@ -76,7 +76,7 @@ test("full local workspace mode uses explicitly named business roles and stays i
   await withDisposableIdentity(async ({ client, id }) => {
     const result = await bootstrapFirstAdministrator(client, id, { workspaceAccess: true });
     assert.equal(result.created, true);
-    assert.deepEqual(result.roles, ["administrator", "member", "moderator", "senior_archive_editor"]);
+    assert.deepEqual(result.roles, ["administrator", "member", "reviewer", "senior_archive_editor"]);
     const granted = await client.query(
       `select distinct rc.capability_key from identity.role_assignments a
        join identity.role_capabilities rc on rc.role_key=a.role_key where a.account_id=$1`,

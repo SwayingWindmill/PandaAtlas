@@ -262,7 +262,7 @@ export class PostgresContributionRepository implements ContributionRepository {
     target_id: string;
     public_version_seen: string;
     latest_revision_number: number;
-    contributor_status: string;
+    contributor_status: ContributionRecord["status"];
     submitted_at: Date | null;
     user_visible_reason: string | null;
   }): ContributionRecord {
