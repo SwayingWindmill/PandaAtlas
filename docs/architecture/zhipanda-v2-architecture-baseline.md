@@ -267,6 +267,8 @@ The Web imports the generated client package; it never imports Nest DTO/domain s
 
 No `/api/v1` aliases, snake_case transformer, FastAPI `detail` compatibility, manual V2 OpenAPI YAML fragments, or hand-maintained frontend transport interfaces.
 
+Browser requests reach the API through the Web app's forwarding module, `apps/web/lib/server/v2-forwarding.ts`, which holds the route table and the policy of that boundary. Six routes compose several operations and keep their own handlers, applying the module's state-change rule: `engagement/passport`, `games/guess/question`, `games/guess/answer`, `admin/publication/releases/[releaseId]/actions`, `notification/inbox`, `auth/email-otp/start`.
+
 ## 10. Identity, authentication, and authorization
 
 ### Authentication authority
@@ -589,7 +591,6 @@ There is no staging environment. Every push to `main` runs the full development 
 ### Cloudflare Workers
 
 Two Workers are deployed units: the Web Worker (`apps/web`) and the API Worker (`services/api`). The API Worker mounts the Nest application through `httpServerHandler` and runs the Cron Trigger; the Web Worker reaches it through the `V2_API` service binding. Both are reachable only on their custom domains. Hyperdrive connects the API Worker to Supabase.
-
 ### Health
 
 `GET /health` proves the Nest process is alive and does not call remote dependencies.
