@@ -7,19 +7,23 @@ const { AsyncDownstreamRunnerService } = await import("../dist/jobs/async-downst
 const { runScheduledCycle } = await import("../dist/jobs/scheduled-cycle.js");
 const { webPublicCache } = await import("../dist/jobs/web-public-cache.js");
 const { StructuredLoggerService } = await import("../dist/platform/observability/structured-logger.service.js");
+const { createColdStartReporter } = await import("../dist/platform/observability/cold-start.js");
 const application = await createApplication();
 const database = application.get(DatabaseService);
 const runner = application.get(AsyncDownstreamRunnerService);
 const logger = application.get(StructuredLoggerService);
 const bridge = httpServerHandler(application.getHttpServer());
+const coldStart = createColdStartReporter(logger);
 
 export default {
   fetch(request, bindings, context) {
+    coldStart.report("fetch", { method: request.method, path: new URL(request.url).pathname });
     return database.withRequest(bindings.HYPERDRIVE.connectionString, () =>
       bridge.fetch(request, bindings, context),
     );
   },
   scheduled(_controller, bindings, context) {
+    coldStart.report("scheduled");
     // waitUntil records a failed cycle as the Cron Trigger invocation status.
     context.waitUntil(runScheduledCycle(database, runner, bindings.HYPERDRIVE.connectionString, {
       publicCache: webPublicCache(bindings.PUBLIC_WEB),

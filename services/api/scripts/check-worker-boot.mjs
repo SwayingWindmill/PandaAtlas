@@ -1,7 +1,8 @@
 // Boots the built API Worker (.cloudflare/output) in local workerd and requires the application's
 // own /health response. Catches Workers-only startup failures such as an unsettled top-level await,
-// which unit tests running on Node cannot see (#524). It then requires a failing /ready request to
-// write its structured error entry to the Worker's console, which is what Workers Logs ingests (#559).
+// which unit tests running on Node cannot see (#524). It then requires the isolate's first invocation
+// to log its cold-start marker (#637) and a failing /ready request to write its structured error
+// entry to the Worker's console, which is what Workers Logs ingests (#559).
 import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
@@ -51,6 +52,15 @@ async function check() {
   throw new Error("Timed out waiting for the API Worker to serve /health.");
 }
 
+// The first invocation logs the isolate's cold start (#637).
+async function checkColdStartLogged() {
+  while (Date.now() < deadline) {
+    if (/message: 'Worker started',[^}]*coldStart: true/u.test(output)) return;
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  throw new Error("The isolate's first invocation did not log a 'Worker started' entry.");
+}
+
 // The boot database is unreachable, so /ready fails and must log one entry carrying its request id.
 async function checkFailureLogged() {
   const response = await fetch(`http://127.0.0.1:${port}/ready`);
@@ -70,6 +80,8 @@ async function checkFailureLogged() {
 try {
   const body = await check();
   console.log(`[worker-boot] API Worker booted in workerd; /health -> ${body}`);
+  await checkColdStartLogged();
+  console.log("[worker-boot] the first invocation logged 'Worker started'");
   const requestId = await checkFailureLogged();
   console.log(`[worker-boot] failed /ready request ${requestId} was logged to the Worker console as a structured entry`);
 } catch (error) {
