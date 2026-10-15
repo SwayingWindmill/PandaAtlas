@@ -13,7 +13,6 @@ const database = application.get(DatabaseService);
 const runner = application.get(AsyncDownstreamRunnerService);
 const logger = application.get(StructuredLoggerService);
 const bridge = httpServerHandler(application.getHttpServer());
-// The isolate's first invocation logs its cold start (#637).
 const coldStart = createColdStartReporter(logger);
 
 export default {
