@@ -1,6 +1,8 @@
 import type { components } from "@zhipanda/api-client";
 import { NextResponse } from "next/server";
 
+import { refuseStateChange } from "@/lib/server/v2-forwarding";
+
 import {
   authenticationRequiredResponse,
   createAuthenticatedV2Client,
@@ -21,6 +23,8 @@ interface PublicationActionRequest extends PublicationReasonBody {
 }
 
 export async function POST(request: Request, context: RouteContext) {
+  const refused = refuseStateChange(request);
+  if (refused !== undefined) return refused;
   const api = await createAuthenticatedV2Client();
   if (!api) return authenticationRequiredResponse();
   const { releaseId } = await context.params;

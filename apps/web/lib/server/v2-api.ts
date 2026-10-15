@@ -4,6 +4,7 @@ import { createApiClient, type ApiClient } from "@zhipanda/api-client";
 import { env } from "cloudflare:workers";
 import { NextResponse } from "next/server";
 
+import { sessionRequiredResponse } from "@/lib/server/v2-forwarding";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
 export const V2_API_BASE_URL = (process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001").replace(/\/$/, "");
@@ -47,16 +48,8 @@ export async function createAuthenticatedV2Client(): Promise<AuthenticatedV2Clie
   };
 }
 
-export function authenticationRequiredResponse(): NextResponse {
-  return NextResponse.json(
-    {
-      type: "about:blank",
-      title: "Authentication required",
-      status: 401,
-      detail: "Authentication is required for this operation.",
-    },
-    { status: 401, headers: { "WWW-Authenticate": "Bearer", "Cache-Control": "no-store, private" } },
-  );
+export function authenticationRequiredResponse(): Response {
+  return sessionRequiredResponse();
 }
 
 export function v2JsonResponse(result: V2Result): NextResponse {

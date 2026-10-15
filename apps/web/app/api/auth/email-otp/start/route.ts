@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { refuseStateChange } from "@/lib/server/v2-forwarding";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
+  const refused = refuseStateChange(request);
+  if (refused !== undefined) return refused;
   const payload = await request.json().catch(() => null) as Record<string, unknown> | null;
   const email = typeof payload?.email === "string" ? payload.email.trim().toLowerCase() : "";
   const next = typeof payload?.next === "string"

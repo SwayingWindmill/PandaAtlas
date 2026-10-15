@@ -2,7 +2,9 @@ import type { paths } from "@zhipanda/api-client";
 
 type ApiPath = keyof paths & string;
 type ApiMethod<P extends ApiPath> = Uppercase<
-  { [M in keyof paths[P]]-?: paths[P][M] extends undefined ? never : M & string }[keyof paths[P]]
+  {
+    [M in Exclude<keyof paths[P], "parameters">]-?: paths[P][M] extends undefined ? never : M & string;
+  }[Exclude<keyof paths[P], "parameters">]
 >;
 
 interface ForwardedRoute {
@@ -18,7 +20,7 @@ function route<P extends ApiPath>(web: string, api: P, ...methods: ApiMethod<P>[
   return { methods, web: web.split("/").filter(Boolean), api };
 }
 
-// The Web paths come first in each pair; a literal segment wins over a parameter listed after it.
+// The first matching entry wins, so a literal segment is listed before a parameter at the same place.
 const ROUTES: readonly ForwardedRoute[] = [
   route("/api/admin/session", "/api/v2/me", "GET"),
   route("/api/identity/session", "/api/v2/me", "GET"),
@@ -75,14 +77,21 @@ export interface ForwardingDependencies {
   getAccessToken: () => Promise<string | null>;
 }
 
-function problem(status: number, title: string, detail: string, headers: Record<string, string> = {}): Response {
-  return Response.json(
-    { type: "about:blank", title, status, detail },
-    { status, headers: { "Cache-Control": "no-store, private", ...headers } },
-  );
+// Problem Details (RFC 9457) with the API's `code` extension, so the client reads one error shape.
+function problem(status: number, code: string, title: string, detail: string, headers: Record<string, string> = {}): Response {
+  return new Response(JSON.stringify({ type: "about:blank", title, status, detail, code }), {
+    status,
+    headers: { "Content-Type": "application/problem+json", "Cache-Control": "no-store, private", ...headers },
+  });
 }
 
-function matchRoute(method: string, pathname: string): { route: ForwardedRoute; apiPath: string } | "unknown" | "method" {
+export function sessionRequiredResponse(): Response {
+  return problem(401, "web.sessionRequired", "Authentication required", "Authentication is required for this operation.", {
+    "WWW-Authenticate": "Bearer",
+  });
+}
+
+function matchRoute(method: string, pathname: string): string | "unknown" | "method" {
   const segments = pathname.split("/").filter(Boolean).map((segment) => {
     try {
       return decodeURIComponent(segment);
@@ -105,36 +114,50 @@ function matchRoute(method: string, pathname: string): { route: ForwardedRoute; 
     if (!matched) continue;
     pathKnown = true;
     if (!candidate.methods.includes(method)) continue;
-    const apiPath = candidate.api.replace(/\{[^}]+\}/gu, () => encodeURIComponent(parameters.shift()!));
-    return { route: candidate, apiPath };
+    return candidate.api.replace(/\{[^}]+\}/gu, () => encodeURIComponent(parameters.shift()!));
   }
   return pathKnown ? "method" : "unknown";
 }
 
 // A state-changing request is accepted only from this site. Browsers send Sec-Fetch-Site; older ones
 // send Origin; a client that sends neither carries no ambient cookies, so it cannot forge a session.
-function crossSite(request: Request, origin: string): boolean {
+function crossSite(request: Request): boolean {
   const site = request.headers.get("sec-fetch-site");
   if (site !== null) return site !== "same-origin";
-  const requestOrigin = request.headers.get("origin");
-  return requestOrigin !== null && requestOrigin !== origin;
+  const origin = request.headers.get("origin");
+  return origin !== null && origin !== new URL(request.url).origin;
 }
 
-// Forwards a browser request to its API operation with the session's bearer token. Every policy of
-// the Web-to-API boundary lives here: the allowlist, the session, the same-origin rule for writes,
-// JSON-only bodies, and `no-store` on the way back.
+function declaresJsonBody(request: Request): boolean {
+  return (request.headers.get("content-type") ?? "").toLowerCase().startsWith("application/json");
+}
+
+// The rule for every state-changing request the Web app accepts, from the catch-all and from the
+// routes that compose operations: from this site only, and a body only as declared JSON.
+export function refuseStateChange(request: Request): Response | undefined {
+  if (crossSite(request)) {
+    return problem(403, "web.crossSite", "Forbidden", "State-changing requests are accepted from this site only.");
+  }
+  if (request.headers.has("content-type") && !declaresJsonBody(request)) {
+    return problem(415, "web.unsupportedMediaType", "Unsupported Media Type", "Request bodies must be JSON.");
+  }
+  return undefined;
+}
+
+// Forwards a browser request to its API operation with the session's bearer token. The query string
+// passes through unchanged, and the API rejects parameters its operation does not declare.
 export async function forwardToV2(request: Request, dependencies: ForwardingDependencies): Promise<Response> {
   const url = new URL(request.url);
-  const match = matchRoute(request.method, url.pathname);
-  if (match === "unknown") return problem(404, "Not Found", "No API operation is forwarded at this path.");
-  if (match === "method") return problem(405, "Method Not Allowed", "The API operation does not accept this method.");
+  const apiPath = matchRoute(request.method, url.pathname);
+  if (apiPath === "unknown") {
+    return problem(404, "web.notForwarded", "Not Found", "No API operation is forwarded at this path.");
+  }
+  if (apiPath === "method") {
+    return problem(405, "web.methodNotAllowed", "Method Not Allowed", "The API operation does not accept this method.");
+  }
 
   const accessToken = await dependencies.getAccessToken();
-  if (accessToken === null) {
-    return problem(401, "Authentication required", "Authentication is required for this operation.", {
-      "WWW-Authenticate": "Bearer",
-    });
-  }
+  if (accessToken === null) return sessionRequiredResponse();
 
   const headers = new Headers({
     Accept: "application/json",
@@ -143,20 +166,16 @@ export async function forwardToV2(request: Request, dependencies: ForwardingDepe
   });
   let body: string | undefined;
   if (request.method !== "GET") {
-    if (crossSite(request, url.origin)) {
-      return problem(403, "Forbidden", "State-changing requests are accepted from this site only.");
-    }
-    if (request.body !== null) {
-      if (!(request.headers.get("content-type") ?? "").toLowerCase().startsWith("application/json")) {
-        return problem(415, "Unsupported Media Type", "Request bodies must be JSON.");
-      }
+    const refused = refuseStateChange(request);
+    if (refused !== undefined) return refused;
+    if (declaresJsonBody(request)) {
       body = await request.text();
       headers.set("Content-Type", "application/json");
     }
   }
 
   const upstream = await dependencies.transport(
-    new Request(`${dependencies.baseUrl}${match.apiPath}${url.search}`, { method: request.method, headers, body }),
+    new Request(`${dependencies.baseUrl}${apiPath}${url.search}`, { method: request.method, headers, body }),
   );
   const responseHeaders = new Headers({ "Cache-Control": "no-store, private" });
   for (const name of ["content-type", "www-authenticate"]) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { createServerV2Client, v2JsonResponse } from "@/lib/server/v2-api";
+import { refuseStateChange } from "@/lib/server/v2-forwarding";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,8 @@ function displayName(
 }
 
 export async function POST(request: NextRequest) {
+  const refused = refuseStateChange(request);
+  if (refused !== undefined) return refused;
   const body = (await request.json()) as {
     questionId: string;
     selectedPandaId: string;

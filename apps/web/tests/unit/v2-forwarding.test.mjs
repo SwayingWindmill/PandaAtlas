@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { forwardToV2 } from "../../lib/server/v2-forwarding.ts";
+import { forwardToV2, refuseStateChange } from "../../lib/server/v2-forwarding.ts";
 
 const ORIGIN = "https://www.example.test";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
@@ -65,6 +65,47 @@ test("a body that is not JSON is refused", async () => {
   });
   assert.equal((await forwardToV2(form, dependencies)).status, 415);
   assert.deepEqual(upstream, []);
+});
+
+test("the routes that compose operations apply the same state-change rule", () => {
+  const crossSite = request("POST", "/api/games/guess/answer", { headers: { "sec-fetch-site": "cross-site" } });
+  assert.equal(refuseStateChange(crossSite)?.status, 403);
+  const form = request("POST", "/api/auth/email-otp/start", {
+    headers: { "sec-fetch-site": "same-origin", "content-type": "text/plain" },
+    body: "email=a@b.c",
+  });
+  assert.equal(refuseStateChange(form)?.status, 415);
+  const json = request("POST", "/api/auth/email-otp/start", {
+    headers: { "sec-fetch-site": "same-origin", "content-type": "application/json" },
+    body: "{}",
+  });
+  assert.equal(refuseStateChange(json), undefined);
+});
+
+test("a write without a body is forwarded without one, and a literal segment wins over a parameter", async () => {
+  const { dependencies, upstream } = harness();
+  const toggle = request("POST", "/api/engagement/favorites/p1", { headers: { "sec-fetch-site": "same-origin" } });
+  assert.equal((await forwardToV2(toggle, dependencies)).status, 200);
+  assert.equal(upstream[0].request.headers.has("content-type"), false);
+  assert.equal(upstream[0].body, "");
+
+  await forwardToV2(request("GET", "/api/admin/staff/accounts/catalog"), dependencies);
+  assert.equal(upstream[1].request.url, "https://api.example.test/api/v2/staff/accounts/catalog");
+  await forwardToV2(request("GET", "/api/admin/staff/accounts/acc-1"), dependencies);
+  assert.equal(upstream[2].request.url, "https://api.example.test/api/v2/staff/accounts/acc-1");
+});
+
+test("refusals are Problem Details with a code", async () => {
+  const { dependencies } = harness({ token: null });
+  const response = await forwardToV2(request("GET", "/api/engagement/favorites"), dependencies);
+  assert.equal(response.headers.get("content-type"), "application/problem+json");
+  assert.deepEqual(await response.json(), {
+    type: "about:blank",
+    title: "Authentication required",
+    status: 401,
+    detail: "Authentication is required for this operation.",
+    code: "web.sessionRequired",
+  });
 });
 
 test("a listed GET is forwarded with the bearer token, a correlation id and its query", async () => {
