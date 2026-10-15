@@ -51,6 +51,15 @@ async function check() {
   throw new Error("Timed out waiting for the API Worker to serve /health.");
 }
 
+// The first invocation logs the isolate's cold start (#637).
+async function checkColdStartLogged() {
+  while (Date.now() < deadline) {
+    if (output.includes("message: 'Worker started'") && output.includes("coldStart: true")) return;
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  throw new Error("The isolate's first invocation did not log a 'Worker started' entry.");
+}
+
 // The boot database is unreachable, so /ready fails and must log one entry carrying its request id.
 async function checkFailureLogged() {
   const response = await fetch(`http://127.0.0.1:${port}/ready`);
@@ -70,6 +79,8 @@ async function checkFailureLogged() {
 try {
   const body = await check();
   console.log(`[worker-boot] API Worker booted in workerd; /health -> ${body}`);
+  await checkColdStartLogged();
+  console.log("[worker-boot] the first invocation logged 'Worker started'");
   const requestId = await checkFailureLogged();
   console.log(`[worker-boot] failed /ready request ${requestId} was logged to the Worker console as a structured entry`);
 } catch (error) {
