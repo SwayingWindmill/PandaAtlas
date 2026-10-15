@@ -15,7 +15,7 @@ This slice changes **human staff role assignments**, not Supabase identities or 
 ## Governance and conflict boundaries
 
 - Both mutation commands require `identity.role.manage`, whose PostgreSQL policy requires AAL2, recent interactive authentication and a live Supabase session. Staff directory, assignment history and catalog GETs use separate `identity.staff.read` authorization (AAL1, live session, no 15-minute step-up). The UI is only a presentation of server policy.
-- A manager cannot change their own roles. The `administrator` bootstrap/recovery role and `community_scanner` service role are not delegable here. `member` is not a staff role. Administrative recovery is deliberately postponed to IAM-05.
+- A manager cannot change their own roles. The `administrator` bootstrap/recovery role is not delegable here. `member` is not a staff role. Administrative recovery is deliberately postponed to IAM-05.
 - A verified identity may not simultaneously hold effective Review decision rights and Publication activation rights, even through distinct role assignments.
 - Grants and revocations are append-only with reason, actor, subject, correlation, idempotency key, authorization audit and integration Outbox facts in one database transaction. A replay of the same command key returns the same result without creating new audit or event facts. Reusing a key with changed intent is rejected. Revoking a grant or letting it expire cannot be undone by replaying its old grant request.
 - Concurrency on one staff account is serialized by its PostgreSQL account row. Role catalog choices are read from existing `identity.roles` and `identity.role_capabilities`, not from client-supplied capability claims.

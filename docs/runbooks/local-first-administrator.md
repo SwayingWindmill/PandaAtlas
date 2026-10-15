@@ -19,7 +19,7 @@ PandaAtlas keeps authentication in Supabase and all application roles in the pri
    npm run bootstrap:admin -- --account-id <verified-supabase-user-uuid> --workspace-access
    ```
 
-   Ordinary bootstrap grants `member` and `administrator`. Local workspace access adds the existing `moderator` and `senior_archive_editor` roles. These capabilities do **not** bypass recent authentication, AAL2, ownership or business-domain rules.
+   Ordinary bootstrap grants `member` and `administrator`. Local workspace access adds the existing `reviewer` and `senior_archive_editor` roles. These capabilities do **not** bypass recent authentication, AAL2, ownership or business-domain rules.
 5. Login again with a **fresh OTP**. Verify `/admin` renders the Chinese shell; `/api/admin/session` and NestJS `GET /api/v2/me` should return `admin.shell.access`. For the ordinary role, `identity.role.manage` is present, but its high-risk commands require AAL2/recent reauthentication.
 
 ## Safety and verification

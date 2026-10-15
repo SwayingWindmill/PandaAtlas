@@ -5,11 +5,9 @@
 
 import type { ColumnType } from "kysely";
 
-export type CommunityIntakeAssertionDisposition = "incorporated" | "not_incorporated" | "not_selected" | "pending" | "selected" | "superseded";
-
 export type CommunityIntakeAttachmentState = "clean" | "deleted" | "infected" | "quarantined" | "scan_failed";
 
-export type CommunityIntakeContributorStatus = "accepted" | "action_required" | "draft" | "duplicate" | "expired" | "incorporated_full" | "incorporated_partial" | "incorporation_in_progress" | "not_accepted" | "out_of_scope" | "submitted" | "target_merged" | "target_unpublished" | "withdrawn";
+export type CommunityIntakeContributorStatus = "accepted" | "duplicate" | "not_accepted" | "out_of_scope" | "submitted";
 
 export type CommunityIntakeSourceKind = "document" | "other" | "publication" | "url";
 
@@ -62,20 +60,7 @@ export interface CommunityIntakeAttachments {
   upload_completed_at: Timestamp | null;
 }
 
-export interface CommunityIntakeContributorAssertionResults {
-  assertion_key: string;
-  created_at: Generated<Timestamp>;
-  disposition: CommunityIntakeAssertionDisposition;
-  explanation: string | null;
-  public_reference_id: string | null;
-  result_id: Generated<string>;
-  revision_number: number;
-  status_event_id: string;
-  submission_id: string;
-}
-
 export interface CommunityIntakeContributorStatusEvents {
-  action_required_fields: Generated<Json>;
   active_revision_number: number | null;
   actor_subject_hash: string;
   correlation_id: string;
@@ -86,7 +71,6 @@ export interface CommunityIntakeContributorStatusEvents {
   status: CommunityIntakeContributorStatus;
   status_event_id: Generated<string>;
   submission_id: string;
-  target_redirect_id: string | null;
   user_visible_reason: string | null;
 }
 
@@ -140,7 +124,6 @@ export interface CommunityIntakeSubmittedSources {
 
 export interface DB {
   "community_intake.attachments": CommunityIntakeAttachments;
-  "community_intake.contributor_assertion_results": CommunityIntakeContributorAssertionResults;
   "community_intake.contributor_status_events": CommunityIntakeContributorStatusEvents;
   "community_intake.submission_revisions": CommunityIntakeSubmissionRevisions;
   "community_intake.submissions": CommunityIntakeSubmissions;

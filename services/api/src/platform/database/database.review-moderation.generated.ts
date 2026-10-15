@@ -5,7 +5,7 @@
 
 import type { ColumnType } from "kysely";
 
-export type CommunityIntakeContributorStatus = "accepted" | "action_required" | "draft" | "duplicate" | "expired" | "incorporated_full" | "incorporated_partial" | "incorporation_in_progress" | "not_accepted" | "out_of_scope" | "submitted" | "target_merged" | "target_unpublished" | "withdrawn";
+export type CommunityIntakeContributorStatus = "accepted" | "duplicate" | "not_accepted" | "out_of_scope" | "submitted";
 
 export type CommunityIntakeTargetType = "panda";
 

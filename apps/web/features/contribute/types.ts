@@ -2,49 +2,8 @@ export type Locale = "zh" | "en";
 
 export type SubmissionType = "correction" | "sourced_information";
 
-export type ContributorStatus =
-  | "draft"
-  | "submitted"
-  | "action_required"
-  | "duplicate"
-  | "out_of_scope"
-  | "not_accepted"
-  | "accepted"
-  | "incorporation_in_progress"
-  | "incorporated_full"
-  | "incorporated_partial"
-  | "withdrawn"
-  | "expired"
-  | "target_merged"
-  | "target_unpublished";
-
-export interface SubmittedSource {
-  source_kind: "url" | "publication" | "document" | "other";
-  title: string;
-  locator: string;
-  publisher?: string | null;
-  published_on?: string | null;
-}
-
-export interface SubmissionSummary {
-  submission_id: string;
-  submission_type: SubmissionType;
-  target_type: "panda";
-  target_id: string;
-  public_version_seen: string;
-  state: "draft" | "submitted" | "withdrawn" | "expired" | "closed";
-  contributor_status: ContributorStatus;
-  version: number;
-  latest_revision_number: number;
-  user_visible_reason: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface SubmissionPage {
-  items: SubmissionSummary[];
-  next_cursor: string | null;
-}
+// The statuses the API writes: submitted, then one review outcome.
+export type ContributorStatus = "submitted" | "accepted" | "not_accepted" | "duplicate" | "out_of_scope";
 
 export interface V2ContributionRecord {
   submissionId: string;
@@ -52,7 +11,7 @@ export interface V2ContributionRecord {
   targetPandaId: string;
   publicVersionSeen: string;
   revisionNumber: number;
-  status: string;
+  status: ContributorStatus;
   statusExplanation?: string;
   submittedAt: string;
 }

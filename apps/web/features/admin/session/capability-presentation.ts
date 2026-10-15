@@ -5,7 +5,7 @@ const capabilityDomains: Record<string, string> = {
 
 const capabilityDescriptions: Record<string, string> = {
   "review.case.read": "查看审核案件", "review.case.claim": "领取审核案件", "review.case.decide": "处理审核案件",
-  "audit.read": "查看审计记录", "audit.export": "导出审计记录", "identity.staff.read": "查看工作人员",
+  "audit.read": "查看审计记录", "identity.staff.read": "查看工作人员",
   "identity.role.manage": "管理岗位授权", "identity.account.manage": "管理工作人员账号",
   "publication.release.manage": "管理候选发布版本",
   "publication.release.activate": "启用与回滚公开版本", "publication.emergency": "紧急管理公开内容",

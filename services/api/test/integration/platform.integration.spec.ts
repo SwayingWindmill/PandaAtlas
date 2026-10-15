@@ -141,7 +141,7 @@ describe("NestJS V2 platform against local Supabase PostgreSQL", () => {
     ];
     const highImpact = [
       "identity.account.manage", "identity.role.manage",
-      "publication.release.activate", "publication.emergency", "audit.export",
+      "publication.release.activate", "publication.emergency",
     ];
 
     const policies = await database.db

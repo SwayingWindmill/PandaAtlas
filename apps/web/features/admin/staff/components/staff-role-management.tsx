@@ -26,17 +26,11 @@ type AccountStateChange = { action: "suspend" | "reinstate"; idempotencyKey: str
 
 const roleNames: Record<string, string> = {
   administrator: "管理员",
-  archive_editor: "档案编辑",
-  audit_exporter: "审计导出员",
+  archive_editor: "发布编辑",
   audit_reader: "审计查看员",
-  contributor: "资料贡献者",
-  editorial_publisher: "动态发布员",
-  import_operator: "数据导入员",
   member: "普通成员",
-  moderator: "社区审核员",
-  privacy_operator: "隐私事务专员",
   reviewer: "审核员",
-  senior_archive_editor: "资深档案编辑（终审）",
+  senior_archive_editor: "发布负责人",
 };
 
 function roleName(value: string) { return roleNames[value] ?? value; }
@@ -49,7 +43,7 @@ async function responseJson<T>(response: Response): Promise<T> {
     const message = code === "auth.recentAuthRequired" ? "最近认证已过期，请重新登录并完成双重验证。"
       : code === "auth.aalRequired" ? "请先在账号安全中完成双重验证。"
         : code === "auth.liveSessionRequired" || response.status === 401 ? "当前会话已失效，请重新登录。"
-        : code === "identity.dutiesConflict" ? "审核和最终审批必须由不同岗位承担，不能同时授权。"
+        : code === "identity.dutiesConflict" ? "审核和公开发布必须由不同岗位承担，不能同时授权。"
           : code === "identity.selfGrantForbidden" ? "不能变更自己的角色。"
             : response.status === 409 ? "角色状态已变化，请刷新并检查当前授权。"
               : response.status === 403 ? "当前账号不具备该操作的管理权限。"
