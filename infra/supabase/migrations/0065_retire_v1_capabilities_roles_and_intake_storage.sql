@@ -67,19 +67,10 @@ alter table community_intake.contributor_status_events
   drop column action_required_fields,
   drop column target_redirect_id;
 
-do $$
-declare source_context_check text;
-begin
-  select conname into source_context_check
-  from pg_constraint
-  where conrelid = 'community_intake.contributor_status_events'::regclass
-    and contype = 'c'
-    and pg_get_constraintdef(oid) like '%source_context%';
-  execute format('alter table community_intake.contributor_status_events drop constraint %I', source_context_check);
-end $$;
 alter table community_intake.contributor_status_events
+  drop constraint contributor_status_events_source_context_check,
   add constraint contributor_status_events_source_context_check
-  check (source_context in ('contributor', 'review'));
+    check (source_context in ('contributor', 'review'));
 
 -- The contributor status is submitted, then one review outcome.
 drop view review_moderation.review_case_queue;

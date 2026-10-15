@@ -1,13 +1,8 @@
 import { Kysely, PostgresDialect, sql } from "kysely";
-import { readdirSync, readFileSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
 import pg from "pg";
 import { afterAll, describe, expect, it } from "vitest";
-
-const DATABASE_URL =
-  process.env.TEST_DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
-const SOURCE_ROOT = fileURLToPath(new URL("../../src/", import.meta.url));
+import { apiSourceFiles, DATABASE_URL } from "./api-source.js";
 
 type Privilege = "select" | "insert" | "update" | "delete" | "execute";
 
@@ -25,17 +20,9 @@ const ACCESS_PATTERNS: Array<[RegExp, Privilege]> = [
   [/\b([a-z_]+\.[a-z_]+)\(/gu, "execute"],
 ];
 
-function sourceFiles(directory: string): string[] {
-  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    const absolute = path.join(directory, entry.name);
-    if (entry.isDirectory()) return sourceFiles(absolute);
-    return entry.name.endsWith(".ts") && !entry.name.endsWith(".generated.ts") ? [absolute] : [];
-  });
-}
-
 function requiredAccess(): string[] {
   const access = new Set<string>();
-  for (const file of sourceFiles(SOURCE_ROOT)) {
+  for (const file of apiSourceFiles()) {
     const source = readFileSync(file, "utf8");
     for (const [pattern, privilege] of ACCESS_PATTERNS) {
       for (const match of source.matchAll(pattern)) access.add(`${privilege} ${match[1]!.toLowerCase()}`);

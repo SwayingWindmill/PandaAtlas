@@ -1,24 +1,12 @@
+import type { components } from "@zhipanda/api-client";
+
 export type Locale = "zh" | "en";
 
 export type SubmissionType = "correction" | "sourced_information";
 
-// The statuses the API writes: submitted, then one review outcome.
-export type ContributorStatus = "submitted" | "accepted" | "not_accepted" | "duplicate" | "out_of_scope";
-
-export interface V2ContributionRecord {
-  submissionId: string;
-  submissionType: SubmissionType;
-  targetPandaId: string;
-  publicVersionSeen: string;
-  revisionNumber: number;
-  status: ContributorStatus;
-  statusExplanation?: string;
-  submittedAt: string;
-}
-
-export interface V2ContributionList {
-  items: V2ContributionRecord[];
-}
+export type V2ContributionRecord = components["schemas"]["ContributionRecordDto"];
+export type V2ContributionList = components["schemas"]["ContributionListDto"];
+export type ContributorStatus = V2ContributionRecord["status"];
 
 export interface V2ContributionInput {
   submissionType: SubmissionType;

@@ -22,6 +22,7 @@ import type {
   ContributionSourceKind,
   ContributionSubmissionType,
 } from "../application/contribution.application.js";
+import { CONTRIBUTOR_STATUSES, type ContributorStatus } from "../application/contribution.application.js";
 
 function trim(value: unknown): unknown {
   return typeof value === "string" ? value.trim() : value;
@@ -195,8 +196,8 @@ export class ContributionRecordDto {
   @ApiProperty({ minimum: 1 })
   public declare revisionNumber: number;
 
-  @ApiProperty()
-  public declare status: string;
+  @ApiProperty({ enum: CONTRIBUTOR_STATUSES })
+  public declare status: ContributorStatus;
 
   @ApiPropertyOptional({ description: "The reviewer's explanation of the status." })
   public declare statusExplanation?: string;

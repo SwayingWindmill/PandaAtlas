@@ -1231,7 +1231,8 @@ export interface components {
             targetPandaId: string;
             publicVersionSeen: string;
             revisionNumber: number;
-            status: string;
+            /** @enum {string} */
+            status: "submitted" | "accepted" | "not_accepted" | "duplicate" | "out_of_scope";
             /** @description The reviewer's explanation of the status. */
             statusExplanation?: string;
             /** Format: date-time */
