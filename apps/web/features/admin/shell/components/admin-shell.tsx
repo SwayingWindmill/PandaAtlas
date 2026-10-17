@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircleUserRound } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
@@ -13,14 +13,12 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  adminSessionQueryOptions,
-  AdminSessionRequestError,
-} from "@/features/admin/session/api/queries";
+import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import {
   adminNavigationItemForPath,
   canAccessAdminNavigationItem,
 } from "@/features/admin/shell/navigation";
+import { ApiRequestError } from "@/lib/api/request";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { AppSidebar } from "./app-sidebar";
 import { AdminCommandMenu } from "./admin-command-menu";
@@ -86,8 +84,9 @@ function AdminHeader({ pathname, session }: { pathname: string; session: AdminSe
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const sessionQuery = useQuery(adminSessionQueryOptions);
-  const sessionError = sessionQuery.error instanceof AdminSessionRequestError ? sessionQuery.error : null;
+  const sessionError = sessionQuery.error instanceof ApiRequestError ? sessionQuery.error : null;
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -105,6 +104,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   async function signOut() {
     await getSupabaseBrowserClient().auth.signOut();
+    // The browser keeps one query cache; nothing read for this account survives its sign-out.
+    queryClient.clear();
     router.replace("/auth/login?next=%2Fadmin" as Route);
   }
 

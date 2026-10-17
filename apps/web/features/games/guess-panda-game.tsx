@@ -3,31 +3,16 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, RefreshCcw, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 
+import { fanMutationOptions } from "@/features/fan/api/queries";
+import { beginSignIn, signInRequired } from "@/features/fan/api/session";
+import type { GameAttemptInput, GuessAnswer, GuessQuestion } from "@/features/fan/api/types";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { isEngagementUiEnabled } from "@/lib/engagement/config";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
-
-type PendingAttempt = {
-  questionId: string;
-  selectedPandaId: string;
-};
-
-interface GuessQuestion {
-  questionId: string;
-  imageUrl: string;
-  imageAlt: string;
-  difficulty: "easy" | "medium" | "hard";
-  options: Array<{ pandaId: string; name: string }>;
-}
-
-interface GuessAnswer {
-  correct: boolean;
-  answer: { pandaId: string; name: string; slug: string };
-  recognitionTips: string[];
-}
 
 const pendingAttemptKey = "zhipanda:pending-guess-attempt:v2";
 
@@ -84,93 +69,83 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [gameError, setGameError] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const engagementEnabled = isEngagementUiEnabled();
   const t = copy[locale];
 
+  const nextQuestion = useMutation({
+    ...fanMutationOptions.getGuessQuestion(),
+    onMutate: () => {
+      setGameError(false);
+      setSelectedId(null);
+      setAnswerResult(null);
+      setSaveState("idle");
+    },
+    onSuccess: (received) => setQuestion(received),
+    onError: () => {
+      setQuestion(null);
+      setGameError(true);
+    },
+  });
+  const answer = useMutation({
+    ...fanMutationOptions.answerGuess(),
+    onMutate: ({ selectedPandaId }) => {
+      setSelectedId(selectedPandaId);
+      setGameError(false);
+    },
+    onSuccess: (result) => {
+      setAnswerResult(result);
+      setAnswered((value) => value + 1);
+      if (result.correct) setScore((value) => value + 1);
+    },
+    onError: () => {
+      setSelectedId(null);
+      setGameError(true);
+    },
+  });
+  // Saving needs the session. The attempt is kept until the server has it: a visitor who chose to
+  // save is sent to sign in and finds it saved on return; a visitor still signed out keeps it.
+  const { mutate: saveMutation } = useMutation(fanMutationOptions.saveGameAttempt());
+  const persistAttempt = useCallback((attempt: GameAttemptInput, signInWhenRefused: boolean) => {
+    saveMutation(attempt, {
+      onSuccess: () => {
+        window.sessionStorage.removeItem(pendingAttemptKey);
+        setSaveState("saved");
+      },
+      onError: (error) => {
+        if (signInRequired(error)) {
+          if (signInWhenRefused) beginSignIn(`/${locale}/games/guess`);
+          return;
+        }
+        window.sessionStorage.removeItem(pendingAttemptKey);
+        setSaveState("error");
+      },
+    });
+  }, [locale, saveMutation]);
+
   useEffect(() => {
     if (!engagementEnabled) return;
     const raw = window.sessionStorage.getItem(pendingAttemptKey);
     if (!raw) return;
-    let payload: PendingAttempt;
+    let payload: GameAttemptInput;
     try {
-      payload = JSON.parse(raw) as PendingAttempt;
+      payload = JSON.parse(raw) as GameAttemptInput;
     } catch {
       window.sessionStorage.removeItem(pendingAttemptKey);
       return;
     }
-    void fetch("/api/engagement/game-attempts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).then((response) => {
-      if (response.ok) {
-        window.sessionStorage.removeItem(pendingAttemptKey);
-        setSaveState("saved");
-      } else if (response.status !== 401) {
-        window.sessionStorage.removeItem(pendingAttemptKey);
-        setSaveState("error");
-      }
-    });
-  }, [engagementEnabled]);
+    persistAttempt(payload, false);
+  }, [engagementEnabled, persistAttempt]);
 
-  async function startNextRound() {
-    setLoading(true);
-    setGameError(false);
-    setSelectedId(null);
-    setAnswerResult(null);
-    setSaveState("idle");
-    try {
-      const response = await fetch(`/api/games/guess/question?locale=${locale}`, { cache: "no-store" });
-      if (!response.ok) {
-        setQuestion(null);
-        setGameError(true);
-        return;
-      }
-      setQuestion((await response.json()) as GuessQuestion);
-    } catch {
-      setQuestion(null);
-      setGameError(true);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const loading = nextQuestion.isPending || answer.isPending;
 
-  async function submitAnswer(pandaId: string) {
+  function submitAnswer(pandaId: string) {
     if (!question || answerResult || loading) return;
-    setSelectedId(pandaId);
-    setLoading(true);
-    setGameError(false);
-    try {
-      const response = await fetch("/api/games/guess/answer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          questionId: question.questionId,
-          selectedPandaId: pandaId,
-          locale,
-        }),
-      });
-      if (!response.ok) {
-        setSelectedId(null);
-        setGameError(true);
-        return;
-      }
-      const result = (await response.json()) as GuessAnswer;
-      setAnswerResult(result);
-      setAnswered((value) => value + 1);
-      if (result.correct) setScore((value) => value + 1);
-    } catch {
-      setSelectedId(null);
-      setGameError(true);
-    } finally {
-      setLoading(false);
-    }
+    answer.mutate({ questionId: question.questionId, selectedPandaId: pandaId, locale });
   }
 
-  async function saveAttempt() {
+  function saveAttempt() {
     if (
       !question
       || !answerResult
@@ -179,26 +154,10 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
       || saveState === "saving"
       || saveState === "saved"
     ) return;
-    const payload: PendingAttempt = {
-      questionId: question.questionId,
-      selectedPandaId: selectedId,
-    };
+    const attempt = { questionId: question.questionId, selectedPandaId: selectedId };
+    window.sessionStorage.setItem(pendingAttemptKey, JSON.stringify(attempt));
     setSaveState("saving");
-    const response = await fetch("/api/engagement/game-attempts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (response.ok) {
-      setSaveState("saved");
-      return;
-    }
-    if (response.status === 401) {
-      window.sessionStorage.setItem(pendingAttemptKey, JSON.stringify(payload));
-      window.location.assign(`/auth/login?next=${encodeURIComponent(`/${locale}/games/guess`)}`);
-      return;
-    }
-    setSaveState("error");
+    persistAttempt(attempt, true);
   }
 
   if (!question) {
@@ -214,7 +173,7 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
         <button
           type="button"
           disabled={loading}
-          onClick={() => void startNextRound()}
+          onClick={() => nextQuestion.mutate(locale)}
           className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white disabled:opacity-60"
         >
           {loading ? t.loading : t.start}<ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -255,7 +214,7 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
                 key={choice.pandaId}
                 type="button"
                 disabled={Boolean(answerResult) || loading}
-                onClick={() => void submitAnswer(choice.pandaId)}
+                onClick={() => submitAnswer(choice.pandaId)}
                 className="flex min-h-12 items-center justify-between gap-3 rounded-xl border border-[var(--pa-color-accent-border-14)] px-4 py-3 text-left font-semibold disabled:cursor-default disabled:opacity-100"
               >
                 <span>{choice.name}</span>{icon}
@@ -282,7 +241,7 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
               <button
                 type="button"
                 disabled={loading}
-                onClick={() => void startNextRound()}
+                onClick={() => nextQuestion.mutate(locale)}
                 className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white"
               >
                 <RefreshCcw className="h-4 w-4" aria-hidden="true" />{t.next}
@@ -297,7 +256,7 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
                 <button
                   type="button"
                   disabled={saveState === "saving" || saveState === "saved"}
-                  onClick={() => void saveAttempt()}
+                  onClick={saveAttempt}
                   className="inline-flex min-h-12 items-center rounded-xl border border-[var(--pa-color-accent-border-14)] px-5 py-3 font-semibold disabled:opacity-60"
                 >
                   {saveState === "saving" ? t.saving : saveState === "saved" ? t.saved : t.save}

@@ -3,8 +3,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { Gamepad2, LogIn } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
+import { gameAttemptsQueryOptions } from "@/features/fan/api/queries";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 interface PandaReference {
@@ -12,16 +15,6 @@ interface PandaReference {
   name: string;
   href: string;
 }
-
-interface GameAttempt {
-  attemptId: string;
-  questionId: string;
-  selectedPandaId: string;
-  correct: boolean;
-  attemptedAt: string;
-}
-
-type PageState = "loading" | "ready" | "signed-out" | "error";
 
 const copy = {
   zh: {
@@ -55,50 +48,29 @@ const copy = {
 } as const;
 
 export function GameHistoryPage({ locale, pandas }: { locale: PublicLocale; pandas: PandaReference[] }) {
-  const [state, setState] = useState<PageState>("loading");
-  const [attempts, setAttempts] = useState<GameAttempt[]>([]);
+  const session = useFanSession();
+  const attempts = useQuery({ ...gameAttemptsQueryOptions, enabled: session.status === "ready" });
   const pandaById = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda])), [pandas]);
   const t = copy[locale];
+  const status = privateReadStatus(session.status, attempts);
 
-  useEffect(() => {
-    let active = true;
-    void fetch("/api/engagement/game-attempts", { cache: "no-store" }).then(async (response) => {
-      if (!active) return;
-      if (response.status === 401) {
-        setState("signed-out");
-        return;
-      }
-      if (!response.ok) {
-        setState("error");
-        return;
-      }
-      const payload = await response.json() as { items?: GameAttempt[] };
-      if (!active) return;
-      setAttempts(Array.isArray(payload.items) ? payload.items : []);
-      setState("ready");
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  if (state === "loading") {
+  if (status === "loading") {
     return <p className="py-12 text-sm text-[var(--muted)]" role="status">{locale === "zh" ? "正在读取游戏历史……" : "Loading game history…"}</p>;
   }
 
-  if (state === "signed-out") {
+  if (status === "signed-out") {
     return (
       <section className="my-10 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-6 sm:p-8">
         <LogIn aria-hidden="true" />
         <p className="mt-4 text-lg font-semibold">{t.signIn}</p>
-        <Link href={`/auth/login?next=/${locale}/me/game-history` as Route} className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white">
+        <Link href={signInHref(`/${locale}/me/game-history`) as Route} className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white">
           {t.signInAction}
         </Link>
       </section>
     );
   }
 
-  if (state === "error") {
+  if (status !== "ready" || attempts.data === undefined) {
     return <p className="my-10 rounded-xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-5" role="alert">{t.unavailable}</p>;
   }
 
@@ -110,9 +82,9 @@ export function GameHistoryPage({ locale, pandas }: { locale: PublicLocale; pand
         <p className="mt-4 text-base leading-8 text-[var(--muted)]">{t.body}</p>
       </header>
 
-      {attempts.length ? (
+      {attempts.data.length ? (
         <ol className="grid gap-4">
-          {attempts.map((attempt) => {
+          {attempts.data.map((attempt) => {
             const selected = pandaById.get(attempt.selectedPandaId);
             return (
               <li key={attempt.attemptId} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 sm:p-6">

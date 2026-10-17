@@ -14,6 +14,7 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
+import { ApiRequestError, requestJson } from "@/lib/api/request";
 import { StaffWorkspaceNavigation } from "./staff-workspace-navigation";
 
 type Invitation = components["schemas"]["StaffInvitationDto"];
@@ -21,28 +22,22 @@ type IssuedInvitation = components["schemas"]["IssuedStaffInvitationDto"];
 type InvitationFilter = "all" | "pending" | "accepted" | "other";
 type Notice = { kind: "success" | "error"; message: string; code: string };
 
-class InvitationRequestError extends Error {
-  public constructor(public readonly code: string, message: string) {
-    super(message);
-  }
-}
-
-async function invitationFailure(response: Response): Promise<InvitationRequestError> {
-  const problem: unknown = await response.json().catch(() => null);
-  const code = problem && typeof problem === "object" && "code" in problem && typeof problem.code === "string"
-    ? problem.code : "";
-  const message = code === "auth.recentAuthRequired"
+function invitationMessage({ code, status }: ApiRequestError): string {
+  return code === "auth.recentAuthRequired"
     ? "最近认证已过期。请重新使用邮箱验证码登录，并完成 TOTP 双重验证。"
     : code === "auth.aalRequired"
       ? "当前会话尚未完成双重身份验证，请前往账号安全验证。"
-      : code === "auth.liveSessionRequired" || response.status === 401
+      : code === "auth.liveSessionRequired" || status === 401
         ? "当前登录会话已失效，请重新登录。"
-        : response.status === 409
+        : status === 409
           ? "该邮箱已注册或已有邀请，请先核对账号。"
-          : response.status === 403
+          : status === 403
             ? "当前账号没有执行此操作所需的权限。"
             : "邀请服务暂时不可用，请稍后重试。";
-  return new InvitationRequestError(code || String(response.status), message);
+}
+
+function invitationCode({ code, status }: ApiRequestError): string {
+  return code || String(status);
 }
 
 function InvitationRecovery({ code }: { code: string }) {
@@ -55,10 +50,8 @@ function InvitationRecovery({ code }: { code: string }) {
   return null;
 }
 
-async function getInvitations(): Promise<Invitation[]> {
-  const response = await fetch("/api/admin/staff/invitations", { cache: "no-store" });
-  if (!response.ok) throw await invitationFailure(response);
-  return response.json() as Promise<Invitation[]>;
+function getInvitations(): Promise<Invitation[]> {
+  return requestJson("/api/admin/staff/invitations");
 }
 
 function invitationState(status: string): InvitationFilter {
@@ -112,13 +105,10 @@ export function StaffInvitations() {
     setSubmitting(true);
     setNotice(null);
     try {
-      const response = await fetch("/api/admin/staff/invitations", {
+      const issued = await requestJson<IssuedInvitation>("/api/admin/staff/invitations", {
         method: "POST",
-        headers: { "content-type": "application/json" },
         body: JSON.stringify({ email: email.trim() }),
       });
-      if (!response.ok) throw await invitationFailure(response);
-      const issued = await response.json() as IssuedInvitation;
       setNotice({
         kind: "success",
         message: `已向 ${issued.email} 发送邀请。对方完成邮箱验证并登录后才能获得审核员岗位。`,
@@ -129,8 +119,8 @@ export function StaffInvitations() {
     } catch (failure) {
       setNotice({
         kind: "error",
-        message: failure instanceof InvitationRequestError ? failure.message : "网络连接失败，邀请可能未完成。请检查邀请记录后重试。",
-        code: failure instanceof InvitationRequestError ? failure.code : "",
+        message: failure instanceof ApiRequestError ? invitationMessage(failure) : "网络连接失败，邀请可能未完成。请检查邀请记录后重试。",
+        code: failure instanceof ApiRequestError ? invitationCode(failure) : "",
       });
     } finally {
       setSubmitting(false);
@@ -205,8 +195,8 @@ export function StaffInvitations() {
         </div>
         {error && (
           <div role="alert" className="flex flex-wrap items-center gap-3 rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
-            <span>{error instanceof InvitationRequestError ? error.message : "无法读取邀请记录，请重试。"}</span>
-            {error instanceof InvitationRequestError && <InvitationRecovery code={error.code} />}
+            <span>{error instanceof ApiRequestError ? invitationMessage(error) : "无法读取邀请记录，请重试。"}</span>
+            {error instanceof ApiRequestError && <InvitationRecovery code={invitationCode(error)} />}
             <Button type="button" variant="outline" size="sm" onClick={() => void refetch()} disabled={isFetching}>重新加载</Button>
           </div>
         )}

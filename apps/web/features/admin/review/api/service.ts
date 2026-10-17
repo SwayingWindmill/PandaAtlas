@@ -1,3 +1,5 @@
+import { requestJson } from "@/lib/api/request";
+
 import type {
   OpenReviewCaseInput,
   ReviewCase,
@@ -7,23 +9,6 @@ import type {
   ReviewQueueQuery,
   VerifyReviewSourceInput,
 } from "./types";
-
-async function requestJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
-  const response = await fetch(input, {
-    cache: "no-store",
-    credentials: "same-origin",
-    ...init,
-    headers: {
-      "content-type": "application/json",
-      ...init?.headers,
-    },
-  });
-  if (!response.ok) {
-    const problem = await response.json().catch(() => null) as { detail?: string; message?: string } | null;
-    throw new Error(problem?.detail ?? problem?.message ?? `Admin request failed (${response.status})`);
-  }
-  return response.json() as Promise<T>;
-}
 
 export function listReviewCases(query: ReviewQueueQuery): Promise<ReviewCasePage> {
   const params = new URLSearchParams({ limit: String(query.limit), offset: String(query.offset) });
@@ -40,7 +25,7 @@ export function openReviewCase(input: OpenReviewCaseInput): Promise<ReviewCase> 
 }
 
 export function claimReviewCase(reviewCaseId: string): Promise<ReviewCase> {
-  return requestJson(`/api/admin/review/cases/${reviewCaseId}/claim`, { method: "POST" });
+  return requestJson(`/api/admin/review/cases/${reviewCaseId}/claim`, { method: "POST", body: "{}" });
 }
 
 export function verifyReviewSource(reviewCaseId: string, input: VerifyReviewSourceInput): Promise<{ verified: true }> {

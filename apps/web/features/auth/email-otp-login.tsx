@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ApiRequestError, requestJson } from "@/lib/api/request";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 const SAFE_APP_PATH = /^\/(?:admin(?:\/.*)?|(zh|en)\/(?:pandas\/[a-z0-9-]+|contribute|me\/(?:passport|feed|inbox|submissions(?:\/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})?)))$/;
@@ -81,9 +82,13 @@ async function destinationAfterStaffSignIn(destination: string): Promise<string>
 }
 
 async function acceptStaffInvitation(): Promise<boolean> {
-  const response = await fetch("/api/admin/staff/invitations/accept", { method: "POST" });
-  // Existing staff members have no invitation. This is not an error.
-  return response.ok || response.status === 404;
+  try {
+    await requestJson("/api/admin/staff/invitations/accept", { method: "POST", body: "{}" });
+    return true;
+  } catch (error) {
+    // Existing staff members have no invitation. This is not an error.
+    return error instanceof ApiRequestError && error.status === 404;
+  }
 }
 
 export function EmailOtpLogin() {
@@ -151,8 +156,8 @@ export function EmailOtpLogin() {
         setMessageKind("error");
         return;
       }
-      const adminSession = await fetch("/api/admin/session", { cache: "no-store" });
-      if (!adminSession.ok) {
+      const adminSession = await requestJson("/api/admin/session").then(() => true, () => false);
+      if (!adminSession) {
         adminAuthRestoreStartedRef.current = false;
         setMessage(copy[localeFromPath(destination)].magicLinkFailed);
         setMessageKind("error");
@@ -167,13 +172,12 @@ export function EmailOtpLogin() {
     event.preventDefault();
     setBusy(true);
     setMessage(null);
-    const response = await fetch("/api/auth/email-otp/start", {
+    const sent = await requestJson("/api/auth/email-otp/start", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, next: destination }),
-    });
+    }).then(() => true, () => false);
     setBusy(false);
-    if (!response.ok) {
+    if (!sent) {
       setMessage(t.sendFailed);
       setMessageKind("error");
       return;

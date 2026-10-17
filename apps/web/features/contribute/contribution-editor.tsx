@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 
-import { ContributionApiError, getSubmission, submitContribution } from "./api";
-import type { Locale, SubmissionType, V2ContributionInput, V2ContributionRecord } from "./types";
+import { fanMutationOptions, submissionQueryOptions } from "@/features/fan/api/queries";
+import { redirectedToSignIn } from "@/features/fan/api/session";
+
+import type { Locale, SubmissionType, V2ContributionInput } from "./types";
 
 interface PandaOption {
   id: string;
@@ -106,10 +109,9 @@ export function ContributionEditor({
   pandas = [],
 }: ContributionEditorProps) {
   const t = copy[locale];
-  const [record, setRecord] = useState<V2ContributionRecord | null>(null);
-  const [loading, setLoading] = useState(Boolean(submissionId));
-  const [busy, setBusy] = useState(false);
+  const submission = useQuery({ ...submissionQueryOptions(submissionId ?? ""), enabled: Boolean(submissionId) });
   const [error, setError] = useState<string | null>(null);
+  const submit = useMutation(fanMutationOptions.submitContribution());
   const [submissionType, setSubmissionType] = useState<SubmissionType>("correction");
   const [targetPandaId, setTargetPandaId] = useState("");
   const [fieldKey, setFieldKey] = useState("");
@@ -123,25 +125,7 @@ export function ContributionEditor({
   const [publishedOn, setPublishedOn] = useState("");
   const pandaLabel = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda.label])), [pandas]);
 
-  useEffect(() => {
-    if (!submissionId) return;
-    let active = true;
-    void getSubmission(submissionId)
-      .then((result) => {
-        if (active) setRecord(result.data);
-      })
-      .catch((reason: unknown) => {
-        if (active) setError(reason instanceof Error ? reason.message : t.notFound);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [submissionId, t.notFound]);
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     if (
@@ -180,18 +164,12 @@ export function ContributionEditor({
       }],
     };
 
-    setBusy(true);
-    try {
-      const result = await submitContribution(body);
-      window.location.assign(`/${locale}/me/submissions/${result.data.submissionId}`);
-    } catch (reason) {
-      if (reason instanceof ContributionApiError && reason.status === 401) {
-        window.location.assign(`/auth/login?next=${encodeURIComponent(`/${locale}/contribute`)}`);
-        return;
-      }
-      setError(reason instanceof Error ? reason.message : t.required);
-      setBusy(false);
-    }
+    submit.mutate(body, {
+      onSuccess: (created) => window.location.assign(`/${locale}/me/submissions/${created.submissionId}`),
+      onError: (reason) => {
+        if (!redirectedToSignIn(reason, `/${locale}/contribute`)) setError(reason.message || t.required);
+      },
+    });
   }
 
   if (submissionId) {
@@ -204,23 +182,23 @@ export function ContributionEditor({
           </div>
           <Link className="button-secondary" href={`/${locale}/me/submissions`}>{t.back}</Link>
         </header>
-        {loading ? <p role="status">{t.loading}</p> : null}
-        {error ? <p className="contribution-message contribution-message--error" role="alert">{error}</p> : null}
-        {record ? (
+        {submission.isPending ? <p role="status">{t.loading}</p> : null}
+        {submission.isError ? <p className="contribution-message contribution-message--error" role="alert">{submission.error.message || t.notFound}</p> : null}
+        {submission.data ? (
           <div className="contribution-list">
             <article className="contribution-list-item">
               <div>
-                <span className={`contribution-status contribution-status--${record.status}`}>{record.status}</span>
-                <h2>{record.submissionType === "correction" ? t.correction : t.sourced}</h2>
-                <p className="contribution-list-item__target">{pandaLabel.get(record.targetPandaId) ?? record.targetPandaId}</p>
+                <span className={`contribution-status contribution-status--${submission.data.status}`}>{submission.data.status}</span>
+                <h2>{submission.data.submissionType === "correction" ? t.correction : t.sourced}</h2>
+                <p className="contribution-list-item__target">{pandaLabel.get(submission.data.targetPandaId) ?? submission.data.targetPandaId}</p>
               </div>
               <dl>
-                <div><dt>{t.status}</dt><dd>{record.status}</dd></div>
-                {record.statusExplanation ? <div><dt>{t.statusExplanation}</dt><dd>{record.statusExplanation}</dd></div> : null}
-                <div><dt>{t.target}</dt><dd>{record.targetPandaId}</dd></div>
-                <div><dt>{t.revision}</dt><dd>{record.revisionNumber}</dd></div>
-                <div><dt>{t.release}</dt><dd>{record.publicVersionSeen}</dd></div>
-                <div><dt>{t.submittedAt}</dt><dd>{new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(record.submittedAt))}</dd></div>
+                <div><dt>{t.status}</dt><dd>{submission.data.status}</dd></div>
+                {submission.data.statusExplanation ? <div><dt>{t.statusExplanation}</dt><dd>{submission.data.statusExplanation}</dd></div> : null}
+                <div><dt>{t.target}</dt><dd>{submission.data.targetPandaId}</dd></div>
+                <div><dt>{t.revision}</dt><dd>{submission.data.revisionNumber}</dd></div>
+                <div><dt>{t.release}</dt><dd>{submission.data.publicVersionSeen}</dd></div>
+                <div><dt>{t.submittedAt}</dt><dd>{new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(submission.data.submittedAt))}</dd></div>
               </dl>
             </article>
           </div>
@@ -313,8 +291,8 @@ export function ContributionEditor({
           <p>{t.privateEvidenceNote}</p>
         </fieldset>
         <div className="contribution-actions">
-          <button type="submit" className="button-primary" disabled={busy || !publicVersion}>
-            {busy ? t.submitting : t.submit}
+          <button type="submit" className="button-primary" disabled={submit.isPending || !publicVersion}>
+            {submit.isPending ? t.submitting : t.submit}
           </button>
         </div>
       </form>

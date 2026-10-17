@@ -3,8 +3,12 @@
 import { ArrowRight, Clock3, Heart, LogIn, Trash2 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
+import { passportQueryOptions } from "@/features/fan/api/queries";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
+import type { PassportEntry } from "@/features/fan/api/types";
 import type {
   MyPandasCopy,
   MyPandasProfileSummary,
@@ -24,13 +28,6 @@ interface Props {
   copy: MyPandasCopy;
 }
 
-interface PassportEntry {
-  panda_id: string;
-  relationship_state: "active" | "inactive" | null;
-  first_followed_at: string | null;
-  contribution_count: number;
-}
-
 type PassportState = "disabled" | "loading" | "ready" | "signed-out" | "error";
 
 function formatDate(value: string, locale: PublicLocale): string {
@@ -42,17 +39,15 @@ function formatDate(value: string, locale: PublicLocale): string {
 }
 
 function relationshipLabel(entry: PassportEntry, locale: PublicLocale): string {
-  if (entry.relationship_state === "active") return locale === "zh" ? "已收藏" : "Favorited";
-  if (entry.relationship_state === "inactive") return locale === "zh" ? "收藏历史" : "Favorite history";
+  if (entry.relationshipState === "active") return locale === "zh" ? "已收藏" : "Favorited";
+  if (entry.relationshipState === "inactive") return locale === "zh" ? "收藏历史" : "Favorite history";
   return locale === "zh" ? "贡献记录" : "Contribution record";
 }
 
 export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
   const engagementEnabled = isEngagementUiEnabled();
-  const [passportState, setPassportState] = useState<PassportState>(
-    engagementEnabled ? "loading" : "disabled",
-  );
-  const [passport, setPassport] = useState<PassportEntry[]>([]);
+  const session = useFanSession(engagementEnabled);
+  const passportQuery = useQuery({ ...passportQueryOptions, enabled: engagementEnabled && session.status === "ready" });
   const [recent, setRecent] = useState<StoredProfilePreferenceEntry[]>([]);
   const references = useMemo(
     () => profiles.map((profile) => ({ id: profile.id, aliases: profile.aliases })),
@@ -63,34 +58,20 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
     [profiles],
   );
 
+  // Recent visits live in this browser only.
   useEffect(() => {
-    let active = true;
     const refreshRecent = () => setRecent(readProfilePreferences(references).recent);
-
-    async function refreshPassport() {
-      const response = await fetch("/api/engagement/passport", { cache: "no-store" });
-      if (!active) return;
-      if (response.status === 401) {
-        setPassportState("signed-out");
-        return;
-      }
-      if (!response.ok) {
-        setPassportState("error");
-        return;
-      }
-      const payload = await response.json() as { entries?: PassportEntry[] };
-      setPassport(Array.isArray(payload.entries) ? payload.entries : []);
-      setPassportState("ready");
-    }
-
     refreshRecent();
-    if (engagementEnabled) void refreshPassport();
-    const unsubscribe = subscribeToProfilePreferences(refreshRecent);
-    return () => {
-      active = false;
-      unsubscribe();
-    };
-  }, [engagementEnabled, references]);
+    return subscribeToProfilePreferences(refreshRecent);
+  }, [references]);
+
+  const readStatus = privateReadStatus(session.status, passportQuery);
+  const passportState: PassportState = !engagementEnabled
+    ? "disabled"
+    : readStatus === "blocked" || readStatus === "unavailable"
+      ? "error"
+      : readStatus;
+  const passport = passportQuery.data ?? [];
 
   return (
     <div className="my-pandas-local" data-testid="my-pandas-local-island">
@@ -124,7 +105,7 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
           <div className="my-pandas-empty">
             <LogIn aria-hidden="true" />
             <p>{locale === "zh" ? "登录后可查看跨设备同步的收藏。" : "Sign in to view synced favorites."}</p>
-            <Link href={`/auth/login?next=/${locale}/me` as Route}>
+            <Link href={signInHref(`/${locale}/me`) as Route}>
               {locale === "zh" ? "使用邮箱验证码登录" : "Sign in with email OTP"}
               <ArrowRight aria-hidden="true" />
             </Link>
@@ -150,15 +131,15 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
             </Link>
           </div>
         ) : null}
-        {passport.length ? (
+        {passportState === "ready" && passport.length ? (
           <ul className="my-pandas-list">
             {passport.map((entry) => {
-              const profile = profilesById.get(entry.panda_id);
+              const profile = profilesById.get(entry.pandaId);
               return (
                 <li
                   className="my-pandas-card"
-                  data-testid={`passport-entry-${entry.panda_id}`}
-                  key={entry.panda_id}
+                  data-testid={`passport-entry-${entry.pandaId}`}
+                  key={entry.pandaId}
                 >
                   <div className="my-pandas-card-heading">
                     <span className="my-pandas-card-mark" aria-hidden="true"><Heart /></span>
@@ -167,14 +148,14 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
                       <p>{relationshipLabel(entry, locale)}</p>
                     </div>
                   </div>
-                  {entry.first_followed_at ? (
+                  {entry.firstFollowedAt ? (
                     <p>
-                      {locale === "zh" ? "首次收藏" : "First favorited"}: {formatDate(entry.first_followed_at, locale)}
+                      {locale === "zh" ? "首次收藏" : "First favorited"}: {formatDate(entry.firstFollowedAt, locale)}
                     </p>
                   ) : null}
-                  {entry.contribution_count > 0 ? (
+                  {entry.contributionCount > 0 ? (
                     <p>
-                      {locale === "zh" ? "贡献记录" : "Contributions"}: {entry.contribution_count}
+                      {locale === "zh" ? "贡献记录" : "Contributions"}: {entry.contributionCount}
                     </p>
                   ) : null}
                   {profile ? (

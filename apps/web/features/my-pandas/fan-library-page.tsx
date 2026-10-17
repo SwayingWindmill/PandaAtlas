@@ -3,26 +3,16 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { FolderHeart, Heart, LogIn, Plus, Trash2 } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type { FormEvent } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import { collectionsQueryOptions, fanMutationOptions, favoritesQueryOptions } from "@/features/fan/api/queries";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
+import type { FanCollection } from "@/features/fan/api/types";
 import type { MyPandasProfileSummary } from "@/features/my-pandas/my-pandas-view-model";
 import type { PublicLocale } from "@/foundation/content/locales";
-
-interface Favorite {
-  panda_id: string;
-  favorited_at: string;
-}
-
-interface FanCollection {
-  collection_id: string;
-  name: string;
-  panda_ids: string[];
-  created_at: string;
-  updated_at: string;
-}
-
-type PageState = "loading" | "ready" | "signed-out" | "error";
+import { ApiRequestError } from "@/lib/api/request";
 
 const copy = {
   zh: {
@@ -86,11 +76,11 @@ export function FanLibraryPage({
   locale: PublicLocale;
   profiles: MyPandasProfileSummary[];
 }) {
-  const [pageState, setPageState] = useState<PageState>("loading");
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
-  const [collections, setCollections] = useState<FanCollection[]>([]);
+  const session = useFanSession();
+  const favorites = useQuery({ ...favoritesQueryOptions, enabled: session.status === "ready" });
+  const collections = useQuery({ ...collectionsQueryOptions, enabled: session.status === "ready" });
+  const status = privateReadStatus(session.status, favorites, collections);
   const [newName, setNewName] = useState("");
-  const [busyKey, setBusyKey] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
   const t = copy[locale];
   const profilesById = useMemo(
@@ -98,137 +88,46 @@ export function FanLibraryPage({
     [profiles],
   );
 
-  useEffect(() => {
-    let active = true;
+  const clearFeedback = { onMutate: () => setFeedback("") };
+  const create = useMutation({ ...fanMutationOptions.createCollection(), ...clearFeedback });
+  const rename = useMutation({ ...fanMutationOptions.renameCollection(), ...clearFeedback });
+  const remove = useMutation({ ...fanMutationOptions.deleteCollection(), ...clearFeedback });
+  const membership = useMutation({ ...fanMutationOptions.setCollectionMembership(), ...clearFeedback });
+  // Only a name can collide; any other refused write is an outage to the visitor.
+  const nameFailed = (error: Error) =>
+    setFeedback(error instanceof ApiRequestError && error.status === 409 ? t.duplicate : t.unavailable);
+  const writeFailed = () => setFeedback(t.unavailable);
 
-    async function loadLibrary() {
-      const [favoriteResponse, collectionResponse] = await Promise.all([
-        fetch("/api/engagement/favorites", { cache: "no-store" }),
-        fetch("/api/engagement/collections", { cache: "no-store" }),
-      ]);
-      if (!active) return;
-      if (favoriteResponse.status === 401 || collectionResponse.status === 401) {
-        setPageState("signed-out");
-        return;
-      }
-      if (!favoriteResponse.ok || !collectionResponse.ok) {
-        setPageState("error");
-        return;
-      }
-      const favoritePayload = await favoriteResponse.json() as { items?: Favorite[] };
-      const collectionPayload = await collectionResponse.json() as { items?: FanCollection[] };
-      if (!active) return;
-      setFavorites(Array.isArray(favoritePayload.items) ? favoritePayload.items : []);
-      setCollections(Array.isArray(collectionPayload.items) ? collectionPayload.items : []);
-      setPageState("ready");
-    }
-
-    void loadLibrary();
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  async function createCollection(event: FormEvent<HTMLFormElement>) {
+  function createCollection(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const name = newName.trim();
     if (!name) return;
-    setBusyKey("create");
-    setFeedback("");
-    const response = await fetch("/api/engagement/collections", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name }),
-    });
-    setBusyKey(null);
-    if (response.status === 409) {
-      setFeedback(t.duplicate);
-      return;
-    }
-    if (!response.ok) {
-      setFeedback(t.unavailable);
-      return;
-    }
-    const created = await response.json() as FanCollection;
-    setCollections((current) => [created, ...current]);
-    setNewName("");
+    create.mutate(name, { onSuccess: () => setNewName(""), onError: nameFailed });
   }
 
-  async function renameCollection(collection: FanCollection, name: string) {
+  function renameCollection(collection: FanCollection, name: string) {
     const normalized = name.trim();
     if (!normalized || normalized === collection.name) return;
-    setBusyKey(`rename-${collection.collection_id}`);
-    setFeedback("");
-    const response = await fetch(`/api/engagement/collections/${collection.collection_id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: normalized }),
-    });
-    setBusyKey(null);
-    if (response.status === 409) {
-      setFeedback(t.duplicate);
-      return;
-    }
-    if (!response.ok) {
-      setFeedback(t.unavailable);
-      return;
-    }
-    const updated = await response.json() as FanCollection;
-    setCollections((current) => current.map((item) => (
-      item.collection_id === updated.collection_id ? updated : item
-    )));
+    rename.mutate({ collectionId: collection.collectionId, name: normalized }, { onError: nameFailed });
   }
 
-  async function deleteCollection(collectionId: string) {
-    setBusyKey(`delete-${collectionId}`);
-    setFeedback("");
-    const response = await fetch(`/api/engagement/collections/${collectionId}`, {
-      method: "DELETE",
-    });
-    setBusyKey(null);
-    if (!response.ok) {
-      setFeedback(t.unavailable);
-      return;
-    }
-    setCollections((current) => current.filter((item) => item.collection_id !== collectionId));
-  }
-
-  async function setMembership(collection: FanCollection, pandaId: string, member: boolean) {
-    const key = `${collection.collection_id}-${pandaId}`;
-    setBusyKey(key);
-    setFeedback("");
-    const response = await fetch(
-      `/api/engagement/collections/${collection.collection_id}/pandas/${encodeURIComponent(pandaId)}`,
-      { method: member ? "POST" : "DELETE" },
-    );
-    setBusyKey(null);
-    if (!response.ok) {
-      setFeedback(t.unavailable);
-      return;
-    }
-    const updated = await response.json() as FanCollection;
-    setCollections((current) => current.map((item) => (
-      item.collection_id === updated.collection_id ? updated : item
-    )));
-  }
-
-  if (pageState === "loading") {
+  if (status === "loading") {
     return <p className="py-12 text-sm text-[var(--muted)]" role="status">{locale === "zh" ? "正在读取你的收藏……" : "Loading your favorites…"}</p>;
   }
 
-  if (pageState === "signed-out") {
+  if (status === "signed-out") {
     return (
       <section className="my-10 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-6 sm:p-8">
         <LogIn aria-hidden="true" />
         <p className="mt-4 text-lg font-semibold">{t.signIn}</p>
-        <Link className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white" href={`/auth/login?next=/${locale}/me/collections` as Route}>
+        <Link className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white" href={signInHref(`/${locale}/me/collections`) as Route}>
           {t.signInAction}
         </Link>
       </section>
     );
   }
 
-  if (pageState === "error") {
+  if (status !== "ready" || favorites.data === undefined || collections.data === undefined) {
     return <p className="my-10 rounded-xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-5" role="alert">{t.unavailable}</p>;
   }
 
@@ -250,24 +149,27 @@ export function FanLibraryPage({
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{t.favoritesBody}</p>
           </div>
         </div>
-        {favorites.length ? (
+        {favorites.data.length ? (
           <ul className="mt-6 grid gap-4 md:grid-cols-2">
-            {favorites.map((favorite) => {
-              const profile = profilesById.get(favorite.panda_id);
+            {favorites.data.map((favorite) => {
+              const profile = profilesById.get(favorite.pandaId);
               return (
-                <li key={favorite.panda_id} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5">
-                  <h3 className="text-xl font-semibold">{profile?.name ?? favorite.panda_id}</h3>
+                <li key={favorite.pandaId} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5">
+                  <h3 className="text-xl font-semibold">{profile?.name ?? favorite.pandaId}</h3>
                   {profile ? <p className="mt-1 text-sm text-[var(--muted)]">{profile.currentPlace}</p> : null}
                   <div className="mt-5 flex flex-wrap gap-2">
                     {profile ? <Link className="rounded-lg border border-[var(--pa-color-accent-border-12)] px-3 py-2 text-sm font-semibold" href={profile.href as Route}>{t.open}</Link> : null}
-                    {collections.map((collection) => {
-                      const member = collection.panda_ids.includes(favorite.panda_id);
+                    {collections.data.map((collection) => {
+                      const member = collection.pandaIds.includes(favorite.pandaId);
+                      const busy = membership.isPending
+                        && membership.variables.collectionId === collection.collectionId
+                        && membership.variables.pandaId === favorite.pandaId;
                       return (
                         <button
-                          key={collection.collection_id}
+                          key={collection.collectionId}
                           type="button"
-                          disabled={busyKey === `${collection.collection_id}-${favorite.panda_id}`}
-                          onClick={() => void setMembership(collection, favorite.panda_id, !member)}
+                          disabled={busy}
+                          onClick={() => membership.mutate({ collectionId: collection.collectionId, pandaId: favorite.pandaId, member: !member }, { onError: writeFailed })}
                           className="rounded-lg border border-[var(--pa-color-accent-border-12)] px-3 py-2 text-sm font-semibold disabled:opacity-60"
                         >
                           {member ? `${t.removeFrom} · ${collection.name}` : `${t.addTo} · ${collection.name}`}
@@ -306,26 +208,26 @@ export function FanLibraryPage({
             placeholder={t.createPlaceholder}
             className="min-h-12 flex-1 rounded-xl border border-[var(--pa-color-accent-border-14)] bg-[var(--card)] px-4 py-3"
           />
-          <button type="submit" disabled={!newName.trim() || busyKey === "create"} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white disabled:opacity-60">
+          <button type="submit" disabled={!newName.trim() || create.isPending} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white disabled:opacity-60">
             <Plus className="h-4 w-4" aria-hidden="true" />{t.createAction}
           </button>
         </form>
 
-        {collections.length ? (
+        {collections.data.length ? (
           <ul className="mt-6 grid gap-5">
-            {collections.map((collection) => (
-              <li key={collection.collection_id} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 sm:p-6">
+            {collections.data.map((collection) => (
+              <li key={collection.collectionId} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 sm:p-6">
                 <CollectionHeading
-                  key={collection.updated_at}
+                  key={collection.updatedAt}
                   collection={collection}
                   locale={locale}
-                  busy={busyKey === `rename-${collection.collection_id}`}
-                  onRename={(name) => void renameCollection(collection, name)}
+                  busy={rename.isPending && rename.variables.collectionId === collection.collectionId}
+                  onRename={(name) => renameCollection(collection, name)}
                 />
-                <p className="mt-2 text-sm text-[var(--muted)]">{t.memberCount(collection.panda_ids.length)}</p>
-                {collection.panda_ids.length ? (
+                <p className="mt-2 text-sm text-[var(--muted)]">{t.memberCount(collection.pandaIds.length)}</p>
+                {collection.pandaIds.length ? (
                   <ul className="mt-5 flex flex-wrap gap-2">
-                    {collection.panda_ids.map((pandaId) => {
+                    {collection.pandaIds.map((pandaId) => {
                       const profile = profilesById.get(pandaId);
                       return (
                         <li key={pandaId} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-3 py-2 text-sm">
@@ -337,8 +239,8 @@ export function FanLibraryPage({
                 ) : null}
                 <button
                   type="button"
-                  disabled={busyKey === `delete-${collection.collection_id}`}
-                  onClick={() => void deleteCollection(collection.collection_id)}
+                  disabled={remove.isPending && remove.variables === collection.collectionId}
+                  onClick={() => remove.mutate(collection.collectionId, { onError: writeFailed })}
                   className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--pa-color-accent-border-12)] px-3 py-2 text-sm font-semibold disabled:opacity-60"
                 >
                   <Trash2 className="h-4 w-4" aria-hidden="true" />{t.deleteCollection}

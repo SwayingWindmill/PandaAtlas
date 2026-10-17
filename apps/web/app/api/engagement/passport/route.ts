@@ -8,10 +8,10 @@ import {
 
 export const dynamic = "force-dynamic";
 
+// The Panda Passport: every panda the account favorites or contributed to, in one list.
 export async function GET() {
   const api = await createAuthenticatedV2Client();
   if (!api) return authenticationRequiredResponse();
-
   const [favorites, contributions] = await Promise.all([
     api.client.GET("/api/v2/me/favorites", { headers: api.headers }),
     api.client.GET("/api/v2/me/contributions", { headers: api.headers }),
@@ -26,17 +26,15 @@ export async function GET() {
       (contributionCounts.get(contribution.targetPandaId) ?? 0) + 1,
     );
   }
-  const favoriteIds = new Set(favorites.data.items.map((favorite) => favorite.pandaId));
-  const pandaIds = new Set([...favoriteIds, ...contributionCounts.keys()]);
   const favoriteById = new Map(favorites.data.items.map((favorite) => [favorite.pandaId, favorite]));
-
+  const pandaIds = new Set([...favoriteById.keys(), ...contributionCounts.keys()]);
   return NextResponse.json(
     {
       entries: [...pandaIds].map((pandaId) => ({
-        panda_id: pandaId,
-        relationship_state: favoriteIds.has(pandaId) ? "active" : null,
-        first_followed_at: favoriteById.get(pandaId)?.favoritedAt ?? null,
-        contribution_count: contributionCounts.get(pandaId) ?? 0,
+        pandaId,
+        relationshipState: favoriteById.has(pandaId) ? "active" : null,
+        firstFollowedAt: favoriteById.get(pandaId)?.favoritedAt ?? null,
+        contributionCount: contributionCounts.get(pandaId) ?? 0,
       })),
     },
     { headers: { "Cache-Control": "no-store, private" } },

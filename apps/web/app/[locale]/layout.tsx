@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { parsePublicLocale, PUBLIC_LOCALES, publicLanguageTag } from "@/foundation/content/locales";
+import { QueryProvider } from "@/lib/query/provider";
 
 interface PublicLocaleLayoutProps {
   children: ReactNode;
@@ -18,7 +19,7 @@ export default async function PublicLocaleLayout({ children, params }: PublicLoc
 
   return (
     <div lang={publicLanguageTag(locale)} className="pa-public-register">
-      {children}
+      <QueryProvider>{children}</QueryProvider>
     </div>
   );
 }

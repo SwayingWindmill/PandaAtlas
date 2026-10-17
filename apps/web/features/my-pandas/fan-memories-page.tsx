@@ -3,8 +3,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { Eye, LogIn, MapPinCheck, Trash2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
+import { checkinsQueryOptions, fanMutationOptions, seenPandasQueryOptions } from "@/features/fan/api/queries";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 interface NamedReference {
@@ -12,23 +15,6 @@ interface NamedReference {
   name: string;
   href: string;
 }
-
-interface CheckinRecord {
-  checkin_id: string;
-  place_id: string;
-  visited_on: string;
-  note: string | null;
-}
-
-interface SeenPandaRecord {
-  seen_id: string;
-  panda_id: string;
-  place_id: string | null;
-  seen_on: string | null;
-  note: string | null;
-}
-
-type PageState = "loading" | "ready" | "signed-out" | "error";
 
 const copy = {
   zh: {
@@ -84,82 +70,34 @@ export function FanMemoriesPage({
   pandas: NamedReference[];
   places: NamedReference[];
 }) {
-  const [state, setState] = useState<PageState>("loading");
-  const [checkins, setCheckins] = useState<CheckinRecord[]>([]);
-  const [seenPandas, setSeenPandas] = useState<SeenPandaRecord[]>([]);
-  const [busyKey, setBusyKey] = useState<string | null>(null);
+  const session = useFanSession();
+  const checkins = useQuery({ ...checkinsQueryOptions, enabled: session.status === "ready" });
+  const seenPandas = useQuery({ ...seenPandasQueryOptions, enabled: session.status === "ready" });
+  const status = privateReadStatus(session.status, checkins, seenPandas);
   const t = copy[locale];
   const pandaById = useMemo(() => new Map(pandas.map((item) => [item.id, item])), [pandas]);
   const placeById = useMemo(() => new Map(places.map((item) => [item.id, item])), [places]);
 
-  useEffect(() => {
-    let active = true;
-    async function loadMemories() {
-      const [checkinResponse, seenResponse] = await Promise.all([
-        fetch("/api/engagement/checkins", { cache: "no-store" }),
-        fetch("/api/engagement/seen-pandas", { cache: "no-store" }),
-      ]);
-      if (!active) return;
-      if (checkinResponse.status === 401 || seenResponse.status === 401) {
-        setState("signed-out");
-        return;
-      }
-      if (!checkinResponse.ok || !seenResponse.ok) {
-        setState("error");
-        return;
-      }
-      const checkinPayload = await checkinResponse.json() as { items?: CheckinRecord[] };
-      const seenPayload = await seenResponse.json() as { items?: SeenPandaRecord[] };
-      if (!active) return;
-      setCheckins(Array.isArray(checkinPayload.items) ? checkinPayload.items : []);
-      setSeenPandas(Array.isArray(seenPayload.items) ? seenPayload.items : []);
-      setState("ready");
-    }
-    void loadMemories();
-    return () => {
-      active = false;
-    };
-  }, []);
+  const removeCheckin = useMutation(fanMutationOptions.removeCheckin());
+  const removeSeenPanda = useMutation(fanMutationOptions.removeSeenPanda());
 
-  async function removeCheckin(checkinId: string) {
-    setBusyKey(`checkin-${checkinId}`);
-    const response = await fetch(`/api/engagement/checkins/${encodeURIComponent(checkinId)}`, {
-      method: "DELETE",
-    });
-    setBusyKey(null);
-    if (response.ok) {
-      setCheckins((current) => current.filter((item) => item.checkin_id !== checkinId));
-    }
-  }
-
-  async function removeSeenPanda(pandaId: string) {
-    setBusyKey(`seen-${pandaId}`);
-    const response = await fetch(`/api/engagement/seen-pandas/${encodeURIComponent(pandaId)}`, {
-      method: "DELETE",
-    });
-    setBusyKey(null);
-    if (response.ok) {
-      setSeenPandas((current) => current.filter((item) => item.panda_id !== pandaId));
-    }
-  }
-
-  if (state === "loading") {
+  if (status === "loading") {
     return <p className="py-12 text-sm text-[var(--muted)]" role="status">{locale === "zh" ? "正在读取你的私人足迹……" : "Loading your private memories…"}</p>;
   }
 
-  if (state === "signed-out") {
+  if (status === "signed-out") {
     return (
       <section className="my-10 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-6 sm:p-8">
         <LogIn aria-hidden="true" />
         <p className="mt-4 text-lg font-semibold">{t.signIn}</p>
-        <Link className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white" href={`/auth/login?next=/${locale}/me/memories` as Route}>
+        <Link className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-[var(--accent)] px-5 py-3 font-semibold text-white" href={signInHref(`/${locale}/me/memories`) as Route}>
           {t.signInAction}
         </Link>
       </section>
     );
   }
 
-  if (state === "error") {
+  if (status !== "ready" || checkins.data === undefined || seenPandas.data === undefined) {
     return <p className="my-10 rounded-xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-5" role="alert">{t.unavailable}</p>;
   }
 
@@ -172,18 +110,18 @@ export function FanMemoriesPage({
       </header>
 
       <MemorySection icon={<MapPinCheck aria-hidden="true" />} title={t.checkins} body={t.checkinsBody}>
-        {checkins.length ? (
+        {checkins.data.length ? (
           <ul className="grid gap-4 md:grid-cols-2">
-            {checkins.map((checkin) => {
-              const place = placeById.get(checkin.place_id);
+            {checkins.data.map((checkin) => {
+              const place = placeById.get(checkin.placeId);
               return (
-                <li key={checkin.checkin_id} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5">
+                <li key={checkin.checkinId} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5">
                   <h3 className="text-lg font-semibold">{place?.name ?? t.unknownPlace}</h3>
-                  <p className="mt-2 text-sm text-[var(--muted)]">{checkin.visited_on}</p>
+                  <p className="mt-2 text-sm text-[var(--muted)]">{checkin.visitedOn}</p>
                   {checkin.note ? <p className="mt-3 text-sm leading-6">{checkin.note}</p> : null}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {place ? <Link href={place.href as Route} className="rounded-lg border px-3 py-2 text-sm font-semibold">{place.name}</Link> : null}
-                    <button type="button" disabled={busyKey === `checkin-${checkin.checkin_id}`} onClick={() => void removeCheckin(checkin.checkin_id)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold disabled:opacity-60"><Trash2 className="h-4 w-4" aria-hidden="true" />{t.remove}</button>
+                    <button type="button" disabled={removeCheckin.isPending && removeCheckin.variables === checkin.checkinId} onClick={() => removeCheckin.mutate(checkin.checkinId)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold disabled:opacity-60"><Trash2 className="h-4 w-4" aria-hidden="true" />{t.remove}</button>
                   </div>
                 </li>
               );
@@ -193,20 +131,20 @@ export function FanMemoriesPage({
       </MemorySection>
 
       <MemorySection icon={<Eye aria-hidden="true" />} title={t.seen} body={t.seenBody}>
-        {seenPandas.length ? (
+        {seenPandas.data.length ? (
           <ul className="grid gap-4 md:grid-cols-2">
-            {seenPandas.map((record) => {
-              const panda = pandaById.get(record.panda_id);
-              const place = record.place_id ? placeById.get(record.place_id) : null;
+            {seenPandas.data.map((record) => {
+              const panda = pandaById.get(record.pandaId);
+              const place = record.placeId ? placeById.get(record.placeId) : null;
               return (
-                <li key={record.seen_id} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5">
+                <li key={record.seenId} className="rounded-2xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5">
                   <h3 className="text-lg font-semibold">{panda?.name ?? t.unknownPanda}</h3>
-                  <p className="mt-2 text-sm text-[var(--muted)]">{record.seen_on ?? t.dateUnknown}</p>
+                  <p className="mt-2 text-sm text-[var(--muted)]">{record.seenOn ?? t.dateUnknown}</p>
                   {place ? <p className="mt-1 text-sm text-[var(--muted)]">{t.seenAt}: {place.name}</p> : null}
                   {record.note ? <p className="mt-3 text-sm leading-6">{record.note}</p> : null}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {panda ? <Link href={panda.href as Route} className="rounded-lg border px-3 py-2 text-sm font-semibold">{panda.name}</Link> : null}
-                    <button type="button" disabled={busyKey === `seen-${record.panda_id}`} onClick={() => void removeSeenPanda(record.panda_id)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold disabled:opacity-60"><Trash2 className="h-4 w-4" aria-hidden="true" />{t.remove}</button>
+                    <button type="button" disabled={removeSeenPanda.isPending && removeSeenPanda.variables === record.pandaId} onClick={() => removeSeenPanda.mutate(record.pandaId)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold disabled:opacity-60"><Trash2 className="h-4 w-4" aria-hidden="true" />{t.remove}</button>
                   </div>
                 </li>
               );
