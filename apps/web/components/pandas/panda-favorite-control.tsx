@@ -3,12 +3,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { fanKeys, fanMutationOptions, favoritesQueryOptions } from "@/features/fan/api/queries";
-import { beginSignIn, useFanSession } from "@/features/fan/api/session";
-import { ApiRequestError } from "@/lib/api/request";
+import { fanMutationOptions, favoritesQueryOptions } from "@/features/fan/api/queries";
+import { beginSignIn, privateReadStatus, redirectedToSignIn, useFanSession } from "@/features/fan/api/session";
 import { isEngagementUiEnabled } from "@/lib/engagement/config";
 
 interface PandaFavoriteControlProps {
@@ -48,7 +47,6 @@ export function PandaFavoriteControl({
   locale,
 }: PandaFavoriteControlProps) {
   const engagementEnabled = isEngagementUiEnabled();
-  const queryClient = useQueryClient();
   const session = useFanSession(engagementEnabled);
   const favorites = useQuery({ ...favoritesQueryOptions, enabled: engagementEnabled && session.status === "ready" });
   const [feedback, setFeedback] = useState("");
@@ -56,38 +54,30 @@ export function PandaFavoriteControl({
   const returnPath = `/${locale}/pandas/${slug}`;
   const collectionsPath = `/${locale}/me/collections` as Route;
 
-  const toggle = useMutation({
-    ...fanMutationOptions.setFavorite(),
-    onSuccess: async (_result, { favorite }) => {
-      setFeedback(favorite ? t.saved(name) : t.removed(name));
-      await queryClient.invalidateQueries({ queryKey: fanKeys.favorites });
-      await queryClient.invalidateQueries({ queryKey: fanKeys.passport });
-    },
-    onError: (error) => {
-      if (error instanceof ApiRequestError && error.status === 401) {
-        beginSignIn(returnPath);
-        return;
-      }
-      setFeedback(t.unavailable);
-    },
-  });
+  const toggle = useMutation(fanMutationOptions.setFavorite());
+  const status = privateReadStatus(session.status, favorites);
 
   if (!engagementEnabled) return null;
 
   const favorited = favorites.data?.some((favorite) => favorite.pandaId === stableId) ?? false;
-  const loading = session.status === "loading" || (session.status === "ready" && favorites.isPending);
-  const unavailable = session.status === "blocked" || session.status === "unavailable" || favorites.isError;
+  const loading = status === "loading";
+  const unavailable = status === "blocked" || status === "unavailable";
   const busy = toggle.isPending;
   const label = favorited ? t.remove(name) : t.add(name);
   const message = feedback || (unavailable ? t.unavailable : "");
 
   function toggleFavorite() {
-    if (session.status === "signed-out") {
+    if (status === "signed-out") {
       beginSignIn(returnPath);
       return;
     }
     setFeedback("");
-    toggle.mutate({ pandaId: stableId, favorite: !favorited });
+    toggle.mutate({ pandaId: stableId, favorite: !favorited }, {
+      onSuccess: (_result, { favorite }) => setFeedback(favorite ? t.saved(name) : t.removed(name)),
+      onError: (error) => {
+        if (!redirectedToSignIn(error, returnPath)) setFeedback(t.unavailable);
+      },
+    });
   }
 
   return (

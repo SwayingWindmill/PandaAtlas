@@ -3,11 +3,11 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { Eye, LogIn, MapPinCheck, Trash2 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { checkinsQueryOptions, fanKeys, fanMutationOptions, seenPandasQueryOptions } from "@/features/fan/api/queries";
-import { signInHref, useFanSession } from "@/features/fan/api/session";
+import { checkinsQueryOptions, fanMutationOptions, seenPandasQueryOptions } from "@/features/fan/api/queries";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 interface NamedReference {
@@ -70,33 +70,22 @@ export function FanMemoriesPage({
   pandas: NamedReference[];
   places: NamedReference[];
 }) {
-  const queryClient = useQueryClient();
   const session = useFanSession();
-  const ready = session.status === "ready";
-  const checkins = useQuery({ ...checkinsQueryOptions, enabled: ready });
-  const seenPandas = useQuery({ ...seenPandasQueryOptions, enabled: ready });
+  const checkins = useQuery({ ...checkinsQueryOptions, enabled: session.status === "ready" });
+  const seenPandas = useQuery({ ...seenPandasQueryOptions, enabled: session.status === "ready" });
+  const status = privateReadStatus(session.status, checkins, seenPandas);
   const t = copy[locale];
   const pandaById = useMemo(() => new Map(pandas.map((item) => [item.id, item])), [pandas]);
   const placeById = useMemo(() => new Map(places.map((item) => [item.id, item])), [places]);
 
-  const removeCheckin = useMutation({
-    ...fanMutationOptions.removeCheckin(),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: fanKeys.checkins });
-    },
-  });
-  const removeSeenPanda = useMutation({
-    ...fanMutationOptions.removeSeenPanda(),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: fanKeys.seenPandas });
-    },
-  });
+  const removeCheckin = useMutation(fanMutationOptions.removeCheckin());
+  const removeSeenPanda = useMutation(fanMutationOptions.removeSeenPanda());
 
-  if (session.status === "loading" || (ready && (checkins.isPending || seenPandas.isPending))) {
+  if (status === "loading") {
     return <p className="py-12 text-sm text-[var(--muted)]" role="status">{locale === "zh" ? "正在读取你的私人足迹……" : "Loading your private memories…"}</p>;
   }
 
-  if (session.status === "signed-out") {
+  if (status === "signed-out") {
     return (
       <section className="my-10 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-6 sm:p-8">
         <LogIn aria-hidden="true" />
@@ -108,7 +97,7 @@ export function FanMemoriesPage({
     );
   }
 
-  if (!ready || checkins.data === undefined || seenPandas.data === undefined) {
+  if (status !== "ready" || checkins.data === undefined || seenPandas.data === undefined) {
     return <p className="my-10 rounded-xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-5" role="alert">{t.unavailable}</p>;
   }
 

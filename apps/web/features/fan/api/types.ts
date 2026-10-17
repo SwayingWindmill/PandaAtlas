@@ -1,13 +1,30 @@
 import type { components } from "@zhipanda/api-client";
 
-export type FanSession = components["schemas"]["CurrentAccountDto"];
-export type Favorite = components["schemas"]["FavoriteDto"];
-export type FanCollection = components["schemas"]["CollectionDto"];
-export type Checkin = components["schemas"]["CheckinDto"];
-export type SeenPanda = components["schemas"]["SeenPandaDto"];
-export type GameAttempt = components["schemas"]["GameAttemptDto"];
-export type NotificationMessage = components["schemas"]["NotificationMessageDto"];
-export type NotificationPreference = components["schemas"]["NotificationPreferenceDto"];
+type Schemas = components["schemas"];
+
+export type FanSession = Schemas["CurrentAccountDto"];
+export type Favorite = Schemas["FavoriteDto"];
+export type FavoriteList = Schemas["FavoriteListDto"];
+export type Unfavorite = Schemas["UnfavoriteDto"];
+export type FanCollection = Schemas["CollectionDto"];
+export type FanCollectionList = Schemas["CollectionListDto"];
+export type DeletedCollection = Schemas["DeletedCollectionDto"];
+export type Checkin = Schemas["CheckinDto"];
+export type CheckinList = Schemas["CheckinListDto"];
+export type CheckinInput = Schemas["CreateCheckinDto"];
+export type DeletedCheckin = Schemas["DeletedCheckinDto"];
+export type SeenPanda = Schemas["SeenPandaDto"];
+export type SeenPandaList = Schemas["SeenPandaListDto"];
+export type SeenPandaInput = Schemas["SaveSeenPandaDto"];
+export type DeletedSeenPanda = Schemas["DeletedSeenPandaDto"];
+export type GameAttempt = Schemas["GameAttemptDto"];
+export type GameAttemptList = Schemas["GameAttemptListDto"];
+export type GameAttemptInput = Schemas["GuessAnswerDto"];
+export type SavedGameAttempt = Schemas["SavedGameAttemptDto"];
+export type NotificationMessage = Schemas["NotificationMessageDto"];
+export type NotificationBulkRead = Schemas["NotificationBulkReadResultDto"];
+export type NotificationPreference = Schemas["NotificationPreferenceDto"];
+export type NotificationPreferenceInput = Schemas["NotificationPreferenceInputDto"];
 
 // Composed by the Web app's own routes rather than one API operation.
 export interface PassportEntry {

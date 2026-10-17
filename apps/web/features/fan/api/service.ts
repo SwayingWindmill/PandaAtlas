@@ -1,19 +1,35 @@
 import type { V2ContributionInput, V2ContributionList, V2ContributionRecord } from "@/features/contribute/types";
+import type { PublicLocale } from "@/foundation/content/locales";
 import { ApiRequestError, requestJson } from "@/lib/api/request";
 
 import type {
   Checkin,
+  CheckinInput,
+  CheckinList,
+  DeletedCheckin,
+  DeletedCollection,
+  DeletedSeenPanda,
   FanCollection,
+  FanCollectionList,
   FanSession,
   Favorite,
+  FavoriteList,
   GameAttempt,
+  GameAttemptInput,
+  GameAttemptList,
   GuessAnswer,
   GuessQuestion,
+  NotificationBulkRead,
   NotificationInbox,
   NotificationMessage,
   NotificationPreference,
+  NotificationPreferenceInput,
   PassportEntry,
+  SavedGameAttempt,
   SeenPanda,
+  SeenPandaInput,
+  SeenPandaList,
+  Unfavorite,
 } from "./types";
 
 const encode = encodeURIComponent;
@@ -23,10 +39,10 @@ export function getFanSession(): Promise<FanSession> {
 }
 
 export async function listFavorites(): Promise<Favorite[]> {
-  return (await requestJson<{ items: Favorite[] }>("/api/engagement/favorites")).items;
+  return (await requestJson<FavoriteList>("/api/engagement/favorites")).items;
 }
 
-export function setFavorite(pandaId: string, favorite: boolean): Promise<unknown> {
+export function setFavorite(pandaId: string, favorite: boolean): Promise<Favorite | Unfavorite> {
   return requestJson(`/api/engagement/favorites/${encode(pandaId)}`, { method: favorite ? "POST" : "DELETE" });
 }
 
@@ -40,34 +56,31 @@ export async function getSeenPanda(pandaId: string): Promise<SeenPanda | null> {
 }
 
 export async function listSeenPandas(): Promise<SeenPanda[]> {
-  return (await requestJson<{ items: SeenPanda[] }>("/api/engagement/seen-pandas")).items;
+  return (await requestJson<SeenPandaList>("/api/engagement/seen-pandas")).items;
 }
 
-export function saveSeenPanda(
-  pandaId: string,
-  record: { seenOn: string | null; placeId: string | null; note: string | null },
-): Promise<SeenPanda> {
+export function saveSeenPanda(pandaId: string, record: SeenPandaInput): Promise<SeenPanda> {
   return requestJson(`/api/engagement/seen-pandas/${encode(pandaId)}`, { method: "PUT", body: JSON.stringify(record) });
 }
 
-export function removeSeenPanda(pandaId: string): Promise<unknown> {
+export function removeSeenPanda(pandaId: string): Promise<DeletedSeenPanda> {
   return requestJson(`/api/engagement/seen-pandas/${encode(pandaId)}`, { method: "DELETE" });
 }
 
 export async function listCheckins(): Promise<Checkin[]> {
-  return (await requestJson<{ items: Checkin[] }>("/api/engagement/checkins")).items;
+  return (await requestJson<CheckinList>("/api/engagement/checkins")).items;
 }
 
-export function createCheckin(record: { placeId: string; visitedOn: string; note: string | null }): Promise<Checkin> {
+export function createCheckin(record: CheckinInput): Promise<Checkin> {
   return requestJson("/api/engagement/checkins", { method: "POST", body: JSON.stringify(record) });
 }
 
-export function removeCheckin(checkinId: string): Promise<unknown> {
+export function removeCheckin(checkinId: string): Promise<DeletedCheckin> {
   return requestJson(`/api/engagement/checkins/${encode(checkinId)}`, { method: "DELETE" });
 }
 
 export async function listCollections(): Promise<FanCollection[]> {
-  return (await requestJson<{ items: FanCollection[] }>("/api/engagement/collections")).items;
+  return (await requestJson<FanCollectionList>("/api/engagement/collections")).items;
 }
 
 export function createCollection(name: string): Promise<FanCollection> {
@@ -78,7 +91,7 @@ export function renameCollection(collectionId: string, name: string): Promise<Fa
   return requestJson(`/api/engagement/collections/${encode(collectionId)}`, { method: "PATCH", body: JSON.stringify({ name }) });
 }
 
-export function deleteCollection(collectionId: string): Promise<unknown> {
+export function deleteCollection(collectionId: string): Promise<DeletedCollection> {
   return requestJson(`/api/engagement/collections/${encode(collectionId)}`, { method: "DELETE" });
 }
 
@@ -89,10 +102,10 @@ export function setCollectionMembership(collectionId: string, pandaId: string, m
 }
 
 export async function listGameAttempts(): Promise<GameAttempt[]> {
-  return (await requestJson<{ items: GameAttempt[] }>("/api/engagement/game-attempts")).items;
+  return (await requestJson<GameAttemptList>("/api/engagement/game-attempts")).items;
 }
 
-export function saveGameAttempt(attempt: { questionId: string; selectedPandaId: string }): Promise<unknown> {
+export function saveGameAttempt(attempt: GameAttemptInput): Promise<SavedGameAttempt> {
   return requestJson("/api/engagement/game-attempts", { method: "POST", body: JSON.stringify(attempt) });
 }
 
@@ -108,7 +121,7 @@ export function markNotificationRead(messageId: string): Promise<NotificationMes
   return requestJson(`/api/notification/inbox/${encode(messageId)}/read`, { method: "PATCH", body: "{}" });
 }
 
-export function markAllNotificationsRead(): Promise<unknown> {
+export function markAllNotificationsRead(): Promise<NotificationBulkRead> {
   return requestJson("/api/notification/inbox/read-all", { method: "PATCH", body: "{}" });
 }
 
@@ -116,9 +129,7 @@ export function listNotificationPreferences(): Promise<NotificationPreference[]>
   return requestJson("/api/notification/preferences");
 }
 
-export function updateNotificationPreference(
-  preference: { category: string; channel: "email"; enabled: boolean },
-): Promise<NotificationPreference> {
+export function updateNotificationPreference(preference: NotificationPreferenceInput): Promise<NotificationPreference> {
   return requestJson("/api/notification/preferences", { method: "PUT", body: JSON.stringify(preference) });
 }
 
@@ -134,11 +145,11 @@ export function submitContribution(body: V2ContributionInput): Promise<V2Contrib
   return requestJson("/api/community-intake/submissions", { method: "POST", body: JSON.stringify(body) });
 }
 
-// The guess game is public; only saving an attempt needs the session.
-export function getGuessQuestion(locale: "zh" | "en"): Promise<GuessQuestion> {
+// The guess game is public: every question is a fresh server-side draw, so it is requested, not cached.
+export function getGuessQuestion(locale: PublicLocale): Promise<GuessQuestion> {
   return requestJson(`/api/games/guess/question?locale=${locale}`);
 }
 
-export function answerGuess(answer: { questionId: string; selectedPandaId: string; locale: "zh" | "en" }): Promise<GuessAnswer> {
+export function answerGuess(answer: GameAttemptInput & { locale: PublicLocale }): Promise<GuessAnswer> {
   return requestJson("/api/games/guess/answer", { method: "POST", body: JSON.stringify(answer) });
 }

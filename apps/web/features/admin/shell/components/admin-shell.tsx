@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircleUserRound } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
@@ -84,6 +84,7 @@ function AdminHeader({ pathname, session }: { pathname: string; session: AdminSe
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const sessionQuery = useQuery(adminSessionQueryOptions);
   const sessionError = sessionQuery.error instanceof ApiRequestError ? sessionQuery.error : null;
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -103,6 +104,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   async function signOut() {
     await getSupabaseBrowserClient().auth.signOut();
+    // The browser keeps one query cache; nothing read for this account survives its sign-out.
+    queryClient.clear();
     router.replace("/auth/login?next=%2Fadmin" as Route);
   }
 

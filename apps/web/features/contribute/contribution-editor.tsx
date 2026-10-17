@@ -5,8 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
 import { fanMutationOptions, submissionQueryOptions } from "@/features/fan/api/queries";
-import { beginSignIn } from "@/features/fan/api/session";
-import { ApiRequestError } from "@/lib/api/request";
+import { redirectedToSignIn } from "@/features/fan/api/session";
 
 import type { Locale, SubmissionType, V2ContributionInput } from "./types";
 
@@ -112,19 +111,7 @@ export function ContributionEditor({
   const t = copy[locale];
   const submission = useQuery({ ...submissionQueryOptions(submissionId ?? ""), enabled: Boolean(submissionId) });
   const [error, setError] = useState<string | null>(null);
-  const submit = useMutation({
-    ...fanMutationOptions.submitContribution(),
-    onSuccess: (created) => {
-      window.location.assign(`/${locale}/me/submissions/${created.submissionId}`);
-    },
-    onError: (reason) => {
-      if (reason instanceof ApiRequestError && reason.status === 401) {
-        beginSignIn(`/${locale}/contribute`);
-        return;
-      }
-      setError(reason.message || t.required);
-    },
-  });
+  const submit = useMutation(fanMutationOptions.submitContribution());
   const [submissionType, setSubmissionType] = useState<SubmissionType>("correction");
   const [targetPandaId, setTargetPandaId] = useState("");
   const [fieldKey, setFieldKey] = useState("");
@@ -177,7 +164,12 @@ export function ContributionEditor({
       }],
     };
 
-    submit.mutate(body);
+    submit.mutate(body, {
+      onSuccess: (created) => window.location.assign(`/${locale}/me/submissions/${created.submissionId}`),
+      onError: (reason) => {
+        if (!redirectedToSignIn(reason, `/${locale}/contribute`)) setError(reason.message || t.required);
+      },
+    });
   }
 
   if (submissionId) {

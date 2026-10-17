@@ -1,4 +1,4 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import { mutationOptions, queryOptions, type QueryClient } from "@tanstack/react-query";
 
 import {
   answerGuess,
@@ -30,8 +30,9 @@ import {
   submitContribution,
   updateNotificationPreference,
 } from "./service";
+import type { NotificationInbox, NotificationPreference } from "./types";
 
-// Private account data: the keys the mutations invalidate.
+// Private account data; each write below names the reads it changes.
 export const fanKeys = {
   session: ["fan", "session"] as const,
   favorites: ["fan", "favorites"] as const,
@@ -62,35 +63,89 @@ export const submissionsQueryOptions = queryOptions({ queryKey: fanKeys.submissi
 export const submissionQueryOptions = (submissionId: string) =>
   queryOptions({ queryKey: fanKeys.submission(submissionId), queryFn: () => getSubmission(submissionId) });
 
+function invalidate(client: QueryClient, ...queryKeys: ReadonlyArray<readonly unknown[]>) {
+  return Promise.all(queryKeys.map((queryKey) => client.invalidateQueries({ queryKey })));
+}
+
 export const fanMutationOptions = {
   setFavorite: () => mutationOptions({
     mutationFn: ({ pandaId, favorite }: { pandaId: string; favorite: boolean }) => setFavorite(pandaId, favorite),
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.favorites, fanKeys.passport),
   }),
   saveSeenPanda: () => mutationOptions({
     mutationFn: ({ pandaId, record }: { pandaId: string; record: Parameters<typeof saveSeenPanda>[1] }) =>
       saveSeenPanda(pandaId, record),
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.seenPandas),
   }),
-  removeSeenPanda: () => mutationOptions({ mutationFn: (pandaId: string) => removeSeenPanda(pandaId) }),
-  createCheckin: () => mutationOptions({ mutationFn: (record: Parameters<typeof createCheckin>[0]) => createCheckin(record) }),
-  removeCheckin: () => mutationOptions({ mutationFn: (checkinId: string) => removeCheckin(checkinId) }),
-  createCollection: () => mutationOptions({ mutationFn: (name: string) => createCollection(name) }),
+  removeSeenPanda: () => mutationOptions({
+    mutationFn: removeSeenPanda,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.seenPandas),
+  }),
+  createCheckin: () => mutationOptions({
+    mutationFn: createCheckin,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.checkins),
+  }),
+  removeCheckin: () => mutationOptions({
+    mutationFn: removeCheckin,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.checkins),
+  }),
+  createCollection: () => mutationOptions({
+    mutationFn: createCollection,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.collections),
+  }),
   renameCollection: () => mutationOptions({
     mutationFn: ({ collectionId, name }: { collectionId: string; name: string }) => renameCollection(collectionId, name),
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.collections),
   }),
-  deleteCollection: () => mutationOptions({ mutationFn: (collectionId: string) => deleteCollection(collectionId) }),
+  deleteCollection: () => mutationOptions({
+    mutationFn: deleteCollection,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.collections),
+  }),
   setCollectionMembership: () => mutationOptions({
     mutationFn: ({ collectionId, pandaId, member }: { collectionId: string; pandaId: string; member: boolean }) =>
       setCollectionMembership(collectionId, pandaId, member),
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.collections),
   }),
-  saveGameAttempt: () => mutationOptions({ mutationFn: (attempt: Parameters<typeof saveGameAttempt>[0]) => saveGameAttempt(attempt) }),
-  markNotificationRead: () => mutationOptions({ mutationFn: (messageId: string) => markNotificationRead(messageId) }),
-  markAllNotificationsRead: () => mutationOptions({ mutationFn: () => markAllNotificationsRead() }),
-  updateNotificationPreference: () => mutationOptions({
-    mutationFn: (preference: Parameters<typeof updateNotificationPreference>[0]) => updateNotificationPreference(preference),
+  saveGameAttempt: () => mutationOptions({
+    mutationFn: saveGameAttempt,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.gameAttempts),
   }),
   submitContribution: () => mutationOptions({
-    mutationFn: (body: Parameters<typeof submitContribution>[0]) => submitContribution(body),
+    mutationFn: submitContribution,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.submissions, fanKeys.passport),
   }),
-  getGuessQuestion: () => mutationOptions({ mutationFn: (locale: "zh" | "en") => getGuessQuestion(locale) }),
-  answerGuess: () => mutationOptions({ mutationFn: (answer: Parameters<typeof answerGuess>[0]) => answerGuess(answer) }),
+  // The API returns the changed message or preference; the cache takes that representation.
+  markNotificationRead: () => mutationOptions({
+    mutationFn: markNotificationRead,
+    onSuccess: (updated, messageId, _result, { client }) => {
+      client.setQueryData<NotificationInbox>(fanKeys.inbox, (current) => {
+        if (!current) return current;
+        const wasUnread = current.items.some((entry) => entry.messageId === messageId && entry.readAt === null);
+        return {
+          unreadCount: Math.max(0, current.unreadCount - (wasUnread ? 1 : 0)),
+          items: current.items.map((entry) => (entry.messageId === messageId ? updated : entry)),
+        };
+      });
+    },
+  }),
+  markAllNotificationsRead: () => mutationOptions({
+    mutationFn: markAllNotificationsRead,
+    onSuccess: (_data, _variables, _result, { client }) => {
+      const now = new Date().toISOString();
+      client.setQueryData<NotificationInbox>(fanKeys.inbox, (current) =>
+        current ? { unreadCount: 0, items: current.items.map((entry) => ({ ...entry, readAt: entry.readAt ?? now })) } : current,
+      );
+    },
+  }),
+  updateNotificationPreference: () => mutationOptions({
+    mutationFn: updateNotificationPreference,
+    onSuccess: (updated, _variables, _result, { client }) => {
+      client.setQueryData<NotificationPreference[]>(fanKeys.preferences, (current) => [
+        ...(current ?? []).filter((preference) => !(preference.category === updated.category && preference.channel === updated.channel)),
+        updated,
+      ]);
+    },
+  }),
+  getGuessQuestion: () => mutationOptions({ mutationFn: getGuessQuestion }),
+  answerGuess: () => mutationOptions({ mutationFn: answerGuess }),
 };

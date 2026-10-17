@@ -1,12 +1,11 @@
 "use client";
 
 import { Eye } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { fanKeys, fanMutationOptions, seenPandaQueryOptions } from "@/features/fan/api/queries";
-import { beginSignIn, useFanSession } from "@/features/fan/api/session";
-import { ApiRequestError } from "@/lib/api/request";
+import { fanMutationOptions, seenPandaQueryOptions } from "@/features/fan/api/queries";
+import { beginSignIn, privateReadStatus, redirectedToSignIn, useFanSession } from "@/features/fan/api/session";
 import { isEngagementUiEnabled } from "@/lib/engagement/config";
 
 interface PandaSeenControlProps {
@@ -44,58 +43,38 @@ const copy = {
 
 export function PandaSeenControl({ stableId, slug, name, locale }: PandaSeenControlProps) {
   const engagementEnabled = isEngagementUiEnabled();
-  const queryClient = useQueryClient();
   const session = useFanSession(engagementEnabled);
   const seenPanda = useQuery({ ...seenPandaQueryOptions(stableId), enabled: engagementEnabled && session.status === "ready" });
   const [feedback, setFeedback] = useState("");
   const t = copy[locale];
   const returnPath = `/${locale}/pandas/${slug}`;
 
-  const settle = {
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: fanKeys.seenPandas });
-    },
-    onError: (error: unknown) => {
-      if (error instanceof ApiRequestError && error.status === 401) {
-        beginSignIn(returnPath);
-        return;
-      }
-      setFeedback(t.unavailable);
-    },
+  const save = useMutation(fanMutationOptions.saveSeenPanda());
+  const remove = useMutation(fanMutationOptions.removeSeenPanda());
+  const status = privateReadStatus(session.status, seenPanda);
+  const failed = (error: Error) => {
+    if (!redirectedToSignIn(error, returnPath)) setFeedback(t.unavailable);
   };
-  const save = useMutation({
-    ...fanMutationOptions.saveSeenPanda(),
-    ...settle,
-    onSuccess: async () => {
-      setFeedback(t.saved(name));
-      await settle.onSuccess();
-    },
-  });
-  const remove = useMutation({
-    ...fanMutationOptions.removeSeenPanda(),
-    ...settle,
-    onSuccess: async () => {
-      setFeedback(t.removed(name));
-      await settle.onSuccess();
-    },
-  });
 
   if (!engagementEnabled) return null;
 
   const seen = seenPanda.data !== null && seenPanda.data !== undefined;
-  const loading = session.status === "loading" || (session.status === "ready" && seenPanda.isPending);
-  const unavailable = session.status === "blocked" || session.status === "unavailable" || seenPanda.isError;
+  const loading = status === "loading";
+  const unavailable = status === "blocked" || status === "unavailable";
   const busy = save.isPending || remove.isPending;
   const message = feedback || (unavailable ? t.unavailable : "");
 
   function toggleSeen() {
-    if (session.status === "signed-out") {
+    if (status === "signed-out") {
       beginSignIn(returnPath);
       return;
     }
     setFeedback("");
-    if (seen) remove.mutate(stableId);
-    else save.mutate({ pandaId: stableId, record: { seenOn: localDate(), placeId: null, note: null } });
+    if (seen) remove.mutate(stableId, { onSuccess: () => setFeedback(t.removed(name)), onError: failed });
+    else save.mutate(
+      { pandaId: stableId, record: { seenOn: localDate(), placeId: null, note: null } },
+      { onSuccess: () => setFeedback(t.saved(name)), onError: failed },
+    );
   }
 
   return (

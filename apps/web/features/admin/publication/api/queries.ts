@@ -38,9 +38,8 @@ async function publicationRequest<T>(input: string, init?: RequestInit): Promise
   try {
     return await requestJson<T>(input, init);
   } catch (error) {
-    const message = error instanceof ApiRequestError ? authenticationMessages[error.code] : undefined;
-    if (message && error instanceof ApiRequestError) throw new PublicationAuthenticationError(error.code, message);
-    throw error;
+    if (!(error instanceof ApiRequestError) || !authenticationMessages[error.code]) throw error;
+    throw new PublicationAuthenticationError(error.code, authenticationMessages[error.code]);
   }
 }
 

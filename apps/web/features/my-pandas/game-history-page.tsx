@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { gameAttemptsQueryOptions } from "@/features/fan/api/queries";
-import { signInHref, useFanSession } from "@/features/fan/api/session";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 interface PandaReference {
@@ -52,12 +52,13 @@ export function GameHistoryPage({ locale, pandas }: { locale: PublicLocale; pand
   const attempts = useQuery({ ...gameAttemptsQueryOptions, enabled: session.status === "ready" });
   const pandaById = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda])), [pandas]);
   const t = copy[locale];
+  const status = privateReadStatus(session.status, attempts);
 
-  if (session.status === "loading" || (session.status === "ready" && attempts.isPending)) {
+  if (status === "loading") {
     return <p className="py-12 text-sm text-[var(--muted)]" role="status">{locale === "zh" ? "正在读取游戏历史……" : "Loading game history…"}</p>;
   }
 
-  if (session.status === "signed-out") {
+  if (status === "signed-out") {
     return (
       <section className="my-10 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-6 sm:p-8">
         <LogIn aria-hidden="true" />
@@ -69,7 +70,7 @@ export function GameHistoryPage({ locale, pandas }: { locale: PublicLocale; pand
     );
   }
 
-  if (session.status !== "ready" || attempts.isError || attempts.data === undefined) {
+  if (status !== "ready" || attempts.data === undefined) {
     return <p className="my-10 rounded-xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-5" role="alert">{t.unavailable}</p>;
   }
 

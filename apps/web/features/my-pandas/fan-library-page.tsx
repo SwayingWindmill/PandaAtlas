@@ -3,12 +3,12 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { FolderHeart, Heart, LogIn, Plus, Trash2 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 
-import { collectionsQueryOptions, fanKeys, fanMutationOptions, favoritesQueryOptions } from "@/features/fan/api/queries";
-import { signInHref, useFanSession } from "@/features/fan/api/session";
+import { collectionsQueryOptions, fanMutationOptions, favoritesQueryOptions } from "@/features/fan/api/queries";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { FanCollection } from "@/features/fan/api/types";
 import type { MyPandasProfileSummary } from "@/features/my-pandas/my-pandas-view-model";
 import type { PublicLocale } from "@/foundation/content/locales";
@@ -76,11 +76,10 @@ export function FanLibraryPage({
   locale: PublicLocale;
   profiles: MyPandasProfileSummary[];
 }) {
-  const queryClient = useQueryClient();
   const session = useFanSession();
-  const ready = session.status === "ready";
-  const favorites = useQuery({ ...favoritesQueryOptions, enabled: ready });
-  const collections = useQuery({ ...collectionsQueryOptions, enabled: ready });
+  const favorites = useQuery({ ...favoritesQueryOptions, enabled: session.status === "ready" });
+  const collections = useQuery({ ...collectionsQueryOptions, enabled: session.status === "ready" });
+  const status = privateReadStatus(session.status, favorites, collections);
   const [newName, setNewName] = useState("");
   const [feedback, setFeedback] = useState("");
   const t = copy[locale];
@@ -89,45 +88,34 @@ export function FanLibraryPage({
     [profiles],
   );
 
-  const settle = {
-    onMutate: () => setFeedback(""),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: fanKeys.collections });
-    },
-    onError: (error: unknown) => {
-      setFeedback(error instanceof ApiRequestError && error.status === 409 ? t.duplicate : t.unavailable);
-    },
-  };
-  const create = useMutation({
-    ...fanMutationOptions.createCollection(),
-    ...settle,
-    onSuccess: async () => {
-      setNewName("");
-      await settle.onSuccess();
-    },
-  });
-  const rename = useMutation({ ...fanMutationOptions.renameCollection(), ...settle });
-  const remove = useMutation({ ...fanMutationOptions.deleteCollection(), ...settle });
-  const membership = useMutation({ ...fanMutationOptions.setCollectionMembership(), ...settle });
+  const clearFeedback = { onMutate: () => setFeedback("") };
+  const create = useMutation({ ...fanMutationOptions.createCollection(), ...clearFeedback });
+  const rename = useMutation({ ...fanMutationOptions.renameCollection(), ...clearFeedback });
+  const remove = useMutation({ ...fanMutationOptions.deleteCollection(), ...clearFeedback });
+  const membership = useMutation({ ...fanMutationOptions.setCollectionMembership(), ...clearFeedback });
+  // Only a name can collide; any other refused write is an outage to the visitor.
+  const nameFailed = (error: Error) =>
+    setFeedback(error instanceof ApiRequestError && error.status === 409 ? t.duplicate : t.unavailable);
+  const writeFailed = () => setFeedback(t.unavailable);
 
   function createCollection(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const name = newName.trim();
     if (!name) return;
-    create.mutate(name);
+    create.mutate(name, { onSuccess: () => setNewName(""), onError: nameFailed });
   }
 
   function renameCollection(collection: FanCollection, name: string) {
     const normalized = name.trim();
     if (!normalized || normalized === collection.name) return;
-    rename.mutate({ collectionId: collection.collectionId, name: normalized });
+    rename.mutate({ collectionId: collection.collectionId, name: normalized }, { onError: nameFailed });
   }
 
-  if (session.status === "loading" || (ready && (favorites.isPending || collections.isPending))) {
+  if (status === "loading") {
     return <p className="py-12 text-sm text-[var(--muted)]" role="status">{locale === "zh" ? "正在读取你的收藏……" : "Loading your favorites…"}</p>;
   }
 
-  if (session.status === "signed-out") {
+  if (status === "signed-out") {
     return (
       <section className="my-10 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-6 sm:p-8">
         <LogIn aria-hidden="true" />
@@ -139,7 +127,7 @@ export function FanLibraryPage({
     );
   }
 
-  if (!ready || favorites.data === undefined || collections.data === undefined) {
+  if (status !== "ready" || favorites.data === undefined || collections.data === undefined) {
     return <p className="my-10 rounded-xl border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] p-5" role="alert">{t.unavailable}</p>;
   }
 
@@ -181,7 +169,7 @@ export function FanLibraryPage({
                           key={collection.collectionId}
                           type="button"
                           disabled={busy}
-                          onClick={() => membership.mutate({ collectionId: collection.collectionId, pandaId: favorite.pandaId, member: !member })}
+                          onClick={() => membership.mutate({ collectionId: collection.collectionId, pandaId: favorite.pandaId, member: !member }, { onError: writeFailed })}
                           className="rounded-lg border border-[var(--pa-color-accent-border-12)] px-3 py-2 text-sm font-semibold disabled:opacity-60"
                         >
                           {member ? `${t.removeFrom} · ${collection.name}` : `${t.addTo} · ${collection.name}`}
@@ -252,7 +240,7 @@ export function FanLibraryPage({
                 <button
                   type="button"
                   disabled={remove.isPending && remove.variables === collection.collectionId}
-                  onClick={() => remove.mutate(collection.collectionId)}
+                  onClick={() => remove.mutate(collection.collectionId, { onError: writeFailed })}
                   className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-lg border border-[var(--pa-color-accent-border-12)] px-3 py-2 text-sm font-semibold disabled:opacity-60"
                 >
                   <Trash2 className="h-4 w-4" aria-hidden="true" />{t.deleteCollection}

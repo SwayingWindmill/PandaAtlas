@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 
 import { passportQueryOptions } from "@/features/fan/api/queries";
-import { signInHref, useFanSession } from "@/features/fan/api/session";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { PassportEntry } from "@/features/fan/api/types";
 import type {
   MyPandasCopy,
@@ -65,15 +65,12 @@ export function MyPandasPassportIsland({ locale, profiles, copy }: Props) {
     return subscribeToProfilePreferences(refreshRecent);
   }, [references]);
 
+  const readStatus = privateReadStatus(session.status, passportQuery);
   const passportState: PassportState = !engagementEnabled
     ? "disabled"
-    : session.status === "signed-out"
-      ? "signed-out"
-      : session.status === "blocked" || session.status === "unavailable" || passportQuery.isError
-        ? "error"
-        : passportQuery.isSuccess
-          ? "ready"
-          : "loading";
+    : readStatus === "blocked" || readStatus === "unavailable"
+      ? "error"
+      : readStatus;
   const passport = passportQuery.data ?? [];
 
   return (

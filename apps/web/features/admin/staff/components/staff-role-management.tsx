@@ -51,7 +51,7 @@ async function staffRequest<T>(path: string, init?: RequestInit): Promise<T> {
           : code === "identity.selfGrantForbidden" ? "不能变更自己的角色。"
             : status === 409 ? "角色状态已变化，请刷新并检查当前授权。"
               : status === 403 ? "当前账号不具备该操作的管理权限。"
-                : error.detail;
+                : error.code ? error.detail : "请求失败，请稍后重试。";
     throw new Error(message);
   }
 }

@@ -1,12 +1,11 @@
 "use client";
 
 import { MapPinCheck } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { checkinsQueryOptions, fanKeys, fanMutationOptions } from "@/features/fan/api/queries";
-import { beginSignIn, useFanSession } from "@/features/fan/api/session";
-import { ApiRequestError } from "@/lib/api/request";
+import { checkinsQueryOptions, fanMutationOptions } from "@/features/fan/api/queries";
+import { beginSignIn, privateReadStatus, redirectedToSignIn, useFanSession } from "@/features/fan/api/session";
 import { isEngagementUiEnabled } from "@/lib/engagement/config";
 
 interface PlaceCheckinControlProps {
@@ -23,7 +22,6 @@ function localDate(): string {
 
 export function PlaceCheckinControl({ placeId, slug, name, locale }: PlaceCheckinControlProps) {
   const engagementEnabled = isEngagementUiEnabled();
-  const queryClient = useQueryClient();
   const session = useFanSession(engagementEnabled);
   const checkins = useQuery({ ...checkinsQueryOptions, enabled: engagementEnabled && session.status === "ready" });
   const [feedback, setFeedback] = useState("");
@@ -32,52 +30,39 @@ export function PlaceCheckinControl({ placeId, slug, name, locale }: PlaceChecki
   const zh = locale === "zh";
   const unavailableCopy = zh ? "打卡暂时不可用。" : "Check-ins are temporarily unavailable.";
 
-  const settle = {
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: fanKeys.checkins });
-    },
-    onError: (error: unknown) => {
-      if (error instanceof ApiRequestError && error.status === 401) {
-        beginSignIn(returnPath);
-        return;
-      }
-      setFeedback(unavailableCopy);
-    },
+  const create = useMutation(fanMutationOptions.createCheckin());
+  const remove = useMutation(fanMutationOptions.removeCheckin());
+  const status = privateReadStatus(session.status, checkins);
+  const failed = (error: Error) => {
+    if (!redirectedToSignIn(error, returnPath)) setFeedback(unavailableCopy);
   };
-  const create = useMutation({
-    ...fanMutationOptions.createCheckin(),
-    ...settle,
-    onSuccess: async () => {
-      setFeedback(zh ? `已记录今天来过${name}。` : `Recorded today's visit to ${name}.`);
-      await settle.onSuccess();
-    },
-  });
-  const remove = useMutation({
-    ...fanMutationOptions.removeCheckin(),
-    ...settle,
-    onSuccess: async () => {
-      setFeedback(zh ? `已删除今天在${name}的打卡。` : `Removed today's check-in at ${name}.`);
-      await settle.onSuccess();
-    },
-  });
 
   if (!engagementEnabled) return null;
 
   const current = checkins.data?.find((item) => item.placeId === placeId && item.visitedOn === today);
   const checked = current !== undefined;
-  const loading = session.status === "loading" || (session.status === "ready" && checkins.isPending);
-  const unavailable = session.status === "blocked" || session.status === "unavailable" || checkins.isError;
+  const loading = status === "loading";
+  const unavailable = status === "blocked" || status === "unavailable";
   const busy = create.isPending || remove.isPending;
   const message = feedback || (unavailable ? unavailableCopy : "");
 
   function toggleCheckin() {
-    if (session.status === "signed-out") {
+    if (status === "signed-out") {
       beginSignIn(returnPath);
       return;
     }
     setFeedback("");
-    if (current) remove.mutate(current.checkinId);
-    else create.mutate({ placeId, visitedOn: today, note: null });
+    if (current) {
+      remove.mutate(current.checkinId, {
+        onSuccess: () => setFeedback(zh ? `已删除今天在${name}的打卡。` : `Removed today's check-in at ${name}.`),
+        onError: failed,
+      });
+    } else {
+      create.mutate({ placeId, visitedOn: today, note: null }, {
+        onSuccess: () => setFeedback(zh ? `已记录今天来过${name}。` : `Recorded today's visit to ${name}.`),
+        onError: failed,
+      });
+    }
   }
 
   return (

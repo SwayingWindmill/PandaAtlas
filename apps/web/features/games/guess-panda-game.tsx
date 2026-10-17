@@ -4,21 +4,15 @@ import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, RefreshCcw, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { fanMutationOptions } from "@/features/fan/api/queries";
-import { beginSignIn } from "@/features/fan/api/session";
-import type { GuessAnswer, GuessQuestion } from "@/features/fan/api/types";
+import { beginSignIn, signInRequired } from "@/features/fan/api/session";
+import type { GameAttemptInput, GuessAnswer, GuessQuestion } from "@/features/fan/api/types";
 import type { PublicLocale } from "@/foundation/content/locales";
-import { ApiRequestError } from "@/lib/api/request";
 import { isEngagementUiEnabled } from "@/lib/engagement/config";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
-
-type PendingAttempt = {
-  questionId: string;
-  selectedPandaId: string;
-};
 
 const pendingAttemptKey = "zhipanda:pending-guess-attempt:v2";
 
@@ -110,51 +104,39 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
       setGameError(true);
     },
   });
-  // Saving needs the session: a signed-out visitor keeps the attempt for after sign-in.
-  const save = useMutation({
-    ...fanMutationOptions.saveGameAttempt(),
-    onMutate: () => setSaveState("saving"),
-    onSuccess: () => {
-      window.sessionStorage.removeItem(pendingAttemptKey);
-      setSaveState("saved");
-    },
-    onError: (error, attempt) => {
-      if (error instanceof ApiRequestError && error.status === 401) {
-        window.sessionStorage.setItem(pendingAttemptKey, JSON.stringify(attempt));
-        beginSignIn(`/${locale}/games/guess`);
-        return;
-      }
-      setSaveState("error");
-    },
-  });
-  // The attempt kept across sign-in is saved once; a visitor still signed out keeps it.
-  const replay = useMutation({
-    ...fanMutationOptions.saveGameAttempt(),
-    onSuccess: () => {
-      window.sessionStorage.removeItem(pendingAttemptKey);
-      setSaveState("saved");
-    },
-    onError: (error) => {
-      if (error instanceof ApiRequestError && error.status === 401) return;
-      window.sessionStorage.removeItem(pendingAttemptKey);
-      setSaveState("error");
-    },
-  });
-  const replayAttempt = replay.mutate;
+  // Saving needs the session. The attempt is kept until the server has it: a visitor who chose to
+  // save is sent to sign in and finds it saved on return; a visitor still signed out keeps it.
+  const { mutate: saveMutation } = useMutation(fanMutationOptions.saveGameAttempt());
+  const persistAttempt = useCallback((attempt: GameAttemptInput, signInWhenRefused: boolean) => {
+    saveMutation(attempt, {
+      onSuccess: () => {
+        window.sessionStorage.removeItem(pendingAttemptKey);
+        setSaveState("saved");
+      },
+      onError: (error) => {
+        if (signInRequired(error)) {
+          if (signInWhenRefused) beginSignIn(`/${locale}/games/guess`);
+          return;
+        }
+        window.sessionStorage.removeItem(pendingAttemptKey);
+        setSaveState("error");
+      },
+    });
+  }, [locale, saveMutation]);
 
   useEffect(() => {
     if (!engagementEnabled) return;
     const raw = window.sessionStorage.getItem(pendingAttemptKey);
     if (!raw) return;
-    let payload: PendingAttempt;
+    let payload: GameAttemptInput;
     try {
-      payload = JSON.parse(raw) as PendingAttempt;
+      payload = JSON.parse(raw) as GameAttemptInput;
     } catch {
       window.sessionStorage.removeItem(pendingAttemptKey);
       return;
     }
-    replayAttempt(payload);
-  }, [engagementEnabled, replayAttempt]);
+    persistAttempt(payload, false);
+  }, [engagementEnabled, persistAttempt]);
 
   const loading = nextQuestion.isPending || answer.isPending;
 
@@ -172,7 +154,10 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
       || saveState === "saving"
       || saveState === "saved"
     ) return;
-    save.mutate({ questionId: question.questionId, selectedPandaId: selectedId });
+    const attempt = { questionId: question.questionId, selectedPandaId: selectedId };
+    window.sessionStorage.setItem(pendingAttemptKey, JSON.stringify(attempt));
+    setSaveState("saving");
+    persistAttempt(attempt, true);
   }
 
   if (!question) {

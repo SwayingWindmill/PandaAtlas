@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
 import { submissionsQueryOptions } from "@/features/fan/api/queries";
-import { signInHref, useFanSession } from "@/features/fan/api/session";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 
 import type { Locale } from "./types";
 
@@ -55,13 +55,11 @@ const copy = {
 export function SubmissionDashboard({ locale }: SubmissionDashboardProps) {
   const t = copy[locale];
   const session = useFanSession();
-  const ready = session.status === "ready";
-  const submissions = useQuery({ ...submissionsQueryOptions, enabled: ready });
-  const requiresLogin = session.status === "signed-out";
-  const loading = session.status === "loading" || (ready && submissions.isPending);
-  const error = session.status === "blocked" || session.status === "unavailable"
-    ? t.error
-    : submissions.error?.message ?? null;
+  const submissions = useQuery({ ...submissionsQueryOptions, enabled: session.status === "ready" });
+  const status = privateReadStatus(session.status, submissions);
+  const requiresLogin = status === "signed-out";
+  const loading = status === "loading";
+  const error = status === "blocked" || status === "unavailable" ? submissions.error?.message || t.error : null;
   const items = submissions.data?.items ?? [];
 
   return (

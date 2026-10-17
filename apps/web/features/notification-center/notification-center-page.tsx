@@ -3,13 +3,13 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { Bell, CheckCheck, CircleAlert, LockKeyhole, Mail, RotateCcw } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
 import { GlobalNavigation } from "@/components/patterns/global-navigation";
-import { fanKeys, fanMutationOptions, inboxQueryOptions, preferencesQueryOptions } from "@/features/fan/api/queries";
-import { fanSessionStatus, signInHref, useFanSession } from "@/features/fan/api/session";
-import type { NotificationInbox, NotificationMessage, NotificationPreference } from "@/features/fan/api/types";
+import { fanMutationOptions, inboxQueryOptions, preferencesQueryOptions } from "@/features/fan/api/queries";
+import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
+import type { NotificationMessage, NotificationPreference } from "@/features/fan/api/types";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 interface NotificationCenterPageProps {
@@ -128,63 +128,22 @@ function localizedContent(
 
 export function NotificationCenterPage({ locale }: NotificationCenterPageProps) {
   const t = copy[locale];
-  const queryClient = useQueryClient();
   const session = useFanSession();
-  const ready = session.status === "ready";
-  const inbox = useQuery({ ...inboxQueryOptions, enabled: ready });
-  const preferences = useQuery({ ...preferencesQueryOptions, enabled: ready });
+  const inbox = useQuery({ ...inboxQueryOptions, enabled: session.status === "ready" });
+  const preferences = useQuery({ ...preferencesQueryOptions, enabled: session.status === "ready" });
   const [statusMessage, setStatusMessage] = useState("");
   const alternate = locale === "zh" ? "en" : "zh";
 
-  // The API returns the changed message or preference; the cache takes that representation.
-  const markRead = useMutation({
-    ...fanMutationOptions.markNotificationRead(),
-    onMutate: () => setStatusMessage(""),
-    onSuccess: (updated, messageId) => {
-      queryClient.setQueryData(fanKeys.inbox, (current: NotificationInbox | undefined) => {
-        if (!current) return current;
-        const wasUnread = current.items.some((entry) => entry.messageId === messageId && entry.readAt === null);
-        return {
-          unreadCount: Math.max(0, current.unreadCount - (wasUnread ? 1 : 0)),
-          items: current.items.map((entry) => (entry.messageId === messageId ? updated : entry)),
-        };
-      });
-      setStatusMessage(t.read);
-    },
-    onError: () => setStatusMessage(t.actionFailed),
-  });
-  const markAllRead = useMutation({
-    ...fanMutationOptions.markAllNotificationsRead(),
-    onMutate: () => setStatusMessage(""),
-    onSuccess: () => {
-      const now = new Date().toISOString();
-      queryClient.setQueryData(fanKeys.inbox, (current: NotificationInbox | undefined) =>
-        current ? { unreadCount: 0, items: current.items.map((entry) => ({ ...entry, readAt: entry.readAt ?? now })) } : current,
-      );
-      setStatusMessage(t.read);
-    },
-    onError: () => setStatusMessage(t.actionFailed),
-  });
-  const updatePreference = useMutation({
-    ...fanMutationOptions.updateNotificationPreference(),
-    onMutate: () => setStatusMessage(""),
-    onSuccess: (updated) => {
-      queryClient.setQueryData(fanKeys.preferences, (current: NotificationPreference[] | undefined) => [
-        ...(current ?? []).filter((preference) => !(preference.category === updated.category && preference.channel === "email")),
-        updated,
-      ]);
-      setStatusMessage(t.saved);
-    },
+  const clearStatus = { onMutate: () => setStatusMessage("") };
+  const markRead = useMutation({ ...fanMutationOptions.markNotificationRead(), ...clearStatus });
+  const markAllRead = useMutation({ ...fanMutationOptions.markAllNotificationsRead(), ...clearStatus });
+  const updatePreference = useMutation({ ...fanMutationOptions.updateNotificationPreference(), ...clearStatus });
+  const announce = (message: string) => ({
+    onSuccess: () => setStatusMessage(message),
     onError: () => setStatusMessage(t.actionFailed),
   });
 
-  const state: LoadState = session.status !== "ready"
-    ? session.status
-    : inbox.isError || preferences.isError
-      ? fanSessionStatus(inbox.error ?? preferences.error)
-      : inbox.isSuccess && preferences.isSuccess
-        ? "ready"
-        : "loading";
+  const state: LoadState = privateReadStatus(session.status, inbox, preferences);
   const page = inbox.data;
   const busyKey = markRead.isPending
     ? markRead.variables
@@ -256,7 +215,7 @@ export function NotificationCenterPage({ locale }: NotificationCenterPageProps) 
                   <h2 id="inbox-heading" className="flex items-center gap-2 text-2xl font-semibold text-[var(--fg)]"><Bell aria-hidden="true" />{t.inbox}</h2>
                   <p className="mt-2 text-sm text-[var(--muted)]">{t.unread}: <strong>{page.unreadCount}</strong></p>
                 </div>
-                <button type="button" disabled={page.unreadCount === 0 || busyKey === "read-all"} onClick={() => markAllRead.mutate()} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50"><CheckCheck aria-hidden="true" />{t.markAll}</button>
+                <button type="button" disabled={page.unreadCount === 0 || busyKey === "read-all"} onClick={() => markAllRead.mutate(undefined, announce(t.read))} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50"><CheckCheck aria-hidden="true" />{t.markAll}</button>
               </div>
 
               {page.items.length ? (
@@ -276,7 +235,7 @@ export function NotificationCenterPage({ locale }: NotificationCenterPageProps) 
                         <div className="mt-4 flex items-center justify-between gap-3">
                           <span className="text-sm text-[var(--muted)]">{item.readAt ? t.read : t.unread}</span>
                           {!item.readAt ? (
-                            <button type="button" disabled={busyKey === item.messageId} onClick={() => markRead.mutate(item.messageId)} className="min-h-12 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50">{t.markRead}</button>
+                            <button type="button" disabled={busyKey === item.messageId} onClick={() => markRead.mutate(item.messageId, announce(t.read))} className="min-h-12 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50">{t.markRead}</button>
                           ) : null}
                         </div>
                       </li>
@@ -304,7 +263,7 @@ export function NotificationCenterPage({ locale }: NotificationCenterPageProps) 
                         <h3 className="font-semibold text-[var(--fg)]">{t.category[category]}</h3>
                         <p className="mt-1 text-sm text-[var(--muted)]">{enabled ? t.enabled : t.disabled}</p>
                       </div>
-                      <button type="button" aria-pressed={enabled} disabled={busyKey === key} onClick={() => updatePreference.mutate({ category, channel: "email", enabled: !enabled })} className="min-h-12 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50">{enabled ? t.disable : t.enable}</button>
+                      <button type="button" aria-pressed={enabled} disabled={busyKey === key} onClick={() => updatePreference.mutate({ category, channel: "email", enabled: !enabled }, announce(t.saved))} className="min-h-12 rounded-full border border-[var(--pa-color-accent-border-14)] px-5 py-3 text-sm font-semibold text-[var(--accent)] disabled:opacity-50">{enabled ? t.disable : t.enable}</button>
                     </li>
                   );
                 })}
