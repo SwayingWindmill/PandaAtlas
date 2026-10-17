@@ -1,10 +1,13 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import { ContributionApiError, listSubmissions } from "./api";
-import type { Locale, V2ContributionRecord } from "./types";
+import { submissionsQueryOptions } from "@/features/fan/api/queries";
+import { signInHref, useFanSession } from "@/features/fan/api/session";
+
+import type { Locale } from "./types";
 
 interface SubmissionDashboardProps {
   locale: Locale;
@@ -51,29 +54,15 @@ const copy = {
 
 export function SubmissionDashboard({ locale }: SubmissionDashboardProps) {
   const t = copy[locale];
-  const [items, setItems] = useState<V2ContributionRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [requiresLogin, setRequiresLogin] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    void listSubmissions()
-      .then((result) => {
-        if (active) setItems(result.data.items);
-      })
-      .catch((reason: unknown) => {
-        if (!active) return;
-        if (reason instanceof ContributionApiError && reason.status === 401) setRequiresLogin(true);
-        setError(reason instanceof Error ? reason.message : t.error);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [t.error]);
+  const session = useFanSession();
+  const ready = session.status === "ready";
+  const submissions = useQuery({ ...submissionsQueryOptions, enabled: ready });
+  const requiresLogin = session.status === "signed-out";
+  const loading = session.status === "loading" || (ready && submissions.isPending);
+  const error = session.status === "blocked" || session.status === "unavailable"
+    ? t.error
+    : submissions.error?.message ?? null;
+  const items = submissions.data?.items ?? [];
 
   return (
     <section className="contribution-panel" aria-labelledby="submission-dashboard-heading">
@@ -89,7 +78,7 @@ export function SubmissionDashboard({ locale }: SubmissionDashboardProps) {
       {loading ? <p role="status">{t.loading}</p> : null}
       {requiresLogin ? (
         <p className="contribution-message contribution-message--notice">
-          {t.signedOut} <Link href={`/auth/login?next=/${locale}/me/submissions`}>{t.signIn}</Link>
+          {t.signedOut} <Link href={signInHref(`/${locale}/me/submissions`) as Route}>{t.signIn}</Link>
         </p>
       ) : null}
       {error && !requiresLogin ? <p className="contribution-message contribution-message--error" role="alert">{error}</p> : null}

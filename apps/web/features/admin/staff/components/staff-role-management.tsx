@@ -15,6 +15,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { adminSessionQueryOptions } from "@/features/admin/session/api/queries";
 import { capabilityDescription, capabilityGroups } from "@/features/admin/session/capability-presentation";
+import { ApiRequestError, requestJson } from "@/lib/api/request";
 import { StaffWorkspaceNavigation } from "./staff-workspace-navigation";
 
 type Staff = components["schemas"]["StaffAccountSummaryDto"];
@@ -36,25 +37,23 @@ const roleNames: Record<string, string> = {
 function roleName(value: string) { return roleNames[value] ?? value; }
 
 
-async function responseJson<T>(response: Response): Promise<T> {
-  const body = await response.json();
-  if (!response.ok) {
-    const code = body.code as string | undefined;
+// Refusals are shown to the operator in their own words.
+async function staffRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  try {
+    return await requestJson<T>(`/api/admin/staff/accounts${path}`, init);
+  } catch (error) {
+    if (!(error instanceof ApiRequestError)) throw error;
+    const { code, status } = error;
     const message = code === "auth.recentAuthRequired" ? "最近认证已过期，请重新登录并完成双重验证。"
       : code === "auth.aalRequired" ? "请先在账号安全中完成双重验证。"
-        : code === "auth.liveSessionRequired" || response.status === 401 ? "当前会话已失效，请重新登录。"
+        : code === "auth.liveSessionRequired" || status === 401 ? "当前会话已失效，请重新登录。"
         : code === "identity.dutiesConflict" ? "审核和公开发布必须由不同岗位承担，不能同时授权。"
           : code === "identity.selfGrantForbidden" ? "不能变更自己的角色。"
-            : response.status === 409 ? "角色状态已变化，请刷新并检查当前授权。"
-              : response.status === 403 ? "当前账号不具备该操作的管理权限。"
-                : body.detail ?? "请求失败，请稍后重试。";
+            : status === 409 ? "角色状态已变化，请刷新并检查当前授权。"
+              : status === 403 ? "当前账号不具备该操作的管理权限。"
+                : error.detail;
     throw new Error(message);
   }
-  return body as T;
-}
-
-async function getStaff<T>(path: string): Promise<T> {
-  return responseJson<T>(await fetch(`/api/admin/staff/accounts${path}`, { cache: "no-store" }));
 }
 
 export function StaffRoleManagement() {
@@ -75,24 +74,23 @@ export function StaffRoleManagement() {
   const [search, setSearch] = useState("");
   const [stateFilter, setStateFilter] = useState("all");
 
-  const directory = useQuery({ queryKey: ["admin", "staff", "accounts", "directory"], queryFn: () => getStaff<Staff[]>(""), enabled: canInspect, retry: false });
-  const catalog = useQuery({ queryKey: ["admin", "staff", "accounts", "catalog"], queryFn: () => getStaff<Role[]>("/catalog"), enabled: roleManager });
-  const detail = useQuery({ queryKey: ["admin", "staff", "accounts", "detail", selectedId], queryFn: () => getStaff<StaffDetail>(`/${selectedId}`), enabled: canInspect && Boolean(selectedId), retry: false });
+  const directory = useQuery({ queryKey: ["admin", "staff", "accounts", "directory"], queryFn: () => staffRequest<Staff[]>(""), enabled: canInspect, retry: false });
+  const catalog = useQuery({ queryKey: ["admin", "staff", "accounts", "catalog"], queryFn: () => staffRequest<Role[]>("/catalog"), enabled: roleManager });
+  const detail = useQuery({ queryKey: ["admin", "staff", "accounts", "detail", selectedId], queryFn: () => staffRequest<StaffDetail>(`/${selectedId}`), enabled: canInspect && Boolean(selectedId), retry: false });
 
   const change = useMutation({
     mutationFn: async ({ action, reason: explanation }: { action: Change; reason: string }) => {
-      const url = action.kind === "grant"
-        ? `/api/admin/staff/accounts/${selectedId}/roles`
-        : `/api/admin/staff/accounts/${selectedId}/roles/${action.assignmentId}/revoke`;
-      return responseJson(await fetch(url, {
+      const path = action.kind === "grant"
+        ? `/${selectedId}/roles`
+        : `/${selectedId}/roles/${action.assignmentId}/revoke`;
+      return staffRequest(path, {
         method: "POST",
-        headers: { "content-type": "application/json" },
         body: JSON.stringify({
           ...(action.kind === "grant" ? { roleKey: action.roleKey } : {}),
           reason: explanation,
           idempotencyKey: action.idempotencyKey,
         }),
-      }));
+      });
     },
     onSuccess: async () => {
       setMessage(planned?.kind === "grant" ? "角色已授予" : "角色已撤销");
@@ -104,10 +102,10 @@ export function StaffRoleManagement() {
 
   const accountChange = useMutation({
     mutationFn: async ({ action, idempotencyKey }: AccountStateChange) => {
-      return responseJson(await fetch(`/api/admin/staff/accounts/${selectedId}/state`, {
-        method: "POST", headers: { "content-type": "application/json" },
+      return staffRequest(`/${selectedId}/state`, {
+        method: "POST",
         body: JSON.stringify({ action, reason: stateReason.trim(), idempotencyKey }),
-      }));
+      });
     },
     onSuccess: async () => {
       setStateMessage(statePlanned?.action === "suspend" ? "工作人员已停用" : "工作人员已恢复");

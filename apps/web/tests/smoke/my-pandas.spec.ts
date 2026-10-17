@@ -27,7 +27,7 @@ test("serves My Pandas as the personal hub", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 2, name: "护照与最近浏览使用不同存储边界" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "熊猫护照" })).toBeVisible();
   if (engagementEnabled) {
-    await expect(page.getByRole("link", { name: "使用邮箱验证码登录" })).toHaveAttribute("href", "/auth/login?next=/zh/me");
+    await expect(page.getByRole("link", { name: "使用邮箱验证码登录" })).toHaveAttribute("href", "/auth/login?next=%2Fzh%2Fme");
   } else {
     await expect(page.getByText("熊猫护照尚未在此环境启用。最近浏览仍只保存在当前浏览器。")).toBeVisible();
   }
@@ -67,17 +67,23 @@ test("deletes legacy anonymous saves without converting them", async ({ page }) 
 
 test("renders private Passport and local recent history", async ({ page }) => {
   test.skip(!engagementEnabled, "The deployed Web build intentionally disables Engagement UI.");
+  await page.route("**/api/identity/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ accountId: "11111111-1111-1111-1111-111111111111", aal: "aal1", capabilities: [] }),
+    });
+  });
   await page.route("**/api/engagement/passport", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        account_id: "11111111-1111-1111-1111-111111111111",
         entries: [{
-          panda_id: "stable-panda-mei-xiang",
-          relationship_state: "active",
-          first_followed_at: "2026-07-18T00:00:00.000Z",
-          contribution_count: 2,
+          pandaId: "stable-panda-mei-xiang",
+          relationshipState: "active",
+          firstFollowedAt: "2026-07-18T00:00:00.000Z",
+          contributionCount: 2,
         }],
       }),
     });
