@@ -43,7 +43,7 @@
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.460.0",
     "maplibre-gl": "^5.0.0",
-    "motion": "^12.43.0",
+    "motion": "^14.3.0",
     "nuqs": "^2.10.2",
     "radix-ui": "^1.7.0",
     "react": "^19.3.0",
