@@ -30,10 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out main
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: "24"
           cache: npm
@@ -48,7 +48,7 @@ jobs:
         run: npm run check:worker-boot -w @zhipanda/api
 
       - name: Keep the build output for the approved deploy
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: cloudflare-build-output
           include-hidden-files: true
@@ -67,10 +67,10 @@ jobs:
     environment: production
     steps:
       - name: Check out main
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: "24"
           cache: npm
