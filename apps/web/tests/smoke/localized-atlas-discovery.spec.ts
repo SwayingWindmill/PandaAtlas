@@ -10,7 +10,7 @@ test("normalizes unsupported and invalid URL state instead of silently retaining
 test("preserves compatible discovery state across the locale switch", async ({ page }) => {
   await page.goto("/zh/pandas?q=mei&sex=female&sort=name");
 
-  await expect(page.getByRole("link", { name: "English", exact: true })).toHaveAttribute(
+  await expect(page.getByRole("banner").getByRole("link", { name: "English", exact: true })).toHaveAttribute(
     "href",
     "/en/pandas?q=mei&sex=female&sort=name",
   );

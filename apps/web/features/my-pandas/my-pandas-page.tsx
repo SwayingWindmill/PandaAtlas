@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, Database, ShieldCheck } from "lucide-react";
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
 import { isFeedUiEnabled } from "@/features/feed/config";
@@ -22,18 +22,12 @@ interface MyPandasPageProps {
 
 export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
   const { copy } = view;
-  const alternateLocale = locale === "zh" ? "en" : "zh";
   const feedEnabled = isFeedUiEnabled();
   const notificationCenterEnabled = isNotificationCenterEnabled();
   const contributionEnabled = isCommunityIntakeUiEnabled();
 
   return (
     <>
-      <GlobalNavigation
-        locale={locale}
-        active="my-pandas"
-        alternatePath={`/${alternateLocale}/me`}
-      />
       <main id="main-content" className="my-pandas-page" data-testid="my-pandas-page">
         <section className={`${publicShellClassName} my-pandas-delivery`}>
           <PublicDeliveryNotice

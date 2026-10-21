@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import type {
   PublicCoverage,
@@ -140,7 +140,6 @@ export function PublicEntityPage({
   const isInstitution = entity.kind === "institution";
   return (
     <>
-      <GlobalNavigation locale={locale} active="map" alternatePath={entity.alternateLanguageHref} />
       <main id="main-content" className="pb-20 pt-8" data-testid={`${entity.kind}-entity-page`}>
         <div className={`${publicShellClassName} grid min-w-0 gap-8 [&>*]:min-w-0`}>
           <header className="rounded-[var(--pa-radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm md:p-10">

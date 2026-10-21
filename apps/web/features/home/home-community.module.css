@@ -1,9 +1,9 @@
 .pageTheme,
 .world {
-  --home-deep: #003e40;
-  --home-deeper: #002526;
+  --home-deep: var(--zp-brand-deep);
+  --home-deeper: var(--zp-brand-ink);
   --home-ivory: var(--zp-brand-ivory);
-  --home-paper: #f7f5e8;
+  --home-paper: var(--zp-brand-paper);
   --home-ink: var(--zp-brand-ink);
   --home-muted: #5f6d68;
   --home-accent: var(--zp-brand-acid);

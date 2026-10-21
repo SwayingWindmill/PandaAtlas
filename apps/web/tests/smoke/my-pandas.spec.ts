@@ -17,10 +17,10 @@ test("serves My Pandas as the personal hub", async ({ page }) => {
   await mockSignedOutPassport(page);
   await page.goto("/zh/me");
   await expect(page.getByRole("heading", { level: 1, name: "我的熊猫" })).toBeVisible();
-  const primaryNav = page.locator(".pa-desktop-nav");
-  await expect(primaryNav.getByRole("link", { name: "我的熊猫", exact: true })).toHaveAttribute("href", "/zh/me");
-  await expect(primaryNav.getByText("收藏动态", { exact: true })).toHaveCount(0);
-  await expect(primaryNav.getByText("通知", { exact: true })).toHaveCount(0);
+  const header = page.getByRole("banner");
+  await expect(header.getByRole("link", { name: "我的熊猫", exact: true })).toHaveAttribute("href", "/zh/me");
+  await expect(header.getByText("收藏动态", { exact: true })).toHaveCount(0);
+  await expect(header.getByText("通知", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "打开我的通知" })).toHaveAttribute("href", "/zh/me/inbox");
   await expect(page.getByRole("link", { name: "收藏动态", exact: true })).toHaveAttribute("href", "/zh/me/feed");
   await expect(page.getByRole("link", { name: "通知", exact: true })).toHaveAttribute("href", "/zh/me/inbox");

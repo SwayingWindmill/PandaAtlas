@@ -1,7 +1,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { ArrowRight, GitBranch, Network, SearchCheck } from "lucide-react";
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import type {
   PublicCoverage,
@@ -269,16 +269,10 @@ export function StructuredLineagePage({
   localeDelivery,
 }: StructuredLineagePageProps) {
   const t = copy[locale];
-  const alternateLocale = locale === "zh" ? "en" : "zh";
   const selected = view.selectedRelation;
 
   return (
     <>
-      <GlobalNavigation
-        locale={locale}
-        active="families"
-        alternatePath={familyLineageHref(alternateLocale, state)}
-      />
       <main id="main-content" className="pa-public-main" data-testid="structured-lineage-page">
         <section className={`${publicShellClassName} pa-lineage-hero`}>
           <p className="pa-eyebrow">ZhiPanda / Family relationships</p>

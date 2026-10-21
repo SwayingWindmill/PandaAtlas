@@ -1,12 +1,10 @@
 @import "tailwindcss";
 
 @import "../styles/tokens.css";
-@import "../styles/brand.css";
 @import "../styles/base.css";
 @import "../styles/typography.css";
 @import "../styles/motion.css";
 @import "../styles/registers.css";
-@import "../styles/global-navigation-resilience.css";
 @import "../styles/licensed-media.css";
 @import "../styles/admin-console.css";
 @import "../styles/trusted-profile.css";
@@ -21,28 +19,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-    --sidebar: hsl(0 0% 98%);
-    --sidebar-foreground: hsl(240 5.3% 26.1%);
-    --sidebar-primary: hsl(240 5.9% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(240 4.8% 95.9%);
-    --sidebar-accent-foreground: hsl(240 5.9% 10%);
-    --sidebar-border: hsl(220 13% 91%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
-.dark {
-    --sidebar: hsl(240 5.9% 10%);
-    --sidebar-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-primary: hsl(224.3 76.3% 48%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(240 3.7% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(240 3.7% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
+/* Tailwind utilities for the shadcn/ui tokens; the values live in styles/tokens.css. */
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -70,57 +47,4 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
-}
-
-/* Semantic defaults for the official shadcn primitives used by Admin.
-   The public site keeps its own --pa-* visual language. */
-:root {
-    --background: #fff;
-    --foreground: #172019;
-    --primary: #24543a;
-    --primary-foreground: #fff;
-    --secondary: #f2f5f3;
-    --secondary-foreground: #172019;
-    --muted-ui: #f2f5f3;
-    --muted-foreground: #58675c;
-    --accent-ui: #eaf4ed;
-    --accent-foreground: #24543a;
-    --popover: #fff;
-    --popover-foreground: #172019;
-    --card-foreground: #172019;
-    --border: #d7dfd8;
-    --input: #d7dfd8;
-    --ring: #397253;
-    --destructive: #b42318;
-}
-
-/* Admin V4 design context. Shared across every authorized Admin route. */
-.pa-admin-shell {
-    --background: #f8fafc;
-    --foreground: #192733;
-    --primary: #176b5a;
-    --primary-foreground: #fff;
-    --secondary: #f1f5f6;
-    --secondary-foreground: #20303c;
-    --muted-ui: #f3f6f7;
-    --muted-foreground: #526474;
-    --accent-ui: #e8f5f0;
-    --accent-foreground: #135949;
-    --card: #fff;
-    --card-foreground: #192733;
-    --popover: #fff;
-    --popover-foreground: #192733;
-    --border: #dde6e8;
-    --input: #d8e2e4;
-    --ring: #227a68;
-    --sidebar: #ffffff;
-    --sidebar-foreground: #415363;
-    --sidebar-primary: #176b5a;
-    --sidebar-primary-foreground: #fff;
-    --sidebar-accent: #e9f5f1;
-    --sidebar-accent-foreground: #135949;
-    --sidebar-border: #e6eced;
-    --sidebar-ring: #227a68;
-    background: #f3f6f8;
-    color: var(--foreground);
 }

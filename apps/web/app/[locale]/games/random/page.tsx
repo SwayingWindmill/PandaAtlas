@@ -2,7 +2,7 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { buildGamePandas } from "@/features/games/game-panda";
 import { RandomPandaGame } from "@/features/games/random-panda-game";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
@@ -49,7 +49,6 @@ export default async function RandomPandaPage({ params }: RandomPandaPageProps) 
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const alternateLocale = locale === "zh" ? "en" : "zh";
   const envelope = await loadV2PublicAtlasDataset(locale);
   if (!envelope) notFound();
   const pandas = buildGamePandas(envelope.data.pandas, locale);
@@ -57,11 +56,6 @@ export default async function RandomPandaPage({ params }: RandomPandaPageProps) 
 
   return (
     <>
-      <GlobalNavigation
-        locale={locale}
-        active="games"
-        alternatePath={`/${alternateLocale}/games/random`}
-      />
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
         <div className={`${publicShellClassName} grid gap-8 py-10 sm:py-14`}>
           <header className="max-w-3xl">

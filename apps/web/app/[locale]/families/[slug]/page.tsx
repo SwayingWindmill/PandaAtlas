@@ -1,7 +1,6 @@
 import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { loadV2FamilyStory } from "@/features/public-content/public-v2";
 import {
   getFamilyStory,
@@ -107,7 +106,6 @@ export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) 
   if (!record) notFound();
   const { members, assertions, events, sources } = record;
   const t = copy[locale];
-  const alternateLocale = locale === "zh" ? "en" : "zh";
   const confirmedCount = assertions.filter((item) => item.status === "confirmed").length;
   const tentativeCount = assertions.filter((item) => item.status === "tentative").length;
   const scopeCopy = story.scope.coverage_state === "partial" ? t.partial : t.complete;
@@ -115,11 +113,6 @@ export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) 
 
   return (
     <div className={styles.page}>
-      <GlobalNavigation
-        locale={locale}
-        active="families"
-        alternatePath={`/${alternateLocale}/families/${story.slug}`}
-      />
       <main id="main-content">
         <div className={styles.shell}>
           <p className={styles.releaseNote}>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { FanMemoriesPage } from "@/features/my-pandas/fan-memories-page";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
@@ -43,7 +43,6 @@ export default async function MemoriesPage({ params }: MemoriesPageProps) {
 
   const envelope = await loadV2PublicAtlasDataset(locale);
   if (!envelope) notFound();
-  const alternateLocale = locale === "zh" ? "en" : "zh";
   const pandas = envelope.data.pandas.map((panda) => ({
     id: panda.id,
     name: locale === "zh" ? panda.name_zh : panda.name_en ?? panda.name_zh,
@@ -59,11 +58,6 @@ export default async function MemoriesPage({ params }: MemoriesPageProps) {
 
   return (
     <>
-      <GlobalNavigation
-        locale={locale}
-        active="my-pandas"
-        alternatePath={`/${alternateLocale}/me/memories`}
-      />
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
         <div className={publicShellClassName}>
           <FanMemoriesPage locale={locale} pandas={pandas} places={places} />

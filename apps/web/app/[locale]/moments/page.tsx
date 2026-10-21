@@ -2,7 +2,6 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { PandaCalendarPage } from "@/features/calendar/panda-calendar-page";
 import type { PublicMomentOccurrence } from "@/features/public-experiences/moments";
 import type { PublicExperienceLocale } from "@/features/public-experiences/stories";
@@ -190,18 +189,10 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
     visibleItems.filter((item) => item.occurrenceKind === "source_event").map((item) => item.sourceEventId),
   ).size;
 
-  const alternateLocale = locale === "zh" ? "en" : "zh";
-  const alternateQuery = new URLSearchParams();
-  for (const [key, value] of Object.entries(rawSearch)) {
-    const selected = one(value);
-    if (selected) alternateQuery.set(key, selected);
-  }
-  const alternatePath = `/${alternateLocale}/moments${alternateQuery.size ? `?${alternateQuery}` : ""}`;
   const t = copy[locale];
 
   return (
     <div className={styles.page}>
-      <GlobalNavigation locale={locale} active="moments" alternatePath={alternatePath} />
       <main id="main-content">
         <div className={styles.shell}>
           <p className={styles.releaseNote}>
