@@ -1,6 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Bell } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { alternateLocale } from "@/foundation/content/locales";
 import { MobileNavigation } from "@/components/patterns/mobile-navigation";
@@ -20,7 +20,8 @@ interface GlobalNavigationProps {
     | "my-pandas"
     | "feed"
     | "contribute"
-    | "inbox";
+    | "inbox"
+    | "search";
   alternatePath?: string;
 }
 
@@ -38,6 +39,7 @@ const copy = {
     contribute: "贡献资料",
     inbox: "通知",
     inboxAria: "打开我的通知",
+    search: "搜索熊猫、家族和地点",
     nav: "主导航",
     mobileNav: "移动导航",
     open: "打开导航菜单",
@@ -57,6 +59,7 @@ const copy = {
     contribute: "Contribute",
     inbox: "Notifications",
     inboxAria: "Open my notifications",
+    search: "Search pandas, families, and places",
     nav: "Primary navigation",
     mobileNav: "Mobile navigation",
     open: "Open navigation menu",
@@ -110,6 +113,15 @@ export function GlobalNavigation({ locale, active, alternatePath }: GlobalNaviga
           </nav>
 
           <div className="pa-header-actions">
+            <Link
+              href={`/${locale}/search` as Route}
+              className="pa-icon-button"
+              aria-label={t.search}
+              aria-current={active === "search" ? "page" : undefined}
+              title={t.search}
+            >
+              <Search aria-hidden="true" />
+            </Link>
             {notificationCenterEnabled ? (
               <Link
                 href={`/${locale}/me/inbox` as Route}

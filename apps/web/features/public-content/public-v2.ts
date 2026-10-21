@@ -648,6 +648,30 @@ export async function loadV2FamilyStoryMembers(
   ]));
 }
 
+export interface V2PublicSearchDataset {
+  pandas: PandaDetail[];
+  facilities: PublicFacilitySummary[];
+  familyMembers: Map<string, PandaDetail[]>;
+}
+
+// One core read feeds every search kind; family stories reference V2 pandas by ID.
+export async function loadV2PublicSearchDataset(
+  stories: PublicFamilyStoryRecord[],
+): Promise<V2PublicSearchDataset | null> {
+  const core = await loadCore();
+  if (!core) return null;
+  const pandas = buildCorePandas(core);
+  const pandasById = new Map(pandas.map((panda) => [panda.id, panda]));
+  return {
+    pandas,
+    facilities: core.places.map(mapFacility),
+    familyMembers: new Map(stories.map((story) => [
+      story.id,
+      story.member_ids.flatMap((id) => pandasById.get(id) ?? []),
+    ])),
+  };
+}
+
 export async function loadV2FamilyStory(story: PublicFamilyStoryRecord): Promise<V2FamilyStoryRecord | null> {
   const client = createServerV2Client();
   const [core, evidence] = await Promise.all([
