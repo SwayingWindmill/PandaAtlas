@@ -107,18 +107,7 @@ for (const { locale, path, buttonName, pressedButtonName } of [
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({
-          account_id: "11111111-1111-1111-1111-111111111111",
-          email: "member@example.invalid",
-          state: "active",
-          roles: ["member"],
-          capabilities: ["account.session.read"],
-          recent_auth: true,
-          authenticated_at: "2026-07-29T00:00:00Z",
-          authentication_method: "otp",
-          assurance_level: "aal1",
-          expires_at: "2026-07-29T01:00:00Z",
-        }),
+        body: JSON.stringify({ accountId: "11111111-1111-1111-1111-111111111111", aal: "aal1", capabilities: [] }),
       });
     });
     await page.route("**/api/engagement/favorites", async (route) => {
@@ -128,15 +117,7 @@ for (const { locale, path, buttonName, pressedButtonName } of [
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({
-          follow_id: "33333333-3333-3333-3333-333333333333",
-          panda_id: "stable-panda-mei-xiang",
-          state: "active",
-          first_followed_at: "2026-07-29T00:00:00Z",
-          followed_at: "2026-07-29T00:00:00Z",
-          unfollowed_at: null,
-          version: 1,
-        }),
+        body: JSON.stringify({ pandaId: "stable-panda-mei-xiang", favoritedAt: "2026-07-29T00:00:00Z" }),
       });
     });
     await page.goto(path);

@@ -30,7 +30,7 @@ import {
   submitContribution,
   updateNotificationPreference,
 } from "./service";
-import type { NotificationInbox, NotificationPreference } from "./types";
+import type { Favorite, NotificationInbox, NotificationPreference } from "./types";
 
 // Private account data; each write below names the reads it changes.
 export const fanKeys = {
@@ -70,7 +70,14 @@ function invalidate(client: QueryClient, ...queryKeys: ReadonlyArray<readonly un
 export const fanMutationOptions = {
   setFavorite: () => mutationOptions({
     mutationFn: ({ pandaId, favorite }: { pandaId: string; favorite: boolean }) => setFavorite(pandaId, favorite),
-    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.favorites, fanKeys.passport),
+    // The control shows the new state at once; the passport, which also counts contributions, refetches.
+    onSuccess: (saved, { pandaId, favorite }, _result, { client }) => {
+      client.setQueryData<Favorite[]>(fanKeys.favorites, (current = []) => {
+        const others = current.filter((entry) => entry.pandaId !== pandaId);
+        return favorite && saved.favoritedAt ? [...others, { pandaId, favoritedAt: saved.favoritedAt }] : others;
+      });
+      return invalidate(client, fanKeys.passport);
+    },
   }),
   saveSeenPanda: () => mutationOptions({
     mutationFn: ({ pandaId, record }: { pandaId: string; record: Parameters<typeof saveSeenPanda>[1] }) =>
