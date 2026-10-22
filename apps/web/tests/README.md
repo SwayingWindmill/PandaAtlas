@@ -15,3 +15,8 @@ A browser test that needs data outside the default fixture must own an explicit 
 - accessibility and browser-matrix suites are separate acceptance surfaces; do not duplicate their assertions into smoke merely to increase coverage counts.
 
 The default suites may mock identity or feature APIs at the browser boundary, but production responses must never silently fall back to these fixtures.
+
+## Running locally
+
+- Each suite starts its own servers and refuses a port that is already taken (smoke: Web 3100 and fixture API 3300; admin: Web 3300), so run the suites one after another. An interrupted run can leave those servers behind: stop the listening processes before the next run instead of setting `PLAYWRIGHT_REUSE_EXISTING_SERVER`, which would test a stale build.
+- The first spec against a cold Vite dev server can fail with `Failed to fetch dynamically imported module` while dependencies are optimized. Re-run that spec alone before treating it as a product failure; a failure that repeats is real.
