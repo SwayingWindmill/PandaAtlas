@@ -26,6 +26,7 @@ import type {
   NotificationMessage,
   NotificationPreference,
   NotificationPreferenceInput,
+  PandaBook,
   PassportEntry,
   SavedGameAttempt,
   SeenPanda,
@@ -109,6 +110,15 @@ export async function listGameAttempts(): Promise<GameAttempt[]> {
 
 export function saveGameAttempt(attempt: GameAttemptInput): Promise<SavedGameAttempt> {
   return requestJson("/api/engagement/game-attempts", { method: "POST", body: JSON.stringify(attempt) });
+}
+
+export function getPandaBook(): Promise<PandaBook> {
+  return requestJson("/api/engagement/panda-book");
+}
+
+// The response also carries the evaluated result; the caller already has it from playing.
+export function saveDailyPandaResult(guessPandaIds: string[]): Promise<{ saved: boolean }> {
+  return requestJson("/api/engagement/daily-panda-results", { method: "POST", body: JSON.stringify({ guessPandaIds }) });
 }
 
 export async function listPassportEntries(): Promise<PassportEntry[]> {

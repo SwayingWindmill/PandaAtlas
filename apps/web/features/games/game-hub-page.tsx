@@ -18,7 +18,8 @@ const copy = {
     guessTitle: "猜熊猫",
     guessBody: "只看公开照片做四选一，答完马上揭晓是哪只熊猫。",
     guessAction: "开始猜",
-    note: "没有排行榜，不和别人比分数，也不会因为玩游戏自动收藏熊猫。",
+    note: "没有排行榜，不和别人比分数，也不会因为玩游戏自动收藏熊猫。登录后保存的结果会把那只熊猫收进你的熊猫图鉴。",
+    pandaBook: "打开我的熊猫图鉴",
   },
   en: {
     eyebrow: "Panda games",
@@ -33,7 +34,8 @@ const copy = {
     guessTitle: "Guess Panda",
     guessBody: "Identify a panda from a published photo, then reveal the answer immediately.",
     guessAction: "Start guessing",
-    note: "No leaderboard, no comparing scores with others, and playing never favorites a panda automatically.",
+    note: "No leaderboard, no comparing scores with others, and playing never favorites a panda automatically. A result you save while signed in adds that panda to your panda book.",
+    pandaBook: "Open my panda book",
   },
 } as const;
 
@@ -75,7 +77,10 @@ export function GameHubPage({ locale }: { locale: PublicLocale }) {
         />
       </div>
 
-      <p className="max-w-3xl rounded-2xl bg-[var(--surface-muted)] p-5 text-sm leading-7 text-[var(--muted)]">{t.note}</p>
+      <p className="max-w-3xl rounded-2xl bg-[var(--surface-muted)] p-5 text-sm leading-7 text-[var(--muted)]">
+        {t.note}{" "}
+        <Link href={`/${locale}/me/panda-book` as Route} className="font-semibold text-[var(--accent)] underline underline-offset-4">{t.pandaBook}</Link>
+      </p>
     </div>
   );
 }

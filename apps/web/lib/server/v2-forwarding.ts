@@ -66,6 +66,8 @@ const ROUTES: readonly ForwardedRoute[] = [
     "DELETE",
   ),
   route("/api/engagement/game-attempts", "/api/v2/me/game-attempts", "GET", "POST"),
+  route("/api/engagement/panda-book", "/api/v2/me/panda-book", "GET"),
+  route("/api/engagement/daily-panda-results", "/api/v2/me/daily-panda-results", "POST"),
   route("/api/notification/preferences", "/api/v2/me/notifications/preferences", "GET", "PUT"),
   route("/api/notification/inbox/read-all", "/api/v2/me/notifications/read-all", "PATCH"),
   route("/api/notification/inbox/:inboxItemId/read", "/api/v2/me/notifications/{messageId}/read", "PATCH"),

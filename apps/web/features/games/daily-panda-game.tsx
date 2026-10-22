@@ -4,13 +4,15 @@ import type { Route } from "next";
 import Link from "next/link";
 import { Check, Copy, Lock, X } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { fanMutationOptions } from "@/features/fan/api/queries";
+import { beginSignIn, signInRequired } from "@/features/fan/api/session";
 import type { DailyPandaGuessFeedback, DailyPandaGuessResult, DailyPandaPuzzle } from "@/features/fan/api/types";
 import type { DailyPandaClue } from "@/features/games/daily-panda-clues";
 import type { PublicLocale } from "@/foundation/content/locales";
+import { isEngagementUiEnabled } from "@/lib/engagement/config";
 
 export interface DailyPandaOption {
   id: string;
@@ -30,6 +32,35 @@ function readStoredGuesses(puzzleDate: string): string[] {
     return [];
   }
 }
+
+// A save started while signed out waits here through the sign-in round trip.
+const pendingSaveKey = "zhipanda:pending-daily-panda-save:v1";
+
+interface PendingSave {
+  puzzleDate: string;
+  guessPandaIds: string[];
+}
+
+function readPendingSave(): PendingSave | null {
+  try {
+    const parsed = JSON.parse(window.sessionStorage.getItem(pendingSaveKey) ?? "null") as Partial<PendingSave> | null;
+    if (typeof parsed?.puzzleDate !== "string" || !Array.isArray(parsed.guessPandaIds)) return null;
+    return { puzzleDate: parsed.puzzleDate, guessPandaIds: parsed.guessPandaIds.filter((id) => typeof id === "string") };
+  } catch {
+    return null;
+  }
+}
+
+function writePendingSave(pending: PendingSave | null) {
+  try {
+    if (pending === null) window.sessionStorage.removeItem(pendingSaveKey);
+    else window.sessionStorage.setItem(pendingSaveKey, JSON.stringify(pending));
+  } catch {
+    // Without storage the save still works for a visitor who is already signed in.
+  }
+}
+
+type SaveState = "idle" | "saving" | "saved" | "error";
 
 function storeGuesses(puzzleDate: string, guesses: readonly string[]) {
   try {
@@ -73,6 +104,11 @@ const copy = {
       photo: "TA 的公开照片",
     },
     guessError: "这次没能提交，请再试一次。",
+    save: "收进熊猫图鉴",
+    saving: "正在收进图鉴…",
+    saved: "TA 已经在你的熊猫图鉴里了。",
+    saveError: "暂时没能收进图鉴，请稍后再试。",
+    pandaBook: "打开熊猫图鉴",
   },
   en: {
     loading: "Getting today's panda ready…",
@@ -107,6 +143,11 @@ const copy = {
       photo: "A published photo of this panda",
     },
     guessError: "That guess could not be sent. Please try again.",
+    save: "Add to my panda book",
+    saving: "Adding…",
+    saved: "This panda is in your panda book.",
+    saveError: "This panda could not be added right now. Please try again later.",
+    pandaBook: "Open panda book",
   },
 } as const;
 
@@ -142,6 +183,8 @@ export function DailyPandaGame({ locale, pandas }: { locale: PublicLocale; panda
   const [result, setResult] = useState<DailyPandaGuessResult | null>(null);
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const engagementEnabled = isEngagementUiEnabled();
   const pandasById = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda])), [pandas]);
 
   const guess = useMutation({
@@ -152,12 +195,38 @@ export function DailyPandaGame({ locale, pandas }: { locale: PublicLocale; panda
     },
   });
   const { mutate: submitGuesses } = guess;
+
+  // Saving needs the session. A visitor who chose to save is sent to sign in and finds the panda
+  // saved on return; the server re-checks the guesses, so only a finished puzzle is saved.
+  const { mutate: saveMutation } = useMutation(fanMutationOptions.saveDailyPandaResult());
+  const persistSave = useCallback((pending: PendingSave, signInWhenRefused: boolean) => {
+    setSaveState("saving");
+    saveMutation(pending.guessPandaIds, {
+      onSuccess: () => {
+        writePendingSave(null);
+        setSaveState("saved");
+      },
+      onError: (error) => {
+        if (signInRequired(error)) {
+          if (signInWhenRefused) beginSignIn(`/${locale}/games/daily`);
+          else setSaveState("idle");
+          return;
+        }
+        writePendingSave(null);
+        setSaveState("error");
+      },
+    });
+  }, [locale, saveMutation]);
+
   const load = useMutation({
     ...fanMutationOptions.getDailyPanda(),
     onSuccess: (received) => {
       setPuzzle(received);
       const stored = readStoredGuesses(received.puzzleDate);
       if (stored.length > 0) submitGuesses(stored);
+      const pending = engagementEnabled ? readPendingSave() : null;
+      if (pending?.puzzleDate === received.puzzleDate) persistSave(pending, false);
+      else if (pending !== null) writePendingSave(null);
     },
   });
   const { mutate: loadPuzzle } = load;
@@ -196,6 +265,13 @@ export function DailyPandaGame({ locale, pandas }: { locale: PublicLocale; panda
     if (finished || guess.isPending || guessedIds.has(pandaId)) return;
     setSearch("");
     submitGuesses([...guesses.map((item) => item.pandaId), pandaId]);
+  }
+
+  function saveToBook() {
+    if (!engagementEnabled || saveState === "saving" || saveState === "saved") return;
+    const pending = { puzzleDate: puzzle!.puzzleDate, guessPandaIds: guesses.map((item) => item.pandaId) };
+    writePendingSave(pending);
+    persistSave(pending, true);
   }
 
   async function shareResult() {
@@ -268,7 +344,24 @@ export function DailyPandaGame({ locale, pandas }: { locale: PublicLocale; panda
               >
                 <Copy className="h-4 w-4" aria-hidden="true" />{copied ? t.copied : t.share}
               </button>
+              {engagementEnabled && saveState !== "saved" ? (
+                <button
+                  type="button"
+                  disabled={saveState === "saving"}
+                  onClick={saveToBook}
+                  className="inline-flex min-h-12 items-center rounded-xl border border-[var(--pa-color-accent-border-14)] px-5 py-3 font-semibold disabled:opacity-60"
+                >
+                  {saveState === "saving" ? t.saving : t.save}
+                </button>
+              ) : null}
             </div>
+            {saveState === "saved" ? (
+              <p className="mt-4 text-sm font-semibold text-[var(--accent)]">
+                {t.saved}{" "}
+                <Link href={`/${locale}/me/panda-book` as Route} className="underline underline-offset-4">{t.pandaBook}</Link>
+              </p>
+            ) : null}
+            {saveState === "error" ? <p className="mt-3 text-sm" role="alert">{t.saveError}</p> : null}
             <p className="mt-5 text-sm text-[var(--muted)]">{t.comeBack}</p>
           </div>
         ) : (

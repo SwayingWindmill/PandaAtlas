@@ -9,6 +9,7 @@ import {
   getDailyPanda,
   getGuessQuestion,
   getInbox,
+  getPandaBook,
   getSeenPanda,
   getSubmission,
   guessDailyPanda,
@@ -25,6 +26,7 @@ import {
   removeCheckin,
   removeSeenPanda,
   renameCollection,
+  saveDailyPandaResult,
   saveGameAttempt,
   saveSeenPanda,
   setCollectionMembership,
@@ -43,6 +45,7 @@ export const fanKeys = {
   checkins: ["fan", "checkins"] as const,
   collections: ["fan", "collections"] as const,
   gameAttempts: ["fan", "game-attempts"] as const,
+  pandaBook: ["fan", "panda-book"] as const,
   passport: ["fan", "passport"] as const,
   inbox: ["fan", "inbox"] as const,
   preferences: ["fan", "preferences"] as const,
@@ -58,6 +61,7 @@ export const seenPandaQueryOptions = (pandaId: string) =>
 export const checkinsQueryOptions = queryOptions({ queryKey: fanKeys.checkins, queryFn: listCheckins });
 export const collectionsQueryOptions = queryOptions({ queryKey: fanKeys.collections, queryFn: listCollections });
 export const gameAttemptsQueryOptions = queryOptions({ queryKey: fanKeys.gameAttempts, queryFn: listGameAttempts });
+export const pandaBookQueryOptions = queryOptions({ queryKey: fanKeys.pandaBook, queryFn: getPandaBook });
 export const passportQueryOptions = queryOptions({ queryKey: fanKeys.passport, queryFn: listPassportEntries });
 export const inboxQueryOptions = queryOptions({ queryKey: fanKeys.inbox, queryFn: getInbox });
 export const preferencesQueryOptions = queryOptions({ queryKey: fanKeys.preferences, queryFn: listNotificationPreferences });
@@ -117,7 +121,11 @@ export const fanMutationOptions = {
   }),
   saveGameAttempt: () => mutationOptions({
     mutationFn: saveGameAttempt,
-    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.gameAttempts),
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.gameAttempts, fanKeys.pandaBook),
+  }),
+  saveDailyPandaResult: () => mutationOptions({
+    mutationFn: saveDailyPandaResult,
+    onSuccess: (_data, _variables, _result, { client }) => invalidate(client, fanKeys.pandaBook),
   }),
   submitContribution: () => mutationOptions({
     mutationFn: submitContribution,
