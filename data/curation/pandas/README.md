@@ -23,7 +23,7 @@ The Python entry point is available at `scripts/curation/validate_panda_curation
 - `partial`: the row has a reliable source but still misses at least one database-critical field, such as exact birth date, current facility, or parent identity.
 - `needs_primary_source`: the row is only supported by secondary reporting or needs a stronger source before promotion.
 
-The collection uses one release policy ([collection release mode](../../../docs/release/private-collection-mode.md)): the validator checks structure, enums, dates and references, not publication completeness. Editorial practice still applies: take parentage only from reviewed assertions, state unknown or disputed values explicitly rather than guessing, and never infer a fact from a photo caption.
+The collection uses one release policy ([collection release mode](../../../docs/release/collection-release-mode.md)): the validator checks structure, enums, dates and references, not publication completeness. Editorial practice still applies: take parentage only from reviewed assertions, state unknown or disputed values explicitly rather than guessing, and never infer a fact from a photo caption.
 
 ## Minimum Photo Record
 

@@ -11,6 +11,8 @@
 
 The code lives under `src/panda_data` and never imports the NestJS API.
 
+Before changing an acquisition adapter, the source runner, identity reconciliation or the reviewed source registry, read its design record in [`docs/data-acquisition/`](../../docs/data-acquisition/): the candidate contract, runner, reconciliation, crawler PoC, the Smithsonian and Xi Lun adapters, and the source review bound by `data/acquisition-sources/registry.json`.
+
 ## Authority boundary
 
 NestJS business modules remain authoritative. `panda-data` may:

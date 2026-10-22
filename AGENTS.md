@@ -20,17 +20,19 @@
 - Make architectural decisions for the long term. Do not accept a stopgap
   that only works for now and is meant to be replaced later.
 - On this Windows-hosted repository, run Node.js/npm/NestJS/Vitest/ESLint/build
-  commands with the Windows toolchain against the native `E:\` workspace
-  (for example via `cmd.exe /d /s /c`). Do not run Node/npm through WSL against
-  `/mnt/e`, because mixed Windows/WSL `node_modules`, permissions, native
-  binaries, and small-file I/O make installs and verification unreliable.
-  Use WSL only for tooling that genuinely requires Linux.
+  commands with the Windows toolchain against the native `E:\` workspace:
+  from PowerShell, or from Git Bash as `cmd.exe //d //s //c "npm ..."`.
+  Git Bash rewrites a single-slash `/d` into a path, so `cmd.exe /d /s /c`
+  there starts an empty shell and runs nothing. Do not run Node/npm through
+  WSL against `/mnt/e`: mixed Windows/WSL `node_modules`, permissions,
+  native binaries, and small-file I/O make installs and verification
+  unreliable. Use WSL only for tooling that genuinely requires Linux.
 
 ## Agent skills
 
-For Matt Pocock workflows in this repository, explicitly read the tracked `.agents/skills/<skill>/SKILL.md`; user-global duplicate skills are not PandaAtlas authority.
+Matt Pocock skills are tracked under `.agents/skills/` as the synced release (v1.3.1) for agents without the plugin. The installed `mattpocock-skills` plugin of the same release is equivalent; use whichever your harness loads.
 
-For frontend UX/UI work, also read the user-global `jakubkrehel/skills` instructions under `~/.agents/skills/`. Use `better-interface` with its six domain skills (`better-accessibility`, `better-layout`, `better-writing`, `better-typography`, `better-colors`, `better-ui`) when designing or auditing a complete operator flow. For visual changes, use the `interface-review` skill as a separate change-scoped review alongside Matt's Standards/Spec code review. Global availability is a developer-workstation prerequisite, not an app dependency; do not vendor these skills or introduce new build/runtime dependencies. Product facts, security/capabilities, existing PandaAtlas design contracts and accessibility take precedence over aesthetic suggestions. An automated test pass is not visual sign-off: inspect the rendered desktop page, its real-data semantics and its loading/empty/error states before claiming UI acceptance.
+For frontend UX/UI work (designing, restyling or accepting a visual change), read `docs/agents/frontend-review.md`.
 
 ### Issue tracker
 
@@ -40,7 +42,11 @@ For issue implementation, create a branch in the existing `E:\Code\PandaAtlas` c
 
 ### Issue completion
 
-When an issue is merged and closed, stop before starting another issue. Report the completed issue and its verification to the user, then run the repo-local `/retro` against the 10 most recent PandaAtlas coding-agent sessions. Start the next issue only after the user explicitly asks to continue.
+When an issue is merged and closed, report it and its verification to the user. Start the next issue when the user asks to continue or has already named the order to work through. Run the repo-local `/retro` only when the user asks for one.
+
+### Production
+
+Before merging anything that ships a migration or changes how production is deployed, read `docs/runbooks/production-release.md`; only its workflow migrates production.
 
 ### Web browser tests
 

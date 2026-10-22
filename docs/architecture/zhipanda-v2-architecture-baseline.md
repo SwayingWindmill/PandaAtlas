@@ -7,23 +7,17 @@
 
 ## 1. Purpose
 
-This document is the canonical application/domain architecture baseline for the NestJS V2 rebuild of ZhiPanda/PandaAtlas.
-
-The core migration rule is:
-
-> **Migrate business truth and product invariants; do not migrate the FastAPI architecture.**
-
-V2 is a replacement architecture, not a TypeScript translation of the Python package tree.
+This document is the canonical application/domain architecture baseline for ZhiPanda/PandaAtlas.
 
 ## 2. Architecture principles
 
 1. Build a business-capability modular monolith, not microservices.
 2. Supabase PostgreSQL/PostGIS is the single authoritative database.
 3. NestJS owns the online HTTP/business runtime; Python remains a separate data/research runtime.
-4. Preserve business meaning, provenance, security, auditability, recovery properties, and database invariants; do not preserve FastAPI routers/services/Pydantic/SQLAlchemy/Worker/D1 shapes.
+4. Preserve business meaning, provenance, security, auditability, recovery properties, and database invariants.
 5. Prefer explicit, boring platform primitives over speculative abstraction.
 6. Do not introduce Redis, BullMQ, Kafka, RabbitMQ, Temporal, or another datastore without measured need.
-7. No compatibility layer for `/api/v1`, FastAPI error shapes, V1 snake_case payloads, Worker/D1 fallback, legacy admin tokens, or actor headers.
+7. `/api/v2` is the only HTTP contract, described by the generated OpenAPI document; a breaking change to it needs an explicit API-version decision.
 8. Keep engineering governance proportional: every defensive check, test, gate, retry, or fallback must correspond to a concrete trust, invariant, concurrency, external-failure, architecture, or release risk.
 9. Test each risk at the cheapest sufficient layer; do not duplicate the same assertion mechanically through every test layer.
 10. Keep deployment managed-only: no persistent self-managed production server.
@@ -123,7 +117,7 @@ V2 has 16 business modules.
 10. **Identity** — application account state, roles, capabilities, revocations, security policy; Supabase Auth remains external authentication authority.
 11. **Engagement** — Favorite, Collection, LocationCheckin, SeenPanda.
 12. **Game** — Random Panda, Guess Panda, question/rule data, attempts.
-13. **Updates** — public-safe updates/announcements, personalized eligibility/read state/cursors; replaces V1 Activity + Feed split.
+13. **Updates** — public-safe updates/announcements, personalized eligibility/read state/cursors.
 14. **Notification** — preferences/consent, notification intent, inbox, delivery attempts/receipts, delivery policy.
 
 ### Compliance / evidence
@@ -261,11 +255,11 @@ The Web imports the generated client package; it never imports Nest DTO/domain s
 - no universal `{data, meta}` success envelope;
 - errors: RFC 9457 `application/problem+json`;
 - stable extensions: `code`, `requestId`, optional bounded `errors`;
-- request validation failures use HTTP 400, not FastAPI 422;
+- request validation failures use HTTP 400;
 - ETag/If-Match for representation concurrency where needed;
 - retry-safe commands use `Idempotency-Key` header when justified.
 
-No `/api/v1` aliases, snake_case transformer, FastAPI `detail` compatibility, manual V2 OpenAPI YAML fragments, or hand-maintained frontend transport interfaces.
+The OpenAPI document is generated from the NestJS controllers and DTOs, and frontend transport types come from `@zhipanda/api-client`, generated from it; types the Web app composes from several operations are the only hand-written ones.
 
 Browser requests reach the API through the Web app's forwarding module, `apps/web/lib/server/v2-forwarding.ts`, which holds the route table and the policy of that boundary. Six routes compose several operations and keep their own handlers, applying the module's state-change rule: `engagement/passport`, `games/guess/question`, `games/guess/answer`, `admin/publication/releases/[releaseId]/actions`, `notification/inbox`, `auth/email-otp/start`.
 
@@ -323,15 +317,7 @@ Recent authentication is derived from current-session JWT AMR evidence, not acco
 
 AAL2/live-session checks are reserved for high-impact commands.
 
-Remove V1 actor/admin bypasses:
-
-```text
-ADMIN_API_TOKEN
-X-Actor-Id
-workflow actor header
-email-based admin bootstrap
-custom JWT capability claims as authority
-```
+Authority comes only from the verified Supabase session and the Identity capability store; an operator token, actor header, email bootstrap or JWT capability claim grants nothing.
 
 Account provisioning is an explicit authenticated idempotent Identity command, not a write performed on every protected request.
 
@@ -551,11 +537,10 @@ cross-module private-table access
 application/domain importing framework/provider code
 Web importing API server source
 business forwardRef/ModuleRef/global-module escapes
-V2 runtime importing Worker/D1/FastAPI compatibility code
 OpenAPI/client or schema/type drift
 ```
 
-Do **not** recreate V1 repository top-level file/directory whitelists, “gate for the gate” checks, or dozens of architecture micro-scripts.
+Keep enforcement to these tools: add a check for a real violation class, never a check that only guards another check.
 
 ## 18. Build and CI
 
@@ -609,27 +594,7 @@ Application startup never runs migrations. Only the approval-gated Production De
 
 Rollback is V2-to-V2: redeploy a previous Worker version, or fix forward (`docs/runbooks/production-release.md`). Expand-first migrations keep the previous deployment a valid rollback target. Database restore/PITR is disaster recovery for actual data corruption, not deployment rollback.
 
-## 21. HTTP contract break from V1
-
-The V2 HTTP contract deliberately does not carry:
-
-```text
-/api/v1
-snake_case wire payloads
-FastAPI 422 behavior
-FastAPI detail error body
-ADMIN_API_TOKEN
-X-Actor-Id
-email bootstrap admin behavior
-V1 custom JWT authority assumptions
-Worker/D1 public-read implementation
-manual V1 OpenAPI/checklist contracts
-D1 publication activation APIs/scripts
-```
-
-A breaking change to `/api/v2` requires an explicit API-version decision.
-
-## 22. Proportional engineering rule
+## 21. Proportional engineering rule
 
 The following are explicitly **not** quality goals:
 
@@ -656,9 +621,9 @@ idempotency where retries are real
 managed platform primitives
 ```
 
-Avoid catch-log-rethrow templates, duplicate exists-before-insert checks when a uniqueness constraint is authoritative, blanket repository retries, mock fallbacks in production, runtime fallback to V1, or generic Result/base/wrapper layers without boundary value.
+Avoid catch-log-rethrow templates, duplicate exists-before-insert checks when a uniqueness constraint is authoritative, blanket repository retries, mock fallbacks in production, or generic Result/base/wrapper layers without boundary value.
 
-## 23. Product truths
+## 22. Product truths
 
 These hold unless a later product decision changes them:
 
@@ -672,8 +637,8 @@ These hold unless a later product decision changes them:
 - Check-in does not imply a panda was seen and vice versa;
 - provenance/review/privacy/audit/publication support the product rather than becoming the public product hierarchy.
 
-## 24. Changing the architecture
+## 23. Changing the architecture
 
-A delivery ticket may refine code-level details inside its accepted architecture boundary. It may not reopen settled architecture merely because a V1 file suggests a different structure.
+A delivery ticket may refine code-level details inside its accepted architecture boundary. It does not reopen settled architecture on its own.
 
 Reopen an architecture decision only when implementation discovers material evidence that an accepted baseline cannot satisfy correctness, security, operability, or product requirements.

@@ -12,9 +12,9 @@ The product priority is **panda fan experience first**. Archive, provenance, rev
 
 | Decision | Status | What still applies |
 |---|---|---|
-| [ADR 0001](adr-0001-single-source-api-boundary.md) | Principle stands; implementation superseded | One API owns domain rules and writes: the NestJS V2 API. |
-| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Principle stands; provider superseded | Managed services only; production is Cloudflare Workers with Supabase. |
-| [ADR 0003](adr-0003-single-accountable-archive-approver.md) | Principle stands; implementation superseded | One accountable approver decides publication, with no four-eyes step. |
+| [ADR 0001](adr-0001-single-source-api-boundary.md) | Accepted | One API owns domain rules and writes: the NestJS V2 API. |
+| [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Accepted | Managed services only; production is Cloudflare Workers with Supabase. |
+| [ADR 0003](adr-0003-single-accountable-archive-approver.md) | Accepted | One accountable approver decides publication, with no four-eyes step. |
 | [Batch workflow interfaces](batch-workflow-interfaces.md) | Current | The bounded batch control plane. |
 
 Wayfinder #309 resolved the V2 architecture through decisions #310-#322; the baseline is their synthesis. Implementation refines code-level details inside it. Reopen architecture only when implementation produces material correctness, security, product, managed-platform or operability evidence that the baseline cannot satisfy.
