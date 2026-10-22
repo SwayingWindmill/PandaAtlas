@@ -3,7 +3,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, ArrowRight, Search } from "lucide-react";
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { atlasHref, parseAtlasQuery, type AtlasQueryState } from "@/features/atlas/atlas-query";
 import { buildAtlasSearchViewModel } from "@/features/atlas/atlas-search";
@@ -177,7 +177,6 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
   if (parsed.needsNormalization || view.page !== parsed.state.page) permanentRedirect(canonicalHref as Route);
 
   const t = copy[locale];
-  const alternateLocale = locale === "zh" ? "en" : "zh";
   const mediaLabel = (state: string) => {
     if (state === "licensed") return t.licensedMedia;
     if (state === "source_link_only") return t.sourceLinkOnly;
@@ -215,7 +214,6 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
 
   return (
     <>
-      <GlobalNavigation locale={locale} active="atlas" alternatePath={atlasHref(alternateLocale, canonicalState)} />
       <main id="main-content" className="pa-public-main" data-testid="localized-pandas-page">
         <section className={`${publicShellClassName} pa-atlas-header`}>
           <p className="pa-eyebrow">{locale === "zh" ? "吱熊猫 / 熊猫资料" : "ZhiPanda / Panda profiles"}</p>

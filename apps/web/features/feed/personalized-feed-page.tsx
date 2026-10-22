@@ -2,7 +2,6 @@ import type { Route } from "next";
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, LockKeyhole } from "lucide-react";
 
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import type { PublicLocale } from "@/foundation/content/locales";
 import { ActivityTimeline } from "@/features/feed/activity-timeline";
 import type { FeedPageData } from "@/features/feed/types";
@@ -59,15 +58,9 @@ export function PersonalizedFeedPage({
   pandas,
 }: PersonalizedFeedPageProps) {
   const t = copy[locale];
-  const alternate = locale === "zh" ? "en" : "zh";
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <GlobalNavigation
-        locale={locale}
-        active="feed"
-        alternatePath={`/${alternate}/me/feed`}
-      />
       <main id="main-content" className="mx-auto w-full max-w-5xl px-4 pb-20 pt-10 md:px-8 md:pt-16">
         <section className="rounded-3xl border border-[var(--pa-color-accent-border-10)] bg-[var(--pa-color-accent-fill-04)] p-6 md:p-10">
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">

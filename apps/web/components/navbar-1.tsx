@@ -2,10 +2,10 @@
 
 /* eslint-disable @next/next/no-img-element -- the prototype navigation uses reviewed remote panda media. */
 
-import { ArrowRight, ChevronDown, Heart, Menu } from "lucide-react";
+import { ArrowRight, Bell, ChevronDown, Heart, Menu } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui";
 import { useState, type CSSProperties } from "react";
 
@@ -30,6 +30,8 @@ type NavItem = {
 type NavSection = {
   label: string;
   href: string;
+  // Other path prefixes that belong to this section, for the active state.
+  matches?: string[];
   items?: NavItem[];
 };
 
@@ -40,22 +42,36 @@ export type NavbarFeature = {
   meta: string;
 };
 
+// Each public route has the same path in both locales, so the language switch keeps the
+// current path and query and only swaps the locale segment.
+function alternateLanguageHref(locale: "zh" | "en", pathname: string, search: string) {
+  const otherLocale = locale === "zh" ? "en" : "zh";
+  const rest = pathname.replace(/^\/(zh|en)(?=\/|$)/, "");
+  return `/${otherLocale}${rest}${search ? `?${search}` : ""}`;
+}
+
 export function Navbar1({
   locale,
   searchResults,
-  immersive = false,
+  immersive,
   featuredPandas = [],
-  languageHref,
+  contributeEnabled = false,
+  notificationsEnabled = false,
 }: {
   locale: "zh" | "en";
   searchResults: ArchiveSearchResult[];
+  /** Floating pill over a full-bleed hero. Defaults to the locale home page. */
   immersive?: boolean;
   featuredPandas?: NavbarFeature[];
-  languageHref?: string;
+  contributeEnabled?: boolean;
+  notificationsEnabled?: boolean;
 }) {
   const zh = locale === "zh";
-  const languageDestination = languageHref ?? `/${locale === "zh" ? "en" : "zh"}`;
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const languageDestination = alternateLanguageHref(locale, pathname, searchParams.toString());
+  const languageHrefLang = zh ? "en" : "zh-CN";
+  const isImmersive = immersive ?? pathname === `/${locale}`;
   const [open, setOpen] = useState(false);
 
   const sections: NavSection[] = [
@@ -77,6 +93,11 @@ export function Navbar1({
           label: zh ? "随机认识一只" : "Meet one at random",
           description: zh ? "不知道从谁开始时，就从这里开始" : "A simple way to start somewhere new",
           href: `/${locale}/games/random`,
+        },
+        {
+          label: zh ? "熊猫游戏" : "Panda games",
+          description: zh ? "猜熊猫、认熊猫，玩着记住它们" : "Guess and match pandas to remember them",
+          href: `/${locale}/games`,
         },
       ],
     },
@@ -104,6 +125,7 @@ export function Navbar1({
     {
       label: zh ? "地点" : "Places",
       href: `/${locale}/map`,
+      matches: [`/${locale}/places`],
     },
     {
       label: zh ? "故事" : "Stories",
@@ -119,6 +141,11 @@ export function Navbar1({
           description: zh ? "回到你关心的熊猫最近发生的事" : "Return to updates from pandas you follow",
           href: `/${locale}/me/feed`,
         },
+        ...(contributeEnabled ? [{
+          label: zh ? "纠错与贡献" : "Contribute",
+          description: zh ? "补充资料或指出需要更正的地方" : "Add material or point out a correction",
+          href: `/${locale}/contribute`,
+        }] : []),
       ],
     },
   ];
@@ -126,33 +153,35 @@ export function Navbar1({
   const immersiveVars = {
     "--pa-color-canvas": "var(--zp-brand-ivory)",
     "--pa-color-surface": "var(--zp-brand-ivory)",
-    "--pa-color-surface-subtle": "#f2f0e6",
+    "--pa-color-surface-subtle": "var(--zp-brand-sand)",
     "--pa-color-ink": "var(--zp-brand-ink)",
-    "--pa-color-ink-muted": "#60716b",
-    "--pa-color-line": "#d8ddd6",
+    "--pa-color-ink-muted": "var(--zp-brand-sage)",
+    "--pa-color-line": "var(--zp-brand-mist)",
     "--pa-color-accent": "var(--zp-brand-acid)",
     "--pa-color-accent-strong": "var(--zp-brand-acid)",
   } as CSSProperties;
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
+  const isSectionActive = (section: NavSection) =>
+    [section.href, ...(section.matches ?? [])].some(isActive);
 
   return (
     <header
       className={cn(
         "z-50 w-full",
-        immersive
+        isImmersive
           ? "pointer-events-none fixed inset-x-0 top-0"
           : "sticky top-0 border-b border-[var(--pa-color-line)] bg-[color:color-mix(in_srgb,var(--pa-color-canvas)_96%,transparent)] backdrop-blur-md",
       )}
     >
       <div
         className={cn(
-          immersive
+          isImmersive
             ? "pointer-events-auto mx-auto mt-3 flex h-[50px] w-[calc(100%_-_3rem)] max-w-[1280px] items-center gap-3 rounded-full bg-[var(--zp-brand-ivory)] px-3.5 shadow-[var(--zp-shadow-float)] sm:px-4 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-4"
-            : "mx-auto flex h-16 w-full max-w-[96rem] items-center gap-8 px-4 sm:px-6 lg:px-8",
+            : "mx-auto flex min-h-16 w-full max-w-[96rem] flex-wrap items-center gap-x-8 gap-y-2 px-4 py-2 sm:px-6 lg:px-8",
         )}
-        style={immersive ? immersiveVars : undefined}
+        style={isImmersive ? immersiveVars : undefined}
       >
         <Link
           href={`/${locale}` as Route}
@@ -164,9 +193,10 @@ export function Navbar1({
 
         <NavigationMenuPrimitive.Root
           delayDuration={90}
-          className="relative hidden shrink-0 items-center justify-self-center text-[13px] font-semibold lg:flex"
+          aria-label={zh ? "主导航" : "Primary navigation"}
+          className="relative hidden min-w-0 items-center justify-self-center text-[13px] font-semibold lg:flex"
         >
-          <NavigationMenuPrimitive.List className="flex items-center gap-2 xl:gap-3">
+          <NavigationMenuPrimitive.List className="flex flex-wrap items-center gap-2 xl:gap-3">
             {sections.map((section, sectionIndex) => {
               const feature = featuredPandas[sectionIndex % Math.max(featuredPandas.length, 1)] ?? null;
 
@@ -177,7 +207,7 @@ export function Navbar1({
                     <NavigationMenuPrimitive.Trigger
                       className={cn(
                         "group inline-flex min-h-9 items-center gap-1.5 rounded-full px-2.5 text-[inherit] font-[inherit] text-[var(--pa-color-ink)] outline-none transition-colors hover:bg-[#10352f]/7 focus-visible:bg-[#10352f]/7 data-[state=open]:bg-[#10352f]/7 xl:px-3",
-                        isActive(section.href) && "bg-[#10352f]/7",
+                        isSectionActive(section) && "bg-[#10352f]/7",
                       )}
                     >
                       {section.label}
@@ -256,10 +286,10 @@ export function Navbar1({
                   <NavigationMenuPrimitive.Link asChild>
                     <Link
                       href={section.href as Route}
-                      aria-current={isActive(section.href) ? "page" : undefined}
+                      aria-current={isSectionActive(section) ? "page" : undefined}
                       className={cn(
                         "inline-flex min-h-9 items-center rounded-full px-2.5 text-[inherit] font-[inherit] !text-[var(--pa-color-ink)] outline-none transition-colors hover:bg-[#10352f]/7 focus-visible:bg-[#10352f]/7 xl:px-3",
-                        isActive(section.href) && "bg-[#10352f]/7",
+                        isSectionActive(section) && "bg-[#10352f]/7",
                       )}
                     >
                       {section.label}
@@ -273,24 +303,36 @@ export function Navbar1({
 
         </NavigationMenuPrimitive.Root>
 
-        <div className="ml-auto hidden shrink-0 items-center justify-self-end gap-1 lg:flex">
+        <div className="ml-auto hidden min-w-0 flex-wrap items-center justify-end justify-self-end gap-1 lg:flex">
           <ArchiveSearch
             locale={locale}
             results={searchResults}
             triggerLabel={zh ? "搜索" : "Search"}
-            compact={immersive}
+            compact={isImmersive}
           />
           <Link
             href={languageDestination as Route}
+            hrefLang={languageHrefLang}
+            aria-label={zh ? "English" : "中文"}
             className="inline-flex min-h-9 min-w-9 items-center justify-center px-1.5 text-[11px] font-medium text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)]"
           >
             {zh ? "中 / EN" : "EN / 中"}
           </Link>
+          {notificationsEnabled ? (
+            <Link
+              href={`/${locale}/me/inbox` as Route}
+              className="inline-flex size-9 items-center justify-center rounded-full text-[var(--pa-color-ink)] hover:bg-[#10352f]/7"
+              aria-label={zh ? "打开我的通知" : "Open my notifications"}
+              title={zh ? "通知" : "Notifications"}
+            >
+              <Bell className="size-4" aria-hidden="true" />
+            </Link>
+          ) : null}
           <Link
             href={`/${locale}/me` as Route}
             className={cn(
               "inline-flex min-h-9 items-center gap-1.5 text-[13px] font-[720]",
-              immersive
+              isImmersive
                 ? "rounded-full bg-[var(--zp-brand-acid)] px-3.5 !text-[var(--zp-brand-ink)] hover:bg-[#eff51a]"
                 : "px-2 text-[var(--pa-color-ink)]",
             )}
@@ -306,7 +348,7 @@ export function Navbar1({
             results={searchResults}
             triggerLabel={zh ? "搜索" : "Search"}
           />
-          {immersive ? (
+          {isImmersive ? (
             <Link
               href={`/${locale}/me` as Route}
               className="inline-flex size-10 items-center justify-center rounded-full bg-[var(--zp-brand-acid)] !text-[var(--zp-brand-ink)]"

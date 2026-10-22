@@ -457,6 +457,34 @@ export async function loadV2PublicMapDataset(locale: PublicLocale): Promise<Publ
   return loadV2PublicAtlasDataset(locale);
 }
 
+export interface V2SiteSearchIndex {
+  pandas: { id: string; slug: string; nameZh: string; nameEn: string | null; birthYear: string | null }[];
+  places: { id: string; slug: string; nameZh: string | null; nameEn: string | null; region: string | null }[];
+}
+
+// Names only, for the site-wide navigation search: two list reads instead of the full atlas dataset.
+export async function loadV2SiteSearchIndex(): Promise<V2SiteSearchIndex | null> {
+  const client = createServerV2Client();
+  const [pandas, places] = await Promise.all([client.GET("/api/v2/pandas"), client.GET("/api/v2/places")]);
+  if (!pandas.data || !places.data) return null;
+  return {
+    pandas: pandas.data.items.map((panda) => ({
+      id: panda.pandaId,
+      slug: panda.canonicalSlug,
+      nameZh: primaryName(panda, "zh") ?? primaryName(panda, "en") ?? panda.canonicalSlug,
+      nameEn: primaryName(panda, "en"),
+      birthYear: textFact(panda, "identity.birth_date", "birth_date")?.slice(0, 4) ?? null,
+    })),
+    places: places.data.items.map((place) => ({
+      id: place.placeId,
+      slug: place.slug,
+      nameZh: place.nameZh ?? null,
+      nameEn: place.nameEn ?? null,
+      region: place.region ?? null,
+    })),
+  };
+}
+
 // The first published photo of each panda, for pages that show a handful of pandas from the list.
 export async function loadV2PandaCovers(pandaIds: readonly string[]): Promise<Map<string, PandaDetail["media"][number]>> {
   if (pandaIds.length === 0) return new Map();

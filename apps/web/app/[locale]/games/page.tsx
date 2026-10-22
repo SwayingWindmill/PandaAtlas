@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { GameHubPage } from "@/features/games/game-hub-page";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
@@ -33,11 +33,9 @@ export default async function GamesPage({ params }: GamesPageProps) {
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const alternateLocale = locale === "zh" ? "en" : "zh";
 
   return (
     <>
-      <GlobalNavigation locale={locale} active="games" alternatePath={`/${alternateLocale}/games`} />
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
         <div className={publicShellClassName}>
           <GameHubPage locale={locale} />

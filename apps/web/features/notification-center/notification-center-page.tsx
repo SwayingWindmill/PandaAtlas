@@ -6,7 +6,6 @@ import { Bell, CheckCheck, CircleAlert, LockKeyhole, Mail, RotateCcw } from "luc
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { fanMutationOptions, inboxQueryOptions, preferencesQueryOptions } from "@/features/fan/api/queries";
 import { privateReadStatus, signInHref, useFanSession } from "@/features/fan/api/session";
 import type { NotificationMessage, NotificationPreference } from "@/features/fan/api/types";
@@ -132,7 +131,6 @@ export function NotificationCenterPage({ locale }: NotificationCenterPageProps) 
   const inbox = useQuery({ ...inboxQueryOptions, enabled: session.status === "ready" });
   const preferences = useQuery({ ...preferencesQueryOptions, enabled: session.status === "ready" });
   const [statusMessage, setStatusMessage] = useState("");
-  const alternate = locale === "zh" ? "en" : "zh";
 
   const clearStatus = { onMutate: () => setStatusMessage("") };
   const markRead = useMutation({ ...fanMutationOptions.markNotificationRead(), ...clearStatus });
@@ -171,11 +169,6 @@ export function NotificationCenterPage({ locale }: NotificationCenterPageProps) 
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <GlobalNavigation
-        locale={locale}
-        active="inbox"
-        alternatePath={`/${alternate}/me/inbox`}
-      />
       <main id="main-content" className="mx-auto w-full max-w-5xl px-4 pb-20 pt-10 md:px-8 md:pt-16">
         <section className="rounded-3xl border border-[var(--pa-color-accent-border-10)] bg-[var(--pa-color-accent-fill-04)] p-6 md:p-10">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[var(--accent)]">

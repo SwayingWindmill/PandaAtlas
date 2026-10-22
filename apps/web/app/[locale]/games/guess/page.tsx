@@ -2,7 +2,7 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { GuessPandaGame } from "@/features/games/guess-panda-game";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
@@ -47,16 +47,10 @@ export default async function GuessPandaPage({ params }: GuessPandaPageProps) {
   const { locale: rawLocale } = await params;
   const locale = parsePublicLocale(rawLocale);
   if (!locale) notFound();
-  const alternateLocale = locale === "zh" ? "en" : "zh";
   const t = copy[locale];
 
   return (
     <>
-      <GlobalNavigation
-        locale={locale}
-        active="games"
-        alternatePath={`/${alternateLocale}/games/guess`}
-      />
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
         <div className={`${publicShellClassName} grid gap-8 py-10 sm:py-14`}>
           <header className="max-w-3xl">

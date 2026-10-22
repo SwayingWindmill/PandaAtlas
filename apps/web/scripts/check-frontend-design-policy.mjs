@@ -23,7 +23,7 @@ const publicBrandFiles = [
   "app/layout.tsx",
   "app/[locale]/page.tsx",
   "app/[locale]/pandas/page.tsx",
-  "components/patterns/global-navigation.tsx",
+  "app/[locale]/layout.tsx",
   "components/navbar-1.tsx",
   "components/command-menu-04.tsx",
   "components/blocks/marketing/footers/minimal.tsx",

@@ -6,7 +6,7 @@ test("finds pandas, families, and places from one URL-addressable query", async 
   const results = page.getByRole("listbox");
   await expect(results.getByRole("option", { name: /Mei Xiang/ }).first()).toHaveAttribute("href", "/en/pandas/mei-xiang");
   await expect(results.getByRole("option", { name: /From Mei Xiang to Bao Li/ })).toHaveAttribute("href", /\/en\/families\//);
-  await expect(page.getByRole("link", { name: "中文", exact: true })).toHaveAttribute("href", "/zh/search?q=mei");
+  await expect(page.getByRole("banner").getByRole("link", { name: "中文", exact: true })).toHaveAttribute("href", "/zh/search?q=mei");
 
   await page.getByTestId("search-page").getByRole("link", { name: /^Families/ }).click();
   await expect(page).toHaveURL(/\/en\/search\?q=mei&type=family$/);

@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { loadV2PublicSearchDataset } from "@/features/public-content/public-v2";
 import { listFamilyStories } from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
-import { buildSearchViewModel, parseSearchQuery, searchHref } from "@/features/search/archive-search";
+import { buildSearchViewModel, parseSearchQuery } from "@/features/search/archive-search";
 import { SearchWorkspace } from "@/features/search/search-workspace";
-import { alternateLocale, parsePublicLocale } from "@/foundation/content/locales";
+import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
 interface SearchPageProps {
@@ -60,11 +59,6 @@ export default async function SearchPage({ params, searchParams }: SearchPagePro
 
   return (
     <div className={styles.page}>
-      <GlobalNavigation
-        locale={locale}
-        active="search"
-        alternatePath={searchHref(alternateLocale(locale), state)}
-      />
       <main id="main-content" data-testid="search-page">
         <div className={`${styles.shell} pb-16 pt-8 sm:pt-12`}>
           <p className={styles.eyebrow}>{t.eyebrow}</p>

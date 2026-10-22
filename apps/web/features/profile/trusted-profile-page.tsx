@@ -12,7 +12,7 @@ import {
   localizedEditorial,
 } from "@/features/public-experiences/stories";
 import { TrustedProfileMediaGallery } from "@/features/profile/trusted-profile-media-gallery";
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { LicensedMediaFigure } from "@/components/patterns/licensed-media-figure";
 import type { PublicContentEnvelope, PublicProfileRecord } from "@/features/public-content/public-release";
@@ -504,7 +504,6 @@ export function TrustedProfilePage({
         dangerouslySetInnerHTML={{ __html: structuredData }}
       />
       <ProfileVisitRecorder stableId={profile.stableId} slug={profile.canonicalSlug} />
-      <GlobalNavigation locale={locale} active="profile" alternatePath={profile.alternateLanguageHref} />
       <main
         id="main-content"
         lang={locale === "zh" ? "zh-CN" : "en"}

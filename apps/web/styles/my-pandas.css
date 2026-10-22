@@ -418,18 +418,11 @@
 }
 
 @media (max-width: 520px) {
-  .pa-public-register:has(.my-pandas-page) .pa-brand > span:last-child,
-  .pa-public-register:has(.my-pandas-page) .pa-language-link {
-    display: none;
-  }
-
-  .pa-public-register:has(.my-pandas-page) .pa-brand-mark,
   .pa-public-register:has(.my-pandas-page) .pa-icon-button {
     width: 44px;
     height: 44px;
   }
 
-  .pa-public-register:has(.my-pandas-page) .pa-brand-mark svg,
   .pa-public-register:has(.my-pandas-page) .pa-icon-button svg {
     width: 20px;
     height: 20px;

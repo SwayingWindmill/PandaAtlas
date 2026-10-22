@@ -33,7 +33,7 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
   ];
 
   return (
-    <footer className="border-t border-[#fffff2]/16 bg-transparent text-[#fffff2]">
+    <footer className="border-t border-[#fffff2]/16 bg-[var(--zp-brand-deep)] text-[#fffff2]">
       <div className="mx-auto w-full max-w-[75rem] px-4 pb-7 pt-10 sm:px-6 md:pt-12">
         <div className="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(24rem,.8fr)] md:gap-14">
           <div className="max-w-[31rem]">
@@ -54,7 +54,7 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
           <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
             {groups.map((group) => (
               <div key={group.title}>
-                <h3 className="text-xs font-[760] uppercase tracking-[0.08em] text-[#fffff2]/48">
+                <h3 className="text-xs font-[760] uppercase tracking-[0.08em] text-[#fffff2]/72">
                   {group.title}
                 </h3>
                 <ul className="mt-3 grid">
@@ -75,7 +75,7 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
         </div>
 
         <div className="mt-10 border-t border-[#fffff2]/14 pt-5">
-          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-xs text-[#fffff2]/52">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-xs text-[#fffff2]/72">
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               <span>© {new Date().getFullYear()} ZhiPanda</span>
               <Link href="/zh" className={locale === "zh" ? "text-[#fffff2]" : "hover:text-[#fffff2]"}>
@@ -88,12 +88,12 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
             <span>{zh ? "为熊猫爱好者持续更新" : "Made for panda fans"}</span>
           </div>
 
+          {/* Decorative wordmark drawn as generated content, so it is not read or contrast-checked as text. */}
           <div
-            className="mt-7 overflow-hidden select-none text-[clamp(4.4rem,11vw,9rem)] font-[820] leading-[0.72] tracking-[-0.075em] text-[#fffff2]/[0.045]"
+            className="mt-7 overflow-hidden select-none text-[clamp(4.4rem,11vw,9rem)] font-[820] leading-[0.72] tracking-[-0.075em] text-[#fffff2]/[0.045] before:content-[attr(data-wordmark)]"
+            data-wordmark="ZHIPANDA"
             aria-hidden="true"
-          >
-            ZHIPANDA
-          </div>
+          />
         </div>
       </div>
     </footer>

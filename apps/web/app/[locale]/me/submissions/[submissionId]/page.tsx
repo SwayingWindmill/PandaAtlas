@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { isCommunityIntakeUiEnabled } from "@/features/contribute/config";
 import { ContributionEditor } from "@/features/contribute/contribution-editor";
 import { parsePublicLocale } from "@/foundation/content/locales";
@@ -44,14 +43,8 @@ export default async function SubmissionDetailPage({ params }: SubmissionDetailP
       `/auth/login?next=${encodeURIComponent(`/${locale}/me/submissions/${submissionId}`)}`,
     );
   }
-  const alternate = locale === "zh" ? "en" : "zh";
   return (
     <div className="contribution-page">
-      <GlobalNavigation
-        locale={locale}
-        active="contribute"
-        alternatePath={`/${alternate}/me/submissions/${submissionId}`}
-      />
       <main id="main-content" className="contribution-shell">
         <ContributionEditor locale={locale} submissionId={submissionId} />
       </main>

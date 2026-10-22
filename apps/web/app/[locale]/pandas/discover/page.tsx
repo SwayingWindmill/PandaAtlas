@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowDown, ArrowLeft, ArrowRight, Grid3X3, MousePointer2 } from "lucide-react";
 
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import { CircularGallery, type GalleryItem } from "@/components/ui/circular-gallery";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale, type PublicLocale } from "@/foundation/content/locales";
@@ -153,15 +152,9 @@ export default async function PandaDiscoveryPage({ params }: PandaDiscoveryPageP
   if (!envelope) notFound();
   const items = buildGalleryItems(envelope.data.pandas, locale);
   const t = copy[locale];
-  const alternateLocale = locale === "zh" ? "en" : "zh";
 
   return (
     <>
-      <GlobalNavigation
-        locale={locale}
-        active="atlas"
-        alternatePath={`/${alternateLocale}/pandas/discover`}
-      />
       <main id="main-content" className="bg-[#07120d] text-white" data-testid="panda-discovery-page">
         <section className="relative h-[320vh] min-h-[1800px]" aria-labelledby="panda-discovery-heading">
           <div className="sticky top-0 h-screen overflow-hidden bg-[#07120d]">

@@ -1,8 +1,6 @@
 .pa-result-card,
 .pa-principle-card,
-.pa-search-row button,
-.pa-language-link,
-.pa-desktop-nav a {
+.pa-search-row button {
   transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
@@ -23,9 +21,7 @@
 
   .pa-result-card,
   .pa-principle-card,
-  .pa-search-row button,
-  .pa-language-link,
-  .pa-desktop-nav a {
+  .pa-search-row button {
     transition: none;
   }
 }

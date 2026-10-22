@@ -2,7 +2,6 @@ import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 
-import { GlobalNavigation } from "@/components/patterns/global-navigation";
 import {
   loadV2FamilyStoryMembers,
   loadV2PublicLineageDataset,
@@ -146,11 +145,9 @@ export default async function FamiliesPage({ params, searchParams }: FamiliesPag
   const membersByStory = await loadV2FamilyStoryMembers(stories);
   if (!membersByStory) notFound();
   const t = copy[locale];
-  const alternateLocale = locale === "zh" ? "en" : "zh";
 
   return (
     <div className={styles.page}>
-      <GlobalNavigation locale={locale} active="families" alternatePath={`/${alternateLocale}/families`} />
       <main id="main-content">
         <div className={styles.shell}>
           <p className={styles.releaseNote}>

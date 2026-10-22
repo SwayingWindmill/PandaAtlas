@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { FanLibraryPage } from "@/features/my-pandas/fan-library-page";
 import { buildMyPandasViewModel } from "@/features/my-pandas/my-pandas-view-model";
 import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
@@ -45,15 +45,9 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
   const envelope = await loadV2PublicAtlasDataset(locale);
   if (!envelope) notFound();
   const view = buildMyPandasViewModel(envelope.data, locale);
-  const alternateLocale = locale === "zh" ? "en" : "zh";
 
   return (
     <>
-      <GlobalNavigation
-        locale={locale}
-        active="my-pandas"
-        alternatePath={`/${alternateLocale}/me/collections`}
-      />
       <main id="main-content" className="bg-[var(--bg)] text-[var(--fg)]">
         <div className={publicShellClassName}>
           <FanLibraryPage locale={locale} profiles={view.profiles} />

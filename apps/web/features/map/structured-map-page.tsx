@@ -1,6 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { GlobalNavigation, publicShellClassName } from "@/components/patterns/global-navigation";
+import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { ACTIVE_STRUCTURED_MAP_PROVIDER } from "@/features/map/map-provider-registry";
 import { MapVisualizationEnhancement } from "@/features/map/visualization/map-visualization-enhancement";
@@ -216,8 +216,6 @@ export function StructuredMapPage({
   localeDelivery,
 }: StructuredMapPageProps) {
   const t = copy[locale];
-  const otherLocale = locale === "zh" ? "en" : "zh";
-  const alternatePath = structuredMapHref(otherLocale, state);
   const modeCopy = t.modes[state.mode];
   const resetState: StructuredMapQueryState = {
     mode: state.mode,
@@ -231,7 +229,6 @@ export function StructuredMapPage({
 
   return (
     <>
-      <GlobalNavigation locale={locale} active="map" alternatePath={alternatePath} />
       <main id="main-content" className="pa-structured-map-page" data-testid="structured-map-page">
         <div className={publicShellClassName}>
           <header className="pa-structured-map-hero">
