@@ -161,3 +161,39 @@ export class DailyPandaGuessResultDto {
   @ApiPropertyOptional({ type: () => DailyPandaAnswerDto, description: "Present once the puzzle is finished." })
   public declare answer?: DailyPandaAnswerDto;
 }
+
+export class SavedDailyPandaDto {
+  @ApiProperty({ type: () => DailyPandaGuessResultDto })
+  public declare result: DailyPandaGuessResultDto;
+
+  @ApiProperty({ description: "False when today's result was already saved; nothing changed." })
+  public declare saved: boolean;
+}
+
+export class PandaBookEntryDto {
+  @ApiProperty({ format: "uuid" })
+  public declare pandaId: string;
+
+  @ApiProperty({ enum: ["guess_panda", "daily_panda"], description: "The game where the fan first met this panda." })
+  public declare firstGame: "guess_panda" | "daily_panda";
+
+  @ApiProperty({ format: "date-time" })
+  public declare firstMetAt: string;
+
+  @ApiProperty({ format: "date-time" })
+  public declare lastMetAt: string;
+
+  @ApiProperty()
+  public declare timesMet: number;
+}
+
+export class PandaBookDto {
+  @ApiProperty({ description: "Pandas in the current public release." })
+  public declare publishedCount: number;
+
+  @ApiProperty()
+  public declare knownCount: number;
+
+  @ApiProperty({ type: () => PandaBookEntryDto, isArray: true, description: "Newest first." })
+  public declare items: PandaBookEntryDto[];
+}

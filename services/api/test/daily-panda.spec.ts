@@ -7,6 +7,12 @@ import {
   puzzleDateOf,
   type DailyPandaRepository,
 } from "../src/modules/game/application/daily-panda.application.js";
+import {
+  PandaBookApplication,
+  type DailyPandaResultRecord,
+  type PandaBookEntry,
+  type PandaBookRepository,
+} from "../src/modules/game/application/panda-book.application.js";
 import type {
   PublicPandaDetail,
   PublicPandaSummary,
@@ -176,5 +182,52 @@ describe("DailyPandaApplication", () => {
   it("is unavailable when no panda qualifies", async () => {
     const application = new DailyPandaApplication(memoryRepository(), publicRead([noBirth]), NOW);
     expect(await application.today()).toEqual({ kind: "unavailable" });
+  });
+});
+
+function memoryBook(entries: PandaBookEntry[] = []): PandaBookRepository & { saved: DailyPandaResultRecord[] } {
+  const saved: DailyPandaResultRecord[] = [];
+  return {
+    saved,
+    listEncounters: () => Promise.resolve(entries),
+    saveDailyPandaResult: (_accountId, record) => {
+      if (saved.some((item) => item.puzzleDate === record.puzzleDate)) return Promise.resolve(false);
+      saved.push(record);
+      return Promise.resolve(true);
+    },
+  };
+}
+
+function entry(pandaId: string): PandaBookEntry {
+  const at = new Date("2026-10-20T08:00:00Z");
+  return { pandaId, firstGame: "guess_panda", firstMetAt: at, lastMetAt: at, timesMet: 1 };
+}
+
+describe("PandaBookApplication", () => {
+  const pandas = [answer, older, sameYear, noBirth];
+  const daily = () => new DailyPandaApplication(memoryRepository({ "2026-10-23": "a" }), publicRead(pandas), NOW);
+
+  it("counts only pandas still in the public release", async () => {
+    const book = new PandaBookApplication(memoryBook([entry("a"), entry("gone")]), daily(), publicRead(pandas));
+    expect(await book.book("fan")).toMatchObject({ publishedCount: 4, knownCount: 1, items: [{ pandaId: "a" }] });
+  });
+
+  it("saves a finished Daily Panda once and adds its answer", async () => {
+    const repository = memoryBook();
+    const book = new PandaBookApplication(repository, daily(), publicRead(pandas));
+
+    const first = await book.saveDailyPanda("fan", ["b", "a"]);
+    const again = await book.saveDailyPanda("fan", ["b", "a"]);
+
+    expect(first).toMatchObject({ kind: "ok", saved: true, result: { solved: true } });
+    expect(again).toMatchObject({ kind: "ok", saved: false });
+    expect(repository.saved).toEqual([{ puzzleDate: "2026-10-23", pandaId: "a", solved: true, guessCount: 2 }]);
+  });
+
+  it("refuses to save a Daily Panda that is still in play", async () => {
+    const repository = memoryBook();
+    const book = new PandaBookApplication(repository, daily(), publicRead(pandas));
+    expect(await book.saveDailyPanda("fan", ["b"])).toEqual({ kind: "not_finished" });
+    expect(repository.saved).toEqual([]);
   });
 });

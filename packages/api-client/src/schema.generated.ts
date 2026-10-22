@@ -580,6 +580,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/me/panda-book": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPandaBook"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/daily-panda-results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["saveDailyPandaResult"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/release": {
         parameters: {
             query?: never;
@@ -1587,6 +1619,32 @@ export interface components {
         SavedGameAttemptDto: {
             attempt: components["schemas"]["GameAttemptDto"];
             answer: components["schemas"]["GuessResultDto"];
+        };
+        PandaBookEntryDto: {
+            /** Format: uuid */
+            pandaId: string;
+            /**
+             * @description The game where the fan first met this panda.
+             * @enum {string}
+             */
+            firstGame: "guess_panda" | "daily_panda";
+            /** Format: date-time */
+            firstMetAt: string;
+            /** Format: date-time */
+            lastMetAt: string;
+            timesMet: number;
+        };
+        PandaBookDto: {
+            /** @description Pandas in the current public release. */
+            publishedCount: number;
+            knownCount: number;
+            /** @description Newest first. */
+            items: components["schemas"]["PandaBookEntryDto"][];
+        };
+        SavedDailyPandaDto: {
+            result: components["schemas"]["DailyPandaGuessResultDto"];
+            /** @description False when today's result was already saved; nothing changed. */
+            saved: boolean;
         };
         PublicReadReleaseDto: {
             /** Format: uuid */
@@ -2989,6 +3047,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SavedGameAttemptDto"];
+                };
+            };
+        };
+    };
+    getPandaBook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PandaBookDto"];
+                };
+            };
+        };
+    };
+    saveDailyPandaResult: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyPandaGuessesDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedDailyPandaDto"];
                 };
             };
         };

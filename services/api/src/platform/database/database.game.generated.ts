@@ -32,10 +32,28 @@ export interface GameAttempts {
   selected_panda_id: string;
 }
 
+export interface GameDailyPandaResults {
+  account_id: string;
+  guess_count: number;
+  panda_id: string;
+  puzzle_date: string;
+  saved_at: Generated<Timestamp>;
+  solved: boolean;
+}
+
 export interface GameDailyPandas {
   chosen_at: Generated<Timestamp>;
   panda_id: string;
   puzzle_date: string;
+}
+
+export interface GameEncounters {
+  account_id: string;
+  first_game: string;
+  first_met_at: Generated<Timestamp>;
+  last_met_at: Generated<Timestamp>;
+  panda_id: string;
+  times_met: Generated<number>;
 }
 
 export interface GameQuestions {
@@ -55,6 +73,8 @@ export interface GameQuestions {
 
 export interface DB {
   "game.attempts": GameAttempts;
+  "game.daily_panda_results": GameDailyPandaResults;
   "game.daily_pandas": GameDailyPandas;
+  "game.encounters": GameEncounters;
   "game.questions": GameQuestions;
 }
