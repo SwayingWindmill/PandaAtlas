@@ -532,6 +532,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/games/daily-panda": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getDailyPanda"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/games/daily-panda/guesses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["guessDailyPanda"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/me/game-attempts": {
         parameters: {
             query?: never;
@@ -1489,6 +1521,53 @@ export interface components {
             /** Format: uuid */
             answerPandaId: string;
             recognitionTips: string[];
+        };
+        DailyPandaClueDto: {
+            /** @enum {string} */
+            kind: "sex" | "birth_year" | "life_status" | "birthplace" | "name_initial" | "photo";
+            /** @description female | male for sex, a year for birth_year, alive | deceased for life_status, text otherwise. Absent for photo. */
+            value?: string | number;
+            /**
+             * Format: uuid
+             * @description Photo clue only.
+             */
+            assetId?: string;
+            /** @description Photo clue only: the public media object key. */
+            objectKey?: string;
+        };
+        DailyPandaPuzzleDto: {
+            /** Format: date */
+            puzzleDate: string;
+            maxGuesses: number;
+            /** @description How many clues today's panda has in total. */
+            clueCount: number;
+            clues: components["schemas"]["DailyPandaClueDto"][];
+        };
+        DailyPandaGuessesDto: {
+            guessPandaIds: string[];
+        };
+        DailyPandaGuessFeedbackDto: {
+            /** Format: uuid */
+            pandaId: string;
+            correct: boolean;
+            /** @description Null when either sex is unpublished. */
+            sameSex: boolean | null;
+            /** @enum {string} */
+            birthYear: "answer_earlier" | "answer_later" | "same" | "unknown";
+        };
+        DailyPandaAnswerDto: {
+            /** Format: uuid */
+            pandaId: string;
+            canonicalSlug: string;
+        };
+        DailyPandaGuessResultDto: {
+            /** Format: date */
+            puzzleDate: string;
+            solved: boolean;
+            finished: boolean;
+            guesses: components["schemas"]["DailyPandaGuessFeedbackDto"][];
+            clues: components["schemas"]["DailyPandaClueDto"][];
+            answer: (components["schemas"]["DailyPandaAnswerDto"] | null) & components["schemas"]["DailyPandaAnswerDto"];
         };
         GameAttemptDto: {
             /** Format: uuid */
@@ -2825,6 +2904,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GuessResultDto"];
+                };
+            };
+        };
+    };
+    getDailyPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyPandaPuzzleDto"];
+                };
+            };
+        };
+    };
+    guessDailyPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyPandaGuessesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyPandaGuessResultDto"];
                 };
             };
         };

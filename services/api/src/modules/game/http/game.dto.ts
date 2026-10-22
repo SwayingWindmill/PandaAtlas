@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsIn, IsOptional, IsUUID } from "class-validator";
+import { ArrayMaxSize, ArrayUnique, IsArray, IsIn, IsOptional, IsUUID } from "class-validator";
+import { DAILY_PANDA_MAX_GUESSES, type BirthYearHint } from "../application/daily-panda.application.js";
 import type { GameDifficulty } from "../application/game.application.js";
 
 export class GuessQuestionQueryDto {
@@ -77,4 +78,86 @@ export class SavedGameAttemptDto {
 
   @ApiProperty({ type: () => GuessResultDto })
   public declare answer: GuessResultDto;
+}
+
+export class DailyPandaGuessesDto {
+  @ApiProperty({ type: String, isArray: true, format: "uuid", maxItems: DAILY_PANDA_MAX_GUESSES })
+  @IsArray()
+  @ArrayMaxSize(DAILY_PANDA_MAX_GUESSES)
+  @ArrayUnique()
+  @IsUUID("all", { each: true })
+  public guessPandaIds!: string[];
+}
+
+export class DailyPandaClueDto {
+  @ApiProperty({ enum: ["sex", "birth_year", "life_status", "birthplace", "name_initial", "photo"] })
+  public declare kind: string;
+
+  @ApiPropertyOptional({
+    description: "female | male for sex, a year for birth_year, alive | deceased for life_status, text otherwise. Absent for photo.",
+    oneOf: [{ type: "string" }, { type: "integer" }],
+  })
+  public declare value?: string | number;
+
+  @ApiPropertyOptional({ format: "uuid", description: "Photo clue only." })
+  public declare assetId?: string;
+
+  @ApiPropertyOptional({ description: "Photo clue only: the public media object key." })
+  public declare objectKey?: string;
+}
+
+export class DailyPandaPuzzleDto {
+  @ApiProperty({ format: "date" })
+  public declare puzzleDate: string;
+
+  @ApiProperty()
+  public declare maxGuesses: number;
+
+  @ApiProperty({ description: "How many clues today's panda has in total." })
+  public declare clueCount: number;
+
+  @ApiProperty({ type: () => DailyPandaClueDto, isArray: true })
+  public declare clues: DailyPandaClueDto[];
+}
+
+export class DailyPandaGuessFeedbackDto {
+  @ApiProperty({ format: "uuid" })
+  public declare pandaId: string;
+
+  @ApiProperty()
+  public declare correct: boolean;
+
+  @ApiProperty({ type: Boolean, nullable: true, description: "Null when either sex is unpublished." })
+  public declare sameSex: boolean | null;
+
+  @ApiProperty({ enum: ["answer_earlier", "answer_later", "same", "unknown"] })
+  public declare birthYear: BirthYearHint;
+}
+
+export class DailyPandaAnswerDto {
+  @ApiProperty({ format: "uuid" })
+  public declare pandaId: string;
+
+  @ApiProperty()
+  public declare canonicalSlug: string;
+}
+
+export class DailyPandaGuessResultDto {
+  @ApiProperty({ format: "date" })
+  public declare puzzleDate: string;
+
+  @ApiProperty()
+  public declare solved: boolean;
+
+  @ApiProperty()
+  public declare finished: boolean;
+
+  @ApiProperty({ type: () => DailyPandaGuessFeedbackDto, isArray: true })
+  public declare guesses: DailyPandaGuessFeedbackDto[];
+
+  @ApiProperty({ type: () => DailyPandaClueDto, isArray: true })
+  public declare clues: DailyPandaClueDto[];
+
+  @ApiProperty({ type: () => DailyPandaAnswerDto, nullable: true })
+  public declare answer: DailyPandaAnswerDto | null;
 }

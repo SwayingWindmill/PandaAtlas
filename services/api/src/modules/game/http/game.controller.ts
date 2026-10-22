@@ -5,8 +5,12 @@ import { Public } from "../../../platform/auth/public.decorator.js";
 import { ProblemException } from "../../../platform/http/problem.exception.js";
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
+import { DAILY_PANDA_PORT, type DailyPandaApplication } from "../application/daily-panda.application.js";
 import { GAME_PORT, type GamePort } from "../application/game.application.js";
 import {
+  DailyPandaGuessesDto,
+  DailyPandaGuessResultDto,
+  DailyPandaPuzzleDto,
   GameAttemptListDto,
   GuessAnswerDto,
   GuessQuestionDto,
@@ -69,6 +73,43 @@ export class GameController {
     const result = await this.game.evaluateGuess(input.questionId, input.selectedPandaId);
     if (result.kind !== "answer") gameProblem(result.kind);
     return result.answer;
+  }
+}
+
+function dailyPandaUnavailable(): never {
+  throw new ProblemException(503, "game.dailyPandaUnavailable", "Today's Daily Panda is not available.");
+}
+
+@ApiTags("Games")
+@Controller("games/daily-panda")
+export class DailyPandaController {
+  public constructor(@Inject(DAILY_PANDA_PORT) private readonly dailyPanda: DailyPandaApplication) {}
+
+  @Get()
+  @Public()
+  @ApiOperation({ operationId: "getDailyPanda" })
+  @ApiOkResponse({ type: DailyPandaPuzzleDto })
+  public async today() {
+    const result = await this.dailyPanda.today();
+    if (result.kind !== "ok") dailyPandaUnavailable();
+    return result.puzzle;
+  }
+
+  @Post("guesses")
+  @HttpCode(200)
+  @Public()
+  @ApiOperation({ operationId: "guessDailyPanda" })
+  @ApiOkResponse({ type: DailyPandaGuessResultDto })
+  public async guess(@Body() input: DailyPandaGuessesDto) {
+    const result = await this.dailyPanda.guess(input.guessPandaIds);
+    if (result.kind === "unknown_panda") {
+      throw new ProblemException(422, "game.unknownPanda", "A guessed panda is not a published panda.");
+    }
+    if (result.kind === "too_many_guesses") {
+      throw new ProblemException(422, "game.tooManyGuesses", "Daily Panda allows at most six guesses.");
+    }
+    if (result.kind !== "ok") dailyPandaUnavailable();
+    return result.result;
   }
 }
 
