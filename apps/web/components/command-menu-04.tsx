@@ -17,6 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Route } from "next";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -24,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandDialog,
-  CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
@@ -203,7 +203,9 @@ export function GlobalArchiveSearch({
             })}
           </div>
 
-          <CommandEmpty>{zh ? `没有找到“${query}”` : `No results for “${query}”`}</CommandEmpty>
+          {needle && !matches.length ? (
+            <p className="py-6 text-center text-sm">{zh ? `没有找到“${query}”` : `No results for “${query}”`}</p>
+          ) : null}
 
           <CommandGroup
             heading={needle ? (zh ? "搜索结果" : "Search results") : (zh ? "从这里开始" : "Start here")}
@@ -213,29 +215,49 @@ export function GlobalArchiveSearch({
               <ArchiveResultRow key={result.id} result={result} needle={needle} onSelect={onSelect} />
             ))}
           </CommandGroup>
+
+          {needle ? (
+            <CommandGroup className="p-0">
+              <CommandItem
+                className="mx-2 min-h-12 gap-3 rounded-[var(--pa-radius-md)] px-3 py-2 text-sm"
+                onSelect={() => onSelect({
+                  id: "search-page",
+                  kind: "collection",
+                  title: query.trim(),
+                  snippet: "",
+                  href: `/${locale}/search?${new URLSearchParams({ q: query.trim() })}`,
+                })}
+                value="search-page"
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--pa-color-surface-subtle)] text-[var(--pa-color-ink-muted)]">
+                  <Search className="size-4" aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1 truncate text-[var(--pa-color-ink)]">
+                  {zh ? `在搜索页查看“${query.trim()}”的全部结果` : `See all results for “${query.trim()}”`}
+                </span>
+              </CommandItem>
+            </CommandGroup>
+          ) : null}
         </CommandList>
       </Command>
     </CommandDialog>
   );
 }
 
-function ArchiveResultRow({
+export function ArchiveResultRow({
   result,
   needle,
   onSelect,
+  asLink = false,
 }: {
   result: ArchiveSearchResult;
   needle?: string;
   onSelect: (result: ArchiveSearchResult) => void;
+  asLink?: boolean;
 }) {
   const Icon = kindIcons[result.kind];
-
-  return (
-    <CommandItem
-      className="mx-2 min-h-14 gap-3 rounded-[var(--pa-radius-md)] px-3 py-2 text-sm"
-      onSelect={() => onSelect(result)}
-      value={result.id}
-    >
+  const content = (
+    <>
       <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--pa-color-surface-subtle)] text-[var(--pa-color-ink-muted)]">
         <Icon className="size-4" aria-hidden="true" />
       </span>
@@ -252,11 +274,22 @@ function ArchiveResultRow({
           {result.meta}
         </span>
       ) : null}
+    </>
+  );
+
+  return (
+    <CommandItem
+      asChild={asLink}
+      className="mx-2 min-h-14 gap-3 rounded-[var(--pa-radius-md)] px-3 py-2 text-sm"
+      onSelect={() => onSelect(result)}
+      value={result.id}
+    >
+      {asLink ? <Link href={result.href as Route}>{content}</Link> : content}
     </CommandItem>
   );
 }
 
-function Highlight({ text, needle }: { text: string; needle?: string }) {
+export function Highlight({ text, needle }: { text: string; needle?: string }) {
   const start = needle ? text.toLocaleLowerCase().indexOf(needle) : -1;
   if (!needle || start === -1) return text;
   const end = start + needle.length;
