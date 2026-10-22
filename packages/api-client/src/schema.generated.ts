@@ -1567,7 +1567,8 @@ export interface components {
             finished: boolean;
             guesses: components["schemas"]["DailyPandaGuessFeedbackDto"][];
             clues: components["schemas"]["DailyPandaClueDto"][];
-            answer: (components["schemas"]["DailyPandaAnswerDto"] | null) & components["schemas"]["DailyPandaAnswerDto"];
+            /** @description Present once the puzzle is finished. */
+            answer?: components["schemas"]["DailyPandaAnswerDto"];
         };
         GameAttemptDto: {
             /** Format: uuid */

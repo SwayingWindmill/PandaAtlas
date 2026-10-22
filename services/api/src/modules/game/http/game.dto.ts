@@ -158,6 +158,6 @@ export class DailyPandaGuessResultDto {
   @ApiProperty({ type: () => DailyPandaClueDto, isArray: true })
   public declare clues: DailyPandaClueDto[];
 
-  @ApiProperty({ type: () => DailyPandaAnswerDto, nullable: true })
-  public declare answer: DailyPandaAnswerDto | null;
+  @ApiPropertyOptional({ type: () => DailyPandaAnswerDto, description: "Present once the puzzle is finished." })
+  public declare answer?: DailyPandaAnswerDto;
 }

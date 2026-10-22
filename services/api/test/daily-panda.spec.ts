@@ -140,7 +140,7 @@ describe("DailyPandaApplication", () => {
     if (result.kind !== "ok") return;
     expect(result.result.solved).toBe(false);
     expect(result.result.finished).toBe(false);
-    expect(result.result.answer).toBeNull();
+    expect(result.result.answer).toBeUndefined();
     expect(result.result.clues.map((clue) => clue.kind)).toEqual(["sex", "birth_year", "life_status", "birthplace"]);
     expect(result.result.guesses).toEqual([
       { pandaId: "b", correct: false, sameSex: false, birthYear: "answer_later" },

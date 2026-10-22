@@ -28,6 +28,7 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
         { title: zh ? "纠错与贡献" : "Contribute", href: `/${locale}/contribute` },
         { title: zh ? "随机认识一只" : "Meet one at random", href: `/${locale}/games/random` },
         { title: zh ? "猜熊猫" : "Guess the panda", href: `/${locale}/games/guess` },
+        { title: zh ? "每日一猫" : "Daily Panda", href: `/${locale}/games/daily` },
       ],
     },
   ];

@@ -1,5 +1,7 @@
 import type { components } from "@zhipanda/api-client";
 
+import type { DailyPandaClue } from "@/features/games/daily-panda-clues";
+
 type Schemas = components["schemas"];
 
 export type FanSession = Schemas["CurrentAccountDto"];
@@ -20,6 +22,7 @@ export type DeletedSeenPanda = Schemas["DeletedSeenPandaDto"];
 export type GameAttempt = Schemas["GameAttemptDto"];
 export type GameAttemptList = Schemas["GameAttemptListDto"];
 export type GameAttemptInput = Schemas["GuessAnswerDto"];
+export type DailyPandaGuessFeedback = Schemas["DailyPandaGuessFeedbackDto"];
 export type SavedGameAttempt = Schemas["SavedGameAttemptDto"];
 export type NotificationMessage = Schemas["NotificationMessageDto"];
 export type NotificationBulkRead = Schemas["NotificationBulkReadResultDto"];
@@ -51,4 +54,20 @@ export interface GuessAnswer {
   correct: boolean;
   answer: { pandaId: string; name: string; slug: string };
   recognitionTips: string[];
+}
+
+export interface DailyPandaPuzzle {
+  puzzleDate: string;
+  maxGuesses: number;
+  clueCount: number;
+  clues: DailyPandaClue[];
+}
+
+export interface DailyPandaGuessResult {
+  puzzleDate: string;
+  solved: boolean;
+  finished: boolean;
+  guesses: DailyPandaGuessFeedback[];
+  clues: DailyPandaClue[];
+  answer?: { pandaId: string; canonicalSlug: string };
 }

@@ -39,7 +39,8 @@ export interface DailyPandaGuessResult {
   finished: boolean;
   guesses: DailyPandaGuessFeedback[];
   clues: DailyPandaClue[];
-  answer: { pandaId: string; canonicalSlug: string } | null;
+  /** Present once the puzzle is finished. */
+  answer?: { pandaId: string; canonicalSlug: string };
 }
 
 export type DailyPandaRead =
@@ -204,7 +205,7 @@ export class DailyPandaApplication {
         finished,
         guesses: counted,
         clues: finished ? day.clues : day.clues.slice(0, 1 + wrong),
-        answer: finished ? { pandaId: day.panda.pandaId, canonicalSlug: day.panda.canonicalSlug } : null,
+        ...(finished ? { answer: { pandaId: day.panda.pandaId, canonicalSlug: day.panda.canonicalSlug } } : {}),
       },
     };
   }

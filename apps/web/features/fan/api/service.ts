@@ -4,6 +4,8 @@ import { ApiRequestError, requestJson } from "@/lib/api/request";
 
 import type {
   Checkin,
+  DailyPandaGuessResult,
+  DailyPandaPuzzle,
   CheckinInput,
   CheckinList,
   DeletedCheckin,
@@ -148,6 +150,14 @@ export function submitContribution(body: V2ContributionInput): Promise<V2Contrib
 // The guess game is public: every question is a fresh server-side draw, so it is requested, not cached.
 export function getGuessQuestion(locale: PublicLocale): Promise<GuessQuestion> {
   return requestJson(`/api/games/guess/question?locale=${locale}`);
+}
+
+export function getDailyPanda(): Promise<DailyPandaPuzzle> {
+  return requestJson("/api/games/daily-panda");
+}
+
+export function guessDailyPanda(guessPandaIds: string[]): Promise<DailyPandaGuessResult> {
+  return requestJson("/api/games/daily-panda/guesses", { method: "POST", body: JSON.stringify({ guessPandaIds }) });
 }
 
 export function answerGuess(answer: GameAttemptInput & { locale: PublicLocale }): Promise<GuessAnswer> {

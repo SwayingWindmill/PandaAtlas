@@ -4373,10 +4373,7 @@
             }
           },
           "answer": {
-            "type": [
-              "object",
-              "null"
-            ],
+            "description": "Present once the puzzle is finished.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/DailyPandaAnswerDto"
@@ -4389,8 +4386,7 @@
           "solved",
           "finished",
           "guesses",
-          "clues",
-          "answer"
+          "clues"
         ]
       },
       "GameAttemptDto": {
