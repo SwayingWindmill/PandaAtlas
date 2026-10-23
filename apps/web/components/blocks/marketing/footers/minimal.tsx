@@ -33,36 +33,34 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
   ];
 
   return (
-    <footer className="border-t border-[#fffff2]/16 bg-[var(--zp-brand-deep)] text-[#fffff2]">
-      <div className="mx-auto w-full max-w-[75rem] px-4 pb-7 pt-10 sm:px-6 md:pt-12">
+    <footer className="mt-16 border-t border-[var(--pa-color-line)] bg-[var(--pa-color-surface)] text-[var(--pa-color-ink)]">
+      <div className="mx-auto w-[min(var(--pa-content-max),calc(100%-2*var(--pa-space-page)))] pb-10 pt-12">
         <div className="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(24rem,.8fr)] md:gap-14">
           <div className="max-w-[31rem]">
             <Link
               href={`/${locale}` as Route}
-              className="inline-flex text-[#fffff2]"
+              className="inline-flex"
               aria-label={zh ? "吱熊猫首页" : "ZhiPanda home"}
             >
-              <ZhiPandaLogo locale={locale} inverse />
+              <ZhiPandaLogo locale={locale} />
             </Link>
-            <p className="mt-5 max-w-[29rem] text-sm leading-7 text-[#fffff2]/68">
+            <p className="mt-5 max-w-[29rem] text-sm leading-7 text-[var(--pa-color-ink-muted)]">
               {zh
-                ? "从名字、家人、生活过的地方和真实影像，认识每一只熊猫。"
-                : "Meet every panda through names, families, places, and real imagery."}
+                ? "从名字、家人、生活过的地方和真实影像，认识每一只熊猫。照片均来自授权来源，署名和许可见每只熊猫的资料页。"
+                : "Meet every panda through names, families, places, and real imagery. Photos come from licensed sources; credits are on each panda's profile."}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
             {groups.map((group) => (
               <div key={group.title}>
-                <h3 className="text-xs font-[760] uppercase tracking-[0.08em] text-[#fffff2]/72">
-                  {group.title}
-                </h3>
+                <h3 className="text-sm font-semibold text-[var(--pa-color-ink-muted)]">{group.title}</h3>
                 <ul className="mt-3 grid">
                   {group.links.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href as Route}
-                        className="inline-flex min-h-10 items-center text-sm font-[620] text-[#fffff2]/82 transition-colors hover:text-[#f0f63a]"
+                        className="inline-flex min-h-10 items-center text-sm font-medium transition-colors hover:text-[var(--pa-color-ink-muted)]"
                       >
                         {link.title}
                       </Link>
@@ -74,26 +72,9 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-[#fffff2]/14 pt-5">
-          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-xs text-[#fffff2]/72">
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-              <span>© {new Date().getFullYear()} ZhiPanda</span>
-              <Link href="/zh" className={locale === "zh" ? "text-[#fffff2]" : "hover:text-[#fffff2]"}>
-                中文
-              </Link>
-              <Link href="/en" className={locale === "en" ? "text-[#fffff2]" : "hover:text-[#fffff2]"}>
-                English
-              </Link>
-            </div>
-            <span>{zh ? "为熊猫爱好者持续更新" : "Made for panda fans"}</span>
-          </div>
-
-          {/* Decorative wordmark drawn as generated content, so it is not read or contrast-checked as text. */}
-          <div
-            className="mt-7 overflow-hidden select-none text-[clamp(4.4rem,11vw,9rem)] font-[820] leading-[0.72] tracking-[-0.075em] text-[#fffff2]/[0.045] before:content-[attr(data-wordmark)]"
-            data-wordmark="ZHIPANDA"
-            aria-hidden="true"
-          />
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-[var(--pa-color-line)] pt-5 text-xs text-[var(--pa-color-ink-muted)]">
+          <span>© {new Date().getFullYear()} ZhiPanda</span>
+          <span>{zh ? "为熊猫爱好者持续更新" : "Made for panda fans"}</span>
         </div>
       </div>
     </footer>

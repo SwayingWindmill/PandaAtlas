@@ -7,14 +7,11 @@
 @import "../styles/registers.css";
 @import "../styles/licensed-media.css";
 @import "../styles/admin-console.css";
-@import "../styles/trusted-profile.css";
 @import "../styles/my-pandas.css";
 @import "../styles/community-contribution.css";
-@import "../styles/atlas-discovery.css";
 @import "../styles/structured-lineage.css";
 @import "../styles/structured-map.css";
 @import "../styles/map-visualization.css";
-@import "../styles/zhipanda-modern.css";
 @import "../styles/reduced-motion.css";
 
 @custom-variant dark (&:is(.dark *));

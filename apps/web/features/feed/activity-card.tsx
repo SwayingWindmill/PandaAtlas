@@ -84,7 +84,7 @@ export function ActivityCard({
 
   return (
     <article
-      className="rounded-3xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 shadow-sm md:p-6"
+      className="rounded-[var(--pa-radius-lg)] bg-[var(--pa-color-surface-subtle)] p-5 md:p-6"
       data-testid="activity-card"
       data-activity-id={activity.activity_id}
     >

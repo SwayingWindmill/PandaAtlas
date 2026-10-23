@@ -5,9 +5,9 @@ const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypeScript,
   {
-    // Upstream shadcn/ui ships these files byte-identical to ours and sets state in an effect; keep
-    // them upstream-identical so `shadcn add --overwrite` updates apply cleanly.
-    files: ["components/ui/carousel.tsx", "hooks/use-mobile.ts"],
+    // Upstream shadcn/ui ships this file byte-identical to ours and sets state in an effect; keep
+    // it upstream-identical so `shadcn add --overwrite` updates apply cleanly.
+    files: ["hooks/use-mobile.ts"],
     rules: { "react-hooks/set-state-in-effect": "off" },
   },
   {

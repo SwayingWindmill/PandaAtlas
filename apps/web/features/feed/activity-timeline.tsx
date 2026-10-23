@@ -23,7 +23,7 @@ export function ActivityTimeline({
   const count = feedItems?.length ?? activities?.length ?? 0;
   if (!count) {
     return (
-      <section className="rounded-3xl border border-dashed border-[var(--pa-color-accent-border-14)] bg-[var(--pa-color-accent-fill-04)] p-8 text-center">
+      <section className="rounded-[var(--pa-radius-lg)] bg-[var(--pa-color-surface-subtle)] p-8 text-center">
         <h2 className="text-xl font-semibold text-[var(--fg)]">
           {emptyTitle ?? (locale === "zh" ? "还没有公开动态" : "No public panda updates yet")}
         </h2>

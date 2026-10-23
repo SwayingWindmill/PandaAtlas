@@ -25,6 +25,8 @@ import type {
   TrustedProfileRelationViewModel,
 } from "@/features/profile/profile-page-view-model";
 
+import styles from "./trusted-profile-page.module.css";
+
 export type PublicProfileLocale = "zh" | "en";
 
 interface TrustedProfilePageProps {
@@ -42,10 +44,10 @@ const copy = {
     complete: "资料较完整",
     basic: "基础资料",
     organizing: "资料整理中",
-    back: "返回熊猫图鉴",
+    back: "全部熊猫",
     stableIdentity: "身份记录",
     aliases: "名字与搜索线索",
-    reviewedStory: "熊猫简介",
+    reviewedStory: "简介",
     storyUnavailable: "当前没有这一语言的经核实简介。吱熊猫不会生成占位故事。",
     lifeStatus: "生命状态",
     birth: "出生日期",
@@ -77,15 +79,15 @@ const copy = {
     navLabel: "熊猫资料章节",
     nav: [
       ["概览", "overview"],
-      ["熊猫简介", "story"],
-      ["时间线", "timeline"],
-      ["家族", "family"],
+      ["简介", "story"],
+      ["经历", "timeline"],
+      ["家人", "family"],
       ["足迹", "footprint"],
-      ["影像", "media"],
+      ["照片", "media"],
       ["来源", "sources"],
-      ["修订", "revisions"],
+      ["版本", "revisions"],
     ],
-    timeline: "生活时间线",
+    timeline: "经历",
     timelineIntro: "发生日期与来源发布日期分开呈现。宣布迁移不会被写成已经发生。",
     residency: "居住记录",
     transfer: "迁移事件",
@@ -96,7 +98,7 @@ const copy = {
     changesCurrent: "改变当前居住记录",
     noTimeline: "暂无已发布时间线记录。",
     partialTimeline: "当前时间线是已发布子集，不代表完整生平。",
-    family: "家族关系",
+    family: "家人",
     familyIntro: "已确认、暂定和有争议的关系会分别标记；只有家族线索的记录不会被显示成完整熊猫资料。",
     father: "父亲",
     mother: "母亲",
@@ -105,19 +107,19 @@ const copy = {
     grandparents: "祖辈",
     noRelations: "暂无已发布关系记录。",
     noProfile: "目前只有家族关系记录，暂无完整熊猫资料",
-    footprint: "生活足迹",
+    footprint: "生活过的地方",
     footprintIntro: "只展示已发布的机构或粗粒度地点，不推测更精确坐标。",
     noCoordinates: "公开记录没有足够精度用于地理地图。这里采用不带坐标的顺序记录。",
     noFootprint: "暂无已发布居住记录。",
     openPlace: "查看这个地点",
-    media: "影像与许可",
+    media: "照片与许可",
     noMedia: "暂无可公开授权影像",
     noMediaBody: "当前资料明确记录为没有可公开授权的影像。页面不会用来源不明或其他熊猫的图片替代。",
     sourceMedia: "仅提供来源媒体链接",
     sourceMediaBody: "来源页面可供查阅，但其影像未导入图鉴，也不在本站重新授权。",
     sourceMediaAction: "前往来源页面",
     mediaUnavailable: "媒体模块没有可发布的许可状态，已按不可用处理。",
-    sources: "公开来源",
+    sources: "资料来源",
     sourcesIntro: "关键资料可继续查看公开来源和最后核实时间；内部审核材料不会在此页面公开。",
     published: "来源发布日期",
     sourceDateUnavailable: "来源发布日期未提供",
@@ -125,7 +127,7 @@ const copy = {
     changed: "地址或内容已变化",
     restricted: "访问受限",
     unavailable: "当前不可访问",
-    revisions: "资料版本与修订",
+    revisions: "资料版本",
     revisionUnavailable: "当前没有可发布的修订摘要。",
     revisionPartial: "版本标识可用，但当前语言的修订摘要尚未发布。",
     dataVersion: "资料版本",
@@ -140,10 +142,10 @@ const copy = {
     complete: "More complete profile",
     basic: "Basic record",
     organizing: "Record in progress",
-    back: "Back to panda guide",
+    back: "All pandas",
     stableIdentity: "Identity record",
     aliases: "Names and search references",
-    reviewedStory: "Panda introduction",
+    reviewedStory: "About",
     storyUnavailable: "No verified introduction is available in this language. ZhiPanda does not generate a placeholder story.",
     lifeStatus: "Life status",
     birth: "Birth date",
@@ -175,15 +177,15 @@ const copy = {
     navLabel: "Panda profile sections",
     nav: [
       ["Overview", "overview"],
-      ["Panda introduction", "story"],
-      ["Timeline", "timeline"],
+      ["About", "story"],
+      ["Life story", "timeline"],
       ["Family", "family"],
-      ["Footprint", "footprint"],
-      ["Media", "media"],
+      ["Places", "footprint"],
+      ["Photos", "media"],
       ["Sources", "sources"],
-      ["Revisions", "revisions"],
+      ["Version", "revisions"],
     ],
-    timeline: "Life timeline",
+    timeline: "Life story",
     timelineIntro: "Event dates and source publication dates stay distinct. Announcements are not presented as completed moves.",
     residency: "Residency",
     transfer: "Transfer event",
@@ -194,7 +196,7 @@ const copy = {
     changesCurrent: "Changes current residency",
     noTimeline: "No published timeline records are available.",
     partialTimeline: "This timeline is the currently published subset, not a complete life history.",
-    family: "Family relationships",
+    family: "Family",
     familyIntro: "Confirmed, tentative, and disputed relationships are labelled separately. Family-only records are not presented as complete panda profiles.",
     father: "Father",
     mother: "Mother",
@@ -203,19 +205,19 @@ const copy = {
     grandparents: "Grandparents",
     noRelations: "No published relationship records are available.",
     noProfile: "Family relationship record only; no complete panda profile yet",
-    footprint: "Life journey",
+    footprint: "Places lived",
     footprintIntro: "Only published institutions or coarse locations are shown. More precise coordinates are not inferred.",
     noCoordinates: "The public record is not precise enough for a geographic map. This is a coordinate-free ordered record.",
     noFootprint: "No published residency records are available.",
     openPlace: "View this place",
-    media: "Media and licensing",
+    media: "Photos and licences",
     noMedia: "No licensed public media",
     noMediaBody: "The current information states that no licensed public media is available. Unverified imagery or a different panda is never substituted.",
     sourceMedia: "Source-linked media only",
     sourceMediaBody: "The source page may be consulted, but its media is not imported or relicensed by ZhiPanda.",
     sourceMediaAction: "Open source page",
     mediaUnavailable: "The media module has no publishable licence state and is treated as unavailable.",
-    sources: "Public sources",
+    sources: "Sources",
     sourcesIntro: "Key information links to public sources and last-verified dates. Internal review material is not exposed here.",
     published: "Source published",
     sourceDateUnavailable: "Source publication date unavailable",
@@ -223,7 +225,7 @@ const copy = {
     changed: "Address or content changed",
     restricted: "Restricted access",
     unavailable: "Currently unavailable",
-    revisions: "Information version and revisions",
+    revisions: "Data version",
     revisionUnavailable: "No publishable revision record is available.",
     revisionPartial: "Version identifiers are available, but no revision summary is published in this language.",
     dataVersion: "Information version",
@@ -354,10 +356,28 @@ function sourceNames(sourceIds: string[], profile: TrustedProfilePageViewModel):
 }
 
 function ModuleState({ state, locale }: { state: ProfileModuleState; locale: PublicProfileLocale }) {
+  return <span className={styles.state}>{stateLabel(state, locale)}</span>;
+}
+
+function SectionHead({
+  title,
+  intro,
+  state,
+  locale,
+}: {
+  title: string;
+  intro?: string;
+  state?: ProfileModuleState;
+  locale: PublicProfileLocale;
+}) {
   return (
-    <span className="inline-flex rounded-full border border-[var(--pa-color-accent-border-14)] bg-[var(--pa-color-accent-fill-06)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
-      {stateLabel(state, locale)}
-    </span>
+    <header className={styles.sectionHead}>
+      <div>
+        <h2>{title}</h2>
+        {intro ? <p>{intro}</p> : null}
+      </div>
+      {state ? <ModuleState state={state} locale={locale} /> : null}
+    </header>
   );
 }
 
@@ -377,9 +397,7 @@ function SourceAnchors({
     return (
       <span key={sourceId}>
         {index ? ", " : ""}
-        <a href={`#${sourceId}`} className="font-semibold text-[var(--accent)] hover:underline">
-          {source?.publisher ?? sourceId}
-        </a>
+        <a href={`#${sourceId}`}>{source?.publisher ?? sourceId}</a>
       </span>
     );
   })}</>;
@@ -397,12 +415,12 @@ function FactProvenance({
   const t = copy[locale];
   const colon = locale === "zh" ? "：" : ": ";
   return (
-    <dd className="mt-1 text-xs leading-5 text-[var(--muted)]">
-      {t.conclusionStatus}{colon}{factStatusLabel(fact.status, locale)} | {t.precision}{colon}{precisionLabel(fact.precision, locale)}
-      <> | {t.source}{colon}<SourceAnchors sourceIds={fact.sourceIds} profile={profile} locale={locale} /></>
-      {fact.lastVerifiedAt ? <> | {t.verified}{colon}{fact.lastVerifiedAt}</> : null}
-      {fact.candidateValues.length ? <span className="mt-1 block">{t.candidateValues}{colon}{fact.candidateValues.map(String).join(", ")}</span> : null}
-      {fact.supersededValues.length ? <span className="mt-1 block">{t.supersededValues}{colon}{fact.supersededValues.map(String).join(", ")}</span> : null}
+    <dd className={styles.provenance}>
+      {factStatusLabel(fact.status, locale)} · {t.precision}{colon}{precisionLabel(fact.precision, locale)}
+      <span>{t.source}{colon}<SourceAnchors sourceIds={fact.sourceIds} profile={profile} locale={locale} /></span>
+      {fact.lastVerifiedAt ? <span>{t.verified}{colon}{fact.lastVerifiedAt}</span> : null}
+      {fact.candidateValues.length ? <span>{t.candidateValues}{colon}{fact.candidateValues.map(String).join(", ")}</span> : null}
+      {fact.supersededValues.length ? <span>{t.supersededValues}{colon}{fact.supersededValues.map(String).join(", ")}</span> : null}
     </dd>
   );
 }
@@ -424,29 +442,28 @@ function RelationList({
   if (!items.length) return null;
   return (
     <div data-testid={testId}>
-      <h3 className="text-xl font-semibold">{title}</h3>
-      <ol className="mt-4 grid gap-3">
-        {items.map((item, index) => (
-          <li key={`${item.relation}-${item.id}`} className="rounded-xl border border-[var(--pa-color-accent-border-09)] p-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <p>
-                <span className="mr-3 text-[var(--accent)]">{index + 1}.</span>
-                {item.href ? (
-                  <Link href={item.href as Route} lang={item.nameLanguage} className="font-semibold text-[var(--accent)] hover:underline">
-                    {item.name}
-                  </Link>
-                ) : <span lang={item.nameLanguage} className="font-semibold">{item.name}</span>}
-              </p>
-              <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
-                {relationStatusLabel(item.status, locale)}
+      <h3 className={styles.kinTitle}>{title}</h3>
+      <ol className={styles.kin}>
+        {items.map((item) => {
+          const body = (
+            <>
+              <i aria-hidden="true">{Array.from(item.name)[0]}</i>
+              <span>
+                <b lang={item.nameLanguage}>{item.name}</b>
+                <small>
+                  {relationStatusLabel(item.status, locale)}
+                  {!item.profileAvailable ? ` · ${t.noProfile}` : null}
+                </small>
+                <small>{t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} /></small>
               </span>
-            </div>
-            {!item.profileAvailable ? <p className="mt-2 text-xs text-[var(--muted)]">{t.noProfile}</p> : null}
-            <p className="mt-2 text-xs text-[var(--muted)]">
-              {t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} />
-            </p>
-          </li>
-        ))}
+            </>
+          );
+          return (
+            <li key={`${item.relation}-${item.id}`}>
+              {item.href ? <Link href={item.href as Route}>{body}</Link> : <div>{body}</div>}
+            </li>
+          );
+        })}
       </ol>
     </div>
   );
@@ -495,6 +512,7 @@ export function TrustedProfilePage({
     summary: profile.summary,
     coverImageUrl: envelope.data.panda.cover_image_url,
   }));
+  const shell = publicShellClassName;
 
   return (
     <>
@@ -507,192 +525,102 @@ export function TrustedProfilePage({
       <main
         id="main-content"
         lang={locale === "zh" ? "zh-CN" : "en"}
-        className="trusted-profile-theme bg-[var(--bg)] pb-20 text-[var(--fg)]"
+        className={styles.page}
         data-testid="trusted-panda-profile"
       >
-        <section className={`${publicShellClassName} pt-6`}>
-          <PublicDeliveryNotice
-            locale={locale}
-            release={envelope.release}
-            delivery={envelope.delivery}
-            coverage={envelope.coverage}
-            localeDelivery={envelope.locale}
-          />
-        </section>
+        <nav className={`${shell} ${styles.crumbs}`} aria-label={locale === "zh" ? "位置" : "Breadcrumb"}>
+          <Link href={profile.atlasHref as Route}>{t.back}</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{profile.displayName}</span>
+        </nav>
 
-        <section id="overview" className={`${publicShellClassName} scroll-mt-36 py-8 lg:py-12`}>
-          <div data-testid="identity-first-card" className="pa-profile-hero grid gap-8 border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 md:p-8 lg:grid-cols-[minmax(18rem,0.85fr)_minmax(0,1.15fr)]">
-            <div className="lg:row-span-2">
-              <LicensedMediaFigure
-                locale={locale}
-                variant="profile"
-                src={primaryMedia?.url ?? null}
-                srcSet={primarySrcSet}
-                sizes="(min-width: 1024px) 40vw, 100vw"
-                width={primaryMedia?.width}
-                height={primaryMedia?.height}
-                alt={primaryMedia?.alt ?? t.noMedia}
-                credit={primaryMedia?.credit}
-                rights={primaryMedia?.rights}
-                sourceUrl={primaryMedia?.sourceUrl}
-                fallbackTitle={t.noMedia}
-                fallbackBody={t.noMediaBody}
-                priority
-                testId="profile-hero-media"
-              />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <Link href={profile.atlasHref as Route} className="font-semibold text-[var(--accent)] hover:underline">{t.back}</Link>
-                <span aria-hidden="true">/</span>
-                <span>{archiveLabel(profile, locale)}</span>
-              </div>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <p className="text-sm font-semibold text-[var(--accent)]">{t.archive}</p>
-                <span className="rounded-full bg-[var(--pa-color-accent-soft)] px-3 py-1 text-xs font-bold text-[var(--accent)]">{cohortLabel}</span>
-              </div>
-              <h1 lang={profile.displayNameLanguage} className="mt-3 text-5xl leading-tight text-[var(--fg)] sm:text-6xl" style={{ fontFamily: "var(--font-display)" }}>
-                {profile.displayName}
-              </h1>
-              {profile.displayNameTranslation === "missing" ? <p className="mt-2 text-sm text-[var(--muted)]">{t.missingTranslation}</p> : null}
-              <p className="mt-2 text-lg text-[var(--muted)]">
-                {profile.alternateName}{profile.pinyin ? ` / ${profile.pinyin}` : ""}
-              </p>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--muted)]">{profile.summary ?? t.unknown}</p>
-              {profile.lastVerifiedAt ? <p className="mt-3 text-sm font-semibold text-[var(--accent)]">{t.verified}{locale === "zh" ? "：" : ": "}{profile.lastVerifiedAt}</p> : null}
-              <div className="mt-6 flex flex-wrap gap-2" aria-label={locale === "zh" ? "继续探索" : "Continue exploring"}>
-                <Link href={`/${locale}/moments?panda=${profile.canonicalSlug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] bg-[var(--pa-color-accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? "查看熊猫时光" : "View Panda Moments"}</Link>
-                <Link href={`/${locale}/families?view=lineage&focus=${profile.canonicalSlug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{locale === "zh" ? "查看家族谱系" : "View family lineage"}</Link>
-                {familyStories.map((story) => {
-                  const storyContent = localizedEditorial(story.localized_content, locale);
-                  return <Link key={story.id} href={`/${locale}/families/${story.slug}` as Route} className="rounded-full border border-[var(--pa-color-accent-border-12)] px-4 py-2 text-sm font-semibold text-[var(--accent)] hover:underline">{storyContent.title}</Link>;
-                })}
-              </div>
+        <section id="overview" className={`${shell} ${styles.hero}`} data-testid="identity-first-card">
+          <div className={styles.heroMedia}>
+            <LicensedMediaFigure
+              locale={locale}
+              variant="profile"
+              src={primaryMedia?.url ?? null}
+              srcSet={primarySrcSet}
+              sizes="(min-width: 1000px) 55vw, 100vw"
+              width={primaryMedia?.width}
+              height={primaryMedia?.height}
+              alt={primaryMedia?.alt ?? t.noMedia}
+              credit={primaryMedia?.credit}
+              rights={primaryMedia?.rights}
+              sourceUrl={primaryMedia?.sourceUrl}
+              fallbackTitle={t.noMedia}
+              fallbackBody={t.noMediaBody}
+              priority
+              testId="profile-hero-media"
+            />
+          </div>
+          <div className={styles.heroCopy}>
+            <p className={styles.badges}>
+              <span>{cohortLabel}</span>
+              <span>{archiveLabel(profile, locale)}</span>
+            </p>
+            <h1 lang={profile.displayNameLanguage}>{profile.displayName}</h1>
+            {profile.displayNameTranslation === "missing" ? <p className={styles.note}>{t.missingTranslation}</p> : null}
+            <p className={styles.alt}>{profile.alternateName}{profile.pinyin ? ` · ${profile.pinyin}` : ""}</p>
+            <p className={styles.bio}>{profile.summary ?? t.unknown}</p>
 
-              <dl className="mt-8 grid gap-5 sm:grid-cols-2">
-                {[
-                  ["fact-life-status", t.lifeStatus, lifeStatusFact],
-                  ["fact-birth", t.birth, birthFact],
-                  ["fact-sex", t.sex, sexFact],
-                  ["fact-place", t.place, placeFact],
-                ].map(([testId, label, fact]) => (
-                  <div key={String(testId)} data-testid={String(testId)}>
-                    <dt className="text-xs font-semibold text-[var(--muted)]">{String(label)}</dt>
-                    <dd className="mt-2 text-lg font-semibold">{factValue(fact as TrustedProfileFactViewModel, profile, locale)}</dd>
-                    <FactProvenance fact={fact as TrustedProfileFactViewModel} locale={locale} profile={profile} />
-                  </div>
-                ))}
-                <div data-testid="fact-parents">
-                  <dt className="text-xs font-semibold text-[var(--muted)]">{t.parents}</dt>
-                  <dd className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-lg font-semibold">
-                    {parents.length ? parents.map((item) => item.href ? (
-                      <Link key={item.id} href={item.href as Route} lang={item.nameLanguage} className="text-[var(--accent)] hover:underline">{item.name}</Link>
-                    ) : <span key={item.id} lang={item.nameLanguage}>{item.name}</span>) : t.noRelations}
-                  </dd>
-                  <dd className="mt-1 text-xs text-[var(--muted)]">
-                    {parents.length ? parents.map((item) => relationStatusLabel(item.status, locale)).join(" / ") : t.noReviewedSource}
-                  </dd>
+            <dl className={styles.facts}>
+              {([
+                ["fact-life-status", t.lifeStatus, lifeStatusFact],
+                ["fact-birth", t.birth, birthFact],
+                ["fact-sex", t.sex, sexFact],
+                ["fact-place", t.place, placeFact],
+              ] as const).map(([testId, label, fact]) => (
+                <div key={testId} data-testid={testId}>
+                  <dt>{label}</dt>
+                  <dd>{factValue(fact, profile, locale)}</dd>
+                  <FactProvenance fact={fact} locale={locale} profile={profile} />
                 </div>
-              </dl>
+              ))}
+              <div data-testid="fact-parents">
+                <dt>{t.parents}</dt>
+                <dd>
+                  {parents.length ? parents.map((item, index) => (
+                    <span key={item.id}>
+                      {index ? " · " : ""}
+                      {item.href
+                        ? <Link href={item.href as Route} lang={item.nameLanguage}>{item.name}</Link>
+                        : <span lang={item.nameLanguage}>{item.name}</span>}
+                    </span>
+                  )) : t.noRelations}
+                </dd>
+                <dd className={styles.provenance}>
+                  {parents.length ? parents.map((item) => relationStatusLabel(item.status, locale)).join(" / ") : t.noReviewedSource}
+                </dd>
+              </div>
+            </dl>
+
+            <div className={styles.actions}>
+              <PandaFavoriteControl stableId={profile.stableId} slug={profile.canonicalSlug} name={profile.displayName} locale={locale} />
+              <PandaSeenControl stableId={profile.stableId} slug={profile.canonicalSlug} name={profile.displayName} locale={locale} />
             </div>
 
-            <aside className="flex flex-col justify-between gap-8 border-t border-[var(--pa-color-accent-border-12)] pt-6 lg:col-start-2">
-              <div>
-                <p className="text-sm font-semibold text-[var(--accent)]">{archiveLabel(profile, locale)}</p>
-                <dl className="mt-4 text-xs">
-                  <div>
-                    <dt className="text-[var(--muted)]">{t.stableIdentity}</dt>
-                    <dd className="mt-1 break-all font-semibold">{profile.stableId}</dd>
-                  </div>
-                </dl>
-                <p className="mt-5 text-sm leading-7 text-[var(--muted)]">{t.aliases}</p>
-                <ul className="mt-4 grid gap-2" aria-label={t.aliases}>
-                  {profile.identityReferences.map((reference) => (
-                    <li key={`${reference.kind}-${reference.value}`} className="rounded-lg border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] px-3 py-2 text-xs">
-                      <span className="font-semibold">{reference.value}</span>
-                      <span className="mt-1 block text-[var(--muted)]">{t.source}: {sourceNames(reference.sourceIds, profile) || t.noReviewedSource}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="grid gap-5">
-                <PandaFavoriteControl
-                  stableId={profile.stableId}
-                  slug={profile.canonicalSlug}
-                  name={profile.displayName}
-                  locale={locale}
-                />
-                <PandaSeenControl
-                  stableId={profile.stableId}
-                  slug={profile.canonicalSlug}
-                  name={profile.displayName}
-                  locale={locale}
-                />
-              </div>
-            </aside>
+            <ul className={styles.explore} aria-label={locale === "zh" ? "继续探索" : "Continue exploring"}>
+              <li><Link href={`/${locale}/moments?panda=${profile.canonicalSlug}` as Route}>{locale === "zh" ? "查看熊猫时光" : "View Panda Moments"}</Link></li>
+              <li><Link href={`/${locale}/families?view=lineage&focus=${profile.canonicalSlug}` as Route}>{locale === "zh" ? "查看家族谱系" : "View family lineage"}</Link></li>
+              {familyStories.map((story) => (
+                <li key={story.id}>
+                  <Link href={`/${locale}/families/${story.slug}` as Route}>{localizedEditorial(story.localized_content, locale).title}</Link>
+                </li>
+              ))}
+            </ul>
+            {profile.lastVerifiedAt ? <p className={styles.note}>{t.verified}{locale === "zh" ? "：" : ": "}{profile.lastVerifiedAt}</p> : null}
           </div>
         </section>
 
-        <nav aria-label={t.navLabel} className="sticky top-[78px] z-20 border-y border-[var(--pa-color-accent-border-08)] bg-[var(--card)]">
-          <div className={`${publicShellClassName} flex flex-wrap gap-x-5 gap-y-1 py-3 text-sm font-semibold`}>
-            {t.nav.map(([label, id]) => (
-              <a key={id} href={`#${id}`} className="min-w-0 rounded-lg px-2 py-2 break-words focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
-                {label}
-              </a>
-            ))}
+        <nav aria-label={t.navLabel} className={styles.sectionNav}>
+          <div className={shell}>
+            {t.nav.map(([label, id]) => <a key={id} href={`#${id}`}>{label}</a>)}
           </div>
         </nav>
 
-        <section id="story" className={`${publicShellClassName} scroll-mt-36 py-14`} data-testid="reviewed-story">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.reviewedStory}</h2>
-            <ModuleState state={profile.story.state === "reviewed" ? "complete" : "unavailable"} locale={locale} />
-          </div>
-          {profile.story.state === "reviewed" ? (
-            <div className="mt-6 max-w-3xl space-y-4 text-base leading-8 text-[var(--muted)]">
-              {profile.story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            </div>
-          ) : <p className="mt-6 text-sm leading-7 text-[var(--muted)]">{t.storyUnavailable}</p>}
-        </section>
-
-        <section id="timeline" className={`${publicShellClassName} scroll-mt-36 py-14`}>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.timeline}</h2>
-            <ModuleState state={profile.timeline.state} locale={locale} />
-          </div>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">{t.timelineIntro}</p>
-          {profile.timeline.state === "partial" ? <p className="mt-3 rounded-xl bg-[var(--pa-color-warning-fill-09)] p-4 text-sm">{t.partialTimeline}</p> : null}
-          {profile.timeline.items.length ? (
-            <ol className="mt-8 grid gap-4" data-testid="timeline-list">
-              {profile.timeline.items.map((item) => (
-                <li key={item.id} className="grid gap-3 rounded-xl border border-[var(--pa-color-accent-border-09)] bg-[var(--card)] p-5 sm:grid-cols-[9rem_1fr]">
-                  <div>
-                    <time className="font-semibold" dateTime={item.date}>{dateLabel(item.date, locale, item.datePrecision)}</time>
-                    <p className="mt-1 text-xs text-[var(--accent)]">{eventKindLabel(item.kind, locale)}</p>
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <p className="font-semibold">{item.fromLabel ? `${item.fromLabel} → ${item.toLabel}` : item.toLabel || t.unknown}</p>
-                      <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">{eventStatusLabel(item.status, locale)}</span>
-                    </div>
-                    {item.endDate ? <p className="mt-2 text-sm text-[var(--muted)]">{dateLabel(item.date, locale, item.datePrecision)} - {dateLabel(item.endDate, locale, item.endPrecision ?? "day")}</p> : item.kind === "residency" ? <p className="mt-2 text-sm text-[var(--muted)]">{t.current}</p> : null}
-                    {item.changesCurrentResidency ? <p className="mt-2 text-xs font-semibold text-[var(--accent)]">{t.changesCurrent}</p> : null}
-                    <p className="mt-2 text-xs text-[var(--muted)]">{t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} /></p>
-                    <ul className="mt-1 text-xs text-[var(--muted)]">
-                      {item.sourceIds.map((sourceId) => {
-                        const source = profile.sources.find((candidate) => candidate.id === sourceId);
-                        return <li key={sourceId}>{t.published}: {source?.publishedAt ? dateLabel(source.publishedAt, locale) : t.sourceDateUnavailable}</li>;
-                      })}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          ) : <p className="mt-6 text-sm text-[var(--muted)]" data-testid="timeline-empty-state">{t.noTimeline}</p>}
-        </section>
-
         {activity || activityUnavailable ? (
-          <div className={`${publicShellClassName} pb-14`}>
+          <div className={`${shell} ${styles.section}`}>
             <PublicPandaActivity
               locale={locale}
               panda={envelope.data.panda}
@@ -703,116 +631,163 @@ export function TrustedProfilePage({
           </div>
         ) : null}
 
-        <section id="family" className="scroll-mt-36 bg-[var(--card)] py-14">
-          <div className={publicShellClassName}>
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.family}</h2>
-              <ModuleState state={profile.family.state} locale={locale} />
+        <section id="story" className={`${shell} ${styles.section}`} data-testid="reviewed-story">
+          <SectionHead title={t.reviewedStory} state={profile.story.state === "reviewed" ? "complete" : "unavailable"} locale={locale} />
+          {profile.story.state === "reviewed" ? (
+            <div className={styles.story}>
+              {profile.story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </div>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">{t.familyIntro}</p>
-            {profile.family.state === "empty" ? <p className="mt-6 text-sm text-[var(--muted)]">{t.noRelations}</p> : (
-              <div className="mt-8 grid gap-8 lg:grid-cols-2" data-testid="lineage-text-view">
+          ) : <p className={styles.empty}>{t.storyUnavailable}</p>}
+        </section>
+
+        <div className={`${shell} ${styles.two}`}>
+          <section id="timeline" className={`${styles.box} ${styles.soft}`}>
+            <SectionHead title={t.timeline} intro={t.timelineIntro} state={profile.timeline.state} locale={locale} />
+            {profile.timeline.state === "partial" ? <p className={styles.warning}>{t.partialTimeline}</p> : null}
+            {profile.timeline.items.length ? (
+              <ol className={styles.timeline} data-testid="timeline-list">
+                {profile.timeline.items.map((item) => (
+                  <li key={item.id} data-current={item.kind === "residency" && !item.endDate ? "" : undefined}>
+                    <p className={styles.when}>
+                      <time dateTime={item.date}>{dateLabel(item.date, locale, item.datePrecision)}</time>
+                      {item.endDate ? <> – {dateLabel(item.endDate, locale, item.endPrecision ?? "day")}</> : null}
+                      {" · "}{eventKindLabel(item.kind, locale)} · {eventStatusLabel(item.status, locale)}
+                    </p>
+                    <p className={styles.what}>{item.fromLabel ? `${item.fromLabel} → ${item.toLabel}` : item.toLabel || t.unknown}</p>
+                    {!item.endDate && item.kind === "residency" ? <p className={styles.tiny}>{t.current}</p> : null}
+                    {item.changesCurrentResidency ? <p className={styles.tiny}>{t.changesCurrent}</p> : null}
+                    <p className={styles.tiny}>
+                      {t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} />
+                      {item.sourceIds.map((sourceId) => {
+                        const source = profile.sources.find((candidate) => candidate.id === sourceId);
+                        return <span key={sourceId}> · {t.published}: {source?.publishedAt ? dateLabel(source.publishedAt, locale) : t.sourceDateUnavailable}</span>;
+                      })}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            ) : <p className={styles.empty} data-testid="timeline-empty-state">{t.noTimeline}</p>}
+          </section>
+
+          <section id="family" className={`${styles.box} ${styles.outline}`}>
+            <SectionHead title={t.family} intro={t.familyIntro} state={profile.family.state} locale={locale} />
+            {profile.family.state === "empty" ? <p className={styles.empty}>{t.noRelations}</p> : (
+              <div className={styles.family} data-testid="lineage-text-view">
                 <RelationList title={t.parents} items={profile.family.parents} locale={locale} profile={profile} testId="parent-relations" />
                 <RelationList title={t.children} items={profile.family.children} locale={locale} profile={profile} testId="child-relations" />
                 <RelationList title={t.siblings} items={profile.family.related.filter((item) => item.relation === "sibling")} locale={locale} profile={profile} />
                 <RelationList title={t.grandparents} items={profile.family.related.filter((item) => item.relation === "grandparent")} locale={locale} profile={profile} />
               </div>
             )}
+          </section>
+        </div>
+
+        <section id="footprint" className={`${shell} ${styles.section}`}>
+          <div className={styles.visit}>
+            <SectionHead title={t.footprint} intro={t.footprintIntro} state={profile.footprint.state} locale={locale} />
+            <p className={styles.tiny}>{t.noCoordinates}</p>
+            {profile.footprint.stops.length ? (
+              <ol data-testid="footprint-text-view">
+                {profile.footprint.stops.map((item) => (
+                  <li key={item.id}>
+                    <span className={styles.stopDate}>
+                      {dateLabel(item.startDate, locale, item.startPrecision)} – {item.endDate ? dateLabel(item.endDate, locale, item.endPrecision ?? "day") : t.current}
+                    </span>
+                    <span>
+                      <b>{item.label || t.unknown}</b>
+                      <small>
+                        {eventStatusLabel(item.status, locale)}
+                        {item.lastVerifiedAt ? ` · ${t.verified}: ${item.lastVerifiedAt}` : null}
+                        {" · "}{t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} />
+                      </small>
+                    </span>
+                    {item.entityHref ? <Link href={item.entityHref as Route}>{t.openPlace}</Link> : <span />}
+                  </li>
+                ))}
+              </ol>
+            ) : <p className={styles.empty}>{t.noFootprint}</p>}
           </div>
         </section>
 
-        <section id="footprint" className={`${publicShellClassName} scroll-mt-36 py-14`}>
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.footprint}</h2>
-            <ModuleState state={profile.footprint.state} locale={locale} />
-          </div>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">{t.footprintIntro}</p>
-          <p className="mt-3 text-sm text-[var(--muted)]">{t.noCoordinates}</p>
-          {profile.footprint.stops.length ? (
-            <ol className="mt-8 grid gap-3" data-testid="footprint-text-view">
-              {profile.footprint.stops.map((item, index) => (
-                <li key={item.id} className="rounded-xl border border-[var(--pa-color-accent-border-09)] bg-[var(--card)] p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <p className="font-semibold">{index + 1}. {item.label || t.unknown}</p>
-                    <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">{eventStatusLabel(item.status, locale)}</span>
-                  </div>
-                  <p className="mt-2 text-sm text-[var(--muted)]">{dateLabel(item.startDate, locale, item.startPrecision)} - {item.endDate ? dateLabel(item.endDate, locale, item.endPrecision ?? "day") : t.current}</p>
-                  {item.lastVerifiedAt ? <p className="mt-2 text-xs text-[var(--muted)]">{t.verified}: {item.lastVerifiedAt}</p> : null}
-                  <p className="mt-2 text-xs text-[var(--muted)]">{t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} /></p>
-                  {item.entityHref ? (
-                    <Link href={item.entityHref as Route} className="mt-3 inline-flex text-sm font-semibold text-[var(--accent)] hover:underline">
-                      {t.openPlace}
-                    </Link>
-                  ) : null}
+        <section id="media" className={`${shell} ${styles.section}`}>
+          <SectionHead title={t.media} locale={locale} />
+          {profile.media.state === "gallery" ? <TrustedProfileMediaGallery locale={locale} media={profile.media} /> : null}
+          {profile.media.state === "no_licensed_media" ? (
+            <div className={styles.callout} data-testid="media-empty-state">
+              <strong>{t.noMedia}</strong>
+              <p>{t.noMediaBody}</p>
+            </div>
+          ) : null}
+          {profile.media.state === "source_link_only" ? (
+            <div className={styles.callout} data-testid="media-source-link-state">
+              <strong>{t.sourceMedia}</strong>
+              <p>{t.sourceMediaBody}</p>
+              {mediaSources.map((source) => (
+                <a key={source.id} href={source.url} target="_blank" rel="noreferrer">
+                  {t.sourceMediaAction}<ExternalLink aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          ) : null}
+          {profile.media.state === "unavailable" ? <p className={styles.empty}>{t.mediaUnavailable}</p> : null}
+        </section>
+
+        <section id="sources" className={`${shell} ${styles.section}`}>
+          <SectionHead title={t.sources} intro={t.sourcesIntro} locale={locale} />
+          <ul className={styles.sources} data-testid="evidence-list">
+            {profile.sources.map((source) => (
+              <li key={source.id}>
+                <article id={source.id}>
+                  <p className={styles.tiny}>
+                    {source.publisher} · {source.accessState === "accessible" ? t.accessible : source.accessState === "changed" ? t.changed : source.accessState === "restricted" ? t.restricted : t.unavailable}
+                  </p>
+                  <h3>{source.title}</h3>
+                  <p className={styles.tiny}>
+                    {t.published}: {source.publishedAt ? dateLabel(source.publishedAt, locale) : t.sourceDateUnavailable} · {t.verified}: {source.lastVerifiedAt}
+                  </p>
+                  <p className={styles.tiny}>{source.language} · {source.rawAccessState}</p>
+                  <a href={source.url} target="_blank" rel="noreferrer">{t.source}<ExternalLink aria-hidden="true" /></a>
+                </article>
+              </li>
+            ))}
+          </ul>
+          <div className={styles.identity}>
+            <h3>{t.aliases}</h3>
+            <p className={styles.tiny}>{t.stableIdentity}: {profile.stableId}</p>
+            <ul aria-label={t.aliases}>
+              {profile.identityReferences.map((reference) => (
+                <li key={`${reference.kind}-${reference.value}`}>
+                  <b>{reference.value}</b>
+                  <small>{t.source}: {sourceNames(reference.sourceIds, profile) || t.noReviewedSource}</small>
                 </li>
               ))}
-            </ol>
-          ) : <p className="mt-6 text-sm text-[var(--muted)]">{t.noFootprint}</p>}
-        </section>
-
-        <section id="media" className="scroll-mt-36 bg-[var(--card)] py-14">
-          <div className={publicShellClassName}>
-            <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.media}</h2>
-            {profile.media.state === "gallery" ? (
-              <TrustedProfileMediaGallery locale={locale} media={profile.media} />
-            ) : null}
-            {profile.media.state === "no_licensed_media" ? (
-              <div className="mt-8 rounded-2xl border border-dashed border-[var(--pa-color-accent-border-22)] bg-[var(--pa-color-accent-fill-05)] p-8 sm:p-12" data-testid="media-empty-state">
-                <p className="text-2xl font-semibold">{t.noMedia}</p>
-                <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">{t.noMediaBody}</p>
-              </div>
-            ) : null}
-            {profile.media.state === "source_link_only" ? (
-              <div className="mt-8 rounded-2xl border border-[var(--pa-color-accent-border-12)] bg-[var(--pa-color-accent-fill-05)] p-8 sm:p-12" data-testid="media-source-link-state">
-                <p className="text-2xl font-semibold">{t.sourceMedia}</p>
-                <p className="mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">{t.sourceMediaBody}</p>
-                {mediaSources.map((source) => (
-                  <a key={source.id} href={source.url} target="_blank" rel="noreferrer" className="mt-5 mr-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] hover:underline">
-                    {t.sourceMediaAction}<ExternalLink className="h-4 w-4" aria-hidden="true" />
-                  </a>
-                ))}
-              </div>
-            ) : null}
-            {profile.media.state === "unavailable" ? <p className="mt-8 text-sm text-[var(--muted)]">{t.mediaUnavailable}</p> : null}
+            </ul>
           </div>
         </section>
 
-        <section id="sources" className={`${publicShellClassName} scroll-mt-36 py-14`}>
-          <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.sources}</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">{t.sourcesIntro}</p>
-          <div className="mt-8 grid gap-4" data-testid="evidence-list">
-            {profile.sources.map((source) => (
-              <article id={source.id} key={source.id} className="scroll-mt-36 rounded-xl border border-[var(--pa-color-accent-border-09)] bg-[var(--card)] p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="text-xs font-semibold text-[var(--accent)]">{source.publisher}</p>
-                  <span className="rounded-full bg-[var(--pa-color-accent-fill-08)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)]">
-                    {source.accessState === "accessible" ? t.accessible : source.accessState === "changed" ? t.changed : source.accessState === "restricted" ? t.restricted : t.unavailable}
-                  </span>
-                </div>
-                <h3 className="mt-2 text-lg font-semibold">{source.title}</h3>
-                <p className="mt-2 text-xs text-[var(--muted)]">{t.published}: {source.publishedAt ? dateLabel(source.publishedAt, locale) : t.sourceDateUnavailable} | {t.verified}: {source.lastVerifiedAt}</p>
-                <p className="mt-1 text-xs text-[var(--muted)]">{source.language} · {source.rawAccessState}</p>
-                <a href={source.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)] hover:underline">
-                  {t.source}<ExternalLink className="h-4 w-4" aria-hidden="true" />
-                </a>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section id="revisions" className="scroll-mt-36 bg-[var(--card)] py-14">
-          <div className={publicShellClassName} data-testid="revision-summary">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-3xl" style={{ fontFamily: "var(--font-display)" }}>{t.revisions}</h2>
-              <ModuleState state={profile.revision.state === "reviewed" ? "complete" : profile.revision.state === "partial" ? "partial" : "unavailable"} locale={locale} />
-            </div>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--muted)]">
+        <section id="revisions" className={`${shell} ${styles.section}`}>
+          <div className={`${styles.box} ${styles.soft}`} data-testid="revision-summary">
+            <SectionHead
+              title={t.revisions}
+              state={profile.revision.state === "reviewed" ? "complete" : profile.revision.state === "partial" ? "partial" : "unavailable"}
+              locale={locale}
+            />
+            <p className={styles.story}>
               {profile.revision.summary ?? (profile.revision.state === "partial" ? t.revisionPartial : t.revisionUnavailable)}
             </p>
-            <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2">
-              <div><dt className="text-[var(--muted)]">{t.dataVersion}</dt><dd className="mt-1 font-semibold">{profile.revision.dataVersion ?? t.unknown}</dd></div>
-              <div><dt className="text-[var(--muted)]">{t.schema}</dt><dd className="mt-1 font-semibold">{profile.revision.publicSchemaVersion ?? t.unknown}</dd></div>
+            <dl className={styles.versions}>
+              <div><dt>{t.dataVersion}</dt><dd>{profile.revision.dataVersion ?? t.unknown}</dd></div>
+              <div><dt>{t.schema}</dt><dd>{profile.revision.publicSchemaVersion ?? t.unknown}</dd></div>
             </dl>
+          </div>
+          <div className={styles.notice}>
+            <PublicDeliveryNotice
+              locale={locale}
+              release={envelope.release}
+              delivery={envelope.delivery}
+              coverage={envelope.coverage}
+              localeDelivery={envelope.locale}
+            />
           </div>
         </section>
       </main>

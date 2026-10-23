@@ -179,10 +179,9 @@ test("bilingual Home tolerates a simulated 200-percent text-only resize", async 
     });
 
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
-    // Rails scroll or clip horizontally by design; their off-screen cards do not overflow the page.
+    // Scrollers clip horizontally by design; their off-screen children do not overflow the page.
     const overflowing = await page.locator("*").evaluateAll((elements) => elements
       .filter((element) => {
-        if (element.closest("[data-panda-rail-track], [data-slot='carousel-content']")) return false;
         for (let parent = element.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
           if (["auto", "scroll"].includes(getComputedStyle(parent).overflowX)) return false;
         }

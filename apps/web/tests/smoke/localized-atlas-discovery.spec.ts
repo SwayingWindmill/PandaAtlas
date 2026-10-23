@@ -23,7 +23,7 @@ test("submits native filters from the keyboard and canonicalizes default values"
   await status.focus();
   await expect(status).toBeFocused();
   await status.selectOption("alive");
-  await page.getByRole("button", { name: "应用搜索与筛选" }).last().press("Enter");
+  await page.getByRole("button", { name: "应用筛选" }).press("Enter");
 
   await expect(page).toHaveURL(/\/zh\/pandas\?status=alive$/);
   await expect(page.getByTestId("atlas-result-summary")).toContainText("1 个筛选条件生效");

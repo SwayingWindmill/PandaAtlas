@@ -1,29 +1,24 @@
 /*
  * The one design-token source for the Web app.
  *
- * 1. Brand primitives (--zp-*): the v09 palette, fonts, radii and shadow. Raw values live only here.
- * 2. Public semantic tokens (--pa-*): what public pages and the navigation read. The default is
- *    v09's light paper register; the homepage and dark-mode profile re-point these in their own scope.
+ * 1. Brand primitives (--zp-*): the ink-on-white palette, fonts, radii and shadows. Raw values live only here.
+ * 2. Public semantic tokens (--pa-*): what public pages and the navigation read.
  * 3. shadcn/ui semantic tokens: read through Tailwind's @theme mapping in app/globals.css.
  * 4. Admin context: the staff console's dense palette, scoped to .pa-admin-shell.
  */
 
 :root {
   /* 1. Brand primitives */
-  --zp-brand-deep: #003e40;
-  --zp-brand-ink: #002526;
-  --zp-brand-teal: #0b5353;
-  --zp-brand-ivory: #fffff2;
-  --zp-brand-paper: #f7f5e8;
-  --zp-brand-sand: #f2f0e6;
-  --zp-brand-mist: #d8ddd6;
-  --zp-brand-sage: #60716b;
-  --zp-brand-acid: #fbff36;
-  --zp-brand-acid-strong: #eff51a;
-  --zp-brand-leaf: #65b878;
-  --zp-brand-water: #66c8cb;
-  --zp-brand-ochre: #845c19;
-  --zp-brand-alert: #b42318;
+  --zp-ink: #111311;
+  --zp-ink-strong: #000000;
+  --zp-ink-soft: #2b2f2b;
+  --zp-white: #ffffff;
+  --zp-soft: #f4f5f2;
+  --zp-soft-strong: #e9ebe6;
+  --zp-line: #e6e8e3;
+  --zp-muted: #5e635d;
+  --zp-ochre: #845c19;
+  --zp-alert: #b42318;
 
   --zp-font-display-latin: "Archivo Variable", "Arial Narrow", sans-serif;
   --zp-font-display-cjk: "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -31,61 +26,52 @@
   --zp-font-ui-latin: "Archivo Variable", "Noto Sans SC Variable", sans-serif;
 
   --zp-radius-action: 999px;
-  --zp-radius-card: 1.5rem;
+  --zp-radius-card: 1.75rem;
   --zp-radius-scene: 2rem;
-  --zp-shadow-float: 0 0.75rem 2.5rem rgba(0, 37, 38, 0.14);
+  --zp-shadow-float: 0 1.5rem 3.75rem -1.25rem rgba(17, 19, 17, 0.35);
 
   --font-display: var(--zp-font-display-latin);
   --font-body: var(--zp-font-body);
 
-  /* 2. Public semantic tokens: v09 paper register */
-  --pa-color-canvas: var(--zp-brand-paper);
-  --pa-color-surface: var(--zp-brand-ivory);
-  --pa-color-surface-subtle: var(--zp-brand-sand);
-  --pa-color-ink: var(--zp-brand-ink);
-  --pa-color-ink-muted: var(--zp-brand-sage);
-  --pa-color-accent: var(--zp-brand-deep);
-  --pa-color-accent-strong: var(--zp-brand-ink);
-  --pa-color-accent-soft: #eff3ed;
-  --pa-color-highlight: var(--zp-brand-acid);
-  --pa-color-highlight-ink: var(--zp-brand-ink);
-  --pa-color-line: var(--zp-brand-mist);
-  --pa-color-warning: var(--zp-brand-ochre);
-  --pa-color-danger: var(--zp-brand-alert);
+  /* 2. Public semantic tokens */
+  --pa-color-canvas: var(--zp-white);
+  --pa-color-surface: var(--zp-white);
+  --pa-color-surface-subtle: var(--zp-soft);
+  --pa-color-surface-strong: var(--zp-soft-strong);
+  --pa-color-ink: var(--zp-ink);
+  --pa-color-ink-muted: var(--zp-muted);
+  --pa-color-accent: var(--zp-ink);
+  --pa-color-accent-strong: var(--zp-ink-strong);
+  --pa-color-accent-soft: var(--zp-soft);
+  --pa-color-line: var(--zp-line);
+  --pa-color-warning: var(--zp-ochre);
+  --pa-color-danger: var(--zp-alert);
 
-  /* v09 deep register, used by dark-mode profiles */
-  --pa-color-dark-canvas: var(--zp-brand-ink);
-  --pa-color-dark-surface: var(--zp-brand-deep);
-  --pa-color-dark-ink: var(--zp-brand-ivory);
-  --pa-color-dark-muted: rgba(255, 255, 242, 0.72);
-  --pa-color-dark-accent: var(--zp-brand-acid);
-  --pa-color-dark-accent-strong: var(--zp-brand-acid-strong);
-
-  /* Translucent steps of the accent, for hairlines and quiet fills */
-  --pa-color-accent-border-08: rgba(0, 62, 64, 0.08);
-  --pa-color-accent-border-09: rgba(0, 62, 64, 0.09);
-  --pa-color-accent-border-10: rgba(0, 62, 64, 0.1);
-  --pa-color-accent-border-12: rgba(0, 62, 64, 0.12);
-  --pa-color-accent-border-14: rgba(0, 62, 64, 0.14);
-  --pa-color-accent-border-18: rgba(0, 62, 64, 0.18);
-  --pa-color-accent-border-22: rgba(0, 62, 64, 0.22);
-  --pa-color-accent-fill-04: rgba(0, 62, 64, 0.04);
-  --pa-color-accent-fill-05: rgba(0, 62, 64, 0.05);
-  --pa-color-accent-fill-06: rgba(0, 62, 64, 0.06);
-  --pa-color-accent-fill-07: rgba(0, 62, 64, 0.07);
-  --pa-color-accent-fill-08: rgba(0, 62, 64, 0.08);
-  --pa-color-accent-fill-12: rgba(0, 62, 64, 0.12);
+  /* Translucent steps of the ink, for hairlines and quiet fills */
+  --pa-color-accent-border-08: rgba(17, 19, 17, 0.08);
+  --pa-color-accent-border-09: rgba(17, 19, 17, 0.09);
+  --pa-color-accent-border-10: rgba(17, 19, 17, 0.1);
+  --pa-color-accent-border-12: rgba(17, 19, 17, 0.12);
+  --pa-color-accent-border-14: rgba(17, 19, 17, 0.14);
+  --pa-color-accent-border-18: rgba(17, 19, 17, 0.18);
+  --pa-color-accent-border-22: rgba(17, 19, 17, 0.22);
+  --pa-color-accent-fill-04: rgba(17, 19, 17, 0.04);
+  --pa-color-accent-fill-05: rgba(17, 19, 17, 0.05);
+  --pa-color-accent-fill-06: rgba(17, 19, 17, 0.06);
+  --pa-color-accent-fill-07: rgba(17, 19, 17, 0.07);
+  --pa-color-accent-fill-08: rgba(17, 19, 17, 0.08);
+  --pa-color-accent-fill-12: rgba(17, 19, 17, 0.12);
   --pa-color-warning-fill-09: rgba(132, 92, 25, 0.09);
 
-  --pa-radius-sm: 0.55rem;
-  --pa-radius-md: 0.85rem;
-  --pa-radius-lg: 1.15rem;
-  --pa-radius-xl: var(--zp-radius-card);
-  --pa-shadow-card: 0 1rem 2.5rem rgba(0, 37, 38, 0.06);
-  --pa-shadow-profile: 0 1.25rem 3rem rgba(0, 37, 38, 0.07);
+  --pa-radius-sm: 0.875rem;
+  --pa-radius-md: 1.25rem;
+  --pa-radius-lg: var(--zp-radius-card);
+  --pa-radius-xl: var(--zp-radius-scene);
+  --pa-shadow-card: 0 1px 2px rgba(17, 19, 17, 0.06);
+  --pa-shadow-float: var(--zp-shadow-float);
   --pa-focus-ring: 0 0 0 0.2rem var(--pa-color-canvas), 0 0 0 0.4rem var(--pa-color-accent);
   --pa-space-page: clamp(1rem, 4vw, 4rem);
-  --pa-content-max: 76rem;
+  --pa-content-max: 77.5rem;
 
   /*
    * Short aliases that pages written before v09 still read. They point at the semantic tokens,
@@ -101,30 +87,30 @@
   /* 3. shadcn/ui semantic tokens (--card doubles as the short alias above) */
   --background: var(--pa-color-surface);
   --foreground: var(--pa-color-ink);
-  --primary: var(--zp-brand-deep);
-  --primary-foreground: var(--zp-brand-ivory);
+  --primary: var(--zp-ink);
+  --primary-foreground: var(--zp-white);
   --secondary: var(--pa-color-surface-subtle);
   --secondary-foreground: var(--pa-color-ink);
   --muted-ui: var(--pa-color-surface-subtle);
   --muted-foreground: var(--pa-color-ink-muted);
   --accent-ui: var(--pa-color-accent-soft);
-  --accent-foreground: var(--zp-brand-deep);
+  --accent-foreground: var(--zp-ink);
   --card: var(--pa-color-surface);
   --card-foreground: var(--pa-color-ink);
   --popover: var(--pa-color-surface);
   --popover-foreground: var(--pa-color-ink);
   --border: var(--pa-color-line);
   --input: var(--pa-color-line);
-  --ring: var(--zp-brand-deep);
+  --ring: var(--zp-ink);
   --destructive: var(--pa-color-danger);
   --sidebar: var(--pa-color-surface);
   --sidebar-foreground: var(--pa-color-ink);
-  --sidebar-primary: var(--zp-brand-deep);
-  --sidebar-primary-foreground: var(--zp-brand-ivory);
+  --sidebar-primary: var(--zp-ink);
+  --sidebar-primary-foreground: var(--zp-white);
   --sidebar-accent: var(--pa-color-accent-soft);
-  --sidebar-accent-foreground: var(--zp-brand-deep);
+  --sidebar-accent-foreground: var(--zp-ink);
   --sidebar-border: var(--pa-color-line);
-  --sidebar-ring: var(--zp-brand-deep);
+  --sidebar-ring: var(--zp-ink);
 }
 
 html[lang="zh-CN"] {

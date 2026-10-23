@@ -7,7 +7,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui";
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 
 import { ZhiPandaLogo } from "@/components/brand/zhipanda-logo";
 import { ArchiveSearch, type ArchiveSearchResult } from "@/components/command-menu-04";
@@ -53,15 +53,12 @@ function alternateLanguageHref(locale: "zh" | "en", pathname: string, search: st
 export function Navbar1({
   locale,
   searchResults,
-  immersive,
   featuredPandas = [],
   contributeEnabled = false,
   notificationsEnabled = false,
 }: {
   locale: "zh" | "en";
   searchResults: ArchiveSearchResult[];
-  /** Floating pill over a full-bleed hero. Defaults to the locale home page. */
-  immersive?: boolean;
   featuredPandas?: NavbarFeature[];
   contributeEnabled?: boolean;
   notificationsEnabled?: boolean;
@@ -71,7 +68,6 @@ export function Navbar1({
   const searchParams = useSearchParams();
   const languageDestination = alternateLanguageHref(locale, pathname, searchParams.toString());
   const languageHrefLang = zh ? "en" : "zh-CN";
-  const isImmersive = immersive ?? pathname === `/${locale}`;
   const [open, setOpen] = useState(false);
 
   const sections: NavSection[] = [
@@ -150,42 +146,17 @@ export function Navbar1({
     },
   ];
 
-  const immersiveVars = {
-    "--pa-color-canvas": "var(--zp-brand-ivory)",
-    "--pa-color-surface": "var(--zp-brand-ivory)",
-    "--pa-color-surface-subtle": "var(--zp-brand-sand)",
-    "--pa-color-ink": "var(--zp-brand-ink)",
-    "--pa-color-ink-muted": "var(--zp-brand-sage)",
-    "--pa-color-line": "var(--zp-brand-mist)",
-    "--pa-color-accent": "var(--zp-brand-acid)",
-    "--pa-color-accent-strong": "var(--zp-brand-acid)",
-  } as CSSProperties;
-
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
   const isSectionActive = (section: NavSection) =>
     [section.href, ...(section.matches ?? [])].some(isActive);
 
   return (
-    <header
-      className={cn(
-        "z-50 w-full",
-        isImmersive
-          ? "pointer-events-none fixed inset-x-0 top-0"
-          : "sticky top-0 border-b border-[var(--pa-color-line)] bg-[color:color-mix(in_srgb,var(--pa-color-canvas)_96%,transparent)] backdrop-blur-md",
-      )}
-    >
-      <div
-        className={cn(
-          isImmersive
-            ? "pointer-events-auto mx-auto mt-3 flex h-[50px] w-[calc(100%_-_3rem)] max-w-[1280px] items-center gap-3 rounded-full bg-[var(--zp-brand-ivory)] px-3.5 shadow-[var(--zp-shadow-float)] sm:px-4 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-4"
-            : "mx-auto flex min-h-16 w-full max-w-[96rem] flex-wrap items-center gap-x-8 gap-y-2 px-4 py-2 sm:px-6 lg:px-8",
-        )}
-        style={isImmersive ? immersiveVars : undefined}
-      >
+    <header className="sticky top-0 z-50 w-full bg-[color:color-mix(in_srgb,var(--pa-color-canvas)_94%,transparent)] backdrop-blur-md">
+      <div className="mx-auto flex min-h-[4.5rem] w-[min(var(--pa-content-max),calc(100%-2*var(--pa-space-page)))] items-center gap-4 lg:gap-8">
         <Link
           href={`/${locale}` as Route}
-          className="flex min-h-9 shrink-0 items-center text-[var(--pa-color-ink)] lg:justify-self-start"
+          className="flex min-h-11 shrink-0 items-center text-[var(--pa-color-ink)]"
           aria-label={zh ? "吱熊猫首页" : "ZhiPanda home"}
         >
           <ZhiPandaLogo locale={locale} />
@@ -194,22 +165,21 @@ export function Navbar1({
         <NavigationMenuPrimitive.Root
           delayDuration={90}
           aria-label={zh ? "主导航" : "Primary navigation"}
-          className="relative hidden min-w-0 items-center justify-self-center text-[13px] font-semibold lg:flex"
+          className="relative hidden min-w-0 items-center text-[0.9375rem] font-medium lg:flex"
         >
-          <NavigationMenuPrimitive.List className="flex flex-wrap items-center gap-2 xl:gap-3">
+          <NavigationMenuPrimitive.List className="flex items-center gap-1">
             {sections.map((section, sectionIndex) => {
               const feature = featuredPandas[sectionIndex % Math.max(featuredPandas.length, 1)] ?? null;
+              const itemClass = cn(
+                "group inline-flex min-h-10 items-center gap-1.5 rounded-full px-3.5 text-[inherit] font-[inherit] text-[var(--pa-color-ink-muted)] outline-none transition-colors hover:text-[var(--pa-color-ink)] focus-visible:bg-[var(--pa-color-surface-subtle)] data-[state=open]:bg-[var(--pa-color-surface-subtle)] data-[state=open]:text-[var(--pa-color-ink)]",
+                isSectionActive(section) && "bg-[var(--pa-color-surface-subtle)] font-semibold text-[var(--pa-color-ink)]",
+              );
 
               return (
               <NavigationMenuPrimitive.Item key={section.href} className="relative">
                 {section.items?.length ? (
                   <>
-                    <NavigationMenuPrimitive.Trigger
-                      className={cn(
-                        "group inline-flex min-h-9 items-center gap-1.5 rounded-full px-2.5 text-[inherit] font-[inherit] text-[var(--pa-color-ink)] outline-none transition-colors hover:bg-[#10352f]/7 focus-visible:bg-[#10352f]/7 data-[state=open]:bg-[#10352f]/7 xl:px-3",
-                        isSectionActive(section) && "bg-[#10352f]/7",
-                      )}
-                    >
+                    <NavigationMenuPrimitive.Trigger className={itemClass}>
                       {section.label}
                       <ChevronDown
                         className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180"
@@ -218,16 +188,16 @@ export function Navbar1({
                     </NavigationMenuPrimitive.Trigger>
                     <NavigationMenuPrimitive.Content
                       className={cn(
-                        "absolute top-full z-50 mt-3 w-[36rem] overflow-hidden rounded-[1.15rem] border border-[#d8ddd6] bg-[var(--zp-brand-ivory)] p-2.5 shadow-[0_22px_60px_rgba(0,37,38,0.2)]",
-                        section.label === (zh ? "故事" : "Stories") ? "right-0" : "left-0",
+                        "absolute top-full z-50 mt-3 w-[36rem] overflow-hidden rounded-[var(--pa-radius-md)] bg-[var(--pa-color-surface)] p-2.5 shadow-[var(--pa-shadow-float)] ring-1 ring-[var(--pa-color-line)]",
+                        sectionIndex === sections.length - 1 ? "right-0" : "left-0",
                       )}
                     >
                       <div className={cn("grid gap-2", feature ? "grid-cols-[1.05fr_.95fr]" : "grid-cols-1")}>
                         <div className="min-w-0">
-                          <div className="border-b border-[#d8ddd6] px-3 pb-2.5 pt-1.5">
+                          <div className="border-b border-[var(--pa-color-line)] px-3 pb-2.5 pt-1.5">
                             <Link
                               href={section.href as Route}
-                              className="inline-flex items-center gap-2 text-[13px] font-[780] !text-[#002526]"
+                              className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--pa-color-ink)]"
                             >
                               {zh ? `查看全部${section.label}` : `View all ${section.label.toLowerCase()}`}
                               <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -238,18 +208,16 @@ export function Navbar1({
                               <NavigationMenuPrimitive.Link key={item.href} asChild>
                                 <Link
                                   href={item.href as Route}
-                                  className="group grid grid-cols-[1fr_auto] items-center gap-3 rounded-xl px-3 py-2.5 !text-[#002526] outline-none transition-colors hover:bg-[#eff0e5] focus-visible:bg-[#eff0e5]"
+                                  className="group grid grid-cols-[1fr_auto] items-center gap-3 rounded-[var(--pa-radius-sm)] px-3 py-2.5 text-[var(--pa-color-ink)] outline-none transition-colors hover:bg-[var(--pa-color-surface-subtle)] focus-visible:bg-[var(--pa-color-surface-subtle)]"
                                 >
                                   <span className="min-w-0">
-                                    <strong className="block text-[13px] font-[760] tracking-[-0.01em] !text-[#002526]">
-                                      {item.label}
-                                    </strong>
-                                    <span className="mt-0.5 block text-[11px] leading-[1.45] text-[#60716b]">
+                                    <strong className="block text-sm font-semibold">{item.label}</strong>
+                                    <span className="mt-0.5 block text-xs leading-[1.45] text-[var(--pa-color-ink-muted)]">
                                       {item.description}
                                     </span>
                                   </span>
                                   <ArrowRight
-                                    className="size-3.5 text-[#60716b] transition-transform group-hover:translate-x-0.5 group-hover:text-[#002526]"
+                                    className="size-3.5 text-[var(--pa-color-ink-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--pa-color-ink)]"
                                     aria-hidden="true"
                                   />
                                 </Link>
@@ -261,21 +229,21 @@ export function Navbar1({
                         {feature ? (
                           <Link
                             href={feature.href as Route}
-                            className="group relative min-h-[15rem] overflow-hidden rounded-[0.9rem] bg-[#0b5353] !text-[#fffff2]"
+                            className="group relative min-h-[15rem] overflow-hidden rounded-[var(--pa-radius-sm)] bg-[var(--pa-color-ink)] text-[var(--pa-color-surface)]"
                           >
                             <img
                               src={feature.imageSrc}
                               alt=""
                               aria-hidden="true"
-                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                             />
-                            <span className="absolute inset-0 bg-gradient-to-t from-[#002526]/90 via-[#002526]/18 to-transparent" aria-hidden="true" />
+                            <span className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" aria-hidden="true" />
                             <span className="absolute inset-x-4 bottom-4 z-10 grid gap-1">
-                              <span className="text-[10px] font-[760] uppercase tracking-[0.12em] text-[#f0f63a]">
+                              <span className="text-xs font-medium text-white/75">
                                 {zh ? "今天认识" : "Meet a panda"}
                               </span>
-                              <strong className="text-lg font-[780] tracking-[-0.025em]">{feature.name}</strong>
-                              <span className="text-[11px] leading-[1.45] text-[#fffff2]/72">{feature.meta}</span>
+                              <strong className="text-lg font-extrabold">{feature.name}</strong>
+                              <span className="text-xs leading-[1.45] text-white/75">{feature.meta}</span>
                             </span>
                           </Link>
                         ) : null}
@@ -287,10 +255,7 @@ export function Navbar1({
                     <Link
                       href={section.href as Route}
                       aria-current={isSectionActive(section) ? "page" : undefined}
-                      className={cn(
-                        "inline-flex min-h-9 items-center rounded-full px-2.5 text-[inherit] font-[inherit] !text-[var(--pa-color-ink)] outline-none transition-colors hover:bg-[#10352f]/7 focus-visible:bg-[#10352f]/7 xl:px-3",
-                        isSectionActive(section) && "bg-[#10352f]/7",
-                      )}
+                      className={itemClass}
                     >
                       {section.label}
                     </Link>
@@ -300,28 +265,26 @@ export function Navbar1({
               );
             })}
           </NavigationMenuPrimitive.List>
-
         </NavigationMenuPrimitive.Root>
 
-        <div className="ml-auto hidden min-w-0 flex-wrap items-center justify-end justify-self-end gap-1 lg:flex">
+        <div className="ml-auto flex items-center gap-2">
           <ArchiveSearch
             locale={locale}
             results={searchResults}
             triggerLabel={zh ? "搜索" : "Search"}
-            compact={isImmersive}
           />
           <Link
             href={languageDestination as Route}
             hrefLang={languageHrefLang}
             aria-label={zh ? "English" : "中文"}
-            className="inline-flex min-h-9 min-w-9 items-center justify-center px-1.5 text-[11px] font-medium text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)]"
+            className="hidden min-h-11 items-center px-2 text-[0.9375rem] font-medium text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)] lg:inline-flex"
           >
-            {zh ? "中 / EN" : "EN / 中"}
+            {zh ? "EN" : "中文"}
           </Link>
           {notificationsEnabled ? (
             <Link
               href={`/${locale}/me/inbox` as Route}
-              className="inline-flex size-9 items-center justify-center rounded-full text-[var(--pa-color-ink)] hover:bg-[#10352f]/7"
+              className="hidden size-11 items-center justify-center rounded-full bg-[var(--pa-color-surface-subtle)] text-[var(--pa-color-ink)] transition-colors hover:bg-[var(--pa-color-surface-strong)] lg:inline-flex"
               aria-label={zh ? "打开我的通知" : "Open my notifications"}
               title={zh ? "通知" : "Notifications"}
             >
@@ -330,108 +293,89 @@ export function Navbar1({
           ) : null}
           <Link
             href={`/${locale}/me` as Route}
-            className={cn(
-              "inline-flex min-h-9 items-center gap-1.5 text-[13px] font-[720]",
-              isImmersive
-                ? "rounded-full bg-[var(--zp-brand-acid)] px-3.5 !text-[var(--zp-brand-ink)] hover:bg-[#eff51a]"
-                : "px-2 text-[var(--pa-color-ink)]",
-            )}
+            className="pa-header-cta inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-full bg-[var(--pa-color-ink)] px-5 text-sm font-semibold text-[var(--pa-color-surface)] transition hover:bg-[var(--zp-ink-soft)] active:scale-[0.97] max-sm:px-4 max-[25rem]:px-0"
           >
-            <Heart className="size-4" aria-hidden="true" />
-            {zh ? "我的熊猫" : "My Pandas"}
+            <Heart className="size-4 shrink-0" aria-hidden="true" />
+            <span className="max-[25rem]:sr-only">{zh ? "我的熊猫" : "My Pandas"}</span>
           </Link>
-        </div>
 
-        <div className="ml-auto flex items-center gap-1 lg:hidden">
-          <ArchiveSearch
-            locale={locale}
-            results={searchResults}
-            triggerLabel={zh ? "搜索" : "Search"}
-          />
-          {isImmersive ? (
-            <Link
-              href={`/${locale}/me` as Route}
-              className="inline-flex size-10 items-center justify-center rounded-full bg-[var(--zp-brand-acid)] !text-[var(--zp-brand-ink)]"
-              aria-label={zh ? "我的熊猫" : "My Pandas"}
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex size-11 items-center justify-center rounded-full bg-[var(--pa-color-surface-subtle)] text-[var(--pa-color-ink)] lg:hidden"
+                aria-label={zh ? "打开导航" : "Open navigation"}
+              >
+                <Menu className="size-5" aria-hidden="true" />
+              </button>
+            </SheetTrigger>
+            <SheetContent
+              side="bottom"
+              className="h-dvh max-h-dvh rounded-none border-0 bg-[var(--pa-color-surface)] px-0 pb-6 text-[var(--pa-color-ink)]"
             >
-              <Heart className="size-4" aria-hidden="true" />
-            </Link>
-          ) : null}
-        </div>
+              <SheetHeader className="border-b border-[var(--pa-color-line)] px-6 pb-5 pt-7 text-left">
+                <SheetTitle className="text-xl font-extrabold text-[var(--pa-color-ink)]">
+                  {zh ? "吱熊猫 ZhiPanda" : "ZhiPanda"}
+                </SheetTitle>
+              </SheetHeader>
 
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <button
-              type="button"
-              className="inline-flex size-11 items-center justify-center text-[var(--pa-color-ink)] lg:hidden"
-              aria-label={zh ? "打开导航" : "Open navigation"}
-            >
-              <Menu className="size-5" aria-hidden="true" />
-            </button>
-          </SheetTrigger>
-          <SheetContent
-            side="bottom"
-            className="h-dvh max-h-dvh rounded-none border-0 bg-[#003e40] px-0 pb-6 text-[#fffff2]"
-          >
-            <SheetHeader className="border-b border-[#fffff2]/14 px-6 pb-5 pt-7 text-left">
-              <SheetTitle className="text-xl font-[760] tracking-[-0.025em] text-[#fffff2]">
-                {zh ? "吱熊猫 ZhiPanda" : "ZhiPanda"}
-              </SheetTitle>
-            </SheetHeader>
+              <nav className="px-5 pt-3" aria-label={zh ? "移动导航" : "Mobile navigation"}>
+                {sections.map((section) => (
+                  <div key={section.href} className="border-b border-[var(--pa-color-line)] py-1">
+                    <SheetClose asChild>
+                      <Link
+                        href={section.href as Route}
+                        className="grid min-h-16 grid-cols-[1fr_auto] items-center px-1 text-[var(--pa-color-ink)]"
+                      >
+                        <strong className="text-[clamp(1.75rem,8vw,2.5rem)] font-black tracking-[-0.02em]">
+                          {section.label}
+                        </strong>
+                        <ArrowRight className="size-5 text-[var(--pa-color-ink-muted)]" aria-hidden="true" />
+                      </Link>
+                    </SheetClose>
+                    {section.items?.length ? (
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 px-1 pb-3">
+                        {section.items.slice(0, 2).map((item) => (
+                          <SheetClose key={item.href} asChild>
+                            <Link
+                              href={item.href as Route}
+                              className="inline-flex min-h-9 items-center text-sm text-[var(--pa-color-ink-muted)]"
+                            >
+                              {item.label}
+                            </Link>
+                          </SheetClose>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
 
-            <nav className="px-5 pt-3" aria-label={zh ? "移动导航" : "Mobile navigation"}>
-              {sections.map((section) => (
-                <div key={section.href} className="border-b border-[#fffff2]/14 py-1">
+                <div className="mt-6 flex items-center justify-between gap-3 px-1">
+                  {notificationsEnabled ? (
+                    <SheetClose asChild>
+                      <Link
+                        href={`/${locale}/me/inbox` as Route}
+                        className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--pa-color-surface-subtle)] px-5 text-sm font-semibold"
+                      >
+                        <Bell className="size-4" aria-hidden="true" />
+                        {zh ? "通知" : "Notifications"}
+                      </Link>
+                    </SheetClose>
+                  ) : <span />}
                   <SheetClose asChild>
                     <Link
-                      href={section.href as Route}
-                      className="grid min-h-16 grid-cols-[1fr_auto] items-center px-1 text-[#fffff2]"
+                      href={languageDestination as Route}
+                      hrefLang={languageHrefLang}
+                      className="inline-flex min-h-12 items-center text-sm text-[var(--pa-color-ink-muted)]"
                     >
-                      <strong className="text-[clamp(1.8rem,8vw,2.6rem)] font-[720] tracking-[-0.035em]">
-                        {section.label}
-                      </strong>
-                      <span className="text-[#f0f63a]" aria-hidden="true">↗</span>
+                      {zh ? "English" : "中文"}
                     </Link>
                   </SheetClose>
-                  {section.items?.length ? (
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 px-1 pb-3">
-                      {section.items.slice(0, 2).map((item) => (
-                        <SheetClose key={item.href} asChild>
-                          <Link
-                            href={item.href as Route}
-                            className="inline-flex min-h-9 items-center text-xs font-medium text-[#fffff2]/64"
-                          >
-                            {item.label}
-                          </Link>
-                        </SheetClose>
-                      ))}
-                    </div>
-                  ) : null}
                 </div>
-              ))}
-
-              <div className="mt-6 flex items-center justify-between gap-3 px-1">
-                <SheetClose asChild>
-                  <Link
-                    href={`/${locale}/me` as Route}
-                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--zp-brand-acid)] px-5 text-sm font-[760] !text-[var(--zp-brand-ink)]"
-                  >
-                    <Heart className="size-4" aria-hidden="true" />
-                    {zh ? "我的熊猫" : "My Pandas"}
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link
-                    href={languageDestination as Route}
-                    className="inline-flex min-h-12 items-center text-sm text-[#fffff2]/68"
-                  >
-                    {zh ? "English" : "中文"}
-                  </Link>
-                </SheetClose>
-              </div>
-            </nav>
-          </SheetContent>
-        </Sheet>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );

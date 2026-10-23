@@ -70,6 +70,7 @@ export interface HomeV09PlaceSpotlight {
   pandaCount: number;
   pandaIds: string[];
   href: string;
+  media: HomeV09Media | null;
 }
 
 export interface HomeV09ViewModel {
@@ -110,11 +111,11 @@ function localizedName(panda: PandaDetail, locale: PublicLocale) {
 }
 
 // Photos come from the panda covers read after the view model has picked its pandas.
-function mediaFor(panda: HomeV09Panda, asset: PandaDetail["media"][number], locale: PublicLocale): HomeV09Media | null {
+export function mediaFor(fallbackAlt: string, asset: PandaDetail["media"][number], locale: PublicLocale): HomeV09Media | null {
   if (!asset.url) return null;
   return {
     src: asset.url,
-    alt: (locale === "zh" ? asset.alt_zh ?? asset.alt_en : asset.alt_en ?? asset.alt_zh) ?? panda.name,
+    alt: (locale === "zh" ? asset.alt_zh ?? asset.alt_en : asset.alt_en ?? asset.alt_zh) ?? fallbackAlt,
     credit: asset.credit ?? asset.photographer ?? null,
     rights: asset.rights,
   };
@@ -357,6 +358,7 @@ function buildPlaces(
         pandaCount: pandaIds.length,
         pandaIds,
         href: `/${locale}/places/${facility.canonical_slug}`,
+        media: null,
       }];
     })
     .sort((left, right) => right.pandaCount - left.pandaCount || left.name.localeCompare(right.name))
@@ -396,12 +398,12 @@ export function buildHomeV09ViewModel(
     kind: leadRevision ? "update" : "profile",
     label: leadRevision
       ? (locale === "zh" ? "最近更新" : "Recently updated")
-      : (locale === "zh" ? "今日档案" : "Today in the archive"),
+      : (locale === "zh" ? "今日推荐" : "Featured today"),
     title: leadPanda.name,
     deck: leadRevision?.summary
       ?? leadSource.localized_content.find((item) => item.locale === (locale === "zh" ? "zh-CN" : "en"))?.summary
       ?? leadSource.intro
-      ?? (locale === "zh" ? "打开完整档案继续查看。" : "Open the full profile to continue."),
+      ?? (locale === "zh" ? "看看它的资料、家人和生活过的地方。" : "See its profile, family, and the places it has lived."),
     href: leadPanda.href,
     media: leadPanda.media,
     panda: leadPanda,
@@ -466,6 +468,7 @@ export function homeV09PandaIds(model: HomeV09ViewModel): string[] {
     ...model.explore.pandas.map((panda) => panda.id),
     ...model.revisions.map((revision) => revision.panda.id),
     ...(model.family ? [model.family.focus.id, ...model.family.members.map((member) => member.id)] : []),
+    ...model.places.flatMap((place) => place.pandaIds.slice(0, 3)),
   ])];
 }
 
@@ -476,9 +479,17 @@ export function withHomeV09Media(
 ): HomeV09ViewModel {
   const withMedia = <T extends HomeV09Panda>(panda: T): T => {
     const asset = covers.get(panda.id);
-    return asset ? { ...panda, media: mediaFor(panda, asset, locale) } : panda;
+    return asset ? { ...panda, media: mediaFor(panda.name, asset, locale) } : panda;
   };
   const leadPanda = withMedia(model.today.lead.panda);
+  const placeMedia = (place: HomeV09PlaceSpotlight): HomeV09Media | null => {
+    for (const pandaId of place.pandaIds.slice(0, 3)) {
+      const asset = covers.get(pandaId);
+      const media = asset ? mediaFor(place.name, asset, locale) : null;
+      if (media) return media;
+    }
+    return null;
+  };
   return {
     ...model,
     today: { ...model.today, lead: { ...model.today.lead, panda: leadPanda, media: leadPanda.media } },
@@ -487,5 +498,6 @@ export function withHomeV09Media(
     family: model.family
       ? { ...model.family, focus: withMedia(model.family.focus), members: model.family.members.map(withMedia) }
       : null,
+    places: model.places.map((place) => ({ ...place, media: placeMedia(place) })),
   };
 }

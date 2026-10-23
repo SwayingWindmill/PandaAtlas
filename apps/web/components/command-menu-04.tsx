@@ -55,12 +55,10 @@ export function ArchiveSearch({
   locale,
   results,
   triggerLabel,
-  compact = false,
 }: {
   locale: "zh" | "en";
   results: ArchiveSearchResult[];
   triggerLabel: string;
-  compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -72,15 +70,10 @@ export function ArchiveSearch({
         variant="outline"
         size="sm"
         onClick={() => setOpen(true)}
-        className={cn(
-          "border-0 bg-transparent text-[var(--pa-color-ink)] hover:bg-[var(--pa-color-surface-subtle)]",
-          compact
-            ? "h-9 min-w-9 gap-1.5 px-1.5 text-[13px]"
-            : "h-11 min-w-11 gap-2 px-2",
-        )}
+        className="h-11 min-w-11 gap-2 rounded-full border-0 bg-[var(--pa-color-surface-subtle)] px-3 text-[var(--pa-color-ink)] shadow-none hover:bg-[var(--pa-color-surface-strong)] xl:px-4"
         aria-label={triggerLabel}
       >
-        <Search className={compact ? "size-3.5" : "size-4"} aria-hidden="true" />
+        <Search className="size-4" aria-hidden="true" />
         <span className="hidden xl:inline">{triggerLabel}</span>
       </Button>
 

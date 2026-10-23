@@ -4,18 +4,18 @@ const retiredPublicBrand = ["Panda", "Atlas"].join("");
 
 const checks = [
   {
-    path: "features/home/home-community.tsx",
-    required: ["认识每一只熊猫", "继续探索熊猫世界", "去哪里认识熊猫？", "把喜欢的熊猫留在身边", "Meet every panda", "Explore the panda world", "Where can you meet pandas?", "Keep your favorite pandas close"],
+    path: "features/home/home-page.tsx",
+    required: ["认识每一只熊猫", "最近更新的熊猫", "按地点找熊猫", "把喜欢的熊猫留在身边", "Meet every panda", "Recently updated pandas", "Find pandas by place", "Keep your favorite pandas close"],
     banned: ["档案控制台", "结构化入口", "Archive console", "structured entry point", retiredPublicBrand],
   },
   {
     path: "app/[locale]/pandas/page.tsx",
-    required: ["熊猫图鉴", "寻找熊猫", "查看熊猫资料", "Panda guide", "Find a panda", "View panda profile"],
+    required: ["全部熊猫", "熊猫图鉴", "寻找熊猫", "All pandas", "Panda guide", "Find a panda"],
     banned: ["熊猫档案检索", "搜索与筛选公开档案", "打开可信档案", "Panda profile discovery", "versioned public archive", "Open trusted profile"],
   },
   {
     path: "features/profile/trusted-profile-page.tsx",
-    required: ["熊猫资料", "熊猫简介", "生活时间线", "生活足迹", "Panda introduction", "Life timeline", "Life journey", "最后核实", "Last verified", "有争议", "Disputed"],
+    required: ["熊猫资料", "简介", "经历", "生活过的地方", "About", "Life story", "Places lived", "最后核实", "Last verified", "有争议", "Disputed"],
     banned: ["可信公开档案", "已审核档案摘要", "档案章节", "Trusted public archive", "Reviewed profile summary"],
   },
   {

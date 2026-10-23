@@ -78,7 +78,7 @@ export function PandaSeenControl({ stableId, slug, name, locale }: PandaSeenCont
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-3">
+    <div className="flex flex-col gap-2">
       <button
         type="button"
         disabled={busy || loading}
@@ -86,12 +86,12 @@ export function PandaSeenControl({ stableId, slug, name, locale }: PandaSeenCont
         aria-pressed={seen}
         aria-label={seen ? t.remove(name) : t.add(name)}
         onClick={toggleSeen}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[var(--pa-color-accent-border-14)] bg-[var(--card)] px-5 py-3 text-base font-semibold text-[var(--accent)] transition-transform hover:-translate-y-0.5 active:translate-y-px disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 sm:w-auto"
+        className="inline-flex min-h-13 items-center justify-center gap-2 self-start rounded-full bg-[var(--pa-color-surface-subtle)] px-6 text-base font-semibold text-[var(--pa-color-ink)] transition hover:bg-[var(--pa-color-surface-strong)] active:scale-[0.97] disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pa-color-ink)] focus-visible:ring-offset-2"
       >
         <Eye className="h-4 w-4" aria-hidden="true" />
         {seen ? t.added : t.add(name)}
       </button>
-      <p className="text-sm leading-6 text-[var(--muted)]">{t.support}</p>
+      <p className="text-xs leading-5 text-[var(--pa-color-ink-muted)]">{t.support}</p>
       {message ? <p className="text-sm leading-6" role="status">{message}</p> : null}
     </div>
   );
