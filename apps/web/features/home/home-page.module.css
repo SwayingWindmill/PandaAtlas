@@ -43,7 +43,7 @@
 
 .count {
   margin: 0;
-  color: var(--pa-color-ink-muted);
+  color: var(--pa-color-highlight-text);
   font-size: var(--pa-text-meta);
   font-weight: 600;
 }
@@ -172,7 +172,7 @@
 
 .label {
   margin: 0;
-  color: var(--pa-color-ink-muted);
+  color: var(--pa-color-highlight-text);
   font-size: var(--pa-text-meta);
   font-weight: 600;
 }
@@ -400,6 +400,8 @@
 .keepAction svg {
   width: 1rem;
   height: 1rem;
+  color: var(--pa-color-highlight);
+  fill: currentColor;
 }
 
 .faces {

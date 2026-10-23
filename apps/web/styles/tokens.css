@@ -36,6 +36,10 @@
   --pa-color-on-accent: var(--olive-1);
   --pa-color-line: var(--olive-6);
   --pa-color-line-strong: var(--olive-8);
+  /* The one accent: used sparingly for the favorite heart, new-item marks, the current step and focus. */
+  --pa-color-highlight: var(--jade-9);
+  --pa-color-highlight-text: var(--jade-11);
+  --pa-color-highlight-soft: var(--jade-3);
   --pa-color-warning: var(--amber-11);
   --pa-color-danger: var(--red-11);
 
@@ -66,7 +70,7 @@
   --pa-shadow-float: 0 0.75rem 2rem -0.75rem var(--olive-a8);
   --pa-ease: cubic-bezier(0.215, 0.61, 0.355, 1);
   --pa-duration: 250ms;
-  --pa-focus-ring: 0 0 0 0.2rem var(--pa-color-canvas), 0 0 0 0.4rem var(--pa-color-accent);
+  --pa-focus-ring: 0 0 0 0.125rem var(--pa-color-canvas), 0 0 0 0.25rem var(--pa-color-highlight);
   --pa-space-page: clamp(1rem, 4vw, 4rem);
   --pa-content-max: 77.5rem;
 

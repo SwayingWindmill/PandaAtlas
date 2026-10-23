@@ -77,7 +77,7 @@ export function ActivityCard({
     >
       <div className="flex flex-wrap items-center gap-2 text-xs font-semibold empty:hidden">
         {isNew ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--pa-color-accent)] px-3 py-1 text-[var(--pa-color-on-accent)]">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--pa-color-highlight-soft)] px-3 py-1 text-[var(--pa-color-highlight-text)]">
             <Sparkles aria-hidden="true" className="size-3.5" />{t.new}
           </span>
         ) : null}

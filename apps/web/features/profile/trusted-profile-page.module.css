@@ -250,7 +250,8 @@
 }
 
 .timeline li[data-current]::before {
-  background: var(--pa-color-ink);
+  border-color: var(--pa-color-highlight);
+  background: var(--pa-color-highlight);
 }
 
 .when {

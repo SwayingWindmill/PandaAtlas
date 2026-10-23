@@ -87,9 +87,9 @@ export function PandaFavoriteControl({
         aria-pressed={favorited}
         aria-label={label}
         onClick={toggleFavorite}
-        className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-full bg-[var(--pa-color-accent)] px-6 text-base font-semibold text-[var(--pa-color-on-accent)] transition-colors duration-250 ease-out hover:bg-[var(--pa-color-accent-hover)] aria-pressed:bg-[var(--pa-color-surface-subtle)] aria-pressed:text-[var(--pa-color-ink)] aria-pressed:hover:bg-[var(--pa-color-surface-hover)] disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pa-color-ink)] focus-visible:ring-offset-2"
+        className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-full bg-[var(--pa-color-accent)] px-6 text-base font-semibold text-[var(--pa-color-on-accent)] transition-colors duration-250 ease-out hover:bg-[var(--pa-color-accent-hover)] aria-pressed:bg-[var(--pa-color-surface-subtle)] aria-pressed:text-[var(--pa-color-ink)] aria-pressed:hover:bg-[var(--pa-color-surface-hover)] disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pa-color-highlight)] focus-visible:ring-offset-2"
       >
-        <Heart className={`h-4 w-4 ${favorited ? "fill-current" : ""}`} aria-hidden="true" />
+        <Heart className={`h-4 w-4 text-[var(--pa-color-highlight)] ${favorited ? "fill-current" : ""}`} aria-hidden="true" />
         {favorited ? t.added : t.add(name)}
       </button>
       {favorited ? (

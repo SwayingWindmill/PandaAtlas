@@ -230,7 +230,7 @@ export function Navbar1({
             href={`/${locale}/me` as Route}
             className="pa-header-cta inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-full bg-[var(--pa-color-accent)] px-5 text-base font-semibold text-[var(--pa-color-on-accent)] hover:bg-[var(--pa-color-accent-hover)] max-sm:px-4 max-[25rem]:px-0"
           >
-            <Heart className="size-4 shrink-0" aria-hidden="true" />
+            <Heart className="size-4 shrink-0 fill-[var(--pa-color-highlight)] text-[var(--pa-color-highlight)]" aria-hidden="true" />
             <span className="max-[25rem]:sr-only">{zh ? "我的熊猫" : "My Pandas"}</span>
           </Link>
 
