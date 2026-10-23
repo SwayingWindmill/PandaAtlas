@@ -29,6 +29,9 @@ export interface PlaceInstitutions {
   institution_id: Generated<string>;
   name_en: string | null;
   name_zh: string | null;
+  /**
+   * Public institution profile: kind, bilingual summary, website, live camera link, verifiedOn and sourceUrls.
+   */
   profile: Json | null;
   slug: string;
   updated_at: Generated<Timestamp>;
@@ -47,6 +50,9 @@ export interface PlacePlaces {
   region: string | null;
   slug: string;
   updated_at: Generated<Timestamp>;
+  /**
+   * Public visit guide for a facility: bilingual address, opening hours, admission, panda area and tips, with verifiedOn and sourceUrls.
+   */
   visit_guide: Json | null;
 }
 
