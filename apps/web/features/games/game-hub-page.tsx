@@ -1,6 +1,6 @@
 import type { Route } from "next";
 import Link from "next/link";
-import { Dices, FileQuestion, Sparkles } from "lucide-react";
+import { CalendarDays, Dices, FileQuestion, Sparkles } from "lucide-react";
 
 import type { PublicLocale } from "@/foundation/content/locales";
 
@@ -8,26 +8,34 @@ const copy = {
   zh: {
     eyebrow: "熊猫游戏",
     title: "轻松玩一会儿，也认识一只新熊猫。",
-    body: "游戏直接使用吱熊猫已经发布的熊猫资料和公开图片。第一版不需要登录，也不保存成绩。",
+    body: "游戏直接使用吱熊猫已经发布的熊猫资料和公开图片，不需要登录就能玩。",
+    dailyTitle: "每日一猫",
+    dailyBody: "每天所有人猜同一只熊猫，猜错一次多揭开一条线索。",
+    dailyAction: "猜今天的熊猫",
     randomTitle: "随机熊猫",
     randomBody: "随机遇见一只熊猫，从名字、照片和现在地点开始认识 TA。",
     randomAction: "随机一只",
     guessTitle: "猜熊猫",
     guessBody: "只看公开照片做四选一，答完马上揭晓是哪只熊猫。",
     guessAction: "开始猜",
-    note: "没有排行榜，没有每日任务，也不会因为玩游戏自动收藏熊猫。",
+    note: "没有排行榜，不和别人比分数，也不会因为玩游戏自动收藏熊猫。登录后保存的结果会把那只熊猫收进你的熊猫图鉴。",
+    pandaBook: "打开我的熊猫图鉴",
   },
   en: {
     eyebrow: "Panda games",
     title: "Play for a moment and meet another panda.",
-    body: "These games use ZhiPanda's published panda information and public media. The first version requires no sign-in and stores no score.",
+    body: "These games use ZhiPanda's published panda information and public media, and need no sign-in.",
+    dailyTitle: "Daily Panda",
+    dailyBody: "Everyone guesses the same panda each day; each wrong guess reveals another clue.",
+    dailyAction: "Guess today's panda",
     randomTitle: "Random Panda",
     randomBody: "Meet one panda at random, starting with its name, photo, and current place.",
     randomAction: "Pick a panda",
     guessTitle: "Guess Panda",
     guessBody: "Identify a panda from a published photo, then reveal the answer immediately.",
     guessAction: "Start guessing",
-    note: "No leaderboard, no daily-task system, and playing never favorites a panda automatically.",
+    note: "No leaderboard, no comparing scores with others, and playing never favorites a panda automatically. A result you save while signed in adds that panda to your panda book.",
+    pandaBook: "Open my panda book",
   },
 } as const;
 
@@ -45,7 +53,14 @@ export function GameHubPage({ locale }: { locale: PublicLocale }) {
         <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--muted)] sm:text-lg">{t.body}</p>
       </header>
 
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-3">
+        <GameCard
+          href={`/${locale}/games/daily`}
+          icon={<CalendarDays className="h-6 w-6" aria-hidden="true" />}
+          title={t.dailyTitle}
+          body={t.dailyBody}
+          action={t.dailyAction}
+        />
         <GameCard
           href={`/${locale}/games/random`}
           icon={<Dices className="h-6 w-6" aria-hidden="true" />}
@@ -62,7 +77,10 @@ export function GameHubPage({ locale }: { locale: PublicLocale }) {
         />
       </div>
 
-      <p className="max-w-3xl rounded-2xl bg-[var(--surface-muted)] p-5 text-sm leading-7 text-[var(--muted)]">{t.note}</p>
+      <p className="max-w-3xl rounded-2xl bg-[var(--surface-muted)] p-5 text-sm leading-7 text-[var(--muted)]">
+        {t.note}{" "}
+        <Link href={`/${locale}/me/panda-book` as Route} className="font-semibold text-[var(--accent)] underline underline-offset-4">{t.pandaBook}</Link>
+      </p>
     </div>
   );
 }

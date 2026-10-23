@@ -4,6 +4,8 @@ import { ApiRequestError, requestJson } from "@/lib/api/request";
 
 import type {
   Checkin,
+  DailyPandaGuessResult,
+  DailyPandaPuzzle,
   CheckinInput,
   CheckinList,
   DeletedCheckin,
@@ -24,6 +26,7 @@ import type {
   NotificationMessage,
   NotificationPreference,
   NotificationPreferenceInput,
+  PandaBook,
   PassportEntry,
   SavedGameAttempt,
   SeenPanda,
@@ -109,6 +112,15 @@ export function saveGameAttempt(attempt: GameAttemptInput): Promise<SavedGameAtt
   return requestJson("/api/engagement/game-attempts", { method: "POST", body: JSON.stringify(attempt) });
 }
 
+export function getPandaBook(): Promise<PandaBook> {
+  return requestJson("/api/engagement/panda-book");
+}
+
+// The response also carries the evaluated result; the caller already has it from playing.
+export function saveDailyPandaResult(guessPandaIds: string[]): Promise<{ saved: boolean }> {
+  return requestJson("/api/engagement/daily-panda-results", { method: "POST", body: JSON.stringify({ guessPandaIds }) });
+}
+
 export async function listPassportEntries(): Promise<PassportEntry[]> {
   return (await requestJson<{ entries: PassportEntry[] }>("/api/engagement/passport")).entries;
 }
@@ -148,6 +160,14 @@ export function submitContribution(body: V2ContributionInput): Promise<V2Contrib
 // The guess game is public: every question is a fresh server-side draw, so it is requested, not cached.
 export function getGuessQuestion(locale: PublicLocale): Promise<GuessQuestion> {
   return requestJson(`/api/games/guess/question?locale=${locale}`);
+}
+
+export function getDailyPanda(): Promise<DailyPandaPuzzle> {
+  return requestJson("/api/games/daily-panda");
+}
+
+export function guessDailyPanda(guessPandaIds: string[]): Promise<DailyPandaGuessResult> {
+  return requestJson("/api/games/daily-panda/guesses", { method: "POST", body: JSON.stringify({ guessPandaIds }) });
 }
 
 export function answerGuess(answer: GameAttemptInput & { locale: PublicLocale }): Promise<GuessAnswer> {

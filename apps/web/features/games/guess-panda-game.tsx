@@ -33,9 +33,10 @@ const copy = {
     scoreLabel: "本次游戏成绩",
     save: "保存本次结果",
     saving: "正在保存…",
-    saved: "本次结果已保存到你的账号。",
+    saved: "已保存，TA 也点亮在你的熊猫图鉴里。",
     saveError: "暂时无法保存本次结果。",
     history: "查看游戏历史",
+    pandaBook: "打开熊猫图鉴",
     tips: "识别提示",
     loading: "正在抽取题目…",
   },
@@ -55,9 +56,10 @@ const copy = {
     scoreLabel: "Current game score",
     save: "Save this result",
     saving: "Saving…",
-    saved: "This result was saved to your account.",
+    saved: "Saved. This panda is now in your panda book.",
     saveError: "This result could not be saved right now.",
     history: "View game history",
+    pandaBook: "Open panda book",
     tips: "Recognition tips",
     loading: "Choosing a question…",
   },
@@ -261,6 +263,14 @@ export function GuessPandaGame({ locale }: { locale: PublicLocale }) {
                 >
                   {saveState === "saving" ? t.saving : saveState === "saved" ? t.saved : t.save}
                 </button>
+              ) : null}
+              {saveState === "saved" ? (
+                <Link
+                  href={`/${locale}/me/panda-book` as Route}
+                  className="inline-flex min-h-12 items-center rounded-xl px-2 py-3 font-semibold text-[var(--accent)] underline underline-offset-4"
+                >
+                  {t.pandaBook}
+                </Link>
               ) : null}
               {engagementEnabled ? (
                 <Link

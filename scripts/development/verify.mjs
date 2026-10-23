@@ -21,6 +21,8 @@ const IGNORED_PREFIXES = [
   "apps/web/node_modules/",
   "apps/web/playwright-report/",
   "apps/web/test-results/",
+  "apps/mobile/.expo/",
+  "apps/mobile/node_modules/",
   "node_modules/",
   "test-results/",
 ];
@@ -91,6 +93,7 @@ export function classifyDevelopmentScopes(paths) {
     if (changedPath === "package-lock.json") {
       addScope(scopes, "release");
       addScope(scopes, "web");
+      addScope(scopes, "mobile");
       addScope(scopes, "api");
       continue;
     }
@@ -109,6 +112,7 @@ export function classifyDevelopmentScopes(paths) {
     ) addScope(scopes, "release");
 
     if (changedPath.startsWith("apps/web/")) addScope(scopes, "web");
+    if (changedPath.startsWith("apps/mobile/")) addScope(scopes, "mobile");
     if (changedPath.startsWith("services/api/")) addScope(scopes, "api");
     if (changedPath.startsWith("packages/api-client/")) addScope(scopes, "api");
     if (

@@ -532,6 +532,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/games/daily-panda": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getDailyPanda"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/games/daily-panda/guesses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["guessDailyPanda"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/me/game-attempts": {
         parameters: {
             query?: never;
@@ -542,6 +574,38 @@ export interface paths {
         get: operations["listGameAttempts"];
         put?: never;
         post: operations["saveGameAttempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/panda-book": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPandaBook"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/me/daily-panda-results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["saveDailyPandaResult"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1490,6 +1554,54 @@ export interface components {
             answerPandaId: string;
             recognitionTips: string[];
         };
+        DailyPandaClueDto: {
+            /** @enum {string} */
+            kind: "sex" | "birth_year" | "life_status" | "birthplace" | "name_initial" | "photo";
+            /** @description female | male for sex, a year for birth_year, alive | deceased for life_status, text otherwise. Absent for photo. */
+            value?: string | number;
+            /**
+             * Format: uuid
+             * @description Photo clue only.
+             */
+            assetId?: string;
+            /** @description Photo clue only: the public media object key. */
+            objectKey?: string;
+        };
+        DailyPandaPuzzleDto: {
+            /** Format: date */
+            puzzleDate: string;
+            maxGuesses: number;
+            /** @description How many clues today's panda has in total. */
+            clueCount: number;
+            clues: components["schemas"]["DailyPandaClueDto"][];
+        };
+        DailyPandaGuessesDto: {
+            guessPandaIds: string[];
+        };
+        DailyPandaGuessFeedbackDto: {
+            /** Format: uuid */
+            pandaId: string;
+            correct: boolean;
+            /** @description Null when either sex is unpublished. */
+            sameSex: boolean | null;
+            /** @enum {string} */
+            birthYear: "answer_earlier" | "answer_later" | "same" | "unknown";
+        };
+        DailyPandaAnswerDto: {
+            /** Format: uuid */
+            pandaId: string;
+            canonicalSlug: string;
+        };
+        DailyPandaGuessResultDto: {
+            /** Format: date */
+            puzzleDate: string;
+            solved: boolean;
+            finished: boolean;
+            guesses: components["schemas"]["DailyPandaGuessFeedbackDto"][];
+            clues: components["schemas"]["DailyPandaClueDto"][];
+            /** @description Present once the puzzle is finished. */
+            answer?: components["schemas"]["DailyPandaAnswerDto"];
+        };
         GameAttemptDto: {
             /** Format: uuid */
             attemptId: string;
@@ -1507,6 +1619,32 @@ export interface components {
         SavedGameAttemptDto: {
             attempt: components["schemas"]["GameAttemptDto"];
             answer: components["schemas"]["GuessResultDto"];
+        };
+        PandaBookEntryDto: {
+            /** Format: uuid */
+            pandaId: string;
+            /**
+             * @description The game where the fan first met this panda.
+             * @enum {string}
+             */
+            firstGame: "guess_panda" | "daily_panda";
+            /** Format: date-time */
+            firstMetAt: string;
+            /** Format: date-time */
+            lastMetAt: string;
+            timesMet: number;
+        };
+        PandaBookDto: {
+            /** @description Pandas in the current public release. */
+            publishedCount: number;
+            knownCount: number;
+            /** @description Newest first. */
+            items: components["schemas"]["PandaBookEntryDto"][];
+        };
+        SavedDailyPandaDto: {
+            result: components["schemas"]["DailyPandaGuessResultDto"];
+            /** @description False when today's result was already saved; nothing changed. */
+            saved: boolean;
         };
         PublicReadReleaseDto: {
             /** Format: uuid */
@@ -2829,6 +2967,48 @@ export interface operations {
             };
         };
     };
+    getDailyPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyPandaPuzzleDto"];
+                };
+            };
+        };
+    };
+    guessDailyPanda: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyPandaGuessesDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DailyPandaGuessResultDto"];
+                };
+            };
+        };
+    };
     listGameAttempts: {
         parameters: {
             query?: never;
@@ -2867,6 +3047,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SavedGameAttemptDto"];
+                };
+            };
+        };
+    };
+    getPandaBook: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PandaBookDto"];
+                };
+            };
+        };
+    };
+    saveDailyPandaResult: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DailyPandaGuessesDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SavedDailyPandaDto"];
                 };
             };
         };

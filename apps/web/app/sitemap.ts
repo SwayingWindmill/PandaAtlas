@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       { url: `${siteUrl}/${locale}/games`, changeFrequency: "monthly", priority: 0.6 },
       { url: `${siteUrl}/${locale}/games/random`, changeFrequency: "monthly", priority: 0.5 },
       { url: `${siteUrl}/${locale}/games/guess`, changeFrequency: "monthly", priority: 0.5 },
+      { url: `${siteUrl}/${locale}/games/daily`, changeFrequency: "daily", priority: 0.5 },
     );
 
     try {
