@@ -195,9 +195,6 @@ export default async function MomentsPage({ params, searchParams }: MomentsPageP
     <div className={styles.page}>
       <main id="main-content">
         <div className={styles.shell}>
-          <p className={styles.releaseNote}>
-            {t.release}: {momentDataset.release.version} · Schema {"v2"}
-          </p>
 
           <section className={styles.hero} aria-labelledby="moments-title">
             <p className={styles.eyebrow}>{t.eyebrow}</p>

@@ -10,7 +10,7 @@ test("searches the localized Atlas and opens the canonical trusted profile", asy
   await profileLink.click();
   await expect(page).toHaveURL(/\/zh\/pandas\/mei-xiang$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByTestId("public-delivery-notice")).toContainText("2026.08.12.1");
+  await expect(page.getByTestId("public-delivery-notice")).toHaveCount(0);
 });
 
 test("publishes the Ueno family in Atlas search and canonical profiles", async ({ page }) => {
@@ -23,7 +23,6 @@ test("publishes the Ueno family in Atlas search and canonical profiles", async (
 
   await expect(page).toHaveURL(/\/en\/pandas\/ri-ri$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByTestId("revision-summary")).toContainText("2026.08.12.1");
 });
 
 test("redirects the legacy global distribution route into the localized structured map", async ({ page }) => {

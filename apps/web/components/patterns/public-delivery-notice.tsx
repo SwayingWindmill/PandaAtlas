@@ -17,21 +17,12 @@ interface PublicDeliveryNoticeProps {
 
 export function PublicDeliveryNotice({
   locale,
-  release,
   delivery,
-  coverage,
   localeDelivery,
 }: PublicDeliveryNoticeProps) {
-  const versionLabel = locale === "zh" ? "资料版本" : "Information version";
-
-  // Live data needs no warning: the version stays as a quiet footnote.
-  if (delivery.state === "live" && coverage.state !== "partial" && localeDelivery.translation === "reviewed") {
-    return (
-      <p className="pa-delivery-note" data-testid="public-delivery-notice">
-        {versionLabel} {release.id}
-      </p>
-    );
-  }
+  // Fans only need to hear about data when something is actually wrong: stale or missing
+  // data, or text that is not translated yet. Versions and coverage stay out of public pages.
+  if (delivery.state === "live" && localeDelivery.translation === "reviewed") return null;
 
   const unavailable = delivery.state === "unavailable";
   const title = locale === "zh"
@@ -39,14 +30,17 @@ export function PublicDeliveryNotice({
       ? "熊猫资料暂时无法更新"
       : delivery.state === "cached"
         ? "正在显示最近可用的熊猫资料"
-        : "部分熊猫资料暂缺"
+        : delivery.state === "partial"
+          ? "部分熊猫资料暂缺"
+          : "部分内容还没有翻译"
     : unavailable
       ? "Panda information cannot be refreshed right now"
       : delivery.state === "cached"
         ? "Showing the latest available panda information"
-        : "Some panda information is missing";
+        : delivery.state === "partial"
+          ? "Some panda information is missing"
+          : "Some content is not translated yet";
   const details = [
-    coverage.state === "partial" ? (locale === "zh" ? "本页只有部分资料" : "Only part of this page is available") : null,
     localeDelivery.translation === "reviewed" ? null : (locale === "zh" ? "部分内容还没有中文翻译" : "Some content is not yet translated into English"),
     delivery.lastSuccessfulAt ? `${locale === "zh" ? "最近更新" : "Last updated"} ${delivery.lastSuccessfulAt}` : null,
   ].filter((detail): detail is string => Boolean(detail));
@@ -63,7 +57,6 @@ export function PublicDeliveryNotice({
       <div>
         <strong>{title}</strong>
         {details.map((detail) => <p key={detail}>{detail}</p>)}
-        <p>{versionLabel} {release.id}</p>
       </div>
     </aside>
   );

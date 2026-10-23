@@ -15,7 +15,8 @@ test("calendar is a Panda Moments view and the standalone route is gone", async 
 
   await page.goto("/zh/moments?view=calendar&year=2026&month=8");
   await expect(page.getByRole("heading", { level: 1, name: "熊猫时光" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "日历" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("navigation", { name: "主导航" }).getByRole("link", { name: "日历" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("navigation", { name: "熊猫时光视图" }).getByRole("link", { name: "日历" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { level: 2, name: "按月看看熊猫世界发生了什么。" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "2026年8月" })).toBeVisible();
   await expect(page.getByRole("link", { name: "切换到时光流" })).toHaveAttribute("href", "/zh/moments?view=timeline&year=2026&month=8&anniversaries=1");

@@ -5,7 +5,7 @@ const RELEASE_ID = "2026.08.12.1";
 test("publishes Xi Lun in the current V2 Atlas fixture", async ({ page }) => {
   await page.goto("/zh/pandas?q=Xi%20Lun");
 
-  await expect(page.getByTestId("public-delivery-notice")).toContainText(RELEASE_ID);
+  await expect(page.getByTestId("public-delivery-notice")).toHaveCount(0);
   await expect(page.getByRole("link", { name: /喜伦/ })).toHaveAttribute("href", "/zh/pandas/xi-lun");
 });
 
@@ -14,7 +14,6 @@ test("renders Xi Lun from current V2 facts and uses the media fallback when no r
 
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: /Xi Lun/ })).toBeVisible();
-  await expect(page.getByTestId("revision-summary")).toContainText(RELEASE_ID);
   await expect(page.getByTestId("fact-place")).toContainText("Zoo Atlanta");
   await expect(page.getByTestId("timeline-list").locator(":scope > li")).toHaveCount(3);
   await expect(page.getByTestId("profile-hero-media-fallback")).toBeVisible();
