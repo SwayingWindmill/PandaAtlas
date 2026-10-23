@@ -116,6 +116,13 @@ describe("V2 publication and release-scoped public reads", () => {
       slug: `publication-institution-${suffix}`,
       nameEn: "Publication Integration Center",
       countryCode: "CN",
+      profile: {
+        kind: "breeding_center",
+        summary: { en: "A base used by the publication integration test." },
+        websiteUrl: "https://example.org/base",
+        verifiedOn: "2026-10-23",
+        sourceUrls: ["https://example.org/base"],
+      },
     });
     const place = await places.createPlace({
       institutionId: institution.institutionId,
@@ -125,6 +132,12 @@ describe("V2 publication and release-scoped public reads", () => {
       countryCode: "CN",
       region: "Sichuan",
       center: { longitude: 104.0665, latitude: 30.5728 },
+      visitGuide: {
+        openingHours: { en: "9 a.m. to 5 p.m." },
+        tips: [{ topic: "best_time", text: { en: "Come early." } }],
+        verifiedOn: "2026-10-23",
+        sourceUrls: ["https://example.org/base/visit"],
+      },
     });
     await lifeHistory.createResidency({
       residencyId: `publication-residency:${suffix}`,
@@ -221,6 +234,19 @@ describe("V2 publication and release-scoped public reads", () => {
     expect(firstBody.events).toContainEqual(expect.objectContaining({ eventType: "public_debut" }));
     expect(firstBody.media).toContainEqual(expect.objectContaining({ assetId: asset.assetId, objectKey: `public/${suffix}.jpg` }));
     expect(firstBody.evidence).toContainEqual(expect.objectContaining({ sourceId, publicSummary: "Initial public summary." }));
+    const institutionRead = await injectHttp(app, { method: "GET", url: `/api/v2/institutions/${institution.slug}` });
+    expect(institutionRead.statusCode, institutionRead.body).toBe(200);
+    const institutionBody = institutionRead.json<{
+      institution: { slug: string; profile?: { kind: string } };
+      places: Array<{ placeId: string; visitGuide?: { openingHours?: { en?: string } } }>;
+    }>();
+    expect(institutionBody.institution.profile?.kind).toBe("breeding_center");
+    expect(institutionBody.places.map((item) => item.placeId)).toEqual([place.placeId]);
+    expect(institutionBody.places[0]?.visitGuide?.openingHours).toEqual({ en: "9 a.m. to 5 p.m." });
+    const institutionList = await injectHttp(app, { method: "GET", url: "/api/v2/institutions" });
+    expect(institutionList.statusCode, institutionList.body).toBe(200);
+    expect(institutionList.json<{ items: Array<{ slug: string }> }>().items).toContainEqual(expect.objectContaining({ slug: institution.slug }));
+    expect((await injectHttp(app, { method: "GET", url: `/api/v2/institutions/missing-${suffix}` })).statusCode).toBe(404);
     const coversUrl = (...ids: string[]) => `/api/v2/panda-covers?ids=${ids.join(",")}`;
     const covers = await injectHttp(app, { method: "GET", url: coversUrl(panda.pandaId, father.pandaId, randomUUID()) });
     expect(covers.statusCode, covers.body).toBe(200);

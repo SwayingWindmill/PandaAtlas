@@ -1,4 +1,5 @@
 import type { JsonValue } from "../../panda/application/panda.application.js";
+import type { FacilityVisitGuide, InstitutionProfile } from "../../places/application/visitor-content.js";
 
 export interface PublicReadRelease {
   releaseId: string;
@@ -39,6 +40,23 @@ export interface PublicPlaceSummary {
   region?: string;
   longitude?: number;
   latitude?: number;
+  visitGuide?: FacilityVisitGuide;
+}
+
+export interface PublicInstitutionSummary {
+  institutionId: string;
+  slug: string;
+  nameZh?: string;
+  nameEn?: string;
+  countryCode?: string;
+  profile?: InstitutionProfile;
+}
+
+export interface PublicInstitutionDetail {
+  release: PublicReadRelease;
+  institution: PublicInstitutionSummary;
+  /** The institution's deliverable facilities, each with its own visit guide. */
+  places: PublicPlaceSummary[];
 }
 
 export interface PublicEvidenceSummary {
@@ -141,6 +159,8 @@ export interface PublicReadPort {
   listPandaCovers(pandaIds: readonly string[]): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicMediaSummary[] }>>;
   listPlaces(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicPlaceSummary[] }>>;
   getPlace(slug: string): Promise<PublicReadResult<{ release: PublicReadRelease; place: PublicPlaceSummary }>>;
+  listInstitutions(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicInstitutionSummary[] }>>;
+  getInstitution(slug: string): Promise<PublicReadResult<PublicInstitutionDetail>>;
   listLineage(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicLineageSummary[] }>>;
   listResidencies(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicResidencySummary[] }>>;
   listLifeEvents(): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicLifeEventSummary[] }>>;

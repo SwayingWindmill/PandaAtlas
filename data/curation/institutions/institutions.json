@@ -1,0 +1,240 @@
+{
+  "$comment": "Visitor content for zoos and breeding centers. Each institution lists the existing facility places it runs, by slug, with a map point and an optional visit guide. Edit here, then run scripts/curation/build_institution_content_migration.py to write the migration. Hours and prices change: only record what an official page says, and update verifiedOn when you recheck.",
+  "institutions": [
+    {
+      "slug": "chengdu-research-base",
+      "nameZh": "成都大熊猫繁育研究基地",
+      "nameEn": "Chengdu Research Base of Giant Panda Breeding",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "breeding_center",
+        "summary": {
+          "zh": "1987 年由成都市政府建立，集大熊猫迁地保护、科研繁育、科普教育和文化旅游于一体，占地约 3.07 平方公里，也繁育小熊猫等中国特有濒危动物。",
+          "en": "Founded by the Chengdu city government in 1987, the base combines ex-situ conservation, breeding research, education and tourism on about 3.07 square kilometres, and also breeds red pandas and other endangered species native to China."
+        },
+        "websiteUrl": "https://www.panda.org.cn/",
+        "verifiedOn": "2026-10-23",
+        "sourceUrls": [
+          "https://www.panda.org.cn/",
+          "https://en.wikipedia.org/wiki/Chengdu_Research_Base_of_Giant_Panda_Breeding"
+        ]
+      },
+      "places": [
+        {
+          "slug": "chengdu-research-base",
+          "longitude": 104.1456,
+          "latitude": 30.7330,
+          "visitGuide": {
+            "address": {
+              "zh": "四川省成都市成华区熊猫大道 1375 号",
+              "en": "1375 Panda Avenue, Chenghua District, Chengdu, Sichuan"
+            },
+            "tips": [
+              {
+                "topic": "getting_there",
+                "text": {
+                  "zh": "距市中心天府广场约 10 公里，距双流国际机场约 30 公里，距天府国际机场约 70 公里。",
+                  "en": "About 10 km from Tianfu Square in the city centre, 30 km from Shuangliu airport and 70 km from Tianfu airport."
+                }
+              },
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "开放时间和门票以基地官网公告为准。",
+                  "en": "Check the base's official website for current opening hours and tickets."
+                }
+              }
+            ],
+            "verifiedOn": "2026-10-23",
+            "sourceUrls": ["https://www.panda.org.cn/"]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "ccrcgp",
+      "nameZh": "中国大熊猫保护研究中心",
+      "nameEn": "China Conservation and Research Center for the Giant Panda",
+      "countryCode": "CN",
+      "profile": {
+        "kind": "breeding_center",
+        "summary": {
+          "zh": "国家级大熊猫保护研究机构，起源于卧龙。2008 年汶川地震后，部分大熊猫转移到雅安碧峰峡基地；2012 年起陆续迁入卧龙神树坪基地。",
+          "en": "China's national giant panda conservation and research centre, which began in Wolong. After the 2008 Wenchuan earthquake some pandas moved to the Bifengxia base in Ya'an, and from 2012 pandas moved into the new Shenshuping base in Wolong."
+        },
+        "verifiedOn": "2026-10-23",
+        "sourceUrls": [
+          "https://en.wikipedia.org/wiki/China_Conservation_and_Research_Centre_for_the_Giant_Panda",
+          "https://en.wikipedia.org/wiki/Bifengxia_Panda_Base"
+        ]
+      },
+      "places": [
+        {
+          "slug": "ccrcgp-bifengxia-base",
+          "longitude": 102.9762,
+          "latitude": 30.0720,
+          "visitGuide": {
+            "address": {
+              "zh": "四川省雅安市雨城区碧峰峡镇",
+              "en": "Bifengxia Town, Ya'an, Sichuan"
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "2004 年开放，2008 年地震后接收了从卧龙转移的大熊猫。开放时间和门票以中心公告为准。",
+                  "en": "Opened in 2004 and took in pandas moved from Wolong after the 2008 earthquake. Check the centre's notices for current hours and tickets."
+                }
+              }
+            ],
+            "verifiedOn": "2026-10-23",
+            "sourceUrls": ["https://en.wikipedia.org/wiki/Bifengxia_Panda_Base"]
+          }
+        },
+        { "slug": "ccrcgp-yaan-base" },
+        { "slug": "ccrcgp-wolong-shenshuping-base" },
+        { "slug": "ccrcgp-wolong-gengda-base" }
+      ]
+    },
+    {
+      "slug": "smithsonian-national-zoo",
+      "nameZh": "史密森尼国家动物园",
+      "nameEn": "Smithsonian's National Zoo and Conservation Biology Institute",
+      "countryCode": "US",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于华盛顿特区，免费入园。目前生活着两只大熊猫：宝力和青宝，住在亚洲步道。",
+          "en": "A free zoo in Washington, D.C. It is home to two giant pandas, Bao Li and Qing Bao, on Asia Trail."
+        },
+        "websiteUrl": "https://nationalzoo.si.edu/",
+        "liveCamUrl": "https://nationalzoo.si.edu/webcams/panda-cam",
+        "verifiedOn": "2026-10-23",
+        "sourceUrls": ["https://nationalzoo.si.edu/animals/giant-panda"]
+      },
+      "places": [
+        {
+          "slug": "smithsonian-national-zoo",
+          "longitude": -77.0498,
+          "latitude": 38.9296,
+          "visitGuide": {
+            "address": {
+              "zh": "3001 Connecticut Ave. NW, Washington, DC 20008",
+              "en": "3001 Connecticut Ave. NW, Washington, DC 20008"
+            },
+            "openingHours": {
+              "zh": "常规开放 8:00 至 16:00，15:00 停止入园。",
+              "en": "Usually 8 a.m. to 4 p.m., last entry 3 p.m."
+            },
+            "admission": {
+              "zh": "免费。出发前在官网确认是否需要预约入园通行证。",
+              "en": "Free. Check the zoo's Passes page before you go."
+            },
+            "pandaArea": {
+              "zh": "亚洲步道（Asia Trail）",
+              "en": "Asia Trail"
+            },
+            "tips": [],
+            "verifiedOn": "2026-10-23",
+            "sourceUrls": ["https://nationalzoo.si.edu/animals/giant-panda"]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "zoo-atlanta",
+      "nameZh": "亚特兰大动物园",
+      "nameEn": "Zoo Atlanta",
+      "countryCode": "US",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于美国佐治亚州亚特兰大格兰特公园。大熊猫平平和福双已经抵达，新馆 Arthur M. Blank Panda Grove 于 11 月 6 日开放。",
+          "en": "In Grant Park, Atlanta, Georgia. The giant pandas Ping Ping and Fu Shuang have arrived, and their new home, the Arthur M. Blank Panda Grove, opens on November 6."
+        },
+        "websiteUrl": "https://zooatlanta.org/",
+        "liveCamUrl": "https://zooatlanta.org/panda-cam/",
+        "verifiedOn": "2026-10-23",
+        "sourceUrls": ["https://zooatlanta.org/"]
+      },
+      "places": [
+        {
+          "slug": "zoo-atlanta",
+          "longitude": -84.3720,
+          "latitude": 33.7340,
+          "visitGuide": {
+            "address": {
+              "zh": "800 Cherokee Avenue SE, Atlanta, GA 30315",
+              "en": "800 Cherokee Avenue SE, Atlanta, GA 30315"
+            },
+            "openingHours": {
+              "zh": "9:00 至 17:00，15:30 停止入园。",
+              "en": "9 a.m. to 5 p.m., last admission 3:30 p.m."
+            },
+            "pandaArea": {
+              "zh": "Arthur M. Blank Panda Grove（11 月 6 日开放）",
+              "en": "Arthur M. Blank Panda Grove (opens November 6)"
+            },
+            "tips": [],
+            "verifiedOn": "2026-10-23",
+            "sourceUrls": ["https://zooatlanta.org/"]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "ueno-zoo",
+      "nameZh": "上野动物园",
+      "nameEn": "Ueno Zoological Gardens",
+      "countryCode": "JP",
+      "profile": {
+        "kind": "zoo",
+        "summary": {
+          "zh": "位于东京上野公园。最后两只大熊猫晓晓和蕾蕾于 2026 年 1 月 27 日返回中国，日本暂时没有大熊猫。",
+          "en": "In Ueno Park, Tokyo. Its last two giant pandas, Xiao Xiao and Lei Lei, returned to China on January 27, 2026, leaving Japan without pandas for now."
+        },
+        "websiteUrl": "https://www.tokyo-zoo.net/english/ueno/",
+        "verifiedOn": "2026-10-23",
+        "sourceUrls": [
+          "https://www.tokyo-zoo.net/english/ueno/",
+          "https://english.adnkronos.com/2026/01/25/people-bid-farewell-to-ueno-zoo-pandas-on-final-viewing-day/"
+        ]
+      },
+      "places": [
+        {
+          "slug": "ueno-zoo",
+          "longitude": 139.7714,
+          "latitude": 35.7163,
+          "visitGuide": {
+            "address": {
+              "zh": "东京都台东区上野公园 9-83",
+              "en": "9-83 Ueno Park, Taito-ku, Tokyo 110-8711"
+            },
+            "openingHours": {
+              "zh": "9:30 至 17:00，16:00 停止售票。周一休园（周一逢节假日则改为周二），12 月 29 日至 1 月 1 日休园。",
+              "en": "9:30 to 17:00, tickets until 16:00. Closed Mondays (Tuesday when Monday is a holiday) and December 29 to January 1."
+            },
+            "admission": {
+              "zh": "16 至 64 岁 600 日元，65 岁以上 300 日元，13 至 15 岁 200 日元，12 岁及以下免费。",
+              "en": "Ages 16 to 64: 600 yen. 65 and over: 300 yen. Ages 13 to 15: 200 yen. 12 and under: free."
+            },
+            "tips": [
+              {
+                "topic": "good_to_know",
+                "text": {
+                  "zh": "2026 年 1 月 27 日起园内没有大熊猫。",
+                  "en": "There have been no giant pandas at the zoo since January 27, 2026."
+                }
+              }
+            ],
+            "verifiedOn": "2026-10-23",
+            "sourceUrls": [
+              "https://www.tokyo-zoo.net/english/ueno/",
+              "https://english.adnkronos.com/2026/01/25/people-bid-farewell-to-ueno-zoo-pandas-on-final-viewing-day/"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
