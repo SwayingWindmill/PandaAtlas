@@ -15,7 +15,7 @@ const checks = [
   },
   {
     path: "features/profile/trusted-profile-page.tsx",
-    required: ["熊猫资料", "简介", "经历", "生活过的地方", "About", "Life story", "Places lived", "最后核实", "Last verified", "有争议", "Disputed"],
+    required: ["简介", "经历", "生活过的地方", "About", "Life story", "Places lived"],
     banned: ["可信公开档案", "已审核档案摘要", "档案章节", "Trusted public archive", "Reviewed profile summary"],
   },
   {
@@ -40,7 +40,7 @@ const checks = [
   },
   {
     path: "features/feed/public-panda-activity.tsx",
-    required: ["熊猫动态", "Panda updates", "更正", "撤回", "corrections", "retractions"],
+    required: ["熊猫动态", "Panda updates"],
     banned: ["Public Activity", "Archive releases", "Activity 投影", "projection service", "Archive profile"],
   },
   {

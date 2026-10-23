@@ -16,7 +16,7 @@ test("searches the localized Atlas and opens the canonical trusted profile", asy
 test("publishes the Ueno family in Atlas search and canonical profiles", async ({ page }) => {
   await page.goto("/en/pandas?q=Ri%20Ri");
 
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found; 3 pandas are currently included");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 panda found");
   const profileLink = page.getByRole("link", { name: /Ri Ri/ });
   await expect(profileLink).toHaveAttribute("href", "/en/pandas/ri-ri");
   await profileLink.click();

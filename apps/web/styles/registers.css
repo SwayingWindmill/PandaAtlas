@@ -30,12 +30,11 @@
 .pa-delivery-notice {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.9rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--pa-color-line);
-  border-radius: var(--pa-radius-md);
-  background: var(--pa-color-surface-subtle);
-  color: var(--pa-color-ink);
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: var(--pa-radius-lg);
+  background: var(--amber-3);
+  color: var(--amber-12);
 }
 
 .pa-delivery-icon {
@@ -43,27 +42,32 @@
   width: 2.25rem;
   height: 2.25rem;
   place-items: center;
-  border-radius: 0.65rem;
-  background: var(--pa-color-surface);
-  color: var(--pa-color-accent);
+  border-radius: var(--pa-radius-sm);
+  background: var(--amber-4);
+  color: var(--amber-11);
 }
 
 .pa-delivery-icon svg {
-  width: 1.05rem;
-  height: 1.05rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .pa-delivery-notice strong {
   display: block;
-  margin-bottom: 0.2rem;
-  font-size: 0.9rem;
+  font-size: var(--pa-text-body);
 }
 
 .pa-delivery-notice p {
-  margin: 0.1rem 0 0;
+  margin: 0.25rem 0 0;
+  color: var(--amber-12);
+  font-size: var(--pa-text-meta);
+  line-height: 1.5;
+}
+
+.pa-delivery-note {
+  margin: 0;
   color: var(--pa-color-ink-muted);
-  font-size: 0.78rem;
-  line-height: 1.55;
+  font-size: var(--pa-text-meta);
 }
 
 .pa-result-kicker {

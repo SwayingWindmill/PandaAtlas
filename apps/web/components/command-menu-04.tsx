@@ -70,7 +70,7 @@ export function ArchiveSearch({
         variant="outline"
         size="sm"
         onClick={() => setOpen(true)}
-        className="h-11 min-w-11 gap-2 rounded-full border-0 bg-[var(--pa-color-surface-subtle)] px-3 text-[var(--pa-color-ink)] shadow-none hover:bg-[var(--pa-color-surface-strong)] xl:px-4"
+        className="h-11 min-w-11 gap-2 rounded-full border-0 bg-[var(--pa-color-surface-subtle)] px-3 text-[var(--pa-color-ink)] shadow-none hover:bg-[var(--pa-color-surface-hover)] xl:px-4"
         aria-label={triggerLabel}
       >
         <Search className="size-4" aria-hidden="true" />
@@ -141,7 +141,7 @@ export function GlobalArchiveSearch({
       title={zh ? "搜索熊猫世界" : "Search ZhiPanda"}
     >
       <Command shouldFilter={false}>
-        <div className="flex h-16 shrink-0 items-center gap-3 border-b border-[var(--pa-color-line)] px-5">
+        <div className="flex h-16 shrink-0 items-center gap-3 border-b-[0.5px] border-[var(--pa-color-line)] px-5">
           <Search className="size-4 shrink-0 text-[var(--pa-color-ink-muted)]" aria-hidden="true" />
           <CommandPrimitive.Input
             className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-[var(--pa-color-ink-muted)]"
@@ -151,7 +151,7 @@ export function GlobalArchiveSearch({
           />
           {query ? (
             <button
-              className="min-h-11 px-2 text-sm text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)]"
+              className="min-h-11 px-2 text-xs text-[var(--pa-color-ink-muted)] hover:text-[var(--pa-color-ink)]"
               onClick={reset}
               type="button"
             >
@@ -171,7 +171,7 @@ export function GlobalArchiveSearch({
         <CommandList className="max-h-[28rem] pb-3">
           <div
             aria-label={zh ? "搜索类型筛选" : "Search result filters"}
-            className="sticky top-0 z-10 flex gap-1 overflow-x-auto border-b border-[var(--pa-color-line)] bg-[var(--pa-color-canvas)] px-5 py-3"
+            className="sticky top-0 z-10 flex gap-1 overflow-x-auto border-b-[0.5px] border-[var(--pa-color-line)] bg-[var(--pa-color-canvas)] px-5 py-3"
             role="tablist"
           >
             {filters.map((option) => {
@@ -180,9 +180,9 @@ export function GlobalArchiveSearch({
                 <button
                   aria-selected={selected}
                   className={cn(
-                    "min-h-9 whitespace-nowrap rounded-full px-3 text-sm transition-colors",
+                    "min-h-9 whitespace-nowrap rounded-full px-3 text-xs font-semibold",
                     selected
-                      ? "bg-[var(--pa-color-ink)] text-white"
+                      ? "bg-[var(--pa-color-accent)] text-[var(--pa-color-on-accent)]"
                       : "text-[var(--pa-color-ink-muted)] hover:bg-[var(--pa-color-surface-subtle)] hover:text-[var(--pa-color-ink)]",
                   )}
                   key={option.value}
@@ -197,12 +197,12 @@ export function GlobalArchiveSearch({
           </div>
 
           {needle && !matches.length ? (
-            <p className="py-6 text-center text-sm">{zh ? `没有找到“${query}”` : `No results for “${query}”`}</p>
+            <p className="py-6 text-center text-base">{zh ? `没有找到“${query}”` : `No results for “${query}”`}</p>
           ) : null}
 
           <CommandGroup
             heading={needle ? (zh ? "搜索结果" : "Search results") : (zh ? "从这里开始" : "Start here")}
-            className="p-0 **:[[cmdk-group-heading]]:px-5 **:[[cmdk-group-heading]]:py-3 **:[[cmdk-group-heading]]:font-normal **:[[cmdk-group-heading]]:text-sm"
+            className="p-0 **:[[cmdk-group-heading]]:px-5 **:[[cmdk-group-heading]]:py-3 **:[[cmdk-group-heading]]:font-normal **:[[cmdk-group-heading]]:text-xs"
           >
             {(needle ? matches : results.slice(0, 10)).map((result) => (
               <ArchiveResultRow key={result.id} result={result} needle={needle} onSelect={onSelect} />
@@ -212,7 +212,7 @@ export function GlobalArchiveSearch({
           {needle ? (
             <CommandGroup className="p-0">
               <CommandItem
-                className="mx-2 min-h-12 gap-3 rounded-[var(--pa-radius-md)] px-3 py-2 text-sm"
+                className="mx-2 min-h-12 gap-3 rounded-[var(--pa-radius-sm)] px-3 py-2 text-base"
                 onSelect={() => onSelect({
                   id: "search-page",
                   kind: "collection",
@@ -258,7 +258,7 @@ export function ArchiveResultRow({
         <span className="block truncate font-medium leading-5 text-[var(--pa-color-ink)]">
           <Highlight needle={needle} text={result.title} />
         </span>
-        <span className="block truncate pt-0.5 text-[var(--pa-color-ink-muted)]">
+        <span className="block truncate pt-0.5 text-xs text-[var(--pa-color-ink-muted)]">
           <Highlight needle={needle} text={result.snippet} />
         </span>
       </span>
@@ -273,7 +273,7 @@ export function ArchiveResultRow({
   return (
     <CommandItem
       asChild={asLink}
-      className="mx-2 min-h-14 gap-3 rounded-[var(--pa-radius-md)] px-3 py-2 text-sm"
+      className="mx-2 min-h-14 gap-3 rounded-[var(--pa-radius-sm)] px-3 py-2 text-base"
       onSelect={() => onSelect(result)}
       value={result.id}
     >

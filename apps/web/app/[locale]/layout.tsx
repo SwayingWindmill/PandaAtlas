@@ -31,7 +31,6 @@ export default async function PublicLocaleLayout({ children, params }: PublicLoc
       <Navbar1
         locale={locale}
         searchResults={navigation.searchResults}
-        featuredPandas={navigation.featuredPandas}
         contributeEnabled={isCommunityIntakeUiEnabled()}
         notificationsEnabled={isNotificationCenterEnabled()}
       />

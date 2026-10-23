@@ -40,29 +40,20 @@ export function ZhiPandaLogo({
   compact?: boolean;
 }) {
   const ink = inverse ? "text-[var(--pa-color-surface)]" : "text-[var(--pa-color-ink)]";
-  const muted = inverse ? "text-[color:rgba(255,255,255,.68)]" : "text-[var(--pa-color-ink-muted)]";
 
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <ZhiPandaMark className="h-7 w-[3.15rem] sm:h-8 sm:w-[3.6rem]" inverse={inverse} />
       {compact ? null : (
-        <span className="flex items-baseline gap-2">
-          <strong
-            className={cn("text-[1.25rem] font-black tracking-[-0.02em]", ink)}
-            style={{ fontFamily: "var(--zp-font-display-cjk)" }}
-          >
-            吱熊猫
-          </strong>
-          <span
-            className={cn("hidden text-[9px] font-[720] tracking-[0.14em] sm:inline", muted)}
-            style={{ fontFamily: "var(--zp-font-ui-latin)" }}
-          >
-            ZHIPANDA
-          </span>
-        </span>
+        <strong
+          className={cn("text-[1.25rem] font-black tracking-[-0.02em]", ink)}
+          style={{ fontFamily: "var(--zp-font-display-cjk)" }}
+        >
+          吱熊猫
+        </strong>
       )}
       <span className="sr-only">
-        {locale === "zh" ? "吱熊猫 ZhiPanda" : "ZhiPanda"}
+        {locale === "zh" ? "吱熊猫" : "ZhiPanda"}
       </span>
     </span>
   );

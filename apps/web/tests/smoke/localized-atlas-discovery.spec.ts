@@ -4,7 +4,7 @@ test("normalizes unsupported and invalid URL state instead of silently retaining
   await page.goto("/en/pandas?status=invalid&page=0&unsupported=value");
 
   await expect(page).toHaveURL(/\/en\/pandas$/);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("3 pandas are currently included");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("3 pandas found");
 });
 
 test("preserves compatible discovery state across the locale switch", async ({ page }) => {
@@ -18,7 +18,7 @@ test("preserves compatible discovery state across the locale switch", async ({ p
 
 test("submits native filters from the keyboard and canonicalizes default values", async ({ page }) => {
   await page.goto("/zh/pandas");
-  const status = page.getByLabel("生命状态");
+  const status = page.getByLabel("状态");
 
   await status.focus();
   await expect(status).toBeFocused();
@@ -26,7 +26,8 @@ test("submits native filters from the keyboard and canonicalizes default values"
   await page.getByRole("button", { name: "应用筛选" }).press("Enter");
 
   await expect(page).toHaveURL(/\/zh\/pandas\?status=alive$/);
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 个筛选条件生效");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("共找到");
+  await expect(page.getByLabel("状态")).toHaveValue("alive");
 });
 
 test("renders searchable results without JavaScript", async ({ browser }) => {

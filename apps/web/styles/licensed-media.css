@@ -6,7 +6,7 @@
 .pa-licensed-media-frame {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--pa-color-line);
+  border: var(--pa-border) solid var(--pa-color-line);
   border-radius: var(--pa-radius-lg);
   background: var(--pa-color-surface-subtle);
 }
@@ -42,7 +42,7 @@
 
 .pa-licensed-media-fallback strong {
   max-width: 22ch;
-  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-size: var(--pa-text-title);
   line-height: 1.15;
 }
 
@@ -60,7 +60,7 @@
   gap: 1rem;
   padding: 0.9rem 0.15rem 0;
   color: var(--pa-color-ink-muted);
-  font-size: 0.72rem;
+  font-size: var(--pa-text-meta);
   line-height: 1.55;
 }
 
@@ -84,7 +84,7 @@
 .pa-licensed-media-profile-link {
   display: inline-block;
   margin-bottom: 0.2rem;
-  font-size: 0.82rem;
+  font-size: var(--pa-text-meta);
 }
 
 .pa-licensed-media-source {

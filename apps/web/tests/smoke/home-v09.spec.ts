@@ -5,7 +5,6 @@ test("the home introduces pandas through photo cards and section entrances", asy
 
   await expect(page.getByRole("heading", { level: 1, name: "认识每一只熊猫" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "最近更新的熊猫" })).toBeVisible();
-  await expect(page.getByRole("heading", { level: 2, name: "每一条，都有出处" })).toBeVisible();
   await expect(page.getByRole("heading", { level: 2, name: "把喜欢的熊猫留在身边" })).toBeVisible();
   // Each photo card carries the panda's licensed cover and opens its profile.
   const card = page.locator('a[href="/zh/pandas/mei-xiang"]').filter({ has: page.locator("img") }).first();

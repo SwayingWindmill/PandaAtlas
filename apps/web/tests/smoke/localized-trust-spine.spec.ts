@@ -4,7 +4,7 @@ test("uses the same reviewed identity release in English", async ({ page }) => {
   await page.goto("/en/pandas?q=Mei%20Xiang");
 
   await expect(page.getByRole("heading", { level: 1, name: "All pandas" })).toBeVisible();
-  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 pandas found");
+  await expect(page.getByTestId("atlas-result-summary")).toContainText("1 panda found");
   await expect(
     page.locator('a[href="/en/pandas/mei-xiang"]').filter({ hasText: "Mei Xiang" }).first(),
   ).toBeVisible();

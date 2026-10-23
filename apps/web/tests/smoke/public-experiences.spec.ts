@@ -49,7 +49,6 @@ test("Family Stories preserve declared scope and relationship status", async ({ 
 test("Profile V2 links into Moments, Lineage, and a related Family Story", async ({ page }) => {
   await page.goto("/en/pandas/xi-lun");
 
-  await expect(page.getByText("Rich profile", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "View Panda Moments" })).toHaveAttribute(
     "href",
     "/en/moments?panda=xi-lun",

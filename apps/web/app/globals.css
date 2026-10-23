@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@import "@radix-ui/colors/olive.css";
+@import "@radix-ui/colors/olive-alpha.css";
+@import "@radix-ui/colors/amber.css";
+@import "@radix-ui/colors/red.css";
+@import "@radix-ui/colors/black-alpha.css";
+@import "@radix-ui/colors/white-alpha.css";
+
 @import "../styles/tokens.css";
 @import "../styles/base.css";
 @import "../styles/typography.css";
