@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Bell, ChevronDown, Heart, Menu } from "lucide-react";
+import { ArrowRight, Bell, Heart, Menu } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -19,17 +19,11 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-type NavItem = {
-  label: string;
-  href: string;
-};
-
 type NavSection = {
   label: string;
   href: string;
   // Other path prefixes that belong to this section, for the active state.
   matches?: string[];
-  items?: NavItem[];
 };
 
 // Each public route has the same path in both locales, so the language switch keeps the
@@ -43,12 +37,10 @@ function alternateLanguageHref(locale: "zh" | "en", pathname: string, search: st
 export function Navbar1({
   locale,
   searchResults,
-  contributeEnabled = false,
   notificationsEnabled = false,
 }: {
   locale: "zh" | "en";
   searchResults: ArchiveSearchResult[];
-  contributeEnabled?: boolean;
   notificationsEnabled?: boolean;
 }) {
   const zh = locale === "zh";
@@ -58,70 +50,17 @@ export function Navbar1({
   const languageHrefLang = zh ? "en" : "zh-CN";
   const [open, setOpen] = useState(false);
 
+  // Five flat destinations, no dropdowns. Personal pages live behind "My Pandas".
   const sections: NavSection[] = [
+    { label: zh ? "熊猫" : "Pandas", href: `/${locale}/pandas` },
     {
-      label: zh ? "熊猫" : "Pandas",
-      href: `/${locale}/pandas`,
-      items: [
-        {
-          label: zh ? "全部熊猫" : "All pandas",
-          href: `/${locale}/pandas`,
-        },
-        {
-          label: zh ? "发现熊猫" : "Discover",
-          href: `/${locale}/pandas/discover`,
-        },
-        {
-          label: zh ? "随机认识一只" : "Meet one at random",
-          href: `/${locale}/games/random`,
-        },
-        {
-          label: zh ? "熊猫游戏" : "Panda games",
-          href: `/${locale}/games`,
-        },
-      ],
-    },
-    {
-      label: zh ? "家族" : "Families",
-      href: `/${locale}/families`,
-      items: [
-        {
-          label: zh ? "家族总览" : "Family overview",
-          href: `/${locale}/families`,
-        },
-        {
-          label: zh ? "美香家族" : "Smithsonian family",
-          href: `/${locale}/families/smithsonian-generations`,
-        },
-        {
-          label: zh ? "上野双胞胎" : "Ueno twins",
-          href: `/${locale}/families/ueno-twins`,
-        },
-      ],
-    },
-    {
-      label: zh ? "地点" : "Places",
+      label: zh ? "地图" : "Map",
       href: `/${locale}/map`,
-      matches: [`/${locale}/places`],
+      matches: [`/${locale}/places`, `/${locale}/institutions`],
     },
-    {
-      label: zh ? "故事" : "Stories",
-      href: `/${locale}/moments`,
-      items: [
-        {
-          label: zh ? "熊猫时刻" : "Panda moments",
-          href: `/${locale}/moments`,
-        },
-        {
-          label: zh ? "我的动态" : "My feed",
-          href: `/${locale}/me/feed`,
-        },
-        ...(contributeEnabled ? [{
-          label: zh ? "纠错与贡献" : "Contribute",
-          href: `/${locale}/contribute`,
-        }] : []),
-      ],
-    },
+    { label: zh ? "家谱" : "Family tree", href: `/${locale}/families` },
+    { label: zh ? "日历" : "Calendar", href: `/${locale}/moments` },
+    { label: zh ? "游戏" : "Games", href: `/${locale}/games` },
   ];
 
   const isActive = (href: string) =>
@@ -146,59 +85,22 @@ export function Navbar1({
           className="relative hidden min-w-0 items-center text-base font-medium lg:flex"
         >
           <NavigationMenuPrimitive.List className="flex items-center gap-1">
-            {sections.map((section, sectionIndex) => {
-              const itemClass = cn(
-                "group inline-flex min-h-10 items-center gap-1.5 rounded-full px-3.5 text-[inherit] font-[inherit] text-[var(--pa-color-ink-muted)] outline-none transition-colors duration-250 ease-out hover:text-[var(--pa-color-ink)] focus-visible:bg-[var(--pa-color-surface-subtle)] data-[state=open]:bg-[var(--pa-color-surface-subtle)] data-[state=open]:text-[var(--pa-color-ink)]",
-                isSectionActive(section) && "bg-[var(--pa-color-surface-subtle)] font-semibold text-[var(--pa-color-ink)]",
-              );
-
-              return (
-              <NavigationMenuPrimitive.Item key={section.href} className="relative">
-                {section.items?.length ? (
-                  <>
-                    <NavigationMenuPrimitive.Trigger className={itemClass}>
-                      {section.label}
-                      <ChevronDown
-                        className="size-4 transition-transform duration-250 ease-out group-data-[state=open]:rotate-180"
-                        aria-hidden="true"
-                      />
-                    </NavigationMenuPrimitive.Trigger>
-                    <NavigationMenuPrimitive.Content
-                      className={cn(
-                        "absolute top-full z-50 mt-2 w-56 rounded-[var(--pa-radius-lg)] bg-[var(--pa-color-surface)] p-1.5 shadow-[var(--pa-shadow-float)] ring-[0.5px] ring-[var(--pa-color-line-strong)]",
-                        sectionIndex === sections.length - 1 ? "right-0" : "left-0",
-                      )}
-                    >
-                      <ul className="grid">
-                        {section.items.map((item) => (
-                          <li key={item.href}>
-                            <NavigationMenuPrimitive.Link asChild>
-                              <Link
-                                href={item.href as Route}
-                                className="flex min-h-10 items-center rounded-[calc(var(--pa-radius-lg)-0.375rem)] px-3 text-[var(--pa-color-ink)] outline-none hover:bg-[var(--pa-color-surface-subtle)] focus-visible:bg-[var(--pa-color-surface-subtle)]"
-                              >
-                                {item.label}
-                              </Link>
-                            </NavigationMenuPrimitive.Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuPrimitive.Content>
-                  </>
-                ) : (
-                  <NavigationMenuPrimitive.Link asChild>
-                    <Link
-                      href={section.href as Route}
-                      aria-current={isSectionActive(section) ? "page" : undefined}
-                      className={itemClass}
-                    >
-                      {section.label}
-                    </Link>
-                  </NavigationMenuPrimitive.Link>
-                )}
+            {sections.map((section) => (
+              <NavigationMenuPrimitive.Item key={section.href}>
+                <NavigationMenuPrimitive.Link asChild>
+                  <Link
+                    href={section.href as Route}
+                    aria-current={isSectionActive(section) ? "page" : undefined}
+                    className={cn(
+                      "inline-flex min-h-10 items-center rounded-full px-3.5 text-[inherit] font-[inherit] text-[var(--pa-color-ink-muted)] outline-none transition-colors duration-250 ease-out hover:text-[var(--pa-color-ink)] focus-visible:bg-[var(--pa-color-surface-subtle)]",
+                      isSectionActive(section) && "bg-[var(--pa-color-surface-subtle)] font-semibold text-[var(--pa-color-ink)]",
+                    )}
+                  >
+                    {section.label}
+                  </Link>
+                </NavigationMenuPrimitive.Link>
               </NavigationMenuPrimitive.Item>
-              );
-            })}
+            ))}
           </NavigationMenuPrimitive.List>
         </NavigationMenuPrimitive.Root>
 
@@ -256,33 +158,16 @@ export function Navbar1({
 
               <nav className="px-5 pt-3" aria-label={zh ? "移动导航" : "Mobile navigation"}>
                 {sections.map((section) => (
-                  <div key={section.href} className="border-b-[0.5px] border-[var(--pa-color-line)] py-1">
-                    <SheetClose asChild>
-                      <Link
-                        href={section.href as Route}
-                        className="grid min-h-14 grid-cols-[1fr_auto] items-center px-1 text-[var(--pa-color-ink)]"
-                      >
-                        <strong className="text-xl font-extrabold">
-                          {section.label}
-                        </strong>
-                        <ArrowRight className="size-5 text-[var(--pa-color-ink-muted)]" aria-hidden="true" />
-                      </Link>
-                    </SheetClose>
-                    {section.items?.length ? (
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 px-1 pb-3">
-                        {section.items.slice(0, 2).map((item) => (
-                          <SheetClose key={item.href} asChild>
-                            <Link
-                              href={item.href as Route}
-                              className="inline-flex min-h-9 items-center text-base text-[var(--pa-color-ink-muted)]"
-                            >
-                              {item.label}
-                            </Link>
-                          </SheetClose>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
+                  <SheetClose key={section.href} asChild>
+                    <Link
+                      href={section.href as Route}
+                      aria-current={isSectionActive(section) ? "page" : undefined}
+                      className="grid min-h-16 grid-cols-[1fr_auto] items-center border-b-[0.5px] border-[var(--pa-color-line)] px-1 text-[var(--pa-color-ink)]"
+                    >
+                      <strong className="text-xl font-extrabold">{section.label}</strong>
+                      <ArrowRight className="size-5 text-[var(--pa-color-ink-muted)]" aria-hidden="true" />
+                    </Link>
+                  </SheetClose>
                 ))}
 
                 <div className="mt-6 flex items-center justify-between gap-3 px-1">

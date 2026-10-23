@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import { ArrowLeft, ArrowRight, ChevronDown, LayoutGrid, MapPin, Search } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, MapPin, Search, Shuffle } from "lucide-react";
 import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { atlasHref, parseAtlasQuery, type AtlasQueryState } from "@/features/atlas/atlas-query";
@@ -26,7 +26,7 @@ const copy = {
     description: "按名字、状态、性别和生活地点寻找大熊猫，继续探索它们的资料、家族和生活足迹。",
     heading: "全部熊猫",
     count: (total: number) => `${total} 只`,
-    gallery: "画廊",
+    gallery: "随机看一只",
     searchLabel: "寻找熊猫",
     inputLabel: "熊猫名字",
     placeholder: "输入熊猫名字，比如 美香",
@@ -66,7 +66,7 @@ const copy = {
     description: "Find giant pandas by name, life status, sex, and current place, then continue to their profiles, families, and life journeys.",
     heading: "All pandas",
     count: (total: number) => `${total}`,
-    gallery: "Gallery",
+    gallery: "Meet one at random",
     searchLabel: "Find a panda",
     inputLabel: "Panda name",
     placeholder: "Enter a panda's name, e.g. Mei Xiang",
@@ -193,8 +193,8 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
         <section className={`${publicShellClassName} ${styles.top}`}>
           <div className={styles.heading}>
             <h1>{t.heading}<span>{t.count(view.totalPublished)}</span></h1>
-            <Link href={`/${locale}/pandas/discover` as Route} className={styles.gallery}>
-              <LayoutGrid aria-hidden="true" />{t.gallery}
+            <Link href={`/${locale}/games/random` as Route} prefetch={false} className={styles.gallery}>
+              <Shuffle aria-hidden="true" />{t.gallery}
             </Link>
           </div>
           <div className={styles.search}>

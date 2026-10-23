@@ -5,7 +5,7 @@ const RELEASE_ID = "2026.08.12.1";
 test("publishes Xi Lun in the current V2 Atlas fixture", async ({ page }) => {
   await page.goto("/zh/pandas?q=Xi%20Lun");
 
-  await expect(page.getByTestId("public-delivery-notice")).toContainText(RELEASE_ID);
+  await expect(page.getByTestId("public-delivery-notice")).toHaveCount(0);
   await expect(page.getByRole("link", { name: /喜伦/ })).toHaveAttribute("href", "/zh/pandas/xi-lun");
 });
 
