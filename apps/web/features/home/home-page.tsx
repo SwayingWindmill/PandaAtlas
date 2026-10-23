@@ -4,12 +4,8 @@ import { ArrowRight, Check, Heart, Search } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 
-import type {
-  HomeV09Media,
-  HomeV09Panda,
-  HomeV09Revision,
-  HomeV09ViewModel,
-} from "@/features/home/home-v09-view-model";
+import type { HomeV09Panda, HomeV09Revision, HomeV09ViewModel } from "@/features/home/home-v09-view-model";
+import type { PandaCoverMedia } from "@/features/public-content/public-v2";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 import styles from "./home-page.module.css";
@@ -73,7 +69,7 @@ function Photo({
   eager = false,
   sizes,
 }: {
-  media: HomeV09Media | null;
+  media: PandaCoverMedia | null;
   fallback: string;
   eager?: boolean;
   sizes?: string;
@@ -101,10 +97,14 @@ export function HomePage({ locale, model }: { locale: PublicLocale; model: HomeV
   const side = model.revisions.find((revision) => revision.panda.id !== lead.panda.id && revision.panda.media) ?? null;
 
   // Updated pandas lead; the rest of the atlas fills the row when fewer than four were updated.
-  const updated: Array<{ panda: HomeV09Panda; revision: HomeV09Revision | null }> = [
+  const updated = new Map<string, { panda: HomeV09Panda; revision: HomeV09Revision | null }>();
+  for (const item of [
     ...model.revisions.map((revision) => ({ panda: revision.panda, revision })),
     ...model.explore.pandas.map((panda) => ({ panda, revision: null })),
-  ].filter((item, index, all) => all.findIndex((other) => other.panda.id === item.panda.id) === index).slice(0, 4);
+  ]) {
+    if (updated.size === 4) break;
+    if (!updated.has(item.panda.id)) updated.set(item.panda.id, item);
+  }
 
   const popular = model.explore.pandas.slice(0, 5);
   const keepFaces = model.explore.pandas.filter((panda) => panda.media).slice(0, 4);
@@ -180,7 +180,7 @@ export function HomePage({ locale, model }: { locale: PublicLocale; model: HomeV
           </Link>
         </header>
         <ul className={styles.cards}>
-          {updated.map(({ panda, revision }) => (
+          {[...updated.values()].map(({ panda, revision }) => (
             <li key={panda.id}>
               <Link href={panda.href as Route} className={styles.card}>
                 <span className={styles.cardPhoto}>

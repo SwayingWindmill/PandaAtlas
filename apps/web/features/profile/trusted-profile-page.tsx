@@ -40,7 +40,6 @@ interface TrustedProfilePageProps {
 
 const copy = {
   zh: {
-    archive: "熊猫资料",
     complete: "资料较完整",
     basic: "基础资料",
     organizing: "资料整理中",
@@ -60,7 +59,6 @@ const copy = {
     male: "雄性",
     unknown: "暂无已审核记录",
     missingTranslation: "当前语言名称尚未审核，保留原文名称。",
-    conclusionStatus: "结论状态",
     precision: "精度",
     confirmed: "已确认",
     provisional: "暂定",
@@ -138,7 +136,6 @@ const copy = {
     moduleUnavailable: "不可用",
   },
   en: {
-    archive: "Panda profile",
     complete: "More complete profile",
     basic: "Basic record",
     organizing: "Record in progress",
@@ -158,7 +155,6 @@ const copy = {
     male: "Male",
     unknown: "No reviewed record",
     missingTranslation: "The English name has not been reviewed; the original-language name is retained.",
-    conclusionStatus: "Conclusion status",
     precision: "Precision",
     confirmed: "Confirmed",
     provisional: "Provisional",
@@ -445,22 +441,19 @@ function RelationList({
       <h3 className={styles.kinTitle}>{title}</h3>
       <ol className={styles.kin}>
         {items.map((item) => {
-          const body = (
-            <>
+          return (
+            <li key={`${item.relation}-${item.id}`}>
               <i aria-hidden="true">{Array.from(item.name)[0]}</i>
               <span>
-                <b lang={item.nameLanguage}>{item.name}</b>
+                {item.href
+                  ? <Link href={item.href as Route} lang={item.nameLanguage}>{item.name}</Link>
+                  : <b lang={item.nameLanguage}>{item.name}</b>}
                 <small>
                   {relationStatusLabel(item.status, locale)}
                   {!item.profileAvailable ? ` · ${t.noProfile}` : null}
                 </small>
                 <small>{t.source}: <SourceAnchors sourceIds={item.sourceIds} profile={profile} locale={locale} /></small>
               </span>
-            </>
-          );
-          return (
-            <li key={`${item.relation}-${item.id}`}>
-              {item.href ? <Link href={item.href as Route}>{body}</Link> : <div>{body}</div>}
             </li>
           );
         })}
@@ -513,6 +506,17 @@ export function TrustedProfilePage({
     coverImageUrl: envelope.data.panda.cover_image_url,
   }));
   const shell = publicShellClassName;
+  // A stale or partial delivery is a warning the reader needs before the facts; a live one is a footnote.
+  const deliveryNotice = (
+    <PublicDeliveryNotice
+      locale={locale}
+      release={envelope.release}
+      delivery={envelope.delivery}
+      coverage={envelope.coverage}
+      localeDelivery={envelope.locale}
+    />
+  );
+  const deliveryIsLive = envelope.delivery.state === "live";
 
   return (
     <>
@@ -528,6 +532,8 @@ export function TrustedProfilePage({
         className={styles.page}
         data-testid="trusted-panda-profile"
       >
+        {deliveryIsLive ? null : <div className={`${shell} ${styles.alert}`}>{deliveryNotice}</div>}
+
         <nav className={`${shell} ${styles.crumbs}`} aria-label={locale === "zh" ? "位置" : "Breadcrumb"}>
           <Link href={profile.atlasHref as Route}>{t.back}</Link>
           <span aria-hidden="true">/</span>
@@ -780,15 +786,7 @@ export function TrustedProfilePage({
               <div><dt>{t.schema}</dt><dd>{profile.revision.publicSchemaVersion ?? t.unknown}</dd></div>
             </dl>
           </div>
-          <div className={styles.notice}>
-            <PublicDeliveryNotice
-              locale={locale}
-              release={envelope.release}
-              delivery={envelope.delivery}
-              coverage={envelope.coverage}
-              localeDelivery={envelope.locale}
-            />
-          </div>
+          {deliveryIsLive ? <div className={styles.notice}>{deliveryNotice}</div> : null}
         </section>
       </main>
     </>

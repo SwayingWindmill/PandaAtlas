@@ -116,7 +116,7 @@
 
 .search button:hover,
 .apply:hover {
-  background: #2b2f2b;
+  background: var(--zp-ink-soft);
 }
 
 .search button:active,
@@ -341,9 +341,11 @@
   gap: 0.25rem 0.5rem;
 }
 
-.name strong {
+.name h3 {
+  margin: 0;
   font-size: 1.25rem;
   font-weight: 800;
+  letter-spacing: 0;
 }
 
 .name small,
@@ -529,6 +531,10 @@
   margin-top: 3rem;
 }
 
+.alert {
+  margin-bottom: 1.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .photo img {
     transition: none;
@@ -560,7 +566,7 @@
     gap: 1.375rem 0.875rem;
   }
 
-  .name strong {
+  .name h3 {
     font-size: 1.0625rem;
   }
 

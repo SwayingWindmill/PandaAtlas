@@ -9,8 +9,7 @@ import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PublicDeliveryNotice } from "@/components/patterns/public-delivery-notice";
 import { atlasHref, parseAtlasQuery, type AtlasQueryState } from "@/features/atlas/atlas-query";
 import { buildAtlasSearchViewModel } from "@/features/atlas/atlas-search";
-import { mediaFor } from "@/features/home/home-v09-view-model";
-import { loadV2PandaCovers, loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
+import { loadV2PandaCovers, loadV2PublicAtlasDataset, pandaCoverMedia } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
 import { buildPublicMetadata } from "@/foundation/metadata/public-metadata";
 
@@ -210,6 +209,11 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
   const covers = await loadV2PandaCovers(view.results.map((result) => result.id));
   const hasConditions = Boolean(canonicalState.q) || view.activeFilterCount > 0;
   const suggestions = view.totalMatched ? [] : envelope.data.pandas.slice(0, 4);
+  // A stale or partial delivery is a warning the reader needs before the results; a live one is a footnote.
+  const deliveryNotice = (
+    <PublicDeliveryNotice locale={locale} release={envelope.release} delivery={envelope.delivery} coverage={envelope.coverage} localeDelivery={envelope.locale} />
+  );
+  const deliveryIsLive = envelope.delivery.state === "live";
 
   return (
     <main id="main-content" className={styles.page} data-testid="localized-pandas-page">
@@ -287,6 +291,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
       </form>
 
       <section className={`${publicShellClassName} ${styles.results}`}>
+        {deliveryIsLive ? null : <div className={styles.alert}>{deliveryNotice}</div>}
         {entityMatches.length ? (
           <section className={styles.entities} aria-labelledby="atlas-entity-results-heading" data-testid="atlas-entity-results">
             <h2 id="atlas-entity-results-heading">{t.relatedEntities}</h2>
@@ -321,7 +326,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
           <ol className={styles.grid} data-testid="atlas-result-list">
             {view.results.map((result) => {
               const cover = covers.get(result.id);
-              const media = cover ? mediaFor(result.name, cover, locale) : null;
+              const media = cover ? pandaCoverMedia(cover, result.name, locale) : null;
               const facts = [
                 localizedStatus(result.status, locale),
                 localizedSex(result.sex, locale),
@@ -339,7 +344,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
                       {result.facilityName ? <span className={styles.tag}><span aria-hidden="true" />{result.facilityName}</span> : null}
                     </span>
                     <span className={styles.name}>
-                      <strong lang={result.nameLanguage}>{result.name}</strong>
+                      <h3 lang={result.nameLanguage}>{result.name}</h3>
                       {result.alternateName ? <small>{result.alternateName}</small> : null}
                     </span>
                     <span className={styles.facts}>{facts}</span>
@@ -357,7 +362,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
               <ul aria-label={t.tryThese}>
                 {suggestions.map((panda) => (
                   <li key={panda.id}>
-                    <Link href={`/${locale}/pandas/${panda.slug}` as Route}>
+                    <Link href={`/${locale}/pandas/${panda.slug}` as Route} lang={locale === "en" && panda.name_en ? "en" : "zh-CN"}>
                       {locale === "zh" ? panda.name_zh : panda.name_en ?? panda.name_zh}
                     </Link>
                   </li>
@@ -384,9 +389,7 @@ export default async function LocalizedPandasPage({ params, searchParams }: Loca
           </nav>
         ) : null}
 
-        <div className={styles.notice}>
-          <PublicDeliveryNotice locale={locale} release={envelope.release} delivery={envelope.delivery} coverage={envelope.coverage} localeDelivery={envelope.locale} />
-        </div>
+        {deliveryIsLive ? <div className={styles.notice}>{deliveryNotice}</div> : null}
       </section>
     </main>
   );

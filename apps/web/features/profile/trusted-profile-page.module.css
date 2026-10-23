@@ -407,20 +407,22 @@
   list-style: none;
 }
 
-.kin a,
-.kin div {
+.kin li {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
   border-radius: var(--pa-radius-sm);
   background: var(--pa-color-surface-subtle);
-  text-decoration: none;
-  transition: background-color 160ms ease;
 }
 
-.kin a:hover {
-  background: var(--pa-color-surface-strong);
+.kin span > a {
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.kin span > a:hover {
+  text-decoration: underline;
 }
 
 .kin i {
@@ -627,6 +629,10 @@
 
 .notice {
   margin-top: 1.25rem;
+}
+
+.alert {
+  padding-top: 1.25rem;
 }
 
 @media (max-width: 62.5rem) {

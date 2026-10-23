@@ -89,7 +89,7 @@ export function PandaFavoriteControl({
         aria-pressed={favorited}
         aria-label={label}
         onClick={toggleFavorite}
-        className="inline-flex min-h-13 items-center justify-center gap-2 self-start rounded-full bg-[var(--pa-color-ink)] px-6 text-base font-semibold text-[var(--pa-color-surface)] transition hover:bg-[#2b2f2b] active:scale-[0.97] aria-pressed:bg-[var(--pa-color-surface-subtle)] aria-pressed:text-[var(--pa-color-ink)] disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pa-color-ink)] focus-visible:ring-offset-2"
+        className="inline-flex min-h-13 items-center justify-center gap-2 self-start rounded-full bg-[var(--pa-color-ink)] px-6 text-base font-semibold text-[var(--pa-color-surface)] transition hover:bg-[var(--zp-ink-soft)] active:scale-[0.97] aria-pressed:bg-[var(--pa-color-surface-subtle)] aria-pressed:text-[var(--pa-color-ink)] aria-pressed:hover:bg-[var(--pa-color-surface-strong)] disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pa-color-ink)] focus-visible:ring-offset-2"
       >
         <Heart className={`h-4 w-4 ${favorited ? "fill-current" : ""}`} aria-hidden="true" />
         {favorited ? t.added : t.add(name)}

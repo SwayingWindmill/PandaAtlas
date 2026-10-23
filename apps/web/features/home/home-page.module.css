@@ -123,7 +123,7 @@
 }
 
 .search button:hover {
-  background: #2b2f2b;
+  background: var(--zp-ink-soft);
 }
 
 .search button:active {
