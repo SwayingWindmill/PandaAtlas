@@ -23,7 +23,6 @@ test("publishes the Ueno family in Atlas search and canonical profiles", async (
 
   await expect(page).toHaveURL(/\/en\/pandas\/ri-ri$/);
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
-  await expect(page.getByTestId("revision-summary")).toContainText("2026.08.12.1");
 });
 
 test("redirects the legacy global distribution route into the localized structured map", async ({ page }) => {

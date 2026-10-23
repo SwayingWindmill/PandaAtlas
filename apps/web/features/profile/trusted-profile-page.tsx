@@ -71,7 +71,6 @@ const copy = {
     moments: "熊猫时光",
     lineage: "家族谱系",
     explore: "继续探索",
-    dataVersion: "资料版本",
   },
   en: {
     back: "All pandas",
@@ -110,7 +109,6 @@ const copy = {
     moments: "Panda Moments",
     lineage: "Family lineage",
     explore: "Continue exploring",
-    dataVersion: "Information version",
   },
 } as const;
 
@@ -262,7 +260,8 @@ export function TrustedProfilePage({
     coverImageUrl: envelope.data.panda.cover_image_url,
   }));
   const shell = publicShellClassName;
-  // A stale or partial delivery is a warning the reader needs before the facts; a live one is a footnote.
+  // A stale, partial or untranslated delivery is a warning the reader needs before the facts;
+  // live, reviewed data needs no notice at all.
   const deliveryNotice = (
     <PublicDeliveryNotice
       locale={locale}
@@ -272,7 +271,7 @@ export function TrustedProfilePage({
       localeDelivery={envelope.locale}
     />
   );
-  const deliveryIsLive = envelope.delivery.state === "live";
+  const deliveryIsLive = envelope.delivery.state === "live" && envelope.locale.translation === "reviewed";
   const altNames = [profile.alternateName, profile.pinyin].filter(
     (name, index, names): name is string => Boolean(name) && name !== profile.displayName && names.indexOf(name) === index,
   );
@@ -466,12 +465,11 @@ export function TrustedProfilePage({
           </section>
         )}
 
-        <footer className={`${shell} ${styles.footnote}`} data-testid="revision-summary">
-          {profile.revision.summary ? <p>{profile.revision.summary}</p> : null}
-          {deliveryIsLive
-            ? deliveryNotice
-            : profile.revision.dataVersion ? <p>{t.dataVersion} {profile.revision.dataVersion}</p> : null}
-        </footer>
+        {profile.revision.summary ? (
+          <footer className={`${shell} ${styles.footnote}`} data-testid="revision-summary">
+            <p>{profile.revision.summary}</p>
+          </footer>
+        ) : null}
       </main>
     </>
   );

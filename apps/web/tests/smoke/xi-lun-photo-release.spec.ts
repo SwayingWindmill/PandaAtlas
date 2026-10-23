@@ -14,7 +14,6 @@ test("renders Xi Lun from current V2 facts and uses the media fallback when no r
 
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: /Xi Lun/ })).toBeVisible();
-  await expect(page.getByTestId("revision-summary")).toContainText(RELEASE_ID);
   await expect(page.getByTestId("fact-place")).toContainText("Zoo Atlanta");
   await expect(page.getByTestId("timeline-list").locator(":scope > li")).toHaveCount(3);
   await expect(page.getByTestId("profile-hero-media-fallback")).toBeVisible();
