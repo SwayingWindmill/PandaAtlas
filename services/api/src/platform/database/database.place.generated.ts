@@ -9,6 +9,18 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface PlaceInstitutions {
@@ -17,6 +29,7 @@ export interface PlaceInstitutions {
   institution_id: Generated<string>;
   name_en: string | null;
   name_zh: string | null;
+  profile: Json | null;
   slug: string;
   updated_at: Generated<Timestamp>;
 }
@@ -34,6 +47,7 @@ export interface PlacePlaces {
   region: string | null;
   slug: string;
   updated_at: Generated<Timestamp>;
+  visit_guide: Json | null;
 }
 
 export interface DB {

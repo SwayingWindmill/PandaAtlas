@@ -7,6 +7,8 @@ import type {
   PublicLineageSummary,
   PublicMediaSummary,
   PublicPandaDetail,
+  PublicInstitutionDetail,
+  PublicInstitutionSummary,
   PublicPandaSummary,
   PublicPlaceSummary,
   PublicReadPort,
@@ -17,6 +19,7 @@ import type {
 } from "../application/public-read.application.js";
 import { LISTING_FACT_KEYS } from "../application/public-read.application.js";
 import { familyCircleIds } from "../application/family-circle.js";
+import type { FacilityVisitGuide, InstitutionProfile } from "../../places/application/visitor-content.js";
 
 // Filters `facts` in Postgres so list reads never transfer curation facts.
 const listingFactsPath = `$[*] ? (${LISTING_FACT_KEYS.map((key) => `@.fieldKey == "${key}"`).join(" || ")})`;
@@ -254,6 +257,48 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     return { kind: "ok", value: { release, place: this.mapPlace(row) } };
   }
 
+  public async listInstitutions(): Promise<
+    PublicReadResult<{ release: PublicReadRelease; items: PublicInstitutionSummary[] }>
+  > {
+    const release = await this.resolveCurrentRelease(this.database.db);
+    if (release === undefined) return { kind: "unavailable" };
+    const rows = await this.database.db
+      .selectFrom("public_read.institutions")
+      .selectAll()
+      .where("release_id", "=", release.releaseId)
+      .orderBy("slug")
+      .execute();
+    return { kind: "ok", value: { release, items: rows.map((row) => this.mapInstitution(row)) } };
+  }
+
+  public async getInstitution(slug: string): Promise<PublicReadResult<PublicInstitutionDetail>> {
+    const release = await this.resolveCurrentRelease(this.database.db);
+    if (release === undefined) return { kind: "unavailable" };
+    const row = await this.database.db
+      .selectFrom("public_read.institutions")
+      .selectAll()
+      .where("release_id", "=", release.releaseId)
+      .where("slug", "=", slug)
+      .executeTakeFirst();
+    if (row === undefined) return { kind: "not_found" };
+    const controls = await this.loadDeliveryControls(this.database.db);
+    const placeRows = await this.database.db
+      .selectFrom("public_read.places")
+      .selectAll()
+      .where("release_id", "=", release.releaseId)
+      .where("institution_id", "=", row.institution_id)
+      .orderBy("slug")
+      .execute();
+    return {
+      kind: "ok",
+      value: {
+        release,
+        institution: this.mapInstitution(row),
+        places: placeRows.filter((place) => !controls.place.has(place.place_id)).map((place) => this.mapPlace(place)),
+      },
+    };
+  }
+
   public async listLineage(): Promise<
     PublicReadResult<{ release: PublicReadRelease; items: PublicLineageSummary[] }>
   > {
@@ -449,6 +494,7 @@ export class PostgresPublicReadRepository implements PublicReadPort {
     region: string | null;
     longitude: number | null;
     latitude: number | null;
+    visit_guide: unknown;
   }): PublicPlaceSummary {
     return {
       placeId: row.place_id,
@@ -461,6 +507,25 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       ...(row.region === null ? {} : { region: row.region }),
       ...(row.longitude === null ? {} : { longitude: row.longitude }),
       ...(row.latitude === null ? {} : { latitude: row.latitude }),
+      ...(row.visit_guide === null ? {} : { visitGuide: row.visit_guide as FacilityVisitGuide }),
+    };
+  }
+
+  private mapInstitution(row: {
+    institution_id: string;
+    slug: string;
+    name_zh: string | null;
+    name_en: string | null;
+    country_code: string | null;
+    profile: unknown;
+  }): PublicInstitutionSummary {
+    return {
+      institutionId: row.institution_id,
+      slug: row.slug,
+      ...(row.name_zh === null ? {} : { nameZh: row.name_zh }),
+      ...(row.name_en === null ? {} : { nameEn: row.name_en }),
+      ...(row.country_code === null ? {} : { countryCode: row.country_code }),
+      ...(row.profile === null ? {} : { profile: row.profile as InstitutionProfile }),
     };
   }
 

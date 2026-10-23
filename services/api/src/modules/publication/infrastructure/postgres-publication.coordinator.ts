@@ -120,6 +120,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
                   nameZh: item.nameZh,
                   nameEn: item.nameEn,
                   countryCode: item.countryCode,
+                  profile: item.profile,
                 };
                 memberships.push(this.membership("institution", item.institutionId, item, projection));
                 return {
@@ -129,6 +130,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
                   name_zh: item.nameZh ?? null,
                   name_en: item.nameEn ?? null,
                   country_code: item.countryCode ?? null,
+                  profile: item.profile === undefined ? null : sql<PublicReadJson>`${JSON.stringify(item.profile)}::jsonb`,
                 };
               }),
             )
@@ -151,6 +153,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
                   region: item.region,
                   longitude: item.longitude,
                   latitude: item.latitude,
+                  visitGuide: item.visitGuide,
                 };
                 memberships.push(this.membership("place", item.placeId, item, projection));
                 return {
@@ -165,6 +168,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
                   region: item.region ?? null,
                   longitude: item.longitude ?? null,
                   latitude: item.latitude ?? null,
+                  visit_guide: item.visitGuide === undefined ? null : sql<PublicReadJson>`${JSON.stringify(item.visitGuide)}::jsonb`,
                 };
               }),
             )

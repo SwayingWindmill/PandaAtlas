@@ -281,6 +281,32 @@ const commands = [
     effect: "generated-output",
   },
   {
+    id: "curation.institutions-check",
+    category: "verification",
+    description: "Validate institution content and check its migration is current.",
+    command: "python",
+    args: ["scripts/curation/build_institution_content_migration.py", "--check"],
+    requires: ["python"],
+    effect: "read-only",
+  },
+  {
+    id: "curation.institutions-test",
+    category: "verification",
+    description: "Run institution content migration builder tests.",
+    command: "python",
+    args: [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "scripts/curation/tests",
+      "-p",
+      "test_build_institution_content_migration.py",
+    ],
+    requires: ["python"],
+    effect: "generated-output",
+  },
+  {
     id: "curation.media-test",
     category: "verification",
     description: "Run panda-data media-processing tests.",
@@ -435,7 +461,13 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
   ],
   web: ["web.lint", "web.typecheck", "web.test-worker", "web.test-unit"],
   api: ["api.lint", "api.typecheck", "api.client-typecheck", "api.test", "api.contract"],
-  curation: ["curation.test", "curation.check", "curation.media-test"],
+  curation: [
+    "curation.test",
+    "curation.check",
+    "curation.institutions-test",
+    "curation.institutions-check",
+    "curation.media-test",
+  ],
   data: ["data.test", "data.check"],
 });
 

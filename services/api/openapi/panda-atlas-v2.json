@@ -1585,6 +1585,68 @@
         ]
       }
     },
+    "/api/v2/institutions": {
+      "get": {
+        "operationId": "listPublicInstitutions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicInstitutionListDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "List zoos and breeding centers from one active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
+    "/api/v2/institutions/{slug}": {
+      "get": {
+        "operationId": "getPublicInstitution",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicInstitutionDetailDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The institution is absent from the active release."
+          },
+          "503": {
+            "description": "No active deliverable release is available."
+          }
+        },
+        "summary": "Get one zoo or breeding center, its profile and its facilities' visit guides, from the active release",
+        "tags": [
+          "Public reads"
+        ]
+      }
+    },
     "/api/v2/lineage": {
       "get": {
         "operationId": "listPublicLineage",
@@ -4689,6 +4751,78 @@
           "items"
         ]
       },
+      "LocalizedTextDto": {
+        "type": "object",
+        "properties": {
+          "zh": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          }
+        }
+      },
+      "FacilityVisitTipDto": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "best_time",
+              "finding_pandas",
+              "getting_there",
+              "good_to_know"
+            ]
+          },
+          "text": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          }
+        },
+        "required": [
+          "topic",
+          "text"
+        ]
+      },
+      "FacilityVisitGuideDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "openingHours": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "admission": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "pandaArea": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "tips": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacilityVisitTipDto"
+            }
+          },
+          "verifiedOn": {
+            "type": "string",
+            "format": "date",
+            "description": "Opening hours and prices change; this is the day they were last checked."
+          },
+          "sourceUrls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        },
+        "required": [
+          "tips",
+          "verifiedOn",
+          "sourceUrls"
+        ]
+      },
       "PublicPlaceSummaryDto": {
         "type": "object",
         "properties": {
@@ -4723,6 +4857,14 @@
           },
           "latitude": {
             "type": "number"
+          },
+          "visitGuide": {
+            "description": "How to see the pandas here; facilities only.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FacilityVisitGuideDto"
+              }
+            ]
           }
         },
         "required": [
@@ -4762,6 +4904,117 @@
         "required": [
           "release",
           "place"
+        ]
+      },
+      "InstitutionProfileDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "zoo",
+              "breeding_center",
+              "wildlife_park"
+            ]
+          },
+          "summary": {
+            "$ref": "#/components/schemas/LocalizedTextDto"
+          },
+          "websiteUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "liveCamUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "The institution's own live panda camera, linked and never embedded."
+          },
+          "verifiedOn": {
+            "type": "string",
+            "format": "date",
+            "description": "The day an editor last checked the profile against its sources."
+          },
+          "sourceUrls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "verifiedOn",
+          "sourceUrls"
+        ]
+      },
+      "PublicInstitutionSummaryDto": {
+        "type": "object",
+        "properties": {
+          "institutionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "nameZh": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/InstitutionProfileDto"
+          }
+        },
+        "required": [
+          "institutionId",
+          "slug"
+        ]
+      },
+      "PublicInstitutionListDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicInstitutionSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "items"
+        ]
+      },
+      "PublicInstitutionDetailDto": {
+        "type": "object",
+        "properties": {
+          "release": {
+            "$ref": "#/components/schemas/PublicReadReleaseDto"
+          },
+          "institution": {
+            "$ref": "#/components/schemas/PublicInstitutionSummaryDto"
+          },
+          "places": {
+            "description": "The institution's deliverable facilities.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublicPlaceSummaryDto"
+            }
+          }
+        },
+        "required": [
+          "release",
+          "institution",
+          "places"
         ]
       },
       "PublicLineageListDto": {

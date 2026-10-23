@@ -21,6 +21,8 @@ import {
   PublicPandaCoverListDto,
   PublicPandaDetailDto,
   PublicPandaListDto,
+  PublicInstitutionDetailDto,
+  PublicInstitutionListDto,
   PublicPlaceDetailDto,
   PublicPlaceListDto,
   PublicReadReleaseDto,
@@ -101,6 +103,28 @@ export class PublicReadController {
   @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
   public async getPlace(@Param("slug") slug: string) {
     return publicResult(await this.publicRead.getPlace(slug), "The public place does not exist.");
+  }
+
+  @Get("institutions")
+  @Public()
+  @ApiOperation({ operationId: "listPublicInstitutions", summary: "List zoos and breeding centers from one active release" })
+  @ApiOkResponse({ type: PublicInstitutionListDto })
+  @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
+  public async listInstitutions() {
+    return publicResult(await this.publicRead.listInstitutions(), "The public institution collection does not exist.");
+  }
+
+  @Get("institutions/:slug")
+  @Public()
+  @ApiOperation({
+    operationId: "getPublicInstitution",
+    summary: "Get one zoo or breeding center, its profile and its facilities' visit guides, from the active release",
+  })
+  @ApiOkResponse({ type: PublicInstitutionDetailDto })
+  @ApiNotFoundResponse({ description: "The institution is absent from the active release." })
+  @ApiServiceUnavailableResponse({ description: "No active deliverable release is available." })
+  public async getInstitution(@Param("slug") slug: string) {
+    return publicResult(await this.publicRead.getInstitution(slug), "The public institution does not exist.");
   }
 
   @Get("lineage")
