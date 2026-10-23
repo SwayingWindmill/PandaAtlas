@@ -18,36 +18,24 @@ interface ActivityCardProps {
 
 const copy = {
   zh: {
-    retracted: "动态已撤回",
-    correction: "公开更正",
-    pinned: "全站置顶",
+    retracted: "已撤回",
+    correction: "更正",
+    pinned: "置顶",
     new: "新动态",
-    history: "收藏前 90 天历史",
-    historyBody: "这条动态发生在你收藏之前，因此作为较早历史单独标注。",
-    deleted: "熊猫资料已不可用",
-    published: "发布于",
-    occurred: "发生于",
-    source: "公开来源",
-    sourceCount: (count: number) => `${count} 条公开来源`,
-    withdrawnBody: "原动态不再公开展示。以下原因来自已审核撤回记录。",
-    noReason: "公开来源已撤回，未发布更多说明。",
-    backfill: "历史回填",
+    history: "收藏前的动态",
+    deleted: "资料已下线",
+    withdrawnBody: "这条动态已撤回。",
+    backfill: "早期记录",
   },
   en: {
-    retracted: "Activity retracted",
-    correction: "Public correction",
-    pinned: "Sitewide pin",
+    retracted: "Retracted",
+    correction: "Correction",
+    pinned: "Pinned",
     new: "New",
-    history: "90-day pre-favorite history",
-    historyBody: "This update was published before you favorited the panda, so it is labelled as earlier history.",
-    deleted: "Panda profile is no longer available",
-    published: "Published",
-    occurred: "Occurred",
-    source: "Public sources",
-    sourceCount: (count: number) => `${count} public source${count === 1 ? "" : "s"}`,
-    withdrawnBody: "The original update is no longer publicly shown. This reason comes from the reviewed retraction record.",
-    noReason: "The public source was withdrawn without a published explanation.",
-    backfill: "Historical backfill",
+    history: "Before you favorited",
+    deleted: "Profile removed",
+    withdrawnBody: "This update was retracted.",
+    backfill: "Earlier record",
   },
 } as const;
 
@@ -63,7 +51,6 @@ function dateLabel(value: string, locale: PublicLocale): string {
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-US", {
     dateStyle: "medium",
-    timeStyle: "short",
   }).format(date);
 }
 
@@ -84,66 +71,55 @@ export function ActivityCard({
 
   return (
     <article
-      className="rounded-3xl border border-[var(--pa-color-accent-border-10)] bg-[var(--card)] p-5 shadow-sm md:p-6"
+      className="rounded-[var(--pa-radius-lg)] bg-[var(--pa-color-surface-subtle)] p-5 md:p-6"
       data-testid="activity-card"
       data-activity-id={activity.activity_id}
     >
-      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold empty:hidden">
         {isNew ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--pa-color-accent-fill-12)] px-3 py-1 text-[var(--accent-strong)]">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--pa-color-highlight-soft)] px-3 py-1 text-[var(--pa-color-highlight-text)]">
             <Sparkles aria-hidden="true" className="size-3.5" />{t.new}
           </span>
         ) : null}
         {isPinned ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-amber-900">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--amber-3)] px-3 py-1 text-[var(--amber-11)]">
             <Pin aria-hidden="true" className="size-3.5" />{t.pinned}
           </span>
         ) : null}
         {correction ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-blue-900">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--pa-color-surface)] px-3 py-1 text-[var(--pa-color-ink)]">
             <RotateCcw aria-hidden="true" className="size-3.5" />{t.correction}
           </span>
         ) : null}
         {attribution === "history" ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1 text-stone-700">
+          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--pa-color-surface)] px-3 py-1 text-[var(--pa-color-ink-muted)]">
             <History aria-hidden="true" className="size-3.5" />{t.history}
           </span>
         ) : null}
         {activity.is_backfill ? (
-          <span className="rounded-full bg-stone-100 px-3 py-1 text-stone-700">{t.backfill}</span>
+          <span className="rounded-full bg-[var(--pa-color-surface)] px-3 py-1 text-[var(--pa-color-ink-muted)]">{t.backfill}</span>
         ) : null}
       </div>
 
-      <div className="mt-4">
-        <h3 className="text-xl font-semibold leading-tight text-[var(--fg)] md:text-2xl">
+      <div className="mt-3">
+        <h3 className="text-xl font-bold leading-snug text-[var(--pa-color-ink)]">
           {retracted ? t.retracted : snapshot.title}
         </h3>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)] md:text-base">
+        <p className="mt-2 max-w-3xl text-base leading-7 text-[var(--pa-color-ink-muted)]">
           {retracted
-            ? `${t.withdrawnBody} ${activity.retraction_reason ?? t.noReason}`
+            ? [t.withdrawnBody, activity.retraction_reason].filter(Boolean).join(" ")
             : snapshot.summary}
         </p>
-        {attribution === "history" ? (
-          <p className="mt-3 text-xs leading-5 text-[var(--muted)]">{t.historyBody}</p>
-        ) : null}
       </div>
 
-      <dl className="mt-5 grid gap-2 text-xs text-[var(--muted)] sm:grid-cols-2">
-        <div>
-          <dt className="inline font-semibold text-[var(--fg)]">{t.occurred}: </dt>
-          <dd className="inline">{dateLabel(activity.occurred_at, locale)}</dd>
-        </div>
-        <div>
-          <dt className="inline font-semibold text-[var(--fg)]">{t.published}: </dt>
-          <dd className="inline">{dateLabel(activity.published_at, locale)}</dd>
-        </div>
-      </dl>
-
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <time dateTime={activity.occurred_at} className="mr-2 text-xs text-[var(--pa-color-ink-muted)]">
+          {dateLabel(activity.occurred_at, locale)}
+        </time>
         {activity.targets.map((target) => {
           if (target.target_type !== "panda") {
             return (
-              <span key={`${target.target_type}:${target.target_id}`} className="rounded-full border px-3 py-1 text-xs">
+              <span key={`${target.target_type}:${target.target_id}`} className="rounded-full border-[0.5px] border-[var(--pa-color-line-strong)] px-3 py-1 text-xs">
                 {target.target_id}
               </span>
             );
@@ -154,7 +130,7 @@ export function ActivityCard({
             return (
               <span
                 key={`${target.target_type}:${target.target_id}`}
-                className="inline-flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs text-red-800"
+                className="inline-flex items-center gap-1 rounded-full bg-[var(--red-3)] px-3 py-1 text-xs text-[var(--red-11)]"
               >
                 <AlertTriangle aria-hidden="true" className="size-3.5" />{t.deleted}
               </span>
@@ -165,7 +141,7 @@ export function ActivityCard({
             <Link
               key={`${target.target_type}:${target.target_id}`}
               href={`/${locale}/pandas/${panda.slug}` as Route}
-              className="rounded-full border border-[var(--pa-color-accent-border-14)] px-3 py-1 text-xs font-semibold text-[var(--accent)] hover:bg-[var(--pa-color-accent-fill-06)]"
+              className="rounded-full border-[0.5px] border-[var(--pa-color-line-strong)] bg-[var(--pa-color-surface)] px-3 py-1 text-xs font-semibold text-[var(--pa-color-ink)] hover:border-[var(--pa-color-ink)]"
             >
               {name}
             </Link>
@@ -173,12 +149,6 @@ export function ActivityCard({
         })}
       </div>
 
-      {activity.provenance.public_reference_ids.length ? (
-        <p className="mt-5 text-xs text-[var(--muted)]">
-          <span className="font-semibold text-[var(--fg)]">{t.source}: </span>
-          {t.sourceCount(activity.provenance.public_reference_ids.length)}
-        </p>
-      ) : null}
     </article>
   );
 }

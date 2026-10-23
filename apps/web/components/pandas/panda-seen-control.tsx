@@ -23,21 +23,19 @@ function localDate(): string {
 const copy = {
   zh: {
     add: (name: string) => `我见过${name}`,
-    added: "我见过 TA",
+    added: "已见过",
     remove: (name: string) => `删除见过${name}的记录`,
     saved: (name: string) => `已记录你见过${name}。`,
     removed: (name: string) => `已删除你见过${name}的记录。`,
     unavailable: "“见过熊猫”暂时不可用，请稍后重试。",
-    support: "这是你的私人见面记录；不会因为去过某个地点自动添加。",
   },
   en: {
     add: (name: string) => `I've seen ${name}`,
-    added: "I've seen this panda",
+    added: "Seen",
     remove: (name: string) => `Remove my seen record for ${name}`,
     saved: (name: string) => `Recorded that you've seen ${name}.`,
     removed: (name: string) => `Removed your seen record for ${name}.`,
     unavailable: "Seen-panda records are temporarily unavailable. Please try again.",
-    support: "This is your private panda memory. Visiting a place never adds it automatically.",
   },
 } as const;
 
@@ -78,7 +76,7 @@ export function PandaSeenControl({ stableId, slug, name, locale }: PandaSeenCont
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-3">
+    <div className="flex flex-col gap-2">
       <button
         type="button"
         disabled={busy || loading}
@@ -86,13 +84,12 @@ export function PandaSeenControl({ stableId, slug, name, locale }: PandaSeenCont
         aria-pressed={seen}
         aria-label={seen ? t.remove(name) : t.add(name)}
         onClick={toggleSeen}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[var(--pa-color-accent-border-14)] bg-[var(--card)] px-5 py-3 text-base font-semibold text-[var(--accent)] transition-transform hover:-translate-y-0.5 active:translate-y-px disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 sm:w-auto"
+        className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-full bg-[var(--pa-color-surface-subtle)] px-6 text-base font-semibold text-[var(--pa-color-ink)] transition-colors duration-250 ease-out hover:bg-[var(--pa-color-surface-hover)] disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pa-color-highlight)] focus-visible:ring-offset-2"
       >
         <Eye className="h-4 w-4" aria-hidden="true" />
         {seen ? t.added : t.add(name)}
       </button>
-      <p className="text-sm leading-6 text-[var(--muted)]">{t.support}</p>
-      {message ? <p className="text-sm leading-6" role="status">{message}</p> : null}
+      {message ? <p className="text-xs leading-5 text-[var(--pa-color-ink-muted)]" role="status">{message}</p> : null}
     </div>
   );
 }

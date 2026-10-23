@@ -22,37 +22,34 @@ export function PublicDeliveryNotice({
   coverage,
   localeDelivery,
 }: PublicDeliveryNoticeProps) {
-  const cached = delivery.state === "cached";
+  const versionLabel = locale === "zh" ? "资料版本" : "Information version";
+
+  // Live data needs no warning: the version stays as a quiet footnote.
+  if (delivery.state === "live" && coverage.state !== "partial" && localeDelivery.translation === "reviewed") {
+    return (
+      <p className="pa-delivery-note" data-testid="public-delivery-notice">
+        {versionLabel} {release.id}
+      </p>
+    );
+  }
+
   const unavailable = delivery.state === "unavailable";
   const title = locale === "zh"
     ? unavailable
       ? "熊猫资料暂时无法更新"
-      : cached
+      : delivery.state === "cached"
         ? "正在显示最近可用的熊猫资料"
-        : "熊猫资料来自当前公开版本"
+        : "部分熊猫资料暂缺"
     : unavailable
       ? "Panda information cannot be refreshed right now"
-      : cached
+      : delivery.state === "cached"
         ? "Showing the latest available panda information"
-        : "Panda information comes from the current public version";
-  const coverageLabel = locale === "zh"
-    ? coverage.state === "complete"
-      ? "本页资料完整"
-      : coverage.state === "partial"
-        ? "本页部分资料可用"
-        : "选择内容后查看资料范围"
-    : coverage.state === "complete"
-      ? "Complete for this page"
-      : coverage.state === "partial"
-        ? "Some information is available"
-        : "Choose an item to see available information";
-  const translationLabel = locale === "zh"
-    ? localeDelivery.translation === "reviewed"
-      ? "当前语言内容已核实"
-      : "部分内容暂缺当前语言翻译"
-    : localeDelivery.translation === "reviewed"
-      ? "Content in this language has been reviewed"
-      : "Some content is not yet translated into this language";
+        : "Some panda information is missing";
+  const details = [
+    coverage.state === "partial" ? (locale === "zh" ? "本页只有部分资料" : "Only part of this page is available") : null,
+    localeDelivery.translation === "reviewed" ? null : (locale === "zh" ? "部分内容还没有中文翻译" : "Some content is not yet translated into English"),
+    delivery.lastSuccessfulAt ? `${locale === "zh" ? "最近更新" : "Last updated"} ${delivery.lastSuccessfulAt}` : null,
+  ].filter((detail): detail is string => Boolean(detail));
 
   return (
     <aside
@@ -65,13 +62,8 @@ export function PublicDeliveryNotice({
       </span>
       <div>
         <strong>{title}</strong>
-        <p>
-          {locale === "zh" ? "资料版本" : "Information version"}: {release.id} · {coverageLabel}
-        </p>
-        <p>{translationLabel}</p>
-        {delivery.lastSuccessfulAt ? (
-          <p>{locale === "zh" ? "最近核实" : "Last checked"}: {delivery.lastSuccessfulAt}</p>
-        ) : null}
+        {details.map((detail) => <p key={detail}>{detail}</p>)}
+        <p>{versionLabel} {release.id}</p>
       </div>
     </aside>
   );

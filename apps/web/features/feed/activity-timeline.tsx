@@ -23,23 +23,25 @@ export function ActivityTimeline({
   const count = feedItems?.length ?? activities?.length ?? 0;
   if (!count) {
     return (
-      <section className="rounded-3xl border border-dashed border-[var(--pa-color-accent-border-14)] bg-[var(--pa-color-accent-fill-04)] p-8 text-center">
-        <h2 className="text-xl font-semibold text-[var(--fg)]">
-          {emptyTitle ?? (locale === "zh" ? "还没有公开动态" : "No public panda updates yet")}
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[var(--muted)]">
-          {emptyBody ?? (
-            locale === "zh"
-              ? "经过审核的熊猫动态发布后会显示在这里。"
-              : "Reviewed panda updates will appear here after publication."
-          )}
-        </p>
+      <section className="rounded-[var(--pa-radius-lg)] bg-[var(--pa-color-surface-subtle)] p-5 text-[var(--pa-color-ink-muted)]">
+        <h3 className="text-base font-semibold">
+          {emptyTitle ?? (locale === "zh" ? "还没有动态" : "No updates yet")}
+        </h3>
+        {emptyBody === "" ? null : (
+          <p className="mt-1 text-base leading-7">
+            {emptyBody ?? (
+              locale === "zh"
+                ? "你关心的熊猫有新动态时，会显示在这里。"
+                : "Updates from the pandas you follow will appear here."
+            )}
+          </p>
+        )}
       </section>
     );
   }
 
   return (
-    <div className="grid gap-5" role="feed" aria-busy="false">
+    <div className="grid gap-3" role="feed" aria-busy="false">
       {feedItems?.map((item) => (
         <ActivityCard
           key={item.activity.activity_id}

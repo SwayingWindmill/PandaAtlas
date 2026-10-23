@@ -1,0 +1,203 @@
+/* eslint-disable @next/next/no-img-element -- licensed panda covers are served from the public media origin. */
+
+import { ArrowRight, Heart, Search } from "lucide-react";
+import type { Route } from "next";
+import Link from "next/link";
+
+import type { HomeV09Panda, HomeV09Revision, HomeV09ViewModel } from "@/features/home/home-v09-view-model";
+import type { PandaCoverMedia } from "@/features/public-content/public-v2";
+import type { PublicLocale } from "@/foundation/content/locales";
+
+import styles from "./home-page.module.css";
+
+const copy = {
+  zh: {
+    count: (total: number) => `已收录 ${total} 只熊猫`,
+    title: "认识每一只熊猫",
+    searchLabel: "搜索熊猫",
+    searchPlaceholder: "输入熊猫名字，比如 美香",
+    search: "搜索",
+    popular: "热门",
+    open: "查看资料",
+    updatesTitle: "最近更新的熊猫",
+    allPandas: "全部熊猫",
+    placesTitle: "按地点找熊猫",
+    map: "地图",
+    born: (year: string) => `${year} 年出生`,
+    pandaCount: (count: number) => `${count} 只熊猫`,
+    keepTitle: "把喜欢的熊猫留在身边",
+    keepAction: "我的熊猫",
+    noPhoto: "暂无照片",
+  },
+  en: {
+    count: (total: number) => `${total} pandas`,
+    title: "Meet every panda",
+    searchLabel: "Search pandas",
+    searchPlaceholder: "Enter a panda's name, e.g. Mei Xiang",
+    search: "Search",
+    popular: "Popular",
+    open: "View profile",
+    updatesTitle: "Recently updated pandas",
+    allPandas: "All pandas",
+    placesTitle: "Find pandas by place",
+    map: "Map",
+    born: (year: string) => `Born ${year}`,
+    pandaCount: (count: number) => `${count} ${count === 1 ? "panda" : "pandas"}`,
+    keepTitle: "Keep your favorite pandas close",
+    keepAction: "My Pandas",
+    noPhoto: "No photo yet",
+  },
+} as const;
+
+function Photo({
+  media,
+  fallback,
+  eager = false,
+  sizes,
+}: {
+  media: PandaCoverMedia | null;
+  fallback: string;
+  eager?: boolean;
+  sizes?: string;
+}) {
+  if (!media) return <div className={styles.noPhoto}>{fallback}</div>;
+  return (
+    <img
+      src={media.src}
+      alt={media.alt}
+      sizes={sizes}
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "high" : "auto"}
+      decoding="async"
+    />
+  );
+}
+
+function Meta({ items }: { items: Array<string | null | undefined> }) {
+  const shown = items.filter(Boolean);
+  if (!shown.length) return null;
+  return (
+    <span className={styles.meta}>
+      {shown.map((item) => <span key={item}>{item}</span>)}
+    </span>
+  );
+}
+
+export function HomePage({ locale, model }: { locale: PublicLocale; model: HomeV09ViewModel }) {
+  const t = copy[locale];
+  const lead = model.today.lead;
+
+  // Updated pandas lead; the rest of the atlas fills the row when fewer than four were updated.
+  const updated = new Map<string, { panda: HomeV09Panda; revision: HomeV09Revision | null }>();
+  for (const item of [
+    ...model.revisions.map((revision) => ({ panda: revision.panda, revision })),
+    ...model.explore.pandas.map((panda) => ({ panda, revision: null })),
+  ]) {
+    if (updated.size === 4) break;
+    if (!updated.has(item.panda.id)) updated.set(item.panda.id, item);
+  }
+
+  const popular = model.explore.pandas.slice(0, 5);
+  const keepFaces = model.explore.pandas.filter((panda) => panda.media).slice(0, 4);
+
+  return (
+    <div className={styles.page}>
+      <section className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <p className={styles.count}>{t.count(model.explore.totalPublished)}</p>
+          <h1>{t.title}</h1>
+          <form action={`/${locale}/pandas`} method="get" role="search" className={styles.search}>
+            <Search aria-hidden="true" />
+            <label htmlFor="home-search" className="sr-only">{t.searchLabel}</label>
+            <input id="home-search" name="q" type="search" placeholder={t.searchPlaceholder} autoComplete="off" />
+            <button type="submit">{t.search}</button>
+          </form>
+          {popular.length ? (
+            <p className={styles.popular}>
+              <span>{t.popular}</span>
+              {popular.map((panda) => (
+                <Link key={panda.id} href={panda.href as Route}>{panda.name}</Link>
+              ))}
+            </p>
+          ) : null}
+        </div>
+
+        <div className={styles.stage}>
+          <Link href={lead.href as Route} className={styles.stagePhoto} tabIndex={-1} aria-hidden="true">
+            <Photo media={lead.media} fallback={t.noPhoto} eager sizes="(min-width: 1000px) 46vw, 100vw" />
+          </Link>
+          <article className={styles.leadCard}>
+            <p className={styles.label}>{lead.label}</p>
+            <h2 className={styles.leadName}>{lead.panda.name}</h2>
+            <Meta items={[lead.panda.birthYear && t.born(lead.panda.birthYear), lead.panda.placeLabel]} />
+            <p className={styles.quote}>{lead.deck}</p>
+            <Link href={lead.href as Route} className={styles.leadAction}>
+              {t.open}<ArrowRight aria-hidden="true" />
+            </Link>
+          </article>
+        </div>
+      </section>
+
+      <section className={styles.section} aria-labelledby="home-updates">
+        <header className={styles.sectionHead}>
+          <h2 id="home-updates">{t.updatesTitle}</h2>
+          <Link href={`/${locale}/pandas` as Route} className={styles.more}>
+            {t.allPandas}<ArrowRight aria-hidden="true" />
+          </Link>
+        </header>
+        <ul className={styles.cards}>
+          {[...updated.values()].map(({ panda, revision }) => (
+            <li key={panda.id}>
+              <Link href={panda.href as Route} className={styles.card}>
+                <span className={styles.cardPhoto}>
+                  <Photo media={panda.media} fallback={t.noPhoto} sizes="(min-width: 1000px) 22vw, 50vw" />
+                </span>
+                <strong className={styles.cardName}>{panda.name}</strong>
+                <Meta items={[panda.birthYear && t.born(panda.birthYear), panda.placeLabel]} />
+                {revision ? <span className={styles.cardQuote}>{revision.summary}</span> : null}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {model.places.length ? (
+        <section className={styles.section} aria-labelledby="home-places">
+          <header className={styles.sectionHead}>
+            <h2 id="home-places">{t.placesTitle}</h2>
+            <Link href={`/${locale}/map` as Route} className={styles.more}>
+              {t.map}<ArrowRight aria-hidden="true" />
+            </Link>
+          </header>
+          <ul className={styles.places} data-count={Math.min(model.places.length, 5)}>
+            {model.places.slice(0, 5).map((place) => (
+              <li key={place.id}>
+                <Link href={place.href as Route} className={styles.place}>
+                  <Photo media={place.media} fallback="" sizes="(min-width: 1000px) 30vw, 100vw" />
+                  <span>
+                    <strong>{place.name}</strong>
+                    <small>{t.pandaCount(place.pandaCount)}</small>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      <section className={`${styles.section} ${styles.keep}`} aria-labelledby="home-keep">
+        <h2 id="home-keep">{t.keepTitle}</h2>
+        {keepFaces.length ? (
+          <ul className={styles.faces} aria-hidden="true">
+            {keepFaces.map((panda) => (
+              <li key={panda.id}><Photo media={panda.media} fallback="" /></li>
+            ))}
+          </ul>
+        ) : null}
+        <Link href={`/${locale}/me` as Route} className={styles.keepAction}>
+          <Heart aria-hidden="true" />{t.keepAction}
+        </Link>
+      </section>
+    </div>
+  );
+}

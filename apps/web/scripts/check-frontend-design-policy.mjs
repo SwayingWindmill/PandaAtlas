@@ -27,7 +27,7 @@ const publicBrandFiles = [
   "components/navbar-1.tsx",
   "components/command-menu-04.tsx",
   "components/blocks/marketing/footers/minimal.tsx",
-  "features/home/home-community.tsx",
+  "features/home/home-page.tsx",
   "features/home/home-v09-view-model.ts",
   "features/lineage/structured-lineage-page.tsx",
   "features/map/map-provider-registry.ts",

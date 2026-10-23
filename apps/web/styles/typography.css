@@ -1,22 +1,22 @@
-.pa-public-register h1,
-.pa-public-register h2,
-.pa-public-register h3 {
+:where(.pa-public-register) h1,
+:where(.pa-public-register) h2,
+:where(.pa-public-register) h3 {
   font-family: var(--font-display);
   text-wrap: balance;
 }
 
-.pa-public-register h1 {
-  font-size: clamp(2.5rem, 7vw, 5rem);
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+:where(.pa-public-register) h1 {
+  font-size: var(--pa-text-display);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-.pa-public-register h2 {
-  font-size: clamp(1.35rem, 3vw, 2rem);
+:where(.pa-public-register) h2 {
+  font-size: var(--pa-text-title);
   line-height: 1.15;
 }
 
-.pa-public-register p {
+:where(.pa-public-register) p {
   text-wrap: pretty;
 }
 
@@ -42,17 +42,4 @@
 .pa-eyebrow svg {
   width: 1rem;
   height: 1rem;
-}
-
-.zp-brand-display {
-  font-family: var(--font-display);
-  font-variation-settings: "wght" 820;
-  letter-spacing: -0.055em;
-}
-
-.zp-brand-label {
-  font-family: var(--zp-font-ui-latin);
-  font-variation-settings: "wght" 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }

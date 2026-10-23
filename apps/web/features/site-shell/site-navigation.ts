@@ -3,23 +3,18 @@ import "server-only";
 import { cache } from "react";
 
 import type { ArchiveSearchResult } from "@/components/command-menu-04";
-import type { NavbarFeature } from "@/components/navbar-1";
-import { loadV2PandaCovers, loadV2SiteSearchIndex } from "@/features/public-content/public-v2";
+import { loadV2SiteSearchIndex } from "@/features/public-content/public-v2";
 import type { PublicLocale } from "@/foundation/content/locales";
 
 export interface SiteNavigationModel {
   searchResults: ArchiveSearchResult[];
-  featuredPandas: NavbarFeature[];
 }
-
-const FEATURED_CANDIDATES = 8;
-const FEATURED_COUNT = 4;
 
 // The navigation is part of every public page, so a failed read degrades to an empty search
 // instead of failing the page.
 export const loadSiteNavigation = cache(async (locale: PublicLocale): Promise<SiteNavigationModel> => {
   const index = await loadV2SiteSearchIndex().catch(() => null);
-  if (!index) return { searchResults: [], featuredPandas: [] };
+  if (!index) return { searchResults: [] };
   const zh = locale === "zh";
 
   const pandas = index.pandas.map((panda) => {
@@ -53,18 +48,5 @@ export const loadSiteNavigation = cache(async (locale: PublicLocale): Promise<Si
     })),
   ];
 
-  const candidates = pandas.slice(0, FEATURED_CANDIDATES);
-  const covers = await loadV2PandaCovers(candidates.map((panda) => panda.id)).catch(() => new Map());
-  const featuredPandas: NavbarFeature[] = candidates.flatMap((panda) => {
-    const src = covers.get(panda.id)?.url;
-    if (!src) return [];
-    return [{
-      href: panda.href,
-      imageSrc: src,
-      name: panda.name,
-      meta: panda.birthYear ?? (zh ? "认识这只熊猫" : "Meet this panda"),
-    }];
-  }).slice(0, FEATURED_COUNT);
-
-  return { searchResults, featuredPandas };
+  return { searchResults };
 });
