@@ -7,16 +7,18 @@ const scriptDir = path.dirname(scriptPath);
 const webRoot = path.resolve(scriptDir, "..");
 const repoRoot = path.resolve(webRoot, "../..");
 const policyPath = path.join(repoRoot, "docs/design/zhipanda-frontend-policy.md");
+const designSystemPath = path.join(repoRoot, "docs/design/zhipanda-design-system.md");
 
 const requiredPolicyMarkers = [
   "吱熊猫 ZhiPanda",
-  "https://github.com/Leonxlnx/taste-skill",
-  "design-taste-frontend",
-  "2026-07-25",
-  "https://github.com/pbakaus/impeccable",
-  "cli-v2.3.2",
-  "b913668",
+  "zhipanda-design-system.md",
   "真实性与媒体许可",
+];
+
+const requiredDesignSystemMarkers = [
+  "十条规则",
+  "@radix-ui/colors",
+  "apps/web/styles/tokens.css",
 ];
 
 const publicBrandFiles = [
@@ -55,6 +57,10 @@ const failures = [];
 const policy = await readFile(policyPath, "utf8");
 for (const marker of requiredPolicyMarkers) {
   if (!policy.includes(marker)) failures.push(`Design policy is missing required marker: ${marker}`);
+}
+const designSystem = await readFile(designSystemPath, "utf8");
+for (const marker of requiredDesignSystemMarkers) {
+  if (!designSystem.includes(marker)) failures.push(`Design system is missing required marker: ${marker}`);
 }
 
 for (const relativePath of publicBrandFiles) {
