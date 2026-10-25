@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
+import { loadV2PublicAtlasDataset, loadV2PublicInstitutionSlugs } from "@/features/public-content/public-v2";
 
 const siteUrl = (process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
@@ -18,6 +18,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
 
     try {
+      for (const slug of await loadV2PublicInstitutionSlugs()) {
+        entries.push({ url: `${siteUrl}/${locale}/institutions/${slug}`, changeFrequency: "monthly", priority: 0.7 });
+      }
       const envelope = await loadV2PublicAtlasDataset(locale);
       if (!envelope) continue;
       for (const panda of envelope.data.pandas) {

@@ -15,6 +15,7 @@ const ids = {
   atlanta: "00000000-0000-4000-8000-000000000201",
   washington: "afb0f227-dd5e-5076-88e3-74e9807a6049",
   ueno: "00000000-0000-4000-8000-000000000203",
+  smithsonianInstitution: "00000000-0000-4000-8000-000000000301",
 };
 
 function names(zh, en) {
@@ -75,12 +76,27 @@ const places = [
   },
   {
     placeId: ids.washington,
+    institutionId: ids.smithsonianInstitution,
     slug: "smithsonian-national-zoo",
-    placeType: "zoo",
+    placeType: "facility",
     nameZh: "史密森国家动物园",
     nameEn: "Smithsonian's National Zoo",
     countryCode: "US",
     region: "Washington, DC",
+    longitude: -77.0498,
+    latitude: 38.9296,
+    visitGuide: {
+      address: { zh: "3001 Connecticut Ave. NW, Washington, DC 20008", en: "3001 Connecticut Ave. NW, Washington, DC 20008" },
+      openingHours: { zh: "常规开放 8:00 至 16:00，15:00 停止入园。", en: "Usually 8 a.m. to 4 p.m., last entry 3 p.m." },
+      admission: { zh: "免费。", en: "Free." },
+      pandaArea: { zh: "亚洲步道", en: "Asia Trail" },
+      tips: [
+        { topic: "best_time", text: { zh: "开园后的第一个小时熊猫最活跃。", en: "Pandas are most active in the first hour after opening." } },
+        { topic: "getting_there", text: { zh: "地铁红线 Woodley Park 站步行约 10 分钟。", en: "About a 10-minute walk from Woodley Park on the Red Line." } },
+      ],
+      verifiedOn: "2026-10-23",
+      sourceUrls: ["https://nationalzoo.si.edu/animals/giant-panda"],
+    },
   },
   {
     placeId: ids.ueno,
@@ -90,6 +106,24 @@ const places = [
     nameEn: "Ueno Zoo",
     countryCode: "JP",
     region: "Tokyo",
+  },
+];
+
+const institutions = [
+  {
+    institutionId: ids.smithsonianInstitution,
+    slug: "smithsonian-national-zoo",
+    nameZh: "史密森尼国家动物园",
+    nameEn: "Smithsonian's National Zoo and Conservation Biology Institute",
+    countryCode: "US",
+    profile: {
+      kind: "zoo",
+      summary: { zh: "位于华盛顿特区，免费入园。", en: "A free zoo in Washington, D.C." },
+      websiteUrl: "https://nationalzoo.si.edu/",
+      liveCamUrl: "https://nationalzoo.si.edu/webcams/panda-cam",
+      verifiedOn: "2026-10-23",
+      sourceUrls: ["https://nationalzoo.si.edu/animals/giant-panda"],
+    },
   },
 ];
 
@@ -268,6 +302,24 @@ const server = http.createServer((request, response) => {
   }
   if (url.pathname === "/api/v2/places") {
     sendJson(response, 200, { release, items: places });
+    return;
+  }
+  if (url.pathname === "/api/v2/institutions") {
+    sendJson(response, 200, { release, items: institutions });
+    return;
+  }
+  if (url.pathname.startsWith("/api/v2/institutions/")) {
+    const slug = decodeURIComponent(url.pathname.slice("/api/v2/institutions/".length));
+    const institution = institutions.find((item) => item.slug === slug);
+    if (!institution) {
+      sendJson(response, 404, { title: "Not Found", status: 404 });
+      return;
+    }
+    sendJson(response, 200, {
+      release,
+      institution,
+      places: places.filter((place) => place.institutionId === institution.institutionId),
+    });
     return;
   }
   if (url.pathname === "/api/v2/residencies") {

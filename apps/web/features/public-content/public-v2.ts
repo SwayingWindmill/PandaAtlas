@@ -38,6 +38,8 @@ type V2Event = components["schemas"]["PublicLifeEventSummaryDto"];
 type V2Lineage = components["schemas"]["PublicLineageSummaryDto"];
 type V2Evidence = components["schemas"]["PublicEvidenceSummaryDto"];
 type V2Media = components["schemas"]["PublicMediaSummaryDto"];
+export type V2Institution = components["schemas"]["PublicInstitutionSummaryDto"];
+export type V2InstitutionPlace = components["schemas"]["PublicPlaceSummaryDto"];
 
 interface V2CoreDataset {
   release: V2Release;
@@ -618,6 +620,54 @@ export async function loadV2PublicPlace(
     { state: "partial", scope: "canonical V2 public place identity, panda residencies, and life events; institution detail is not published by V2" },
     locale,
   );
+}
+
+export interface PublicInstitutionRecord {
+  institution: V2Institution;
+  /** The institution's facilities, each with its visit guide when one is published. */
+  places: V2InstitutionPlace[];
+  /** Pandas that have lived at any of the facilities, with their residencies. */
+  pandas: PandaDetail[];
+}
+
+export async function loadV2PublicInstitution(
+  slug: string,
+  locale: PublicLocale,
+): Promise<PublicContentEnvelope<PublicInstitutionRecord> | null> {
+  const client = createServerV2Client();
+  const [detail, core] = await Promise.all([
+    client.GET("/api/v2/institutions/{slug}", { params: { path: { slug: slug.trim() } } }),
+    loadCore(),
+  ]);
+  if (!detail.data || !core) return null;
+  const placeIds = new Set(detail.data.places.map((place) => place.placeId));
+  const pandas = buildCorePandas(core).filter((panda) =>
+    panda.residencies.some((residency) => residency.facility_id !== null && placeIds.has(residency.facility_id)),
+  );
+  return v2Envelope(
+    { institution: detail.data.institution, places: detail.data.places, pandas },
+    core.release,
+    core.pandas,
+    { state: "complete", scope: "canonical V2 institution profile, facility visit guides, and panda residencies" },
+    locale,
+  );
+}
+
+export async function loadV2PublicInstitutionSlugs(): Promise<string[]> {
+  const result = await createServerV2Client().GET("/api/v2/institutions");
+  return result.data?.items.map((item) => item.slug) ?? [];
+}
+
+/** The institution page that replaces a facility's place page, when the facility belongs to one. */
+export async function resolveV2InstitutionSlugForPlace(placeId: string): Promise<string | null> {
+  const client = createServerV2Client();
+  const [places, institutions] = await Promise.all([
+    client.GET("/api/v2/places"),
+    client.GET("/api/v2/institutions"),
+  ]);
+  const place = places.data?.items.find((item) => item.placeId === placeId);
+  if (!place?.institutionId || place.placeType !== "facility") return null;
+  return institutions.data?.items.find((item) => item.institutionId === place.institutionId)?.slug ?? null;
 }
 
 function sourceOccurrence(event: PandaDetail["events"][number], pandasById: Map<string, PandaDetail>): PublicMomentOccurrence {
