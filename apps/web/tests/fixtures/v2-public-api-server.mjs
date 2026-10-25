@@ -250,8 +250,58 @@ function pandaDetail(reference) {
   };
 }
 
+// Daily Panda: Xi Lun is the fixed answer. Clues reveal one per wrong guess, as in the API.
+const dailyAnswer = pandas[0];
+const dailyClues = [
+  { kind: "sex", value: "female" },
+  { kind: "birth_year", value: 2016 },
+  { kind: "life_status", value: "alive" },
+  { kind: "name_initial", value: "喜" },
+  { kind: "photo", assetId: covers[0].assetId, objectKey: covers[0].objectKey },
+];
+
+function dailyGuessResult(guessPandaIds) {
+  const answerYear = Number(dailyAnswer.facts.find((fact) => fact.fieldKey === "birth_date").value.slice(0, 4));
+  const answerSex = dailyAnswer.facts.find((fact) => fact.fieldKey === "sex").value;
+  const guesses = [];
+  for (const pandaId of guessPandaIds) {
+    const panda = pandas.find((item) => item.pandaId === pandaId);
+    if (!panda) return null;
+    const year = Number(panda.facts.find((fact) => fact.fieldKey === "birth_date").value.slice(0, 4));
+    guesses.push({
+      pandaId,
+      correct: pandaId === dailyAnswer.pandaId,
+      sameSex: panda.facts.find((fact) => fact.fieldKey === "sex").value === answerSex,
+      birthYear: year === answerYear ? "same" : answerYear < year ? "answer_earlier" : "answer_later",
+    });
+    if (pandaId === dailyAnswer.pandaId) break;
+  }
+  const solved = guesses.some((guess) => guess.correct);
+  const finished = solved || guesses.length === 6;
+  const wrong = guesses.filter((guess) => !guess.correct).length;
+  return {
+    puzzleDate: "2026-10-22",
+    solved,
+    finished,
+    guesses,
+    clues: finished ? dailyClues : dailyClues.slice(0, 1 + wrong),
+    ...(finished ? { answer: { pandaId: dailyAnswer.pandaId, canonicalSlug: dailyAnswer.canonicalSlug } } : {}),
+  };
+}
+
 const server = http.createServer((request, response) => {
   const url = new URL(request.url ?? "/", `http://${host}:${port}`);
+
+  if (request.method === "POST" && url.pathname === "/api/v2/games/daily-panda/guesses") {
+    let raw = "";
+    request.on("data", (chunk) => { raw += chunk; });
+    request.on("end", () => {
+      const result = dailyGuessResult(JSON.parse(raw || "{}").guessPandaIds ?? []);
+      if (result) sendJson(response, 200, result);
+      else sendJson(response, 422, { title: "Unknown panda", status: 422, code: "game.unknownPanda" });
+    });
+    return;
+  }
 
   if (request.method !== "GET") {
     sendJson(response, 405, { title: "Method Not Allowed", status: 405 });
@@ -264,6 +314,10 @@ const server = http.createServer((request, response) => {
   }
   if (url.pathname === "/api/v2/pandas") {
     sendJson(response, 200, { release, items: pandas.map(listing) });
+    return;
+  }
+  if (url.pathname === "/api/v2/games/daily-panda") {
+    sendJson(response, 200, { puzzleDate: "2026-10-22", maxGuesses: 6, clueCount: dailyClues.length, clues: dailyClues.slice(0, 1) });
     return;
   }
   if (url.pathname === "/api/v2/places") {

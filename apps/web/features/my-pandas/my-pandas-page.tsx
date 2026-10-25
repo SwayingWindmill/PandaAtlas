@@ -66,6 +66,10 @@ export function MyPandasPage({ locale, view, envelope }: MyPandasPageProps) {
                   {locale === "zh" ? "足迹与见过" : "Visits & seen pandas"}
                   <ArrowRight aria-hidden="true" />
                 </Link>
+                <Link href={`/${locale}/me/panda-book` as Route} className="my-pandas-hero-link">
+                  {locale === "zh" ? "熊猫图鉴" : "Panda book"}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
                 <Link href={`/${locale}/me/game-history` as Route} className="my-pandas-hero-link">
                   {locale === "zh" ? "游戏历史" : "Game history"}
                   <ArrowRight aria-hidden="true" />

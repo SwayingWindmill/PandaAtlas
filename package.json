@@ -6,6 +6,7 @@
   "workspaces": [
     "packages/api-client",
     "apps/web",
+    "apps/mobile",
     "services/api"
   ],
   "scripts": {

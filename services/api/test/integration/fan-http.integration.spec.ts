@@ -251,6 +251,20 @@ describe("V2 fan identity, engagement, and games", () => {
     expect(checkinsBody.items.some((item) => item.placeId === placeId)).toBe(true);
     expect(seenPandasBody.items.some((item) => item.pandaId === answerPandaId)).toBe(true);
     expect(attemptsBody.items.some((item) => item.questionId === questionId)).toBe(true);
+
+    // A saved attempt adds the question's panda to the panda book.
+    const encounter = await app.get(DatabaseService).db
+      .selectFrom("game.encounters")
+      .select(["first_game", "times_met"])
+      .where("account_id", "=", ACCOUNT_ID)
+      .where("panda_id", "=", answerPandaId)
+      .executeTakeFirst();
+    expect(encounter).toMatchObject({ first_game: "guess_panda", times_met: 1 });
+    const pandaBook = await injectHttp(app, { method: "GET", url: "/api/v2/me/panda-book", headers });
+    expect(pandaBook.statusCode).toBe(200);
+    const pandaBookBody = responseBody<{ publishedCount: number; knownCount: number }>(pandaBook);
+    expect(typeof pandaBookBody.publishedCount).toBe("number");
+    expect(typeof pandaBookBody.knownCount).toBe("number");
   });
 
   it("serves anonymous Random Panda and Guess without persisting an attempt", async () => {
