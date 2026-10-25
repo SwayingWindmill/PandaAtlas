@@ -31,12 +31,10 @@ export default async function PublicLocaleLayout({ children, params }: PublicLoc
       <Navbar1
         locale={locale}
         searchResults={navigation.searchResults}
-        featuredPandas={navigation.featuredPandas}
-        contributeEnabled={isCommunityIntakeUiEnabled()}
         notificationsEnabled={isNotificationCenterEnabled()}
       />
       <QueryProvider>{children}</QueryProvider>
-      <FooterMinimal locale={locale} />
+      <FooterMinimal locale={locale} contributeEnabled={isCommunityIntakeUiEnabled()} />
     </div>
   );
 }

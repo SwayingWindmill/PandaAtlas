@@ -10,7 +10,6 @@ import {
 import {
   listFamilyStories,
   localizedEditorial,
-  publicExperienceRelease,
 } from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import {
@@ -150,9 +149,6 @@ export default async function FamiliesPage({ params, searchParams }: FamiliesPag
     <div className={styles.page}>
       <main id="main-content">
         <div className={styles.shell}>
-          <p className={styles.releaseNote}>
-            {t.release}: {publicExperienceRelease.dataset_release_version} · Schema {publicExperienceRelease.public_schema_version}
-          </p>
           <section className={styles.hero} aria-labelledby="families-title">
             <p className={styles.eyebrow}>{t.eyebrow}</p>
             <h1 className={styles.title} id="families-title">{t.title}</h1>

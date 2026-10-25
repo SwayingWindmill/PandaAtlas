@@ -18,19 +18,20 @@ async function signIn(page: Page) {
 test("serves localized panda game routes and lists them in the sitemap", async ({ page, request }) => {
   for (const locale of ["zh", "en"] as const) {
     const hub = await request.get(`/${locale}/games`);
-    const random = await request.get(`/${locale}/games/random`);
+    const random = await request.get(`/${locale}/games/random`, { maxRedirects: 0 });
     const guess = await request.get(`/${locale}/games/guess`);
     const daily = await request.get(`/${locale}/games/daily`);
     expect(hub.status()).toBe(200);
     expect(daily.status()).toBe(200);
-    expect(random.status()).toBe(200);
+    expect(random.status()).toBe(307);
+    expect(random.headers().location).toMatch(new RegExp(`/${locale}/pandas/[a-z0-9-]+$`));
     expect(guess.status()).toBe(200);
   }
 
   const sitemap = await request.get("/sitemap.xml");
   const xml = await sitemap.text();
   expect(xml).toContain("/zh/games");
-  expect(xml).toContain("/en/games/random");
+  expect(xml).not.toContain("/games/random");
   expect(xml).toContain("/en/games/guess");
   expect(xml).toContain("/zh/games/daily");
 

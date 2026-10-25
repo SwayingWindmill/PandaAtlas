@@ -1,0 +1,527 @@
+/* All pandas: search and filters on top, a photo grid below, with a real empty state. */
+.page {
+  padding-bottom: 2rem;
+  font-size: var(--pa-text-body);
+}
+
+.page img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.top {
+  padding-block: 2.5rem 1.5rem;
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+.heading h1 {
+  margin: 0;
+  font-size: var(--pa-text-display);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.heading h1 span {
+  margin-left: 0.75rem;
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-title);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.gallery {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--pa-color-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.gallery:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gallery svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* The pill holds a pill button: inner radius = outer radius - padding, so both stay concentric. */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 40rem;
+  height: 3.5rem;
+  margin-top: 1.5rem;
+  padding: 0.375rem 0.375rem 0.375rem 1.25rem;
+  border: var(--pa-border) solid var(--pa-color-line-strong);
+  border-radius: var(--pa-radius-pill);
+  background: var(--pa-color-surface);
+}
+
+.search:focus-within {
+  border-color: var(--pa-color-ink);
+  box-shadow: 0 0 0 var(--pa-border) var(--pa-color-ink);
+}
+
+.search svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+  color: var(--pa-color-ink-muted);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--pa-color-ink);
+  font: inherit;
+}
+
+.search input::placeholder {
+  color: var(--pa-color-ink-muted);
+}
+
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search button,
+.apply {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: var(--pa-radius-pill);
+  background: var(--pa-color-accent);
+  color: var(--pa-color-on-accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.search button:hover,
+.apply:hover {
+  background: var(--pa-color-accent-hover);
+}
+
+/* filters: native selects dressed as pills, so the form works without JavaScript */
+.filters {
+  position: sticky;
+  top: 4.5rem;
+  z-index: 4;
+  min-width: 0;
+  margin: 0;
+  padding: 0.75rem 0;
+  border: 0;
+  border-bottom: var(--pa-border) solid var(--pa-color-line);
+  background: var(--pa-color-canvas);
+}
+
+.filters > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filters > div::-webkit-scrollbar {
+  display: none;
+}
+
+.select {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 2.5rem;
+  border: var(--pa-border) solid var(--pa-color-line-strong);
+  border-radius: var(--pa-radius-pill);
+  background: var(--pa-color-surface);
+  font-size: var(--pa-text-meta);
+}
+
+.select:hover {
+  background: var(--pa-color-surface-subtle);
+}
+
+.select:focus-within {
+  border-color: var(--pa-color-ink);
+}
+
+.select > span {
+  padding-left: 1rem;
+  color: var(--pa-color-ink-muted);
+  white-space: nowrap;
+}
+
+.select select {
+  height: 100%;
+  max-width: 14rem;
+  field-sizing: content;
+  padding: 0 2.25rem 0 0.375rem;
+  border: 0;
+  border-radius: var(--pa-radius-pill);
+  outline: 0;
+  appearance: none;
+  background: none;
+  color: var(--pa-color-ink);
+  font: inherit;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.select svg {
+  position: absolute;
+  right: 0.875rem;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: none;
+}
+
+.apply {
+  height: 2.5rem;
+  margin-left: 0.25rem;
+  font-size: var(--pa-text-meta);
+}
+
+.reset {
+  flex: none;
+  padding: 0 0.5rem;
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-meta);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.reset:hover {
+  color: var(--pa-color-ink);
+}
+
+/* results */
+.results {
+  padding-block: 1.5rem 3rem;
+}
+
+.summary {
+  margin-bottom: 1.25rem;
+}
+
+.summary h2 {
+  margin: 0;
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-meta);
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.75rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-decoration: none;
+}
+
+.photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-surface-subtle);
+}
+
+.card:hover h3 {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.card:focus-visible {
+  outline: none;
+}
+
+.card:focus-visible .photo {
+  outline: 2px solid var(--pa-color-ink);
+  outline-offset: 3px;
+}
+
+.noPhoto {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-display);
+  font-weight: 900;
+}
+
+.name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.5rem;
+}
+
+.name h3 {
+  margin: 0;
+  font-size: var(--pa-text-body);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.name small,
+.facts {
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-meta);
+}
+
+/* Secondary facts sit side by side, separated by space rather than punctuation. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+}
+
+/* empty */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 4rem 1rem;
+  border-radius: var(--pa-radius-xl);
+  background: var(--pa-color-surface-subtle);
+  text-align: center;
+}
+
+.face {
+  position: relative;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 0.5rem;
+  border-radius: 50%;
+  background: var(--pa-color-accent);
+}
+
+.face::before,
+.face::after {
+  position: absolute;
+  top: 1.25rem;
+  width: 1rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--pa-color-surface-subtle);
+  content: "";
+}
+
+.face::before {
+  left: 0.75rem;
+  transform: rotate(-12deg);
+}
+
+.face::after {
+  right: 0.75rem;
+  transform: rotate(12deg);
+}
+
+.empty h3 {
+  margin: 0;
+  font-size: var(--pa-text-title);
+  font-weight: 800;
+}
+
+.empty p {
+  max-width: 26em;
+  margin: 0;
+  color: var(--pa-color-ink-muted);
+}
+
+.empty ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empty ul a {
+  display: inline-flex;
+  align-items: center;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: var(--pa-border) solid var(--pa-color-line-strong);
+  border-radius: var(--pa-radius-pill);
+  background: var(--pa-color-surface);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.empty ul a:hover {
+  border-color: var(--pa-color-ink);
+}
+
+.empty .apply {
+  height: 2.75rem;
+  font-size: var(--pa-text-body);
+}
+
+/* matching places */
+.entities {
+  margin-bottom: 2rem;
+}
+
+.entities h2 {
+  margin: 0 0 0.75rem;
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-meta);
+  font-weight: 600;
+}
+
+.entities ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entities a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem 0.75rem 1rem;
+  border-radius: var(--pa-radius-md);
+  background: var(--pa-color-surface-subtle);
+  text-decoration: none;
+}
+
+.entities a:hover {
+  background: var(--pa-color-surface-hover);
+}
+
+.entities svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.entities span {
+  display: grid;
+}
+
+.entities small {
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-meta);
+}
+
+/* pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.pagination a,
+.pagination span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border: var(--pa-border) solid var(--pa-color-line-strong);
+  border-radius: var(--pa-radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pagination a:hover {
+  background: var(--pa-color-surface-subtle);
+}
+
+.pagination span[aria-disabled="true"] {
+  border-color: var(--pa-color-line);
+  color: var(--olive-9);
+}
+
+.pagination strong {
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-meta);
+  font-weight: 600;
+}
+
+.pagination svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.notice {
+  margin-top: 3rem;
+}
+
+.alert {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 62.5rem) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 37.5rem) {
+  .top {
+    padding-top: 1.5rem;
+  }
+
+  .search button {
+    display: none;
+  }
+
+  .filters {
+    top: 4.25rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 0.75rem;
+  }
+
+  .pagination strong {
+    display: none;
+  }
+}

@@ -8,6 +8,11 @@ import type {
   PlacesRepository,
   PlaceType,
 } from "../application/places.application.js";
+import type { FacilityVisitGuide, InstitutionProfile } from "../application/visitor-content.js";
+
+function jsonb(value: object | undefined) {
+  return value === undefined ? null : sql<string>`${JSON.stringify(value)}::jsonb`;
+}
 
 interface PlaceRow {
   place_id: string;
@@ -20,6 +25,7 @@ interface PlaceRow {
   region: string | null;
   longitude: number | null;
   latitude: number | null;
+  visit_guide: unknown;
 }
 
 export class PostgresPlacesRepository implements PlacesRepository {
@@ -33,8 +39,9 @@ export class PostgresPlacesRepository implements PlacesRepository {
         name_zh: input.nameZh,
         name_en: input.nameEn,
         country_code: input.countryCode,
+        profile: jsonb(input.profile),
       })
-      .returning(["institution_id", "slug", "name_zh", "name_en", "country_code"])
+      .returning(["institution_id", "slug", "name_zh", "name_en", "country_code", "profile"])
       .executeTakeFirstOrThrow();
     return this.mapInstitution(row);
   }
@@ -50,10 +57,11 @@ export class PostgresPlacesRepository implements PlacesRepository {
         name_zh: input.nameZh ?? null,
         name_en: input.nameEn ?? null,
         country_code: input.countryCode ?? null,
+        profile: jsonb(input.profile),
         updated_at: new Date(),
       })
       .where("institution_id", "=", institutionId)
-      .returning(["institution_id", "slug", "name_zh", "name_en", "country_code"])
+      .returning(["institution_id", "slug", "name_zh", "name_en", "country_code", "profile"])
       .executeTakeFirstOrThrow();
     return this.mapInstitution(row);
   }
@@ -73,6 +81,7 @@ export class PostgresPlacesRepository implements PlacesRepository {
           input.center === undefined
             ? undefined
             : sql`ST_SetSRID(ST_MakePoint(${input.center.longitude}, ${input.center.latitude}), 4326)`,
+        visit_guide: jsonb(input.visitGuide),
       })
       .returning("place_id")
       .executeTakeFirstOrThrow();
@@ -98,6 +107,7 @@ export class PostgresPlacesRepository implements PlacesRepository {
           input.center === undefined
             ? null
             : sql`ST_SetSRID(ST_MakePoint(${input.center.longitude}, ${input.center.latitude}), 4326)`,
+        visit_guide: jsonb(input.visitGuide),
         updated_at: new Date(),
       })
       .where("place_id", "=", placeId)
@@ -122,7 +132,8 @@ export class PostgresPlacesRepository implements PlacesRepository {
         country_code,
         region,
         case when center is null then null else ST_X(center) end as longitude,
-        case when center is null then null else ST_Y(center) end as latitude
+        case when center is null then null else ST_Y(center) end as latitude,
+        visit_guide
       from place.places
       where place_id = ${placeId}::uuid
     `.execute(this.database.db);
@@ -142,6 +153,7 @@ export class PostgresPlacesRepository implements PlacesRepository {
       ...(row.longitude === null || row.latitude === null
         ? {}
         : { center: { longitude: row.longitude, latitude: row.latitude } }),
+      ...(row.visit_guide === null ? {} : { visitGuide: row.visit_guide as FacilityVisitGuide }),
     };
   }
 
@@ -160,6 +172,7 @@ export class PostgresPlacesRepository implements PlacesRepository {
     name_zh: string | null;
     name_en: string | null;
     country_code: string | null;
+    profile: unknown;
   }): InstitutionRecord {
     return {
       institutionId: row.institution_id,
@@ -167,6 +180,7 @@ export class PostgresPlacesRepository implements PlacesRepository {
       ...(row.name_zh === null ? {} : { nameZh: row.name_zh }),
       ...(row.name_en === null ? {} : { nameEn: row.name_en }),
       ...(row.country_code === null ? {} : { countryCode: row.country_code }),
+      ...(row.profile === null ? {} : { profile: row.profile as InstitutionProfile }),
     };
   }
 }

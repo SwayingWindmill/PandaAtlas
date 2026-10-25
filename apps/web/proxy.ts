@@ -38,6 +38,10 @@ function redirectToCanonicalRoute(request: NextRequest): NextResponse | null {
   const localizedCollection = pathname.match(/^\/(zh|en)\/atlas$/);
   if (localizedCollection) return redirect(`/${localizedCollection[1]}/pandas`);
 
+  // The rotating gallery was retired; the panda list is the one way to browse.
+  const retiredDiscovery = pathname.match(/^\/(zh|en)\/pandas\/discover$/);
+  if (retiredDiscovery) return redirect(`/${retiredDiscovery[1]}/pandas`);
+
   const localizedPassportAlias = pathname.match(/^\/(zh|en)\/(?:my-pandas|me\/passport)$/);
   if (localizedPassportAlias) return redirect(`/${localizedPassportAlias[1]}/me`);
 

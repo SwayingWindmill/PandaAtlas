@@ -32,7 +32,7 @@
 
 Matt Pocock skills are tracked under `.agents/skills/` as the synced release (v1.3.1) for agents without the plugin. The installed `mattpocock-skills` plugin of the same release is equivalent; use whichever your harness loads.
 
-For frontend UX/UI work (designing, restyling or accepting a visual change), read `docs/agents/frontend-review.md`.
+For frontend UX/UI work (designing, restyling or accepting a visual change), read `docs/design/zhipanda-design-system.md` and `docs/agents/frontend-review.md`.
 
 ### Issue tracker
 

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import type { PandaHeroRailItem } from "@/components/blocks/zhipanda/panda-hero-rail";
-import HomeCommunity from "@/features/home/home-community";
-import homeStyles from "@/features/home/home-community.module.css";
+import { HomePage } from "@/features/home/home-page";
 import { buildHomeV09ViewModel, homeV09PandaIds, withHomeV09Media } from "@/features/home/home-v09-view-model";
 import { loadV2PandaCovers, loadV2PublicAtlasDataset } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
@@ -42,31 +40,10 @@ export default async function LocalizedHomePage({ params }: LocalizedHomePagePro
 
   const baseModel = buildHomeV09ViewModel(envelope.data, locale);
   const model = withHomeV09Media(baseModel, await loadV2PandaCovers(homeV09PandaIds(baseModel)), locale);
-  const zh = locale === "zh";
-
-  const pandaRailItems: PandaHeroRailItem[] = model.explore.pandas.flatMap((panda) => {
-    if (!panda.media) return [];
-    return [{
-      id: panda.id,
-      href: panda.href,
-      imageSrc: panda.media.src,
-      imageSources: [panda.media.src],
-      imageAlt: panda.media.alt,
-      name: panda.name,
-      meta: [panda.birthYear, panda.placeLabel].filter(Boolean).join(" · ")
-        || (zh ? "认识这只熊猫" : "Meet this panda"),
-    }];
-  });
 
   return (
-    <div className={homeStyles.pageTheme} data-testid="localized-home-page">
-      <main id="main-content">
-        <HomeCommunity
-          locale={locale}
-          model={model}
-          pandaRailItems={pandaRailItems}
-        />
-      </main>
-    </div>
+    <main id="main-content" data-testid="localized-home-page">
+      <HomePage locale={locale} model={model} />
+    </main>
   );
 }

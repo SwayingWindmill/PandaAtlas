@@ -6,7 +6,6 @@ import {
   getFamilyStory,
   listFamilyStories,
   localizedEditorial,
-  publicExperienceRelease,
 } from "@/features/public-experiences/stories";
 import styles from "@/features/public-experiences/public-experiences.module.css";
 import { parsePublicLocale, PUBLIC_LOCALES } from "@/foundation/content/locales";
@@ -115,9 +114,6 @@ export default async function FamilyStoryPage({ params }: FamilyStoryPageProps) 
     <div className={styles.page}>
       <main id="main-content">
         <div className={styles.shell}>
-          <p className={styles.releaseNote}>
-            {t.release}: {publicExperienceRelease.dataset_release_version} · Schema {publicExperienceRelease.public_schema_version}
-          </p>
           <section className={styles.hero} aria-labelledby="family-title">
             <div className={styles.storyHero}>
               <div>

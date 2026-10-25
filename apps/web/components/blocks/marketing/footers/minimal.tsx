@@ -3,67 +3,61 @@ import Link from "next/link";
 
 import { ZhiPandaLogo } from "@/components/brand/zhipanda-logo";
 
-export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
+export default function FooterMinimal({
+  locale,
+  contributeEnabled = false,
+}: {
+  locale: "zh" | "en";
+  contributeEnabled?: boolean;
+}) {
   const zh = locale === "zh";
   const groups = [
     {
-      title: zh ? "探索" : "Explore",
+      title: zh ? "浏览" : "Browse",
       links: [
         { title: zh ? "熊猫" : "Pandas", href: `/${locale}/pandas` },
-        { title: zh ? "家族" : "Families", href: `/${locale}/families` },
-        { title: zh ? "地点" : "Places", href: `/${locale}/map` },
-        { title: zh ? "故事" : "Stories", href: `/${locale}/moments` },
+        { title: zh ? "地图" : "Map", href: `/${locale}/map` },
+        { title: zh ? "家谱" : "Family tree", href: `/${locale}/families` },
+        { title: zh ? "日历" : "Calendar", href: `/${locale}/moments` },
+        { title: zh ? "游戏" : "Games", href: `/${locale}/games` },
       ],
     },
     {
-      title: zh ? "我的" : "My",
+      title: zh ? "我的" : "Yours",
       links: [
         { title: zh ? "我的熊猫" : "My Pandas", href: `/${locale}/me` },
-        { title: zh ? "我的动态" : "My Feed", href: `/${locale}/me/feed` },
-      ],
-    },
-    {
-      title: zh ? "参与" : "Participate",
-      links: [
-        { title: zh ? "纠错与贡献" : "Contribute", href: `/${locale}/contribute` },
-        { title: zh ? "随机认识一只" : "Meet one at random", href: `/${locale}/games/random` },
-        { title: zh ? "猜熊猫" : "Guess the panda", href: `/${locale}/games/guess` },
-        { title: zh ? "每日一猫" : "Daily Panda", href: `/${locale}/games/daily` },
+        { title: zh ? "搜索" : "Search", href: `/${locale}/search` },
+        ...(contributeEnabled
+          ? [{ title: zh ? "发现错误" : "Report a mistake", href: `/${locale}/contribute` }]
+          : []),
       ],
     },
   ];
 
   return (
-    <footer className="border-t border-[#fffff2]/16 bg-[var(--zp-brand-deep)] text-[#fffff2]">
-      <div className="mx-auto w-full max-w-[75rem] px-4 pb-7 pt-10 sm:px-6 md:pt-12">
-        <div className="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(24rem,.8fr)] md:gap-14">
-          <div className="max-w-[31rem]">
+    <footer className="mt-16 border-t-[0.5px] border-[var(--pa-color-line)] bg-[var(--pa-color-surface)] text-[var(--pa-color-ink)]">
+      <div className="mx-auto w-[min(var(--pa-content-max),calc(100%-2*var(--pa-space-page)))] pb-10 pt-12">
+        <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(16rem,auto)] md:gap-14">
+          <div>
             <Link
               href={`/${locale}` as Route}
-              className="inline-flex text-[#fffff2]"
+              className="inline-flex"
               aria-label={zh ? "吱熊猫首页" : "ZhiPanda home"}
             >
-              <ZhiPandaLogo locale={locale} inverse />
+              <ZhiPandaLogo locale={locale} />
             </Link>
-            <p className="mt-5 max-w-[29rem] text-sm leading-7 text-[#fffff2]/68">
-              {zh
-                ? "从名字、家人、生活过的地方和真实影像，认识每一只熊猫。"
-                : "Meet every panda through names, families, places, and real imagery."}
-            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-12 gap-y-8">
             {groups.map((group) => (
               <div key={group.title}>
-                <h3 className="text-xs font-[760] uppercase tracking-[0.08em] text-[#fffff2]/72">
-                  {group.title}
-                </h3>
+                <h3 className="text-xs font-semibold text-[var(--pa-color-ink-muted)]">{group.title}</h3>
                 <ul className="mt-3 grid">
                   {group.links.map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href as Route}
-                        className="inline-flex min-h-10 items-center text-sm font-[620] text-[#fffff2]/82 transition-colors hover:text-[#f0f63a]"
+                        className="inline-flex min-h-10 items-center text-base font-medium hover:underline hover:underline-offset-[3px]"
                       >
                         {link.title}
                       </Link>
@@ -75,27 +69,9 @@ export default function FooterMinimal({ locale }: { locale: "zh" | "en" }) {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-[#fffff2]/14 pt-5">
-          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 text-xs text-[#fffff2]/72">
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-              <span>© {new Date().getFullYear()} ZhiPanda</span>
-              <Link href="/zh" className={locale === "zh" ? "text-[#fffff2]" : "hover:text-[#fffff2]"}>
-                中文
-              </Link>
-              <Link href="/en" className={locale === "en" ? "text-[#fffff2]" : "hover:text-[#fffff2]"}>
-                English
-              </Link>
-            </div>
-            <span>{zh ? "为熊猫爱好者持续更新" : "Made for panda fans"}</span>
-          </div>
-
-          {/* Decorative wordmark drawn as generated content, so it is not read or contrast-checked as text. */}
-          <div
-            className="mt-7 overflow-hidden select-none text-[clamp(4.4rem,11vw,9rem)] font-[820] leading-[0.72] tracking-[-0.075em] text-[#fffff2]/[0.045] before:content-[attr(data-wordmark)]"
-            data-wordmark="ZHIPANDA"
-            aria-hidden="true"
-          />
-        </div>
+        <p className="mt-10 border-t-[0.5px] border-[var(--pa-color-line)] pt-5 text-xs text-[var(--pa-color-ink-muted)]">
+          © {new Date().getFullYear()} ZhiPanda
+        </p>
       </div>
     </footer>
   );

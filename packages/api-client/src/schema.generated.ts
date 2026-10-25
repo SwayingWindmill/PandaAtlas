@@ -714,6 +714,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/institutions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List zoos and breeding centers from one active release */
+        get: operations["listPublicInstitutions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/institutions/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get one zoo or breeding center, its profile and its facilities' visit guides, from the active release */
+        get: operations["getPublicInstitution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/lineage": {
         parameters: {
             query?: never;
@@ -1771,6 +1805,28 @@ export interface components {
             /** @description The first deliverable image of each requested panda, in display order; pandas without one are omitted. */
             items: components["schemas"]["PublicMediaSummaryDto"][];
         };
+        LocalizedTextDto: {
+            zh?: string;
+            en?: string;
+        };
+        FacilityVisitTipDto: {
+            /** @enum {string} */
+            topic: "best_time" | "finding_pandas" | "getting_there" | "good_to_know";
+            text: components["schemas"]["LocalizedTextDto"];
+        };
+        FacilityVisitGuideDto: {
+            address?: components["schemas"]["LocalizedTextDto"];
+            openingHours?: components["schemas"]["LocalizedTextDto"];
+            admission?: components["schemas"]["LocalizedTextDto"];
+            pandaArea?: components["schemas"]["LocalizedTextDto"];
+            tips: components["schemas"]["FacilityVisitTipDto"][];
+            /**
+             * Format: date
+             * @description Opening hours and prices change; this is the day they were last checked.
+             */
+            verifiedOn: string;
+            sourceUrls: string[];
+        };
         PublicPlaceSummaryDto: {
             /** Format: uuid */
             placeId: string;
@@ -1784,6 +1840,8 @@ export interface components {
             region?: string;
             longitude?: number;
             latitude?: number;
+            /** @description How to see the pandas here; facilities only. */
+            visitGuide?: components["schemas"]["FacilityVisitGuideDto"];
         };
         PublicPlaceListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
@@ -1792,6 +1850,43 @@ export interface components {
         PublicPlaceDetailDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
             place: components["schemas"]["PublicPlaceSummaryDto"];
+        };
+        InstitutionProfileDto: {
+            /** @enum {string} */
+            kind: "zoo" | "breeding_center" | "wildlife_park";
+            summary?: components["schemas"]["LocalizedTextDto"];
+            /** Format: uri */
+            websiteUrl?: string;
+            /**
+             * Format: uri
+             * @description The institution's own live panda camera, linked and never embedded.
+             */
+            liveCamUrl?: string;
+            /**
+             * Format: date
+             * @description The day an editor last checked the profile against its sources.
+             */
+            verifiedOn: string;
+            sourceUrls: string[];
+        };
+        PublicInstitutionSummaryDto: {
+            /** Format: uuid */
+            institutionId: string;
+            slug: string;
+            nameZh?: string;
+            nameEn?: string;
+            countryCode?: string;
+            profile?: components["schemas"]["InstitutionProfileDto"];
+        };
+        PublicInstitutionListDto: {
+            release: components["schemas"]["PublicReadReleaseDto"];
+            items: components["schemas"]["PublicInstitutionSummaryDto"][];
+        };
+        PublicInstitutionDetailDto: {
+            release: components["schemas"]["PublicReadReleaseDto"];
+            institution: components["schemas"]["PublicInstitutionSummaryDto"];
+            /** @description The institution's deliverable facilities. */
+            places: components["schemas"]["PublicPlaceSummaryDto"][];
         };
         PublicLineageListDto: {
             release: components["schemas"]["PublicReadReleaseDto"];
@@ -3255,6 +3350,67 @@ export interface operations {
                 };
             };
             /** @description The place is absent or under emergency takedown. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No active deliverable release is available. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPublicInstitutions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicInstitutionListDto"];
+                };
+            };
+            /** @description No active deliverable release is available. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getPublicInstitution: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicInstitutionDetailDto"];
+                };
+            };
+            /** @description The institution is absent from the active release. */
             404: {
                 headers: {
                     [name: string]: unknown;

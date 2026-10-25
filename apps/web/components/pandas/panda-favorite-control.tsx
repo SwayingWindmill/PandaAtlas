@@ -25,7 +25,6 @@ const copy = {
     saved: (name: string) => `已把${name}加入“我的熊猫”。`,
     removed: (name: string) => `已取消收藏${name}。`,
     unavailable: "收藏暂时不可用，请稍后重试。",
-    support: "收藏会同步到“我的熊猫”；通知偏好可以在通知中心单独设置。",
     collections: "整理我的合集",
   },
   en: {
@@ -35,7 +34,6 @@ const copy = {
     saved: (name: string) => `${name} is now in My Pandas.`,
     removed: (name: string) => `${name} was removed from your favorites.`,
     unavailable: "Favorites are temporarily unavailable. Please try again.",
-    support: "Favorites sync to My Pandas; notification preferences are managed separately in the notification center.",
     collections: "Organize collections",
   },
 } as const;
@@ -81,7 +79,7 @@ export function PandaFavoriteControl({
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-3">
+    <div className="flex flex-col gap-2">
       <button
         type="button"
         disabled={busy || loading}
@@ -89,15 +87,14 @@ export function PandaFavoriteControl({
         aria-pressed={favorited}
         aria-label={label}
         onClick={toggleFavorite}
-        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3 text-base font-semibold text-white transition-transform hover:-translate-y-0.5 active:translate-y-px disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 sm:w-auto"
+        className="inline-flex h-12 items-center justify-center gap-2 self-start rounded-full bg-[var(--pa-color-accent)] px-6 text-base font-semibold text-[var(--pa-color-on-accent)] transition-colors duration-250 ease-out hover:bg-[var(--pa-color-accent-hover)] aria-pressed:bg-[var(--pa-color-surface-subtle)] aria-pressed:text-[var(--pa-color-ink)] aria-pressed:hover:bg-[var(--pa-color-surface-hover)] disabled:cursor-wait disabled:opacity-65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--pa-color-highlight)] focus-visible:ring-offset-2"
       >
-        <Heart className={`h-4 w-4 ${favorited ? "fill-current" : ""}`} aria-hidden="true" />
+        <Heart className={`h-4 w-4 text-[var(--pa-color-highlight)] ${favorited ? "fill-current" : ""}`} aria-hidden="true" />
         {favorited ? t.added : t.add(name)}
       </button>
-      <p className="text-sm leading-6 text-[var(--muted)]">{t.support}</p>
       {favorited ? (
         <Link
-          className="min-h-12 self-start rounded-lg px-1 py-3 font-semibold underline underline-offset-4"
+          className="self-start text-xs font-semibold underline underline-offset-4"
           href={collectionsPath}
         >
           {t.collections}
@@ -105,7 +102,7 @@ export function PandaFavoriteControl({
       ) : null}
       {message ? (
         <p
-          className="rounded-lg border border-[var(--pa-color-accent-border-12)] bg-[var(--card)] px-3 py-2 text-sm leading-6"
+          className="text-xs leading-5 text-[var(--pa-color-ink-muted)]"
           role="status"
         >
           {message}

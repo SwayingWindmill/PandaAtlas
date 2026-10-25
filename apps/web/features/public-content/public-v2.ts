@@ -495,6 +495,28 @@ export async function loadV2PandaCovers(pandaIds: readonly string[]): Promise<Ma
   return new Map(result.data.items.map((media) => [media.pandaId, mapMedia(media, new Map())]));
 }
 
+export interface PandaCoverMedia {
+  src: string;
+  alt: string;
+  credit: string | null;
+  rights: string | null;
+}
+
+// The display fields of a panda cover; fallbackAlt is used when the asset carries no alt text.
+export function pandaCoverMedia(
+  asset: PandaDetail["media"][number],
+  fallbackAlt: string,
+  locale: PublicLocale,
+): PandaCoverMedia | null {
+  if (!asset.url) return null;
+  return {
+    src: asset.url,
+    alt: (locale === "zh" ? asset.alt_zh ?? asset.alt_en : asset.alt_en ?? asset.alt_zh) ?? fallbackAlt,
+    credit: asset.credit ?? asset.photographer ?? null,
+    rights: asset.rights,
+  };
+}
+
 export async function loadV2PublicLineageDataset(locale: PublicLocale): Promise<PublicContentEnvelope<PublicLineageDataset> | null> {
   const core = await loadCore();
   if (!core) return null;

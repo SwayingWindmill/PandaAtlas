@@ -1,17 +1,11 @@
 import type { PublicAtlasDataset } from "@/features/public-content/public-release";
+import { pandaCoverMedia, type PandaCoverMedia } from "@/features/public-content/public-v2";
 import type { PublicLocale } from "@/foundation/content/locales";
 import type {
   PandaDetail,
   PublicEntityName,
   PublicFacilitySummary,
 } from "@/lib/types";
-
-export interface HomeV09Media {
-  src: string;
-  alt: string;
-  credit: string | null;
-  rights: string | null;
-}
 
 export interface HomeV09Panda {
   id: string;
@@ -21,7 +15,7 @@ export interface HomeV09Panda {
   href: string;
   birthYear: string | null;
   placeLabel: string | null;
-  media: HomeV09Media | null;
+  media: PandaCoverMedia | null;
 }
 
 export interface HomeV09LeadStory {
@@ -30,18 +24,9 @@ export interface HomeV09LeadStory {
   title: string;
   deck: string;
   href: string;
-  media: HomeV09Media | null;
+  media: PandaCoverMedia | null;
   panda: HomeV09Panda;
   dateLabel: string | null;
-}
-
-export interface HomeV09TodayItem {
-  kind: "update" | "family" | "place";
-  label: string;
-  title: string;
-  body: string;
-  href: string;
-  dateLabel?: string | null;
 }
 
 export interface HomeV09Revision {
@@ -52,37 +37,24 @@ export interface HomeV09Revision {
   dateLabel: string | null;
 }
 
-export interface HomeV09FamilyMember extends HomeV09Panda {
-  relation: "parent" | "child";
-}
-
-export interface HomeV09FamilySpotlight {
-  focus: HomeV09Panda;
-  members: HomeV09FamilyMember[];
-  title: string;
-  body: string;
-  href: string;
-}
-
 export interface HomeV09PlaceSpotlight {
   id: string;
   name: string;
   pandaCount: number;
   pandaIds: string[];
   href: string;
+  media: PandaCoverMedia | null;
 }
 
 export interface HomeV09ViewModel {
   today: {
     lead: HomeV09LeadStory;
-    secondary: HomeV09TodayItem[];
   };
   explore: {
     pandas: HomeV09Panda[];
     totalPublished: number;
   };
   revisions: HomeV09Revision[];
-  family: HomeV09FamilySpotlight | null;
   places: HomeV09PlaceSpotlight[];
 }
 
@@ -106,17 +78,6 @@ function localizedName(panda: PandaDetail, locale: PublicLocale) {
   return {
     name,
     alternateName: alternate && alternate !== name ? alternate : null,
-  };
-}
-
-// Photos come from the panda covers read after the view model has picked its pandas.
-function mediaFor(panda: HomeV09Panda, asset: PandaDetail["media"][number], locale: PublicLocale): HomeV09Media | null {
-  if (!asset.url) return null;
-  return {
-    src: asset.url,
-    alt: (locale === "zh" ? asset.alt_zh ?? asset.alt_en : asset.alt_en ?? asset.alt_zh) ?? panda.name,
-    credit: asset.credit ?? asset.photographer ?? null,
-    rights: asset.rights,
   };
 }
 
@@ -266,81 +227,25 @@ function buildRevisions(
     .slice(0, 8);
 }
 
-function buildFamilySpotlight(
-  pandas: PandaDetail[],
-  facilities: Map<string, PublicFacilitySummary>,
-  locale: PublicLocale,
-): HomeV09FamilySpotlight | null {
-  const byId = new Map(pandas.map((panda) => [panda.id, panda]));
-  const childrenByParent = new Map<string, PandaDetail[]>();
-
-  for (const panda of pandas) {
-    for (const parentId of [panda.mother_id, panda.father_id]) {
-      if (!parentId || !byId.has(parentId)) continue;
-      childrenByParent.set(parentId, [...(childrenByParent.get(parentId) ?? []), panda]);
-    }
-  }
-
-  const ranked = pandas
-    .map((panda) => {
-      const parents = [panda.mother_id, panda.father_id]
-        .flatMap((id) => id && byId.has(id) ? [byId.get(id) as PandaDetail] : []);
-      const children = childrenByParent.get(panda.id) ?? [];
-      return {
-        panda,
-        parents,
-        children,
-        score: (parents.length + children.length) * 10 + profileRichness(panda),
-      };
-    })
-    .filter((item) => item.parents.length + item.children.length >= 2)
-    .sort((left, right) => right.score - left.score || left.panda.slug.localeCompare(right.panda.slug));
-
-  const candidate = ranked[0];
-  if (!candidate) return null;
-
-  const focus = toHomePanda(candidate.panda, facilities, locale);
-  const members: HomeV09FamilyMember[] = [
-    ...candidate.parents.map((panda) => ({
-      ...toHomePanda(panda, facilities, locale),
-      relation: "parent" as const,
-    })),
-    ...candidate.children.map((panda) => ({
-      ...toHomePanda(panda, facilities, locale),
-      relation: "child" as const,
-    })),
-  ].slice(0, 6);
-
-  return {
-    focus,
-    members,
-    title: locale === "zh"
-      ? `${focus.name}的家族线索`
-      : `The family around ${focus.name}`,
-    body: locale === "zh"
-      ? `从 ${members.length} 个公开亲缘连接继续认识这个家族。`
-      : `Continue through ${members.length} published family connections.`,
-    href: `/${locale}/families?view=lineage&focus=${candidate.panda.slug}`,
-  };
-}
-
 function buildPlaces(
   pandas: PandaDetail[],
   facilities: PublicFacilitySummary[],
   locale: PublicLocale,
 ): HomeV09PlaceSpotlight[] {
-  const pandasByFacility = new Map<string, Set<string>>();
+  // Current residents come before former ones, so a place's photo shows a panda that lives there now.
+  const pandasByFacility = new Map<string, { current: string[]; former: string[] }>();
 
   for (const panda of pandas) {
+    const currentId = panda.current_place?.facility_id;
     const facilityIds = new Set([
-      panda.current_place?.facility_id,
+      currentId,
       ...panda.residencies.map((residency) => residency.facility_id),
     ].filter((id): id is string => Boolean(id)));
 
     for (const facilityId of facilityIds) {
-      const pandaIds = pandasByFacility.get(facilityId) ?? new Set<string>();
-      pandaIds.add(panda.id);
-      pandasByFacility.set(facilityId, pandaIds);
+      const residents = pandasByFacility.get(facilityId) ?? { current: [], former: [] };
+      (facilityId === currentId ? residents.current : residents.former).push(panda.id);
+      pandasByFacility.set(facilityId, residents);
     }
   }
 
@@ -348,7 +253,8 @@ function buildPlaces(
   return facilities
     .filter((facility) => facility.facility_type !== "coarse_location")
     .flatMap((facility) => {
-      const pandaIds = [...(pandasByFacility.get(facility.id) ?? [])];
+      const residents = pandasByFacility.get(facility.id);
+      const pandaIds = residents ? [...residents.current, ...residents.former] : [];
       const name = localizedEntityName(facility.names, locale);
       if (!name || pandaIds.length < 2) return [];
       return [{
@@ -357,6 +263,7 @@ function buildPlaces(
         pandaCount: pandaIds.length,
         pandaIds,
         href: `/${locale}/places/${facility.canonical_slug}`,
+        media: null,
       }];
     })
     .sort((left, right) => right.pandaCount - left.pandaCount || left.name.localeCompare(right.name))
@@ -373,7 +280,6 @@ export function buildHomeV09ViewModel(
 
   const facilities = new Map(dataset.facilities.map((facility) => [facility.id, facility]));
   const revisions = buildRevisions(dataset.pandas, facilities, locale);
-  const family = buildFamilySpotlight(dataset.pandas, facilities, locale);
   const places = buildPlaces(dataset.pandas, dataset.facilities, locale);
 
   const leadPanda = revisions[0]?.panda
@@ -396,66 +302,25 @@ export function buildHomeV09ViewModel(
     kind: leadRevision ? "update" : "profile",
     label: leadRevision
       ? (locale === "zh" ? "最近更新" : "Recently updated")
-      : (locale === "zh" ? "今日档案" : "Today in the archive"),
+      : (locale === "zh" ? "今日推荐" : "Featured today"),
     title: leadPanda.name,
     deck: leadRevision?.summary
       ?? leadSource.localized_content.find((item) => item.locale === (locale === "zh" ? "zh-CN" : "en"))?.summary
       ?? leadSource.intro
-      ?? (locale === "zh" ? "打开完整档案继续查看。" : "Open the full profile to continue."),
+      ?? (locale === "zh" ? "看看它的资料、家人和生活过的地方。" : "See its profile, family, and the places it has lived."),
     href: leadPanda.href,
     media: leadPanda.media,
     panda: leadPanda,
     dateLabel: leadRevision?.dateLabel ?? null,
   };
 
-  const secondary: HomeV09TodayItem[] = [];
-
-  const nextRevision = revisions.find((revision) => revision.panda.id !== leadPanda.id);
-  if (nextRevision) {
-    secondary.push({
-      kind: "update",
-      label: locale === "zh" ? "最近补充" : "Recent addition",
-      title: nextRevision.panda.name,
-      body: nextRevision.summary,
-      href: nextRevision.panda.href,
-      dateLabel: nextRevision.dateLabel,
-    });
-  }
-
-  if (family) {
-    secondary.push({
-      kind: "family",
-      label: locale === "zh" ? "家族" : "Family",
-      title: family.title,
-      body: family.body,
-      href: family.href,
-    });
-  }
-
-  if (places[0]) {
-    const place = places[0];
-    secondary.push({
-      kind: "place",
-      label: locale === "zh" ? "地点" : "Place",
-      title: place.name,
-      body: locale === "zh"
-        ? `连接 ${place.pandaCount} 只当前公开档案。`
-        : `Connected to ${place.pandaCount} currently published profiles.`,
-      href: place.href,
-    });
-  }
-
   return {
-    today: {
-      lead,
-      secondary: secondary.slice(0, 3),
-    },
+    today: { lead },
     explore: {
       pandas: diversifiedPandas(dataset.pandas, 12).map((panda) => toHomePanda(panda, facilities, locale)),
       totalPublished: dataset.pandas.length,
     },
     revisions,
-    family,
     places,
   };
 }
@@ -465,7 +330,7 @@ export function homeV09PandaIds(model: HomeV09ViewModel): string[] {
     model.today.lead.panda.id,
     ...model.explore.pandas.map((panda) => panda.id),
     ...model.revisions.map((revision) => revision.panda.id),
-    ...(model.family ? [model.family.focus.id, ...model.family.members.map((member) => member.id)] : []),
+    ...model.places.flatMap((place) => place.pandaIds.slice(0, 3)),
   ])];
 }
 
@@ -476,16 +341,23 @@ export function withHomeV09Media(
 ): HomeV09ViewModel {
   const withMedia = <T extends HomeV09Panda>(panda: T): T => {
     const asset = covers.get(panda.id);
-    return asset ? { ...panda, media: mediaFor(panda, asset, locale) } : panda;
+    return asset ? { ...panda, media: pandaCoverMedia(asset, panda.name, locale) } : panda;
   };
   const leadPanda = withMedia(model.today.lead.panda);
+  const placeMedia = (place: HomeV09PlaceSpotlight): PandaCoverMedia | null => {
+    const fallbackAlt = locale === "zh" ? `${place.name}的熊猫` : `A panda at ${place.name}`;
+    for (const pandaId of place.pandaIds.slice(0, 3)) {
+      const asset = covers.get(pandaId);
+      const media = asset ? pandaCoverMedia(asset, fallbackAlt, locale) : null;
+      if (media) return media;
+    }
+    return null;
+  };
   return {
     ...model,
     today: { ...model.today, lead: { ...model.today.lead, panda: leadPanda, media: leadPanda.media } },
     explore: { ...model.explore, pandas: model.explore.pandas.map(withMedia) },
     revisions: model.revisions.map((revision) => ({ ...revision, panda: withMedia(revision.panda) })),
-    family: model.family
-      ? { ...model.family, focus: withMedia(model.family.focus), members: model.family.members.map(withMedia) }
-      : null,
+    places: model.places.map((place) => ({ ...place, media: placeMedia(place) })),
   };
 }
