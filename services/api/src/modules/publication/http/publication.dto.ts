@@ -1,6 +1,12 @@
 import { Transform, Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { ArrayMaxSize, ArrayMinSize, IsArray, IsIn, IsInt, IsOptional, IsString, IsUUID, Length, Max, Min } from "class-validator";
+import {
+  INSTITUTION_KINDS,
+  VISIT_TIP_TOPICS,
+  type InstitutionKind,
+  type VisitTipTopic,
+} from "../../places/application/visitor-content.js";
 
 export class BuildPublicReleaseDto {
   @ApiProperty({ example: "2026.08.27.1", minLength: 1, maxLength: 80 })
@@ -226,6 +232,65 @@ export class PublicPandaSummaryDto {
   public declare facts: PublicPandaFactDto[];
 }
 
+export class LocalizedTextDto {
+  @ApiPropertyOptional()
+  public declare zh?: string;
+
+  @ApiPropertyOptional()
+  public declare en?: string;
+}
+
+export class InstitutionProfileDto {
+  @ApiProperty({ enum: INSTITUTION_KINDS })
+  public declare kind: InstitutionKind;
+
+  @ApiPropertyOptional({ type: () => LocalizedTextDto })
+  public declare summary?: LocalizedTextDto;
+
+  @ApiPropertyOptional({ format: "uri" })
+  public declare websiteUrl?: string;
+
+  @ApiPropertyOptional({ format: "uri", description: "The institution's own live panda camera, linked and never embedded." })
+  public declare liveCamUrl?: string;
+
+  @ApiProperty({ format: "date", description: "The day an editor last checked the profile against its sources." })
+  public declare verifiedOn: string;
+
+  @ApiProperty({ type: String, format: "uri", isArray: true })
+  public declare sourceUrls: string[];
+}
+
+export class FacilityVisitTipDto {
+  @ApiProperty({ enum: VISIT_TIP_TOPICS })
+  public declare topic: VisitTipTopic;
+
+  @ApiProperty({ type: () => LocalizedTextDto })
+  public declare text: LocalizedTextDto;
+}
+
+export class FacilityVisitGuideDto {
+  @ApiPropertyOptional({ type: () => LocalizedTextDto })
+  public declare address?: LocalizedTextDto;
+
+  @ApiPropertyOptional({ type: () => LocalizedTextDto })
+  public declare openingHours?: LocalizedTextDto;
+
+  @ApiPropertyOptional({ type: () => LocalizedTextDto })
+  public declare admission?: LocalizedTextDto;
+
+  @ApiPropertyOptional({ type: () => LocalizedTextDto })
+  public declare pandaArea?: LocalizedTextDto;
+
+  @ApiProperty({ type: () => FacilityVisitTipDto, isArray: true })
+  public declare tips: FacilityVisitTipDto[];
+
+  @ApiProperty({ format: "date", description: "Opening hours and prices change; this is the day they were last checked." })
+  public declare verifiedOn: string;
+
+  @ApiProperty({ type: String, format: "uri", isArray: true })
+  public declare sourceUrls: string[];
+}
+
 export class PublicPlaceSummaryDto {
   @ApiProperty({ format: "uuid" })
   public declare placeId: string;
@@ -256,6 +321,29 @@ export class PublicPlaceSummaryDto {
 
   @ApiPropertyOptional()
   public declare latitude?: number;
+
+  @ApiPropertyOptional({ type: () => FacilityVisitGuideDto, description: "How to see the pandas here; facilities only." })
+  public declare visitGuide?: FacilityVisitGuideDto;
+}
+
+export class PublicInstitutionSummaryDto {
+  @ApiProperty({ format: "uuid" })
+  public declare institutionId: string;
+
+  @ApiProperty()
+  public declare slug: string;
+
+  @ApiPropertyOptional()
+  public declare nameZh?: string;
+
+  @ApiPropertyOptional()
+  public declare nameEn?: string;
+
+  @ApiPropertyOptional()
+  public declare countryCode?: string;
+
+  @ApiPropertyOptional({ type: () => InstitutionProfileDto })
+  public declare profile?: InstitutionProfileDto;
 }
 
 export class PublicEvidenceSummaryDto {
@@ -487,6 +575,25 @@ export class PublicPlaceListDto {
 
   @ApiProperty({ type: () => PublicPlaceSummaryDto, isArray: true })
   public declare items: PublicPlaceSummaryDto[];
+}
+
+export class PublicInstitutionListDto {
+  @ApiProperty({ type: () => PublicReadReleaseDto })
+  public declare release: PublicReadReleaseDto;
+
+  @ApiProperty({ type: () => PublicInstitutionSummaryDto, isArray: true })
+  public declare items: PublicInstitutionSummaryDto[];
+}
+
+export class PublicInstitutionDetailDto {
+  @ApiProperty({ type: () => PublicReadReleaseDto })
+  public declare release: PublicReadReleaseDto;
+
+  @ApiProperty({ type: () => PublicInstitutionSummaryDto })
+  public declare institution: PublicInstitutionSummaryDto;
+
+  @ApiProperty({ type: () => PublicPlaceSummaryDto, isArray: true, description: "The institution's deliverable facilities." })
+  public declare places: PublicPlaceSummaryDto[];
 }
 
 export class PublicLineageListDto {

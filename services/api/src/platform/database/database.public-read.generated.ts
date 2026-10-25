@@ -42,6 +42,7 @@ export interface PublicReadInstitutions {
   institution_id: string;
   name_en: string | null;
   name_zh: string | null;
+  profile: Json | null;
   release_id: string;
   slug: string;
 }
@@ -109,6 +110,7 @@ export interface PublicReadPlaces {
   region: string | null;
   release_id: string;
   slug: string;
+  visit_guide: Json | null;
 }
 
 export interface PublicReadResidencies {

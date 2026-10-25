@@ -1,5 +1,6 @@
 import type { DatabaseTransaction } from "../../../platform/database/database.service.js";
 import type { PlaceType } from "./places.application.js";
+import type { FacilityVisitGuide, InstitutionProfile } from "./visitor-content.js";
 
 export interface InstitutionPublicationSource {
   institutionId: string;
@@ -7,6 +8,7 @@ export interface InstitutionPublicationSource {
   nameZh?: string;
   nameEn?: string;
   countryCode?: string;
+  profile?: InstitutionProfile;
   sourceRevision: string;
   sourceVersion: string;
   sourceSha256: string;
@@ -23,6 +25,7 @@ export interface PlacePublicationSource {
   region?: string;
   longitude?: number;
   latitude?: number;
+  visitGuide?: FacilityVisitGuide;
   sourceRevision: string;
   sourceVersion: string;
   sourceSha256: string;

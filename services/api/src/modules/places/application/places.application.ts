@@ -1,4 +1,10 @@
 import { DomainError } from "../../../platform/errors/domain-error.js";
+import {
+  assertFacilityVisitGuide,
+  assertInstitutionProfile,
+  type FacilityVisitGuide,
+  type InstitutionProfile,
+} from "./visitor-content.js";
 export type PlaceType = "facility" | "habitat" | "protected_area" | "distribution_area" | "coarse_location";
 
 export interface InstitutionRecord {
@@ -7,6 +13,7 @@ export interface InstitutionRecord {
   nameZh?: string;
   nameEn?: string;
   countryCode?: string;
+  profile?: InstitutionProfile;
 }
 
 export interface PlaceRecord {
@@ -19,6 +26,7 @@ export interface PlaceRecord {
   countryCode?: string;
   region?: string;
   center?: { longitude: number; latitude: number };
+  visitGuide?: FacilityVisitGuide;
 }
 
 export interface CreateInstitutionInput {
@@ -26,6 +34,7 @@ export interface CreateInstitutionInput {
   nameZh?: string;
   nameEn?: string;
   countryCode?: string;
+  profile?: InstitutionProfile;
 }
 
 export interface CreatePlaceInput {
@@ -37,6 +46,7 @@ export interface CreatePlaceInput {
   countryCode?: string;
   region?: string;
   center?: { longitude: number; latitude: number };
+  visitGuide?: FacilityVisitGuide;
 }
 
 export interface PlacesRepository {
@@ -61,10 +71,12 @@ export class PlacesApplication implements PlacesPort, PlaceReferencePort {
   public constructor(private readonly repository: PlacesRepository) {}
 
   public createInstitution(input: CreateInstitutionInput): Promise<InstitutionRecord> {
+    assertInstitutionProfile(input.profile);
     return this.repository.createInstitution(input);
   }
 
   public replaceInstitution(institutionId: string, input: CreateInstitutionInput): Promise<InstitutionRecord> {
+    assertInstitutionProfile(input.profile);
     return this.repository.replaceInstitution(institutionId, input);
   }
 
@@ -94,5 +106,9 @@ export class PlacesApplication implements PlacesPort, PlaceReferencePort {
     if (input.placeType !== "facility" && input.institutionId !== undefined) {
       throw new DomainError("invalid", "places.institutionRequiresFacility", "Only facility places may belong to an institution.");
     }
+    if (input.placeType !== "facility" && input.visitGuide !== undefined) {
+      throw new DomainError("invalid", "places.visitGuideRequiresFacility", "Only facility places carry a visit guide.");
+    }
+    assertFacilityVisitGuide(input.visitGuide);
   }
 }
