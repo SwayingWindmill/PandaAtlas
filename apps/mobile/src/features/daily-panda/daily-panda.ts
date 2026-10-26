@@ -48,13 +48,14 @@ function clueOf(clue: Schemas["DailyPandaClueDto"]): DailyPandaClue[] {
   }
 }
 
-export function feedbackText(feedback: DailyPandaGuessFeedback): string {
+/** Each fact the guess got right or wrong, shown side by side without separators. */
+export function feedbackParts(feedback: DailyPandaGuessFeedback): string[] {
   const parts: string[] = [];
   if (feedback.sameSex !== null) parts.push(feedback.sameSex ? "性别相同" : "性别不同");
-  if (feedback.birthYear === "answer_earlier") parts.push("TA 出生更早");
-  if (feedback.birthYear === "answer_later") parts.push("TA 出生更晚");
+  if (feedback.birthYear === "answer_earlier") parts.push("它出生更早");
+  if (feedback.birthYear === "answer_later") parts.push("它出生更晚");
   if (feedback.birthYear === "same") parts.push("同年出生");
-  return parts.join(" · ");
+  return parts;
 }
 
 // Today's guesses stay on the device so reopening the app resumes the puzzle.

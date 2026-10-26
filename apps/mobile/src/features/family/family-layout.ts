@@ -3,7 +3,7 @@ import type { Family, FamilyMember } from "@/features/family/family";
 // One generation up and one down around the focus panda, like FamilySearch's family view.
 // Tapping any relative re-centres the tree on it, so the layout never needs more rows.
 
-export const PARENT_CARD = { width: 140, height: 72 };
+export const PARENT_CARD = { width: 144, height: 72 };
 export const MEMBER_CARD = { width: 96, height: 124 };
 export const FOCUS_CARD = { width: 120, height: 152 };
 
@@ -11,7 +11,7 @@ const PAD = 16;
 const ROW_GAP = 52;
 const UNIT_GAP = 16;
 const CARD_GAP = 8;
-const COUPLE_GAP = 32;
+const COUPLE_GAP = 24;
 const GROUP_PAD = 8;
 const GROUP_LABEL = 26;
 const BUS_OFFSET = 22;
@@ -43,6 +43,8 @@ export interface FamilyLayout {
   groups: PlacedGroup[];
   /** SVG path data for the connectors. */
   lines: string[];
+  /** The dot joining the two parents, when both are known. */
+  couple: { x: number; y: number } | null;
   /** Where the "no descendants" placeholder sits, when the focus panda has none. */
   noChildren: { x: number; y: number; width: number; height: number } | null;
 }
@@ -122,11 +124,13 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
   // Parents, centred over their children.
   const centre = generationWidth / 2;
   const lines: string[] = [];
+  let couple: FamilyLayout["couple"] = null;
   if (parents.length === 2) {
     const [father, mother] = parents;
     cards.push({ member: father, kind: "parent", x: centre - COUPLE_GAP / 2 - PARENT_CARD.width, y: parentsTop, ...PARENT_CARD });
     cards.push({ member: mother, kind: "parent", x: centre + COUPLE_GAP / 2, y: parentsTop, ...PARENT_CARD });
     const coupleY = parentsTop + PARENT_CARD.height / 2;
+    couple = { x: centre, y: coupleY };
     lines.push(`M${centre - COUPLE_GAP / 2} ${coupleY}H${centre + COUPLE_GAP / 2}`);
     lines.push(...branch({ x: centre, y: coupleY }, drops));
   } else if (parents.length === 1) {
@@ -178,6 +182,7 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
     cards: cards.map(shift),
     groups: groups.map(shift),
     lines: lines.map(shiftPath),
+    couple: couple ? shift(couple) : null,
     noChildren: noChildren ? shift(noChildren) : null,
   };
 }

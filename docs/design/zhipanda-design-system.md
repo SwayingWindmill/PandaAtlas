@@ -1,10 +1,10 @@
 # 吱熊猫设计系统
 
-- **状态：** 当前生效。公开页面的视觉、排版、配色和组件写法以本文为准。
+- **状态：** 当前生效。网站公开页面和 App 的视觉、排版、配色和组件写法以本文为准。
 - **生效日期：** 2026-10-23
-- **适用范围：** `apps/web` 的公开页面和共享组件；Admin 有自己的作用域样式，不受本文约束。
-- **取值来源：** 所有数值都在 `apps/web/styles/tokens.css`。本文只说明怎么用，不重复维护第二份数值；两者不一致时以 token 文件为准，并修正本文。
-- **样板页面：** 首页 `features/home/`、熊猫列表 `app/[locale]/pandas/`、熊猫资料页 `features/profile/`。新页面先照着这三页的写法做。
+- **适用范围：** `apps/web` 的公开页面和共享组件，以及 `apps/mobile`（App，写法见第 10 节）；Admin 有自己的作用域样式，不受本文约束。
+- **取值来源：** 网站的数值在 `apps/web/styles/tokens.css`，App 的在 `apps/mobile/src/global.css`，两份必须是同一组 Radix 色阶、圆角和字号。本文只说明怎么用，不重复维护第三份数值；本文和 token 文件不一致时以 token 文件为准，并修正本文。
+- **样板页面：** 网站是首页 `features/home/`、熊猫列表 `app/[locale]/pandas/`、熊猫资料页 `features/profile/`；App 是家谱 `apps/mobile/src/app/pandas/[slug]/family.tsx`。新页面先照着样板的写法做。
 
 ## 1. 十条规则
 
@@ -190,3 +190,16 @@ Tailwind 对应：`text-xs`（12）、`text-base`（16）、`text-xl`（20）。
 3. 中文和英文、桌面（1440）和手机（390）都截图看过，包括空状态、无照片、加载失败；
 4. `npm run lint`（含设计和文案检查）、`npm run typecheck`、Playwright 冒烟和无障碍测试通过；
 5. 320px 宽度和 200% 文字放大下没有横向溢出。
+
+## 10. App（`apps/mobile`）
+
+App 遵守上面全部规则，只是写法不同。
+
+- **样式：** Uniwind（Tailwind 4）的类名，只用 `src/global.css` 里的语义 token：`bg-background`、`bg-muted`、`text-foreground`、`text-muted-foreground`、`text-highlight-foreground`、`border-border`、`border-input`。不写十六进制、不用 `StyleSheet`。React Navigation 和原生属性（占位符颜色、SVG 描边）要颜色时，用 `useCSSVariable` 读同一组 token。
+- **组件：** 来自 React Native Reusables，用它的 CLI 加进 `src/components/ui/`，再按本文改样式：按钮是胶囊，高 48，16px 粗体，没有阴影；骨架屏是静态灰块，不闪烁。
+- **字号：** `Text` 只有四档：`h1` 32（每屏唯一）、`h2` 20、正文和 `h3` 16、`muted` / `small` 12。Tailwind 写法对应 `text-display`、`text-xl`、`text-base`、`text-xs`。
+- **线条：** `border-hairline`、`border-t-hairline`、`border-b-hairline`、`h-hairline`，都是 0.5px；SVG 连线也是 0.5。
+- **圆角：** 与网站同一组：8、12、16（卡片）、24（大容器）、胶囊。嵌套时内圆角 = 外圆角 − 间距，例如 24 的容器内边距 8，里面的卡片用 16。
+- **页面框架：** 不用原生导航栏。每屏用 `components/page.tsx`：左上一个返回按钮，一行 12px jade 小标签，然后是唯一的 `h1`。
+- **深色：** 跟随系统；`global.css` 的 `@variant dark` 是同一组 Radix 色阶的深色版。
+

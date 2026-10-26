@@ -17,25 +17,25 @@
   --text-display--line-height: 1.15;
 }
 
-/* The design system's 0.5px lines, as the device's thinnest line. */
+/* Every line and border is 0.5px (design system rule 6). */
 @utility border-hairline {
-  border-width: hairlineWidth();
+  border-width: 0.5px;
 }
 
 @utility border-t-hairline {
-  border-top-width: hairlineWidth();
+  border-top-width: 0.5px;
 }
 
 @utility border-b-hairline {
-  border-bottom-width: hairlineWidth();
+  border-bottom-width: 0.5px;
 }
 
 @utility h-hairline {
-  height: hairlineWidth();
+  height: 0.5px;
 }
 
 @utility w-hairline {
-  width: hairlineWidth();
+  width: 0.5px;
 }
 
 @layer theme {

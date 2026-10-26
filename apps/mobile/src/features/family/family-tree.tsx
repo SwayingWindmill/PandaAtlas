@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, type ScrollViewInstance, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Circle, Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,10 +33,10 @@ function Card({ card }: { card: PlacedCard }) {
     return (
       <View
         style={position}
-        className="absolute items-center justify-center gap-1.5 rounded-[20px] bg-primary px-2"
+        className="absolute items-center justify-center gap-1.5 rounded-lg bg-primary px-2"
         accessibilityLabel={`${member.name}，当前查看`}
       >
-        <MemberAvatar member={member} className="size-16 border-2 border-highlight" />
+        <MemberAvatar member={member} className="size-16" />
         <Text className="font-bold text-primary-foreground" numberOfLines={1}>
           {member.name}
         </Text>
@@ -52,12 +52,12 @@ function Card({ card }: { card: PlacedCard }) {
     return (
       <Pressable
         style={position}
-        className="absolute flex-row items-center gap-2.5 rounded-lg border-hairline border-border bg-card px-3 active:bg-accent"
+        className="absolute flex-row items-center gap-2 rounded-lg border-hairline border-border bg-card px-2.5 active:bg-accent"
         onPress={() => openFamily(member)}
         role="button"
         accessibilityLabel={label}
       >
-        <MemberAvatar member={member} />
+        <MemberAvatar member={member} className="size-10" />
         <View className="min-w-0 flex-1">
           <Text className="font-bold" numberOfLines={1}>
             {member.name}
@@ -91,7 +91,7 @@ function Card({ card }: { card: PlacedCard }) {
 
 export function FamilyTree({ family }: { family: Family }) {
   const [width, setWidth] = useState(0);
-  const lineColor = useCSSVariable("--color-input");
+  const [lineColor, inkColor] = useCSSVariable(["--color-input", "--color-foreground"]);
   const layout = useMemo(() => (width > 0 ? layoutFamily(family, width) : null), [family, width]);
   const scroll = useRef<ScrollViewInstance>(null);
 
@@ -108,14 +108,15 @@ export function FamilyTree({ family }: { family: Family }) {
           <View style={{ width: layout.width, height: layout.height }}>
             <Svg width={layout.width} height={layout.height} style={{ position: "absolute" }}>
               {layout.lines.map((line) => (
-                <Path key={line} d={line} stroke={String(lineColor ?? "#b9bcb8")} strokeWidth={1} fill="none" />
+                <Path key={line} d={line} stroke={String(lineColor)} strokeWidth={0.5} fill="none" />
               ))}
+              {layout.couple ? <Circle cx={layout.couple.x} cy={layout.couple.y} r={4} fill={String(inkColor)} /> : null}
             </Svg>
             {layout.groups.map((group) => (
               <View
                 key={`${group.x}-${group.label}`}
                 style={{ left: group.x, top: group.y, width: group.width, height: group.height }}
-                className="absolute items-center rounded-[20px] border-hairline border-dashed border-input pt-1.5"
+                className="absolute items-center rounded-xl border-hairline border-dashed border-input pt-1.5"
               >
                 <Text variant="small" className="text-muted-foreground">
                   {group.label}
