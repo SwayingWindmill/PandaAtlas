@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, ScrollView, Share, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,7 +14,7 @@ import { Text } from "@/components/ui/text";
 import { PandaActions } from "@/features/engagement/panda-actions";
 import { relativesOf } from "@/features/family/family";
 import { openPanda } from "@/features/pandas/panda-row";
-import { type Profile, loadProfile } from "@/features/pandas/profile";
+import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
 import { cn } from "@/lib/utils";
 
 const WEBSITE = "https://www.zhipanda.com/zh/pandas";
@@ -137,6 +138,36 @@ function Visit({ visit }: { visit: NonNullable<Profile["visit"]> }) {
   );
 }
 
+function Sources({ sources }: { sources: Profile["sources"] }) {
+  return (
+    <View className="gap-3">
+      <Text variant="h2">资料来源</Text>
+      <View>
+        {sources.map((source, index) => (
+          <Pressable
+            key={source.id}
+            onPress={() => void WebBrowser.openBrowserAsync(source.url)}
+            role="link"
+            accessibilityLabel={`${source.publisher}，${source.title}`}
+            accessibilityHint="在浏览器中打开"
+            className={cn(
+              "gap-0.5 border-t-hairline border-border py-3 active:bg-accent",
+              index === sources.length - 1 && "border-b-hairline",
+            )}
+          >
+            <Text className="font-bold" numberOfLines={2}>
+              {source.title}
+            </Text>
+            <Text variant="muted" numberOfLines={1}>
+              {source.publisher}　核实于 {longDate(source.lastVerifiedOn)}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const insets = useSafeAreaInsets();
@@ -157,6 +188,7 @@ export default function ProfileScreen() {
   }
 
   const top = { top: insets.top + 8 };
+  const cover = profile?.photos[0];
 
   if (!profile) {
     return (
@@ -181,21 +213,32 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView className="flex-1 bg-background" contentContainerClassName="pb-12">
-      {profile.photo ? (
+      {cover ? (
         <View>
-          <Image
-            source={profile.photo.url}
-            style={{ width: "100%", height: 380, backgroundColor: String(muted) }}
-            contentFit="cover"
-            accessibilityLabel={`${profile.name}的照片`}
-          />
+          <Pressable
+            onPress={() => router.push({ pathname: "/pandas/[slug]/photos", params: { slug: profile.slug } })}
+            role="button"
+            accessibilityLabel={`查看${profile.name}的照片，共 ${profile.photos.length} 张`}
+          >
+            <Image
+              source={cover.url}
+              style={{ width: "100%", height: 380, backgroundColor: String(muted) }}
+              contentFit="cover"
+              accessible={false}
+            />
+            {profile.photos.length > 1 ? (
+              <View className="absolute right-4 bottom-4 rounded-full bg-background px-3 py-1">
+                <Text variant="small">共 {profile.photos.length} 张</Text>
+              </View>
+            ) : null}
+          </Pressable>
           <View className="absolute inset-x-4 flex-row justify-between" style={top}>
             <BackButton className="bg-background" />
             <ShareButton profile={profile} className="bg-background" />
           </View>
-          {profile.photo.credit ? (
+          {cover.credit ? (
             <Text variant="muted" className="px-5 pt-2" numberOfLines={1}>
-              {profile.photo.credit}
+              {cover.credit}
             </Text>
           ) : null}
         </View>
@@ -213,6 +256,7 @@ export default function ProfileScreen() {
         {profile.events.length > 0 ? <Events events={profile.events} /> : null}
         <Relatives profile={profile} />
         {profile.visit ? <Visit visit={profile.visit} /> : null}
+        {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
       </View>
     </ScrollView>
   );

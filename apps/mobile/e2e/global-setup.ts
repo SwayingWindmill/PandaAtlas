@@ -94,6 +94,22 @@ export default async function globalSetup(): Promise<void> {
       metadata: { purpose: "mobile-e2e" },
     });
     await media.attachToPanda(panda.pandaId, photo.assetId, "cover", 0);
+    const second = await media.createAsset({
+      sourceId,
+      storageBucket: "panda-media",
+      storageKey: `e2e/${run}-2.jpg`,
+      contentSha256: "e".repeat(64),
+      mediaType: "image/jpeg",
+      byteSize: 1024,
+      title: "E2E panda, second photo",
+      creator: "E2E Second Photographer",
+      license: "CC-BY-4.0",
+      attributionText: "E2E Second Photographer / CC BY 4.0",
+      rightsStatus: "cleared",
+      eligibilityStatus: "eligible",
+      metadata: { purpose: "mobile-e2e" },
+    });
+    await media.attachToPanda(panda.pandaId, second.assetId, "gallery", 1);
     const database = app.get<{ db: { insertInto(table: string): { values(row: object): { execute(): Promise<unknown> } } } }>(DatabaseService);
     await database.db
       .insertInto("game.questions")
