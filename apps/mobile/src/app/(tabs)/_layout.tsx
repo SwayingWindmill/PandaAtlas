@@ -1,9 +1,10 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import type { ColorValue } from "react-native";
 import Svg, { Circle, Path, Rect } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
 import { Text } from "@/components/ui/text";
+import { useWelcomeSeen } from "@/features/onboarding/welcome";
 import { cn } from "@/lib/utils";
 
 // The canvas's bottom navigation.
@@ -56,6 +57,10 @@ export default function TabsLayout() {
     "--color-foreground",
     "--color-muted-foreground",
   ]);
+  // First launch opens the welcome; nothing shows while the device says whether it already did.
+  const welcomeSeen = useWelcomeSeen();
+  if (welcomeSeen === null) return null;
+  if (!welcomeSeen) return <Redirect href="/welcome" />;
   return (
     <Tabs
       screenOptions={{

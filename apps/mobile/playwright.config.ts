@@ -30,6 +30,8 @@ export default defineConfig({
   workers: 1,
   use: {
     baseURL: appOrigin,
+    // Journeys start past the first-launch welcome; e2e/onboarding.spec.ts clears this to see it.
+    storageState: { cookies: [], origins: [{ origin: appOrigin, localStorage: [{ name: "welcome.seen", value: "1" }] }] },
     viewport: { width: 390, height: 844 },
     locale: "zh-CN",
     ...(browserChannel ? { channel: browserChannel } : {}),
