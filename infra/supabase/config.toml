@@ -3,11 +3,12 @@
 project_id = "panda-atlas"
 
 [api]
-enabled = true
+# The Data API (PostgREST) is off, as in production: the API reads Postgres directly and the web
+# app uses Supabase only for Auth. Exposing public let anyone holding the publishable key write
+# PostGIS's spatial_ref_sys, which supabase_admin owns and no migration can lock down.
+# The port is the local gateway's, which Auth still uses.
+enabled = false
 port = 54321
-schemas = ["public", "graphql_public"]
-extra_search_path = ["public", "extensions"]
-max_rows = 1000
 auto_expose_new_tables = false
 
 [db]
