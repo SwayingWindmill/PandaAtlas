@@ -94,6 +94,15 @@ const commands = [
     effect: "read-only",
   },
   {
+    id: "mobile.test",
+    category: "verification",
+    description: "Run the mobile App unit tests.",
+    command: "npm",
+    args: ["run", "test", "-w", "@zhipanda/mobile"],
+    requires: ["node_modules"],
+    effect: "read-only",
+  },
+  {
     id: "web.typecheck",
     category: "verification",
     description: "Run the frontend TypeScript check.",
@@ -479,7 +488,7 @@ export const DEVELOPMENT_SCOPE_COMMAND_IDS = Object.freeze({
     "release.test-development",
   ],
   web: ["web.lint", "web.typecheck", "web.test-worker", "web.test-unit"],
-  mobile: ["mobile.lint", "mobile.typecheck"],
+  mobile: ["mobile.lint", "mobile.typecheck", "mobile.test"],
   api: ["api.lint", "api.typecheck", "api.client-typecheck", "api.test", "api.contract"],
   curation: [
     "curation.test",

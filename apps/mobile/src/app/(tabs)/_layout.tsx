@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import type { ColorValue } from "react-native";
-import Svg, { Circle, Path } from "react-native-svg";
+import Svg, { Circle, Path, Rect } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
 import { Text } from "@/components/ui/text";
@@ -21,6 +21,17 @@ function FindIcon({ color }: { color: ColorValue }) {
     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">
       <Circle cx={11} cy={11} r={7} />
       <Path d="m20 20-3.5-3.5" />
+    </Svg>
+  );
+}
+
+function BookIcon({ color }: { color: ColorValue }) {
+  return (
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinejoin="round">
+      <Rect x={4} y={4} width={7} height={7} rx={1.5} />
+      <Rect x={13} y={4} width={7} height={7} rx={1.5} />
+      <Rect x={4} y={13} width={7} height={7} rx={1.5} />
+      <Rect x={13} y={13} width={7} height={7} rx={1.5} />
     </Svg>
   );
 }
@@ -68,6 +79,14 @@ export default function TabsLayout() {
           title: "找熊猫",
           tabBarLabel: ({ focused }) => <Label focused={focused}>找熊猫</Label>,
           tabBarIcon: ({ color }) => <FindIcon color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="book"
+        options={{
+          title: "图鉴",
+          tabBarLabel: ({ focused }) => <Label focused={focused}>图鉴</Label>,
+          tabBarIcon: ({ color }) => <BookIcon color={color} />,
         }}
       />
       <Tabs.Screen

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { components } from "@zhipanda/api-client";
 
-import { api, publicMediaUrl } from "@/lib/api";
+import { api, authedApi, publicMediaUrl } from "@/lib/api";
 import { chineseName, englishName } from "@/lib/panda";
 
 type Schemas = components["schemas"];
@@ -83,6 +83,18 @@ export async function guessDailyPanda(base: DailyPandaState, guessPandaIds: stri
     finished: data.finished,
     answer: data.answer,
   };
+}
+
+/**
+ * Records a finished puzzle on the signed-in fan's account; the API replays the guesses, so the result
+ * cannot be forged, and a second save of the same day changes nothing. The answer joins the 图鉴.
+ */
+export async function saveDailyResult(state: DailyPandaState): Promise<boolean> {
+  if (!state.finished) return false;
+  const { data } = await authedApi.POST("/api/v2/me/daily-panda-results", {
+    body: { guessPandaIds: state.guesses.map((guess) => guess.pandaId) },
+  });
+  return data !== undefined;
 }
 
 export async function loadDailyPanda(): Promise<DailyPandaState> {

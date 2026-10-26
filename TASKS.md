@@ -23,8 +23,8 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 | Ticket | Delivers | Blocked by | Status |
 |---|---|---|---|
 | Sign-in (#683) | Email-code sign-in with Supabase Auth, SecureStore session, account provisioning, authenticated API client, 我的 tab with name and sign-out | none | done (#695): e2e 2/2 on local stack |
-| Follow and 见过 (#684) | Follow toggle and 见过 with date on profiles, followed list in 我的 | Sign-in | done: e2e follow, 见过, reload, 我的 list, unfollow |
-| 图鉴 (#685) | Panda book tab, signed-out explanation, Daily Panda result saved to the account | Sign-in | todo |
+| Follow and 见过 (#684) | Follow toggle and 见过 with date on profiles, followed list in 我的 | Sign-in | done (#696): e2e follow, 见过, reload, 我的 list, unfollow |
+| 图鉴 (#685) | Panda book tab, signed-out explanation, Daily Panda result saved to the account | Sign-in | done: e2e signed-out state and 见过 joining the book; unit tests for book rules. Daily result save is wired (POST /me/daily-panda-results) but not e2e: finishing a puzzle needs six local pandas |
 | 猜熊猫 (#686) | Photo question with four names, answer feedback, results feed the 图鉴 | none | todo |
 | Calendar (#687) | Birthdays and moves by month from public data | none | todo |
 | Photos and sources (#688) | Photo viewer with credits, evidence sources of a profile | none | todo |
