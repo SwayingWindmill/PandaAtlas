@@ -42,7 +42,7 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 ## Canvas audit (all 41 App v2 artboards against the app)
 
 - Built and matching: BookGuest, Book, Calendar, Daily, DailyResult, DeleteAccount, Family, Find (list), Guess, Institution, Institutions, Loading, Login (email codes), Me, Main (今天), Night (dark mode follows the system), Offline, Photos, PickPandas, Profile, Relation, Report, Search, SearchEmpty, ShareCard, Sources, Sparse, Welcome.
-- Built in this pass to close differences: Profile and Memorial (infobox with 出生地 and 父母, 享年 for pandas who died, 生活过的地方), Sparse (暂无记录 rows, 暂无照片 and 告诉我们 links to 纠错), Main (你关注的 strip and 今天生日), Find (area chips 卧龙 / 成都 / 雅安 / 北京 / 海外 from where pandas live), Calendar (全部 / 我关注的), Guess (看…的资料 after answering).
+- Built in this pass to close differences: Profile and Memorial (infobox with 出生地 and 父母, 享年 for pandas who died, 生活过的地方), Sparse (暂无记录 rows, 暂无照片 and 告诉我们 links to 纠错), Main (你关注的 strip and 今天生日), Find (area chips 卧龙 / 成都 / 雅安 / 北京 / 海外 from where pandas live), Calendar (全部 / 我关注的), Guess (看…的资料 after answering). Me (显示: 跟随系统 / 浅色 / 深色, stored on the device; 关于: 内容和照片从哪来 with the release's counts; 文字大小 follows the system through React Native's default font scaling).
 - Blocked, recorded in `USER_ACTIONS_REQUIRED.md`: Learn, LearnCard, Topic, Term, FaceGuide, FaceChallenge (learning content), Updates and the 官方动态 parts of Main and Profile (official posts), OnSite and the 通常这个时间 schedule (on-site data), WildArea, Map (map provider key), Remind (push credentials), Lock (iOS widget), Me's 用户协议和隐私政策 (#348).
 
 ## Endpoint audit (every app-facing V2 operation against what the app calls)
