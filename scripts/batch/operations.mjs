@@ -62,6 +62,8 @@ const EXPECTED_READY_COMMANDS = new Map([
       "../../.batch-work/media",
     ],
   ],
+  ["release.build", ["node", "services/api/dist/release-command.js", "build"]],
+  ["release.publish", ["node", "services/api/dist/release-command.js", "publish"]],
 ]);
 
 export class BatchOperationError extends Error {
@@ -251,6 +253,8 @@ function operationRequirements(operation) {
     requires_node: executable === "node",
     requires_python: executable === "python" || executable === "uv",
     requires_uv: executable === "uv",
+    // Adapters inside the API package run its compiled output, built in the job before the adapter starts.
+    requires_api_build: executable === "node" && String(operation.command?.[1] ?? "").startsWith("services/api/dist/"),
   };
 }
 
@@ -337,6 +341,7 @@ export function writeBatchPlan(plan, { repositoryRoot = repoRoot } = {}) {
   appendGithubOutput("requires_node", plan.requires_node);
   appendGithubOutput("requires_python", plan.requires_python);
   appendGithubOutput("requires_uv", plan.requires_uv);
+  appendGithubOutput("requires_api_build", plan.requires_api_build);
   appendGithubOutput("artifact_directory", plan.artifact_directory);
   appendSummary(plan);
   return outputPath;

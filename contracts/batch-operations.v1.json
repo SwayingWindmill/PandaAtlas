@@ -83,21 +83,23 @@
     },
     {
       "id": "release.build",
-      "status": "planned",
-      "effect": "generated-output",
-      "approval_required": false,
-      "manifest_required": true,
-      "idempotency": "A future adapter must bind one reviewed publication batch to one immutable release directory.",
-      "blocked_reason": "The existing builder requires source, publication, version, and output arguments that are not yet represented by one batch manifest."
-    },
-    {
-      "id": "release.publish",
-      "status": "planned",
+      "status": "ready",
       "effect": "production-write",
       "approval_required": true,
       "manifest_required": true,
-      "idempotency": "Publication must activate one immutable release pointer and preserve pointer-only rollback.",
-      "blocked_reason": "Managed production publication is not authorized before the Phase 5 cutover interface is implemented."
+      "idempotency": "Builds the not-yet-public release a data/release-manifests manifest names, once: versions are unique, so a repeated run finds that release and reports it again.",
+      "command": ["node", "services/api/dist/release-command.js", "build"],
+      "artifact_paths": [".batch-work/release"]
+    },
+    {
+      "id": "release.publish",
+      "status": "ready",
+      "effect": "production-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "Seals and activates the one built release a manifest names, or moves the pointer back to an older sealed release; a step that already happened is reported, not repeated.",
+      "command": ["node", "services/api/dist/release-command.js", "publish"],
+      "artifact_paths": [".batch-work/release"]
     },
     {
       "id": "recovery.drill",

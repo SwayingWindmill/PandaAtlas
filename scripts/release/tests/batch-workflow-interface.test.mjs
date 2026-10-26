@@ -27,8 +27,27 @@ test("batch catalog exposes the standard operations", () => {
   assert.equal(catalog.operations.length, 9);
   assert.deepEqual(
     catalog.operations.filter((item) => item.status === "ready").map((item) => item.id),
-    ["research.validate", "curation.validate", "media.process"],
+    ["research.validate", "curation.validate", "media.process", "release.build", "release.publish"],
   );
+});
+
+test("release adapters are approval-gated production writes that need the built API", () => {
+  const catalog = loadBatchCatalog();
+  for (const operationId of ["release.build", "release.publish"]) {
+    const operation = catalog.operations.find((item) => item.id === operationId);
+    assert.equal(operation.effect, "production-write");
+    assert.equal(operation.approval_required, true);
+    assert.equal(operation.manifest_required, true);
+    const plan = createBatchPlan({
+      catalog,
+      operationId,
+      manifestPath: "data/release-manifests/2026.10.26.1.json",
+      repositoryRoot: repoRoot,
+    });
+    assert.equal(plan.executable, true);
+    assert.equal(plan.requires_api_build, true);
+    assert.equal(plan.approval_environment, "production-batch");
+  }
 });
 
 test("ready commands cannot drift through catalog-only changes", () => {
@@ -57,12 +76,12 @@ test("manifest paths cannot escape the repository", () => {
 test("planned write operations remain non-executable", async () => {
   const root = await mkdtemp(path.join(tmpdir(), "panda-batch-plan-"));
   try {
-    await writeFile(path.join(root, "release.json"), "{}\n", "utf8");
+    await writeFile(path.join(root, "media.json"), "{}\n", "utf8");
     const catalog = loadBatchCatalog();
     const plan = createBatchPlan({
       catalog,
-      operationId: "release.publish",
-      manifestPath: "release.json",
+      operationId: "media.publish",
+      manifestPath: "media.json",
       repositoryRoot: root,
     });
     assert.equal(plan.executable, false);
@@ -70,8 +89,8 @@ test("planned write operations remain non-executable", async () => {
     assert.throws(
       () => executeBatchOperation({
         catalog,
-        operationId: "release.publish",
-        manifestPath: "release.json",
+        operationId: "media.publish",
+        manifestPath: "media.json",
         repositoryRoot: root,
         changeReference: "issue-999",
       }),
@@ -146,15 +165,17 @@ test("approval execution requires change reference and protected environment", a
 test("tracked workflow passes and unsafe mutations fail", async () => {
   assert.deepEqual(checkBatchWorkflowInterface({ repositoryRoot: repoRoot, quiet: true }), {
     operations: 9,
-    ready: 3,
+    ready: 5,
   });
   const catalog = loadBatchCatalog();
   const workflowText = await readFile(workflowPath, "utf8");
   const unsafe = workflowText
     .replace("contents: read", "contents: write")
-    .replace("  workflow_dispatch:", "  push:\n  workflow_dispatch:");
+    .replace("  workflow_dispatch:", "  push:\n  workflow_dispatch:")
+    .replace("if: github.ref != 'refs/heads/main'", "if: false");
   const violations = validateBatchWorkflowText({ workflowText: unsafe, catalog });
   assert.ok(violations.includes("workflow contains forbidden contents write permission"));
   assert.ok(violations.includes("workflow contains forbidden push trigger"));
   assert.ok(violations.includes("workflow must be workflow_dispatch-only"));
+  assert.ok(violations.includes("workflow missing required fragment: if: github.ref != 'refs/heads/main'"));
 });

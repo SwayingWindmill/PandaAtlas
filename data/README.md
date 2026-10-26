@@ -7,6 +7,7 @@ Important tracked areas include:
 - [`acquisition-sources`](acquisition-sources/) for the reviewed acquisition source registry that `panda-data` reads;
 - [`curation`](curation/) for source-backed working records;
 - [`public-releases`](public-releases/) for immutable published release files;
+- [`release-manifests`](release-manifests/) for reviewed intents to build, publish or roll back a database public release, governed by [`contracts/release-manifest.v1.json`](../contracts/release-manifest.v1.json) and run by the `release.build` and `release.publish` batch operations;
 - [`research-batches`](research-batches/) for declarative research inputs governed by [`contracts/research-batch.v1.json`](../contracts/research-batch.v1.json).
 
 The ignored `local-panda-research/` workspace may hold original responses, intermediate imports, caches, temporary query output, audit scratch files, and media binaries. Promote only reviewed, bounded material into a governed tracked area; do not force-add the local workspace wholesale.

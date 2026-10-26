@@ -61,6 +61,8 @@ export interface PublicationReleaseInspection {
 }
 
 export interface PublicationInspectionPort {
+  /** Versions are unique, so a version names at most one release. */
+  findReleaseId(version: string): Promise<string | undefined>;
   listReleases(query: PublicationReleaseListQuery): Promise<PublicationReleasePage>;
   inspectRelease(releaseId: string, query?: { changeLimit: number; changeOffset: number }): Promise<PublicationReleaseInspection | undefined>;
 }

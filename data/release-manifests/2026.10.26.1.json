@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "version": "2026.10.26.1",
+  "action": "publish",
+  "reason": "Publish the five institution profiles and their facility visit guides (#668, #678), which the website (#669) and the app (#677) show on institution pages."
+}

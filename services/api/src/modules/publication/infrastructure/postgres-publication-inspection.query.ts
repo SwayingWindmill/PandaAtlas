@@ -54,6 +54,15 @@ export class PostgresPublicationInspectionQuery implements PublicationInspection
     private readonly changes: PublicationChangePort,
   ) {}
 
+  public async findReleaseId(version: string): Promise<string | undefined> {
+    const row = await this.database.db
+      .selectFrom("publication.releases")
+      .select("release_id")
+      .where("version", "=", version)
+      .executeTakeFirst();
+    return row?.release_id;
+  }
+
   public async listReleases(query: PublicationReleaseListQuery): Promise<PublicationReleasePage> {
     const currentReleaseId = await this.currentReleaseId();
     let releasesQuery = this.database.db
