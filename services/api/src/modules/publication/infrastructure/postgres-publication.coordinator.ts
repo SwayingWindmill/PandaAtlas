@@ -46,6 +46,26 @@ function actorSystemKey(context: PublicationCommandContext): string | null {
   return context.actor.kind === "system" ? context.actor.systemKey : null;
 }
 
+/**
+ * A PostgreSQL statement binds at most 65,535 parameters, and a release's projection rows exceed that
+ * (6,461 evidence sources at 11 columns already do). Each column of a row binds one parameter, so rows
+ * go in batches below the limit; the batches share the build transaction, which still commits or not
+ * as a whole.
+ */
+export const MAX_BIND_PARAMETERS = 60_000;
+
+export async function insertInChunks<Row extends object>(
+  rows: readonly Row[],
+  insert: (chunk: Row[]) => Promise<unknown>,
+): Promise<void> {
+  const [first] = rows;
+  if (first === undefined) return;
+  const size = Math.max(1, Math.floor(MAX_BIND_PARAMETERS / Object.keys(first).length));
+  for (let start = 0; start < rows.length; start += size) {
+    await insert(rows.slice(start, start + size));
+  }
+}
+
 export class PostgresPublicationCoordinator implements PublicationCoordinator {
   public constructor(
     private readonly database: DatabaseService,
@@ -82,275 +102,259 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
         const memberships: MembershipInput[] = [];
 
         if (pandas.length > 0) {
-          await transaction
-            .insertInto("public_read.pandas")
-            .values(
-              pandas.map((item) => {
-                const projection = {
-                  pandaId: item.pandaId,
-                  canonicalSlug: item.canonicalSlug,
-                  legacySlugs: item.legacySlugs,
-                  names: item.names,
-                  facts: item.facts,
-                  evidenceSourceIds: item.evidenceSourceIds,
-                };
-                memberships.push(this.membership("panda", item.pandaId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  panda_id: item.pandaId,
-                  canonical_slug: item.canonicalSlug,
-                  legacy_slugs: item.legacySlugs,
-                  names: sql<PublicReadJson>`${JSON.stringify(item.names)}::jsonb`,
-                  facts: sql<PublicReadJson>`${JSON.stringify(item.facts)}::jsonb`,
-                  evidence_source_ids: item.evidenceSourceIds,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            pandas.map((item) => {
+              const projection = {
+                pandaId: item.pandaId,
+                canonicalSlug: item.canonicalSlug,
+                legacySlugs: item.legacySlugs,
+                names: item.names,
+                facts: item.facts,
+                evidenceSourceIds: item.evidenceSourceIds,
+              };
+              memberships.push(this.membership("panda", item.pandaId, item, projection));
+              return {
+                release_id: release.release_id,
+                panda_id: item.pandaId,
+                canonical_slug: item.canonicalSlug,
+                legacy_slugs: item.legacySlugs,
+                names: sql<PublicReadJson>`${JSON.stringify(item.names)}::jsonb`,
+                facts: sql<PublicReadJson>`${JSON.stringify(item.facts)}::jsonb`,
+                evidence_source_ids: item.evidenceSourceIds,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.pandas").values(chunk).execute(),
+          );
         }
 
         if (places.institutions.length > 0) {
-          await transaction
-            .insertInto("public_read.institutions")
-            .values(
-              places.institutions.map((item) => {
-                const projection = {
-                  institutionId: item.institutionId,
-                  slug: item.slug,
-                  nameZh: item.nameZh,
-                  nameEn: item.nameEn,
-                  countryCode: item.countryCode,
-                  profile: item.profile,
-                };
-                memberships.push(this.membership("institution", item.institutionId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  institution_id: item.institutionId,
-                  slug: item.slug,
-                  name_zh: item.nameZh ?? null,
-                  name_en: item.nameEn ?? null,
-                  country_code: item.countryCode ?? null,
-                  profile: item.profile === undefined ? null : sql<PublicReadJson>`${JSON.stringify(item.profile)}::jsonb`,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            places.institutions.map((item) => {
+              const projection = {
+                institutionId: item.institutionId,
+                slug: item.slug,
+                nameZh: item.nameZh,
+                nameEn: item.nameEn,
+                countryCode: item.countryCode,
+                profile: item.profile,
+              };
+              memberships.push(this.membership("institution", item.institutionId, item, projection));
+              return {
+                release_id: release.release_id,
+                institution_id: item.institutionId,
+                slug: item.slug,
+                name_zh: item.nameZh ?? null,
+                name_en: item.nameEn ?? null,
+                country_code: item.countryCode ?? null,
+                profile: item.profile === undefined ? null : sql<PublicReadJson>`${JSON.stringify(item.profile)}::jsonb`,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.institutions").values(chunk).execute(),
+          );
         }
 
         if (places.places.length > 0) {
-          await transaction
-            .insertInto("public_read.places")
-            .values(
-              places.places.map((item) => {
-                const projection = {
-                  placeId: item.placeId,
-                  institutionId: item.institutionId,
-                  slug: item.slug,
-                  placeType: item.placeType,
-                  nameZh: item.nameZh,
-                  nameEn: item.nameEn,
-                  countryCode: item.countryCode,
-                  region: item.region,
-                  longitude: item.longitude,
-                  latitude: item.latitude,
-                  visitGuide: item.visitGuide,
-                };
-                memberships.push(this.membership("place", item.placeId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  place_id: item.placeId,
-                  institution_id: item.institutionId ?? null,
-                  slug: item.slug,
-                  place_type: item.placeType,
-                  name_zh: item.nameZh ?? null,
-                  name_en: item.nameEn ?? null,
-                  country_code: item.countryCode ?? null,
-                  region: item.region ?? null,
-                  longitude: item.longitude ?? null,
-                  latitude: item.latitude ?? null,
-                  visit_guide: item.visitGuide === undefined ? null : sql<PublicReadJson>`${JSON.stringify(item.visitGuide)}::jsonb`,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            places.places.map((item) => {
+              const projection = {
+                placeId: item.placeId,
+                institutionId: item.institutionId,
+                slug: item.slug,
+                placeType: item.placeType,
+                nameZh: item.nameZh,
+                nameEn: item.nameEn,
+                countryCode: item.countryCode,
+                region: item.region,
+                longitude: item.longitude,
+                latitude: item.latitude,
+                visitGuide: item.visitGuide,
+              };
+              memberships.push(this.membership("place", item.placeId, item, projection));
+              return {
+                release_id: release.release_id,
+                place_id: item.placeId,
+                institution_id: item.institutionId ?? null,
+                slug: item.slug,
+                place_type: item.placeType,
+                name_zh: item.nameZh ?? null,
+                name_en: item.nameEn ?? null,
+                country_code: item.countryCode ?? null,
+                region: item.region ?? null,
+                longitude: item.longitude ?? null,
+                latitude: item.latitude ?? null,
+                visit_guide: item.visitGuide === undefined ? null : sql<PublicReadJson>`${JSON.stringify(item.visitGuide)}::jsonb`,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.places").values(chunk).execute(),
+          );
         }
 
         if (lineage.length > 0) {
-          await transaction
-            .insertInto("public_read.lineage")
-            .values(
-              lineage.map((item) => {
-                const projection = {
-                  assertionId: item.assertionId,
-                  childId: item.childId,
-                  parentId: item.parentId,
-                  parentRole: item.parentRole,
-                  sourceIds: item.sourceIds,
-                };
-                memberships.push(this.membership("lineage", item.assertionId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  assertion_id: item.assertionId,
-                  child_id: item.childId,
-                  parent_id: item.parentId,
-                  parent_role: item.parentRole,
-                  source_ids: item.sourceIds,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            lineage.map((item) => {
+              const projection = {
+                assertionId: item.assertionId,
+                childId: item.childId,
+                parentId: item.parentId,
+                parentRole: item.parentRole,
+                sourceIds: item.sourceIds,
+              };
+              memberships.push(this.membership("lineage", item.assertionId, item, projection));
+              return {
+                release_id: release.release_id,
+                assertion_id: item.assertionId,
+                child_id: item.childId,
+                parent_id: item.parentId,
+                parent_role: item.parentRole,
+                source_ids: item.sourceIds,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.lineage").values(chunk).execute(),
+          );
         }
 
         if (lifeHistory.residencies.length > 0) {
-          await transaction
-            .insertInto("public_read.residencies")
-            .values(
-              lifeHistory.residencies.map((item) => {
-                const projection = {
-                  residencyId: item.residencyId,
-                  pandaId: item.pandaId,
-                  placeId: item.placeId,
-                  residencyType: item.residencyType,
-                  startOn: item.startOn,
-                  startPrecision: item.startPrecision,
-                  endOn: item.endOn,
-                  endPrecision: item.endPrecision,
-                  status: item.status,
-                  sourceIds: item.sourceIds,
-                };
-                memberships.push(this.membership("residency", item.residencyId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  residency_id: item.residencyId,
-                  panda_id: item.pandaId,
-                  place_id: item.placeId,
-                  residency_type: item.residencyType,
-                  start_on: item.startOn ?? null,
-                  start_precision: item.startPrecision,
-                  end_on: item.endOn ?? null,
-                  end_precision: item.endPrecision ?? null,
-                  status: item.status,
-                  source_ids: item.sourceIds,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            lifeHistory.residencies.map((item) => {
+              const projection = {
+                residencyId: item.residencyId,
+                pandaId: item.pandaId,
+                placeId: item.placeId,
+                residencyType: item.residencyType,
+                startOn: item.startOn,
+                startPrecision: item.startPrecision,
+                endOn: item.endOn,
+                endPrecision: item.endPrecision,
+                status: item.status,
+                sourceIds: item.sourceIds,
+              };
+              memberships.push(this.membership("residency", item.residencyId, item, projection));
+              return {
+                release_id: release.release_id,
+                residency_id: item.residencyId,
+                panda_id: item.pandaId,
+                place_id: item.placeId,
+                residency_type: item.residencyType,
+                start_on: item.startOn ?? null,
+                start_precision: item.startPrecision,
+                end_on: item.endOn ?? null,
+                end_precision: item.endPrecision ?? null,
+                status: item.status,
+                source_ids: item.sourceIds,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.residencies").values(chunk).execute(),
+          );
         }
 
         if (lifeHistory.events.length > 0) {
-          await transaction
-            .insertInto("public_read.life_events")
-            .values(
-              lifeHistory.events.map((item) => {
-                const projection = {
-                  eventId: item.eventId,
-                  eventType: item.eventType,
-                  eventStatus: item.eventStatus,
-                  occurredOn: item.occurredOn,
-                  occurredPrecision: item.occurredPrecision,
-                  fromPlaceId: item.fromPlaceId,
-                  toPlaceId: item.toPlaceId,
-                  summary: item.summary,
-                  participantIds: item.participantIds,
-                  sourceIds: item.sourceIds,
-                };
-                memberships.push(this.membership("life_event", item.eventId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  event_id: item.eventId,
-                  event_type: item.eventType,
-                  event_status: item.eventStatus,
-                  occurred_on: item.occurredOn ?? null,
-                  occurred_precision: item.occurredPrecision,
-                  from_place_id: item.fromPlaceId ?? null,
-                  to_place_id: item.toPlaceId ?? null,
-                  summary: item.summary ?? null,
-                  participant_ids: item.participantIds,
-                  source_ids: item.sourceIds,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            lifeHistory.events.map((item) => {
+              const projection = {
+                eventId: item.eventId,
+                eventType: item.eventType,
+                eventStatus: item.eventStatus,
+                occurredOn: item.occurredOn,
+                occurredPrecision: item.occurredPrecision,
+                fromPlaceId: item.fromPlaceId,
+                toPlaceId: item.toPlaceId,
+                summary: item.summary,
+                participantIds: item.participantIds,
+                sourceIds: item.sourceIds,
+              };
+              memberships.push(this.membership("life_event", item.eventId, item, projection));
+              return {
+                release_id: release.release_id,
+                event_id: item.eventId,
+                event_type: item.eventType,
+                event_status: item.eventStatus,
+                occurred_on: item.occurredOn ?? null,
+                occurred_precision: item.occurredPrecision,
+                from_place_id: item.fromPlaceId ?? null,
+                to_place_id: item.toPlaceId ?? null,
+                summary: item.summary ?? null,
+                participant_ids: item.participantIds,
+                source_ids: item.sourceIds,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.life_events").values(chunk).execute(),
+          );
         }
 
         if (media.length > 0) {
-          await transaction
-            .insertInto("public_read.media")
-            .values(
-              media.map((item) => {
-                const projection = {
-                  assetId: item.assetId,
-                  pandaId: item.pandaId,
-                  sourceId: item.sourceId,
-                  usageRole: item.usageRole,
-                  displayOrder: item.displayOrder,
-                  objectKey: item.objectKey,
-                  contentSha256: item.contentSha256,
-                  mediaType: item.mediaType,
-                  title: item.title,
-                  creator: item.creator,
-                  copyrightText: item.copyrightText,
-                  license: item.license,
-                  attributionText: item.attributionText,
-                  takenAt: item.takenAt,
-                };
-                memberships.push(this.membership("media", item.membershipId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  asset_id: item.assetId,
-                  panda_id: item.pandaId,
-                  source_id: item.sourceId ?? null,
-                  usage_role: item.usageRole,
-                  display_order: item.displayOrder,
-                  object_key: item.objectKey,
-                  content_sha256: item.contentSha256,
-                  media_type: item.mediaType,
-                  title: item.title ?? null,
-                  creator: item.creator ?? null,
-                  copyright_text: item.copyrightText ?? null,
-                  license: item.license ?? null,
-                  attribution_text: item.attributionText ?? null,
-                  taken_at: item.takenAt ?? null,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            media.map((item) => {
+              const projection = {
+                assetId: item.assetId,
+                pandaId: item.pandaId,
+                sourceId: item.sourceId,
+                usageRole: item.usageRole,
+                displayOrder: item.displayOrder,
+                objectKey: item.objectKey,
+                contentSha256: item.contentSha256,
+                mediaType: item.mediaType,
+                title: item.title,
+                creator: item.creator,
+                copyrightText: item.copyrightText,
+                license: item.license,
+                attributionText: item.attributionText,
+                takenAt: item.takenAt,
+              };
+              memberships.push(this.membership("media", item.membershipId, item, projection));
+              return {
+                release_id: release.release_id,
+                asset_id: item.assetId,
+                panda_id: item.pandaId,
+                source_id: item.sourceId ?? null,
+                usage_role: item.usageRole,
+                display_order: item.displayOrder,
+                object_key: item.objectKey,
+                content_sha256: item.contentSha256,
+                media_type: item.mediaType,
+                title: item.title ?? null,
+                creator: item.creator ?? null,
+                copyright_text: item.copyrightText ?? null,
+                license: item.license ?? null,
+                attribution_text: item.attributionText ?? null,
+                taken_at: item.takenAt ?? null,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.media").values(chunk).execute(),
+          );
         }
 
         if (evidence.length > 0) {
-          await transaction
-            .insertInto("public_read.evidence_sources")
-            .values(
-              evidence.map((item) => {
-                const projection = {
-                  sourceId: item.sourceId,
-                  publisher: item.publisher,
-                  title: item.title,
-                  url: item.url,
-                  publishedOn: item.publishedOn,
-                  lastVerifiedOn: item.lastVerifiedOn,
-                  languageTag: item.languageTag,
-                  accessState: item.accessState,
-                  evidenceTier: item.evidenceTier,
-                  publicSummary: item.publicSummary,
-                };
-                memberships.push(this.membership("evidence", item.sourceId, item, projection));
-                return {
-                  release_id: release.release_id,
-                  source_id: item.sourceId,
-                  publisher: item.publisher,
-                  title: item.title,
-                  url: item.url,
-                  published_on: item.publishedOn ?? null,
-                  last_verified_on: item.lastVerifiedOn,
-                  language_tag: item.languageTag,
-                  access_state: item.accessState,
-                  evidence_tier: item.evidenceTier ?? null,
-                  public_summary: item.publicSummary ?? null,
-                };
-              }),
-            )
-            .execute();
+          await insertInChunks(
+            evidence.map((item) => {
+              const projection = {
+                sourceId: item.sourceId,
+                publisher: item.publisher,
+                title: item.title,
+                url: item.url,
+                publishedOn: item.publishedOn,
+                lastVerifiedOn: item.lastVerifiedOn,
+                languageTag: item.languageTag,
+                accessState: item.accessState,
+                evidenceTier: item.evidenceTier,
+                publicSummary: item.publicSummary,
+              };
+              memberships.push(this.membership("evidence", item.sourceId, item, projection));
+              return {
+                release_id: release.release_id,
+                source_id: item.sourceId,
+                publisher: item.publisher,
+                title: item.title,
+                url: item.url,
+                published_on: item.publishedOn ?? null,
+                last_verified_on: item.lastVerifiedOn,
+                language_tag: item.languageTag,
+                access_state: item.accessState,
+                evidence_tier: item.evidenceTier ?? null,
+                public_summary: item.publicSummary ?? null,
+              };
+            }),
+            (chunk) => transaction.insertInto("public_read.evidence_sources").values(chunk).execute(),
+          );
         }
 
         await transaction
@@ -369,20 +373,18 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
           .execute();
 
         if (memberships.length > 0) {
-          await transaction
-            .insertInto("publication.release_memberships")
-            .values(
-              memberships.map((membership) => ({
-                release_id: release.release_id,
-                resource_kind: membership.resourceKind,
-                resource_id: membership.resourceId,
-                source_revision: membership.sourceRevision,
-                source_version: membership.sourceVersion,
-                source_sha256: membership.sourceSha256,
-                projection_sha256: membership.projectionSha256,
-              })),
-            )
-            .execute();
+          await insertInChunks(
+            memberships.map((membership) => ({
+              release_id: release.release_id,
+              resource_kind: membership.resourceKind,
+              resource_id: membership.resourceId,
+              source_revision: membership.sourceRevision,
+              source_version: membership.sourceVersion,
+              source_sha256: membership.sourceSha256,
+              projection_sha256: membership.projectionSha256,
+            })),
+            (chunk) => transaction.insertInto("publication.release_memberships").values(chunk).execute(),
+          );
         }
 
         await transaction
