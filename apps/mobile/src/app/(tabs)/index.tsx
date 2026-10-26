@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { FollowedChanges } from "@/features/today/followed-changes";
 
 export default function TodayScreen() {
   return (
@@ -19,6 +20,7 @@ export default function TodayScreen() {
           </Button>
         </Link>
       </View>
+      <FollowedChanges />
       <View className="gap-3 rounded-lg border-hairline border-border p-5">
         <Text variant="small" className="text-highlight-foreground">
           猜熊猫
