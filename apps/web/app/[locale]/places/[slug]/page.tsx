@@ -5,6 +5,7 @@ import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
 import { buildPlacePageViewModel } from "@/features/places/place-page-view-model";
 import {
   loadV2PublicPlace,
+  resolveV2InstitutionSlugForPlace,
   resolveV2PublicPlaceReference,
 } from "@/features/public-content/public-v2";
 import { parsePublicLocale } from "@/foundation/content/locales";
@@ -41,6 +42,11 @@ export default async function PlacePage({ params, searchParams }: PlacePageProps
   if (!locale) notFound();
   const reference = await resolveV2PublicPlaceReference(slug);
   if (!reference) notFound();
+  // Zoos and breeding centers are presented on their institution page; place pages are for wild areas.
+  const institutionSlug = await resolveV2InstitutionSlugForPlace(reference.id);
+  if (institutionSlug) {
+    permanentRedirect(localizedPublicDestination(locale, `/institutions/${institutionSlug}`, query) as Route);
+  }
   if (slug !== reference.slug) {
     permanentRedirect(
       localizedPublicDestination(locale, `/places/${reference.slug}`, query) as Route,
