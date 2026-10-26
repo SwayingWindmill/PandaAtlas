@@ -117,6 +117,25 @@ function Relatives({ profile }: { profile: Profile }) {
   );
 }
 
+function Visit({ visit }: { visit: NonNullable<Profile["visit"]> }) {
+  return (
+    <View className="gap-3 rounded-lg border-hairline border-border p-4">
+      <Text variant="h2">去看它</Text>
+      <View>
+        <Text className="font-bold">{visit.place}</Text>
+        {visit.address ? <Text variant="muted">{visit.address}</Text> : null}
+      </View>
+      <Button
+        variant="secondary"
+        className="self-start"
+        onPress={() => router.push({ pathname: "/institutions/[slug]", params: { slug: visit.institutionSlug } })}
+      >
+        <Text>参观指南</Text>
+      </Button>
+    </View>
+  );
+}
+
 export default function ProfileScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const insets = useSafeAreaInsets();
@@ -191,6 +210,7 @@ export default function ProfileScreen() {
         {profile.facts.length > 0 ? <Facts facts={profile.facts} /> : null}
         {profile.events.length > 0 ? <Events events={profile.events} /> : null}
         <Relatives profile={profile} />
+        {profile.visit ? <Visit visit={profile.visit} /> : null}
       </View>
     </ScrollView>
   );
