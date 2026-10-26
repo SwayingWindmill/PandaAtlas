@@ -43,6 +43,17 @@ committed so the typecheck knows the class names.
 
 Both run in CI when files under `apps/mobile/` change (`npm run verify:dev -- --scope mobile`).
 
+## End-to-end journeys
+
+`apps/mobile/e2e/` drives the app's web build with Playwright against the real local stack: Supabase Auth (sign-in codes are read from its Mailpit inbox) and the NestJS API on the local database, with a fresh `@example.test` user per run. Start Supabase, then run the suite; it starts the API on port 3101 and the app on port 8792 itself:
+
+```powershell
+npm run infra:start
+npm run test:e2e -w @zhipanda/mobile
+```
+
+Sign-in uses Supabase Auth directly: `src/lib/supabase.ts` keeps the session in SecureStore (split into chunks under Android's size limit) and refreshes it while the app is in the foreground; `src/features/session/session.tsx` owns the signed-in state and provisions the application account once; `authedApi` in `src/lib/api.ts` adds the access token to personal API calls.
+
 ## App Store builds
 
 Store builds are made in the cloud with EAS Build, so they also work without a Mac:

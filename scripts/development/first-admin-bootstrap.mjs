@@ -140,7 +140,8 @@ async function main(args) {
   }
   const status = await localSupabaseStatus();
   const database = new URL(status.DB_URL ?? "");
-  if (status.API_URL !== "http://127.0.0.1:54321" ||
+  // With the local Data API off (infra/supabase/config.toml), status omits API_URL; the database pins the instance.
+  if ((status.API_URL !== undefined && status.API_URL !== "http://127.0.0.1:54321") ||
       database.hostname !== "127.0.0.1" || database.port !== "54322" ||
       database.pathname !== "/postgres") {
     throw new Error("Refusing to grant roles outside the pinned local Supabase instance");

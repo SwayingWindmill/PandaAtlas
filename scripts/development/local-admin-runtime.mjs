@@ -79,6 +79,9 @@ async function readSupabaseStatus() {
     throw new Error(`Unable to read local Supabase status: ${result.stderr.trim() || `exit ${result.code}`}`);
   }
   const status = parseJsonPayload(result.stdout);
+  // The Data API is off locally as in production, so status omits API_URL; Auth still answers on the
+  // gateway port set in infra/supabase/config.toml.
+  status.API_URL ??= "http://127.0.0.1:54321";
   for (const key of ["API_URL", "DB_URL", "PUBLISHABLE_KEY"]) {
     if (typeof status[key] !== "string" || status[key].length === 0) {
       throw new Error(`Supabase status is missing ${key}`);

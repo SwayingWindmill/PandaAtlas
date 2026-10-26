@@ -6,6 +6,7 @@ import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { useUniwind } from "uniwind";
 
+import { SessionProvider } from "@/features/session/session";
 import { NAV_THEME } from "@/lib/theme";
 
 export default function RootLayout() {
@@ -14,10 +15,12 @@ export default function RootLayout() {
 
   // Screens draw their own back button and title (components/page.tsx), so there is no nav bar.
   return (
-    <ThemeProvider value={NAV_THEME[scheme]}>
-      <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-      <Stack screenOptions={{ headerShown: false }} />
-      <PortalHost />
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider value={NAV_THEME[scheme]}>
+        <StatusBar style={scheme === "dark" ? "light" : "dark"} />
+        <Stack screenOptions={{ headerShown: false }} />
+        <PortalHost />
+      </ThemeProvider>
+    </SessionProvider>
   );
 }
