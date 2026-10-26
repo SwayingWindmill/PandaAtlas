@@ -1,7 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-const RELEASE_ID = "2026.08.12.1";
-
 test("publishes Xi Lun in the current V2 Atlas fixture", async ({ page }) => {
   await page.goto("/zh/pandas?q=Xi%20Lun");
 
@@ -19,16 +17,10 @@ test("renders Xi Lun from current V2 facts and uses the media fallback when no r
   await expect(page.getByTestId("profile-hero-media-fallback")).toBeVisible();
 });
 
-test("shows Xi Lun current residency in the structured map", async ({ page }) => {
-  await page.goto(`/en/map?mode=individual&focus=xi-lun&snapshot=${RELEASE_ID}`);
+test("shows Xi Lun at her current home on the panda map", async ({ page }) => {
+  await page.goto("/en/map");
 
-  const results = page.locator('[data-testid^="structured-map-result-residency:"]');
-  await expect(results).toHaveCount(1);
-  await expect(results.filter({ hasText: "Current" })).toHaveCount(1);
-  await expect(page.getByRole("link", { name: "View panda profile" }).first()).toHaveAttribute(
-    "href",
-    "/en/pandas/xi-lun",
-  );
+  await expect(page.getByRole("link", { name: /Zoo Atlanta.*Xi Lun/ })).toHaveAttribute("href", "/en/places/zoo-atlanta");
 });
 
 test("renders the current Xi Lun profile without JavaScript", async ({ browser }) => {

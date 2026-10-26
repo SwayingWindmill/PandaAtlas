@@ -32,8 +32,6 @@ const publicBrandFiles = [
   "features/home/home-page.tsx",
   "features/home/home-v09-view-model.ts",
   "features/lineage/structured-lineage-page.tsx",
-  "features/map/map-provider-registry.ts",
-  "features/map/map-view-model.ts",
   "features/my-pandas/my-pandas-view-model.ts",
 ];
 

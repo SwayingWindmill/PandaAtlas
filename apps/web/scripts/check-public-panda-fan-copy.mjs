@@ -29,14 +29,9 @@ const checks = [
     banned: ["机构实体", "场所实体", "可信公开实体", "在结构化地图中查看", "Institution entity", "Place entity", "Trusted public entity", "Open in the structured map"],
   },
   {
-    path: "features/map/structured-map-page.tsx",
-    required: ["看看大熊猫生活在哪里", "熊猫在哪里", "熊猫旅行记", "野生家园", "探索结果", "See where giant pandas live", "Where pandas live", "Panda journeys", "Wild homes", "Explore results", "公开精度", "Published precision", "最后核实", "Last verified"],
-    banned: ["STRUCTURED MAP", "结构化全球分布与足迹", "筛选结构化结果", "结构化结果", "地图 Provider 契约", "当前任务范围", "Structured global distribution and footprints", "Filter structured results", "Structured results", "Map provider contract", "Current task scope"],
-  },
-  {
-    path: "features/map/visualization/map-visualization-enhancement.tsx",
-    required: ["真实地图", "在真实地图上看看", "打开真实地图", "LIVE MAP", "See it on a live map", "Open live map", "公开", "published"],
-    banned: ["OPTIONAL VISUAL LAYER", "启用地图可视增强", "结构化列表", "Activate map visualization", "structured list"],
+    path: "features/map/panda-map-page.tsx",
+    required: ["熊猫在哪里", "现在没有熊猫", "Where pandas live", "No pandas right now"],
+    banned: ["结构化", "精度", "快照", "structured", "precision", "snapshot"],
   },
   {
     path: "features/feed/public-panda-activity.tsx",
