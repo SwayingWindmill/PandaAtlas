@@ -1572,6 +1572,8 @@ export interface components {
             questionId: string;
             /** Format: uuid */
             mediaAssetId: string;
+            /** @description Public object key of the question photo in the active release. */
+            photoObjectKey: string;
             /** @enum {string} */
             difficulty: "easy" | "medium" | "hard";
             optionPandaIds: string[];

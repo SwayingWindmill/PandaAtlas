@@ -9,6 +9,7 @@ import { EVIDENCE_PORT, type EvidencePort } from "../../src/modules/evidence/app
 import { MEDIA_PORT, type MediaPort } from "../../src/modules/media/application/media.application.js";
 import { PANDA_PORT, type PandaPort } from "../../src/modules/panda/application/panda.application.js";
 import { PLACES_PORT, type PlacesPort } from "../../src/modules/places/application/places.application.js";
+import { PUBLICATION_PORT, type PublicationPort } from "../../src/modules/publication/application/publication.application.js";
 import { DatabaseService } from "../../src/platform/database/database.service.js";
 import { injectHttp } from "../inject-http.js";
 
@@ -149,6 +150,15 @@ beforeAll(async () => {
     .returning("question_id")
     .executeTakeFirstOrThrow();
   questionId = question.question_id;
+
+  // A question is served only once its photo is public, as in production: the photo is the answer's
+  // cover in an active release.
+  await media.attachToPanda(answerPandaId, asset.assetId, "cover", 0);
+  const publication = app.get<PublicationPort>(PUBLICATION_PORT);
+  const context = { actor: { kind: "system" as const, systemKey: "fan-integration" }, correlationId: randomUUID() };
+  const release = await publication.build(`fan-integration-${suffix}`, context);
+  await publication.seal(release.releaseId, context, "Fan integration release.");
+  await publication.activate(release.releaseId, context, "Fan integration release.");
 });
 
 afterAll(async () => {
@@ -283,10 +293,12 @@ describe("V2 fan identity, engagement, and games", () => {
     expect(question.statusCode).toBe(200);
     const questionBody = responseBody<{
       questionId: string;
+      photoObjectKey: string;
       difficulty: string;
       optionPandaIds: string[];
     }>(question);
     expect(questionBody.difficulty).toBe("easy");
+    expect(questionBody.photoObjectKey).toEqual(expect.any(String));
     expect(questionBody.optionPandaIds).toHaveLength(4);
     expect(questionBody).not.toHaveProperty("targetPandaId");
 

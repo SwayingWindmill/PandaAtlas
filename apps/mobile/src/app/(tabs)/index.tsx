@@ -19,6 +19,17 @@ export default function TodayScreen() {
           </Button>
         </Link>
       </View>
+      <View className="gap-3 rounded-lg border-hairline border-border p-5">
+        <Text variant="small" className="text-highlight-foreground">
+          猜熊猫
+        </Text>
+        <Text variant="h2">看照片认熊猫</Text>
+        <Link href="/guess" asChild>
+          <Button variant="secondary" className="self-start">
+            <Text>来一题</Text>
+          </Button>
+        </Link>
+      </View>
     </Page>
   );
 }
