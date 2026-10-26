@@ -108,13 +108,17 @@ function Relatives({ profile }: { profile: Profile }) {
           </Pressable>
         ))}
       </View>
-      <Button
-        variant="outline"
-        className="self-start"
-        onPress={() => router.push({ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } })}
-      >
-        <Text>看家谱</Text>
-      </Button>
+      <View className="flex-row flex-wrap gap-2">
+        <Button
+          variant="outline"
+          onPress={() => router.push({ pathname: "/pandas/[slug]/family", params: { slug: profile.slug } })}
+        >
+          <Text>看家谱</Text>
+        </Button>
+        <Button variant="outline" onPress={() => router.push({ pathname: "/relationship", params: { from: profile.slug } })}>
+          <Text>查关系</Text>
+        </Button>
+      </View>
     </View>
   );
 }
