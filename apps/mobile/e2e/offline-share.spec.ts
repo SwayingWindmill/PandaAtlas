@@ -23,6 +23,27 @@ test("offline, the app says so, keeps the list it loaded, and recovers once back
   await expect(page.getByRole("heading", { name: panda.name })).toBeVisible();
 });
 
+test("started again without a connection, the app shows the list and profile it loaded last time", async ({
+  page,
+  context,
+}) => {
+  const { panda } = fixture();
+  await page.goto("/find");
+  await page.getByLabel("搜索熊猫").fill(panda.name);
+  await page.getByRole("button", { name: new RegExp(`^${panda.name}`) }).click();
+  await expect(page.getByRole("heading", { name: panda.name })).toBeVisible();
+  await page.close();
+
+  // A fresh start of the app on the same device, with every API request failing.
+  const restarted = await context.newPage();
+  await restarted.route("**/api/v2/**", (route) => route.abort("internetdisconnected"));
+  await restarted.goto("/find");
+  await restarted.getByLabel("搜索熊猫").fill(panda.name);
+  await restarted.getByRole("button", { name: new RegExp(`^${panda.name}`) }).click();
+  await expect(restarted.getByRole("heading", { name: panda.name })).toBeVisible();
+  await expect(restarted.getByText("2020 年 7 月 20 日")).toBeVisible();
+});
+
 test("a profile shares as an image card", async ({ page }) => {
   const { panda } = fixture();
   await page.goto(`/pandas/${panda.slug}`);
