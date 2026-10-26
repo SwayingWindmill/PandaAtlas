@@ -1,6 +1,7 @@
 import type { components } from "@zhipanda/api-client";
 
 import { api } from "@/lib/api";
+import { loadResidencies } from "@/lib/public-data";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 
 type Schemas = components["schemas"];
@@ -60,14 +61,10 @@ export function loadPlaces(): Promise<Map<string, Place>> {
 }
 
 async function buildIndex(): Promise<PandaListItem[]> {
-  const [pandas, residencies, placesById] = await Promise.all([
-    api.GET("/api/v2/pandas"),
-    api.GET("/api/v2/residencies"),
-    loadPlaces(),
-  ]);
-  if (!pandas.data || !residencies.data) throw new Error("Panda list unavailable");
+  const [pandas, residencies, placesById] = await Promise.all([api.GET("/api/v2/pandas"), loadResidencies(), loadPlaces()]);
+  if (!pandas.data) throw new Error("Panda list unavailable");
   const residenciesByPanda = new Map<string, Residency[]>();
-  for (const residency of residencies.data.items) {
+  for (const residency of residencies) {
     residenciesByPanda.set(residency.pandaId, [...(residenciesByPanda.get(residency.pandaId) ?? []), residency]);
   }
 

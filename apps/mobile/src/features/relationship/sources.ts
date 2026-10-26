@@ -1,22 +1,10 @@
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
-import { api } from "@/lib/api";
+import { loadLineage } from "@/lib/public-data";
 
-import { type ParentLink, buildGraph } from "./relationship";
+import { buildGraph } from "./relationship";
 
-let links: Promise<ParentLink[]> | null = null;
-
-/** The published pandas and their parent links, loaded once per app session. */
+/** The published pandas and their parent links. */
 export async function loadKinship(): Promise<{ pandas: PandaListItem[]; graph: ReturnType<typeof buildGraph> }> {
-  links ??= api
-    .GET("/api/v2/lineage")
-    .then(({ data }) => {
-      if (!data) throw new Error("Lineage unavailable");
-      return data.items;
-    })
-    .catch((error: unknown) => {
-      links = null;
-      throw error;
-    });
-  const [pandas, lineage] = await Promise.all([loadPandaIndex(), links]);
+  const [pandas, lineage] = await Promise.all([loadPandaIndex(), loadLineage()]);
   return { pandas, graph: buildGraph(lineage) };
 }
