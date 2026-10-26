@@ -45,6 +45,11 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 - Covered by calls the app already makes: `/me` (the session provisions with `POST /me/account`), `/release` and `/stats` (lists carry the release), `/places/{slug}` (places come with institutions), `/evidence/{sourceId}` (the panda detail carries its evidence), `/me/contributions/{id}` and `/me/privacy/requests/{id}` (lists carry every field), `/games/random-panda` (猜熊猫 draws questions).
 - Left for an owner decision: `POST /contributions/{id}/attachments` (see `USER_ACTIONS_REQUIRED.md`).
 
+## Database advisor review (Supabase security and performance advisors, production, 2026-10-27)
+
+- Fixed by migration 0071: the 11 trigger and helper functions with a mutable `search_path` now pin `search_path = ''` (every body already schema-qualifies its tables); `engagement.favorites (panda_id, account_id)` indexes the notification audience lookup by panda.
+- Left as they are, with reasons: `postgis`, `btree_gist` and `pg_net` in `public` (moving PostGIS breaks its catalog objects, and the Data API that would expose `public` is off since #671); leaked-password protection (a dashboard setting; fans sign in with email codes and have no password); the other unindexed foreign keys and unused indexes (audit, admin and retired-intake tables no query filters on, at current volume).
+
 ## Review fixes (code review of #686–#694)
 
 - Product name in the app is 吱熊猫 (welcome label, share card, authenticator name).
