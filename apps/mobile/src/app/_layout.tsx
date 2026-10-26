@@ -18,7 +18,9 @@ export default function RootLayout() {
     <SessionProvider>
       <ThemeProvider value={NAV_THEME[scheme]}>
         <StatusBar style={scheme === "dark" ? "light" : "dark"} />
-        <Stack screenOptions={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "fullScreenModal" }} />
+        </Stack>
         <PortalHost />
       </ThemeProvider>
     </SessionProvider>
