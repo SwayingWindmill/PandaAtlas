@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { components } from "@zhipanda/api-client";
 
 import { api, publicMediaUrl } from "@/lib/api";
+import { chineseName, englishName } from "@/lib/panda";
 
 type Schemas = components["schemas"];
 export type DailyPandaGuessFeedback = Schemas["DailyPandaGuessFeedbackDto"];
@@ -47,13 +48,14 @@ function clueOf(clue: Schemas["DailyPandaClueDto"]): DailyPandaClue[] {
   }
 }
 
-export function feedbackText(feedback: DailyPandaGuessFeedback): string {
+/** Each fact the guess got right or wrong, shown side by side without separators. */
+export function feedbackParts(feedback: DailyPandaGuessFeedback): string[] {
   const parts: string[] = [];
   if (feedback.sameSex !== null) parts.push(feedback.sameSex ? "性别相同" : "性别不同");
-  if (feedback.birthYear === "answer_earlier") parts.push("TA 出生更早");
-  if (feedback.birthYear === "answer_later") parts.push("TA 出生更晚");
+  if (feedback.birthYear === "answer_earlier") parts.push("它出生更早");
+  if (feedback.birthYear === "answer_later") parts.push("它出生更晚");
   if (feedback.birthYear === "same") parts.push("同年出生");
-  return parts.join(" · ");
+  return parts;
 }
 
 // Today's guesses stay on the device so reopening the app resumes the puzzle.
@@ -99,20 +101,12 @@ export async function loadDailyPanda(): Promise<DailyPandaState> {
   return stored.length > 0 ? guessDailyPanda(state, stored) : state;
 }
 
-function primaryName(names: Schemas["PublicPandaSummaryDto"]["names"], tags: string[]): string | null {
-  for (const tag of tags) {
-    const match = names.find((name) => name.languageTag === tag && name.isPrimary) ?? names.find((name) => name.languageTag === tag);
-    if (match) return match.value;
-  }
-  return null;
-}
-
 export async function loadPandaChoices(): Promise<PandaChoice[]> {
   const { data, error } = await api.GET("/api/v2/pandas");
   if (!data) throw new Error(`Panda list unavailable: ${JSON.stringify(error)}`);
   return data.items.map((panda) => {
-    const zh = primaryName(panda.names, ["zh-Hans", "zh-CN", "zh"]);
-    const en = primaryName(panda.names, ["en"]);
+    const zh = chineseName(panda);
+    const en = englishName(panda);
     return { id: panda.pandaId, slug: panda.canonicalSlug, name: zh ?? en ?? panda.canonicalSlug, alternateName: zh ? en : null };
   });
 }

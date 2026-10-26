@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "zhipanda",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.zhipanda.app",
       "supportsTablet": true
@@ -14,7 +14,7 @@
     "android": {
       "package": "com.zhipanda.app",
       "adaptiveIcon": {
-        "backgroundColor": "#F7F5E8",
+        "backgroundColor": "#FCFDFC",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -28,7 +28,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#F7F5E8",
+          "backgroundColor": "#FCFDFC",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }

@@ -1,33 +1,37 @@
 import { Link } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
 
-import { colors, radius } from "@/lib/theme";
+import { Page } from "@/components/page";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
 
 export default function HomeScreen() {
   return (
-    <ScrollView contentContainerStyle={styles.page}>
-      <Text style={styles.eyebrow}>熊猫游戏</Text>
-      <Text style={styles.title}>轻松玩一会儿，也认识一只新熊猫。</Text>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>每日一猫</Text>
-        <Text style={styles.cardBody}>每天所有人猜同一只熊猫，猜错一次多揭开一条线索。</Text>
+    <Page title="吱熊猫">
+      <View className="gap-3 rounded-lg border-hairline border-border p-5">
+        <Text variant="small" className="text-highlight-foreground">
+          每日一猫
+        </Text>
+        <Text variant="h2">今天是哪只熊猫？</Text>
+        <Text className="text-muted-foreground">所有人猜同一只。6 次机会，猜错一次多一条线索。</Text>
         <Link href="/daily" asChild>
-          <Pressable style={styles.button} accessibilityRole="button">
-            <Text style={styles.buttonText}>猜今天的熊猫</Text>
-          </Pressable>
+          <Button className="self-start">
+            <Text>开始猜</Text>
+          </Button>
         </Link>
       </View>
-    </ScrollView>
+
+      <View className="gap-3 rounded-lg border-hairline border-border p-5">
+        <Text variant="small" className="text-highlight-foreground">
+          家谱
+        </Text>
+        <Text variant="h2">美香一家</Text>
+        <Link href={{ pathname: "/pandas/[slug]/family", params: { slug: "bao-bao" } }} asChild>
+          <Button variant="secondary" className="self-start">
+            <Text>看家谱</Text>
+          </Button>
+        </Link>
+      </View>
+    </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  page: { padding: 20, gap: 16 },
-  eyebrow: { color: colors.accent, fontWeight: "600" },
-  title: { color: colors.ink, fontSize: 28, fontWeight: "700", lineHeight: 36 },
-  card: { backgroundColor: colors.surface, borderColor: colors.line, borderWidth: 1, borderRadius: radius.card, padding: 20, gap: 10 },
-  cardTitle: { color: colors.ink, fontSize: 22, fontWeight: "700" },
-  cardBody: { color: colors.muted, fontSize: 15, lineHeight: 22 },
-  button: { alignSelf: "flex-start", backgroundColor: colors.accent, borderRadius: radius.control, paddingHorizontal: 18, paddingVertical: 12, marginTop: 6 },
-  buttonText: { color: colors.onAccent, fontWeight: "700", fontSize: 16 },
-});
