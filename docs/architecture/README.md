@@ -16,5 +16,6 @@ The product priority is **panda fan experience first**. Archive, provenance, rev
 | [ADR 0002](adr-0002-managed-cloud-deployment-target.md) | Accepted | Managed services only; production is Cloudflare Workers with Supabase. |
 | [ADR 0003](adr-0003-single-accountable-archive-approver.md) | Accepted | One accountable approver decides publication, with no four-eyes step. |
 | [Batch workflow interfaces](batch-workflow-interfaces.md) | Current | The bounded batch control plane. |
+| [Mobile app and platform services](mobile-app-platform-services.md) | Current | Which Supabase and Cloudflare services the Expo app uses, and why the others do not fit. |
 
 Wayfinder #309 resolved the V2 architecture through decisions #310-#322; the baseline is their synthesis. Implementation refines code-level details inside it. Reopen architecture only when implementation produces material correctness, security, product, managed-platform or operability evidence that the baseline cannot satisfy.
