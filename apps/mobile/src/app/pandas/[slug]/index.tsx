@@ -257,6 +257,13 @@ export default function ProfileScreen() {
         <Relatives profile={profile} />
         {profile.visit ? <Visit visit={profile.visit} /> : null}
         {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
+        <Button
+          variant="outline"
+          className="self-start"
+          onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug: profile.slug } })}
+        >
+          <Text>资料有误？纠错</Text>
+        </Button>
       </View>
     </ScrollView>
   );
