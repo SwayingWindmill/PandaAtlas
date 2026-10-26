@@ -1,9 +1,7 @@
 import { router } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, TextInput, View } from "react-native";
+import { FlatList, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Svg, { Circle, Path } from "react-native-svg";
-import { useCSSVariable } from "uniwind";
 
 import { PageHeader } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -12,44 +10,21 @@ import { Text } from "@/components/ui/text";
 import { loadInstitutionList } from "@/features/institutions/institutions";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
+import { SearchField } from "@/features/pandas/search-field";
 
-function SearchField({ value, onChange }: { value: string; onChange: (value: string) => void }) {
-  const muted = String(useCSSVariable("--color-muted-foreground"));
-  return (
-    <View className="h-12 flex-row items-center gap-2.5 rounded-full border-hairline border-input px-4">
-      <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={muted} strokeWidth={2} strokeLinecap="round">
-        <Circle cx={11} cy={11} r={7} />
-        <Path d="m20 20-3.5-3.5" />
-      </Svg>
-      <TextInput
-        value={value}
-        onChangeText={onChange}
-        placeholder="名字或基地"
-        placeholderTextColor={muted}
-        accessibilityLabel="搜索熊猫"
-        autoCorrect={false}
-        clearButtonMode="while-editing"
-        returnKeyType="search"
-        className="h-full flex-1 text-base text-foreground"
-      />
-    </View>
-  );
-}
-
-function InstitutionsEntry() {
+function Entry({ label, href }: { label: string; href: "/institutions" | "/relationship" }) {
   return (
     <Pressable
-      onPress={() => router.push("/institutions")}
+      onPress={() => router.push(href)}
       role="button"
-      accessibilityLabel="基地和动物园"
+      accessibilityLabel={label}
       className="mb-3 flex-row items-center justify-between rounded-lg border-hairline border-border p-4 active:bg-accent"
     >
-      <Text className="font-bold">基地和动物园</Text>
+      <Text className="font-bold">{label}</Text>
       <Text className="text-muted-foreground">›</Text>
     </Pressable>
   );
 }
-
 export default function FindScreen() {
   const insets = useSafeAreaInsets();
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
@@ -94,7 +69,14 @@ export default function FindScreen() {
           contentContainerClassName="px-5 pb-12"
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
-          ListHeaderComponent={hasInstitutions && !deferredQuery.trim() ? <InstitutionsEntry /> : undefined}
+          ListHeaderComponent={
+            deferredQuery.trim() ? undefined : (
+              <View>
+                {hasInstitutions ? <Entry label="基地和动物园" href="/institutions" /> : null}
+                <Entry label="查两只熊猫的关系" href="/relationship" />
+              </View>
+            )
+          }
           ListEmptyComponent={<Text className="py-4 text-muted-foreground">{`没有找到「${deferredQuery.trim()}」`}</Text>}
         />
       ) : failed ? (

@@ -18,6 +18,7 @@ export default async function globalSetup(): Promise<void> {
   const { EVIDENCE_PORT } = await load<{ EVIDENCE_PORT: symbol }>("modules/evidence/application/evidence.application.js");
   const { PANDA_PORT } = await load<{ PANDA_PORT: symbol }>("modules/panda/application/panda.application.js");
   const { MEDIA_PORT } = await load<{ MEDIA_PORT: symbol }>("modules/media/application/media.application.js");
+  const { LINEAGE_PORT } = await load<{ LINEAGE_PORT: symbol }>("modules/lineage/application/lineage.application.js");
   const { DatabaseService } = await load<{ DatabaseService: unknown }>("platform/database/database.service.js");
   const { createReleaseCommandContext } = await load<{
     createReleaseCommandContext(): Promise<{ app: { close(): Promise<void> }; ports: unknown }>;
@@ -74,6 +75,24 @@ export default async function globalSetup(): Promise<void> {
         primaryName: { languageTag: "zh-Hans", value: `选项${letter}${run}`, sourceIds: [sourceId] },
       }));
     }
+    // A family for 查关系: 选项丙 is the mother of the fixture panda and of 选项乙, 选项丁 the fixture panda's father.
+    const [optionB, optionC, optionD] = others;
+    const lineage = app.get<{ createAssertion(input: object): Promise<unknown> }>(LINEAGE_PORT);
+    for (const [index, [childId, parentId, parentRole]] of [
+      [panda.pandaId, optionC?.pandaId, "mother"],
+      [panda.pandaId, optionD?.pandaId, "father"],
+      [optionB?.pandaId, optionC?.pandaId, "mother"],
+    ].entries()) {
+      await lineage.createAssertion({
+        assertionId: `e2e-parent-${index}:${run}`,
+        childId,
+        parentId,
+        parentRole,
+        status: "confirmed",
+        sourceIds: [sourceId],
+      });
+    }
+
     const media = app.get<{
       createAsset(input: object): Promise<{ assetId: string }>;
       attachToPanda(pandaId: string, assetId: string, role: string, order: number): Promise<unknown>;
