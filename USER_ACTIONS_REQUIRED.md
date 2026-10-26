@@ -24,8 +24,9 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 ## Product and content decisions
 
+- **猜熊猫 tips and difficulty.** 433 questions are live, generated from the active release ([run 40374378674](https://github.com/SwayingWindmill/PandaAtlas/actions/runs/40374378674)): tips come from confirmed birth dates and current homes (201 have one), and 424 are `easy` because few pandas have a recorded current home. Hand-written recognition tips, or a rerun after `2026.10.26.1` is published, would make them richer.
+
 - **Which pandas the welcome suggests.** First launch offers living pandas that can be visited, youngest first, plus search. A curated list (the pandas most fans arrive for) would serve newcomers better; name the list or the rule.
-- **Add the first 猜熊猫 questions.** The app's 猜熊猫 answers 404 in production because no question is published. The `curation.guess-questions` batch operation now draws them from the active release (one per living panda with a public cover photo; 433 from the active release), and the manifest `data/curation/guess-questions/2026.10.27.1.json` is merged. Approve a run when you want them live (runbook: `docs/runbooks/production-release.md#add-猜熊猫-questions`), ideally after publishing `2026.10.26.1` so its new pandas are included. Hand-written recognition tips can replace the generated ones later.
 
 - **Learning content (科普, 专题, 认脸指南, 认脸挑战).** No content model or text exists; the canvas uses placeholders such as `[形状和左右差别]`. Decide the content and who writes it before a schema is built for it.
 - **Official posts (官方动态, 官方最近说).** The API's updates feed lists release changes, not posts by bases. Quoting official social posts needs a source, its terms of use and an acquisition decision.
