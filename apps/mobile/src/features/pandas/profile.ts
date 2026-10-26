@@ -1,12 +1,14 @@
 import type { components } from "@zhipanda/api-client";
 
 import { type Family, familyOf } from "@/features/family/family";
+import { loadInstitutionList } from "@/features/institutions/institutions";
 import { currentPlaceId, loadPlaces, placeName } from "@/features/pandas/pandas";
 import { api, publicMediaUrl } from "@/lib/api";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
 
 type Schemas = components["schemas"];
 type LifeEvent = Schemas["PublicLifeEventSummaryDto"];
+type Place = Schemas["PublicPlaceSummaryDto"];
 
 export interface Profile {
   id: string;
@@ -17,6 +19,17 @@ export interface Profile {
   events: { id: string; date: string; text: string }[];
   /** Null when the lineage could not be loaded; the rest of the profile still shows. */
   family: Family | null;
+  /** Where to see the panda now, when its facility belongs to a published institution. */
+  visit: { place: string; address: string | null; institutionSlug: string } | null;
+}
+
+async function visitOf(place: Place | undefined): Promise<Profile["visit"]> {
+  if (!place?.institutionId) return null;
+  const institutions = await loadInstitutionList().catch(() => []);
+  const institution = institutions.find((item) => item.institutionId === place.institutionId);
+  const name = placeName(place);
+  if (!institution || !name) return null;
+  return { place: name, address: place.visitGuide?.address?.zh ?? null, institutionSlug: institution.slug };
 }
 
 /** "2020-07-20" → "2020 年 7 月 20 日"; month and year precision stay as precise as the record. */
@@ -74,7 +87,8 @@ export async function loadProfile(slug: string): Promise<Profile> {
   const birthDate = pandaBirthDate(panda);
   const deceased = pandaIsDeceased(panda);
   const deathDate = panda.facts.find((fact) => fact.fieldKey === "death_date")?.value;
-  const currentPlace = deceased ? null : place(currentPlaceId(residencies) ?? undefined);
+  const currentPlaceRecord = deceased ? undefined : places.get(currentPlaceId(residencies) ?? "");
+  const currentPlace = placeName(currentPlaceRecord);
   const facts = [
     sex && { label: "性别", value: sex === "female" ? "雌" : "雄" },
     birthDate && { label: "出生", value: longDate(birthDate) },
@@ -97,5 +111,6 @@ export async function loadProfile(slug: string): Promise<Profile> {
         return text ? [{ id: event.eventId, date: shortDate(event), text }] : [];
       }),
     family: await familyOf(detail.data).catch(() => null),
+    visit: await visitOf(currentPlaceRecord),
   };
 }

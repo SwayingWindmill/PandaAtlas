@@ -1,5 +1,6 @@
+import { router } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { FlatList, TextInput, View } from "react-native";
+import { FlatList, Pressable, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
@@ -8,6 +9,7 @@ import { PageHeader } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { loadInstitutionList } from "@/features/institutions/institutions";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
 
@@ -34,6 +36,20 @@ function SearchField({ value, onChange }: { value: string; onChange: (value: str
   );
 }
 
+function InstitutionsEntry() {
+  return (
+    <Pressable
+      onPress={() => router.push("/institutions")}
+      role="button"
+      accessibilityLabel="基地和动物园"
+      className="mb-3 flex-row items-center justify-between rounded-lg border-hairline border-border p-4 active:bg-accent"
+    >
+      <Text className="font-bold">基地和动物园</Text>
+      <Text className="text-muted-foreground">›</Text>
+    </Pressable>
+  );
+}
+
 export default function FindScreen() {
   const insets = useSafeAreaInsets();
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
@@ -53,6 +69,14 @@ export default function FindScreen() {
     load();
   }
 
+  // The entry appears once a release publishes institutions; until then there is nothing behind it.
+  const [hasInstitutions, setHasInstitutions] = useState(false);
+  useEffect(() => {
+    loadInstitutionList()
+      .then((institutions) => setHasInstitutions(institutions.length > 0))
+      .catch(() => setHasInstitutions(false));
+  }, []);
+
   const results = useMemo(() => (pandas ? searchPandas(pandas, deferredQuery) : []), [pandas, deferredQuery]);
 
   return (
@@ -70,6 +94,7 @@ export default function FindScreen() {
           contentContainerClassName="px-5 pb-12"
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
+          ListHeaderComponent={hasInstitutions && !deferredQuery.trim() ? <InstitutionsEntry /> : undefined}
           ListEmptyComponent={<Text className="py-4 text-muted-foreground">{`没有找到「${deferredQuery.trim()}」`}</Text>}
         />
       ) : failed ? (
