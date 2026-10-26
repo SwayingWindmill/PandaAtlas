@@ -24,6 +24,8 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 ## Product and content decisions
 
+- **Files attached to 纠错.** The API can register an attachment on a report, but the private upload path behind it (bucket, malware scanning, retention) was retired in #633, and the website does not upload either. Fans can cite a link or a book page. Decide whether fans may upload screenshots or documents; if so, it needs a private Supabase Storage bucket with scanning and a retention rule before the app offers it.
+
 - **猜熊猫 tips and difficulty.** 433 questions are live, generated from the active release ([run 40374378674](https://github.com/SwayingWindmill/PandaAtlas/actions/runs/40374378674)): tips come from confirmed birth dates and current homes (201 have one), and 424 are `easy` because few pandas have a recorded current home. Hand-written recognition tips, or a rerun after `2026.10.26.1` is published, would make them richer.
 
 - **Which pandas the welcome suggests.** First launch offers living pandas that can be visited, youngest first, plus search. A curated list (the pandas most fans arrive for) would serve newcomers better; name the list or the rule.

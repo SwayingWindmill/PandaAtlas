@@ -19,6 +19,7 @@ export default async function globalSetup(): Promise<void> {
   const { PANDA_PORT } = await load<{ PANDA_PORT: symbol }>("modules/panda/application/panda.application.js");
   const { MEDIA_PORT } = await load<{ MEDIA_PORT: symbol }>("modules/media/application/media.application.js");
   const { LINEAGE_PORT } = await load<{ LINEAGE_PORT: symbol }>("modules/lineage/application/lineage.application.js");
+  const { PLACES_PORT } = await load<{ PLACES_PORT: symbol }>("modules/places/application/places.application.js");
   const { DatabaseService } = await load<{ DatabaseService: unknown }>("platform/database/database.service.js");
   const { createReleaseCommandContext } = await load<{
     createReleaseCommandContext(): Promise<{ app: { close(): Promise<void> }; ports: unknown }>;
@@ -93,6 +94,30 @@ export default async function globalSetup(): Promise<void> {
       });
     }
 
+    // A zoo with one facility, for 到访 on its page.
+    const places = app.get<{
+      createInstitution(input: object): Promise<{ institutionId: string }>;
+      createPlace(input: object): Promise<{ placeId: string }>;
+    }>(PLACES_PORT);
+    const zoo = {
+      slug: `e2e-zoo-${run}`,
+      name: `测试动物园${run}`,
+      facility: `测试动物园熊猫馆${run}`,
+    };
+    const institution = await places.createInstitution({
+      slug: zoo.slug,
+      nameZh: zoo.name,
+      countryCode: "CN",
+      profile: { kind: "zoo", verifiedOn: "2026-10-27", sourceUrls: [`https://example.test/zoo/${run}`] },
+    });
+    await places.createPlace({
+      institutionId: institution.institutionId,
+      slug: `e2e-zoo-facility-${run}`,
+      placeType: "facility",
+      nameZh: zoo.facility,
+      countryCode: "CN",
+    });
+
     const media = app.get<{
       createAsset(input: object): Promise<{ assetId: string }>;
       attachToPanda(pandaId: string, assetId: string, role: string, order: number): Promise<unknown>;
@@ -149,7 +174,7 @@ export default async function globalSetup(): Promise<void> {
     await publishRelease(command.ports, manifest, context, manifest.reason);
 
     const notice = { id: others[0].pandaId, slug: `e2e-option-${"乙".codePointAt(0)}-${run}`, name: `选项乙${run}` };
-    await writeFile(statePath, JSON.stringify({ panda: { id: panda.pandaId, slug, name: `测试熊猫${run}` }, notice }), "utf8");
+    await writeFile(statePath, JSON.stringify({ panda: { id: panda.pandaId, slug, name: `测试熊猫${run}` }, notice, zoo }), "utf8");
   } finally {
     await command.app.close();
     await app.close();
