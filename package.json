@@ -78,6 +78,6 @@
     "mdast-util-from-markdown": "^2.1.0",
     "supabase": "2.110.0",
     "typescript": "^5.9.0",
-    "typescript-eslint": "^8.71.1"
+    "typescript-eslint": "^8.72.0"
   }
 }
