@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     const panda = pandasById.get(pandaId);
     if (!panda) return [];
     const name = displayName(panda.names, locale);
-    return name ? [{ pandaId, name, slug: panda.canonicalSlug }] : [];
+    return name ? [{ pandaId, name }] : [];
   });
   if (options.length !== questionResult.data.optionPandaIds.length) {
     return NextResponse.json(
@@ -49,30 +49,14 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const detailResults = await Promise.all(
-    options.map((option) =>
-      client.GET("/api/v2/pandas/{slug}", {
-        params: { path: { slug: option.slug } },
-      }),
-    ),
-  );
-  const media = detailResults
-    .flatMap((result) => result.data?.media ?? [])
-    .find((asset) => asset.assetId === questionResult.data.mediaAssetId);
-  if (!media) {
-    return NextResponse.json(
-      { detail: "The published game media is unavailable in the active public release." },
-      { status: 503 },
-    );
-  }
-
+  // The API serves only questions whose photo is public in the active release, with its object key.
   return NextResponse.json(
     {
       questionId: questionResult.data.questionId,
-      imageUrl: publicMediaUrl(media.objectKey),
+      imageUrl: publicMediaUrl(questionResult.data.photoObjectKey),
       imageAlt: locale === "zh" ? "待猜熊猫的公开照片" : "Published panda photo to identify",
       difficulty: questionResult.data.difficulty,
-      options: options.map(({ pandaId, name }) => ({ pandaId, name })),
+      options,
     },
     { headers: { "Cache-Control": "no-store" } },
   );

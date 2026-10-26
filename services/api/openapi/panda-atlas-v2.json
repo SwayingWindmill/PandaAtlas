@@ -4267,6 +4267,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "photoObjectKey": {
+            "type": "string",
+            "description": "Public object key of the question photo in the active release."
+          },
           "difficulty": {
             "type": "string",
             "enum": [
@@ -4286,6 +4290,7 @@
         "required": [
           "questionId",
           "mediaAssetId",
+          "photoObjectKey",
           "difficulty",
           "optionPandaIds"
         ]

@@ -37,12 +37,16 @@ export class PostgresGameRepository implements GameRepository {
   }
 
   public async getGuessQuestion(difficultyFilter?: GameDifficulty): Promise<GuessQuestion | undefined> {
+    // Only questions whose photo is public in the active release, so a client can show it directly.
     let query = this.database.db
-      .selectFrom("game.questions")
-      .select(["question_id", "media_asset_id", "difficulty", "option_panda_ids"])
-      .where("state", "=", "published");
+      .selectFrom("game.questions as question")
+      .innerJoin("publication.current_release as current", (join) => join.onTrue())
+      .innerJoin("public_read.media as media", (join) =>
+        join.onRef("media.release_id", "=", "current.release_id").onRef("media.asset_id", "=", "question.media_asset_id"))
+      .select(["question.question_id", "question.media_asset_id", "question.difficulty", "question.option_panda_ids", "media.object_key"])
+      .where("question.state", "=", "published");
     if (difficultyFilter !== undefined) {
-      query = query.where("difficulty", "=", difficultyFilter);
+      query = query.where("question.difficulty", "=", difficultyFilter);
     }
     const row = await query.orderBy(sql`random()`).limit(1).executeTakeFirst();
     return row === undefined
@@ -50,6 +54,7 @@ export class PostgresGameRepository implements GameRepository {
       : {
           questionId: row.question_id,
           mediaAssetId: row.media_asset_id,
+          photoObjectKey: row.object_key,
           difficulty: difficulty(row.difficulty),
           optionPandaIds: row.option_panda_ids,
         };

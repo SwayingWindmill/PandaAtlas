@@ -32,6 +32,9 @@ export class GuessQuestionDto {
   @ApiProperty({ format: "uuid" })
   public declare mediaAssetId: string;
 
+  @ApiProperty({ description: "Public object key of the question photo in the active release." })
+  public declare photoObjectKey: string;
+
   @ApiProperty({ enum: ["easy", "medium", "hard"] })
   public declare difficulty: GameDifficulty;
 

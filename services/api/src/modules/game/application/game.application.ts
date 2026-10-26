@@ -7,6 +7,8 @@ export interface RandomPandaCandidate {
 export interface GuessQuestion {
   questionId: string;
   mediaAssetId: string;
+  /** The photo's public object key in the active release; questions whose photo is not public are skipped. */
+  photoObjectKey: string;
   difficulty: GameDifficulty;
   optionPandaIds: string[];
 }

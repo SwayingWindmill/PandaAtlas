@@ -1,4 +1,5 @@
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
+import { useNavigationState } from "expo-router/react-navigation";
 import type { ReactNode } from "react";
 import { ScrollView, type ScrollViewProps, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -31,7 +32,8 @@ export function BackButton({ className }: { className?: string }) {
  * tabs is not a history the button should walk.
  */
 export function PageHeader({ label, title, back = true }: { label?: string; title: string; back?: boolean }) {
-  const canGoBack = useNavigation().canGoBack();
+  // Subscribed, so the button appears once the push settles; a screen opened directly has nothing beneath it.
+  const canGoBack = useNavigationState((state) => (state?.index ?? 0) > 0);
   return (
     <View className="gap-4">
       {back && canGoBack ? <BackButton /> : null}
