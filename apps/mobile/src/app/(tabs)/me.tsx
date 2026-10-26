@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
@@ -11,6 +11,8 @@ import { statusLabel } from "@/features/corrections/correction";
 import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
 import { shortDay } from "@/features/engagement/seen";
 import { useFollowed } from "@/features/engagement/favorites";
+import { loadInbox } from "@/features/notifications/inbox";
+import { unreadCount } from "@/features/notifications/notifications";
 import { PandaRow, openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
@@ -114,6 +116,43 @@ function Profile({ email }: { email: string | null }) {
   );
 }
 
+function EntryRow({ label, meta, href, last }: { label: string; meta?: string; href: "/notifications" | "/account"; last?: boolean }) {
+  return (
+    <Pressable
+      onPress={() => router.push(href)}
+      role="button"
+      accessibilityLabel={meta ? `${label}，${meta}` : label}
+      className={cn(
+        "flex-row items-center justify-between gap-3 border-t-hairline border-border py-3.5 active:bg-accent",
+        last && "border-b-hairline",
+      )}
+    >
+      <Text className="font-bold">{label}</Text>
+      <View className="flex-row items-center gap-2">
+        {meta ? <Text className="text-highlight-foreground">{meta}</Text> : null}
+        <Text className="text-muted-foreground">›</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+function Entries() {
+  const [unread, setUnread] = useState(0);
+  useFocusEffect(
+    useCallback(() => {
+      loadInbox()
+        .then((messages) => setUnread(unreadCount(messages)))
+        .catch(() => setUnread(0));
+    }, []),
+  );
+  return (
+    <View>
+      <EntryRow label="通知" meta={unread > 0 ? `${unread} 条未读` : undefined} href="/notifications" />
+      <EntryRow label="账号与数据" href="/account" last />
+    </View>
+  );
+}
+
 function Following() {
   const followed = useFollowed();
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
@@ -200,6 +239,7 @@ export default function MeScreen() {
       {state.status === "signedIn" ? <Profile email={state.email} /> : null}
       {state.status === "signedIn" ? <Following /> : null}
       {state.status === "signedIn" ? <Contributions /> : null}
+      {state.status === "signedIn" ? <Entries /> : null}
       {state.status === "signedIn" || state.status === "unavailable" ? (
         <View className="border-t-hairline border-border pt-4">
           <Button variant="secondary" className="self-start" onPress={() => void signOut()}>

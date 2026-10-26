@@ -30,6 +30,8 @@ export interface CreatePrivacyRequestInput {
 export interface PrivacyRepository {
   create(accountId: string, input: CreatePrivacyRequestInput): Promise<PrivacyRequestRecord>;
   get(accountId: string, requestId: string): Promise<PrivacyRequestRecord | undefined>;
+  /** The account's requests, newest first. */
+  list(accountId: string): Promise<PrivacyRequestRecord[]>;
   getExport(accountId: string, requestId: string): Promise<PrivacyExportRecord | undefined>;
 }
 
@@ -46,6 +48,10 @@ export class PrivacyApplication implements PrivacyPort {
 
   public get(accountId: string, requestId: string) {
     return this.repository.get(accountId, requestId);
+  }
+
+  public list(accountId: string) {
+    return this.repository.list(accountId);
   }
 
   public getExport(accountId: string, requestId: string) {

@@ -230,6 +230,7 @@ describe("V2 async downstream and compliance", () => {
       correlationId: randomUUID(),
     });
     expect(privacyRequest.state).toBe("pending");
+    expect((await privacy.list(accountId)).map((request) => request.requestId)).toEqual([privacyRequest.requestId]);
     let completedPrivacy = await privacy.get(accountId, privacyRequest.requestId);
     for (let cycle = 0; cycle < 4 && completedPrivacy?.state !== "completed"; cycle += 1) {
       await runner.runCycle(effects);
