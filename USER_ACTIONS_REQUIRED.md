@@ -20,6 +20,7 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 ## Product and content decisions
 
+- **Which pandas the welcome suggests.** First launch offers living pandas that can be visited, youngest first, plus search. A curated list (the pandas most fans arrive for) would serve newcomers better; name the list or the rule.
 - **猜熊猫 questions.** The app's 猜熊猫 works end to end, but production has no published question (the question endpoint answers 404), so it shows 现在还没有可以猜的题目。 There is no authoring tool or import for questions. Decide who picks the photo, the three wrong options and the recognition tips; a curated JSON plus a migration (like `data/curation/institutions`) or an admin form are both small once the source of questions is decided.
 
 - **Learning content (科普, 专题, 认脸指南, 认脸挑战).** No content model or text exists; the canvas uses placeholders such as `[形状和左右差别]`. Decide the content and who writes it before a schema is built for it.
