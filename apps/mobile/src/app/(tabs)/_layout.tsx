@@ -6,7 +6,7 @@ import { useCSSVariable } from "uniwind";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
-// The canvas's bottom navigation. 图鉴 and 我的 join once sign-in exists.
+// The canvas's bottom navigation.
 function TodayIcon({ color }: { color: ColorValue }) {
   return (
     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">
@@ -21,6 +21,15 @@ function FindIcon({ color }: { color: ColorValue }) {
     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">
       <Circle cx={11} cy={11} r={7} />
       <Path d="m20 20-3.5-3.5" />
+    </Svg>
+  );
+}
+
+function MeIcon({ color }: { color: ColorValue }) {
+  return (
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">
+      <Circle cx={12} cy={8} r={4} />
+      <Path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" />
     </Svg>
   );
 }
@@ -59,6 +68,14 @@ export default function TabsLayout() {
           title: "找熊猫",
           tabBarLabel: ({ focused }) => <Label focused={focused}>找熊猫</Label>,
           tabBarIcon: ({ color }) => <FindIcon color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="me"
+        options={{
+          title: "我的",
+          tabBarLabel: ({ focused }) => <Label focused={focused}>我的</Label>,
+          tabBarIcon: ({ color }) => <MeIcon color={color} />,
         }}
       />
     </Tabs>
