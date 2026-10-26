@@ -9,6 +9,7 @@ export default tseslint.config(
       "**/dist/**",
       "**/coverage/**",
       "apps/web/**",
+      "apps/mobile/**",
       "services/worker-api/**",
       "services/api/app/**",
       "services/api/scripts/**",

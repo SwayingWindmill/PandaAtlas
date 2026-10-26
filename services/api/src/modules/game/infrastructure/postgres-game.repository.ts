@@ -10,6 +10,7 @@ import type {
   SaveAttemptResult,
   SavedGameAttempt,
 } from "../application/game.application.js";
+import { recordEncounter } from "./postgres-panda-book.repository.js";
 
 function recognitionTips(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((tip): tip is string => typeof tip === "string") : [];
@@ -112,6 +113,8 @@ export class PostgresGameRepository implements GameRepository {
         })
         .returning(["attempt_id", "question_id", "selected_panda_id", "correct", "attempted_at"])
         .executeTakeFirstOrThrow();
+      // A saved attempt adds the question's panda to the fan's panda book, right or wrong.
+      await recordEncounter(transaction, accountId, question.target_panda_id, "guess_panda");
       return {
         kind: "saved" as const,
         answer,

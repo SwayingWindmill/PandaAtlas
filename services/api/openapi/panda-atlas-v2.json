@@ -1348,6 +1348,60 @@
         ]
       }
     },
+    "/api/v2/games/daily-panda": {
+      "get": {
+        "operationId": "getDailyPanda",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyPandaPuzzleDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
+    "/api/v2/games/daily-panda/guesses": {
+      "post": {
+        "operationId": "guessDailyPanda",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyPandaGuessesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyPandaGuessResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
     "/api/v2/me/game-attempts": {
       "get": {
         "operationId": "listGameAttempts",
@@ -1389,6 +1443,60 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SavedGameAttemptDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
+    "/api/v2/me/panda-book": {
+      "get": {
+        "operationId": "getPandaBook",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PandaBookDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Games"
+        ]
+      }
+    },
+    "/api/v2/me/daily-panda-results": {
+      "post": {
+        "operationId": "saveDailyPandaResult",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyPandaGuessesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedDailyPandaDto"
                 }
               }
             }
@@ -4222,6 +4330,181 @@
           "recognitionTips"
         ]
       },
+      "DailyPandaClueDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "sex",
+              "birth_year",
+              "life_status",
+              "birthplace",
+              "name_initial",
+              "photo"
+            ]
+          },
+          "value": {
+            "description": "female | male for sex, a year for birth_year, alive | deceased for life_status, text otherwise. Absent for photo.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          },
+          "assetId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Photo clue only."
+          },
+          "objectKey": {
+            "type": "string",
+            "description": "Photo clue only: the public media object key."
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "DailyPandaPuzzleDto": {
+        "type": "object",
+        "properties": {
+          "puzzleDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "maxGuesses": {
+            "type": "number"
+          },
+          "clueCount": {
+            "type": "number",
+            "description": "How many clues today's panda has in total."
+          },
+          "clues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyPandaClueDto"
+            }
+          }
+        },
+        "required": [
+          "puzzleDate",
+          "maxGuesses",
+          "clueCount",
+          "clues"
+        ]
+      },
+      "DailyPandaGuessesDto": {
+        "type": "object",
+        "properties": {
+          "guessPandaIds": {
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "guessPandaIds"
+        ]
+      },
+      "DailyPandaGuessFeedbackDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "correct": {
+            "type": "boolean"
+          },
+          "sameSex": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Null when either sex is unpublished."
+          },
+          "birthYear": {
+            "type": "string",
+            "enum": [
+              "answer_earlier",
+              "answer_later",
+              "same",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "pandaId",
+          "correct",
+          "sameSex",
+          "birthYear"
+        ]
+      },
+      "DailyPandaAnswerDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "canonicalSlug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "pandaId",
+          "canonicalSlug"
+        ]
+      },
+      "DailyPandaGuessResultDto": {
+        "type": "object",
+        "properties": {
+          "puzzleDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "solved": {
+            "type": "boolean"
+          },
+          "finished": {
+            "type": "boolean"
+          },
+          "guesses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyPandaGuessFeedbackDto"
+            }
+          },
+          "clues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyPandaClueDto"
+            }
+          },
+          "answer": {
+            "description": "Present once the puzzle is finished.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DailyPandaAnswerDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "puzzleDate",
+          "solved",
+          "finished",
+          "guesses",
+          "clues"
+        ]
+      },
       "GameAttemptDto": {
         "type": "object",
         "properties": {
@@ -4280,6 +4563,81 @@
         "required": [
           "attempt",
           "answer"
+        ]
+      },
+      "PandaBookEntryDto": {
+        "type": "object",
+        "properties": {
+          "pandaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstGame": {
+            "type": "string",
+            "enum": [
+              "guess_panda",
+              "daily_panda"
+            ],
+            "description": "The game where the fan first met this panda."
+          },
+          "firstMetAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastMetAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timesMet": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "pandaId",
+          "firstGame",
+          "firstMetAt",
+          "lastMetAt",
+          "timesMet"
+        ]
+      },
+      "PandaBookDto": {
+        "type": "object",
+        "properties": {
+          "publishedCount": {
+            "type": "number",
+            "description": "Pandas in the current public release."
+          },
+          "knownCount": {
+            "type": "number"
+          },
+          "items": {
+            "description": "Newest first.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PandaBookEntryDto"
+            }
+          }
+        },
+        "required": [
+          "publishedCount",
+          "knownCount",
+          "items"
+        ]
+      },
+      "SavedDailyPandaDto": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/DailyPandaGuessResultDto"
+          },
+          "saved": {
+            "type": "boolean",
+            "description": "False when today's result was already saved; nothing changed."
+          }
+        },
+        "required": [
+          "result",
+          "saved"
         ]
       },
       "PublicReadReleaseDto": {
