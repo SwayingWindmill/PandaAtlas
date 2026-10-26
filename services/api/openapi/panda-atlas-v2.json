@@ -2629,6 +2629,31 @@
         "tags": [
           "Privacy"
         ]
+      },
+      "get": {
+        "operationId": "listMyPrivacyRequests",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyRequestListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "supabaseJwt": []
+          }
+        ],
+        "summary": "List the account's privacy requests, newest first",
+        "tags": [
+          "Privacy"
+        ]
       }
     },
     "/api/v2/me/privacy/requests/{requestId}": {
@@ -6180,6 +6205,20 @@
           "reason",
           "requestedAt",
           "updatedAt"
+        ]
+      },
+      "PrivacyRequestListDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrivacyRequestDto"
+            }
+          }
+        },
+        "required": [
+          "items"
         ]
       },
       "PrivacyExportDto": {

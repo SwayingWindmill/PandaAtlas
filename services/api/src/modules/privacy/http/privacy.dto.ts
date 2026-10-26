@@ -46,6 +46,11 @@ export class PrivacyRequestDto {
   public declare failureCode?: string;
 }
 
+export class PrivacyRequestListDto {
+  @ApiProperty({ type: [PrivacyRequestDto] })
+  public declare items: PrivacyRequestDto[];
+}
+
 export class PrivacyExportDto {
   @ApiProperty({ format: "uuid" })
   public declare requestId: string;

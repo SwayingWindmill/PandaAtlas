@@ -129,7 +129,8 @@ export default async function globalSetup(): Promise<void> {
     await buildRelease(command.ports, manifest, context);
     await publishRelease(command.ports, manifest, context, manifest.reason);
 
-    await writeFile(statePath, JSON.stringify({ panda: { id: panda.pandaId, slug, name: `测试熊猫${run}` } }), "utf8");
+    const notice = { id: others[0].pandaId, slug: `e2e-option-${"乙".codePointAt(0)}-${run}`, name: `选项乙${run}` };
+    await writeFile(statePath, JSON.stringify({ panda: { id: panda.pandaId, slug, name: `测试熊猫${run}` }, notice }), "utf8");
   } finally {
     await command.app.close();
     await app.close();

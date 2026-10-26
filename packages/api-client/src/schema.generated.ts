@@ -1097,7 +1097,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List the account's privacy requests, newest first */
+        get: operations["listMyPrivacyRequests"];
         put?: never;
         /** Create an asynchronous privacy request */
         post: operations["createMyPrivacyRequest"];
@@ -2100,6 +2101,9 @@ export interface components {
             /** Format: date-time */
             failedAt?: string;
             failureCode?: string;
+        };
+        PrivacyRequestListDto: {
+            items: components["schemas"]["PrivacyRequestDto"][];
         };
         PrivacyExportDto: {
             /** Format: uuid */
@@ -3987,6 +3991,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NotificationPreferenceDto"];
+                };
+            };
+        };
+    };
+    listMyPrivacyRequests: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivacyRequestListDto"];
                 };
             };
         };

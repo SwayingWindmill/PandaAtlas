@@ -79,6 +79,16 @@ export class PostgresPrivacyRepository implements PrivacyRepository {
     return row === undefined ? undefined : this.mapRequest(row);
   }
 
+  public async list(accountId: string): Promise<PrivacyRequestRecord[]> {
+    const rows = await this.database.db
+      .selectFrom("privacy.subject_requests")
+      .selectAll()
+      .where("account_id", "=", accountId)
+      .orderBy("requested_at", "desc")
+      .execute();
+    return rows.map((row) => this.mapRequest(row));
+  }
+
   public async getExport(accountId: string, requestId: string): Promise<PrivacyExportRecord | undefined> {
     const row = await this.database.db
       .selectFrom("privacy.export_snapshots as snapshot")

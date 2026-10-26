@@ -16,6 +16,8 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 
 - **User agreement and privacy policy.** The canvas login asks fans to accept them, and both app stores require a privacy policy URL, but no such pages exist (website issue #348). The app's sign-in shows no consent line until the documents are written and published.
 
+- **What account deletion keeps.** Deleting an account erases follows, 见过, game records, notifications and the identity, but leaves submitted 纠错 (contributions) in the review records. The app's deletion text names only what is erased. Decide whether contributions are kept, anonymized or deleted, and say so in the privacy policy (#348).
+
 ## Product and content decisions
 
 - **猜熊猫 questions.** The app's 猜熊猫 works end to end, but production has no published question (the question endpoint answers 404), so it shows 现在还没有可以猜的题目。 There is no authoring tool or import for questions. Decide who picks the photo, the three wrong options and the recognition tips; a curated JSON plus a migration (like `data/curation/institutions`) or an admin form are both small once the source of questions is decided.

@@ -164,6 +164,34 @@ describe("Identity HTTP security path", () => {
     });
   });
 
+  it("lists the member's own privacy requests, newest first, after two-step verification", async () => {
+    const sessionId = randomUUID();
+    await sql`
+      insert into auth.sessions (id, user_id, created_at, updated_at, aal)
+      values (${sessionId}::uuid, ${ACCOUNT_ID}::uuid, now(), now(), 'aal2')
+    `.execute(app.get(DatabaseService).db);
+    const weak = await injectHttp(app, {
+      method: "GET",
+      url: "/api/v2/me/privacy/requests",
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(weak.statusCode).toBe(403);
+    expect(weak.json()).toMatchObject({ code: "auth.aalRequired" });
+
+    const headers = { authorization: `Bearer ${await signTestToken(ACCOUNT_ID, sessionId, "aal2")}` };
+    const created = await injectHttp(app, {
+      method: "POST",
+      url: "/api/v2/me/privacy/requests",
+      headers,
+      payload: { kind: "access_export", reason: "Export my data", idempotencyKey: randomUUID() },
+    });
+    expect(created.statusCode).toBe(201);
+    const listed = await injectHttp(app, { method: "GET", url: "/api/v2/me/privacy/requests", headers });
+    expect(listed.statusCode).toBe(200);
+    const { items } = listed.json<{ items: { requestId: string }[] }>();
+    expect(items[0]?.requestId).toBe(created.json<{ requestId: string }>().requestId);
+  });
+
   it("does not let an ordinary member invite an archive reviewer", async () => {
     const response = await injectHttp(app, {
       method: "POST",

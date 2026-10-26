@@ -6,7 +6,7 @@ import { RequestContextService } from "../../../platform/request-context/request
 import { RequireCapabilities } from "../../identity/http/access.metadata.js";
 import { getActorContext } from "../../identity/http/request-actor.js";
 import { PRIVACY_PORT, type PrivacyPort } from "../application/privacy.application.js";
-import { CreatePrivacyRequestDto, PrivacyExportDto, PrivacyRequestDto } from "./privacy.dto.js";
+import { CreatePrivacyRequestDto, PrivacyExportDto, PrivacyRequestDto, PrivacyRequestListDto } from "./privacy.dto.js";
 
 @ApiTags("Privacy")
 @ApiBearerAuth("supabaseJwt")
@@ -29,6 +29,14 @@ export class PrivacyController {
       idempotencyKey: input.idempotencyKey,
       correlationId,
     });
+  }
+
+  @Get()
+  @RequireCapabilities("privacy.request.manage")
+  @ApiOperation({ operationId: "listMyPrivacyRequests", summary: "List the account's privacy requests, newest first" })
+  @ApiOkResponse({ type: PrivacyRequestListDto })
+  public async list(@Req() request: HttpRequest) {
+    return { items: await this.privacy.list(this.context(request).accountId) };
   }
 
   @Get(":requestId")
