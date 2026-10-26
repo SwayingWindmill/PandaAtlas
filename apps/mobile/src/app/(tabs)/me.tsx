@@ -128,6 +128,8 @@ function AccountLinks() {
   );
   return (
     <View>
+      <NavRow label="我的合集" href="/collections" />
+      <NavRow label="去过的地点" href="/visits" />
       <NavRow label="通知" meta={unread > 0 ? `${unread} 条未读` : undefined} href="/notifications" />
       <NavRow label="账号与数据" href="/account" last />
     </View>

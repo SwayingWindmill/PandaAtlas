@@ -6,6 +6,8 @@ export interface Fixture {
   panda: { id: string; slug: string; name: string };
   /** A second published panda, followed and taken down by the notification journey. */
   notice: { id: string; slug: string; name: string };
+  /** A published zoo with one facility, for 到访. */
+  zoo: { slug: string; name: string; facility: string };
 }
 
 export function fixture(): Fixture {

@@ -39,6 +39,12 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 | Onboarding (#693)                | Welcome and follow a few pandas on first launch                                                                                             | Follow and 见过 | done: first launch redirects the tabs to 欢迎 (flag in AsyncStorage, once per install); suggestions are living, visitable pandas youngest first, or search; follow several after signing in (sign-in returns to the welcome), or 先逛逛; 1 unit test; e2e fresh install → sign in → follow two → 今天 → 我的 shows 2, and skip shown once                                                                                                  |
 | Offline and share (#694)         | Offline banner keeping loaded data, profile share card                                                                                      | none            | done: a floating notice while expo-network reports no connection, loaded lists stay and new reads fall into their retry states; 分享 on profiles opens a card (photo, name, facts, credit, link) captured with react-native-view-shot and shared as PNG (share sheet on phones, download on web), plus 分享链接; e2e offline → banner, list kept, profile retry after reconnecting; card PNG over 10 KB                                    |
 
+## Endpoint audit (every app-facing V2 operation against what the app calls)
+
+- Built: 我的合集 (list, create, rename, delete, remove a panda; 加入合集 on profiles) and 去过的地点 (记下今天去过 per facility on institution pages, list and delete in 我的), the website's 收藏与合集 and place check-ins, which the app had no screen for. e2e: collection from a profile through rename, empty and delete; a visit recorded on a fixture zoo and removed; the signed-out prompt.
+- Covered by calls the app already makes: `/me` (the session provisions with `POST /me/account`), `/release` and `/stats` (lists carry the release), `/places/{slug}` (places come with institutions), `/evidence/{sourceId}` (the panda detail carries its evidence), `/me/contributions/{id}` and `/me/privacy/requests/{id}` (lists carry every field), `/games/random-panda` (猜熊猫 draws questions).
+- Left for an owner decision: `POST /contributions/{id}/attachments` (see `USER_ACTIONS_REQUIRED.md`).
+
 ## Review fixes (code review of #686–#694)
 
 - Product name in the app is 吱熊猫 (welcome label, share card, authenticator name).

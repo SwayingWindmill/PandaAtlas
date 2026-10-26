@@ -250,6 +250,13 @@ export default function ProfileScreen() {
       <View className="gap-7 px-5 pt-6">
         <Text variant="h1">{profile.name}</Text>
         {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
+        <Button
+          variant="secondary"
+          className="self-start"
+          onPress={() => router.push({ pathname: "/pandas/[slug]/collect", params: { slug: profile.slug } })}
+        >
+          <Text>加入合集</Text>
+        </Button>
         {profile.facts.length > 0 ? <Facts facts={profile.facts} /> : null}
         {profile.events.length > 0 ? <Events events={profile.events} /> : null}
         <Relatives profile={profile} />

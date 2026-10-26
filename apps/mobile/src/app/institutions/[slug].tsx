@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { type Facility, type InstitutionDetail, hostname, loadInstitution } from "@/features/institutions/institutions";
+import { FacilityVisits } from "@/features/visits/facility-visits";
 import { openPanda } from "@/features/pandas/panda-row";
 import type { PandaListItem } from "@/features/pandas/pandas";
 import { longDate } from "@/features/pandas/profile";
@@ -189,6 +190,7 @@ export default function InstitutionScreen() {
           ))}
         </View>
       ) : null}
+      {institution.facilities.length > 0 ? <FacilityVisits facilities={institution.facilities} /> : null}
       {institution.former.length > 0 ? <Former pandas={institution.former} /> : null}
       {institution.liveCamUrl || institution.websiteUrl ? (
         <View className="gap-2">
