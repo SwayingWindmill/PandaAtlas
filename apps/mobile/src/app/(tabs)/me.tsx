@@ -1,17 +1,21 @@
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { TextInput, View } from "react-native";
+import { Pressable, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { statusLabel } from "@/features/corrections/correction";
+import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
+import { shortDay } from "@/features/engagement/seen";
 import { useFollowed } from "@/features/engagement/favorites";
-import { PandaRow } from "@/features/pandas/panda-row";
+import { PandaRow, openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
 import { authedApi } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 const NICKNAME_MAX = 40;
 
@@ -134,6 +138,56 @@ function Following() {
   );
 }
 
+function Contributions() {
+  const [items, setItems] = useState<ContributionRecord[] | null>(null);
+  const [pandas, setPandas] = useState<Map<string, PandaListItem> | null>(null);
+  useEffect(() => {
+    void loadMyContributions()
+      .then(setItems)
+      .catch(() => setItems(null));
+    void loadPandaIndex().then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))));
+  }, []);
+  if (!items || !pandas || items.length === 0) return null;
+  return (
+    <View className="gap-2">
+      <Text variant="h2">{`我的纠错　${items.length}`}</Text>
+      <View>
+        {items.map((item, index) => {
+          const panda = pandas.get(item.targetPandaId);
+          const name = panda?.name ?? "熊猫";
+          const status = statusLabel(item.status);
+          return (
+            <Pressable
+              key={item.submissionId}
+              disabled={!panda}
+              onPress={() => panda && openPanda(panda.slug)}
+              role="button"
+              accessibilityLabel={`${name}，${status}`}
+              className={cn(
+                "gap-0.5 border-t-hairline border-border py-3 active:bg-accent",
+                index === items.length - 1 && "border-b-hairline",
+              )}
+            >
+              <View className="flex-row items-center justify-between gap-3">
+                <Text className="min-w-0 flex-1 font-bold" numberOfLines={1}>
+                  {name}
+                </Text>
+                <Text
+                  className={cn(item.status === "accepted" ? "text-highlight-foreground" : "text-muted-foreground")}
+                >
+                  {status}
+                </Text>
+              </View>
+              <Text variant="muted">{`${shortDay(item.submittedAt.slice(0, 10))}提交`}</Text>
+              {item.statusExplanation ? <Text variant="muted">{item.statusExplanation}</Text> : null}
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 export default function MeScreen() {
   const { state, signOut } = useSession();
   return (
@@ -145,6 +199,7 @@ export default function MeScreen() {
       ) : null}
       {state.status === "signedIn" ? <Profile email={state.email} /> : null}
       {state.status === "signedIn" ? <Following /> : null}
+      {state.status === "signedIn" ? <Contributions /> : null}
       {state.status === "signedIn" || state.status === "unavailable" ? (
         <View className="border-t-hairline border-border pt-4">
           <Button variant="secondary" className="self-start" onPress={() => void signOut()}>
