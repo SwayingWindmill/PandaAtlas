@@ -39,10 +39,10 @@ export default async function InstitutionRoute({ params }: InstitutionRouteProps
   const envelope = await loadV2PublicInstitution(slug, locale);
   if (!envelope) notFound();
   const view = buildInstitutionPageViewModel(envelope.data, locale);
-  const pandaIds = [...view.residents, ...view.formerResidents].map((panda) => panda.id);
-  const assets = await loadV2PandaCovers(pandaIds);
+  // Photos show only current residents; the history list is text.
+  const assets = await loadV2PandaCovers(view.residents.map((panda) => panda.id));
   const covers = new Map<string, PandaCoverMedia>();
-  for (const panda of [...view.residents, ...view.formerResidents]) {
+  for (const panda of view.residents) {
     const asset = assets.get(panda.id);
     const media = asset ? pandaCoverMedia(asset, panda.name, locale) : null;
     if (media) covers.set(panda.id, media);

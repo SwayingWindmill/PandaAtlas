@@ -16,7 +16,7 @@ export interface InstitutionPandaItem {
   name: string;
   /** The name in the other language, when it differs. */
   alternateName: string | null;
-  /** For example "雌性 · 2016 年出生". */
+  /** For example "雌性　2016 年出生". */
   detail: string;
   /** When the panda lived here, for example "2000 – 2023" or "2016 年至今". */
   stay: string;
@@ -92,7 +92,12 @@ function pandaDetail(panda: PandaDetail, locale: PublicLocale): string {
   const born = panda.birth_date
     ? locale === "zh" ? `${year(panda.birth_date)} 年出生` : `Born ${year(panda.birth_date)}`
     : null;
-  return [sex, born].filter(Boolean).join(" · ");
+  return [sex, born].filter(Boolean).join(listSeparator(locale));
+}
+
+/** Joins short facts on one line: a full-width space in Chinese, a comma in English; never a middle dot. */
+export function listSeparator(locale: PublicLocale): string {
+  return locale === "zh" ? "　" : ", ";
 }
 
 function facilityItem(place: V2InstitutionPlace, locale: PublicLocale): InstitutionFacilityItem {

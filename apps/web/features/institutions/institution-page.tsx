@@ -5,10 +5,11 @@ import Link from "next/link";
 import { Clock, ExternalLink, Info, MapPin, Route as RouteIcon, Video } from "lucide-react";
 import { publicShellClassName } from "@/components/patterns/public-shell";
 import { PlaceCheckinControl } from "@/components/places/place-checkin-control";
-import type {
-  InstitutionPageViewModel,
-  InstitutionPandaItem,
-  VisitTipTopic,
+import {
+  listSeparator,
+  type InstitutionPageViewModel,
+  type InstitutionPandaItem,
+  type VisitTipTopic,
 } from "@/features/institutions/institution-page-view-model";
 import type { PandaCoverMedia } from "@/features/public-content/public-v2";
 import type { PublicLocale } from "@/foundation/content/locales";
@@ -71,18 +72,28 @@ function hostname(url: string): string {
   }
 }
 
-function SourceLinks({ urls, label }: { urls: string[]; label: string }) {
+function SourceLinks({ urls, label, locale }: { urls: string[]; label: string; locale: PublicLocale }) {
   if (!urls.length) return null;
   return (
     <span className={styles.sources}>
       {label}
       {urls.map((url, index) => (
         <span key={url}>
-          {index ? ", " : null}
+          {index ? (locale === "zh" ? "、" : ", ") : null}
           <a href={url} target="_blank" rel="noreferrer">{hostname(url)}</a>
         </span>
       ))}
     </span>
+  );
+}
+
+/** The day facts were checked and where they come from, set apart by space rather than a separator. */
+function Provenance({ checked, urls, label, locale }: { checked: string; urls: string[]; label: string; locale: PublicLocale }) {
+  return (
+    <p className={`${styles.meta} ${styles.provenance}`}>
+      <span>{checked}</span>
+      <SourceLinks urls={urls} label={label} locale={locale} />
+    </p>
   );
 }
 
@@ -121,8 +132,9 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
   const where = locale === "zh" ? view.country : [view.region, view.country].filter(Boolean).join(", ");
   const eyebrow = [view.kind ? t.kinds[view.kind] : null, where]
     .filter(Boolean)
-    .join(" · ");
-  const heroPhotos = [...view.residents, ...view.formerResidents]
+    .join(listSeparator(locale));
+  // Only pandas living here now: a former resident's photo would suggest it can still be seen.
+  const heroPhotos = view.residents
     .map((panda) => covers.get(panda.id))
     .filter((cover): cover is PandaCoverMedia => Boolean(cover))
     .slice(0, 3);
@@ -224,9 +236,7 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
               <div className={styles.facilityFoot}>
                 <PlaceCheckinControl placeId={facility.placeId} slug={facility.slug} name={facility.name} locale={locale} />
                 {facility.verifiedOn ? (
-                  <p className={styles.meta}>
-                    {t.checked(facility.verifiedOn)} · <SourceLinks urls={facility.sourceUrls} label={t.sources} />
-                  </p>
+                  <Provenance checked={t.checked(facility.verifiedOn)} urls={facility.sourceUrls} label={t.sources} locale={locale} />
                 ) : null}
               </div>
             </article>
@@ -253,9 +263,7 @@ export function InstitutionPage({ locale, view, covers }: InstitutionPageProps) 
 
       {view.profileVerifiedOn ? (
         <footer className={`${shell} ${styles.footnote}`}>
-          <p className={styles.meta}>
-            {t.about(view.profileVerifiedOn)} · <SourceLinks urls={view.profileSourceUrls} label={t.sources} />
-          </p>
+          <Provenance checked={t.about(view.profileVerifiedOn)} urls={view.profileSourceUrls} label={t.sources} locale={locale} />
         </footer>
       ) : null}
     </main>
