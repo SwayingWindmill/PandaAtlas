@@ -3,6 +3,8 @@ import type { ComponentRef, RefObject } from "react";
 import { Platform, Share, type View } from "react-native";
 import { captureRef } from "react-native-view-shot";
 
+import { downloadOnWeb } from "@/lib/download";
+
 const WEBSITE = "https://www.zhipanda.com/zh/pandas";
 
 export function profileUrl(slug: string): string {
@@ -13,10 +15,7 @@ export function profileUrl(slug: string): string {
 export async function shareCardImage(card: RefObject<ComponentRef<typeof View> | null>, slug: string): Promise<void> {
   if (Platform.OS === "web") {
     const dataUri = await captureRef(card, { format: "png", result: "data-uri" });
-    const link = document.createElement("a");
-    link.href = dataUri;
-    link.download = `zhipanda-${slug}.png`;
-    link.click();
+    downloadOnWeb(dataUri, `zhipanda-${slug}.png`);
     return;
   }
   const uri = await captureRef(card, { format: "png", result: "tmpfile" });

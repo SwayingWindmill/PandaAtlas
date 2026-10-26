@@ -13,7 +13,8 @@ test("first launch welcomes the fan, who signs in, follows two pandas and lands 
 
   for (const name of [panda.name, notice.name]) {
     await page.getByLabel("搜索想关注的熊猫").fill(name);
-    await page.getByRole("checkbox", { name }).click();
+    await page.getByRole("button", { name, exact: true }).click();
+    await expect(page.getByRole("button", { name, exact: true, pressed: true })).toBeVisible();
   }
   await page.getByRole("button", { name: "登录并关注这 2 只" }).click();
   await enterCode(page, testEmail("welcome"));

@@ -3,6 +3,7 @@ import { Pressable, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -40,8 +41,7 @@ function MonthButton({ to, direction, onPress }: { to: number; direction: "back"
   );
   return (
     <Button
-      variant="secondary"
-      size="sm"
+      variant="secondary"
       onPress={onPress}
       accessibilityLabel={`${direction === "back" ? "上个月" : "下个月"}，${to}月`}
     >
@@ -96,7 +96,7 @@ function MonthGrid({
                   selected: isSelected,
                   disabled: count === 0,
                 }}
-                className={cn("h-11 flex-1 items-center justify-center rounded-md", isSelected && "bg-highlight-soft")}
+                className={cn("h-11 flex-1 items-center justify-center rounded-md", isSelected && "bg-accent")}
               >
                 <Text
                   className={cn(
@@ -106,7 +106,7 @@ function MonthGrid({
                 >
                   {day}
                 </Text>
-                <View className={cn("size-1 rounded-full", count > 0 ? "bg-highlight-foreground" : "bg-transparent")} />
+                <View className={cn("size-1 rounded-full", count > 0 ? "bg-foreground" : "bg-transparent")} />
               </Pressable>
             );
           })}
@@ -138,7 +138,7 @@ function DayList({ days }: { days: CalendarDay[] }) {
               <Text className="min-w-0 flex-1 font-bold" numberOfLines={1}>
                 {entry.name}
               </Text>
-              <Text className="text-highlight-foreground">{entry.what}</Text>
+              <Text className="text-muted-foreground">{entry.what}</Text>
             </Pressable>
           ))}
         </View>
@@ -182,17 +182,7 @@ export default function CalendarScreen() {
         <MonthButton to={shiftMonth(year, month, 1).month} direction="forward" onPress={() => go(1)} />
       </View>
       {failed ? (
-        <View className="items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>日历暂时打不开。</Text>
-          <Button
-            onPress={() => {
-              setFailed(false);
-              load();
-            }}
-          >
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="日历暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
       ) : sources === null ? (
         <Skeleton className="h-72 w-full" accessibilityLabel="正在加载日历" />
       ) : (

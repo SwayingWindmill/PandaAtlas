@@ -1,10 +1,10 @@
-import { router } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { LoadFailed } from "@/components/load-failed";
+import { NavRow } from "@/components/nav-row";
 import { PageHeader } from "@/components/page";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { loadInstitutionList } from "@/features/institutions/institutions";
@@ -12,19 +12,6 @@ import { PandaRow } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
 
-function Entry({ label, href }: { label: string; href: "/institutions" | "/relationship" }) {
-  return (
-    <Pressable
-      onPress={() => router.push(href)}
-      role="button"
-      accessibilityLabel={label}
-      className="mb-3 flex-row items-center justify-between rounded-lg border-hairline border-border p-4 active:bg-accent"
-    >
-      <Text className="font-bold">{label}</Text>
-      <Text className="text-muted-foreground">›</Text>
-    </Pressable>
-  );
-}
 export default function FindScreen() {
   const insets = useSafeAreaInsets();
   const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
@@ -71,21 +58,16 @@ export default function FindScreen() {
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
             deferredQuery.trim() ? undefined : (
-              <View>
-                {hasInstitutions ? <Entry label="基地和动物园" href="/institutions" /> : null}
-                <Entry label="查两只熊猫的关系" href="/relationship" />
+              <View className="mb-3">
+                {hasInstitutions ? <NavRow label="基地和动物园" href="/institutions" /> : null}
+                <NavRow label="查两只熊猫的关系" href="/relationship" last />
               </View>
             )
           }
           ListEmptyComponent={<Text className="py-4 text-muted-foreground">{`没有找到「${deferredQuery.trim()}」`}</Text>}
         />
       ) : failed ? (
-        <View className="mx-5 items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>熊猫列表暂时打不开。</Text>
-          <Button onPress={retry}>
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="熊猫列表暂时打不开。" onRetry={retry} className="mx-5" />
       ) : (
         <View className="gap-3 px-5 pt-2.5" accessibilityLabel="正在加载熊猫列表">
           {[0, 1, 2, 3, 4, 5].map((key) => (

@@ -4,6 +4,7 @@ import { type ComponentRef, type RefObject, useCallback, useEffect, useRef, useS
 import { View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -42,7 +43,7 @@ function Card({ profile, cardRef }: { profile: Profile; cardRef: RefObject<Compo
         </View>
         {cover?.credit ? <Text variant="muted">{cover.credit}</Text> : null}
         <View className="border-t-hairline border-border pt-3">
-          <Text className="font-bold text-highlight-foreground">知熊猫</Text>
+          <Text className="font-bold">吱熊猫</Text>
           <Text variant="muted">{profileUrl(profile.slug).replace("https://", "")}</Text>
         </View>
       </View>
@@ -77,17 +78,7 @@ export default function ShareScreen() {
   return (
     <Page label="分享" title="分享这只熊猫">
       {failed ? (
-        <View className="items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>资料暂时打不开。</Text>
-          <Button
-            onPress={() => {
-              setFailed(false);
-              load();
-            }}
-          >
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="资料暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
       ) : !profile ? (
         <Skeleton className="h-96 w-full" accessibilityLabel="正在加载" />
       ) : (

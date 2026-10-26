@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -94,7 +95,6 @@ function Preferences({
           </View>
         ))}
       </View>
-      <Text variant="muted">邮件发到你登录用的邮箱。</Text>
     </View>
   );
 }
@@ -105,6 +105,7 @@ export default function NotificationsScreen() {
   const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
   const [failed, setFailed] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [readFailed, setReadFailed] = useState(false);
 
   const load = useCallback(() => {
     Promise.all([loadInbox(), loadPreferences()])
@@ -118,18 +119,24 @@ export default function NotificationsScreen() {
   useEffect(load, [load]);
 
   function read(message: Message) {
-    void markRead(message.messageId).then((updated) =>
-      setMessages((current) => current?.map((item) => (item.messageId === updated.messageId ? updated : item)) ?? null),
-    );
+    setReadFailed(false);
+    markRead(message.messageId)
+      .then((updated) =>
+        setMessages((current) => current?.map((item) => (item.messageId === updated.messageId ? updated : item)) ?? null),
+      )
+      .catch(() => setReadFailed(true));
   }
 
   function readAll() {
     const now = new Date().toISOString();
-    void markAllRead().then(() =>
-      setMessages(
-        (current) => current?.map((item) => (item.readAt === null ? { ...item, readAt: now } : item)) ?? null,
-      ),
-    );
+    setReadFailed(false);
+    markAllRead()
+      .then(() =>
+        setMessages(
+          (current) => current?.map((item) => (item.readAt === null ? { ...item, readAt: now } : item)) ?? null,
+        ),
+      )
+      .catch(() => setReadFailed(true));
   }
 
   function change(row: PreferenceRow, enabled: boolean) {
@@ -150,17 +157,7 @@ export default function NotificationsScreen() {
   return (
     <Page label="我的" title="通知">
       {failed ? (
-        <View className="items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>通知暂时打不开。</Text>
-          <Button
-            onPress={() => {
-              setFailed(false);
-              load();
-            }}
-          >
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="通知暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
       ) : messages === null || preferences === null ? (
         <Skeleton className="h-48 w-full" accessibilityLabel="正在加载通知" />
       ) : (
@@ -169,12 +166,13 @@ export default function NotificationsScreen() {
             {unread > 0 ? (
               <View className="flex-row items-center justify-between">
                 <Text variant="muted">{`${unread} 条未读`}</Text>
-                <Button variant="secondary" size="sm" onPress={readAll}>
+                <Button variant="secondary" onPress={readAll}>
                   <Text>全部已读</Text>
                 </Button>
               </View>
             ) : null}
             <Inbox messages={messages} pandas={pandas} onRead={read} />
+            {readFailed ? <Text className="text-destructive">没能标记已读，请再试一次。</Text> : null}
           </View>
           <Preferences rows={preferenceRows(preferences)} onChange={change} />
           {saveFailed ? <Text className="text-destructive">没能保存设置，请再试一次。</Text> : null}

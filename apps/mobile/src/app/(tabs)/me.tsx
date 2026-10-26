@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Pressable, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
+import { NavRow } from "@/components/nav-row";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -116,27 +117,7 @@ function Profile({ email }: { email: string | null }) {
   );
 }
 
-function EntryRow({ label, meta, href, last }: { label: string; meta?: string; href: "/notifications" | "/account"; last?: boolean }) {
-  return (
-    <Pressable
-      onPress={() => router.push(href)}
-      role="button"
-      accessibilityLabel={meta ? `${label}，${meta}` : label}
-      className={cn(
-        "flex-row items-center justify-between gap-3 border-t-hairline border-border py-3.5 active:bg-accent",
-        last && "border-b-hairline",
-      )}
-    >
-      <Text className="font-bold">{label}</Text>
-      <View className="flex-row items-center gap-2">
-        {meta ? <Text className="text-highlight-foreground">{meta}</Text> : null}
-        <Text className="text-muted-foreground">›</Text>
-      </View>
-    </Pressable>
-  );
-}
-
-function Entries() {
+function AccountLinks() {
   const [unread, setUnread] = useState(0);
   useFocusEffect(
     useCallback(() => {
@@ -147,8 +128,8 @@ function Entries() {
   );
   return (
     <View>
-      <EntryRow label="通知" meta={unread > 0 ? `${unread} 条未读` : undefined} href="/notifications" />
-      <EntryRow label="账号与数据" href="/account" last />
+      <NavRow label="通知" meta={unread > 0 ? `${unread} 条未读` : undefined} href="/notifications" />
+      <NavRow label="账号与数据" href="/account" last />
     </View>
   );
 }
@@ -179,14 +160,19 @@ function Following() {
 
 function Contributions() {
   const [items, setItems] = useState<ContributionRecord[] | null>(null);
-  const [pandas, setPandas] = useState<Map<string, PandaListItem> | null>(null);
-  useEffect(() => {
-    void loadMyContributions()
-      .then(setItems)
-      .catch(() => setItems(null));
-    void loadPandaIndex().then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))));
-  }, []);
-  if (!items || !pandas || items.length === 0) return null;
+  const [pandas, setPandas] = useState<Map<string, PandaListItem>>(new Map());
+  // Read again whenever 我的 shows, so a report sent from a profile appears on return.
+  useFocusEffect(
+    useCallback(() => {
+      loadMyContributions()
+        .then(setItems)
+        .catch(() => setItems(null));
+      loadPandaIndex()
+        .then((list) => setPandas(new Map(list.map((panda) => [panda.id, panda]))))
+        .catch(() => undefined);
+    }, []),
+  );
+  if (!items || items.length === 0) return null;
   return (
     <View className="gap-2">
       <Text variant="h2">{`我的纠错　${items.length}`}</Text>
@@ -212,7 +198,7 @@ function Contributions() {
                   {name}
                 </Text>
                 <Text
-                  className={cn(item.status === "accepted" ? "text-highlight-foreground" : "text-muted-foreground")}
+                  className={cn(item.status === "accepted" ? "font-bold text-foreground" : "text-muted-foreground")}
                 >
                   {status}
                 </Text>
@@ -239,7 +225,7 @@ export default function MeScreen() {
       {state.status === "signedIn" ? <Profile email={state.email} /> : null}
       {state.status === "signedIn" ? <Following /> : null}
       {state.status === "signedIn" ? <Contributions /> : null}
-      {state.status === "signedIn" ? <Entries /> : null}
+      {state.status === "signedIn" ? <AccountLinks /> : null}
       {state.status === "signedIn" || state.status === "unavailable" ? (
         <View className="border-t-hairline border-border pt-4">
           <Button variant="secondary" className="self-start" onPress={() => void signOut()}>

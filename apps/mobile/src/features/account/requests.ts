@@ -4,6 +4,7 @@ import { shareAsync } from "expo-sharing";
 import { Platform } from "react-native";
 
 import { authedApi } from "@/lib/api";
+import { downloadOnWeb } from "@/lib/download";
 
 import { type PrivacyKind, type PrivacyRequest, exportFileName } from "./privacy";
 
@@ -27,10 +28,14 @@ export async function loadPrivacyRequests(): Promise<PrivacyRequest[]> {
   return data.items;
 }
 
-/** One key per tap, so a retried request is not filed twice. */
-export async function createPrivacyRequest(kind: PrivacyKind, reason: string): Promise<PrivacyRequest> {
+/** A key for one request the fan means to file; send it again on a retry so the API files it once. */
+export function newRequestKey(): string {
+  return randomUUID();
+}
+
+export async function createPrivacyRequest(kind: PrivacyKind, reason: string, idempotencyKey: string): Promise<PrivacyRequest> {
   const { data, error } = await authedApi.POST("/api/v2/me/privacy/requests", {
-    body: { kind, reason, idempotencyKey: randomUUID() },
+    body: { kind, reason, idempotencyKey },
   });
   throwIfUnverified(error);
   if (!data) throw new Error("Privacy request not created");
@@ -49,10 +54,7 @@ export async function saveExport(requestId: string): Promise<void> {
 
   if (Platform.OS === "web") {
     const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = name;
-    link.click();
+    downloadOnWeb(url, name);
     URL.revokeObjectURL(url);
     return;
   }

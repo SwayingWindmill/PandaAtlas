@@ -5,6 +5,7 @@ import { Linking, Platform, Pressable, View, useWindowDimensions } from "react-n
 import Svg, { Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -166,12 +167,7 @@ export default function InstitutionScreen() {
     return (
       <Page title="基地和动物园">
         {failed ? (
-          <View className="items-start gap-3 rounded-lg bg-muted p-5">
-            <Text>这一页暂时打不开。</Text>
-            <Button onPress={retry}>
-              <Text>重试</Text>
-            </Button>
-          </View>
+          <LoadFailed message="这一页暂时打不开。" onRetry={retry} />
         ) : (
           <Skeleton className="h-72 w-full" accessibilityLabel="正在加载" />
         )}

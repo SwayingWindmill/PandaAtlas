@@ -2,8 +2,8 @@ import { useLocalSearchParams } from "expo-router";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { openPanda } from "@/features/pandas/panda-row";
@@ -36,7 +36,7 @@ function Slot({
       accessibilityLabel={`${SLOT_LABEL[slot]}，${panda ? panda.name : "未选"}`}
       className={cn(
         "flex-1 gap-0.5 rounded-lg border-hairline border-input p-4 active:bg-accent",
-        active && "border-highlight-foreground bg-highlight-soft",
+        active && "border-foreground bg-accent",
       )}
     >
       <Text variant="small" className="text-muted-foreground">
@@ -115,7 +115,7 @@ function Result({
               accessibilityLabel={`${step.label}：${name}`}
               className="flex-row items-center gap-3 border-t-hairline border-border py-3 active:bg-accent"
             >
-              <Text className="w-16 text-highlight-foreground">{`↓ ${step.label}`}</Text>
+              <Text className="w-16 text-muted-foreground">{`↓ ${step.label}`}</Text>
               <Text className="min-w-0 flex-1 font-bold" numberOfLines={1}>
                 {name}
               </Text>
@@ -123,7 +123,6 @@ function Result({
           );
         })}
       </View>
-      <Text variant="muted">按公开的谱系记录推算，每一步都是一条父母与孩子的关系。</Text>
     </View>
   );
 }
@@ -164,17 +163,7 @@ export default function RelationshipScreen() {
   return (
     <Page label="查关系" title="两只熊猫是什么关系？" keyboardShouldPersistTaps="handled">
       {failed ? (
-        <View className="items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>谱系暂时打不开。</Text>
-          <Button
-            onPress={() => {
-              setFailed(false);
-              load();
-            }}
-          >
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="谱系暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
       ) : !kinship ? (
         <Skeleton className="h-40 w-full" accessibilityLabel="正在加载谱系" />
       ) : (

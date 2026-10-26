@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { LoadFailed } from "@/components/load-failed";
 import { BackButton } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -52,17 +53,7 @@ export default function PhotosScreen() {
       </View>
       {photos === null ? (
         failed ? (
-          <View className="mx-5 mt-6 items-start gap-3 rounded-lg bg-muted p-5">
-            <Text>照片暂时打不开。</Text>
-            <Button
-              onPress={() => {
-                setFailed(false);
-                load();
-              }}
-            >
-              <Text>重试</Text>
-            </Button>
-          </View>
+          <LoadFailed message="照片暂时打不开。" onRetry={() => { setFailed(false); load(); }} className="mx-5 mt-6" />
         ) : (
           <Skeleton className="mx-5 mt-6 h-96" accessibilityLabel="正在加载照片" />
         )
@@ -95,12 +86,11 @@ export default function PhotosScreen() {
             {current?.credit ? <Text variant="muted">{current.credit}</Text> : null}
             {photos.length > 1 ? (
               <View className="flex-row justify-between">
-                <Button variant="secondary" size="sm" disabled={index === 0} onPress={() => go(index - 1)}>
+                <Button variant="secondary" disabled={index === 0} onPress={() => go(index - 1)}>
                   <Text>上一张</Text>
                 </Button>
                 <Button
                   variant="secondary"
-                  size="sm"
                   disabled={index === photos.length - 1}
                   onPress={() => go(index + 1)}
                 >
