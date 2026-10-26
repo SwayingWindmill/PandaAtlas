@@ -131,14 +131,35 @@ export function buildFamily(
   };
 }
 
+async function withCovers(detail: Schemas["PublicPandaDetailDto"], lineage: Lineage[]): Promise<Family> {
+  const ids = [detail.panda, ...detail.relatives].map((panda) => panda.pandaId).slice(0, 50);
+  // Photos are a nicety: the tree still renders with initials when covers fail.
+  const covers = await api.GET("/api/v2/panda-covers", { params: { query: { ids: ids.join(",") } } }).catch(() => null);
+  return buildFamily(detail, lineage, covers?.data?.items ?? []);
+}
+
+/** The family of a panda whose detail the caller already has. */
+export async function familyOf(detail: Schemas["PublicPandaDetailDto"]): Promise<Family> {
+  const lineage = await api.GET("/api/v2/lineage");
+  if (!lineage.data) throw new Error(`Family of ${detail.panda.canonicalSlug} unavailable`);
+  return withCovers(detail, lineage.data.items);
+}
+
 export async function loadFamily(slug: string): Promise<Family> {
   const [detail, lineage] = await Promise.all([
     api.GET("/api/v2/pandas/{slug}", { params: { path: { slug } } }),
     api.GET("/api/v2/lineage"),
   ]);
   if (!detail.data || !lineage.data) throw new Error(`Family of ${slug} unavailable`);
-  const ids = [detail.data.panda, ...detail.data.relatives].map((panda) => panda.pandaId).slice(0, 50);
-  // Photos are a nicety: the tree still renders with initials when covers fail.
-  const covers = await api.GET("/api/v2/panda-covers", { params: { query: { ids: ids.join(",") } } }).catch(() => null);
-  return buildFamily(detail.data, lineage.data.items, covers?.data?.items ?? []);
+  return withCovers(detail.data, lineage.data.items);
+}
+
+/** Everyone in the family except the focus panda: parents, siblings in birth order, children. */
+export function relativesOf(family: Family): FamilyMember[] {
+  return [
+    family.father,
+    family.mother,
+    ...family.generation.flatMap((group) => group.members).filter((member) => member.id !== family.focus.id),
+    ...family.children,
+  ].filter((member): member is FamilyMember => member !== null);
 }

@@ -6,18 +6,9 @@ import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { type Family, type FamilyMember, loadFamily, memberMeta } from "@/features/family/family";
+import { type Family, loadFamily, memberMeta, relativesOf } from "@/features/family/family";
 import { FamilyTree, MemberAvatar, openFamily } from "@/features/family/family-tree";
 import { cn } from "@/lib/utils";
-
-function relativesOf(family: Family): FamilyMember[] {
-  return [
-    family.father,
-    family.mother,
-    ...family.generation.flatMap((group) => group.members).filter((member) => member.id !== family.focus.id),
-    ...family.children,
-  ].filter((member): member is FamilyMember => member !== null);
-}
 
 export default function FamilyScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();

@@ -7,11 +7,18 @@ import { useCSSVariable } from "uniwind";
 
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { cn } from "@/lib/utils";
 
-function BackButton() {
+export function BackButton({ className }: { className?: string }) {
   const ink = useCSSVariable("--color-foreground");
   return (
-    <Button variant="secondary" size="icon" className="self-start" onPress={() => router.back()} accessibilityLabel="返回">
+    <Button
+      variant="secondary"
+      size="icon"
+      className={cn("self-start", className)}
+      onPress={() => router.back()}
+      accessibilityLabel="返回"
+    >
       <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
         <Path d="M15 5l-7 7 7 7" stroke={String(ink)} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
       </Svg>
@@ -19,15 +26,36 @@ function BackButton() {
   );
 }
 
-/** Every screen's frame: back button, a one-line label, the screen's only h1, then content. */
+/**
+ * Back button, a one-line label and the screen's only h1. Tab roots pass `back={false}`: switching
+ * tabs is not a history the button should walk.
+ */
+export function PageHeader({ label, title, back = true }: { label?: string; title: string; back?: boolean }) {
+  const canGoBack = useNavigation().canGoBack();
+  return (
+    <View className="gap-4">
+      {back && canGoBack ? <BackButton /> : null}
+      <View className="gap-1">
+        {label ? (
+          <Text variant="small" className="text-highlight-foreground">
+            {label}
+          </Text>
+        ) : null}
+        <Text variant="h1">{title}</Text>
+      </View>
+    </View>
+  );
+}
+
+/** Every scrolling screen's frame: the header, then content. */
 export function Page({
   label,
   title,
+  back,
   children,
   ...scroll
-}: { label?: string; title: string; children?: ReactNode } & Omit<ScrollViewProps, "children">) {
+}: { label?: string; title: string; back?: boolean; children?: ReactNode } & Omit<ScrollViewProps, "children">) {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
   return (
     <ScrollView
       className="flex-1 bg-background"
@@ -35,17 +63,7 @@ export function Page({
       contentContainerStyle={{ paddingTop: insets.top + 12 }}
       {...scroll}
     >
-      <View className="gap-4">
-        {navigation.canGoBack() ? <BackButton /> : null}
-        <View className="gap-1">
-          {label ? (
-            <Text variant="small" className="text-highlight-foreground">
-              {label}
-            </Text>
-          ) : null}
-          <Text variant="h1">{title}</Text>
-        </View>
-      </View>
+      <PageHeader label={label} title={title} back={back} />
       {children}
     </ScrollView>
   );

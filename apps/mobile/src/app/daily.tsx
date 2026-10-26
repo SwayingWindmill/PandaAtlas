@@ -1,5 +1,4 @@
 import { Image } from "expo-image";
-import * as Linking from "expo-linking";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, Share, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
@@ -15,6 +14,7 @@ import {
   type DailyPandaState,
   type PandaChoice,
 } from "@/features/daily-panda/daily-panda";
+import { openPanda } from "@/features/pandas/panda-row";
 import { cn } from "@/lib/utils";
 
 const MAX_MATCHES = 8;
@@ -170,11 +170,7 @@ export default function DailyPandaScreen() {
               <Text>分享结果</Text>
             </Button>
             {current.answer ? (
-              <Button
-                variant="secondary"
-                role="link"
-                onPress={() => void Linking.openURL(`https://zhipanda.com/zh/pandas/${current.answer!.canonicalSlug}`)}
-              >
+              <Button variant="secondary" onPress={() => openPanda(current.answer!.canonicalSlug)}>
                 <Text>{answer ? `看${answer.name}的资料` : "看资料"}</Text>
               </Button>
             ) : null}
