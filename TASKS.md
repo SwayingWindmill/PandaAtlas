@@ -45,9 +45,9 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 - Privacy requests keep one idempotency key per intended request until it succeeds; 今天 reads the lineage, residency and life-event lists fresh with the updates; 我的纠错 refreshes on focus; app reports are sent as `provisional`; failed read marking shows a message.
 - Explanatory paragraphs removed (welcome intro, email note, relationship footnote, export description); the export status says how long it can be downloaded.
 
-## Follow-ups
+## Offline across restarts
 
-- Offline across restarts: loaded data lives in memory for the session. Persisting the public lists on the device (keyed by release) would let a cold start offline show them.
+- Done: the public API client saves successful reads of the release-wide lists and the 30 most recently opened panda and institution pages on the device (AsyncStorage, network first). A request that fails without a connection is answered from the saved copy, so an app started offline still shows them; photos come from expo-image's disk cache. e2e restarts the app with every API request failing and opens the list and the profile it loaded before (the same test fails with the cache switched off).
 
 ## Fixes along the way
 
