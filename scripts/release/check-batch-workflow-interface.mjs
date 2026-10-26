@@ -60,6 +60,8 @@ export function validateBatchWorkflowText({ workflowText, catalog }) {
     "check-workspace-cleanliness.mjs --context batch-operation",
     "check-workspace-cleanliness.mjs --context protected-batch-operation",
     "reject-unavailable-execution:",
+    "if: github.ref != 'refs/heads/main'",
+    "npm ci --ignore-scripts",
   ];
   for (const fragment of requiredFragments) {
     if (!workflowText.includes(fragment)) violations.push(`workflow missing required fragment: ${fragment}`);

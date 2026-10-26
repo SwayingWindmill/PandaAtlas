@@ -14,6 +14,19 @@ Production changes reach Cloudflare only through the `Production Deploy` workflo
 
 A failed step stops the later ones. Migrations run while the previous API still serves traffic, and the new API may briefly serve the previous Web Worker, which is why both directions must stay compatible (below). Re-run the job once the cause is fixed, or roll the Worker back.
 
+## Publish a content release
+
+Public pages and the API read the **active content release**, an immutable snapshot of the database, not the live tables. Merged data (a content migration, curated records) appears only after a release that includes it is built, sealed and activated. Production serves no staff console, so releases go through the `release.build` and `release.publish` operations of the **Bounded Batch Operations** workflow ([interface](../architecture/batch-workflow-interfaces.md)).
+
+1. **Write the manifest.** In a pull request, add `data/release-manifests/<version>.json` ([contract](../../contracts/release-manifest.v1.json)): a new version such as `2026.10.26.1`, `"action": "publish"` and a reason naming what the release brings. Merge it, and first deploy and migrate whatever the release must include.
+2. **Build.** Run the workflow on `main` with operation `release.build`, that manifest path, **execute** checked and the pull request as change reference, then approve the `production-batch` environment. The job builds the release without making it public and writes its counts and changes against the current release to the job summary; the `protected-batch-result-*` artifact holds every changed resource. A repeated run reports the same release again.
+3. **Review** the summary: the changes should be what the release is for, and nothing else should be added or removed.
+4. **Publish.** Run the workflow again with operation `release.publish` and the same manifest. After approval it seals and activates that exact release, then waits until `https://api.zhipanda.com/api/v2/release` reports the version. Run `Production Probe` once afterwards.
+
+**Roll back** with a manifest whose `version` is the earlier sealed release and `"action": "rollback"`, published through `release.publish`; it only moves the active-release pointer. Every lifecycle step records the system actor `release-batch-workflow` with the manifest reason, change reference and run URL in `publication.release_transitions`.
+
+The `production-batch` environment holds `SUPABASE_DB_URL` (the same session-pooler connection the deploy uses) and `SUPABASE_DB_SSL_CA_CERT` (the Supabase root CA from the dashboard's database settings; the command refuses a remote database without it), requires the owner's approval, and allows `main` only.
+
 ## Migration rules
 
 - **Expand first.** A migration must keep the currently deployed API working: add tables, columns, grants and functions; do not rename, drop or tighten what the running API uses. Remove the old shape in a later release, after no deployed code uses it.

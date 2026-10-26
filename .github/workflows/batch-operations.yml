@@ -57,6 +57,7 @@ jobs:
       requires_node: ${{ steps.plan.outputs.requires_node }}
       requires_python: ${{ steps.plan.outputs.requires_python }}
       requires_uv: ${{ steps.plan.outputs.requires_uv }}
+      requires_api_build: ${{ steps.plan.outputs.requires_api_build }}
       artifact_directory: ${{ steps.plan.outputs.artifact_directory }}
     steps:
       - name: Check out clean repository
@@ -148,6 +149,13 @@ jobs:
     env:
       BATCH_APPROVAL_ENVIRONMENT: production-batch
     steps:
+      # Production writes run reviewed code only: a dispatch from any other branch stops here.
+      - name: Refuse refs other than main
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "Approval-gated operations run from main only, not $GITHUB_REF."
+          exit 1
+
       - name: Check out clean repository
         uses: actions/checkout@v7.0.1
         with:
@@ -157,6 +165,7 @@ jobs:
         uses: actions/setup-node@v7.1.0
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: npm
 
       - name: Set up Python
         if: needs.plan.outputs.requires_python == 'true'
@@ -168,12 +177,26 @@ jobs:
         if: needs.plan.outputs.requires_uv == 'true'
         run: python -m pip install uv==${{ env.UV_VERSION }}
 
+      # Secrets reach only the adapter step below, never dependency installation or the build.
+      - name: Install workspace dependencies without install scripts
+        if: needs.plan.outputs.requires_api_build == 'true'
+        run: npm ci --ignore-scripts
+
+      - name: Build the API adapter
+        if: needs.plan.outputs.requires_api_build == 'true'
+        run: npm run build:local -w @zhipanda/api
+
       - name: Execute approved fixed batch adapter
         env:
           BATCH_OPERATION: ${{ inputs.operation }}
           BATCH_MANIFEST_PATH: ${{ inputs.manifest_path }}
           BATCH_EXECUTE_REQUESTED: "true"
           BATCH_CHANGE_REFERENCE: ${{ inputs.change_reference }}
+          # Release adapters only: the managed database over verified TLS, and the public API they check.
+          DATABASE_URL: ${{ startsWith(inputs.operation, 'release.') && secrets.SUPABASE_DB_URL || '' }}
+          DATABASE_SSL_CA_CERT: ${{ startsWith(inputs.operation, 'release.') && secrets.SUPABASE_DB_SSL_CA_CERT || '' }}
+          DB_STATEMENT_TIMEOUT_MS: "120000"
+          PUBLIC_API_BASE_URL: https://api.zhipanda.com
         run: node scripts/batch/operations.mjs run --execute --operation "$BATCH_OPERATION" --manifest "$BATCH_MANIFEST_PATH"
 
       - name: Verify operation did not modify tracked files

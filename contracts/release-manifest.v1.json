@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "title": "PandaAtlas Public Release Manifest Contract",
+  "scope": "One reviewed intent to build, publish or roll back a database public release through the release.build and release.publish batch operations",
+  "manifest_directory": "data/release-manifests",
+  "required_fields": [
+    "schema_version",
+    "version",
+    "action",
+    "reason"
+  ],
+  "version_pattern": "^\\d{4}\\.\\d{2}\\.\\d{2}\\.\\d+(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$",
+  "allowed_actions": [
+    "publish",
+    "rollback"
+  ],
+  "reason_length": {
+    "minimum": 10,
+    "maximum": 500
+  },
+  "rules": {
+    "filename_must_match_version": true,
+    "unknown_fields_are_rejected": true,
+    "publish_builds_a_new_release": true,
+    "rollback_targets_an_existing_older_sealed_release": true
+  }
+}

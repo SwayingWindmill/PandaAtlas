@@ -1,6 +1,6 @@
 # Bounded batch workflow interfaces
 
-- Status: Current; three operations are ready, the rest planned
+- Status: Current; five operations are ready, the rest planned
 - Managed-only principle: [ADR 0002](adr-0002-managed-cloud-deployment-target.md)
 - Operation catalog: [`contracts/batch-operations.v1.json`](../../contracts/batch-operations.v1.json)
 - Manual workflow: [`.github/workflows/batch-operations.yml`](../../.github/workflows/batch-operations.yml)
@@ -22,8 +22,8 @@ The workflow is manual-only. Its default behavior is to validate the catalog and
 | `curation.apply` | Planned | Authoritative write | `production-batch` |
 | `media.process` | Ready | Generated output | No |
 | `media.publish` | Planned | External write | `production-batch` |
-| `release.build` | Planned | Generated output | No |
-| `release.publish` | Planned | Production write | `production-batch` |
+| `release.build` | Ready | Production write | `production-batch` |
+| `release.publish` | Ready | Production write | `production-batch` |
 | `recovery.drill` | Planned | Isolated state | No |
 
 A planned operation can produce a reviewed plan when its required JSON manifest exists, but an execution request fails closed. Changing an operation from planned to ready requires both a catalog change and a matching code-level command allowlist change in `scripts/batch/operations.mjs`.
@@ -39,7 +39,7 @@ Manifest paths must:
 - remain inside the repository after symlink resolution;
 - be present whenever the selected operation requires one.
 
-Approval-gated execution also requires a change reference and the GitHub Environment named `production-batch`. The protected job is the only workflow job that receives that environment. No currently ready operation uses the protected job.
+Approval-gated execution also requires a change reference and the GitHub Environment named `production-batch`. The protected job is the only workflow job that receives that environment, and it refuses to run from any ref other than `main`, so production writes only ever run reviewed code. When an adapter lives in the API package, the job installs dependencies with `--ignore-scripts` and builds the API before the adapter step; secrets are set on the adapter step alone, and only for the operations that need them.
 
 ## Plans, results, and summaries
 
@@ -49,13 +49,14 @@ Every plan writes `.batch-work/plan.json`. Execution additionally writes `.batch
 
 ## Ready adapters
 
-The first ready adapters intentionally have bounded effects:
+The ready adapters:
 
 - `research.validate` runs the research-script policy checker;
 - `curation.validate` validates reviewed curation records;
-- `media.process` creates isolated local media derivatives with network access disabled by default.
+- `media.process` creates isolated local media derivatives with network access disabled by default;
+- `release.build` and `release.publish` run `services/api/dist/release-command.js` against the production database with a manifest from `data/release-manifests/` ([contract](../../contracts/release-manifest.v1.json)). Build creates the not-yet-public release and reports its counts and every change against the current release; publish seals and activates exactly that release, or moves the pointer back to an older sealed one, then waits until `api.zhipanda.com` serves it. Both reuse the API's publication module, record the system actor `release-batch-workflow` with the manifest reason, change reference and run URL, and report rather than repeat a step that already happened. The procedure is in the [production release runbook](../runbooks/production-release.md#publish-a-content-release).
 
-The interface does not expose cohort-specific curation apply scripts, source-specific media upload scripts, managed production publication, or environment-specific recovery commands as generic operations.
+The interface does not expose cohort-specific curation apply scripts, source-specific media upload scripts, or environment-specific recovery commands as generic operations.
 
 ## Enabling a planned operation
 
