@@ -41,6 +41,7 @@ describe("calendarMonth", () => {
           {
             key: "birthday:b",
             date: "2026-07-03",
+            pandaId: "b",
             slug: "slug-b",
             name: "熊猫b",
             what: "出生",
@@ -54,6 +55,7 @@ describe("calendarMonth", () => {
           {
             key: "birthday:a",
             date: "2026-07-20",
+            pandaId: "a",
             slug: "slug-a",
             name: "熊猫a",
             what: "6 岁生日",

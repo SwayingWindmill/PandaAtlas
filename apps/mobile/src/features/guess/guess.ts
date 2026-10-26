@@ -6,7 +6,7 @@ import { api, authedApi, publicMediaUrl } from "@/lib/api";
 export interface GuessQuestion {
   questionId: string;
   photoUrl: string;
-  options: { pandaId: string; name: string }[];
+  options: { pandaId: string; name: string; slug: string | null }[];
 }
 
 export interface GuessOutcome {
@@ -21,11 +21,15 @@ export async function loadQuestion(): Promise<GuessQuestion> {
   const [{ data, response }, pandas] = await Promise.all([api.GET("/api/v2/games/guess/question"), loadPandaIndex()]);
   if (response.status === 404) throw new NoQuestionError("No published question");
   if (!data) throw new Error(`Question unavailable (${response.status})`);
-  const names = new Map(pandas.map((panda) => [panda.id, panda.name]));
+  const byId = new Map(pandas.map((panda) => [panda.id, panda]));
   return {
     questionId: data.questionId,
     photoUrl: publicMediaUrl(data.photoObjectKey),
-    options: data.optionPandaIds.map((pandaId) => ({ pandaId, name: names.get(pandaId) ?? "熊猫" })),
+    options: data.optionPandaIds.map((pandaId) => ({
+      pandaId,
+      name: byId.get(pandaId)?.name ?? "熊猫",
+      slug: byId.get(pandaId)?.slug ?? null,
+    })),
   };
 }
 

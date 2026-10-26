@@ -22,6 +22,7 @@ export interface CalendarEntry {
   key: string;
   /** YYYY-MM-DD. */
   date: string;
+  pandaId: string;
   slug: string;
   name: string;
   /** "4 岁生日", "出生", "抵达". */
@@ -85,6 +86,7 @@ export function calendarMonth(
     entries.push({
       key: `birthday:${panda.id}`,
       date,
+      pandaId: panda.id,
       slug: panda.slug,
       name: panda.name,
       what: age === 0 ? "出生" : `${age} 岁生日`,
@@ -102,6 +104,7 @@ export function calendarMonth(
       entries.push({
         key: `${event.eventId}:${pandaId}`,
         date: event.occurredOn,
+        pandaId,
         slug: panda.slug,
         name: panda.name,
         what: EVENT_LABEL[event.eventType] ?? "大事",

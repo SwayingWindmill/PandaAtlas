@@ -1,5 +1,6 @@
 import type { components } from "@zhipanda/api-client";
 
+import { areaOf } from "@/features/pandas/areas";
 import { api } from "@/lib/api";
 import { loadResidencies } from "@/lib/public-data";
 import { displayName, pandaBirthDate, pandaIsDeceased, pandaSex } from "@/lib/panda";
@@ -16,6 +17,8 @@ export interface PandaListItem {
   birthDate: string | null;
   deceased: boolean;
   place: string | null;
+  /** The 找熊猫 area chip it falls under: a base area in China, or 海外. */
+  area: string | null;
   /** Slug, every name and the current place, normalized for matching. */
   terms: string[];
 }
@@ -70,7 +73,8 @@ async function buildIndex(): Promise<PandaListItem[]> {
 
   const items = pandas.data.items.map((panda) => {
     const placeId = currentPlaceId(residenciesByPanda.get(panda.pandaId) ?? []);
-    const place = placeName(placeId ? placesById.get(placeId) : undefined);
+    const placeRecord = placeId ? placesById.get(placeId) : undefined;
+    const place = placeName(placeRecord);
     const names = [panda.canonicalSlug, ...panda.legacySlugs, ...panda.names.map((name) => name.value)];
     return {
       id: panda.pandaId,
@@ -80,6 +84,7 @@ async function buildIndex(): Promise<PandaListItem[]> {
       birthDate: pandaBirthDate(panda),
       deceased: pandaIsDeceased(panda),
       place,
+      area: areaOf(placeRecord),
       terms: (place ? [...names, place] : names).map(normalizeTerm),
     };
   });

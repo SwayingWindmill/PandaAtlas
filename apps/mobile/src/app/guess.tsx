@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { type GuessOutcome, type GuessQuestion, NoQuestionError, answerQuestion, loadQuestion } from "@/features/guess/guess";
+import { openPanda } from "@/features/pandas/panda-row";
 import { useSession } from "@/features/session/session";
 import { cn } from "@/lib/utils";
 
@@ -58,6 +59,7 @@ export default function GuessScreen() {
   }
 
   const { question } = load;
+  const answer = outcome ? question.options.find((option) => option.pandaId === outcome.answerPandaId) : undefined;
   return (
     <Page label={label} title="这是哪只熊猫？">
       <View className="overflow-hidden rounded-lg">
@@ -109,15 +111,21 @@ export default function GuessScreen() {
               {tip}
             </Text>
           ))}
-          <Button
-            className="self-start"
-            onPress={() => {
-              setRound((value) => value + 1);
-              next();
-            }}
-          >
-            <Text>下一题</Text>
-          </Button>
+          <View className="flex-row flex-wrap gap-2">
+            <Button
+              onPress={() => {
+                setRound((value) => value + 1);
+                next();
+              }}
+            >
+              <Text>下一题</Text>
+            </Button>
+            {answer?.slug ? (
+              <Button variant="secondary" onPress={() => openPanda(answer.slug as string)}>
+                <Text>{`看${answer.name}的资料`}</Text>
+              </Button>
+            ) : null}
+          </View>
         </View>
       ) : null}
     </Page>
