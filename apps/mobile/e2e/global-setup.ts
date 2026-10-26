@@ -59,7 +59,7 @@ export default async function globalSetup(): Promise<void> {
     });
     for (const [index, fact] of [
       { fieldKey: "sex", value: "female" },
-      { fieldKey: "birth.date", value: "2020-07-20" },
+      { fieldKey: "birth_date", value: "2020-07-20" },
     ].entries()) {
       const assertionId = `e2e-fact-${index}:${run}`;
       await pandas.recordFactAssertion({ assertionId, pandaId: panda.pandaId, ...fact, certainty: "confirmed", lastVerifiedOn: "2026-10-26", sourceIds: [sourceId] });

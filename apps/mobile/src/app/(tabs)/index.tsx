@@ -30,6 +30,17 @@ export default function TodayScreen() {
           </Button>
         </Link>
       </View>
+      <View className="gap-3 rounded-lg border-hairline border-border p-5">
+        <Text variant="small" className="text-highlight-foreground">
+          熊猫日历
+        </Text>
+        <Text variant="h2">这个月谁过生日</Text>
+        <Link href="/calendar" asChild>
+          <Button variant="secondary" className="self-start">
+            <Text>看日历</Text>
+          </Button>
+        </Link>
+      </View>
     </Page>
   );
 }
