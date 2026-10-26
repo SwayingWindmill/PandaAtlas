@@ -141,5 +141,5 @@ export async function loadInstitution(slug: string): Promise<InstitutionDetail> 
 
 /** "https://www.panda.org.cn/about" → "panda.org.cn", for naming a source in one line. */
 export function hostname(url: string): string {
-  return url.replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0];
+  return url.replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0] ?? url;
 }

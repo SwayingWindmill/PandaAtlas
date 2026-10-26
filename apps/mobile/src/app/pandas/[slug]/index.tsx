@@ -36,15 +36,13 @@ function ShareButton({ profile, className }: { profile: Profile; className?: str
 }
 
 function Facts({ facts }: { facts: Profile["facts"] }) {
-  const rows = facts.reduce<Profile["facts"][]>((pairs, fact, index) => {
-    if (index % 2 === 0) pairs.push([fact]);
-    else pairs[pairs.length - 1].push(fact);
-    return pairs;
-  }, []);
+  // Two facts per row, the way an infobox reads.
+  const rows: Profile["facts"][] = [];
+  for (let index = 0; index < facts.length; index += 2) rows.push(facts.slice(index, index + 2));
   return (
     <View>
       {rows.map((row, rowIndex) => (
-        <View key={row[0].label} className="flex-row gap-5">
+        <View key={row.map((fact) => fact.label).join("/")} className="flex-row gap-5">
           {[0, 1].map((column) => {
             const fact = row[column];
             return (

@@ -56,11 +56,12 @@ interface Point {
 
 /** A trunk from `source` to a horizontal bus, then a drop to each target, with rounded outer corners. */
 function branch(source: Point, targets: Point[]): string[] {
-  if (targets.length === 1 && targets[0].x === source.x) return [`M${source.x} ${source.y}V${targets[0].y}`];
+  const [only] = targets;
+  if (targets.length === 1 && only && only.x === source.x) return [`M${source.x} ${source.y}V${only.y}`];
   const busY = Math.min(...targets.map((target) => target.y)) - BUS_OFFSET;
-  const xs = targets.map((target) => target.x).sort((a, b) => a - b);
-  const left = Math.min(xs[0], source.x);
-  const right = Math.max(xs[xs.length - 1], source.x);
+  const xs = targets.map((target) => target.x);
+  const left = Math.min(...xs, source.x);
+  const right = Math.max(...xs, source.x);
   const paths = [`M${source.x} ${source.y}V${busY}`];
   const leftTarget = targets.find((target) => target.x === left);
   const rightTarget = targets.find((target) => target.x === right);
@@ -125,16 +126,16 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
   const centre = generationWidth / 2;
   const lines: string[] = [];
   let couple: FamilyLayout["couple"] = null;
-  if (parents.length === 2) {
-    const [father, mother] = parents;
+  const [father, mother] = parents;
+  if (father && mother) {
     cards.push({ member: father, kind: "parent", x: centre - COUPLE_GAP / 2 - PARENT_CARD.width, y: parentsTop, ...PARENT_CARD });
     cards.push({ member: mother, kind: "parent", x: centre + COUPLE_GAP / 2, y: parentsTop, ...PARENT_CARD });
     const coupleY = parentsTop + PARENT_CARD.height / 2;
     couple = { x: centre, y: coupleY };
     lines.push(`M${centre - COUPLE_GAP / 2} ${coupleY}H${centre + COUPLE_GAP / 2}`);
     lines.push(...branch({ x: centre, y: coupleY }, drops));
-  } else if (parents.length === 1) {
-    cards.push({ member: parents[0], kind: "parent", x: centre - PARENT_CARD.width / 2, y: parentsTop, ...PARENT_CARD });
+  } else if (father) {
+    cards.push({ member: father, kind: "parent", x: centre - PARENT_CARD.width / 2, y: parentsTop, ...PARENT_CARD });
     lines.push(...branch({ x: centre, y: parentsTop + PARENT_CARD.height }, drops));
   }
 
@@ -171,8 +172,9 @@ export function layoutFamily(family: Family, availableWidth: number): FamilyLayo
   const shiftPath = (path: string) =>
     path.replace(/([MHVQ])([^MHVQ]*)/g, (_, command: string, args: string) => {
       const numbers = args.trim().split(/\s+/).filter(Boolean).map(Number);
-      if (command === "H") return `H${numbers[0] + dx}`;
-      if (command === "V") return `V${numbers[0] + dy}`;
+      const [first = 0] = numbers;
+      if (command === "H") return `H${first + dx}`;
+      if (command === "V") return `V${first + dy}`;
       return command + numbers.map((value, index) => (index % 2 === 0 ? value + dx : value + dy)).join(" ");
     });
 
