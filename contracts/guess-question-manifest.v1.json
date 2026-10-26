@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "title": "PandaAtlas 猜熊猫 Question Batch Manifest Contract",
+  "scope": "One reviewed intent to add 猜熊猫 questions drawn from the active public release through the curation.guess-questions batch operation",
+  "manifest_directory": "data/curation/guess-questions",
+  "required_fields": [
+    "schema_version",
+    "batch",
+    "reason"
+  ],
+  "batch_pattern": "^\\d{4}\\.\\d{2}\\.\\d{2}\\.\\d+$",
+  "reason_length": {
+    "minimum": 10,
+    "maximum": 500
+  },
+  "rules": {
+    "filename_must_match_batch": true,
+    "unknown_fields_are_rejected": true,
+    "questions_come_from_the_active_release_only": true,
+    "an_existing_target_and_photo_is_never_written_twice": true
+  }
+}

@@ -25,6 +25,13 @@ Public pages and the API read the **active content release**, an immutable snaps
 
 **Roll back** with a manifest whose `version` is the earlier sealed release and `"action": "rollback"`, published through `release.publish`; it only moves the active-release pointer. Every lifecycle step records the system actor `release-batch-workflow` with the manifest reason, change reference and run URL in `publication.release_transitions`.
 
+### Add 猜熊猫 questions
+
+猜熊猫 serves published rows of `game.questions` whose photo is public in the active release. The `curation.guess-questions` operation draws them from that release: one question per living panda with a public cover photo, the other three options preferring pandas at the same place (difficulty `hard`, `medium` or `easy` by how many it found), and tips from confirmed birth dates and current homes.
+
+1. **Write the manifest.** In a pull request, add `data/curation/guess-questions/<batch>.json` ([contract](../../contracts/guess-question-manifest.v1.json)) with a new batch such as `2026.10.27.1` and the reason. Publish the content release the questions should come from first.
+2. **Run.** Run the workflow on `main` with operation `curation.guess-questions`, that manifest, **execute** checked and the pull request as change reference, then approve `production-batch`. The summary states how many questions the release yields, how many were new and the mix of difficulty. A pair of panda and photo is never written twice, so running again after a new release adds only the pandas and photos that release brought.
+
 The `production-batch` environment holds `SUPABASE_DB_URL` (the same session-pooler connection the deploy uses) and `SUPABASE_DB_SSL_CA_CERT` (the Supabase root CA from the dashboard's database settings; the command refuses a remote database without it), requires the owner's approval, and allows `main` only.
 
 ## Migration rules

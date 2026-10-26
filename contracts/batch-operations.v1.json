@@ -48,6 +48,16 @@
       "blocked_reason": "Current apply scripts are cohort-specific and cannot be exposed as one generic write entrypoint."
     },
     {
+      "id": "curation.guess-questions",
+      "status": "ready",
+      "effect": "production-write",
+      "approval_required": true,
+      "manifest_required": true,
+      "idempotency": "Draws 猜熊猫 questions from the active public release and publishes those not already present: the (panda, photo) key is unique, so a repeated run with the same release adds nothing.",
+      "command": ["node", "services/api/dist/guess-questions-command.js"],
+      "artifact_paths": [".batch-work/guess-questions"]
+    },
+    {
       "id": "media.process",
       "status": "ready",
       "effect": "generated-output",

@@ -8,11 +8,14 @@ Working list for the App v2 build-out. Spec #682 and tickets #683–#694 live in
 - [x] Release builds below PostgreSQL's bind-parameter limit (#681); deployed.
 - [x] Production deploy of #698 (guess question photo key): approved and succeeded; the superseded waiting run for an older commit was cancelled.
 - [x] `release.build` for `2026.10.26.1` ([run 40337956764](https://github.com/SwayingWindmill/PandaAtlas/actions/runs/40337956764)), release `daf46238-544c-44ff-ab25-8d936af81fec`, not public. 59 changes against `2026.10.02.1-photo-only`:
-  - institution +5: 上野动物园, 中国大熊猫保护研究中心, 亚特兰大动物园, 史密森国家动物园, 成都大熊猫繁育研究基地
-  - place ~8: the eight facilities above gain institution links, coordinates and visit guides
-  - panda +17: a-bao, cheng-lan, da-mei-changsha, er-qiao, jing-liang, lun-hui, ni-ke, ni-na, qi-fu-changsha, qi-zhen, ya-li, ya-lun, ya-song, yang-yang, yong-ba, zhi-ma, zhi-shi; ~1: xing-er
-  - lineage +6, residency +5 (Ya Lun and Yang Yang at Zoo Atlanta and Chengdu, Lun Hui at Chengdu), life_event +17 (births, Zoo Atlanta arrival 1999 and return 2024)
+  - institution added (5): 上野动物园 (ueno-zoo), 中国大熊猫保护研究中心 (ccrcgp), 亚特兰大动物园 (zoo-atlanta), 史密森国家动物园 (smithsonian-national-zoo), 成都大熊猫繁育研究基地 (chengdu-research-base)
+  - place changed (8), gaining institution links, coordinates and visit guides: 上野动物园, 中国大熊猫保护研究中心卧龙神树坪基地, 卧龙耿达基地, 雅安基地, 雅安碧峰峡基地, 亚特兰大动物园, 史密森国家动物园, 成都大熊猫繁育研究基地
+  - panda added (17): 阿宝 a-bao, 成兰 cheng-lan, 大美 da-mei-changsha, 二巧 er-qiao, 晶亮 jing-liang, 轮辉 lun-hui, 妮可 ni-ke, 妮娜 ni-na, 奇福 qi-fu-changsha, 奇珍 qi-zhen, 雅莉 ya-li, 雅伦 ya-lun, 雅颂 ya-song, 洋洋 yang-yang, yong-ba, 芝麻 zhi-ma, 芝士 zhi-shi; changed (1): 兴二 xing-er
+  - lineage added (6): 雅伦 ← 父 洋洋, 雅伦 ← 母 伦伦, 喜伦 ← 父 洋洋, 宝新 ← 母 阿宝, 珍喜 ← 母 奇珍, 青青 ← 母 二巧
+  - residency added (5): 洋洋 at 亚特兰大动物园 1999-11-05 to 2024-10-12 and at 成都大熊猫繁育研究基地 from 2024-10-13; 雅伦 at 亚特兰大动物园 2016-09-03 to 2024-10-12 and at 成都大熊猫繁育研究基地 from 2024-10-13; 轮辉 at 成都大熊猫繁育研究基地 from 2021-07-25
+  - life_event added (17): births of 洋洋 1997-09-09, 雅伦 2016-09-03, 芝麻 and 芝士 2017-04-24, 大美 and 成兰 2017-06-27, 晶亮 2017-07-10, 珍喜 2017-07-15 (mother 奇珍), 妮可 and 妮娜 2017-07-20, 青青 2017-07-26 (mother 二巧), 宝新 2021-06-24 (mother 阿宝), 轮辉 2021-07-25, 雅颂 2021-07-31; 伦伦 and 洋洋 arrive at 亚特兰大动物园 1999-11-05; 雅伦 public debut 2016-12-27; 伦伦, 洋洋, 雅伦 and 喜伦 move to 成都大熊猫繁育研究基地 2024-10-12
   - media, evidence: unchanged
+- [x] 猜熊猫 question generation: the `curation.guess-questions` batch operation draws questions from the active release (433 today) and publishes them after `production-batch` approval; first manifest `data/curation/guess-questions/2026.10.27.1.json`. Running it in production is an owner approval (`USER_ACTIONS_REQUIRED.md`).
 - [ ] `release.publish` for `2026.10.26.1`: owner decision (`USER_ACTIONS_REQUIRED.md`).
 
 ## App v2 (apps/mobile)
