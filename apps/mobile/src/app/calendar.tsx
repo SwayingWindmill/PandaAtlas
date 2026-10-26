@@ -8,6 +8,7 @@ import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   type CalendarDay,
   type CalendarEvent,
@@ -18,6 +19,7 @@ import {
   shiftMonth,
 } from "@/features/calendar/calendar";
 import { loadCalendarSources } from "@/features/calendar/sources";
+import { useFollowed } from "@/features/engagement/favorites";
 import { localToday } from "@/features/engagement/seen";
 import { openPanda } from "@/features/pandas/panda-row";
 import { cn } from "@/lib/utils";
@@ -41,7 +43,8 @@ function MonthButton({ to, direction, onPress }: { to: number; direction: "back"
   );
   return (
     <Button
-      variant="secondary"
+      variant="secondary"
+
       onPress={onPress}
       accessibilityLabel={`${direction === "back" ? "上个月" : "下个月"}，${to}月`}
     >
@@ -168,7 +171,17 @@ export default function CalendarScreen() {
     () => (sources ? calendarMonth(sources.pandas, sources.events, year, month) : []),
     [sources, year, month],
   );
-  const shown = selected === null ? days : days.filter((day) => day.day === selected);
+  const followed = useFollowed();
+  const [scope, setScope] = useState<"all" | "followed">("all");
+  // 我关注的 keeps only the entries of followed pandas; days left empty drop out.
+  const scoped =
+    scope === "followed" && followed
+      ? days.flatMap((day) => {
+          const entries = day.entries.filter((entry) => followed.has(entry.pandaId));
+          return entries.length > 0 ? [{ ...day, entries }] : [];
+        })
+      : days;
+  const shown = selected === null ? scoped : scoped.filter((day) => day.day === selected);
 
   function go(by: number) {
     setMonth(shiftMonth(year, month, by));
@@ -187,9 +200,32 @@ export default function CalendarScreen() {
         <Skeleton className="h-72 w-full" accessibilityLabel="正在加载日历" />
       ) : (
         <>
-          <MonthGrid year={year} month={month} days={days} today={today} selected={selected} onSelect={setSelected} />
-          {days.length === 0 ? (
-            <Text className="text-muted-foreground">这个月还没有公开的生日或大事。</Text>
+          {followed && followed.size > 0 ? (
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              value={scope}
+              onValueChange={(value) => {
+                if (value === "all" || value === "followed") {
+                  setScope(value);
+                  setSelected(null);
+                }
+              }}
+              accessibilityLabel="日历范围"
+            >
+              <ToggleGroupItem value="all" accessibilityLabel="全部">
+                <Text>全部</Text>
+              </ToggleGroupItem>
+              <ToggleGroupItem value="followed" accessibilityLabel="我关注的">
+                <Text>我关注的</Text>
+              </ToggleGroupItem>
+            </ToggleGroup>
+          ) : null}
+          <MonthGrid year={year} month={month} days={scoped} today={today} selected={selected} onSelect={setSelected} />
+          {scoped.length === 0 ? (
+            <Text className="text-muted-foreground">
+              {scope === "followed" ? "这个月关注的熊猫没有生日或大事。" : "这个月还没有公开的生日或大事。"}
+            </Text>
           ) : (
             <DayList days={shown} />
           )}

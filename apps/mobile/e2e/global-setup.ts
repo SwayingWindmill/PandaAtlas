@@ -20,6 +20,9 @@ export default async function globalSetup(): Promise<void> {
   const { MEDIA_PORT } = await load<{ MEDIA_PORT: symbol }>("modules/media/application/media.application.js");
   const { LINEAGE_PORT } = await load<{ LINEAGE_PORT: symbol }>("modules/lineage/application/lineage.application.js");
   const { PLACES_PORT } = await load<{ PLACES_PORT: symbol }>("modules/places/application/places.application.js");
+  const { LIFE_HISTORY_PORT } = await load<{ LIFE_HISTORY_PORT: symbol }>(
+    "modules/life-history/application/life-history.application.js",
+  );
   const { DatabaseService } = await load<{ DatabaseService: unknown }>("platform/database/database.service.js");
   const { createReleaseCommandContext } = await load<{
     createReleaseCommandContext(): Promise<{ app: { close(): Promise<void> }; ports: unknown }>;
@@ -78,6 +81,15 @@ export default async function globalSetup(): Promise<void> {
     }
     // A family for 查关系: 选项丙 is the mother of the fixture panda and of 选项乙, 选项丁 the fixture panda's father.
     const [optionB, optionC, optionD] = others;
+    // 选项丁 has its birthday on the day the journeys run, for 今天生日.
+    const now = new Date();
+    const today = `${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    if (optionD) {
+      const assertionId = `e2e-birthday:${run}`;
+      const fact = { fieldKey: "birth_date", value: `2010-${today}` };
+      await pandas.recordFactAssertion({ assertionId, pandaId: optionD.pandaId, ...fact, certainty: "confirmed", lastVerifiedOn: "2026-10-26", sourceIds: [sourceId] });
+      await pandas.setFactConclusion({ pandaId: optionD.pandaId, ...fact, status: "confirmed", lastVerifiedOn: "2026-10-26", assertionIds: [assertionId] });
+    }
     const lineage = app.get<{ createAssertion(input: object): Promise<unknown> }>(LINEAGE_PORT);
     for (const [index, [childId, parentId, parentRole]] of [
       [panda.pandaId, optionC?.pandaId, "mother"],
@@ -110,12 +122,25 @@ export default async function globalSetup(): Promise<void> {
       countryCode: "CN",
       profile: { kind: "zoo", verifiedOn: "2026-10-27", sourceUrls: [`https://example.test/zoo/${run}`] },
     });
-    await places.createPlace({
+    const facility = await places.createPlace({
       institutionId: institution.institutionId,
       slug: `e2e-zoo-facility-${run}`,
       placeType: "facility",
+      region: "Chengdu, Sichuan",
       nameZh: zoo.facility,
       countryCode: "CN",
+    });
+
+    // The fixture panda lives at the zoo's facility, for 所在地 and 生活过的地方 on its profile.
+    await app.get<{ createResidency(input: object): Promise<unknown> }>(LIFE_HISTORY_PORT).createResidency({
+      residencyId: `e2e-home:${run}`,
+      pandaId: panda.pandaId,
+      placeId: facility.placeId,
+      residencyType: "primary",
+      startOn: "2021-03-01",
+      startPrecision: "day",
+      status: "confirmed",
+      sourceIds: [sourceId],
     });
 
     const media = app.get<{

@@ -7,7 +7,9 @@ import { NavRow } from "@/components/nav-row";
 import { PageHeader } from "@/components/page";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { loadInstitutionList } from "@/features/institutions/institutions";
+import { areaChips } from "@/features/pandas/areas";
 import { PandaRow } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex, searchPandas } from "@/features/pandas/pandas";
 import { SearchField } from "@/features/pandas/search-field";
@@ -39,13 +41,33 @@ export default function FindScreen() {
       .catch(() => setHasInstitutions(false));
   }, []);
 
-  const results = useMemo(() => (pandas ? searchPandas(pandas, deferredQuery) : []), [pandas, deferredQuery]);
+  const [area, setArea] = useState("全部");
+  const chips = useMemo(() => (pandas ? areaChips(pandas) : []), [pandas]);
+  const results = useMemo(() => {
+    const found = pandas ? searchPandas(pandas, deferredQuery) : [];
+    return area === "全部" ? found : found.filter((panda) => panda.area === area);
+  }, [pandas, deferredQuery, area]);
 
   return (
     <View className="flex-1 bg-background">
       <View className="gap-4 px-5 pb-3" style={{ paddingTop: insets.top + 12 }}>
         <PageHeader title="找熊猫" back={false} />
         <SearchField value={query} onChange={setQuery} />
+        {chips.length > 0 ? (
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            value={area}
+            onValueChange={(value) => setArea(value ?? "全部")}
+            accessibilityLabel="按地方看"
+          >
+            {["全部", ...chips].map((chip) => (
+              <ToggleGroupItem key={chip} value={chip} accessibilityLabel={chip}>
+                <Text>{chip}</Text>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        ) : null}
       </View>
 
       {pandas ? (
@@ -57,7 +79,7 @@ export default function FindScreen() {
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
-            deferredQuery.trim() ? undefined : (
+            deferredQuery.trim() || area !== "全部" ? undefined : (
               <View className="mb-3">
                 {hasInstitutions ? <NavRow label="基地和动物园" href="/institutions" /> : null}
                 <NavRow label="查两只熊猫的关系" href="/relationship" last />

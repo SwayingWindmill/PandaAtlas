@@ -69,7 +69,29 @@ function Facts({ facts }: { facts: Profile["facts"] }) {
   );
 }
 
-function Events({ events }: { events: Profile["events"] }) {
+/** A section with nothing published yet: says so, and offers 纠错 for the panda. */
+function Unknown({ slug, ask }: { slug: string; ask?: string }) {
+  return (
+    <View className="items-start gap-2">
+      <Text className="text-muted-foreground">暂无记录</Text>
+      {ask ? (
+        <Button variant="secondary" onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug } })}>
+          <Text>{ask}</Text>
+        </Button>
+      ) : null}
+    </View>
+  );
+}
+
+function Events({ events, slug }: { events: Profile["events"]; slug: string }) {
+  if (events.length === 0) {
+    return (
+      <View className="gap-3">
+        <Text variant="h2">经历</Text>
+        <Unknown slug={slug} ask="知道它的经历？告诉我们" />
+      </View>
+    );
+  }
   return (
     <View className="gap-3">
       <Text variant="h2">经历</Text>
@@ -87,7 +109,14 @@ function Events({ events }: { events: Profile["events"] }) {
 
 function Relatives({ profile }: { profile: Profile }) {
   const relatives = profile.family ? relativesOf(profile.family) : [];
-  if (relatives.length === 0) return null;
+  if (relatives.length === 0) {
+    return (
+      <View className="gap-3">
+        <Text variant="h2">家人</Text>
+        <Unknown slug={profile.slug} />
+      </View>
+    );
+  }
   return (
     <View className="gap-3">
       <Text variant="h2">家人</Text>
@@ -115,6 +144,30 @@ function Relatives({ profile }: { profile: Profile }) {
         <Button variant="outline" onPress={() => router.push({ pathname: "/relationship", params: { from: profile.slug } })}>
           <Text>查关系</Text>
         </Button>
+      </View>
+    </View>
+  );
+}
+
+function PlacesLived({ places }: { places: Profile["placesLived"] }) {
+  return (
+    <View className="gap-3">
+      <Text variant="h2">生活过的地方</Text>
+      <View>
+        {places.map((place, index) => (
+          <View
+            key={`${place.place}-${place.years}`}
+            className={cn(
+              "flex-row items-center justify-between gap-3 border-t-hairline border-border py-2.5",
+              index === places.length - 1 && "border-b-hairline",
+            )}
+          >
+            <Text className={cn("min-w-0 flex-1", place.current && "font-bold")} numberOfLines={1}>
+              {place.place}
+            </Text>
+            {place.years ? <Text variant="muted">{place.years}</Text> : null}
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -239,9 +292,20 @@ export default function ProfileScreen() {
           ) : null}
         </View>
       ) : (
-        <View className="flex-row justify-between px-5" style={{ paddingTop: insets.top + 12 }}>
-          <BackButton />
-          <ShareButton profile={profile} />
+        <View className="gap-4 px-5" style={{ paddingTop: insets.top + 12 }}>
+          <View className="flex-row justify-between">
+            <BackButton />
+            <ShareButton profile={profile} />
+          </View>
+          <View className="items-start gap-2 rounded-lg bg-muted p-5">
+            <Text className="text-muted-foreground">暂无照片</Text>
+            <Button
+              variant="outline"
+              onPress={() => router.push({ pathname: "/pandas/[slug]/correct", params: { slug: profile.slug } })}
+            >
+              <Text>有它的照片？告诉我们</Text>
+            </Button>
+          </View>
         </View>
       )}
 
@@ -256,8 +320,9 @@ export default function ProfileScreen() {
           <Text>加入合集</Text>
         </Button>
         {profile.facts.length > 0 ? <Facts facts={profile.facts} /> : null}
-        {profile.events.length > 0 ? <Events events={profile.events} /> : null}
+        <Events events={profile.events} slug={profile.slug} />
         <Relatives profile={profile} />
+        {profile.placesLived.length > 0 ? <PlacesLived places={profile.placesLived} /> : null}
         {profile.visit ? <Visit visit={profile.visit} /> : null}
         {profile.sources.length > 0 ? <Sources sources={profile.sources} /> : null}
         <Button
