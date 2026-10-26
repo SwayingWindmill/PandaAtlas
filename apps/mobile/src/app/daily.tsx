@@ -1,4 +1,5 @@
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, Share, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
@@ -11,10 +12,12 @@ import {
   guessDailyPanda,
   loadDailyPanda,
   loadPandaChoices,
+  saveDailyResult,
   type DailyPandaState,
   type PandaChoice,
 } from "@/features/daily-panda/daily-panda";
 import { openPanda } from "@/features/pandas/panda-row";
+import { useSession } from "@/features/session/session";
 import { cn } from "@/lib/utils";
 
 const MAX_MATCHES = 8;
@@ -49,6 +52,22 @@ export default function DailyPandaScreen() {
     setLoadFailed(false);
     load();
   }
+
+  // A finished puzzle joins the signed-in fan's 图鉴; saving the same day again changes nothing.
+  const { state: session } = useSession();
+  const accountId = session.status === "signedIn" ? session.accountId : null;
+  const [savedFor, setSavedFor] = useState<string | null>(null);
+  useEffect(() => {
+    if (!state?.finished || accountId === null) return;
+    let active = true;
+    void saveDailyResult(state).then((saved) => {
+      if (active && saved) setSavedFor(`${accountId}:${state.puzzleDate}`);
+    });
+    return () => {
+      active = false;
+    };
+  }, [state, accountId]);
+  const savedToBook = state !== null && accountId !== null && savedFor === `${accountId}:${state.puzzleDate}`;
 
   const pandasById = useMemo(() => new Map(pandas.map((panda) => [panda.id, panda])), [pandas]);
   const guessedIds = useMemo(() => new Set(state?.guesses.map((guess) => guess.pandaId)), [state]);
@@ -165,6 +184,17 @@ export default function DailyPandaScreen() {
             <Text variant="h2">{answer?.name ?? "这只熊猫"}</Text>
             <Text className="font-bold">{current.solved ? `第 ${current.guesses.length} 次猜中` : "这次没猜中"}</Text>
           </View>
+          {savedToBook ? (
+            <View className="self-start rounded-full bg-highlight-soft px-3 py-1.5">
+              <Text variant="small" className="text-highlight-foreground">
+                已收进图鉴
+              </Text>
+            </View>
+          ) : session.status === "signedOut" ? (
+            <Button variant="secondary" className="self-start" onPress={() => router.push("/sign-in")}>
+              <Text>登录，收进图鉴</Text>
+            </Button>
+          ) : null}
           <View className="flex-row flex-wrap gap-2">
             <Button onPress={share}>
               <Text>分享结果</Text>
