@@ -20,7 +20,8 @@ export interface FamilyMember {
 
 /** Pandas born to the same parents on the same day are drawn together. */
 export interface SiblingGroup {
-  members: FamilyMember[];
+  /** Never empty: the eldest leads the group. */
+  members: [FamilyMember, ...FamilyMember[]];
   twins: boolean;
 }
 
@@ -96,7 +97,7 @@ export function buildFamily(
   });
 
   const byBirth = (a: FamilyMember, b: FamilyMember) => (a.birthDate ?? "9999").localeCompare(b.birthDate ?? "9999");
-  const ownGroup = [focus, ...siblings.filter((sibling) => sibling.relation.startsWith("双胞胎"))];
+  const ownGroup: SiblingGroup["members"] = [focus, ...siblings.filter((sibling) => sibling.relation.startsWith("双胞胎"))];
   const others = siblings.filter((sibling) => !ownGroup.includes(sibling)).sort(byBirth);
   // Siblings sharing both parents and a birthday are twins of each other, not of the focus panda.
   const otherGroups: SiblingGroup[] = [];

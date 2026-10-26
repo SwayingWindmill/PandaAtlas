@@ -59,7 +59,7 @@ export function longDate(value: string): string {
 type DatedEvent = LifeEvent & { occurredOn: string };
 
 function shortDate(event: DatedEvent): string {
-  const [year, month] = event.occurredOn.split("-");
+  const [year = event.occurredOn, month] = event.occurredOn.split("-");
   return event.occurredPrecision === "year" || !month ? year : `${year}.${Number(month)}`;
 }
 
