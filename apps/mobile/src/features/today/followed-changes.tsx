@@ -10,7 +10,7 @@ import { openPanda } from "@/features/pandas/panda-row";
 import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
 import { api } from "@/lib/api";
-import { loadLifeEvents, loadLineage, loadResidencies } from "@/lib/public-data";
+import { fetchLifeEvents, fetchLineage, fetchResidencies } from "@/lib/public-data";
 import { cn } from "@/lib/utils";
 
 import { type Owners, type Update, followedChanges } from "./changes";
@@ -21,13 +21,16 @@ interface Sources {
   pandas: Map<string, PandaListItem>;
 }
 
-/** The latest releases, and what maps their changes back to pandas. Updates are read again each time 今天 shows. */
+/**
+ * The latest releases, and the lists that map their changes back to pandas. All are read again each time 今天
+ * shows, so a release published while the app is open is mapped through its own lists.
+ */
 async function loadSources(): Promise<Sources> {
   const [updates, lineage, residencies, events, pandas] = await Promise.all([
     api.GET("/api/v2/updates", { params: { query: { limit: 10 } } }),
-    loadLineage(),
-    loadResidencies(),
-    loadLifeEvents(),
+    fetchLineage(),
+    fetchResidencies(),
+    fetchLifeEvents(),
     loadPandaIndex(),
   ]);
   if (!updates.data) throw new Error("Updates unavailable");
@@ -131,7 +134,7 @@ export function FollowedChanges() {
                 </Text>
                 <Text variant="muted">{day}</Text>
               </View>
-              <Text className="text-highlight-foreground">{change.what}</Text>
+              <Text>{change.what}</Text>
             </Pressable>
           );
         })}

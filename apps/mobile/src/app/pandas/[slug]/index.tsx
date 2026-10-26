@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
+import { LoadFailed } from "@/components/load-failed";
 import { BackButton } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -197,12 +198,7 @@ export default function ProfileScreen() {
       <View className="flex-1 bg-background px-5" style={{ paddingTop: insets.top + 12 }}>
         <BackButton />
         {failed ? (
-          <View className="mt-6 items-start gap-3 rounded-lg bg-muted p-5">
-            <Text>资料暂时打不开。</Text>
-            <Button onPress={retry}>
-              <Text>重试</Text>
-            </Button>
-          </View>
+          <LoadFailed message="资料暂时打不开。" onRetry={retry} className="mt-6" />
         ) : (
           <View className="mt-6 gap-4" accessibilityLabel="正在加载资料">
             <Skeleton className="h-72 w-full" />

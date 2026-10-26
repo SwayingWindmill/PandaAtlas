@@ -2,8 +2,8 @@ import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { type Family, loadFamily, memberMeta, relativesOf } from "@/features/family/family";
@@ -31,12 +31,7 @@ export default function FamilyScreen() {
     return (
       <Page label="家谱" title="家族">
         {failed ? (
-          <View className="items-start gap-3 rounded-lg bg-muted p-5">
-            <Text>家谱暂时打不开。</Text>
-            <Button onPress={retry}>
-              <Text>重试</Text>
-            </Button>
-          </View>
+          <LoadFailed message="家谱暂时打不开。" onRetry={retry} />
         ) : (
           <Skeleton className="h-96 w-full rounded-xl" accessibilityLabel="正在加载家谱" />
         )}

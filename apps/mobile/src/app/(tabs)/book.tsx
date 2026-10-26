@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, View, useWindowDimensions } from "react-native";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -124,17 +125,7 @@ function SignedIn() {
 
   if (failed) {
     return (
-      <View className="items-start gap-3 rounded-lg bg-muted p-5">
-        <Text>图鉴暂时打不开。</Text>
-        <Button
-          onPress={() => {
-            setFailed(false);
-            load();
-          }}
-        >
-          <Text>重试</Text>
-        </Button>
-      </View>
+      <LoadFailed message="图鉴暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
     );
   }
   if (!view) return <Skeleton className="h-64 w-full" accessibilityLabel="正在加载图鉴" />;

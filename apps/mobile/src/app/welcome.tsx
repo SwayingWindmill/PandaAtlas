@@ -1,12 +1,13 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { Toggle } from "@/components/ui/toggle";
 import { setFollowing } from "@/features/engagement/favorites";
 import { suggestions } from "@/features/onboarding/suggestions";
 import { markWelcomeSeen } from "@/features/onboarding/welcome";
@@ -19,27 +20,23 @@ import { cn } from "@/lib/utils";
 function Tile({ panda, selected, onToggle }: { panda: PandaListItem; selected: boolean; onToggle: () => void }) {
   const photo = usePandaCover(panda.id);
   return (
-    <Pressable
-      onPress={onToggle}
-      role="checkbox"
+    <Toggle
+      pressed={selected}
+      onPressedChange={onToggle}
       accessibilityLabel={panda.name}
-      accessibilityState={{ checked: selected }}
-      className={cn(
-        "basis-[31%] grow gap-1.5 rounded-lg border-hairline border-border p-2 active:bg-accent",
-        selected && "border-highlight-foreground bg-highlight-soft",
-      )}
+      className={cn("h-auto w-[31%] flex-col items-stretch gap-1.5 rounded-lg border-hairline p-2", !selected && "border-border")}
     >
-      <View className="aspect-square items-center justify-center overflow-hidden rounded-md bg-accent">
+      <View className="aspect-square items-center justify-center overflow-hidden rounded-sm bg-accent">
         {photo ? (
           <Image source={photo} style={{ width: "100%", height: "100%" }} contentFit="cover" accessible={false} />
         ) : (
-          <Text className="text-2xl font-extrabold">{panda.name.slice(0, 1)}</Text>
+          <Text className="font-extrabold">{panda.name.slice(0, 1)}</Text>
         )}
       </View>
-      <Text className={cn("text-center", selected && "font-bold")} numberOfLines={1}>
+      <Text className="text-center" numberOfLines={1}>
         {panda.name}
       </Text>
-    </Pressable>
+    </Toggle>
   );
 }
 
@@ -89,10 +86,7 @@ export default function WelcomeScreen() {
 
   const signedIn = session.status === "signedIn";
   return (
-    <Page label="欢迎来到知熊猫" title="先关注几只熊猫" back={false} keyboardShouldPersistTaps="handled">
-      <Text className="text-muted-foreground">
-        这里有大熊猫的资料、家谱和住处。关注几只你喜欢的，它们有新资料时会出现在「今天」。
-      </Text>
+    <Page label="欢迎来到吱熊猫" title="先关注几只熊猫" back={false} keyboardShouldPersistTaps="handled">
       <SearchField value={query} onChange={setQuery} label="搜索想关注的熊猫" />
       {pandas === null ? (
         <Skeleton className="h-64 w-full" accessibilityLabel="正在加载熊猫" />

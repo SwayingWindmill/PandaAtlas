@@ -36,6 +36,19 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 | Onboarding (#693)                | Welcome and follow a few pandas on first launch                                                                                             | Follow and 见过 | done: first launch redirects the tabs to 欢迎 (flag in AsyncStorage, once per install); suggestions are living, visitable pandas youngest first, or search; follow several after signing in (sign-in returns to the welcome), or 先逛逛; 1 unit test; e2e fresh install → sign in → follow two → 今天 → 我的 shows 2, and skip shown once                                                                                                  |
 | Offline and share (#694)         | Offline banner keeping loaded data, profile share card                                                                                      | none            | done: a floating notice while expo-network reports no connection, loaded lists stay and new reads fall into their retry states; 分享 on profiles opens a card (photo, name, facts, credit, link) captured with react-native-view-shot and shared as PNG (share sheet on phones, download on web), plus 分享链接; e2e offline → banner, list kept, profile retry after reconnecting; card PNG over 10 KB                                    |
 
+## Review fixes (code review of #686–#694)
+
+- Product name in the app is 吱熊猫 (welcome label, share card, authenticator name).
+- Design system: jade only on small labels, today's date and unread markers; selected states are olive; buttons at full size; no `text-2xl`; the photo radius comes from tokens; the RN Reusables Switch restyled (no shadow, motion or 1px border).
+- Component sourcing: 纠错 topics use RN Reusables ToggleGroup and welcome tiles use Toggle (restyled; web gets the radio and pressed semantics native already has). The offline notice stays a page-level status pill: RN Reusables has no toast, and its Alert is an inline block.
+- Shared `LoadFailed`, `NavRow` and `downloadOnWeb` replace copies across screens.
+- Privacy requests keep one idempotency key per intended request until it succeeds; 今天 reads the lineage, residency and life-event lists fresh with the updates; 我的纠错 refreshes on focus; app reports are sent as `provisional`; failed read marking shows a message.
+- Explanatory paragraphs removed (welcome intro, email note, relationship footnote, export description); the export status says how long it can be downloaded.
+
+## Follow-ups
+
+- Offline across restarts: loaded data lives in memory for the session. Persisting the public lists on the device (keyed by release) would let a cold start offline show them.
+
 ## Fixes along the way
 
 - Local admin runtime and first-admin bootstrap required `API_URL` from `supabase status`, which the CLI omits since the local Data API was turned off (#671); both now fall back to the Auth gateway on port 54321.

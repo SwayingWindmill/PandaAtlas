@@ -44,7 +44,7 @@ describe("canRequest", () => {
 
 describe("requestStatus and requestReason", () => {
   it("words each state for the kind", () => {
-    expect(requestStatus(request({ state: "completed" }))).toBe("已准备好");
+    expect(requestStatus(request({ state: "completed" }))).toBe("已准备好，24 小时内可下载");
     expect(requestStatus(request({ kind: "account_deletion", state: "pending" }))).toBe("已提交，等待处理");
   });
 

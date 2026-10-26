@@ -30,7 +30,7 @@ describe("buildSubmission", () => {
           assertionKey: "assertion-1",
           fieldKey: "birth_date",
           value: "2020-07-21",
-          certainty: "confirmed",
+          certainty: "provisional",
           lastVerifiedOn: "2026-10-26",
           sourceKeys: ["source-1"],
         },

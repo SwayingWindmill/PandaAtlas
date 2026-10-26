@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, Share, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -84,12 +85,7 @@ export default function DailyPandaScreen() {
     return (
       <Page label="每日一猫" title={TITLE}>
         {loadFailed ? (
-          <View className="items-start gap-3 rounded-lg bg-muted p-5">
-            <Text>今天的每日一猫暂时打不开。</Text>
-            <Button onPress={retry}>
-              <Text>重试</Text>
-            </Button>
-          </View>
+          <LoadFailed message="今天的每日一猫暂时打不开。" onRetry={retry} />
         ) : (
           <ActivityIndicator color={String(inkColor)} accessibilityLabel="正在加载每日一猫" />
         )}

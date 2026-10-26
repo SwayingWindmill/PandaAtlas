@@ -21,6 +21,7 @@ test("a signed-in fan reports a mistake with a source and follows it in 我的",
   await expect(page.getByText("选一项哪里不对。")).toBeVisible();
 
   await page.getByRole("radio", { name: "出生日期" }).click();
+  await expect(page.getByRole("radio", { name: "出生日期", checked: true })).toBeVisible();
   await expect(page.getByText("写下正确的内容。")).toBeVisible();
   await page.getByLabel("正确的是").fill("2020 年 7 月 21 日出生");
   await page.getByLabel("来源名称").fill("基地公告");

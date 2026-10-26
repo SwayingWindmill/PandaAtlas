@@ -2,8 +2,8 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { type InstitutionListItem, loadInstitutions } from "@/features/institutions/institutions";
@@ -64,12 +64,7 @@ export default function InstitutionsScreen() {
           <Group title="海外" items={items.filter((item) => !item.domestic)} />
         </>
       ) : failed ? (
-        <View className="items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>列表暂时打不开。</Text>
-          <Button onPress={retry}>
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="列表暂时打不开。" onRetry={retry} />
       ) : (
         <View className="gap-3" accessibilityLabel="正在加载">
           <Skeleton className="h-14 w-full" />

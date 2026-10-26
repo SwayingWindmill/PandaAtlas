@@ -1,12 +1,14 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
-import { Pressable, TextInput, type TextInputProps, View } from "react-native";
+import { TextInput, type TextInputProps, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   type CorrectionDraft,
   EMPTY_DRAFT,
@@ -80,26 +82,19 @@ function Form({ target }: { target: CorrectionTarget }) {
   return (
     <View className="gap-6">
       <Field label="哪里不对">
-        <View role="radiogroup" accessibilityLabel="哪里不对" className="flex-row flex-wrap gap-2">
-          {TOPICS.map((topic) => {
-            const selected = draft.topic === topic.fieldKey;
-            return (
-              <Pressable
-                key={topic.fieldKey}
-                onPress={() => set({ topic: topic.fieldKey })}
-                role="radio"
-                accessibilityLabel={topic.label}
-                accessibilityState={{ checked: selected }}
-                className={cn(
-                  "h-11 items-center justify-center rounded-full border-hairline border-input px-4 active:bg-accent",
-                  selected && "border-highlight-foreground bg-highlight-soft",
-                )}
-              >
-                <Text className={cn(selected && "font-bold")}>{topic.label}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          value={draft.topic ?? undefined}
+          onValueChange={(value) => set({ topic: (TOPICS.find((topic) => topic.fieldKey === value)?.fieldKey ?? null) })}
+          accessibilityLabel="哪里不对"
+        >
+          {TOPICS.map((topic) => (
+            <ToggleGroupItem key={topic.fieldKey} value={topic.fieldKey} accessibilityLabel={topic.label}>
+              <Text>{topic.label}</Text>
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
       </Field>
       <Field label="正确的是">
         <Input
@@ -163,17 +158,7 @@ export default function CorrectScreen() {
       ) : session.status === "unavailable" ? (
         <Text className="text-muted-foreground">账号暂时不可用，请稍后再试。</Text>
       ) : failed ? (
-        <View className="items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>资料暂时打不开。</Text>
-          <Button
-            onPress={() => {
-              setFailed(false);
-              load();
-            }}
-          >
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="资料暂时打不开。" onRetry={() => { setFailed(false); load(); }} />
       ) : target && session.status === "signedIn" ? (
         <Form target={target} />
       ) : (

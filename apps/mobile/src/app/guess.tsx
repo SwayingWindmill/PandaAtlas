@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,12 +51,7 @@ export default function GuessScreen() {
         {load.status === "loading" ? <Skeleton className="h-64 w-full" accessibilityLabel="正在出题" /> : null}
         {load.status === "empty" ? <Text className="text-muted-foreground">现在还没有可以猜的题目。</Text> : null}
         {load.status === "failed" ? (
-          <View className="items-start gap-3 rounded-lg bg-muted p-5">
-            <Text>题目暂时打不开。</Text>
-            <Button onPress={next}>
-              <Text>重试</Text>
-            </Button>
-          </View>
+          <LoadFailed message="题目暂时打不开。" onRetry={next} />
         ) : null}
       </Page>
     );
@@ -64,12 +60,14 @@ export default function GuessScreen() {
   const { question } = load;
   return (
     <Page label={label} title="这是哪只熊猫？">
-      <Image
-        source={question.photoUrl}
-        style={{ width: "100%", aspectRatio: 4 / 3, borderRadius: 16 }}
-        contentFit="cover"
-        accessibilityLabel="待猜熊猫的照片"
-      />
+      <View className="overflow-hidden rounded-lg">
+        <Image
+          source={question.photoUrl}
+          style={{ width: "100%", aspectRatio: 4 / 3 }}
+          contentFit="cover"
+          accessibilityLabel="待猜熊猫的照片"
+        />
+      </View>
       <View role="group" accessibilityLabel="选项" className="flex-row flex-wrap gap-2">
         {question.options.map((option) => {
           const isAnswer = outcome?.answerPandaId === option.pandaId;
@@ -83,13 +81,13 @@ export default function GuessScreen() {
               accessibilityLabel={option.name}
               className={cn(
                 "h-16 basis-[48%] grow items-center justify-center rounded-lg border-hairline border-input active:bg-accent",
-                isAnswer && "border-highlight-foreground bg-highlight-soft",
+                isAnswer && "border-foreground bg-accent",
                 wrongPick && "border-destructive",
               )}
             >
               <Text className="font-bold">{option.name}</Text>
               {isAnswer ? (
-                <Text variant="small" className="text-highlight-foreground">
+                <Text variant="small" className="font-bold text-foreground">
                   是它
                 </Text>
               ) : null}

@@ -56,7 +56,8 @@ export function buildSubmission(
         assertionKey: "assertion-1",
         fieldKey: draft.topic,
         value: draft.value.trim(),
-        certainty: "confirmed",
+        // A fan's report, not a reviewed fact: reviewers confirm it.
+        certainty: "provisional",
         lastVerifiedOn: today,
         sourceKeys: [sourceKey],
       },

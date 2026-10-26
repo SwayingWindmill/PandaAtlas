@@ -41,7 +41,7 @@ export async function enrollAuthenticator(): Promise<Enrollment> {
       await supabase.auth.mfa.unenroll({ factorId: factor.id });
     }
   }
-  const { data, error } = await supabase.auth.mfa.enroll({ factorType: "totp", friendlyName: "知熊猫 App" });
+  const { data, error } = await supabase.auth.mfa.enroll({ factorType: "totp", friendlyName: "吱熊猫 App" });
   if (error) throw error;
   return { factorId: data.id, qrCode: data.totp.qr_code, secret: data.totp.secret, uri: data.totp.uri };
 }

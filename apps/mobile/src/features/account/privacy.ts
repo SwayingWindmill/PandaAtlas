@@ -30,7 +30,7 @@ export function requestStatus(request: PrivacyRequest): string {
     case "processing":
       return "正在处理";
     case "completed":
-      return request.kind === "access_export" ? "已准备好" : "已完成";
+      return request.kind === "access_export" ? "已准备好，24 小时内可下载" : "已完成";
     case "failed":
       return "没能完成，可以重新申请";
   }

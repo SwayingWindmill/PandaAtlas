@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
+import { LoadFailed } from "@/components/load-failed";
 import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,6 +19,7 @@ import {
   VerificationRequired,
   createPrivacyRequest,
   loadPrivacyRequests,
+  newRequestKey,
   saveExport,
 } from "@/features/account/requests";
 import { shortDay } from "@/features/engagement/seen";
@@ -55,9 +57,6 @@ function ExportSection({
   return (
     <View className="items-start gap-3">
       <Text variant="h2">导出我的数据</Text>
-      <Text className="text-muted-foreground">
-        包括账号资料、关注和见过的熊猫、游戏记录和通知。准备好后可以下载一个 JSON 文件，24 小时内有效。
-      </Text>
       {request ? <Status request={request} /> : null}
       <View className="flex-row flex-wrap gap-2">
         {ready ? (
@@ -175,9 +174,14 @@ export default function AccountScreen() {
     load();
   }
 
+  // One key per request the fan means to file, kept across retries until it succeeds.
+  const keys = useRef<Partial<Record<PrivacyKind, string>>>({});
+
   async function request(kind: PrivacyKind, written = "") {
     try {
-      const created = await createPrivacyRequest(kind, requestReason(kind, written));
+      const key = (keys.current[kind] ??= newRequestKey());
+      const created = await createPrivacyRequest(kind, requestReason(kind, written), key);
+      delete keys.current[kind];
       setRequests((current) => [created, ...(current ?? []).filter((item) => item.requestId !== created.requestId)]);
     } catch (error) {
       if (error instanceof VerificationRequired) verify();
@@ -197,12 +201,7 @@ export default function AccountScreen() {
   return (
     <Page label="我的" title="账号与数据">
       {gate.status === "failed" ? (
-        <View className="items-start gap-3 rounded-lg bg-muted p-5">
-          <Text>暂时打不开。</Text>
-          <Button onPress={reload}>
-            <Text>重试</Text>
-          </Button>
-        </View>
+        <LoadFailed message="暂时打不开。" onRetry={reload} />
       ) : null}
       {gate.status === "checking" ? <Skeleton className="h-48 w-full" accessibilityLabel="正在加载" /> : null}
       {gate.status === "verify" ? <Verification factorId={gate.factorId} onVerified={reload} /> : null}
