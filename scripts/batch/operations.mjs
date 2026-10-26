@@ -36,6 +36,7 @@ const EXPECTED_OPERATION_IDS = new Set([
   "research.build",
   "curation.validate",
   "curation.apply",
+  "curation.guess-questions",
   "media.process",
   "media.publish",
   "release.build",
@@ -62,6 +63,7 @@ const EXPECTED_READY_COMMANDS = new Map([
       "../../.batch-work/media",
     ],
   ],
+  ["curation.guess-questions", ["node", "services/api/dist/guess-questions-command.js"]],
   ["release.build", ["node", "services/api/dist/release-command.js", "build"]],
   ["release.publish", ["node", "services/api/dist/release-command.js", "publish"]],
 ]);

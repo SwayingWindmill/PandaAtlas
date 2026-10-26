@@ -24,16 +24,20 @@ const workflowPath = path.join(repoRoot, ".github", "workflows", "batch-operatio
 test("batch catalog exposes the standard operations", () => {
   const catalog = loadBatchCatalog();
   assert.deepEqual(validateBatchCatalog(catalog), []);
-  assert.equal(catalog.operations.length, 9);
+  assert.equal(catalog.operations.length, 10);
   assert.deepEqual(
     catalog.operations.filter((item) => item.status === "ready").map((item) => item.id),
-    ["research.validate", "curation.validate", "media.process", "release.build", "release.publish"],
+    ["research.validate", "curation.validate", "curation.guess-questions", "media.process", "release.build", "release.publish"],
   );
 });
 
-test("release adapters are approval-gated production writes that need the built API", () => {
+test("database adapters are approval-gated production writes that need the built API", () => {
   const catalog = loadBatchCatalog();
-  for (const operationId of ["release.build", "release.publish"]) {
+  for (const [operationId, manifestPath] of [
+    ["release.build", "data/release-manifests/2026.10.26.1.json"],
+    ["release.publish", "data/release-manifests/2026.10.26.1.json"],
+    ["curation.guess-questions", "data/curation/guess-questions/2026.10.27.1.json"],
+  ]) {
     const operation = catalog.operations.find((item) => item.id === operationId);
     assert.equal(operation.effect, "production-write");
     assert.equal(operation.approval_required, true);
@@ -41,7 +45,7 @@ test("release adapters are approval-gated production writes that need the built 
     const plan = createBatchPlan({
       catalog,
       operationId,
-      manifestPath: "data/release-manifests/2026.10.26.1.json",
+      manifestPath,
       repositoryRoot: repoRoot,
     });
     assert.equal(plan.executable, true);
@@ -164,8 +168,8 @@ test("approval execution requires change reference and protected environment", a
 
 test("tracked workflow passes and unsafe mutations fail", async () => {
   assert.deepEqual(checkBatchWorkflowInterface({ repositoryRoot: repoRoot, quiet: true }), {
-    operations: 9,
-    ready: 5,
+    operations: 10,
+    ready: 6,
   });
   const catalog = loadBatchCatalog();
   const workflowText = await readFile(workflowPath, "utf8");

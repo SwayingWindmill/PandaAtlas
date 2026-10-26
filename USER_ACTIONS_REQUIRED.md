@@ -25,7 +25,7 @@ Items that need the owner: credentials, approvals or product decisions. Work tha
 ## Product and content decisions
 
 - **Which pandas the welcome suggests.** First launch offers living pandas that can be visited, youngest first, plus search. A curated list (the pandas most fans arrive for) would serve newcomers better; name the list or the rule.
-- **猜熊猫 questions.** The app's 猜熊猫 works end to end, but production has no published question (the question endpoint answers 404), so it shows 现在还没有可以猜的题目。 There is no authoring tool or import for questions. Decide who picks the photo, the three wrong options and the recognition tips; a curated JSON plus a migration (like `data/curation/institutions`) or an admin form are both small once the source of questions is decided.
+- **Add the first 猜熊猫 questions.** The app's 猜熊猫 answers 404 in production because no question is published. The `curation.guess-questions` batch operation now draws them from the active release (one per living panda with a public cover photo; 433 from the active release), and the manifest `data/curation/guess-questions/2026.10.27.1.json` is merged. Approve a run when you want them live (runbook: `docs/runbooks/production-release.md#add-猜熊猫-questions`), ideally after publishing `2026.10.26.1` so its new pandas are included. Hand-written recognition tips can replace the generated ones later.
 
 - **Learning content (科普, 专题, 认脸指南, 认脸挑战).** No content model or text exists; the canvas uses placeholders such as `[形状和左右差别]`. Decide the content and who writes it before a schema is built for it.
 - **Official posts (官方动态, 官方最近说).** The API's updates feed lists release changes, not posts by bases. Quoting official social posts needs a source, its terms of use and an acquisition decision.

@@ -12,6 +12,7 @@ on:
           - research.build
           - curation.validate
           - curation.apply
+          - curation.guess-questions
           - media.process
           - media.publish
           - release.build
@@ -192,9 +193,9 @@ jobs:
           BATCH_MANIFEST_PATH: ${{ inputs.manifest_path }}
           BATCH_EXECUTE_REQUESTED: "true"
           BATCH_CHANGE_REFERENCE: ${{ inputs.change_reference }}
-          # Release adapters only: the managed database over verified TLS, and the public API they check.
-          DATABASE_URL: ${{ startsWith(inputs.operation, 'release.') && secrets.SUPABASE_DB_URL || '' }}
-          DATABASE_SSL_CA_CERT: ${{ startsWith(inputs.operation, 'release.') && secrets.SUPABASE_DB_SSL_CA_CERT || '' }}
+          # Database adapters only (release.*, curation.guess-questions): the managed database over verified TLS.
+          DATABASE_URL: ${{ (startsWith(inputs.operation, 'release.') || inputs.operation == 'curation.guess-questions') && secrets.SUPABASE_DB_URL || '' }}
+          DATABASE_SSL_CA_CERT: ${{ (startsWith(inputs.operation, 'release.') || inputs.operation == 'curation.guess-questions') && secrets.SUPABASE_DB_SSL_CA_CERT || '' }}
           DB_STATEMENT_TIMEOUT_MS: "120000"
           PUBLIC_API_BASE_URL: https://api.zhipanda.com
         run: node scripts/batch/operations.mjs run --execute --operation "$BATCH_OPERATION" --manifest "$BATCH_MANIFEST_PATH"

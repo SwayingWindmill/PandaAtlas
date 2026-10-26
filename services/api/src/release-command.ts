@@ -9,6 +9,7 @@ import {
   publishRelease,
   renderReleaseReport,
 } from "./modules/publication/application/release-command.js";
+import { assertVerifiedDatabase } from "./batch-database.js";
 import { parseReleaseManifest } from "./modules/publication/application/release-manifest.js";
 import { createReleaseCommandContext } from "./modules/publication/release-command.module.js";
 
@@ -21,17 +22,6 @@ const SYSTEM_KEY = "release-batch-workflow";
 const REPORT_DIRECTORY = ".batch-work/release";
 const PUBLIC_CHECK_ATTEMPTS = 10;
 const PUBLIC_CHECK_INTERVAL_MS = 30_000;
-
-/** A remote database must be reached over verified TLS; only a local test database may skip it. */
-function assertVerifiedDatabase(): void {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL is required.");
-  const host = new URL(url).hostname;
-  const local = host === "localhost" || host === "127.0.0.1" || host === "::1";
-  if (!local && !process.env.DATABASE_SSL_CA_CERT?.trim()) {
-    throw new Error(`DATABASE_SSL_CA_CERT is required to reach ${host} over verified TLS.`);
-  }
-}
 
 /** The manifest reason plus where the run came from, recorded on every lifecycle transition. */
 function provenance(reason: string): string {
