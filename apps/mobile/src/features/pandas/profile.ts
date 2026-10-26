@@ -14,6 +14,7 @@ export interface Profile {
   id: string;
   slug: string;
   name: string;
+  deceased: boolean;
   photo: { url: string; credit: string | null } | null;
   facts: { label: string; value: string }[];
   events: { id: string; date: string; text: string }[];
@@ -100,6 +101,7 @@ export async function loadProfile(slug: string): Promise<Profile> {
     id: panda.pandaId,
     slug: panda.canonicalSlug,
     name: displayName(panda),
+    deceased,
     photo: coverPhoto(media),
     facts,
     // Only what happened: an announced plan is not part of the panda's life yet.

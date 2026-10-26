@@ -10,6 +10,7 @@ import { BackButton } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { PandaActions } from "@/features/engagement/panda-actions";
 import { relativesOf } from "@/features/family/family";
 import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, loadProfile } from "@/features/pandas/profile";
@@ -207,6 +208,7 @@ export default function ProfileScreen() {
 
       <View className="gap-7 px-5 pt-6">
         <Text variant="h1">{profile.name}</Text>
+        {profile.deceased ? null : <PandaActions pandaId={profile.id} name={profile.name} />}
         {profile.facts.length > 0 ? <Facts facts={profile.facts} /> : null}
         {profile.events.length > 0 ? <Events events={profile.events} /> : null}
         <Relatives profile={profile} />

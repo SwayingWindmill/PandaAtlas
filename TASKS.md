@@ -22,8 +22,8 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 
 | Ticket | Delivers | Blocked by | Status |
 |---|---|---|---|
-| Sign-in (#683) | Email-code sign-in with Supabase Auth, SecureStore session, account provisioning, authenticated API client, 我的 tab with name and sign-out | none | done: e2e 2/2 on local stack |
-| Follow and 见过 (#684) | Follow toggle and 见过 with date on profiles, followed list in 我的 | Sign-in | todo |
+| Sign-in (#683) | Email-code sign-in with Supabase Auth, SecureStore session, account provisioning, authenticated API client, 我的 tab with name and sign-out | none | done (#695): e2e 2/2 on local stack |
+| Follow and 见过 (#684) | Follow toggle and 见过 with date on profiles, followed list in 我的 | Sign-in | done: e2e follow, 见过, reload, 我的 list, unfollow |
 | 图鉴 (#685) | Panda book tab, signed-out explanation, Daily Panda result saved to the account | Sign-in | todo |
 | 猜熊猫 (#686) | Photo question with four names, answer feedback, results feed the 图鉴 | none | todo |
 | Calendar (#687) | Birthdays and moves by month from public data | none | todo |
@@ -40,6 +40,8 @@ The `to-tickets` step normally asks the owner to approve the breakdown; the owne
 - Local admin runtime and first-admin bootstrap required `API_URL` from `supabase status`, which the CLI omits since the local Data API was turned off (#671); both now fall back to the Auth gateway on port 54321.
 - Session state never left "loading" when no session was stored (first-read sentinel); found by the sign-in e2e test.
 - Supabase answers `otp_expired` for a wrong code as well; the app's message now covers both.
+- The e2e sign-in helper accepted the code screen (which also shows the address) as signed in; it now waits for 退出登录.
+- e2e journeys seed their own panda through the API's domain modules and publish it with the release command (`e2e/global-setup.ts`); an older local database needs `npx supabase migration up --workdir infra --local` first.
 
 ## Verification log
 

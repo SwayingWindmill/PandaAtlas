@@ -31,5 +31,6 @@ export async function signIn(page: Page, email: string): Promise<void> {
   await page.getByRole("button", { name: "获取验证码" }).click();
   await page.getByLabel("验证码").fill(await latestCode(email));
   await page.getByRole("button", { name: "登录" }).last().click();
-  await expect(page.getByText(email).last()).toBeVisible();
+  // Only the signed-in 我的 tab offers sign-out; the code screen also shows the address, so it proves nothing.
+  await expect(page.getByRole("button", { name: "退出登录" })).toBeVisible();
 }

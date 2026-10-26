@@ -19,9 +19,12 @@ const browserChannel = process.env.PLAYWRIGHT_BROWSER_CHANNEL?.trim() || (proces
 
 // Supabase's local mail catcher; the tests read sign-in codes from it.
 process.env.E2E_MAILPIT_URL = status.MAILPIT_URL;
+// e2e/global-setup.ts seeds through the API's own modules, which read the same configuration as the API.
+Object.assign(process.env, { APP_ENV: "development", DATABASE_URL: status.DB_URL, CORS_ALLOW_ORIGINS: appOrigin });
 
 export default defineConfig({
   testDir: "e2e",
+  globalSetup: "./e2e/global-setup.ts",
   timeout: 120_000,
   fullyParallel: false,
   workers: 1,

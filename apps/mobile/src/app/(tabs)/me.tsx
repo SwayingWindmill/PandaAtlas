@@ -7,6 +7,9 @@ import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { useFollowed } from "@/features/engagement/favorites";
+import { PandaRow } from "@/features/pandas/panda-row";
+import { type PandaListItem, loadPandaIndex } from "@/features/pandas/pandas";
 import { useSession } from "@/features/session/session";
 import { authedApi } from "@/lib/api";
 
@@ -107,6 +110,30 @@ function Profile({ email }: { email: string | null }) {
   );
 }
 
+function Following() {
+  const followed = useFollowed();
+  const [pandas, setPandas] = useState<PandaListItem[] | null>(null);
+  useEffect(() => {
+    void loadPandaIndex().then(setPandas);
+  }, []);
+  if (followed === null || pandas === null) return null;
+  const items = pandas.filter((panda) => followed.has(panda.id));
+  return (
+    <View className="gap-2">
+      <Text variant="h2">{`关注的熊猫　${items.length}`}</Text>
+      {items.length === 0 ? (
+        <Text className="text-muted-foreground">在熊猫资料页点「关注」。</Text>
+      ) : (
+        <View>
+          {items.map((item, index) => (
+            <PandaRow key={item.id} item={item} last={index === items.length - 1} />
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
 export default function MeScreen() {
   const { state, signOut } = useSession();
   return (
@@ -117,6 +144,7 @@ export default function MeScreen() {
         <Text className="text-muted-foreground">账号暂时不可用，请稍后再试。</Text>
       ) : null}
       {state.status === "signedIn" ? <Profile email={state.email} /> : null}
+      {state.status === "signedIn" ? <Following /> : null}
       {state.status === "signedIn" || state.status === "unavailable" ? (
         <View className="border-t-hairline border-border pt-4">
           <Button variant="secondary" className="self-start" onPress={() => void signOut()}>
