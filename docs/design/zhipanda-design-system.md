@@ -200,6 +200,7 @@ App 遵守上面全部规则，只是写法不同。
 - **字号：** `Text` 只有四档：`h1` 32（每屏唯一）、`h2` 20、正文和 `h3` 16、`muted` / `small` 12。Tailwind 写法对应 `text-display`、`text-xl`、`text-base`、`text-xs`。
 - **线条：** `border-hairline`、`border-t-hairline`、`border-b-hairline`、`h-hairline`，都是 0.5px；SVG 连线也是 0.5。
 - **圆角：** 与网站同一组：8、12、16（卡片）、24（大容器）、胶囊。嵌套时内圆角 = 外圆角 − 间距，例如 24 的容器内边距 8，里面的卡片用 16。
-- **页面框架：** 不用原生导航栏。每屏用 `components/page.tsx`：左上一个返回按钮，一行 12px jade 小标签，然后是唯一的 `h1`。
+- **页面框架：** 不用原生导航栏。每屏用 `components/page.tsx`（`Page`，或列表屏只用 `PageHeader`）：左上一个返回按钮，一行 12px jade 小标签，然后是唯一的 `h1`。底部导航的标签页根屏传 `back={false}`，不显示返回按钮。熊猫资料这类以照片开头的屏，返回和分享按钮浮在照片上，底色用 `bg-background`；照片来源放在照片下面，不叠字、不加文字阴影。
+- **底部导航：** `app/(tabs)`，标签 12px，选中加粗用 `foreground`，其余 `muted-foreground`，顶边 0.5px，没有投影和切换动画。只放已经能用的标签：需要登录的「图鉴」「我的」等登录做好再加。
 - **深色：** 跟随系统；`global.css` 的 `@variant dark` 是同一组 Radix 色阶的深色版。
 

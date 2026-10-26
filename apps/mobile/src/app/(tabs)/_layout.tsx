@@ -1,0 +1,66 @@
+import { Tabs } from "expo-router";
+import type { ColorValue } from "react-native";
+import Svg, { Circle, Path } from "react-native-svg";
+import { useCSSVariable } from "uniwind";
+
+import { Text } from "@/components/ui/text";
+import { cn } from "@/lib/utils";
+
+// The canvas's bottom navigation. 图鉴 and 我的 join once sign-in exists.
+function TodayIcon({ color }: { color: ColorValue }) {
+  return (
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">
+      <Circle cx={12} cy={12} r={4} />
+      <Path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </Svg>
+  );
+}
+
+function FindIcon({ color }: { color: ColorValue }) {
+  return (
+    <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">
+      <Circle cx={11} cy={11} r={7} />
+      <Path d="m20 20-3.5-3.5" />
+    </Svg>
+  );
+}
+
+function Label({ focused, children }: { focused: boolean; children: string }) {
+  return <Text className={cn("text-xs", focused ? "font-bold text-foreground" : "text-muted-foreground")}>{children}</Text>;
+}
+
+export default function TabsLayout() {
+  const [background, border, ink, muted] = useCSSVariable([
+    "--color-background",
+    "--color-border",
+    "--color-foreground",
+    "--color-muted-foreground",
+  ]);
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: String(ink),
+        tabBarInactiveTintColor: String(muted),
+        tabBarStyle: { backgroundColor: String(background), borderTopColor: String(border), borderTopWidth: 0.5, elevation: 0 },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "今天",
+          tabBarLabel: ({ focused }) => <Label focused={focused}>今天</Label>,
+          tabBarIcon: ({ color }) => <TodayIcon color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="find"
+        options={{
+          title: "找熊猫",
+          tabBarLabel: ({ focused }) => <Label focused={focused}>找熊猫</Label>,
+          tabBarIcon: ({ color }) => <FindIcon color={color} />,
+        }}
+      />
+    </Tabs>
+  );
+}
