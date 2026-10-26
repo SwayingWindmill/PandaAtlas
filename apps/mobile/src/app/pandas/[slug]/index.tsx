@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, ScrollView, Share, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
@@ -17,8 +17,6 @@ import { openPanda } from "@/features/pandas/panda-row";
 import { type Profile, loadProfile, longDate } from "@/features/pandas/profile";
 import { cn } from "@/lib/utils";
 
-const WEBSITE = "https://www.zhipanda.com/zh/pandas";
-
 function ShareButton({ profile, className }: { profile: Profile; className?: string }) {
   const ink = String(useCSSVariable("--color-foreground"));
   return (
@@ -27,7 +25,7 @@ function ShareButton({ profile, className }: { profile: Profile; className?: str
       size="icon"
       className={className}
       accessibilityLabel="分享"
-      onPress={() => void Share.share({ message: `${profile.name} ${WEBSITE}/${profile.slug}` })}
+      onPress={() => router.push({ pathname: "/pandas/[slug]/share", params: { slug: profile.slug } })}
     >
       <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={ink} strokeWidth={2} strokeLinecap="round">
         <Path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6" />

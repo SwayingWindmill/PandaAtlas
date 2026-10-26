@@ -6,6 +6,7 @@ import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { useUniwind } from "uniwind";
 
+import { OfflineBanner } from "@/components/offline-banner";
 import { SessionProvider } from "@/features/session/session";
 import { NAV_THEME } from "@/lib/theme";
 
@@ -21,6 +22,7 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="pandas/[slug]/photos" options={{ presentation: "fullScreenModal" }} />
         </Stack>
+        <OfflineBanner />
         <PortalHost />
       </ThemeProvider>
     </SessionProvider>
