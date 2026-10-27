@@ -8,6 +8,8 @@ import { Page } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { type Appearance, useAppearance } from "@/features/appearance/appearance";
 import { statusLabel } from "@/features/corrections/correction";
 import { type ContributionRecord, loadMyContributions } from "@/features/corrections/submissions";
 import { shortDay } from "@/features/engagement/seen";
@@ -215,6 +217,38 @@ function Contributions() {
   );
 }
 
+const APPEARANCES: { value: Appearance; label: string }[] = [
+  { value: "system", label: "跟随系统" },
+  { value: "light", label: "浅色" },
+  { value: "dark", label: "深色" },
+];
+
+function Display() {
+  const [appearance, setAppearance] = useAppearance();
+  return (
+    <View className="gap-3">
+      <Text variant="h2">显示</Text>
+      <ToggleGroup
+        type="single"
+        variant="outline"
+        value={appearance}
+        onValueChange={(value) => {
+          const choice = APPEARANCES.find((item) => item.value === value);
+          if (choice) setAppearance(choice.value);
+        }}
+        accessibilityLabel="外观"
+      >
+        {APPEARANCES.map((item) => (
+          <ToggleGroupItem key={item.value} value={item.value} accessibilityLabel={item.label}>
+            <Text>{item.label}</Text>
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
+      <NavRow label="内容和照片从哪来" href="/about" last />
+    </View>
+  );
+}
+
 export default function MeScreen() {
   const { state, signOut } = useSession();
   return (
@@ -228,6 +262,7 @@ export default function MeScreen() {
       {state.status === "signedIn" ? <Following /> : null}
       {state.status === "signedIn" ? <Contributions /> : null}
       {state.status === "signedIn" ? <AccountLinks /> : null}
+      <Display />
       {state.status === "signedIn" || state.status === "unavailable" ? (
         <View className="border-t-hairline border-border pt-4">
           <Button variant="secondary" className="self-start" onPress={() => void signOut()}>
