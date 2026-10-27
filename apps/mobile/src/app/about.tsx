@@ -40,7 +40,7 @@ export default function AboutScreen() {
     ? [
         { label: "熊猫", value: `${counts.pandas.toLocaleString("zh-CN")} 只` },
         { label: "资料来源", value: `${counts.sources.toLocaleString("zh-CN")} 条` },
-        { label: "照片", value: `${counts.photos.toLocaleString("zh-CN")} 张` },
+        { label: "媒体资料", value: `${counts.photos.toLocaleString("zh-CN")} 条` },
         { label: "资料版本", value: counts.version },
       ]
     : [];
@@ -74,9 +74,8 @@ export default function AboutScreen() {
             ))}
           </View>
           <View className="gap-2">
-            <Text>每条资料都有来源，熊猫资料页底部的「资料来源」能打开原文。</Text>
-            <Text>每张照片都写明作者和授权方式，在照片下面和照片查看器里。</Text>
-            <Text>发现不对的地方，在资料页点「资料有误？纠错」。</Text>
+            <Text>资料来源见熊猫资料页，照片署名见照片下方和查看器。</Text>
+            <Text>发现资料有误，可以在熊猫资料页纠错。</Text>
           </View>
         </>
       )}
