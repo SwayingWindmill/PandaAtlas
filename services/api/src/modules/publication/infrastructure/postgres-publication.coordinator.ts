@@ -17,6 +17,7 @@ import type {
   PublicationResourceKind,
   ReleaseLifecycleState,
 } from "../application/publication.application.js";
+import type { PublicReadCache } from "./public-read-cache.js";
 
 interface MembershipInput {
   resourceKind: string;
@@ -76,6 +77,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
     private readonly lifeHistory: LifeHistoryPublicationPort,
     private readonly lineage: LineagePublicationPort,
     private readonly media: MediaPublicationPort,
+    private readonly publicReads: PublicReadCache,
   ) {}
 
   public async build(version: string, context: PublicationCommandContext): Promise<PublicRelease> {
@@ -456,7 +458,9 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
     context: PublicationCommandContext,
     reason: string,
   ): Promise<PublicationReleaseResult> {
-    return this.switchCurrent(releaseId, "activated", context, reason);
+    return this.switchCurrent(releaseId, "activated", context, reason).then((result) =>
+      this.publishDeliveryChange(result),
+    );
   }
 
   public rollback(
@@ -464,7 +468,9 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
     context: PublicationCommandContext,
     reason: string,
   ): Promise<PublicationReleaseResult> {
-    return this.switchCurrent(releaseId, "rolled_back", context, reason);
+    return this.switchCurrent(releaseId, "rolled_back", context, reason).then((result) =>
+      this.publishDeliveryChange(result),
+    );
   }
 
   public async setReleaseSuspension(
@@ -473,7 +479,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
     context: PublicationCommandContext,
     reason: string,
   ): Promise<PublicationReleaseResult> {
-    return this.database.transaction(async (transaction) => {
+    const result = await this.database.transaction(async (transaction): Promise<PublicationReleaseResult> => {
       const release = await this.lockRelease(transaction, releaseId);
       if (release === undefined) return { kind: "not_found" };
       if (release.lifecycle_state !== "sealed") return { kind: "not_ready" };
@@ -514,6 +520,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
       });
       return { kind: "ok", release: this.mapRelease(release) };
     });
+    return this.publishDeliveryChange(result);
   }
 
   public async setResourceTakedown(
@@ -550,6 +557,7 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
         payload: { resourceKind, resourceId, takenDown },
       });
     });
+    await this.publicReads.invalidate();
   }
 
   public async getRelease(releaseId: string): Promise<PublicRelease | undefined> {
@@ -559,6 +567,13 @@ export class PostgresPublicationCoordinator implements PublicationCoordinator {
       .where("release_id", "=", releaseId)
       .executeTakeFirst();
     return row === undefined ? undefined : this.mapRelease(row);
+  }
+
+  // A delivery change is visible on the next public read. The edge purge still
+  // runs later from the outbox; this drop is what keeps the API itself current.
+  private async publishDeliveryChange(result: PublicationReleaseResult): Promise<PublicationReleaseResult> {
+    if (result.kind === "ok") await this.publicReads.invalidate();
+    return result;
   }
 
   private async switchCurrent(

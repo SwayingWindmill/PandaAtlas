@@ -6,8 +6,16 @@ import type { PublicCacheConsumerService } from "../modules/publication/infrastr
 import type { PrivacyRequestProcessorService } from "../modules/privacy/infrastructure/privacy-request-processor.service.js";
 import type { UpdatesEventConsumerService } from "../modules/updates/infrastructure/updates-event-consumer.service.js";
 import type { AsyncDownstreamHeartbeat } from "../platform/integration/async-downstream-heartbeat.js";
-import type { OutboxDispatcherService } from "../platform/integration/outbox-dispatcher.service.js";
+import type { OutboxDispatchResult, OutboxDispatcherService } from "../platform/integration/outbox-dispatcher.service.js";
 import { serializeError, type StructuredLoggerService } from "../platform/observability/structured-logger.service.js";
+
+const IDLE_DISPATCH: OutboxDispatchResult = { dispatched: 0, queueMessages: 0 };
+
+function stageProducedWork(result: unknown): boolean {
+  if (result === undefined || result === null || typeof result !== "object") return false;
+  const record = result as { received?: number; selected?: number };
+  return (record.received ?? 0) > 0 || (record.selected ?? 0) > 0;
+}
 
 // Effects that live outside the API and its database, bound per Worker invocation.
 export interface AsyncDownstreamEffects {
@@ -41,16 +49,34 @@ export class AsyncDownstreamRunnerService {
       }
     };
 
+    const failed = (stage: string) => failures.some((failure) => failure.stage === stage);
+    const dispatchInitial = await run("dispatchInitial", () => this.dispatcher.dispatchBatch(50));
+    const publicCache = await run("publicCache", () => this.publicCache.processBatch(effects.publicCache));
+    const updates = await run("updates", () => this.updates.processBatch(25));
+    // Later dispatches only publish events the stage that just ran appended.
+    // An idle cycle would otherwise open a transaction for an empty outbox twice more.
+    const dispatchAfterUpdates = stageProducedWork(updates) || failed("updates")
+      ? await run("dispatchAfterUpdates", () => this.dispatcher.dispatchBatch(50))
+      : IDLE_DISPATCH;
+    const notification = await run("notification", () => this.notification.processBatch(25));
+    const privacy = await run("privacy", () => this.privacy.processBatch(5));
+    const provider = await run("provider", () => this.provider.processBatch(10));
+    const dispatchFinal = stageProducedWork(notification) || stageProducedWork(privacy) || stageProducedWork(provider)
+      || failed("notification") || failed("privacy") || failed("provider")
+      || (dispatchAfterUpdates?.dispatched ?? 0) > 0 || failed("dispatchAfterUpdates")
+      ? await run("dispatchFinal", () => this.dispatcher.dispatchBatch(50))
+      : IDLE_DISPATCH;
+    const audit = await run("audit", () => this.audit.processBatch(50));
     const stages = {
-      dispatchInitial: await run("dispatchInitial", () => this.dispatcher.dispatchBatch(50)),
-      publicCache: await run("publicCache", () => this.publicCache.processBatch(effects.publicCache)),
-      updates: await run("updates", () => this.updates.processBatch(25)),
-      dispatchAfterUpdates: await run("dispatchAfterUpdates", () => this.dispatcher.dispatchBatch(50)),
-      notification: await run("notification", () => this.notification.processBatch(25)),
-      privacy: await run("privacy", () => this.privacy.processBatch(5)),
-      provider: await run("provider", () => this.provider.processBatch(10)),
-      dispatchFinal: await run("dispatchFinal", () => this.dispatcher.dispatchBatch(50)),
-      audit: await run("audit", () => this.audit.processBatch(50)),
+      dispatchInitial,
+      publicCache,
+      updates,
+      dispatchAfterUpdates,
+      notification,
+      privacy,
+      provider,
+      dispatchFinal,
+      audit,
     };
     if (failures.length > 0) {
       const summary = failures

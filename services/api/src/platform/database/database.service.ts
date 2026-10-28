@@ -33,7 +33,7 @@ export class DatabaseService implements OnApplicationShutdown {
     this.client = new Kysely<Database>({ dialect: new PostgresDialect({ pool: this.pool }) });
   }
 
-  private createPool(connectionString: string): pg.Pool {
+  private createPool(connectionString: string, max = this.config.databasePoolMax): pg.Pool {
     const config = this.config;
     const pool = new pg.Pool({
       connectionString,
@@ -46,7 +46,7 @@ export class DatabaseService implements OnApplicationShutdown {
             },
           }),
       types: postgresTypes,
-      max: config.databasePoolMax,
+      max,
       min: 0,
       connectionTimeoutMillis: config.databaseConnectionTimeoutMs,
       idleTimeoutMillis: config.databaseIdleTimeoutMs,
@@ -69,7 +69,9 @@ export class DatabaseService implements OnApplicationShutdown {
   }
 
   public async withRequest<T>(connectionString: string, work: () => Promise<T>): Promise<T> {
-    const pool = this.createPool(connectionString);
+    // Hyperdrive's origin allows 5 connections. One connection per Worker
+    // request stays inside that limit when several requests overlap.
+    const pool = this.createPool(connectionString, 1);
     const db = new Kysely<Database>({ dialect: new PostgresDialect({ pool }) });
     try {
       return await this.requests.run({ db, pool }, work);

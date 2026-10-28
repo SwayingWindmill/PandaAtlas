@@ -20,6 +20,7 @@ import type {
 import { LISTING_FACT_KEYS } from "../application/public-read.application.js";
 import { familyCircleIds } from "../application/family-circle.js";
 import type { FacilityVisitGuide, InstitutionProfile } from "../../places/application/visitor-content.js";
+import type { PublicReadCache } from "./public-read-cache.js";
 
 // Filters `facts` in Postgres so list reads never transfer curation facts.
 const listingFactsPath = `$[*] ? (${LISTING_FACT_KEYS.map((key) => `@.fieldKey == "${key}"`).join(" || ")})`;
@@ -38,20 +39,36 @@ interface DeliveryControls {
   evidence: Set<string>;
 }
 
+interface PublicSnapshot {
+  release: PublicReadRelease;
+  controls: DeliveryControls;
+}
+
+interface PublicReadLineageRow {
+  assertion_id: string;
+  child_id: string;
+  parent_id: string;
+  parent_role: string;
+  source_ids: string[];
+}
+
 export class PostgresPublicReadRepository implements PublicReadPort {
-  public constructor(private readonly database: DatabaseService) {}
+  public constructor(
+    private readonly database: DatabaseService,
+    private readonly cache: PublicReadCache,
+  ) {}
 
   public async currentRelease(): Promise<PublicReadResult<PublicReadRelease>> {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    return release === undefined ? { kind: "unavailable" } : { kind: "ok", value: release };
+    const snapshot = await this.snapshot();
+    return snapshot === undefined ? { kind: "unavailable" } : { kind: "ok", value: snapshot.release };
   }
 
   public async listPandas(): Promise<
     PublicReadResult<{ release: PublicReadRelease; items: PublicPandaSummary[] }>
   > {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const rows = await this.database.db
       .selectFrom("public_read.pandas")
       .select(listingPandaColumns)
@@ -70,9 +87,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async listPandaCovers(
     pandaIds: readonly string[],
   ): Promise<PublicReadResult<{ release: PublicReadRelease; items: PublicMediaSummary[] }>> {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const rows = await this.database.db
       .selectFrom("public_read.media")
       .selectAll()
@@ -92,9 +109,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   }
 
   public async getPanda(slug: string): Promise<PublicReadResult<PublicPandaDetail>> {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const pandaRow = await this.database.db
       .selectFrom("public_read.pandas")
       .selectAll()
@@ -109,16 +126,13 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       .executeTakeFirst();
     if (pandaRow === undefined || controls.panda.has(pandaRow.panda_id)) return { kind: "not_found" };
 
-    const parentageRows = await this.database.db
-      .selectFrom("public_read.lineage")
-      .select(["parent_id", "child_id"])
-      .where("release_id", "=", release.releaseId)
-      .execute();
+    const familyRows = await this.loadFamilyLineage(release.releaseId, pandaRow.panda_id);
+    const deliverableFamily = familyRows.filter(
+      (row) => !controls.panda.has(row.parent_id) && !controls.panda.has(row.child_id),
+    );
     const relativeIds = familyCircleIds(
       pandaRow.panda_id,
-      parentageRows
-        .filter((row) => !controls.panda.has(row.parent_id) && !controls.panda.has(row.child_id))
-        .map((row) => ({ parentId: row.parent_id, childId: row.child_id })),
+      deliverableFamily.map((row) => ({ parentId: row.parent_id, childId: row.child_id })),
     );
     const relativeRows =
       relativeIds.length === 0
@@ -131,20 +145,8 @@ export class PostgresPublicReadRepository implements PublicReadPort {
             .orderBy("canonical_slug")
             .execute();
 
-    const lineageRows = await this.database.db
-      .selectFrom("public_read.lineage")
-      .selectAll()
-      .where("release_id", "=", release.releaseId)
-      .where((expression) =>
-        expression.or([
-          expression("child_id", "=", pandaRow.panda_id),
-          expression("parent_id", "=", pandaRow.panda_id),
-        ]),
-      )
-      .orderBy("assertion_id")
-      .execute();
-    const lineage = lineageRows
-      .filter((row) => !controls.panda.has(row.child_id) && !controls.panda.has(row.parent_id))
+    const lineage = deliverableFamily
+      .filter((row) => row.child_id === pandaRow.panda_id || row.parent_id === pandaRow.panda_id)
       .map((row) => this.mapLineage(row));
 
     const residencyRows = await this.database.db
@@ -223,9 +225,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async listPlaces(): Promise<
     PublicReadResult<{ release: PublicReadRelease; items: PublicPlaceSummary[] }>
   > {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const rows = await this.database.db
       .selectFrom("public_read.places")
       .selectAll()
@@ -244,9 +246,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async getPlace(
     slug: string,
   ): Promise<PublicReadResult<{ release: PublicReadRelease; place: PublicPlaceSummary }>> {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const row = await this.database.db
       .selectFrom("public_read.places")
       .selectAll()
@@ -260,8 +262,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async listInstitutions(): Promise<
     PublicReadResult<{ release: PublicReadRelease; items: PublicInstitutionSummary[] }>
   > {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release } = snapshot;
     const rows = await this.database.db
       .selectFrom("public_read.institutions")
       .selectAll()
@@ -272,8 +275,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   }
 
   public async getInstitution(slug: string): Promise<PublicReadResult<PublicInstitutionDetail>> {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const row = await this.database.db
       .selectFrom("public_read.institutions")
       .selectAll()
@@ -281,7 +285,6 @@ export class PostgresPublicReadRepository implements PublicReadPort {
       .where("slug", "=", slug)
       .executeTakeFirst();
     if (row === undefined) return { kind: "not_found" };
-    const controls = await this.loadDeliveryControls(this.database.db);
     const placeRows = await this.database.db
       .selectFrom("public_read.places")
       .selectAll()
@@ -302,9 +305,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async listLineage(): Promise<
     PublicReadResult<{ release: PublicReadRelease; items: PublicLineageSummary[] }>
   > {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const rows = await this.database.db
       .selectFrom("public_read.lineage")
       .selectAll()
@@ -325,9 +328,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async listResidencies(): Promise<
     PublicReadResult<{ release: PublicReadRelease; items: PublicResidencySummary[] }>
   > {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const rows = await this.database.db
       .selectFrom("public_read.residencies")
       .selectAll()
@@ -350,9 +353,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async listLifeEvents(): Promise<
     PublicReadResult<{ release: PublicReadRelease; items: PublicLifeEventSummary[] }>
   > {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     const rows = await this.database.db
       .selectFrom("public_read.life_events")
       .selectAll()
@@ -379,9 +382,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   public async getEvidence(
     sourceId: string,
   ): Promise<PublicReadResult<{ release: PublicReadRelease; source: PublicEvidenceSummary }>> {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
-    const controls = await this.loadDeliveryControls(this.database.db);
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release, controls } = snapshot;
     if (controls.evidence.has(sourceId)) return { kind: "not_found" };
     const row = await this.database.db
       .selectFrom("public_read.evidence_sources")
@@ -395,8 +398,9 @@ export class PostgresPublicReadRepository implements PublicReadPort {
   }
 
   public async stats(): Promise<PublicReadResult<{ release: PublicReadRelease; stats: PublicStats }>> {
-    const release = await this.resolveCurrentRelease(this.database.db);
-    if (release === undefined) return { kind: "unavailable" };
+    const snapshot = await this.snapshot();
+    if (snapshot === undefined) return { kind: "unavailable" };
+    const { release } = snapshot;
     const row = await this.database.db
       .selectFrom("public_read.stats")
       .selectAll()
@@ -419,6 +423,52 @@ export class PostgresPublicReadRepository implements PublicReadPort {
         },
       },
     };
+  }
+
+  // Release pointer, suspension and takedowns are one cached snapshot. Every list
+  // and detail read in this generation reuses it instead of repeating those queries.
+  private snapshot(): Promise<PublicSnapshot | undefined> {
+    return this.cache.remember(
+      "snapshot",
+      async () => {
+        const release = await this.resolveCurrentRelease(this.database.db);
+        if (release === undefined) return undefined;
+        return { release, controls: await this.loadDeliveryControls(this.database.db) };
+      },
+      (snapshot) => snapshot !== undefined,
+    );
+  }
+
+  // Parents, children, siblings and grandparents. One neighborhood read replaces
+  // loading every lineage row and then reading the focus panda's edges again.
+  private async loadFamilyLineage(releaseId: string, pandaId: string): Promise<PublicReadLineageRow[]> {
+    const result = await sql<PublicReadLineageRow>`
+      select assertion_id, child_id, parent_id, parent_role, source_ids
+      from (
+        select assertion_id, child_id, parent_id, parent_role, source_ids
+        from public_read.lineage
+        where release_id = ${releaseId} and (child_id = ${pandaId} or parent_id = ${pandaId})
+        union
+        select sib.assertion_id, sib.child_id, sib.parent_id, sib.parent_role, sib.source_ids
+        from public_read.lineage as me
+        join public_read.lineage as sib
+          on sib.release_id = me.release_id and sib.parent_id = me.parent_id
+        where me.release_id = ${releaseId} and me.child_id = ${pandaId}
+        union
+        select gp.assertion_id, gp.child_id, gp.parent_id, gp.parent_role, gp.source_ids
+        from public_read.lineage as me
+        join public_read.lineage as gp
+          on gp.release_id = me.release_id and gp.child_id = me.parent_id
+        where me.release_id = ${releaseId} and me.child_id = ${pandaId}
+      ) as family
+      order by assertion_id
+    `.execute(this.database.db);
+    const seen = new Set<string>();
+    return result.rows.filter((row) => {
+      if (seen.has(row.assertion_id)) return false;
+      seen.add(row.assertion_id);
+      return true;
+    });
   }
 
   private async resolveCurrentRelease(db: Kysely<Database>): Promise<PublicReadRelease | undefined> {

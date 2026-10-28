@@ -4,6 +4,7 @@ import { createApiClient, type ApiClient } from "@zhipanda/api-client";
 import { env } from "cloudflare:workers";
 import { NextResponse } from "next/server";
 
+import { createCachedPublicGet, responseFromCache } from "@/lib/server/cached-public-get";
 import { sessionRequiredResponse } from "@/lib/server/v2-forwarding";
 import { getVerifiedSupabaseAccessToken } from "@/lib/supabase/server";
 
@@ -31,8 +32,17 @@ interface V2Result {
   response: Response;
 }
 
+const readPublicGet = createCachedPublicGet((url) => v2Transport(new Request(url, { method: "GET" })));
+
+function serverFetch(request: Request): Promise<Response> {
+  if (request.method === "GET" && !request.headers.has("Authorization")) {
+    return readPublicGet(request.url).then(responseFromCache);
+  }
+  return v2Transport(request);
+}
+
 export function createServerV2Client(): ApiClient {
-  return createApiClient(V2_API_BASE_URL, v2Transport);
+  return createApiClient(V2_API_BASE_URL, serverFetch);
 }
 
 export async function createAuthenticatedV2Client(): Promise<AuthenticatedV2Client | null> {

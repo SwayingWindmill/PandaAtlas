@@ -53,8 +53,11 @@ export class IntegrationEventConsumer {
     definition: IntegrationEventConsumerDefinition,
     limit: number,
   ): Promise<IntegrationEventBatchResult> {
-    const messages = await this.database.transaction((transaction) =>
-      this.pgmq.read(transaction, definition.queue, VISIBILITY_TIMEOUT_SECONDS, limit),
+    const messages = await this.pgmq.read(
+      this.database.db,
+      definition.queue,
+      VISIBILITY_TIMEOUT_SECONDS,
+      limit,
     );
     const result: IntegrationEventBatchResult = {
       received: messages.length,

@@ -26,6 +26,7 @@ jobs:
       - name: Async downstream is not stalled
         run: curl --fail --silent --show-error --max-time 20 --retry 2 --retry-all-errors https://api.zhipanda.com/health/async
 
-      # A unique query string misses the edge page cache, so the Web Worker itself must render.
-      - name: Web renders the home page
-        run: curl --fail --silent --show-error --max-time 30 --retry 2 --retry-all-errors --output /dev/null "https://www.zhipanda.com/zh?probe=${{ github.run_id }}"
+      # The canonical URL hits Workers Cache. A fresh home-page render would spend a
+      # public-read query budget on every probe; /ready already checks the API and database.
+      - name: Web serves the home page
+        run: curl --fail --silent --show-error --max-time 30 --retry 2 --retry-all-errors --output /dev/null "https://www.zhipanda.com/zh"

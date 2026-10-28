@@ -6,10 +6,40 @@ const PUBLIC_PAGE = /^\/(?:zh|en)(?:\/(?:pandas|families|moments|map|places|game
 const PUBLIC_FILES = new Set(["/sitemap.xml"]);
 const PAGE_CONTENT = /^text\/(?:html|x-component)\b/u;
 
-// Edge-only freshness; the Worker version is part of the cache key, so each deploy starts cold.
-export const PUBLIC_EDGE_CACHE_CONTROL = "public, max-age=600, stale-while-revalidate=86400";
+// Edge-only freshness. A delivery change purges this cache, so the TTL can be long;
+// the Worker version is part of the cache key, so each deploy starts cold.
+export const PUBLIC_EDGE_CACHE_CONTROL = "public, max-age=86400, stale-while-revalidate=604800";
 const BROWSER_CACHE_CONTROL = "public, max-age=0, must-revalidate";
 const UNCACHEABLE = "private, no-store";
+
+// Set by the uncached gateway after it has checked the API binding's purge props.
+// PublicPages is not routed from the internet, so a client header cannot purge.
+export const PUBLIC_CACHE_PURGE_HEADER = "x-zhipanda-cache-purge";
+
+// Query parameters that never change a public page. They stay out of the cache key
+// so a probe or a campaign link reuses the canonical render.
+const IGNORABLE_QUERY_PARAM = /^(?:probe|utm_[a-z0-9_]+|fbclid|gclid|gclsrc|dclid|gbraid|wbraid|msclkid|twclid|ttclid|li_fat_id|igshid|mc_[a-z0-9_]+|yclid|gad_source|gad_campaignid|_ga|_gl|_gac|_gid)$/iu;
+const CACHE_VARY_HEADERS = ["rsc", "next-router-state-tree", "next-router-prefetch", "next-router-segment-prefetch", "next-url"];
+
+export function isIgnorableQueryParam(name) {
+  return IGNORABLE_QUERY_PARAM.test(name);
+}
+
+export function publicPageCacheKey(request) {
+  const url = new URL(request.url);
+  const params = new URLSearchParams(url.search);
+  for (const key of [...params.keys()]) {
+    if (isIgnorableQueryParam(key)) params.delete(key);
+  }
+  params.sort();
+  const search = params.toString();
+  const parts = [`${url.pathname}${search ? `?${search}` : ""}`];
+  for (const name of CACHE_VARY_HEADERS) {
+    const value = request.headers.get(name);
+    if (value) parts.push(`${name}=${value}`);
+  }
+  return parts.join(" ");
+}
 
 function isPublicResponse(request, response) {
   if (request.method !== "GET" && request.method !== "HEAD") return false;
@@ -34,7 +64,8 @@ export function withEdgeCachePolicy(request, response) {
 
 // The API purges after any delivery change, over a service binding whose ctx.props carry
 // publicCachePurge. Only someone who can deploy the API can set those props, so internet requests
-// can never reach this. Purging runs in the default entrypoint, which owns the page cache.
+// can never reach this. The uncached gateway checks those props and forwards the purge to
+// PublicPages, which owns the page cache.
 export function isPublicCachePurge(context) {
   return context.props?.publicCachePurge === true;
 }

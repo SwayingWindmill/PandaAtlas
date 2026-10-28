@@ -45,7 +45,7 @@ export class NotificationProviderWorkerService {
   ) {}
 
   public async processBatch(limit = 10): Promise<NotificationProviderWorkerResult> {
-    const messages = await this.database.transaction((transaction) => this.pgmq.read(transaction, QUEUE, 120, limit));
+    const messages = await this.pgmq.read(this.database.db, QUEUE, 120, limit);
     const result: NotificationProviderWorkerResult = {
       received: messages.length,
       submitted: 0,
