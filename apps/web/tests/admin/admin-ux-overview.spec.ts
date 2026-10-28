@@ -60,7 +60,7 @@ test("staff without queue permissions sees accessible destinations but no imagin
   await page.route("**/api/admin/review/cases?**", (route) => { forbiddenCalls += 1; return route.abort(); });
   await page.goto("/admin");
   await expect(page.getByText("当前没有可在首页处理的任务队列。", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "查看审计证据" })).toHaveAttribute("href", "/admin/audit/evidence");
+  await expect(page.getByRole("link", { name: "追踪操作与证据记录" })).toHaveAttribute("href", "/admin/audit/evidence");
   await expect(page.getByText("可用工作区")).toBeVisible();
   expect(forbiddenCalls).toBe(0);
 });

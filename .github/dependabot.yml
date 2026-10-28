@@ -18,6 +18,7 @@ updates:
       # Must equal the lightningcss version @tailwindcss/node pins, which is not the newest release.
       - dependency-name: "lightningcss-linux-x64-gnu"
     # Groups take minor and patch updates; each major arrives as its own pull request to evaluate.
+    # @nestjs/* is the exception: a split major leaves peer dependencies on the previous line.
     groups:
       cloudflare-toolchain:
         patterns: ["cf", "@cloudflare/*", "vinext", "vite", "@vitejs/*"]
@@ -28,7 +29,7 @@ updates:
         update-types: ["minor", "patch"]
       nestjs:
         patterns: ["@nestjs/*", "reflect-metadata", "rxjs", "class-transformer", "class-validator"]
-        update-types: ["minor", "patch"]
+        update-types: ["major", "minor", "patch"]
       react-next:
         patterns: ["react", "react-dom", "react-server-dom-webpack", "next", "eslint-config-next", "@types/react", "@types/react-dom"]
         update-types: ["minor", "patch"]

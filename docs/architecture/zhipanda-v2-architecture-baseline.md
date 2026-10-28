@@ -57,7 +57,7 @@ Do not create generic `shared`, `common`, `utils`, `types`, `domain`, `config`, 
 ## 5. NestJS runtime baseline
 
 - Node.js 24 LTS.
-- NestJS 11.
+- NestJS 12.
 - Express via `@nestjs/platform-express`, served on Cloudflare Workers through `httpServerHandler`. Fastify was replaced (#524) because Workers forbid `new Function` and provide no timers outside a request, both of which Fastify's boot needs.
 - Strict TypeScript.
 - `module` / `moduleResolution`: NodeNext for the API.

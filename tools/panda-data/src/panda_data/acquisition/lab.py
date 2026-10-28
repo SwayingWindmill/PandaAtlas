@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
-from scrapling.fetchers import DynamicFetcher, FetcherSession, StealthyFetcher
+from scrapling.fetchers import FetcherSession, StealthyFetcher
 
 _CHROME_UA_VERSION = re.compile(r"(?:Chrome|Chromium)/(\d+)")
 _CHROME_HINT_VERSION = re.compile(r'(?:Google Chrome|Chromium)";v="(\d+)"')
@@ -121,11 +121,12 @@ def run_scrapling_browser_lab() -> dict[str, Any]:
 
         dynamic_result = _run_browser_probe(
             "dynamic",
-            lambda: DynamicFetcher.fetch(
+            lambda: StealthyFetcher.fetch(
                 f"{base_url}/js",
                 headless=True,
                 real_chrome=real_chrome,
                 google_search=False,
+                solve_cloudflare=False,
                 wait_selector="#browser-probe",
                 timeout=30_000,
             ),

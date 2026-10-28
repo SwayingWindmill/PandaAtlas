@@ -173,19 +173,24 @@ export function PublicationControlPlane() {
   const columns = useMemo(() => [
     releaseColumnHelper.accessor("version", {
       header: "版本",
-      cell: (context) => (
-        <Button
-          type="button"
-          aria-pressed={effectiveReleaseId === context.row.original.releaseId}
-          aria-label={`查看版本 ${context.getValue()}`}
-          variant="ghost"
-          className={`h-auto min-w-0 max-w-full flex-col items-start gap-1 px-2 py-2 text-left text-sm font-semibold underline underline-offset-4 ${effectiveReleaseId === context.row.original.releaseId ? "bg-teal-50 text-teal-900" : "text-slate-900"}`}
-          onClick={() => { setReason(""); setMessage(null); void setDiffPage(1); void setReleaseId(context.row.original.releaseId); }}
-        >
-          <span>{context.getValue()}</span>
-          <span className="text-xs font-normal no-underline text-slate-600">{context.row.original.isCurrent ? "当前公开" : "候选版本"}{context.row.original.suspended ? " · 已暂停" : ""}</span>
-        </Button>
-      ),
+      cell: (context) => {
+        const release = context.row.original;
+        const version = context.getValue();
+        const status = `${release.isCurrent ? "当前公开" : "候选版本"}${release.suspended ? " · 已暂停" : ""}`;
+        return (
+          <Button
+            type="button"
+            aria-pressed={effectiveReleaseId === release.releaseId}
+            aria-label={`查看版本 ${version} ${status}`}
+            variant="ghost"
+            className={`h-auto min-w-0 max-w-full flex-col items-start gap-1 px-2 py-2 text-left text-sm font-semibold underline underline-offset-4 ${effectiveReleaseId === release.releaseId ? "bg-teal-50 text-teal-900" : "text-slate-900"}`}
+            onClick={() => { setReason(""); setMessage(null); void setDiffPage(1); void setReleaseId(release.releaseId); }}
+          >
+            <span>{version}</span>
+            <span className="text-xs font-normal no-underline text-slate-600">{status}</span>
+          </Button>
+        );
+      },
     }),
     releaseColumnHelper.accessor("lifecycleState", { header: "生命周期", cell: ({ getValue }) => transitionLabels[getValue()] ?? getValue() }),
   ], [setReleaseId, setDiffPage, effectiveReleaseId]);
