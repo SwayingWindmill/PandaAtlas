@@ -7,11 +7,6 @@ const engagementEnabled = isDeployedFeatureEnabled("engagement");
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const AXE_ROUTE_SCAN_TIMEOUT_MS = 60_000;
-const TRANSPARENT_MAP_TILE = Buffer.from(
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl8sAAAAASUVORK5CYII=",
-  "base64",
-);
-
 async function scanForWcagViolations(page: Page, testInfo: TestInfo, attachmentName: string) {
   const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
 
@@ -36,8 +31,8 @@ const coreJourneys = [
   { name: "English Atlas discovery", path: "/en/pandas?status=alive&sort=name" },
   { name: "Chinese trusted profile", path: "/zh/pandas/mei-xiang" },
   { name: "English trusted profile", path: "/en/pandas/mei-xiang" },
-  { name: "Chinese structured map journey", path: "/zh/map?mode=institutions&snapshot=2026.08.12.1" },
-  { name: "English structured map journey", path: "/en/map?mode=wild&snapshot=2026.08.12.1" },
+  { name: "Chinese panda map", path: "/zh/map" },
+  { name: "English panda map", path: "/en/map" },
   { name: "Chinese place entity", path: "/zh/places/wolong-shenshuping-base" },
   { name: "English place entity", path: "/en/places/wolong-shenshuping-base" },
   { name: "Chinese institution page", path: "/zh/institutions/smithsonian-national-zoo" },
@@ -205,22 +200,19 @@ test("bilingual Home tolerates a simulated 200-percent text-only resize", async 
   }
 });
 
-test("structured map filters remain keyboard operable and accessible", async ({ page }, testInfo) => {
+test("panda map dots open a place card from the keyboard", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/en/map?mode=institutions&snapshot=2026.08.12.1");
-  const form = page.getByRole("form", { name: "Find pandas and places on the map" });
-  await form.getByLabel("Panda, zoo, base, or region").fill("Smithsonian");
-  await form.getByLabel("Country or region").selectOption("US");
-  await form.getByRole("button", { name: "Show results" }).focus();
-  await Promise.all([
-    page.waitForURL(
-      (url) => url.searchParams.get("focus") === "Smithsonian" && url.searchParams.get("country") === "US",
-      { waitUntil: "domcontentloaded" },
-    ),
-    page.keyboard.press("Enter"),
-  ]);
-  await expect(page.getByRole("heading", { level: 3, name: "Smithsonian's National Zoo" })).toBeVisible();
-  await scanForWcagViolations(page, testInfo, "axe-mobile-structured-map-filtered");
+  await page.goto("/en/map");
+  await page.waitForLoadState("networkidle");
+  const dot = page.getByTestId("panda-world-map").getByRole("link", { name: /^Zoo Atlanta, Smithsonian's National Zoo/ });
+  await dot.focus();
+  await page.keyboard.press("Enter");
+  const card = page.getByRole("dialog");
+  await expect(card.getByRole("link", { name: /Smithsonian's National Zoo/ })).toHaveAttribute("href", "/en/institutions/smithsonian-national-zoo");
+  await expect(card.getByRole("link", { name: /Zoo Atlanta/ })).toHaveAttribute("href", "/en/places/zoo-atlanta");
+  await scanForWcagViolations(page, testInfo, "axe-mobile-panda-map-card");
+  await page.keyboard.press("Escape");
+  await expect(card).toHaveCount(0);
 });
 
 test("reduced-motion removes nonessential animation from core journeys", async ({ page }) => {
@@ -233,8 +225,8 @@ test("reduced-motion removes nonessential animation from core journeys", async (
     "/en/pandas?status=alive&sort=name",
     "/zh/pandas/mei-xiang",
     "/en/pandas/mei-xiang",
-    "/zh/map?mode=institutions&snapshot=2026.08.12.1",
-    "/en/map?mode=wild&snapshot=2026.08.12.1",
+    "/zh/map",
+    "/en/map",
     "/zh/families?view=lineage&focus=mei-xiang",
     "/en/families?view=lineage&focus=bao-li&descendants=1",
   ]) {
@@ -273,43 +265,4 @@ test("reduced-motion removes nonessential animation from core journeys", async (
 
     expect(movingElements, `${path} retains motion under prefers-reduced-motion`).toEqual([]);
   }
-});
-
-test("activated map visualization remains keyboard-equivalent and accessible", async ({ page }, testInfo) => {
-  await page.route("https://basemaps.cartocdn.com/**", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "image/png",
-      body: TRANSPARENT_MAP_TILE,
-    });
-  });
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/en/map?mode=institutions&snapshot=2026.08.12.1");
-  // Click auto-waits for the button to become enabled once the page hydrates.
-  await page.getByTestId("activate-map-visualization").click();
-
-  const island = page.getByTestId("map-visualization-island");
-  const failure = page.getByTestId("map-visualization-failure");
-  await expect.poll(async () => {
-    if (await island.isVisible()) return "island";
-    if (await failure.isVisible()) return "failure";
-    return "loading";
-  }, { timeout: 15_000 }).toMatch(/island|failure/);
-
-  if (await island.isVisible()) {
-    await expect(island).toHaveAttribute(
-      "data-provider-status",
-      /ready|degraded|offline|recovering/,
-      { timeout: 15_000 },
-    );
-    await expect(page.getByRole("region", { name: "Interactive panda map" })).toBeVisible();
-    await expect(page.getByLabel("Choose without dragging the map")).toBeVisible();
-    await expect(page.locator(".pa-map-visualization-attribution").getByRole("link")).toHaveCount(2);
-  } else {
-    await expect(failure).toContainText("The live map cannot be opened right now");
-    await expect(page.getByRole("heading", { level: 3, name: "Smithsonian's National Zoo" })).toBeVisible();
-  }
-  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-
-  await scanForWcagViolations(page, testInfo, "axe-mobile-activated-map-visualization");
 });

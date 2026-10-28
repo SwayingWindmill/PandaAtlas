@@ -653,6 +653,84 @@ export async function loadV2PublicInstitution(
   );
 }
 
+export interface PublicMapEntry {
+  /** An institution, or a place that belongs to none. */
+  kind: "institution" | "place";
+  id: string;
+  slug: string;
+  nameZh: string | null;
+  nameEn: string | null;
+  countryCode: string | null;
+  region: string | null;
+  /** Map points of the entry's places that publish coordinates. */
+  points: Array<{ longitude: number; latitude: number }>;
+  /** Pandas living here now, oldest stay first. */
+  residents: PandaDetail[];
+}
+
+/**
+ * Every institution and every other mappable place, for the panda map. Coarse locations are left
+ * out: they mark a country or region a record could not narrow down, not somewhere to visit.
+ */
+export async function loadV2PublicMapOverview(
+  locale: PublicLocale,
+): Promise<PublicContentEnvelope<{ entries: PublicMapEntry[] }> | null> {
+  const [core, institutions] = await Promise.all([
+    loadCore(),
+    createServerV2Client().GET("/api/v2/institutions"),
+  ]);
+  if (!core) return null;
+  const pandas = buildCorePandas(core);
+  const residentsAt = (placeIds: ReadonlySet<string>) => pandas
+    .filter((panda) => panda.current_place?.facility_id && placeIds.has(panda.current_place.facility_id))
+    .sort((left, right) => {
+      const since = (panda: PandaDetail) => panda.residencies.find((item) => item.end_date === null)?.start_date ?? "";
+      return since(left).localeCompare(since(right));
+    });
+  const pointsOf = (places: V2Place[]) => places.flatMap((place) =>
+    typeof place.longitude === "number" && typeof place.latitude === "number"
+      ? [{ longitude: place.longitude, latitude: place.latitude }]
+      : []);
+  const places = core.places.filter((place) => place.placeType !== "coarse_location");
+  const knownInstitutions = new Set((institutions.data?.items ?? []).map((item) => item.institutionId));
+  const entries: PublicMapEntry[] = (institutions.data?.items ?? []).map((institution) => {
+    const own = places.filter((place) => place.institutionId === institution.institutionId);
+    const regions = [...new Set(own.map((place) => place.region).filter((region): region is string => Boolean(region)))];
+    return {
+      kind: "institution" as const,
+      id: institution.institutionId,
+      slug: institution.slug,
+      nameZh: institution.nameZh ?? null,
+      nameEn: institution.nameEn ?? null,
+      countryCode: institution.countryCode ?? own[0]?.countryCode ?? null,
+      region: regions.length === 1 ? regions[0] ?? null : null,
+      points: pointsOf(own),
+      residents: residentsAt(new Set(own.map((place) => place.placeId))),
+    };
+  });
+  for (const place of places) {
+    if (place.institutionId && knownInstitutions.has(place.institutionId)) continue;
+    entries.push({
+      kind: "place",
+      id: place.placeId,
+      slug: place.slug,
+      nameZh: place.nameZh ?? null,
+      nameEn: place.nameEn ?? null,
+      countryCode: place.countryCode ?? null,
+      region: place.region ?? null,
+      points: pointsOf([place]),
+      residents: residentsAt(new Set([place.placeId])),
+    });
+  }
+  return v2Envelope(
+    { entries },
+    core.release,
+    core.pandas,
+    { state: "complete", scope: "canonical V2 institutions, places with published coordinates, and current residencies" },
+    locale,
+  );
+}
+
 export async function loadV2PublicInstitutionSlugs(): Promise<string[]> {
   const result = await createServerV2Client().GET("/api/v2/institutions");
   return result.data?.items.map((item) => item.slug) ?? [];

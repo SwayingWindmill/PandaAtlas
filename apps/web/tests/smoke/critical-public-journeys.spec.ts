@@ -25,11 +25,11 @@ test("publishes the Ueno family in Atlas search and canonical profiles", async (
   await expect(page.getByTestId("trusted-panda-profile")).toBeVisible();
 });
 
-test("redirects the legacy global distribution route into the localized structured map", async ({ page }) => {
+test("redirects the legacy global distribution route to the panda map", async ({ page }) => {
   await page.goto("/global-distribution");
 
-  await expect(page).toHaveURL(/\/(zh|en)\/map\?mode=institutions&snapshot=2026\.08\.12\.1$/);
-  await expect(page.getByTestId("structured-map-page")).toBeVisible();
+  await expect(page).toHaveURL(/\/(zh|en)\/map$/);
+  await expect(page.getByTestId("panda-map-page")).toBeVisible();
 });
 
 test("does not expose the staff console or its API while the admin shell is disabled", async ({ request }) => {

@@ -1,0 +1,301 @@
+/* Panda map: a world map of where pandas live, then every place, grouped into China and elsewhere. */
+.page {
+  padding-bottom: 3rem;
+  font-size: var(--pa-text-body);
+}
+
+.head {
+  padding-top: 2.5rem;
+}
+
+.head h1 {
+  margin: 0;
+  font-size: var(--pa-text-display);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.head p {
+  margin: 0.5rem 0 0;
+  color: var(--pa-color-ink-muted);
+}
+
+/* map */
+.map {
+  position: relative;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  border: var(--pa-border) solid var(--pa-color-line);
+  border-radius: var(--pa-radius-xl);
+  background: var(--pa-color-surface-subtle);
+}
+
+.stage {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.canvas {
+  position: relative;
+}
+
+.map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.land {
+  fill: var(--pa-color-surface-strong);
+  stroke: var(--pa-color-canvas);
+  stroke-width: 0.6;
+}
+
+/* The link is the tap target; the mark inside it is the visible dot. */
+.dot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: var(--pa-radius-pill);
+  text-decoration: none;
+  transform: translate(-50%, -50%);
+}
+
+.dotMark {
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--pa-color-canvas);
+  border-radius: var(--pa-radius-pill);
+  background: var(--pa-color-accent);
+  color: var(--pa-color-on-accent);
+  font-size: var(--pa-text-meta);
+  font-weight: 700;
+  line-height: 1;
+  transition: background-color var(--pa-duration) var(--pa-ease);
+}
+
+.dot[data-empty="true"] .dotMark {
+  background: var(--pa-color-line-strong);
+}
+
+.dot:hover .dotMark,
+.dot[data-selected="true"] .dotMark {
+  background: var(--pa-color-accent-hover);
+}
+
+.dot:focus-visible {
+  outline: none;
+  box-shadow: var(--pa-focus-ring);
+}
+
+.popover {
+  position: absolute;
+  z-index: 2;
+  width: 18rem;
+  max-height: calc(100% - 1.5rem);
+  overflow: auto;
+  border: var(--pa-border) solid var(--pa-color-line);
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-canvas);
+  box-shadow: var(--pa-shadow-float);
+}
+
+.popover ul {
+  margin: 0;
+  padding: 0.5rem;
+  list-style: none;
+}
+
+.popoverItem {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--pa-radius-sm);
+  color: inherit;
+  text-decoration: none;
+}
+
+.popoverItem:hover {
+  background: var(--pa-color-surface-hover);
+}
+
+.popoverItem:focus-visible {
+  outline: none;
+  box-shadow: var(--pa-focus-ring);
+}
+
+.popoverItem img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--pa-radius-sm);
+  object-fit: cover;
+}
+
+.popoverItem > span {
+  display: grid;
+  gap: 0.125rem;
+  padding-right: 1.75rem;
+}
+
+.close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 0;
+  border-radius: var(--pa-radius-pill);
+  background: var(--pa-color-surface-subtle);
+  color: var(--pa-color-ink);
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--pa-color-surface-hover);
+}
+
+.close:focus-visible {
+  outline: none;
+  box-shadow: var(--pa-focus-ring);
+}
+
+/* list */
+.section {
+  padding-top: 3.5rem;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.sectionHead h2 {
+  margin: 0;
+  font-size: var(--pa-text-title);
+  font-weight: 800;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+  margin: 0;
+  color: var(--pa-color-ink-muted);
+  font-size: var(--pa-text-meta);
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 2.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.875rem;
+  height: 100%;
+  padding: 0.75rem 0;
+  border-top: var(--pa-border) solid var(--pa-color-line);
+  color: inherit;
+  text-decoration: none;
+}
+
+.row:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.row:focus-visible {
+  outline: none;
+  box-shadow: var(--pa-focus-ring);
+}
+
+.thumb {
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--pa-radius-md);
+  background: var(--pa-color-surface-subtle);
+  color: var(--pa-color-ink-muted);
+  font-weight: 900;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rowCopy {
+  display: grid;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.row[data-empty="true"] strong {
+  color: var(--pa-color-ink-muted);
+}
+
+.names {
+  overflow: hidden;
+  font-size: var(--pa-text-meta);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 2rem 0 0;
+  padding: 1.25rem;
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-surface-subtle);
+  color: var(--pa-color-ink-muted);
+}
+
+@media (max-width: 37.5rem) {
+  .head {
+    padding-top: 1.5rem;
+  }
+
+  .map {
+    border-radius: var(--pa-radius-lg);
+  }
+
+  /* Wide enough that nearby zoos keep their own dots; the reader scrolls sideways. */
+  .canvas {
+    width: 46rem;
+  }
+
+  /* On a phone the card sits along the bottom of the map instead of beside the dot. */
+  .popover {
+    right: 0.5rem;
+    bottom: 0.5rem !important;
+    left: 0.5rem !important;
+    top: auto !important;
+    width: auto;
+  }
+
+  .popoverItem img {
+    display: none;
+  }
+
+  .section {
+    padding-top: 2.5rem;
+  }
+
+  .rows {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
