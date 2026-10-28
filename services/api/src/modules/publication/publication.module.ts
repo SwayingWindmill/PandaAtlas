@@ -67,7 +67,8 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
         lifeHistory: LifeHistoryPublicationPort,
         lineage: LineagePublicationPort,
         media: MediaPublicationPort,
-      ) => new PostgresPublicationCoordinator(database, outbox, evidence, pandas, places, lifeHistory, lineage, media),
+        cache: PublicReadCache,
+      ) => new PostgresPublicationCoordinator(database, outbox, evidence, pandas, places, lifeHistory, lineage, media, cache),
       inject: [
         DatabaseService,
         IntegrationOutboxService,
@@ -77,6 +78,7 @@ import { PublicCacheConsumerService } from "./infrastructure/public-cache-consum
         LIFE_HISTORY_PUBLICATION_PORT,
         LINEAGE_PUBLICATION_PORT,
         MEDIA_PUBLICATION_PORT,
+        PublicReadCache,
       ],
     },
     {

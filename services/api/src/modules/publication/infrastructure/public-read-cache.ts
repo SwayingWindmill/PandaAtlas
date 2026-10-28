@@ -1,8 +1,8 @@
 // Public reads are identical for every caller until a delivery change. The result
-// lives in isolate memory, keyed by a generation the purge cycle bumps in the Cache
-// API before it clears the Web edge cache. HTTP isolates in this region (the API
-// Worker is pinned to one) see the new generation on their next read and reload, so
-// a purged page cannot be refilled from a stale public read.
+// lives in isolate memory, keyed by a generation. Publishing, rollback, suspension,
+// and resource takedown bump it as soon as the write commits, and the purge cycle
+// bumps it again before clearing the Web edge cache. HTTP isolates in this region
+// (the API Worker is pinned to one) see the new generation on their next read.
 
 const GENERATION_URL = "https://public-read.internal/generation";
 
